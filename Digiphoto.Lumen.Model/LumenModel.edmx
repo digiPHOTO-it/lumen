@@ -1,0 +1,331 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Digiphoto.Lumen.Modello.Store" Alias="Self" Provider="System.Data.SqlServerCe.4.0" ProviderManifestToken="4.0" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+  <EntityContainer Name="DigiphotoLumenModelloStoreContainer">
+    <EntitySet Name="Fotografi" EntityType="Digiphoto.Lumen.Modello.Store.Fotografi" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Fotografie" EntityType="Digiphoto.Lumen.Modello.Store.Fotografie" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Eventi" EntityType="Digiphoto.Lumen.Modello.Store.Eventi" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Raccolte" EntityType="Digiphoto.Lumen.Modello.Store.Raccolte" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="FotografiaRaccoglitore" EntityType="Digiphoto.Lumen.Modello.Store.FotografiaRaccoglitore" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="FotografoFotografia" Association="Digiphoto.Lumen.Modello.Store.FotografoFotografia">
+      <End Role="Fotografo" EntitySet="Fotografi" />
+      <End Role="Fotografia" EntitySet="Fotografie" />
+    </AssociationSet>
+    <AssociationSet Name="EventoFotografia" Association="Digiphoto.Lumen.Modello.Store.EventoFotografia">
+      <End Role="Evento" EntitySet="Eventi" />
+      <End Role="Fotografia" EntitySet="Fotografie" />
+    </AssociationSet>
+    <AssociationSet Name="FK_FotografiaRaccoglitore_Fotografia" Association="Digiphoto.Lumen.Modello.Store.FK_FotografiaRaccoglitore_Fotografia">
+      <End Role="Fotografia" EntitySet="Fotografie" />
+      <End Role="FotografiaRaccoglitore" EntitySet="FotografiaRaccoglitore" />
+    </AssociationSet>
+    <AssociationSet Name="FK_FotografiaRaccoglitore_Raccoglitore" Association="Digiphoto.Lumen.Modello.Store.FK_FotografiaRaccoglitore_Raccoglitore">
+      <End Role="Raccoglitore" EntitySet="Raccolte" />
+      <End Role="FotografiaRaccoglitore" EntitySet="FotografiaRaccoglitore" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Fotografi">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="nvarchar" Nullable="false" MaxLength="16" />
+    <Property Name="cognomeNome" Type="nvarchar" Nullable="false" />
+    <Property Name="iniziali" Type="nvarchar" Nullable="false" MaxLength="2" />
+    <Property Name="attivo" Type="bit" Nullable="false" DefaultValue="true" />
+    <Property Name="umano" Type="bit" Nullable="false" DefaultValue="true" />
+    <Property Name="note" Type="nvarchar" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Fotografie">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="nomeFile" Type="nvarchar" Nullable="false" />
+    <Property Name="dataOraScatto" Type="datetime" Nullable="true" />
+    <Property Name="didascalia" Type="nvarchar" Nullable="true" />
+    <Property Name="dataOraAcquisizione" Type="datetime" Nullable="false" />
+    <Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="false" />
+    <Property Name="evento_id" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Eventi">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="descrizione" Type="nvarchar" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Raccolte">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="nome" Type="nvarchar" Nullable="false" MaxLength="255" />
+    <Property Name="tempoCreazione" Type="datetime" Nullable="false" />
+    <Property Name="note" Type="nvarchar" Nullable="true" />
+  </EntityType>
+  <EntityType Name="FotografiaRaccoglitore">
+    <Key>
+      <PropertyRef Name="fotografie_id" />
+      <PropertyRef Name="raccolte_id" />
+    </Key>
+    <Property Name="fotografie_id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="raccolte_id" Type="uniqueidentifier" Nullable="false" />
+  </EntityType>
+  <Association Name="FotografoFotografia">
+    <End Role="Fotografo" Type="Digiphoto.Lumen.Modello.Store.Fotografi" Multiplicity="1" />
+    <End Role="Fotografia" Type="Digiphoto.Lumen.Modello.Store.Fotografie" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Fotografo">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Fotografia">
+        <PropertyRef Name="fotografo_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="EventoFotografia">
+    <End Role="Evento" Type="Digiphoto.Lumen.Modello.Store.Eventi" Multiplicity="0..1" />
+    <End Role="Fotografia" Type="Digiphoto.Lumen.Modello.Store.Fotografie" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Evento">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Fotografia">
+        <PropertyRef Name="evento_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_FotografiaRaccoglitore_Fotografia">
+    <End Role="Fotografia" Type="Digiphoto.Lumen.Modello.Store.Fotografie" Multiplicity="1" />
+    <End Role="FotografiaRaccoglitore" Type="Digiphoto.Lumen.Modello.Store.FotografiaRaccoglitore" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Fotografia">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="FotografiaRaccoglitore">
+        <PropertyRef Name="fotografie_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_FotografiaRaccoglitore_Raccoglitore">
+    <End Role="FotografiaRaccoglitore" Type="Digiphoto.Lumen.Modello.Store.FotografiaRaccoglitore" Multiplicity="*" />
+    <End Role="Raccoglitore" Type="Digiphoto.Lumen.Modello.Store.Raccolte" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Raccoglitore">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="FotografiaRaccoglitore">
+        <PropertyRef Name="raccolte_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="Digiphoto.Lumen.Model" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
+        <EntityContainer Name="LumenEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Fotografi" EntityType="Digiphoto.Lumen.Model.Fotografo" />
+          <EntitySet Name="Fotografie" EntityType="Digiphoto.Lumen.Model.Fotografia" />
+          <AssociationSet Name="FotografoFotografia" Association="Digiphoto.Lumen.Model.FotografoFotografia">
+            <End Role="Fotografo" EntitySet="Fotografi" />
+            <End Role="Fotografia" EntitySet="Fotografie" />
+          </AssociationSet>
+          <EntitySet Name="Eventi" EntityType="Digiphoto.Lumen.Model.Evento" />
+          <AssociationSet Name="EventoFotografia" Association="Digiphoto.Lumen.Model.EventoFotografia">
+            <End Role="Evento" EntitySet="Eventi" />
+            <End Role="Fotografia" EntitySet="Fotografie" />
+          </AssociationSet>
+          <EntitySet Name="Raccolte" EntityType="Digiphoto.Lumen.Model.Raccolta" />
+          <AssociationSet Name="FotografiaRaccoglitore" Association="Digiphoto.Lumen.Model.FotografiaRaccoglitore">
+            <End Role="Fotografia" EntitySet="Fotografie" />
+            <End Role="Raccoglitore" EntitySet="Raccolte" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Fotografo">
+          <Documentation>
+            <Summary>Operatori scattini e fotografi</Summary>
+            <LongDescription>Anagrafica dei fotografi che producono foto</LongDescription>
+          </Documentation>
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="String" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" MaxLength="16" >
+            <Documentation>
+              <Summary>Identificatico univoco del fotografo in tutte le installazioni</Summary>
+              <LongDescription>Utilizzare per esempio il codice fiscale</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Type="String" Name="cognomeNome" Nullable="false" />
+          <Property Name="iniziali" Nullable="false" MaxLength="2" Type="String" />
+          <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true" />
+          <Property Type="Boolean" Name="umano" Nullable="false" DefaultValue="true" >
+            <Documentation>
+              <Summary>Umano oppure Automatico (OnRide)</Summary>
+            </Documentation>
+          </Property>
+          <Property Type="String" Name="note" Nullable="true" />
+        </EntityType>
+        <EntityType Name="Fotografia">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Type="String" Name="nomeFile" Nullable="false" >
+            <Documentation>
+              <Summary>nome del file senza il percorso</Summary>
+              <LongDescription>E' il nome originale del file cosi come generato dalla fotocamera</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Type="DateTime" Name="dataOraScatto" Nullable="true" />
+          <Property Type="String" Name="didascalia" Nullable="true" />
+          <NavigationProperty Name="fotografo" Relationship="Digiphoto.Lumen.Model.FotografoFotografia" FromRole="Fotografia" ToRole="Fotografo" />
+          <NavigationProperty Name="evento" Relationship="Digiphoto.Lumen.Model.EventoFotografia" FromRole="Fotografia" ToRole="Evento" />
+          <Property Type="DateTime" Name="dataOraAcquisizione" Nullable="false" />
+          <NavigationProperty Name="raccolte" Relationship="Digiphoto.Lumen.Model.FotografiaRaccoglitore" FromRole="Fotografia" ToRole="Raccoglitore" />
+        </EntityType>
+        <Association Name="FotografoFotografia">
+          <End Type="Digiphoto.Lumen.Model.Fotografo" Role="Fotografo" Multiplicity="1" />
+          <End Type="Digiphoto.Lumen.Model.Fotografia" Role="Fotografia" Multiplicity="*" />
+        </Association>
+        <EntityType Name="Evento">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="descrizione" Nullable="false" />
+        </EntityType>
+        <Association Name="EventoFotografia">
+          <End Type="Digiphoto.Lumen.Model.Evento" Role="Evento" Multiplicity="0..1" />
+          <End Type="Digiphoto.Lumen.Model.Fotografia" Role="Fotografia" Multiplicity="*" />
+        </Association>
+        <EntityType Name="Raccolta">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Type="String" Name="nome" Nullable="false" MaxLength="255" />
+          <NavigationProperty Name="fotografie" Relationship="Digiphoto.Lumen.Model.FotografiaRaccoglitore" FromRole="Raccoglitore" ToRole="Fotografia" />
+          <Property Type="DateTime" Name="tempoCreazione" Nullable="false" />
+          <Property Type="String" Name="note" Nullable="true" />
+        </EntityType>
+        <Association Name="FotografiaRaccoglitore">
+          <End Type="Digiphoto.Lumen.Model.Fotografia" Role="Fotografia" Multiplicity="*" />
+          <End Type="Digiphoto.Lumen.Model.Raccolta" Role="Raccoglitore" Multiplicity="*" />
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="DigiphotoLumenModelloStoreContainer" CdmEntityContainer="LumenEntities">
+    <EntitySetMapping Name="Fotografi">
+      <EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.Fotografo)">
+        <MappingFragment StoreEntitySet="Fotografi">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="cognomeNome" ColumnName="cognomeNome" />
+          <ScalarProperty Name="iniziali" ColumnName="iniziali" />
+          <ScalarProperty Name="attivo" ColumnName="attivo" />
+          <ScalarProperty Name="umano" ColumnName="umano" />
+          <ScalarProperty Name="note" ColumnName="note" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Fotografie">
+      <EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.Fotografia)">
+        <MappingFragment StoreEntitySet="Fotografie">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="nomeFile" ColumnName="nomeFile" />
+          <ScalarProperty Name="dataOraScatto" ColumnName="dataOraScatto" />
+          <ScalarProperty Name="didascalia" ColumnName="didascalia" />
+          <ScalarProperty Name="dataOraAcquisizione" ColumnName="dataOraAcquisizione" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Eventi">
+      <EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.Evento)">
+        <MappingFragment StoreEntitySet="Eventi">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="descrizione" ColumnName="descrizione" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Raccolte">
+      <EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.Raccolta)">
+        <MappingFragment StoreEntitySet="Raccolte">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="nome" ColumnName="nome" />
+          <ScalarProperty Name="tempoCreazione" ColumnName="tempoCreazione" />
+          <ScalarProperty Name="note" ColumnName="note" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="FotografoFotografia" TypeName="Digiphoto.Lumen.Model.FotografoFotografia" StoreEntitySet="Fotografie">
+      <EndProperty Name="Fotografo">
+        <ScalarProperty Name="id" ColumnName="fotografo_id" />
+      </EndProperty>
+      <EndProperty Name="Fotografia">
+        <ScalarProperty Name="id" ColumnName="id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="EventoFotografia" TypeName="Digiphoto.Lumen.Model.EventoFotografia" StoreEntitySet="Fotografie">
+      <EndProperty Name="Evento">
+        <ScalarProperty Name="id" ColumnName="evento_id" />
+      </EndProperty>
+      <EndProperty Name="Fotografia">
+        <ScalarProperty Name="id" ColumnName="id" />
+      </EndProperty>
+      <Condition ColumnName="evento_id" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="FotografiaRaccoglitore" TypeName="Digiphoto.Lumen.Model.FotografiaRaccoglitore" StoreEntitySet="FotografiaRaccoglitore">
+      <EndProperty Name="Fotografia">
+        <ScalarProperty Name="id" ColumnName="fotografie_id" />
+      </EndProperty>
+      <EndProperty Name="Raccoglitore">
+        <ScalarProperty Name="id" ColumnName="raccolte_id" />
+      </EndProperty>
+    </AssociationSetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram Name="ModelloEntita" ZoomLevel="81" >
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografo" Width="2.375" PointX="0.625" PointY="2.5" Height="2.192587890625" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografia" Width="1.5" PointX="4.125" PointY="1.75" Height="2.5571907552083326" />
+        <AssociationConnector Association="Digiphoto.Lumen.Model.FotografoFotografia">
+          <ConnectorPoint PointX="3" PointY="3.4035953776041663" />
+          <ConnectorPoint PointX="4.125" PointY="3.4035953776041663" />
+        </AssociationConnector>
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Evento" Width="1.5" PointX="1.75" PointY="0.5" Height="1.4033821614583333" />
+        <AssociationConnector Association="Digiphoto.Lumen.Model.EventoFotografia">
+          <ConnectorPoint PointX="3.25" PointY="1.1249995" />
+          <ConnectorPoint PointX="4.875" PointY="1.1249995" />
+          <ConnectorPoint PointX="4.875" PointY="1.75" />
+        </AssociationConnector>
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Raccolta" Width="1.5" PointX="6.75" PointY="3" Height="1.9802864583333335" />
+        <AssociationConnector Association="Digiphoto.Lumen.Model.FotografiaRaccoglitore">
+          <ConnectorPoint PointX="5.625" PointY="3.6535953776041663" />
+          <ConnectorPoint PointX="6.75" PointY="3.6535953776041663" />
+        </AssociationConnector>
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

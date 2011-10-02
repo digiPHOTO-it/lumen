@@ -1,0 +1,33 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Digiphoto.Lumen.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="dbNomeDbVuoto" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">dbvuoto.sdf</Value>
+    </Setting>
+    <Setting Name="dbNomeDbPieno" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">database.sdf</Value>
+    </Setting>
+    <Setting Name="giorniDeleteFoto" Type="System.Int16" Scope="User">
+      <Value Profile="(Default)">8</Value>
+    </Setting>
+    <Setting Name="dbCartella" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="cartellaFoto" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="oraCambioGiornata" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">05:30</Value>
+    </Setting>
+    <Setting Name="estensioniGrafiche" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">*.jpg;*.jpeg;*.png;*.tif;*.tiff</Value>
+    </Setting>
+    <Setting Name="dbCartella2" Type="System.String" Scope="User">
+      <Value Profile="(Default)">%PROGRAMDATA%\Lumen</Value>
+    </Setting>
+    <Setting Name="dbCartella1" Type="System.String" Scope="User">
+      <Value Profile="(Default)">%APPDATA%\Lumen</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
