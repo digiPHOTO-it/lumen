@@ -1,0 +1,181 @@
+
+-- --------------------------------------------------
+-- Entity Designer DDL Script for SQL Server Compact Edition
+-- --------------------------------------------------
+-- Date Created: 09/29/2011 08:39:41
+-- Generated from EDMX file: C:\Users\bluca\Documents\Visual Studio 2010\Projects\Lumen\Digiphoto.Lumen.Core\Lumen.edmx
+-- --------------------------------------------------
+
+
+-- --------------------------------------------------
+-- Dropping existing FOREIGN KEY constraints
+-- NOTE: if the constraint does not exist, an ignorable error will be reported.
+-- --------------------------------------------------
+
+    ALTER TABLE [Fotografie] DROP CONSTRAINT [FK_FotografoFotografia];
+GO
+    ALTER TABLE [Fotografie] DROP CONSTRAINT [FK_EventoFotografia];
+GO
+    ALTER TABLE [FotografiaRaccoglitore] DROP CONSTRAINT [FK_FotografiaRaccoglitore_Fotografia];
+GO
+    ALTER TABLE [FotografiaRaccoglitore] DROP CONSTRAINT [FK_FotografiaRaccoglitore_Raccoglitore];
+GO
+
+-- --------------------------------------------------
+-- Dropping existing tables
+-- NOTE: if the table does not exist, an ignorable error will be reported.
+-- --------------------------------------------------
+
+    DROP TABLE [Fotografi];
+GO
+    DROP TABLE [Fotografie];
+GO
+    DROP TABLE [Eventi];
+GO
+    DROP TABLE [Raccolte];
+GO
+    DROP TABLE [FotografiaRaccoglitore];
+GO
+
+-- --------------------------------------------------
+-- Creating all tables
+-- --------------------------------------------------
+
+-- Creating table 'Fotografi'
+CREATE TABLE [Fotografi] (
+    [id] nvarchar(16)  NOT NULL,
+    [cognomeNome] nvarchar(4000)  NOT NULL,
+    [iniziali] nvarchar(2)  NOT NULL,
+    [attivo] bit  NOT NULL,
+    [umano] bit  NOT NULL,
+    [note] nvarchar(4000)  NULL
+);
+GO
+
+-- Creating table 'Fotografie'
+CREATE TABLE [Fotografie] (
+    [id] uniqueidentifier  NOT NULL,
+    [nomeFile] nvarchar(4000)  NOT NULL,
+    [dataOraScatto] datetime  NULL,
+    [didascalia] nvarchar(4000)  NULL,
+    [dataOraAcquisizione] datetime  NOT NULL,
+    [fotografo_id] nvarchar(16)  NOT NULL,
+    [evento_id] int  NULL
+);
+GO
+
+-- Creating table 'Eventi'
+CREATE TABLE [Eventi] (
+    [id] int IDENTITY(1,1) NOT NULL,
+    [descrizione] nvarchar(4000)  NOT NULL
+);
+GO
+
+-- Creating table 'Raccolte'
+CREATE TABLE [Raccolte] (
+    [id] uniqueidentifier  NOT NULL,
+    [nome] nvarchar(255)  NOT NULL,
+    [tempoCreazione] datetime  NOT NULL,
+    [note] nvarchar(4000)  NULL
+);
+GO
+
+-- Creating table 'FotografiaRaccoglitore'
+CREATE TABLE [FotografiaRaccoglitore] (
+    [fotografie_id] uniqueidentifier  NOT NULL,
+    [raccolte_id] uniqueidentifier  NOT NULL
+);
+GO
+
+-- --------------------------------------------------
+-- Creating all PRIMARY KEY constraints
+-- --------------------------------------------------
+
+-- Creating primary key on [id] in table 'Fotografi'
+ALTER TABLE [Fotografi]
+ADD CONSTRAINT [PK_Fotografi]
+    PRIMARY KEY ([id] );
+GO
+
+-- Creating primary key on [id] in table 'Fotografie'
+ALTER TABLE [Fotografie]
+ADD CONSTRAINT [PK_Fotografie]
+    PRIMARY KEY ([id] );
+GO
+
+-- Creating primary key on [id] in table 'Eventi'
+ALTER TABLE [Eventi]
+ADD CONSTRAINT [PK_Eventi]
+    PRIMARY KEY ([id] );
+GO
+
+-- Creating primary key on [id] in table 'Raccolte'
+ALTER TABLE [Raccolte]
+ADD CONSTRAINT [PK_Raccolte]
+    PRIMARY KEY ([id] );
+GO
+
+-- Creating primary key on [fotografie_id], [raccolte_id] in table 'FotografiaRaccoglitore'
+ALTER TABLE [FotografiaRaccoglitore]
+ADD CONSTRAINT [PK_FotografiaRaccoglitore]
+    PRIMARY KEY ([fotografie_id], [raccolte_id] );
+GO
+
+-- --------------------------------------------------
+-- Creating all FOREIGN KEY constraints
+-- --------------------------------------------------
+
+-- Creating foreign key on [fotografo_id] in table 'Fotografie'
+ALTER TABLE [Fotografie]
+ADD CONSTRAINT [FK_FotografoFotografia]
+    FOREIGN KEY ([fotografo_id])
+    REFERENCES [Fotografi]
+        ([id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_FotografoFotografia'
+CREATE INDEX [IX_FK_FotografoFotografia]
+ON [Fotografie]
+    ([fotografo_id]);
+GO
+
+-- Creating foreign key on [evento_id] in table 'Fotografie'
+ALTER TABLE [Fotografie]
+ADD CONSTRAINT [FK_EventoFotografia]
+    FOREIGN KEY ([evento_id])
+    REFERENCES [Eventi]
+        ([id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_EventoFotografia'
+CREATE INDEX [IX_FK_EventoFotografia]
+ON [Fotografie]
+    ([evento_id]);
+GO
+
+-- Creating foreign key on [fotografie_id] in table 'FotografiaRaccoglitore'
+ALTER TABLE [FotografiaRaccoglitore]
+ADD CONSTRAINT [FK_FotografiaRaccoglitore_Fotografia]
+    FOREIGN KEY ([fotografie_id])
+    REFERENCES [Fotografie]
+        ([id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating foreign key on [raccolte_id] in table 'FotografiaRaccoglitore'
+ALTER TABLE [FotografiaRaccoglitore]
+ADD CONSTRAINT [FK_FotografiaRaccoglitore_Raccoglitore]
+    FOREIGN KEY ([raccolte_id])
+    REFERENCES [Raccolte]
+        ([id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_FotografiaRaccoglitore_Raccoglitore'
+CREATE INDEX [IX_FK_FotografiaRaccoglitore_Raccoglitore]
+ON [FotografiaRaccoglitore]
+    ([raccolte_id]);
+GO
+
+-- --------------------------------------------------
+-- Script has ended
+-- --------------------------------------------------
