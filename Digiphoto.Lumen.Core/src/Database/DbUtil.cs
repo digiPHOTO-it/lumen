@@ -129,17 +129,6 @@ namespace Digiphoto.Lumen.Database {
 			return f;
 		}
 
-/*
-		public static Evento loadEventoById( Int32 idEvento ) {
-
-			Evento e = null;
-			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
-
-			e = dbContext.Eventi.FirstOrDefault<Fotografo>( ee => ee.id == idEvento );
-
-			return e;
-		}
-*/
 
 
 		private static string decidiCartellaDatabase() {
@@ -150,7 +139,7 @@ namespace Digiphoto.Lumen.Database {
 			string cd = Properties.Settings.Default.dbCartella;
 
 			if( String.IsNullOrEmpty( cd ) ) {
-				ret = Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.CommonApplicationData ), "Lumen" );
+				ret = Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.CommonApplicationData ), "Digiphoto", "Lumen" );
 			} else {
 				ret = Environment.ExpandEnvironmentVariables( cd );
 			}

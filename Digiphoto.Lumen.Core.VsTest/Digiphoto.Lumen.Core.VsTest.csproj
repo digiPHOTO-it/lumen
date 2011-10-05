@@ -58,13 +58,51 @@
       <Project>{34477397-B3B8-4DD1-8418-D7E9EED4D006}</Project>
       <Name>Digiphoto.Lumen.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Digiphoto.Lumen.Imaging\Digiphoto.Lumen.Imaging.Nativa.csproj">
+      <Project>{C2E9E83A-2D6A-4CB5-B0B2-BC5931E58B94}</Project>
+      <Name>Digiphoto.Lumen.Imaging.Nativa</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Digiphoto.Lumen.Model\Digiphoto.Lumen.Model.csproj">
       <Project>{83D8301E-7999-4179-962C-1BFA507F5396}</Project>
       <Name>Digiphoto.Lumen.Model</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="images\Img01.JPG">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\Img02.JPG">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\Img03.JPG">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\Img04.JPG">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\Img05.JPG">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\Img06.JPG">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\Img07.JPG">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\Img08.JPG">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\Img09.JPG">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\Img10.JPG">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -100,7 +100,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 				Directory.CreateDirectory( nomeDirDest );
 
 				// Creo la cartella che conterrà i provini
-				ProviniUtil.creaCartellaProvini( new FileInfo(nomeDirDest) );
+				PathUtil.creaCartellaProvini( new FileInfo(nomeDirDest) );
 				
 				scaricoFotoMsg = new ScaricoFotoMsg();
 
@@ -146,8 +146,11 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			try {
 
-				// ----- Copio
-				File.Copy( nomeFileSrc, nomeFileDest, sovrascrivi );
+				if( _paramScarica.eliminaFilesSorgenti )
+					File.Move( nomeFileSrc, nomeFileDest );
+				else
+					File.Copy( nomeFileSrc, nomeFileDest, sovrascrivi );
+
 				copiato = true;
 				++scaricoFotoMsg.totFotoCopiateOk;
 				scaricoFotoMsg.fotoDaLavorare.Add( new FileInfo( nomeFileDest ) );
@@ -265,7 +268,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			
 			string [] pezzi = new string [3];
 
-			pezzi[0] = configurazione.getCartellaBaseFoto();
+			pezzi[0] = configurazione.getCartellaRepositoryFoto();
 			pezzi[1] = String.Format( "{0:yyyy-dd-MM}", configurazione.dataLegale );
 			pezzi[2] = _paramScarica.flashCardConfig.fotografo.id;
 

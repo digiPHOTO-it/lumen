@@ -60,7 +60,12 @@ namespace Digiphoto.Lumen.Config  {
 			verificheConfruenza();
 		}
 
-		public string getCartellaBaseFoto() {
+		/**
+		 * Le foto sono memorizzate in una cartella che chiamiamo Repository.
+		 * Questo repository ha un percorso di base, e poi una struttura variabile
+		 * che comprende il giorno in cui ... e l'operatore che ha scattato le foto.
+		 */
+		public string getCartellaRepositoryFoto() {
 
 			if( String.IsNullOrEmpty( Properties.Settings.Default.cartellaFoto ) )
 				return (Path.Combine( cartellaAppData, "Foto" ));
@@ -68,6 +73,12 @@ namespace Digiphoto.Lumen.Config  {
 				return Properties.Settings.Default.cartellaFoto;
 		}
 
+		/**
+		 * La data legale, rappresenta la giornata lavorativa.
+		 * Anche se le foto sono state scattate il giorno 2 all'una di notte, 
+		 * queste appartengono alla giornata lavorativa del giorno 1.
+		 * L'orario vero in cui fare il cambio della giornata, è scritto nei settaggi
+		 */
 		private DateTime calcolaDataLegale() {
 
 			DateTime dataLegale = DateTime.Today;

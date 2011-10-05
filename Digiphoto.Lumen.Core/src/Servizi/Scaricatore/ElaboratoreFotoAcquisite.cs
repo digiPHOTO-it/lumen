@@ -23,7 +23,6 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 		private List<FileInfo> _listaFiles;
 		private ParamScarica _paramScarica;
-		private IProvinatore _provinatore;
 
 		public int conta {
 			get;
@@ -34,9 +33,6 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			this._listaFiles = list;
 			this._paramScarica = paramScarica;
-
-
-			this._provinatore = ImagingFactory.Instance.creaProvinatore();
 		}
 
 
@@ -49,7 +45,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 				Fotografia foto = aggiungiEntitaFoto( fileInfo );
 
-				creaProvino( fileInfo );
+				creaProvinoImmagine( fileInfo.FullName, foto );
 
 				// Quando sono a posto con la foto, sollevo un evento per avvisare tutti
 				NuovaFotoMsg msg = new NuovaFotoMsg( foto );
@@ -59,18 +55,41 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			_giornale.Info( "Terminato di lavorare " + _listaFiles.Count + " foto appena acqusite" );
 		}
 
-		private void creaProvino( FileInfo fiFoto ) {
-
-
-			
-
-			// TODO
-			//ProviniUtil provUtil = new ProviniUtil();
-			//string nomeFileProvino = provUtil.creaProvino( fiFoto );
-
-		
+		/**
+		 * Siccome alcuni attributi Immagine non risiedono nel db,
+		 * li devo gestire sul filesystem.
+		 * Siccome è la priima volta, li creo.
+		 * 
+		 * TODO rendere questa funzionalità generica e comune sia a quando viene creata la foto per la prima volta,
+		 *      sia quando la carico da disco esistente, sia quando faccio "torna originale".
+		 *      Occhio che forse l'evento di creazione nuovo provino va lanciato qui dentro.
+		 */
+		private void creaProvinoImmagine( Fotografia foto ) {
+			creaProvinoImmagine( PathUtil.nomeCompletoFoto( foto ), foto );
 		}
 
+		private void creaProvinoImmagine( string nomeFileFoto, Fotografia foto ) {
+
+			IGestoreImmagineSrv gis = LumenApplication.Instance.getGestoreImmaginiSrv();
+
+
+			Immagine immagineGrande = gis.load( nomeFileFoto );
+			foto.imgOrig = immagineGrande;
+
+			// TODO l'immagine risultante non ho ancora deciso se e come la gestirò.
+			// per ora non faccio niente
+			foto.imgRisultante = null; // immagineGrande;
+
+			Immagine immaginePiccola = gis.creaProvino( immagineGrande );
+			foto.imgProvino = immaginePiccola;
+			gis.save( immaginePiccola, PathUtil.nomeCompletoProvino( foto ) );
+
+		}
+
+		/**
+		 * dato il nome del file della immagine, creo l'oggetto Fotografia e lo aggiungo al suo contenitore
+		 * (in pratica faccio una insert nel database).
+		 */
 		private Fotografia aggiungiEntitaFoto( FileInfo fileInfo ) {
 
 			// Ad ogni foto persisto.
@@ -93,17 +112,17 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 					foto = new Fotografia();
 					foto.id = Guid.NewGuid();
-					// foto.dataOraScatto =   TODO
+					// foto.dataOraScatto =   TODO prendere dai dati exif.
 					foto.dataOraAcquisizione = fileInfo.CreationTime;
 					foto.fotografo = fotografo;
 					foto.evento = evento;
 					foto.didascalia = _paramScarica.flashCardConfig.didascalia;
 
 					// il nome del file, lo memorizzo solamente relativo
-					int iniz = LumenApplication.Instance.configurazione.getCartellaBaseFoto().Length;
-
 					// scarto la parte iniziale di tutto il path togliendo il nome della cartella di base delle foto.
-					foto.nomeFile = fileInfo.FullName.Substring( iniz+1 );
+					// Questo perché le stesse foto le devono vedere altri computer della rete che
+					// vedono il percorso condiviso in maniera differente.
+					foto.nomeFile = PathUtil.nomeRelativoFoto( fileInfo );
 
 					// TODO leggere un pò di dati exif (in particolare la data-ora di scatto, orientazione )
 					caricaMetadatiImmagine( foto );

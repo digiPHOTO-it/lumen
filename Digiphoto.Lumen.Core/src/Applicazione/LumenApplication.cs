@@ -16,6 +16,7 @@ using Digiphoto.Lumen.Servizi.Scaricatore;
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Servizi.VolumeCambiato;
 using Digiphoto.Lumen.Eventi;
+using Digiphoto.Lumen.Imaging;
 
 namespace Digiphoto.Lumen.Applicazione {
 
@@ -28,8 +29,10 @@ namespace Digiphoto.Lumen.Applicazione {
 		
 		private Configurazione _configurazione;
 		
-		private IDictionary<String, ServizioImpl> _serviziAvviati = null;
+		private IDictionary<String, IServizio> _serviziAvviati = null;
+
 		private ServizioFactory _servizioFactory;
+
 
 
 
@@ -77,14 +80,24 @@ namespace Digiphoto.Lumen.Applicazione {
 
 		private void avviaServizi() {
 
-			_serviziAvviati = new Dictionary<string, ServizioImpl>();
+			_serviziAvviati = new Dictionary<string, IServizio>();
 
 
-			VolumeCambiatoSrvImpl s1  = (VolumeCambiatoSrvImpl) _servizioFactory.creaServizio( typeof(IVolumeCambiatoSrv) );
+			string s2 = this.GetType().Assembly.FullName;
+			Console.WriteLine( s2 );
+
+			IVolumeCambiatoSrv s1  = (VolumeCambiatoSrvImpl) _servizioFactory.creaServizio( typeof(IVolumeCambiatoSrv) );
 			_serviziAvviati.Add( typeof( IVolumeCambiatoSrv ).FullName, s1 );
 			s1.attesaBloccante = false;
 			s1.start();
 			s1.attesaEventi();
+
+			IGestoreImmagineSrv gis = (IGestoreImmagineSrv)_servizioFactory.creaServizio( typeof( IGestoreImmagineSrv ) );
+			_serviziAvviati.Add( typeof(IGestoreImmagineSrv).FullName , gis );
+			gis.start();
+
+
+
 /*
 			ScaricatoreFotoSrvImpl s2 = (ScaricatoreFotoSrvImpl)_servizioFactory.creaServizio( typeof( IScaricatoreFotoSrv ) );
 			_serviziAvviati.Add( typeof( IScaricatoreFotoSrv ).FullName, s2 );
@@ -139,6 +152,15 @@ namespace Digiphoto.Lumen.Applicazione {
 			}
 		}
 
+
+		public IServizio getServizioAvviato( string nome ) {
+			return _serviziAvviati [nome];
+		}
+
+		/** Ritorno il servizio di gestione dell''immagine */
+		public IGestoreImmagineSrv getGestoreImmaginiSrv() {
+			return (IGestoreImmagineSrv) getServizioAvviato( typeof(IGestoreImmagineSrv).FullName );
+		}
 
 		//public IScaricatoreFotoSrv getScaricatoreFotoSrv() {
 		//   return (IScaricatoreFotoSrv) _serviziAvviati[ typeof( IScaricatoreFotoSrv ).FullName ];

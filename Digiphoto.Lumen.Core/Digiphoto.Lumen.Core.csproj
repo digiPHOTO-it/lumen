@@ -93,10 +93,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="src\Servizi\VolumeCambiato\VolumeCambiatoSrvImpl.cs" />
-    <Compile Include="src\Util\ProviniUtil.cs" />
+    <Compile Include="src\Util\PathUtil.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

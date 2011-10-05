@@ -43,10 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LumenModel.cs">
+    <Compile Include="LumenEntities.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>LumenModel.tt</DependentUpon>
+      <DependentUpon>LumenEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="LumenModel.Designer.cs">
       <DependentUpon>LumenModel.edmx</DependentUpon>
@@ -64,11 +64,10 @@
     </EntityDeploy>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.Config" />
     <None Include="Lumen.edmx.sqlce" />
-    <None Include="LumenModel.tt">
+    <None Include="LumenEntities.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>LumenModel.cs</LastGenOutput>
+      <LastGenOutput>LumenEntities.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>

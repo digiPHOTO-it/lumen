@@ -11,9 +11,10 @@ namespace Digiphoto.Lumen.Imaging {
 		/** Crea una immagine leggendola da disco */
 		Immagine load( string fileName );
 
-		/** Ritorna una immagine piccola (thumbnail) */
+		/** Crea una immagine piccola (thumbnail) riducendo quella grande passata per parametro */
 		Immagine creaProvino( Immagine immagineGrande );
 
+		/** Salva l'immagine indicata sul filesystem */
 		void save( Immagine immagine, string fileName );
 	}
 }

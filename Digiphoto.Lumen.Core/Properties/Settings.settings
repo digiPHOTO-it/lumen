@@ -29,5 +29,8 @@
     <Setting Name="dbCartella1" Type="System.String" Scope="User">
       <Value Profile="(Default)">%APPDATA%\Lumen</Value>
     </Setting>
+    <Setting Name="pixelLatoProvino" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">300</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
