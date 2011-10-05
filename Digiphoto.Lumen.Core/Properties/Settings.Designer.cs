@@ -118,5 +118,17 @@ namespace Digiphoto.Lumen.Properties {
                 this["dbCartella1"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("300")]
+        public int pixelLatoProvino {
+            get {
+                return ((int)(this["pixelLatoProvino"]));
+            }
+            set {
+                this["pixelLatoProvino"] = value;
+            }
+        }
     }
 }

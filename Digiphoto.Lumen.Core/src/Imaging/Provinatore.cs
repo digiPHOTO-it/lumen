@@ -7,6 +7,11 @@ namespace Digiphoto.Lumen.Imaging {
 
 	public abstract class Provinatore : IProvinatore {
 
+		public Provinatore() {
+
+			// Determino per default la grandezza massima del lato più grande del provino
+			this.latoMax = Properties.Settings.Default.pixelLatoProvino;
+		}
 
 		/** E' la dimensione massima del lato del provino. Se non indicata, la ricavo dalla configurazione */
 		public int latoMax { get; set; }
@@ -19,7 +24,8 @@ namespace Digiphoto.Lumen.Imaging {
 
 		/** E' l'immagine da rimpicciolire */
 		public Immagine immagine {	get; protected set;	}
-		
+
+		public abstract Immagine creaImmagine( string nomeFile );
 
 		public abstract Immagine creaProvino( Immagine immagineGrande );
 
@@ -28,12 +34,12 @@ namespace Digiphoto.Lumen.Imaging {
 			if( immagine.orientamento == Orientamento.Orizzontale ) {
 				if( immagine.ww > this.latoMax ) {
 					calcW = latoMax;
-					calcH = (int) (calcW / immagine.rapporto);
+					calcH = (int) (calcW / immagine.rapporto );
 				}
 			} else {
 				if( immagine.hh > latoMax ) {
 					calcH = latoMax;
-					calcW = (int) (calcH * immagine.rapporto);
+					calcW = (int)(calcH * immagine.rapporto);
 				}
 			}
 		}

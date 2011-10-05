@@ -15,6 +15,7 @@ namespace Digiphoto.Lumen.Imaging {
 			get;
 		}
 
+		Immagine creaImmagine( string nomeFile );
 		Immagine creaProvino( Immagine immagineGrande );
 	}
 

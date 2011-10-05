@@ -16,7 +16,8 @@ namespace Digiphoto.Lumen.Imaging.Nativa  {
 		}
 
 		public Immagine load( string fileName ) {
-			return new ImmagineNet( Image.FromFile( fileName ) );
+			Image image = Image.FromFile( fileName );
+			return new ImmagineNet( image );
 		}
 
 		public Immagine creaProvino( Immagine immagineGrande ) {

@@ -14,6 +14,11 @@ namespace Digiphoto.Lumen.Imaging {
 		int ww { get;	}
 		int hh { get; }
 		Orientamento orientamento { get; }
+
+		/**
+		 *  E' dato dalla larghezza / altezza  
+		 *  rapp = ww / hh
+		 */
 		float rapporto { get; }
 	}
 

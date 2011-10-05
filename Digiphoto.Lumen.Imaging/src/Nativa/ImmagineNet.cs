@@ -36,7 +36,7 @@ namespace Digiphoto.Lumen.Imaging.Nativa {
 
 		public float rapporto {
 			get {
-				return this.ww / this.hh;
+				return (float)this.ww / (float)this.hh;
 			}
 		}
 
