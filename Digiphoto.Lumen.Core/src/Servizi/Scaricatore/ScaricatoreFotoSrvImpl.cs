@@ -91,6 +91,13 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		
 		private void scaricaAsincrono() {
 
+			int conta = 0;
+			DateTime oraInizio = DateTime.Now;
+
+
+			_giornale.Debug( "Inizio a trasferire le foto da " + _paramScarica.cartellaSorgente );
+			
+
 			// Pattern Unit-of-work
 			using( new UnitOfWorkScope( true ) ) {
 
@@ -104,21 +111,31 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 				
 				scaricoFotoMsg = new ScaricoFotoMsg();
 
-				// Faccio giri diversi per i vari formati grafici che sono indicati nella configurazione
+				// Faccio giri diversi per i vari formati grafici che sono indicati nella configurazione (jpg, tif)
 				string [] estensioni = Properties.Settings.Default.estensioniGrafiche.Split( ';' );
 				foreach( string estensione in estensioni ) {
 
 					string [] files = Directory.GetFiles( _paramScarica.cartellaSorgente, searchPattern: estensione, searchOption: SearchOption.AllDirectories );
 
+					// trasferisco tutti i files elencati
 					foreach( string nomeFileSrc in files ) {
-						scaricaAsincronoUnFile( nomeFileSrc, nomeDirDest );
+						if( scaricaAsincronoUnFile( nomeFileSrc, nomeDirDest ) )
+							++conta;
 					}
+
 				}
+
+				// Nel log scrivo anche il tempo che ci ho messo a scaricare le foto. Mi servirà per profilare
+				TimeSpan tempoImpiegato = DateTime.Now.Subtract( oraInizio );
+				_giornale.Info( "Terminato trasferimento di " + conta + " foto. Tempo impiegato = " + tempoImpiegato );
 
 				// Finito: genero un evento per notificare che l'utente può togliere la flash card.
 				scaricoFotoMsg.fase = Fase.FineScarico;
 				scaricoFotoMsg.descrizione = "Acquisizione foto terminata";
 				scaricoFotoMsg.cartellaSorgente = _paramScarica.cartellaSorgente;
+
+				// battezzo la flashcard al fotografo corrente
+				battezzaFlashCard( _paramScarica );
 
 				// Rendo pubblico l'esito dello scarico in modo che la UI possa notificare l'utente di togliere 
 				// la flash card.
@@ -131,7 +148,10 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			}
 		}
 
-		private void scaricaAsincronoUnFile( string nomeFileSrc, string nomeDirDest ) {
+		/**
+		 * Se  va tutto bene ritorna true
+		 */
+		private bool scaricaAsincronoUnFile( string nomeFileSrc, string nomeDirDest ) {
 
 			FileInfo fileInfoSrc = new FileInfo( nomeFileSrc );
 			string nomeOrig = fileInfoSrc.Name;
@@ -167,19 +187,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 				_giornale.Error( "Il file " + nomeFileSrc + " non è stato copiato ", ee );
 			}
 
-			// Se il file è stato copiato bene, allora tento la cancellazione (se richiesto)
-			if( copiato && _paramScarica.eliminaFilesSorgenti ) {
-
-				try {
-					// ----- Cancello
-					File.Delete( nomeFileSrc );
-					_giornale.Debug( "ok Eliminato correttamente il file perché scaricato bene" );
-				} catch( Exception ee ) {
-					scaricoFotoMsg.riscontratiErrori = true;
-					++scaricoFotoMsg.totFotoNonEliminate;
-					_giornale.Warn( "Impossibile eliminare foto sorgente: " + nomeFileSrc, ee );
-				}
-			}
+			return copiato;
 		}
 
 		private void elaboraFotoAcquisite() {
@@ -207,8 +215,8 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			if( !Directory.Exists( _paramScarica.cartellaSorgente ) )
 				throw new FileNotFoundException( "cartella da scaricare inesistente:\n" + _paramScarica.cartellaSorgente );
 
-			if( _paramScarica.flashCardConfig.fotografo == null )
-				throw new ArgumentException( "fotografo vuoto" );
+			if( _paramScarica.flashCardConfig.idFotografo == null )
+				throw new ArgumentException( "fotografo non indicato" );
 
 		}
 
@@ -254,13 +262,33 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 
 		/**
-		 * Scrive il file xml di configurazione sulla flash card
+		 * Scrive il file xml di configurazione sulla flash card.
+		 * Se il disco NON è rimovibile, non faccio nulla.
+		 * Ritorna true se tutto bene.
 		 */
-		public void battezzaFlashCard( ParamScarica param ) {
+		public bool battezzaFlashCard( ParamScarica param ) {
 
-			string nomeFileConfig = Path.Combine( param.cartellaSorgente, FlashCardConfig.NOMEFILECONFIG );
+			bool riuscito = false;
 
-			FlashCardConfig.Serialize( nomeFileConfig, param.flashCardConfig );
+			// Eseguo il controllo soltanto se il disco è rimovibile
+			DriveInfo driveInfo = new DriveInfo( param.cartellaSorgente );
+			if( driveInfo.DriveType == DriveType.Removable ) {
+
+				try {
+
+					string nomeFileConfig = Path.Combine( param.cartellaSorgente, FlashCardConfig.NOMEFILECONFIG );
+
+					FlashCardConfig.serialize( nomeFileConfig, param.flashCardConfig );
+
+					riuscito = true;
+
+				} catch( Exception ee ) {
+					// pazienza. Non è grave.
+					_giornale.Debug( "Non sono riuscito a battezzare la flash card", ee );
+				}
+			}
+
+			return riuscito;
 		}
 
 
@@ -270,7 +298,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			pezzi[0] = configurazione.getCartellaRepositoryFoto();
 			pezzi[1] = String.Format( "{0:yyyy-dd-MM}", configurazione.dataLegale );
-			pezzi[2] = _paramScarica.flashCardConfig.fotografo.id;
+			pezzi[2] = _paramScarica.flashCardConfig.idFotografo;
 
 			return Path.Combine( pezzi );
 		}

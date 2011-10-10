@@ -45,7 +45,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				// using( TransactionScope transaction = new TransactionScope() ) {
 
 
-					_mario = dbContext.Fotografi.FirstOrDefault<Fotografo>( ff => ff.id == "ROSSIMARIO" );
+					_mario = (Fotografo) dbContext.Fotografi.FirstOrDefault<Fotografo>( ff => ff.id == "ROSSIMARIO" );
 					if( _mario == null ) {
 						_mario = creaMario();
 						dbContext.Fotografi.AddObject( _mario );
@@ -63,7 +63,9 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 					if( _ballo == null ) {
 						_ballo = new Evento();
+						
 						_ballo.descrizione = "BALLO";
+						_ballo.id = Guid.NewGuid();
 						dbContext.Eventi.AddObject( _ballo );
 					}
 
@@ -76,6 +78,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 					//          select ev).FirstOrDefault();
 					if( _briscola == null ) {
 						_briscola = new Evento();
+						_briscola.id = Guid.NewGuid();
 						_briscola.descrizione = "BRISCOLA";
 						dbContext.Eventi.AddObject( _briscola );
 					}
@@ -163,15 +166,17 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 		public void OnNext( ScaricoFotoMsg msg ) {
 
+			Assert.IsFalse( msg.riscontratiErrori );
+
+			// Controllo che i files siano tutti copiati
+			Assert.IsTrue( msg.totFotoCopiateOk == QUANTI_FILES );
+
 			// ok è arrivato il messaggio.
 			if( msg.fase == Fase.FineScarico )
 				_puoiTogliereLaFlashCard = true;
 
 			if( msg.fase == Fase.FineLavora )
 				_elaborazioneTerminata = true;
-			
-			// Controllo che i files siano tutti copiati
-			//Assert.IsTrue( msg.totFotoCopiateOk == QUANTI_FILES );
 
 		}
 

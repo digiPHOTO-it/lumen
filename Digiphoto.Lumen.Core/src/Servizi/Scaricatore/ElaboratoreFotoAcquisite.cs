@@ -102,13 +102,12 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 				LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
 				try {
 
-					// potrebbe essere staccato. Lo riattacco */
-					Fotografo fotografo = _paramScarica.flashCardConfig.fotografo;
-					OrmUtil.AttachToOrGet<Fotografo>( objContext, "Fotografi", ref fotografo );
+					// Carico il fotografo. Obbligatorio */
+					Fotografo fotografo = objContext.Fotografi.First<Fotografo>( ff => ff.id == _paramScarica.flashCardConfig.idFotografo );
 
-					Evento evento = _paramScarica.flashCardConfig.evento;
-					OrmUtil.AttachToOrGet<Evento>( objContext, "Eventi", ref evento );
-
+					Evento evento = null;
+					if( _paramScarica.flashCardConfig.idEvento != null && _paramScarica.flashCardConfig.idEvento != Guid.Empty )
+						evento = objContext.Eventi.FirstOrDefault<Evento>( ee => ee.id == _paramScarica.flashCardConfig.idEvento );
 
 					foto = new Fotografia();
 					foto.id = Guid.NewGuid();
