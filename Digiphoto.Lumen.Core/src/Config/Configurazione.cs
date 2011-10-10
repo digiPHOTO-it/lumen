@@ -133,7 +133,7 @@ namespace Digiphoto.Lumen.Config  {
 			DbUtil.creaCartellaPerDb();
 
 			// Controllo il database. Se non esiste nessuna impostazione diversa, lo creo.
-			DbUtil.copiaDbVuotoSuDbDiLavoro(  );
+			DbUtil.copiaDbVuotoSuDbDiLavoro();
 
 
 			// ----
@@ -199,7 +199,7 @@ namespace Digiphoto.Lumen.Config  {
 		public static string cartellaAppData {
 			get {
 				string cd = Environment.GetFolderPath( Environment.SpecialFolder.CommonApplicationData );
-				return (Path.Combine( cd, "digiPHOTO\\Lumen" ));
+				return (Path.Combine( cd, "digiPHOTO", "Lumen" ));
 			}
 		}
 

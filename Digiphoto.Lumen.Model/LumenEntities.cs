@@ -20,7 +20,8 @@ using System.Runtime.Serialization;
 
 [assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "FotografoFotografia", "Fotografo", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Digiphoto.Lumen.Model.Fotografo), "Fotografia", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.Fotografia))]
 [assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "EventoFotografia", "Evento", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Digiphoto.Lumen.Model.Evento), "Fotografia", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.Fotografia))]
-[assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "FotografiaRaccoglitore", "Fotografia", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.Fotografia), "Raccoglitore", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.Raccolta))]
+[assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "RigaAlbumFotografia", "RigaAlbum", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Digiphoto.Lumen.Model.RigaAlbum), "Fotografia", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.Fotografia))]
+[assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "AlbumRigaAlbum", "Album", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Digiphoto.Lumen.Model.Album), "RigaAlbum", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.RigaAlbum))]
 
 #endregion
 
@@ -123,18 +124,34 @@ namespace Digiphoto.Lumen.Model
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        public ObjectSet<Raccolta> Raccolte
+        public ObjectSet<Album> Albums
         {
             get
             {
-                if ((_Raccolte == null))
+                if ((_Albums == null))
                 {
-                    _Raccolte = base.CreateObjectSet<Raccolta>("Raccolte");
+                    _Albums = base.CreateObjectSet<Album>("Albums");
                 }
-                return _Raccolte;
+                return _Albums;
             }
         }
-        private ObjectSet<Raccolta> _Raccolte;
+        private ObjectSet<Album> _Albums;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<RigaAlbum> RigheAlbum
+        {
+            get
+            {
+                if ((_RigheAlbum == null))
+                {
+                    _RigheAlbum = base.CreateObjectSet<RigaAlbum>("RigheAlbum");
+                }
+                return _RigheAlbum;
+            }
+        }
+        private ObjectSet<RigaAlbum> _RigheAlbum;
 
         #endregion
         #region AddTo Methods
@@ -164,11 +181,19 @@ namespace Digiphoto.Lumen.Model
         }
     
         /// <summary>
-        /// Deprecated Method for adding a new object to the Raccolte EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// Deprecated Method for adding a new object to the Albums EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
-        public void AddToRaccolte(Raccolta raccolta)
+        public void AddToAlbums(Album album)
         {
-            base.AddObject("Raccolte", raccolta);
+            base.AddObject("Albums", album);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the RigheAlbum EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToRigheAlbum(RigaAlbum rigaAlbum)
+        {
+            base.AddObject("RigheAlbum", rigaAlbum);
         }
 
         #endregion
@@ -182,24 +207,28 @@ namespace Digiphoto.Lumen.Model
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName="Digiphoto.Lumen.Model", Name="Evento")]
+    [EdmEntityTypeAttribute(NamespaceName="Digiphoto.Lumen.Model", Name="Album")]
     [Serializable()]
     [DataContractAttribute(IsReference=true)]
-    public partial class Evento : EntityObject
+    public partial class Album : EntityObject
     {
         #region Factory Method
     
         /// <summary>
-        /// Create a new Evento object.
+        /// Create a new Album object.
         /// </summary>
         /// <param name="id">Initial value of the id property.</param>
-        /// <param name="descrizione">Initial value of the descrizione property.</param>
-        public static Evento CreateEvento(global::System.Int32 id, global::System.String descrizione)
+        /// <param name="titolo">Initial value of the titolo property.</param>
+        /// <param name="note">Initial value of the note property.</param>
+        /// <param name="timestamp">Initial value of the timestamp property.</param>
+        public static Album CreateAlbum(global::System.Int32 id, global::System.String titolo, global::System.String note, global::System.DateTime timestamp)
         {
-            Evento evento = new Evento();
-            evento.id = id;
-            evento.descrizione = descrizione;
-            return evento;
+            Album album = new Album();
+            album.id = id;
+            album.titolo = titolo;
+            album.note = note;
+            album.timestamp = timestamp;
+            return album;
         }
 
         #endregion
@@ -230,6 +259,160 @@ namespace Digiphoto.Lumen.Model
         }
         private global::System.Int32 _id;
         partial void OnidChanging(global::System.Int32 value);
+        partial void OnidChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String titolo
+        {
+            get
+            {
+                return _titolo;
+            }
+            set
+            {
+                OntitoloChanging(value);
+                ReportPropertyChanging("titolo");
+                _titolo = StructuralObject.SetValidValue(value, false);
+                ReportPropertyChanged("titolo");
+                OntitoloChanged();
+            }
+        }
+        private global::System.String _titolo;
+        partial void OntitoloChanging(global::System.String value);
+        partial void OntitoloChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String note
+        {
+            get
+            {
+                return _note;
+            }
+            set
+            {
+                OnnoteChanging(value);
+                ReportPropertyChanging("note");
+                _note = StructuralObject.SetValidValue(value, false);
+                ReportPropertyChanged("note");
+                OnnoteChanged();
+            }
+        }
+        private global::System.String _note;
+        partial void OnnoteChanging(global::System.String value);
+        partial void OnnoteChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.DateTime timestamp
+        {
+            get
+            {
+                return _timestamp;
+            }
+            set
+            {
+                OntimestampChanging(value);
+                ReportPropertyChanging("timestamp");
+                _timestamp = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("timestamp");
+                OntimestampChanged();
+            }
+        }
+        private global::System.DateTime _timestamp;
+        partial void OntimestampChanging(global::System.DateTime value);
+        partial void OntimestampChanged();
+
+        #endregion
+    
+        #region Navigation Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("Digiphoto.Lumen.Model", "AlbumRigaAlbum", "RigaAlbum")]
+        public EntityCollection<RigaAlbum> RigaAlbum
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<RigaAlbum>("Digiphoto.Lumen.Model.AlbumRigaAlbum", "RigaAlbum");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<RigaAlbum>("Digiphoto.Lumen.Model.AlbumRigaAlbum", "RigaAlbum", value);
+                }
+            }
+        }
+
+        #endregion
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="Digiphoto.Lumen.Model", Name="Evento")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class Evento : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new Evento object.
+        /// </summary>
+        /// <param name="id">Initial value of the id property.</param>
+        /// <param name="descrizione">Initial value of the descrizione property.</param>
+        public static Evento CreateEvento(global::System.Guid id, global::System.String descrizione)
+        {
+            Evento evento = new Evento();
+            evento.id = id;
+            evento.descrizione = descrizione;
+            return evento;
+        }
+
+        #endregion
+        #region Primitive Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Guid id
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                if (_id != value)
+                {
+                    OnidChanging(value);
+                    ReportPropertyChanging("id");
+                    _id = StructuralObject.SetValidValue(value);
+                    ReportPropertyChanged("id");
+                    OnidChanged();
+                }
+            }
+        }
+        private global::System.Guid _id;
+        partial void OnidChanging(global::System.Guid value);
         partial void OnidChanged();
     
         /// <summary>
@@ -493,28 +676,6 @@ namespace Digiphoto.Lumen.Model
                 }
             }
         }
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("Digiphoto.Lumen.Model", "FotografiaRaccoglitore", "Raccoglitore")]
-        public EntityCollection<Raccolta> raccolte
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<Raccolta>("Digiphoto.Lumen.Model.FotografiaRaccoglitore", "Raccoglitore");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<Raccolta>("Digiphoto.Lumen.Model.FotografiaRaccoglitore", "Raccoglitore", value);
-                }
-            }
-        }
 
         #endregion
     }
@@ -707,26 +868,22 @@ namespace Digiphoto.Lumen.Model
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName="Digiphoto.Lumen.Model", Name="Raccolta")]
+    [EdmEntityTypeAttribute(NamespaceName="Digiphoto.Lumen.Model", Name="RigaAlbum")]
     [Serializable()]
     [DataContractAttribute(IsReference=true)]
-    public partial class Raccolta : EntityObject
+    public partial class RigaAlbum : EntityObject
     {
         #region Factory Method
     
         /// <summary>
-        /// Create a new Raccolta object.
+        /// Create a new RigaAlbum object.
         /// </summary>
         /// <param name="id">Initial value of the id property.</param>
-        /// <param name="nome">Initial value of the nome property.</param>
-        /// <param name="tempoCreazione">Initial value of the tempoCreazione property.</param>
-        public static Raccolta CreateRaccolta(global::System.Guid id, global::System.String nome, global::System.DateTime tempoCreazione)
+        public static RigaAlbum CreateRigaAlbum(global::System.Int32 id)
         {
-            Raccolta raccolta = new Raccolta();
-            raccolta.id = id;
-            raccolta.nome = nome;
-            raccolta.tempoCreazione = tempoCreazione;
-            return raccolta;
+            RigaAlbum rigaAlbum = new RigaAlbum();
+            rigaAlbum.id = id;
+            return rigaAlbum;
         }
 
         #endregion
@@ -737,7 +894,7 @@ namespace Digiphoto.Lumen.Model
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.Guid id
+        public global::System.Int32 id
         {
             get
             {
@@ -755,81 +912,9 @@ namespace Digiphoto.Lumen.Model
                 }
             }
         }
-        private global::System.Guid _id;
-        partial void OnidChanging(global::System.Guid value);
+        private global::System.Int32 _id;
+        partial void OnidChanging(global::System.Int32 value);
         partial void OnidChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.String nome
-        {
-            get
-            {
-                return _nome;
-            }
-            set
-            {
-                OnnomeChanging(value);
-                ReportPropertyChanging("nome");
-                _nome = StructuralObject.SetValidValue(value, false);
-                ReportPropertyChanged("nome");
-                OnnomeChanged();
-            }
-        }
-        private global::System.String _nome;
-        partial void OnnomeChanging(global::System.String value);
-        partial void OnnomeChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.DateTime tempoCreazione
-        {
-            get
-            {
-                return _tempoCreazione;
-            }
-            set
-            {
-                OntempoCreazioneChanging(value);
-                ReportPropertyChanging("tempoCreazione");
-                _tempoCreazione = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("tempoCreazione");
-                OntempoCreazioneChanged();
-            }
-        }
-        private global::System.DateTime _tempoCreazione;
-        partial void OntempoCreazioneChanging(global::System.DateTime value);
-        partial void OntempoCreazioneChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public global::System.String note
-        {
-            get
-            {
-                return _note;
-            }
-            set
-            {
-                OnnoteChanging(value);
-                ReportPropertyChanging("note");
-                _note = StructuralObject.SetValidValue(value, true);
-                ReportPropertyChanged("note");
-                OnnoteChanged();
-            }
-        }
-        private global::System.String _note;
-        partial void OnnoteChanging(global::System.String value);
-        partial void OnnoteChanged();
 
         #endregion
     
@@ -841,18 +926,18 @@ namespace Digiphoto.Lumen.Model
         [XmlIgnoreAttribute()]
         [SoapIgnoreAttribute()]
         [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("Digiphoto.Lumen.Model", "FotografiaRaccoglitore", "Fotografia")]
-        public EntityCollection<Fotografia> fotografie
+        [EdmRelationshipNavigationPropertyAttribute("Digiphoto.Lumen.Model", "RigaAlbumFotografia", "Fotografia")]
+        public EntityCollection<Fotografia> Fotografia
         {
             get
             {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<Fotografia>("Digiphoto.Lumen.Model.FotografiaRaccoglitore", "Fotografia");
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<Fotografia>("Digiphoto.Lumen.Model.RigaAlbumFotografia", "Fotografia");
             }
             set
             {
                 if ((value != null))
                 {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<Fotografia>("Digiphoto.Lumen.Model.FotografiaRaccoglitore", "Fotografia", value);
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<Fotografia>("Digiphoto.Lumen.Model.RigaAlbumFotografia", "Fotografia", value);
                 }
             }
         }

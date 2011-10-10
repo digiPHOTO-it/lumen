@@ -11,8 +11,9 @@ namespace Digiphoto.Lumen.Config {
 	public class FlashCardConfig {	
 
 		private int version { get; set; }
-		public Fotografo fotografo { get; set; }
-		public Evento evento { get; set; }
+		public string idFotografo { get; set; }
+		public Guid idEvento { get; set; }
+
 		public string didascalia { get; set; }
 
 		public static readonly string NOMEFILECONFIG = typeof( FlashCardConfig ).FullName + ".xml";
@@ -25,11 +26,10 @@ namespace Digiphoto.Lumen.Config {
 
 		public FlashCardConfig( Fotografo fotografo, Evento evento ) {
 			version = 1;
-			this.fotografo = fotografo;
-			this.evento = evento;
+			this.idFotografo = fotografo.id;
 		}
 
-		public static void Serialize( string file, FlashCardConfig c ) {
+		public static void serialize( string file, FlashCardConfig c ) {
 			System.Xml.Serialization.XmlSerializer xs
 				= new System.Xml.Serialization.XmlSerializer( c.GetType() );
 			StreamWriter writer = File.CreateText( file );

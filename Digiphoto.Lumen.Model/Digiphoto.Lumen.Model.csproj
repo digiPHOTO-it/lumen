@@ -47,6 +47,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>LumenEntities.tt</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="LumenModel.Designer.cs">
       <DependentUpon>LumenModel.edmx</DependentUpon>
@@ -64,11 +65,15 @@
     </EntityDeploy>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.Config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Lumen.edmx.sqlce" />
     <None Include="LumenEntities.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>LumenEntities.cs</LastGenOutput>
     </None>
+    <None Include="LumenModel.edmx.sqlce" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

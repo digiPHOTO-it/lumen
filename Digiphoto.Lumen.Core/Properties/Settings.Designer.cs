@@ -97,7 +97,7 @@ namespace Digiphoto.Lumen.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("%PROGRAMDATA%\\Lumen")]
+        [global::System.Configuration.DefaultSettingValueAttribute("%PROGRAMDATA%\\digiPHOTO\\Lumen")]
         public string dbCartella2 {
             get {
                 return ((string)(this["dbCartella2"]));
@@ -109,7 +109,7 @@ namespace Digiphoto.Lumen.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("%APPDATA%\\Lumen")]
+        [global::System.Configuration.DefaultSettingValueAttribute("%APPDATA%\\digiPHOTO\\Lumen")]
         public string dbCartella1 {
             get {
                 return ((string)(this["dbCartella1"]));
@@ -121,7 +121,7 @@ namespace Digiphoto.Lumen.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("300")]
+        [global::System.Configuration.DefaultSettingValueAttribute("240")]
         public int pixelLatoProvino {
             get {
                 return ((int)(this["pixelLatoProvino"]));

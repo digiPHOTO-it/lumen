@@ -139,7 +139,7 @@ namespace Digiphoto.Lumen.Database {
 			string cd = Properties.Settings.Default.dbCartella;
 
 			if( String.IsNullOrEmpty( cd ) ) {
-				ret = Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.CommonApplicationData ), "Digiphoto", "Lumen" );
+				ret = Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.CommonApplicationData ), "digiPHOTO", "Lumen" );
 			} else {
 				ret = Environment.ExpandEnvironmentVariables( cd );
 			}

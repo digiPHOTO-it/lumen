@@ -19,7 +19,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			get;
 		}
 
-		void battezzaFlashCard( ParamScarica param );
+		bool battezzaFlashCard( ParamScarica param );
 
 		/** Questo metodo non ritorna nulla, perchè la copia avviene in asincrono */
 		void scarica( ParamScarica param );
