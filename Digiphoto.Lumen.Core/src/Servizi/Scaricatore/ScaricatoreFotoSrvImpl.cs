@@ -297,7 +297,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			string [] pezzi = new string [3];
 
 			pezzi[0] = configurazione.getCartellaRepositoryFoto();
-			pezzi[1] = String.Format( "{0:yyyy-dd-MM}", configurazione.dataLegale );
+			pezzi[1] = String.Format( "{0:yyyy-MM-dd}", configurazione.dataLegale );
 			pezzi[2] = _paramScarica.flashCardConfig.idFotografo;
 
 			return Path.Combine( pezzi );
