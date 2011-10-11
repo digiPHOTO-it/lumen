@@ -22,6 +22,7 @@ using System.Runtime.Serialization;
 [assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "EventoFotografia", "Evento", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Digiphoto.Lumen.Model.Evento), "Fotografia", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.Fotografia))]
 [assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "RigaAlbumFotografia", "RigaAlbum", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Digiphoto.Lumen.Model.RigaAlbum), "Fotografia", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.Fotografia))]
 [assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "AlbumRigaAlbum", "Album", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Digiphoto.Lumen.Model.Album), "RigaAlbum", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.RigaAlbum))]
+[assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "FotografoScaricoCard", "Fotografo", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Digiphoto.Lumen.Model.Fotografo), "ScaricoCard", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.ScaricoCard))]
 
 #endregion
 
@@ -152,6 +153,38 @@ namespace Digiphoto.Lumen.Model
             }
         }
         private ObjectSet<RigaAlbum> _RigheAlbum;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<ScaricoCard> ScarichiCards
+        {
+            get
+            {
+                if ((_ScarichiCards == null))
+                {
+                    _ScarichiCards = base.CreateObjectSet<ScaricoCard>("ScarichiCards");
+                }
+                return _ScarichiCards;
+            }
+        }
+        private ObjectSet<ScaricoCard> _ScarichiCards;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<FormatoCarta> FormatiCarta
+        {
+            get
+            {
+                if ((_FormatiCarta == null))
+                {
+                    _FormatiCarta = base.CreateObjectSet<FormatoCarta>("FormatiCarta");
+                }
+                return _FormatiCarta;
+            }
+        }
+        private ObjectSet<FormatoCarta> _FormatiCarta;
 
         #endregion
         #region AddTo Methods
@@ -194,6 +227,22 @@ namespace Digiphoto.Lumen.Model
         public void AddToRigheAlbum(RigaAlbum rigaAlbum)
         {
             base.AddObject("RigheAlbum", rigaAlbum);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the ScarichiCards EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToScarichiCards(ScaricoCard scaricoCard)
+        {
+            base.AddObject("ScarichiCards", scaricoCard);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the FormatiCarta EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToFormatiCarta(FormatoCarta formatoCarta)
+        {
+            base.AddObject("FormatiCarta", formatoCarta);
         }
 
         #endregion
@@ -438,6 +487,137 @@ namespace Digiphoto.Lumen.Model
         private global::System.String _descrizione;
         partial void OndescrizioneChanging(global::System.String value);
         partial void OndescrizioneChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Boolean attivo
+        {
+            get
+            {
+                return _attivo;
+            }
+            set
+            {
+                OnattivoChanging(value);
+                ReportPropertyChanging("attivo");
+                _attivo = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("attivo");
+                OnattivoChanged();
+            }
+        }
+        private global::System.Boolean _attivo = true;
+        partial void OnattivoChanging(global::System.Boolean value);
+        partial void OnattivoChanged();
+
+        #endregion
+    
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="Digiphoto.Lumen.Model", Name="FormatoCarta")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class FormatoCarta : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new FormatoCarta object.
+        /// </summary>
+        /// <param name="id">Initial value of the id property.</param>
+        /// <param name="descrizione">Initial value of the descrizione property.</param>
+        /// <param name="prezzo">Initial value of the prezzo property.</param>
+        public static FormatoCarta CreateFormatoCarta(global::System.Guid id, global::System.String descrizione, global::System.Decimal prezzo)
+        {
+            FormatoCarta formatoCarta = new FormatoCarta();
+            formatoCarta.id = id;
+            formatoCarta.descrizione = descrizione;
+            formatoCarta.prezzo = prezzo;
+            return formatoCarta;
+        }
+
+        #endregion
+        #region Primitive Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Guid id
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                if (_id != value)
+                {
+                    OnidChanging(value);
+                    ReportPropertyChanging("id");
+                    _id = StructuralObject.SetValidValue(value);
+                    ReportPropertyChanged("id");
+                    OnidChanged();
+                }
+            }
+        }
+        private global::System.Guid _id;
+        partial void OnidChanging(global::System.Guid value);
+        partial void OnidChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String descrizione
+        {
+            get
+            {
+                return _descrizione;
+            }
+            set
+            {
+                OndescrizioneChanging(value);
+                ReportPropertyChanging("descrizione");
+                _descrizione = StructuralObject.SetValidValue(value, false);
+                ReportPropertyChanged("descrizione");
+                OndescrizioneChanged();
+            }
+        }
+        private global::System.String _descrizione;
+        partial void OndescrizioneChanging(global::System.String value);
+        partial void OndescrizioneChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Decimal prezzo
+        {
+            get
+            {
+                return _prezzo;
+            }
+            set
+            {
+                OnprezzoChanging(value);
+                ReportPropertyChanging("prezzo");
+                _prezzo = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("prezzo");
+                OnprezzoChanged();
+            }
+        }
+        private global::System.Decimal _prezzo;
+        partial void OnprezzoChanging(global::System.Decimal value);
+        partial void OnprezzoChanged();
 
         #endregion
     
@@ -938,6 +1118,157 @@ namespace Digiphoto.Lumen.Model
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<Fotografia>("Digiphoto.Lumen.Model.RigaAlbumFotografia", "Fotografia", value);
+                }
+            }
+        }
+
+        #endregion
+    }
+    
+    /// <summary>
+    /// Foto Scattate
+    /// </summary>
+    /// <LongDescription>
+    /// Questa entità rappresenta l&apos;azione di scaricare una memory card nel computer. In pratica sono le foto che un fotografo ha scattato in un periodo
+    /// </LongDescription>
+    [EdmEntityTypeAttribute(NamespaceName="Digiphoto.Lumen.Model", Name="ScaricoCard")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class ScaricoCard : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new ScaricoCard object.
+        /// </summary>
+        /// <param name="id">Initial value of the id property.</param>
+        /// <param name="tempo">Initial value of the tempo property.</param>
+        /// <param name="totFoto">Initial value of the totFoto property.</param>
+        public static ScaricoCard CreateScaricoCard(global::System.Guid id, global::System.DateTime tempo, global::System.Int16 totFoto)
+        {
+            ScaricoCard scaricoCard = new ScaricoCard();
+            scaricoCard.id = id;
+            scaricoCard.tempo = tempo;
+            scaricoCard.totFoto = totFoto;
+            return scaricoCard;
+        }
+
+        #endregion
+        #region Primitive Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Guid id
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                if (_id != value)
+                {
+                    OnidChanging(value);
+                    ReportPropertyChanging("id");
+                    _id = StructuralObject.SetValidValue(value);
+                    ReportPropertyChanged("id");
+                    OnidChanged();
+                }
+            }
+        }
+        private global::System.Guid _id;
+        partial void OnidChanging(global::System.Guid value);
+        partial void OnidChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.DateTime tempo
+        {
+            get
+            {
+                return _tempo;
+            }
+            set
+            {
+                OntempoChanging(value);
+                ReportPropertyChanging("tempo");
+                _tempo = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("tempo");
+                OntempoChanged();
+            }
+        }
+        private global::System.DateTime _tempo;
+        partial void OntempoChanging(global::System.DateTime value);
+        partial void OntempoChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int16 totFoto
+        {
+            get
+            {
+                return _totFoto;
+            }
+            set
+            {
+                OntotFotoChanging(value);
+                ReportPropertyChanging("totFoto");
+                _totFoto = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("totFoto");
+                OntotFotoChanged();
+            }
+        }
+        private global::System.Int16 _totFoto;
+        partial void OntotFotoChanging(global::System.Int16 value);
+        partial void OntotFotoChanged();
+
+        #endregion
+    
+        #region Navigation Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("Digiphoto.Lumen.Model", "FotografoScaricoCard", "Fotografo")]
+        public Fotografo Fotografo
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Fotografo>("Digiphoto.Lumen.Model.FotografoScaricoCard", "Fotografo").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Fotografo>("Digiphoto.Lumen.Model.FotografoScaricoCard", "Fotografo").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<Fotografo> FotografoReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Fotografo>("Digiphoto.Lumen.Model.FotografoScaricoCard", "Fotografo");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Fotografo>("Digiphoto.Lumen.Model.FotografoScaricoCard", "Fotografo", value);
                 }
             }
         }

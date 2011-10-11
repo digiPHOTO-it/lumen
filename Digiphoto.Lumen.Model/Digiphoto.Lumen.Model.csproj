@@ -68,7 +68,6 @@
     <None Include="App.Config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Lumen.edmx.sqlce" />
     <None Include="LumenEntities.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>LumenEntities.cs</LastGenOutput>

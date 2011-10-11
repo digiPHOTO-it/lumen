@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server Compact Edition
 -- --------------------------------------------------
--- Date Created: 09/29/2011 08:39:41
--- Generated from EDMX file: C:\Users\bluca\Documents\Visual Studio 2010\Projects\Lumen\Digiphoto.Lumen.Core\Lumen.edmx
+-- Date Created: 10/12/2011 01:38:47
+-- Generated from EDMX file: C:\Users\bluca\Documents\Visual Studio 2010\Projects\lumen\Digiphoto.Lumen.Model\LumenModel.edmx
 -- --------------------------------------------------
 
 
@@ -16,9 +16,11 @@
 GO
     ALTER TABLE [Fotografie] DROP CONSTRAINT [FK_EventoFotografia];
 GO
-    ALTER TABLE [FotografiaRaccoglitore] DROP CONSTRAINT [FK_FotografiaRaccoglitore_Fotografia];
+    ALTER TABLE [Fotografie] DROP CONSTRAINT [FK_RigaAlbumFotografia];
 GO
-    ALTER TABLE [FotografiaRaccoglitore] DROP CONSTRAINT [FK_FotografiaRaccoglitore_Raccoglitore];
+    ALTER TABLE [RigheAlbum] DROP CONSTRAINT [FK_AlbumRigaAlbum];
+GO
+    ALTER TABLE [ScarichiCards] DROP CONSTRAINT [FK_FotografoScaricoCard];
 GO
 
 -- --------------------------------------------------
@@ -32,9 +34,13 @@ GO
 GO
     DROP TABLE [Eventi];
 GO
-    DROP TABLE [Raccolte];
+    DROP TABLE [Albums];
 GO
-    DROP TABLE [FotografiaRaccoglitore];
+    DROP TABLE [RigheAlbum];
+GO
+    DROP TABLE [ScarichiCards];
+GO
+    DROP TABLE [FormatiCarta];
 GO
 
 -- --------------------------------------------------
@@ -60,30 +66,49 @@ CREATE TABLE [Fotografie] (
     [didascalia] nvarchar(4000)  NULL,
     [dataOraAcquisizione] datetime  NOT NULL,
     [fotografo_id] nvarchar(16)  NOT NULL,
-    [evento_id] int  NULL
+    [evento_id] uniqueidentifier  NULL,
+    [RigaAlbumFotografia_Fotografia_id] int  NULL
 );
 GO
 
 -- Creating table 'Eventi'
 CREATE TABLE [Eventi] (
-    [id] int IDENTITY(1,1) NOT NULL,
-    [descrizione] nvarchar(4000)  NOT NULL
-);
-GO
-
--- Creating table 'Raccolte'
-CREATE TABLE [Raccolte] (
     [id] uniqueidentifier  NOT NULL,
-    [nome] nvarchar(255)  NOT NULL,
-    [tempoCreazione] datetime  NOT NULL,
-    [note] nvarchar(4000)  NULL
+    [descrizione] nvarchar(4000)  NOT NULL,
+    [attivo] bit  NOT NULL
 );
 GO
 
--- Creating table 'FotografiaRaccoglitore'
-CREATE TABLE [FotografiaRaccoglitore] (
-    [fotografie_id] uniqueidentifier  NOT NULL,
-    [raccolte_id] uniqueidentifier  NOT NULL
+-- Creating table 'Albums'
+CREATE TABLE [Albums] (
+    [id] int IDENTITY(1,1) NOT NULL,
+    [titolo] nvarchar(40)  NOT NULL,
+    [note] nvarchar(4000)  NOT NULL,
+    [timestamp] datetime  NOT NULL
+);
+GO
+
+-- Creating table 'RigheAlbum'
+CREATE TABLE [RigheAlbum] (
+    [id] int IDENTITY(1,1) NOT NULL,
+    [AlbumRigaAlbum_RigaAlbum_id] int  NOT NULL
+);
+GO
+
+-- Creating table 'ScarichiCards'
+CREATE TABLE [ScarichiCards] (
+    [id] uniqueidentifier  NOT NULL,
+    [tempo] datetime  NOT NULL,
+    [totFoto] smallint  NOT NULL,
+    [Fotografo_id] nvarchar(16)  NOT NULL
+);
+GO
+
+-- Creating table 'FormatiCarta'
+CREATE TABLE [FormatiCarta] (
+    [id] uniqueidentifier  NOT NULL,
+    [descrizione] nvarchar(4000)  NOT NULL,
+    [prezzo] decimal(18,0)  NOT NULL
 );
 GO
 
@@ -109,16 +134,28 @@ ADD CONSTRAINT [PK_Eventi]
     PRIMARY KEY ([id] );
 GO
 
--- Creating primary key on [id] in table 'Raccolte'
-ALTER TABLE [Raccolte]
-ADD CONSTRAINT [PK_Raccolte]
+-- Creating primary key on [id] in table 'Albums'
+ALTER TABLE [Albums]
+ADD CONSTRAINT [PK_Albums]
     PRIMARY KEY ([id] );
 GO
 
--- Creating primary key on [fotografie_id], [raccolte_id] in table 'FotografiaRaccoglitore'
-ALTER TABLE [FotografiaRaccoglitore]
-ADD CONSTRAINT [PK_FotografiaRaccoglitore]
-    PRIMARY KEY ([fotografie_id], [raccolte_id] );
+-- Creating primary key on [id] in table 'RigheAlbum'
+ALTER TABLE [RigheAlbum]
+ADD CONSTRAINT [PK_RigheAlbum]
+    PRIMARY KEY ([id] );
+GO
+
+-- Creating primary key on [id] in table 'ScarichiCards'
+ALTER TABLE [ScarichiCards]
+ADD CONSTRAINT [PK_ScarichiCards]
+    PRIMARY KEY ([id] );
+GO
+
+-- Creating primary key on [id] in table 'FormatiCarta'
+ALTER TABLE [FormatiCarta]
+ADD CONSTRAINT [PK_FormatiCarta]
+    PRIMARY KEY ([id] );
 GO
 
 -- --------------------------------------------------
@@ -153,27 +190,46 @@ ON [Fotografie]
     ([evento_id]);
 GO
 
--- Creating foreign key on [fotografie_id] in table 'FotografiaRaccoglitore'
-ALTER TABLE [FotografiaRaccoglitore]
-ADD CONSTRAINT [FK_FotografiaRaccoglitore_Fotografia]
-    FOREIGN KEY ([fotografie_id])
-    REFERENCES [Fotografie]
+-- Creating foreign key on [RigaAlbumFotografia_Fotografia_id] in table 'Fotografie'
+ALTER TABLE [Fotografie]
+ADD CONSTRAINT [FK_RigaAlbumFotografia]
+    FOREIGN KEY ([RigaAlbumFotografia_Fotografia_id])
+    REFERENCES [RigheAlbum]
         ([id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_RigaAlbumFotografia'
+CREATE INDEX [IX_FK_RigaAlbumFotografia]
+ON [Fotografie]
+    ([RigaAlbumFotografia_Fotografia_id]);
 GO
 
--- Creating foreign key on [raccolte_id] in table 'FotografiaRaccoglitore'
-ALTER TABLE [FotografiaRaccoglitore]
-ADD CONSTRAINT [FK_FotografiaRaccoglitore_Raccoglitore]
-    FOREIGN KEY ([raccolte_id])
-    REFERENCES [Raccolte]
+-- Creating foreign key on [AlbumRigaAlbum_RigaAlbum_id] in table 'RigheAlbum'
+ALTER TABLE [RigheAlbum]
+ADD CONSTRAINT [FK_AlbumRigaAlbum]
+    FOREIGN KEY ([AlbumRigaAlbum_RigaAlbum_id])
+    REFERENCES [Albums]
+        ([id])
+    ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_AlbumRigaAlbum'
+CREATE INDEX [IX_FK_AlbumRigaAlbum]
+ON [RigheAlbum]
+    ([AlbumRigaAlbum_RigaAlbum_id]);
+GO
+
+-- Creating foreign key on [Fotografo_id] in table 'ScarichiCards'
+ALTER TABLE [ScarichiCards]
+ADD CONSTRAINT [FK_FotografoScaricoCard]
+    FOREIGN KEY ([Fotografo_id])
+    REFERENCES [Fotografi]
         ([id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 
--- Creating non-clustered index for FOREIGN KEY 'FK_FotografiaRaccoglitore_Raccoglitore'
-CREATE INDEX [IX_FK_FotografiaRaccoglitore_Raccoglitore]
-ON [FotografiaRaccoglitore]
-    ([raccolte_id]);
+-- Creating non-clustered index for FOREIGN KEY 'FK_FotografoScaricoCard'
+CREATE INDEX [IX_FK_FotografoScaricoCard]
+ON [ScarichiCards]
+    ([Fotografo_id]);
 GO
 
 -- --------------------------------------------------

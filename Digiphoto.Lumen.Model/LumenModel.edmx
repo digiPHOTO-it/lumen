@@ -11,6 +11,8 @@
     <EntitySet Name="Eventi" EntityType="Digiphoto.Lumen.Model.Store.Eventi" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Albums" EntityType="Digiphoto.Lumen.Model.Store.Albums" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="RigheAlbum" EntityType="Digiphoto.Lumen.Model.Store.RigheAlbum" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ScarichiCards" EntityType="Digiphoto.Lumen.Model.Store.ScarichiCards" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="FormatiCarta" EntityType="Digiphoto.Lumen.Model.Store.FormatiCarta" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="FotografoFotografia" Association="Digiphoto.Lumen.Model.Store.FotografoFotografia">
       <End Role="Fotografo" EntitySet="Fotografi" />
       <End Role="Fotografia" EntitySet="Fotografie" />
@@ -26,6 +28,10 @@
     <AssociationSet Name="AlbumRigaAlbum" Association="Digiphoto.Lumen.Model.Store.AlbumRigaAlbum">
       <End Role="Album" EntitySet="Albums" />
       <End Role="RigaAlbum" EntitySet="RigheAlbum" />
+    </AssociationSet>
+    <AssociationSet Name="FotografoScaricoCard" Association="Digiphoto.Lumen.Model.Store.FotografoScaricoCard">
+      <End Role="Fotografo" EntitySet="Fotografi" />
+      <End Role="ScaricoCard" EntitySet="ScarichiCards" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="Fotografi">
@@ -58,6 +64,7 @@
     </Key>
     <Property Name="id" Type="uniqueidentifier" Nullable="false" />
     <Property Name="descrizione" Type="nvarchar" Nullable="false" />
+    <Property Name="attivo" Type="bit" Nullable="false" DefaultValue="true" />
   </EntityType>
   <EntityType Name="Albums">
     <Key>
@@ -74,6 +81,23 @@
     </Key>
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="AlbumRigaAlbum_RigaAlbum_id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ScarichiCards">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="tempo" Type="datetime" Nullable="false" />
+    <Property Name="totFoto" Type="smallint" Nullable="false" />
+    <Property Name="Fotografo_id" Type="nvarchar" MaxLength="16" Nullable="false" />
+  </EntityType>
+  <EntityType Name="FormatiCarta">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="uniqueidentifier" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="descrizione" Type="nvarchar" Nullable="false" />
+    <Property Name="prezzo" Type="decimal" Nullable="false" />
   </EntityType>
   <Association Name="FotografoFotografia">
     <End Role="Fotografo" Type="Digiphoto.Lumen.Model.Store.Fotografi" Multiplicity="1" />
@@ -125,6 +149,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FotografoScaricoCard">
+    <End Role="Fotografo" Type="Digiphoto.Lumen.Model.Store.Fotografi" Multiplicity="1" />
+    <End Role="ScaricoCard" Type="Digiphoto.Lumen.Model.Store.ScarichiCards" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Fotografo">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="ScaricoCard">
+        <PropertyRef Name="Fotografo_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -150,6 +186,12 @@
           <AssociationSet Name="AlbumRigaAlbum" Association="Digiphoto.Lumen.Model.AlbumRigaAlbum">
             <End Role="Album" EntitySet="Albums" />
             <End Role="RigaAlbum" EntitySet="RigheAlbum" />
+          </AssociationSet>
+          <EntitySet Name="ScarichiCards" EntityType="Digiphoto.Lumen.Model.ScaricoCard" />
+          <EntitySet Name="FormatiCarta" EntityType="Digiphoto.Lumen.Model.FormatoCarta" />
+          <AssociationSet Name="FotografoScaricoCard" Association="Digiphoto.Lumen.Model.FotografoScaricoCard">
+            <End Role="Fotografo" EntitySet="Fotografi" />
+            <End Role="ScaricoCard" EntitySet="ScarichiCards" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Fotografo">
@@ -203,6 +245,7 @@
           </Key>
           <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" />
           <Property Type="String" Name="descrizione" Nullable="false" />
+          <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true" />
         </EntityType>
         <Association Name="EventoFotografia">
           <End Type="Digiphoto.Lumen.Model.Evento" Role="Evento" Multiplicity="0..1" />
@@ -234,6 +277,32 @@
             <OnDelete Action="Cascade" />
           </End>
           <End Type="Digiphoto.Lumen.Model.RigaAlbum" Role="RigaAlbum" Multiplicity="*" />
+        </Association>
+        <EntityType Name="ScaricoCard">
+          <Documentation>
+            <Summary>Foto Scattate</Summary>
+            <LongDescription>Questa entità rappresenta l'azione di scaricare una memory card nel computer. In pratica sono le foto che un fotografo ha scattato in un periodo</LongDescription>
+          </Documentation>
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Type="DateTime" Name="tempo" Nullable="false" />
+          <Property Type="Int16" Name="totFoto" Nullable="false" />
+          <NavigationProperty Name="Fotografo" Relationship="Digiphoto.Lumen.Model.FotografoScaricoCard" FromRole="ScaricoCard" ToRole="Fotografo" />
+        </EntityType>
+        <EntityType Name="FormatoCarta">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="descrizione" Nullable="false" />
+          <Property Type="Decimal" Name="prezzo" Nullable="false" />
+        </EntityType>
+        <Association Name="FotografoScaricoCard">
+          <End Type="Digiphoto.Lumen.Model.Fotografo" Role="Fotografo" Multiplicity="1" >
+          </End>
+          <End Type="Digiphoto.Lumen.Model.ScaricoCard" Role="ScaricoCard" Multiplicity="*" />
         </Association>
       </Schema>
     </edmx:ConceptualModels>
@@ -269,6 +338,7 @@
         <MappingFragment StoreEntitySet="Eventi">
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="descrizione" ColumnName="descrizione" />
+          <ScalarProperty Name="attivo" ColumnName="attivo" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -286,6 +356,24 @@
       <EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.RigaAlbum)">
         <MappingFragment StoreEntitySet="RigheAlbum">
           <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ScarichiCards">
+      <EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.ScaricoCard)">
+        <MappingFragment StoreEntitySet="ScarichiCards">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="tempo" ColumnName="tempo" />
+          <ScalarProperty Name="totFoto" ColumnName="totFoto" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="FormatiCarta">
+      <EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.FormatoCarta)">
+        <MappingFragment StoreEntitySet="FormatiCarta">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="descrizione" ColumnName="descrizione" />
+          <ScalarProperty Name="prezzo" ColumnName="prezzo" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -323,6 +411,14 @@
         <ScalarProperty Name="id" ColumnName="id" />
       </EndProperty>
     </AssociationSetMapping>
+    <AssociationSetMapping Name="FotografoScaricoCard" TypeName="Digiphoto.Lumen.Model.FotografoScaricoCard" StoreEntitySet="ScarichiCards">
+      <EndProperty Name="Fotografo">
+        <ScalarProperty Name="id" ColumnName="Fotografo_id" />
+      </EndProperty>
+      <EndProperty Name="ScaricoCard">
+        <ScalarProperty Name="id" ColumnName="id" />
+      </EndProperty>
+    </AssociationSetMapping>
   </EntityContainerMapping>
 </Mapping></edmx:Mappings>
   </edmx:Runtime>
@@ -342,8 +438,8 @@
     </edmx:Options>
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram Name="ModelloEntita" ZoomLevel="81" >
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografo" Width="2.375" PointX="0.625" PointY="2.5" Height="2.192587890625" />
+      <Diagram Name="ModelloEntita" ZoomLevel="93" >
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografo" Width="2.375" PointX="0.625" PointY="2.5" Height="2.1725878906249996" />
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografia" Width="1.5" PointX="4.125" PointY="1.75" Height="2.3648893229166656" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.FotografoFotografia">
           <ConnectorPoint PointX="3" PointY="3.3074446614583328" />
@@ -351,8 +447,8 @@
         </AssociationConnector>
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Evento" Width="1.5" PointX="1.75" PointY="0.5" Height="1.4033821614583333" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.EventoFotografia">
-          <ConnectorPoint PointX="3.25" PointY="1.1249995" />
-          <ConnectorPoint PointX="4.875" PointY="1.1249995" />
+          <ConnectorPoint PointX="3.25" PointY="1.1249995000000002" />
+          <ConnectorPoint PointX="4.875" PointY="1.1249995000000002" />
           <ConnectorPoint PointX="4.875" PointY="1.75" />
         </AssociationConnector>
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Album" Width="1.5" PointX="9" PointY="0.5" Height="1.9802864583333339" />
@@ -364,6 +460,12 @@
         <AssociationConnector Association="Digiphoto.Lumen.Model.AlbumRigaAlbum">
           <ConnectorPoint PointX="9" PointY="1.9276432291666668" />
           <ConnectorPoint PointX="8.25" PointY="1.9276432291666668" />
+        </AssociationConnector>
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.ScaricoCard" Width="1.75" PointX="2.375" PointY="5.5" Height="1.7879850260416665" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.FormatoCarta" Width="1.5" PointX="7" PointY="5.125" Height="1.5956835937499996" />
+        <AssociationConnector Association="Digiphoto.Lumen.Model.FotografoScaricoCard">
+          <ConnectorPoint PointX="2.6875" PointY="4.672587890625" />
+          <ConnectorPoint PointX="2.6875" PointY="5.5" />
         </AssociationConnector>
       </Diagram>
     </edmx:Diagrams>
