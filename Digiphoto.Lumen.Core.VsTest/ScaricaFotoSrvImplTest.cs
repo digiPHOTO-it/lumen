@@ -43,49 +43,47 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 			using( LumenEntities dbContext = new LumenEntities() ) {
 				// using( TransactionScope transaction = new TransactionScope() ) {
+                
+                _mario = (Fotografo) dbContext.Fotografi.FirstOrDefault<Fotografo>( ff => ff.id == "ROSSIMARIO" );
+				if( _mario == null ) {
+					_mario = creaMario();
+					dbContext.Fotografi.AddObject( _mario );
+				}
+
+				// cerco l'evento con la descrizione
+				_ballo = dbContext.Eventi.Where
+					( "it.descrizione = @descriz", new ObjectParameter(
+					"descriz", "BALLO" ) ).FirstOrDefault<Evento>();
 
 
-					_mario = (Fotografo) dbContext.Fotografi.FirstOrDefault<Fotografo>( ff => ff.id == "ROSSIMARIO" );
-					if( _mario == null ) {
-						_mario = creaMario();
-						dbContext.Fotografi.AddObject( _mario );
-					}
+				//_ballo = (from ev in dbContext.Eventi 
+				//           where ev.descrizione.Equals("BALLO")
+				//           select ev).FirstOrDefault();
 
-					// cerco l'evento con la descrizione
-					_ballo = dbContext.Eventi.Where
-						( "it.descrizione = @descriz", new ObjectParameter(
-					 "descriz", "BALLO" ) ).FirstOrDefault<Evento>();
+				if( _ballo == null ) {
+					_ballo = new Evento();
+					_ballo.descrizione = "BALLO";
+					_ballo.id = Guid.NewGuid();
+					dbContext.Eventi.AddObject( _ballo );
+				}
 
+				_briscola = dbContext.Eventi.Where
+					( "it.descrizione = @descriz", new ObjectParameter(
+					"descriz", "BRISCOLA" ) ).FirstOrDefault<Evento>();
 
-					//_ballo = (from ev in dbContext.Eventi 
-					//           where ev.descrizione.Equals("BALLO")
-					//           select ev).FirstOrDefault();
+				//_briscola = (from ev in dbContext.Eventi
+				//          where ev.descrizione.Equals( "BRISCOLA" )
+				//          select ev).FirstOrDefault();
+				if( _briscola == null ) {
+					_briscola = new Evento();
+					_briscola.id = Guid.NewGuid();
+					_briscola.descrizione = "BRISCOLA";
+					dbContext.Eventi.AddObject( _briscola );
+				}
 
-					if( _ballo == null ) {
-						_ballo = new Evento();
-						
-						_ballo.descrizione = "BALLO";
-						_ballo.id = Guid.NewGuid();
-						dbContext.Eventi.AddObject( _ballo );
-					}
-
-					_briscola = dbContext.Eventi.Where
-						( "it.descrizione = @descriz", new ObjectParameter(
-					 "descriz", "BRISCOLA" ) ).FirstOrDefault<Evento>();
-
-					//_briscola = (from ev in dbContext.Eventi
-					//          where ev.descrizione.Equals( "BRISCOLA" )
-					//          select ev).FirstOrDefault();
-					if( _briscola == null ) {
-						_briscola = new Evento();
-						_briscola.id = Guid.NewGuid();
-						_briscola.descrizione = "BRISCOLA";
-						dbContext.Eventi.AddObject( _briscola );
-					}
-
-					dbContext.SaveChanges();
-					// transaction.Complete();
-				// }
+				dbContext.SaveChanges();
+				// transaction.Complete();
+			// }
 			}
 		}
 

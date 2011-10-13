@@ -35,6 +35,11 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			this._paramScarica = paramScarica;
 		}
 
+        //Edward84
+        public int numeroFotoAcquisite(){
+            return _listaFiles.Count;
+        }
+
 
 		public void elaboora() {
 

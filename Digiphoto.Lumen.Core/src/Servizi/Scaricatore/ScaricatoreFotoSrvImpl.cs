@@ -10,7 +10,9 @@ using Digiphoto.Lumen.Servizi.VolumeCambiato;
 using System.Threading;
 using Digiphoto.Lumen.Database;
 using Digiphoto.Lumen.Util;
-
+using Digiphoto.Lumen.Model;
+using System.Data.Objects;
+using System.Linq;
 
 namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
@@ -201,11 +203,27 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			scaricoFotoMsg.fase = Fase.FineLavora;
 			scaricoFotoMsg.descrizione = "Provinatura foto terminata";
 			pubblicaMessaggio( scaricoFotoMsg );
+
+            //Edward84
+            using(LumenEntities dbContext = new LumenEntities()){
+
+                Fotografo fotografo = (Fotografo)dbContext.Fotografi.FirstOrDefault<Fotografo>(ff => ff.id == _paramScarica.flashCardConfig.idFotografo);
+
+                ScaricoCard scaricoCard = new ScaricoCard();
+                scaricoCard.totFoto = (short)elab.numeroFotoAcquisite();
+               
+                scaricoCard.Fotografo = fotografo;
+                scaricoCard.tempo = DateTime.Now;
+
+                dbContext.ScarichiCards.AddObject(scaricoCard);
+                dbContext.SaveChanges();
+            }
+           
 		}
 
 		private void seNonPossoScaricareSpaccati() {
 
-			// Voglio evitare doppie esecuzioni. Si scarica e poi si distrugger
+			// Voglio evitare doppie esecuzioni. Si scarica e poi si distrugge
 			if( _morto )
 				throw new InvalidOperationException( "Il metodo scarica si può chiamare solo una volta" );
 
