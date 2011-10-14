@@ -24,8 +24,6 @@ namespace Digiphoto.Lumen.Core.VsTest {
 		Evento _ballo = null;
 		Evento _briscola = null;
 
-		
-
 		[TestInitialize]
 		public void Init() {
 
