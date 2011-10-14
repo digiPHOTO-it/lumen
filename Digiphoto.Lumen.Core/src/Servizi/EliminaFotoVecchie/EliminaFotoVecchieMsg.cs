@@ -24,6 +24,7 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie{
 
 		}
 
+        public bool riscontratiErrori { get; set; }
         public string cartellaSorgente { get; set; }
         public Fase fase { get; set; }
         public int totFotoEliminate { get; set; }
