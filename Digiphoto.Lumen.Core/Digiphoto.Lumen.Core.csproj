@@ -76,6 +76,9 @@
     <Compile Include="src\Imaging\IProvinatore.cs" />
     <Compile Include="src\Imaging\Provinatore.cs" />
     <Compile Include="src\Servizi\CambioStatoMessaggio.cs" />
+    <Compile Include="src\Servizi\EliminaFotoVecchie\EliminaFotoVecchieSvrImp.cs" />
+    <Compile Include="src\Servizi\EliminaFotoVecchie\EliminaFotoVecchieMsg.cs" />
+    <Compile Include="src\Servizi\EliminaFotoVecchie\IEliminaFotoVecchieSvr.cs" />
     <Compile Include="src\Servizi\LumenEntities.cs" />
     <Compile Include="src\Servizi\Scaricatore\ElaboratoreFotoAcquisite.cs" />
     <Compile Include="src\Servizi\Scaricatore\NuovaFotoMsg.cs" />
