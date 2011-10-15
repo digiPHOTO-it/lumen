@@ -4,163 +4,276 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="Digiphoto.Lumen.Model.Store" Alias="Self" Provider="System.Data.SqlServerCe.4.0" ProviderManifestToken="4.0" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
-  <EntityContainer Name="DigiphotoLumenModelStoreContainer">
-    <EntitySet Name="Fotografi" EntityType="Digiphoto.Lumen.Model.Store.Fotografi" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="Fotografie" EntityType="Digiphoto.Lumen.Model.Store.Fotografie" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="Eventi" EntityType="Digiphoto.Lumen.Model.Store.Eventi" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="Albums" EntityType="Digiphoto.Lumen.Model.Store.Albums" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="RigheAlbum" EntityType="Digiphoto.Lumen.Model.Store.RigheAlbum" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="ScarichiCards" EntityType="Digiphoto.Lumen.Model.Store.ScarichiCards" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="FormatiCarta" EntityType="Digiphoto.Lumen.Model.Store.FormatiCarta" store:Type="Tables" Schema="dbo" />
-    <AssociationSet Name="FotografoFotografia" Association="Digiphoto.Lumen.Model.Store.FotografoFotografia">
-      <End Role="Fotografo" EntitySet="Fotografi" />
-      <End Role="Fotografia" EntitySet="Fotografie" />
-    </AssociationSet>
-    <AssociationSet Name="EventoFotografia" Association="Digiphoto.Lumen.Model.Store.EventoFotografia">
-      <End Role="Evento" EntitySet="Eventi" />
-      <End Role="Fotografia" EntitySet="Fotografie" />
-    </AssociationSet>
-    <AssociationSet Name="RigaAlbumFotografia" Association="Digiphoto.Lumen.Model.Store.RigaAlbumFotografia">
-      <End Role="RigaAlbum" EntitySet="RigheAlbum" />
-      <End Role="Fotografia" EntitySet="Fotografie" />
-    </AssociationSet>
-    <AssociationSet Name="AlbumRigaAlbum" Association="Digiphoto.Lumen.Model.Store.AlbumRigaAlbum">
-      <End Role="Album" EntitySet="Albums" />
-      <End Role="RigaAlbum" EntitySet="RigheAlbum" />
-    </AssociationSet>
-    <AssociationSet Name="FotografoScaricoCard" Association="Digiphoto.Lumen.Model.Store.FotografoScaricoCard">
-      <End Role="Fotografo" EntitySet="Fotografi" />
-      <End Role="ScaricoCard" EntitySet="ScarichiCards" />
-    </AssociationSet>
-  </EntityContainer>
-  <EntityType Name="Fotografi">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="nvarchar" Nullable="false" MaxLength="16" />
-    <Property Name="cognomeNome" Type="nvarchar" Nullable="false" />
-    <Property Name="iniziali" Type="nvarchar" Nullable="false" MaxLength="2" />
-    <Property Name="attivo" Type="bit" Nullable="false" DefaultValue="true" />
-    <Property Name="umano" Type="bit" Nullable="false" DefaultValue="true" />
-    <Property Name="note" Type="nvarchar" Nullable="true" />
-  </EntityType>
-  <EntityType Name="Fotografie">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="nomeFile" Type="nvarchar" Nullable="false" />
-    <Property Name="dataOraScatto" Type="datetime" Nullable="true" />
-    <Property Name="didascalia" Type="nvarchar" Nullable="true" />
-    <Property Name="dataOraAcquisizione" Type="datetime" Nullable="false" />
-    <Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="false" />
-    <Property Name="evento_id" Type="uniqueidentifier" Nullable="true" />
-    <Property Name="RigaAlbumFotografia_Fotografia_id" Type="int" Nullable="true" />
-  </EntityType>
-  <EntityType Name="Eventi">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="descrizione" Type="nvarchar" Nullable="false" />
-    <Property Name="attivo" Type="bit" Nullable="false" DefaultValue="true" />
-  </EntityType>
-  <EntityType Name="Albums">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="titolo" Type="nvarchar" Nullable="false" MaxLength="40" />
-    <Property Name="note" Type="nvarchar" Nullable="false" />
-    <Property Name="timestamp" Type="datetime" Nullable="false" />
-  </EntityType>
-  <EntityType Name="RigheAlbum">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="AlbumRigaAlbum_RigaAlbum_id" Type="int" Nullable="false" />
-  </EntityType>
-  <EntityType Name="ScarichiCards">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="tempo" Type="datetime" Nullable="false" />
-    <Property Name="totFoto" Type="smallint" Nullable="false" />
-    <Property Name="Fotografo_id" Type="nvarchar" MaxLength="16" Nullable="false" />
-  </EntityType>
-  <EntityType Name="FormatiCarta">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="uniqueidentifier" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="descrizione" Type="nvarchar" Nullable="false" />
-    <Property Name="prezzo" Type="decimal" Nullable="false" />
-  </EntityType>
-  <Association Name="FotografoFotografia">
-    <End Role="Fotografo" Type="Digiphoto.Lumen.Model.Store.Fotografi" Multiplicity="1" />
-    <End Role="Fotografia" Type="Digiphoto.Lumen.Model.Store.Fotografie" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Fotografo">
-        <PropertyRef Name="id" />
-      </Principal>
-      <Dependent Role="Fotografia">
-        <PropertyRef Name="fotografo_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="EventoFotografia">
-    <End Role="Evento" Type="Digiphoto.Lumen.Model.Store.Eventi" Multiplicity="0..1" />
-    <End Role="Fotografia" Type="Digiphoto.Lumen.Model.Store.Fotografie" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Evento">
-        <PropertyRef Name="id" />
-      </Principal>
-      <Dependent Role="Fotografia">
-        <PropertyRef Name="evento_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="RigaAlbumFotografia">
-    <End Role="RigaAlbum" Type="Digiphoto.Lumen.Model.Store.RigheAlbum" Multiplicity="0..1" />
-    <End Role="Fotografia" Type="Digiphoto.Lumen.Model.Store.Fotografie" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="RigaAlbum">
-        <PropertyRef Name="id" />
-      </Principal>
-      <Dependent Role="Fotografia">
-        <PropertyRef Name="RigaAlbumFotografia_Fotografia_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="AlbumRigaAlbum">
-    <End Role="Album" Type="Digiphoto.Lumen.Model.Store.Albums" Multiplicity="1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <End Role="RigaAlbum" Type="Digiphoto.Lumen.Model.Store.RigheAlbum" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Album">
-        <PropertyRef Name="id" />
-      </Principal>
-      <Dependent Role="RigaAlbum">
-        <PropertyRef Name="AlbumRigaAlbum_RigaAlbum_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FotografoScaricoCard">
-    <End Role="Fotografo" Type="Digiphoto.Lumen.Model.Store.Fotografi" Multiplicity="1" />
-    <End Role="ScaricoCard" Type="Digiphoto.Lumen.Model.Store.ScarichiCards" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Fotografo">
-        <PropertyRef Name="id" />
-      </Principal>
-      <Dependent Role="ScaricoCard">
-        <PropertyRef Name="Fotografo_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
+    <Schema Namespace="Digiphoto.Lumen.Model.Store" Alias="Self" Provider="System.Data.SqlServerCe.4.0" ProviderManifestToken="4.0" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator">
+    <EntityContainer Name="DigiphotoLumenModelStoreContainer">
+
+        <EntitySet Name="Fotografi" EntityType="Digiphoto.Lumen.Model.Store.Fotografi" store:Type="Tables" Schema="dbo" />
+        <EntitySet Name="Fotografie" EntityType="Digiphoto.Lumen.Model.Store.Fotografie" store:Type="Tables" Schema="dbo" />
+        <EntitySet Name="Eventi" EntityType="Digiphoto.Lumen.Model.Store.Eventi" store:Type="Tables" Schema="dbo" />
+        <EntitySet Name="Albums" EntityType="Digiphoto.Lumen.Model.Store.Albums" store:Type="Tables" Schema="dbo" />
+        <EntitySet Name="RigheAlbum" EntityType="Digiphoto.Lumen.Model.Store.RigheAlbum" store:Type="Tables" Schema="dbo" />
+        <EntitySet Name="ScarichiCards" EntityType="Digiphoto.Lumen.Model.Store.ScarichiCards" store:Type="Tables" Schema="dbo" />
+        <EntitySet Name="FormatiCarta" EntityType="Digiphoto.Lumen.Model.Store.FormatiCarta" store:Type="Tables" Schema="dbo" />
+        <EntitySet Name="InfosFisse" EntityType="Digiphoto.Lumen.Model.Store.InfosFisse" store:Type="Tables" Schema="dbo" />
+        <EntitySet Name="Carrelli" EntityType="Digiphoto.Lumen.Model.Store.Carrelli" store:Type="Tables" Schema="dbo" />
+        <EntitySet Name="RigheCarrelli" EntityType="Digiphoto.Lumen.Model.Store.RigheCarrelli" store:Type="Tables" Schema="dbo" />
+        <AssociationSet Name="FotografoFotografia" Association="Digiphoto.Lumen.Model.Store.FotografoFotografia">
+            <End Role="Fotografo" EntitySet="Fotografi" />
+            <End Role="Fotografia" EntitySet="Fotografie" />
+        </AssociationSet>
+        <AssociationSet Name="EventoFotografia" Association="Digiphoto.Lumen.Model.Store.EventoFotografia">
+            <End Role="Evento" EntitySet="Eventi" />
+            <End Role="Fotografia" EntitySet="Fotografie" />
+        </AssociationSet>
+        <AssociationSet Name="RigaAlbumFotografia" Association="Digiphoto.Lumen.Model.Store.RigaAlbumFotografia">
+            <End Role="RigaAlbum" EntitySet="RigheAlbum" />
+            <End Role="Fotografia" EntitySet="Fotografie" />
+        </AssociationSet>
+        <AssociationSet Name="AlbumRigaAlbum" Association="Digiphoto.Lumen.Model.Store.AlbumRigaAlbum">
+            <End Role="Album" EntitySet="Albums" />
+            <End Role="RigaAlbum" EntitySet="RigheAlbum" />
+        </AssociationSet>
+        <AssociationSet Name="FotografoScaricoCard" Association="Digiphoto.Lumen.Model.Store.FotografoScaricoCard">
+            <End Role="Fotografo" EntitySet="Fotografi" />
+            <End Role="ScaricoCard" EntitySet="ScarichiCards" />
+        </AssociationSet>
+        <AssociationSet Name="CarrelloRigaCarrello" Association="Digiphoto.Lumen.Model.Store.CarrelloRigaCarrello">
+            <End Role="Carrello" EntitySet="Carrelli" />
+            <End Role="RigaCarrello" EntitySet="RigheCarrelli" />
+        </AssociationSet>
+        <AssociationSet Name="FormatoCartaRiCaFotoStampata" Association="Digiphoto.Lumen.Model.Store.FormatoCartaRiCaFotoStampata">
+            <End Role="FormatoCarta" EntitySet="FormatiCarta" />
+            <End Role="RiCaFotoStampata" EntitySet="RigheCarrelli" />
+        </AssociationSet>
+        <AssociationSet Name="FotografoRiCaFotoStampata" Association="Digiphoto.Lumen.Model.Store.FotografoRiCaFotoStampata">
+            <End Role="Fotografo" EntitySet="Fotografi" />
+            <End Role="RiCaFotoStampata" EntitySet="RigheCarrelli" />
+        </AssociationSet>
+
+    </EntityContainer>
+
+    <EntityType Name="Fotografi">
+        <Key>
+            <PropertyRef Name="id" />
+        </Key>
+		<Property Name="id" Type="nvarchar" Nullable="false" MaxLength="16" />
+		<Property Name="cognomeNome" Type="nvarchar" Nullable="false" />
+		<Property Name="iniziali" Type="nvarchar" Nullable="false" MaxLength="2" />
+		<Property Name="attivo" Type="bit" Nullable="false" DefaultValue="true" />
+		<Property Name="umano" Type="bit" Nullable="false" DefaultValue="true" />
+		<Property Name="note" Type="nvarchar" Nullable="true" />
+    </EntityType>
+    <EntityType Name="Fotografie">
+        <Key>
+            <PropertyRef Name="id" />
+        </Key>
+		<Property Name="id" Type="uniqueidentifier" Nullable="false" />
+		<Property Name="nomeFile" Type="nvarchar" Nullable="false" />
+		<Property Name="dataOraScatto" Type="datetime" Nullable="true" />
+		<Property Name="didascalia" Type="nvarchar" Nullable="true" />
+		<Property Name="dataOraAcquisizione" Type="datetime" Nullable="false" />
+		<Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="false" />
+		<Property Name="evento_id" Type="uniqueidentifier" Nullable="true" />
+		<Property Name="RigaAlbumFotografia_Fotografia_id" Type="int" Nullable="true" />
+    </EntityType>
+    <EntityType Name="Eventi">
+        <Key>
+            <PropertyRef Name="id" />
+        </Key>
+		<Property Name="id" Type="uniqueidentifier" Nullable="false" />
+		<Property Name="descrizione" Type="nvarchar" Nullable="false" />
+		<Property Name="attivo" Type="bit" Nullable="false" DefaultValue="true" />
+    </EntityType>
+    <EntityType Name="Albums">
+        <Key>
+            <PropertyRef Name="id" />
+        </Key>
+		<Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+		<Property Name="titolo" Type="nvarchar" Nullable="false" MaxLength="40" />
+		<Property Name="note" Type="nvarchar" Nullable="false" />
+		<Property Name="timestamp" Type="datetime" Nullable="false" />
+    </EntityType>
+    <EntityType Name="RigheAlbum">
+        <Key>
+            <PropertyRef Name="id" />
+        </Key>
+		<Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+		<Property Name="AlbumRigaAlbum_RigaAlbum_id" Type="int" Nullable="false" />
+    </EntityType>
+    <EntityType Name="ScarichiCards">
+        <Key>
+            <PropertyRef Name="id" />
+        </Key>
+		<Property Name="id" Type="uniqueidentifier" Nullable="false" />
+		<Property Name="tempo" Type="datetime" Nullable="false" />
+		<Property Name="totFoto" Type="smallint" Nullable="false" />
+		<Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="false" />
+    </EntityType>
+    <EntityType Name="FormatiCarta">
+        <Key>
+            <PropertyRef Name="id" />
+        </Key>
+		<Property Name="id" Type="uniqueidentifier" Nullable="false" />
+		<Property Name="descrizione" Type="nvarchar" Nullable="false" />
+		<Property Name="prezzo" Type="decimal" Nullable="false" />
+    </EntityType>
+    <EntityType Name="InfosFisse">
+        <Key>
+            <PropertyRef Name="id" />
+        </Key>
+		<Property Name="id" Type="nvarchar" Nullable="false" MaxLength="1" />
+		<Property Name="ultimoNumFotogramma" Type="int" Nullable="false" />
+		<Property Name="dataUltimoScarico" Type="nvarchar" Nullable="false" />
+		<Property Name="versioneDbCompatibile" Type="nvarchar" Nullable="false" DefaultValue="1.0" MaxLength="10" />
+    </EntityType>
+    <EntityType Name="Carrelli">
+        <Key>
+            <PropertyRef Name="id" />
+        </Key>
+		<Property Name="id" Type="uniqueidentifier" Nullable="false" />
+		<Property Name="giornata" Type="datetime" Nullable="false" />
+		<Property Name="tempo" Type="datetime" Nullable="false" />
+		<Property Name="totaleAPagare" Type="decimal" Nullable="false" />
+    </EntityType>
+    <EntityType Name="RigheCarrelli">
+        <Key>
+            <PropertyRef Name="id" />
+        </Key>
+		<Property Name="id" Type="uniqueidentifier" Nullable="false" />
+		<Property Name="prezzoLordoUnitario" Type="decimal" Nullable="false" />
+		<Property Name="quantita" Type="smallint" Nullable="false" />
+		<Property Name="prezzoNettoTotale" Type="decimal" Nullable="false" />
+		<Property Name="sconto" Type="decimal" Nullable="true" />
+		<Property Name="descrizione" Type="nvarchar" Nullable="false" />
+		<Property Name="totFogliStampati" Type="smallint" Nullable="true" />
+		<Property Name="idFotografia" Type="uniqueidentifier" Nullable="true" />
+		<Property Name="totFotoMasterizzate" Type="smallint" Nullable="true" />
+        <Property Name="__Disc__" Type="nvarchar" MaxLength="Max" Nullable="false" />
+		<Property Name="CarrelloRigaCarrello_RigaCarrello_id" Type="uniqueidentifier" Nullable="false" />
+		<Property Name="formatoCarta_id" Type="uniqueidentifier" Nullable="true" />
+		<Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="true" />
+    </EntityType>
+	<Association Name="FotografoFotografia">
+		<End Role="Fotografo" Type="Digiphoto.Lumen.Model.Store.Fotografi" Multiplicity="1">
+		</End>				
+		<End Role="Fotografia" Type="Digiphoto.Lumen.Model.Store.Fotografie" Multiplicity="*">
+		</End>				
+		<ReferentialConstraint>
+			<Principal Role="Fotografo">
+				<PropertyRef Name="id" />
+			</Principal>
+			<Dependent Role="Fotografia">
+				<PropertyRef Name="fotografo_id" />
+			
+			</Dependent>
+		</ReferentialConstraint>
+	</Association>
+	<Association Name="EventoFotografia">
+		<End Role="Evento" Type="Digiphoto.Lumen.Model.Store.Eventi" Multiplicity="0..1">
+		</End>				
+		<End Role="Fotografia" Type="Digiphoto.Lumen.Model.Store.Fotografie" Multiplicity="*">
+		</End>				
+		<ReferentialConstraint>
+			<Principal Role="Evento">
+				<PropertyRef Name="id" />
+			</Principal>
+			<Dependent Role="Fotografia">
+				<PropertyRef Name="evento_id" />
+			
+			</Dependent>
+		</ReferentialConstraint>
+	</Association>
+	<Association Name="RigaAlbumFotografia">
+		<End Role="RigaAlbum" Type="Digiphoto.Lumen.Model.Store.RigheAlbum" Multiplicity="0..1">
+		</End>				
+		<End Role="Fotografia" Type="Digiphoto.Lumen.Model.Store.Fotografie" Multiplicity="*">
+		</End>				
+		<ReferentialConstraint>
+			<Principal Role="RigaAlbum">
+				<PropertyRef Name="id" />
+			</Principal>
+			<Dependent Role="Fotografia">
+				<PropertyRef Name="RigaAlbumFotografia_Fotografia_id" />
+			
+			</Dependent>
+		</ReferentialConstraint>
+	</Association>
+	<Association Name="AlbumRigaAlbum">
+		<End Role="Album" Type="Digiphoto.Lumen.Model.Store.Albums" Multiplicity="1">
+			<OnDelete Action="Cascade" />
+		</End>				
+		<End Role="RigaAlbum" Type="Digiphoto.Lumen.Model.Store.RigheAlbum" Multiplicity="*">
+		</End>				
+		<ReferentialConstraint>
+			<Principal Role="Album">
+				<PropertyRef Name="id" />
+			</Principal>
+			<Dependent Role="RigaAlbum">
+				<PropertyRef Name="AlbumRigaAlbum_RigaAlbum_id" />
+			
+			</Dependent>
+		</ReferentialConstraint>
+	</Association>
+	<Association Name="FotografoScaricoCard">
+		<End Role="Fotografo" Type="Digiphoto.Lumen.Model.Store.Fotografi" Multiplicity="1">
+		</End>				
+		<End Role="ScaricoCard" Type="Digiphoto.Lumen.Model.Store.ScarichiCards" Multiplicity="*">
+		</End>				
+		<ReferentialConstraint>
+			<Principal Role="Fotografo">
+				<PropertyRef Name="id" />
+			</Principal>
+			<Dependent Role="ScaricoCard">
+				<PropertyRef Name="fotografo_id" />
+			
+			</Dependent>
+		</ReferentialConstraint>
+	</Association>
+	<Association Name="CarrelloRigaCarrello">
+		<End Role="Carrello" Type="Digiphoto.Lumen.Model.Store.Carrelli" Multiplicity="1">
+		</End>				
+		<End Role="RigaCarrello" Type="Digiphoto.Lumen.Model.Store.RigheCarrelli" Multiplicity="*">
+		</End>				
+		<ReferentialConstraint>
+			<Principal Role="Carrello">
+				<PropertyRef Name="id" />
+			</Principal>
+			<Dependent Role="RigaCarrello">
+				<PropertyRef Name="CarrelloRigaCarrello_RigaCarrello_id" />
+			
+			</Dependent>
+		</ReferentialConstraint>
+	</Association>
+	<Association Name="FormatoCartaRiCaFotoStampata">
+		<End Role="FormatoCarta" Type="Digiphoto.Lumen.Model.Store.FormatiCarta" Multiplicity="0..1">
+		</End>				
+		<End Role="RiCaFotoStampata" Type="Digiphoto.Lumen.Model.Store.RigheCarrelli" Multiplicity="*">
+		</End>				
+		<ReferentialConstraint>
+			<Principal Role="FormatoCarta">
+				<PropertyRef Name="id" />
+			</Principal>
+			<Dependent Role="RiCaFotoStampata">
+				<PropertyRef Name="formatoCarta_id" />
+			
+			</Dependent>
+		</ReferentialConstraint>
+	</Association>
+	<Association Name="FotografoRiCaFotoStampata">
+		<End Role="Fotografo" Type="Digiphoto.Lumen.Model.Store.Fotografi" Multiplicity="0..1">
+		</End>				
+		<End Role="RiCaFotoStampata" Type="Digiphoto.Lumen.Model.Store.RigheCarrelli" Multiplicity="*">
+		</End>				
+		<ReferentialConstraint>
+			<Principal Role="Fotografo">
+				<PropertyRef Name="id" />
+			</Principal>
+			<Dependent Role="RiCaFotoStampata">
+				<PropertyRef Name="fotografo_id" />
+			
+			</Dependent>
+		</ReferentialConstraint>
+	</Association>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -193,7 +306,22 @@
             <End Role="Fotografo" EntitySet="Fotografi" />
             <End Role="ScaricoCard" EntitySet="ScarichiCards" />
           </AssociationSet>
-        </EntityContainer>
+          <EntitySet Name="InfosFisse" EntityType="Digiphoto.Lumen.Model.InfoFissa" />
+          <EntitySet Name="Carrelli" EntityType="Digiphoto.Lumen.Model.Carrello" />
+          <EntitySet Name="RigheCarrelli" EntityType="Digiphoto.Lumen.Model.RigaCarrello" />
+          <AssociationSet Name="CarrelloRigaCarrello" Association="Digiphoto.Lumen.Model.CarrelloRigaCarrello">
+            <End Role="Carrello" EntitySet="Carrelli" />
+            <End Role="RigaCarrello" EntitySet="RigheCarrelli" />
+          </AssociationSet>
+          <AssociationSet Name="FormatoCartaRiCaFotoStampata" Association="Digiphoto.Lumen.Model.FormatoCartaRiCaFotoStampata">
+            <End Role="FormatoCarta" EntitySet="FormatiCarta" />
+            <End Role="RiCaFotoStampata" EntitySet="RigheCarrelli" />
+          </AssociationSet>
+          <AssociationSet Name="FotografoRiCaFotoStampata" Association="Digiphoto.Lumen.Model.FotografoRiCaFotoStampata">
+            <End Role="Fotografo" EntitySet="Fotografi" />
+            <End Role="RiCaFotoStampata" EntitySet="RigheCarrelli" />
+          </AssociationSet>
+          </EntityContainer>
         <EntityType Name="Fotografo">
           <Documentation>
             <Summary>Operatori scattini e fotografi</Summary>
@@ -259,14 +387,14 @@
           <Property Type="String" Name="titolo" Nullable="false" MaxLength="40" />
           <Property Type="String" Name="note" Nullable="false" />
           <Property Type="DateTime" Name="timestamp" Nullable="false" />
-          <NavigationProperty Name="RigaAlbum" Relationship="Digiphoto.Lumen.Model.AlbumRigaAlbum" FromRole="Album" ToRole="RigaAlbum" />
+          <NavigationProperty Name="righeAlbum" Relationship="Digiphoto.Lumen.Model.AlbumRigaAlbum" FromRole="Album" ToRole="RigaAlbum" />
         </EntityType>
         <EntityType Name="RigaAlbum">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <NavigationProperty Name="Fotografia" Relationship="Digiphoto.Lumen.Model.RigaAlbumFotografia" FromRole="RigaAlbum" ToRole="Fotografia" />
+          <NavigationProperty Name="fotografia" Relationship="Digiphoto.Lumen.Model.RigaAlbumFotografia" FromRole="RigaAlbum" ToRole="Fotografia" />
         </EntityType>
         <Association Name="RigaAlbumFotografia">
           <End Type="Digiphoto.Lumen.Model.RigaAlbum" Role="RigaAlbum" Multiplicity="0..1" />
@@ -289,137 +417,298 @@
           <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" />
           <Property Type="DateTime" Name="tempo" Nullable="false" />
           <Property Type="Int16" Name="totFoto" Nullable="false" />
-          <NavigationProperty Name="Fotografo" Relationship="Digiphoto.Lumen.Model.FotografoScaricoCard" FromRole="ScaricoCard" ToRole="Fotografo" />
+          <NavigationProperty Name="fotografo" Relationship="Digiphoto.Lumen.Model.FotografoScaricoCard" FromRole="ScaricoCard" ToRole="Fotografo" />
         </EntityType>
         <EntityType Name="FormatoCarta">
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" />
           <Property Type="String" Name="descrizione" Nullable="false" />
           <Property Type="Decimal" Name="prezzo" Nullable="false" />
+          <NavigationProperty Name="RiCaFotoStampata" Relationship="Digiphoto.Lumen.Model.FormatoCartaRiCaFotoStampata" FromRole="FormatoCarta" ToRole="RiCaFotoStampata" />
         </EntityType>
         <Association Name="FotografoScaricoCard">
           <End Type="Digiphoto.Lumen.Model.Fotografo" Role="Fotografo" Multiplicity="1" >
           </End>
           <End Type="Digiphoto.Lumen.Model.ScaricoCard" Role="ScaricoCard" Multiplicity="*" />
         </Association>
+        <EntityType Name="InfoFissa">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" Type="String" MaxLength="1">
+            <Documentation>
+              <Summary>Informazioni fisse per tutti gli utenti</Summary>
+              <LongDescription>Tabella a record unico. Tutti gli utenti vedono lo stessa unica riga</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="ultimoNumFotogramma" Nullable="false" Type="Int32">
+            <Documentation>
+              <LongDescription>A tutti gli effetti la usiamo come una sequence</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="dataUltimoScarico" Nullable="false" Type="String">
+            <Documentation>
+              <LongDescription>Data senza ora dell'ultima volta in cui ho incrementato il numeratore delle foto (sequenza)</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="versioneDbCompatibile" Nullable="false" DefaultValue="1.0" MaxLength="10" Type="String">
+            <Documentation>
+              <LongDescription>Indica il numero di revisione della struttura del database. Il programma qando parte deve controllare di essere compatibile</LongDescription>
+            </Documentation>
+          </Property>
+        </EntityType>
+        <EntityType Name="Carrello">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Type="DateTime" Name="giornata" Nullable="false" />
+          <Property Type="DateTime" Name="tempo" Nullable="false" />
+          <Property Type="Decimal" Name="totaleAPagare" Nullable="false" />
+          <NavigationProperty Name="righeCarrello" Relationship="Digiphoto.Lumen.Model.CarrelloRigaCarrello" FromRole="Carrello" ToRole="RigaCarrello" />
+        </EntityType>
+        <EntityType Name="RigaCarrello" Abstract="false">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Type="Decimal" Name="prezzoLordoUnitario" Nullable="false" />
+          <Property Type="Int16" Name="quantita" Nullable="false" />
+          <Property Type="Decimal" Name="prezzoNettoTotale" Nullable="false" />
+          <Property Type="Decimal" Name="sconto" Nullable="true" />
+          <Property Type="String" Name="descrizione" Nullable="false" />
+        </EntityType>
+        <Association Name="CarrelloRigaCarrello">
+          <End Type="Digiphoto.Lumen.Model.Carrello" Role="Carrello" Multiplicity="1" />
+          <End Type="Digiphoto.Lumen.Model.RigaCarrello" Role="RigaCarrello" Multiplicity="*" />
+        </Association>
+        <EntityType Name="RiCaDiscoMasterizzato" BaseType="Digiphoto.Lumen.Model.RigaCarrello" >
+          <Property Type="Int16" Name="totFotoMasterizzate" Nullable="true" />
+        </EntityType>
+        <EntityType Name="RiCaFotoStampata" BaseType="Digiphoto.Lumen.Model.RigaCarrello" >
+          <Property Type="Int16" Name="totFogliStampati" Nullable="true" />
+          <Property Type="Guid" Name="idFotografia" Nullable="true" />
+          <NavigationProperty Name="formatoCarta" Relationship="Digiphoto.Lumen.Model.FormatoCartaRiCaFotoStampata" FromRole="RiCaFotoStampata" ToRole="FormatoCarta" />
+          <NavigationProperty Name="fotografo" Relationship="Digiphoto.Lumen.Model.FotografoRiCaFotoStampata" FromRole="RiCaFotoStampata" ToRole="Fotografo" />
+        </EntityType>
+        <Association Name="FormatoCartaRiCaFotoStampata">
+          <End Type="Digiphoto.Lumen.Model.FormatoCarta" Role="FormatoCarta" Multiplicity="0..1" />
+          <End Type="Digiphoto.Lumen.Model.RiCaFotoStampata" Role="RiCaFotoStampata" Multiplicity="*" />
+        </Association>
+        <Association Name="FotografoRiCaFotoStampata">
+          <End Type="Digiphoto.Lumen.Model.Fotografo" Role="Fotografo" Multiplicity="0..1" />
+          <End Type="Digiphoto.Lumen.Model.RiCaFotoStampata" Role="RiCaFotoStampata" Multiplicity="*" />
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
     <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
-  <EntityContainerMapping StorageEntityContainer="DigiphotoLumenModelStoreContainer" CdmEntityContainer="LumenEntities">
-    <EntitySetMapping Name="Fotografi">
-      <EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.Fotografo)">
-        <MappingFragment StoreEntitySet="Fotografi">
-          <ScalarProperty Name="id" ColumnName="id" />
-          <ScalarProperty Name="cognomeNome" ColumnName="cognomeNome" />
-          <ScalarProperty Name="iniziali" ColumnName="iniziali" />
-          <ScalarProperty Name="attivo" ColumnName="attivo" />
-          <ScalarProperty Name="umano" ColumnName="umano" />
-          <ScalarProperty Name="note" ColumnName="note" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Fotografie">
-      <EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.Fotografia)">
-        <MappingFragment StoreEntitySet="Fotografie">
-          <ScalarProperty Name="id" ColumnName="id" />
-          <ScalarProperty Name="nomeFile" ColumnName="nomeFile" />
-          <ScalarProperty Name="dataOraScatto" ColumnName="dataOraScatto" />
-          <ScalarProperty Name="didascalia" ColumnName="didascalia" />
-          <ScalarProperty Name="dataOraAcquisizione" ColumnName="dataOraAcquisizione" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Eventi">
-      <EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.Evento)">
-        <MappingFragment StoreEntitySet="Eventi">
-          <ScalarProperty Name="id" ColumnName="id" />
-          <ScalarProperty Name="descrizione" ColumnName="descrizione" />
-          <ScalarProperty Name="attivo" ColumnName="attivo" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Albums">
-      <EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.Album)">
-        <MappingFragment StoreEntitySet="Albums">
-          <ScalarProperty Name="id" ColumnName="id" />
-          <ScalarProperty Name="titolo" ColumnName="titolo" />
-          <ScalarProperty Name="note" ColumnName="note" />
-          <ScalarProperty Name="timestamp" ColumnName="timestamp" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="RigheAlbum">
-      <EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.RigaAlbum)">
-        <MappingFragment StoreEntitySet="RigheAlbum">
-          <ScalarProperty Name="id" ColumnName="id" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="ScarichiCards">
-      <EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.ScaricoCard)">
-        <MappingFragment StoreEntitySet="ScarichiCards">
-          <ScalarProperty Name="id" ColumnName="id" />
-          <ScalarProperty Name="tempo" ColumnName="tempo" />
-          <ScalarProperty Name="totFoto" ColumnName="totFoto" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="FormatiCarta">
-      <EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.FormatoCarta)">
-        <MappingFragment StoreEntitySet="FormatiCarta">
-          <ScalarProperty Name="id" ColumnName="id" />
-          <ScalarProperty Name="descrizione" ColumnName="descrizione" />
-          <ScalarProperty Name="prezzo" ColumnName="prezzo" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <AssociationSetMapping Name="FotografoFotografia" TypeName="Digiphoto.Lumen.Model.FotografoFotografia" StoreEntitySet="Fotografie">
-      <EndProperty Name="Fotografo">
-        <ScalarProperty Name="id" ColumnName="fotografo_id" />
-      </EndProperty>
-      <EndProperty Name="Fotografia">
-        <ScalarProperty Name="id" ColumnName="id" />
-      </EndProperty>
-    </AssociationSetMapping>
-    <AssociationSetMapping Name="EventoFotografia" TypeName="Digiphoto.Lumen.Model.EventoFotografia" StoreEntitySet="Fotografie">
-      <EndProperty Name="Evento">
-        <ScalarProperty Name="id" ColumnName="evento_id" />
-      </EndProperty>
-      <EndProperty Name="Fotografia">
-        <ScalarProperty Name="id" ColumnName="id" />
-      </EndProperty>
-      <Condition ColumnName="evento_id" IsNull="false" />
-    </AssociationSetMapping>
-    <AssociationSetMapping Name="RigaAlbumFotografia" TypeName="Digiphoto.Lumen.Model.RigaAlbumFotografia" StoreEntitySet="Fotografie">
-      <EndProperty Name="RigaAlbum">
-        <ScalarProperty Name="id" ColumnName="RigaAlbumFotografia_Fotografia_id" />
-      </EndProperty>
-      <EndProperty Name="Fotografia">
-        <ScalarProperty Name="id" ColumnName="id" />
-      </EndProperty>
-      <Condition ColumnName="RigaAlbumFotografia_Fotografia_id" IsNull="false" />
-    </AssociationSetMapping>
-    <AssociationSetMapping Name="AlbumRigaAlbum" TypeName="Digiphoto.Lumen.Model.AlbumRigaAlbum" StoreEntitySet="RigheAlbum">
-      <EndProperty Name="Album">
-        <ScalarProperty Name="id" ColumnName="AlbumRigaAlbum_RigaAlbum_id" />
-      </EndProperty>
-      <EndProperty Name="RigaAlbum">
-        <ScalarProperty Name="id" ColumnName="id" />
-      </EndProperty>
-    </AssociationSetMapping>
-    <AssociationSetMapping Name="FotografoScaricoCard" TypeName="Digiphoto.Lumen.Model.FotografoScaricoCard" StoreEntitySet="ScarichiCards">
-      <EndProperty Name="Fotografo">
-        <ScalarProperty Name="id" ColumnName="Fotografo_id" />
-      </EndProperty>
-      <EndProperty Name="ScaricoCard">
-        <ScalarProperty Name="id" ColumnName="id" />
-      </EndProperty>
-    </AssociationSetMapping>
-  </EntityContainerMapping>
+	<EntityContainerMapping StorageEntityContainer="DigiphotoLumenModelStoreContainer" CdmEntityContainer="LumenEntities">
+		<EntitySetMapping Name="Fotografi">
+			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.Fotografo">
+				<MappingFragment StoreEntitySet="Fotografi">
+					<ScalarProperty Name="id" ColumnName="id" />
+					<ScalarProperty Name="cognomeNome" ColumnName="cognomeNome" />
+					<ScalarProperty Name="iniziali" ColumnName="iniziali" />
+					<ScalarProperty Name="attivo" ColumnName="attivo" />
+					<ScalarProperty Name="umano" ColumnName="umano" />
+					<ScalarProperty Name="note" ColumnName="note" />
+				</MappingFragment>
+			</EntityTypeMapping>
+		</EntitySetMapping>
+		<EntitySetMapping Name="Fotografie">
+			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.Fotografia">
+				<MappingFragment StoreEntitySet="Fotografie">
+					<ScalarProperty Name="id" ColumnName="id" />
+					<ScalarProperty Name="nomeFile" ColumnName="nomeFile" />
+					<ScalarProperty Name="dataOraScatto" ColumnName="dataOraScatto" />
+					<ScalarProperty Name="didascalia" ColumnName="didascalia" />
+					<ScalarProperty Name="dataOraAcquisizione" ColumnName="dataOraAcquisizione" />
+				</MappingFragment>
+			</EntityTypeMapping>
+		</EntitySetMapping>
+		<EntitySetMapping Name="Eventi">
+			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.Evento">
+				<MappingFragment StoreEntitySet="Eventi">
+					<ScalarProperty Name="id" ColumnName="id" />
+					<ScalarProperty Name="descrizione" ColumnName="descrizione" />
+					<ScalarProperty Name="attivo" ColumnName="attivo" />
+				</MappingFragment>
+			</EntityTypeMapping>
+		</EntitySetMapping>
+		<EntitySetMapping Name="Albums">
+			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.Album">
+				<MappingFragment StoreEntitySet="Albums">
+					<ScalarProperty Name="id" ColumnName="id" />
+					<ScalarProperty Name="titolo" ColumnName="titolo" />
+					<ScalarProperty Name="note" ColumnName="note" />
+					<ScalarProperty Name="timestamp" ColumnName="timestamp" />
+				</MappingFragment>
+			</EntityTypeMapping>
+		</EntitySetMapping>
+		<EntitySetMapping Name="RigheAlbum">
+			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.RigaAlbum">
+				<MappingFragment StoreEntitySet="RigheAlbum">
+					<ScalarProperty Name="id" ColumnName="id" />
+				</MappingFragment>
+			</EntityTypeMapping>
+		</EntitySetMapping>
+		<EntitySetMapping Name="ScarichiCards">
+			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.ScaricoCard">
+				<MappingFragment StoreEntitySet="ScarichiCards">
+					<ScalarProperty Name="id" ColumnName="id" />
+					<ScalarProperty Name="tempo" ColumnName="tempo" />
+					<ScalarProperty Name="totFoto" ColumnName="totFoto" />
+				</MappingFragment>
+			</EntityTypeMapping>
+		</EntitySetMapping>
+		<EntitySetMapping Name="FormatiCarta">
+			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.FormatoCarta">
+				<MappingFragment StoreEntitySet="FormatiCarta">
+					<ScalarProperty Name="id" ColumnName="id" />
+					<ScalarProperty Name="descrizione" ColumnName="descrizione" />
+					<ScalarProperty Name="prezzo" ColumnName="prezzo" />
+				</MappingFragment>
+			</EntityTypeMapping>
+		</EntitySetMapping>
+		<EntitySetMapping Name="InfosFisse">
+			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.InfoFissa">
+				<MappingFragment StoreEntitySet="InfosFisse">
+					<ScalarProperty Name="id" ColumnName="id" />
+					<ScalarProperty Name="ultimoNumFotogramma" ColumnName="ultimoNumFotogramma" />
+					<ScalarProperty Name="dataUltimoScarico" ColumnName="dataUltimoScarico" />
+					<ScalarProperty Name="versioneDbCompatibile" ColumnName="versioneDbCompatibile" />
+				</MappingFragment>
+			</EntityTypeMapping>
+		</EntitySetMapping>
+		<EntitySetMapping Name="Carrelli">
+			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.Carrello">
+				<MappingFragment StoreEntitySet="Carrelli">
+					<ScalarProperty Name="id" ColumnName="id" />
+					<ScalarProperty Name="giornata" ColumnName="giornata" />
+					<ScalarProperty Name="tempo" ColumnName="tempo" />
+					<ScalarProperty Name="totaleAPagare" ColumnName="totaleAPagare" />
+				</MappingFragment>
+			</EntityTypeMapping>
+		</EntitySetMapping>
+		<EntitySetMapping Name="RigheCarrelli">
+			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.RigaCarrello">
+				<MappingFragment StoreEntitySet="RigheCarrelli">
+					<ScalarProperty Name="id" ColumnName="id" />
+					<ScalarProperty Name="prezzoLordoUnitario" ColumnName="prezzoLordoUnitario" />
+					<ScalarProperty Name="quantita" ColumnName="quantita" />
+					<ScalarProperty Name="prezzoNettoTotale" ColumnName="prezzoNettoTotale" />
+					<ScalarProperty Name="sconto" ColumnName="sconto" />
+					<ScalarProperty Name="descrizione" ColumnName="descrizione" />
+                    <Condition ColumnName="__Disc__" Value="RigaCarrello" />
+				</MappingFragment>
+			</EntityTypeMapping>
+			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.RiCaFotoStampata">
+				<MappingFragment StoreEntitySet="RigheCarrelli">
+					<ScalarProperty Name="id" ColumnName="id" />
+					<ScalarProperty Name="prezzoLordoUnitario" ColumnName="prezzoLordoUnitario" />
+					<ScalarProperty Name="quantita" ColumnName="quantita" />
+					<ScalarProperty Name="prezzoNettoTotale" ColumnName="prezzoNettoTotale" />
+					<ScalarProperty Name="sconto" ColumnName="sconto" />
+					<ScalarProperty Name="descrizione" ColumnName="descrizione" />
+					<ScalarProperty Name="totFogliStampati" ColumnName="totFogliStampati" />
+					<ScalarProperty Name="idFotografia" ColumnName="idFotografia" />
+                    <Condition ColumnName="__Disc__" Value="RiCaFotoStampata" />
+				</MappingFragment>
+			</EntityTypeMapping>
+			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.RiCaDiscoMasterizzato">
+				<MappingFragment StoreEntitySet="RigheCarrelli">
+					<ScalarProperty Name="id" ColumnName="id" />
+					<ScalarProperty Name="prezzoLordoUnitario" ColumnName="prezzoLordoUnitario" />
+					<ScalarProperty Name="quantita" ColumnName="quantita" />
+					<ScalarProperty Name="prezzoNettoTotale" ColumnName="prezzoNettoTotale" />
+					<ScalarProperty Name="sconto" ColumnName="sconto" />
+					<ScalarProperty Name="descrizione" ColumnName="descrizione" />
+					<ScalarProperty Name="totFotoMasterizzate" ColumnName="totFotoMasterizzate" />
+                    <Condition ColumnName="__Disc__" Value="RiCaDiscoMasterizzato" />
+				</MappingFragment>
+			</EntityTypeMapping>
+		</EntitySetMapping>
+		<AssociationSetMapping Name="FotografoFotografia" TypeName="Digiphoto.Lumen.Model.FotografoFotografia" StoreEntitySet="Fotografie">
+			<EndProperty Name="Fotografo">
+				<ScalarProperty Name="id" ColumnName="fotografo_id" />
+			</EndProperty>
+			<EndProperty Name="Fotografia">
+				<ScalarProperty Name="id" ColumnName="id" />
+			</EndProperty>
+		</AssociationSetMapping>
+
+		<AssociationSetMapping Name="EventoFotografia" TypeName="Digiphoto.Lumen.Model.EventoFotografia" StoreEntitySet="Fotografie">
+			<EndProperty Name="Evento">
+				<ScalarProperty Name="id" ColumnName="evento_id" />
+			</EndProperty>
+			<EndProperty Name="Fotografia">
+				<ScalarProperty Name="id" ColumnName="id" />
+			</EndProperty>
+			<Condition ColumnName="evento_id" IsNull="false" />
+		</AssociationSetMapping>
+
+		<AssociationSetMapping Name="RigaAlbumFotografia" TypeName="Digiphoto.Lumen.Model.RigaAlbumFotografia" StoreEntitySet="Fotografie">
+			<EndProperty Name="RigaAlbum">
+				<ScalarProperty Name="id" ColumnName="RigaAlbumFotografia_Fotografia_id" />
+			</EndProperty>
+			<EndProperty Name="Fotografia">
+				<ScalarProperty Name="id" ColumnName="id" />
+			</EndProperty>
+			<Condition ColumnName="RigaAlbumFotografia_Fotografia_id" IsNull="false" />
+		</AssociationSetMapping>
+
+		<AssociationSetMapping Name="AlbumRigaAlbum" TypeName="Digiphoto.Lumen.Model.AlbumRigaAlbum" StoreEntitySet="RigheAlbum">
+			<EndProperty Name="Album">
+				<ScalarProperty Name="id" ColumnName="AlbumRigaAlbum_RigaAlbum_id" />
+			</EndProperty>
+			<EndProperty Name="RigaAlbum">
+				<ScalarProperty Name="id" ColumnName="id" />
+			</EndProperty>
+		</AssociationSetMapping>
+
+		<AssociationSetMapping Name="FotografoScaricoCard" TypeName="Digiphoto.Lumen.Model.FotografoScaricoCard" StoreEntitySet="ScarichiCards">
+			<EndProperty Name="Fotografo">
+				<ScalarProperty Name="id" ColumnName="fotografo_id" />
+			</EndProperty>
+			<EndProperty Name="ScaricoCard">
+				<ScalarProperty Name="id" ColumnName="id" />
+			</EndProperty>
+		</AssociationSetMapping>
+
+		<AssociationSetMapping Name="CarrelloRigaCarrello" TypeName="Digiphoto.Lumen.Model.CarrelloRigaCarrello" StoreEntitySet="RigheCarrelli">
+			<EndProperty Name="Carrello">
+				<ScalarProperty Name="id" ColumnName="CarrelloRigaCarrello_RigaCarrello_id" />
+			</EndProperty>
+			<EndProperty Name="RigaCarrello">
+				<ScalarProperty Name="id" ColumnName="id" />
+			</EndProperty>
+		</AssociationSetMapping>
+
+		<AssociationSetMapping Name="FormatoCartaRiCaFotoStampata" TypeName="Digiphoto.Lumen.Model.FormatoCartaRiCaFotoStampata" StoreEntitySet="RigheCarrelli">
+			<EndProperty Name="FormatoCarta">
+				<ScalarProperty Name="id" ColumnName="formatoCarta_id" />
+			</EndProperty>
+			<EndProperty Name="RiCaFotoStampata">
+				<ScalarProperty Name="id" ColumnName="id" />
+			</EndProperty>
+			<Condition ColumnName="formatoCarta_id" IsNull="false" />
+		</AssociationSetMapping>
+
+		<AssociationSetMapping Name="FotografoRiCaFotoStampata" TypeName="Digiphoto.Lumen.Model.FotografoRiCaFotoStampata" StoreEntitySet="RigheCarrelli">
+			<EndProperty Name="Fotografo">
+				<ScalarProperty Name="id" ColumnName="fotografo_id" />
+			</EndProperty>
+			<EndProperty Name="RiCaFotoStampata">
+				<ScalarProperty Name="id" ColumnName="id" />
+			</EndProperty>
+			<Condition ColumnName="fotografo_id" IsNull="false" />
+		</AssociationSetMapping>
+
+	</EntityContainerMapping>
 </Mapping></edmx:Mappings>
   </edmx:Runtime>
   <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
@@ -433,41 +722,73 @@
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="False" />
-        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Default" />
+        <DesignerProperty Name="DDLGenerationTemplate" Value="$(VSEFTools)\DBGen\SSDLToSQL10.tt" />
+        <DesignerProperty Name="DatabaseGenerationWorkflow" Value="$(VSEFTools)\DBGen\Generate T-SQL Via T4 (TPH).xaml" />
       </DesignerInfoPropertySet>
     </edmx:Options>
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram Name="ModelloEntita" ZoomLevel="93" >
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografo" Width="2.375" PointX="0.625" PointY="2.5" Height="2.1725878906249996" />
+      <Diagram Name="ModelloEntita" ZoomLevel="58" >
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografo" Width="2.375" PointX="3.875" PointY="5.75" Height="2.1725878906249996" />
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografia" Width="1.5" PointX="4.125" PointY="1.75" Height="2.3648893229166656" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.FotografoFotografia">
-          <ConnectorPoint PointX="3" PointY="3.3074446614583328" />
-          <ConnectorPoint PointX="4.125" PointY="3.3074446614583328" />
+          <ConnectorPoint PointX="4.875" PointY="5.75" />
+          <ConnectorPoint PointX="4.875" PointY="4.1148893229166656" />
         </AssociationConnector>
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Evento" Width="1.5" PointX="1.75" PointY="0.5" Height="1.4033821614583333" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.EventoFotografia">
-          <ConnectorPoint PointX="3.25" PointY="1.1249995000000002" />
-          <ConnectorPoint PointX="4.875" PointY="1.1249995000000002" />
-          <ConnectorPoint PointX="4.875" PointY="1.75" />
+          <ConnectorPoint PointX="3.25" PointY="1.922841796875" />
+          <ConnectorPoint PointX="4.125" PointY="1.922841796875" />
         </AssociationConnector>
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Album" Width="1.5" PointX="9" PointY="0.5" Height="1.9802864583333339" />
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RigaAlbum" Width="1.5" PointX="6.75" PointY="1.375" Height="1.4033821614583339" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.RigaAlbumFotografia" ManuallyRouted="false">
-          <ConnectorPoint PointX="6.75" PointY="2.2641910807291667" />
-          <ConnectorPoint PointX="5.625" PointY="2.2641910807291667" />
+          <ConnectorPoint PointX="6.75" PointY="2.3721321614583335" />
+          <ConnectorPoint PointX="5.625" PointY="2.3721321614583335" />
         </AssociationConnector>
         <AssociationConnector Association="Digiphoto.Lumen.Model.AlbumRigaAlbum">
           <ConnectorPoint PointX="9" PointY="1.9276432291666668" />
           <ConnectorPoint PointX="8.25" PointY="1.9276432291666668" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.ScaricoCard" Width="1.75" PointX="2.375" PointY="5.5" Height="1.7879850260416665" />
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.FormatoCarta" Width="1.5" PointX="7" PointY="5.125" Height="1.5956835937499996" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.ScaricoCard" Width="1.75" PointX="1" PointY="6.75" Height="1.7879850260416665" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.FormatoCarta" Width="1.5" PointX="7.625" PointY="8.375" Height="1.7879850260416657" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.FotografoScaricoCard">
-          <ConnectorPoint PointX="2.6875" PointY="4.672587890625" />
-          <ConnectorPoint PointX="2.6875" PointY="5.5" />
+          <ConnectorPoint PointX="3.875" PointY="7.3362939453125" />
+          <ConnectorPoint PointX="2.75" PointY="7.3362939453125" />
         </AssociationConnector>
-      </Diagram>
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.InfoFissa" PointX="11.625" PointY="0.625" Width="1.5" Height="1.7879850260416665" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Carrello" Width="1.5" PointX="8.25" PointY="4" Height="1.9802864583333335" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RigaCarrello" Width="1.5" PointX="10.75" PointY="4.75" Height="2.5571907552083335" />
+        <AssociationConnector Association="Digiphoto.Lumen.Model.CarrelloRigaCarrello">
+          <ConnectorPoint PointX="9.75" PointY="5.3651432291666667" />
+          <ConnectorPoint PointX="10.75" PointY="5.3651432291666667" />
+        </AssociationConnector>
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RiCaDiscoMasterizzato" Width="1.5" PointX="12.375" PointY="7.875" Height="1.2110807291666665" />
+        <InheritanceConnector EntityType="Digiphoto.Lumen.Model.RiCaDiscoMasterizzato" ManuallyRouted="false" >
+          <ConnectorPoint PointX="11.5" PointY="6.922587890625" />
+          <ConnectorPoint PointX="11.5" PointY="7.297587890625" />
+          <ConnectorPoint PointX="13.125" PointY="7.297587890625" />
+          <ConnectorPoint PointX="13.125" PointY="7.875" />
+        </InheritanceConnector>
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RiCaFotoStampata" Width="1.5" PointX="10.625" PointY="7.75" Height="1.7879850260416674" />
+        <InheritanceConnector EntityType="Digiphoto.Lumen.Model.RiCaFotoStampata" ManuallyRouted="true" >
+          <ConnectorPoint PointX="11.5" PointY="6.922587890625" />
+          <ConnectorPoint PointX="11.5" PointY="7.4073271645093364" />
+          <ConnectorPoint PointX="11.216197980329996" PointY="7.4073271645093364" />
+          <ConnectorPoint PointX="11.216197980329996" PointY="7.75" />
+        </InheritanceConnector>
+        <AssociationConnector Association="Digiphoto.Lumen.Model.FormatoCartaRiCaFotoStampata">
+          <ConnectorPoint PointX="9.125" PointY="8.9564925130208337" />
+          <ConnectorPoint PointX="10.625" PointY="8.9564925130208337" />
+        </AssociationConnector>
+        <AssociationConnector Association="Digiphoto.Lumen.Model.FotografoRiCaFotoStampata" ManuallyRouted="true">
+          <ConnectorPoint PointX="6.25" PointY="7.141337890625" />
+          <ConnectorPoint PointX="7.7040625" PointY="7.141337890625" />
+          <ConnectorPoint PointX="7.7040625" PointY="7.75" />
+          <ConnectorPoint PointX="10.625" PointY="7.75" />
+        </AssociationConnector>
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

@@ -45,11 +45,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				// using( TransactionScope transaction = new TransactionScope() ) {
 
 
-					_mario = (Fotografo) dbContext.Fotografi.FirstOrDefault<Fotografo>( ff => ff.id == "ROSSIMARIO" );
-					if( _mario == null ) {
-						_mario = creaMario();
-						dbContext.Fotografi.AddObject( _mario );
-					}
+				_mario = Utilita.ottieniFotografoMario( dbContext );
 
 					// cerco l'evento con la descrizione
 					_ballo = dbContext.Eventi.Where
@@ -94,14 +90,6 @@ namespace Digiphoto.Lumen.Core.VsTest {
 			_impl.Dispose();
 		}
 
-		private Fotografo creaMario() {
-			Fotografo f = new Fotografo();
-			f.id = "ROSSIMARIO";
-			f.iniziali = "RM";
-			f.attivo = true;
-			f.cognomeNome = "Rossi Mario";
-			return f;
-		}
 
 		[TestMethod]
 		public void testScaricaFile() {

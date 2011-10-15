@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server Compact Edition
 -- --------------------------------------------------
--- Date Created: 10/12/2011 01:38:47
+-- Date Created: 10/15/2011 07:41:05
 -- Generated from EDMX file: C:\Users\bluca\Documents\Visual Studio 2010\Projects\lumen\Digiphoto.Lumen.Model\LumenModel.edmx
 -- --------------------------------------------------
 
@@ -21,6 +21,12 @@ GO
     ALTER TABLE [RigheAlbum] DROP CONSTRAINT [FK_AlbumRigaAlbum];
 GO
     ALTER TABLE [ScarichiCards] DROP CONSTRAINT [FK_FotografoScaricoCard];
+GO
+    ALTER TABLE [RigheCarrelli] DROP CONSTRAINT [FK_CarrelloRigaCarrello];
+GO
+    ALTER TABLE [RigheCarrelli] DROP CONSTRAINT [FK_FormatoCartaRiCaFotoStampata];
+GO
+    ALTER TABLE [RigheCarrelli] DROP CONSTRAINT [FK_FotografoRiCaFotoStampata];
 GO
 
 -- --------------------------------------------------
@@ -41,6 +47,12 @@ GO
     DROP TABLE [ScarichiCards];
 GO
     DROP TABLE [FormatiCarta];
+GO
+    DROP TABLE [InfosFisse];
+GO
+    DROP TABLE [Carrelli];
+GO
+    DROP TABLE [RigheCarrelli];
 GO
 
 -- --------------------------------------------------
@@ -100,7 +112,7 @@ CREATE TABLE [ScarichiCards] (
     [id] uniqueidentifier  NOT NULL,
     [tempo] datetime  NOT NULL,
     [totFoto] smallint  NOT NULL,
-    [Fotografo_id] nvarchar(16)  NOT NULL
+    [fotografo_id] nvarchar(16)  NOT NULL
 );
 GO
 
@@ -109,6 +121,42 @@ CREATE TABLE [FormatiCarta] (
     [id] uniqueidentifier  NOT NULL,
     [descrizione] nvarchar(4000)  NOT NULL,
     [prezzo] decimal(18,0)  NOT NULL
+);
+GO
+
+-- Creating table 'InfosFisse'
+CREATE TABLE [InfosFisse] (
+    [id] nvarchar(1)  NOT NULL,
+    [ultimoNumFotogramma] int  NOT NULL,
+    [dataUltimoScarico] nvarchar(4000)  NOT NULL,
+    [versioneDbCompatibile] nvarchar(10)  NOT NULL
+);
+GO
+
+-- Creating table 'Carrelli'
+CREATE TABLE [Carrelli] (
+    [id] uniqueidentifier  NOT NULL,
+    [giornata] datetime  NOT NULL,
+    [tempo] datetime  NOT NULL,
+    [totaleAPagare] decimal(18,0)  NOT NULL
+);
+GO
+
+-- Creating table 'RigheCarrelli'
+CREATE TABLE [RigheCarrelli] (
+    [id] uniqueidentifier  NOT NULL,
+    [prezzoLordoUnitario] decimal(18,0)  NOT NULL,
+    [quantita] smallint  NOT NULL,
+    [prezzoNettoTotale] decimal(18,0)  NOT NULL,
+    [sconto] decimal(18,0)  NULL,
+    [descrizione] nvarchar(4000)  NOT NULL,
+    [totFogliStampati] smallint  NULL,
+    [idFotografia] uniqueidentifier  NULL,
+    [totFotoMasterizzate] smallint  NULL,
+    [__Disc__] nvarchar(4000)  NOT NULL,
+    [CarrelloRigaCarrello_RigaCarrello_id] uniqueidentifier  NOT NULL,
+    [formatoCarta_id] uniqueidentifier  NULL,
+    [fotografo_id] nvarchar(16)  NULL
 );
 GO
 
@@ -155,6 +203,24 @@ GO
 -- Creating primary key on [id] in table 'FormatiCarta'
 ALTER TABLE [FormatiCarta]
 ADD CONSTRAINT [PK_FormatiCarta]
+    PRIMARY KEY ([id] );
+GO
+
+-- Creating primary key on [id] in table 'InfosFisse'
+ALTER TABLE [InfosFisse]
+ADD CONSTRAINT [PK_InfosFisse]
+    PRIMARY KEY ([id] );
+GO
+
+-- Creating primary key on [id] in table 'Carrelli'
+ALTER TABLE [Carrelli]
+ADD CONSTRAINT [PK_Carrelli]
+    PRIMARY KEY ([id] );
+GO
+
+-- Creating primary key on [id] in table 'RigheCarrelli'
+ALTER TABLE [RigheCarrelli]
+ADD CONSTRAINT [PK_RigheCarrelli]
     PRIMARY KEY ([id] );
 GO
 
@@ -218,10 +284,10 @@ ON [RigheAlbum]
     ([AlbumRigaAlbum_RigaAlbum_id]);
 GO
 
--- Creating foreign key on [Fotografo_id] in table 'ScarichiCards'
+-- Creating foreign key on [fotografo_id] in table 'ScarichiCards'
 ALTER TABLE [ScarichiCards]
 ADD CONSTRAINT [FK_FotografoScaricoCard]
-    FOREIGN KEY ([Fotografo_id])
+    FOREIGN KEY ([fotografo_id])
     REFERENCES [Fotografi]
         ([id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -229,7 +295,49 @@ ADD CONSTRAINT [FK_FotografoScaricoCard]
 -- Creating non-clustered index for FOREIGN KEY 'FK_FotografoScaricoCard'
 CREATE INDEX [IX_FK_FotografoScaricoCard]
 ON [ScarichiCards]
-    ([Fotografo_id]);
+    ([fotografo_id]);
+GO
+
+-- Creating foreign key on [CarrelloRigaCarrello_RigaCarrello_id] in table 'RigheCarrelli'
+ALTER TABLE [RigheCarrelli]
+ADD CONSTRAINT [FK_CarrelloRigaCarrello]
+    FOREIGN KEY ([CarrelloRigaCarrello_RigaCarrello_id])
+    REFERENCES [Carrelli]
+        ([id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_CarrelloRigaCarrello'
+CREATE INDEX [IX_FK_CarrelloRigaCarrello]
+ON [RigheCarrelli]
+    ([CarrelloRigaCarrello_RigaCarrello_id]);
+GO
+
+-- Creating foreign key on [formatoCarta_id] in table 'RigheCarrelli'
+ALTER TABLE [RigheCarrelli]
+ADD CONSTRAINT [FK_FormatoCartaRiCaFotoStampata]
+    FOREIGN KEY ([formatoCarta_id])
+    REFERENCES [FormatiCarta]
+        ([id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_FormatoCartaRiCaFotoStampata'
+CREATE INDEX [IX_FK_FormatoCartaRiCaFotoStampata]
+ON [RigheCarrelli]
+    ([formatoCarta_id]);
+GO
+
+-- Creating foreign key on [fotografo_id] in table 'RigheCarrelli'
+ALTER TABLE [RigheCarrelli]
+ADD CONSTRAINT [FK_FotografoRiCaFotoStampata]
+    FOREIGN KEY ([fotografo_id])
+    REFERENCES [Fotografi]
+        ([id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_FotografoRiCaFotoStampata'
+CREATE INDEX [IX_FK_FotografoRiCaFotoStampata]
+ON [RigheCarrelli]
+    ([fotografo_id]);
 GO
 
 -- --------------------------------------------------
