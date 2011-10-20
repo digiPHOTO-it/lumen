@@ -21,7 +21,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( ElaboratoreFotoAcquisite ) );
 
-		private List<FileInfo> _listaFiles;
+		private IList<FileInfo> _listaFiles;
 		private ParamScarica _paramScarica;
 
 		public int conta {
@@ -29,7 +29,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			private set;
 		}
 
-		public ElaboratoreFotoAcquisite( List<FileInfo> list, ParamScarica paramScarica ) {
+		public ElaboratoreFotoAcquisite( IList<FileInfo> list, ParamScarica paramScarica ) {
 
 			this._listaFiles = list;
 			this._paramScarica = paramScarica;

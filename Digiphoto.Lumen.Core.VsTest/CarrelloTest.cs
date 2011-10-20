@@ -6,10 +6,18 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Servizi.Scaricatore;
 using Digiphoto.Lumen.Model;
+using System.Data.EntityClient;
+using System.Data.Common;
+using System.Data;
+using System.Diagnostics;
 
 namespace Digiphoto.Lumen.Core.VsTest {
 	[TestClass]
 	public class CarrelloTest {
+
+		int _contaStampate = 0;
+		int _contaMasterizzate = 0;
+		Carrello _carrelloInserito = null;
 
 		[TestInitialize]
 		public void Init() {
@@ -28,7 +36,8 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				c1.tempo = DateTime.Now;
 				c1.totaleAPagare = 123m;
 				c1.righeCarrello = new System.Data.Objects.DataClasses.EntityCollection<RigaCarrello>();
-				
+				_carrelloInserito = c1;
+
 				// ---
 
 				RiCaDiscoMasterizzato r1 = new RiCaDiscoMasterizzato();
@@ -39,6 +48,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				r1.descrizione = "RiCaDiscoMasterizzato";
 				r1.totFotoMasterizzate = 85;
 				c1.righeCarrello.Add( r1 );
+				_contaMasterizzate++;
 
 				// ---
 
@@ -52,7 +62,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				r2.formatoCarta = Utilita.ottieniFormatoCartaA4( dbContext );
 				r2.fotografo = Utilita.ottieniFotografoMario( dbContext );
 				c1.righeCarrello.Add( r2 );
-
+				_contaStampate++;
 
 				// ---
 
@@ -66,30 +76,92 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				r3.formatoCarta = Utilita.ottieniFormatoCartaA4( dbContext );
 				r3.fotografo = Utilita.ottieniFotografoMario( dbContext );
 				c1.righeCarrello.Add( r3 );
-
-
-
+				_contaStampate++;
 
 				// ---
+				
 				dbContext.Carrelli.AddObject( c1 );
 
 				dbContext.SaveChanges();
 
 
-				// Ora faccio una query cerco solo le foto stampate in questa ultima sessione
-				decimal somma = dbContext.RigheCarrelli.Sum(p => Math.Abs(p.prezzoNettoTotale));
-
-				IQueryable<RigaCarrello> esito = from c in dbContext.Carrelli.Include( "righeCarrelli" )
-													  from r in c.righeCarrello
-													  select r;
-
-				foreach( RigaCarrello r in esito ) {
-					System.Diagnostics.Trace.WriteLine( r.GetType().Name );
-				}
-
-				
 			}
 
+			// Verifico che l'inserimento appena effettuato sia andato bene.
+			queryPolimorficaCorrente();
+
+
+			// provo altre tecniche di query, giusto per sport.
+			queryPolimorficaSql();
+			queryPolimorfica();
+		}
+
+		/**
+		 * Provo a leggere tutte le righe di tutti i carrelli ma solo quelle di tipo
+		 * foto stampata.
+		 */
+		private void queryPolimorfica() {
+
+			using( LumenEntities dbContext = new LumenEntities() ) {
+				foreach( RiCaFotoStampata riCaFotoStampata in dbContext.RigheCarrelli.OfType<RiCaFotoStampata>() ) {
+					Trace.WriteLine ( "Riga Carrello foto stampata: " + riCaFotoStampata.fotografo.id + " totFoto=" + riCaFotoStampata.totFogliStampati );
+				}
+			}
+		}
+
+		private void queryPolimorficaCorrente() {
+
+			using( LumenEntities dbContext = new LumenEntities() ) {
+
+				// Prendo le righe dell'ultimo carrello inserito,
+				// ma solo quelle di tipo foto stampata
+				IQueryable<RigaCarrello> esito =
+					from c in dbContext.Carrelli.Include( "righeCarrelli" )
+					from r in c.righeCarrello
+					where (c.id == _carrelloInserito.id && r is RiCaFotoStampata)
+					select r;
+
+
+
+
+				// le righe inserite nell'ultimo carrello sono 3 ma soltanto 2 sono di tipo foto stampata
+				Assert.IsTrue( esito.Count() == _contaStampate );
+				foreach( RiCaFotoStampata riga in esito ) {
+					// Trace.WriteLine( "Riga Carrello foto stampata: " + riCaFotoStampata.fotografo.id + " totFoto=" + riCaFotoStampata.totFogliStampati );
+					Trace.WriteLine( "Riga Carrello " + riga.ToString() );
+				}
+
+			}
+		}
+
+
+		/**
+		 * Con questa query estraggo solo le righe del carrello di tipo "foto stampata"
+		 * ma usando una sintassi stile SQL. Diciamo che questa non mi piace molto.
+		 */
+		private void queryPolimorficaSql() {
+
+			using( EntityConnection conn = new EntityConnection( "name=LumenEntities" ) ) {
+
+				conn.Open();
+				// Create a query that specifies to 
+				// get a collection of only Righe Stampate.
+				
+				string esqlQuery = @"SELECT VALUE fs 
+				                   FROM  OFTYPE(LumenEntities.RigheCarrelli, Digiphoto.Lumen.Model.RiCaFotoStampata) AS fs";
+
+				using( EntityCommand cmd = new EntityCommand( esqlQuery, conn ) ) {
+					// Execute the command.
+					using( DbDataReader rdr = cmd.ExecuteReader( CommandBehavior.SequentialAccess ) ) {
+						// Start reading.
+						while( rdr.Read() ) {
+							// Display 
+							Console.WriteLine( "id: {0} ", rdr ["id"] );
+							Console.WriteLine( "descriz: {0} ", rdr ["descrizione"] );
+						}
+					}
+				}
+			}
 
 		}
 
