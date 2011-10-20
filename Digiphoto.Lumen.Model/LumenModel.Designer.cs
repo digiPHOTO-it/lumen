@@ -897,12 +897,14 @@ namespace Digiphoto.Lumen.Model
         /// <param name="id">Initial value of the id property.</param>
         /// <param name="nomeFile">Initial value of the nomeFile property.</param>
         /// <param name="dataOraAcquisizione">Initial value of the dataOraAcquisizione property.</param>
-        public static Fotografia CreateFotografia(global::System.Guid id, global::System.String nomeFile, global::System.DateTime dataOraAcquisizione)
+        /// <param name="correzioni">Initial value of the correzioni property.</param>
+        public static Fotografia CreateFotografia(global::System.Guid id, global::System.String nomeFile, global::System.DateTime dataOraAcquisizione, global::System.String correzioni)
         {
             Fotografia fotografia = new Fotografia();
             fotografia.id = id;
             fotografia.nomeFile = nomeFile;
             fotografia.dataOraAcquisizione = dataOraAcquisizione;
+            fotografia.correzioni = correzioni;
             return fotografia;
         }
 
@@ -1034,6 +1036,30 @@ namespace Digiphoto.Lumen.Model
         private global::System.DateTime _dataOraAcquisizione;
         partial void OndataOraAcquisizioneChanging(global::System.DateTime value);
         partial void OndataOraAcquisizioneChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String correzioni
+        {
+            get
+            {
+                return _correzioni;
+            }
+            set
+            {
+                OncorrezioniChanging(value);
+                ReportPropertyChanging("correzioni");
+                _correzioni = StructuralObject.SetValidValue(value, false);
+                ReportPropertyChanged("correzioni");
+                OncorrezioniChanged();
+            }
+        }
+        private global::System.String _correzioni;
+        partial void OncorrezioniChanging(global::System.String value);
+        partial void OncorrezioniChanged();
 
         #endregion
     

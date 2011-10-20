@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="Digiphoto.Lumen.Model.Store" Alias="Self" Provider="System.Data.SqlServerCe.4.0" ProviderManifestToken="4.0" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator">
+    <Schema Namespace="Digiphoto.Lumen.Model.Store" Alias="Self" Provider="System.Data.SqlServerCe.3.5" ProviderManifestToken="3.5" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator">
     <EntityContainer Name="DigiphotoLumenModelStoreContainer">
 
         <EntitySet Name="Fotografi" EntityType="Digiphoto.Lumen.Model.Store.Fotografi" store:Type="Tables" Schema="dbo" />
@@ -72,6 +72,7 @@
 		<Property Name="dataOraScatto" Type="datetime" Nullable="true" />
 		<Property Name="didascalia" Type="nvarchar" Nullable="true" />
 		<Property Name="dataOraAcquisizione" Type="datetime" Nullable="false" />
+		<Property Name="correzioni" Type="nvarchar" Nullable="false" />
 		<Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="false" />
 		<Property Name="evento_id" Type="uniqueidentifier" Nullable="true" />
 		<Property Name="RigaAlbumFotografia_Fotografia_id" Type="int" Nullable="true" />
@@ -314,8 +315,8 @@
             <End Role="RigaCarrello" EntitySet="RigheCarrelli" />
           </AssociationSet>
           <AssociationSet Name="FormatoCartaRiCaFotoStampata" Association="Digiphoto.Lumen.Model.FormatoCartaRiCaFotoStampata">
-            <End Role="FormatoCarta" EntitySet="FormatiCarta" />
-            <End Role="RiCaFotoStampata" EntitySet="RigheCarrelli" />
+            <End EntitySet="FormatiCarta" Role="FormatoCarta" />
+            <End EntitySet="RigheCarrelli" Role="RiCaFotoStampata" />
           </AssociationSet>
           <AssociationSet Name="FotografoRiCaFotoStampata" Association="Digiphoto.Lumen.Model.FotografoRiCaFotoStampata">
             <End Role="Fotografo" EntitySet="Fotografi" />
@@ -362,6 +363,7 @@
           <NavigationProperty Name="fotografo" Relationship="Digiphoto.Lumen.Model.FotografoFotografia" FromRole="Fotografia" ToRole="Fotografo" />
           <NavigationProperty Name="evento" Relationship="Digiphoto.Lumen.Model.EventoFotografia" FromRole="Fotografia" ToRole="Evento" />
           <Property Type="DateTime" Name="dataOraAcquisizione" Nullable="false" />
+          <Property Type="String" Name="correzioni" Nullable="false" />
         </EntityType>
         <Association Name="FotografoFotografia">
           <End Type="Digiphoto.Lumen.Model.Fotografo" Role="Fotografo" Multiplicity="1" />
@@ -494,8 +496,8 @@
           <NavigationProperty Name="fotografo" Relationship="Digiphoto.Lumen.Model.FotografoRiCaFotoStampata" FromRole="RiCaFotoStampata" ToRole="Fotografo" />
         </EntityType>
         <Association Name="FormatoCartaRiCaFotoStampata">
-          <End Type="Digiphoto.Lumen.Model.FormatoCarta" Role="FormatoCarta" Multiplicity="0..1" />
-          <End Type="Digiphoto.Lumen.Model.RiCaFotoStampata" Role="RiCaFotoStampata" Multiplicity="*" />
+          <End Type="Digiphoto.Lumen.Model.FormatoCarta" Multiplicity="0..1" Role="FormatoCarta" />
+          <End Type="Digiphoto.Lumen.Model.RiCaFotoStampata" Multiplicity="*" Role="RiCaFotoStampata" />
         </Association>
         <Association Name="FotografoRiCaFotoStampata">
           <End Type="Digiphoto.Lumen.Model.Fotografo" Role="Fotografo" Multiplicity="0..1" />
@@ -527,6 +529,7 @@
 					<ScalarProperty Name="dataOraScatto" ColumnName="dataOraScatto" />
 					<ScalarProperty Name="didascalia" ColumnName="didascalia" />
 					<ScalarProperty Name="dataOraAcquisizione" ColumnName="dataOraAcquisizione" />
+					<ScalarProperty Name="correzioni" ColumnName="correzioni" />
 				</MappingFragment>
 			</EntityTypeMapping>
 		</EntitySetMapping>
@@ -729,23 +732,23 @@
     </edmx:Options>
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram Name="ModelloEntita" ZoomLevel="58" >
+      <Diagram Name="ModelloEntita" ZoomLevel="101" >
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografo" Width="2.375" PointX="3.875" PointY="5.75" Height="2.1725878906249996" />
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografia" Width="1.5" PointX="4.125" PointY="1.75" Height="2.3648893229166656" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografia" Width="1.5" PointX="4.125" PointY="1.75" Height="2.5571907552083326" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.FotografoFotografia">
           <ConnectorPoint PointX="4.875" PointY="5.75" />
-          <ConnectorPoint PointX="4.875" PointY="4.1148893229166656" />
+          <ConnectorPoint PointX="4.875" PointY="4.3071907552083326" />
         </AssociationConnector>
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Evento" Width="1.5" PointX="1.75" PointY="0.5" Height="1.4033821614583333" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.EventoFotografia">
-          <ConnectorPoint PointX="3.25" PointY="1.922841796875" />
-          <ConnectorPoint PointX="4.125" PointY="1.922841796875" />
+          <ConnectorPoint PointX="3.25" PointY="1.9228417968749998" />
+          <ConnectorPoint PointX="4.125" PointY="1.9228417968749998" />
         </AssociationConnector>
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Album" Width="1.5" PointX="9" PointY="0.5" Height="1.9802864583333339" />
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RigaAlbum" Width="1.5" PointX="6.75" PointY="1.375" Height="1.4033821614583339" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.RigaAlbumFotografia" ManuallyRouted="false">
-          <ConnectorPoint PointX="6.75" PointY="2.3721321614583335" />
-          <ConnectorPoint PointX="5.625" PointY="2.3721321614583335" />
+          <ConnectorPoint PointX="6.75" PointY="2.2641910807291667" />
+          <ConnectorPoint PointX="5.625" PointY="2.2641910807291667" />
         </AssociationConnector>
         <AssociationConnector Association="Digiphoto.Lumen.Model.AlbumRigaAlbum">
           <ConnectorPoint PointX="9" PointY="1.9276432291666668" />
@@ -758,35 +761,33 @@
           <ConnectorPoint PointX="2.75" PointY="7.3362939453125" />
         </AssociationConnector>
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.InfoFissa" PointX="11.625" PointY="0.625" Width="1.5" Height="1.7879850260416665" />
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Carrello" Width="1.5" PointX="8.25" PointY="4" Height="1.9802864583333335" />
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RigaCarrello" Width="1.5" PointX="10.75" PointY="4.75" Height="2.5571907552083335" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Carrello" Width="1.5" PointX="10.875" PointY="4.25" Height="1.9802864583333335" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RigaCarrello" Width="1.5" PointX="13.125" PointY="4.5" Height="2.1725878906249996" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.CarrelloRigaCarrello">
-          <ConnectorPoint PointX="9.75" PointY="5.3651432291666667" />
-          <ConnectorPoint PointX="10.75" PointY="5.3651432291666667" />
+          <ConnectorPoint PointX="12.375" PointY="5.3651432291666667" />
+          <ConnectorPoint PointX="13.125" PointY="5.3651432291666667" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RiCaDiscoMasterizzato" Width="1.5" PointX="12.375" PointY="7.875" Height="1.2110807291666665" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RiCaDiscoMasterizzato" Width="1.5" PointX="14.75" PointY="7.625" Height="1.2110807291666665" />
         <InheritanceConnector EntityType="Digiphoto.Lumen.Model.RiCaDiscoMasterizzato" ManuallyRouted="false" >
-          <ConnectorPoint PointX="11.5" PointY="6.922587890625" />
-          <ConnectorPoint PointX="11.5" PointY="7.297587890625" />
-          <ConnectorPoint PointX="13.125" PointY="7.297587890625" />
-          <ConnectorPoint PointX="13.125" PointY="7.875" />
+          <ConnectorPoint PointX="13.875" PointY="6.672587890625" />
+          <ConnectorPoint PointX="13.875" PointY="7.047587890625" />
+          <ConnectorPoint PointX="15.5" PointY="7.047587890625" />
+          <ConnectorPoint PointX="15.5" PointY="7.625" />
         </InheritanceConnector>
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RiCaFotoStampata" Width="1.5" PointX="10.625" PointY="7.75" Height="1.7879850260416674" />
-        <InheritanceConnector EntityType="Digiphoto.Lumen.Model.RiCaFotoStampata" ManuallyRouted="true" >
-          <ConnectorPoint PointX="11.5" PointY="6.922587890625" />
-          <ConnectorPoint PointX="11.5" PointY="7.4073271645093364" />
-          <ConnectorPoint PointX="11.216197980329996" PointY="7.4073271645093364" />
-          <ConnectorPoint PointX="11.216197980329996" PointY="7.75" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RiCaFotoStampata" Width="1.5" PointX="13" PointY="7.5" Height="1.7879850260416674" />
+        <InheritanceConnector EntityType="Digiphoto.Lumen.Model.RiCaFotoStampata" ManuallyRouted="false" >
+          <ConnectorPoint PointX="13.875" PointY="6.672587890625" />
+          <ConnectorPoint PointX="13.875" PointY="7.125" />
+          <ConnectorPoint PointX="13.75" PointY="7.125" />
+          <ConnectorPoint PointX="13.75" PointY="7.5" />
         </InheritanceConnector>
         <AssociationConnector Association="Digiphoto.Lumen.Model.FormatoCartaRiCaFotoStampata">
-          <ConnectorPoint PointX="9.125" PointY="8.9564925130208337" />
-          <ConnectorPoint PointX="10.625" PointY="8.9564925130208337" />
+          <ConnectorPoint PointX="9.125" PointY="8.8314925130208337" />
+          <ConnectorPoint PointX="13" PointY="8.8314925130208337" />
         </AssociationConnector>
-        <AssociationConnector Association="Digiphoto.Lumen.Model.FotografoRiCaFotoStampata" ManuallyRouted="true">
-          <ConnectorPoint PointX="6.25" PointY="7.141337890625" />
-          <ConnectorPoint PointX="7.7040625" PointY="7.141337890625" />
-          <ConnectorPoint PointX="7.7040625" PointY="7.75" />
-          <ConnectorPoint PointX="10.625" PointY="7.75" />
+        <AssociationConnector Association="Digiphoto.Lumen.Model.FotografoRiCaFotoStampata" ManuallyRouted="false">
+          <ConnectorPoint PointX="6.25" PointY="7.7112939453125" />
+          <ConnectorPoint PointX="13" PointY="7.7112939453125" />
         </AssociationConnector>
         </Diagram>
     </edmx:Diagrams>

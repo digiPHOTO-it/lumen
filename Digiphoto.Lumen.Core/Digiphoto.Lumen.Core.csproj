@@ -75,6 +75,16 @@
     <Compile Include="src\Imaging\ImagingFactory.cs" />
     <Compile Include="src\Imaging\IProvinatore.cs" />
     <Compile Include="src\Imaging\Provinatore.cs" />
+    <Compile Include="src\Imaging\Ritocco\BiancoNero.cs" />
+    <Compile Include="src\Imaging\Ritocco\Contrasto.cs" />
+    <Compile Include="src\Imaging\Ritocco\Cornice.cs" />
+    <Compile Include="src\Imaging\Ritocco\Correzione.cs" />
+    <Compile Include="src\Imaging\Ritocco\Crop.cs" />
+    <Compile Include="src\Imaging\Ritocco\Luminosita.cs" />
+    <Compile Include="src\Imaging\Ritocco\Ruota.cs" />
+    <Compile Include="src\Imaging\Ritocco\Seppia.cs" />
+    <Compile Include="src\Util\SerializzaUtil.cs" />
+    <Compile Include="src\Imaging\Ritocco\Specchio.cs" />
     <Compile Include="src\Servizi\CambioStatoMessaggio.cs" />
     <Compile Include="src\Servizi\LumenEntities.cs" />
     <Compile Include="src\Servizi\Scaricatore\ElaboratoreFotoAcquisite.cs" />
