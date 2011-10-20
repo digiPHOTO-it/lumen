@@ -8,6 +8,10 @@ using Digiphoto.Lumen.Model;
 namespace Digiphoto.Lumen.Config {
 
 	[Serializable]
+	/**
+	 * Queste sono le informazioni che potenzialmente potrei scrivere sulla
+	 * memorycard. Per or mi interessa solo l'ID del fotografo
+	 */
 	public class FlashCardConfig {	
 
 		private int version { get; set; }

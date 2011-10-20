@@ -29,7 +29,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		public int totFotoNonCopiate { get; set; }
 		public int totFotoNonEliminate { get; set; }
 
-		public List<FileInfo> fotoDaLavorare {
+		public IList<FileInfo> fotoDaLavorare {
 			get;
 			set;
 		}

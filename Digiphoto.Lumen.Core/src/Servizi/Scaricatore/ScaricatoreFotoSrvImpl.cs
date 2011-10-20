@@ -75,14 +75,9 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		 */
 		public void scarica( ParamScarica paramScarica ) {
 
-			if( !isRunning ) {
-				_giornale.Warn( "Il servizio è stoppato. Non scarico le foto" );
-				return;
-			}
+			seNonPossoScaricareSpaccati();
 
 			_paramScarica = paramScarica;
-
-			seNonPossoScaricareSpaccati();
 
 			// Scarico in un thread separato per non bloccare l'applicazione
 			_threadCopia = new Thread( scaricaAsincrono );

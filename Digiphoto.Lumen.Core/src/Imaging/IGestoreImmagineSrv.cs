@@ -16,5 +16,6 @@ namespace Digiphoto.Lumen.Imaging {
 
 		/** Salva l'immagine indicata sul filesystem */
 		void save( Immagine immagine, string fileName );
+
 	}
 }
