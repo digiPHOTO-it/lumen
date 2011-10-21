@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.Imaging.Nat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.Model", "Digiphoto.Lumen.Model\Digiphoto.Lumen.Model.csproj", "{83D8301E-7999-4179-962C-1BFA507F5396}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.UtilitaUI", "..\DigiPhoto-Lumen\Digiphoto.Lumen.UtilitaUI\Digiphoto.Lumen.UtilitaUI.csproj", "{3793F811-5D5B-4673-9A6E-ABE6A0553495}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Lumen.vsmdi
@@ -94,6 +96,16 @@ Global
 		{83D8301E-7999-4179-962C-1BFA507F5396}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{83D8301E-7999-4179-962C-1BFA507F5396}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{83D8301E-7999-4179-962C-1BFA507F5396}.Release|x86.ActiveCfg = Release|Any CPU
+		{3793F811-5D5B-4673-9A6E-ABE6A0553495}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{3793F811-5D5B-4673-9A6E-ABE6A0553495}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{3793F811-5D5B-4673-9A6E-ABE6A0553495}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{3793F811-5D5B-4673-9A6E-ABE6A0553495}.Debug|x86.ActiveCfg = Debug|x86
+		{3793F811-5D5B-4673-9A6E-ABE6A0553495}.Debug|x86.Build.0 = Debug|x86
+		{3793F811-5D5B-4673-9A6E-ABE6A0553495}.Release|Any CPU.ActiveCfg = Release|x86
+		{3793F811-5D5B-4673-9A6E-ABE6A0553495}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{3793F811-5D5B-4673-9A6E-ABE6A0553495}.Release|Mixed Platforms.Build.0 = Release|x86
+		{3793F811-5D5B-4673-9A6E-ABE6A0553495}.Release|x86.ActiveCfg = Release|x86
+		{3793F811-5D5B-4673-9A6E-ABE6A0553495}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

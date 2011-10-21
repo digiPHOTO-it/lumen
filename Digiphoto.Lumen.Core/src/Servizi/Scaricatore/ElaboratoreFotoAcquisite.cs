@@ -22,6 +22,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( ElaboratoreFotoAcquisite ) );
 
 		private IList<FileInfo> _listaFiles;
+
 		private ParamScarica _paramScarica;
 
 		private Fotografo _fotografo;
