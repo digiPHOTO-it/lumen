@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server Compact Edition
 -- --------------------------------------------------
--- Date Created: 10/20/2011 14:07:21
+-- Date Created: 10/21/2011 13:23:43
 -- Generated from EDMX file: C:\Users\bluca\Documents\Visual Studio 2010\Projects\lumen\Digiphoto.Lumen.Model\LumenModel.edmx
 -- --------------------------------------------------
 
@@ -78,6 +78,7 @@ CREATE TABLE [Fotografie] (
     [didascalia] nvarchar(4000)  NULL,
     [dataOraAcquisizione] datetime  NOT NULL,
     [correzioni] nvarchar(4000)  NOT NULL,
+    [numero] int  NOT NULL,
     [fotografo_id] nvarchar(16)  NOT NULL,
     [evento_id] uniqueidentifier  NULL,
     [RigaAlbumFotografia_Fotografia_id] int  NULL
@@ -129,7 +130,7 @@ GO
 CREATE TABLE [InfosFisse] (
     [id] nvarchar(1)  NOT NULL,
     [ultimoNumFotogramma] int  NOT NULL,
-    [dataUltimoScarico] nvarchar(4000)  NOT NULL,
+    [dataUltimoScarico] datetime  NULL,
     [versioneDbCompatibile] nvarchar(10)  NOT NULL
 );
 GO

@@ -75,10 +75,10 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		 */
 		public void scarica( ParamScarica paramScarica ) {
 
-			seNonPossoScaricareSpaccati();
-
 			_paramScarica = paramScarica;
 
+			seNonPossoScaricareSpaccati();
+			
 			// Scarico in un thread separato per non bloccare l'applicazione
 			_threadCopia = new Thread( scaricaAsincrono );
 			_threadCopia.Start();
@@ -190,7 +190,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		private void elaboraFotoAcquisite() {
 
 			ElaboratoreFotoAcquisite elab = new ElaboratoreFotoAcquisite( scaricoFotoMsg.fotoDaLavorare, _paramScarica );
-			elab.elaboora();
+			elab.elabora();
 
 			_giornale.Debug( "Elaborazione terminata. Inserite " + elab.conta + " foto nel database" );
 			
@@ -199,20 +199,6 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			scaricoFotoMsg.descrizione = "Provinatura foto terminata";
 			pubblicaMessaggio( scaricoFotoMsg );
 
-            //Edward84
-            using(LumenEntities dbContext = new LumenEntities()){
-
-                Fotografo fotografo = (Fotografo)dbContext.Fotografi.FirstOrDefault<Fotografo>(ff => ff.id == _paramScarica.flashCardConfig.idFotografo);
-
-                ScaricoCard scaricoCard = new ScaricoCard();
-                scaricoCard.totFoto = (short)elab.numeroFotoAcquisite();
-               
-                scaricoCard.Fotografo = fotografo;
-                scaricoCard.tempo = DateTime.Now;
-
-                dbContext.ScarichiCards.AddObject(scaricoCard);
-                dbContext.SaveChanges();
-            }
            
 		}
 
