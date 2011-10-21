@@ -86,9 +86,7 @@
     <Compile Include="src\Util\SerializzaUtil.cs" />
     <Compile Include="src\Imaging\Ritocco\Specchio.cs" />
     <Compile Include="src\Servizi\CambioStatoMessaggio.cs" />
-    <Compile Include="src\Servizi\EliminaFotoVecchie\EliminaFotoVecchieSrvImp.cs" />
     <Compile Include="src\Servizi\EliminaFotoVecchie\EliminaFotoVecchieMsg.cs" />
-    <Compile Include="src\Servizi\EliminaFotoVecchie\IEliminaFotoVecchieSrv.cs" />
     <Compile Include="src\Servizi\LumenEntities.cs" />
     <Compile Include="src\Servizi\Scaricatore\ElaboratoreFotoAcquisite.cs" />
     <Compile Include="src\Servizi\Scaricatore\NuovaFotoMsg.cs" />

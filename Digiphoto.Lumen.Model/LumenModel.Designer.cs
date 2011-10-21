@@ -898,13 +898,15 @@ namespace Digiphoto.Lumen.Model
         /// <param name="nomeFile">Initial value of the nomeFile property.</param>
         /// <param name="dataOraAcquisizione">Initial value of the dataOraAcquisizione property.</param>
         /// <param name="correzioni">Initial value of the correzioni property.</param>
-        public static Fotografia CreateFotografia(global::System.Guid id, global::System.String nomeFile, global::System.DateTime dataOraAcquisizione, global::System.String correzioni)
+        /// <param name="numero">Initial value of the numero property.</param>
+        public static Fotografia CreateFotografia(global::System.Guid id, global::System.String nomeFile, global::System.DateTime dataOraAcquisizione, global::System.String correzioni, global::System.Int32 numero)
         {
             Fotografia fotografia = new Fotografia();
             fotografia.id = id;
             fotografia.nomeFile = nomeFile;
             fotografia.dataOraAcquisizione = dataOraAcquisizione;
             fotografia.correzioni = correzioni;
+            fotografia.numero = numero;
             return fotografia;
         }
 
@@ -1060,6 +1062,30 @@ namespace Digiphoto.Lumen.Model
         private global::System.String _correzioni;
         partial void OncorrezioniChanging(global::System.String value);
         partial void OncorrezioniChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 numero
+        {
+            get
+            {
+                return _numero;
+            }
+            set
+            {
+                OnnumeroChanging(value);
+                ReportPropertyChanging("numero");
+                _numero = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("numero");
+                OnnumeroChanged();
+            }
+        }
+        private global::System.Int32 _numero;
+        partial void OnnumeroChanging(global::System.Int32 value);
+        partial void OnnumeroChanged();
 
         #endregion
     
@@ -1342,15 +1368,11 @@ namespace Digiphoto.Lumen.Model
         /// <summary>
         /// Create a new InfoFissa object.
         /// </summary>
-        /// <param name="id">Initial value of the id property.</param>
         /// <param name="ultimoNumFotogramma">Initial value of the ultimoNumFotogramma property.</param>
-        /// <param name="dataUltimoScarico">Initial value of the dataUltimoScarico property.</param>
-        public static InfoFissa CreateInfoFissa(global::System.String id, global::System.Int32 ultimoNumFotogramma, global::System.String dataUltimoScarico)
+        public static InfoFissa CreateInfoFissa(global::System.Int32 ultimoNumFotogramma)
         {
             InfoFissa infoFissa = new InfoFissa();
-            infoFissa.id = id;
             infoFissa.ultimoNumFotogramma = ultimoNumFotogramma;
-            infoFissa.dataUltimoScarico = dataUltimoScarico;
             return infoFissa;
         }
 
@@ -1383,7 +1405,7 @@ namespace Digiphoto.Lumen.Model
                 }
             }
         }
-        private global::System.String _id;
+        private global::System.String _id = "K";
         partial void OnidChanging(global::System.String value);
         partial void OnidChanged();
     
@@ -1420,9 +1442,9 @@ namespace Digiphoto.Lumen.Model
         /// <LongDescription>
         /// Data senza ora dell&apos;ultima volta in cui ho incrementato il numeratore delle foto (sequenza)
         /// </LongDescription>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
-        public global::System.String dataUltimoScarico
+        public Nullable<global::System.DateTime> dataUltimoScarico
         {
             get
             {
@@ -1432,13 +1454,13 @@ namespace Digiphoto.Lumen.Model
             {
                 OndataUltimoScaricoChanging(value);
                 ReportPropertyChanging("dataUltimoScarico");
-                _dataUltimoScarico = StructuralObject.SetValidValue(value, false);
+                _dataUltimoScarico = StructuralObject.SetValidValue(value);
                 ReportPropertyChanged("dataUltimoScarico");
                 OndataUltimoScaricoChanged();
             }
         }
-        private global::System.String _dataUltimoScarico;
-        partial void OndataUltimoScaricoChanging(global::System.String value);
+        private Nullable<global::System.DateTime> _dataUltimoScarico;
+        partial void OndataUltimoScaricoChanging(Nullable<global::System.DateTime> value);
         partial void OndataUltimoScaricoChanged();
     
         /// <summary>

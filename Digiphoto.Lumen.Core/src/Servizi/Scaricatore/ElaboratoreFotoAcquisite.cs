@@ -24,6 +24,8 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		private IList<FileInfo> _listaFiles;
 		private ParamScarica _paramScarica;
 
+		private Fotografo _fotografo;
+
 		public int conta {
 			get;
 			private set;
@@ -35,20 +37,25 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			this._paramScarica = paramScarica;
 		}
 
-        //Edward84
         public int numeroFotoAcquisite(){
             return _listaFiles.Count;
         }
 
 
-		public void elaboora() {
+		public void elabora() {
 
-			_giornale.Debug( "Sto per lavorare le " + _listaFiles.Count + " foto appena acquisite" );
-	
+			// carico il fotografo che rimane uguale per tutta questa sessione di elaborazione
+			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
+			_fotografo = objContext.Fotografi.Single<Fotografo>( ff => ff.id == _paramScarica.flashCardConfig.idFotografo );
+
+			_giornale.Debug( "Sto per lavorare le " + _listaFiles.Count + " foto appena acquisite di " + _fotografo.id );
+
+			int ultimoNumFoto = incrementaNumeratoreFoto( _listaFiles.Count );
+			int conta = 0;
 
 			foreach( FileInfo fileInfo in _listaFiles ) {
 
-				Fotografia foto = aggiungiEntitaFoto( fileInfo );
+				Fotografia foto = aggiungiEntitaFoto( fileInfo, ++conta + ultimoNumFoto );
 
 				creaProvinoImmagine( fileInfo.FullName, foto );
 
@@ -58,6 +65,45 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			}
 
 			_giornale.Info( "Terminato di lavorare " + _listaFiles.Count + " foto appena acqusite" );
+
+			incrementaTotaleFotoScaricate();
+		}
+
+		/** Quando ho finito di scaricar le foto, aggiorno il totale in apposita tabella */
+		private void incrementaTotaleFotoScaricate() {
+
+			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
+			ScaricoCard scaricoCard = new ScaricoCard();
+			scaricoCard.id = Guid.NewGuid();
+			scaricoCard.totFoto = (short)numeroFotoAcquisite();
+
+			scaricoCard.fotografo = this._fotografo;
+			scaricoCard.tempo = DateTime.Now;
+
+			objContext.ScarichiCards.AddObject( scaricoCard );
+
+			objContext.SaveChanges();
+		}
+
+		/**
+		 * Mando avanti il numeratore delle foto della quantità indicata.
+		 * Gestisco anche il reset 
+		 */
+		private int incrementaNumeratoreFoto( int quante ) {
+
+			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
+			InfoFissa infoFissa = objContext.InfosFisse.SingleOrDefault<InfoFissa>( f => f.id == "K" );
+
+			if( infoFissa == null ) {
+				infoFissa = new InfoFissa();
+				objContext.InfosFisse.AddObject( infoFissa );
+			}
+			int ultimoNum = infoFissa.ultimoNumFotogramma;
+			infoFissa.ultimoNumFotogramma = ultimoNum + quante;
+			infoFissa.dataUltimoScarico = DateTime.Today;
+			infoFissa.id = "K";
+			int quanti = objContext.SaveChanges();
+			return ultimoNum;
 		}
 
 		/**
@@ -95,7 +141,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		 * dato il nome del file della immagine, creo l'oggetto Fotografia e lo aggiungo al suo contenitore
 		 * (in pratica faccio una insert nel database).
 		 */
-		private Fotografia aggiungiEntitaFoto( FileInfo fileInfo ) {
+		private Fotografia aggiungiEntitaFoto( FileInfo fileInfo, int numFotogramma ) {
 
 			// Ad ogni foto persisto.
 			// Se per esempio ho 500 foto da salvare, non posso permettermi che se una salta, perdo anche le altre 499 !
@@ -107,9 +153,6 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 				LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
 				try {
 
-					// Carico il fotografo. Obbligatorio */
-					Fotografo fotografo = objContext.Fotografi.First<Fotografo>( ff => ff.id == _paramScarica.flashCardConfig.idFotografo );
-
 					Evento evento = null;
 					if( _paramScarica.flashCardConfig.idEvento != null && _paramScarica.flashCardConfig.idEvento != Guid.Empty )
 						evento = objContext.Eventi.FirstOrDefault<Evento>( ee => ee.id == _paramScarica.flashCardConfig.idEvento );
@@ -118,9 +161,10 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 					foto.id = Guid.NewGuid();
 					// foto.dataOraScatto =   TODO prendere dai dati exif.
 					foto.dataOraAcquisizione = fileInfo.CreationTime;
-					foto.fotografo = fotografo;
+					foto.fotografo = _fotografo;
 					foto.evento = evento;
 					foto.didascalia = _paramScarica.flashCardConfig.didascalia;
+					foto.numero = numFotogramma;
 
 					// il nome del file, lo memorizzo solamente relativo
 					// scarto la parte iniziale di tutto il path togliendo il nome della cartella di base delle foto.
