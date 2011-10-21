@@ -55,11 +55,16 @@
   <ItemGroup>
     <Compile Include="CarrelloTest.cs" />
     <Compile Include="CorrezioniTest.cs" />
+    <Compile Include="EliminaFotoVecchieSrvImplTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScaricaFotoSrvImplTest.cs" />
     <Compile Include="Utilita.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Digiphoto.Lumen.CLI\Digiphoto.Lumen.Cli.csproj">
+      <Project>{A54D45CF-018D-4FEB-8827-E276FB831930}</Project>
+      <Name>Digiphoto.Lumen.Cli</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Digiphoto.Lumen.Core\Digiphoto.Lumen.Core.csproj">
       <Project>{34477397-B3B8-4DD1-8418-D7E9EED4D006}</Project>
       <Name>Digiphoto.Lumen.Core</Name>
