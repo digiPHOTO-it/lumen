@@ -25,10 +25,6 @@
             <End Role="Evento" EntitySet="Eventi" />
             <End Role="Fotografia" EntitySet="Fotografie" />
         </AssociationSet>
-        <AssociationSet Name="RigaAlbumFotografia" Association="Digiphoto.Lumen.Model.Store.RigaAlbumFotografia">
-            <End Role="RigaAlbum" EntitySet="RigheAlbum" />
-            <End Role="Fotografia" EntitySet="Fotografie" />
-        </AssociationSet>
         <AssociationSet Name="AlbumRigaAlbum" Association="Digiphoto.Lumen.Model.Store.AlbumRigaAlbum">
             <End Role="Album" EntitySet="Albums" />
             <End Role="RigaAlbum" EntitySet="RigheAlbum" />
@@ -48,6 +44,10 @@
         <AssociationSet Name="FotografoRiCaFotoStampata" Association="Digiphoto.Lumen.Model.Store.FotografoRiCaFotoStampata">
             <End Role="Fotografo" EntitySet="Fotografi" />
             <End Role="RiCaFotoStampata" EntitySet="RigheCarrelli" />
+        </AssociationSet>
+        <AssociationSet Name="FotografiaRigaAlbum" Association="Digiphoto.Lumen.Model.Store.FotografiaRigaAlbum">
+            <End Role="Fotografia" EntitySet="Fotografie" />
+            <End Role="RigaAlbum" EntitySet="RigheAlbum" />
         </AssociationSet>
 
     </EntityContainer>
@@ -76,7 +76,6 @@
 		<Property Name="numero" Type="int" Nullable="false" />
 		<Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="false" />
 		<Property Name="evento_id" Type="uniqueidentifier" Nullable="true" />
-		<Property Name="RigaAlbumFotografia_Fotografia_id" Type="int" Nullable="true" />
     </EntityType>
     <EntityType Name="Eventi">
         <Key>
@@ -101,6 +100,7 @@
         </Key>
 		<Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
 		<Property Name="AlbumRigaAlbum_RigaAlbum_id" Type="int" Nullable="false" />
+		<Property Name="fotografia_id" Type="uniqueidentifier" Nullable="false" />
     </EntityType>
     <EntityType Name="ScarichiCards">
         <Key>
@@ -123,10 +123,11 @@
         <Key>
             <PropertyRef Name="id" />
         </Key>
-		<Property Name="id" Type="nvarchar" Nullable="false" MaxLength="1" />
+		<Property Name="id" Type="nvarchar" Nullable="false" DefaultValue="K" MaxLength="1" />
 		<Property Name="ultimoNumFotogramma" Type="int" Nullable="false" />
 		<Property Name="dataUltimoScarico" Type="datetime" Nullable="true" />
 		<Property Name="versioneDbCompatibile" Type="nvarchar" Nullable="false" DefaultValue="1.0" MaxLength="10" />
+		<Property Name="modoNumerazione" Type="nvarchar" Nullable="false" DefaultValue="M" />
     </EntityType>
     <EntityType Name="Carrelli">
         <Key>
@@ -181,21 +182,6 @@
 			</Principal>
 			<Dependent Role="Fotografia">
 				<PropertyRef Name="evento_id" />
-			
-			</Dependent>
-		</ReferentialConstraint>
-	</Association>
-	<Association Name="RigaAlbumFotografia">
-		<End Role="RigaAlbum" Type="Digiphoto.Lumen.Model.Store.RigheAlbum" Multiplicity="0..1">
-		</End>				
-		<End Role="Fotografia" Type="Digiphoto.Lumen.Model.Store.Fotografie" Multiplicity="*">
-		</End>				
-		<ReferentialConstraint>
-			<Principal Role="RigaAlbum">
-				<PropertyRef Name="id" />
-			</Principal>
-			<Dependent Role="Fotografia">
-				<PropertyRef Name="RigaAlbumFotografia_Fotografia_id" />
 			
 			</Dependent>
 		</ReferentialConstraint>
@@ -276,6 +262,22 @@
 			</Dependent>
 		</ReferentialConstraint>
 	</Association>
+	<Association Name="FotografiaRigaAlbum">
+		<End Role="Fotografia" Type="Digiphoto.Lumen.Model.Store.Fotografie" Multiplicity="1">
+			<OnDelete Action="Cascade" />
+		</End>				
+		<End Role="RigaAlbum" Type="Digiphoto.Lumen.Model.Store.RigheAlbum" Multiplicity="*">
+		</End>				
+		<ReferentialConstraint>
+			<Principal Role="Fotografia">
+				<PropertyRef Name="id" />
+			</Principal>
+			<Dependent Role="RigaAlbum">
+				<PropertyRef Name="fotografia_id" />
+			
+			</Dependent>
+		</ReferentialConstraint>
+	</Association>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -294,10 +296,6 @@
           </AssociationSet>
           <EntitySet Name="Albums" EntityType="Digiphoto.Lumen.Model.Album" />
           <EntitySet Name="RigheAlbum" EntityType="Digiphoto.Lumen.Model.RigaAlbum" />
-          <AssociationSet Name="RigaAlbumFotografia" Association="Digiphoto.Lumen.Model.RigaAlbumFotografia">
-            <End Role="RigaAlbum" EntitySet="RigheAlbum" />
-            <End Role="Fotografia" EntitySet="Fotografie" />
-          </AssociationSet>
           <AssociationSet Name="AlbumRigaAlbum" Association="Digiphoto.Lumen.Model.AlbumRigaAlbum">
             <End Role="Album" EntitySet="Albums" />
             <End Role="RigaAlbum" EntitySet="RigheAlbum" />
@@ -322,6 +320,10 @@
           <AssociationSet Name="FotografoRiCaFotoStampata" Association="Digiphoto.Lumen.Model.FotografoRiCaFotoStampata">
             <End Role="Fotografo" EntitySet="Fotografi" />
             <End Role="RiCaFotoStampata" EntitySet="RigheCarrelli" />
+          </AssociationSet>
+          <AssociationSet Name="FotografiaRigaAlbum" Association="Digiphoto.Lumen.Model.FotografiaRigaAlbum">
+            <End Role="Fotografia" EntitySet="Fotografie" />
+            <End Role="RigaAlbum" EntitySet="RigheAlbum" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Fotografo">
@@ -364,7 +366,7 @@
           <NavigationProperty Name="fotografo" Relationship="Digiphoto.Lumen.Model.FotografoFotografia" FromRole="Fotografia" ToRole="Fotografo" />
           <NavigationProperty Name="evento" Relationship="Digiphoto.Lumen.Model.EventoFotografia" FromRole="Fotografia" ToRole="Evento" />
           <Property Type="DateTime" Name="dataOraAcquisizione" Nullable="false" />
-          <Property Type="String" Name="correzioni" Nullable="false" />
+          <Property Type="String" Name="correzioni" Nullable="true" />
           <Property Type="Int32" Name="numero" Nullable="false" />
         </EntityType>
         <Association Name="FotografoFotografia">
@@ -398,12 +400,8 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <NavigationProperty Name="fotografia" Relationship="Digiphoto.Lumen.Model.RigaAlbumFotografia" FromRole="RigaAlbum" ToRole="Fotografia" />
+          <NavigationProperty Name="fotografia" Relationship="Digiphoto.Lumen.Model.FotografiaRigaAlbum" FromRole="RigaAlbum" ToRole="Fotografia" />
         </EntityType>
-        <Association Name="RigaAlbumFotografia">
-          <End Type="Digiphoto.Lumen.Model.RigaAlbum" Role="RigaAlbum" Multiplicity="0..1" />
-          <End Type="Digiphoto.Lumen.Model.Fotografia" Role="Fotografia" Multiplicity="*" />
-        </Association>
         <Association Name="AlbumRigaAlbum">
           <End Type="Digiphoto.Lumen.Model.Album" Role="Album" Multiplicity="1" >
             <OnDelete Action="Cascade" />
@@ -462,6 +460,15 @@
               <LongDescription>Indica il numero di revisione della struttura del database. Il programma qando parte deve controllare di essere compatibile</LongDescription>
             </Documentation>
           </Property>
+          <Property Type="String" Name="modoNumerazione" Nullable="false" DefaultValue="M" >
+            <Documentation>
+              <Summary>Modo azzeramento sequenza fotogrammi</Summary>
+              <LongDescription>Ogni foto che entra, viene numerata. Questo numeratore può essere azzerato in vari modi:
+ G = ogni giorno
+ S = ogni settimana
+ M = mai</LongDescription>
+            </Documentation>
+          </Property>
         </EntityType>
         <EntityType Name="Carrello">
           <Key>
@@ -504,6 +511,12 @@
         <Association Name="FotografoRiCaFotoStampata">
           <End Type="Digiphoto.Lumen.Model.Fotografo" Role="Fotografo" Multiplicity="0..1" />
           <End Type="Digiphoto.Lumen.Model.RiCaFotoStampata" Role="RiCaFotoStampata" Multiplicity="*" />
+        </Association>
+        <Association Name="FotografiaRigaAlbum">
+          <End Type="Digiphoto.Lumen.Model.Fotografia" Role="Fotografia" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="Digiphoto.Lumen.Model.RigaAlbum" Role="RigaAlbum" Multiplicity="*" />
         </Association>
       </Schema>
     </edmx:ConceptualModels>
@@ -587,6 +600,7 @@
 					<ScalarProperty Name="ultimoNumFotogramma" ColumnName="ultimoNumFotogramma" />
 					<ScalarProperty Name="dataUltimoScarico" ColumnName="dataUltimoScarico" />
 					<ScalarProperty Name="versioneDbCompatibile" ColumnName="versioneDbCompatibile" />
+					<ScalarProperty Name="modoNumerazione" ColumnName="modoNumerazione" />
 				</MappingFragment>
 			</EntityTypeMapping>
 		</EntitySetMapping>
@@ -657,16 +671,6 @@
 			<Condition ColumnName="evento_id" IsNull="false" />
 		</AssociationSetMapping>
 
-		<AssociationSetMapping Name="RigaAlbumFotografia" TypeName="Digiphoto.Lumen.Model.RigaAlbumFotografia" StoreEntitySet="Fotografie">
-			<EndProperty Name="RigaAlbum">
-				<ScalarProperty Name="id" ColumnName="RigaAlbumFotografia_Fotografia_id" />
-			</EndProperty>
-			<EndProperty Name="Fotografia">
-				<ScalarProperty Name="id" ColumnName="id" />
-			</EndProperty>
-			<Condition ColumnName="RigaAlbumFotografia_Fotografia_id" IsNull="false" />
-		</AssociationSetMapping>
-
 		<AssociationSetMapping Name="AlbumRigaAlbum" TypeName="Digiphoto.Lumen.Model.AlbumRigaAlbum" StoreEntitySet="RigheAlbum">
 			<EndProperty Name="Album">
 				<ScalarProperty Name="id" ColumnName="AlbumRigaAlbum_RigaAlbum_id" />
@@ -714,6 +718,15 @@
 			<Condition ColumnName="fotografo_id" IsNull="false" />
 		</AssociationSetMapping>
 
+		<AssociationSetMapping Name="FotografiaRigaAlbum" TypeName="Digiphoto.Lumen.Model.FotografiaRigaAlbum" StoreEntitySet="RigheAlbum">
+			<EndProperty Name="Fotografia">
+				<ScalarProperty Name="id" ColumnName="fotografia_id" />
+			</EndProperty>
+			<EndProperty Name="RigaAlbum">
+				<ScalarProperty Name="id" ColumnName="id" />
+			</EndProperty>
+		</AssociationSetMapping>
+
 	</EntityContainerMapping>
 </Mapping></edmx:Mappings>
   </edmx:Runtime>
@@ -735,7 +748,7 @@
     </edmx:Options>
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram Name="ModelloEntita" ZoomLevel="62" >
+      <Diagram Name="ModelloEntita" ZoomLevel="81" >
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografo" Width="2.375" PointX="3.875" PointY="5.75" Height="2.1725878906249996" />
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografia" Width="1.5" PointX="4.125" PointY="1.75" Height="2.7494921874999996" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.FotografoFotografia">
@@ -744,15 +757,11 @@
         </AssociationConnector>
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Evento" Width="1.5" PointX="1.75" PointY="0.5" Height="1.4033821614583333" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.EventoFotografia">
-          <ConnectorPoint PointX="3.25" PointY="1.9228417968750002" />
-          <ConnectorPoint PointX="4.125" PointY="1.9228417968750002" />
+          <ConnectorPoint PointX="3.25" PointY="1.922841796875" />
+          <ConnectorPoint PointX="4.125" PointY="1.922841796875" />
         </AssociationConnector>
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Album" Width="1.5" PointX="9" PointY="0.5" Height="1.9802864583333339" />
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RigaAlbum" Width="1.5" PointX="6.75" PointY="1.375" Height="1.4033821614583339" />
-        <AssociationConnector Association="Digiphoto.Lumen.Model.RigaAlbumFotografia" ManuallyRouted="false">
-          <ConnectorPoint PointX="6.75" PointY="2.2641910807291667" />
-          <ConnectorPoint PointX="5.625" PointY="2.2641910807291667" />
-        </AssociationConnector>
         <AssociationConnector Association="Digiphoto.Lumen.Model.AlbumRigaAlbum">
           <ConnectorPoint PointX="9" PointY="1.9276432291666668" />
           <ConnectorPoint PointX="8.25" PointY="1.9276432291666668" />
@@ -763,7 +772,7 @@
           <ConnectorPoint PointX="3.875" PointY="7.3362939453125" />
           <ConnectorPoint PointX="2.75" PointY="7.3362939453125" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.InfoFissa" PointX="11.625" PointY="0.625" Width="1.5" Height="1.7879850260416665" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.InfoFissa" PointX="11.625" PointY="0.625" Width="1.5" Height="1.9802864583333331" />
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Carrello" Width="1.5" PointX="10.875" PointY="4.25" Height="1.9802864583333335" />
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RigaCarrello" Width="1.5" PointX="13.125" PointY="4.5" Height="2.1725878906249996" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.CarrelloRigaCarrello">
@@ -791,6 +800,10 @@
         <AssociationConnector Association="Digiphoto.Lumen.Model.FotografoRiCaFotoStampata" ManuallyRouted="false">
           <ConnectorPoint PointX="6.25" PointY="7.7112939453125" />
           <ConnectorPoint PointX="13" PointY="7.7112939453125" />
+        </AssociationConnector>
+        <AssociationConnector Association="Digiphoto.Lumen.Model.FotografiaRigaAlbum">
+          <ConnectorPoint PointX="5.625" PointY="2.2641910807291667" />
+          <ConnectorPoint PointX="6.75" PointY="2.2641910807291667" />
         </AssociationConnector>
         </Diagram>
     </edmx:Diagrams>

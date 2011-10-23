@@ -50,7 +50,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			_giornale.Debug( "Sto per lavorare le " + _listaFiles.Count + " foto appena acquisite di " + _fotografo.id );
 
-			int ultimoNumFoto = incrementaNumeratoreFoto( _listaFiles.Count );
+			int ultimoNumFoto = NumeratoreFotogrammi.incrementaNumeratoreFoto( _listaFiles.Count );
 			int conta = 0;
 
 			foreach( FileInfo fileInfo in _listaFiles ) {
@@ -85,26 +85,6 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			objContext.SaveChanges();
 		}
 
-		/**
-		 * Mando avanti il numeratore delle foto della quantità indicata.
-		 * Gestisco anche il reset 
-		 */
-		private int incrementaNumeratoreFoto( int quante ) {
-
-			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
-			InfoFissa infoFissa = objContext.InfosFisse.SingleOrDefault<InfoFissa>( f => f.id == "K" );
-
-			if( infoFissa == null ) {
-				infoFissa = new InfoFissa();
-				objContext.InfosFisse.AddObject( infoFissa );
-			}
-			int ultimoNum = infoFissa.ultimoNumFotogramma;
-			infoFissa.ultimoNumFotogramma = ultimoNum + quante;
-			infoFissa.dataUltimoScarico = DateTime.Today;
-			infoFissa.id = "K";
-			int quanti = objContext.SaveChanges();
-			return ultimoNum;
-		}
 
 		/**
 		 * Siccome alcuni attributi Immagine non risiedono nel db,

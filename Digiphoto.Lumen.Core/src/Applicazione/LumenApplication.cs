@@ -23,6 +23,8 @@ namespace Digiphoto.Lumen.Applicazione {
 
 	public sealed class LumenApplication : IObserver<String> {
 
+		#region Proprietà
+
 		public static readonly LumenApplication _instance = new LumenApplication();
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof(LumenApplication) );
 		private readonly IBus _bus = BusSetup.StartWith<Fast>().Construct();
@@ -33,6 +35,12 @@ namespace Digiphoto.Lumen.Applicazione {
 
 		private ServizioFactory _servizioFactory;
 
+		public Stato stato {
+			get;
+			private set;
+		}
+
+		#endregion
 
 
 
@@ -55,6 +63,10 @@ namespace Digiphoto.Lumen.Applicazione {
 
 			avviaConfigurazione();
 
+			StartupUtil.forseCreaInfoFisse();
+
+			creaStato();
+
 			avviaServizi();
 
 			avviata = true;
@@ -62,6 +74,12 @@ namespace Digiphoto.Lumen.Applicazione {
 			_bus.Publish( "primo" );
 
 			_giornale.Info( "L'applicazione è avviata." );
+		}
+
+		private void creaStato() {
+			
+			stato = new Stato();
+			stato.giornataLavorativa = StartupUtil.calcolaGiornataLavorativa();
 		}
 
 		/**\

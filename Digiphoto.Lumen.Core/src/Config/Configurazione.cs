@@ -10,28 +10,12 @@ using System.IO;
 
 namespace Digiphoto.Lumen.Config  {
 
-	internal class Configurazione {
+	public class Configurazione {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof(Configurazione) );
 		private IDictionary<String, String> _nomiServizi;
 		bool _autoSistemazione;
 
-		private DateTime _dataLegale;
-
-		/**
-		 * La data legale, rappresenta la giornata lavorativa e non quella "solare" del calendario.
-		 * Infatti è possibile che le foto acquisite alle 2 di notte vadano nel giorno precedente.
-		 */
-
-		public DateTime dataLegale {
-			get {
-				return _dataLegale;
-			}
-
-			private set {
-				_dataLegale = value;
-			}
-		}
 
 		public static string cartellaBaseFoto {
 			get {
@@ -49,9 +33,6 @@ namespace Digiphoto.Lumen.Config  {
 			_autoSistemazione = autoSistemazione;
 
 			sostituisciSegnapostoDataDirectoryPerConnectionString();
-
-			dataLegale = calcolaDataLegale();
-
 
 			if( autoSistemazione ) {
 				autoSistemaPerPartenzaDiDefault();
@@ -73,33 +54,6 @@ namespace Digiphoto.Lumen.Config  {
 				return Properties.Settings.Default.cartellaFoto;
 		}
 
-		/**
-		 * La data legale, rappresenta la giornata lavorativa.
-		 * Anche se le foto sono state scattate il giorno 2 all'una di notte, 
-		 * queste appartengono alla giornata lavorativa del giorno 1.
-		 * L'orario vero in cui fare il cambio della giornata, è scritto nei settaggi
-		 */
-		private DateTime calcolaDataLegale() {
-
-			DateTime dataLegale = DateTime.Today;
-			string oraCambioGiornata = Properties.Settings.Default.oraCambioGiornata;
-
-			if( ! String.IsNullOrEmpty( oraCambioGiornata ) ) { 
-				DateTime adesso = DateTime.Now;
-				DateTime ieri = DateTime.Today.AddDays( -1 );
-
-				string [] pezzi = oraCambioGiornata.Split( ':' );
-				if( pezzi.Length == 2 ) {
-
-					if( adesso.Hour < Int16.Parse(pezzi[0]) )
-						dataLegale = ieri;
-					else if( adesso.Hour == Int16.Parse(pezzi[0]) && adesso.Minute < Int16.Parse(pezzi[1]) )
-						dataLegale = ieri;
-				}
-			}
-
-			return dataLegale;
-		}
 
 		/** Faccio un controllo. Se tutto a posto sto zitto, altrimenti sollevo un eccezione */
 		private void verificheConfruenza() {

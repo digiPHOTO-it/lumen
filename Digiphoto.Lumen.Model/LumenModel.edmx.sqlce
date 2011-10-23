@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server Compact Edition
 -- --------------------------------------------------
--- Date Created: 10/21/2011 13:23:43
+-- Date Created: 10/23/2011 17:41:40
 -- Generated from EDMX file: C:\Users\bluca\Documents\Visual Studio 2010\Projects\lumen\Digiphoto.Lumen.Model\LumenModel.edmx
 -- --------------------------------------------------
 
@@ -16,8 +16,6 @@
 GO
     ALTER TABLE [Fotografie] DROP CONSTRAINT [FK_EventoFotografia];
 GO
-    ALTER TABLE [Fotografie] DROP CONSTRAINT [FK_RigaAlbumFotografia];
-GO
     ALTER TABLE [RigheAlbum] DROP CONSTRAINT [FK_AlbumRigaAlbum];
 GO
     ALTER TABLE [ScarichiCards] DROP CONSTRAINT [FK_FotografoScaricoCard];
@@ -27,6 +25,8 @@ GO
     ALTER TABLE [RigheCarrelli] DROP CONSTRAINT [FK_FormatoCartaRiCaFotoStampata];
 GO
     ALTER TABLE [RigheCarrelli] DROP CONSTRAINT [FK_FotografoRiCaFotoStampata];
+GO
+    ALTER TABLE [RigheAlbum] DROP CONSTRAINT [FK_FotografiaRigaAlbum];
 GO
 
 -- --------------------------------------------------
@@ -77,11 +77,10 @@ CREATE TABLE [Fotografie] (
     [dataOraScatto] datetime  NULL,
     [didascalia] nvarchar(4000)  NULL,
     [dataOraAcquisizione] datetime  NOT NULL,
-    [correzioni] nvarchar(4000)  NOT NULL,
+    [correzioni] nvarchar(4000)  NULL,
     [numero] int  NOT NULL,
     [fotografo_id] nvarchar(16)  NOT NULL,
-    [evento_id] uniqueidentifier  NULL,
-    [RigaAlbumFotografia_Fotografia_id] int  NULL
+    [evento_id] uniqueidentifier  NULL
 );
 GO
 
@@ -105,7 +104,8 @@ GO
 -- Creating table 'RigheAlbum'
 CREATE TABLE [RigheAlbum] (
     [id] int IDENTITY(1,1) NOT NULL,
-    [AlbumRigaAlbum_RigaAlbum_id] int  NOT NULL
+    [AlbumRigaAlbum_RigaAlbum_id] int  NOT NULL,
+    [fotografia_id] uniqueidentifier  NOT NULL
 );
 GO
 
@@ -131,7 +131,8 @@ CREATE TABLE [InfosFisse] (
     [id] nvarchar(1)  NOT NULL,
     [ultimoNumFotogramma] int  NOT NULL,
     [dataUltimoScarico] datetime  NULL,
-    [versioneDbCompatibile] nvarchar(10)  NOT NULL
+    [versioneDbCompatibile] nvarchar(10)  NOT NULL,
+    [modoNumerazione] nvarchar(4000)  NOT NULL
 );
 GO
 
@@ -258,20 +259,6 @@ ON [Fotografie]
     ([evento_id]);
 GO
 
--- Creating foreign key on [RigaAlbumFotografia_Fotografia_id] in table 'Fotografie'
-ALTER TABLE [Fotografie]
-ADD CONSTRAINT [FK_RigaAlbumFotografia]
-    FOREIGN KEY ([RigaAlbumFotografia_Fotografia_id])
-    REFERENCES [RigheAlbum]
-        ([id])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- Creating non-clustered index for FOREIGN KEY 'FK_RigaAlbumFotografia'
-CREATE INDEX [IX_FK_RigaAlbumFotografia]
-ON [Fotografie]
-    ([RigaAlbumFotografia_Fotografia_id]);
-GO
-
 -- Creating foreign key on [AlbumRigaAlbum_RigaAlbum_id] in table 'RigheAlbum'
 ALTER TABLE [RigheAlbum]
 ADD CONSTRAINT [FK_AlbumRigaAlbum]
@@ -340,6 +327,20 @@ ADD CONSTRAINT [FK_FotografoRiCaFotoStampata]
 CREATE INDEX [IX_FK_FotografoRiCaFotoStampata]
 ON [RigheCarrelli]
     ([fotografo_id]);
+GO
+
+-- Creating foreign key on [fotografia_id] in table 'RigheAlbum'
+ALTER TABLE [RigheAlbum]
+ADD CONSTRAINT [FK_FotografiaRigaAlbum]
+    FOREIGN KEY ([fotografia_id])
+    REFERENCES [Fotografie]
+        ([id])
+    ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_FotografiaRigaAlbum'
+CREATE INDEX [IX_FK_FotografiaRigaAlbum]
+ON [RigheAlbum]
+    ([fotografia_id]);
 GO
 
 -- --------------------------------------------------

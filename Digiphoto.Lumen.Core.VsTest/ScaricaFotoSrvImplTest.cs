@@ -18,7 +18,6 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 		private ScaricatoreFotoSrvImpl _impl;
 		private bool _puoiTogliereLaFlashCard;
-		private static readonly int QUANTI_FILES = 10;
 
 		Fotografo _mario = null;
 		Evento _ballo = null;
@@ -44,6 +43,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 			using( LumenEntities dbContext = new LumenEntities() ) {
 				// using( TransactionScope transaction = new TransactionScope() ) {
 
+				InfoFissa i = dbContext.InfosFisse.Single<InfoFissa>( f => f.id == "K" );
 
 				_mario = Utilita.ottieniFotografoMario( dbContext );
 
