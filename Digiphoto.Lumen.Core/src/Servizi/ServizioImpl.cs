@@ -84,9 +84,15 @@ namespace Digiphoto.Lumen.Servizi {
 
 #endregion
 
-		internal Configurazione configurazione {
+		public Configurazione configurazione {
 			get {
 				return LumenApplication.Instance.configurazione;
+			}
+		}
+
+		public Stato stato {
+			get {
+				return LumenApplication.Instance.stato;
 			}
 		}
 

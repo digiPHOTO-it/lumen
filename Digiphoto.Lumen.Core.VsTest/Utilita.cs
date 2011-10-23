@@ -9,6 +9,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 	public class Utilita {
 
 		public static Fotografo ottieniFotografoMario( LumenEntities dbContext ) {
+
 			Fotografo mario = dbContext.Fotografi.SingleOrDefault( f => f.id == "ROSSIMARIO" );
 			if( mario == null ) {
 				mario = new Fotografo();

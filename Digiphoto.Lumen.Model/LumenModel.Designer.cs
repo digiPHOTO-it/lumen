@@ -20,12 +20,12 @@ using System.Runtime.Serialization;
 
 [assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "FotografoFotografia", "Fotografo", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Digiphoto.Lumen.Model.Fotografo), "Fotografia", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.Fotografia))]
 [assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "EventoFotografia", "Evento", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Digiphoto.Lumen.Model.Evento), "Fotografia", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.Fotografia))]
-[assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "RigaAlbumFotografia", "RigaAlbum", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Digiphoto.Lumen.Model.RigaAlbum), "Fotografia", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.Fotografia))]
 [assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "AlbumRigaAlbum", "Album", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Digiphoto.Lumen.Model.Album), "RigaAlbum", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.RigaAlbum))]
 [assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "FotografoScaricoCard", "Fotografo", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Digiphoto.Lumen.Model.Fotografo), "ScaricoCard", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.ScaricoCard))]
 [assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "CarrelloRigaCarrello", "Carrello", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Digiphoto.Lumen.Model.Carrello), "RigaCarrello", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.RigaCarrello))]
 [assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "FormatoCartaRiCaFotoStampata", "FormatoCarta", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Digiphoto.Lumen.Model.FormatoCarta), "RiCaFotoStampata", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.RiCaFotoStampata))]
 [assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "FotografoRiCaFotoStampata", "Fotografo", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Digiphoto.Lumen.Model.Fotografo), "RiCaFotoStampata", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.RiCaFotoStampata))]
+[assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "FotografiaRigaAlbum", "Fotografia", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Digiphoto.Lumen.Model.Fotografia), "RigaAlbum", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.RigaAlbum))]
 
 #endregion
 
@@ -897,15 +897,13 @@ namespace Digiphoto.Lumen.Model
         /// <param name="id">Initial value of the id property.</param>
         /// <param name="nomeFile">Initial value of the nomeFile property.</param>
         /// <param name="dataOraAcquisizione">Initial value of the dataOraAcquisizione property.</param>
-        /// <param name="correzioni">Initial value of the correzioni property.</param>
         /// <param name="numero">Initial value of the numero property.</param>
-        public static Fotografia CreateFotografia(global::System.Guid id, global::System.String nomeFile, global::System.DateTime dataOraAcquisizione, global::System.String correzioni, global::System.Int32 numero)
+        public static Fotografia CreateFotografia(global::System.Guid id, global::System.String nomeFile, global::System.DateTime dataOraAcquisizione, global::System.Int32 numero)
         {
             Fotografia fotografia = new Fotografia();
             fotografia.id = id;
             fotografia.nomeFile = nomeFile;
             fotografia.dataOraAcquisizione = dataOraAcquisizione;
-            fotografia.correzioni = correzioni;
             fotografia.numero = numero;
             return fotografia;
         }
@@ -1042,7 +1040,7 @@ namespace Digiphoto.Lumen.Model
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String correzioni
         {
@@ -1054,7 +1052,7 @@ namespace Digiphoto.Lumen.Model
             {
                 OncorrezioniChanging(value);
                 ReportPropertyChanging("correzioni");
-                _correzioni = StructuralObject.SetValidValue(value, false);
+                _correzioni = StructuralObject.SetValidValue(value, true);
                 ReportPropertyChanged("correzioni");
                 OncorrezioniChanged();
             }
@@ -1489,6 +1487,33 @@ namespace Digiphoto.Lumen.Model
         private global::System.String _versioneDbCompatibile = "1.0";
         partial void OnversioneDbCompatibileChanging(global::System.String value);
         partial void OnversioneDbCompatibileChanged();
+    
+        /// <summary>
+        /// Modo azzeramento sequenza fotogrammi
+        /// </summary>
+        /// <LongDescription>
+        /// Ogni foto che entra, viene numerata. Questo numeratore può essere azzerato in vari modi:&#xA; G = ogni giorno&#xA; S = ogni settimana&#xA; M = mai
+        /// </LongDescription>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String modoNumerazione
+        {
+            get
+            {
+                return _modoNumerazione;
+            }
+            set
+            {
+                OnmodoNumerazioneChanging(value);
+                ReportPropertyChanging("modoNumerazione");
+                _modoNumerazione = StructuralObject.SetValidValue(value, false);
+                ReportPropertyChanged("modoNumerazione");
+                OnmodoNumerazioneChanged();
+            }
+        }
+        private global::System.String _modoNumerazione = "M";
+        partial void OnmodoNumerazioneChanging(global::System.String value);
+        partial void OnmodoNumerazioneChanged();
 
         #endregion
     
@@ -1778,18 +1803,34 @@ namespace Digiphoto.Lumen.Model
         [XmlIgnoreAttribute()]
         [SoapIgnoreAttribute()]
         [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("Digiphoto.Lumen.Model", "RigaAlbumFotografia", "Fotografia")]
-        public EntityCollection<Fotografia> fotografia
+        [EdmRelationshipNavigationPropertyAttribute("Digiphoto.Lumen.Model", "FotografiaRigaAlbum", "Fotografia")]
+        public Fotografia fotografia
         {
             get
             {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<Fotografia>("Digiphoto.Lumen.Model.RigaAlbumFotografia", "Fotografia");
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Fotografia>("Digiphoto.Lumen.Model.FotografiaRigaAlbum", "Fotografia").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Fotografia>("Digiphoto.Lumen.Model.FotografiaRigaAlbum", "Fotografia").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<Fotografia> fotografiaReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Fotografia>("Digiphoto.Lumen.Model.FotografiaRigaAlbum", "Fotografia");
             }
             set
             {
                 if ((value != null))
                 {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<Fotografia>("Digiphoto.Lumen.Model.RigaAlbumFotografia", "Fotografia", value);
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Fotografia>("Digiphoto.Lumen.Model.FotografiaRigaAlbum", "Fotografia", value);
                 }
             }
         }
