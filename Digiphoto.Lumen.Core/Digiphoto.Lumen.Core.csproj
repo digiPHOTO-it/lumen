@@ -86,6 +86,8 @@
     <Compile Include="src\Imaging\Ritocco\Ruota.cs" />
     <Compile Include="src\Imaging\Ritocco\Seppia.cs" />
     <Compile Include="src\Servizi\Scaricatore\NumeratoreFotogrammi.cs" />
+    <Compile Include="src\Servizi\EliminaFotoVecchie\EliminaFotoVecchieSrvImpl.cs" />
+    <Compile Include="src\Servizi\EliminaFotoVecchie\IEliminaFotoVecchieSrv.cs" />
     <Compile Include="src\Util\SerializzaUtil.cs" />
     <Compile Include="src\Imaging\Ritocco\Specchio.cs" />
     <Compile Include="src\Servizi\CambioStatoMessaggio.cs" />
