@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="NumeratoreFotogrammiTest.cs" />
     <Compile Include="src\Model\CarrelloTest.cs" />
+    <Compile Include="src\Util\QueriesVarieTest.cs" />
     <Compile Include="src\Util\SerializzaUtilTest.cs" />
     <Compile Include="EliminaFotoVecchieSrvImplTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
