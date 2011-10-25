@@ -157,6 +157,11 @@ namespace Digiphoto.Lumen.Config  {
 			}
 		}
 
-	
+		public int getGiorniDeleteFoto()
+		{
+			return Properties.Settings.Default.giorniDeleteFoto;
+		}
+
+
 	}
 }
