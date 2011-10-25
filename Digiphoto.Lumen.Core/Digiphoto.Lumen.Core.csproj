@@ -69,6 +69,7 @@
     <Compile Include="src\Config\ServiziCollection.cs" />
     <Compile Include="src\Config\ServizioElement.cs" />
     <Compile Include="src\Config\StartupServiziConfigSection.cs" />
+    <Compile Include="src\Core\FaseDelGiornoUtil.cs" />
     <Compile Include="src\Database\DbUtil.cs" />
     <Compile Include="src\Database\OrmUtil.cs" />
     <Compile Include="src\Database\UnitOfWorkScope.cs" />
@@ -85,6 +86,8 @@
     <Compile Include="src\Imaging\Ritocco\Luminosita.cs" />
     <Compile Include="src\Imaging\Ritocco\Ruota.cs" />
     <Compile Include="src\Imaging\Ritocco\Seppia.cs" />
+    <Compile Include="src\Servizi\Masterizza\IMasterizzaSrv.cs" />
+    <Compile Include="src\Servizi\Ricerca\IRicercatoreSrv.cs" />
     <Compile Include="src\Servizi\Scaricatore\NumeratoreFotogrammi.cs" />
     <Compile Include="src\Servizi\EliminaFotoVecchie\EliminaFotoVecchieSrvImpl.cs" />
     <Compile Include="src\Servizi\EliminaFotoVecchie\IEliminaFotoVecchieSrv.cs" />

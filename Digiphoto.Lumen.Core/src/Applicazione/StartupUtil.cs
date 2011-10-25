@@ -23,7 +23,9 @@ namespace Digiphoto.Lumen.Applicazione {
 			DateTime gionata = DateTime.Today;
 			string oraCambioGiornata = Properties.Settings.Default.oraCambioGiornata;
 
-			if( !String.IsNullOrEmpty( oraCambioGiornata ) ) {
+			if( String.IsNullOrEmpty( oraCambioGiornata ) || oraCambioGiornata.Equals( "00:00" ) ) {
+				// vuoto: non faccio niente
+			} else {
 				DateTime adesso = DateTime.Now;
 				DateTime ieri = DateTime.Today.AddDays( -1 );
 

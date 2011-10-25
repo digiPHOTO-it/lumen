@@ -53,18 +53,18 @@ namespace Digiphoto.Lumen.Cli {
 		}
 
 		private void battezzaFlashCard() {
-			IScaricatoreFotoSrv s = LumenApplication.Instance.getScaricatoreFotoSrv();
+			
+			IScaricatoreFotoSrv s = LumenApplication.Instance.creaScaricatoreFotoSrv();
 			
 			ParamScarica param = s.ultimaChiavettaInserita;
-			param.flashCardConfig = new FlashCardConfig("QQ","PIZZA");
+			// TODO da fare
 			s.battezzaFlashCard( param );
 
 		}
 
 		private void scaricaFoto() {
-			IScaricatoreFotoSrv srv = LumenApplication.Instance.getScaricatoreFotoSrv();
-			ParamScarica param = srv.ultimaChiavettaInserita;
-			srv.scarica( param );
+			IScaricatoreFotoSrv srv;
+			// TODO
 		}
 		
 		char eseguiMenu( IDictionary<char, string> voci ) {
