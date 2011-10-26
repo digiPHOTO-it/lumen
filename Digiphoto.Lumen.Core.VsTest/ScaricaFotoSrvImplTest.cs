@@ -14,7 +14,7 @@ using System.Reflection;
 namespace Digiphoto.Lumen.Core.VsTest {
 	
 	[TestClass]
-	public class ScaricatoreFotoSrvImplTest : IObserver<ScaricoFotoMsg> {
+	public class ScaricatoreFotoImplTest : IObserver<ScaricoFotoMsg> {
 
 		private ScaricatoreFotoSrvImpl _impl;
 		private bool _puoiTogliereLaFlashCard;

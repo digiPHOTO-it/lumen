@@ -6,6 +6,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Database;
 using Digiphoto.Lumen.Model;
+using System.Data.EntityClient;
+using System.Data.Common;
+using System.Data;
+using System.Data.Objects;
 
 namespace Digiphoto.Lumen.Core.VsTest.Util {
 
@@ -54,6 +58,48 @@ namespace Digiphoto.Lumen.Core.VsTest.Util {
 					// deve dare errore perchè nelle query si possono usare solo tipi primitivi per l'uguaglianza
 					//    :-((   bleah!!!
 				}
+
+				// ----- Ora provo in eSql
+				string esql = @"SELECT VALUE f
+                              FROM LumenEntities.Fotografie
+                              as f
+                              WHERE f.numero < @quanti";
+
+				DbCommand comando = dbContext.Connection.CreateCommand();
+				comando.CommandText = esql;
+				EntityParameter pquanti = new EntityParameter( "quanti", DbType.Int16 );
+				pquanti.Value = 3;
+
+				comando.Parameters.Add( pquanti );
+				using( DbDataReader rdr = comando.ExecuteReader( CommandBehavior.SequentialAccess ) ) {
+					// Iterate through the collection of Contact items.
+					while( rdr.Read() ) {
+						Console.WriteLine( rdr ["nomefile"] );
+					}
+				}
+
+
+
+				// -----
+
+
+				// The following query returns a collection of Fotografia objects.
+				int [] vettore = { 2, 4, 6 };
+				string listaNum = string.Join( ", ", vettore.Select( r => r.ToString()  ).ToArray() );
+				string esql2 = @"SELECT VALUE f
+                              FROM LumenEntities.Fotografie
+                              as f
+                              WHERE f.numero in {" + listaNum + "}";
+
+				ObjectQuery<Fotografia> query2 = new ObjectQuery<Fotografia>( esql2, dbContext, MergeOption.NoTracking );
+				foreach( Fotografia f in query2 ) {
+					Console.WriteLine( f.nomeFile );
+				}
+				
+
+
+
+
 			}
 
 		}

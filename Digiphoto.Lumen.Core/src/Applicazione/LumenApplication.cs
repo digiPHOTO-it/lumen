@@ -123,8 +123,14 @@ namespace Digiphoto.Lumen.Applicazione {
 */
 		}
 
+		public IServizio creaServizio<T>() {
+
+			IServizio srv  = _servizioFactory.creaServizio( typeof(T) );
+			return srv;
+		}
+
 		public IScaricatoreFotoSrv creaScaricatoreFotoSrv() {
-			
+
 			ScaricatoreFotoSrvImpl scaricatoreFotoSrvImpl = new ScaricatoreFotoSrvImpl();
 	
 			// Sottoscrivo questo servizio come asoltatore del bus di eventi

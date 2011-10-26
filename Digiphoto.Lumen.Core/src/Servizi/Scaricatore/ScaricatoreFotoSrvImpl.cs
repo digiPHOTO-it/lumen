@@ -24,7 +24,6 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 	 */
 	public class ScaricatoreFotoSrvImpl : ServizioImpl, IScaricatoreFotoSrv {
 
-	
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( ScaricatoreFotoSrvImpl ) );
 
 		#region Proprietà
