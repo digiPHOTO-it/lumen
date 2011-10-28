@@ -29,10 +29,9 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 			this._impl = new RicercatoreSrvImpl();
 
-			IServizio srv2 = app.creaServizio<IRicercatoreSrv>();
+			IRicercatoreSrv srv2 = app.creaServizio<IRicercatoreSrv>();
 
 			// -------
-
 			using( LumenEntities dbContext = new LumenEntities() ) {
 
 			}
@@ -44,10 +43,30 @@ namespace Digiphoto.Lumen.Core.VsTest {
 			ParamRicercaFoto param = new ParamRicercaFoto();
 			param.giornataIniz = new DateTime( 2000, 1, 1 );
 			param.giornataFine = new DateTime( 2299, 12, 31 );
+			// param.didascalia = "pizza";
 
-			IList<Fotografia> ris = _impl.cerca( param );
+			using( LumenEntities dbContext = new LumenEntities() ) {
 
-			Console.WriteLine( ris.Count() );
+				Evento ev = dbContext.Eventi.First();
+				Fotografo op = dbContext.Fotografi.First();
+
+				Fotografia f = dbContext.Fotografie.First();
+				f.evento = ev;
+				f.fotografo = op;
+	
+				dbContext.SaveChanges();
+
+
+				param.numeriFotogrammi = new int [] { 3, 5, 7, f.numero };
+				param.eventi = new Evento[] { ev };
+				param.fotografi = new Fotografo [] { op };
+
+
+				IList<Fotografia> ris = _impl.cerca( param );
+				Assert.IsTrue( ris.Count > 0 );
+				Console.WriteLine( ris.Count );
+
+			}
 		}
 
 		[TestCleanup]

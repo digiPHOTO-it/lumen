@@ -74,6 +74,7 @@
 		<Property Name="dataOraAcquisizione" Type="datetime" Nullable="false" />
 		<Property Name="correzioni" Type="nvarchar" Nullable="true" />
 		<Property Name="numero" Type="int" Nullable="false" />
+		<Property Name="faseDelGiorno" Type="smallint" Nullable="true" />
 		<Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="false" />
 		<Property Name="evento_id" Type="uniqueidentifier" Nullable="true" />
     </EntityType>
@@ -368,6 +369,7 @@
           <Property Type="DateTime" Name="dataOraAcquisizione" Nullable="false" />
           <Property Type="String" Name="correzioni" Nullable="true" />
           <Property Type="Int32" Name="numero" Nullable="false" />
+          <Property Type="Int16" Name="faseDelGiorno" Nullable="true" />
         </EntityType>
         <Association Name="FotografoFotografia">
           <End Type="Digiphoto.Lumen.Model.Fotografo" Role="Fotografo" Multiplicity="1" />
@@ -546,6 +548,7 @@
 					<ScalarProperty Name="dataOraAcquisizione" ColumnName="dataOraAcquisizione" />
 					<ScalarProperty Name="correzioni" ColumnName="correzioni" />
 					<ScalarProperty Name="numero" ColumnName="numero" />
+					<ScalarProperty Name="faseDelGiorno" ColumnName="faseDelGiorno" />
 				</MappingFragment>
 			</EntityTypeMapping>
 		</EntitySetMapping>
@@ -750,10 +753,10 @@
     <edmx:Diagrams>
       <Diagram Name="ModelloEntita" ZoomLevel="81" >
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografo" Width="2.375" PointX="3.875" PointY="5.75" Height="2.1725878906249996" />
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografia" Width="1.5" PointX="4.125" PointY="1.75" Height="2.7494921874999996" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografia" Width="1.5" PointX="4.125" PointY="1.75" Height="2.9417936197916656" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.FotografoFotografia">
           <ConnectorPoint PointX="4.875" PointY="5.75" />
-          <ConnectorPoint PointX="4.875" PointY="4.4994921875" />
+          <ConnectorPoint PointX="4.875" PointY="4.6917936197916656" />
         </AssociationConnector>
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Evento" Width="1.5" PointX="1.75" PointY="0.5" Height="1.4033821614583333" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.EventoFotografia">

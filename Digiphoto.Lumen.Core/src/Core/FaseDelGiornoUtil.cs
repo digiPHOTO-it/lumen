@@ -7,12 +7,13 @@ using Digiphoto.Lumen.Applicazione;
 namespace Digiphoto.Lumen.Core {
 
 	/** Notare che i caratteri sono ANCHE in ordine alfabetico cosi si può fare un order by facilmente */
-	public enum FaseDelGiorno : byte {
-		Mattino		= (byte) 'M',
-		Pomeriggio	= (byte) 'P',
-		Sera		= (byte) 'S'
+	public enum FaseDelGiorno : short {
+		Mattino = 1,
+		Pomeriggio = 2,
+		Sera = 3
 	};
-		
+
+
 	public class FaseDelGiornoUtil {
 
 		public static FaseDelGiorno getFaseDelGiorno( DateTime timestamp ) {
