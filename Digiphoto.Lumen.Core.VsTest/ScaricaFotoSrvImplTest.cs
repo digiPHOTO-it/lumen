@@ -116,6 +116,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 			ParamScarica param = new ParamScarica();
 			param.cartellaSorgente = dir;
 			param.eliminaFilesSorgenti = true;
+			param.faseDelGiorno = FaseDelGiorno.Pomeriggio;
 
 			
 

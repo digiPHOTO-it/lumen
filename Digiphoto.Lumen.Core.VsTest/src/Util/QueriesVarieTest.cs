@@ -10,17 +10,21 @@ using System.Data.EntityClient;
 using System.Data.Common;
 using System.Data;
 using System.Data.Objects;
+using System.Linq.Expressions;
 
 namespace Digiphoto.Lumen.Core.VsTest.Util {
 
 	[TestClass]
-
 	public class QueriesVarieTest {
 	
+		[TestInitialize]
+		public void init() {
+			LumenApplication.Instance.avvia();
+		}
+
 		[TestMethod]
 		public void TestQuery1() {
 
-			LumenApplication.Instance.avvia();
 
 			using( LumenEntities dbContext = new LumenEntities() ) {
 				
@@ -59,6 +63,17 @@ namespace Digiphoto.Lumen.Core.VsTest.Util {
 					//    :-((   bleah!!!
 				}
 
+			}
+		}
+
+
+		[TestMethod]
+		public void testQueryEsql() {
+
+			using( LumenEntities dbContext = new LumenEntities() ) {
+				
+				dbContext.Connection.Open();
+
 				// ----- Ora provo in eSql
 				string esql = @"SELECT VALUE f
                               FROM LumenEntities.Fotografie
@@ -78,10 +93,7 @@ namespace Digiphoto.Lumen.Core.VsTest.Util {
 					}
 				}
 
-
-
 				// -----
-
 
 				// The following query returns a collection of Fotografia objects.
 				int [] vettore = { 2, 4, 6 };
@@ -95,13 +107,59 @@ namespace Digiphoto.Lumen.Core.VsTest.Util {
 				foreach( Fotografia f in query2 ) {
 					Console.WriteLine( f.nomeFile );
 				}
-				
-
-
-
-
 			}
+		}
 
+		[TestMethod]
+		public void testNonScalar() {
+			using( LumenEntities dbContext = new LumenEntities() ) {
+
+				Evento evento = dbContext.Eventi.First();
+				Fotografia foto = dbContext.Fotografie.First();
+				foto.evento = evento;
+
+				// ----- Ora provo in eSql
+				string esql = @"SELECT VALUE f
+                              FROM LumenEntities.Fotografie as f
+                              WHERE f.evento = @evento";
+
+				ObjectQuery<Fotografia> query = new ObjectQuery<Fotografia>( esql, dbContext );
+				try {
+					query.Parameters.Add( new ObjectParameter( "evento", evento ) );
+
+					IList<Fotografia> ris = query.ToList();
+					int quanti = ris.Count();
+					Assert.Fail();  // purtroppo entity framework ancora non gestisce questa cosa.
+				} catch( Exception ) {
+					// purtroppo entity framework ancora non gestisce questa cosa.
+				}
+			}
+		}
+
+
+		[TestMethod]
+		public void testRuntimeLinqQuery() {
+
+			using( LumenEntities dbContext = new LumenEntities() ) {
+
+				Evento ev = dbContext.Eventi.First();
+
+				Fotografia foto = dbContext.Fotografie.First();
+				foto.evento = ev;
+
+				// ---
+				try {
+					var query = from f in dbContext.Fotografie
+					            where ev.Equals( f.evento )
+					            select f;
+
+					IList<Fotografia> ris = query.ToList();
+					int quanti = ris.Count();
+					Assert.Fail();  // purtroppo entity framework ancora non gestisce questa cosa.
+				} catch( Exception ) {
+					// purtroppo entity framework ancora non gestisce questa cosa.
+				}
+			}
 		}
 	}
 }

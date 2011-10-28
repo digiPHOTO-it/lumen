@@ -123,9 +123,9 @@ namespace Digiphoto.Lumen.Applicazione {
 */
 		}
 
-		public IServizio creaServizio<T>() {
+		public T creaServizio<T>() {
 
-			IServizio srv  = _servizioFactory.creaServizio( typeof(T) );
+			T srv  = (T) _servizioFactory.creaServizio( typeof(T) );
 			return srv;
 		}
 

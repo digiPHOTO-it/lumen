@@ -146,6 +146,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 					foto.evento = evento;
 					foto.didascalia = _paramScarica.flashCardConfig.didascalia;
 					foto.numero = numFotogramma;
+					foto.faseDelGiorno = (short) _paramScarica.faseDelGiorno;
 
 					// il nome del file, lo memorizzo solamente relativo
 					// scarto la parte iniziale di tutto il path togliendo il nome della cartella di base delle foto.

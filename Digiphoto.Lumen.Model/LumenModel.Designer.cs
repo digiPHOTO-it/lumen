@@ -1084,6 +1084,30 @@ namespace Digiphoto.Lumen.Model
         private global::System.Int32 _numero;
         partial void OnnumeroChanging(global::System.Int32 value);
         partial void OnnumeroChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Int16> faseDelGiorno
+        {
+            get
+            {
+                return _faseDelGiorno;
+            }
+            set
+            {
+                OnfaseDelGiornoChanging(value);
+                ReportPropertyChanging("faseDelGiorno");
+                _faseDelGiorno = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("faseDelGiorno");
+                OnfaseDelGiornoChanged();
+            }
+        }
+        private Nullable<global::System.Int16> _faseDelGiorno;
+        partial void OnfaseDelGiornoChanging(Nullable<global::System.Int16> value);
+        partial void OnfaseDelGiornoChanged();
 
         #endregion
     
