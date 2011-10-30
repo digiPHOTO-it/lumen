@@ -88,6 +88,7 @@
     <Compile Include="src\Imaging\Ritocco\Seppia.cs" />
     <Compile Include="src\Servizi\Masterizza\IMasterizzaSrv.cs" />
     <Compile Include="src\Servizi\Ricerca\IRicercatoreSrv.cs" />
+    <Compile Include="src\Servizi\Ricerca\ParamRicercaFoto.cs" />
     <Compile Include="src\Servizi\Ricerca\RicercatoreSrvImpl.cs" />
     <Compile Include="src\Servizi\Scaricatore\NumeratoreFotogrammi.cs" />
     <Compile Include="src\Servizi\EliminaFotoVecchie\EliminaFotoVecchieSrvImpl.cs" />

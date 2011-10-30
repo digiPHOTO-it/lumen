@@ -17,6 +17,7 @@ using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Servizi.VolumeCambiato;
 using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Imaging;
+using log4net.Config;
 
 namespace Digiphoto.Lumen.Applicazione {
 
@@ -60,6 +61,9 @@ namespace Digiphoto.Lumen.Applicazione {
 		 * Avvio della applicazione. Accendiamo la baracca.
 		 */
 		public void avvia() {
+
+			// Configuro il logger
+			XmlConfigurator.Configure();
 
 			avviaConfigurazione();
 

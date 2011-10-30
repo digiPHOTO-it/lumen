@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server Compact Edition
 -- --------------------------------------------------
--- Date Created: 10/27/2011 14:11:40
+-- Date Created: 10/29/2011 12:29:44
 -- Generated from EDMX file: C:\Users\bluca\Documents\Visual Studio 2010\Projects\lumen\Digiphoto.Lumen.Model\LumenModel.edmx
 -- --------------------------------------------------
 
@@ -80,6 +80,7 @@ CREATE TABLE [Fotografie] (
     [correzioni] nvarchar(4000)  NULL,
     [numero] int  NOT NULL,
     [faseDelGiorno] smallint  NULL,
+    [giornata] datetime  NOT NULL,
     [fotografo_id] nvarchar(16)  NOT NULL,
     [evento_id] uniqueidentifier  NULL
 );
