@@ -11,6 +11,7 @@ using System.Data.Common;
 using System.Data;
 using System.Data.Objects;
 using System.Linq.Expressions;
+using System.Data.Linq;
 
 namespace Digiphoto.Lumen.Core.VsTest.Util {
 
@@ -161,5 +162,34 @@ namespace Digiphoto.Lumen.Core.VsTest.Util {
 				}
 			}
 		}
+
+
+		[TestMethod]
+		public void soloLinqToEntities() {
+
+			using( LumenEntities dbContext = new LumenEntities() ) {
+
+				IQueryable<Fotografia> query = from ff in dbContext.Fotografie 
+											   select ff;
+
+				var evento = dbContext.Eventi.First();
+
+				int [] numeri = { 1, 2, 3, 4, 6 };
+
+				if( 1 == 1 )
+					query = query.Where( ff => numeri.Contains( ff.numero ) );
+
+				if( 1 == 1 )
+					query = query.Where( ff => evento.id == ff.evento.id );
+
+				
+				var risultato = query.Select( ff => ff );
+				ObjectQuery<Fotografia> oq = (ObjectQuery<Fotografia>)query;
+				string s = oq.ToTraceString();
+				var lista = risultato.ToList();
+			}
+		}
+
 	}
 }
+

@@ -21,6 +21,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 		private RicercatoreSrvImpl _impl;
 
+
 		[TestInitialize]
 		public void Init() {
 
@@ -43,7 +44,6 @@ namespace Digiphoto.Lumen.Core.VsTest {
 			ParamRicercaFoto param = new ParamRicercaFoto();
 			param.giornataIniz = new DateTime( 2000, 1, 1 );
 			param.giornataFine = new DateTime( 2299, 12, 31 );
-			// param.didascalia = "pizza";
 
 			using( LumenEntities dbContext = new LumenEntities() ) {
 
@@ -53,6 +53,8 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				Fotografia f = dbContext.Fotografie.First();
 				f.evento = ev;
 				f.fotografo = op;
+				f.faseDelGiorno = (short)FaseDelGiorno.Mattino;
+				f.didascalia = "W IL POLLO ARROSTO";
 	
 				dbContext.SaveChanges();
 
@@ -60,6 +62,8 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				param.numeriFotogrammi = new int [] { 3, 5, 7, f.numero };
 				param.eventi = new Evento[] { ev };
 				param.fotografi = new Fotografo [] { op };
+				param.fasiDelGiorno = new FaseDelGiorno [] { FaseDelGiorno.Mattino, FaseDelGiorno.Sera };
+				param.didascalia = "pollo";  // deve trovarla ugualmente
 
 
 				IList<Fotografia> ris = _impl.cerca( param );

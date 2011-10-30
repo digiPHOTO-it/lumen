@@ -898,13 +898,15 @@ namespace Digiphoto.Lumen.Model
         /// <param name="nomeFile">Initial value of the nomeFile property.</param>
         /// <param name="dataOraAcquisizione">Initial value of the dataOraAcquisizione property.</param>
         /// <param name="numero">Initial value of the numero property.</param>
-        public static Fotografia CreateFotografia(global::System.Guid id, global::System.String nomeFile, global::System.DateTime dataOraAcquisizione, global::System.Int32 numero)
+        /// <param name="giornata">Initial value of the giornata property.</param>
+        public static Fotografia CreateFotografia(global::System.Guid id, global::System.String nomeFile, global::System.DateTime dataOraAcquisizione, global::System.Int32 numero, global::System.DateTime giornata)
         {
             Fotografia fotografia = new Fotografia();
             fotografia.id = id;
             fotografia.nomeFile = nomeFile;
             fotografia.dataOraAcquisizione = dataOraAcquisizione;
             fotografia.numero = numero;
+            fotografia.giornata = giornata;
             return fotografia;
         }
 
@@ -1108,6 +1110,30 @@ namespace Digiphoto.Lumen.Model
         private Nullable<global::System.Int16> _faseDelGiorno;
         partial void OnfaseDelGiornoChanging(Nullable<global::System.Int16> value);
         partial void OnfaseDelGiornoChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.DateTime giornata
+        {
+            get
+            {
+                return _giornata;
+            }
+            set
+            {
+                OngiornataChanging(value);
+                ReportPropertyChanging("giornata");
+                _giornata = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("giornata");
+                OngiornataChanged();
+            }
+        }
+        private global::System.DateTime _giornata;
+        partial void OngiornataChanging(global::System.DateTime value);
+        partial void OngiornataChanged();
 
         #endregion
     

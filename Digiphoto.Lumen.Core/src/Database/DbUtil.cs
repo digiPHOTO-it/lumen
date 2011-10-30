@@ -74,7 +74,7 @@ namespace Digiphoto.Lumen.Database {
 		public static void creaCartellaPerDb() {
 			// Controllo se esiste la cartella di base dei dati dell'applicazione
 			if( !Directory.Exists( DbUtil.cartellaDatabase ) ) {
-				_giornale.Info( "Creo la cartella dei dati perchè non esiste:\n" + DbUtil.cartellaDatabase );
+				_giornale.Info( "Creo la cartella dei dati perchè non esiste:\r\n" + DbUtil.cartellaDatabase );
 				Directory.CreateDirectory( DbUtil.cartellaDatabase );
 			}
 		}
@@ -107,14 +107,14 @@ namespace Digiphoto.Lumen.Database {
 		public static void copiaDbVuotoSuDbDiLavoro() {
 
 			if( !File.Exists( nomeFileDbPieno ) ) {
-				_giornale.Info( "Il database di lavoro\n" + nomeFileDbPieno + "\nnon esiste. Lo creo partendo dal template vuoto" );
+				_giornale.Info( @"Il database di lavoro\r\n" + nomeFileDbPieno + "\r\nnon esiste. Lo creo partendo dal template vuoto" );
 
 				
 				File.Copy( nomeFileDbVuoto, nomeFileDbPieno );
 
 				_giornale.Debug( "ok copia vuoto -> pieno riuscita" );
 			} else
-				_giornale.Debug( "Il database di lavoro\n" + nomeFileDbPieno + "\nesiste già. Uso quello" );
+				_giornale.Debug( "Il database di lavoror\r\n" + nomeFileDbPieno + "\r\nesiste già. Uso quello" );
 		
 		}
 
