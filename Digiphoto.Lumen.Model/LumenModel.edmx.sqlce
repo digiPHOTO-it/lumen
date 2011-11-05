@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server Compact Edition
 -- --------------------------------------------------
--- Date Created: 10/29/2011 12:29:44
--- Generated from EDMX file: C:\Users\bluca\Documents\Visual Studio 2010\Projects\lumen\Digiphoto.Lumen.Model\LumenModel.edmx
+-- Date Created: 11/02/2011 13:26:02
+-- Generated from EDMX file: C:\Users\bluca\Documents\Visual Studio 2010\Projects\Lumen\Digiphoto.Lumen.Model\LumenModel.edmx
 -- --------------------------------------------------
 
 
@@ -27,6 +27,8 @@ GO
     ALTER TABLE [RigheCarrelli] DROP CONSTRAINT [FK_FotografoRiCaFotoStampata];
 GO
     ALTER TABLE [RigheAlbum] DROP CONSTRAINT [FK_FotografiaRigaAlbum];
+GO
+    ALTER TABLE [Correzioni] DROP CONSTRAINT [FK_FotografiaCorrezione];
 GO
 
 -- --------------------------------------------------
@@ -54,6 +56,8 @@ GO
 GO
     DROP TABLE [RigheCarrelli];
 GO
+    DROP TABLE [Correzioni];
+GO
 
 -- --------------------------------------------------
 -- Creating all tables
@@ -77,7 +81,6 @@ CREATE TABLE [Fotografie] (
     [dataOraScatto] datetime  NULL,
     [didascalia] nvarchar(4000)  NULL,
     [dataOraAcquisizione] datetime  NOT NULL,
-    [correzioni] nvarchar(4000)  NULL,
     [numero] int  NOT NULL,
     [faseDelGiorno] smallint  NULL,
     [giornata] datetime  NOT NULL,
@@ -165,6 +168,32 @@ CREATE TABLE [RigheCarrelli] (
 );
 GO
 
+-- Creating table 'Correzioni'
+CREATE TABLE [Correzioni] (
+    [id] uniqueidentifier  NOT NULL,
+    [cardinalita] smallint  NOT NULL,
+    [ordinamento] nvarchar(4000)  NOT NULL,
+    [gradi] smallint  NULL,
+    [scartoAutomatico] bit  NULL,
+    [backgroundColor] int  NULL,
+    [fattore] real  NULL,
+    [imgOrigW] int  NULL,
+    [imgOrigH] int  NULL,
+    [areaRitaglioX] int  NULL,
+    [areaRitaglioY] int  NULL,
+    [areaRitaglioW] int  NULL,
+    [areaRitaglioH] int  NULL,
+    [fattoreL] real  NULL,
+    [direzione] nchar(1)  NULL,
+    [nome] nvarchar(4000)  NULL,
+    [fattoreRotazione] real  NULL,
+    [gradiRotazione] smallint  NULL,
+    [direzioneSpecchio] nchar(1)  NULL,
+    [__Disc__] nvarchar(4000)  NOT NULL,
+    [FotografiaCorrezione_Correzione_id] uniqueidentifier  NOT NULL
+);
+GO
+
 -- --------------------------------------------------
 -- Creating all PRIMARY KEY constraints
 -- --------------------------------------------------
@@ -226,6 +255,12 @@ GO
 -- Creating primary key on [id] in table 'RigheCarrelli'
 ALTER TABLE [RigheCarrelli]
 ADD CONSTRAINT [PK_RigheCarrelli]
+    PRIMARY KEY ([id] );
+GO
+
+-- Creating primary key on [id] in table 'Correzioni'
+ALTER TABLE [Correzioni]
+ADD CONSTRAINT [PK_Correzioni]
     PRIMARY KEY ([id] );
 GO
 
@@ -343,6 +378,20 @@ ADD CONSTRAINT [FK_FotografiaRigaAlbum]
 CREATE INDEX [IX_FK_FotografiaRigaAlbum]
 ON [RigheAlbum]
     ([fotografia_id]);
+GO
+
+-- Creating foreign key on [FotografiaCorrezione_Correzione_id] in table 'Correzioni'
+ALTER TABLE [Correzioni]
+ADD CONSTRAINT [FK_FotografiaCorrezione]
+    FOREIGN KEY ([FotografiaCorrezione_Correzione_id])
+    REFERENCES [Fotografie]
+        ([id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_FotografiaCorrezione'
+CREATE INDEX [IX_FK_FotografiaCorrezione]
+ON [Correzioni]
+    ([FotografiaCorrezione_Correzione_id]);
 GO
 
 -- --------------------------------------------------

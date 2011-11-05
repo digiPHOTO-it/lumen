@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Servizi;
+using Digiphoto.Lumen.Model;
 
 namespace Digiphoto.Lumen.Imaging {
 
@@ -17,5 +18,7 @@ namespace Digiphoto.Lumen.Imaging {
 		/** Salva l'immagine indicata sul filesystem */
 		void save( Immagine immagine, string fileName );
 
+		/** Applico tutte i ritocchi grafici indicati nel preciso ordine */
+		Immagine applicaCorrezioni( Immagine immaginePartenza, IList<Correzione> correzioni );
 	}
 }

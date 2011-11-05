@@ -58,7 +58,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 				Fotografia foto = aggiungiEntitaFoto( fileInfo, ++conta + ultimoNumFoto );
 
-				creaProvinoImmagine( fileInfo.FullName, foto );
+				RitoccoUtil.creaProvinoFoto( fileInfo.FullName, foto );
 
 				// Quando sono a posto con la foto, sollevo un evento per avvisare tutti
 				NuovaFotoMsg msg = new NuovaFotoMsg( foto );
@@ -87,36 +87,6 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		}
 
 
-		/**
-		 * Siccome alcuni attributi Immagine non risiedono nel db,
-		 * li devo gestire sul filesystem.
-		 * Siccome è la priima volta, li creo.
-		 * 
-		 * TODO rendere questa funzionalità generica e comune sia a quando viene creata la foto per la prima volta,
-		 *      sia quando la carico da disco esistente, sia quando faccio "torna originale".
-		 *      Occhio che forse l'evento di creazione nuovo provino va lanciato qui dentro.
-		 */
-		private void creaProvinoImmagine( Fotografia foto ) {
-			creaProvinoImmagine( PathUtil.nomeCompletoFoto( foto ), foto );
-		}
-
-		private void creaProvinoImmagine( string nomeFileFoto, Fotografia foto ) {
-
-			IGestoreImmagineSrv gis = LumenApplication.Instance.getGestoreImmaginiSrv();
-
-
-			Immagine immagineGrande = gis.load( nomeFileFoto );
-			foto.imgOrig = immagineGrande;
-
-			// TODO l'immagine risultante non ho ancora deciso se e come la gestirò.
-			// per ora non faccio niente
-			foto.imgRisultante = null; // immagineGrande;
-
-			Immagine immaginePiccola = gis.creaProvino( immagineGrande );
-			foto.imgProvino = immaginePiccola;
-			gis.save( immaginePiccola, PathUtil.nomeCompletoProvino( foto ) );
-
-		}
 
 		/**
 		 * dato il nome del file della immagine, creo l'oggetto Fotografia e lo aggiungo al suo contenitore
