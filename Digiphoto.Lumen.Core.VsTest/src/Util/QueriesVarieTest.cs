@@ -59,9 +59,10 @@ namespace Digiphoto.Lumen.Core.VsTest.Util {
 								where f3.Equals( campione )
 								select f3;
 					Assert.Fail();
-				} catch( Exception ee ) {
+				} catch( Exception ) {
 					// deve dare errore perchè nelle query si possono usare solo tipi primitivi per l'uguaglianza
 					//    :-((   bleah!!!
+					// Microsoft promette che nelle prossime versioni sarà implementato. A quel punto si potrà usare.
 				}
 
 			}

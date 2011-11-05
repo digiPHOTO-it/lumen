@@ -18,6 +18,7 @@ using Digiphoto.Lumen.Servizi.VolumeCambiato;
 using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Imaging;
 using log4net.Config;
+using Digiphoto.Lumen.Servizi.Explorer;
 
 namespace Digiphoto.Lumen.Applicazione {
 
@@ -61,6 +62,9 @@ namespace Digiphoto.Lumen.Applicazione {
 		 * Avvio della applicazione. Accendiamo la baracca.
 		 */
 		public void avvia() {
+
+			if( avviata == true )
+				throw new InvalidOperationException( "L'applicazione Lumen è già stata avviata" );
 
 			// Configuro il logger
 			XmlConfigurator.Configure();
@@ -118,7 +122,9 @@ namespace Digiphoto.Lumen.Applicazione {
 			_serviziAvviati.Add( typeof(IGestoreImmagineSrv).FullName , gis );
 			gis.start();
 
-
+			IFotoExplorerSrv fes = (IFotoExplorerSrv)_servizioFactory.creaServizio( typeof( IFotoExplorerSrv ) );
+			_serviziAvviati.Add( typeof( IFotoExplorerSrv ).FullName, fes );
+			gis.start();
 
 /*
 			ScaricatoreFotoSrvImpl s2 = (ScaricatoreFotoSrvImpl)_servizioFactory.creaServizio( typeof( IScaricatoreFotoSrv ) );
@@ -183,6 +189,9 @@ namespace Digiphoto.Lumen.Applicazione {
 
 		public IServizio getServizioAvviato( string nome ) {
 			return _serviziAvviati [nome];
+		}
+		public T getServizioAvviato<T>() {
+			return (T)getServizioAvviato( typeof( T ).FullName );
 		}
 
 		/** Ritorno il servizio di gestione dell''immagine */

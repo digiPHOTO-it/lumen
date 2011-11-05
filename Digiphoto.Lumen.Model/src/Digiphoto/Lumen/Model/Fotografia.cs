@@ -1,6 +1,7 @@
 ﻿using System;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Imaging;
+using System.Collections.Generic;
 
 
 namespace Digiphoto.Lumen.Model {
@@ -9,20 +10,12 @@ namespace Digiphoto.Lumen.Model {
 	// Ci penserò io a riempirli a mano
 	public partial class Fotografia {
 
-		public Immagine imgOrig {
-			get;
-			set;
-		}
+		public Immagine imgOrig { get; set; }
 
-		public Immagine imgProvino {
-			get;
-			set;
-		}
+		public Immagine imgProvino { get; set; }
 
-		public Immagine imgRisultante {
-			get;
-			set;
-		}
+		public Immagine imgRisultante { get; set; }
 
+		public bool selezionata { get; set; }
 	}
 }

@@ -7,7 +7,7 @@ using Digiphoto.Lumen.Core;
 
 namespace Digiphoto.Lumen.Servizi.Ricerca {
 
-	interface IRicercatoreSrv {
+	interface IRicercatoreSrv : IServizio {
 
 		List<Fotografia> cerca( ParamRicercaFoto param );
 
