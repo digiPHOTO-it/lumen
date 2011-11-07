@@ -21,7 +21,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 		Fotografia fotoCorrente { get; set; }
 
 		/** invoca l'operazione richiesta */
-		void invoca( Comando comandoUtente );
+		void invoca( Comando comandoUtente, Target target );
 
 		// Cerca le foto nell'archivio e le carica in memoria.
 		void cercaFoto( ParamRicercaFoto param );

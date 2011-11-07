@@ -17,9 +17,10 @@ namespace Digiphoto.Lumen.Core.VsTest.Util {
 
 	[TestClass]
 	public class QueriesVarieTest {
-	
-		[TestInitialize]
-		public void init() {
+
+		//Use ClassInitialize to run code before running the first test in the class
+		[ClassInitialize()]
+		public static void MyClassInitialize( TestContext testContext ) {
 			LumenApplication.Instance.avvia();
 		}
 

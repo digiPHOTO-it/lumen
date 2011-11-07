@@ -19,10 +19,11 @@ namespace Digiphoto.Lumen.Core.VsTest {
 		int _contaMasterizzate = 0;
 		Carrello _carrelloInserito = null;
 
-		[TestInitialize]
-		public void Init() {
+		//Use ClassInitialize to run code before running the first test in the class
+		[ClassInitialize()]
+		public static void MyClassInitialize( TestContext testContext ) {
 			LumenApplication.Instance.avvia();
-		}		
+		}	
 
 
 		[TestMethod]

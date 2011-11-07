@@ -58,6 +58,10 @@
   <ItemGroup>
     <Compile Include="src\Applicazione\StartupUtil.cs" />
     <Compile Include="src\Applicazione\Stato.cs" />
+    <Compile Include="src\Comandi\CorrezioneCmd.cs" />
+    <Compile Include="src\Comandi\SelezionaCmd.cs" />
+    <Compile Include="src\Comandi\StampaCmd.cs" />
+    <Compile Include="src\Comandi\TornaOriginaleCmd.cs" />
     <Compile Include="src\Config\Configurazione.cs" />
     <Compile Include="src\Config\ConfigurazioneNonValidaException.cs" />
     <Compile Include="src\Applicazione\LumenApplication.cs" />
@@ -80,11 +84,7 @@
     <Compile Include="src\Imaging\ImagingFactory.cs" />
     <Compile Include="src\Imaging\IProvinatore.cs" />
     <Compile Include="src\Imaging\Provinatore.cs" />
-    <Compile Include="src\Imaging\RitoccoUtil.cs" />
-    <Compile Include="src\Comandi\CorrezioneComando.cs" />
-    <Compile Include="src\Comandi\StampaComando.cs" />
     <Compile Include="src\Comandi\Comando.cs" />
-    <Compile Include="src\Comandi\TornaOriginaleComando.cs" />
     <Compile Include="src\Servizi\Explorer\FotoExplorerSrvImpl.cs" />
     <Compile Include="src\Servizi\Explorer\IFotoExplorerSrv.cs" />
     <Compile Include="src\Servizi\Explorer\RicercaModificataMessaggio.cs" />

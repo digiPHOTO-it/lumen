@@ -37,7 +37,7 @@ namespace Digiphoto.Lumen.Imaging.Nativa  {
 		}
 
 
-		public Immagine applicaCorrezioni( Immagine immaginePartenza, IList<Correzione> correzioni ) {
+		public Immagine applicaCorrezioni( Immagine immaginePartenza, ICollection<Correzione> correzioni ) {
 
 			CorrettoreFactory factory = new CorrettoreFactory();
 

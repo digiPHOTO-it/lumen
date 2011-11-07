@@ -25,11 +25,16 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 		
 
+		//Use ClassInitialize to run code before running the first test in the class
+		[ClassInitialize()]
+		public static void MyClassInitialize( TestContext testContext ) {
+			LumenApplication.Instance.avvia();
+		}
+
 		[TestInitialize]
 		public void Init() {
 
 			LumenApplication app = LumenApplication.Instance;
-			app.avvia();
 			IObservable<ScaricoFotoMsg> observable = app.bus.Observe<ScaricoFotoMsg>();
 			observable.Subscribe( this );
 

@@ -9,10 +9,7 @@ namespace Digiphoto.Lumen.Comandi {
 
 	public class StampaComando : Comando {
 
-		public StampaComando() {
-		}
-
-		public StampaComando( Target target ) : base( target ) {
+		public StampaComando( Target target ) {
 		}
 
 		internal override Esito esegui( Fotografia foto ) {

@@ -54,10 +54,13 @@ namespace Digiphoto.Lumen.Imaging.Nativa {
 
 
 		public void Dispose() {
-			try {
-				image.Dispose();
-			} finally {
-				image = null;
+
+			if( image != null ) {
+				try {
+					image.Dispose();
+				} finally {
+					image = null;
+				}
 			}
 		}
 	}

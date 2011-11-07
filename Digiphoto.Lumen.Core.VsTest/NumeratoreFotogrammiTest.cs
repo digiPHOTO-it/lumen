@@ -66,10 +66,14 @@ namespace Digiphoto.Lumen.Core.VsTest {
 		//}
 		//
 		#endregion
+		//Use ClassInitialize to run code before running the first test in the class
+		[ClassInitialize()]
+		public static void inizializzaClasse( TestContext testContext ) {
+			LumenApplication.Instance.avvia();
+		}
+		
 		[TestInitialize]
 		public void Init() {
-			LumenApplication app = LumenApplication.Instance;
-			app.avvia();
 		}
 
 

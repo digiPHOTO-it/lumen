@@ -25,14 +25,9 @@ namespace Digiphoto.Lumen.Comandi {
 		/** Altri possibili parametri per il comando */
 	//	public Object extraParam { get; set; }
 
+
 		public Comando() {
 		}
-
-		public Comando( Target target ) {
-			this.target = target;
-		}
-
-		public Target target { get; set; }
 
 		internal abstract Esito esegui( Fotografia foto );
 		

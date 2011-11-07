@@ -30,12 +30,18 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 		private int giorni = 0;
 
+		//Use ClassInitialize to run code before running the first test in the class
+		[ClassInitialize()]
+		public static void inizializzaClasse( TestContext testContext ) {
+			LumenApplication.Instance.avvia();
+		}
+
+
         [TestInitialize()]
         public void initTest()
         {
 			Console.WriteLine("INIZIO");
 			LumenApplication app = LumenApplication.Instance;
-			app.avvia();
 			giorni = Settings.Default.giorniDeleteFoto;
 			Console.WriteLine("GIORNI " +giorni);
 
