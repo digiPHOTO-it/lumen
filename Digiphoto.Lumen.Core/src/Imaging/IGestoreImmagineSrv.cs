@@ -7,6 +7,12 @@ using Digiphoto.Lumen.Model;
 
 namespace Digiphoto.Lumen.Imaging {
 
+	/**
+	 * Questo servizio non contiene intelligenza o stato.
+	 * E' un esecutore di interventi grafici.
+	 * Verrà pilotato da un altro servizio "più intelligente" e più vicino
+	 * al modello.
+	 */
 	public interface IGestoreImmagineSrv : IServizio {
 
 		/** Crea una immagine leggendola da disco */
@@ -19,6 +25,6 @@ namespace Digiphoto.Lumen.Imaging {
 		void save( Immagine immagine, string fileName );
 
 		/** Applico tutte i ritocchi grafici indicati nel preciso ordine */
-		Immagine applicaCorrezioni( Immagine immaginePartenza, IList<Correzione> correzioni );
+		Immagine applicaCorrezioni( Immagine immaginePartenza, ICollection<Correzione> correzioni );
 	}
 }

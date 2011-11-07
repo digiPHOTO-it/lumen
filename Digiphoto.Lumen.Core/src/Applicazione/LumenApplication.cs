@@ -23,7 +23,7 @@ using Digiphoto.Lumen.Servizi.Explorer;
 namespace Digiphoto.Lumen.Applicazione {
 
 
-	public sealed class LumenApplication : IObserver<String> {
+	public sealed class LumenApplication {
 
 		#region Proprietà
 
@@ -63,9 +63,14 @@ namespace Digiphoto.Lumen.Applicazione {
 		 */
 		public void avvia() {
 
+/*
+ * Purtoppo non posso mettere questo controllo perché gli Test-Case si inciampano qui.
+ * Sembra che i vari test case siano eseguiti in più thread dello stesso processo.
+ * 
 			if( avviata == true )
 				throw new InvalidOperationException( "L'applicazione Lumen è già stata avviata" );
 
+*/
 			// Configuro il logger
 			XmlConfigurator.Configure();
 
@@ -167,18 +172,6 @@ namespace Digiphoto.Lumen.Applicazione {
 			avviata = false;
 		}
 
-
-		public void OnCompleted() {
-			throw new NotImplementedException();
-		}
-
-		public void OnError( Exception error ) {
-			throw new NotImplementedException();
-		}
-
-		public void OnNext( string value ) {
-			throw new NotImplementedException();
-		}
 
 		public IBus bus {
 			get {

@@ -9,14 +9,17 @@ using Digiphoto.Lumen.Util;
 
 namespace Digiphoto.Lumen.Comandi {
 
-	public class CorrezioneComando : Comando {
+	/**
+	 * Questo comando serve per applicare delle correzioni grafiche alle foto.
+	 * Le correzioni sono gestite da apposito serzivio.
+	 * Ogni correzione è demandata ad un apposito Correttore.
+	 */
+	public class CorrezioneCmd : Comando {
 
 		IList<Correzione> _correzioni;
 
-		public CorrezioneComando() : this( Target.Nessuna, null ) {
-		}
 
-		public CorrezioneComando( Target target, Correzione correzione ) : base( target ) {
+		public CorrezioneCmd( Correzione correzione ) {
 			
 			_correzioni = new List<Correzione>();
 
@@ -32,29 +35,20 @@ namespace Digiphoto.Lumen.Comandi {
 
 			Immagine modificata = gis.applicaCorrezioni( foto.imgProvino, _correzioni );
 
-			//
+
  			// ATTENZIONE :   questo passaggio è importante.
 			// In questa fase, sto per perdere il reference all'Image precedente.
 			// Se non faccio esplicitamente la dispose, quel file sul filesystem rimane lockato.
 			// Infatti il metodo Image.FromFile() quando apre l'immagine, impone un lock sul file.
 			// Questo lock non verrebbe più rilasciato
-			//
+			
 			
 			foto.imgProvino.Dispose();
 			foto.imgProvino = modificata;
 
-
 			// Aggiungo la correzione all'elenco
 			foreach( Correzione c in _correzioni )
 				foto.correzioni.Add( c );
-
-			// TODO attenzione 
-			//      ci vuole un refactoring 
-			//      se ho 10 correzioni, non posso salvare il file 10 volte,
-			//      bisogna che carico la bitmap,
-			//      poi la modifico in tutti i modi
-			//      poi la salvo alla  fine.
-			//      Per il momento la tengo cosi che almeno funziona per fare qualche test.
 
 			// Salvo l'immagine cosi modificata
 			gis.save( foto.imgProvino, PathUtil.nomeCompletoProvino( foto ) );

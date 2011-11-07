@@ -11,6 +11,7 @@ using Digiphoto.Lumen.Eventi;
 using System.Threading;
 using Digiphoto.Lumen.Util;
 using log4net;
+using Digiphoto.Lumen.Database;
 
 namespace Digiphoto.Lumen.Servizi.Explorer {
 
@@ -42,31 +43,39 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 
 			// avviso se il thread di copia è ancora attivo
 			if( _threadIdrata != null && _threadIdrata.IsAlive ) {
-				_giornale.Warn( "Il thread di caricamento foto è ancora attivo. Non è stata fatta la Join o la Abort.\nProababilmente il programma si inchioderà" );
+				_giornale.Warn( "Il thread di caricamento foto è ancora attivo. Non è stata fatta la Dispose del servizio.\nProababilmente il programma si inchioderà" );
 			}
 		}
 
-		public void invoca( Comando comando ) {
+		public void invoca( Comando comando, Target target ) {
 
-			switch( comando.target ) {
+			using( new UnitOfWorkScope( true ) ) {
 
-				case Target.Corrente:
-					comando.esegui( fotoCorrente );
-					break;
+				switch( target ) {
 
-				case Target.Selezionate:
-					var querySelezionate = from ff in fotografie
-										   where ff.selezionata == true
-										   select ff;
-					foreach( Fotografia foto in querySelezionate )
-						comando.esegui( foto );
-					break;
+					// --
+					case Target.Corrente:
+						if( fotoCorrente == null )
+							throw new ArgumentException( "Nessuna foto corrente selezionata" );
 
-				case Target.Tutte:
-					foreach( Fotografia foto in fotografie )
-						comando.esegui( foto );
-					break;
+						comando.esegui( fotoCorrente );
+						break;
 
+					// --
+					case Target.Selezionate:
+						var querySelezionate = from ff in fotografie
+											   where ff.selezionata == true
+											   select ff;
+						foreach( Fotografia foto in querySelezionate )
+							comando.esegui( foto );
+						break;
+
+					// --
+					case Target.Tutte:
+						foreach( Fotografia foto in fotografie )
+							comando.esegui( foto );
+						break;
+				}
 			}
 		}
 
@@ -117,10 +126,17 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 					else
 						_threadIdrata.Join();
 				}
-
 			} finally {
-				base.Dispose();
 			}
+
+			try {
+				foreach( Fotografia foto in this.fotografie ) {
+					AiutanteFoto.disposeImmagini( foto );
+				}
+			} finally {
+			}
+
+			base.Dispose();
 		}
 	}
 }

@@ -56,9 +56,9 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			foreach( FileInfo fileInfo in _listaFiles ) {
 
-				Fotografia foto = aggiungiEntitaFoto( fileInfo, ++conta + ultimoNumFoto );
+				Fotografia foto = aggiungiFoto( fileInfo, ++conta + ultimoNumFoto );
 
-				RitoccoUtil.creaProvinoFoto( fileInfo.FullName, foto );
+				AiutanteFoto.creaProvinoFoto( fileInfo.FullName, foto );
 
 				// Quando sono a posto con la foto, sollevo un evento per avvisare tutti
 				NuovaFotoMsg msg = new NuovaFotoMsg( foto );
@@ -92,7 +92,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		 * dato il nome del file della immagine, creo l'oggetto Fotografia e lo aggiungo al suo contenitore
 		 * (in pratica faccio una insert nel database).
 		 */
-		private Fotografia aggiungiEntitaFoto( FileInfo fileInfo, int numFotogramma ) {
+		private Fotografia aggiungiFoto( FileInfo fileInfo, int numFotogramma ) {
 
 			// Ad ogni foto persisto.
 			// Se per esempio ho 500 foto da salvare, non posso permettermi che se una salta, perdo anche le altre 499 !
@@ -110,7 +110,6 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 					foto = new Fotografia();
 					foto.id = Guid.NewGuid();
-					// foto.dataOraScatto =   TODO prendere dai dati exif.
 					foto.dataOraAcquisizione = fileInfo.CreationTime;
 					foto.fotografo = _fotografo;
 					foto.evento = evento;
@@ -125,7 +124,6 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 					// vedono il percorso condiviso in maniera differente.
 					foto.nomeFile = PathUtil.nomeRelativoFoto( fileInfo );
 
-					// TODO leggere un pò di dati exif (in particolare la data-ora di scatto, orientazione )
 					caricaMetadatiImmagine( foto );
 
 					objContext.Fotografie.AddObject( foto );
@@ -157,6 +155,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		 */
 		private void caricaMetadatiImmagine( Fotografia foto ) {
 			// TODO
+			// foto.dataOraScatto =   TODO prendere dai dati exif.
 			// throw new NotImplementedException();
 		}
 	

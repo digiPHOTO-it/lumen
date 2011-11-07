@@ -68,6 +68,7 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Crc32.cs" />
     <Compile Include="src\Servizi\Explorer\FotoExplorerSrvImplTest.cs" />
     <Compile Include="NumeratoreFotogrammiTest.cs" />
     <Compile Include="src\Model\CarrelloTest.cs" />
@@ -126,13 +127,15 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
     <Shadow Include="Test References\Digiphoto.Lumen.Core.accessor" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\Servizi\Scaricatore\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

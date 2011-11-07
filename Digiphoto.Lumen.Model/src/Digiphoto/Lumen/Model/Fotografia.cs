@@ -2,6 +2,7 @@
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Imaging;
 using System.Collections.Generic;
+using System.Data.Objects.DataClasses;
 
 
 namespace Digiphoto.Lumen.Model {
@@ -17,5 +18,7 @@ namespace Digiphoto.Lumen.Model {
 		public Immagine imgRisultante { get; set; }
 
 		public bool selezionata { get; set; }
+
 	}
+
 }

@@ -7,6 +7,8 @@ using Digiphoto.Lumen.Model;
 using System.ComponentModel;
 using Digiphoto.Lumen.Applicazione;
 using System.Threading;
+using System.IO;
+using Digiphoto.Lumen.Util;
 
 namespace Digiphoto.Lumen.Core.VsTest
 {
@@ -96,9 +98,43 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 			Assert.IsTrue( _caricateFoto );
 
+			// ora torno normale
+			TornaOriginaleComando origCmd = new TornaOriginaleComando();
+			_impl.invoca( origCmd, Target.Corrente );
+			
+			// calcolo il crc di controllo prima della cura.
+			string hashOrig = calcolaCrc( PathUtil.nomeCompletoProvino( _impl.fotoCorrente ) );
+
+			// ---
 			Correzione cor = new BiancoNeroCorrezione();
-			Comando cmd = new CorrezioneComando( Target.Corrente, cor );
-			_impl.invoca( cmd );
+			Comando cmd = new CorrezioneCmd( cor );
+			_impl.invoca( cmd, Target.Corrente );
+
+			string hashBN = calcolaCrc( PathUtil.nomeCompletoProvino( _impl.fotoCorrente ) );
+
+			// ora le foto non sono più uguali perchè è in bianco e nero
+			Assert.AreNotEqual( hashOrig, hashBN );
+
+			// ---
+			// ora torno normale
+			_impl.invoca( origCmd, Target.Corrente );
+
+			string hashFinale = calcolaCrc( PathUtil.nomeCompletoProvino( _impl.fotoCorrente ) );
+
+			Assert.AreEqual( hashOrig, hashFinale );
+
+		}
+
+		private string calcolaCrc( string nomeFile ) {
+			
+			string hash = String.Empty;
+			Crc32 crc32 = new Crc32();
+			using( FileStream fs = File.Open( nomeFile, FileMode.Open ) ) {
+				foreach( byte b in crc32.ComputeHash( fs ) ) {
+					hash += b.ToString( "x2" ).ToLower();
+				}
+			}
+			return hash;
 		}
 
 		public void OnCompleted() {
