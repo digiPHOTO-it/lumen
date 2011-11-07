@@ -162,6 +162,16 @@ namespace Digiphoto.Lumen.Config  {
 			return Properties.Settings.Default.giorniDeleteFoto;
 		}
 
+        public String suffissoCartellaFoto()
+        {
+            return ".Fot";
+        }
+
+        public String suffissoCartellaGiorni()
+        {
+            return ".Gio";
+        }
+
 
 	}
 }

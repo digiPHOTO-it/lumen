@@ -2,16 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Digiphoto.Lumen.Model;
+using Digiphoto.Lumen.Eventi;
 
 namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
 {
     public enum Fase
     {
-        FineEliminazione
+        FineEliminazione,
+        FineEliminazioneAlbumNonReferenziati
     };
 
-    class EliminaFotoVecchieMsg
+    class EliminaFotoVecchieMsg : Messaggio
     {
+        public Fotografo fotografo { get; set; }
+
         public string cartellaSorgente { get; set; }
 
         public DateTime dataIntervallo { get; set; }

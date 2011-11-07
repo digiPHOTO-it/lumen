@@ -8,22 +8,14 @@ using Digiphoto.Lumen.Servizi;
 namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
 {
 
-    public class ParamEliminaFotoVecchieSrv
-    {
-        public DateTime dataIntervallo { get; set; }
-        public Fotografo fotografo { get; set; }
-    }
-
 
     public interface IEliminaFotoVecchie
     {
-        void init(ParamEliminaFotoVecchieSrv param);
-
         IList<String> getListaCartelleDaEliminare();
 
         void elimina(String pathCartellaDaEliminare);
 
-        Fotografo diChiSonoQuesteFoto();
+		Fotografo diChiSonoQuesteFoto(String pathCartellaDaEliminare);
     }
 
 }

@@ -70,8 +70,40 @@ namespace Digiphoto.Lumen.Util {
 			return nomeCartellaProvini;
 		}
 
+        public static string fotografoIDFromPath(String path)
+        {
+            String fotografoID = null;
+            if (Directory.Exists(path) || true)
+            {
+                String[] array = path.Split(Path.DirectorySeparatorChar);
+                foreach (String ar in array)
+                {
+                    if (ar.Contains(".Fot"))
+                    {
+                        fotografoID = ar.Split('.')[0];
+                        break;
+                    }
+                }
+            }
+            return fotografoID;
+        }
 
-
+        public static string giornoFromPath(String path)
+        {
+            String giorno = null;
+            if (Directory.Exists(path) || true)
+            {
+                String[] array = path.Split(Path.DirectorySeparatorChar);
+                foreach (String ar in array)
+                {
+                    if(ar.Contains(".Gio")){
+                        giorno = ar.Split('.')[0];
+                        break;
+                    }
+                }
+            }
+            return giorno;
+        }
 
 	}
 }
