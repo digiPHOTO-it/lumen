@@ -74,7 +74,7 @@
     <Compile Include="src\Model\CarrelloTest.cs" />
     <Compile Include="src\Servizi\Ricerca\RicercatoreSrvImplTest.cs" />
     <Compile Include="src\Util\QueriesVarieTest.cs" />
-    <Compile Include="EliminaFotoVecchieSrvImplTest.cs" />
+    <Compile Include="src\Servizi\EliminaFotoVecchie\EliminaFotoVecchieSrvImplTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScaricaFotoSrvImplTest.cs" />
     <Compile Include="Utilita.cs" />

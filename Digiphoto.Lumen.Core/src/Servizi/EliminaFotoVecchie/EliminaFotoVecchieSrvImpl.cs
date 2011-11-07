@@ -11,24 +11,17 @@ using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Model;
 using System.Collections;
+using Digiphoto.Lumen.Util;
 
 namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
 {
 
     public class EliminaFotoVecchieSrvImpl : ServizioImpl, IEliminaFotoVecchie 
     {
-
         private static readonly ILog _giornale = LogManager.GetLogger(typeof(EliminaFotoVecchieSrvImpl));      
-
-        private EliminaFotoVecchieMsg _eliminaFotoVecchieMsg;
-
-        private DateTime _dataIntervallo;
-
-        private Fotografo _fotografo;
 
         public EliminaFotoVecchieSrvImpl()
         {
-           
         }
 
         ~EliminaFotoVecchieSrvImpl()
@@ -36,47 +29,35 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
 
         }
 
-        public void init(ParamEliminaFotoVecchieSrv param)
-        {
-            this._fotografo = param.fotografo;
-        }
-
+        /// <summary>
+        /// Restituisce la lista dei path che soddisfano il criterio di eliminazione in base alla data
+        /// </summary>
         public IList<String> getListaCartelleDaEliminare()
         {
 			IList<String> listaCartelleDaEliminare = new List<String>();
-            string nomeDirDest = @configurazione.getCartellaRepositoryFoto();
-			if (_dataIntervallo == DateTime.MinValue)
-			{
-				_dataIntervallo = DateTime.Now.AddDays(-configurazione.getGiorniDeleteFoto());
-			}
-			
-            string idFotografo = this._fotografo.id;
+            String pathCartellaRepositoryFoto = @configurazione.getCartellaRepositoryFoto();
+			DateTime dataIntervallo = DateTime.Now.AddDays(-configurazione.getGiorniDeleteFoto());
 
-            _eliminaFotoVecchieMsg = new EliminaFotoVecchieMsg();
-
-            if (System.IO.Directory.Exists(nomeDirDest))
+            if (System.IO.Directory.Exists(pathCartellaRepositoryFoto))
             {
-                string[] filePathsDate = Directory.GetDirectories(nomeDirDest);
-                foreach (String filePathEtichettaData in filePathsDate)
+                String[] listPathsDate = Directory.GetDirectories(pathCartellaRepositoryFoto);
+                foreach (String filePathEtichettaData in listPathsDate)
                 {
-                    Console.WriteLine("[EliminaFotoVecchieSvrImpl]: "+filePathEtichettaData);
+                    //System.Diagnostics.Trace.WriteLine("[EliminaFotoVecchieSvrImpl]: "+filePathEtichettaData);
                     //Calcolo il percoso fino alle date e ne recupero le etichette per avere una data da confrotare
                     String etichettaData = Path.GetFileName(filePathEtichettaData);
-                    DateTime newDate = Convert.ToDateTime(etichettaData);
+                    DateTime dateDaEtichetta = Convert.ToDateTime(PathUtil.giornoFromPath(etichettaData));
+					String strDateDaEtichetta = dateDaEtichetta.ToString("yyyy/MM/dd");
 
-                    string strNewDate = newDate.ToString("yyyy/MM/dd");
+                    String dataInt = dataIntervallo.ToString("yyyy/MM/dd");
 
-                    string dataIntervallo = _dataIntervallo.ToString("yyyy/MM/dd");
-
-					if (Convert.ToDateTime(strNewDate).Date <= Convert.ToDateTime(dataIntervallo).Date)
+					if (Convert.ToDateTime(strDateDaEtichetta).Date <= Convert.ToDateTime(dataInt).Date)
 					{
-						String filePath = @filePathEtichettaData + "\\" + idFotografo;
-						if(System.IO.Directory.Exists(filePath)){
-							listaCartelleDaEliminare.Add(filePath);
+						String[] filePath = Directory.GetDirectories(filePathEtichettaData);
+						foreach(String path in filePath){
+							listaCartelleDaEliminare.Add(path);
 						}
-					}
-					else
-					{
+						
 					}
                 }
             }
@@ -87,9 +68,17 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
             return listaCartelleDaEliminare;
         }
 
+        /// <summary>
+        /// Consente di eliminare tutte le foto contenute nel path
+        /// </summary>
+        /// <param name="pathCartella"></param>
         public void elimina(String pathCartella)
         {
-			String[] dirNameArray = pathCartella.Split(Path.DirectorySeparatorChar);
+            String fotografoID = PathUtil.fotografoIDFromPath(pathCartella);
+            DateTime dataRiferimento = Convert.ToDateTime(PathUtil.giornoFromPath(pathCartella)).Date;
+
+            EliminaFotoVecchieMsg eliminaFotoVecchieMsg = new EliminaFotoVecchieMsg();
+
             foreach (string directoryPath in Directory.GetFiles(pathCartella))
             {			
 				String nomeFile = Path.GetFileName(directoryPath);
@@ -106,48 +95,51 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
 			{
 				Directory.Delete(dirDataPath);
 			}
-
-			using (LumenEntities dbContext = new LumenEntities())
+            using (new UnitOfWorkScope())
 			{
-				dbContext.ExecuteStoreCommand("DELETE FROM Fotografie WHERE fotografo_id = {0} AND dataoraAcquisizione ={1}", _fotografo.id, _dataIntervallo);
-				dbContext.SaveChanges();
+                LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
+                objContext.ExecuteStoreCommand("DELETE FROM Fotografie WHERE fotografo_id = {0} AND DATEPART(yyyy, dataOraAcquisizione) = {1} AND DATEPART(mm, dataOraAcquisizione) = {2} AND DATEPART(dd, dataOraAcquisizione)= {3}", fotografoID, dataRiferimento.Year, dataRiferimento.Month, dataRiferimento.Day);
+                // Elimino tutti gli album rimasti senza foto
+                objContext.ExecuteStoreCommand("DELETE FROM Albums WHERE (id NOT IN(SELECT DISTINCT AlbumRigaAlbum_RigaAlbum_id FROM RigheAlbum))");
+                objContext.SaveChanges();
 			}
-
+            eliminaFotoVecchieMsg.fase = Fase.FineEliminazione;
+            pubblicaMessaggio(eliminaFotoVecchieMsg);
         }
 
-        public Fotografo diChiSonoQuesteFoto()
+        /// <summary>
+        /// Consente di eliminare tutti gli album rimasti senza foto
+        /// </summary>
+        public void eliminaAlbumNonReferenziati()
         {
-            return this._fotografo;
+            EliminaFotoVecchieMsg eliminaFotoVecchieMsg = new EliminaFotoVecchieMsg();
+            using (new UnitOfWorkScope())
+            {
+                LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
+                objContext.ExecuteStoreCommand("DELETE FROM Albums WHERE (id NOT IN(SELECT DISTINCT AlbumRigaAlbum_RigaAlbum_id FROM RigheAlbum))");
+                objContext.SaveChanges();
+                eliminaFotoVecchieMsg.fase = Fase.FineEliminazioneAlbumNonReferenziati;
+                pubblicaMessaggio(eliminaFotoVecchieMsg);
+            }
         }
 
-		public void eliminaRecord()
+        /// <summary>
+        /// Restituisce il fotografo a cui appartengono le foto memorizzate nel path
+        /// </summary>
+        /// <param name="path"></param>
+        public Fotografo diChiSonoQuesteFoto(String path)
 		{
-			DateTime dataRiferimento =  Convert.ToDateTime("2011/10/26").Date;
-			using (LumenEntities dbContext = new LumenEntities())
+            //EliminaFotoVecchieMsg eliminaFotoVecchieMsg = new EliminaFotoVecchieMsg();
+            String fotografoID= PathUtil.fotografoIDFromPath(path);
+			Fotografo fotografo = null;
+            using (new UnitOfWorkScope())
 			{
-				/**
-				 * Ah ricordati che per quel lavoro che stai facendo, non basta buttare via le cartelle dal filesystem, ma occorre buttare via anche 
-				 * le Fotografia dal database.
-				 * Esiste anche l'associazione Fotografia -> RigaAlbum da eliminare (quindi se quella foto era presente in un album, occorre toglierla)
-				 * Altrimenti l'integrità referenziale si incazza.
-				*/
-				//IList<Fotografia> result = dbContext.Fotografie.Where(ff => ff.fotografo.id == _fotografo.id).ToList();
-
-				dbContext.ExecuteStoreCommand("DELETE FROM Fotografie WHERE fotografo_id = {0} AND dataoraAcquisizione ={1}", _fotografo.id, dataRiferimento);
-
-				//foreach(Fotografia r in result){
-				//	Console.WriteLine(r.nomeFile);
-				//}
-
-				//RigaAlbum rigaAlbum = (RigaAlbum)dbContext.RigheAlbum.SingleOrDefault<RigaAlbum>(ff => ff.id == fotografia.id);
-
-				//dbContext.DeleteObject(rigaAlbum);
-				//dbContext.DeleteObject(result);
-				dbContext.SaveChanges();
+                LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
+                fotografo = objContext.Fotografi.SingleOrDefault(f => f.id == fotografoID);
+                //eliminaFotoVecchieMsg.fotografo = fotografo;
+                //pubblicaMessaggio(eliminaFotoVecchieMsg);
+                return fotografo;
 			}
 		}
-
     }
-
-
 }
