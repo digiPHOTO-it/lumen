@@ -79,6 +79,7 @@
     <Compile Include="src\Database\OrmUtil.cs" />
     <Compile Include="src\Database\UnitOfWorkScope.cs" />
     <Compile Include="src\Eventi\Messaggio.cs" />
+    <Compile Include="src\Imaging\ProiettoreArea.cs" />
     <Compile Include="src\Imaging\Correzioni\Correttore.cs" />
     <Compile Include="src\Imaging\IGestoreImmagineSrv.cs" />
     <Compile Include="src\Imaging\ImagingFactory.cs" />

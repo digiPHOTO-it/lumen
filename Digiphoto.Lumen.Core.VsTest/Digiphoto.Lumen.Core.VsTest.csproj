@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Crc32.cs" />
+    <Compile Include="src\Imaging\ProiettoreAreaTest.cs" />
     <Compile Include="src\Servizi\Explorer\FotoExplorerSrvImplTest.cs" />
     <Compile Include="NumeratoreFotogrammiTest.cs" />
     <Compile Include="src\Model\CarrelloTest.cs" />
