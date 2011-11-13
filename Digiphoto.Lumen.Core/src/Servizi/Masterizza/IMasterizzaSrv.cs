@@ -6,7 +6,7 @@ using Digiphoto.Lumen.Servizi;
 using System.Collections;
 using Digiphoto.Lumen.Model;
 
-namespace Digiphoto.Lumen.Servizi.Masterizza {
+namespace Digiphoto.Lumen.Servizi.Masterizzare {
 
 	public enum TipoDestinazione {
 		MASTERIZZATORE,
@@ -21,7 +21,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizza {
 	public interface IMasterizzaSrv : IServizio, IList<Fotografia> {
 
 		/** Aggiunge l'intero album alla lista */
-		void add( Album album );
+		void addAlbum( Album album );
 
 		/** L'utente deve scegliere dove copiare le foto.
 		 * Se il tipo è CARTELLA, allora la destinazione è il nome della cartella.
