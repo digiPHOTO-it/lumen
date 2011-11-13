@@ -55,6 +55,11 @@ namespace Digiphoto.Lumen.Imaging {
 			set;
 		}
 
+		public bool autoCentra {
+			get;
+			set;
+		}
+
 		private bool _effettuataRotazione;
 
 		#endregion
@@ -67,6 +72,7 @@ namespace Digiphoto.Lumen.Imaging {
 			this.dest = dest;
 			this.autoZoomToFit = autoZoomToFit;
 			this.autoRotate = false;
+			this.autoCentra = true;   // non ha senso lavorare senza centratura, almeno per default.
 		}
 
 		/**
@@ -154,10 +160,14 @@ namespace Digiphoto.Lumen.Imaging {
 
 			float ratioSrc = (float)sorgente.Width / (float)sorgente.Height;
 
+			Rectangle copiaDest = dest;
+
 			// Se le aree non sono omogenee (ossia una verticale e l'altra orizzontale) ed ho il permesso di ruotare,
 			// allora giro per renderle omogenee
-			if( autoRotate && !isStessoOrientamento( sorgente.Size, dest.Size ) ) {
-				ratioSrc = 1 / ratioSrc;
+			if( autoRotate && !isStessoOrientamento( sorgente.Size, copiaDest.Size ) ) {
+
+				copiaDest = ruota( dest );
+//				ratioSrc = 1 / ratioSrc;
 				_effettuataRotazione = true;
 			}
     
@@ -167,10 +177,10 @@ namespace Digiphoto.Lumen.Imaging {
 			// dw = -------
 			//         sh
 			Rectangle tenta1 = Rectangle.Empty;
-			tenta1.Height = dest.Height;
-			tenta1.Width = Convert.ToInt32( (tenta1.Height * ratioSrc ) );
+			tenta1.Height = copiaDest.Height;
+			tenta1.Width = (int) (tenta1.Height * ratioSrc );  // tronco senza arrotondare
 
-			if( tenta1.Width > dest.Width ) {
+			if( tenta1.Width > copiaDest.Width ) {
 			    //  --- non ci sta. azzero per secondo tentativo
                 tenta1 = Rectangle.Empty;
 			}
@@ -181,9 +191,9 @@ namespace Digiphoto.Lumen.Imaging {
 			// dh = -------
 			//         sw
 			Rectangle tenta2 = Rectangle.Empty;
-            tenta2.Width = dest.Width;
-			tenta2.Height = Convert.ToInt32( tenta2.Width / ratioSrc );			
-			if( tenta2.Height > dest.Height ) {
+            tenta2.Width = copiaDest.Width;
+			tenta2.Height = (int) (tenta2.Width / ratioSrc );  // Tronco senza arrotondare
+			if( tenta2.Height > copiaDest.Height ) {
                 // --- non ci sta. impossibile.
                 tenta2 = Rectangle.Empty;
 			}
@@ -196,9 +206,22 @@ namespace Digiphoto.Lumen.Imaging {
 			else
 				esito = tenta2;
 				
-			// TODO qui c'era la gestione delle foto-tessera
+
+			// -- gestisco la centratura
+			if( autoCentra ) {
+				esito.X = (copiaDest.Width - esito.Width) / 2;
+				esito.Y = (copiaDest.Height - esito.Height) / 2;
+			}
+
+			Debug.Assert( ! (tenta1.IsEmpty == true && tenta2.IsEmpty == true) );  // non possono essere entrambi vuoti.
 
 			return esito;
+		}
+
+		public static Rectangle ruota( Rectangle rect ) {
+
+			Rectangle girato = new Rectangle( rect.Y, rect.X, rect.Height, rect.Width );
+			return girato;
 		}
    
 
@@ -207,7 +230,14 @@ namespace Digiphoto.Lumen.Imaging {
 		 * rispettivamente se l'area1 è più grande della 2
 		 */
 		private static int sizeCompare( Size s1, Size s2 ) {
-			int a1 = s1.Width * s2.Height;
+
+			if( s2.IsEmpty && !s1.IsEmpty )
+				return 1;
+
+			if( s1.IsEmpty && !s2.IsEmpty )
+				return (-1);
+			
+			int a1 = s1.Width * s1.Height;
 			int a2 = s2.Width * s2.Height;
 			return a1 - a2;
 		}
