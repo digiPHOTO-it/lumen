@@ -90,9 +90,11 @@ namespace Digiphoto.Lumen.Imaging {
 			_effettuataRotazione = false;
 
 			if( autoZoomToFit ) {
+				// In questo caso, l'area di stampa è massima e si scarta un pezzo della foto.
 				proiezione.sorg = calcolaAreaSorgente( sorgente );
 				proiezione.dest = dest;
 			} else {
+				// In questo caso, la foto è presa sempre tutta, ma l'area di stampa è parziale.
 				proiezione.sorg = sorgente;
 				proiezione.dest = calcolaAreaDestinazione( sorgente );
 			}
@@ -114,36 +116,42 @@ namespace Digiphoto.Lumen.Imaging {
 		 */
 		private Rectangle calcolaAreaSorgente( Rectangle sorgente ) {
 
-				Rectangle esito = Rectangle.Empty;
-				int spostamentoNoTaglio = 0;
+			// Se le aree non sono omogenee (ossia una verticale e l'altra orizzontale) ed ho il permesso di ruotare,
+			// allora giro per renderle omogenee
+			if( autoRotate && !isStessoOrientamento( sorgente.Size, dest.Size ) )
+				_effettuataRotazione = true;
 
-				float ratioSrc = (float)sorgente.Width / (float)sorgente.Height;
+			float localRatio = (_effettuataRotazione ? 1 / ratioDest : ratioDest);
 
-				//  -- devo capire quale lato va tagliato. Lo capisco con una proporzione.
-				// cartaH : cartaW = fotoH : x
-				int x = dest.Width * (sorgente.Height / dest.Height);
+			Rectangle tenta1 = Rectangle.Empty;
+			int ww = (int)(((float)sorgente.Height) * localRatio);
+			if( ww <= sorgente.Width )
+				tenta1 = new Rectangle( sorgente.X, sorgente.Y, ww, sorgente.Height );
 
-				if( x <= sorgente.Width ) {
+			Rectangle tenta2 = Rectangle.Empty;
+			int hh = (int)(((float)sorgente.Width) / localRatio);
+			if( hh <= sorgente.Height )
+				tenta2 = new Rectangle( sorgente.X, sorgente.Y, sorgente.Width, hh );
 
-					// Creo il rettangolo da ritornare
-					esito.X = (((sorgente.Width - x) / 2) + spostamentoNoTaglio);
-					esito.Y = 0;
-					esito.Height = sorgente.Height;
-					esito.Width = x;
+			// Controllo di sicurezza: non possono essere entrambi vuoti
+			Debug.Assert( !(tenta1.IsEmpty && tenta2.IsEmpty) );
+		
+			// --- decido quale dei due risultati sia meglio calcolando l'area della foto
+			// --- Prendo quella dove l'area è più grande
+			Rectangle esito = Rectangle.Empty;
+			if( sizeCompare( tenta1.Size, tenta2.Size ) > 0 )
+				esito = tenta1;
+			else
+				esito = tenta2;
 
-				} else {
-					// cartaH : cartaW = x : fotoW
-					x = dest.Height * sorgente.Width / dest.Width;
-					if( x <= sorgente.Height ) {
-						esito.X = 0;
-						esito.Y = ((sorgente.Height - x) / 2) + spostamentoNoTaglio;
-						esito.Height = x;
-						esito.Width = sorgente.Width;
-					} else {
-						Debug.Assert( false, "Ratio non gestibile" );
-					}
-				}
-	
+			// -- gestisco la centratura
+			if( autoCentra ) {
+				esito.X = (sorgente.Width - esito.Width) / 2;
+				esito.Y = (sorgente.Height - esito.Height) / 2;
+			}
+			
+			controllaTuttoPositivo( esito );
+
 			return esito;
 		}
 
@@ -160,14 +168,10 @@ namespace Digiphoto.Lumen.Imaging {
 
 			float ratioSrc = (float)sorgente.Width / (float)sorgente.Height;
 
-			Rectangle copiaDest = dest;
-
 			// Se le aree non sono omogenee (ossia una verticale e l'altra orizzontale) ed ho il permesso di ruotare,
 			// allora giro per renderle omogenee
-			if( autoRotate && !isStessoOrientamento( sorgente.Size, copiaDest.Size ) ) {
-
-				copiaDest = ruota( dest );
-//				ratioSrc = 1 / ratioSrc;
+			if( autoRotate && !isStessoOrientamento( sorgente.Size, dest.Size ) ) {
+				ratioSrc = 1 / ratioSrc;
 				_effettuataRotazione = true;
 			}
     
@@ -177,10 +181,10 @@ namespace Digiphoto.Lumen.Imaging {
 			// dw = -------
 			//         sh
 			Rectangle tenta1 = Rectangle.Empty;
-			tenta1.Height = copiaDest.Height;
+			tenta1.Height = dest.Height;
 			tenta1.Width = (int) (tenta1.Height * ratioSrc );  // tronco senza arrotondare
 
-			if( tenta1.Width > copiaDest.Width ) {
+			if( tenta1.Width > dest.Width ) {
 			    //  --- non ci sta. azzero per secondo tentativo
                 tenta1 = Rectangle.Empty;
 			}
@@ -191,13 +195,15 @@ namespace Digiphoto.Lumen.Imaging {
 			// dh = -------
 			//         sw
 			Rectangle tenta2 = Rectangle.Empty;
-            tenta2.Width = copiaDest.Width;
+			tenta2.Width = dest.Width;
 			tenta2.Height = (int) (tenta2.Width / ratioSrc );  // Tronco senza arrotondare
-			if( tenta2.Height > copiaDest.Height ) {
+			if( tenta2.Height > dest.Height ) {
                 // --- non ci sta. impossibile.
                 tenta2 = Rectangle.Empty;
 			}
-    
+
+			Debug.Assert( !(tenta1.IsEmpty == true && tenta2.IsEmpty == true) );  // non possono essere entrambi vuoti.
+
 			// --- decido quale dei due risultati sia meglio calcolando l'area della foto
 			// --- Prendo quella dove l'area è più grande
 
@@ -209,13 +215,20 @@ namespace Digiphoto.Lumen.Imaging {
 
 			// -- gestisco la centratura
 			if( autoCentra ) {
-				esito.X = (copiaDest.Width - esito.Width) / 2;
-				esito.Y = (copiaDest.Height - esito.Height) / 2;
+				esito.X = (dest.Width - esito.Width) / 2;
+				esito.Y = (dest.Height - esito.Height) / 2;
 			}
 
-			Debug.Assert( ! (tenta1.IsEmpty == true && tenta2.IsEmpty == true) );  // non possono essere entrambi vuoti.
+			controllaTuttoPositivo( esito );
 
 			return esito;
+		}
+
+		private void controllaTuttoPositivo( Rectangle esito ) {
+			Debug.Assert( esito.Left >= 0 );
+			Debug.Assert( esito.Top >= 0 );
+			Debug.Assert( esito.Width >= 0 );
+			Debug.Assert( esito.Height >= 0 );
 		}
 
 		public static Rectangle ruota( Rectangle rect ) {
