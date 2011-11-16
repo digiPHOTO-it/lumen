@@ -16,7 +16,7 @@ using Digiphoto.Lumen.Util;
 namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
 {
 
-    public class EliminaFotoVecchieSrvImpl : ServizioImpl, IEliminaFotoVecchie 
+    public class EliminaFotoVecchieSrvImpl : ServizioImpl, IEliminaFotoVecchieSrv 
     {
         private static readonly ILog _giornale = LogManager.GetLogger(typeof(EliminaFotoVecchieSrvImpl));      
 

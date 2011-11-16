@@ -90,6 +90,17 @@
     <Compile Include="src\Servizi\Explorer\IFotoExplorerSrv.cs" />
     <Compile Include="src\Servizi\Explorer\RicercaModificataMessaggio.cs" />
     <Compile Include="src\Servizi\Masterizza\IMasterizzaSrv.cs" />
+    <Compile Include="src\Servizi\Masterizza\MasterizzaMsg.cs" />
+    <Compile Include="src\Servizi\Masterizza\MasterizzaSrvImpl.cs" />
+    <Compile Include="src\Servizi\Masterizza\MyBurner\BurnerMsg.cs" />
+    <Compile Include="src\Servizi\Masterizza\MyBurner\BurnerSrvImpl.cs" />
+    <Compile Include="src\Servizi\Masterizza\MyBurner\IBurnerSrv.cs" />
+    <Compile Include="src\Servizi\Masterizza\MyBurner\Imapi 2.0\Interop\BurnData.cs" />
+    <Compile Include="src\Servizi\Masterizza\MyBurner\Imapi 2.0\Interop\Imapi2Interop.cs" />
+    <Compile Include="src\Servizi\Masterizza\MyBurner\Imapi 2.0\MediaItem\DirectoryItem.cs" />
+    <Compile Include="src\Servizi\Masterizza\MyBurner\Imapi 2.0\MediaItem\FileItem.cs" />
+    <Compile Include="src\Servizi\Masterizza\MyBurner\Imapi 2.0\MediaItem\IMediaItem.cs" />
+    <Compile Include="src\Servizi\Masterizza\MyBurner\Imapi 2.0\MediaItem\Win32.cs" />
     <Compile Include="src\Servizi\Ricerca\IRicercatoreSrv.cs" />
     <Compile Include="src\Servizi\Ricerca\ParamRicercaFoto.cs" />
     <Compile Include="src\Servizi\Ricerca\RicercatoreSrvImpl.cs" />
