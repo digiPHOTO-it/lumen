@@ -73,6 +73,8 @@
     <Compile Include="src\Servizi\Explorer\FotoExplorerSrvImplTest.cs" />
     <Compile Include="NumeratoreFotogrammiTest.cs" />
     <Compile Include="src\Model\CarrelloTest.cs" />
+    <Compile Include="src\Servizi\Masterizzare\BurnerSrvImplTest.cs" />
+    <Compile Include="src\Servizi\Masterizzare\MasterizzaSrvImplTest.cs" />
     <Compile Include="src\Servizi\Ricerca\RicercatoreSrvImplTest.cs" />
     <Compile Include="src\Util\QueriesVarieTest.cs" />
     <Compile Include="src\Servizi\EliminaFotoVecchie\EliminaFotoVecchieSrvImplTest.cs" />

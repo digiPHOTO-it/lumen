@@ -9,7 +9,7 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
 {
 
 
-    public interface IEliminaFotoVecchie
+    public interface IEliminaFotoVecchieSrv
     {
         IList<String> getListaCartelleDaEliminare();
 
