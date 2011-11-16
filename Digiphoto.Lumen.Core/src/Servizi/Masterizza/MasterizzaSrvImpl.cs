@@ -15,6 +15,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using IMAPI2.MediaItem;
+using Digiphoto.Lumen.Servizi.Masterizza.MyBurner;
 
 namespace Digiphoto.Lumen.Servizi.Masterizzare
 {
@@ -28,9 +29,9 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 
         private String _destinazione;
 
-        private String _driverLetter;
-
         private bool _morto = false;
+
+        private String _driverLetter;
 
         private Thread _threadMasterizza;
 
@@ -109,35 +110,18 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                     _threadMasterizza.Start();
                     break;
                 case TipoDestinazione.MASTERIZZATORE :
-                    // Pulisco la Staging-Area
-                    //DeleteFolder(new DirectoryInfo(_stageAreaFolder));
-                    //copiaFile(_destinazione, false);
-
-                    System.Diagnostics.Trace.WriteLine("Inizio Masterizzazione");
-
-
-                   //_threadMasterizza = new Thread(masterizzaWork);
-                   //_threadMasterizza.Start();
-
-
-                    //Burn.ImapiErrorValues result = _burner.BurnCD();
-                    //_burner.Dispose();
-
-                    //DeleteFolder(new DirectoryInfo(_stageAreaFolder));
-
-                    //if (result == Burn.ImapiErrorValues.Ok)
-                    //{
-                    //    masterizzaMsg.fase = Fase.MasterizzazioneCompletata;
-                    //    _giornale.Info(result.ToString());
-                    //}
-                    //else
-                    //{
-                    //   System.Diagnostics.Trace.WriteLine("Masterizzazione Fallita!!!");
-                    //   masterizzaMsg.fase = Fase.MasterizzazioneFallita;
-                    //   masterizzaMsg.riscontratiErrori = true;
-                    //   masterizzaMsg.result = result.ToString();
-                    //   _giornale.Error("Masterizzazione Fallita!!!");
-                    //}
+                    BurnerSrvImpl _impl = new BurnerSrvImpl();
+                    foreach (Fotografia fot in _listFotografie)
+                    {
+                        _impl.addFileToBurner(configurazione.getCartellaRepositoryFoto() + Path.DirectorySeparatorChar +fot.nomeFile);
+                    }
+                    _impl.setDiscRecorder(@_driverLetter);
+                     _impl.testMedia();
+                    _impl.etichetta = "Test";
+                    _impl.burning();
+                    _impl.Dispose();
+                    masterizzaMsg.fase = Fase.MasterizzazioneCompletata;
+                    pubblicaMessaggio(masterizzaMsg);
                     break;
             }
         }
@@ -153,10 +137,6 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                 masterizzaMsg.fase = Fase.MasterizzazioneCompletata;
                 pubblicaMessaggio(masterizzaMsg);
             }
-        }
-
-        private void copiaStatingAreaAsincorno()
-        {
         }
 
         private void copiaFile(String path, bool sovrascrivi){
@@ -180,8 +160,6 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
             }
         }
 
-
-
         private void DeleteFolder(DirectoryInfo currDir)
         {
           if (currDir.GetFiles().Length > 0)
@@ -195,11 +173,6 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
             {
                 DeleteFolder(folder);
             }
-
-            //if (currDir.FullName != _stageAreaFolder)
-            //{
-            //    Directory.Delete(currDir.FullName);
-            //}
           }
         }
 
