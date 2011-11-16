@@ -59,19 +59,5 @@ namespace FormsTestApplication.Properties {
                 resourceCulture = value;
             }
         }
-        
-        internal static System.Drawing.Bitmap Koala {
-            get {
-                object obj = ResourceManager.GetObject("Koala", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap Mirabilandia_008 {
-            get {
-                object obj = ResourceManager.GetObject("Mirabilandia 008", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
     }
 }
