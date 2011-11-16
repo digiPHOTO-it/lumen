@@ -89,9 +89,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Koala.jpg" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Digiphoto.Lumen.Core\Digiphoto.Lumen.Core.csproj">
       <Project>{34477397-B3B8-4DD1-8418-D7E9EED4D006}</Project>
       <Name>Digiphoto.Lumen.Core</Name>
@@ -102,7 +99,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Mirabilandia 008.JPG" />
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
