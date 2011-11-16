@@ -271,8 +271,10 @@ namespace Digiphoto.Lumen.Servizi.Masterizza.MyBurner
             System.Diagnostics.Trace.WriteLine("Inizio Masterizzazione");
 
             backgroundBurnWorker = new BackgroundWorker();
+            backgroundBurnWorker.WorkerReportsProgress = true;
+            backgroundBurnWorker.WorkerSupportsCancellation = true;
             backgroundBurnWorker.DoWork += backgroundBurnWorker_DoWork;
-            backgroundBurnWorker.ProgressChanged += new ProgressChangedEventHandler(backgroundBurnWorker_ProgressChanged);
+            backgroundBurnWorker.ProgressChanged += backgroundBurnWorker_ProgressChanged;
             backgroundBurnWorker.RunWorkerCompleted += backgroundBurnWorker_RunWorkerCompleted;
             backgroundBurnWorker.RunWorkerAsync(_burner);
         }
@@ -399,6 +401,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizza.MyBurner
         /// <param name="progress"></param>
         void discFormatData_Update([In, MarshalAs(UnmanagedType.IDispatch)] object sender, [In, MarshalAs(UnmanagedType.IDispatch)] object progress)
         {
+            System.Diagnostics.Trace.WriteLine("CCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
             //
             // Check if we've cancelled
             //
@@ -541,6 +544,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizza.MyBurner
         /// <param name="e"></param>
         private void backgroundBurnWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
+            System.Diagnostics.Trace.WriteLine("UPDATE");
             BurnerMsg burnerMsg = new BurnerMsg();
             //int percent = e.ProgressPercentage;
             var burnData = (BurnData)e.UserState;
@@ -557,25 +561,25 @@ namespace Digiphoto.Lumen.Servizi.Masterizza.MyBurner
                 {
                     case IMAPI_FORMAT2_DATA_WRITE_ACTION.IMAPI_FORMAT2_DATA_WRITE_ACTION_VALIDATING_MEDIA:
                         System.Diagnostics.Trace.WriteLine("[0]:" + "Validating current media...");
-                        burnerMsg.fase = Fase.ValidatingCurrentMedia;
+                        burnerMsg.statusMessage = "Validating Current Media";
                         pubblicaMessaggio(burnerMsg);
                         break;
 
                     case IMAPI_FORMAT2_DATA_WRITE_ACTION.IMAPI_FORMAT2_DATA_WRITE_ACTION_FORMATTING_MEDIA:
                         System.Diagnostics.Trace.WriteLine("[0]:" + "Formatting media...");
-                        burnerMsg.fase = Fase.FormattingMedia;
+                        burnerMsg.statusMessage = "Formatting Media";
                         pubblicaMessaggio(burnerMsg);
                         break;
 
                     case IMAPI_FORMAT2_DATA_WRITE_ACTION.IMAPI_FORMAT2_DATA_WRITE_ACTION_INITIALIZING_HARDWARE:
                         System.Diagnostics.Trace.WriteLine("[0]:" + "Initializing hardware...");
-                        burnerMsg.fase = Fase.InitializingHardware;
+                        burnerMsg.statusMessage = "Initializing hardware";
                         pubblicaMessaggio(burnerMsg);
                         break;
 
                     case IMAPI_FORMAT2_DATA_WRITE_ACTION.IMAPI_FORMAT2_DATA_WRITE_ACTION_CALIBRATING_POWER:
                         System.Diagnostics.Trace.WriteLine("[0]:" + "Optimizing laser intensity...");
-                        burnerMsg.fase = Fase.OptimizingLaserIntensity;
+                        burnerMsg.statusMessage = "Optimizing Laser Intensity";
                         pubblicaMessaggio(burnerMsg);
                         break;
 
@@ -599,19 +603,19 @@ namespace Digiphoto.Lumen.Servizi.Masterizza.MyBurner
 
                     case IMAPI_FORMAT2_DATA_WRITE_ACTION.IMAPI_FORMAT2_DATA_WRITE_ACTION_FINALIZATION:
                         System.Diagnostics.Trace.WriteLine("[0]:" + "Finalizing writing...");
-                        burnerMsg.fase = Fase.FinalizingWriting;
+                        burnerMsg.statusMessage = "Finalizing Writing";
                         pubblicaMessaggio(burnerMsg);
                         break;
 
                     case IMAPI_FORMAT2_DATA_WRITE_ACTION.IMAPI_FORMAT2_DATA_WRITE_ACTION_COMPLETED:
                         System.Diagnostics.Trace.WriteLine("[0]:" + "Completed!");
-                        burnerMsg.fase = Fase.Completed;
+                        burnerMsg.statusMessage = "Completed";
                         pubblicaMessaggio(burnerMsg);
                         break;
 
                     case IMAPI_FORMAT2_DATA_WRITE_ACTION.IMAPI_FORMAT2_DATA_WRITE_ACTION_VERIFYING:
                         System.Diagnostics.Trace.WriteLine("[0]:" + "Verifying");
-                        burnerMsg.fase = Fase.Verifying;
+                        burnerMsg.statusMessage = "Verifying";
                         pubblicaMessaggio(burnerMsg);
                         break;
                 }
@@ -644,6 +648,8 @@ namespace Digiphoto.Lumen.Servizi.Masterizza.MyBurner
             System.Diagnostics.Trace.WriteLine("Inizio Formattazione");
 
             backgroundFormatWorker = new BackgroundWorker();
+            backgroundFormatWorker.WorkerReportsProgress = true;
+            backgroundFormatWorker.WorkerSupportsCancellation = true;
             backgroundFormatWorker.DoWork += backgroundFormatWorker_DoWork;
             backgroundFormatWorker.ProgressChanged += new ProgressChangedEventHandler(backgroundFormatWorker_ProgressChanged);
             backgroundFormatWorker.RunWorkerCompleted += backgroundFormatWorker_RunWorkerCompleted;
@@ -756,13 +762,18 @@ namespace Digiphoto.Lumen.Servizi.Masterizza.MyBurner
         private void backgroundFormatWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             System.Diagnostics.Trace.WriteLine("Formatting {0}%... "+ e.ProgressPercentage);
+            BurnerMsg burnerMsg = new BurnerMsg();
+            burnerMsg.statusMessage = "Formatting {0}%... " + e.ProgressPercentage;
+            pubblicaMessaggio(burnerMsg);
             //formatProgressBar.Value = e.ProgressPercentage;
         }
 
         private void backgroundFormatWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             System.Diagnostics.Trace.WriteLine((int)e.Result == 0 ?"Finished Formatting Disc!" : "Error Formatting Disc!");
-
+            BurnerMsg burnerMsg = new BurnerMsg();
+            burnerMsg.fase = (int)e.Result == 0 ? Fase.FormattazioneCompletata : Fase.FormattazioneFallita;
+            pubblicaMessaggio(burnerMsg);
             //formatProgressBar.Value = 0;
             _isFormatting = false;
         }

@@ -26,6 +26,7 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Masterizzare
             System.Diagnostics.Trace.WriteLine("INIZIO");
             app = LumenApplication.Instance;
             app.avvia();
+            _impl.start();
             IObservable<BurnerMsg> observable = app.bus.Observe<BurnerMsg>();
             observable.Subscribe(this);
         }
@@ -79,7 +80,7 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Masterizzare
                 }
             }
             _impl.testMedia();
-            _impl.etichetta = "Test";
+            _impl.etichetta = "Masterizza";
             _impl.burning();
             while (!_elaborazioneTerminata)
             {
@@ -95,6 +96,13 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Masterizzare
             {
                 Thread.Sleep(10000);
             }
+        }
+
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            _impl.Dispose();
         }
 
         public void OnCompleted()
