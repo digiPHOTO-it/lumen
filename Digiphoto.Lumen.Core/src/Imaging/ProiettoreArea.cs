@@ -121,7 +121,7 @@ namespace Digiphoto.Lumen.Imaging {
 			if( autoRotate && !isStessoOrientamento( sorgente.Size, dest.Size ) )
 				_effettuataRotazione = true;
 
-			float localRatio = (_effettuataRotazione ? 1 / ratioDest : ratioDest);
+			float localRatio = (_effettuataRotazione ? 1f/ratioDest : ratioDest);
 
 			Rectangle tenta1 = Rectangle.Empty;
 			int ww = (int)(((float)sorgente.Height) * localRatio);
