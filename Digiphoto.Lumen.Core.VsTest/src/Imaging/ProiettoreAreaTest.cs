@@ -931,7 +931,9 @@ namespace Digiphoto.Lumen.Core.VsTest
 			Rectangle foto = new Rectangle( 0, 0, 100, 80 );
 			Rectangle stampante = new Rectangle( 0, 0, 6, 10 );
 
-			Assert.IsTrue( ratio( foto ) < (1/ratio( stampante )) );
+			float rf = (float)Math.Round( ratio( foto ), 3 );
+			float rs = (float)Math.Round( 1 / ratio( stampante ), 3 );
+			Assert.IsTrue( rf < rs );
 
 			ProiettoreArea proiettore = new ProiettoreArea( stampante );
 			proiettore.autoZoomToFit = true;
@@ -943,6 +945,12 @@ namespace Digiphoto.Lumen.Core.VsTest
 			Assert.AreEqual( esito.sorg, atteso );
 			Assert.AreEqual( esito.dest, stampante );
 			Assert.IsTrue( esito.effettuataRotazione );
+
+			// Controllo che il ratio finale sia giusto (arrotondando a 3 decimali)
+			float vr1 = (float)Math.Round( ratio( esito.sorg ), 3 );
+			float vr2 = (float)Math.Round( 1/ratio( stampante ), 3 );
+			Assert.IsTrue( vr1 == vr2 );
+
 		}
 
 		/**
@@ -973,6 +981,520 @@ namespace Digiphoto.Lumen.Core.VsTest
 			Assert.AreEqual( esito.sorg, foto );
 			Assert.AreEqual( esito.dest, stampante );
 			Assert.IsTrue( esito.effettuataRotazione );
+		}
+
+		/**
+		 * Vedi battaglia navale!
+		 * 
+		 * Foto: Orizzontale
+		 * Stampante: Verticale
+		 * Ratio:  f>s
+		 * autoZoom: true
+		 * autoRotate: true
+		 */
+		[TestMethod()]
+		public void proiettaTest33() {
+
+			Rectangle foto = new Rectangle( 0, 0, 100, 54 );
+			Rectangle stampante = new Rectangle( 0, 0, 6, 10 );
+
+			float rf = (float)Math.Round( ratio( foto ), 3 );
+			float rs = (float)Math.Round( 1/ratio( stampante ), 3 );
+			Assert.IsTrue( rf > rs );
+
+			ProiettoreArea proiettore = new ProiettoreArea( stampante );
+			proiettore.autoZoomToFit = true;
+			proiettore.autoRotate = true;
+			Proiezione esito = proiettore.calcola( foto );
+
+			Rectangle atteso = new Rectangle( 5, 0, 89, 54 );
+
+			Assert.AreEqual( esito.sorg, atteso );
+			Assert.AreEqual( esito.dest, stampante );
+			Assert.IsTrue( esito.effettuataRotazione );
+		}
+
+		/**
+		 * Vedi battaglia navale!
+		 * 
+		 * Foto: orizzontale
+		 * Stampante: orizzontale
+		 * Ratio:  f<s
+		 * autoZoom: true
+		 * autoRotate: true
+		 */
+		[TestMethod()]
+		public void proiettaTest34() {
+
+			Rectangle stampante = new Rectangle( 0, 0, 901, 607 );
+			Rectangle foto = new Rectangle( 0, 0, 407, 399 );
+
+			float rf = (float)Math.Round( ratio( foto ), 3 );
+			float rs = (float)Math.Round( ratio( stampante ), 3 );
+			Assert.IsTrue( rf < rs );
+
+
+			ProiettoreArea proiettore = new ProiettoreArea( stampante );
+			proiettore.autoRotate = true;
+			proiettore.autoZoomToFit = true;
+			Proiezione esito = proiettore.calcola( foto );
+
+			Rectangle atteso = new Rectangle( 0, 62, 407, 274 );  // Rimane uguale l'altezza. Cambia la larghezza
+
+			Assert.AreEqual( esito.sorg, atteso );
+			Assert.AreEqual( esito.dest, stampante );
+			Assert.IsFalse( esito.effettuataRotazione );
+		}
+
+
+		/**
+		 * Vedi battaglia navale!
+		 * 
+		 * Foto: orizzontale
+		 * Stampante: orizzontale
+		 * Ratio:  f=s
+		 * autoZoom: false
+		 * autoRotate: true
+		 */
+		[TestMethod()]
+		public void proiettaTest35() {
+
+			Rectangle stampante = creaOriz();
+			Rectangle foto = creaOriz();
+
+			float rf = (float)Math.Round( ratio( foto ), 3 );
+			float rs = (float)Math.Round( ratio( stampante ), 3 );
+			Assert.IsTrue( rf == rs );
+
+			ProiettoreArea proiettore = new ProiettoreArea( stampante );
+			proiettore.autoZoomToFit = true;
+			proiettore.autoRotate = true;
+
+			Proiezione esito = proiettore.calcola( foto );
+
+			Assert.AreEqual( esito.sorg, foto );
+			Assert.AreEqual( esito.dest, stampante );
+			Assert.IsFalse( esito.effettuataRotazione );
+		}
+
+		/**
+		 * Vedi battaglia navale!
+		 * 
+		 * Foto: orizzontale
+		 * Stampante: orizzontale
+		 * Ratio:  f>s
+		 * autoZoom: true
+		 * autoRotate: true
+		 */
+		[TestMethod()]
+		public void proiettaTest36() {
+
+			Rectangle stampante = new Rectangle( 0, 0, 193, 155 );
+			Rectangle foto = new Rectangle( 0, 0, 12355, 8997 );
+
+			float rf = (float)Math.Round( ratio( foto ), 3 );
+			float rs = (float)Math.Round( ratio( stampante ), 3 );
+			Assert.IsTrue( rf > rs );
+
+			ProiettoreArea proiettore = new ProiettoreArea( stampante );
+			proiettore.autoRotate = true;
+			Proiezione esito = proiettore.calcola( foto );
+
+			Rectangle atteso = new Rectangle( 0, 7, 193, 140 );  // Rimane uguale la larghezza. Cambia l'altezza
+
+			Assert.AreEqual( esito.sorg, foto );
+			Assert.AreEqual( esito.dest, atteso );
+			Assert.IsFalse( esito.effettuataRotazione );
+		}
+
+		/**
+		 * Vedi battaglia navale!
+		 * 
+		 * Foto: Orizzontale
+		 * Stampante: Orizzontale
+		 * Ratio:  f<s
+		 * autoZoom: true
+		 * autoRotate: false
+		 */
+		[TestMethod()]
+		public void proiettaTest37() {
+
+			Rectangle foto = new Rectangle( 0, 0, 100, 80 );
+			Rectangle stampante = new Rectangle( 0, 0, 10, 6 );
+
+			Assert.IsTrue( ratio( foto ) < ratio( stampante ) );
+
+			ProiettoreArea proiettore = new ProiettoreArea( stampante );
+			proiettore.autoZoomToFit = true;
+			Proiezione esito = proiettore.calcola( foto );
+
+			Rectangle atteso = new Rectangle( 0, 10, 100, 60 );
+
+			Assert.AreEqual( esito.sorg, atteso );
+			Assert.AreEqual( esito.dest, stampante );
+			Assert.IsFalse( esito.effettuataRotazione );
+		}
+
+		/**
+		 * Vedi battaglia navale!
+		 * 
+		 * Foto: Verticale
+		 * Stampante: Verticale
+		 * Ratio:  f=s
+		 * autoZoom: true
+		 * autoRotate: false
+		 */
+		[TestMethod()]
+		public void proiettaTest38() {
+
+			Rectangle foto = new Rectangle( 0, 0, 80, 100 );
+			Rectangle stampante = new Rectangle( 0, 0, 16, 20 );
+
+			float rf = (float)Math.Round( ratio( foto ), 3 );
+			float rs = (float)Math.Round( ratio( stampante ), 3 );
+			Assert.IsTrue( rf == rs );
+
+
+			ProiettoreArea proiettore = new ProiettoreArea( stampante );
+			proiettore.autoZoomToFit = true;
+			Proiezione esito = proiettore.calcola( foto );
+
+			Assert.AreEqual( esito.sorg, foto );
+			Assert.AreEqual( esito.dest, stampante );
+			Assert.IsFalse( esito.effettuataRotazione );
+		}
+
+		/**
+		 * Vedi battaglia navale!
+		 * 
+		 * Foto: Verticale
+		 * Stampante: verticale
+		 * Ratio:  f>s
+		 * autoZoom: true
+		 * autoRotate: true
+		 */
+		[TestMethod()]
+		public void proiettaTest39() {
+
+			Rectangle foto = new Rectangle( 0, 0, 80, 100 );
+			Rectangle stampante = new Rectangle( 0, 0, 6, 10 );
+
+			Assert.IsTrue( ratio( foto ) > ratio( stampante ) );
+
+			ProiettoreArea proiettore = new ProiettoreArea( stampante );
+			proiettore.autoZoomToFit = true;
+			Proiezione esito = proiettore.calcola( foto );
+
+			Rectangle atteso = new Rectangle( 10, 0, 60, 100 );
+
+			Assert.AreEqual( esito.sorg, atteso );
+			Assert.AreEqual( esito.dest, stampante );
+			Assert.IsFalse( esito.effettuataRotazione );
+		}
+
+		/**
+		 * Vedi battaglia navale!
+		 * 
+		 * Foto: verticale
+		 * Stampante: orizzontale
+		 * Ratio:  f<s   
+		 * autoZoom: true
+		 * autoRotate: false 
+		 */
+		[TestMethod()]
+		public void proiettaTest40() {
+
+			Rectangle foto = new Rectangle( 0, 0, 800, 1000 );
+			Rectangle stampante = new Rectangle( 0, 0, 22, 20 );
+
+			float rf = (float)Math.Round( ratio( foto ), 3 );
+			float rs = (float)Math.Round( 1/ratio( stampante ), 3 );
+			Assert.IsTrue( rf < rs );
+
+			ProiettoreArea proiettore1 = new ProiettoreArea( stampante );
+			proiettore1.autoZoomToFit = true;
+
+			Proiezione esito1 = proiettore1.calcola( foto );
+
+			Rectangle atteso1 = new Rectangle( 0, 136, 800, 727 );
+			Assert.AreEqual( esito1.sorg, atteso1 );
+			Assert.AreEqual( esito1.dest, stampante );
+			Assert.IsFalse( esito1.effettuataRotazione );
+
+			// Controllo che il ratio finale sia giusto (arrotondando a 3 decimali)
+			float vr1 = (float)Math.Round( ratio( esito1.sorg ), 3 );
+			float vr2 = (float)Math.Round( ratio( stampante ), 3 );
+			Assert.IsTrue( vr1 == vr2 );
+		}
+
+		/**
+		 * Vedi battaglia navale!
+		 * 
+		 * Foto: verticale
+		 * Stampante: orizzontale
+		 * Ratio:  f=s
+		 * autoZoom: true
+		 * autoRotate: false 
+		 */
+		[TestMethod()]
+		public void proiettaTest41() {
+
+			Rectangle foto = new Rectangle( 0, 0, 800, 1000 );
+			Rectangle stampante = new Rectangle( 0, 0, 100, 80 );
+
+			float rf = (float)Math.Round( ratio( foto ), 3 );
+			float rs = (float)Math.Round( 1f / ratio( stampante ), 3 );
+			Assert.IsTrue( rf == rs );
+
+			ProiettoreArea proiettore1 = new ProiettoreArea( stampante );
+			proiettore1.autoZoomToFit = true;
+
+			Proiezione esito1 = proiettore1.calcola( foto );
+
+			Rectangle atteso1 = new Rectangle( 0, 180, 800, 640 );
+			Assert.AreEqual( esito1.sorg, atteso1 );
+			Assert.AreEqual( esito1.dest, stampante );
+			Assert.IsFalse( esito1.effettuataRotazione );
+
+			// Controllo che il ratio finale sia giusto (arrotondando a 3 decimali)
+			float vr1 = (float)Math.Round( ratio( esito1.sorg ), 3 );
+			float vr2 = (float)Math.Round( ratio( stampante ), 3 );
+			Assert.IsTrue( vr1 == vr2 );
+		}
+
+
+		/**
+		 * Vedi battaglia navale!
+		 * 
+		 * Foto: verticale
+		 * Stampante: orizzontale
+		 * Ratio:  f>s
+		 * autoZoom: true
+		 */
+		[TestMethod()]
+		public void proiettaTest42() {
+
+			Rectangle foto1 = new Rectangle( 0, 0, 9000, 10000 );
+			Rectangle stampante1 = new Rectangle( 0, 0, 2000, 1500 );
+
+			float rf = (float)Math.Round( ratio( foto1 ), 3 );
+			float rs = (float)Math.Round( 1 / ratio( stampante1 ), 3 );
+			Assert.IsTrue( rf > rs );
+
+			ProiettoreArea proiettore1 = new ProiettoreArea( stampante1 );
+			proiettore1.autoZoomToFit = true;
+
+			Proiezione esito1 = proiettore1.calcola( foto1 );
+
+			Rectangle atteso1 = new Rectangle( 0, 1625, 9000, 6749 );
+			Assert.AreEqual( esito1.dest, stampante1 );
+			Assert.AreEqual( esito1.sorg, atteso1 );
+			Assert.IsFalse( esito1.effettuataRotazione );
+
+
+			// Controllo che il ratio finale sia giusto (arrotondando a 3 decimali)
+			float vr1 = (float)Math.Round( ratio( atteso1 ), 2 );
+			float vr2 = (float)Math.Round( ratio( stampante1 ), 2 );
+			Assert.IsTrue( vr1 == vr2 );
+		}
+
+		/**
+		 * Vedi battaglia navale!
+		 * 
+		 * Foto: Orizzontale
+		 * Stampante: Verticale
+		 * Ratio:  f<s
+		 * autoZoom: true
+		 * autoRotate: false
+		 */
+		[TestMethod()]
+		public void proiettaTest43() {
+
+			Rectangle foto = new Rectangle( 0, 0, 100, 80 );
+			Rectangle stampante = new Rectangle( 0, 0, 6, 10 );
+
+			float rf = (float)Math.Round( ratio( foto ), 3 );
+			float rs = (float)Math.Round( 1 / ratio( stampante ), 3 );
+			Assert.IsTrue( rf < rs );
+
+			ProiettoreArea proiettore = new ProiettoreArea( stampante );
+			proiettore.autoZoomToFit = true;
+			Proiezione esito = proiettore.calcola( foto );
+
+			Rectangle atteso = new Rectangle( 26, 0, 48, 80 );
+
+			Assert.AreEqual( esito.sorg, atteso );
+			Assert.AreEqual( esito.dest, stampante );
+			Assert.IsFalse( esito.effettuataRotazione );
+
+			// Controllo che il ratio finale sia giusto (arrotondando a 3 decimali)
+			float vr1 = (float)Math.Round( ratio( atteso ), 3 );
+			float vr2 = (float)Math.Round( ratio( stampante ), 3 );
+			Assert.IsTrue( vr1 == vr2 );
+
+		}
+
+		/**
+		 * Vedi battaglia navale!
+		 * 
+		 * Foto: Orizzontale
+		 * Stampante: Verticale
+		 * Ratio:  f=s
+		 * autoZoom: true
+		 * autoRotate: false
+		 */
+		[TestMethod()]
+		public void proiettaTest44() {
+
+			Rectangle foto = new Rectangle( 0, 0, 1000, 600 );
+			Rectangle stampante = new Rectangle( 0, 0, 60, 100 );
+
+			float rf = (float)Math.Round( ratio( foto ), 3 );
+			float rs = (float)Math.Round( 1 / ratio( stampante ), 3 );
+			Assert.IsTrue( rf == rs );
+
+			ProiettoreArea proiettore = new ProiettoreArea( stampante );
+			proiettore.autoZoomToFit = true;
+			Proiezione esito = proiettore.calcola( foto );
+
+			Rectangle atteso = new Rectangle( 320, 0, 360, 600 );
+
+			Assert.AreEqual( esito.sorg, atteso );
+			Assert.AreEqual( esito.dest, stampante );
+			Assert.IsFalse( esito.effettuataRotazione );
+
+			// Controllo che il ratio finale sia giusto (arrotondando a 3 decimali)
+			float vr1 = (float)Math.Round( ratio( atteso ), 3 );
+			float vr2 = (float)Math.Round( ratio( stampante ), 3 );
+			Assert.IsTrue( vr1 == vr2 );
+
+		}
+
+		/**
+		 * Vedi battaglia navale!
+		 * 
+		 * Foto: Orizzontale
+		 * Stampante: Verticale
+		 * Ratio:  f>s
+		 * autoZoom: true
+		 * autoRotate: false
+		 */
+		[TestMethod()]
+		public void proiettaTest45() {
+
+			Rectangle foto = new Rectangle( 0, 0, 1000, 540 );
+			Rectangle stampante = new Rectangle( 0, 0, 6, 10 );
+
+			float rf = (float)Math.Round( ratio( foto ), 3 );
+			float rs = (float)Math.Round( 1 / ratio( stampante ), 3 );
+			Assert.IsTrue( rf > rs );
+
+			ProiettoreArea proiettore = new ProiettoreArea( stampante );
+			proiettore.autoZoomToFit = true;
+			Proiezione esito = proiettore.calcola( foto );
+
+			Rectangle atteso = new Rectangle( 338, 0, 324, 540 );
+
+			Assert.AreEqual( esito.sorg, atteso );
+			Assert.AreEqual( esito.dest, stampante );
+			Assert.IsFalse( esito.effettuataRotazione );
+
+			// Controllo che il ratio finale sia giusto (arrotondando a 3 decimali)
+			float vr1 = (float)Math.Round( ratio( atteso ), 2 );
+			float vr2 = (float)Math.Round( ratio( stampante ), 2 );
+			Assert.IsTrue( vr1 == vr2 );
+
+		}
+
+		/**
+		 * Vedi battaglia navale!
+		 * 
+		 * Foto: orizzontale
+		 * Stampante: orizzontale
+		 * Ratio:  f<s
+		 * autoZoom: true
+		 * autoRotate: falae
+		 */
+		[TestMethod()]
+		public void proiettaTest46() {
+
+			Rectangle stampante = new Rectangle( 0, 0, 901, 607 );
+			Rectangle foto = new Rectangle( 0, 0, 407, 399 );
+
+			float rf = (float)Math.Round( ratio( foto ), 3 );
+			float rs = (float)Math.Round( ratio( stampante ), 3 );
+			Assert.IsTrue( rf < rs );
+
+
+			ProiettoreArea proiettore = new ProiettoreArea( stampante );
+			proiettore.autoZoomToFit = true;
+			Proiezione esito = proiettore.calcola( foto );
+
+			Rectangle atteso = new Rectangle( 0, 62, 407, 274 );
+
+			Assert.AreEqual( esito.sorg, atteso );
+			Assert.AreEqual( esito.dest, stampante );
+			Assert.IsFalse( esito.effettuataRotazione );
+		}
+
+		/**
+		 * Vedi battaglia navale!
+		 * 
+		 * Foto: orizzontale
+		 * Stampante: orizzontale
+		 * Ratio:  f=s
+		 * autoZoom: true
+		 * autoRotate: false
+		 */
+		[TestMethod()]
+		public void proiettaTest47() {
+
+			Rectangle stampante = creaOriz();
+			Rectangle foto = creaOriz();
+
+			float rf = (float)Math.Round( ratio( foto ), 3 );
+			float rs = (float)Math.Round( ratio( stampante ), 3 );
+			Assert.IsTrue( rf == rs );
+
+			ProiettoreArea proiettore = new ProiettoreArea( stampante );
+			proiettore.autoZoomToFit = true;
+
+			Proiezione esito = proiettore.calcola( foto );
+
+			Assert.AreEqual( esito.sorg, foto );
+			Assert.AreEqual( esito.dest, stampante );
+			Assert.IsFalse( esito.effettuataRotazione );
+		}
+
+
+		/**
+		 * Vedi battaglia navale!
+		 * 
+		 * Foto: orizzontale
+		 * Stampante: orizzontale
+		 * Ratio:  f>s
+		 * autoZoom: true
+		 * autoRotate: true
+		 */
+		[TestMethod()]
+		public void proiettaTest48() {
+
+			Rectangle stampante = new Rectangle( 0, 0, 193, 155 );
+			Rectangle foto = new Rectangle( 0, 0, 12355, 8997 );
+
+			float rf = (float)Math.Round( ratio( foto ), 3 );
+			float rs = (float)Math.Round( ratio( stampante ), 3 );
+			Assert.IsTrue( rf > rs );
+
+			ProiettoreArea proiettore = new ProiettoreArea( stampante );
+			proiettore.autoZoomToFit = true;
+			Proiezione esito = proiettore.calcola( foto );
+
+			Rectangle atteso = new Rectangle( 576, 0, 11202, 8997 );
+
+			Assert.AreEqual( esito.sorg, atteso );
+			Assert.AreEqual( esito.dest, stampante );
+			Assert.IsFalse( esito.effettuataRotazione );
 		}
 
 
