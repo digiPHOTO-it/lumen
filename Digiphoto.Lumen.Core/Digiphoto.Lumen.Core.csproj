@@ -114,6 +114,12 @@
     <Compile Include="src\Servizi\Scaricatore\NuovaFotoMsg.cs" />
     <Compile Include="src\Servizi\Scaricatore\ScaricoFotoMsg.cs" />
     <Compile Include="src\Servizi\ServizioFactory.cs" />
+    <Compile Include="src\Servizi\Stampare\ISpoolStampeSrv.cs" />
+    <Compile Include="src\Servizi\Stampare\IEsecutoreStampa.cs" />
+    <Compile Include="src\Servizi\Stampare\LavoroDiStampa.cs" />
+    <Compile Include="src\Servizi\Stampare\ParamStampaFoto.cs" />
+    <Compile Include="src\Servizi\Stampare\SpoolStampaSrvImpl.cs" />
+    <Compile Include="src\Servizi\Stampare\CodaDiStampe.cs" />
     <Compile Include="src\Servizi\VolumeCambiato\IVolumeCambiatoSrv.cs" />
     <Compile Include="src\Servizi\VolumeCambiato\VolumeCambiatoMessaggio.cs" />
     <Compile Include="src\Servizi\Scaricatore\IScaricatoreFotoSrv.cs" />
@@ -123,6 +129,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="src\Servizi\VolumeCambiato\VolumeCambiatoSrvImpl.cs" />
+    <Compile Include="src\Threading\ThreadedQueue.cs" />
+    <Compile Include="src\Threading\ThreadedQueueBase.cs" />
+    <Compile Include="src\Threading\WorkerThreadBase.cs" />
     <Compile Include="src\Util\AiutanteFoto.cs" />
     <Compile Include="src\Util\PathUtil.cs" />
   </ItemGroup>
