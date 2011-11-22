@@ -19,6 +19,10 @@ namespace Digiphoto.Lumen.Model {
 
 		public bool selezionata { get; set; }
 
+		public override string ToString() {
+			return String.Format( "Num.{0} Oper={1} del={2}", numero, fotografo.iniziali, dataOraAcquisizione.ToShortDateString() );
+		}
+
 	}
 
 }

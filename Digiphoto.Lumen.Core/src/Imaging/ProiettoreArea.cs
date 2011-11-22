@@ -75,6 +75,9 @@ namespace Digiphoto.Lumen.Imaging {
 			this.autoCentra = true;   // non ha senso lavorare senza centratura, almeno per default.
 		}
 
+		public ProiettoreArea( RectangleF rectangleF ) : this( new Rectangle( (int)rectangleF.Left, (int)rectangleF.Top, (int)rectangleF.Width, (int)rectangleF.Height ) ) {
+		}
+
 		/**
 		 * Calcolo la porzione della immagine sorgente che deve essere disegnata.
 		 * Calcolo anche l'area di destinazione (stampante) in cui renderizzare
@@ -232,9 +235,11 @@ namespace Digiphoto.Lumen.Imaging {
 		}
 
 		public static Rectangle ruota( Rectangle rect ) {
+			return new Rectangle( rect.Y, rect.X, rect.Height, rect.Width );
+		}
 
-			Rectangle girato = new Rectangle( rect.Y, rect.X, rect.Height, rect.Width );
-			return girato;
+		public static RectangleF ruota( RectangleF rect ) {
+			return new RectangleF( rect.Y, rect.X, rect.Height, rect.Width );
 		}
    
 
@@ -259,19 +264,31 @@ namespace Digiphoto.Lumen.Imaging {
 		 * Mi dice se le due aree indicate sono orientate nello stesso verso
 		 * (cioè entrambe verticali oppure entrambe orizzontali)
 		 */
-		private static bool isStessoOrientamento( Size s1, Size s2 ) {
+		public static bool isStessoOrientamento( Size s1, Size s2 ) {
+			return isStessoOrientamento( s1.Width, s1.Height, s2.Width, s2.Height );
+		}
 
-			if( s1.Width > s1.Height && s2.Width > s2.Height )
+		public static bool isStessoOrientamento( SizeF s1, SizeF s2 ) {
+			return isStessoOrientamento( s1.Width, s1.Height, s2.Width, s2.Height );
+		}
+
+		public static bool isStessoOrientamento( SizeF s1, Immagine s2 ) {
+			return isStessoOrientamento( s1.Width, s1.Height, s2.ww, s2.hh );
+		}
+
+		public static bool isStessoOrientamento( float w1, float h1, float w2, float h2 ) {
+
+			if( w1 > h1 && w2 > h2 )
 				return true;
 
-			if( s1.Width < s1.Height && s2.Width < s2.Height )
+			if( w1 < h1 && w2 < h2 )
 				return true;
 
-			if( s1.Width == s1.Height && s2.Width == s2.Height )
+			if( w1 == h1 && w2 == h2 )
 				return true;
 
 			return false;
 		}
-		
+
 	}
 }
