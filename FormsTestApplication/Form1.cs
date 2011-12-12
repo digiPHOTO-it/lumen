@@ -20,5 +20,26 @@ namespace FormsTestApplication {
 			}
 			
 		}
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            using (FormModificaConnectionString f = new FormModificaConnectionString())
+            {
+                f.ShowDialog();
+            }
+        }
+
+        private void sfoglia_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            using (FormSQLite f = new FormSQLite())
+            {
+                f.ShowDialog();
+            }
+        }
 	}
 }

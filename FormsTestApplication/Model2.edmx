@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="test3Model1.Store" Alias="Self" Provider="System.Data.SQLite" ProviderManifestToken="ISO8601" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityContainer Name="test3Model1StoreContainer">
+          <EntitySet Name="Articoli" EntityType="test3Model1.Store.Articoli" store:Type="Tables" />
+          <EntitySet Name="Clienti" EntityType="test3Model1.Store.Clienti" store:Type="Tables" />
+          <EntitySet Name="Vendita" EntityType="test3Model1.Store.Vendita" store:Type="Tables" />
+        </EntityContainer>
+        <EntityType Name="Articoli">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Descrizione" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Clienti">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Nome" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Vendita">
+          <Key>
+            <PropertyRef Name="Articolo" />
+            <PropertyRef Name="Cliente" />
+          </Key>
+          <Property Name="Articolo" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Cliente" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Nota" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="test3Model1" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityContainer Name="test3Entities1" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Articoli" EntityType="test3Model1.Articoli" />
+          <EntitySet Name="Clienti" EntityType="test3Model1.Clienti" />
+          <EntitySet Name="Vendita" EntityType="test3Model1.Vendita" />
+        </EntityContainer>
+        <EntityType Name="Articoli">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Guid" Nullable="false" />
+          <Property Name="Descrizione" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Clienti">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Guid" Nullable="false" />
+          <Property Name="Nome" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Vendita">
+          <Key>
+            <PropertyRef Name="Articolo" />
+            <PropertyRef Name="Cliente" />
+          </Key>
+          <Property Name="Articolo" Type="Guid" Nullable="false" />
+          <Property Name="Cliente" Type="Guid" Nullable="false" />
+          <Property Name="Nota" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="test3Model1StoreContainer" CdmEntityContainer="test3Entities1">
+          <EntitySetMapping Name="Articoli"><EntityTypeMapping TypeName="test3Model1.Articoli"><MappingFragment StoreEntitySet="Articoli">
+            <ScalarProperty Name="id" ColumnName="id" />
+            <ScalarProperty Name="Descrizione" ColumnName="Descrizione" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Clienti"><EntityTypeMapping TypeName="test3Model1.Clienti"><MappingFragment StoreEntitySet="Clienti">
+            <ScalarProperty Name="id" ColumnName="id" />
+            <ScalarProperty Name="Nome" ColumnName="Nome" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Vendita"><EntityTypeMapping TypeName="test3Model1.Vendita"><MappingFragment StoreEntitySet="Vendita">
+            <ScalarProperty Name="Articolo" ColumnName="Articolo" />
+            <ScalarProperty Name="Cliente" ColumnName="Cliente" />
+            <ScalarProperty Name="Nota" ColumnName="Nota" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram Name="Model2">
+        <EntityTypeShape EntityType="test3Model1.Articoli" Width="1.5" PointX="0.75" PointY="0.75" Height="1.4033821614583331" IsExpanded="true" />
+        <EntityTypeShape EntityType="test3Model1.Clienti" Width="1.5" PointX="2.75" PointY="0.75" Height="1.4033821614583335" IsExpanded="true" />
+        <EntityTypeShape EntityType="test3Model1.Vendita" Width="1.5" PointX="0.75" PointY="2.5" Height="1.5956835937499996" IsExpanded="true" />
+      </Diagram>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>
