@@ -29,7 +29,7 @@ namespace Digiphoto.Lumen.Applicazione {
 
 		public static readonly LumenApplication _instance = new LumenApplication();
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof(LumenApplication) );
-		private readonly IBus _bus = BusSetup.StartWith<Fast>().Construct();
+		private readonly IBus _bus = BusSetup.StartWith<Conservative>().Construct();
 		
 		private Configurazione _configurazione;
 		

@@ -40,8 +40,6 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 
         private BackgroundWorker backgroundWorkerCopia;
 
-        private Thread _threadMasterizza;
-
         private int countFotoAggiunte;
 
         private int countFotoNonAggiunte;
@@ -61,6 +59,10 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
             if (backgroundWorkerCopia != null && backgroundWorkerCopia.WorkerSupportsCancellation == true)
             {
                 backgroundWorkerCopia.CancelAsync();
+            }
+			if (_threadCopiaSuChiavetta != null && _threadCopiaSuChiavetta.IsAlive)
+            {
+                _giornale.Warn("Il thread di copia file è ancora attivo. Non è stata fatta la Join o la Abort.\nProababilmente il programma si inchioderà");
             }
 		}
 
@@ -108,7 +110,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
             switch(_tipoDestinazione){
                 case TipoDestinazione.CARTELLA :
                     // Scarico in un thread separato per non bloccare l'applicazione
-                    //seNonPossoCopiareSpaccati();
+                    seNonPossoCopiareSpaccati();
                     //backgroundWorkerCopia = new BackgroundWorker();
                     //backgroundWorkerCopia.WorkerReportsProgress = true;
                     //backgroundWorkerCopia.WorkerSupportsCancellation = true;
@@ -116,8 +118,8 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                     //backgroundWorkerCopia.ProgressChanged += backgroundWorkerCopia_ProgressChanged;
                     //backgroundWorkerCopia.RunWorkerCompleted += backgroundWorkerCopia_RunWorkerCompleted;
                     //backgroundWorkerCopia.RunWorkerAsync();
-                    _threadMasterizza = new Thread(copiaCartellaDestinazioneAsincrono);
-                    _threadMasterizza.Start();
+                    _threadCopiaSuChiavetta = new Thread(copiaCartellaDestinazioneAsincrono);
+                    _threadCopiaSuChiavetta.Start();
                     break;
                 case TipoDestinazione.MASTERIZZATORE :
                     _burner = new BurnerSrvImpl();
@@ -144,7 +146,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
         private void copiaCartellaDestinazioneAsincrono()
         {
             // Pattern Unit-of-work
-            using (LumenEntities objContext = new LumenEntities())
+            using (LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext)
             {
                 System.Diagnostics.Trace.WriteLine("INIZIO COPIA SU CARTELLA");
                 MasterizzaMsg inizioCopiaMsg = new MasterizzaMsg();
@@ -173,8 +175,8 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                         statoCopiaMsg.totFotoAggiunte = ++countfotoAggiunte;
                         statoCopiaMsg.totFotoNonAggiunte = countFotoNonAggiunte;
                         statoCopiaMsg.result = "Il File " + fot.nomeFile + " è stato copiato sulla chiavetta con successo";
-                        //pubblicaMessaggio(statoCopiaMsg);
-                        System.Diagnostics.Trace.WriteLine("Il File " + fot.nomeFile + " è stato copiato sulla chiavetta con successo");
+                        pubblicaMessaggio(statoCopiaMsg);
+                        //System.Diagnostics.Trace.WriteLine("Il File " + fot.nomeFile + " è stato copiato sulla chiavetta con successo");
                     }
                     catch (IOException ee)
                     {
@@ -186,8 +188,8 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                         statoCopiaErroreMsg.totFotoNonAggiunte = ++countFotoNonAggiunte;
                         statoCopiaErroreMsg.result = "Il file " + fot.nomeFile + " non è stato copiato sulla chiavetta: " + nomeFileDest;
                         _giornale.Error("Il file " + @configurazione.getCartellaRepositoryFoto() + Path.DirectorySeparatorChar + fot.nomeFile + " non è stato copiato il file sulla chiavetta " + nomeFileDest, ee);
-                        //pubblicaMessaggio(statoCopiaErroreMsg);
-                        System.Diagnostics.Trace.WriteLine("Il file " + fot.nomeFile + " non è stato copiato sulla chiavetta: " + nomeFileDest);
+                        pubblicaMessaggio(statoCopiaErroreMsg);
+                        //System.Diagnostics.Trace.WriteLine("Il file " + fot.nomeFile + " non è stato copiato sulla chiavetta: " + nomeFileDest);
                     }
                 }
                 MasterizzaMsg copiaCompletataMsg = new MasterizzaMsg();
@@ -207,7 +209,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                 copiaCompletataMsg.totFotoAggiunte = countfotoAggiunte;
                 
                 pubblicaMessaggio(copiaCompletataMsg);
-                System.Diagnostics.Trace.WriteLine("FINE");
+                //System.Diagnostics.Trace.WriteLine("FINE");
             } 
         }
 
@@ -221,7 +223,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
         private void backgroundWorkerCopia_DoWork(object sender, DoWorkEventArgs e)
         {
             // Pattern Unit-of-work
-            using (LumenEntities objContext = new LumenEntities())
+            using (LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext)
             {
                 System.Diagnostics.Trace.WriteLine("INIZIO COPIA SU CARTELLA");
                 MasterizzaMsg inizioCopiaMsg = new MasterizzaMsg();
@@ -342,7 +344,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
         ///  <param name="album"></param>
         public void addAlbum(Model.Album album)
         {
-            using (LumenEntities objContext = new LumenEntities())
+            using (LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext)
             {
                 foreach (RigaAlbum alb in objContext.RigheAlbum.Where(r => r.id == album.id))
                 {
@@ -427,7 +429,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
         ///  <param name="album"></param>
         public void Remove(Model.Album album)
         {
-            using (LumenEntities objContext = new LumenEntities())
+            using (LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext)
             {
                 foreach (RigaAlbum alb in objContext.RigheAlbum.Where(r => r.id == album.id))
                 {
@@ -446,23 +448,6 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
             return _listFotografie.GetEnumerator();
         }
 
-        public override void Dispose()
-        {
-            try
-            {
-
-
-            }
-            finally
-            {
-                base.Dispose();
-                if (_burner != null)
-                {
-                    _burner.Dispose();
-                }
-            }
-        }
-
         #endregion
 
         #region NotificaMessaggiBurner
@@ -476,5 +461,31 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
             pubblicaMessaggio(masterizzaMsg);
         }
         #endregion
+		
+		public override void Dispose()
+        {
+            System.Diagnostics.Trace.WriteLine("DISPOSE");
+            try
+            {
+                // Se il tread di copia è ancora vivo, lo uccido
+                if (_threadCopiaSuChiavetta != null)
+                {
+                    System.Diagnostics.Trace.WriteLine("VIVO");
+                    if (_threadCopiaSuChiavetta.IsAlive)
+                        _threadCopiaSuChiavetta.Abort();
+                    else
+                        _threadCopiaSuChiavetta.Join();
+                }
+            }
+            finally
+            {
+                if (_burner != null)
+                {
+                    _burner.Dispose();
+                }
+                base.Dispose();
+                
+            }
+        }
     }
 }
