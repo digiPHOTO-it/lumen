@@ -36,7 +36,21 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.SQLite, Version=1.0.67.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\SQLite.NET4\bin\System.Data.SQLite.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data.SQLite.Linq, Version=1.0.38.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\SQLite.NET4\bin\System.Data.SQLite.Linq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -59,6 +73,23 @@
     <Compile Include="FormProiettare.Designer.cs">
       <DependentUpon>FormProiettare.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormModificaConnectionString.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormModificaConnectionString.Designer.cs">
+      <DependentUpon>FormModificaConnectionString.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormSQLite.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormSQLite.Designer.cs">
+      <DependentUpon>FormSQLite.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Model2.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Model2.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
@@ -66,6 +97,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormProiettare.resx">
       <DependentUpon>FormProiettare.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormModificaConnectionString.resx">
+      <DependentUpon>FormModificaConnectionString.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormSQLite.resx">
+      <DependentUpon>FormSQLite.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -78,6 +115,13 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
+    <EntityDeploy Include="Model2.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Model2.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="dbVuoto.sqlite">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
