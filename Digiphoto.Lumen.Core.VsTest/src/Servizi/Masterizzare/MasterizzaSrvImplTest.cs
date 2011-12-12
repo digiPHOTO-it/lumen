@@ -5,9 +5,8 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Model;
-using Digiphoto.Lumen.Servizi.Masterizza;
-using System.Threading;
 using Digiphoto.Lumen.Servizi.Masterizzare;
+using System.Threading;
 
 namespace Digiphoto.Lumen.Core.VsTest
 {
@@ -82,17 +81,6 @@ namespace Digiphoto.Lumen.Core.VsTest
         }
 
         [TestMethod]
-        public void TestMasterizzaVendita()
-        {
-            Carrello carrello = _impl.confermaVendita(5.00m);
-            System.Diagnostics.Trace.WriteLine("[ID]: "+carrello.id);
-            System.Diagnostics.Trace.WriteLine("[GIORNATA]: " + carrello.giornata);
-            System.Diagnostics.Trace.WriteLine("[TEMPO]: " + carrello.tempo);
-            System.Diagnostics.Trace.WriteLine("[TOTALE_A_PAGARE]: " + carrello.totaleAPagare);
-            Assert.IsTrue(carrello.totaleAPagare==5.00m);
-        }
-
-        [TestMethod]
         public void TestMasterizzaAggiungiAlbum()
         {
             using (LumenEntities dbContext = new LumenEntities())
@@ -108,7 +96,7 @@ namespace Digiphoto.Lumen.Core.VsTest
 
             while (!_elaborazioneTerminata)
             {
-                Thread.Sleep(10000);
+                Thread.Sleep(100);
             }
             Assert.IsTrue(_elaborazioneTerminata);
         }
@@ -131,9 +119,22 @@ namespace Digiphoto.Lumen.Core.VsTest
 
         public void OnNext(MasterizzaMsg msg)
         {
-            if (msg.fase == Fase.MasterizzazioneCompletata)
-                _elaborazioneTerminata = true;
-        }
+			System.Diagnostics.Trace.WriteLine("[TotFotoNonAggiunte]: " + msg.totFotoNonAggiunte);
+			System.Diagnostics.Trace.WriteLine("[TotFotoAggiunte]: " + msg.totFotoAggiunte);
+			System.Diagnostics.Trace.WriteLine("[RiscontratiErrori]: " + msg.riscontratiErrori);
+			System.Diagnostics.Trace.WriteLine("[FotoAggiunta]: " + msg.fotoAggiunta);
+			System.Diagnostics.Trace.WriteLine("[Fase]: " + msg.fase);
+			System.Diagnostics.Trace.WriteLine("[Result]: " + msg.result);
+			System.Diagnostics.Trace.WriteLine("[Progress]: " + msg.progress);
+
+			if (msg.fase == Fase.MasterizzazioneCompletata ||
+				msg.fase == Fase.MasterizzazioneFallita ||
+				msg.fase == Fase.CopiaChiavettaFallita ||
+				msg.fase == Fase.CopiaChiavettaCompletata)
+			{
+				_elaborazioneTerminata = true;
+			}
+	}
 
         public bool _elaborazioneTerminata
         {

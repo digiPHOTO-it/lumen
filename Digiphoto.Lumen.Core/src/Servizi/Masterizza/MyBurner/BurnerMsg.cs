@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Eventi;
 
-namespace Digiphoto.Lumen.Servizi.Masterizza.MyBurner
+namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
 {
     public enum Fase
     {
@@ -31,6 +31,8 @@ namespace Digiphoto.Lumen.Servizi.Masterizza.MyBurner
         public String capacity { get; set; }
 
         public int progress { get; set; }
+
+        public int totaleFileAggiunti { get; set; }
 
         public String statusMessage { get; set; }
     }
