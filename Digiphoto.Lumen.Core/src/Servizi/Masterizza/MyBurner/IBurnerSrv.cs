@@ -6,7 +6,7 @@ using System.Collections;
 using IMAPI2.Interop;
 using System.IO;
 
-namespace Digiphoto.Lumen.Servizi.Masterizza.MyBurner
+namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
 {
     public interface IBurnerSrv : IServizio
 	{

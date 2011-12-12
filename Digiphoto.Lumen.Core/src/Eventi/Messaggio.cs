@@ -5,7 +5,8 @@ using System.Text;
 
 namespace Digiphoto.Lumen.Eventi {
 
-	public class Messaggio {
+    public class Messaggio : EventArgs
+    {
 
 		public Messaggio() {
 			timeStamp = DateTime.Now;
