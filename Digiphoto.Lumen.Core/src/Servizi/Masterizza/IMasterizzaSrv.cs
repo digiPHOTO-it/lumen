@@ -30,7 +30,8 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare {
 		 */
 		void impostaDestinazione( TipoDestinazione tipoDestinazione, String destinazione );
 
-		/** Il prezzo del disco masterizzato, viene sempre contrattato con il cliente */
-		Carrello confermaVendita( Decimal prezzoForfettario );
+		/** Viene pubblicato un Messaggio con l'esito */
+		void masterizza();
+
 	}
 }

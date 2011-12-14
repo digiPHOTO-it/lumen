@@ -4,7 +4,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Digiphoto.Lumen.Servizi.Masterizza.MyBurner;
+using Digiphoto.Lumen.Servizi.Masterizzare.MyBurner;
 using IMAPI2.Interop;
 using Digiphoto.Lumen.Applicazione;
 using System.Threading;
@@ -14,7 +14,7 @@ using System.IO;
 namespace Digiphoto.Lumen.Core.VsTest.Servizi.Masterizzare
 {
     [TestClass]
-    public class BurnerSrvImplTest : IObserver<BurnerMsg> 
+    public class BurnerSrvImplTest
     {
         private BurnerSrvImpl _impl = new BurnerSrvImpl();
 
@@ -27,8 +27,8 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Masterizzare
             app = LumenApplication.Instance;
             app.avvia();
             _impl.start();
-            IObservable<BurnerMsg> observable = app.bus.Observe<BurnerMsg>();
-            observable.Subscribe(this);
+            //aggancio l'ascoltatore
+            _impl.InviaStatoMasterizzazione += new BurnerSrvImpl.StatoMasterizzazioneEventHandler(statoMasterizzazione);
         }
 
         [TestMethod]
@@ -99,44 +99,35 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Masterizzare
             }
         }
 
-
-        [TestCleanup]
-        public void Cleanup()
+        private void statoMasterizzazione(object sender, BurnerMsg burnerMsg)
         {
-            _impl.Dispose();
-        }
-
-        public void OnCompleted()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnError(Exception error)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnNext(BurnerMsg msg)
-        {
-            System.Diagnostics.Trace.WriteLine("[Capacity]: "+msg.capacity);
-            System.Diagnostics.Trace.WriteLine("[Fase]: " + msg.fase);
-            System.Diagnostics.Trace.WriteLine("[StatusMessage]: "+msg.statusMessage);
-            System.Diagnostics.Trace.WriteLine("[Progress]: " + msg.progress);
-            if(msg.fase == Fase.FormattazioneCompletata||
-                msg.fase == Fase.MasterizzazioneCompletata||
-                msg.fase == Fase.MasterizzazioneFallita ||
-                msg.fase == Fase.FormattazioneFallita 
+            System.Diagnostics.Trace.WriteLine("[Capacity]: " + burnerMsg.capacity);
+            System.Diagnostics.Trace.WriteLine("[Fase]: " + burnerMsg.fase);
+            System.Diagnostics.Trace.WriteLine("[StatusMessage]: " + burnerMsg.statusMessage);
+            System.Diagnostics.Trace.WriteLine("[Progress]: " + burnerMsg.progress);
+            if (burnerMsg.fase == Fase.FormattazioneCompletata ||
+               burnerMsg.fase == Fase.MasterizzazioneCompletata ||
+               burnerMsg.fase == Fase.MasterizzazioneFallita ||
+               burnerMsg.fase == Fase.FormattazioneFallita
                 //||
                 //msg.fase == Fase.NessunaOperazione
-                ){
+               )
+            {
                 _elaborazioneTerminata = true;
             }
+        
         }
 
         public bool _elaborazioneTerminata
         {
             get;
             set;
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            _impl.Dispose();
         }
     }
 }

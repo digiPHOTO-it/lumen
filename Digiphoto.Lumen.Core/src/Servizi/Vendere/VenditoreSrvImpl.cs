@@ -212,10 +212,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			// Ok ho delle foto da masterizzare
 			faseMasterizzazioneCompletata = false;
 
-// TODO da fare!	
-			masterizzaSrv.confermaVendita( 12m );
+			masterizzaSrv.masterizza();
 
-			// .masterizza( mioMamsterizzazioneEventHandler );
 		}
 
 
