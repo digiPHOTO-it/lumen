@@ -14,5 +14,15 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 
 		/** Aggiunge la stampa alla coda */
 		void accodaStampa( Fotografia foto, ParamStampaFoto param );
+
+		/** 
+		 * Elimina tutte le stempe da tutte le code.
+		 * Piazza pulita!
+		 */
+		void svuotaTutteLeCode();
+
+		IList<CodaDiStampe> code {
+			get;
+		}
 	}
 }

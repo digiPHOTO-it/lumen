@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Core;
 using Digiphoto.Lumen.Model;
+using Digiphoto.Lumen.Util;
 
 namespace Digiphoto.Lumen.Servizi.Ricerca {
 
-	public class ParamRicercaFoto {
+	public class ParamCercaFoto : ParamCerca {
 
 		public Evento [] eventi { get; set; }
 		public Fotografo [] fotografi {	get; set; }
@@ -19,8 +20,6 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 		public DateTime? giornataIniz {	get; set; }
 		public DateTime? giornataFine { get; set; }
 
-		/** Numero di record di ampiezza della paginazione. Se NULL allora ninente */
-		public Paginazione paginazione { get; set; }
 
 		public override string ToString() {
 
@@ -65,18 +64,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			return sb.ToString();
 		}
 
-		public class Paginazione {
 
-			public int skip { get; set; }
-			public int take { get; set; }
-			
-			public override string ToString() {
-				StringBuilder sb = new StringBuilder( "--Paginazione--" );
-				sb.Append( "\r\nSkip: " + skip );
-				sb.Append( "\r\nTake: " + take );
-				return sb.ToString();
-			}
-		}
 
 	}
 }

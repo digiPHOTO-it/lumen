@@ -18,7 +18,7 @@ namespace Digiphoto.Lumen.Core.VsTest
     ///to contain all SpoolStampeSrvImplTest Unit Tests
     ///</summary>
 	[TestClass()]
-	public class SpoolStampeSrvImplTest {
+	public class SpoolStampeSrvImplTest : IObserver<StampatoMsg>  {
 
 
 		private TestContext testContextInstance;
@@ -37,6 +37,8 @@ namespace Digiphoto.Lumen.Core.VsTest
 		}
 
 		private SpoolStampeSrvImpl _impl;
+
+		private int _contaStampe = 0;
 
 		#region Additional test attributes
 		// 
@@ -77,10 +79,17 @@ namespace Digiphoto.Lumen.Core.VsTest
 		public void Init() {
 
 			LumenApplication app = LumenApplication.Instance;
-			
+
+			IObservable<StampatoMsg> observable = app.bus.Observe<StampatoMsg>();
+			observable.Subscribe( this );
+
 			_impl = new SpoolStampeSrvImpl();
 			_impl.start();
+		}
 
+		[TestCleanup]
+		public void Cleanup() {
+			_impl.Dispose();
 		}
 
 
@@ -115,12 +124,26 @@ namespace Digiphoto.Lumen.Core.VsTest
 					}
 				}
 
-				bool esci = false;
+				// Attendo che le due stampe siano terminate
 				do {
-					
 					Thread.Sleep( 5000 );
-				} while( !esci );
+				} while( _contaStampe < 2 );
 			}
+
+			
+		}
+
+		public void OnNext( StampatoMsg value ) {
+			Assert.IsTrue( value.lavoroDiStampa.esitostampa == EsitoStampa.Ok );
+			_contaStampe++;
+		}
+
+		public void OnCompleted() {
+			throw new NotImplementedException();
+		}
+
+		public void OnError( Exception error ) {
+			throw new NotImplementedException();
 		}
 	}
 }

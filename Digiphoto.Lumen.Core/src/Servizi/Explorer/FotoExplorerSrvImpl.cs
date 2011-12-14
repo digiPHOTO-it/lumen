@@ -23,7 +23,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 
 
 		/** Uso una lista bindabile, in questo modo la UI dovrebbe essere notificata delle modifiche che avvengono */
-		public BindingList<Fotografia> fotografie {
+		public IList<Fotografia> fotografie {
 			get;
 			private set;
 		}
@@ -81,7 +81,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 
 
 		/** Eseguo il caricamento delle foto richieste */
-		public void cercaFoto( ParamRicercaFoto param ) {
+		public void cercaFoto( ParamCercaFoto param ) {
 
 			// Per prima cosa azzero la gallery corrente
 			fotografie = null;

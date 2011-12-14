@@ -87,6 +87,9 @@ namespace Digiphoto.Lumen.Threading {
 			base.DisposeWaitHandle( _itemArrived );
 		}
 
+		public void Clear() {
+			_itemQueue.Clear();
+		}
 		protected abstract void ProcessItem( T item );
 	}
 }

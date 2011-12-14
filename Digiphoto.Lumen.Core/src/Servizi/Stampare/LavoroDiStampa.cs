@@ -22,12 +22,14 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 		}
 
 		public enum Stato {
-			Nullo,
-			Inserito,
 			Accodato,
 			InEsecuzione,
-			Annullato,
-			TerinatoOk
+			Completato
+		}
+
+		public EsitoStampa esitostampa {
+			get;
+			internal set;
 		}
 
 		public Stato stato {
@@ -38,7 +40,6 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 		public LavoroDiStampa( Fotografia fotografia, ParamStampaFoto param ) {
 			this.fotografia = fotografia;
 			this.param = param;
-			this.stato = Stato.Nullo;  // Ancora non ho fatto niente.
 		}
 
 		public override string ToString() {

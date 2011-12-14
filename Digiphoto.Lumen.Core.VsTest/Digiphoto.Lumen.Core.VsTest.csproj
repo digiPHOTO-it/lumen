@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="Crc32.cs" />
     <Compile Include="SpoolStampeSrvImplTest.cs" />
+    <Compile Include="src\Core\AvvioFermaTest.cs" />
     <Compile Include="src\Imaging\ProiettoreAreaTest.cs" />
     <Compile Include="src\Servizi\Explorer\FotoExplorerSrvImplTest.cs" />
     <Compile Include="NumeratoreFotogrammiTest.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScaricaFotoSrvImplTest.cs" />
     <Compile Include="Utilita.cs" />
+    <Compile Include="src\Servizi\Vendere\VenditoreSrvImplTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Digiphoto.Lumen.Core\Digiphoto.Lumen.Core.csproj">

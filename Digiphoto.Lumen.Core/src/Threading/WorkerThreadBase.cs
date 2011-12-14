@@ -70,7 +70,7 @@ namespace Digiphoto.Lumen.Threading {
 		}
 
 		public void Stop() {
-			ThrowIfDisposedOrDisposing();
+			ThrowIfDisposed();
 			_stopping.Set();
 			_stopped.WaitOne();
 		}
@@ -118,14 +118,19 @@ namespace Digiphoto.Lumen.Threading {
 			DisposeWaitHandle( _stopped );
 		}
 
-		protected void ThrowIfDisposedOrDisposing() {
-			if( _disposing ) {
-				throw new InvalidOperationException( "Object of type '{0}' is already disposed." );
-			}
-
-			if( _disposed ) {
+		protected void ThrowIfDisposing() {
+			if( _disposing )
 				throw new ObjectDisposedException( GetType().Name, "Object is currently disposing." );
-			}
+		}
+
+		protected void ThrowIfDisposed() {
+			if( _disposed )
+				throw new InvalidOperationException( "Object of type '{0}' is already disposed." );
+		}
+
+		protected void ThrowIfDisposedOrDisposing() {
+			ThrowIfDisposing();
+			ThrowIfDisposed();
 		}
 
 		protected void DisposeWaitHandle( WaitHandle waitHandle ) {

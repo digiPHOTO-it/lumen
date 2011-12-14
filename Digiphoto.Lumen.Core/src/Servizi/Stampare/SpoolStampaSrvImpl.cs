@@ -7,33 +7,51 @@ using Digiphoto.Lumen.Model;
 using System.Collections.Specialized;
 using System.Drawing.Printing;
 using Digiphoto.Lumen.Imaging;
+using log4net;
 
 namespace Digiphoto.Lumen.Servizi.Stampare {
 
 	internal class SpoolStampeSrvImpl : ServizioImpl, ISpoolStampeSrv {
 
-		private	Dictionary<string, CodaDiStampe> _code;
+		private static readonly ILog _giornale = LogManager.GetLogger( typeof(SpoolStampeSrvImpl) );
+
+
+		public IList<CodaDiStampe> code {
+			get;
+			private set;
+		}
+
 
 		public SpoolStampeSrvImpl() {
 			// Istanzio la mappa con tutte le code.
-			_code = new Dictionary<string,CodaDiStampe>();
+			this.code = new List<CodaDiStampe>();
+		}
+
+		public override void Dispose() {
+			// Faccio la dispose di tutte le code
+			foreach( CodaDiStampe c in code )
+				c.Dispose();
+			base.Dispose();
 		}
 
 		/** Avvio tutte le stampe */
 		public override void start() {
-			foreach( string key in _code.Keys )
-				_code[key].Start();
+			foreach( CodaDiStampe c in code )
+				c.Start();
 			base.start();
 		}
 
 		/** Fermo tutte le stampe */
 		public override void stop() {
-			foreach( string key in _code.Keys )
-				_code[key].Stop();
+			foreach( CodaDiStampe c in code )
+				c.Stop();
 			base.stop();
 		}
 
 		public void accodaStampa( Fotografia foto, ParamStampaFoto param ) {
+
+			if( param.nomeStampante == null )
+				param.nomeStampante = ricavaStampante( param.formatoCarta );
 
 			CodaDiStampe codaDiStampe = ricavaCodaDiStampa( param.nomeStampante );
 
@@ -42,20 +60,43 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			codaDiStampe.EnqueueItem( lavoro );
 		}
 
+		private string ricavaStampante( FormatoCarta formatoCarta ) {
+			// TODO gestire le preferenze utente dove indicare l'associazione tra stampanti e formati carta
+			return "dOPDF v7";
+		}
+
 		private CodaDiStampe ricavaCodaDiStampa( string nomeStampante ) {
 
 			// Se non esiste già la stampante nella collezione, allora la istanzio
-			CodaDiStampe coda;
-			if( _code.ContainsKey(nomeStampante) )
-				coda = _code[nomeStampante];
-			else {
-				coda = new CodaDiStampe( nomeStampante );
+			CodaDiStampe coda = (from c in this.code
+								 where c.Name.Equals( nomeStampante )
+								 select c).SingleOrDefault<CodaDiStampe>();
+
+			if( coda == null  ) {
+				coda = new CodaDiStampe( nomeStampante, stampaCompletataEventHandler );
 				coda.Start();
-				_code.Add( nomeStampante, coda );
+				this.code.Add( coda );
 			}
 
 			return coda;
 		}
 
+		private void stampaCompletataEventHandler( object sender, StampatoMsg eventArgs ) {
+
+			_giornale.Info( "Stampa completata. Esito = " + eventArgs.lavoroDiStampa.esitostampa );
+
+
+			// Notifico tutta l'applicazione
+			pubblicaMessaggio( eventArgs );
+		}
+
+		/**
+		 * Svuoto la coda che però rimane nello suo stato precedente.
+		 * Se era running rimane running ... ecc.
+		 */
+		public void svuotaTutteLeCode() {
+			foreach( CodaDiStampe c in this.code )
+				c.Clear();
+		}
 	}
 }

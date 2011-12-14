@@ -9,7 +9,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 	interface IRicercatoreSrv : IServizio {
 
-		List<Fotografia> cerca( ParamRicercaFoto param );
+		List<Fotografia> cerca( ParamCercaFoto param );
 
 	}
 }

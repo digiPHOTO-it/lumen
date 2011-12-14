@@ -44,37 +44,50 @@ namespace Digiphoto.Lumen.Imaging.Nativa {
 			_lavoroDiStampa = lavoroDiStampa;
 			_giornale.Debug( "Sto per avviare il lavoro di stampa: " + lavoroDiStampa.ToString() );
 
-			// Creo il documento di stampa
-			PrintDocument pd = new PrintDocument();
-			pd.PrinterSettings.PrinterName = lavoroDiStampa.param.nomeStampante;
-			pd.DocumentName = "foto N." + lavoroDiStampa.fotografia.numero + " Oper=" + lavoroDiStampa.fotografia.fotografo.iniziali + " gg=" + String.Format( "dd-MMM", lavoroDiStampa.fotografia.dataOraAcquisizione );
 
-			pd.PrintPage += new PrintPageEventHandler( mioPrintPageEventHandler );
+			try {	        
+		
+				// Creo il documento di stampa
+				PrintDocument pd = new PrintDocument();
+				pd.PrinterSettings.PrinterName = lavoroDiStampa.param.nomeStampante;
+				pd.DocumentName = "foto N." + lavoroDiStampa.fotografia.numero + " Oper=" + lavoroDiStampa.fotografia.fotografo.iniziali + " gg=" + String.Format( "{0:dd-MMM}", lavoroDiStampa.fotografia.dataOraAcquisizione );
 
-			// Eventuale rotazione dell'orientamento dell'area di stampa
-			determinaRotazione( pd );
+				pd.PrintPage += new PrintPageEventHandler( mioPrintPageEventHandler );
+				pd.BeginPrint += new PrintEventHandler( pd_BeginPrint );
+				// Eventuale rotazione dell'orientamento dell'area di stampa
+				determinaRotazione( pd );
 
 
-			// ----- gestisco il numero di copie
-			int cicliStampa = 1;
-			if( lavoroDiStampa.param.numCopie > 1 ) {
-				// Se la stampante gestisce le copie multiple, faccio un invio solo.
-				if( pd.PrinterSettings.MaximumCopies >= lavoroDiStampa.param.numCopie )
-					pd.PrinterSettings.Copies = lavoroDiStampa.param.numCopie;
-				else
-					cicliStampa = lavoroDiStampa.param.numCopie;
+				// ----- gestisco il numero di copie
+				int cicliStampa = 1;
+				if( lavoroDiStampa.param.numCopie > 1 ) {
+					// Se la stampante gestisce le copie multiple, faccio un invio solo.
+					if( pd.PrinterSettings.MaximumCopies >= lavoroDiStampa.param.numCopie )
+						pd.PrinterSettings.Copies = lavoroDiStampa.param.numCopie;
+					else
+						cicliStampa = lavoroDiStampa.param.numCopie;
+				}
+
+
+				//
+				// ----- STAMPA per davvero
+				//
+				for( int ciclo = 0; ciclo < cicliStampa; ciclo++ ) {
+					pd.Print();
+				}
+
+			} catch( Exception ee ) {
+				_esito = EsitoStampa.Errore;
+				_giornale.Error( "Stampa fallita", ee );
 			}
-
-
-			//
-			// ----- STAMPA per davvero
-			//
-			for( int ciclo = 0; ciclo < cicliStampa; cicliStampa++ )
-				pd.Print();
-
 
 			_giornale.Info( "Completato lavoro di stampa. Esito = " + _esito + " lavoro = " + lavoroDiStampa.ToString() );
 			return _esito;
+		}
+
+		void pd_BeginPrint( object sender, PrintEventArgs e ) {
+
+			_giornale.Debug( e.PrintAction.ToString() );
 		}
 
 		/**
@@ -128,7 +141,7 @@ namespace Digiphoto.Lumen.Imaging.Nativa {
 				_esito = EsitoStampa.Ok;
 
 			} catch( Exception ee ) {
-
+				_giornale.Error( "Lavoro di stampa fallito: " + _lavoroDiStampa, ee );
 				_esito = EsitoStampa.Errore;
 			}
 

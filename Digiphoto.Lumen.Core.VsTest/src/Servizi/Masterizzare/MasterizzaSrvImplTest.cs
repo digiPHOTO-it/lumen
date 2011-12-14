@@ -51,7 +51,7 @@ namespace Digiphoto.Lumen.Core.VsTest
                 }
             }
             _impl.impostaDestinazione(TipoDestinazione.MASTERIZZATORE, @"E:\");
-            _impl.masterizza();
+			_impl.confermaVendita( new Decimal( 321 ) );
             while (!_elaborazioneTerminata)
             {
                 Thread.Sleep(10000);
@@ -72,7 +72,7 @@ namespace Digiphoto.Lumen.Core.VsTest
             }
             string strPathDesktop = Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
             _impl.impostaDestinazione(TipoDestinazione.CARTELLA, strPathDesktop + @"\Chiavetta");
-            _impl.masterizza();
+            _impl.confermaVendita( new Decimal(456) );
 
             while (!_elaborazioneTerminata)
             {
@@ -84,7 +84,7 @@ namespace Digiphoto.Lumen.Core.VsTest
         [TestMethod]
         public void TestMasterizzaVendita()
         {
-            Carrello carrello = _impl.confermaVendita(5.00m);
+			Carrello carrello = _impl.confermaVendita( 5 );
             System.Diagnostics.Trace.WriteLine("[ID]: "+carrello.id);
             System.Diagnostics.Trace.WriteLine("[GIORNATA]: " + carrello.giornata);
             System.Diagnostics.Trace.WriteLine("[TEMPO]: " + carrello.tempo);
@@ -104,7 +104,7 @@ namespace Digiphoto.Lumen.Core.VsTest
             }
             string strPathDesktop = Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
             _impl.impostaDestinazione(TipoDestinazione.CARTELLA, strPathDesktop + @"\Chiavetta");
-            _impl.masterizza();
+			_impl.confermaVendita( new Decimal( 123 ) );
 
             while (!_elaborazioneTerminata)
             {

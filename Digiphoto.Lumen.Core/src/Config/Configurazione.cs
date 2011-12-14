@@ -7,6 +7,7 @@ using log4net;
 using System.Configuration;
 using System.Data.EntityClient;
 using System.IO;
+using Digiphoto.Lumen.Servizi.Vendere;
 
 namespace Digiphoto.Lumen.Config  {
 
@@ -171,6 +172,12 @@ namespace Digiphoto.Lumen.Config  {
         {
             return ".Gio";
         }
+
+		public static ModoVendita modoVendita {
+			get {
+				return (ModoVendita)Properties.Settings.Default.modoVendita;
+			}
+		}
 
 
 	}
