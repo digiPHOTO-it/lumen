@@ -88,8 +88,7 @@ namespace Digiphoto.Lumen.Servizi.VolumeCambiato {
 
 			// Creo un messaggio da mettere sul bus.
 			VolumeCambiatoMessaggio volumeCambiatoMsg = new VolumeCambiatoMessaggio();
-			volumeCambiatoMsg.sender = sender;
-			volumeCambiatoMsg.eventArgs = e;
+
 			UInt64 timeCreated = (UInt64)mo.Properties ["TIME_CREATED"].Value;
 			volumeCambiatoMsg.timeStamp = new DateTime( (long)timeCreated );
 

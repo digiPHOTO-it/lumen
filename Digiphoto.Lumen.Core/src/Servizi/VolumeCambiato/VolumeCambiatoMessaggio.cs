@@ -6,9 +6,6 @@ namespace Digiphoto.Lumen.Servizi.VolumeCambiato {
 
 	public class VolumeCambiatoMessaggio : Messaggio {
 		
-		public VolumeCambiatoMessaggio( Object sender, EventArgs e ) : base( sender, e ) {
-		}
-
 		public VolumeCambiatoMessaggio() {
 		}
 

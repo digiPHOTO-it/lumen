@@ -19,6 +19,8 @@ using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Imaging;
 using log4net.Config;
 using Digiphoto.Lumen.Servizi.Explorer;
+using Digiphoto.Lumen.Servizi.Stampare;
+using Digiphoto.Lumen.Servizi.Vendere;
 
 namespace Digiphoto.Lumen.Applicazione {
 
@@ -109,51 +111,44 @@ namespace Digiphoto.Lumen.Applicazione {
 			}
 		}
 
+		/**
+		 * - Istanzio i servizi,
+		 * - li aggiungo in una lista interna che mi tengo io per gestire i servizi.
+		 * - Avvio i servizi appena creati
+		 */
 		private void avviaServizi() {
 
+			// Creo la mappa dei servizi
 			_serviziAvviati = new Dictionary<string, IServizio>();
 
+			// Creo i servizi
 
-			string s2 = this.GetType().Assembly.FullName;
-			Console.WriteLine( s2 );
+			//
+			IVolumeCambiatoSrv vcs = creaAggiungiAvviaServizio<IVolumeCambiatoSrv>();
+			vcs.attesaBloccante = false;
+			vcs.attesaEventi();
+			//
+			creaAggiungiAvviaServizio<IGestoreImmagineSrv>();
+			//
+			creaAggiungiAvviaServizio<IFotoExplorerSrv>();
+			//
+			creaAggiungiAvviaServizio<ISpoolStampeSrv>();
+			//
+			creaAggiungiAvviaServizio<IVenditoreSrv>();
 
-			IVolumeCambiatoSrv s1  = (VolumeCambiatoSrvImpl) _servizioFactory.creaServizio( typeof(IVolumeCambiatoSrv) );
-			_serviziAvviati.Add( typeof( IVolumeCambiatoSrv ).FullName, s1 );
-			s1.attesaBloccante = false;
-			s1.start();
-			s1.attesaEventi();
-
-			IGestoreImmagineSrv gis = (IGestoreImmagineSrv)_servizioFactory.creaServizio( typeof( IGestoreImmagineSrv ) );
-			_serviziAvviati.Add( typeof(IGestoreImmagineSrv).FullName , gis );
-			gis.start();
-
-			IFotoExplorerSrv fes = (IFotoExplorerSrv)_servizioFactory.creaServizio( typeof( IFotoExplorerSrv ) );
-			_serviziAvviati.Add( typeof( IFotoExplorerSrv ).FullName, fes );
-			gis.start();
-
-/*
-			ScaricatoreFotoSrvImpl s2 = (ScaricatoreFotoSrvImpl)_servizioFactory.creaServizio( typeof( IScaricatoreFotoSrv ) );
-			_serviziAvviati.Add( typeof( IScaricatoreFotoSrv ).FullName, s2 );
-			s2.start();
-*/
 		}
 
-		public T creaServizio<T>() {
+		public T creaServizio<T>() where T : IServizio {
+			return (T) _servizioFactory.creaServizio( typeof(T) );
+		}
 
-			T srv  = (T) _servizioFactory.creaServizio( typeof(T) );
+		private T creaAggiungiAvviaServizio<T>() where T : IServizio {
+			T srv = creaServizio<T>();
+			_serviziAvviati.Add( (typeof (T)).FullName, srv );
+			srv.start();
 			return srv;
 		}
 
-		public IScaricatoreFotoSrv creaScaricatoreFotoSrv() {
-
-			ScaricatoreFotoSrvImpl scaricatoreFotoSrvImpl = new ScaricatoreFotoSrvImpl();
-	
-			// Sottoscrivo questo servizio come asoltatore del bus di eventi
-			IObservable<Messaggio> observable = _bus.Observe<Messaggio>();
-			observable.Subscribe( scaricatoreFotoSrvImpl );
-
-			return scaricatoreFotoSrvImpl;
-		}
 
 		public void aggiungiAscoltatoreServizioBus( IServizio obj ) {
 			IObservable<Messaggio> observable = _bus.Observe<Messaggio>();

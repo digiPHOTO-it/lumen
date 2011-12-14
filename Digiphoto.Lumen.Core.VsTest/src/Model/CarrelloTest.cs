@@ -12,6 +12,8 @@ using System.Data;
 using System.Diagnostics;
 
 namespace Digiphoto.Lumen.Core.VsTest {
+
+	
 	[TestClass]
 	public class CarrelloTest {
 
@@ -23,11 +25,12 @@ namespace Digiphoto.Lumen.Core.VsTest {
 		[ClassInitialize()]
 		public static void MyClassInitialize( TestContext testContext ) {
 			LumenApplication.Instance.avvia();
-		}	
+		}
+
 
 
 		[TestMethod]
-		public void TestCarrello() {
+		public void carrelloTest() {
 
 			using( LumenEntities dbContext = new LumenEntities() ) {
 
@@ -60,12 +63,16 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				r2.prezzoNettoTotale = Decimal.Multiply( r2.prezzoLordoUnitario, r2.quantita );
 				r2.descrizione = "RicaFotoStampata1";
 				r2.totFogliStampati = 3;
-				r2.formatoCarta = Utilita.ottieniFormatoCartaA4( dbContext );
+				r2.formatoCarta = Utilita.ottieniFormatoCarta( dbContext, "A4" );
 				r2.fotografo = Utilita.ottieniFotografoMario( dbContext );
 				c1.righeCarrello.Add( r2 );
 				_contaStampate++;
 
 				// ---
+
+	
+				
+
 
 				RiCaFotoStampata r3 = new RiCaFotoStampata();
 				r3.id = Guid.NewGuid();
@@ -74,7 +81,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				r3.prezzoNettoTotale = Decimal.Multiply( r3.prezzoLordoUnitario, r3.quantita );
 				r3.descrizione = "RicaFotoStampata1";
 				r3.totFogliStampati = 3;
-				r3.formatoCarta = Utilita.ottieniFormatoCartaA4( dbContext );
+				r3.formatoCarta = Utilita.ottieniFormatoCarta( dbContext, "A4" );
 				r3.fotografo = Utilita.ottieniFotografoMario( dbContext );
 				c1.righeCarrello.Add( r3 );
 				_contaStampate++;

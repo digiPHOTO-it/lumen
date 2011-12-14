@@ -18,6 +18,7 @@ namespace Digiphoto.Lumen.Servizi {
 		private volatile bool _running = false;
 
 		public ServizioImpl() {
+			Console.Write( "STOP" );
 		}
 
 		public bool isRunning {
@@ -37,7 +38,6 @@ namespace Digiphoto.Lumen.Servizi {
 
 			if( notificaCambio ) {
 				CambioStatoMessaggio msg = new CambioStatoMessaggio();
-				msg.sender = this;
 				msg.descrizione = this.GetType().Name + " partito";
 				msg.nuovoStato = '1'; // Acceso 
 				LumenApplication.Instance.bus.Publish( msg );
@@ -54,7 +54,6 @@ namespace Digiphoto.Lumen.Servizi {
 
 			if( notificaCambio ) {
 				CambioStatoMessaggio msg = new CambioStatoMessaggio();
-				msg.sender = this;
 				msg.descrizione = this.GetType().Name + " fermato";
 				msg.nuovoStato = '0'; // Acceso 
 				LumenApplication.Instance.bus.Publish( msg );
@@ -84,7 +83,7 @@ namespace Digiphoto.Lumen.Servizi {
 
 #endregion
 
-		public Configurazione configurazione {
+		protected Configurazione configurazione {
 			get {
 				return LumenApplication.Instance.configurazione;
 			}

@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server Compact Edition
 -- --------------------------------------------------
--- Date Created: 11/02/2011 13:26:02
--- Generated from EDMX file: C:\Users\bluca\Documents\Visual Studio 2010\Projects\Lumen\Digiphoto.Lumen.Model\LumenModel.edmx
+-- Date Created: 12/10/2011 20:34:48
+-- Generated from EDMX file: C:\Users\bluca\Documents\Visual Studio 2010\Projects\lumen\Digiphoto.Lumen.Model\LumenModel.edmx
 -- --------------------------------------------------
 
 
@@ -29,6 +29,8 @@ GO
     ALTER TABLE [RigheAlbum] DROP CONSTRAINT [FK_FotografiaRigaAlbum];
 GO
     ALTER TABLE [Correzioni] DROP CONSTRAINT [FK_FotografiaCorrezione];
+GO
+    ALTER TABLE [RigheCarrelli] DROP CONSTRAINT [FK_FotografiaRiCaFotoStampata];
 GO
 
 -- --------------------------------------------------
@@ -127,7 +129,8 @@ GO
 CREATE TABLE [FormatiCarta] (
     [id] uniqueidentifier  NOT NULL,
     [descrizione] nvarchar(4000)  NOT NULL,
-    [prezzo] decimal(18,0)  NOT NULL
+    [prezzo] decimal(18,0)  NOT NULL,
+    [attivo] bit  NOT NULL
 );
 GO
 
@@ -146,7 +149,8 @@ CREATE TABLE [Carrelli] (
     [id] uniqueidentifier  NOT NULL,
     [giornata] datetime  NOT NULL,
     [tempo] datetime  NOT NULL,
-    [totaleAPagare] decimal(18,0)  NOT NULL
+    [totaleAPagare] decimal(18,0)  NOT NULL,
+    [intestazione] nvarchar(4000)  NULL
 );
 GO
 
@@ -164,7 +168,8 @@ CREATE TABLE [RigheCarrelli] (
     [__Disc__] nvarchar(4000)  NOT NULL,
     [CarrelloRigaCarrello_RigaCarrello_id] uniqueidentifier  NOT NULL,
     [formatoCarta_id] uniqueidentifier  NULL,
-    [fotografo_id] nvarchar(16)  NULL
+    [fotografo_id] nvarchar(16)  NULL,
+    [fotografia_id] uniqueidentifier  NULL
 );
 GO
 
@@ -330,7 +335,7 @@ ADD CONSTRAINT [FK_CarrelloRigaCarrello]
     FOREIGN KEY ([CarrelloRigaCarrello_RigaCarrello_id])
     REFERENCES [Carrelli]
         ([id])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
+    ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_CarrelloRigaCarrello'
 CREATE INDEX [IX_FK_CarrelloRigaCarrello]
@@ -392,6 +397,20 @@ ADD CONSTRAINT [FK_FotografiaCorrezione]
 CREATE INDEX [IX_FK_FotografiaCorrezione]
 ON [Correzioni]
     ([FotografiaCorrezione_Correzione_id]);
+GO
+
+-- Creating foreign key on [fotografia_id] in table 'RigheCarrelli'
+ALTER TABLE [RigheCarrelli]
+ADD CONSTRAINT [FK_FotografiaRiCaFotoStampata]
+    FOREIGN KEY ([fotografia_id])
+    REFERENCES [Fotografie]
+        ([id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_FotografiaRiCaFotoStampata'
+CREATE INDEX [IX_FK_FotografiaRiCaFotoStampata]
+ON [RigheCarrelli]
+    ([fotografia_id]);
 GO
 
 -- --------------------------------------------------

@@ -8,12 +8,20 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 
 	public class ParamStampaFoto : ICloneable {
 
+		public ParamStampaFoto() {
+			this.autoRuota = true;
+			this.numCopie = 1;
+		}
+
 		/**
 		 * La stampante su cui vado a stampare, deve essere già opportunamente configurata
 		 * per accettare il formato carta che sto per indicare.
 		 * Il programma non interviene in nessun modo sulle impostazioni del formato o degli
 		 * attributi della stampante.
 		 * Basta solo il nome per sapere dove andare.
+		 * 
+		 * FACOLTATIVO
+		 * Lasciare vuota property in modo che il servizio lo valorizzi in automatico.
 		 */
 		public string nomeStampante;
 
@@ -46,6 +54,12 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 
 			return s.ToString();
 		}
+
+		/**
+		 * Questa informazione mi serve nella gestione dell'esito.
+		 * se ci sono problemi devo stornare
+		 */
+		public Guid idRigaCarrello;
 
 		public object Clone() {
 			return this.MemberwiseClone();
