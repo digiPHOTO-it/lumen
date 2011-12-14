@@ -54,6 +54,10 @@
             <End Role="Fotografia" EntitySet="Fotografie" />
             <End Role="Correzione" EntitySet="Correzioni" />
         </AssociationSet>
+        <AssociationSet Name="FotografiaRiCaFotoStampata" Association="Digiphoto.Lumen.Model.Store.FotografiaRiCaFotoStampata">
+            <End Role="Fotografia" EntitySet="Fotografie" />
+            <End Role="RiCaFotoStampata" EntitySet="RigheCarrelli" />
+        </AssociationSet>
 
     </EntityContainer>
 
@@ -124,6 +128,7 @@
 		<Property Name="id" Type="uniqueidentifier" Nullable="false" />
 		<Property Name="descrizione" Type="nvarchar" Nullable="false" />
 		<Property Name="prezzo" Type="decimal" Nullable="false" />
+		<Property Name="attivo" Type="bit" Nullable="false" DefaultValue="true" />
     </EntityType>
     <EntityType Name="InfosFisse">
         <Key>
@@ -142,7 +147,8 @@
 		<Property Name="id" Type="uniqueidentifier" Nullable="false" />
 		<Property Name="giornata" Type="datetime" Nullable="false" />
 		<Property Name="tempo" Type="datetime" Nullable="false" />
-		<Property Name="totaleAPagare" Type="decimal" Nullable="false" />
+		<Property Name="totaleAPagare" Type="decimal"  />
+		<Property Name="intestazione" Type="nvarchar" Nullable="true" />
     </EntityType>
     <EntityType Name="RigheCarrelli">
         <Key>
@@ -161,6 +167,7 @@
 		<Property Name="CarrelloRigaCarrello_RigaCarrello_id" Type="uniqueidentifier" Nullable="false" />
 		<Property Name="formatoCarta_id" Type="uniqueidentifier" Nullable="true" />
 		<Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="true" />
+		<Property Name="fotografia_id" Type="uniqueidentifier" Nullable="true" />
     </EntityType>
     <EntityType Name="Correzioni">
         <Key>
@@ -251,6 +258,7 @@
 	</Association>
 	<Association Name="CarrelloRigaCarrello">
 		<End Role="Carrello" Type="Digiphoto.Lumen.Model.Store.Carrelli" Multiplicity="1">
+			<OnDelete Action="Cascade" />
 		</End>				
 		<End Role="RigaCarrello" Type="Digiphoto.Lumen.Model.Store.RigheCarrelli" Multiplicity="*">
 		</End>				
@@ -325,6 +333,21 @@
 			</Dependent>
 		</ReferentialConstraint>
 	</Association>
+	<Association Name="FotografiaRiCaFotoStampata">
+		<End Role="Fotografia" Type="Digiphoto.Lumen.Model.Store.Fotografie" Multiplicity="0..1">
+		</End>				
+		<End Role="RiCaFotoStampata" Type="Digiphoto.Lumen.Model.Store.RigheCarrelli" Multiplicity="*">
+		</End>				
+		<ReferentialConstraint>
+			<Principal Role="Fotografia">
+				<PropertyRef Name="id" />
+			</Principal>
+			<Dependent Role="RiCaFotoStampata">
+				<PropertyRef Name="fotografia_id" />
+			
+			</Dependent>
+		</ReferentialConstraint>
+	</Association>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -376,6 +399,10 @@
           <AssociationSet Name="FotografiaCorrezione" Association="Digiphoto.Lumen.Model.FotografiaCorrezione">
             <End Role="Fotografia" EntitySet="Fotografie" />
             <End Role="Correzione" EntitySet="Correzioni" />
+          </AssociationSet>
+          <AssociationSet Name="FotografiaRiCaFotoStampata" Association="Digiphoto.Lumen.Model.FotografiaRiCaFotoStampata">
+            <End Role="Fotografia" EntitySet="Fotografie" />
+            <End Role="RiCaFotoStampata" EntitySet="RigheCarrelli" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Fotografo">
@@ -482,7 +509,7 @@
           <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" />
           <Property Type="String" Name="descrizione" Nullable="false" />
           <Property Type="Decimal" Name="prezzo" Nullable="false" />
-          <NavigationProperty Name="RiCaFotoStampata" Relationship="Digiphoto.Lumen.Model.FormatoCartaRiCaFotoStampata" FromRole="FormatoCarta" ToRole="RiCaFotoStampata" />
+          <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true" />
         </EntityType>
         <Association Name="FotografoScaricoCard">
           <End Type="Digiphoto.Lumen.Model.Fotografo" Role="Fotografo" Multiplicity="1" >
@@ -531,8 +558,9 @@
           <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" />
           <Property Type="DateTime" Name="giornata" Nullable="false" />
           <Property Type="DateTime" Name="tempo" Nullable="false" />
-          <Property Type="Decimal" Name="totaleAPagare" Nullable="false" />
+          <Property Type="Decimal" Name="totaleAPagare" Nullable="true" />
           <NavigationProperty Name="righeCarrello" Relationship="Digiphoto.Lumen.Model.CarrelloRigaCarrello" FromRole="Carrello" ToRole="RigaCarrello" />
+          <Property Type="String" Name="intestazione" Nullable="true" />
         </EntityType>
         <EntityType Name="RigaCarrello" Abstract="false">
           <Key>
@@ -546,7 +574,9 @@
           <Property Type="String" Name="descrizione" Nullable="false" />
         </EntityType>
         <Association Name="CarrelloRigaCarrello">
-          <End Type="Digiphoto.Lumen.Model.Carrello" Role="Carrello" Multiplicity="1" />
+          <End Type="Digiphoto.Lumen.Model.Carrello" Role="Carrello" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="Digiphoto.Lumen.Model.RigaCarrello" Role="RigaCarrello" Multiplicity="*" />
         </Association>
         <EntityType Name="RiCaDiscoMasterizzato" BaseType="Digiphoto.Lumen.Model.RigaCarrello" >
@@ -557,13 +587,14 @@
           <Property Type="Guid" Name="idFotografia" Nullable="true" />
           <NavigationProperty Name="formatoCarta" Relationship="Digiphoto.Lumen.Model.FormatoCartaRiCaFotoStampata" FromRole="RiCaFotoStampata" ToRole="FormatoCarta" />
           <NavigationProperty Name="fotografo" Relationship="Digiphoto.Lumen.Model.FotografoRiCaFotoStampata" FromRole="RiCaFotoStampata" ToRole="Fotografo" />
+          <NavigationProperty Name="fotografia" Relationship="Digiphoto.Lumen.Model.FotografiaRiCaFotoStampata" FromRole="RiCaFotoStampata" ToRole="Fotografia" />
         </EntityType>
         <Association Name="FormatoCartaRiCaFotoStampata">
-          <End Type="Digiphoto.Lumen.Model.FormatoCarta" Multiplicity="0..1" Role="FormatoCarta" />
+          <End Type="Digiphoto.Lumen.Model.FormatoCarta" Multiplicity="1" Role="FormatoCarta" />
           <End Type="Digiphoto.Lumen.Model.RiCaFotoStampata" Multiplicity="*" Role="RiCaFotoStampata" />
         </Association>
         <Association Name="FotografoRiCaFotoStampata">
-          <End Type="Digiphoto.Lumen.Model.Fotografo" Role="Fotografo" Multiplicity="0..1" />
+          <End Type="Digiphoto.Lumen.Model.Fotografo" Role="Fotografo" Multiplicity="1" />
           <End Type="Digiphoto.Lumen.Model.RiCaFotoStampata" Role="RiCaFotoStampata" Multiplicity="*" />
         </Association>
         <Association Name="FotografiaRigaAlbum">
@@ -633,6 +664,10 @@
         <Association Name="FotografiaCorrezione">
           <End Type="Digiphoto.Lumen.Model.Fotografia" Role="Fotografia" Multiplicity="1" />
           <End Type="Digiphoto.Lumen.Model.Correzione" Role="Correzione" Multiplicity="*" />
+        </Association>
+        <Association Name="FotografiaRiCaFotoStampata">
+          <End Type="Digiphoto.Lumen.Model.Fotografia" Role="Fotografia" Multiplicity="0..1" />
+          <End Type="Digiphoto.Lumen.Model.RiCaFotoStampata" Role="RiCaFotoStampata" Multiplicity="*" />
         </Association>
       </Schema>
     </edmx:ConceptualModels>
@@ -707,6 +742,7 @@
 					<ScalarProperty Name="id" ColumnName="id" />
 					<ScalarProperty Name="descrizione" ColumnName="descrizione" />
 					<ScalarProperty Name="prezzo" ColumnName="prezzo" />
+					<ScalarProperty Name="attivo" ColumnName="attivo" />
 				</MappingFragment>
 			</EntityTypeMapping>
 		</EntitySetMapping>
@@ -728,6 +764,7 @@
 					<ScalarProperty Name="giornata" ColumnName="giornata" />
 					<ScalarProperty Name="tempo" ColumnName="tempo" />
 					<ScalarProperty Name="totaleAPagare" ColumnName="totaleAPagare" />
+					<ScalarProperty Name="intestazione" ColumnName="intestazione" />
 				</MappingFragment>
 			</EntityTypeMapping>
 		</EntitySetMapping>
@@ -770,93 +807,93 @@
 			</EntityTypeMapping>
 		</EntitySetMapping>
 		<EntitySetMapping Name="Correzioni">
-            <EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.Correzione)">
-              <MappingFragment StoreEntitySet="Correzioni">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
-                <ScalarProperty Name="cardinalita" ColumnName="cardinalita" />
-              </MappingFragment>
-            </EntityTypeMapping>
-            <EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.RuotaCorrezione)">
-              <MappingFragment StoreEntitySet="Correzioni">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="backgroundColor" ColumnName="backgroundColor" />
-                <ScalarProperty Name="scartoAutomatico" ColumnName="scartoAutomatico" />
-                <ScalarProperty Name="gradi" ColumnName="gradi" />
-                
-                
-                <Condition ColumnName="__Disc__" Value="RuotaCorrezione" />
-              </MappingFragment>
-            </EntityTypeMapping>
-            <EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.BiancoNeroCorrezione)">
-              <MappingFragment StoreEntitySet="Correzioni">
-                <ScalarProperty Name="id" ColumnName="id" />
-                
-                
-                <Condition ColumnName="__Disc__" Value="BiancoNeroCorrezione" />
-              </MappingFragment>
-            </EntityTypeMapping>
-            <EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.ContrastoCorrezione)">
-              <MappingFragment StoreEntitySet="Correzioni">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="fattore" ColumnName="fattore" />
-                
-                
-                <Condition ColumnName="__Disc__" Value="ContrastoCorrezione" />
-              </MappingFragment>
-            </EntityTypeMapping>
-            <EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.CropCorrezione)">
-              <MappingFragment StoreEntitySet="Correzioni">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="areaRitaglioH" ColumnName="areaRitaglioH" />
-                <ScalarProperty Name="areaRitaglioW" ColumnName="areaRitaglioW" />
-                <ScalarProperty Name="areaRitaglioY" ColumnName="areaRitaglioY" />
-                <ScalarProperty Name="areaRitaglioX" ColumnName="areaRitaglioX" />
-                <ScalarProperty Name="imgOrigH" ColumnName="imgOrigH" />
-                <ScalarProperty Name="imgOrigW" ColumnName="imgOrigW" />
-                
-                
-                <Condition ColumnName="__Disc__" Value="CropCorrezione" />
-              </MappingFragment>
-            </EntityTypeMapping>
-            <EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.LuminositaCorrezione)">
-              <MappingFragment StoreEntitySet="Correzioni">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="fattoreL" ColumnName="fattoreL" />
-                
-                
-                <Condition ColumnName="__Disc__" Value="LuminositaCorrezione" />
-              </MappingFragment>
-            </EntityTypeMapping>
-            <EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.SeppiaCorrezione)">
-              <MappingFragment StoreEntitySet="Correzioni">
-                <ScalarProperty Name="id" ColumnName="id" />
-                
-                
-                <Condition ColumnName="__Disc__" Value="SeppiaCorrezione" />
-              </MappingFragment>
-            </EntityTypeMapping>
-            <EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.SpecchioCorrezione)">
-              <MappingFragment StoreEntitySet="Correzioni">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="direzione" ColumnName="direzione" />
-                
-                
-                <Condition ColumnName="__Disc__" Value="SpecchioCorrezione" />
-              </MappingFragment>
-            </EntityTypeMapping>
-            <EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.CorniceCorrezione)">
-              <MappingFragment StoreEntitySet="Correzioni">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="direzioneSpecchio" ColumnName="direzioneSpecchio" />
-                <ScalarProperty Name="gradiRotazione" ColumnName="gradiRotazione" />
-                <ScalarProperty Name="fattoreRotazione" ColumnName="fattoreRotazione" />
-                <ScalarProperty Name="nome" ColumnName="nome" />
-                
-                
-                <Condition ColumnName="__Disc__" Value="CorniceCorrezione" />
-              </MappingFragment>
-            </EntityTypeMapping>
+			<EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.Correzione)">
+				<MappingFragment StoreEntitySet="Correzioni">
+					<ScalarProperty Name="id" ColumnName="id" />
+					<ScalarProperty Name="cardinalita" ColumnName="cardinalita" />
+					<ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
+				</MappingFragment>
+			</EntityTypeMapping>
+			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.RuotaCorrezione">
+				<MappingFragment StoreEntitySet="Correzioni">
+					<ScalarProperty Name="id" ColumnName="id" />
+					<ScalarProperty Name="cardinalita" ColumnName="cardinalita" />
+					<ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
+					<ScalarProperty Name="gradi" ColumnName="gradi" />
+					<ScalarProperty Name="scartoAutomatico" ColumnName="scartoAutomatico" />
+					<ScalarProperty Name="backgroundColor" ColumnName="backgroundColor" />
+                    <Condition ColumnName="__Disc__" Value="RuotaCorrezione" />
+				</MappingFragment>
+			</EntityTypeMapping>
+			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.BiancoNeroCorrezione">
+				<MappingFragment StoreEntitySet="Correzioni">
+					<ScalarProperty Name="id" ColumnName="id" />
+					<ScalarProperty Name="cardinalita" ColumnName="cardinalita" />
+					<ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
+                    <Condition ColumnName="__Disc__" Value="BiancoNeroCorrezione" />
+				</MappingFragment>
+			</EntityTypeMapping>
+			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.ContrastoCorrezione">
+				<MappingFragment StoreEntitySet="Correzioni">
+					<ScalarProperty Name="id" ColumnName="id" />
+					<ScalarProperty Name="cardinalita" ColumnName="cardinalita" />
+					<ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
+					<ScalarProperty Name="fattore" ColumnName="fattore" />
+                    <Condition ColumnName="__Disc__" Value="ContrastoCorrezione" />
+				</MappingFragment>
+			</EntityTypeMapping>
+			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.CropCorrezione">
+				<MappingFragment StoreEntitySet="Correzioni">
+					<ScalarProperty Name="id" ColumnName="id" />
+					<ScalarProperty Name="cardinalita" ColumnName="cardinalita" />
+					<ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
+					<ScalarProperty Name="imgOrigW" ColumnName="imgOrigW" />
+					<ScalarProperty Name="imgOrigH" ColumnName="imgOrigH" />
+					<ScalarProperty Name="areaRitaglioX" ColumnName="areaRitaglioX" />
+					<ScalarProperty Name="areaRitaglioY" ColumnName="areaRitaglioY" />
+					<ScalarProperty Name="areaRitaglioW" ColumnName="areaRitaglioW" />
+					<ScalarProperty Name="areaRitaglioH" ColumnName="areaRitaglioH" />
+                    <Condition ColumnName="__Disc__" Value="CropCorrezione" />
+				</MappingFragment>
+			</EntityTypeMapping>
+			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.LuminositaCorrezione">
+				<MappingFragment StoreEntitySet="Correzioni">
+					<ScalarProperty Name="id" ColumnName="id" />
+					<ScalarProperty Name="cardinalita" ColumnName="cardinalita" />
+					<ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
+					<ScalarProperty Name="fattoreL" ColumnName="fattoreL" />
+                    <Condition ColumnName="__Disc__" Value="LuminositaCorrezione" />
+				</MappingFragment>
+			</EntityTypeMapping>
+			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.SeppiaCorrezione">
+				<MappingFragment StoreEntitySet="Correzioni">
+					<ScalarProperty Name="id" ColumnName="id" />
+					<ScalarProperty Name="cardinalita" ColumnName="cardinalita" />
+					<ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
+                    <Condition ColumnName="__Disc__" Value="SeppiaCorrezione" />
+				</MappingFragment>
+			</EntityTypeMapping>
+			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.SpecchioCorrezione">
+				<MappingFragment StoreEntitySet="Correzioni">
+					<ScalarProperty Name="id" ColumnName="id" />
+					<ScalarProperty Name="cardinalita" ColumnName="cardinalita" />
+					<ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
+					<ScalarProperty Name="direzione" ColumnName="direzione" />
+                    <Condition ColumnName="__Disc__" Value="SpecchioCorrezione" />
+				</MappingFragment>
+			</EntityTypeMapping>
+			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.CorniceCorrezione">
+				<MappingFragment StoreEntitySet="Correzioni">
+					<ScalarProperty Name="id" ColumnName="id" />
+					<ScalarProperty Name="cardinalita" ColumnName="cardinalita" />
+					<ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
+					<ScalarProperty Name="nome" ColumnName="nome" />
+					<ScalarProperty Name="fattoreRotazione" ColumnName="fattoreRotazione" />
+					<ScalarProperty Name="gradiRotazione" ColumnName="gradiRotazione" />
+					<ScalarProperty Name="direzioneSpecchio" ColumnName="direzioneSpecchio" />
+                    <Condition ColumnName="__Disc__" Value="CorniceCorrezione" />
+				</MappingFragment>
+			</EntityTypeMapping>
 		</EntitySetMapping>
 		<AssociationSetMapping Name="FotografoFotografia" TypeName="Digiphoto.Lumen.Model.FotografoFotografia" StoreEntitySet="Fotografie">
 			<EndProperty Name="Fotografo">
@@ -942,6 +979,16 @@
 			</EndProperty>
 		</AssociationSetMapping>
 
+		<AssociationSetMapping Name="FotografiaRiCaFotoStampata" TypeName="Digiphoto.Lumen.Model.FotografiaRiCaFotoStampata" StoreEntitySet="RigheCarrelli">
+			<EndProperty Name="Fotografia">
+				<ScalarProperty Name="id" ColumnName="fotografia_id" />
+			</EndProperty>
+			<EndProperty Name="RiCaFotoStampata">
+				<ScalarProperty Name="id" ColumnName="id" />
+			</EndProperty>
+			<Condition ColumnName="fotografia_id" IsNull="false" />
+		</AssociationSetMapping>
+
 	</EntityContainerMapping>
 </Mapping></edmx:Mappings>
   </edmx:Runtime>
@@ -991,11 +1038,11 @@
           <ConnectorPoint PointX="11.75" PointY="10.393992513020834" />
         </AssociationConnector>
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.InfoFissa" PointX="0.5" PointY="0.5" Width="1.5" Height="1.9802864583333331" />
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Carrello" Width="1.5" PointX="19" PointY="4.5" Height="1.9802864583333335" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Carrello" Width="1.5" PointX="19" PointY="4.5" Height="2.1725878906249996" />
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RigaCarrello" Width="1.5" PointX="21.25" PointY="4.75" Height="2.1725878906249996" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.CarrelloRigaCarrello">
-          <ConnectorPoint PointX="20.5" PointY="5.6151432291666667" />
-          <ConnectorPoint PointX="21.25" PointY="5.6151432291666667" />
+          <ConnectorPoint PointX="20.5" PointY="5.7112939453125" />
+          <ConnectorPoint PointX="21.25" PointY="5.7112939453125" />
         </AssociationConnector>
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RiCaDiscoMasterizzato" Width="1.5" PointX="22.875" PointY="7.875" Height="1.2110807291666665" />
         <InheritanceConnector EntityType="Digiphoto.Lumen.Model.RiCaDiscoMasterizzato" ManuallyRouted="false" >
@@ -1105,6 +1152,13 @@
         <AssociationConnector Association="Digiphoto.Lumen.Model.FotografiaCorrezione">
           <ConnectorPoint PointX="11.75" PointY="4.047841796875" />
           <ConnectorPoint PointX="3.875" PointY="4.047841796875" />
+        </AssociationConnector>
+        <AssociationConnector Association="Digiphoto.Lumen.Model.FotografiaRiCaFotoStampata">
+          <ConnectorPoint PointX="11.875" PointY="5.3840950520833326" />
+          <ConnectorPoint PointX="11.875" PointY="8.4612939453125" />
+          <ConnectorPoint PointX="13.104166666666666" PointY="8.4612939453125" />
+          <ConnectorPoint PointX="13.270833333333334" PointY="8.4612939453125" />
+          <ConnectorPoint PointX="21.125" PointY="8.4612939453125" />
         </AssociationConnector>
         </Diagram>
     </edmx:Diagrams>

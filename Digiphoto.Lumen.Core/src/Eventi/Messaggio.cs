@@ -5,8 +5,12 @@ using System.Text;
 
 namespace Digiphoto.Lumen.Eventi {
 
-    public class Messaggio : EventArgs
-    {
+	public enum Esito {
+		Ok,
+		Errore
+	}
+
+	public class Messaggio : EventArgs {
 
 		public Messaggio() {
 			timeStamp = DateTime.Now;
@@ -16,22 +20,8 @@ namespace Digiphoto.Lumen.Eventi {
 			this.descrizione = descrizione;
 		}
 
-		public Messaggio( Object sender, EventArgs eventArgs ) : this() {
-			this.sender = sender;
-			this.eventArgs = eventArgs;
-		}
-
+		/** Descrizione dell'episodio */
 		public string descrizione {
-			get;
-			set;
-		}
-
-		public object sender {
-			get;
-			set;
-		}
-
-		public EventArgs eventArgs {
 			get;
 			set;
 		}
@@ -41,5 +31,11 @@ namespace Digiphoto.Lumen.Eventi {
 			get;
 			set;
 		}
+
+		public Esito? esito {
+			get;
+			set;
+		}
+
 	}
 }

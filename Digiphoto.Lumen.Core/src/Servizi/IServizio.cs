@@ -12,6 +12,10 @@ namespace Digiphoto.Lumen.Servizi {
 		void start();
 
 		void stop();
+
+		bool isRunning {
+			get;
+		}
 	}
 
 }

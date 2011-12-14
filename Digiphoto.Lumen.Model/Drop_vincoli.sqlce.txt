@@ -1,0 +1,47 @@
+alter table RigheAlbum	 drop constraint FK_AlbumRigaAlbum;
+go
+alter table RigheCarrelli drop constraint 	FK_CarrelloRigaCarrello	;
+go
+alter table 
+Fotografie drop constraint 	FK_EventoFotografia	
+;
+go
+alter table RigheCarrelli drop constraint 	FK_FormatoCartaRiCaFotoStampata	
+;
+go
+alter table Correzioni	 drop constraint FK_FotografiaCorrezione	
+;
+go
+alter table RigheCarrelli drop constraint 	FK_FotografiaRiCaFotoStampata	
+;
+go
+alter table RigheAlbum drop constraint 	FK_FotografiaRigaAlbum	;
+go
+alter table Fotografie drop constraint 	FK_FotografoFotografia	;
+go
+alter table RigheCarrelli drop constraint 	FK_FotografoRiCaFotoStampata	;
+go
+alter table ScarichiCards drop constraint 	FK_FotografoScaricoCard	;
+go
+alter table Albums drop constraint 	PK_Albums	;
+go
+alter table Carrelli drop constraint 	PK_Carrelli;
+go
+alter table Correzioni drop constraint 	PK_Correzioni	;
+go
+alter table Eventi drop constraint 	PK_Eventi	;
+go
+alter table FormatiCarta drop constraint 	PK_FormatiCarta	;
+go
+alter table Fotografi drop constraint 	PK_Fotografi	;
+go
+alter table Fotografie drop constraint 	PK_Fotografie	;
+go
+alter table InfosFisse drop constraint 	PK_InfosFisse	;
+go
+alter table RigheAlbum drop constraint 	PK_RigheAlbum	;
+go
+alter table RigheCarrelli drop constraint 	PK_RigheCarrelli	;
+go
+alter table ScarichiCards drop constraint 	PK_ScarichiCards	;
+go

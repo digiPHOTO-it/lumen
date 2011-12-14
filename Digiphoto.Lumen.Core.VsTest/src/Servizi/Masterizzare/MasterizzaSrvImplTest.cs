@@ -50,7 +50,7 @@ namespace Digiphoto.Lumen.Core.VsTest
                 }
             }
             _impl.impostaDestinazione(TipoDestinazione.MASTERIZZATORE, @"E:\");
-            _impl.masterizza();
+			_impl.masterizza();
             while (!_elaborazioneTerminata)
             {
                 Thread.Sleep(10000);
@@ -71,7 +71,7 @@ namespace Digiphoto.Lumen.Core.VsTest
             }
             string strPathDesktop = Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
             _impl.impostaDestinazione(TipoDestinazione.CARTELLA, strPathDesktop + @"\Chiavetta");
-            _impl.masterizza();
+			_impl.masterizza();
 
             while (!_elaborazioneTerminata)
             {
@@ -92,7 +92,7 @@ namespace Digiphoto.Lumen.Core.VsTest
             }
             string strPathDesktop = Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
             _impl.impostaDestinazione(TipoDestinazione.CARTELLA, strPathDesktop + @"\Chiavetta");
-            _impl.masterizza();
+			_impl.masterizza();
 
             while (!_elaborazioneTerminata)
             {

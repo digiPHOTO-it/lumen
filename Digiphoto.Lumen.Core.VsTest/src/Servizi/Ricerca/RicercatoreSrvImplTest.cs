@@ -41,7 +41,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 		[TestMethod]
 		public void ricercaTest() {
 
-			ParamRicercaFoto param = new ParamRicercaFoto();
+			ParamCercaFoto param = new ParamCercaFoto();
 			param.giornataIniz = new DateTime( 2000, 1, 1 );
 			param.giornataFine = new DateTime( 2299, 12, 31 );
 

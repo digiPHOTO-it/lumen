@@ -72,6 +72,7 @@
     <Content Include="dbVuoto.sdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="IstruzioniCreazioneDatabaseDaModello.txt" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

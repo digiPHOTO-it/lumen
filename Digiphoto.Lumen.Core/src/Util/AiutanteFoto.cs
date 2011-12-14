@@ -37,10 +37,12 @@ namespace Digiphoto.Lumen.Util {
 			IGestoreImmagineSrv gis = LumenApplication.Instance.getGestoreImmaginiSrv();
 
 			//
-			foto.imgProvino = gis.load( PathUtil.nomeCompletoProvino( foto ) );
+			if( foto.imgProvino == null )
+				foto.imgProvino = gis.load( PathUtil.nomeCompletoProvino( foto ) );
 
 			//
-			foto.imgOrig = gis.load( PathUtil.nomeCompletoFoto( foto ) );
+			if( foto.imgOrig == null )
+				foto.imgOrig = gis.load( PathUtil.nomeCompletoFoto( foto ) );
 
 			// TODO manca l'immagine risultante (se la gestiamo per davvero)
 		}
