@@ -11,8 +11,12 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
     {
         Aggiunto,
         InseritoValore,
+        InizioMasterizzazione,
         MasterizzazioneCompletata,
-        MasterizzazioneFallita
+        MasterizzazioneFallita,
+        InizioCopiaChiavetta,
+        CopiaChiavettaCompletata,
+        CopiaChiavettaFallita
     };
 
     public class MasterizzaMsg : Messaggio
@@ -23,5 +27,6 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
         public int totFotoAggiunte { get; set; }
         public int totFotoNonAggiunte { get; set; }
         public string result { get; set; }
+        public int progress { get; set; }
     }
 }
