@@ -1,0 +1,36 @@
+﻿Purtoppo ci sono diversi errori e problemi nei tool di microzozz.
+
+1) Aprire il modello LumenModel.edmx con il disegnatore.
+
+2) Nella entità RicaFotoStampate, ci sono due associazioni:
+   * con il FormatoCarta
+   * con la Fotografia
+
+   Queste due associazioni devono essere 0..1 a *
+   Però se mettiamo in questo modo a causa di un baco del designer, il file edmx diventa
+   errato e non si riesce a compilare.
+   Se non ci credi leggi qui:
+   http://social.msdn.microsoft.com/Forums/en-US/adodotnetentityframework/thread/c1e1d43a-a09f-4692-9372-3133f04d3eeb/
+
+3) Mettere le associazioni di cui al punto 2 in modo corretto (0..1)
+
+4) Con il tasto destro creare il database dal modello
+   Questa operazione crea lo script sql di creazione del database in modo corretto.
+
+5) Ora mettere le associazioni in modo errato (1)
+
+6) Chiudere il designer e aprire il file edmx con l'editor xml
+
+7) Cercare le occorrenze di sql compact 3.5 e sostituirle con 4.0
+   Salvare
+
+8) Lanciando la build del progetto con F6, si noterà che ci sono ancora un paio di
+   bachi del designer da sistemare.
+   Infatti alcune entità vengono puntate su tabelle inesistenti.
+
+9) Nelle due entità derivate (TPH) RiCaFotoStampata e RiCaDiscoMasterizzato
+   puntarle sulla tabelle RigheCarrelli e non RigheCarrelli_RiCaxxxxxxxxxxx
+
+10) A mano dove si trovano i tag 
+   <Association Name="FotografiaRiCaFotoStampata">
+    mettere Multiplicity="0..1"

@@ -14,12 +14,12 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( RicercatoreSrvImpl ) );
 
-		ParamRicercaFoto _paramRicercaFoto;
+		ParamCercaFoto _paramRicercaFoto;
 
 		public RicercatoreSrvImpl() {
 		}
 
-		public List<Fotografia> cerca( ParamRicercaFoto param ) {
+		public List<Fotografia> cerca( ParamCercaFoto param ) {
 			
 			this._paramRicercaFoto = param;
 

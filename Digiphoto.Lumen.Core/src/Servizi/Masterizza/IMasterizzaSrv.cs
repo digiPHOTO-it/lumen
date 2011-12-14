@@ -29,5 +29,9 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare {
 		 * masterizzatore da usare (potrebbero essercene più di uno).
 		 */
 		void impostaDestinazione( TipoDestinazione tipoDestinazione, String destinazione );
+
+		/** Viene pubblicato un Messaggio con l'esito */
+		void masterizza();
+
 	}
 }
