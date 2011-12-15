@@ -14,6 +14,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
         InizioMasterizzazione,
         MasterizzazioneCompletata,
         MasterizzazioneFallita,
+        ErrorMedia,
         InizioCopiaChiavetta,
         CopiaChiavettaCompletata,
         CopiaChiavettaFallita
