@@ -130,10 +130,19 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                         _burner.addFileToBurner(configurazione.getCartellaRepositoryFoto() + Path.DirectorySeparatorChar + fot.nomeFile);
                     }
                     _burner.setDiscRecorder(_driverLetter);
-                    _burner.testMedia();
-                    //Imposto l'etichetta del CD
-                    _burner.etichetta = DateTime.Now.ToString("yyyy/MM/dd");;
-                    _burner.burning();
+
+                    if(_burner.testMedia()){
+                        //Imposto l'etichetta del CD
+                        _burner.etichetta = DateTime.Now.ToString("yyyy/MM/dd");;
+                        _burner.burning();
+                    }else{
+                         MasterizzaMsg errorTestMediaMsg = new MasterizzaMsg();
+                        errorTestMediaMsg.fase = Fase.ErrorMedia;
+                        errorTestMediaMsg.riscontratiErrori = true;
+                        errorTestMediaMsg.progress = 0;
+                        errorTestMediaMsg.result = "Error Media";
+                        pubblicaMessaggio(errorTestMediaMsg);
+                    }
                     break;
             }
         }
@@ -174,6 +183,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                         statoCopiaMsg.fotoAggiunta = 1;
                         statoCopiaMsg.totFotoAggiunte = ++countfotoAggiunte;
                         statoCopiaMsg.totFotoNonAggiunte = countFotoNonAggiunte;
+                        statoCopiaMsg.progress = ((countfotoAggiunte + countFotoNonAggiunte) * 100) / _listFotografie.Count;
                         statoCopiaMsg.result = "Il File " + fot.nomeFile + " è stato copiato sulla chiavetta con successo";
                         pubblicaMessaggio(statoCopiaMsg);
                         //System.Diagnostics.Trace.WriteLine("Il File " + fot.nomeFile + " è stato copiato sulla chiavetta con successo");
@@ -186,6 +196,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                         statoCopiaErroreMsg.fotoAggiunta = 0;
                         statoCopiaErroreMsg.totFotoAggiunte = countfotoAggiunte;
                         statoCopiaErroreMsg.totFotoNonAggiunte = ++countFotoNonAggiunte;
+                        statoCopiaErroreMsg.progress = ((countfotoAggiunte + countFotoNonAggiunte) * 100) / _listFotografie.Count;
                         statoCopiaErroreMsg.result = "Il file " + fot.nomeFile + " non è stato copiato sulla chiavetta: " + nomeFileDest;
                         _giornale.Error("Il file " + @configurazione.getCartellaRepositoryFoto() + Path.DirectorySeparatorChar + fot.nomeFile + " non è stato copiato il file sulla chiavetta " + nomeFileDest, ee);
                         pubblicaMessaggio(statoCopiaErroreMsg);

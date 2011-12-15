@@ -17,6 +17,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
         FormattazioneFallita,
         ValidatingCurrentMedia,
         FormattingMedia,
+        ErrorMedia,
         InitializingHardware,
         OptimizingLaserIntensity,
         FinalizingWriting,
