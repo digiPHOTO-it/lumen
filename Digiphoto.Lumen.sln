@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormsTestApplication", "For
 EndProject
 Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "VenditeModelling", "VenditeModelling\VenditeModelling.modelproj", "{4A23AB05-7446-4586-88E4-820EDD9FDF68}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.GestoreConfigurazione.UI", "Digiphoto.Lumen.GestoreConfigurazione.UI\Digiphoto.Lumen.GestoreConfigurazione.UI.csproj", "{731A5262-29DE-4F73-8F25-4AFA78089902}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Lumen.vsmdi
@@ -94,6 +96,16 @@ Global
 		{4A23AB05-7446-4586-88E4-820EDD9FDF68}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{4A23AB05-7446-4586-88E4-820EDD9FDF68}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{4A23AB05-7446-4586-88E4-820EDD9FDF68}.Release|x86.ActiveCfg = Release|Any CPU
+		{731A5262-29DE-4F73-8F25-4AFA78089902}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{731A5262-29DE-4F73-8F25-4AFA78089902}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{731A5262-29DE-4F73-8F25-4AFA78089902}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{731A5262-29DE-4F73-8F25-4AFA78089902}.Debug|x86.ActiveCfg = Debug|x86
+		{731A5262-29DE-4F73-8F25-4AFA78089902}.Debug|x86.Build.0 = Debug|x86
+		{731A5262-29DE-4F73-8F25-4AFA78089902}.Release|Any CPU.ActiveCfg = Release|x86
+		{731A5262-29DE-4F73-8F25-4AFA78089902}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{731A5262-29DE-4F73-8F25-4AFA78089902}.Release|Mixed Platforms.Build.0 = Release|x86
+		{731A5262-29DE-4F73-8F25-4AFA78089902}.Release|x86.ActiveCfg = Release|x86
+		{731A5262-29DE-4F73-8F25-4AFA78089902}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

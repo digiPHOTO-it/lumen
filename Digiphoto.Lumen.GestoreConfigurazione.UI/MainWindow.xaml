@@ -1,0 +1,134 @@
+﻿<Window x:Class="Digiphoto.Lumen.GestoreConfigurazione.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Lumen Gestore Configurazione
+        " Height="350" Width="648">
+
+
+    <DockPanel LastChildFill="True">
+
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" 
+                    HorizontalAlignment="Right">
+
+            <Label Content="Password amministratore" Height="28" Margin="5,0,5,0" Name="label2"  Width="149" />
+            <PasswordBox Height="23" Name="amministratorePasswordBox" Width="120"  />
+            <Button Name="amministratoreLoginButton" Content="&gt;" Height="23"  Margin="5,0,5,0"  Width="22" />
+        </StackPanel>
+
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" >
+            <Button Content="Applica" Height="23" Name="applicaButton" Width="75" Margin="5,0,5,0" />
+            <Button Content="Annulla" Height="23" Name="annullaButton" Width="75" Margin="5,0,5,0" />
+        </StackPanel>
+
+        <TabControl Name="tabControl1" >
+            <TabItem Header="Configurazione" Name="tabItem1">
+                <Grid>
+                    <Label Content="Database Connection String" Height="28" HorizontalAlignment="Left" Margin="14,34,0,0" Name="label4" VerticalAlignment="Top" />
+                    <TextBox Height="22" Margin="14,57,17,0" Name="textBox1" VerticalAlignment="Top" />
+                    <Label Content="Cartella Rullini" Height="25" HorizontalAlignment="Left" Margin="20,98,0,0" Name="label5" VerticalAlignment="Top" Width="152" />
+                    <TextBox Height="21" Margin="184,100,45,0" Name="textBox2" VerticalAlignment="Top" />
+                    <Button Content="..." Height="23" Margin="0,99,17,0" Name="button1" VerticalAlignment="Top" ToolTip="Sfoglia cartelle" HorizontalAlignment="Right" Width="22" />
+                    <Label Content="Punto Vendita: codice" Height="26" HorizontalAlignment="Left" Margin="20,152,0,0" Name="label6" VerticalAlignment="Top" Width="136" />
+                    <TextBox Height="24" HorizontalAlignment="Left" Margin="172,154,0,0" Name="textBox3" VerticalAlignment="Top" Width="34" />
+                    <Label Content="Descrizione" Height="26" HorizontalAlignment="Left" Margin="236,152,0,0" Name="label7" VerticalAlignment="Top" Width="79" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="311,154,0,0" Name="textBox4" VerticalAlignment="Top" Width="165" />
+                    <ComboBox Height="23" HorizontalAlignment="Left" Margin="172,12,0,0" Name="databaseSupoortatiComboBox" VerticalAlignment="Top" Width="149">
+                        <ComboBoxItem Content="Sql Server Compact Edition" />
+                        <ComboBoxItem Content="SqLite" />
+                        <ComboBoxItem Content="Sql Server" />
+                    </ComboBox>
+                    <Label Content="Motore di database" Height="28" HorizontalAlignment="Left" Margin="14,12,0,0" Name="label10" VerticalAlignment="Top" Width="152" />
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Carta e Stampanti" >
+
+                <StackPanel Orientation="Horizontal">
+
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+
+                        <ListBox Margin="10,10,10,10" Name="stampantiListBox">
+                            <ListBoxItem IsEnabled="False">Shinko S2115</ListBoxItem>
+                            <ListBoxItem IsEnabled="False">Canon pixma</ListBoxItem>
+                            <ListBoxItem>Epson qqq</ListBoxItem>
+                        </ListBox>
+
+                        <Separator Height="10" />
+
+                        <ListBox Margin="10,10,10,10" Name="formatiCartaListBox">
+                            <ListBoxItem IsEnabled="False">formato A4 (12 euro)</ListBoxItem>
+                            <ListBoxItem>6x8 (7 euro)</ListBoxItem>
+                            <ListBoxItem IsEnabled="False">formato A5 (5 euro)</ListBoxItem>
+                        </ListBox>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button Name="creaNuovoFormatoCartaButton" Content="+" ToolTip="Crea nuovo formato carta" Margin="10,0,10,0"/>
+                            <Button Name="modificaFormatoCartaButton" Content="O" ToolTip="modifica formato carta" Margin="10,0,10,0"/>
+                        </StackPanel>
+
+                        <Label Content="Nota1..." ToolTip="quando un elemento viene abbinato diventa disabilitato "/>
+                        <Label Content="Nota2..." ToolTip="Quando premo + si apre una mascherina per inserire un nuovo formato carta"/>
+                        <Label Content="Nota3..." ToolTip="I formati carta per ora non li facciamo eliminare."/>
+
+                    </StackPanel>
+
+
+                    <StackPanel VerticalAlignment="Center">
+                        <Button Content="Abbina ---&gt;" Name="abbinaButton" Margin="5,5,5,5" />
+                        <Button Content="&lt;--- Rimuovi abbinamento" Name="rimuoviAbbinamentoButton" Margin="5,5,5,5"/>
+                    </StackPanel>
+
+                    <HeaderedContentControl Header="Abbinamenti" >
+                        <StackPanel Orientation="Vertical">                            
+                        <ListBox Margin="10,10,10,10" Name="abbinatiListBox">
+                            <ListBoxItem>formato A4 (12 euro) su Shinko S2115 [PS1]</ListBoxItem>
+                            <ListBoxItem>formato A5 (5 euro) su Canon pixma [PS2]</ListBoxItem>
+                        </ListBox>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button Name="spostaSuAbbinamentoButton" Content="^ Su" ToolTip="Aumenta priorità" Margin="5,0,5,0" />
+                                <Button Name="spostaGiuAbbinamentoButton" Content="Giù V" ToolTip="Diminuisce priorità" Margin="5,0,5,0" />
+                            </StackPanel>
+                        </StackPanel>
+
+                    </HeaderedContentControl>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Preferenze Utente">
+                <Grid>
+
+                    <CheckBox Content="Svuota memory card dopo averla scaricata" Height="19" Name="svuotaCardCheckBox" Width="260" Margin="20,31,336,0" VerticalAlignment="Top" />
+                    <GroupBox Header="Masterizzare" Height="115" Margin="20,51,74,0" Name="groupBox1" VerticalAlignment="Top" Width="399">
+                        <Grid>
+                            <RadioButton  Content="Direttamente con" Height="18" HorizontalAlignment="Left" Margin="12,15,0,0" Name="masterizzaDirettoRadioButton" VerticalAlignment="Top" Width="129" />
+                            <RadioButton Content="usa cartella" Height="15" HorizontalAlignment="Left" Margin="12,47,0,0" Name="masterizzaCartellaRadioButton" VerticalAlignment="Top" Width="115" />
+                            <ComboBox Height="20" HorizontalAlignment="Left" Margin="133,13,0,0" Name="comboBox1" VerticalAlignment="Top" Width="248" 
+                                      IsEnabled="{Binding ElementName=masterizzaDirettoRadioButton, Path=IsChecked}" />
+                            <TextBox Height="23" Margin="133,40,36,0" Name="cartellaMasterizzaTextBox" VerticalAlignment="Top"
+                                     IsEnabled="{Binding ElementName=masterizzaCartellaRadioButton, Path=IsChecked}"   />
+                            <Button Content="..." Height="20" HorizontalAlignment="Left" Margin="362,40,0,0" Name="cartellaMasterizzaBrowseButton" VerticalAlignment="Top" Width="19" 
+                                    IsEnabled="{Binding ElementName=masterizzaCartellaRadioButton, Path=IsChecked}"  />
+                        </Grid>
+                    </GroupBox>
+                    <Label Content="Num. giorni permanenza foto" Height="26" HorizontalAlignment="Left" Margin="20,185,0,0" Name="label8" VerticalAlignment="Top" Width="182" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="192,188,0,0" Name="textBox5" VerticalAlignment="Top" Width="36" ToolTip="N.giorni dopo cui cancellare le foto vecchie" />
+                    <CheckBox Content="Proietta area stampabile sulle diapositive" HorizontalAlignment="Left" Margin="356,185,0,0" Name="checkBox2" VerticalAlignment="Top" Width="207" />
+                    <Label Content="Modalità di vendita" HorizontalAlignment="Left" Margin="351,26,0,0" Name="label9" VerticalAlignment="Top" Width="113" />
+                    <ComboBox Height="22" HorizontalAlignment="Left" Margin="471,23,0,0" Name="comboBox2" VerticalAlignment="Top" Width="118">
+                        <ComboBoxItem Content="Diretta" />
+                        <ComboBoxItem Content="con Carrello" />
+                    </ComboBox>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Riservato">
+                <Grid>
+                    <Label Content="Nuova password" Height="27" Name="label1" Width="174" Margin="88,74,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                    <PasswordBox Margin="278,78,95,0" Name="nuovaPasswordBox" Height="23" VerticalAlignment="Top" />
+                    <Label Content="Conferma nuova password" Height="27" Margin="88,119,0,0" Name="label3" Width="174" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                    <PasswordBox Margin="278,119,95,0" Name="confermaNuovaPasswordBox" Height="23" VerticalAlignment="Top" />
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+
+</Window>
