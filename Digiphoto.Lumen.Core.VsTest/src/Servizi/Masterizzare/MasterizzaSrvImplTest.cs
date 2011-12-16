@@ -119,6 +119,7 @@ namespace Digiphoto.Lumen.Core.VsTest
 
         public void OnNext(MasterizzaMsg msg)
         {
+            System.Diagnostics.Trace.WriteLine("");
 			System.Diagnostics.Trace.WriteLine("[TotFotoNonAggiunte]: " + msg.totFotoNonAggiunte);
 			System.Diagnostics.Trace.WriteLine("[TotFotoAggiunte]: " + msg.totFotoAggiunte);
 			System.Diagnostics.Trace.WriteLine("[RiscontratiErrori]: " + msg.riscontratiErrori);
@@ -130,7 +131,8 @@ namespace Digiphoto.Lumen.Core.VsTest
 			if (msg.fase == Fase.MasterizzazioneCompletata ||
 				msg.fase == Fase.MasterizzazioneFallita ||
 				msg.fase == Fase.CopiaChiavettaFallita ||
-				msg.fase == Fase.CopiaChiavettaCompletata)
+				msg.fase == Fase.CopiaChiavettaCompletata ||
+                msg.fase == Fase.ErrorMedia)
 			{
 				_elaborazioneTerminata = true;
 			}
