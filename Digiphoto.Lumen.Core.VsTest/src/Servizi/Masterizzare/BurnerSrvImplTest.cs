@@ -92,6 +92,7 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Masterizzare
         [TestMethod]
         public void TestFormatting()
         {
+            _impl.testMedia();
             _impl.formatting();
             while (!_elaborazioneTerminata)
             {
@@ -101,6 +102,7 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Masterizzare
 
         private void statoMasterizzazione(object sender, BurnerMsg burnerMsg)
         {
+            System.Diagnostics.Trace.WriteLine("");
             System.Diagnostics.Trace.WriteLine("[Capacity]: " + burnerMsg.capacity);
             System.Diagnostics.Trace.WriteLine("[Fase]: " + burnerMsg.fase);
             System.Diagnostics.Trace.WriteLine("[StatusMessage]: " + burnerMsg.statusMessage);
@@ -108,7 +110,8 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Masterizzare
             if (burnerMsg.fase == Fase.FormattazioneCompletata ||
                burnerMsg.fase == Fase.MasterizzazioneCompletata ||
                burnerMsg.fase == Fase.MasterizzazioneFallita ||
-               burnerMsg.fase == Fase.FormattazioneFallita
+               burnerMsg.fase == Fase.FormattazioneFallita ||
+                burnerMsg.fase == Fase.ErrorMedia
                 //||
                 //msg.fase == Fase.NessunaOperazione
                )

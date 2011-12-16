@@ -153,7 +153,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
         /// <summary>
         /// Verifico se il supporto può essere utilizzato per masterizzare
         /// </summary>
-        public void testMedia()
+        public bool testMedia()
         {
             MsftFileSystemImage fileSystemImage = null;
             MsftDiscFormat2Data discFormatData = null;
@@ -167,7 +167,11 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
                 {
                     System.Diagnostics.Trace.WriteLine("Media not supported!");
                     _totalDiscSize = 0;
-                    return;
+                    BurnerMsg errorMediaMsg = new BurnerMsg();
+                    errorMediaMsg.fase = Fase.ErrorMedia;
+                    errorMediaMsg.statusMessage = "Media not supported!";
+                    OnInviaStatoMasterizzazione(errorMediaMsg);
+                    return false;
                 }
                 else
                 {
@@ -200,6 +204,11 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
             catch (COMException exception)
             {
                 System.Diagnostics.Trace.WriteLine("Detect Media Error "+exception.Message);
+                BurnerMsg errorMediaMsg = new BurnerMsg();
+                errorMediaMsg.fase = Fase.ErrorMedia;
+                errorMediaMsg.statusMessage = "Detect Media Error " + exception.Message;
+                OnInviaStatoMasterizzazione(errorMediaMsg);
+                return false;
             }
             finally
             {
@@ -214,6 +223,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
                 }
             }
             UpdateCapacity();
+            return true;
         }
 
         /// <summary>
@@ -279,8 +289,6 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
             OnInviaStatoMasterizzazione(burnerMsg);
 
             _burner.uniqueRecorderId = this.discRecorder.ActiveDiscRecorder;
-
-            System.Diagnostics.Trace.WriteLine("Inizio Masterizzazione");
 
             backgroundBurnWorker = new BackgroundWorker();
             backgroundBurnWorker.WorkerReportsProgress = true;
@@ -362,6 +370,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
                     e.Result = ex.ErrorCode;
                     BurnerMsg burnerMsg = new BurnerMsg();
                     burnerMsg.fase = Fase.MasterizzazioneFallita;
+                    burnerMsg.statusMessage = "IDiscFormat2Data.Write failed";
                     OnInviaStatoMasterizzazione(burnerMsg);
                     System.Diagnostics.Trace.WriteLine(ex.Message, "IDiscFormat2Data.Write failed");
                 }
@@ -388,8 +397,12 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
                 //
                 // If anything happens during the format, show the message
                 //
-                System.Diagnostics.Trace.WriteLine(exception.Message);
+                System.Diagnostics.Trace.WriteLine("[Eccezione]: "+exception.Message);
                 e.Result = exception.ErrorCode;
+                BurnerMsg burnerMsg = new BurnerMsg();
+                burnerMsg.fase = Fase.MasterizzazioneFallita;
+                burnerMsg.statusMessage = exception.Message;
+                OnInviaStatoMasterizzazione(burnerMsg);
             }
             finally
             {
@@ -947,8 +960,8 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
                 case IMAPI_PROFILE_TYPE.IMAPI_PROFILE_TYPE_BD_REWRITABLE:
                     return "Blu-ray Rewritable media";
             }
-            #endregion
         }
+        #endregion
 
         #region CallBack
 
