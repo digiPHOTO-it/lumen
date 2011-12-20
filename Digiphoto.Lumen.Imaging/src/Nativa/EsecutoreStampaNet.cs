@@ -6,6 +6,7 @@ using Digiphoto.Lumen.Servizi.Stampare;
 using System.Drawing.Drawing2D;
 using System;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Digiphoto.Lumen.Imaging.Nativa {
 
@@ -17,7 +18,15 @@ namespace Digiphoto.Lumen.Imaging.Nativa {
 		private bool _ruotareStampante = false;
 		private EsitoStampa _esito;
 
+		/** Mi serve per attendere la fine della stampa
+		 * Per spiegazione vedere
+		 * http://msdn.microsoft.com/en-us/library/system.threading.manualresetevent.aspx
+		 * http://stackoverflow.com/questions/492020/c-net-blocking-and-waiting-for-an-event
+		 */
+		private ManualResetEvent fineStampaManualResetEvent;
+
 		public EsecutoreStampaNet() {
+			fineStampaManualResetEvent = new ManualResetEvent(false);
 		}
 
 		#region Proprietà
@@ -39,6 +48,11 @@ namespace Digiphoto.Lumen.Imaging.Nativa {
 		#endregion
 
 
+		/**
+		 * Attenzione:
+		 * questo metodo deve ritornare l'esito della stampa, quindi non deve essere asincrono.
+		 * Deve essere sicronizzato
+		 */
 		public EsitoStampa esegui( LavoroDiStampa lavoroDiStampa ) {
 
 			_lavoroDiStampa = lavoroDiStampa;
@@ -51,9 +65,12 @@ namespace Digiphoto.Lumen.Imaging.Nativa {
 				PrintDocument pd = new PrintDocument();
 				pd.PrinterSettings.PrinterName = lavoroDiStampa.param.nomeStampante;
 				pd.DocumentName = "foto N." + lavoroDiStampa.fotografia.numero + " Oper=" + lavoroDiStampa.fotografia.fotografo.iniziali + " gg=" + String.Format( "{0:dd-MMM}", lavoroDiStampa.fotografia.dataOraAcquisizione );
+				if( lavoroDiStampa.param.idRigaCarrello.Equals( Guid.Empty ) == false )
+					pd.DocumentName += " [" + lavoroDiStampa.param.idRigaCarrello + "]";
 
 				pd.PrintPage += new PrintPageEventHandler( mioPrintPageEventHandler );
-				pd.BeginPrint += new PrintEventHandler( pd_BeginPrint );
+				pd.EndPrint += new PrintEventHandler( fineStampaEventHandler );
+
 				// Eventuale rotazione dell'orientamento dell'area di stampa
 				determinaRotazione( pd );
 
@@ -76,6 +93,11 @@ namespace Digiphoto.Lumen.Imaging.Nativa {
 					pd.Print();
 				}
 
+				// Attendo che il thread di stampa finisca davvero
+				fineStampaManualResetEvent.WaitOne();
+
+				_giornale.Debug( "Stampa completata" );
+					
 			} catch( Exception ee ) {
 				_esito = EsitoStampa.Errore;
 				_giornale.Error( "Stampa fallita", ee );
@@ -85,10 +107,7 @@ namespace Digiphoto.Lumen.Imaging.Nativa {
 			return _esito;
 		}
 
-		void pd_BeginPrint( object sender, PrintEventArgs e ) {
 
-			_giornale.Debug( e.PrintAction.ToString() );
-		}
 
 		/**
 		 * Evento che viene rilanciato per stampare tutte le pagine
@@ -147,6 +166,10 @@ namespace Digiphoto.Lumen.Imaging.Nativa {
 
 		}
 
+		void fineStampaEventHandler( object sender, PrintEventArgs e ) {
+			fineStampaManualResetEvent.Set();
+		}
+
 		/**
 		 * Se la foto e la stampante non sono orientate nello stesso verso,
 		 * allora devo uniformarle.
@@ -172,5 +195,14 @@ namespace Digiphoto.Lumen.Imaging.Nativa {
 			_ruotareStampante = true;
 		}
 
+
+		public bool asincrono {
+			get {
+				throw new NotImplementedException();
+			}
+			set {
+				throw new NotImplementedException();
+			}
+		}
 	}
 }

@@ -37,5 +37,14 @@ namespace Digiphoto.Lumen.Eventi {
 			set;
 		}
 
+		/** Questa informazione è a disposizione del programma chiamante.
+		 *  Viene ritornata per poter eseguire operazioni postume di chiusura, o convalida
+		 */
+		public Object senderTag;
+
+		public override string ToString() {
+			return this.descrizione + esito != null ? "Esito = " + ((Esito)esito).ToString() : "nullo";
+		}
+
 	}
 }

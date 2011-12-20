@@ -17,16 +17,16 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof(CodaDiStampe) );
 
-		public delegate void StampaCompletataEventHandler( object sender, StampatoMsg eventArgs );
+		public delegate void StampaCompletataCallback( object sender, StampatoMsg eventArgs );
 
-		private StampaCompletataEventHandler stampaCompletataEventHandler;
+		private StampaCompletataCallback stampaCompletataCallback;
 
-		public CodaDiStampe( string nomeStampante, StampaCompletataEventHandler callback ) : base( nomeStampante ) {
+		public CodaDiStampe( string nomeStampante, StampaCompletataCallback callback ) : base( nomeStampante ) {
 			
 			if( String.IsNullOrEmpty( nomeStampante ) )
 				throw new ArgumentException( "Nome stampante vuota" );
 
-			this.stampaCompletataEventHandler = callback;
+			this.stampaCompletataCallback = callback;
 		}
 
 		public override int GetHashCode() {
@@ -69,7 +69,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			StampatoMsg eventArgs = new StampatoMsg( lavoroDiStampa );
 			eventArgs.descrizione = "+StampaCompletata";
 
-			stampaCompletataEventHandler.Invoke( this, eventArgs ); 
+			stampaCompletataCallback.Invoke( this, eventArgs ); 
 		}
 
 

@@ -17,6 +17,12 @@ namespace Digiphoto.Lumen.Servizi.VolumeCambiato {
 		private ManagementEventWatcher _watcher;
 		private bool? _attivazioneAttesa;
 
+		/** 
+		 * Questo oggetto serve per evitare il problema descritto qui:
+		 * http://stackoverflow.com/questions/1567017/com-object-that-has-been-separated-from-its-underlying-rcw-cannot-be-used
+		 */
+		private EventArrivedEventHandler eventArrivedEventHandler;
+
 		/** Mi tengo a mente l'ultimo drive che ho montato */
 		private string _ultimoDriveMontato;
 
@@ -57,7 +63,9 @@ namespace Digiphoto.Lumen.Servizi.VolumeCambiato {
 			// Solo la prima volta
 			if( _attivazioneAttesa == null ) {
 				// Attivo ascoltatore
-				_watcher.EventArrived += new EventArrivedEventHandler( onVolumeCambiatoEvent );
+				// Devo tenermi un riferimento di questa callback altrimenti durante interop si spacca
+				eventArrivedEventHandler = new EventArrivedEventHandler( onVolumeCambiatoEvent );
+				_watcher.EventArrived += eventArrivedEventHandler;
 				// poi non lo ribadisco più
 				_attivazioneAttesa = attesaBloccante;
 			}
@@ -124,7 +132,7 @@ namespace Digiphoto.Lumen.Servizi.VolumeCambiato {
 
 		public override void Dispose() {
 			_watcher.Dispose();
-			base.Dispose();
+		//	base.Dispose();
 		}
 
 

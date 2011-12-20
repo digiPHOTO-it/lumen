@@ -20,22 +20,6 @@ namespace Digiphoto.Lumen.Core.VsTest
 	[TestClass()]
 	public class SpoolStampeSrvImplTest : IObserver<StampatoMsg>  {
 
-
-		private TestContext testContextInstance;
-
-		/// <summary>
-		///Gets or sets the test context which provides
-		///information about and functionality for the current test run.
-		///</summary>
-		public TestContext TestContext {
-			get {
-				return testContextInstance;
-			}
-			set {
-				testContextInstance = value;
-			}
-		}
-
 		private SpoolStampeSrvImpl _impl;
 
 		private int _contaStampe = 0;
@@ -100,7 +84,7 @@ namespace Digiphoto.Lumen.Core.VsTest
 		public void accodaStampaTest() {
 
 			// EsecutoreStampaNet s = new EsecutoreStampaNet();
-
+			const int QUANTE = 6;
 			using( new UnitOfWorkScope() ) {
 
 				ParamStampaFoto param = new ParamStampaFoto();
@@ -109,25 +93,21 @@ namespace Digiphoto.Lumen.Core.VsTest
 				param.nomeStampante = "doPDF v7";
 
 				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
-				var fotos = dbContext.Fotografie.Top( "10" );
+				var fotos = dbContext.Fotografie.Top( QUANTE.ToString() );
 				foreach( Fotografia foto in fotos ) {
-					AiutanteFoto.idrataImmaginiFoto( foto );
-					if( foto.imgOrig.orientamento == Orientamento.Orizzontale ) {
+					
+					param.autoZoomToFit = true;
+					_impl.accodaStampa( foto, param );
 
-						param.autoZoomToFit = true;
-						_impl.accodaStampa( foto, param );
-
-						ParamStampaFoto p2 = (ParamStampaFoto)param.Clone();
-						p2.autoZoomToFit = false;
-						_impl.accodaStampa( foto, p2 );
-						break;
-					}
+					ParamStampaFoto p2 = (ParamStampaFoto)param.Clone();
+					p2.autoZoomToFit = false;
+					_impl.accodaStampa( foto, p2 );
 				}
 
 				// Attendo che le due stampe siano terminate
 				do {
 					Thread.Sleep( 5000 );
-				} while( _contaStampe < 2 );
+				} while( _contaStampe < QUANTE*2 );
 			}
 
 			

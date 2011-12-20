@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Servizi.VolumeCambiato;
 using Digiphoto.Lumen.Servizi;
+using Digiphoto.Lumen.Servizi.Masterizzare;
 
 namespace Digiphoto.Lumen.Core.VsTest.Core {
 
@@ -31,5 +32,20 @@ namespace Digiphoto.Lumen.Core.VsTest.Core {
 			Assert.IsFalse( srv.isRunning );
 
 		}
+
+		[TestMethod]
+		public void avviaFermaTest2() {
+
+			LumenApplication.Instance.avvia();
+
+			IServizio srv = LumenApplication.Instance.creaServizio<IMasterizzaSrv>();
+			srv.start();
+			Assert.IsTrue( srv.isRunning );
+			srv.Dispose();
+
+			LumenApplication.Instance.ferma();
+		}
+
+
 	}
 }

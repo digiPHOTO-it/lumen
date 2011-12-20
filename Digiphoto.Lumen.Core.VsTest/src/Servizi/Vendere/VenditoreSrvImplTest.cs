@@ -9,6 +9,8 @@ using System.Data.Objects;
 using System.Linq;
 using System.Collections.Generic;
 using Digiphoto.Lumen.Database;
+using Digiphoto.Lumen.Servizi.Masterizzare;
+using System.IO;
 
 namespace Digiphoto.Lumen.Core.VsTest
 {
@@ -21,13 +23,12 @@ namespace Digiphoto.Lumen.Core.VsTest
 	[TestClass()]
 	public class VenditoreSrvImplTest : IObserver<Messaggio> {
 
+		const int QUANTE = 3;
 
-		int contaStampate {
-			get;
-			set;
-		}
+		int contaStampate = 0;
 
-		#region Buttasu
+
+		#region ButtaSu
 		[ClassInitialize()]
 		public static void MyClassInitialize( TestContext testContext ) {
 			LumenApplication.Instance.avvia();
@@ -66,7 +67,6 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 			// -------
 
-			const int quante = 3;
 
 			using( new UnitOfWorkScope(false) ) {
 
@@ -74,20 +74,27 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
 
-				List<Fotografia> fotos = dbContext.Fotografie.Top( Convert.ToString(quante) ).ToList();
+				List<Fotografia> fotos = dbContext.Fotografie.Top( Convert.ToString(QUANTE) ).ToList();
 
 				contaStampate = 0;
 
 				_impl.aggiungiStampe( fotos, p );
 
+				_impl.aggiungiMasterizzate( fotos );
+				_impl.masterizzaSrv.impostaDestinazione( TipoDestinazione.CARTELLA, Path.GetTempPath() );
+				_impl.masterizzaSrv.prezzoForfaittario = 7;
+
 				_impl.confermaCarrello();
+
+				Assert.IsTrue( _impl.carrello.totaleAPagare == 15 + 7 );
 			}
 
 
-			while( contaStampate < quante )
+			while( ! venditaCompletata )
 				System.Threading.Thread.Sleep( 6000 );
 
 			_impl.stop();
+
 
 			Console.WriteLine( "FINITO" );
 		}
@@ -99,7 +106,6 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 			// Vediamo se esiste il formato
 			// TODO : creare un nuovo attributo che identifica il formato carta come chiave naturale (per esempio A4 oppure 6x8)
-			string nomeFormato = "Formato A5";
 
 			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
 
@@ -124,8 +130,22 @@ namespace Digiphoto.Lumen.Core.VsTest
 			throw new NotImplementedException();
 		}
 
-		public void OnNext( Messaggio value ) {
-			++contaStampate;
+		public void OnNext( Messaggio msg ) {
+
+			if( msg is StampatoMsg )
+				++contaStampate;
+
+			if( msg is MasterizzaMsg ) {
+				if( ((MasterizzaMsg)msg).fase == Fase.CopiaCompletata ) {
+				}
+			}
 		}
+
+		bool venditaCompletata {
+			get {
+				return contaStampate == QUANTE && this._impl.masterizzaSrv.isCompletato;
+			}
+		}
+
 	}
 }

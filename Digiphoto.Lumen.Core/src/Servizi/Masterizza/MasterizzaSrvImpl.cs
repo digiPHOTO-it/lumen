@@ -1,22 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Digiphoto.Lumen.Servizi;
-using Digiphoto.Lumen.Servizi.Masterizzare;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Database;
 using log4net;
 using System.Threading;
-using System.Collections;
 using System.IO;
-using IMAPI2.Interop;
 using System.ComponentModel;
-using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
-using IMAPI2.MediaItem;
 using Digiphoto.Lumen.Servizi.Masterizzare.MyBurner;
-using Digiphoto.Lumen.Applicazione;
+using Digiphoto.Lumen.Eventi;
+using Digiphoto.Lumen.Util;
+
 
 namespace Digiphoto.Lumen.Servizi.Masterizzare
 {
@@ -26,12 +20,11 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 
         private TipoDestinazione _tipoDestinazione;
 
-        private IList<Fotografia> _listFotografie;
+        private IList<Fotografia> _fotografie;
 
         private String _destinazione;
 
-        private bool _morto = false;
-
+        
         private String _driverLetter;
 
         private BurnerSrvImpl _burner;
@@ -40,18 +33,25 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 
         private BackgroundWorker backgroundWorkerCopia;
 
-        private int countFotoAggiunte;
-
-        private int countFotoNonAggiunte;
-
         private Fotografia fotCopia;
 
         private bool erroriCopia;
 
+		private object senderTag;
+
+	
+
+		public bool notificareProgressione {
+			get;
+			set;
+		}
+
         public MasterizzaSrvImpl()
         {
-            this._listFotografie = new List<Fotografia>();
-        }
+            this._fotografie = new List<Fotografia>();
+			
+			notificareProgressione = false;			// per default risparmio tempo ed energia
+		}
 
         ~MasterizzaSrvImpl()
         {
@@ -68,10 +68,6 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 
         private void seNonPossoCopiareSpaccati()
         {
-            // Voglio evitare doppie esecuzioni. Si scarica e poi si distrugge
-            if (_morto)
-                throw new InvalidOperationException("Il metodo Copia si può chiamare solo una volta");
-
             if (isRunning == false)
                 throw new InvalidOperationException("Il servizio è fermo. Impossibile Copiare le foto adesso");   
         }
@@ -102,22 +98,21 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
             }
         }
 
+
         /// <summary>
         /// Metodo che consenta la "MASTERIZZAZIONE" o la copia su "CHIAVETTA" delle foto
         /// </summary>
-        public void masterizza()
-        {
+        public void masterizza() {
+		}
+
+		public void masterizza( Guid idCarrello )  {
+
+			senderTag = idCarrello;
+
             switch(_tipoDestinazione){
                 case TipoDestinazione.CARTELLA :
                     // Scarico in un thread separato per non bloccare l'applicazione
                     seNonPossoCopiareSpaccati();
-                    //backgroundWorkerCopia = new BackgroundWorker();
-                    //backgroundWorkerCopia.WorkerReportsProgress = true;
-                    //backgroundWorkerCopia.WorkerSupportsCancellation = true;
-                    //backgroundWorkerCopia.DoWork += backgroundWorkerCopia_DoWork;
-                    //backgroundWorkerCopia.ProgressChanged += backgroundWorkerCopia_ProgressChanged;
-                    //backgroundWorkerCopia.RunWorkerCompleted += backgroundWorkerCopia_RunWorkerCompleted;
-                    //backgroundWorkerCopia.RunWorkerAsync();
                     _threadCopiaSuChiavetta = new Thread(copiaCartellaDestinazioneAsincrono);
                     _threadCopiaSuChiavetta.Start();
                     break;
@@ -125,7 +120,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                     _burner = new BurnerSrvImpl();
                     _burner.InviaStatoMasterizzazione += new BurnerSrvImpl.StatoMasterizzazioneEventHandler(inviaMessaggioStatoMasterizzazione);
                     _burner.start();
-                    foreach (Fotografia fot in _listFotografie)
+                    foreach (Fotografia fot in _fotografie)
                     {
                         _burner.addFileToBurner(configurazione.getCartellaRepositoryFoto() + Path.DirectorySeparatorChar + fot.nomeFile);
                     }
@@ -133,17 +128,20 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 
                     if(_burner.testMedia()){
                         //Imposto l'etichetta del CD
-                        _burner.etichetta = DateTime.Now.ToString("yyyy/MM/dd");;
+                        _burner.etichetta = DateTime.Now.ToString("dd MMM yyyy");;
                         _burner.burning();
                     }else{
                          MasterizzaMsg errorTestMediaMsg = new MasterizzaMsg();
-                        errorTestMediaMsg.fase = Fase.ErrorMedia;
-                        errorTestMediaMsg.riscontratiErrori = true;
+						 errorTestMediaMsg.senderTag = senderTag;
+                        errorTestMediaMsg.fase = Fase.CopiaCompletata;
+                        errorTestMediaMsg.esito = Esito.Errore;
                         errorTestMediaMsg.progress = 0;
                         errorTestMediaMsg.result = "Error Media";
                         pubblicaMessaggio(errorTestMediaMsg);
                     }
                     break;
+				default:
+					throw new ArgumentException( "TipoDestinazione non indicato o non supportato: " + _tipoDestinazione );
             }
         }
 
@@ -159,44 +157,49 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
             {
                 System.Diagnostics.Trace.WriteLine("INIZIO COPIA SU CARTELLA");
                 MasterizzaMsg inizioCopiaMsg = new MasterizzaMsg();
-                inizioCopiaMsg.fase = Fase.InizioCopiaChiavetta;
+				inizioCopiaMsg.senderTag = senderTag;
+				inizioCopiaMsg.fase = Fase.InizioCopia;
                 inizioCopiaMsg.progress = 0;
                 inizioCopiaMsg.result = "Inizio Copia Su Chiavetta";
                 pubblicaMessaggio(inizioCopiaMsg);
 
-                int countfotoAggiunte = 0;
-                int countFotoNonAggiunte = 0;
+                totFotoCopiate = 0;
+                totFotoNonCopiate = 0;
                 bool errori = false;
-                foreach (Fotografia fot in _listFotografie)
+                foreach (Fotografia fot in _fotografie)
                 {
                     string nomeFileDest = "";
                     try
                     {  
                         nomeFileDest = Path.Combine(_destinazione, Path.GetFileName(fot.nomeFile));
-                        String nomeFileSorgente = configurazione.getCartellaRepositoryFoto() + Path.DirectorySeparatorChar + fot.nomeFile;
-                        File.Copy(@nomeFileSorgente, nomeFileDest, false);
+						String nomeFileSorgente = PathUtil.nomeCompletoFoto( fot );
+                        File.Copy(@nomeFileSorgente, nomeFileDest, true);
                         //Elimino gli attributi solo lettura                                
                         File.SetAttributes(nomeFileDest, File.GetAttributes(nomeFileDest) & ~(FileAttributes.Archive | FileAttributes.ReadOnly));
 
-                        MasterizzaMsg statoCopiaMsg = new MasterizzaMsg();
-                        statoCopiaMsg.riscontratiErrori = false;
-                        statoCopiaMsg.fotoAggiunta = 1;
-                        statoCopiaMsg.totFotoAggiunte = ++countfotoAggiunte;
-                        statoCopiaMsg.totFotoNonAggiunte = countFotoNonAggiunte;
-                        statoCopiaMsg.progress = ((countfotoAggiunte + countFotoNonAggiunte) * 100) / _listFotografie.Count;
-                        statoCopiaMsg.result = "Il File " + fot.nomeFile + " è stato copiato sulla chiavetta con successo";
-                        pubblicaMessaggio(statoCopiaMsg);
-                        //System.Diagnostics.Trace.WriteLine("Il File " + fot.nomeFile + " è stato copiato sulla chiavetta con successo");
+						if( notificareProgressione ) {
+							MasterizzaMsg statoCopiaMsg = new MasterizzaMsg();
+							statoCopiaMsg.senderTag = senderTag;
+							statoCopiaMsg.esito = Esito.Ok;
+							statoCopiaMsg.fotoAggiunta = 1;
+							statoCopiaMsg.totFotoAggiunte = ++totFotoCopiate;
+							statoCopiaMsg.totFotoNonAggiunte = totFotoNonCopiate;
+							statoCopiaMsg.progress = ((totFotoCopiate + totFotoNonCopiate) * 100) / _fotografie.Count;
+							statoCopiaMsg.result = "Il File " + fot.nomeFile + " è stato copiato sulla chiavetta con successo";
+							pubblicaMessaggio( statoCopiaMsg );
+							//System.Diagnostics.Trace.WriteLine("Il File " + fot.nomeFile + " è stato copiato sulla chiavetta con successo");
+						}
                     }
                     catch (IOException ee)
                     {
                         MasterizzaMsg statoCopiaErroreMsg = new MasterizzaMsg();
-                        statoCopiaErroreMsg.riscontratiErrori = true;
+						statoCopiaErroreMsg.senderTag = senderTag;
+                        statoCopiaErroreMsg.esito = Esito.Errore;
                         errori = true;
                         statoCopiaErroreMsg.fotoAggiunta = 0;
-                        statoCopiaErroreMsg.totFotoAggiunte = countfotoAggiunte;
-                        statoCopiaErroreMsg.totFotoNonAggiunte = ++countFotoNonAggiunte;
-                        statoCopiaErroreMsg.progress = ((countfotoAggiunte + countFotoNonAggiunte) * 100) / _listFotografie.Count;
+                        statoCopiaErroreMsg.totFotoAggiunte = totFotoCopiate;
+                        statoCopiaErroreMsg.totFotoNonAggiunte = ++totFotoNonCopiate;
+                        statoCopiaErroreMsg.progress = ((totFotoCopiate + totFotoNonCopiate) * 100) / _fotografie.Count;
                         statoCopiaErroreMsg.result = "Il file " + fot.nomeFile + " non è stato copiato sulla chiavetta: " + nomeFileDest;
                         _giornale.Error("Il file " + @configurazione.getCartellaRepositoryFoto() + Path.DirectorySeparatorChar + fot.nomeFile + " non è stato copiato il file sulla chiavetta " + nomeFileDest, ee);
                         pubblicaMessaggio(statoCopiaErroreMsg);
@@ -204,21 +207,14 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                     }
                 }
                 MasterizzaMsg copiaCompletataMsg = new MasterizzaMsg();
-                if (errori)
-                {
-                    copiaCompletataMsg.fase = Fase.CopiaChiavettaFallita;
-                    copiaCompletataMsg.result = "Copia non Completata";
-                }
-                else
-                {
-                    copiaCompletataMsg.fase = Fase.CopiaChiavettaCompletata;
-                    copiaCompletataMsg.result = "Copia Completata con Successo";
-                }
-                copiaCompletataMsg.riscontratiErrori = errori;
-                copiaCompletataMsg.progress = 100;
-                copiaCompletataMsg.totFotoNonAggiunte = countFotoNonAggiunte;
-                copiaCompletataMsg.totFotoAggiunte = countfotoAggiunte;
-                
+				copiaCompletataMsg.senderTag = senderTag;
+				copiaCompletataMsg.fase = Fase.CopiaCompletata;
+				copiaCompletataMsg.esito = errori ? Esito.Errore : Esito.Ok;
+				copiaCompletataMsg.result = errori ? "Riscontrati errori" : "Copia Completata con Successo";
+				copiaCompletataMsg.progress = 100;
+                copiaCompletataMsg.totFotoNonAggiunte = totFotoNonCopiate;
+                copiaCompletataMsg.totFotoAggiunte = totFotoCopiate;
+				this.isCompletato = true;
                 pubblicaMessaggio(copiaCompletataMsg);
                 //System.Diagnostics.Trace.WriteLine("FINE");
             } 
@@ -238,15 +234,15 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
             {
                 System.Diagnostics.Trace.WriteLine("INIZIO COPIA SU CARTELLA");
                 MasterizzaMsg inizioCopiaMsg = new MasterizzaMsg();
-                inizioCopiaMsg.fase = Fase.InizioCopiaChiavetta;
+                inizioCopiaMsg.fase = Fase.InizioCopia;
                 inizioCopiaMsg.progress = 0;
                 inizioCopiaMsg.result = "Inizio Copia Su Chiavetta";
                 pubblicaMessaggio(inizioCopiaMsg);
 
-                countFotoAggiunte = 0;
-                countFotoNonAggiunte = 0;
+                this.totFotoCopiate = 0;
+                this.totFotoNonCopiate = 0;
                 erroriCopia = false;
-                foreach (Fotografia fot in _listFotografie)
+                foreach (Fotografia fot in _fotografie)
                 {
                     fotCopia = fot;
                     string nomeFileDest = "";
@@ -258,23 +254,26 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                         //Elimino gli attributi solo lettura                                
                         File.SetAttributes(nomeFileDest, File.GetAttributes(nomeFileDest) & ~(FileAttributes.Archive | FileAttributes.ReadOnly));
 
-                        //MasterizzaMsg statoCopiaMsg = new MasterizzaMsg();
-                        //statoCopiaMsg.riscontratiErrori = false;
-                        //statoCopiaMsg.fotoAggiunta = 1;
-                        //statoCopiaMsg.totFotoAggiunte = ++countFotoAggiunte;
-                        //statoCopiaMsg.result = "Copia File " + fot.nomeFile;
-                        
-                        backgroundWorkerCopia.ReportProgress(++countFotoAggiunte / _listFotografie.Count * 100);
-                    }
+						if( notificareProgressione ) {
+							//MasterizzaMsg statoCopiaMsg = new MasterizzaMsg();
+							//statoCopiaMsg.riscontratiErrori = false;
+							//statoCopiaMsg.fotoAggiunta = 1;
+							//statoCopiaMsg.totFotoAggiunte = ++countFotoAggiunte;
+							//statoCopiaMsg.result = "Copia File " + fot.nomeFile;
+						
+							backgroundWorkerCopia.ReportProgress(++this.totFotoCopiate / _fotografie.Count * 100);
+						}
+					}
                     catch (IOException ee)
                     {
+						_giornale.Debug( "errore copia foto: " + fot, ee );
                         //MasterizzaMsg statoCopiaErroreMsg = new MasterizzaMsg();
                         //statoCopiaErroreMsg.riscontratiErrori = true;
                         erroriCopia = true;
                         //statoCopiaErroreMsg.totFotoNonAggiunte = ++countFotoNonAggiunte;
                         //statoCopiaErroreMsg.result = "Il file " + @configurazione.getCartellaRepositoryFoto() + Path.DirectorySeparatorChar + fot.nomeFile + " non è stato copiato il file sulla chiavetta " + nomeFileDest;
                         //_giornale.Error("Il file " + @configurazione.getCartellaRepositoryFoto() + Path.DirectorySeparatorChar + fot.nomeFile + " non è stato copiato il file sulla chiavetta " + nomeFileDest, ee);
-                        backgroundWorkerCopia.ReportProgress(++countFotoNonAggiunte / _listFotografie.Count * 100);
+                        backgroundWorkerCopia.ReportProgress(++totFotoNonCopiate / _fotografie.Count * 100);
                     }
                 }
                
@@ -291,18 +290,18 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
             MasterizzaMsg statoCopiaMsg = new MasterizzaMsg();
             if (erroriCopia)
             {
-                statoCopiaMsg.riscontratiErrori = true;           
+                statoCopiaMsg.esito = Esito.Errore;           
                 statoCopiaMsg.fotoAggiunta = 0;
                 statoCopiaMsg.result = "Il File " + fotCopia.nomeFile + " non è stato copiato sulla chiavetta";
             }
             else
             {
-                statoCopiaMsg.riscontratiErrori = false;
+                statoCopiaMsg.esito = Esito.Ok;
                 statoCopiaMsg.fotoAggiunta = 1;
                 statoCopiaMsg.result = "Il File " + fotCopia.nomeFile + " è stato copiato sulla chiavetta con successo";
             }
-            statoCopiaMsg.totFotoAggiunte = countFotoNonAggiunte;
-            statoCopiaMsg.totFotoNonAggiunte = countFotoAggiunte;
+            statoCopiaMsg.totFotoAggiunte = this.totFotoNonCopiate;
+            statoCopiaMsg.totFotoNonAggiunte = this.totFotoCopiate;
             pubblicaMessaggio(statoCopiaMsg);
             erroriCopia = false;
         }
@@ -315,13 +314,10 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
         private void backgroundWorkerCopia_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             MasterizzaMsg statoCopiaCompletatoMsg = new MasterizzaMsg();
-            statoCopiaCompletatoMsg.riscontratiErrori = erroriCopia;
-            if(erroriCopia){
-                statoCopiaCompletatoMsg.fase = Fase.CopiaChiavettaFallita;
-            }
-            statoCopiaCompletatoMsg.fase = Fase.CopiaChiavettaCompletata;
-            statoCopiaCompletatoMsg.totFotoNonAggiunte = countFotoNonAggiunte;
-            statoCopiaCompletatoMsg.totFotoAggiunte = countFotoAggiunte;
+            statoCopiaCompletatoMsg.esito = erroriCopia ? Esito.Errore : Esito.Ok;
+			statoCopiaCompletatoMsg.fase = Fase.CopiaCompletata;
+            statoCopiaCompletatoMsg.totFotoNonAggiunte = totFotoNonCopiate;
+            statoCopiaCompletatoMsg.totFotoAggiunte = totFotoCopiate;
             pubblicaMessaggio(statoCopiaCompletatoMsg);
         }
 
@@ -359,110 +355,26 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
             {
                 foreach (RigaAlbum alb in objContext.RigheAlbum.Where(r => r.id == album.id))
                 {
-                    _listFotografie.Add(alb.fotografia);
+                    _fotografie.Add(alb.fotografia);
                 }
             }
         }
 
-        /// <summary>
-        /// Consente di aggiungere una foto alla lista delle foto da copiare
-        /// </summary>
-        ///  <param name="item"></param>
-        public void Add(Model.Fotografia item)
-        {
-            _listFotografie.Add(item);
-        }
+		public void addFotografia( Fotografia foto ) {
+			if( !fotografie.Contains( foto ) )
+				fotografie.Add( foto );
+		}
 
-        public int IndexOf(Model.Fotografia item)
-        {
-            throw new NotImplementedException();
-        }
+		public IList<Fotografia> fotografie {
+			get {
+				return _fotografie;
+			}
+		}
 
-        public void Insert(int index, Model.Fotografia item)
-        {
-            throw new NotImplementedException();
-        }
+		#endregion
 
-        public void RemoveAt(int index)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Model.Fotografia this[int index]
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public void Clear()
-        {
-            _listFotografie.Clear();
-        }
-
-        public bool Contains(Model.Fotografia item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CopyTo(Model.Fotografia[] array, int arrayIndex)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Count
-        {
-            get { return _listFotografie.Count(); }
-        }
-
-        public bool IsReadOnly
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        /// <summary>
-        /// Consente di rimuovere una foto dalla lista delle foto da copiare
-        /// </summary>
-        ///  <param name="item"></param>
-        public bool Remove(Model.Fotografia item)
-        {
-            return _listFotografie.Remove(item);
-        }
-
-        /// <summary>
-        /// Consente di rimuovere un intero album dalla lista delle foto da copiare
-        /// </summary>
-        ///  <param name="album"></param>
-        public void Remove(Model.Album album)
-        {
-            using (LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext)
-            {
-                foreach (RigaAlbum alb in objContext.RigheAlbum.Where(r => r.id == album.id))
-                {
-                    _listFotografie.Remove(alb.fotografia);
-                }
-            }
-        }
-
-        public IEnumerator<Model.Fotografia> GetEnumerator()
-        {
-            return _listFotografie.GetEnumerator();
-        }
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return _listFotografie.GetEnumerator();
-        }
-
-        #endregion
-
-        #region NotificaMessaggiBurner
-        private void inviaMessaggioStatoMasterizzazione(object sender, BurnerMsg burnerMsg)
+		#region NotificaMessaggiBurner
+		private void inviaMessaggioStatoMasterizzazione(object sender, BurnerMsg burnerMsg)
         {
             MasterizzaMsg masterizzaMsg = new MasterizzaMsg();
             masterizzaMsg.totFotoAggiunte = burnerMsg.totaleFileAggiunti;
@@ -475,6 +387,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 		
 		public override void Dispose()
         {
+
             System.Diagnostics.Trace.WriteLine("DISPOSE");
             try
             {
@@ -490,6 +403,8 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
             }
             finally
             {
+				isCompletato = true;
+
                 if (_burner != null)
                 {
                     _burner.Dispose();
@@ -498,5 +413,33 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                 
             }
         }
-    }
+
+
+		public void addFotografie( IEnumerable<Fotografia> fotos ) {
+			foreach( Fotografia foto in fotos )
+				this.fotografie.Add( foto );
+		}
+		
+
+		public bool isCompletato {
+			get;
+			private set;
+		}
+
+		public int totFotoCopiate {
+			get;
+			private set;
+		}
+
+		public int totFotoNonCopiate {
+			get;
+			private set;
+		}
+
+
+		public decimal prezzoForfaittario {
+			get;
+			set;
+		}
+	}
 }

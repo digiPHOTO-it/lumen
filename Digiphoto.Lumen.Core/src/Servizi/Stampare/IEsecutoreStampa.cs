@@ -13,6 +13,11 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 
 	public interface IEsecutoreStampa {
 
+		bool asincrono {
+			get;
+			set;
+		}
+
 		EsitoStampa esegui( LavoroDiStampa lavoroDiStampa );
 	}
 }

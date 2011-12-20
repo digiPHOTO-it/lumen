@@ -18,7 +18,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare {
 	 * Al momento della copia, occorre creare un carrello che registra l'incasso.
 	 * Attenzione: le foto devono essere elaborate: non possiamo vendere i provini ma quelle buone.	
 	 */
-	public interface IMasterizzaSrv : IServizio, IList<Fotografia> {
+	public interface IMasterizzaSrv : IServizio {
 
 		/** Aggiunge l'intero album alla lista */
 		void addAlbum( Album album );
@@ -29,9 +29,48 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare {
 		 * masterizzatore da usare (potrebbero essercene più di uno).
 		 */
 		void impostaDestinazione( TipoDestinazione tipoDestinazione, String destinazione );
+		
+		void addFotografia( Fotografia foto );
 
-		/** Viene pubblicato un Messaggio con l'esito */
-		void masterizza();
+		void addFotografie( IEnumerable<Fotografia> fotografie );
+
+		IList<Fotografia> fotografie {
+			get;
+		}
+
+		/** Indica se devo notificare la progressione della copia file per file.
+		 * Se falso, viene notificato soltanto l'inizio e la fine
+		 */
+		bool notificareProgressione {
+			get;
+			set;
+		}
+
+		/** Quando il servizio è completato viene acceso questo flag .
+		 * Una volta che il servizio è completato, non è più possibile masterizzare ulteriormente.
+		 * Occorre fare la dispose e istanziarne un altro
+		 */
+		bool isCompletato {
+			get;
+		}
+
+		/** Numero di foto copiate sulla chiavetta oppure copiate sul masterizzatore */
+		int totFotoCopiate {
+			get;
+		}
+
+		int totFotoNonCopiate {
+			get;
+		}
+
+		/** imposto il prezzo forfettario del cd.
+		 * Infatti tale prezzo non dipende mai dalle foto contenute, ma è sempre stabilito al volo
+		 */
+		decimal prezzoForfaittario {
+			get;
+			set;
+		}
+
 
 	}
 }

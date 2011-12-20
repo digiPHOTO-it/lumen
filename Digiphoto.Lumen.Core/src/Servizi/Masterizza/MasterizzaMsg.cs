@@ -9,21 +9,13 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 
     public enum Fase
     {
-        Aggiunto,
-        InseritoValore,
-        InizioMasterizzazione,
-        MasterizzazioneCompletata,
-        MasterizzazioneFallita,
-        ErrorMedia,
-        InizioCopiaChiavetta,
-        CopiaChiavettaCompletata,
-        CopiaChiavettaFallita
+        InizioCopia,
+        CopiaCompletata
     };
 
     public class MasterizzaMsg : Messaggio
     {
         public Fase fase { get; set; }
-        public bool riscontratiErrori { get; set; }
         public int fotoAggiunta { get; set; }
         public int totFotoAggiunte { get; set; }
         public int totFotoNonAggiunte { get; set; }

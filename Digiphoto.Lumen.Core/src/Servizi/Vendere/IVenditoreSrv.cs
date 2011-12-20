@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Servizi.Stampare;
+using Digiphoto.Lumen.Servizi.Masterizzare;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 
@@ -19,11 +20,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		ModoVendita modoVendita { get; set; }
 
-		/** Foto da vendere come files */
-		void aggiungiMasterrizzate( IList<Fotografia> fotografie );
+		IMasterizzaSrv masterizzaSrv {
+			get;
+		}
 
 		/** Foto da vendere come stampe */
-		void aggiungiStampe( IList<Fotografia> fotografie, ParamStampaFoto param );
+		void aggiungiStampe( IEnumerable<Fotografia> fotografie, ParamStampaFoto param );
+
+		void aggiungiMasterizzate( IEnumerable<Fotografia> fotografie );
 
 		/** 
 		 * Prepara un nuovo carrello vuoto (da riempire).

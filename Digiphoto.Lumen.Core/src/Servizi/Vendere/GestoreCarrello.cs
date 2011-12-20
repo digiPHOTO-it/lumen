@@ -270,11 +270,57 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 
-		void stornaRiga( RiCaFotoStampata r ) {
-		}
 
-		void stornaRiga( RiCaDiscoMasterizzato r ) {
-		}
+		internal void stornoMasterizzate( Guid idCarrello, short totFotoOk, short totFotoErrate ) {
+			
+			_giornale.Debug( "Devo stornare " + totFotoErrate + " foto masterizzate dal carrello " + idCarrello + " perché qualcosa è andato storto" );
 
+			if( carrello != null )
+				throw new InvalidOperationException( "Esiste già un carrello caricato" );
+
+			using( new UnitOfWorkScope( true ) ) {
+
+				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+
+				var query = from c in dbContext.Carrelli.Include( "righeCarrello" )
+							where c.id == idCarrello
+							select c;
+
+				carrello = query.SingleOrDefault();
+
+				if( carrello == null )
+					throw new ObjectNotFoundException( "Il carrello con id = " + idCarrello + " non è esiste" );
+
+				// Carattere speciale che non c'è sulla tastiera per evitare cancellazioni fraudolente
+				char marca = '\u0251';
+
+				// Devo individuare qual'è la riga da modificare
+				foreach( RigaCarrello r in carrello.righeCarrello ) {
+
+					short qtaPrec = r.quantita;
+					decimal totRigaPrec = r.prezzoNettoTotale;
+
+					if( r is RiCaDiscoMasterizzato ) {
+						RiCaDiscoMasterizzato rcdm = (RiCaDiscoMasterizzato)r;
+						r.descrizione = marca + "Storno " + rcdm.totFotoMasterizzate + " foto masterizzate";
+						rcdm.totFotoMasterizzate -= totFotoErrate;
+						if( rcdm.totFotoMasterizzate <= 0 ) {
+							rcdm.totFotoMasterizzate = 0;
+							
+							// Se non ho masterizzato nulla, azzero il totale riga e poi abbasso il totale documento
+							r.quantita = 0;
+
+							carrello.totaleAPagare -= totRigaPrec;
+							if( carrello.totaleAPagare < 0 )
+								carrello.totaleAPagare = 0;
+
+							completaAttributiMancanti();
+						}
+						dbContext.SaveChanges();
+						break;
+					}
+				}
+			}
+		}
 	}
 }

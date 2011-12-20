@@ -48,16 +48,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			set;
 		}
 
-		IMasterizzaSrv masterizzaSrv = null;
-
-		/**
-		 * Null non serve.
-		 * false = da fare ma non ancora fatta
-		 * true = da fare e già finita.
-		 */
-		private bool? faseMasterizzazioneCompletata;
-		private bool? faseStampaCompletata;
-
 
 #endregion
 
@@ -66,19 +56,20 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		public VenditoreSrvImpl() : base() {
 
 			gestoreCarrello = new GestoreCarrello();
+
 			modoVendita = Digiphoto.Lumen.Config.Configurazione.modoVendita;
+			
 			contaMessaggiInCoda = 0;
+
 		}
 
 		
-		public void aggiungiMasterrizzate( IList<Fotografia> fotografie ) {
-			throw new NotImplementedException();
-		}
+
 
 		/** 
 		 * Per ogni foto indicata, creo una nuova riga di carrello
 		 */
-		public void aggiungiStampe( IList<Fotografia> fotografie, Stampare.ParamStampaFoto param ) {
+		public void aggiungiStampe( IEnumerable<Fotografia> fotografie, Stampare.ParamStampaFoto param ) {
 			foreach( Fotografia foto in fotografie ) {
 				AiutanteFoto.idrataImmaginiFoto( foto );
 				carrello.righeCarrello.Add( creaRiCaFotoStampata( foto, param ) );
@@ -111,8 +102,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			using( TransactionScope transaction = new TransactionScope() ) {
 
 				try {
+
+					aggiornaTotFotoMasterizzate();
+
 					// Poi salvo il carrello
 					gestoreCarrello.salva();
+
 				} catch( Exception eee ) {
 					_giornale.Error( "Impossibile salvare il carrello", eee );
 					// Purtoppo devo andare avanti lo stesso, perché non posso permettermi 
@@ -128,13 +123,35 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			eventualeStampa();
 
 			// Poi lancio la masterizzazione
-			// eventualeMasterizzazione();
+			eventualeMasterizzazione();
 
 		}
 
-		private void eventualeStampa() {
+		//
+		// <summary>
+		// conto quante foto sono pronte per essere masterizzate e le scrivo nella riga 
+		// del carrello.
+		// Riporto anche il prezzo del cd sulla riga.
+		// </summary>
+		//
+		private void aggiornaTotFotoMasterizzate() {
+			// Sistemo il numero eventuale di foto masterizzate
+			if( _masterizzaSrvImpl != null ) {
+				foreach( RigaCarrello r in gestoreCarrello.carrello.righeCarrello ) {
+					if( r is RiCaDiscoMasterizzato ) {
+						RiCaDiscoMasterizzato rdm = (RiCaDiscoMasterizzato)r;
+						rdm.totFotoMasterizzate = (short)_masterizzaSrvImpl.fotografie.Count;
+						
+						// Sto attento a non sovrascrivere con una informazione vuota.
+						if( _masterizzaSrvImpl.prezzoForfaittario != null )
+							rdm.prezzoLordoUnitario = _masterizzaSrvImpl.prezzoForfaittario;
+						break;
+					}
+				}
+			}
+		}
 
-			faseStampaCompletata = null;
+		private void eventualeStampa() {
 
 			// Se non ho righe nel carrello da stampare, allora esco.
 			if( carrello == null || carrello.righeCarrello.Count == 0 )
@@ -150,8 +167,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					RiCaFotoStampata riCaFotoStampata = (RiCaFotoStampata)riga;
 					
 					++conta;
-					if( faseStampaCompletata == null )
-						faseStampaCompletata = false;
 
 					// Creo nuovamente i parametri di stampa perché potrebbero essere cambiati nell GUI
 					ParamStampaFoto paramStampaFoto = creaParamStampaFoto( riCaFotoStampata );
@@ -197,42 +212,20 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		 * Siccome il carrello in questione viene chiuso prima che termini la masterizzazione,
 		 * tramite il suo id, è possibile andare a sistemare eventuali problemi.
 		 */
-		private void eventualeMasterizzazione( Guid idCarrello ) {
-
-			throw new NotImplementedException();
-
-			faseMasterizzazioneCompletata = null;
+		private void eventualeMasterizzazione() {
 
 			if( masterizzaSrv == null )
 				return;
 
-			if( masterizzaSrv.Count <= 0 )
+			if( masterizzaSrv.fotografie.Count <= 0 )
 				return;
 
-			// Ok ho delle foto da masterizzare
-			faseMasterizzazioneCompletata = false;
+			_masterizzaSrvImpl.start();
 
-			masterizzaSrv.masterizza();
-
+			_masterizzaSrvImpl.masterizza( carrello.id );
 		}
 
 
-
-
-
-
-
-		public void mioMamsterizzazioneEventHandler( MasterizzaMsg msg ) {
-
-			faseMasterizzazioneCompletata = true;
-
-			// Se l'operazione è andata bene, sono già a posto. Ero stato ottimista prima.
-			if( msg.esito == Esito.Ok )
-				return;
-
-			// TODO gestire l'esito (e soprattutto la guid del carrello che mi ha generato
-
-		}
 
 		public override void OnNext( Messaggio messaggio ) {
 			
@@ -250,7 +243,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 						gestioneEsitoMasterizzazione( (MasterizzaMsg)messaggio );
 
 				} catch( Exception ee ) {
-
+					_giornale.Error( "gestione messaggio " + messaggio, ee );
 				} finally {
 					--contaMessaggiInCoda;
 				}
@@ -258,7 +251,19 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 		private void gestioneEsitoMasterizzazione( MasterizzaMsg masterizzaMsg ) {
-			throw new NotImplementedException();
+
+			if( masterizzaMsg.fase != Fase.CopiaCompletata )
+				return;
+
+			if( masterizzaMsg.esito == Esito.Ok )
+				return;
+
+			// TODO gestire lo storno
+			// Vado a correggere questa riga
+			using( GestoreCarrello altroGestoreCarrello = new GestoreCarrello() ) {
+				altroGestoreCarrello.stornoMasterizzate( (Guid)masterizzaMsg.senderTag, (short)masterizzaMsg.totFotoAggiunte, (short)masterizzaMsg.totFotoNonAggiunte );
+			}
+
 		}
 
 		/**
@@ -266,7 +271,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		 */
 		private void gestioneEsitoStampa( LavoroDiStampa lavoroDiStampa ) {
 
-			if( lavoroDiStampa.fotografia != null ) {
+			if( false && lavoroDiStampa.fotografia != null ) {
 				try {
 					// Prima che sia troppo tardi devo rilasciare le immagini (altrimenti rimangono loccate)
 					if( lavoroDiStampa.fotografia.imgOrig != null )
@@ -312,8 +317,51 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			if( gestoreCarrello != null )
 				gestoreCarrello.Dispose();
-
+			
 			gestoreCarrello = new GestoreCarrello();
+
+			if( _masterizzaSrvImpl != null ) {
+				_masterizzaSrvImpl.Dispose();
+				_masterizzaSrvImpl = null;
+			}
+		}
+
+		/**
+		 * Questo servizio mi tengo io la implementazione perché voglio chiamare io il metodo masterizza.
+		 * E non voglio che venga chiamato da fuori.
+		 */
+		private MasterizzaSrvImpl _masterizzaSrvImpl;
+		public IMasterizzaSrv masterizzaSrv {
+			get {
+				return _masterizzaSrvImpl;
+			}
+		}
+
+
+		public void aggiungiMasterizzate( IEnumerable<Fotografia> fotografie ) {
+
+			// Istanzio il servizio di masterizzazione, ma io uso la Impl.
+			if( _masterizzaSrvImpl == null ) {
+				// Siccome non voglio che si chiami il metodo masterizza da fuori, faccio una forzatura.
+				// Uso io direttamente la impl internamente.
+				_masterizzaSrvImpl = (MasterizzaSrvImpl)LumenApplication.Instance.creaServizio<IMasterizzaSrv>();
+
+				carrello.righeCarrello.Add( creaRiCaDiscoMasterizzato() );
+			}
+
+			// Aggiungo le foto alla lista
+			_masterizzaSrvImpl.addFotografie( fotografie );
+		}
+
+
+		// creo anche una riga nel carrello (UNA SOLA)
+		private RiCaDiscoMasterizzato creaRiCaDiscoMasterizzato() {
+
+			RiCaDiscoMasterizzato r = new RiCaDiscoMasterizzato();
+			r.id = Guid.NewGuid();
+			r.quantita = 1;
+			r.descrizione = "Masterizzato Dischetto";
+			return r;
 		}
 	}
 }
