@@ -61,8 +61,7 @@ namespace Digiphoto.Lumen.Servizi {
 		}
 
 		public virtual void Dispose() {
-			if( isRunning )
-				stop();
+			// Qui non devo fare lo stop,  altrimenti mi si accavallano i casini
 		}
 
 #region Metodi-IObserver

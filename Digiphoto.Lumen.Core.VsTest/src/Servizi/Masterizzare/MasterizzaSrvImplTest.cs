@@ -46,7 +46,7 @@ namespace Digiphoto.Lumen.Core.VsTest
             {
                 foreach (Fotografia fot in dbContext.Fotografie.ToList<Fotografia>())
                 {
-                    _impl.Add(fot);
+                    _impl.addFotografia(fot);
                 }
             }
             _impl.impostaDestinazione(TipoDestinazione.MASTERIZZATORE, @"E:\");
@@ -66,7 +66,7 @@ namespace Digiphoto.Lumen.Core.VsTest
                 foreach (Fotografia fot in dbContext.Fotografie.ToList<Fotografia>())
                 {
                     System.Diagnostics.Trace.WriteLine("[Foto Aggiunta all'Abum per la Copia su Chiavetta]: "+fot.nomeFile);
-                    _impl.Add(fot);
+                    _impl.addFotografia(fot);
                 }
             }
             string strPathDesktop = Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
@@ -122,17 +122,13 @@ namespace Digiphoto.Lumen.Core.VsTest
             System.Diagnostics.Trace.WriteLine("");
 			System.Diagnostics.Trace.WriteLine("[TotFotoNonAggiunte]: " + msg.totFotoNonAggiunte);
 			System.Diagnostics.Trace.WriteLine("[TotFotoAggiunte]: " + msg.totFotoAggiunte);
-			System.Diagnostics.Trace.WriteLine("[RiscontratiErrori]: " + msg.riscontratiErrori);
+			System.Diagnostics.Trace.WriteLine("[Esito]: " + msg.esito);
 			System.Diagnostics.Trace.WriteLine("[FotoAggiunta]: " + msg.fotoAggiunta);
 			System.Diagnostics.Trace.WriteLine("[Fase]: " + msg.fase);
 			System.Diagnostics.Trace.WriteLine("[Result]: " + msg.result);
 			System.Diagnostics.Trace.WriteLine("[Progress]: " + msg.progress);
 
-			if (msg.fase == Fase.MasterizzazioneCompletata ||
-				msg.fase == Fase.MasterizzazioneFallita ||
-				msg.fase == Fase.CopiaChiavettaFallita ||
-				msg.fase == Fase.CopiaChiavettaCompletata ||
-                msg.fase == Fase.ErrorMedia)
+			if (msg.fase == Fase.CopiaCompletata)
 			{
 				_elaborazioneTerminata = true;
 			}

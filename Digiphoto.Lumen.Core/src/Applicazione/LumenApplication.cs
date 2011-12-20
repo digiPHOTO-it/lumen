@@ -1,18 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-using System.IO;
 using log4net;
-using System.Configuration;
-using Digiphoto.Lumen.Database;
-using System.Reflection;
 using Digiphoto.Lumen.Servizi;
-using System.Runtime.Remoting;
 using MemBus;
 using MemBus.Configurators;
-using Digiphoto.Lumen.Servizi.Scaricatore;
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Servizi.VolumeCambiato;
 using Digiphoto.Lumen.Eventi;
@@ -187,8 +179,5 @@ namespace Digiphoto.Lumen.Applicazione {
 			return (IGestoreImmagineSrv) getServizioAvviato( typeof(IGestoreImmagineSrv).FullName );
 		}
 
-		//public IScaricatoreFotoSrv getScaricatoreFotoSrv() {
-		//   return (IScaricatoreFotoSrv) _serviziAvviati[ typeof( IScaricatoreFotoSrv ).FullName ];
-		//}
 	}
 }

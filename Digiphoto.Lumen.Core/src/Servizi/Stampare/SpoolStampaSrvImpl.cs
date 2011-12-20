@@ -8,6 +8,8 @@ using System.Collections.Specialized;
 using System.Drawing.Printing;
 using Digiphoto.Lumen.Imaging;
 using log4net;
+using Digiphoto.Lumen.Util;
+using Digiphoto.Lumen.Threading;
 
 namespace Digiphoto.Lumen.Servizi.Stampare {
 
@@ -29,8 +31,10 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 
 		public override void Dispose() {
 			// Faccio la dispose di tutte le code
-			foreach( CodaDiStampe c in code )
+			foreach( CodaDiStampe c in code ) {
+				c.Stop( PendingItemAction.AbortPendingItems );  // Se ci sono lavori in sospeso, devo abortirli.
 				c.Dispose();
+			}
 			base.Dispose();
 		}
 
@@ -55,6 +59,9 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 
 			CodaDiStampe codaDiStampe = ricavaCodaDiStampa( param.nomeStampante );
 
+			// Se le immagini non sono idratate, le carico
+			AiutanteFoto.idrataImmaginiFoto( foto );
+
 			// Creo un nuovo lavoro di stampa e lo aggiungo alla coda.
 			LavoroDiStampa lavoro = new LavoroDiStampa( foto, param );
 			codaDiStampe.EnqueueItem( lavoro );
@@ -66,14 +73,13 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 		}
 
 		private CodaDiStampe ricavaCodaDiStampa( string nomeStampante ) {
-
 			// Se non esiste già la stampante nella collezione, allora la istanzio
 			CodaDiStampe coda = (from c in this.code
 								 where c.Name.Equals( nomeStampante )
 								 select c).SingleOrDefault<CodaDiStampe>();
 
 			if( coda == null  ) {
-				coda = new CodaDiStampe( nomeStampante, stampaCompletataEventHandler );
+				coda = new CodaDiStampe( nomeStampante, stampaCompletataCallback );
 				coda.Start();
 				this.code.Add( coda );
 			}
@@ -81,7 +87,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			return coda;
 		}
 
-		private void stampaCompletataEventHandler( object sender, StampatoMsg eventArgs ) {
+		private void stampaCompletataCallback( object sender, StampatoMsg eventArgs ) {
 
 			_giornale.Info( "Stampa completata. Esito = " + eventArgs.lavoroDiStampa.esitostampa );
 
