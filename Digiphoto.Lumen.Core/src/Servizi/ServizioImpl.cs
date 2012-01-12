@@ -7,7 +7,7 @@ using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Servizi.VolumeCambiato;
 using Digiphoto.Lumen.Eventi;
-using Digiphoto.Lumen.Database;
+using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Model;
 
 namespace Digiphoto.Lumen.Servizi {

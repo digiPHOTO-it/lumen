@@ -69,6 +69,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Crc32.cs" />
+    <Compile Include="src\DatiDiEsempio\DataGenTest.cs" />
+    <Compile Include="src\DatiDiEsempio\ParoleCasualiTest.cs" />
     <Compile Include="SpoolStampeSrvImplTest.cs" />
     <Compile Include="src\Core\AvvioFermaTest.cs" />
     <Compile Include="src\Imaging\ProiettoreAreaTest.cs" />

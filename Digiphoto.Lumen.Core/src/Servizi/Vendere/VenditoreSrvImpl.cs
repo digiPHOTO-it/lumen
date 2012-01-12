@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Model;
 using System.Data.Objects.DataClasses;
-using Digiphoto.Lumen.Database;
+using Digiphoto.Lumen.Core.Database;
 using log4net;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Servizi.Stampare;

@@ -1,0 +1,29 @@
+﻿<Window x:Class="Digiphoto.Lumen.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
+        Title="Lumen" WindowStyle="None" WindowState="Maximized"
+        >
+    <TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Left">
+        
+        <TabItem Header="Scarica" ToolTip="Scarica foto da memory-card o da altra cartella" MinHeight="30" >
+            <!-- UserControl per scaricare le foto -->
+            <lum:ScaricatoreFoto />
+        </TabItem>
+
+        <TabItem Header="Aggiusta" ToolTip="Correggi, organizza e tagga foto" >
+        </TabItem>
+
+        <TabItem Header="Mostra" ToolTip="Visualizzare foto" >
+        </TabItem>
+
+        
+        <TabItem Header="Carrello" ToolTip="Vendere stampe e CD" >
+        </TabItem>
+
+        <TabItem Header="Utilità" ToolTip="Funzionalità varie" >
+            <Button Content="Uscita" Command="{Binding exitCommand}" />
+        </TabItem>
+
+    </TabControl>
+</Window>

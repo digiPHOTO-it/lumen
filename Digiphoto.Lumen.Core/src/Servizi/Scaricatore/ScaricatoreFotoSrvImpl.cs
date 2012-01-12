@@ -8,7 +8,7 @@ using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Servizi.VolumeCambiato;
 using System.Threading;
-using Digiphoto.Lumen.Database;
+using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Model;
 using System.Data.Objects;
@@ -44,6 +44,15 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 		private bool _morto = false;
 		private ParamScarica _paramScarica;
+
+		List<Fotografo> _fotografiAttivi;
+		public IEnumerable<Fotografo> fotografiAttivi {
+			get {
+				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+				var fotografi = dbContext.Fotografi.Where( f => f.attivo == true ).OrderBy( f => f.iniziali );
+				return fotografi;
+			}
+		}
 
 		#endregion
 
@@ -219,6 +228,12 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			}
 		}
 
+
+
+
+		public void addNuovoFotografo( string cognomeNome ) {
+			throw new NotImplementedException();
+		}
 	}
 
 }

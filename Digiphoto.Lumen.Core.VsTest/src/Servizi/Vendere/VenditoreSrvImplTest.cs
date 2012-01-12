@@ -8,7 +8,7 @@ using Digiphoto.Lumen.Servizi.Stampare;
 using System.Data.Objects;
 using System.Linq;
 using System.Collections.Generic;
-using Digiphoto.Lumen.Database;
+using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Servizi.Masterizzare;
 using System.IO;
 

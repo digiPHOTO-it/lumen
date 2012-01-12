@@ -6,7 +6,7 @@ using Digiphoto.Lumen.Servizi;
 using log4net;
 using System.Threading;
 using System.IO;
-using Digiphoto.Lumen.Database;
+using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Model;

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using Digiphoto.Lumen.Model;
 
-namespace Digiphoto.Lumen.Database {
+namespace Digiphoto.Lumen.Core.Database {
 
 	/// <summary>
 	/// Defines a scope wherein only one ObjectContext instance is created, 

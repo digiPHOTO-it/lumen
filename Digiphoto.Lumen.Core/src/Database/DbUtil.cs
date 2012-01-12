@@ -13,7 +13,7 @@ using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Util;
 
-namespace Digiphoto.Lumen.Database {
+namespace Digiphoto.Lumen.Core.Database {
 
 	public static class DbUtil {
 

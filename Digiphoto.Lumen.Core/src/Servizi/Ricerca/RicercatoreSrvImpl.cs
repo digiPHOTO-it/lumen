@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Model;
 using System.Data.Objects;
-using Digiphoto.Lumen.Database;
+using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Core;
 using log4net;
 

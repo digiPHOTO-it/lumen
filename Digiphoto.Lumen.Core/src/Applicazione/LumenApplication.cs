@@ -13,6 +13,9 @@ using log4net.Config;
 using Digiphoto.Lumen.Servizi.Explorer;
 using Digiphoto.Lumen.Servizi.Stampare;
 using Digiphoto.Lumen.Servizi.Vendere;
+using Digiphoto.Lumen.Servizi.EntityRepository;
+using Digiphoto.Lumen.Model;
+using Digiphoto.Lumen.Core.Database;
 
 namespace Digiphoto.Lumen.Applicazione {
 
@@ -70,11 +73,14 @@ namespace Digiphoto.Lumen.Applicazione {
 
 			avviaConfigurazione();
 
-			StartupUtil.forseCreaInfoFisse();
+			using( new UnitOfWorkScope() ) {
 
-			creaStato();
+				StartupUtil.forseCreaInfoFisse();
 
-			avviaServizi();
+				creaStato();
+
+				avviaServizi();
+			}
 
 			avviata = true;
 
@@ -128,6 +134,7 @@ namespace Digiphoto.Lumen.Applicazione {
 			//
 			creaAggiungiAvviaServizio<IVenditoreSrv>();
 
+			creaAggiungiAvviaServizio<IEntityRepositorySrv<Fotografo>>();
 		}
 
 		public T creaServizio<T>() where T : IServizio {
@@ -136,7 +143,8 @@ namespace Digiphoto.Lumen.Applicazione {
 
 		private T creaAggiungiAvviaServizio<T>() where T : IServizio {
 			T srv = creaServizio<T>();
-			_serviziAvviati.Add( (typeof (T)).FullName, srv );
+			string key = ServizioFactory.calcFullName( typeof( T ) );
+			_serviziAvviati.Add( key, srv );
 			srv.start();
 			return srv;
 		}
@@ -166,12 +174,17 @@ namespace Digiphoto.Lumen.Applicazione {
 			}
 		}
 
-
-		public IServizio getServizioAvviato( string nome ) {
-			return _serviziAvviati [nome];
+		//
+		// <summary>
+		//  il mioFullName viene composto dal metodo ServizioFactory.calcFullName()
+		// </summary>
+		//
+		public IServizio getServizioAvviato( string mioFullName ) {
+			return _serviziAvviati [mioFullName];
 		}
+
 		public T getServizioAvviato<T>() {
-			return (T)getServizioAvviato( typeof( T ).FullName );
+			return (T)getServizioAvviato( ServizioFactory.calcFullName( typeof(T) ) );
 		}
 
 		/** Ritorno il servizio di gestione dell''immagine */

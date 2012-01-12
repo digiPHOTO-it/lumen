@@ -11,7 +11,7 @@ using Digiphoto.Lumen.Eventi;
 using System.Threading;
 using Digiphoto.Lumen.Util;
 using log4net;
-using Digiphoto.Lumen.Database;
+using Digiphoto.Lumen.Core.Database;
 
 namespace Digiphoto.Lumen.Servizi.Explorer {
 

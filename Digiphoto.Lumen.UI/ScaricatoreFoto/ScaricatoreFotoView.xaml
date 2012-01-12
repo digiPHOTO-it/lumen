@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="Digiphoto.Lumen.UI.ScaricatoreFoto"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
+             mc:Ignorable="d" 
+             d:DesignHeight="480" d:DesignWidth="640">
+    <Canvas>
+
+        <StackPanel Orientation="Horizontal">
+
+            <lum:SelettoreCartella />
+
+            <lum:SelettoreFotografo x:Name="selettoreFotografo1" possoCreare="True" fotografoSelezionato="{Binding fotografo}"  />
+
+        </StackPanel>
+        <Button Canvas.Left="438" Canvas.Top="33" Content="Code Behind" Height="23" Name="button1" Width="75" Click="button1_Click" />
+        <Label Name="label1" Content="{Binding ElementName=selettoreFotografo1, Path=fotografoSelezionato.cognomeNome, Mode=OneWay}" Canvas.Left="438" Canvas.Top="71" Height="32" Width="155" Background="Red" />
+    </Canvas>
+
+</UserControl>

@@ -4,7 +4,7 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Digiphoto.Lumen.Servizi.Scaricatore;
 using Digiphoto.Lumen.Applicazione;
-using Digiphoto.Lumen.Database;
+using Digiphoto.Lumen.Core.Database;
 using System.Linq;
 using System.Transactions;
 using System.Data.Objects;
