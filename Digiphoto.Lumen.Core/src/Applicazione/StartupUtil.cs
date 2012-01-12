@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Model;
 using log4net;
-using Digiphoto.Lumen.Database;
+using Digiphoto.Lumen.Core.Database;
 
 namespace Digiphoto.Lumen.Applicazione {
 	
@@ -45,18 +45,15 @@ namespace Digiphoto.Lumen.Applicazione {
 		// Se non esistono le informazioni fisse, allora le creo di default
 		internal static void forseCreaInfoFisse() {
 
-			using( new UnitOfWorkScope() ) {
-			
-				LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
-				InfoFissa infoFissa = objContext.InfosFisse.SingleOrDefault<InfoFissa>( f => f.id == "K" );
+			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
+			InfoFissa infoFissa = objContext.InfosFisse.SingleOrDefault<InfoFissa>( f => f.id == "K" );
 
-				if( infoFissa == null ) {
-					_giornale.Info( "Informazioni fisse non trovate. Le creo con i default" );
-					infoFissa = new InfoFissa();
-					infoFissa.id = "K";
-					objContext.InfosFisse.AddObject( infoFissa );
-					objContext.SaveChanges();
-				}
+			if( infoFissa == null ) {
+				_giornale.Info( "Informazioni fisse non trovate. Le creo con i default" );
+				infoFissa = new InfoFissa();
+				infoFissa.id = "K";
+				objContext.InfosFisse.AddObject( infoFissa );
+				objContext.SaveChanges();
 			}
 		}
 

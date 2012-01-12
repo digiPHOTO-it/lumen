@@ -18,9 +18,12 @@ namespace Digiphoto.Lumen.Servizi {
 
 			// Istanzio
 			LumenApplication app = LumenApplication.Instance;
-			
+
+			// calcolo il nome completo della interfaccia che mi fa da chiave per la mappa.
+			string key = calcFullName( tipo );
+
 			/** Puo essere separato da virgola */
-			string [] pezzi = app.configurazione.nomiServizi [tipo.FullName].Split( ',' );
+			string [] pezzi = app.configurazione.nomiServizi [key].Split( ',' );
 			string nomeImpl = pezzi[0];
 			string assemblyName = (pezzi.Length > 1 ? pezzi[1] : null);
 
@@ -43,6 +46,21 @@ namespace Digiphoto.Lumen.Servizi {
 		}
 
 
+		internal static string calcFullName( Type tipo ) {
+
+			// Se il tipo indicato prevede un generic, converto il nome con le parentesi angolari
+			Type [] generici = tipo.GetGenericArguments();
+
+			string mioFullName;
+			if( generici == null || generici.Length == 0 )
+				mioFullName = tipo.FullName;
+			else {
+				string nomeSenzaNumero = tipo.Name.Substring( 0, tipo.Name.IndexOf( "`" ) );
+				mioFullName = tipo.Namespace + "." + nomeSenzaNumero + "<" + generici [0].FullName + ">";
+			}
+
+			return mioFullName;
+		}
 	}
 
 

@@ -6,7 +6,7 @@ using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Servizi.Scaricatore;
 using Digiphoto.Lumen.Imaging;
 using Digiphoto.Lumen.Util;
-using Digiphoto.Lumen.Database;
+using Digiphoto.Lumen.Core.Database;
 
 namespace Digiphoto.Lumen.Comandi {
 

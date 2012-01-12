@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 using System.Transactions;
 using log4net;
-using Digiphoto.Lumen.Database;
+using Digiphoto.Lumen.Core.Database;
 using System.Data.Objects;
 using Digiphoto.Lumen.src.Database;
 using Digiphoto.Lumen.Applicazione;

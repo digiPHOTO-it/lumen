@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Model;
-using Digiphoto.Lumen.Database;
+using Digiphoto.Lumen.Core.Database;
 using System.Linq;
 using System.Text;
 using System.IO;

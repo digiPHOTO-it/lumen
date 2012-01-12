@@ -79,6 +79,8 @@
     <Compile Include="src\Database\DbUtil.cs" />
     <Compile Include="src\Database\OrmUtil.cs" />
     <Compile Include="src\Database\UnitOfWorkScope.cs" />
+    <Compile Include="src\DatiDiEsempio\DataGen.cs" />
+    <Compile Include="src\DatiDiEsempio\ParoleCasuali.cs" />
     <Compile Include="src\Eventi\Messaggio.cs" />
     <Compile Include="src\Imaging\ProiettoreArea.cs" />
     <Compile Include="src\Imaging\Correzioni\Correttore.cs" />
@@ -88,9 +90,12 @@
     <Compile Include="src\Imaging\Provinatore.cs" />
     <Compile Include="src\Comandi\Comando.cs" />
     <Compile Include="src\Servizi\Carrelli\ParamCercaCarrelli.cs" />
+    <Compile Include="src\Servizi\EntityRepository\EntityRepositorySrvImpl.cs" />
+    <Compile Include="src\Servizi\EntityRepository\FotografiRepositorySrvImpl.cs" />
     <Compile Include="src\Servizi\Explorer\FotoExplorerSrvImpl.cs" />
     <Compile Include="src\Servizi\Explorer\IFotoExplorerSrv.cs" />
     <Compile Include="src\Servizi\Explorer\RicercaModificataMessaggio.cs" />
+    <Compile Include="src\Servizi\EntityRepository\IEntityRepositorySrv.cs" />
     <Compile Include="src\Servizi\Masterizza\IMasterizzaSrv.cs" />
     <Compile Include="src\Servizi\Masterizza\MasterizzaMsg.cs" />
     <Compile Include="src\Servizi\Masterizza\MasterizzaSrvImpl.cs" />

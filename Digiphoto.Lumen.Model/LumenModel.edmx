@@ -418,17 +418,17 @@
               <Summary>Identificatico univoco del fotografo in tutte le installazioni</Summary>
               <LongDescription>Utilizzare per esempio il codice fiscale</LongDescription>
             </Documentation>
-          </Property>
-          <Property Type="String" Name="cognomeNome" Nullable="false" />
-          <Property Name="iniziali" Nullable="false" MaxLength="2" Type="String" />
-          <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true" />
+          <a:Display Order="0" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" /></Property>
+          <Property Type="String" Name="cognomeNome" Nullable="false" ><a:Display Order="1" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" /><pem:Validations xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" Enforcement="None"><pem:Required ErrorMessage="il Cognome e Nome del fotografo sono obbligatori" Enforcement="Must" /></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" /></Property>
+          <Property Name="iniziali" Nullable="false" MaxLength="2" Type="String" ><a:Display Order="2" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" /><pem:Validations xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" Enforcement="None"><pem:RegularExpression Pattern="^[A-Z]{1,2}$" ErrorMessage="Le iniziali del fotografo devono essere di una o due lettere maiuscole" Enforcement="Must" /><pem:Message ErrorMessage="Il fotografo non è valido" /></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" /></Property>
+          <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true" ><a:Display Order="4" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" /></Property>
           <Property Type="Boolean" Name="umano" Nullable="false" DefaultValue="true" >
             <Documentation>
               <Summary>Umano oppure Automatico (OnRide)</Summary>
             </Documentation>
-          </Property>
-          <Property Type="String" Name="note" Nullable="true" />
-        </EntityType>
+          <a:Display Order="3" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" /></Property>
+          <Property Type="String" Name="note" Nullable="true" ><a:Display Order="5" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" /></Property>
+        <pem:Validations xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" Enforcement="Must" ></pem:Validations></EntityType>
         <EntityType Name="Fotografia">
           <Key>
             <PropertyRef Name="id" />
@@ -1003,7 +1003,7 @@
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="False" />
-        <DesignerProperty Name="CodeGenerationStrategy" Value="Default" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
         <DesignerProperty Name="DDLGenerationTemplate" Value="$(VSEFTools)\DBGen\SSDLToSQL10.tt" />
         <DesignerProperty Name="DatabaseGenerationWorkflow" Value="$(VSEFTools)\DBGen\Generate T-SQL Via T4 (TPH).xaml" />
       </DesignerInfoPropertySet>

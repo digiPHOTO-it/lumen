@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Applicazione;
-using Digiphoto.Lumen.Database;
+using Digiphoto.Lumen.Core.Database;
 using System.Threading;
 using Digiphoto.Lumen.Imaging.Nativa;
 using Digiphoto.Lumen.Util;

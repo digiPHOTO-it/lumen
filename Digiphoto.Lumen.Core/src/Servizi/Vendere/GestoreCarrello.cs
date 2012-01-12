@@ -6,7 +6,7 @@ using Digiphoto.Lumen.Model;
 using System.Data.Objects.DataClasses;
 using log4net;
 using System.Transactions;
-using Digiphoto.Lumen.Database;
+using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Applicazione;
 using System.Data.Objects;
 using System.Data;
