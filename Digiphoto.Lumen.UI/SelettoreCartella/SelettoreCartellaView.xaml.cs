@@ -18,12 +18,5 @@ namespace Digiphoto.Lumen.UI {
 			this.DataContext = _selettoreCartellaViewModel;
 		}
 
-		// Questi sono i dischi rimovibili disponibili
-		private ObservableCollection<string> dischiRimovibili {
-			get;
-			set;
-		}
-
-
 	}
 }

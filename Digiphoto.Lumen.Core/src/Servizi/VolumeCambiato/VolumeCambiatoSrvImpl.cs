@@ -7,6 +7,7 @@ using log4net;
 using Digiphoto.Lumen.Servizi.VolumeCambiato;
 using Digiphoto.Lumen.Applicazione;
 using System.Threading;
+using System.IO;
 
 namespace Digiphoto.Lumen.Servizi.VolumeCambiato {
 
@@ -136,5 +137,12 @@ namespace Digiphoto.Lumen.Servizi.VolumeCambiato {
 		}
 
 
+
+		public System.IO.DriveInfo [] GetDrivesUsbAttivi() {
+
+			var removableDrives = DriveInfo.GetDrives().Where(d => d.DriveType == DriveType.Removable);
+
+			return removableDrives.ToArray<DriveInfo>();
+		}
 	}
 }
