@@ -44,6 +44,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Digiphoto.Lumen.Core\lib\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="MemBus, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Digiphoto.Lumen.Core\lib\MemBus.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Entity" />
@@ -66,7 +70,27 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="ScaricatoreFoto\ScaricatoreFotoDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SelettoreCartella\SelettoreCartellaDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SelettoreCartella\SelettoreCartellaView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SelettoreEvento\SelettoreEvento.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SelettoreEvento\SelettoreEventoDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SelettoreFotografo\SelettoreFotografoDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -82,10 +106,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="Mvvm\ObservableCollectionEx.cs" />
     <Compile Include="SelettoreCartella\SelettoreCartellaView.xaml.cs">
       <DependentUpon>SelettoreCartellaView.xaml</DependentUpon>
     </Compile>
     <Compile Include="SelettoreCartella\SelettoreCartellaViewModel.cs" />
+    <Compile Include="SelettoreEvento\SelettoreEvento.xaml.cs">
+      <DependentUpon>SelettoreEvento.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SelettoreEvento\SelettoreEventoViewModel.cs" />
     <Compile Include="SelettoreFotografo\SelettoreFotografoView.xaml.cs">
       <DependentUpon>SelettoreFotografoView.xaml</DependentUpon>
     </Compile>

@@ -1484,14 +1484,19 @@ namespace Digiphoto.Lumen.Model
     		bool isOK = true;
     		warnings = new List<string>();
     		errors = new List<string>();
-                		
+            //Required
+    if((this.descrizione == null)) { errors.Add("descrizione\tError: Descrizione evento obbligatoria"); isOK = false; }
+    // DataFieldLength
+    if((this.descrizione != null && this.descrizione.Length > 100)) { errors.Add("descrizione\tError: Descrizione evento deve essere almeno di 2 caratteri"); isOK = false; }
+        		
     		return isOK;	
     	}
     	public string[] GetUIHint(string propertyName)
     	{
     		Dictionary<string, string[]> UIHints = new Dictionary<string, string[]>(); 
     
-                		string[] uihintslist;
+            UIHints.Add("descrizione", new string[] {  });
+        		string[] uihintslist;
     		if (UIHints.TryGetValue(propertyName, out uihintslist))
     			return uihintslist;
     		else
@@ -1908,7 +1913,8 @@ namespace Digiphoto.Lumen.Model
     	{
     		Dictionary<string, string[]> UIHints = new Dictionary<string, string[]>(); 
     
-                                    		string[] uihintslist;
+        UIHints.Add("id", new string[] {  });
+                                		string[] uihintslist;
     		if (UIHints.TryGetValue(propertyName, out uihintslist))
     			return uihintslist;
     		else
@@ -2213,10 +2219,14 @@ namespace Digiphoto.Lumen.Model
     		bool isOK = true;
     		warnings = new List<string>();
     		errors = new List<string>();
-            //Required
-    if((this.cognomeNome == null)) { errors.Add("cognomeNome\tError: il Cognome e Nome del fotografo sono obbligatori"); isOK = false; }
+            // DataFieldLength
+    if((this.cognomeNome != null && this.cognomeNome.Length > 50)) { errors.Add("cognomeNome\tError: Il nominativo deve essere almeno 4 caratteri"); isOK = false; }
+    //Required
+    if((this.cognomeNome == null)) { errors.Add("cognomeNome\tError: Cognome e Nome del fotografo obbligatorio"); isOK = false; }
         //Regular Expression
     if(!(this.iniziali != null && new System.Text.RegularExpressions.Regex(@"^[A-Z]{1,2}$").IsMatch(this.iniziali))) { errors.Add("iniziali\tError: Le iniziali del fotografo devono essere di una o due lettere maiuscole"); isOK = false; }
+    //Required
+    if((this.iniziali == null)) { errors.Add("iniziali\tError: Iniziali obbligatorie"); isOK = false; }
                 		
     		return isOK;	
     	}

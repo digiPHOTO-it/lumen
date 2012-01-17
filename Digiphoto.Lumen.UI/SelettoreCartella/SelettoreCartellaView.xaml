@@ -3,35 +3,53 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 
+
+    <!-- istanzio ed associo il mio rispettivo ViewModel 
+    <UserControl.DataContext>
+        <lum:SelettoreCartellaViewModel />
+    </UserControl.DataContext>
+    -->
+
+    <UserControl.Resources>
+        <ResourceDictionary Source="SelettoreCartellaDictionary.xaml" />        
+    </UserControl.Resources>
+    
+    <!-- -->
+    
     <StackPanel Orientation="Vertical">
 
-        <Label Content="Scarica foto dalla cartella" />
-        <TextBox Name="cartellaSorgente" Text="{Binding paramScarica.cartellaSorgente}" />
-        <Button Name="scaricareButton" Content="Scarica" Command="{Binding scaricareCommand}" />
+        <Label Content="Scarica le foto dalla cartella:" />
 
-        <Expander ExpandDirection="Down" Header="Altre sorgenti" >
-            
+        <TextBox Name="cartellaTextBox" 
+                 Text="{Binding cartellaSelezionata, Mode=TwoWay}" />
+
+        <GroupBox Header="Dischi Rimovibili">
+            <ListBox Name="dischiRimovibiliListBox"
+                     ItemsSource="{Binding dischiRimovibili}" 
+                     ItemTemplate="{StaticResource dischiRimovibiliTemplate}" 
+                     MinHeight="20" 
+                     SelectionChanged="dischiRimovibiliListBox_SelectionChanged" 
+                     MouseDoubleClick="dischiRimovibiliListBox_MouseDoubleClick" />
+        </GroupBox>
+
+        <Button Name="browseForFolderButton" Content="Scegli altra cartella..." 
+                Command="{Binding scegliereCartellaCommand}"
+        />
+<!--        Click="browseForFolderButton_Click" -->
+
+        <Expander ExpandDirection="Down" IsExpanded="False" Header="Altre sorgenti" >
+
             <StackPanel>
 
-                <Label Content="Dischi rimovibili" />
-                
-                <ListBox ItemsSource="{Binding dischiRimovibili}" >
-                </ListBox>
-
-                <Separator />
-                
-                <Label Content="Cartelle recenti" />
-                <ListBox Name="listaCartelleRecenti">
-                    <ListBoxItem>c:\aaa\bbb\ccc\ddd</ListBoxItem>
-                    <ListBoxItem>c:\aaa\bbb\ccc\ddd</ListBoxItem>
-                    <ListBoxItem>c:\aaa\bbb\ccc\ddd</ListBoxItem>
-                    <ListBoxItem>c:\aaa\bbb\ccc\ddd</ListBoxItem>
-                    <ListBoxItem>c:\aaa\bbb\ccc\ddd</ListBoxItem>
-                    <ListBoxItem>c:\aaa\bbb\ccc\ddd</ListBoxItem>
-                </ListBox>
+                <GroupBox Name="cartelleRecentiGroupBox" Header="Cartelle recenti">
+                    <ListBox  Name="cartelleRecentiListBox" ItemsSource="{Binding cartelleRecenti}" 
+                              SelectionChanged="cartelleRecentiListBox_SelectionChanged" 
+                              MouseDoubleClick="cartelleRecentiListBox_MouseDoubleClick" />
+                </GroupBox>
 
             </StackPanel>
         </Expander>

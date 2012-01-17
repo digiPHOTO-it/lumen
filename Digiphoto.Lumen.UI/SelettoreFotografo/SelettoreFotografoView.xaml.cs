@@ -12,45 +12,14 @@ namespace Digiphoto.Lumen.UI {
 
 			InitializeComponent();
 
-			_sceltafotografoViewModel = new SelettoreFotografoViewModel();
-			DataContext = _sceltafotografoViewModel;
-
-			// Mi aggancio all'evento di elemento selezionato della listbox.
-			this.fotografiListBox.SelectionChanged += new SelectionChangedEventHandler( onSelectionChanged );
+			_sceltafotografoViewModel = (SelettoreFotografoViewModel) this.DataContext;
 		}
 
-		private void onSelectionChanged( object sender, SelectionChangedEventArgs e ) {
-			e.Handled = true;  // evita il bubble
-			RoutedEventArgs args = new RoutedEventArgs( fotografoChangedEvent );
-			RaiseEvent( args );
-		}
-
-		#region fotografoSelezionato Dependency Property
-		public static readonly DependencyProperty fotografoSelezionatoProperty = DependencyProperty.Register("fotografoSelezionato", typeof(Fotografo), typeof(SelettoreFotografo));
-
-		// wrapper .net opzionale
 		public Fotografo fotografoSelezionato {
-			get { 
-				return (Fotografo)GetValue(fotografoSelezionatoProperty); 
-			}
-			set { 
-				SetValue(fotografoSelezionatoProperty, value); 
+			get {
+				return _sceltafotografoViewModel.fotografoSelezionato;
 			}
 		}
-		#endregion
-
-
-		#region evento fotografoSelezionato cambiato
-
-		public static readonly RoutedEvent fotografoChangedEvent = EventManager.RegisterRoutedEvent("fotografoChanged", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(SelettoreFotografo));
-
-		public event RoutedEventHandler fotografoChanged {
-			add { AddHandler(fotografoChangedEvent, value); }
-			remove { RemoveHandler(fotografoChangedEvent, value); }
-		}
-
-		#endregion
-
 
 		#region possoCreare Dependency Property
 		public static readonly DependencyProperty possoCreareProperty = DependencyProperty.Register( "possoCreare", typeof( bool ),	typeof( SelettoreFotografo ), new FrameworkPropertyMetadata( true,	FrameworkPropertyMetadataOptions.BindsTwoWayByDefault ) );

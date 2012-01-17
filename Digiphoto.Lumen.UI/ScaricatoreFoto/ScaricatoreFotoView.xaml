@@ -5,18 +5,53 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
              mc:Ignorable="d" 
-             d:DesignHeight="480" d:DesignWidth="640">
-    <Canvas>
+             d:DesignHeight="600" d:DesignWidth="800">
+
+    <UserControl.DataContext>
+        <lum:ScaricatoreFotoViewModel />
+    </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <ResourceDictionary Source="ScaricatoreFotoDictionary.xaml" />
+    </UserControl.Resources>
+
+
+    <StackPanel>
 
         <StackPanel Orientation="Horizontal">
 
-            <lum:SelettoreCartella />
+            <lum:SelettoreCartella x:Name="selettoreCartella1" DataContext="{Binding selettoreCartellaViewModel}"/>
 
-            <lum:SelettoreFotografo x:Name="selettoreFotografo1" possoCreare="True" fotografoSelezionato="{Binding fotografo}"  />
+            <lum:SelettoreFotografo x:Name="selettoreFotografo1" DataContext="{Binding selettoreFotografoViewModel}"
+                                    possoCreare="True" />
+
+            <lum:SelettoreEvento x:Name="selettoreEvento1" 
+                                 DataContext="{Binding selettoreEventoViewModel}" />
+
+            <GroupBox Header="Fasi del giorno">
+                <ListBox Name="fasiGiornoListBox" 
+                    ItemsSource="{Binding fasiDelGiorno,Mode=OneWay}" 
+                    SelectedItem="{Binding faseDelGiorno}" />
+            </GroupBox>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal">
+            
+            <GroupBox>
+                <StackPanel>                    
+                    <RadioButton Content="COPIA files"  GroupName="copiaSpostaGrp" 
+                                 Command="{Binding Path=setCopiaSpostaCommad}" CommandParameter="false"
+                                 IsChecked="{Binding Path=!eliminaFileSorgenti}"/>
+                    <RadioButton Content="SPOSTA files" GroupName="copiaSpostaGrp" 
+                                 Command="{Binding Path=setCopiaSpostaCommad}" CommandParameter="true"
+                                 IsChecked="{Binding Path=eliminaFileSorgenti}" />
+                </StackPanel>
+            </GroupBox>
+
+            <Button Name="scaricaButton" Content="go! SCARICA" Command="{Binding scaricareCommand}" />
+            
+            <Button Canvas.Left="695" Canvas.Top="87" Content="Code Behind" Height="23" Name="button1" Width="75" Click="button1_Click" />
 
         </StackPanel>
-        <Button Canvas.Left="438" Canvas.Top="33" Content="Code Behind" Height="23" Name="button1" Width="75" Click="button1_Click" />
-        <Label Name="label1" Content="{Binding ElementName=selettoreFotografo1, Path=fotografoSelezionato.cognomeNome, Mode=OneWay}" Canvas.Left="438" Canvas.Top="71" Height="32" Width="155" Background="Red" />
-    </Canvas>
-
+    </StackPanel>
 </UserControl>
