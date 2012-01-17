@@ -15,7 +15,7 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 
 		public override Fotografo getById( object oid ) {
 			string id = (string)oid;
-			return UnitOfWorkScope.CurrentObjectContext.Fotografi.FirstOrDefault( f => f.id == id );
+			return UnitOfWorkScope.CurrentObjectContext.Fotografi.SingleOrDefault( f => f.id == id );
 		}
 	}
 }

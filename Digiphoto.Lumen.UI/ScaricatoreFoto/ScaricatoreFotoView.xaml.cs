@@ -30,12 +30,11 @@ namespace Digiphoto.Lumen.UI {
 
 			InitializeComponent();
 
-			_scaricatoreViewModel = new ScaricatoreFotoViewModel();
-			DataContext = _scaricatoreViewModel;
+			_scaricatoreViewModel = (ScaricatoreFotoViewModel) this.DataContext;
 
 			paramScarica = new ParamScarica();
 			paramScarica.flashCardConfig = new FlashCardConfig();
-			
+
 		}
 
 
@@ -44,21 +43,10 @@ namespace Digiphoto.Lumen.UI {
 			set;
 		}
 
-		public Fotografo _fotografo;
-		public Fotografo fotografo {
-			get {
-				return _fotografo;
-			}
-			set {
-				_fotografo = value;
-				// assegno anche la proprietà del parametro
-				paramScarica.flashCardConfig.idFotografo = _fotografo.id;
-			}
-		}
 
 		private void button1_Click( object sender, RoutedEventArgs e ) {
 
-			string appo = this.selettoreFotografo1.fotografoSelezionato.cognomeNome;
+			Console.WriteLine( "stop" );
 		}
 
 

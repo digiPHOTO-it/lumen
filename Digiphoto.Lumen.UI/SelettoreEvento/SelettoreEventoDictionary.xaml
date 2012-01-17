@@ -1,0 +1,12 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+    <!-- il nuovo evento è tutto maiuscolo -->
+    <Style x:Key="newDescrizioneTextBox" TargetType="{x:Type TextBox}">
+        <Setter Property="CharacterCasing" Value="Upper" />
+    </Style>
+
+
+</ResourceDictionary>

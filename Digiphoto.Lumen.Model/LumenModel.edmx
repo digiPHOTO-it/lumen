@@ -419,8 +419,8 @@
               <LongDescription>Utilizzare per esempio il codice fiscale</LongDescription>
             </Documentation>
           <a:Display Order="0" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" /></Property>
-          <Property Type="String" Name="cognomeNome" Nullable="false" ><a:Display Order="1" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" /><pem:Validations xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" Enforcement="None"><pem:Required ErrorMessage="il Cognome e Nome del fotografo sono obbligatori" Enforcement="Must" /></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" /></Property>
-          <Property Name="iniziali" Nullable="false" MaxLength="2" Type="String" ><a:Display Order="2" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" /><pem:Validations xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" Enforcement="None"><pem:RegularExpression Pattern="^[A-Z]{1,2}$" ErrorMessage="Le iniziali del fotografo devono essere di una o due lettere maiuscole" Enforcement="Must" /><pem:Message ErrorMessage="Il fotografo non è valido" /></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" /></Property>
+          <Property Type="String" Name="cognomeNome" Nullable="false" ><a:Display Order="1" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" /><pem:Validations xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" Enforcement="None"><pem:DataFieldLength MinimumLength="5" MaximumLength="50" ErrorMessage="Il nominativo deve essere almeno 4 caratteri" Enforcement="Must" /><pem:Required ErrorMessage="Cognome e Nome del fotografo obbligatorio" Enforcement="Must" /></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" /></Property>
+          <Property Name="iniziali" Nullable="false" MaxLength="2" Type="String" ><a:Display Order="2" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" /><pem:Validations xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" Enforcement="None"><pem:RegularExpression Pattern="^[A-Z]{1,2}$" ErrorMessage="Le iniziali del fotografo devono essere di una o due lettere maiuscole" Enforcement="Must" /><pem:Required ErrorMessage="Iniziali obbligatorie" Enforcement="Must" /><pem:Message ErrorMessage="Il fotografo non è valido" /></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" /></Property>
           <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true" ><a:Display Order="4" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" /></Property>
           <Property Type="Boolean" Name="umano" Nullable="false" DefaultValue="true" >
             <Documentation>
@@ -433,7 +433,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" ><a:Display Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" /><pem:Validations xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" Enforcement="None"></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" /></Property>
           <Property Type="String" Name="nomeFile" Nullable="false" >
             <Documentation>
               <Summary>nome del file senza il percorso</Summary>
@@ -459,7 +459,7 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" />
-          <Property Type="String" Name="descrizione" Nullable="false" />
+          <Property Type="String" Name="descrizione" Nullable="false" ><a:Display Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" /><pem:Validations xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" Enforcement="None"><pem:Required ErrorMessage="Descrizione evento obbligatoria" Enforcement="Must" /><pem:DataFieldLength MinimumLength="2" MaximumLength="100" ErrorMessage="Descrizione evento deve essere almeno di 2 caratteri" Enforcement="Must" /></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" /></Property>
           <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true" />
         </EntityType>
         <Association Name="EventoFotografia">

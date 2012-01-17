@@ -8,23 +8,30 @@
              d:DesignHeight="300" d:DesignWidth="200"
              x:Name="selFotografo">
 
+    <!--
+    <UserControl.DataContext>
+        <lum:SelettoreFotografoViewModel />
+    </UserControl.DataContext>
+    -->
+    
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <ResourceDictionary Source="SelettoreFotografoDictionary.xaml" />
     </UserControl.Resources>
     
     <StackPanel>
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto" >  
-            
-            <ListBox Name="fotografiListBox" 
-                     ItemsSource="{Binding fotografi}" 
-                     DisplayMemberPath="cognomeNome"
-                     SelectedItem="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Mode=OneWayToSource, Path=fotografoSelezionato}"
-                     />
+        <GroupBox Header="lista Fotografi">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">  
+                <ListBox Name="fotografiListBox" 
+                         ItemsSource="{Binding Path=fotografi}" 
+                         ItemTemplate="{StaticResource fotografiListBoxTemplate}"
+                         SelectedItem="{Binding Path=fotografoSelezionato}"
+                         />
 
-        </ScrollViewer>
+            </ScrollViewer>
+        </GroupBox>
 
-        <Button Name="refreshButton" Content="Rileggi" Command="{Binding Path=rileggereFotografiCommand}"  />
+        <Button Name="refreshButton" Content="Rileggi" Command="{Binding Path=rileggereFotografiCommand}" />
 
         <Expander IsExpanded="False" Header="Crea nuovo fotografo" 
                   Visibility="{Binding possoCreare, 
@@ -34,17 +41,17 @@
 
                 <Label Content="Cognome e Nome" />
                 <TextBox x:Name="newNomeFotografoTxt" 
-                         Text="{Binding  Path=idFotografoNew, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
-                         Validation.ErrorTemplate="{x:Null}" />
-                <ContentPresenter Content="{Binding ElementName=newNomeFotografoTxt, Path=(Validation.Errors).CurrentItem}" />
+                         Text="{Binding  Path=idFotografoNew, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource newNomeFotografoTxtStyle}" />
 
                 <Label Content="Iniziali" />
-                <TextBox x:Name="newInizialiFotografoTxt" Text="{Binding Path=nuovoFotografo.iniziali, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
+                <TextBox x:Name="newInizialiFotografoTxt" 
+                         Text="{Binding Path=nuovoFotografo.iniziali, UpdateSourceTrigger=PropertyChanged}"
                          MaxLength="2"
-                         Validation.ErrorTemplate="{x:Null}" />
-                <ContentPresenter Content="{Binding ElementName=newInizialiFotografoTxt, Path=(Validation.Errors).CurrentItem}" />
+                         Style="{StaticResource newInizialiFotografoTxtStyle}"
+                         />
 
-                <Button Name="addNewButton" Content="Aggiungi" Command="{Binding Path=creareNuovoCommand}" />
+                <Button Name="creareNuovoButton" Content="Aggiungi" Command="{Binding Path=creareNuovoCommand}" />
             </StackPanel>
         </Expander>
 

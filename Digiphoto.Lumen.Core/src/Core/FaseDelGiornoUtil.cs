@@ -28,5 +28,10 @@ namespace Digiphoto.Lumen.Core {
 			return fase;
 		}
 
+		public static readonly FaseDelGiorno [] fasiDelGiorno = { FaseDelGiorno.Mattino, FaseDelGiorno.Pomeriggio, FaseDelGiorno.Sera };
+		
+
 	}
+
+
 }

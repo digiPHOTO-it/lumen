@@ -13,13 +13,16 @@ namespace Digiphoto.Lumen.UI {
 
 		public SelettoreFotografoViewModel() {
 
-			this.DisplayName = "Scelta Fotografo";
+			this.DisplayName = "Selettore Fotografo";
 
-			rileggiFotografi();
+			// istanzio la lista vuota
+			fotografi = new ObservableCollection<Fotografo>();
+
+			rileggereFotografi();
 			istanziaNuovoFotografo();
 		}
 
-		#region Properties
+		#region Proprietà
 		
 		public Fotografo nuovoFotografo {
 			get;
@@ -36,15 +39,29 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		/// <summary>
+		/// Tutti i fotografi da visualizzare
+		/// </summary>
 		public ObservableCollection<Fotografo> fotografi {
 			get;
-			private set;
+			set;
 		}
 
-		//public Fotografo fotografoSelezionato {
-		//    get;
-		//    set;
-		//}
+		/// <summary>
+		/// Il fotografo attualmente selezionato
+		/// </summary>
+		Fotografo _fotografoSelezionato;
+		public Fotografo fotografoSelezionato {
+			get {
+				return _fotografoSelezionato;
+			}
+			set {
+				if( value != _fotografoSelezionato ) {
+					_fotografoSelezionato = value;
+					OnPropertyChanged( "fotografoSelezionato" );
+				}
+			}
+		}
 
 
 		public IEntityRepositorySrv<Fotografo> fotografiReporitorySrv {
@@ -54,14 +71,47 @@ namespace Digiphoto.Lumen.UI {
 		}
 		#endregion
 
+		#region Metodi
+		private void rileggereFotografi() {
+
+			IEnumerable<Fotografo> listaF = null;
+			if( IsInDesignMode ) {
+
+				// genero dei dati casuali
+				DataGen<Fotografo> dg = new DataGen<Fotografo>();
+				listaF = dg.generaMolti( 5 );
+
+			} else {
+				listaF = fotografiReporitorySrv.getAll();
+			}
+
+			// purtoppo pare che rimpiazzare il reference con uno nuovo, causa dei problemi.
+			// Non posso istanziare nuovamente la lista, ma la devo svuotare e ripopolare.
+			fotografi.Clear();
+			foreach( Fotografo f in listaF )
+				fotografi.Add( f );
+		}
+
+		private void creareNuovoFotografo() {
+
+			// Salvo nel database
+			fotografiReporitorySrv.addNew( nuovoFotografo );
+
+			// Aggiungo alla collezione visuale (per non dover rifare la query)
+			fotografi.Add( nuovoFotografo );
+
+			// Svuoto per nuova creazione
+			istanziaNuovoFotografo();
+
+		}
 
 		/// <summary>
-		///  istanzia un oggetto di tipo Fotografo, pronto per essere utilizzato nella creazione
-		///  di un nuovo fotografoSelezionato, in caso nell'elenco mancasse.
+		///  istanzia un oggetto nomeCartellaRecente tipo Fotografo, pronto per essere utilizzato nella creazione
+		///  nomeCartellaRecente un nuovo fotografoSelezionato, in caso nell'elenco mancasse.
 		/// </summary>
 		private void istanziaNuovoFotografo() {
 
-			// Questo è d'appoggio per la creazione di un nuovo fotografoSelezionato al volo
+			// Questo è d'appoggio per la creazione nomeCartellaRecente un nuovo fotografoSelezionato al volo
 			nuovoFotografo = new Fotografo();
 			nuovoFotografo.attivo = true;
 			nuovoFotografo.umano = true;
@@ -69,6 +119,8 @@ namespace Digiphoto.Lumen.UI {
 			OnPropertyChanged( "idFotografoNew" );
 			OnPropertyChanged( "nuovoFotografo" );
 		}
+
+		#endregion
 
 		#region Comandi
 
@@ -89,52 +141,35 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand rileggereFotografiCommand {
 			get {
 				if( _rileggereFotografiCommand == null ) {
-					_rileggereFotografiCommand = new RelayCommand( param => this.rileggiFotografi(), null, false );
+					_rileggereFotografiCommand = new RelayCommand( param => this.rileggereFotografi(), null, false );
 				}
 				return _rileggereFotografiCommand;
 			}
 		}
 
 		private bool possoCreareNuovoFotografo {
+			
 			get {
+
 				List<string> avvisi;
 				List<string> errori;
-				return nuovoFotografo != null && nuovoFotografo.Validate( out avvisi, out errori );
+				bool esito = nuovoFotografo != null && nuovoFotografo.Validate( out avvisi, out errori );
+
+				/*
+				 * Questa validazione non basta. Il PEM validator generato dal modello,
+				 * è errato. Non tiene conto della lunghezza minima.
+				 */
+				if( esito == true ) {
+					if( nuovoFotografo.id.Length < 4 )
+						esito = false;
+				}
+
+				return esito;
 			}
 		}
 
 		#endregion
 
-		#region Azioni dei comandi
-		private void rileggiFotografi() {
-
-			IEnumerable<Fotografo> listaF = null;
-			if( IsInDesignMode ) {
-
-				// genero dei dati casuali
-				DataGen<Fotografo> dg = new DataGen<Fotografo>();
-				listaF = dg.generaMolti( 5 );
-				
-			} else {
-				listaF = fotografiReporitorySrv.getAll();
-			}
-			fotografi = new ObservableCollection<Fotografo>( listaF );
-//			OnPropertyChanged( "fotografi" );  // In teoria non dovrebbe servire perchè la collezione è già osservabile. Invece se non lo metto, mi rinfresca la lisa soltanto la prima volta.... boh!
-		}
-
-		private void creareNuovoFotografo() {
-
-			// Salvo nel database
-			fotografiReporitorySrv.addNew( nuovoFotografo );
-				
-			// Aggiungo alla collezione visuale (per non dover rifare la query)
-			fotografi.Add( nuovoFotografo );
-				
-			// Svuoto per nuova creazione
-			istanziaNuovoFotografo();
-
-		}
-		#endregion
 
 	}
 }

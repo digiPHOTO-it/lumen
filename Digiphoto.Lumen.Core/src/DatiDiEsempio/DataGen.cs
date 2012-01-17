@@ -28,7 +28,8 @@ namespace Digiphoto.Lumen.Core.DatiDiEsempio {
 
 			if( tipo.Equals( typeof(Digiphoto.Lumen.Model.Fotografo) ) )
 				return generaUnoFotografo() as TEntity;
-
+			if( tipo.Equals( typeof( Digiphoto.Lumen.Model.Evento ) ) )
+				return generaUnoEvento() as TEntity;
 
 			return null;
 		}
@@ -41,6 +42,13 @@ namespace Digiphoto.Lumen.Core.DatiDiEsempio {
 			return f;
 		}
 
+		private Evento generaUnoEvento() {
+
+			ParoleCasuali pc = new ParoleCasuali();
+
+			Evento e = Evento.CreateEvento( Guid.Empty, pc.genera(15) );
+			return e;
+		}
 
 
 	}

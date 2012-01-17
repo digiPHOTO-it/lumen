@@ -16,6 +16,7 @@ using Digiphoto.Lumen.Servizi.Vendere;
 using Digiphoto.Lumen.Servizi.EntityRepository;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Core.Database;
+using Digiphoto.Lumen.Servizi.Scaricatore;
 
 namespace Digiphoto.Lumen.Applicazione {
 
@@ -126,6 +127,8 @@ namespace Digiphoto.Lumen.Applicazione {
 			vcs.attesaBloccante = false;
 			vcs.attesaEventi();
 			//
+			creaAggiungiAvviaServizio<IScaricatoreFotoSrv>();
+			//
 			creaAggiungiAvviaServizio<IGestoreImmagineSrv>();
 			//
 			creaAggiungiAvviaServizio<IFotoExplorerSrv>();
@@ -135,6 +138,8 @@ namespace Digiphoto.Lumen.Applicazione {
 			creaAggiungiAvviaServizio<IVenditoreSrv>();
 
 			creaAggiungiAvviaServizio<IEntityRepositorySrv<Fotografo>>();
+
+			creaAggiungiAvviaServizio<IEntityRepositorySrv<Evento>>();
 		}
 
 		public T creaServizio<T>() where T : IServizio {

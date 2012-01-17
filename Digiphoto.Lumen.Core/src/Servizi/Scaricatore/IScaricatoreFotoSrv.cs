@@ -20,6 +20,16 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		public string cartellaSorgente  { get; set; }
 		public bool eliminaFilesSorgenti { get; set; }
 		public FaseDelGiorno faseDelGiorno  { get; set; }
+
+		public override string ToString() {
+			
+			StringBuilder sb = new StringBuilder( "cartella = " ).Append( cartellaSorgente );
+			sb.Append( "\n" );
+			sb.Append( flashCardConfig.ToString() );
+			sb.Append( "\nelimina fils = " ).Append( eliminaFilesSorgenti );
+			sb.Append( "\nfase del giorno = " ).Append( faseDelGiorno );
+			return sb.ToString();
+		}
 	}
 
 	public interface IScaricatoreFotoSrv : IServizio {
