@@ -142,5 +142,17 @@ namespace Digiphoto.Lumen.Properties {
                 this["modoVendita"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool eliminaFileSorgenti {
+            get {
+                return ((bool)(this["eliminaFileSorgenti"]));
+            }
+            set {
+                this["eliminaFileSorgenti"] = value;
+            }
+        }
     }
 }

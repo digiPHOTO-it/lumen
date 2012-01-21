@@ -7,5 +7,8 @@ using Digiphoto.Lumen.Eventi;
 namespace Digiphoto.Lumen.Servizi.Explorer {
 	
 	public class RicercaModificataMessaggio : Messaggio {
+
+		public RicercaModificataMessaggio( object sender ) : base( sender ) {
+		}
 	}
 }

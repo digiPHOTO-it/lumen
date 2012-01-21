@@ -27,6 +27,9 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
 
     public class BurnerMsg : Messaggio
     {
+		public BurnerMsg( object sender ) : base( sender ) {
+		}
+
         public Fase fase { get; set; }
 
         public String capacity { get; set; }

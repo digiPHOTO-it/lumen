@@ -9,11 +9,13 @@ using System.Windows.Input;
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Core;
+using System.Windows.Forms;
+using Digiphoto.Lumen.Servizi;
 
 namespace Digiphoto.Lumen.UI {
 
 
-	public class ScaricatoreFotoViewModel : ViewModelBase {
+	public class ScaricatoreFotoViewModel : ViewModelBase, IObserver<CambioStatoMsg> {
 
 
 		public ScaricatoreFotoViewModel() {
@@ -23,7 +25,19 @@ namespace Digiphoto.Lumen.UI {
 
 			selettoreFotografoViewModel = new SelettoreFotografoViewModel();
 
-			selettoreCartellaViewModel = new SelettoreCartellaViewModel();	
+			selettoreCartellaViewModel = new SelettoreCartellaViewModel();
+
+			applicaConfigurazione();
+
+			// Ascolto messaggio
+			IObservable<CambioStatoMsg> observable = LumenApplication.Instance.bus.Observe<CambioStatoMsg>();
+			observable.Subscribe( this );
+		}
+
+		private void applicaConfigurazione() {
+
+			this.eliminaFileSorgenti = Configurazione.eliminaFileSorgenti;
+
 		}
 
 		#region Proprietà
@@ -72,12 +86,36 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		/// <summary>
-		///  Se vero, quando scarico lascio le foto, le elimino dalla cartella (in pratica le sposto)
-		/// </summary>
+		
+		private bool _eliminaFileSorgenti;
 		public bool eliminaFileSorgenti {
-			get;
-			set;
+			get {
+				return _eliminaFileSorgenti;
+			}
+			set {
+				if( value != _eliminaFileSorgenti ) {
+					_eliminaFileSorgenti = value;
+					OnPropertyChanged( "eliminaFileSorgenti" );
+				}
+			}
+
+		}
+
+		public bool possoScaricare {
+			get {
+				if( IsInDesignMode )
+					return true;
+
+				bool posso = true;
+
+				if( scaricatoreFotoSrv != null && scaricatoreFotoSrv.isRunning == false )
+					posso = false;
+
+				if( scaricatoreFotoSrv != null && scaricatoreFotoSrv.statoScarica != StatoScarica.Attesa )
+					posso = false;
+
+				return posso;
+			}
 		}
 
 		#endregion
@@ -111,8 +149,6 @@ namespace Digiphoto.Lumen.UI {
 		#region Metodi
 		private void scaricare() {
 			
-			Console.WriteLine( "STOP" );
-
 			ParamScarica paramScarica = new ParamScarica();
 
 			// Cartella sorgente da cui scaricare
@@ -135,15 +171,26 @@ namespace Digiphoto.Lumen.UI {
 			scaricatoreFotoSrv.scarica( paramScarica );
 		}
 
-		public bool possoScaricare {
-			get {
-				return true;
+		#endregion
+
+		#region Messaggi
+		public void OnCompleted() {
+		}
+
+		public void OnError( Exception error ) {
+		}
+
+		public void OnNext( CambioStatoMsg msg ) {
+
+			if( msg.sender is IScaricatoreFotoSrv ) {
+				// Per qualsiasi cambio di stato del servizio, devo rivalutare la possibilità di scaricare le foto
+				OnPropertyChanged( "possoScaricare" );
 			}
+
+			Console.Write( "stop" );
 		}
 		#endregion
+
 	}
-
-
-
 
 }

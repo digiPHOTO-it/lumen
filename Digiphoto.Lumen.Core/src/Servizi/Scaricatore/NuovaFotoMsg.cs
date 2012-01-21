@@ -11,7 +11,8 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 		Fotografia foto;
 
-		public NuovaFotoMsg( Fotografia foto ) {
+
+		public NuovaFotoMsg( object sender, Fotografia foto ) : base( sender ) {
 			this.foto = foto;
 		}
 	}

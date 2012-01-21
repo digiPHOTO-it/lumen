@@ -7,8 +7,13 @@ using Digiphoto.Lumen.Eventi;
 
 namespace Digiphoto.Lumen.Servizi {
 
-	class CambioStatoMessaggio : Messaggio {
-		public char nuovoStato {
+	public class CambioStatoMsg : Messaggio {
+
+		public CambioStatoMsg( object sender ) : base( sender ) {
+		}
+
+		// lo metto intero cosi lo posso confrontare con qualsiasi enumeration
+		public int nuovoStato {
 			get;
 			set;
 		}

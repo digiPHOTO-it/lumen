@@ -85,7 +85,7 @@ namespace Digiphoto.Lumen.Servizi.VolumeCambiato {
 
 			// Faccio un controllo di sicurezza
 			if( !isRunning ) {
-				_giornale.Warn( "Come mai ho sentito un evento, ma sono in stato di fermo?\nIn ogni caso vado avanti lo stesso" );
+				_giornale.Warn( "Come mai ho sentito un evento, ma sono in statoScarica di fermo?\nIn ogni caso vado avanti lo stesso" );
 			}
 
 			ManagementBaseObject mo = e.NewEvent;
@@ -96,7 +96,7 @@ namespace Digiphoto.Lumen.Servizi.VolumeCambiato {
 			_giornale.Info( "Volume cambiato! driveName = (" + driveName + ")  tipo = " + eventType );
 
 			// Creo un messaggio da mettere sul bus.
-			VolumeCambiatoMessaggio volumeCambiatoMsg = new VolumeCambiatoMessaggio();
+			VolumeCambiatoMessaggio volumeCambiatoMsg = new VolumeCambiatoMessaggio( this );
 
 			UInt64 timeCreated = (UInt64)mo.Properties ["TIME_CREATED"].Value;
 			volumeCambiatoMsg.timeStamp = new DateTime( (long)timeCreated );

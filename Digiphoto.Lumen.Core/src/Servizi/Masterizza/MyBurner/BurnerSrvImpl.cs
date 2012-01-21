@@ -167,7 +167,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
                 {
                     System.Diagnostics.Trace.WriteLine("Media not supported!");
                     _totalDiscSize = 0;
-                    BurnerMsg errorMediaMsg = new BurnerMsg();
+                    BurnerMsg errorMediaMsg = new BurnerMsg( this );
                     errorMediaMsg.fase = Fase.ErrorMedia;
                     errorMediaMsg.statusMessage = "Media not supported!";
                     OnInviaStatoMasterizzazione(errorMediaMsg);
@@ -204,7 +204,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
             catch (COMException exception)
             {
                 System.Diagnostics.Trace.WriteLine("Detect Media Error "+exception.Message);
-                BurnerMsg errorMediaMsg = new BurnerMsg();
+                BurnerMsg errorMediaMsg = new BurnerMsg( this );
                 errorMediaMsg.fase = Fase.ErrorMedia;
                 errorMediaMsg.statusMessage = "Detect Media Error " + exception.Message;
                 OnInviaStatoMasterizzazione(errorMediaMsg);
@@ -252,7 +252,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
             {
                 totalMediaSize += mediaItem.SizeOnDisc;
             }
-            BurnerMsg burnerMsg= new BurnerMsg();
+            BurnerMsg burnerMsg= new BurnerMsg( this );
             burnerMsg.capacity = capacity;
             OnInviaStatoMasterizzazione(burnerMsg);
             return capacity;
@@ -283,7 +283,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
 
         public void burning()
         {
-            BurnerMsg burnerMsg = new BurnerMsg();
+            BurnerMsg burnerMsg = new BurnerMsg( this );
             burnerMsg.fase = Fase.MasterizzazioneIniziata;
             burnerMsg.totaleFileAggiunti = listaFileDaMasterizzare.Count;
             OnInviaStatoMasterizzazione(burnerMsg);
@@ -368,7 +368,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
                 catch (COMException ex)
                 {
                     e.Result = ex.ErrorCode;
-                    BurnerMsg burnerMsg = new BurnerMsg();
+                    BurnerMsg burnerMsg = new BurnerMsg( this );
                     burnerMsg.fase = Fase.MasterizzazioneFallita;
                     burnerMsg.statusMessage = "IDiscFormat2Data.Write failed";
                     OnInviaStatoMasterizzazione(burnerMsg);
@@ -399,7 +399,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
                 //
                 System.Diagnostics.Trace.WriteLine("[Eccezione]: "+exception.Message);
                 e.Result = exception.ErrorCode;
-                BurnerMsg burnerMsg = new BurnerMsg();
+                BurnerMsg burnerMsg = new BurnerMsg( this );
                 burnerMsg.fase = Fase.MasterizzazioneFallita;
                 burnerMsg.statusMessage = exception.Message;
                 OnInviaStatoMasterizzazione(burnerMsg);
@@ -524,7 +524,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
             catch (COMException exception)
             {
                 System.Diagnostics.Trace.WriteLine("FileSystem" + exception.Message);
-                BurnerMsg burnerMsg = new BurnerMsg();
+                BurnerMsg burnerMsg = new BurnerMsg( this );
                 burnerMsg.fase = Fase.MasterizzazioneFallita;
                 OnInviaStatoMasterizzazione(burnerMsg);
                 //MessageBox.Show(this, exception.Message, "Create File System Error",
@@ -572,7 +572,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
         /// <param name="e"></param>
         private void backgroundBurnWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            BurnerMsg burnerMsg = new BurnerMsg();
+            BurnerMsg burnerMsg = new BurnerMsg( this );
             //int percent = e.ProgressPercentage;
             var burnData = (BurnData)e.UserState;
 
@@ -664,7 +664,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
         /// <param name="e"></param>
         private void backgroundBurnWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            BurnerMsg burnerMsg = new BurnerMsg();
+            BurnerMsg burnerMsg = new BurnerMsg( this );
             System.Diagnostics.Trace.WriteLine((int)e.Result == 0 ? "Finished Burning Disc!" : "Error Burning Disc!");
             burnerMsg.fase = (int)e.Result == 0 ? Fase.MasterizzazioneCompletata : Fase.MasterizzazioneFallita;
             OnInviaStatoMasterizzazione(burnerMsg);
@@ -675,7 +675,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
 
         public void formatting()
         {
-            BurnerMsg burnerMsg = new BurnerMsg();
+            BurnerMsg burnerMsg = new BurnerMsg( this );
             burnerMsg.fase = Fase.FormattazioneIniziata;
             OnInviaStatoMasterizzazione(burnerMsg);
 
@@ -699,7 +699,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
         {
             MsftDiscRecorder2 discRecorder = null;
             MsftDiscFormat2Erase discFormatErase = null;
-            BurnerMsg burnerMsg = new BurnerMsg();
+            BurnerMsg burnerMsg = new BurnerMsg( this );
             try
             {
                 //
@@ -796,7 +796,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
         private void backgroundFormatWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             System.Diagnostics.Trace.WriteLine("Formatting {0}%... "+ e.ProgressPercentage);
-            BurnerMsg burnerMsg = new BurnerMsg();
+            BurnerMsg burnerMsg = new BurnerMsg( this );
             burnerMsg.statusMessage = "Formatting {0}%... " + e.ProgressPercentage;
             burnerMsg.progress = 0;
             OnInviaStatoMasterizzazione(burnerMsg);
@@ -806,7 +806,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
         private void backgroundFormatWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             System.Diagnostics.Trace.WriteLine((int)e.Result == 0 ?"Finished Formatting Disc!" : "Error Formatting Disc!");
-            BurnerMsg burnerMsg = new BurnerMsg();
+            BurnerMsg burnerMsg = new BurnerMsg( this );
             burnerMsg.fase = (int)e.Result == 0 ? Fase.FormattazioneCompletata : Fase.FormattazioneFallita;
             OnInviaStatoMasterizzazione(burnerMsg);
             //formatProgressBar.Value = 0;

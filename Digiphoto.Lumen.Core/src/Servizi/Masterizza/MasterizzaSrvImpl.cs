@@ -131,7 +131,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                         _burner.etichetta = DateTime.Now.ToString("dd MMM yyyy");;
                         _burner.burning();
                     }else{
-                         MasterizzaMsg errorTestMediaMsg = new MasterizzaMsg();
+                         MasterizzaMsg errorTestMediaMsg = new MasterizzaMsg( this );
 						 errorTestMediaMsg.senderTag = senderTag;
                         errorTestMediaMsg.fase = Fase.CopiaCompletata;
                         errorTestMediaMsg.esito = Esito.Errore;
@@ -156,7 +156,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
             using (LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext)
             {
                 System.Diagnostics.Trace.WriteLine("INIZIO COPIA SU CARTELLA");
-                MasterizzaMsg inizioCopiaMsg = new MasterizzaMsg();
+                MasterizzaMsg inizioCopiaMsg = new MasterizzaMsg( this );
 				inizioCopiaMsg.senderTag = senderTag;
 				inizioCopiaMsg.fase = Fase.InizioCopia;
                 inizioCopiaMsg.progress = 0;
@@ -178,21 +178,21 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                         File.SetAttributes(nomeFileDest, File.GetAttributes(nomeFileDest) & ~(FileAttributes.Archive | FileAttributes.ReadOnly));
 
 						if( notificareProgressione ) {
-							MasterizzaMsg statoCopiaMsg = new MasterizzaMsg();
+							MasterizzaMsg statoCopiaMsg = new MasterizzaMsg( this );
 							statoCopiaMsg.senderTag = senderTag;
 							statoCopiaMsg.esito = Esito.Ok;
 							statoCopiaMsg.fotoAggiunta = 1;
 							statoCopiaMsg.totFotoAggiunte = ++totFotoCopiate;
 							statoCopiaMsg.totFotoNonAggiunte = totFotoNonCopiate;
 							statoCopiaMsg.progress = ((totFotoCopiate + totFotoNonCopiate) * 100) / _fotografie.Count;
-							statoCopiaMsg.result = "Il File " + fot.nomeFile + " è stato copiato sulla chiavetta con successo";
+							statoCopiaMsg.result = "Il File " + fot.nomeFile + " è statoScarica copiato sulla chiavetta con successo";
 							pubblicaMessaggio( statoCopiaMsg );
-							//System.Diagnostics.Trace.WriteLine("Il File " + fot.nomeFile + " è stato copiato sulla chiavetta con successo");
+							//System.Diagnostics.Trace.WriteLine("Il File " + fot.nomeFile + " è statoScarica copiato sulla chiavetta con successo");
 						}
                     }
                     catch (IOException ee)
                     {
-                        MasterizzaMsg statoCopiaErroreMsg = new MasterizzaMsg();
+                        MasterizzaMsg statoCopiaErroreMsg = new MasterizzaMsg( this );
 						statoCopiaErroreMsg.senderTag = senderTag;
                         statoCopiaErroreMsg.esito = Esito.Errore;
                         errori = true;
@@ -200,13 +200,13 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                         statoCopiaErroreMsg.totFotoAggiunte = totFotoCopiate;
                         statoCopiaErroreMsg.totFotoNonAggiunte = ++totFotoNonCopiate;
                         statoCopiaErroreMsg.progress = ((totFotoCopiate + totFotoNonCopiate) * 100) / _fotografie.Count;
-                        statoCopiaErroreMsg.result = "Il file " + fot.nomeFile + " non è stato copiato sulla chiavetta: " + nomeFileDest;
-                        _giornale.Error("Il file " + @configurazione.getCartellaRepositoryFoto() + Path.DirectorySeparatorChar + fot.nomeFile + " non è stato copiato il file sulla chiavetta " + nomeFileDest, ee);
+                        statoCopiaErroreMsg.result = "Il file " + fot.nomeFile + " non è statoScarica copiato sulla chiavetta: " + nomeFileDest;
+                        _giornale.Error("Il file " + @configurazione.getCartellaRepositoryFoto() + Path.DirectorySeparatorChar + fot.nomeFile + " non è statoScarica copiato il file sulla chiavetta " + nomeFileDest, ee);
                         pubblicaMessaggio(statoCopiaErroreMsg);
-                        //System.Diagnostics.Trace.WriteLine("Il file " + fot.nomeFile + " non è stato copiato sulla chiavetta: " + nomeFileDest);
+                        //System.Diagnostics.Trace.WriteLine("Il file " + fot.nomeFile + " non è statoScarica copiato sulla chiavetta: " + nomeFileDest);
                     }
                 }
-                MasterizzaMsg copiaCompletataMsg = new MasterizzaMsg();
+                MasterizzaMsg copiaCompletataMsg = new MasterizzaMsg( this );
 				copiaCompletataMsg.senderTag = senderTag;
 				copiaCompletataMsg.fase = Fase.CopiaCompletata;
 				copiaCompletataMsg.esito = errori ? Esito.Errore : Esito.Ok;
@@ -233,7 +233,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
             using (LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext)
             {
                 System.Diagnostics.Trace.WriteLine("INIZIO COPIA SU CARTELLA");
-                MasterizzaMsg inizioCopiaMsg = new MasterizzaMsg();
+                MasterizzaMsg inizioCopiaMsg = new MasterizzaMsg( this );
                 inizioCopiaMsg.fase = Fase.InizioCopia;
                 inizioCopiaMsg.progress = 0;
                 inizioCopiaMsg.result = "Inizio Copia Su Chiavetta";
@@ -271,8 +271,8 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                         //statoCopiaErroreMsg.riscontratiErrori = true;
                         erroriCopia = true;
                         //statoCopiaErroreMsg.totFotoNonAggiunte = ++countFotoNonAggiunte;
-                        //statoCopiaErroreMsg.result = "Il file " + @configurazione.getCartellaRepositoryFoto() + Path.DirectorySeparatorChar + fot.nomeFile + " non è stato copiato il file sulla chiavetta " + nomeFileDest;
-                        //_giornale.Error("Il file " + @configurazione.getCartellaRepositoryFoto() + Path.DirectorySeparatorChar + fot.nomeFile + " non è stato copiato il file sulla chiavetta " + nomeFileDest, ee);
+                        //statoCopiaErroreMsg.result = "Il file " + @configurazione.getCartellaRepositoryFoto() + Path.DirectorySeparatorChar + fot.nomeFile + " non è statoScarica copiato il file sulla chiavetta " + nomeFileDest;
+                        //_giornale.Error("Il file " + @configurazione.getCartellaRepositoryFoto() + Path.DirectorySeparatorChar + fot.nomeFile + " non è statoScarica copiato il file sulla chiavetta " + nomeFileDest, ee);
                         backgroundWorkerCopia.ReportProgress(++totFotoNonCopiate / _fotografie.Count * 100);
                     }
                 }
@@ -287,18 +287,18 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
         /// <param name="e"></param>
         private void backgroundWorkerCopia_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            MasterizzaMsg statoCopiaMsg = new MasterizzaMsg();
+            MasterizzaMsg statoCopiaMsg = new MasterizzaMsg( this );
             if (erroriCopia)
             {
                 statoCopiaMsg.esito = Esito.Errore;           
                 statoCopiaMsg.fotoAggiunta = 0;
-                statoCopiaMsg.result = "Il File " + fotCopia.nomeFile + " non è stato copiato sulla chiavetta";
+                statoCopiaMsg.result = "Il File " + fotCopia.nomeFile + " non è statoScarica copiato sulla chiavetta";
             }
             else
             {
                 statoCopiaMsg.esito = Esito.Ok;
                 statoCopiaMsg.fotoAggiunta = 1;
-                statoCopiaMsg.result = "Il File " + fotCopia.nomeFile + " è stato copiato sulla chiavetta con successo";
+                statoCopiaMsg.result = "Il File " + fotCopia.nomeFile + " è statoScarica copiato sulla chiavetta con successo";
             }
             statoCopiaMsg.totFotoAggiunte = this.totFotoNonCopiate;
             statoCopiaMsg.totFotoNonAggiunte = this.totFotoCopiate;
@@ -313,7 +313,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
         /// <param name="e"></param>
         private void backgroundWorkerCopia_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            MasterizzaMsg statoCopiaCompletatoMsg = new MasterizzaMsg();
+            MasterizzaMsg statoCopiaCompletatoMsg = new MasterizzaMsg( this );
             statoCopiaCompletatoMsg.esito = erroriCopia ? Esito.Errore : Esito.Ok;
 			statoCopiaCompletatoMsg.fase = Fase.CopiaCompletata;
             statoCopiaCompletatoMsg.totFotoNonAggiunte = totFotoNonCopiate;
@@ -376,7 +376,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 		#region NotificaMessaggiBurner
 		private void inviaMessaggioStatoMasterizzazione(object sender, BurnerMsg burnerMsg)
         {
-            MasterizzaMsg masterizzaMsg = new MasterizzaMsg();
+            MasterizzaMsg masterizzaMsg = new MasterizzaMsg( this );
             masterizzaMsg.totFotoAggiunte = burnerMsg.totaleFileAggiunti;
             masterizzaMsg.totFotoNonAggiunte = 0;
             masterizzaMsg.result = burnerMsg.statusMessage;

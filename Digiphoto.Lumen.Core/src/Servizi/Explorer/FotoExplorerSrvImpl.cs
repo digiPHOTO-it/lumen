@@ -112,7 +112,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			}
 
 			// Lancio un messaggio che dice che è stata portata a termine una nuova ricerca
-			LumenApplication.Instance.bus.Publish( new RicercaModificataMessaggio() );
+			LumenApplication.Instance.bus.Publish( new RicercaModificataMessaggio( this ) );
 		}
 
 		public override void Dispose() {

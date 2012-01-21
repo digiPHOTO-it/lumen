@@ -42,8 +42,9 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			}
 		}
 
-		private bool _morto = false;
 		private ParamScarica _paramScarica;
+
+		
 
 		List<Fotografo> _fotografiAttivi;
 		public IEnumerable<Fotografo> fotografiAttivi {
@@ -59,6 +60,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 
 		public ScaricatoreFotoSrvImpl() {
+			statoScarica = StatoScarica.Attesa;
 		}
 
 		~ScaricatoreFotoSrvImpl() {
@@ -85,6 +87,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			_copiaImmaginiWorker = new CopiaImmaginiWorker( paramScarica, elaboraFotoAcquisite );
 			_copiaImmaginiWorker.Start();
+			statoScarica = StatoScarica.Scaricamento;
 		}
 
 
@@ -108,6 +111,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			// -- inizio elaborazione 
 
 			ElaboratoreFotoAcquisite elab = new ElaboratoreFotoAcquisite( esitoScarico.fotoDaLavorare, _paramScarica );
+			statoScarica = StatoScarica.Provinatura;
 			elab.elabora();
 
 			_giornale.Debug( "Elaborazione terminata. Inserite " + elab.conta + " foto nel database" );
@@ -117,18 +121,15 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			scaricoFotoMsg.descrizione = "Provinatura foto terminata";
 			pubblicaMessaggio( scaricoFotoMsg );
 
-
 			// Chiudo il worker che ha finito il suo lavoro
 			//_copiaImmaginiWorker.Stop();
+
+			statoScarica = StatoScarica.Attesa;
 		}
 
 
 
 		private void seNonPossoScaricareSpaccati() {
-
-			// Voglio evitare doppie esecuzioni. Si scarica e poi si distrugge
-			if( _morto )
-				throw new InvalidOperationException( "Il metodo scarica si può chiamare solo una volta" );
 
 			if( isRunning == false )
 				throw new InvalidOperationException( "Il servizio è fermo. Impossibile scaricare le foto adesso" );
@@ -136,9 +137,12 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			if( !Directory.Exists( _paramScarica.cartellaSorgente ) )
 				throw new FileNotFoundException( "cartella da scaricare inesistente:\n" + _paramScarica.cartellaSorgente );
 
+			// Se devo spostare le foto, allora testo che la cartella sia scrivibile
+			if( _paramScarica.eliminaFilesSorgenti && !PathUtil.isCartellaScrivibile( _paramScarica.cartellaSorgente ) )
+				throw new InvalidOperationException( "La cartella indicata non è scrivibile. Impossibile spostare i files" );
+
 			if( _paramScarica.flashCardConfig.idFotografo == null )
 				throw new ArgumentException( "fotografo non indicato" );
-
 		}
 
 
@@ -228,11 +232,25 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			}
 		}
 
+		/// <summary>
+		/// StatoRun di questo servizio. Vedere apposita enumerazione
+		/// </summary>
+		private StatoScarica _statoScarica;
+		public new StatoScarica statoScarica {
+			get {
+				return _statoScarica;
+			}
+			private set {
+				if( value != _statoScarica ) {
+					_statoScarica = value;
 
-
-
-		public void addNuovoFotografo( string cognomeNome ) {
-			throw new NotImplementedException();
+					// Notifico tutti
+					CambioStatoMsg msg = new CambioStatoMsg( this );
+					msg.nuovoStato = (int) _statoScarica;
+					msg.descrizione = this.GetType().Name + ": nuovo statoScarica -> " + _statoScarica.ToString();
+					pubblicaMessaggio( msg );
+				}
+			}
 		}
 	}
 
