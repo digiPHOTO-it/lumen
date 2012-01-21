@@ -175,10 +175,15 @@ namespace Digiphoto.Lumen.Config  {
 
 		public static ModoVendita modoVendita {
 			get {
-				return (ModoVendita)Properties.Settings.Default.modoVendita;
+				return (ModoVendita) Properties.Settings.Default.modoVendita;
 			}
 		}
 
+		public static bool eliminaFileSorgenti {
+			get {
+				return (bool)Properties.Settings.Default.eliminaFileSorgenti;
+			}
+		}
 
 	}
 }

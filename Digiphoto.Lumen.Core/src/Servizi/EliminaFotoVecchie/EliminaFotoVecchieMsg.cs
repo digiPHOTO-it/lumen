@@ -15,6 +15,9 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
 
     class EliminaFotoVecchieMsg : Messaggio
     {
+		public EliminaFotoVecchieMsg( object sender ) : base( sender ) {
+		}
+
         public Fotografo fotografo { get; set; }
 
         public string cartellaSorgente { get; set; }

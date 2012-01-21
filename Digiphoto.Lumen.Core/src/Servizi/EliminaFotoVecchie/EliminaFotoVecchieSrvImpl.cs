@@ -77,7 +77,7 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
             String fotografoID = PathUtil.fotografoIDFromPath(pathCartella);
             DateTime dataRiferimento = Convert.ToDateTime(PathUtil.giornoFromPath(pathCartella)).Date;
 
-            EliminaFotoVecchieMsg eliminaFotoVecchieMsg = new EliminaFotoVecchieMsg();
+            EliminaFotoVecchieMsg eliminaFotoVecchieMsg = new EliminaFotoVecchieMsg( this );
 
             foreach (string directoryPath in Directory.GetFiles(pathCartella))
             {			
@@ -112,7 +112,7 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
         /// </summary>
         public void eliminaAlbumNonReferenziati()
         {
-            EliminaFotoVecchieMsg eliminaFotoVecchieMsg = new EliminaFotoVecchieMsg();
+            EliminaFotoVecchieMsg eliminaFotoVecchieMsg = new EliminaFotoVecchieMsg( this );
             using (new UnitOfWorkScope())
             {
                 LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;

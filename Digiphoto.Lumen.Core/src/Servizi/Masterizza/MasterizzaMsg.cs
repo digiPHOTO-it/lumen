@@ -15,6 +15,9 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 
     public class MasterizzaMsg : Messaggio
     {
+		public MasterizzaMsg( object sender ) : base( sender ) {
+		}
+
         public Fase fase { get; set; }
         public int fotoAggiunta { get; set; }
         public int totFotoAggiunte { get; set; }

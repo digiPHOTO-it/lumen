@@ -6,7 +6,7 @@ namespace Digiphoto.Lumen.Servizi.VolumeCambiato {
 
 	public class VolumeCambiatoMessaggio : Messaggio {
 		
-		public VolumeCambiatoMessaggio() {
+		public VolumeCambiatoMessaggio( object sender ) : base( sender ) {
 		}
 
 		public string nomeVolume { get; set; }

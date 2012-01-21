@@ -7,6 +7,7 @@ using System.Drawing;
 using log4net;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Applicazione;
+using System.Security.AccessControl;
 
 namespace Digiphoto.Lumen.Util {
 
@@ -105,5 +106,31 @@ namespace Digiphoto.Lumen.Util {
             return giorno;
         }
 
+		/// <summary>
+		/// Mi dice se posso scrivere nella cartella indicata
+		/// </summary>
+		/// <param name="directoryPath"></param>
+		/// <returns>true se posso scrivere.</returns>
+		public static bool isCartellaScrivibile( string directoryPath ) {
+
+			if( Directory.Exists( directoryPath ) == false )
+				throw new ArgumentException( "cartella " + directoryPath + " inesistente" );
+
+           bool isWriteAccess = false;
+
+			try {
+              AuthorizationRuleCollection collection = Directory.GetAccessControl(directoryPath).GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount));
+              foreach (FileSystemAccessRule rule in collection) {
+                 if (rule.AccessControlType == AccessControlType.Allow) {
+                    isWriteAccess = true;
+                    break;
+                 }
+              }
+           } catch (Exception ex) {
+              isWriteAccess = false;
+           }
+
+			return isWriteAccess;
+		}
 	}
 }

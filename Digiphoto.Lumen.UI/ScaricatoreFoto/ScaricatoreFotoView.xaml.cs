@@ -1,19 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows.Controls;
 using Digiphoto.Lumen.Servizi.Scaricatore;
 using Digiphoto.Lumen.Config;
-using Digiphoto.Lumen.Model;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -29,26 +16,9 @@ namespace Digiphoto.Lumen.UI {
 		public ScaricatoreFoto() {
 
 			InitializeComponent();
-
+			
 			_scaricatoreViewModel = (ScaricatoreFotoViewModel) this.DataContext;
-
-			paramScarica = new ParamScarica();
-			paramScarica.flashCardConfig = new FlashCardConfig();
-
 		}
-
-
-		public ParamScarica paramScarica {
-			get;
-			set;
-		}
-
-
-		private void button1_Click( object sender, RoutedEventArgs e ) {
-
-			Console.WriteLine( "stop" );
-		}
-
 
 	}
 }

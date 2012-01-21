@@ -9,6 +9,12 @@ using Digiphoto.Lumen.Model;
 
 namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
+	public enum StatoScarica {
+		Attesa=401,        // in attesa che qualcuno inserisca una memory-card da scaricare
+		Scaricamento=402,  // Sto scaricando le foto dalla memory-card all'HardDisk
+		Provinatura=403    // Sto creando i provini
+	}
+
 	public class ParamScarica {
 
 		public ParamScarica() {
@@ -48,8 +54,9 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		/** Questo metodo non ritorna nulla, perchè la copia avviene in asincrono */
 		void scarica( ParamScarica param );
 
+		StatoScarica statoScarica {
+			get;
+		}
 
-
-		void addNuovoFotografo( string cognomeNome );
 	}
 }

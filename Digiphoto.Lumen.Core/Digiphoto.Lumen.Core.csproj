@@ -89,6 +89,7 @@
     <Compile Include="src\Imaging\IProvinatore.cs" />
     <Compile Include="src\Imaging\Provinatore.cs" />
     <Compile Include="src\Comandi\Comando.cs" />
+    <Compile Include="src\Servizi\CambioStatoMsg.cs" />
     <Compile Include="src\Servizi\Carrelli\ParamCercaCarrelli.cs" />
     <Compile Include="src\Servizi\EntityRepository\EventiRepositorySrvImpl.cs" />
     <Compile Include="src\Servizi\EntityRepository\EntityRepositorySrvImpl.cs" />
@@ -117,7 +118,6 @@
     <Compile Include="src\Servizi\Scaricatore\NumeratoreFotogrammi.cs" />
     <Compile Include="src\Servizi\EliminaFotoVecchie\EliminaFotoVecchieSrvImpl.cs" />
     <Compile Include="src\Servizi\EliminaFotoVecchie\IEliminaFotoVecchieSrv.cs" />
-    <Compile Include="src\Servizi\CambioStatoMessaggio.cs" />
     <Compile Include="src\Servizi\EliminaFotoVecchie\EliminaFotoVecchieMsg.cs" />
     <Compile Include="src\Servizi\LumenEntities.cs" />
     <Compile Include="src\Servizi\Scaricatore\ElaboratoreFotoAcquisite.cs" />

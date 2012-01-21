@@ -10,13 +10,16 @@ namespace Digiphoto.Lumen.Eventi {
 		Errore
 	}
 
-	public class Messaggio : EventArgs {
 
-		public Messaggio() {
+
+	public class Messaggio {
+
+		public Messaggio( object sender ) {
+			this.sender = sender;
 			timeStamp = DateTime.Now;
 		}
 
-		public Messaggio( string descrizione ) : this() {
+		public Messaggio( object sender, string descrizione ) : this( sender ) {
 			this.descrizione = descrizione;
 		}
 
@@ -35,6 +38,11 @@ namespace Digiphoto.Lumen.Eventi {
 		public Esito? esito {
 			get;
 			set;
+		}
+
+		public object sender {
+			get;
+			private set;
 		}
 
 		/** Questa informazione è a disposizione del programma chiamante.

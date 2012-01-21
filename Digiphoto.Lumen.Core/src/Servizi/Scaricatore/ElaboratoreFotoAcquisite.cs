@@ -60,9 +60,13 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 				AiutanteFoto.creaProvinoFoto( fileInfo.FullName, foto );
 
+				AiutanteFoto.disposeImmagini( foto );
+
 				// Quando sono a posto con la foto, sollevo un evento per avvisare tutti
-				NuovaFotoMsg msg = new NuovaFotoMsg( foto );
-				LumenApplication.Instance.bus.Publish( msg );
+				// Siccome questa operazione è un pò onerosa, per il momento la disabilito.
+				// se servirà vedremo poi.
+				// NuovaFotoMsg msg = new NuovaFotoMsg( this, foto );
+				// LumenApplication.Instance.bus.Publish( msg );
 			}
 
 			_giornale.Info( "Terminato di lavorare " + _listaFiles.Count + " foto appena acqusite" );

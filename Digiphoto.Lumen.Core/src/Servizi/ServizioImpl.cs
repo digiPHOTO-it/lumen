@@ -15,7 +15,6 @@ namespace Digiphoto.Lumen.Servizi {
 	public abstract class ServizioImpl : IServizio {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof(ServizioImpl) );
-		private volatile bool _running = false;
 
 		public ServizioImpl() {
 			Console.Write( "STOP" );
@@ -23,48 +22,30 @@ namespace Digiphoto.Lumen.Servizi {
 
 		public bool isRunning {
 			get {
-				return _running;
+				return (this.statoRun == Servizi.StatoRun.Running);
 			}
 		}
 
 		public virtual void start() {
 
-			bool notificaCambio = (_running == false);
+			statoRun = Servizi.StatoRun.Running;
 
-			_giornale.Debug( "Sta per partire il servizio: " + this.GetType().Name );
-			_running = true;
+			_giornale.Info( "E' statoScarica avviato il servizio: " + this.GetType().Name );
 
-			_giornale.Info( "E' stato avviato il servizio: " + this.GetType().Name );
-
-			if( notificaCambio ) {
-				CambioStatoMessaggio msg = new CambioStatoMessaggio();
-				msg.descrizione = this.GetType().Name + " partito";
-				msg.nuovoStato = '1'; // Acceso 
-				LumenApplication.Instance.bus.Publish( msg );
-			}
 		}
 
 		public virtual void stop() {
 
-			bool notificaCambio = (_running == true);
+			statoRun = Servizi.StatoRun.Stopped;
 
-			_giornale.Debug( "Sto per fermare il servizio: " + this.GetType().Name );
-			_running = false;
-			_giornale.Info( "E' stato fermato il servizio: " + this.GetType().Name );
-
-			if( notificaCambio ) {
-				CambioStatoMessaggio msg = new CambioStatoMessaggio();
-				msg.descrizione = this.GetType().Name + " fermato";
-				msg.nuovoStato = '0'; // Acceso 
-				LumenApplication.Instance.bus.Publish( msg );
-			}
+			_giornale.Info( "E' statoScarica fermato il servizio: " + this.GetType().Name );
 		}
 
 		public virtual void Dispose() {
 			// Qui non devo fare lo stop,  altrimenti mi si accavallano i casini
 		}
 
-#region Metodi-IObserver
+		#region Messaggi
 		
 		public virtual void OnCompleted() {
 			// throw new NotImplementedException();
@@ -80,7 +61,7 @@ namespace Digiphoto.Lumen.Servizi {
 			_giornale.Debug( this.ToString() +  " observer.OnNext = " + messaggio.descrizione );
 		}
 
-#endregion
+		#endregion
 
 		protected Configurazione configurazione {
 			get {
@@ -88,9 +69,23 @@ namespace Digiphoto.Lumen.Servizi {
 			}
 		}
 
-		public Stato stato {
+
+		private StatoRun _statoRun = StatoRun.Stopped;
+		public StatoRun statoRun {
 			get {
-				return LumenApplication.Instance.stato;
+				return _statoRun;
+			}
+			set {
+				if( value != _statoRun ) {
+
+					_statoRun = value;
+
+					// Notifico tutti che questo servizio ha cambiato statoScarica
+					CambioStatoMsg msg = new CambioStatoMsg( this );
+					msg.nuovoStato = (int) _statoRun;
+					msg.descrizione = this.GetType().Name + " partito";
+					LumenApplication.Instance.bus.Publish( msg );
+				}
 			}
 		}
 
