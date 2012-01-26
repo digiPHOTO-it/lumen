@@ -22,7 +22,7 @@ namespace Digiphoto.Lumen.Imaging.Nativa.Correzioni {
 			new float[] {0,			0,		0,		0,	1}});
 
 
-		public override Immagine applica( Immagine immagineSorgente, Correzione correzione ) {
+		public override IImmagine applica( IImmagine immagineSorgente, Correzione correzione ) {
 
 			Image imageSorgente = ((ImmagineNet)immagineSorgente).image;
 

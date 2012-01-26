@@ -97,7 +97,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 
 		[TestMethod]
-		public void testScaricaFile() {
+		public void scaricaFileTest() {
 
 			Guid guid = Guid.NewGuid();
 

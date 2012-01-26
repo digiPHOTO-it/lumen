@@ -13,7 +13,7 @@
     </UserControl.DataContext>
 
     <UserControl.Resources>
-        <ResourceDictionary Source="ScaricatoreFotoDictionary.xaml" />
+        <ResourceDictionary Source="ScaricatoreFotoResources.xaml" />
     </UserControl.Resources>
 
 

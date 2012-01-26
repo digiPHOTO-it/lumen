@@ -185,5 +185,11 @@ namespace Digiphoto.Lumen.Config  {
 			}
 		}
 
+		public static int pixelLatoProvino {
+			get {
+				return Properties.Settings.Default.pixelLatoProvino;
+			}
+		}
+
 	}
 }

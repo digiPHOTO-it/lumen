@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Digiphoto.Lumen.Applicazione;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.Imaging {
 
@@ -10,8 +12,10 @@ namespace Digiphoto.Lumen.Imaging {
 		public Provinatore() {
 
 			// Determino per default la grandezza massima del lato più grande del provino
-			this.latoMax = Properties.Settings.Default.pixelLatoProvino;
+			this.latoMax = Configurazione.pixelLatoProvino;
 		}
+
+		#region Proprietà
 
 		/** E' la dimensione massima del lato del provino. Se non indicata, la ricavo dalla configurazione */
 		public int latoMax { get; set; }
@@ -23,11 +27,13 @@ namespace Digiphoto.Lumen.Imaging {
 		protected int calcH { get;	set; }
 
 		/** E' l'immagine da rimpicciolire */
-		public Immagine immagine {	get; protected set;	}
+		public IImmagine immagine {	get; protected set;	}
 
-		public abstract Immagine creaImmagine( string nomeFile );
+		#endregion
 
-		public abstract Immagine creaProvino( Immagine immagineGrande );
+		#region Metodi
+
+		public abstract IImmagine creaProvino( IImmagine immagineGrande );
 
 		protected void calcolaEsattaWeH() {
 
@@ -44,6 +50,7 @@ namespace Digiphoto.Lumen.Imaging {
 			}
 		}
 
+		#endregion
 	}
 }
 

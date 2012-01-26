@@ -28,32 +28,21 @@ namespace Digiphoto.Lumen.Imaging.Nativa {
 			this._image = image;
 		}
 
-		public Orientamento orientamento {
-			get { 
-				return( this.ww >= this.hh ? Orientamento.Orizzontale : Orientamento.Verticale );
-			}
-		}
 
-		public float rapporto {
-			get {
-				return (float)this.ww / (float)this.hh;
-			}
-		}
-
-		public int ww {
+		public override int ww {
 			get {
 				return _image.Width;
 			}
 		}
 
-		public int hh {
+		public override int hh {
 			get {
 				return _image.Height;
 			}
 		}
 
 
-		public void Dispose() {
+		public override void Dispose() {
 
 			if( image != null ) {
 				try {

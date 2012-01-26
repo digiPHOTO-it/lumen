@@ -19,7 +19,7 @@ namespace Digiphoto.Lumen.Comandi {
 		}
 
 		internal override Esito esegui( Fotografia foto ) {
-			foto.selezionata = _accendi;
+			foto.isSelezionata = _accendi;
 			return Esito.Ok;
 		}
 	}

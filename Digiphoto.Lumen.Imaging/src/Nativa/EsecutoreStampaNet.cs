@@ -33,7 +33,7 @@ namespace Digiphoto.Lumen.Imaging.Nativa {
 		/**
 		 * Ricavo l'immagine che andrà veramente in stampa
 		 */
-		private Immagine immagineDaStampare {
+		private IImmagine immagineDaStampare {
 			get {
 				// TODO: non è vero. Sistemare quando ci saranno le correzioni
 				return _lavoroDiStampa.fotografia.imgOrig;
@@ -117,7 +117,7 @@ namespace Digiphoto.Lumen.Imaging.Nativa {
 			try {
 
 				// Ricavo l'immagine da stampare
-				Immagine immagineDaStampare = _lavoroDiStampa.fotografia.imgOrig;
+				IImmagine immagineDaStampare = _lavoroDiStampa.fotografia.imgOrig;
 
 
 				// Ricavo tutta l'area stampabile

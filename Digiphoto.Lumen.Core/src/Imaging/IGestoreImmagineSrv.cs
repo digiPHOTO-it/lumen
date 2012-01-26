@@ -16,15 +16,15 @@ namespace Digiphoto.Lumen.Imaging {
 	public interface IGestoreImmagineSrv : IServizio {
 
 		/** Crea una immagine leggendola da disco */
-		Immagine load( string fileName );
+		IImmagine load( string fileName );
 
 		/** Crea una immagine piccola (thumbnail) riducendo quella grande passata per parametro */
-		Immagine creaProvino( Immagine immagineGrande );
+		IImmagine creaProvino( IImmagine immagineGrande );
 
 		/** Salva l'immagine indicata sul filesystem */
-		void save( Immagine immagine, string fileName );
+		void save( IImmagine immagine, string fileName );
 
 		/** Applico tutte i ritocchi grafici indicati nel preciso ordine */
-		Immagine applicaCorrezioni( Immagine immaginePartenza, ICollection<Correzione> correzioni );
+		IImmagine applicaCorrezioni( IImmagine immaginePartenza, ICollection<Correzione> correzioni );
 	}
 }

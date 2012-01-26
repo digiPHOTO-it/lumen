@@ -20,28 +20,28 @@ namespace Digiphoto.Lumen.Imaging.Nativa  {
 			_provinatoreNet = new ProvinatoreNet();
 		}
 
-		public Immagine load( string fileName ) {
+		public IImmagine load( string fileName ) {
 
 			// Image image = Image.FromFile( fileName );
 			Image image = new Bitmap( fileName );
 			return new ImmagineNet( image );
 		}
 
-		public Immagine creaProvino( Immagine immagineGrande ) {
+		public IImmagine creaProvino( IImmagine immagineGrande ) {
 			return _provinatoreNet.creaProvino( immagineGrande );
 		}
 
 		/** Salvo l'immagine con il nome del file indicato */
-		public void save( Immagine immagine, string fileName ) {
+		public void save( IImmagine immagine, string fileName ) {
 			((ImmagineNet)immagine).image.Save( fileName );
 		}
 
 
-		public Immagine applicaCorrezioni( Immagine immaginePartenza, ICollection<Correzione> correzioni ) {
+		public IImmagine applicaCorrezioni( IImmagine immaginePartenza, ICollection<Correzione> correzioni ) {
 
 			CorrettoreFactory factory = new CorrettoreFactory();
 
-			Immagine modificata = immaginePartenza;
+			IImmagine modificata = immaginePartenza;
 
 			foreach( Correzione correzione in correzioni ) {
 				Correttore correttore = factory.creaCorrettore( correzione.GetType() );

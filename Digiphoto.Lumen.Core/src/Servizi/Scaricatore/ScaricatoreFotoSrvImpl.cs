@@ -46,7 +46,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 		
 
-		List<Fotografo> _fotografiAttivi;
+//		List<Fotografo> _fotografiAttivi;
 		public IEnumerable<Fotografo> fotografiAttivi {
 			get {
 				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;

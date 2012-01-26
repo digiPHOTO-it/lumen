@@ -33,7 +33,7 @@ namespace Digiphoto.Lumen.Comandi {
 
 			IGestoreImmagineSrv gis = LumenApplication.Instance.getGestoreImmaginiSrv();
 
-			Immagine modificata = gis.applicaCorrezioni( foto.imgProvino, _correzioni );
+			IImmagine modificata = gis.applicaCorrezioni( foto.imgProvino, _correzioni );
 
 
  			// ATTENZIONE :   questo passaggio è importante.

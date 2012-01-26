@@ -22,8 +22,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( FotoExplorerSrvImpl ) );
 
 
-		/** Uso una lista bindabile, in questo modo la UI dovrebbe essere notificata delle modifiche che avvengono */
-		public IList<Fotografia> fotografie {
+		public List<Fotografia> fotografie {
 			get;
 			private set;
 		}
@@ -36,7 +35,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 		#endregion
 
 		public FotoExplorerSrvImpl() : base() {
-			fotografie = new BindingList<Fotografia>();
+			fotografie = new List<Fotografia>();
 		}
 
 		~FotoExplorerSrvImpl() {
@@ -56,7 +55,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 					// --
 					case Target.Corrente:
 						if( fotoCorrente == null )
-							throw new ArgumentException( "Nessuna foto corrente selezionata" );
+							throw new ArgumentException( "Nessuna foto corrente isSelezionata" );
 
 						comando.esegui( fotoCorrente );
 						break;
@@ -64,7 +63,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 					// --
 					case Target.Selezionate:
 						var querySelezionate = from ff in fotografie
-											   where ff.selezionata == true
+											   where ff.isSelezionata == true
 											   select ff;
 						foreach( Fotografia foto in querySelezionate )
 							comando.esegui( foto );
@@ -87,14 +86,23 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			fotografie = null;
 
 			using( IRicercatoreSrv ricercaSrv = LumenApplication.Instance.creaServizio<IRicercatoreSrv>() ) {
-				fotografie = new BindingList<Fotografia>( ricercaSrv.cerca( param ) );
+				fotografie = ricercaSrv.cerca( param );
 			}
 
 
 			if( fotografie != null ) {
+
+// TODO capire come mai
+// se idrato le immagini in un thread separato, la UI mi da problemi.
+// mi dice che i dati sono stati caricati in un thread diverso da quello corrente
+// non ho però capito come risolvere.
+				idrataImmaginiFoto();
+/*
 				// idrato le immagini in un thread separato
 				_threadIdrata = new Thread( idrataImmaginiFoto );
 				_threadIdrata.Start();
+ */
+
 			}
 
 

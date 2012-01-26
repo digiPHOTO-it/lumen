@@ -54,8 +54,8 @@
       <DependentUpon>PEMValidation1.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\Digiphoto\Lumen\Imaging\IImmagine.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\Fotografia.cs" />
-    <Compile Include="src\Digiphoto\Lumen\Imaging\Immagine.cs" />
   </ItemGroup>
   <ItemGroup>
     <EntityDeploy Include="LumenModel.edmx">

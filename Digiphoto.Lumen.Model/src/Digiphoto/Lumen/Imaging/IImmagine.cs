@@ -9,17 +9,27 @@ namespace Digiphoto.Lumen.Imaging {
 		Verticale, Orizzontale
 	}
 
-	public interface Immagine : IDisposable {
+	public interface IImmagine : IDisposable {
 
-		int ww { get;	}
-		int hh { get; }
-		Orientamento orientamento { get; }
+		int ww { 
+			get; 
+		}
+		
+		int hh { 
+			get; 
+		}
+		
+		Orientamento orientamento { 
+			get; 
+		}
 
 		/**
 		 *  E' dato dalla larghezza / altezza  
 		 *  rapp = ww / hh
 		 */
-		float rapporto { get; }
+		float rapporto { 
+			get; 
+		}
 	}
 
 }

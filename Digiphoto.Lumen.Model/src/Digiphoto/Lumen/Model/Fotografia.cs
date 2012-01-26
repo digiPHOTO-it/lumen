@@ -12,13 +12,35 @@ namespace Digiphoto.Lumen.Model {
 
 	public partial class Fotografia {
 
-		public Immagine imgOrig { get; set; }
+		public IImmagine imgOrig { get; set; }
 
-		public Immagine imgProvino { get; set; }
+		private IImmagine _imgProvino;
+		public IImmagine imgProvino {
+			get {
+				return _imgProvino;
+			}
+			set {
+				if( value != _imgProvino ) {
+					_imgProvino = value;
+					OnPropertyChanged( "imgProvino" );
+				}
+			}
+		}
 
-		public Immagine imgRisultante { get; set; }
+		public IImmagine imgRisultante { get; set; }
 
-		public bool selezionata { get; set; }
+		private bool _isSelezionata;
+		public bool isSelezionata {
+			get {
+				return _isSelezionata;
+			}
+			set {
+				if( value != _isSelezionata ) {
+					_isSelezionata = value;
+					OnPropertyChanged( "isSelezionata" );
+				}
+			}
+		}
 
 		public override string ToString() {
 			return String.Format( "Num.{0} Oper={1} del={2}", this.numero, this.fotografo.iniziali, dataOraAcquisizione.ToShortDateString() );

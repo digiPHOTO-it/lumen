@@ -14,7 +14,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 	public interface IFotoExplorerSrv : IServizio {
 
 		/** Queste sono tutte le foto estratte dall'archivio */
-		IList<Fotografia> fotografie { get; }
+		List<Fotografia> fotografie { get; }
 
 		/** Questa è la fotografia corrente */
 		Fotografia fotoCorrente { get; set; }
