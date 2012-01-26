@@ -82,7 +82,7 @@ namespace Digiphoto.Lumen.Imaging {
 		 * Calcolo la porzione della immagine sorgente che deve essere disegnata.
 		 * Calcolo anche l'area di destinazione (stampante) in cui renderizzare
 		 */
-		public Proiezione calcola( Immagine sorgente ) {
+		public Proiezione calcola( IImmagine sorgente ) {
 			return calcola( new Rectangle( 0,0, sorgente.ww, sorgente.hh ) );
 		}
 
@@ -272,7 +272,7 @@ namespace Digiphoto.Lumen.Imaging {
 			return isStessoOrientamento( s1.Width, s1.Height, s2.Width, s2.Height );
 		}
 
-		public static bool isStessoOrientamento( SizeF s1, Immagine s2 ) {
+		public static bool isStessoOrientamento( SizeF s1, IImmagine s2 ) {
 			return isStessoOrientamento( s1.Width, s1.Height, s2.ww, s2.hh );
 		}
 

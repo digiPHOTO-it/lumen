@@ -15,7 +15,7 @@
     -->
 
     <UserControl.Resources>
-        <ResourceDictionary Source="SelettoreCartellaDictionary.xaml" />        
+        <ResourceDictionary Source="SelettoreCartellaResources.xaml" />        
     </UserControl.Resources>
     
     <!-- -->

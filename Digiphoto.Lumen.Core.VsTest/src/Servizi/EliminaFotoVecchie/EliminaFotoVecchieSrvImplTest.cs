@@ -40,7 +40,7 @@ namespace Digiphoto.Lumen.Core.VsTest
 
             ScaricatoreFotoImplTest scaricatore = new ScaricatoreFotoImplTest();
             scaricatore.Init();
-            scaricatore.testScaricaFile();
+            scaricatore.scaricaFileTest();
 
 			giorni = Settings.Default.giorniDeleteFoto;
             System.Diagnostics.Trace.WriteLine("GIORNI " + giorni);

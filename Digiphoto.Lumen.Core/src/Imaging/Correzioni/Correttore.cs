@@ -8,7 +8,7 @@ namespace Digiphoto.Lumen.Imaging.Correzioni {
 
 	public abstract class Correttore {
 
-		public abstract Immagine applica( Immagine immagineSorgente, Correzione correzione );
+		public abstract IImmagine applica( IImmagine immagineSorgente, Correzione correzione );
 
 	}
 }

@@ -82,6 +82,7 @@
     <Compile Include="src\DatiDiEsempio\DataGen.cs" />
     <Compile Include="src\DatiDiEsempio\ParoleCasuali.cs" />
     <Compile Include="src\Eventi\Messaggio.cs" />
+    <Compile Include="src\Imaging\Immagine.cs" />
     <Compile Include="src\Imaging\ProiettoreArea.cs" />
     <Compile Include="src\Imaging\Correzioni\Correttore.cs" />
     <Compile Include="src\Imaging\IGestoreImmagineSrv.cs" />

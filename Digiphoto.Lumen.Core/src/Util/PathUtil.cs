@@ -126,7 +126,7 @@ namespace Digiphoto.Lumen.Util {
                     break;
                  }
               }
-           } catch (Exception ex) {
+           } catch (Exception) {
               isWriteAccess = false;
            }
 

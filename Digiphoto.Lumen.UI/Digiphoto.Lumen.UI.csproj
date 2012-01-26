@@ -74,12 +74,37 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\BoolInverterConverter.cs" />
+    <Compile Include="Converters\ImmagineToImageSourceConverter.cs" />
+    <Compile Include="Diapo\Diapositiva.xaml.cs">
+      <DependentUpon>Diapositiva.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Diapo\DiapositivaViewModel.cs" />
+    <Compile Include="FotoGallery\FotoGallery.xaml.cs">
+      <DependentUpon>FotoGallery.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FotoGallery\FotoGalleryViewModel.cs" />
     <Compile Include="Settings.cs" />
-    <Page Include="ScaricatoreFoto\ScaricatoreFotoDictionary.xaml">
+    <Page Include="Diapo\Diapositiva.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SelettoreCartella\SelettoreCartellaDictionary.xaml">
+    <Page Include="Diapo\DiapositivaDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FotoGallery\FotoGallery.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FotoGallery\FotoGalleryResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ScaricatoreFoto\ScaricatoreFotoResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SelettoreCartella\SelettoreCartellaResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -171,14 +196,22 @@
       <Project>{34477397-B3B8-4DD1-8418-D7E9EED4D006}</Project>
       <Name>Digiphoto.Lumen.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Digiphoto.Lumen.Imaging\Digiphoto.Lumen.Imaging.Nativa.csproj">
-      <Project>{C2E9E83A-2D6A-4CB5-B0B2-BC5931E58B94}</Project>
-      <Name>Digiphoto.Lumen.Imaging.Nativa</Name>
+    <ProjectReference Include="..\Digiphoto.Lumen.Imaging.Wic\Digiphoto.Lumen.Imaging.Wic.csproj">
+      <Project>{3EC29A25-FD9D-4593-BA20-60A9F7917E50}</Project>
+      <Name>Digiphoto.Lumen.Imaging.Wic</Name>
     </ProjectReference>
     <ProjectReference Include="..\Digiphoto.Lumen.Model\Digiphoto.Lumen.Model.csproj">
       <Project>{83D8301E-7999-4179-962C-1BFA507F5396}</Project>
       <Name>Digiphoto.Lumen.Model</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cani_e_bambini.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <SplashScreen Include="SplashScreen1.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

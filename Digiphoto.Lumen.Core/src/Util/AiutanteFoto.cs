@@ -60,7 +60,7 @@ namespace Digiphoto.Lumen.Util {
 				foto.imgOrig = gis.load( nomeFileFoto );
 
 			// Scale per ridimensionare
-			Immagine immaginePiccola = gis.creaProvino( foto.imgOrig );
+			IImmagine immaginePiccola = gis.creaProvino( foto.imgOrig );
 
 			// applico eventuali correzioni
 			if( foto.correzioni != null && foto.correzioni.Count > 0 )

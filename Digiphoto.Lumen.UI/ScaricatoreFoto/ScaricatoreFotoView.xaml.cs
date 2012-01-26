@@ -11,7 +11,6 @@ namespace Digiphoto.Lumen.UI {
 
 		ScaricatoreFotoViewModel _scaricatoreViewModel;
 
-		private ParamScarica _paramScarica;
 
 		public ScaricatoreFoto() {
 

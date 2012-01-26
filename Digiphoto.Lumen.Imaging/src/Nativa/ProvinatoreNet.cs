@@ -29,11 +29,11 @@ namespace Digiphoto.Lumen.Imaging.Nativa {
 		}
 
 
-		public override Immagine creaImmagine( string nomeFile ) {
-			return new ImmagineNet( Image.FromFile( nomeFile ) );
-		}
+		//public override IImmagine creaImmagine( string nomeFile ) {
+		//    return new ImmagineNet( Image.FromFile( nomeFile ) );
+		//}
 
-		public override Immagine creaProvino( Immagine immagineGrande ) {
+		public override IImmagine creaProvino( IImmagine immagineGrande ) {
 
 			this.immagine = immagineGrande;
 

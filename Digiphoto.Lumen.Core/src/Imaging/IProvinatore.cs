@@ -11,12 +11,12 @@ namespace Digiphoto.Lumen.Imaging {
 			set;
 		}
 
-		Immagine immagine {
+		IImmagine immagine {
 			get;
 		}
 
-		Immagine creaImmagine( string nomeFile );
-		Immagine creaProvino( Immagine immagineGrande );
+//		IImmagine creaImmagine( string nomeFile );
+		IImmagine creaProvino( IImmagine immagineGrande );
 	}
 
 }

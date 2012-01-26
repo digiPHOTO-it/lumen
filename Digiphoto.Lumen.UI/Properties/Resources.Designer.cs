@@ -59,5 +59,12 @@ namespace Digiphoto.Lumen.UI.Properties {
                 resourceCulture = value;
             }
         }
+        
+        internal static System.Drawing.Bitmap cani_e_bambini {
+            get {
+                object obj = ResourceManager.GetObject("cani_e_bambini", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }
