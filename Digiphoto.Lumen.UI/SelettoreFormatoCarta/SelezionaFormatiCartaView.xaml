@@ -1,0 +1,55 @@
+﻿<UserControl x:Class="Digiphoto.Lumen.UI.SelezionaFormatiCarta"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
+             mc:Ignorable="d" 
+             d:DesignHeight="381" d:DesignWidth="300">
+
+    <!-- istanzio ed associo il mio rispettivo ViewModel -->
+    <UserControl.DataContext>
+        <lum:SelettoreFormatoCartaViewModel />
+    </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <ResourceDictionary Source="SelettoreFormatoCartaDictionary.xaml" />
+    </UserControl.Resources>
+    
+    <StackPanel>
+
+        <GroupBox Header="lista Formati Carta">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ListBox Name="formatiCartaListBox" 
+                         ItemsSource="{Binding Path=formatiCarta}" 
+                         ItemTemplate="{StaticResource formatiCartaListBoxTemplate}"
+                         SelectedItem="{Binding Path=formatoCartaSelezionato}"
+                         />
+            </ScrollViewer>
+        </GroupBox>
+
+        <Button Name="refreshButton" Content="Rileggi" Command="{Binding Path=rileggereFormatiCartaCommand}" />
+
+        <Expander IsExpanded="False" Header="Crea nuovo formato carta" 
+                  Visibility="{Binding possoCreare, 
+                    ElementName=selFormatiCarta, 
+                    Converter={StaticResource BooleanToVisibilityConverter}}" >
+            <StackPanel>
+
+                <Label Content="Descrizione" />
+                <TextBox x:Name="newDescrizioneTxt" 
+                         Text="{Binding  Path=nuovoFormatoCarta.descrizione, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource newDescrizioneFormatoCartaTxtStyle}" />
+
+                <Label Content="Prezzo" />
+                <TextBox x:Name="newPrezzoTxt" 
+                         Text="{Binding Path=nuovoFormatoCarta.prezzo, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource newPrezzoFormatoCartaTxtStyle}"
+                         />
+
+                <Button Name="creareNuovoButton" Content="Aggiungi" Command="{Binding Path=creareNuovoCommand}" />
+            </StackPanel>
+        </Expander>
+
+    </StackPanel>
+</UserControl>
