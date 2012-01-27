@@ -82,6 +82,8 @@
     <Compile Include="src\Servizi\Masterizzare\BurnerSrvImplTest.cs" />
     <Compile Include="src\Servizi\Masterizzare\MasterizzaSrvImplTest.cs" />
     <Compile Include="src\Servizi\Ricerca\RicercatoreSrvImplTest.cs" />
+    <Compile Include="src\Servizi\Stampare\StampantiAbbinateSrvImplTest.cs" />
+    <Compile Include="src\Servizi\Stampare\StampantiInstallateSrvImplTest.cs" />
     <Compile Include="src\Util\QueriesVarieTest.cs" />
     <Compile Include="src\Servizi\EliminaFotoVecchie\EliminaFotoVecchieSrvImplTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

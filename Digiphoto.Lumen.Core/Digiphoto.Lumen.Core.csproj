@@ -71,6 +71,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="src\Config\ConfigurazioneCore.cs" />
     <Compile Include="src\Config\FlashCardConfig.cs" />
     <Compile Include="src\Config\ServiziCollection.cs" />
     <Compile Include="src\Config\ServizioElement.cs" />
@@ -127,10 +128,14 @@
     <Compile Include="src\Servizi\ServizioFactory.cs" />
     <Compile Include="src\Servizi\Stampare\ISpoolStampeSrv.cs" />
     <Compile Include="src\Servizi\Stampare\IEsecutoreStampa.cs" />
+    <Compile Include="src\Servizi\Stampare\IStampantiAbbinateSrv.cs" />
+    <Compile Include="src\Servizi\Stampare\IStampantiInstallateSrv.cs" />
     <Compile Include="src\Servizi\Stampare\LavoroDiStampa.cs" />
     <Compile Include="src\Servizi\Stampare\ParamStampaFoto.cs" />
     <Compile Include="src\Servizi\Stampare\SpoolStampaSrvImpl.cs" />
     <Compile Include="src\Servizi\Stampare\CodaDiStampe.cs" />
+    <Compile Include="src\Servizi\Stampare\StampantiAbbinateSrvImpl.cs" />
+    <Compile Include="src\Servizi\Stampare\StampantiInstallateSrvImpl.cs" />
     <Compile Include="src\Servizi\Stampare\StampatoMsg.cs" />
     <Compile Include="src\Servizi\Vendere\GestoreCarrello.cs" />
     <Compile Include="src\Servizi\Vendere\IVenditoreSrv.cs" />

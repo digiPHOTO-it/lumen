@@ -191,5 +191,13 @@ namespace Digiphoto.Lumen.Config  {
 			}
 		}
 
+        public static String stampantiAbbinate
+        {
+            get
+            {
+                return Properties.Settings.Default.stampantiAbbinate;
+            }
+        }
+
 	}
 }
