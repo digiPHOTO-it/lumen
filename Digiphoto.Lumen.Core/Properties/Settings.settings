@@ -11,9 +11,6 @@
     <Setting Name="giorniDeleteFoto" Type="System.Int16" Scope="User">
       <Value Profile="(Default)">8</Value>
     </Setting>
-    <Setting Name="dbCartella" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="cartellaFoto" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
@@ -37,6 +34,39 @@
     </Setting>
     <Setting Name="eliminaFileSorgenti" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="dbCartella" Type="System.String" Scope="User">
+      <Value Profile="(Default)">%PROGRAMDATA%\Lumen\Foto</Value>
+    </Setting>
+    <Setting Name="descrizionePuntoVendita" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="defaultMasterizzatore" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="defaultChiavetta" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="ereseFotoMemoryCard" Type="System.String" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="pswAdmin" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="stampigli" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="codicePuntoVendita" Type="System.String" Scope="User">
+      <Value Profile="(Default)">cod</Value>
+    </Setting>
+    <Setting Name="proiettaDiapo" Type="System.String" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="destMasterizza" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="stampantiAbbinate" Type="System.String" Scope="User">
+      <Value Profile="(Default)">A4;4;PDFCreator;PS1</Value>
     </Setting>
   </Settings>
 </SettingsFile>

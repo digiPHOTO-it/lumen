@@ -56,18 +56,6 @@ namespace Digiphoto.Lumen.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string dbCartella {
-            get {
-                return ((string)(this["dbCartella"]));
-            }
-            set {
-                this["dbCartella"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string cartellaFoto {
             get {
                 return ((string)(this["cartellaFoto"]));
@@ -152,6 +140,138 @@ namespace Digiphoto.Lumen.Properties {
             }
             set {
                 this["eliminaFileSorgenti"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("%PROGRAMDATA%\\Lumen\\Foto")]
+        public string dbCartella {
+            get {
+                return ((string)(this["dbCartella"]));
+            }
+            set {
+                this["dbCartella"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string descrizionePuntoVendita {
+            get {
+                return ((string)(this["descrizionePuntoVendita"]));
+            }
+            set {
+                this["descrizionePuntoVendita"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string defaultMasterizzatore {
+            get {
+                return ((string)(this["defaultMasterizzatore"]));
+            }
+            set {
+                this["defaultMasterizzatore"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string defaultChiavetta {
+            get {
+                return ((string)(this["defaultChiavetta"]));
+            }
+            set {
+                this["defaultChiavetta"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public string ereseFotoMemoryCard {
+            get {
+                return ((string)(this["ereseFotoMemoryCard"]));
+            }
+            set {
+                this["ereseFotoMemoryCard"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string pswAdmin {
+            get {
+                return ((string)(this["pswAdmin"]));
+            }
+            set {
+                this["pswAdmin"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string stampigli {
+            get {
+                return ((string)(this["stampigli"]));
+            }
+            set {
+                this["stampigli"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("cod")]
+        public string codicePuntoVendita {
+            get {
+                return ((string)(this["codicePuntoVendita"]));
+            }
+            set {
+                this["codicePuntoVendita"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public string proiettaDiapo {
+            get {
+                return ((string)(this["proiettaDiapo"]));
+            }
+            set {
+                this["proiettaDiapo"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public string destMasterizza {
+            get {
+                return ((string)(this["destMasterizza"]));
+            }
+            set {
+                this["destMasterizza"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("A4;4;PDFCreator;PS1")]
+        public string stampantiAbbinate {
+            get {
+                return ((string)(this["stampantiAbbinate"]));
+            }
+            set {
+                this["stampantiAbbinate"] = value;
             }
         }
     }

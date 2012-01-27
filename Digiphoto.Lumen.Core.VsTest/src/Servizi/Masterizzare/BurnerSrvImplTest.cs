@@ -11,7 +11,7 @@ using System.Threading;
 using Digiphoto.Lumen.Model;
 using System.IO;
 
-namespace Digiphoto.Lumen.Core.VsTest.Servizi.Masterizzare
+namespace Digiphoto.Lumen.Core.VsTest.Servizi.Stampare
 {
     [TestClass]
     public class BurnerSrvImplTest
