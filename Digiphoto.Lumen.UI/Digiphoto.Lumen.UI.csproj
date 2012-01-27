@@ -83,6 +83,8 @@
       <DependentUpon>FotoGallery.xaml</DependentUpon>
     </Compile>
     <Compile Include="FotoGallery\FotoGalleryViewModel.cs" />
+    <Compile Include="SelettoreFormatoCarta\SelettoreFormatoCartaViewModel.cs" />
+    <Compile Include="SelettoreFormatoCarta\SelezionaFormatiCartaView.xaml.cs" />
     <Compile Include="Settings.cs" />
     <Page Include="Diapo\Diapositiva.xaml">
       <SubType>Designer</SubType>
@@ -119,6 +121,14 @@
     <Page Include="SelettoreEvento\SelettoreEventoDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SelettoreFormatoCarta\SelettoreFormatoCartaDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SelettoreFormatoCarta\SelezionaFormatiCartaView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="SelettoreFotografo\SelettoreFotografoDictionary.xaml">
       <SubType>Designer</SubType>
@@ -213,6 +223,7 @@
   <ItemGroup>
     <SplashScreen Include="SplashScreen1.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
