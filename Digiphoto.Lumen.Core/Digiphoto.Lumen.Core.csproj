@@ -95,6 +95,7 @@
     <Compile Include="src\Servizi\Carrelli\ParamCercaCarrelli.cs" />
     <Compile Include="src\Servizi\EntityRepository\EventiRepositorySrvImpl.cs" />
     <Compile Include="src\Servizi\EntityRepository\EntityRepositorySrvImpl.cs" />
+    <Compile Include="src\Servizi\EntityRepository\FormatiCartaRepositorySrvImpl.cs" />
     <Compile Include="src\Servizi\EntityRepository\FotografiRepositorySrvImpl.cs" />
     <Compile Include="src\Servizi\Explorer\FotoExplorerSrvImpl.cs" />
     <Compile Include="src\Servizi\Explorer\IFotoExplorerSrv.cs" />
