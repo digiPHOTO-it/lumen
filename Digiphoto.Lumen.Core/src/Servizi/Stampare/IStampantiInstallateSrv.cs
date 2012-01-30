@@ -34,6 +34,17 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 			get;
 			set;
 		}
+
+        /// <summary>
+        /// Create a new StampanteInstallata object.
+        /// </summary>
+        /// <param name="NomeStampante">nomeStampante.</param>
+        public static StampanteInstallata CreateStampanteInstallata(global::System.String nomeStampante)
+        {
+            StampanteInstallata stampanteInstallata = new StampanteInstallata();
+            stampanteInstallata.NomeStampante = nomeStampante;
+            return stampanteInstallata;
+        }
     }
 
     public interface IStampantiInstallateSrv : IServizio 

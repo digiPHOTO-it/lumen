@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Model;
 using System.Data.Objects.DataClasses;
+using Digiphoto.Lumen.Servizi.Stampare;
 
 
 namespace Digiphoto.Lumen.Core.DatiDiEsempio {
@@ -30,7 +31,10 @@ namespace Digiphoto.Lumen.Core.DatiDiEsempio {
 				return generaUnoFotografo() as TEntity;
 			if( tipo.Equals( typeof( Digiphoto.Lumen.Model.Evento ) ) )
 				return generaUnoEvento() as TEntity;
-
+            if (tipo.Equals(typeof(Digiphoto.Lumen.Model.FormatoCarta)))
+                return generaUnoFormatoCarta() as TEntity;
+            if (tipo.Equals(typeof(StampanteInstallata)))
+                return generaUnoStampantiInstallate() as TEntity;
 			return null;
 		}
 
@@ -50,6 +54,23 @@ namespace Digiphoto.Lumen.Core.DatiDiEsempio {
 			return e;
 		}
 
+        private FormatoCarta generaUnoFormatoCarta()
+        {
+
+            ParoleCasuali pc = new ParoleCasuali();
+
+            FormatoCarta e = FormatoCarta.CreateFormatoCarta(Guid.Empty, pc.genera(15),5);
+            return e;
+        }
+
+        private StampanteInstallata generaUnoStampantiInstallate()
+        {
+
+            ParoleCasuali pc = new ParoleCasuali();
+
+            StampanteInstallata e = StampanteInstallata.CreateStampanteInstallata(pc.genera(15));
+            return e;
+        }
 
 	}
 }

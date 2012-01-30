@@ -1647,12 +1647,17 @@ namespace Digiphoto.Lumen.Model
     		warnings = new List<string>();
     		errors = new List<string>();
                     		
+            if ((this.descrizione == null || this.descrizione.Length < 2)) { errors.Add("descrizione\tError: La Descrizione deve essere almeno 2 caratteri"); isOK = false; }
+            //Required
+            if ((this.prezzo == null)) { errors.Add("prezzo\tError: Al formato carta deve essere associato un prezzo"); isOK = false; }
+            string value = "" + this.prezzo;
+            Decimal number;
+            if (!Decimal.TryParse(value, out number)) { errors.Add("prezzo\tError: Errore nel formato del prezzo "); isOK = false; }
     		return isOK;	
     	}
     	public string[] GetUIHint(string propertyName)
     	{
     		Dictionary<string, string[]> UIHints = new Dictionary<string, string[]>(); 
-    
                     		string[] uihintslist;
     		if (UIHints.TryGetValue(propertyName, out uihintslist))
     			return uihintslist;

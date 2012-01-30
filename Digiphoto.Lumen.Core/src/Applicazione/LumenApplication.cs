@@ -140,6 +140,8 @@ namespace Digiphoto.Lumen.Applicazione {
 			creaAggiungiAvviaServizio<IEntityRepositorySrv<Fotografo>>();
 
 			creaAggiungiAvviaServizio<IEntityRepositorySrv<Evento>>();
+
+            creaAggiungiAvviaServizio<IEntityRepositorySrv<FormatoCarta>>();
 		}
 
 		public T creaServizio<T>() where T : IServizio {
