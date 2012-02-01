@@ -1,0 +1,15 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <DataTemplate x:Key="stampantiInstallateListBoxTemplate">
+
+        <Border BorderBrush="Red" >
+            <StackPanel Orientation="Horizontal">
+                <Label Content="{Binding NomeStampante}" />
+                <Label Content="{Binding PortaStampante}" />
+            </StackPanel>
+        </Border>
+
+    </DataTemplate>
+
+</ResourceDictionary>
