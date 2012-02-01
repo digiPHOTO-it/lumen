@@ -68,7 +68,7 @@ namespace Digiphoto.Lumen.Core.DatiDiEsempio {
 
             ParoleCasuali pc = new ParoleCasuali();
 
-            StampanteInstallata e = StampanteInstallata.CreateStampanteInstallata(pc.genera(15));
+            StampanteInstallata e = StampanteInstallata.CreateStampanteInstallata(pc.genera(15),"LTP1");
             return e;
         }
 

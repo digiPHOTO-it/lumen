@@ -27,6 +27,14 @@
         <TabItem Header="Carrello" ToolTip="Vendere stampe e CD" >
         </TabItem>
 
+        <TabItem Header="Configurazione" ToolTip="Scarica foto da memory-card o da altra cartella" MinHeight="30" >
+        <!-- UserControl per scaricare le foto -->
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Left"> 
+                <lum:SelettoreStampanteInstallata/>
+                <lum:SelezionaFormatiCarta/>
+            </StackPanel>
+        </TabItem>
+
         <TabItem Header="Utilità" ToolTip="Funzionalità varie" >
             <Button Content="Uscita" Command="{Binding exitCommand}" />
         </TabItem>
