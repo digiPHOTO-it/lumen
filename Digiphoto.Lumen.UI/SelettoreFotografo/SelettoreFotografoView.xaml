@@ -14,7 +14,7 @@
     -->
     
     <UserControl.Resources>
-        <ResourceDictionary Source="SelettoreFotografoDictionary.xaml" />
+        <ResourceDictionary Source="SelettoreFotografoResources.xaml" />
     </UserControl.Resources>
     
     <StackPanel>

@@ -25,6 +25,8 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 		 */
 		public string nomeStampante;
 
+
+
 		/**
 		 *  Decide automaticamente l'orientamento giusto per stampare
 		 *  la foto in modo che riempia più possibile la carta.
@@ -36,7 +38,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 		 *  SI = riempie tutta l'area stampabile.
 		 *  NO = bordi bianchi
 		 */
-		public bool autoZoomToFit;
+		public bool autoZoomNoBordiBianchi;
 
 		public FormatoCarta formatoCarta;
 

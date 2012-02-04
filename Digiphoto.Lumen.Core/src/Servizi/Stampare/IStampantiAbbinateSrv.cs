@@ -30,6 +30,21 @@ namespace Digiphoto.Lumen.Servizi.Stampare
             get;
             set;
         }
+
+		public override string ToString() {
+			
+			StringBuilder sb = new StringBuilder();
+			if( this.FormatoCarta != null )
+				sb.Append( FormatoCarta.descrizione );
+
+			if( this.StampanteInstallata != null ) {
+				if( sb.Length > 0 )
+					sb.Append( " su " );
+				sb.Append( this.StampanteInstallata.ToString() );
+			}
+
+			return sb.ToString();
+		}
     }
 
     public interface IStampantiAbbinateSrv : IServizio 
@@ -38,7 +53,9 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 
         void removeAbbinamento(StampanteAbbinata stampanteAbbinata);
 
-        IList<StampanteAbbinata> listaStampantiAbbinate();
+		IList<StampanteAbbinata> stampantiAbbinate {
+			get;
+		}
 
         String listaStampantiAbbinateToString();
 

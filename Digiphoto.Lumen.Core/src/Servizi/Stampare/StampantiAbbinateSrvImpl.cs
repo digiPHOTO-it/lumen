@@ -4,31 +4,37 @@ using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Model;
 using System.Data.Objects;
+using Digiphoto.Lumen.Core.Database;
+using Digiphoto.Lumen.Applicazione;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.Servizi.Stampare
 {
     public class StampantiAbbinateSrvImpl : ServizioImpl, IStampantiAbbinateSrv
     {
-        private IList<StampanteAbbinata> listStampantiAbbinate = null;
+
 
         public StampantiAbbinateSrvImpl()
         {
-            this.listStampantiAbbinate = new List<StampanteAbbinata>();
+			// Carico la lista degli abbinamenti correnti
+			this.stampantiAbbinate = listaStampantiAbbinate( Configurazione.stampantiAbbinate );
         }
 
         public void addAbbinamento(StampanteAbbinata stampanteAbbinata)
         {
-            this.listStampantiAbbinate.Add(stampanteAbbinata);
+			this.stampantiAbbinate.Add( stampanteAbbinata );
         }
 
         public void removeAbbinamento(StampanteAbbinata stampanteAbbinata)
         {
-            this.listStampantiAbbinate.Remove(stampanteAbbinata);
+			this.stampantiAbbinate.Remove( stampanteAbbinata );
         }
 
         public IList<StampanteAbbinata> listaStampantiAbbinate(String stampantiAbbinate)
         {
-            IList<StampanteAbbinata> list = new List<StampanteAbbinata>();
+			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+			
+			IList<StampanteAbbinata> list = new List<StampanteAbbinata>();
             StampantiInstallateSrvImpl stampantiInstallateSrvImpl = new StampantiInstallateSrvImpl();
             String[] st = stampantiAbbinate.Split('#');
             for (int i = 0; i < st.Length; i++)
@@ -41,16 +47,15 @@ namespace Digiphoto.Lumen.Servizi.Stampare
                 //String abbinamento = formato + euro + stampante + porta;
 
                 FormatoCarta formatoCarta = null;
-                using (LumenEntities dbContext = new LumenEntities())
-                {
-                    //formatoCarta = dbContext.ExecuteStoreCommand("SELECT * FROM FormatiCarta WHERE descrizione = {0} AND prezzo = {1}", formato, prezzo);
+				
 
-                    //ObjectQuery<FormatoCarta> contactQuery = dbContext.FormatiCarta.Where("it.descrizione = @ln AND it.prezzo = @fn",
-                    //new ObjectParameter("ln", formato),
-                    //new ObjectParameter("fn", prezzo));
-                    //formatoCarta = contactQuery.First<FormatoCarta>();
-                    formatoCarta = dbContext.FormatiCarta.FirstOrDefault(f => f.descrizione.Equals(formato) && f.prezzo == prezzo);
-                }
+                //formatoCarta = dbContext.ExecuteStoreCommand("SELECT * FROM FormatiCarta WHERE descrizione = {0} AND prezzo = {1}", formato, prezzo);
+
+                //ObjectQuery<FormatoCarta> contactQuery = dbContext.FormatiCarta.Where("it.descrizione = @ln AND it.prezzo = @fn",
+                //new ObjectParameter("ln", formato),
+                //new ObjectParameter("fn", prezzo));
+                //formatoCarta = contactQuery.First<FormatoCarta>();
+				formatoCarta = dbContext.FormatiCarta.FirstOrDefault() ; // f => f.descrizione.Equals( formato ) && f.prezzo == prezzo );
                 StampanteInstallata stampanteInstallata = stampantiInstallateSrvImpl.stampanteInstallataByString(stampante);
                 list.Add(new StampanteAbbinata(stampanteInstallata, formatoCarta));
             }
@@ -59,20 +64,20 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 
         public void sostituisciAbbinamento(IList<StampanteAbbinata> listaStampantiAbbinate)
         {
-            this.listStampantiAbbinate = listaStampantiAbbinate;
+			this.stampantiAbbinate = listaStampantiAbbinate;
         }
 
 
-        public IList<StampanteAbbinata> listaStampantiAbbinate()
-        {
-            return this.listStampantiAbbinate;
+        public IList<StampanteAbbinata> stampantiAbbinate {
+			get;
+			private set;
         }
 
         public String listaStampantiAbbinateToString()
         {
             // A4;4;PDFCreator;PS1
             String stampantiAbbinateString = "";
-            foreach(StampanteAbbinata stampanteAbbinata in this.listStampantiAbbinate){
+			foreach( StampanteAbbinata stampanteAbbinata in this.stampantiAbbinate ) {
                 stampantiAbbinateString += stampanteAbbinata.FormatoCarta.descrizione + ";";
                 stampantiAbbinateString += stampanteAbbinata.FormatoCarta.prezzo + ";";
                 stampantiAbbinateString += stampanteAbbinata.StampanteInstallata.NomeStampante + ";";

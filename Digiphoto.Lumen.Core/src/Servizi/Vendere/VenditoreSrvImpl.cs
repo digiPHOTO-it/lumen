@@ -55,7 +55,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public VenditoreSrvImpl() : base() {
 
+			// istanzio il gestore del carrello e creo subito un carrello nuovo per iniziare a lavorare subito.
 			gestoreCarrello = new GestoreCarrello();
+			gestoreCarrello.creaNuovo();
 
 			modoVendita = Digiphoto.Lumen.Config.Configurazione.modoVendita;
 			
@@ -195,7 +197,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		private ParamStampaFoto creaParamStampaFoto( RiCaFotoStampata riCaFotoStampata ) {
 			ParamStampaFoto param = new ParamStampaFoto();
 			param.autoRuota = true;
-			param.autoZoomToFit = true;
+			param.autoZoomNoBordiBianchi = true;
 			param.formatoCarta = riCaFotoStampata.formatoCarta;
 			param.numCopie = riCaFotoStampata.quantita;
 			param.nomeStampante = "doPDF v7";    // TODO definire la stampa
@@ -362,6 +364,23 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			r.quantita = 1;
 			r.descrizione = "Masterizzato Dischetto";
 			return r;
+		}
+
+
+		/// <summary>
+		/// In base alla configurazione, ed altre variabili di stato/lavoro,
+		/// creo i parametri di stampa di default
+		/// </summary>
+		/// <returns></returns>
+		public ParamStampaFoto creaParamStampaFoto() {
+
+			ParamStampaFoto p = new ParamStampaFoto();
+			p.autoRuota = true;    // non ha senso stampare una foto orizzontale nella carta verticale
+			p.numCopie = 1;
+			p.autoZoomNoBordiBianchi = configurazione.autoZoomNoBordiBianchi;
+
+			// TODO la stampante dovrei prendere quella di default di windows.
+			return p;
 		}
 	}
 }

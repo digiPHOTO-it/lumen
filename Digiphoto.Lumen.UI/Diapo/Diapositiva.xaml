@@ -9,7 +9,7 @@
     
     
     <UserControl.Resources>
-        <ResourceDictionary Source="DiapositivaDictionary.xaml" />
+        <ResourceDictionary Source="DiapositivaResources.xaml" />
     </UserControl.Resources>
 
     <!-- istanzio ed associo il ViewModel -->

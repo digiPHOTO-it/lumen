@@ -14,10 +14,17 @@ using System.Windows.Data;
 using System.Windows.Input;
 using Digiphoto.Lumen.Servizi.Masterizzare;
 using Digiphoto.Lumen.Servizi.Vendere;
+using Digiphoto.Lumen.Servizi.Stampare;
 
 namespace Digiphoto.Lumen.UI {
 
 	public class FotoGalleryViewModel : ViewModelBase {
+
+
+		public IList<StampanteAbbinata> stampantiAbbinate {
+			get;
+			private set;
+		}
 
 
 		public FotoGalleryViewModel() {
@@ -42,7 +49,22 @@ namespace Digiphoto.Lumen.UI {
 
 				this.fotografieCW = CollectionViewSource.GetDefaultView( fotoExplorerSrv.fotografie );
 				deselezionareTutto();
+
+
+				//
+				caricaStampantiAbbinate();
 			} 
+		}
+
+		/// <summary>
+		/// Carico tutti i formati carta che sono abbinati alle stampanti installate
+		/// Per ognuno di questi elementi, dovrò visualizzare un pulsante per la stampa
+		/// </summary>
+		private void caricaStampantiAbbinate() {
+
+			using( IStampantiAbbinateSrv srv = LumenApplication.Instance.creaServizio<IStampantiAbbinateSrv>() ) {
+				this.stampantiAbbinate = srv.stampantiAbbinate;
+			}
 		}
 
 
@@ -78,6 +100,15 @@ namespace Digiphoto.Lumen.UI {
 				return contaSelez > 0;
 			}
 		}
+
+		
+		private IVenditoreSrv venditoreSrv {
+			get {
+				return (IVenditoreSrv) LumenApplication.Instance.getServizioAvviato<IVenditoreSrv>();
+			}
+		}
+
+
 		#endregion
 
 		#region Comandi
@@ -104,6 +135,18 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private RelayCommand _stampareCommand;
+		public ICommand stampareCommand {
+			get {
+				if( _stampareCommand == null ) {
+					_stampareCommand = new RelayCommand( param => stampare( param )
+						//  ,param => possoAggiungereAlMasterizzatore 
+																		   );
+				}
+				return _stampareCommand;
+			}
+		}
+
 		private RelayCommand _filtrareSelezionateCommand;
 		public ICommand filtrareSelezionateCommand {
 			get {
@@ -113,6 +156,11 @@ namespace Digiphoto.Lumen.UI {
 				return _filtrareSelezionateCommand;
 			}
 		}
+
+		#endregion
+
+
+		#region Metodi
 
 		private void filtrareSelezionate( bool attivareFiltro ) {
 
@@ -140,8 +188,7 @@ namespace Digiphoto.Lumen.UI {
 		public void aggiungereAlMasterizzatore() {
 
 			IEnumerable<Fotografia> listaSelez = creaListaFotoSelezionate();
-			IVenditoreSrv srv = LumenApplication.Instance.getServizioAvviato<IVenditoreSrv>();
-			srv.aggiungiMasterizzate( listaSelez );
+			venditoreSrv.aggiungiMasterizzate( listaSelez );
 		}
 
 		private IEnumerable<Fotografia> creaListaFotoSelezionate() {
@@ -158,11 +205,6 @@ namespace Digiphoto.Lumen.UI {
 		}
 			
 
-		#endregion
-
-
-		#region Metodi
-
 		/// <summary>
 		/// Spengo tutte le selezioni
 		/// </summary>
@@ -174,6 +216,29 @@ namespace Digiphoto.Lumen.UI {
 				f.isSelezionata = false;
 		}
 
+		/// <summary>
+		/// Devo mandare in stampa le foto selezionate
+		/// Nel parametro mi arriva l'oggetto StampanteAbbinata che mi da tutte le indicazioni
+		/// per la stampa: il formato carta e la stampante
+		/// </summary>
+		private void stampare( object objStampanteAbbinata ) {
+			
+			StampanteAbbinata stampanteAbbinata = (StampanteAbbinata)objStampanteAbbinata;
+
+			IEnumerable<Fotografia> listaSelez = creaListaFotoSelezionate();
+
+			venditoreSrv.aggiungiStampe( listaSelez, creaParamStampaFoto(stampanteAbbinata) );
+		}
+
+		private ParamStampaFoto creaParamStampaFoto( StampanteAbbinata stampanteAbbinata ) {
+
+			ParamStampaFoto p = venditoreSrv.creaParamStampaFoto();
+
+			p.nomeStampante = stampanteAbbinata.StampanteInstallata.NomeStampante;
+			p.formatoCarta = stampanteAbbinata.FormatoCarta;
+
+			return p;
+		}
 
 		#endregion
 

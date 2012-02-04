@@ -24,6 +24,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			get;
 		}
 
+		/** In base alla configurazione e ad altre variabili di lavoro, creo i parametri di stampa di default */
+		ParamStampaFoto creaParamStampaFoto();
+
 		/** Foto da vendere come stampe */
 		void aggiungiStampe( IEnumerable<Fotografia> fotografie, ParamStampaFoto param );
 

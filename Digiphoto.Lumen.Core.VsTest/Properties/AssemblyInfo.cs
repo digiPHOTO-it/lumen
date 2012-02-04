@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle( "Digiphoto.Lumen.Core.VsTest" )]
 [assembly: AssemblyDescription( "" )]
 [assembly: AssemblyConfiguration( "" )]
-[assembly: AssemblyCompany( "Microsoft" )]
+[assembly: AssemblyCompany( "digiPHOTO.it" )]
 [assembly: AssemblyProduct( "Digiphoto.Lumen.Core.VsTest" )]
-[assembly: AssemblyCopyright( "Copyright © Microsoft 2011" )]
+[assembly: AssemblyCopyright( "Copyright © digiPHOTO.it 2011" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
