@@ -95,11 +95,11 @@ namespace Digiphoto.Lumen.Core.VsTest
 				var fotos = dbContext.Fotografie.Top( QUANTE.ToString() );
 				foreach( Fotografia foto in fotos ) {
 					
-					param.autoZoomToFit = true;
+					param.autoZoomNoBordiBianchi = true;
 					_impl.accodaStampa( foto, param );
 
 					ParamStampaFoto p2 = (ParamStampaFoto)param.Clone();
-					p2.autoZoomToFit = false;
+					p2.autoZoomNoBordiBianchi = false;
 					_impl.accodaStampa( foto, p2 );
 				}
 

@@ -23,7 +23,7 @@
     <DockPanel>
         
         <ToolBarTray DockPanel.Dock="Left" Orientation="Vertical">
-            <ToolBar Band="1" BandIndex="1" >
+            <ToolBar Band="1" BandIndex="1" Name="stampaToolBar" >
                 <Button>
                     <Image Source="http://www.savinobarbera.com/images/print.gif" Width="48"/>
                 </Button>

@@ -199,5 +199,15 @@ namespace Digiphoto.Lumen.Config  {
             }
         }
 
+		/// <summary>
+		/// L'auto zoom, significa che la foto viene automaticamente ingrandita per
+		/// essere stampata senza bordi bianchi, e riempire quindi interamente l'area stampabile.
+		/// </summary>
+		public bool autoZoomNoBordiBianchi {
+			get {
+				return Properties.Settings.Default.autoZoomNoBordiBianchi;
+			}
+		}
+
 	}
 }

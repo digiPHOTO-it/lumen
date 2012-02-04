@@ -35,6 +35,15 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 			set;
 		}
 
+		public override string ToString() {
+			StringBuilder sb = new StringBuilder();
+			if( NomeStampante != null )
+				sb.Append( NomeStampante );
+			if( PortaStampante != null )
+				sb.Append( " [" + PortaStampante + "]" );
+			return sb.ToString();
+		}
+
         /// <summary>
         /// Create a new StampanteInstallata object.
         /// </summary>

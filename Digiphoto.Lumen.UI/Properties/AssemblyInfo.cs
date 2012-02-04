@@ -10,9 +10,9 @@ using System.Windows;
 [assembly: AssemblyTitle( "Digiphoto.Lumen.UI" )]
 [assembly: AssemblyDescription( "" )]
 [assembly: AssemblyConfiguration( "" )]
-[assembly: AssemblyCompany( "Microsoft" )]
+[assembly: AssemblyCompany( "digiPHOTO.it" )]
 [assembly: AssemblyProduct( "Digiphoto.Lumen.UI" )]
-[assembly: AssemblyCopyright( "Copyright © Microsoft 2012" )]
+[assembly: AssemblyCopyright( "Copyright © digiPHOTO.it 2012" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 

@@ -85,30 +85,6 @@ namespace Digiphoto.Lumen.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("%PROGRAMDATA%\\Lumen")]
-        public string dbCartella2 {
-            get {
-                return ((string)(this["dbCartella2"]));
-            }
-            set {
-                this["dbCartella2"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("%APPDATA%\\Lumen")]
-        public string dbCartella1 {
-            get {
-                return ((string)(this["dbCartella1"]));
-            }
-            set {
-                this["dbCartella1"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("300")]
         public int pixelLatoProvino {
             get {
@@ -145,7 +121,7 @@ namespace Digiphoto.Lumen.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("%PROGRAMDATA%\\Lumen\\Foto")]
+        [global::System.Configuration.DefaultSettingValueAttribute("%PROGRAMDATA%\\digiPHOTO\\Lumen")]
         public string dbCartella {
             get {
                 return ((string)(this["dbCartella"]));
@@ -265,7 +241,19 @@ namespace Digiphoto.Lumen.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("A4;4;PDFCreator;PS1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool autoZoomNoBordiBianchi {
+            get {
+                return ((bool)(this["autoZoomNoBordiBianchi"]));
+            }
+            set {
+                this["autoZoomNoBordiBianchi"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("A4;4;PDFCreator;PS1#6x8;5;doPDF v7;qq")]
         public string stampantiAbbinate {
             get {
                 return ((string)(this["stampantiAbbinate"]));

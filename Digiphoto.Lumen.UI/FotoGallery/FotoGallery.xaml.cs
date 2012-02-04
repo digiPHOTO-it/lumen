@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Digiphoto.Lumen.Servizi.Stampare;
 
 namespace Digiphoto.Lumen.UI {
 	/// <summary>
@@ -24,6 +25,22 @@ namespace Digiphoto.Lumen.UI {
 			InitializeComponent();
 
 			this._fotoGalleryViewModel = (FotoGalleryViewModel) this.DataContext;
+
+			creaPulsantiPerStampare();
+		}
+
+		private void creaPulsantiPerStampare() {
+
+			int ii = 0;
+			foreach( StampanteAbbinata stampanteAbbinata in _fotoGalleryViewModel.stampantiAbbinate ) {
+				Button button = new Button();
+				button.Command = _fotoGalleryViewModel.stampareCommand;
+				button.CommandParameter = stampanteAbbinata;  // memorizzo il formato carta e la stampante con cui produrre la stampa.
+				button.Content = "Prn" + Convert.ToString( ++ii );
+				button.ToolTip = stampanteAbbinata.ToString();
+				stampaToolBar.Items.Add( button );
+			}
+
 		}
 
 		#region ToggleButton per dimensione lato immagine

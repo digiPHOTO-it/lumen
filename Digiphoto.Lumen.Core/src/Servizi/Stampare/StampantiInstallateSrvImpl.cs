@@ -11,28 +11,54 @@ namespace Digiphoto.Lumen.Servizi.Stampare
     {
         private IList<StampanteInstallata> listStampantiInstallate = null;
 
-        public StampantiInstallateSrvImpl(){
-            listStampantiInstallate = new List<StampanteInstallata>();
-            List<ManagementObject> arrayStampantiInstallate = new List<ManagementObject>();
-            ManagementScope objScope = new ManagementScope(ManagementPath.DefaultPath); //For the local Access
-            objScope.Connect();
+        public StampantiInstallateSrvImpl() {
+			caricaStampanti();
+		}
 
-            SelectQuery selectQuery = new SelectQuery();
-            selectQuery.QueryString = "Select * from win32_Printer";
-            ManagementObjectSearcher MOS = new ManagementObjectSearcher(objScope, selectQuery);
-            ManagementObjectCollection MOC = MOS.Get();
-            foreach (ManagementObject mo in MOC)
-            {
-                try
-                {
-                    listStampantiInstallate.Add(new StampanteInstallata(mo["Name"].ToString(), " [" + mo["Location"].ToString().ToUpper() + "]"));
-                }
-                catch (NullReferenceException ex)
-                {
-                    listStampantiInstallate.Add(new StampanteInstallata(mo["Name"].ToString(), " [...]"));
-                }
-            }
-        }
+
+		private void caricaStampanti() {
+
+			listStampantiInstallate = new List<StampanteInstallata>();
+
+			// Use the ObjectQuery to get the list of configured printers
+			ObjectQuery oquery = new ObjectQuery( "SELECT * FROM Win32_Printer" );
+
+			ManagementObjectSearcher mosearcher = new ManagementObjectSearcher( oquery );
+
+			ManagementObjectCollection moc = mosearcher.Get();
+
+			foreach( ManagementObject mo in moc ) {
+
+				// Solo per debug
+				// debugManagementObject( mo );
+
+				string nomePorta = null;
+
+				string nomeStampante = (string) mo["Name"];
+				try {
+					nomePorta = (string) mo["PortName"];
+				} catch( Exception ) {
+				}
+
+				StampanteInstallata stp = StampanteInstallata.CreateStampanteInstallata( nomeStampante, nomePorta );
+                listStampantiInstallate.Add( stp );
+
+			}
+		}
+
+
+		/// <summary>
+		/// Solo per debug. MI serve per visualizzare i nomi delle proprietà dentro la mappa
+		/// </summary>
+		/// <param name="mo"></param>
+		private void debugManagementObject( ManagementObject mo ) {
+			PropertyDataCollection pdc = mo.Properties;
+			foreach( PropertyData pd in pdc ) {
+				string pn = pd.Name;
+				object dato = pd.Value;
+			}
+		}
+
 
         public StampanteInstallata stampanteInstallataByString(String nomeStampante)
         {
