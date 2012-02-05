@@ -69,6 +69,9 @@ namespace Digiphoto.Lumen.UI {
 			eventi.Clear();
 			foreach( Evento ev in lista )
 				eventi.Add( ev );
+
+			if( dialogProvider != null )
+				dialogProvider.ShowMessage( "Ricaricati " + eventi.Count + " elementi", "Successo" );
 		}
 
 		private void creareNuovoEvento() {
@@ -78,9 +81,15 @@ namespace Digiphoto.Lumen.UI {
 				
 			// Aggiungo alla collezione visuale (per non dover rifare la query)
 			eventi.Add( nuovoEvento );
-				
+
+			// Prima di azzerare l'oggetto, mi prendo il messaggio da visualizzare
+			string msg = "Creato nuovo evento: " + nuovoEvento.descrizione;
+	
 			// Svuoto per nuova creazione
 			istanziaNuovoEvento();
+
+			// Avviso l'utente
+			dialogProvider.ShowMessage( msg, "Successo" );
 		}
 
 		private void istanziaNuovoEvento() {

@@ -14,6 +14,12 @@ namespace Digiphoto.Lumen.UI.Mvvm
     /// </summary>
 	public abstract class ViewModelBase : INotifyPropertyChanged, IDisposable
     {
+
+		public IDialogProvider dialogProvider {
+			get;
+			set;
+		}
+
         #region Constructor
 
         protected ViewModelBase()

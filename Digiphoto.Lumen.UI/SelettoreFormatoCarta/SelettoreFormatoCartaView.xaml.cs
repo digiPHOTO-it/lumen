@@ -11,17 +11,24 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Digiphoto.Lumen.UI.Mvvm;
 
 namespace Digiphoto.Lumen.UI
 {
     /// <summary>
-    /// Interaction logic for SelezionaFormatiCarta.xaml
+	/// Interaction logic for SelettoreFormatoCarta.xaml
     /// </summary>
-    public partial class SelezionaFormatiCarta : UserControl
+    public partial class SelettoreFormatoCarta : UserControlBase
     {
-        public SelezionaFormatiCarta()
+        public SelettoreFormatoCarta()
         {
             InitializeComponent();
         }
+
+		private SelettoreFormatoCartaViewModel selettoreFormatoCartaViewModel {
+			get {
+				return (SelettoreFormatoCartaViewModel)base.viewModelBase;
+			}
+		}
     }
 }
