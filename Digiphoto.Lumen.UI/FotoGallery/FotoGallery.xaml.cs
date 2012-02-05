@@ -12,36 +12,27 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Digiphoto.Lumen.Servizi.Stampare;
+using Digiphoto.Lumen.UI.Mvvm;
 
 namespace Digiphoto.Lumen.UI {
 	/// <summary>
 	/// Interaction logic for FotoGallery.xaml
 	/// </summary>
-	public partial class FotoGallery : UserControl {
-
-		private FotoGalleryViewModel _fotoGalleryViewModel;
+	public partial class FotoGallery : UserControlBase {
 
 		public FotoGallery() {
 			InitializeComponent();
 
-			this._fotoGalleryViewModel = (FotoGalleryViewModel) this.DataContext;
-
 			creaPulsantiPerStampare();
 		}
 
-		private void creaPulsantiPerStampare() {
-
-			int ii = 0;
-			foreach( StampanteAbbinata stampanteAbbinata in _fotoGalleryViewModel.stampantiAbbinate ) {
-				Button button = new Button();
-				button.Command = _fotoGalleryViewModel.stampareCommand;
-				button.CommandParameter = stampanteAbbinata;  // memorizzo il formato carta e la stampante con cui produrre la stampa.
-				button.Content = "Prn" + Convert.ToString( ++ii );
-				button.ToolTip = stampanteAbbinata.ToString();
-				stampaToolBar.Items.Add( button );
+		#region Proprietà
+		private FotoGalleryViewModel fotoGalleryViewModel {
+			get {
+				return (FotoGalleryViewModel)base.viewModelBase;
 			}
-
 		}
+		#endregion
 
 		#region ToggleButton per dimensione lato immagine
 		private void viewGrandeRadioButton_Checked( object sender, RoutedEventArgs e ) {
@@ -57,12 +48,26 @@ namespace Digiphoto.Lumen.UI {
 		}
 		#endregion
 
+		#region Metodi
+
+		private void creaPulsantiPerStampare() {
+
+			int ii = 0;
+			foreach( StampanteAbbinata stampanteAbbinata in fotoGalleryViewModel.stampantiAbbinate ) {
+				Button button = new Button();
+				button.Command = fotoGalleryViewModel.stampareCommand;
+				button.CommandParameter = stampanteAbbinata;  // memorizzo il formato carta e la stampante con cui produrre la stampa.
+				button.Content = "Prn" + Convert.ToString( ++ii );
+				button.ToolTip = stampanteAbbinata.ToString();
+				stampaToolBar.Items.Add( button );
+			}
+		}
+
 		/// modifico il valore dello slider
 		private void cambiaDimensioneImmagini( double newWidth ) {
 			dimensioneIconeSlider.Value = newWidth;
 		}
 
-
-
+		#endregion
 	}
 }

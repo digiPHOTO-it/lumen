@@ -9,7 +9,6 @@ using System.Windows.Input;
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Core;
-using System.Windows.Forms;
 using Digiphoto.Lumen.Servizi;
 
 namespace Digiphoto.Lumen.UI {
@@ -166,7 +165,7 @@ namespace Digiphoto.Lumen.UI {
 
 			paramScarica.faseDelGiorno = faseDelGiorno;
 
-			System.Windows.Forms.MessageBox.Show( paramScarica.ToString(), "DEVO SCARICARE" );
+			System.Windows.MessageBox.Show( paramScarica.ToString(), "DEVO SCARICARE" );
 
 			scaricatoreFotoSrv.scarica( paramScarica );
 		}

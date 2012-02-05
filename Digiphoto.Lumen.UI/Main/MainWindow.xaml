@@ -31,7 +31,7 @@
         <!-- UserControl per scaricare le foto -->
             <StackPanel Orientation="Vertical" HorizontalAlignment="Left"> 
                 <lum:SelettoreStampanteInstallata/>
-                <lum:SelezionaFormatiCarta/>
+                <lum:SelettoreFormatoCarta/>
             </StackPanel>
         </TabItem>
 

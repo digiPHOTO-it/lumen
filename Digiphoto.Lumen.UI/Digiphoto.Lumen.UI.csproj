@@ -85,8 +85,10 @@
       <DependentUpon>FotoGallery.xaml</DependentUpon>
     </Compile>
     <Compile Include="FotoGallery\FotoGalleryViewModel.cs" />
+    <Compile Include="Mvvm\IDialogProvider.cs" />
+    <Compile Include="Mvvm\UserControlBase.cs" />
     <Compile Include="SelettoreFormatoCarta\SelettoreFormatoCartaViewModel.cs" />
-    <Compile Include="SelettoreFormatoCarta\SelezionaFormatiCartaView.xaml.cs" />
+    <Compile Include="SelettoreFormatoCarta\SelettoreFormatoCartaView.xaml.cs" />
     <Compile Include="SelettoreStampantiInstallate\SelettoreStampantiInstallateViewModel.cs" />
     <Compile Include="SelettoreStampantiInstallate\SelettoreStampantiInstallateView.xaml.cs">
       <DependentUpon>SelettoreStampantiInstallateView.xaml</DependentUpon>
@@ -128,15 +130,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SelettoreEvento\SelettoreEventoDictionary.xaml">
+    <Page Include="SelettoreEvento\SelettoreEventoResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SelettoreFormatoCarta\SelettoreFormatoCartaDictionary.xaml">
+    <Page Include="SelettoreFormatoCarta\SelettoreFormatoCartaResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="SelettoreFormatoCarta\SelezionaFormatiCartaView.xaml">
+    <Page Include="SelettoreFormatoCarta\SelettoreFormatoCartaView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -1,25 +1,32 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using Digiphoto.Lumen.Model;
+using Digiphoto.Lumen.UI.Mvvm;
 
 namespace Digiphoto.Lumen.UI {
 
-	public partial class SelettoreFotografo : UserControl {
-
-		private SelettoreFotografoViewModel _sceltafotografoViewModel;
+	public partial class SelettoreFotografo : UserControlBase {
 
 		public SelettoreFotografo() {
 
 			InitializeComponent();
-
-			_sceltafotografoViewModel = (SelettoreFotografoViewModel) this.DataContext;
 		}
+
+		#region Proprietà
 
 		public Fotografo fotografoSelezionato {
 			get {
-				return _sceltafotografoViewModel.fotografoSelezionato;
+				return sceltafotografoViewModel.fotografoSelezionato;
 			}
 		}
+
+		private SelettoreFotografoViewModel sceltafotografoViewModel {
+			get {
+				return (SelettoreFotografoViewModel)base.viewModelBase;
+			}
+		}
+
+		#endregion
 
 		#region possoCreare Dependency Property
 		public static readonly DependencyProperty possoCreareProperty = DependencyProperty.Register( "possoCreare", typeof( bool ),	typeof( SelettoreFotografo ), new FrameworkPropertyMetadata( true,	FrameworkPropertyMetadataOptions.BindsTwoWayByDefault ) );

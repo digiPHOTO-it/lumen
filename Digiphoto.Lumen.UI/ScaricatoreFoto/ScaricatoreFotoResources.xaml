@@ -7,12 +7,13 @@
     <!-- 
         Questo template applica un SelettoreEvento ad una istanza della classe 
         SelettoreEventoViewModel visualizzata in questa finestra
-    -->
     <DataTemplate DataType="{x:Type lum:SelettoreEventoViewModel}">
         <lum:SelettoreEvento />
     </DataTemplate>
+    -->
 
-    
+
+
     <lumC:BoolInverterConverter x:Key="boolInverterConverter" />
 
     

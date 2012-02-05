@@ -97,6 +97,9 @@ namespace Digiphoto.Lumen.UI
             {
                 formatiCarta.Add(f);
             }
+
+			if( dialogProvider != null )
+				dialogProvider.ShowMessage( "Riletti " + formatiCarta.Count() + " formati carta", "Successo" );
 		}
 
 		private void creareNuovoFormatoCarta() {
@@ -109,7 +112,6 @@ namespace Digiphoto.Lumen.UI
 
 			// Svuoto per nuova creazione
 			istanziaNuovoFormatoCarta();
-
 		}
 
 		/// <summary>

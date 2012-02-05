@@ -12,25 +12,27 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Digiphoto.Lumen.Model;
+using Digiphoto.Lumen.UI.Mvvm;
 
 namespace Digiphoto.Lumen.UI {
 	/// <summary>
 	/// Interaction logic for SelettoreEvento.xaml
 	/// </summary>
-	public partial class SelettoreEvento : UserControl {
-
-		private SelettoreEventoViewModel _selettoreEventoViewModel;
-
+	public partial class SelettoreEvento : UserControlBase {
 
 		public SelettoreEvento() {
 			InitializeComponent();
-
-			_selettoreEventoViewModel = (SelettoreEventoViewModel) this.DataContext;
 		}
 
+		private SelettoreEventoViewModel selettoreEventoViewModel {
+			get {
+				return (SelettoreEventoViewModel)base.viewModelBase;
+			}
+		}
+	
 		public Evento eventoSelezionato {
 			get {
-				return _selettoreEventoViewModel.eventoSelezionato;
+				return selettoreEventoViewModel.eventoSelezionato;
 			}
 		}
 	}

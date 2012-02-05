@@ -15,6 +15,7 @@ using System.Windows.Input;
 using Digiphoto.Lumen.Servizi.Masterizzare;
 using Digiphoto.Lumen.Servizi.Vendere;
 using Digiphoto.Lumen.Servizi.Stampare;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -191,9 +192,11 @@ namespace Digiphoto.Lumen.UI {
 			venditoreSrv.aggiungiMasterizzate( listaSelez );
 		}
 
-		private IEnumerable<Fotografia> creaListaFotoSelezionate() {
+		private IList<Fotografia> creaListaFotoSelezionate() {
 
 			var fotos = fotografieCW.OfType<Fotografia>().Where( f => f.isSelezionata == true );
+
+			return new List<Fotografia>( fotos );
 
 /*
 			IList<Fotografia> fotosSelez = new List<Fotografia>();
@@ -201,7 +204,6 @@ namespace Digiphoto.Lumen.UI {
 				if( f.isSelezionata )
 					fotosSelez.Add( f );
  */
-			return fotos;
 		}
 			
 
@@ -225,17 +227,41 @@ namespace Digiphoto.Lumen.UI {
 			
 			StampanteAbbinata stampanteAbbinata = (StampanteAbbinata)objStampanteAbbinata;
 
-			IEnumerable<Fotografia> listaSelez = creaListaFotoSelezionate();
+			IList<Fotografia> listaSelez = creaListaFotoSelezionate();
 
-			venditoreSrv.aggiungiStampe( listaSelez, creaParamStampaFoto(stampanteAbbinata) );
+			// Se ho selezionato più di una foto, e lavoro in stampa diretta, allora chiedo conferma
+			bool procediPure = true;
+			int quante = listaSelez.Count;
+			if( quante > 1 && Configurazione.modoVendita == ModoVendita.StampaDiretta ) {
+				dialogProvider.ShowConfirmation( "Confermi la stampa di " + quante + " foto ?", "Richiesta conferma",
+				  (confermato) => {
+					  procediPure = confermato;
+				  } );
+			}
+
+			if( procediPure ) {
+				// Aggiungo al carrello oppure stampo direttamente
+				venditoreSrv.aggiungiStampe( listaSelez, creaParamStampaFoto( stampanteAbbinata ) );
+				
+				// Spengo tutto
+				deselezionareTutto();
+			}
+
 		}
-
+		
+		/// <summary>
+		/// Creo i parametri di stampa, mixando un pò di informazioni prese
+		/// dalla configurazione, dallo stato dell'applicazione, e dalla scelta dell'utente.
+		/// </summary>
+		/// <param name="stampanteAbbinata"></param>
+		/// <returns></returns>
 		private ParamStampaFoto creaParamStampaFoto( StampanteAbbinata stampanteAbbinata ) {
 
 			ParamStampaFoto p = venditoreSrv.creaParamStampaFoto();
 
 			p.nomeStampante = stampanteAbbinata.StampanteInstallata.NomeStampante;
 			p.formatoCarta = stampanteAbbinata.FormatoCarta;
+			// TODO per ora il nome della Porta a cui è collegata la stampante non lo uso. Non so cosa farci.
 
 			return p;
 		}

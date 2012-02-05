@@ -90,6 +90,9 @@ namespace Digiphoto.Lumen.UI {
 			fotografi.Clear();
 			foreach( Fotografo f in listaF )
 				fotografi.Add( f );
+
+			if( dialogProvider != null )
+				dialogProvider.ShowMessage( "Riletti " + fotografi.Count + " fotografi", "Successo" );
 		}
 
 		private void creareNuovoFotografo() {

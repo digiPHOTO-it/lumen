@@ -1,18 +1,19 @@
-﻿<UserControl x:Class="Digiphoto.Lumen.UI.FotoGallery"
+﻿<lumM:UserControlBase x:Class="Digiphoto.Lumen.UI.FotoGallery"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
+             xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
              xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
              xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 
     <!-- Istanzio il controllore -->
-    <UserControl.DataContext>
+    <lumM:UserControlBase.DataContext>
         <lum:FotoGalleryViewModel />
-    </UserControl.DataContext>
+    </lumM:UserControlBase.DataContext>
 
     <UserControl.Resources>
         <ResourceDictionary Source="FotoGalleryResources.xaml" />
@@ -109,4 +110,4 @@
 
     </DockPanel>
 
-</UserControl>
+</lumM:UserControlBase>
