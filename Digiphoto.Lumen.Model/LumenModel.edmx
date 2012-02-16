@@ -17,7 +17,6 @@
         <EntitySet Name="InfosFisse" EntityType="Digiphoto.Lumen.Model.Store.InfosFisse" store:Type="Tables" Schema="dbo" />
         <EntitySet Name="Carrelli" EntityType="Digiphoto.Lumen.Model.Store.Carrelli" store:Type="Tables" Schema="dbo" />
         <EntitySet Name="RigheCarrelli" EntityType="Digiphoto.Lumen.Model.Store.RigheCarrelli" store:Type="Tables" Schema="dbo" />
-        <EntitySet Name="Correzioni" EntityType="Digiphoto.Lumen.Model.Store.Correzioni" store:Type="Tables" Schema="dbo" />
         <AssociationSet Name="FotografoFotografia" Association="Digiphoto.Lumen.Model.Store.FotografoFotografia">
             <End Role="Fotografo" EntitySet="Fotografi" />
             <End Role="Fotografia" EntitySet="Fotografie" />
@@ -50,10 +49,6 @@
             <End Role="Fotografia" EntitySet="Fotografie" />
             <End Role="RigaAlbum" EntitySet="RigheAlbum" />
         </AssociationSet>
-        <AssociationSet Name="FotografiaCorrezione" Association="Digiphoto.Lumen.Model.Store.FotografiaCorrezione">
-            <End Role="Fotografia" EntitySet="Fotografie" />
-            <End Role="Correzione" EntitySet="Correzioni" />
-        </AssociationSet>
         <AssociationSet Name="FotografiaRiCaFotoStampata" Association="Digiphoto.Lumen.Model.Store.FotografiaRiCaFotoStampata">
             <End Role="Fotografia" EntitySet="Fotografie" />
             <End Role="RiCaFotoStampata" EntitySet="RigheCarrelli" />
@@ -84,6 +79,7 @@
 		<Property Name="numero" Type="int" Nullable="false" />
 		<Property Name="faseDelGiorno" Type="smallint" Nullable="true" />
 		<Property Name="giornata" Type="datetime" Nullable="false" />
+		<Property Name="correzioniXml" Type="nvarchar" Nullable="true" />
 		<Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="false" />
 		<Property Name="evento_id" Type="uniqueidentifier" Nullable="true" />
     </EntityType>
@@ -94,6 +90,7 @@
 		<Property Name="id" Type="uniqueidentifier" Nullable="false" />
 		<Property Name="descrizione" Type="nvarchar" Nullable="false" />
 		<Property Name="attivo" Type="bit" Nullable="false" DefaultValue="true" />
+		<Property Name="ordinamento" Type="smallint" Nullable="true" />
     </EntityType>
     <EntityType Name="Albums">
         <Key>
@@ -129,6 +126,7 @@
 		<Property Name="descrizione" Type="nvarchar" Nullable="false" />
 		<Property Name="prezzo" Type="decimal" Nullable="false" />
 		<Property Name="attivo" Type="bit" Nullable="false" DefaultValue="true" />
+		<Property Name="ordinamento" Type="smallint" Nullable="true" />
     </EntityType>
     <EntityType Name="InfosFisse">
         <Key>
@@ -147,7 +145,7 @@
 		<Property Name="id" Type="uniqueidentifier" Nullable="false" />
 		<Property Name="giornata" Type="datetime" Nullable="false" />
 		<Property Name="tempo" Type="datetime" Nullable="false" />
-		<Property Name="totaleAPagare" Type="decimal"  />
+		<Property Name="totaleAPagare" Type="decimal" Nullable="true" />
 		<Property Name="intestazione" Type="nvarchar" Nullable="true" />
     </EntityType>
     <EntityType Name="RigheCarrelli">
@@ -168,32 +166,6 @@
 		<Property Name="formatoCarta_id" Type="uniqueidentifier" Nullable="true" />
 		<Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="true" />
 		<Property Name="fotografia_id" Type="uniqueidentifier" Nullable="true" />
-    </EntityType>
-    <EntityType Name="Correzioni">
-        <Key>
-            <PropertyRef Name="id" />
-        </Key>
-		<Property Name="id" Type="uniqueidentifier" Nullable="false" />
-		<Property Name="cardinalita" Type="smallint" Nullable="false" />
-		<Property Name="ordinamento" Type="nvarchar" Nullable="false" />
-		<Property Name="gradi" Type="smallint" Nullable="true" />
-		<Property Name="scartoAutomatico" Type="bit" Nullable="true" />
-		<Property Name="backgroundColor" Type="int" Nullable="true" />
-		<Property Name="fattore" Type="real" Nullable="true" />
-		<Property Name="imgOrigW" Type="int" Nullable="true" />
-		<Property Name="imgOrigH" Type="int" Nullable="true" />
-		<Property Name="areaRitaglioX" Type="int" Nullable="true" />
-		<Property Name="areaRitaglioY" Type="int" Nullable="true" />
-		<Property Name="areaRitaglioW" Type="int" Nullable="true" />
-		<Property Name="areaRitaglioH" Type="int" Nullable="true" />
-		<Property Name="fattoreL" Type="real" Nullable="true" />
-		<Property Name="direzione" Type="nchar" Nullable="true" MaxLength="1" />
-		<Property Name="nome" Type="nvarchar" Nullable="true" />
-		<Property Name="fattoreRotazione" Type="real" Nullable="true" />
-		<Property Name="gradiRotazione" Type="smallint" Nullable="true" />
-		<Property Name="direzioneSpecchio" Type="nchar" Nullable="true" MaxLength="1" />
-        <Property Name="__Disc__" Type="nvarchar" MaxLength="Max" Nullable="false" />
-		<Property Name="FotografiaCorrezione_Correzione_id" Type="uniqueidentifier" Nullable="false" />
     </EntityType>
 	<Association Name="FotografoFotografia">
 		<End Role="Fotografo" Type="Digiphoto.Lumen.Model.Store.Fotografi" Multiplicity="1">
@@ -318,21 +290,6 @@
 			</Dependent>
 		</ReferentialConstraint>
 	</Association>
-	<Association Name="FotografiaCorrezione">
-		<End Role="Fotografia" Type="Digiphoto.Lumen.Model.Store.Fotografie" Multiplicity="1">
-		</End>				
-		<End Role="Correzione" Type="Digiphoto.Lumen.Model.Store.Correzioni" Multiplicity="*">
-		</End>				
-		<ReferentialConstraint>
-			<Principal Role="Fotografia">
-				<PropertyRef Name="id" />
-			</Principal>
-			<Dependent Role="Correzione">
-				<PropertyRef Name="FotografiaCorrezione_Correzione_id" />
-			
-			</Dependent>
-		</ReferentialConstraint>
-	</Association>
 	<Association Name="FotografiaRiCaFotoStampata">
 		<End Role="Fotografia" Type="Digiphoto.Lumen.Model.Store.Fotografie" Multiplicity="0..1">
 		</End>				
@@ -395,11 +352,6 @@
             <End Role="Fotografia" EntitySet="Fotografie" />
             <End Role="RigaAlbum" EntitySet="RigheAlbum" />
           </AssociationSet>
-          <EntitySet Name="Correzioni" EntityType="Digiphoto.Lumen.Model.Correzione" />
-          <AssociationSet Name="FotografiaCorrezione" Association="Digiphoto.Lumen.Model.FotografiaCorrezione">
-            <End Role="Fotografia" EntitySet="Fotografie" />
-            <End Role="Correzione" EntitySet="Correzioni" />
-          </AssociationSet>
           <AssociationSet Name="FotografiaRiCaFotoStampata" Association="Digiphoto.Lumen.Model.FotografiaRiCaFotoStampata">
             <End Role="Fotografia" EntitySet="Fotografie" />
             <End Role="RiCaFotoStampata" EntitySet="RigheCarrelli" />
@@ -448,7 +400,7 @@
           <Property Type="Int32" Name="numero" Nullable="false" />
           <Property Type="Int16" Name="faseDelGiorno" Nullable="true" />
           <Property Type="DateTime" Name="giornata" Nullable="false" />
-          <NavigationProperty Name="correzioni" Relationship="Digiphoto.Lumen.Model.FotografiaCorrezione" FromRole="Fotografia" ToRole="Correzione" />
+          <Property Type="String" Name="correzioniXml" Nullable="true" />
         </EntityType>
         <Association Name="FotografoFotografia">
           <End Type="Digiphoto.Lumen.Model.Fotografo" Role="Fotografo" Multiplicity="1" />
@@ -461,6 +413,7 @@
           <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" />
           <Property Type="String" Name="descrizione" Nullable="false" ><a:Display Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" /><pem:Validations xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" Enforcement="None"><pem:Required ErrorMessage="Descrizione evento obbligatoria" Enforcement="Must" /><pem:DataFieldLength MinimumLength="2" MaximumLength="100" ErrorMessage="Descrizione evento deve essere almeno di 2 caratteri" Enforcement="Must" /></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" /></Property>
           <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true" />
+          <Property Type="Int16" Name="ordinamento" Nullable="true" />
         </EntityType>
         <Association Name="EventoFotografia">
           <End Type="Digiphoto.Lumen.Model.Evento" Role="Evento" Multiplicity="0..1" />
@@ -510,6 +463,7 @@
           <Property Type="String" Name="descrizione" Nullable="false" />
           <Property Type="Decimal" Name="prezzo" Nullable="false" />
           <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true" />
+          <Property Type="Int16" Name="ordinamento" Nullable="true" />
         </EntityType>
         <Association Name="FotografoScaricoCard">
           <End Type="Digiphoto.Lumen.Model.Fotografo" Role="Fotografo" Multiplicity="1" >
@@ -590,11 +544,11 @@
           <NavigationProperty Name="fotografia" Relationship="Digiphoto.Lumen.Model.FotografiaRiCaFotoStampata" FromRole="RiCaFotoStampata" ToRole="Fotografia" />
         </EntityType>
         <Association Name="FormatoCartaRiCaFotoStampata">
-          <End Type="Digiphoto.Lumen.Model.FormatoCarta" Multiplicity="1" Role="FormatoCarta" />
+          <End Type="Digiphoto.Lumen.Model.FormatoCarta" Multiplicity="0..1" Role="FormatoCarta" />
           <End Type="Digiphoto.Lumen.Model.RiCaFotoStampata" Multiplicity="*" Role="RiCaFotoStampata" />
         </Association>
         <Association Name="FotografoRiCaFotoStampata">
-          <End Type="Digiphoto.Lumen.Model.Fotografo" Role="Fotografo" Multiplicity="1" />
+          <End Type="Digiphoto.Lumen.Model.Fotografo" Role="Fotografo" Multiplicity="0..1" />
           <End Type="Digiphoto.Lumen.Model.RiCaFotoStampata" Role="RiCaFotoStampata" Multiplicity="*" />
         </Association>
         <Association Name="FotografiaRigaAlbum">
@@ -602,68 +556,6 @@
             <OnDelete Action="Cascade" />
           </End>
           <End Type="Digiphoto.Lumen.Model.RigaAlbum" Role="RigaAlbum" Multiplicity="*" />
-        </Association>
-        <EntityType Name="Correzione" Abstract="true">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" />
-          <Property Type="Int16" Name="cardinalita" Nullable="false" />
-          <Property Type="String" Name="ordinamento" Nullable="false" />
-        </EntityType>
-        <EntityType Name="RuotaCorrezione" BaseType="Digiphoto.Lumen.Model.Correzione">
-          <Property Type="Int16" Name="gradi" Nullable="true" />
-          <Property Type="Boolean" Name="scartoAutomatico" Nullable="true" />
-          <Property Type="Int32" Name="backgroundColor" Nullable="true" />
-        </EntityType>
-        <EntityType Name="BiancoNeroCorrezione" BaseType="Digiphoto.Lumen.Model.Correzione" />
-        <EntityType Name="ContrastoCorrezione" BaseType="Digiphoto.Lumen.Model.Correzione" >
-          <Property Type="Single" Name="fattore" Nullable="true" />
-        </EntityType>
-        <EntityType Name="CropCorrezione" BaseType="Digiphoto.Lumen.Model.Correzione" >
-          <Property Type="Int32" Name="imgOrigW" Nullable="true" >
-            <Documentation>
-              <LongDescription>Siccome il crop avviene sul provino, devo sapere qual'era la Size originale dell'immagine che ho ritagliato, perché poi devo ripetere l'operazione sull'immagine reale (quella grande)</LongDescription>
-            </Documentation>
-          </Property>
-          <Property Type="Int32" Name="imgOrigH" Nullable="true" >
-            <Documentation>
-              <LongDescription>Siccome il crop avviene sul provino, devo sapere qual'era la Size originale dell'immagine che ho ritagliato, perché poi devo ripetere l'operazione sull'immagine reale (quella grande)</LongDescription>
-            </Documentation>
-          </Property>
-          <Property Type="Int32" Name="areaRitaglioX" Nullable="true" />
-          <Property Type="Int32" Name="areaRitaglioY" Nullable="true" />
-          <Property Type="Int32" Name="areaRitaglioW" Nullable="true" />
-          <Property Type="Int32" Name="areaRitaglioH" Nullable="true" />
-        </EntityType>
-        <EntityType Name="LuminositaCorrezione" BaseType="Digiphoto.Lumen.Model.Correzione">
-          <Property Type="Single" Name="fattoreL" Nullable="true" />
-        </EntityType>
-        <EntityType Name="SeppiaCorrezione" BaseType="Digiphoto.Lumen.Model.Correzione" />
-        <EntityType Name="SpecchioCorrezione" BaseType="Digiphoto.Lumen.Model.Correzione" >
-          <Property Type="String" Name="direzione" FixedLength="true" MaxLength="1" Nullable="true" />
-        </EntityType>
-        <EntityType Name="CorniceCorrezione" BaseType="Digiphoto.Lumen.Model.Correzione" >
-          <Property Type="String" Name="nome" Nullable="true" >
-            <Documentation>
-              <Summary>Nome della cornice</Summary>
-            </Documentation>
-          </Property>
-          <Property Type="Single" Name="fattoreRotazione" Nullable="true" >
-            <Documentation>
-              <Summary>fattore di zoom</Summary>
-            </Documentation>
-          </Property>
-          <Property Type="Int16" Name="gradiRotazione" Nullable="true" >
-            <Documentation>
-              <LongDescription>Gradi di rotazione della foto</LongDescription>
-            </Documentation>
-          </Property>
-          <Property Type="String" Name="direzioneSpecchio" Nullable="true" MaxLength="1" FixedLength="true" />
-        </EntityType>
-        <Association Name="FotografiaCorrezione">
-          <End Type="Digiphoto.Lumen.Model.Fotografia" Role="Fotografia" Multiplicity="1" />
-          <End Type="Digiphoto.Lumen.Model.Correzione" Role="Correzione" Multiplicity="*" />
         </Association>
         <Association Name="FotografiaRiCaFotoStampata">
           <End Type="Digiphoto.Lumen.Model.Fotografia" Role="Fotografia" Multiplicity="0..1" />
@@ -698,6 +590,7 @@
 					<ScalarProperty Name="numero" ColumnName="numero" />
 					<ScalarProperty Name="faseDelGiorno" ColumnName="faseDelGiorno" />
 					<ScalarProperty Name="giornata" ColumnName="giornata" />
+					<ScalarProperty Name="correzioniXml" ColumnName="correzioniXml" />
 				</MappingFragment>
 			</EntityTypeMapping>
 		</EntitySetMapping>
@@ -707,6 +600,7 @@
 					<ScalarProperty Name="id" ColumnName="id" />
 					<ScalarProperty Name="descrizione" ColumnName="descrizione" />
 					<ScalarProperty Name="attivo" ColumnName="attivo" />
+					<ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
 				</MappingFragment>
 			</EntityTypeMapping>
 		</EntitySetMapping>
@@ -743,6 +637,7 @@
 					<ScalarProperty Name="descrizione" ColumnName="descrizione" />
 					<ScalarProperty Name="prezzo" ColumnName="prezzo" />
 					<ScalarProperty Name="attivo" ColumnName="attivo" />
+					<ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
 				</MappingFragment>
 			</EntityTypeMapping>
 		</EntitySetMapping>
@@ -803,95 +698,6 @@
 					<ScalarProperty Name="descrizione" ColumnName="descrizione" />
 					<ScalarProperty Name="totFotoMasterizzate" ColumnName="totFotoMasterizzate" />
                     <Condition ColumnName="__Disc__" Value="RiCaDiscoMasterizzato" />
-				</MappingFragment>
-			</EntityTypeMapping>
-		</EntitySetMapping>
-		<EntitySetMapping Name="Correzioni">
-			<EntityTypeMapping TypeName="IsTypeOf(Digiphoto.Lumen.Model.Correzione)">
-				<MappingFragment StoreEntitySet="Correzioni">
-					<ScalarProperty Name="id" ColumnName="id" />
-					<ScalarProperty Name="cardinalita" ColumnName="cardinalita" />
-					<ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
-				</MappingFragment>
-			</EntityTypeMapping>
-			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.RuotaCorrezione">
-				<MappingFragment StoreEntitySet="Correzioni">
-					<ScalarProperty Name="id" ColumnName="id" />
-					<ScalarProperty Name="cardinalita" ColumnName="cardinalita" />
-					<ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
-					<ScalarProperty Name="gradi" ColumnName="gradi" />
-					<ScalarProperty Name="scartoAutomatico" ColumnName="scartoAutomatico" />
-					<ScalarProperty Name="backgroundColor" ColumnName="backgroundColor" />
-                    <Condition ColumnName="__Disc__" Value="RuotaCorrezione" />
-				</MappingFragment>
-			</EntityTypeMapping>
-			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.BiancoNeroCorrezione">
-				<MappingFragment StoreEntitySet="Correzioni">
-					<ScalarProperty Name="id" ColumnName="id" />
-					<ScalarProperty Name="cardinalita" ColumnName="cardinalita" />
-					<ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
-                    <Condition ColumnName="__Disc__" Value="BiancoNeroCorrezione" />
-				</MappingFragment>
-			</EntityTypeMapping>
-			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.ContrastoCorrezione">
-				<MappingFragment StoreEntitySet="Correzioni">
-					<ScalarProperty Name="id" ColumnName="id" />
-					<ScalarProperty Name="cardinalita" ColumnName="cardinalita" />
-					<ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
-					<ScalarProperty Name="fattore" ColumnName="fattore" />
-                    <Condition ColumnName="__Disc__" Value="ContrastoCorrezione" />
-				</MappingFragment>
-			</EntityTypeMapping>
-			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.CropCorrezione">
-				<MappingFragment StoreEntitySet="Correzioni">
-					<ScalarProperty Name="id" ColumnName="id" />
-					<ScalarProperty Name="cardinalita" ColumnName="cardinalita" />
-					<ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
-					<ScalarProperty Name="imgOrigW" ColumnName="imgOrigW" />
-					<ScalarProperty Name="imgOrigH" ColumnName="imgOrigH" />
-					<ScalarProperty Name="areaRitaglioX" ColumnName="areaRitaglioX" />
-					<ScalarProperty Name="areaRitaglioY" ColumnName="areaRitaglioY" />
-					<ScalarProperty Name="areaRitaglioW" ColumnName="areaRitaglioW" />
-					<ScalarProperty Name="areaRitaglioH" ColumnName="areaRitaglioH" />
-                    <Condition ColumnName="__Disc__" Value="CropCorrezione" />
-				</MappingFragment>
-			</EntityTypeMapping>
-			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.LuminositaCorrezione">
-				<MappingFragment StoreEntitySet="Correzioni">
-					<ScalarProperty Name="id" ColumnName="id" />
-					<ScalarProperty Name="cardinalita" ColumnName="cardinalita" />
-					<ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
-					<ScalarProperty Name="fattoreL" ColumnName="fattoreL" />
-                    <Condition ColumnName="__Disc__" Value="LuminositaCorrezione" />
-				</MappingFragment>
-			</EntityTypeMapping>
-			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.SeppiaCorrezione">
-				<MappingFragment StoreEntitySet="Correzioni">
-					<ScalarProperty Name="id" ColumnName="id" />
-					<ScalarProperty Name="cardinalita" ColumnName="cardinalita" />
-					<ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
-                    <Condition ColumnName="__Disc__" Value="SeppiaCorrezione" />
-				</MappingFragment>
-			</EntityTypeMapping>
-			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.SpecchioCorrezione">
-				<MappingFragment StoreEntitySet="Correzioni">
-					<ScalarProperty Name="id" ColumnName="id" />
-					<ScalarProperty Name="cardinalita" ColumnName="cardinalita" />
-					<ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
-					<ScalarProperty Name="direzione" ColumnName="direzione" />
-                    <Condition ColumnName="__Disc__" Value="SpecchioCorrezione" />
-				</MappingFragment>
-			</EntityTypeMapping>
-			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.CorniceCorrezione">
-				<MappingFragment StoreEntitySet="Correzioni">
-					<ScalarProperty Name="id" ColumnName="id" />
-					<ScalarProperty Name="cardinalita" ColumnName="cardinalita" />
-					<ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
-					<ScalarProperty Name="nome" ColumnName="nome" />
-					<ScalarProperty Name="fattoreRotazione" ColumnName="fattoreRotazione" />
-					<ScalarProperty Name="gradiRotazione" ColumnName="gradiRotazione" />
-					<ScalarProperty Name="direzioneSpecchio" ColumnName="direzioneSpecchio" />
-                    <Condition ColumnName="__Disc__" Value="CorniceCorrezione" />
 				</MappingFragment>
 			</EntityTypeMapping>
 		</EntitySetMapping>
@@ -970,15 +776,6 @@
 			</EndProperty>
 		</AssociationSetMapping>
 
-		<AssociationSetMapping Name="FotografiaCorrezione" TypeName="Digiphoto.Lumen.Model.FotografiaCorrezione" StoreEntitySet="Correzioni">
-			<EndProperty Name="Fotografia">
-				<ScalarProperty Name="id" ColumnName="FotografiaCorrezione_Correzione_id" />
-			</EndProperty>
-			<EndProperty Name="Correzione">
-				<ScalarProperty Name="id" ColumnName="id" />
-			</EndProperty>
-		</AssociationSetMapping>
-
 		<AssociationSetMapping Name="FotografiaRiCaFotoStampata" TypeName="Digiphoto.Lumen.Model.FotografiaRiCaFotoStampata" StoreEntitySet="RigheCarrelli">
 			<EndProperty Name="Fotografia">
 				<ScalarProperty Name="id" ColumnName="fotografia_id" />
@@ -1017,11 +814,10 @@
           <ConnectorPoint PointX="12.625" PointY="6" />
           <ConnectorPoint PointX="12.625" PointY="5.3840950520833326" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Evento" Width="1.5" PointX="9.25" PointY="0.875" Height="1.59568359375" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Evento" Width="1.5" PointX="9.25" PointY="0.875" Height="1.787985026041667" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.EventoFotografia">
-          <ConnectorPoint PointX="10.75" PointY="1.5624995" />
-          <ConnectorPoint PointX="12.5" PointY="1.5624995" />
-          <ConnectorPoint PointX="12.5" PointY="2.25" />
+          <ConnectorPoint PointX="10.75" PointY="2.4564925130208337" />
+          <ConnectorPoint PointX="11.75" PointY="2.4564925130208337" />
         </AssociationConnector>
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Album" Width="1.5" PointX="16.75" PointY="1.125" Height="1.9802864583333339" />
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RigaAlbum" Width="1.5" PointX="14.25" PointY="3.5" Height="1.4033821614583339" />
@@ -1031,13 +827,13 @@
           <ConnectorPoint PointX="15" PointY="3.5" />
         </AssociationConnector>
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.ScaricoCard" Width="1.75" PointX="10" PointY="9.5" Height="1.7879850260416665" />
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.FormatoCarta" Width="1.5" PointX="18.25" PointY="8.75" Height="1.7879850260416657" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.FormatoCarta" Width="1.5" PointX="18.25" PointY="8.75" Height="2.0002864583333331" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.FotografoScaricoCard">
           <ConnectorPoint PointX="13.1875" PointY="8.172587890625" />
           <ConnectorPoint PointX="13.1875" PointY="10.393992513020834" />
           <ConnectorPoint PointX="11.75" PointY="10.393992513020834" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.InfoFissa" PointX="0.5" PointY="0.5" Width="1.5" Height="1.9802864583333331" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.InfoFissa" PointX="5" PointY="0.875" Width="1.5" Height="1.9802864583333331" />
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Carrello" Width="1.5" PointX="19" PointY="4.5" Height="2.1725878906249996" />
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RigaCarrello" Width="1.5" PointX="21.25" PointY="4.75" Height="2.1725878906249996" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.CarrelloRigaCarrello">
@@ -1059,8 +855,8 @@
           <ConnectorPoint PointX="21.875" PointY="7.75" />
         </InheritanceConnector>
         <AssociationConnector Association="Digiphoto.Lumen.Model.FormatoCartaRiCaFotoStampata">
-          <ConnectorPoint PointX="19.75" PointY="9.1439925130208337" />
-          <ConnectorPoint PointX="21.125" PointY="9.1439925130208337" />
+          <ConnectorPoint PointX="19.75" PointY="9.2401432291666659" />
+          <ConnectorPoint PointX="21.125" PointY="9.2401432291666659" />
         </AssociationConnector>
         <AssociationConnector Association="Digiphoto.Lumen.Model.FotografoRiCaFotoStampata" ManuallyRouted="false">
           <ConnectorPoint PointX="14.375" PointY="7.9612939453125" />
@@ -1069,89 +865,6 @@
         <AssociationConnector Association="Digiphoto.Lumen.Model.FotografiaRigaAlbum">
           <ConnectorPoint PointX="13.25" PointY="4.2016910807291667" />
           <ConnectorPoint PointX="14.25" PointY="4.2016910807291667" />
-        </AssociationConnector>
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Correzione" Width="1.5" PointX="2.375" PointY="3.25" Height="1.5956835937499996" />
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RuotaCorrezione" Width="1.5" PointX="0.5" PointY="6.125" Height="1.5956835937499996" />
-        <InheritanceConnector EntityType="Digiphoto.Lumen.Model.RuotaCorrezione" ManuallyRouted="false">
-          <ConnectorPoint PointX="3.125" PointY="4.84568359375" />
-          <ConnectorPoint PointX="3.125" PointY="5.75" />
-          <ConnectorPoint PointX="2.2062133333333334" PointY="5.7499999999999991" />
-          <ConnectorPoint PointX="2.0395466666666664" PointY="5.75" />
-          <ConnectorPoint PointX="1.25" PointY="5.75" />
-          <ConnectorPoint PointX="1.25" PointY="6.125" />
-        </InheritanceConnector>
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.BiancoNeroCorrezione" Width="1.5" PointX="2.25" PointY="6.25" Height="1.0187792968750031" />
-        <InheritanceConnector EntityType="Digiphoto.Lumen.Model.BiancoNeroCorrezione" ManuallyRouted="false" >
-          <ConnectorPoint PointX="3.125" PointY="4.84568359375" />
-          <ConnectorPoint PointX="3.125" PointY="5.875" />
-          <ConnectorPoint PointX="3" PointY="5.875" />
-          <ConnectorPoint PointX="3" PointY="6.25" />
-        </InheritanceConnector>
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.ContrastoCorrezione" Width="1.5" PointX="0.5" PointY="8.125" Height="1.2110807291666657" />
-        <InheritanceConnector EntityType="Digiphoto.Lumen.Model.ContrastoCorrezione" ManuallyRouted="false" >
-          <ConnectorPoint PointX="3.125" PointY="4.84568359375" />
-          <ConnectorPoint PointX="3.125" PointY="5.965" />
-          <ConnectorPoint PointX="3.0833333333333335" PointY="5.964999999999999" />
-          <ConnectorPoint PointX="2.9166666666666665" PointY="5.965" />
-          <ConnectorPoint PointX="2.2062133333333334" PointY="5.964999999999999" />
-          <ConnectorPoint PointX="2.0395466666666664" PointY="5.965" />
-          <ConnectorPoint PointX="1.3333333333333333" PointY="5.964999999999999" />
-          <ConnectorPoint PointX="1.1666666666666667" PointY="5.965" />
-          <ConnectorPoint PointX="0.33999999999999997" PointY="5.965" />
-          <ConnectorPoint PointX="0.33999999999999997" PointY="7.885" />
-          <ConnectorPoint PointX="1.25" PointY="7.885" />
-          <ConnectorPoint PointX="1.25" PointY="8.125" />
-        </InheritanceConnector>
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.CropCorrezione" Width="1.5" PointX="2.25" PointY="8.25" Height="2.1725878906249996" />
-        <InheritanceConnector EntityType="Digiphoto.Lumen.Model.CropCorrezione" ManuallyRouted="false" >
-          <ConnectorPoint PointX="3.125" PointY="4.84568359375" />
-          <ConnectorPoint PointX="3.125" PointY="6.16808" />
-          <ConnectorPoint PointX="3.79308" PointY="6.16808" />
-          <ConnectorPoint PointX="3.79308" PointY="8.1199050260416676" />
-          <ConnectorPoint PointX="3.83192" PointY="8.1199050260416676" />
-          <ConnectorPoint PointX="3.83192" PointY="8.12712" />
-          <ConnectorPoint PointX="3.87288" PointY="8.12712" />
-          <ConnectorPoint PointX="3.87288" PointY="9.3362939453125" />
-          <ConnectorPoint PointX="3.75" PointY="9.3362939453125" />
-        </InheritanceConnector>
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.LuminositaCorrezione" Width="1.5" PointX="0.5" PointY="9.5" Height="1.2110807291666674" />
-        <InheritanceConnector EntityType="Digiphoto.Lumen.Model.LuminositaCorrezione" ManuallyRouted="true" >
-          <ConnectorPoint PointX="3.125" PointY="4.84568359375" />
-          <ConnectorPoint PointX="3.125" PointY="5.1949051811315412" />
-          <ConnectorPoint PointX="2.12288" PointY="5.1949051811315412" />
-          <ConnectorPoint PointX="2.12288" PointY="10.105540364583334" />
-          <ConnectorPoint PointX="2" PointY="10.105540364583334" />
-        </InheritanceConnector>
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.SeppiaCorrezione" Width="1.5" PointX="4" PointY="8.25" Height="1.0187792968750031" />
-        <InheritanceConnector EntityType="Digiphoto.Lumen.Model.SeppiaCorrezione" ManuallyRouted="true" >
-          <ConnectorPoint PointX="3.125" PointY="4.84568359375" />
-          <ConnectorPoint PointX="3.125" PointY="5.34709444509867" />
-          <ConnectorPoint PointX="5.45692" PointY="5.34709444509867" />
-          <ConnectorPoint PointX="5.45692" PointY="8.12712" />
-          <ConnectorPoint PointX="4.75" PointY="8.12712" />
-          <ConnectorPoint PointX="4.75" PointY="8.25" />
-        </InheritanceConnector>
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.SpecchioCorrezione" Width="1.5" PointX="4" PointY="9.5" Height="1.2110807291666657" />
-        <InheritanceConnector EntityType="Digiphoto.Lumen.Model.SpecchioCorrezione" ManuallyRouted="false" >
-          <ConnectorPoint PointX="3.125" PointY="4.84568359375" />
-          <ConnectorPoint PointX="3.125" PointY="6.16808" />
-          <ConnectorPoint PointX="3.79308" PointY="6.16808" />
-          <ConnectorPoint PointX="3.79308" PointY="8.1199050260416676" />
-          <ConnectorPoint PointX="3.83192" PointY="8.1199050260416676" />
-          <ConnectorPoint PointX="3.83192" PointY="9.37712" />
-          <ConnectorPoint PointX="4.75" PointY="9.37712" />
-          <ConnectorPoint PointX="4.75" PointY="9.5" />
-        </InheritanceConnector>
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.CorniceCorrezione" Width="1.5" PointX="3.875" PointY="6.25" Height="1.7879850260416674" />
-        <InheritanceConnector EntityType="Digiphoto.Lumen.Model.CorniceCorrezione" ManuallyRouted="false" >
-          <ConnectorPoint PointX="3.125" PointY="4.84568359375" />
-          <ConnectorPoint PointX="3.125" PointY="5.875" />
-          <ConnectorPoint PointX="4.625" PointY="5.875" />
-          <ConnectorPoint PointX="4.625" PointY="6.25" />
-        </InheritanceConnector>
-        <AssociationConnector Association="Digiphoto.Lumen.Model.FotografiaCorrezione">
-          <ConnectorPoint PointX="11.75" PointY="4.047841796875" />
-          <ConnectorPoint PointX="3.875" PointY="4.047841796875" />
         </AssociationConnector>
         <AssociationConnector Association="Digiphoto.Lumen.Model.FotografiaRiCaFotoStampata">
           <ConnectorPoint PointX="11.875" PointY="5.3840950520833326" />

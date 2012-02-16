@@ -17,18 +17,21 @@ namespace Digiphoto.Lumen.UI {
 
 
 		protected override void OnStartup( StartupEventArgs e ) {
-			
+
+#if (! DEBUG)			
 			// Preparo finestra di attesa
 			SplashScreen splashScreen = new SplashScreen( "SplashScreen1.png" );
 			splashScreen.Show( false, true );
-
+#endif
 			base.OnStartup( e );
 
 			// Inizializzo l'applicazione
 			LumenApplication.Instance.avvia();
 
+#if (! DEBUG)
 			// Chiudo lo splash
 			splashScreen.Close( new TimeSpan() );
+#endif
 				
 			_giornale.Info( "Applicazione avviata" );
 		}

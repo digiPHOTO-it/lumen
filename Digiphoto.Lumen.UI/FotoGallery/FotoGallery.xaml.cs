@@ -22,8 +22,6 @@ namespace Digiphoto.Lumen.UI {
 
 		public FotoGallery() {
 			InitializeComponent();
-
-			creaPulsantiPerStampare();
 		}
 
 		#region Proprietà
@@ -49,19 +47,6 @@ namespace Digiphoto.Lumen.UI {
 		#endregion
 
 		#region Metodi
-
-		private void creaPulsantiPerStampare() {
-
-			int ii = 0;
-			foreach( StampanteAbbinata stampanteAbbinata in fotoGalleryViewModel.stampantiAbbinate ) {
-				Button button = new Button();
-				button.Command = fotoGalleryViewModel.stampareCommand;
-				button.CommandParameter = stampanteAbbinata;  // memorizzo il formato carta e la stampante con cui produrre la stampa.
-				button.Content = "Prn" + Convert.ToString( ++ii );
-				button.ToolTip = stampanteAbbinata.ToString();
-				stampaToolBar.Items.Add( button );
-			}
-		}
 
 		/// modifico il valore dello slider
 		private void cambiaDimensioneImmagini( double newWidth ) {

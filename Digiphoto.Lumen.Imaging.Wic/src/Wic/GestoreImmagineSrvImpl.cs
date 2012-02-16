@@ -1,22 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Digiphoto.Lumen.Servizi;
-using System.IO;
-using System.Windows.Media.Imaging;
-using Digiphoto.Lumen.Imaging.Wic.Correzioni;
-using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Imaging.Correzioni;
+using Digiphoto.Lumen.Servizi.Ritoccare;
+using Digiphoto.Lumen.Config;
+using System.IO;
+using System.Collections.Generic;
+using System.Windows.Media.Imaging;
 
 namespace Digiphoto.Lumen.Imaging.Wic {
 
 	public class GestoreImmagineSrvImpl : ServizioImpl, IGestoreImmagineSrv  {
 
-		ProvinatoreWic _provinatoreWic;
+		private Correttore _provinatore;
+		private ICorrettoreFactory _correttoreFactory;
+		private ResizeCorrezione _correzioneProvino;
 
 		public GestoreImmagineSrvImpl() {
-			_provinatoreWic = new ProvinatoreWic();
+
+
+			// Questa è la definizione per provinare.
+			_correzioneProvino = new ResizeCorrezione() { latoMax = Configurazione.pixelLatoProvino	};
+
+			_correttoreFactory = ImagingFactory.Instance.creaCorrettoreFactory();
+
+			// Questo è il provinatore.
+			// TODO vedere se si può fare con un generics
+			_provinatore = _correttoreFactory.creaCorrettore( typeof(ResizeCorrezione) );
+
 		}
 
 		public IImmagine load( string nomeFile ) {
@@ -34,7 +44,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		}
 
 		public IImmagine creaProvino( IImmagine immagineGrande ) {
-			return _provinatoreWic.creaProvino( immagineGrande );
+			return _provinatore.applica( immagineGrande, _correzioneProvino );
 		}
 
 		public void save( IImmagine immagine, string fileName ) {
@@ -51,18 +61,21 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			encoder.Save( fileStream );
 		}
 
-		public IImmagine applicaCorrezioni( IImmagine immaginePartenza, ICollection<Model.Correzione> correzioni ) {
+		public IImmagine applicaCorrezioni( IImmagine immaginePartenza, IEnumerable<Correzione> correzioni ) {
 			
-			CorrettoreFactory factory = new CorrettoreFactory();
-
 			IImmagine modificata = immaginePartenza;
 
-			foreach( Correzione correzione in correzioni ) {
-				Correttore correttore = factory.creaCorrettore( correzione.GetType() );
-				modificata = correttore.applica( modificata, correzione );
-			}
+			foreach( Correzione correzione in correzioni )
+				modificata = applicaCorrezione( modificata, correzione );
 
 			return modificata;
 		}
+
+
+		public IImmagine applicaCorrezione( IImmagine immaginePartenza, Correzione correzione ) {
+			Correttore correttore = _correttoreFactory.creaCorrettore( correzione.GetType() );
+			return correttore.applica( immaginePartenza, correzione );
+		}
+
 	}
 }

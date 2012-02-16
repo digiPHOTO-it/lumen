@@ -13,28 +13,39 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			private set;
 		}
 
-		public ImmagineWic( BitmapFrame bitmapFrame ) {
-			this.bitmapSource = bitmapFrame;
+		public ImmagineWic( BitmapSource bitmapSource ) {
+			this.bitmapSource = bitmapSource;
 		}
 
 		public ImmagineWic( string uriString ) {
 
+			/*
+			 * SOLUZIONE 1 : ok ma tiene loccato il file.
 			BitmapImage bitmapImage = new BitmapImage();
 			bitmapImage.BeginInit();
 			bitmapImage.UriSource = new Uri( uriString );
 			bitmapImage.EndInit();
+			*/
+
+			BitmapSource bitmapImage = BitmapFrame.Create( new Uri( uriString ), BitmapCreateOptions.None, BitmapCacheOption.OnLoad );
+
+			/*
+			MemoryStream data = new MemoryStream( File.ReadAllBytes( file ) );
+			BitmapSource bitmap = BitmapFrame.Create( data );
+			*/
+
 			this.bitmapSource = bitmapImage;
 		}
 
 		#region Proprietà
 
-		public override int ww {
+		public override long ww {
 			get {
 				return (int)bitmapSource.Width;  // VERIFICARE SE CI POSSONO ESSERE PROBLEMI DI PERDITA DI VALORI
 			}
 		}
 
-		public override int hh {
+		public override long hh {
 			get {
 				return (int)bitmapSource.Height;  // VERIFICARE SE CI POSSONO ESSERE PROBLEMI DI PERDITA DI VALORI
 			}
@@ -45,6 +56,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		#region Metodi
 
 		public override void Dispose() {
+			// Questo dovrebbe servire a rilasciare il file su disco dove punta l'immagine
 			bitmapSource = null;
 		}
 

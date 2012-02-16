@@ -6,7 +6,6 @@ using System.Xml.Serialization;
 using System.Collections;
 using System.IO;
 using System.Xml;
-using Digiphoto.Lumen.Imaging.Ritocco;
 using System.Xml.Linq;
 
 namespace Digiphoto.Lumen.Util {
@@ -21,7 +20,12 @@ namespace Digiphoto.Lumen.Util {
 
 			XmlSerializer ser;
 
-			if( obj is IEnumerable ) {
+			//Add an empty namespace and empty value
+			XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+			ns.Add( "", "" );
+
+
+			if( 1==0 && obj is IEnumerable ) {
 
 				List<Type> extraTipi = new List<Type>();
 
@@ -39,18 +43,19 @@ namespace Digiphoto.Lumen.Util {
 				ser = new XmlSerializer( objType );
 			}
 
-			StringWriter sw = new StringWriter();
-			ser.Serialize( sw, obj );
-			string ret = sw.ToString();
-			sw.Close();
-			return ret;
+			using( StringWriter sw = new StringWriter() ) {
+				ser.Serialize( sw, obj );
+				return sw.ToString();
+			}
 		}
 
 		/** Creo un oggetto deserializzando la stringa xml passata */
 		public static object stringToObject( string xml, System.Type objType ) {
 
-			XmlSerializer ser = new XmlSerializer( objType );
-			return ser.Deserialize( new StringReader( xml ) );
+			XmlSerializer serializer = new XmlSerializer( objType );
+			using( StringReader reader = new StringReader( xml ) ) {
+				return serializer.Deserialize( reader );
+			}
 		}
 
 		/** Questo metodo è uguale a quello sopra ma faccio già il cast in uscita */

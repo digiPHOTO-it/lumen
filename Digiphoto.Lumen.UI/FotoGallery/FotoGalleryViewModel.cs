@@ -36,7 +36,7 @@ namespace Digiphoto.Lumen.UI {
 
 			} else {
 
-				paramCercaFoto.giornataIniz = new DateTime( 2012, 1, 20 );
+				paramCercaFoto.giornataIniz = new DateTime( 2011, 1, 1 );
 
 				// Faccio una ricerca a vuoto
 				fotoExplorerSrv.cercaFoto( paramCercaFoto );

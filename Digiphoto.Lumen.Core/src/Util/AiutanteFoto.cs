@@ -6,6 +6,7 @@ using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Imaging;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Util;
+using Digiphoto.Lumen.Imaging.Correzioni;
 
 namespace Digiphoto.Lumen.Util {
 	
@@ -34,7 +35,7 @@ namespace Digiphoto.Lumen.Util {
 		 */
 		public static void idrataImmaginiFoto( Fotografia foto ) {
 
-			IGestoreImmagineSrv gis = LumenApplication.Instance.getGestoreImmaginiSrv();
+			IGestoreImmagineSrv gis = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
 
 			//
 			if( foto.imgProvino == null )
@@ -53,7 +54,7 @@ namespace Digiphoto.Lumen.Util {
 
 		public static void creaProvinoFoto( string nomeFileFoto, Fotografia foto ) {
 
-			IGestoreImmagineSrv gis = LumenApplication.Instance.getGestoreImmaginiSrv();
+			IGestoreImmagineSrv gis = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
 
 			// Carico l'immagine grande originale (solo la prima volta)
 			if( foto.imgOrig == null )
@@ -63,8 +64,10 @@ namespace Digiphoto.Lumen.Util {
 			IImmagine immaginePiccola = gis.creaProvino( foto.imgOrig );
 
 			// applico eventuali correzioni
-			if( foto.correzioni != null && foto.correzioni.Count > 0 )
-				immaginePiccola = gis.applicaCorrezioni( immaginePiccola, foto.correzioni );
+			if( foto.correzioniXml != null ) {
+				CorrezioniList correzioni = SerializzaUtil.stringToObject<CorrezioniList>( foto.correzioniXml );
+				immaginePiccola = gis.applicaCorrezioni( immaginePiccola, correzioni );
+			}
 
 			// Se avevo già un provino caricato, qui lo vado a sovrascrivere, quindi devo rilasciarlo
 			if( foto.imgProvino != null )

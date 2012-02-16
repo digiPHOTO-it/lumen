@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Model;
 using System.ComponentModel;
-using Digiphoto.Lumen.Comandi;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Servizi.Ricerca;
 using Digiphoto.Lumen.Eventi;
@@ -12,10 +11,11 @@ using System.Threading;
 using Digiphoto.Lumen.Util;
 using log4net;
 using Digiphoto.Lumen.Core.Database;
+using Digiphoto.Lumen.Servizi.Selezionare;
 
 namespace Digiphoto.Lumen.Servizi.Explorer {
 
-	public class FotoExplorerSrvImpl : ServizioImpl, IFotoExplorerSrv {
+	public class FotoExplorerSrvImpl : SelettoreMultiFotoImpl, IFotoExplorerSrv {
 
 		#region Proprietà
 
@@ -25,6 +25,12 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 		public List<Fotografia> fotografie {
 			get;
 			private set;
+		}
+
+		public override IEnumerable<Fotografia> tutteLeFoto {
+			get {
+				return fotografie;
+			}
 		}
 
 		public Fotografia fotoCorrente { get; set; }
@@ -46,37 +52,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			}
 		}
 
-		public void invoca( Comando comando, Target target ) {
-
-			using( new UnitOfWorkScope( true ) ) {
-
-				switch( target ) {
-
-					// --
-					case Target.Corrente:
-						if( fotoCorrente == null )
-							throw new ArgumentException( "Nessuna foto corrente isSelezionata" );
-
-						comando.esegui( fotoCorrente );
-						break;
-
-					// --
-					case Target.Selezionate:
-						var querySelezionate = from ff in fotografie
-											   where ff.isSelezionata == true
-											   select ff;
-						foreach( Fotografia foto in querySelezionate )
-							comando.esegui( foto );
-						break;
-
-					// --
-					case Target.Tutte:
-						foreach( Fotografia foto in fotografie )
-							comando.esegui( foto );
-						break;
-				}
-			}
-		}
+		
 
 
 		/** Eseguo il caricamento delle foto richieste */
@@ -146,5 +122,6 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 
 			base.Dispose();
 		}
+
 	}
 }

@@ -83,7 +83,7 @@ namespace Digiphoto.Lumen.Imaging {
 		 * Calcolo anche l'area di destinazione (stampante) in cui renderizzare
 		 */
 		public Proiezione calcola( IImmagine sorgente ) {
-			return calcola( new Rectangle( 0,0, sorgente.ww, sorgente.hh ) );
+			return calcola( new Rectangle( 0,0, (int)sorgente.ww, (int)sorgente.hh ) );
 		}
 
 		public Proiezione calcola( Rectangle sorgente ) {

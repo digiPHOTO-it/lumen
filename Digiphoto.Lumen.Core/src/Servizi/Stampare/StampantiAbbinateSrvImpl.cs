@@ -34,7 +34,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare
         {
 			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
 			
-			IList<StampanteAbbinata> list = new List<StampanteAbbinata>();
+			List<StampanteAbbinata> list = new List<StampanteAbbinata>();
             StampantiInstallateSrvImpl stampantiInstallateSrvImpl = new StampantiInstallateSrvImpl();
             String[] st = stampantiAbbinate.Split('#');
             for (int i = 0; i < st.Length; i++)
@@ -56,10 +56,16 @@ namespace Digiphoto.Lumen.Servizi.Stampare
                 //new ObjectParameter("fn", prezzo));
                 //formatoCarta = contactQuery.First<FormatoCarta>();
 				formatoCarta = dbContext.FormatiCarta.FirstOrDefault() ; // f => f.descrizione.Equals( formato ) && f.prezzo == prezzo );
-                StampanteInstallata stampanteInstallata = stampantiInstallateSrvImpl.stampanteInstallataByString(stampante);
-                list.Add(new StampanteAbbinata(stampanteInstallata, formatoCarta));
+				if( formatoCarta != null ) {
+					StampanteInstallata stampanteInstallata = stampantiInstallateSrvImpl.stampanteInstallataByString( stampante );
+					list.Add( new StampanteAbbinata( stampanteInstallata, formatoCarta ) );
+				}
             }
-            return list;
+
+			// Ordino la lista per il valore di ordinamento impostato nel database nel formato carta.
+
+			list.Sort( StampanteAbbinata.CompareByImportanza );
+			return list;
         }
 
         public void sostituisciAbbinamento(IList<StampanteAbbinata> listaStampantiAbbinate)

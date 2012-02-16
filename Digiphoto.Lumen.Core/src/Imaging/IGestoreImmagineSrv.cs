@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Servizi;
 using Digiphoto.Lumen.Model;
+using Digiphoto.Lumen.Imaging.Correzioni;
 
 namespace Digiphoto.Lumen.Imaging {
 
@@ -25,6 +26,8 @@ namespace Digiphoto.Lumen.Imaging {
 		void save( IImmagine immagine, string fileName );
 
 		/** Applico tutte i ritocchi grafici indicati nel preciso ordine */
-		IImmagine applicaCorrezioni( IImmagine immaginePartenza, ICollection<Correzione> correzioni );
+		IImmagine applicaCorrezioni( IImmagine immaginePartenza, IEnumerable<Correzione> correzioni );
+
+		IImmagine applicaCorrezione( IImmagine immaginePartenza, Correzione correzione );
 	}
 }

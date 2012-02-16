@@ -58,11 +58,6 @@
   <ItemGroup>
     <Compile Include="src\Applicazione\StartupUtil.cs" />
     <Compile Include="src\Applicazione\Stato.cs" />
-    <Compile Include="src\Comandi\VendiMasterizzateCmd.cs" />
-    <Compile Include="src\Comandi\CorrezioneCmd.cs" />
-    <Compile Include="src\Comandi\SelezionaCmd.cs" />
-    <Compile Include="src\Comandi\VendiStampeCmd.cs" />
-    <Compile Include="src\Comandi\TornaOriginaleCmd.cs" />
     <Compile Include="src\Config\Configurazione.cs" />
     <Compile Include="src\Config\ConfigurazioneNonValidaException.cs" />
     <Compile Include="src\Applicazione\LumenApplication.cs" />
@@ -82,14 +77,20 @@
     <Compile Include="src\DatiDiEsempio\DataGen.cs" />
     <Compile Include="src\DatiDiEsempio\ParoleCasuali.cs" />
     <Compile Include="src\Eventi\Messaggio.cs" />
+    <Compile Include="src\Imaging\Correzioni\BiancoNeroCorrezione.cs" />
+    <Compile Include="src\Imaging\Correzioni\Correzione.cs" />
+    <Compile Include="src\Imaging\Correzioni\CorrezioneList.cs" />
+    <Compile Include="src\Imaging\Correzioni\ResizeCorrezione.cs" />
+    <Compile Include="src\Imaging\Correzioni\RuotaCorrezione.cs" />
+    <Compile Include="src\Servizi\Selezionare\ISelettoreMultiFotoSrv.cs" />
+    <Compile Include="src\Servizi\Ritoccare\FotoRitoccoSrvImpl.cs" />
     <Compile Include="src\Imaging\Immagine.cs" />
+    <Compile Include="src\Servizi\Ritoccare\ICorrettoreFactory.cs" />
+    <Compile Include="src\Servizi\Ritoccare\IFotoRitoccoSrv.cs" />
     <Compile Include="src\Imaging\ProiettoreArea.cs" />
     <Compile Include="src\Imaging\Correzioni\Correttore.cs" />
     <Compile Include="src\Imaging\IGestoreImmagineSrv.cs" />
     <Compile Include="src\Imaging\ImagingFactory.cs" />
-    <Compile Include="src\Imaging\IProvinatore.cs" />
-    <Compile Include="src\Imaging\Provinatore.cs" />
-    <Compile Include="src\Comandi\Comando.cs" />
     <Compile Include="src\Servizi\CambioStatoMsg.cs" />
     <Compile Include="src\Servizi\Carrelli\ParamCercaCarrelli.cs" />
     <Compile Include="src\Servizi\EntityRepository\EventiRepositorySrvImpl.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="src\Servizi\Scaricatore\ElaboratoreFotoAcquisite.cs" />
     <Compile Include="src\Servizi\Scaricatore\NuovaFotoMsg.cs" />
     <Compile Include="src\Servizi\Scaricatore\ScaricoFotoMsg.cs" />
+    <Compile Include="src\Servizi\Selezionare\SelettoreMultiFotoImpl.cs" />
     <Compile Include="src\Servizi\ServizioFactory.cs" />
     <Compile Include="src\Servizi\Stampare\ISpoolStampeSrv.cs" />
     <Compile Include="src\Servizi\Stampare\IEsecutoreStampa.cs" />
@@ -153,9 +155,11 @@
     <Compile Include="src\Threading\ThreadedQueueBase.cs" />
     <Compile Include="src\Threading\WorkerThreadBase.cs" />
     <Compile Include="src\Util\AiutanteFoto.cs" />
+    <Compile Include="src\Util\Target.cs" />
     <Compile Include="src\Util\Paginazione.cs" />
     <Compile Include="src\Util\ParamCerca.cs" />
     <Compile Include="src\Util\PathUtil.cs" />
+    <Compile Include="src\Util\SerializzaUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
@@ -172,7 +176,9 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="src\Comandi\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Digiphoto.Lumen.Model\Digiphoto.Lumen.Model.csproj">
       <Project>{83D8301E-7999-4179-962C-1BFA507F5396}</Project>

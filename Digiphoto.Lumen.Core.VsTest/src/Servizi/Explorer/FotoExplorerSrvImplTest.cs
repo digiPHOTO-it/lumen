@@ -2,13 +2,13 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using Digiphoto.Lumen.Servizi.Ricerca;
-using Digiphoto.Lumen.Comandi;
 using Digiphoto.Lumen.Model;
 using System.ComponentModel;
 using Digiphoto.Lumen.Applicazione;
 using System.Threading;
 using System.IO;
 using Digiphoto.Lumen.Util;
+using Digiphoto.Lumen.Imaging.Correzioni;
 
 namespace Digiphoto.Lumen.Core.VsTest
 {
@@ -90,40 +90,6 @@ namespace Digiphoto.Lumen.Core.VsTest
 			_impl.fotoCorrente = _impl.fotografie[0];
 		}
 
-
-		[TestMethod()]
-		public void comandoBiancoNeroTest() {
-
-			cercaFotoTest();
-
-			Assert.IsTrue( _caricateFoto );
-
-			// ora torno normale
-			TornaOriginaleComando origCmd = new TornaOriginaleComando();
-			_impl.invoca( origCmd, Target.Corrente );
-			
-			// calcolo il crc di controllo prima della cura.
-			string hashOrig = calcolaCrc( PathUtil.nomeCompletoProvino( _impl.fotoCorrente ) );
-
-			// ---
-			Correzione cor = new BiancoNeroCorrezione();
-			Comando cmd = new CorrezioneCmd( cor );
-			_impl.invoca( cmd, Target.Corrente );
-
-			string hashBN = calcolaCrc( PathUtil.nomeCompletoProvino( _impl.fotoCorrente ) );
-
-			// ora le foto non sono più uguali perchè è in bianco e nero
-			Assert.AreNotEqual( hashOrig, hashBN );
-
-			// ---
-			// ora torno normale
-			_impl.invoca( origCmd, Target.Corrente );
-
-			string hashFinale = calcolaCrc( PathUtil.nomeCompletoProvino( _impl.fotoCorrente ) );
-
-			Assert.AreEqual( hashOrig, hashFinale );
-
-		}
 
 		private string calcolaCrc( string nomeFile ) {
 			

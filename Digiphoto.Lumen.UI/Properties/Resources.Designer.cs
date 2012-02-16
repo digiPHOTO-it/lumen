@@ -60,10 +60,10 @@ namespace Digiphoto.Lumen.UI.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap cani_e_bambini {
+        internal static System.Drawing.Icon Stampante {
             get {
-                object obj = ResourceManager.GetObject("cani_e_bambini", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                object obj = ResourceManager.GetObject("Stampante", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
     }

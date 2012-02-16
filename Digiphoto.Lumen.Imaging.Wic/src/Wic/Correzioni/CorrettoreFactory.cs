@@ -3,20 +3,48 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Imaging.Correzioni;
+using Digiphoto.Lumen.Servizi.Ritoccare;
 
 namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 
-	internal class CorrettoreFactory {
-		
+	internal class CorrettoreFactory : ICorrettoreFactory {
+
+		Dictionary<Type, Correttore> _cache;
+
+		public CorrettoreFactory() {
+			_cache = new Dictionary<Type, Correttore>();
+		}
+
 		public Correttore creaCorrettore( Type tipoCorrezione ) {
 
 			Correttore correttore = null;
 
-			// In base al tipo di correzione, istanzio il giusto correttore
-			//if( tipoCorrezione.Equals( typeof( BiancoNeroCorrezione ) ) )
-			//    correttore = new BiancoNeroCorrettore();
+			// Prima controllo in cache
+			if( _cache.ContainsKey( tipoCorrezione ) ) {
+				correttore = _cache[tipoCorrezione];
+			} else {
+
+				// In base al tipo di correzione, istanzio il giusto correttore
+				if( tipoCorrezione == typeof( BiancoNeroCorrezione ) ) {
+					correttore = new BiancoNeroCorrettore();
+				} else if( tipoCorrezione == typeof( ResizeCorrezione ) ) {
+					correttore = new ResizeCorrettore();
+				} else if( tipoCorrezione == typeof( RuotaCorrezione ) ) {
+					correttore = new RuotaCorrettore();
+				}
+
+				if( correttore == null )
+					throw new ArgumentOutOfRangeException( "correzione non gestita: " + tipoCorrezione );
+
+				// Metto in cache
+				_cache.Add( tipoCorrezione, correttore );
+			}
 
 			return correttore;
+		}
+
+		public Correttore creaCorrettore<T>() where T : Correzione {
+			throw new NotImplementedException();
 		}
 	}
 }

@@ -21,11 +21,11 @@ namespace Digiphoto.Lumen.Imaging {
 
 
 		#region Metodi astratti dall'interfaccia
-		public abstract int ww {
+		public abstract long ww {
 			get;
 		}
 
-		public abstract int hh {
+		public abstract long hh {
 			get;
 		}
 
