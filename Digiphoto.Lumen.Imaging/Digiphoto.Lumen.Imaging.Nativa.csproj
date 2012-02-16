@@ -53,9 +53,9 @@
     </Compile>
     <Compile Include="src\Nativa\Correzioni\BiancoNeroCorrettore.cs" />
     <Compile Include="src\Nativa\Correzioni\CorrettoreFactory.cs" />
+    <Compile Include="src\Nativa\Correzioni\ScaleCorrezione.cs" />
     <Compile Include="src\Nativa\GestoreImmagineSrvImpl.cs" />
     <Compile Include="src\Nativa\ImmagineNet.cs" />
-    <Compile Include="src\Nativa\ProvinatoreNet.cs" />
     <Compile Include="src\Nativa\EsecutoreStampaNet.cs" />
   </ItemGroup>
   <ItemGroup>

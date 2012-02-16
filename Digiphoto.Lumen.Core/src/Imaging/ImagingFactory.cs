@@ -1,5 +1,6 @@
 ﻿using System;
 using Digiphoto.Lumen.Servizi.Stampare;
+using Digiphoto.Lumen.Servizi.Ritoccare;
 
 namespace Digiphoto.Lumen.Imaging {
 
@@ -28,9 +29,13 @@ namespace Digiphoto.Lumen.Imaging {
 		}
 
 
-		public IProvinatore creaProvinatore() {
+		public ICorrettoreFactory creaCorrettoreFactory() {
+
+			object ooo = Activator.CreateInstance( "Digiphoto.Lumen.Imaging.Wic", "Digiphoto.Lumen.Imaging.Wic.Correzioni.CorrettoreFactory" ).Unwrap();
+
 			// TODO sostituire con un setting
-			return (IProvinatore)Activator.CreateInstance( "Digiphoto.Lumen.Imaging", "ProvinatoreNet" );
+			return (ICorrettoreFactory)ooo;
+
 		}
 
 

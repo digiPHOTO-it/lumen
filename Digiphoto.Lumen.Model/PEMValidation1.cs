@@ -24,10 +24,9 @@ using System.Collections.Generic;
 [assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "AlbumRigaAlbum", "Album", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Digiphoto.Lumen.Model.Album), "RigaAlbum", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.RigaAlbum))]
 [assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "FotografoScaricoCard", "Fotografo", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Digiphoto.Lumen.Model.Fotografo), "ScaricoCard", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.ScaricoCard))]
 [assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "CarrelloRigaCarrello", "Carrello", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Digiphoto.Lumen.Model.Carrello), "RigaCarrello", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.RigaCarrello))]
-[assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "FormatoCartaRiCaFotoStampata", "FormatoCarta", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Digiphoto.Lumen.Model.FormatoCarta), "RiCaFotoStampata", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.RiCaFotoStampata))]
-[assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "FotografoRiCaFotoStampata", "Fotografo", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Digiphoto.Lumen.Model.Fotografo), "RiCaFotoStampata", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.RiCaFotoStampata))]
+[assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "FormatoCartaRiCaFotoStampata", "FormatoCarta", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Digiphoto.Lumen.Model.FormatoCarta), "RiCaFotoStampata", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.RiCaFotoStampata))]
+[assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "FotografoRiCaFotoStampata", "Fotografo", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Digiphoto.Lumen.Model.Fotografo), "RiCaFotoStampata", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.RiCaFotoStampata))]
 [assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "FotografiaRigaAlbum", "Fotografia", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Digiphoto.Lumen.Model.Fotografia), "RigaAlbum", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.RigaAlbum))]
-[assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "FotografiaCorrezione", "Fotografia", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Digiphoto.Lumen.Model.Fotografia), "Correzione", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.Correzione))]
 [assembly: EdmRelationshipAttribute("Digiphoto.Lumen.Model", "FotografiaRiCaFotoStampata", "Fotografia", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Digiphoto.Lumen.Model.Fotografia), "RiCaFotoStampata", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Digiphoto.Lumen.Model.RiCaFotoStampata))]
 
 #endregion
@@ -238,22 +237,6 @@ namespace Digiphoto.Lumen.Model
             }
         }
         private ObjectSet<RigaCarrello> _RigheCarrelli;
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        public ObjectSet<Correzione> Correzioni
-        {
-            get
-            {
-                if ((_Correzioni == null))
-                {
-                    _Correzioni = base.CreateObjectSet<Correzione>("Correzioni");
-                }
-                return _Correzioni;
-            }
-        }
-        private ObjectSet<Correzione> _Correzioni;
 
         #endregion
         #region AddTo Methods
@@ -336,14 +319,6 @@ namespace Digiphoto.Lumen.Model
         public void AddToRigheCarrelli(RigaCarrello rigaCarrello)
         {
             base.AddObject("RigheCarrelli", rigaCarrello);
-        }
-    
-        /// <summary>
-        /// Deprecated Method for adding a new object to the Correzioni EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
-        /// </summary>
-        public void AddToCorrezioni(Correzione correzione)
-        {
-            base.AddObject("Correzioni", correzione);
         }
 
         #endregion
@@ -536,61 +511,6 @@ namespace Digiphoto.Lumen.Model
         }
 
         #endregion
-    }
-    
-    /// <summary>
-    /// No Metadata Documentation available.
-    /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName="Digiphoto.Lumen.Model", Name="BiancoNeroCorrezione")]
-    [Serializable()]
-    [DataContractAttribute(IsReference=true)]
-    public partial class BiancoNeroCorrezione : Correzione
-    {
-        #region Factory Method
-    
-        /// <summary>
-        /// Create a new BiancoNeroCorrezione object.
-        /// </summary>
-        /// <param name="id">Initial value of the id property.</param>
-        /// <param name="cardinalita">Initial value of the cardinalita property.</param>
-        /// <param name="ordinamento">Initial value of the ordinamento property.</param>
-        public static BiancoNeroCorrezione CreateBiancoNeroCorrezione(global::System.Guid id, global::System.Int16 cardinalita, global::System.String ordinamento)
-        {
-            BiancoNeroCorrezione biancoNeroCorrezione = new BiancoNeroCorrezione();
-            biancoNeroCorrezione.id = id;
-            biancoNeroCorrezione.cardinalita = cardinalita;
-            biancoNeroCorrezione.ordinamento = ordinamento;
-            return biancoNeroCorrezione;
-        }
-
-        #endregion
-    	public bool SetValidate(out List<string> warnings, out List<string> errors)
-    	{
-    		bool isOK = true;
-    		warnings = new List<string>();
-    		errors = new List<string>();
-        
-    		return isOK;	
-    	}
-    	public bool Validate(out List<string> warnings, out List<string> errors)
-    	{
-    		bool isOK = true;
-    		warnings = new List<string>();
-    		errors = new List<string>();
-    		
-    		return isOK;	
-    	}
-    	public string[] GetUIHint(string propertyName)
-    	{
-    		Dictionary<string, string[]> UIHints = new Dictionary<string, string[]>(); 
-    
-    		string[] uihintslist;
-    		if (UIHints.TryGetValue(propertyName, out uihintslist))
-    			return uihintslist;
-    		else
-    			return new string[0];
-    	}
-    
     }
     
     /// <summary>
@@ -802,576 +722,6 @@ namespace Digiphoto.Lumen.Model
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName="Digiphoto.Lumen.Model", Name="ContrastoCorrezione")]
-    [Serializable()]
-    [DataContractAttribute(IsReference=true)]
-    public partial class ContrastoCorrezione : Correzione
-    {
-        #region Factory Method
-    
-        /// <summary>
-        /// Create a new ContrastoCorrezione object.
-        /// </summary>
-        /// <param name="id">Initial value of the id property.</param>
-        /// <param name="cardinalita">Initial value of the cardinalita property.</param>
-        /// <param name="ordinamento">Initial value of the ordinamento property.</param>
-        public static ContrastoCorrezione CreateContrastoCorrezione(global::System.Guid id, global::System.Int16 cardinalita, global::System.String ordinamento)
-        {
-            ContrastoCorrezione contrastoCorrezione = new ContrastoCorrezione();
-            contrastoCorrezione.id = id;
-            contrastoCorrezione.cardinalita = cardinalita;
-            contrastoCorrezione.ordinamento = ordinamento;
-            return contrastoCorrezione;
-        }
-
-        #endregion
-        #region Primitive Properties
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public Nullable<global::System.Single> fattore
-        {
-            get
-            {
-                return _fattore;
-            }
-            set
-            {
-                OnfattoreChanging(value);
-                ReportPropertyChanging("fattore");
-                _fattore = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("fattore");
-                OnfattoreChanged();
-            }
-        }
-        private Nullable<global::System.Single> _fattore;
-        partial void OnfattoreChanging(Nullable<global::System.Single> value);
-        partial void OnfattoreChanged();
-
-        #endregion
-    	public bool SetValidate(out List<string> warnings, out List<string> errors)
-    	{
-    		bool isOK = true;
-    		warnings = new List<string>();
-    		errors = new List<string>();
-        
-    		return isOK;	
-    	}
-    	public bool Validate(out List<string> warnings, out List<string> errors)
-    	{
-    		bool isOK = true;
-    		warnings = new List<string>();
-    		errors = new List<string>();
-        		
-    		return isOK;	
-    	}
-    	public string[] GetUIHint(string propertyName)
-    	{
-    		Dictionary<string, string[]> UIHints = new Dictionary<string, string[]>(); 
-    
-        		string[] uihintslist;
-    		if (UIHints.TryGetValue(propertyName, out uihintslist))
-    			return uihintslist;
-    		else
-    			return new string[0];
-    	}
-    
-    }
-    
-    /// <summary>
-    /// No Metadata Documentation available.
-    /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName="Digiphoto.Lumen.Model", Name="CorniceCorrezione")]
-    [Serializable()]
-    [DataContractAttribute(IsReference=true)]
-    public partial class CorniceCorrezione : Correzione
-    {
-        #region Factory Method
-    
-        /// <summary>
-        /// Create a new CorniceCorrezione object.
-        /// </summary>
-        /// <param name="id">Initial value of the id property.</param>
-        /// <param name="cardinalita">Initial value of the cardinalita property.</param>
-        /// <param name="ordinamento">Initial value of the ordinamento property.</param>
-        public static CorniceCorrezione CreateCorniceCorrezione(global::System.Guid id, global::System.Int16 cardinalita, global::System.String ordinamento)
-        {
-            CorniceCorrezione corniceCorrezione = new CorniceCorrezione();
-            corniceCorrezione.id = id;
-            corniceCorrezione.cardinalita = cardinalita;
-            corniceCorrezione.ordinamento = ordinamento;
-            return corniceCorrezione;
-        }
-
-        #endregion
-        #region Primitive Properties
-    
-        /// <summary>
-        /// Nome della cornice
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public global::System.String nome
-        {
-            get
-            {
-                return _nome;
-            }
-            set
-            {
-                OnnomeChanging(value);
-                ReportPropertyChanging("nome");
-                _nome = StructuralObject.SetValidValue(value, true);
-                ReportPropertyChanged("nome");
-                OnnomeChanged();
-            }
-        }
-        private global::System.String _nome;
-        partial void OnnomeChanging(global::System.String value);
-        partial void OnnomeChanged();
-    
-        /// <summary>
-        /// fattore di zoom
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public Nullable<global::System.Single> fattoreRotazione
-        {
-            get
-            {
-                return _fattoreRotazione;
-            }
-            set
-            {
-                OnfattoreRotazioneChanging(value);
-                ReportPropertyChanging("fattoreRotazione");
-                _fattoreRotazione = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("fattoreRotazione");
-                OnfattoreRotazioneChanged();
-            }
-        }
-        private Nullable<global::System.Single> _fattoreRotazione;
-        partial void OnfattoreRotazioneChanging(Nullable<global::System.Single> value);
-        partial void OnfattoreRotazioneChanged();
-    
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <LongDescription>
-        /// Gradi di rotazione della foto
-        /// </LongDescription>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public Nullable<global::System.Int16> gradiRotazione
-        {
-            get
-            {
-                return _gradiRotazione;
-            }
-            set
-            {
-                OngradiRotazioneChanging(value);
-                ReportPropertyChanging("gradiRotazione");
-                _gradiRotazione = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("gradiRotazione");
-                OngradiRotazioneChanged();
-            }
-        }
-        private Nullable<global::System.Int16> _gradiRotazione;
-        partial void OngradiRotazioneChanging(Nullable<global::System.Int16> value);
-        partial void OngradiRotazioneChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public global::System.String direzioneSpecchio
-        {
-            get
-            {
-                return _direzioneSpecchio;
-            }
-            set
-            {
-                OndirezioneSpecchioChanging(value);
-                ReportPropertyChanging("direzioneSpecchio");
-                _direzioneSpecchio = StructuralObject.SetValidValue(value, true);
-                ReportPropertyChanged("direzioneSpecchio");
-                OndirezioneSpecchioChanged();
-            }
-        }
-        private global::System.String _direzioneSpecchio;
-        partial void OndirezioneSpecchioChanging(global::System.String value);
-        partial void OndirezioneSpecchioChanged();
-
-        #endregion
-    	public bool SetValidate(out List<string> warnings, out List<string> errors)
-    	{
-    		bool isOK = true;
-    		warnings = new List<string>();
-    		errors = new List<string>();
-        
-    		return isOK;	
-    	}
-    	public bool Validate(out List<string> warnings, out List<string> errors)
-    	{
-    		bool isOK = true;
-    		warnings = new List<string>();
-    		errors = new List<string>();
-                    		
-    		return isOK;	
-    	}
-    	public string[] GetUIHint(string propertyName)
-    	{
-    		Dictionary<string, string[]> UIHints = new Dictionary<string, string[]>(); 
-    
-                    		string[] uihintslist;
-    		if (UIHints.TryGetValue(propertyName, out uihintslist))
-    			return uihintslist;
-    		else
-    			return new string[0];
-    	}
-    
-    }
-    
-    /// <summary>
-    /// No Metadata Documentation available.
-    /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName="Digiphoto.Lumen.Model", Name="Correzione")]
-    [Serializable()]
-    [DataContractAttribute(IsReference=true)]
-    [KnownTypeAttribute(typeof(RuotaCorrezione))]
-    [KnownTypeAttribute(typeof(BiancoNeroCorrezione))]
-    [KnownTypeAttribute(typeof(ContrastoCorrezione))]
-    [KnownTypeAttribute(typeof(CropCorrezione))]
-    [KnownTypeAttribute(typeof(LuminositaCorrezione))]
-    [KnownTypeAttribute(typeof(SeppiaCorrezione))]
-    [KnownTypeAttribute(typeof(SpecchioCorrezione))]
-    [KnownTypeAttribute(typeof(CorniceCorrezione))]
-    public abstract partial class Correzione : EntityObject
-    {
-        #region Primitive Properties
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Guid id
-        {
-            get
-            {
-                return _id;
-            }
-            set
-            {
-                if (_id != value)
-                {
-                    OnidChanging(value);
-                    ReportPropertyChanging("id");
-                    _id = StructuralObject.SetValidValue(value);
-                    ReportPropertyChanged("id");
-                    OnidChanged();
-                }
-            }
-        }
-        private global::System.Guid _id;
-        partial void OnidChanging(global::System.Guid value);
-        partial void OnidChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Int16 cardinalita
-        {
-            get
-            {
-                return _cardinalita;
-            }
-            set
-            {
-                OncardinalitaChanging(value);
-                ReportPropertyChanging("cardinalita");
-                _cardinalita = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("cardinalita");
-                OncardinalitaChanged();
-            }
-        }
-        private global::System.Int16 _cardinalita;
-        partial void OncardinalitaChanging(global::System.Int16 value);
-        partial void OncardinalitaChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.String ordinamento
-        {
-            get
-            {
-                return _ordinamento;
-            }
-            set
-            {
-                OnordinamentoChanging(value);
-                ReportPropertyChanging("ordinamento");
-                _ordinamento = StructuralObject.SetValidValue(value, false);
-                ReportPropertyChanged("ordinamento");
-                OnordinamentoChanged();
-            }
-        }
-        private global::System.String _ordinamento;
-        partial void OnordinamentoChanging(global::System.String value);
-        partial void OnordinamentoChanged();
-
-        #endregion
-    	public bool SetValidate(out List<string> warnings, out List<string> errors)
-    	{
-    		bool isOK = true;
-    		warnings = new List<string>();
-    		errors = new List<string>();
-        
-    		return isOK;	
-    	}
-    	public bool Validate(out List<string> warnings, out List<string> errors)
-    	{
-    		bool isOK = true;
-    		warnings = new List<string>();
-    		errors = new List<string>();
-                		
-    		return isOK;	
-    	}
-    	public string[] GetUIHint(string propertyName)
-    	{
-    		Dictionary<string, string[]> UIHints = new Dictionary<string, string[]>(); 
-    
-                		string[] uihintslist;
-    		if (UIHints.TryGetValue(propertyName, out uihintslist))
-    			return uihintslist;
-    		else
-    			return new string[0];
-    	}
-    
-    }
-    
-    /// <summary>
-    /// No Metadata Documentation available.
-    /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName="Digiphoto.Lumen.Model", Name="CropCorrezione")]
-    [Serializable()]
-    [DataContractAttribute(IsReference=true)]
-    public partial class CropCorrezione : Correzione
-    {
-        #region Factory Method
-    
-        /// <summary>
-        /// Create a new CropCorrezione object.
-        /// </summary>
-        /// <param name="id">Initial value of the id property.</param>
-        /// <param name="cardinalita">Initial value of the cardinalita property.</param>
-        /// <param name="ordinamento">Initial value of the ordinamento property.</param>
-        public static CropCorrezione CreateCropCorrezione(global::System.Guid id, global::System.Int16 cardinalita, global::System.String ordinamento)
-        {
-            CropCorrezione cropCorrezione = new CropCorrezione();
-            cropCorrezione.id = id;
-            cropCorrezione.cardinalita = cardinalita;
-            cropCorrezione.ordinamento = ordinamento;
-            return cropCorrezione;
-        }
-
-        #endregion
-        #region Primitive Properties
-    
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <LongDescription>
-        /// Siccome il crop avviene sul provino, devo sapere qual&apos;era la Size originale dell&apos;immagine che ho ritagliato, perché poi devo ripetere l&apos;operazione sull&apos;immagine reale (quella grande)
-        /// </LongDescription>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public Nullable<global::System.Int32> imgOrigW
-        {
-            get
-            {
-                return _imgOrigW;
-            }
-            set
-            {
-                OnimgOrigWChanging(value);
-                ReportPropertyChanging("imgOrigW");
-                _imgOrigW = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("imgOrigW");
-                OnimgOrigWChanged();
-            }
-        }
-        private Nullable<global::System.Int32> _imgOrigW;
-        partial void OnimgOrigWChanging(Nullable<global::System.Int32> value);
-        partial void OnimgOrigWChanged();
-    
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <LongDescription>
-        /// Siccome il crop avviene sul provino, devo sapere qual&apos;era la Size originale dell&apos;immagine che ho ritagliato, perché poi devo ripetere l&apos;operazione sull&apos;immagine reale (quella grande)
-        /// </LongDescription>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public Nullable<global::System.Int32> imgOrigH
-        {
-            get
-            {
-                return _imgOrigH;
-            }
-            set
-            {
-                OnimgOrigHChanging(value);
-                ReportPropertyChanging("imgOrigH");
-                _imgOrigH = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("imgOrigH");
-                OnimgOrigHChanged();
-            }
-        }
-        private Nullable<global::System.Int32> _imgOrigH;
-        partial void OnimgOrigHChanging(Nullable<global::System.Int32> value);
-        partial void OnimgOrigHChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public Nullable<global::System.Int32> areaRitaglioX
-        {
-            get
-            {
-                return _areaRitaglioX;
-            }
-            set
-            {
-                OnareaRitaglioXChanging(value);
-                ReportPropertyChanging("areaRitaglioX");
-                _areaRitaglioX = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("areaRitaglioX");
-                OnareaRitaglioXChanged();
-            }
-        }
-        private Nullable<global::System.Int32> _areaRitaglioX;
-        partial void OnareaRitaglioXChanging(Nullable<global::System.Int32> value);
-        partial void OnareaRitaglioXChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public Nullable<global::System.Int32> areaRitaglioY
-        {
-            get
-            {
-                return _areaRitaglioY;
-            }
-            set
-            {
-                OnareaRitaglioYChanging(value);
-                ReportPropertyChanging("areaRitaglioY");
-                _areaRitaglioY = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("areaRitaglioY");
-                OnareaRitaglioYChanged();
-            }
-        }
-        private Nullable<global::System.Int32> _areaRitaglioY;
-        partial void OnareaRitaglioYChanging(Nullable<global::System.Int32> value);
-        partial void OnareaRitaglioYChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public Nullable<global::System.Int32> areaRitaglioW
-        {
-            get
-            {
-                return _areaRitaglioW;
-            }
-            set
-            {
-                OnareaRitaglioWChanging(value);
-                ReportPropertyChanging("areaRitaglioW");
-                _areaRitaglioW = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("areaRitaglioW");
-                OnareaRitaglioWChanged();
-            }
-        }
-        private Nullable<global::System.Int32> _areaRitaglioW;
-        partial void OnareaRitaglioWChanging(Nullable<global::System.Int32> value);
-        partial void OnareaRitaglioWChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public Nullable<global::System.Int32> areaRitaglioH
-        {
-            get
-            {
-                return _areaRitaglioH;
-            }
-            set
-            {
-                OnareaRitaglioHChanging(value);
-                ReportPropertyChanging("areaRitaglioH");
-                _areaRitaglioH = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("areaRitaglioH");
-                OnareaRitaglioHChanged();
-            }
-        }
-        private Nullable<global::System.Int32> _areaRitaglioH;
-        partial void OnareaRitaglioHChanging(Nullable<global::System.Int32> value);
-        partial void OnareaRitaglioHChanged();
-
-        #endregion
-    	public bool SetValidate(out List<string> warnings, out List<string> errors)
-    	{
-    		bool isOK = true;
-    		warnings = new List<string>();
-    		errors = new List<string>();
-        
-    		return isOK;	
-    	}
-    	public bool Validate(out List<string> warnings, out List<string> errors)
-    	{
-    		bool isOK = true;
-    		warnings = new List<string>();
-    		errors = new List<string>();
-                            		
-    		return isOK;	
-    	}
-    	public string[] GetUIHint(string propertyName)
-    	{
-    		Dictionary<string, string[]> UIHints = new Dictionary<string, string[]>(); 
-    
-                            		string[] uihintslist;
-    		if (UIHints.TryGetValue(propertyName, out uihintslist))
-    			return uihintslist;
-    		else
-    			return new string[0];
-    	}
-    
-    }
-    
-    /// <summary>
-    /// No Metadata Documentation available.
-    /// </summary>
     [EdmEntityTypeAttribute(NamespaceName="Digiphoto.Lumen.Model", Name="Evento")]
     [Serializable()]
     [DataContractAttribute(IsReference=true)]
@@ -1469,6 +819,30 @@ namespace Digiphoto.Lumen.Model
         private global::System.Boolean _attivo = true;
         partial void OnattivoChanging(global::System.Boolean value);
         partial void OnattivoChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Int16> ordinamento
+        {
+            get
+            {
+                return _ordinamento;
+            }
+            set
+            {
+                OnordinamentoChanging(value);
+                ReportPropertyChanging("ordinamento");
+                _ordinamento = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("ordinamento");
+                OnordinamentoChanged();
+            }
+        }
+        private Nullable<global::System.Int16> _ordinamento;
+        partial void OnordinamentoChanging(Nullable<global::System.Int16> value);
+        partial void OnordinamentoChanged();
 
         #endregion
     	public bool SetValidate(out List<string> warnings, out List<string> errors)
@@ -1488,7 +862,7 @@ namespace Digiphoto.Lumen.Model
     if((this.descrizione == null)) { errors.Add("descrizione\tError: Descrizione evento obbligatoria"); isOK = false; }
     // DataFieldLength
     if((this.descrizione != null && this.descrizione.Length > 100)) { errors.Add("descrizione\tError: Descrizione evento deve essere almeno di 2 caratteri"); isOK = false; }
-        		
+            		
     		return isOK;	
     	}
     	public string[] GetUIHint(string propertyName)
@@ -1496,7 +870,7 @@ namespace Digiphoto.Lumen.Model
     		Dictionary<string, string[]> UIHints = new Dictionary<string, string[]>(); 
     
             UIHints.Add("descrizione", new string[] {  });
-        		string[] uihintslist;
+            		string[] uihintslist;
     		if (UIHints.TryGetValue(propertyName, out uihintslist))
     			return uihintslist;
     		else
@@ -1631,6 +1005,30 @@ namespace Digiphoto.Lumen.Model
         private global::System.Boolean _attivo = true;
         partial void OnattivoChanging(global::System.Boolean value);
         partial void OnattivoChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Int16> ordinamento
+        {
+            get
+            {
+                return _ordinamento;
+            }
+            set
+            {
+                OnordinamentoChanging(value);
+                ReportPropertyChanging("ordinamento");
+                _ordinamento = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("ordinamento");
+                OnordinamentoChanged();
+            }
+        }
+        private Nullable<global::System.Int16> _ordinamento;
+        partial void OnordinamentoChanging(Nullable<global::System.Int16> value);
+        partial void OnordinamentoChanged();
 
         #endregion
     	public bool SetValidate(out List<string> warnings, out List<string> errors)
@@ -1646,19 +1044,14 @@ namespace Digiphoto.Lumen.Model
     		bool isOK = true;
     		warnings = new List<string>();
     		errors = new List<string>();
-                    		
-            if ((this.descrizione == null || this.descrizione.Length < 2)) { errors.Add("descrizione\tError: La Descrizione deve essere almeno 2 caratteri"); isOK = false; }
-            //Required
-            if ((this.prezzo == null)) { errors.Add("prezzo\tError: Al formato carta deve essere associato un prezzo"); isOK = false; }
-            string value = "" + this.prezzo;
-            Decimal number;
-            if (!Decimal.TryParse(value, out number)) { errors.Add("prezzo\tError: Errore nel formato del prezzo "); isOK = false; }
+                        		
     		return isOK;	
     	}
     	public string[] GetUIHint(string propertyName)
     	{
     		Dictionary<string, string[]> UIHints = new Dictionary<string, string[]>(); 
-                    		string[] uihintslist;
+    
+                        		string[] uihintslist;
     		if (UIHints.TryGetValue(propertyName, out uihintslist))
     			return uihintslist;
     		else
@@ -1896,6 +1289,30 @@ namespace Digiphoto.Lumen.Model
         private global::System.DateTime _giornata;
         partial void OngiornataChanging(global::System.DateTime value);
         partial void OngiornataChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String correzioniXml
+        {
+            get
+            {
+                return _correzioniXml;
+            }
+            set
+            {
+                OncorrezioniXmlChanging(value);
+                ReportPropertyChanging("correzioniXml");
+                _correzioniXml = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("correzioniXml");
+                OncorrezioniXmlChanged();
+            }
+        }
+        private global::System.String _correzioniXml;
+        partial void OncorrezioniXmlChanging(global::System.String value);
+        partial void OncorrezioniXmlChanged();
 
         #endregion
     	public bool SetValidate(out List<string> warnings, out List<string> errors)
@@ -1911,7 +1328,7 @@ namespace Digiphoto.Lumen.Model
     		bool isOK = true;
     		warnings = new List<string>();
     		errors = new List<string>();
-                                    		
+                                        		
     		return isOK;	
     	}
     	public string[] GetUIHint(string propertyName)
@@ -1919,7 +1336,7 @@ namespace Digiphoto.Lumen.Model
     		Dictionary<string, string[]> UIHints = new Dictionary<string, string[]>(); 
     
         UIHints.Add("id", new string[] {  });
-                                		string[] uihintslist;
+                                    		string[] uihintslist;
     		if (UIHints.TryGetValue(propertyName, out uihintslist))
     			return uihintslist;
     		else
@@ -2000,28 +1417,6 @@ namespace Digiphoto.Lumen.Model
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Evento>("Digiphoto.Lumen.Model.EventoFotografia", "Evento", value);
-                }
-            }
-        }
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("Digiphoto.Lumen.Model", "FotografiaCorrezione", "Correzione")]
-        public EntityCollection<Correzione> correzioni
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<Correzione>("Digiphoto.Lumen.Model.FotografiaCorrezione", "Correzione");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<Correzione>("Digiphoto.Lumen.Model.FotografiaCorrezione", "Correzione", value);
                 }
             }
         }
@@ -2434,88 +1829,6 @@ namespace Digiphoto.Lumen.Model
     		Dictionary<string, string[]> UIHints = new Dictionary<string, string[]>(); 
     
                         		string[] uihintslist;
-    		if (UIHints.TryGetValue(propertyName, out uihintslist))
-    			return uihintslist;
-    		else
-    			return new string[0];
-    	}
-    
-    }
-    
-    /// <summary>
-    /// No Metadata Documentation available.
-    /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName="Digiphoto.Lumen.Model", Name="LuminositaCorrezione")]
-    [Serializable()]
-    [DataContractAttribute(IsReference=true)]
-    public partial class LuminositaCorrezione : Correzione
-    {
-        #region Factory Method
-    
-        /// <summary>
-        /// Create a new LuminositaCorrezione object.
-        /// </summary>
-        /// <param name="id">Initial value of the id property.</param>
-        /// <param name="cardinalita">Initial value of the cardinalita property.</param>
-        /// <param name="ordinamento">Initial value of the ordinamento property.</param>
-        public static LuminositaCorrezione CreateLuminositaCorrezione(global::System.Guid id, global::System.Int16 cardinalita, global::System.String ordinamento)
-        {
-            LuminositaCorrezione luminositaCorrezione = new LuminositaCorrezione();
-            luminositaCorrezione.id = id;
-            luminositaCorrezione.cardinalita = cardinalita;
-            luminositaCorrezione.ordinamento = ordinamento;
-            return luminositaCorrezione;
-        }
-
-        #endregion
-        #region Primitive Properties
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public Nullable<global::System.Single> fattoreL
-        {
-            get
-            {
-                return _fattoreL;
-            }
-            set
-            {
-                OnfattoreLChanging(value);
-                ReportPropertyChanging("fattoreL");
-                _fattoreL = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("fattoreL");
-                OnfattoreLChanged();
-            }
-        }
-        private Nullable<global::System.Single> _fattoreL;
-        partial void OnfattoreLChanging(Nullable<global::System.Single> value);
-        partial void OnfattoreLChanged();
-
-        #endregion
-    	public bool SetValidate(out List<string> warnings, out List<string> errors)
-    	{
-    		bool isOK = true;
-    		warnings = new List<string>();
-    		errors = new List<string>();
-        
-    		return isOK;	
-    	}
-    	public bool Validate(out List<string> warnings, out List<string> errors)
-    	{
-    		bool isOK = true;
-    		warnings = new List<string>();
-    		errors = new List<string>();
-        		
-    		return isOK;	
-    	}
-    	public string[] GetUIHint(string propertyName)
-    	{
-    		Dictionary<string, string[]> UIHints = new Dictionary<string, string[]>(); 
-    
-        		string[] uihintslist;
     		if (UIHints.TryGetValue(propertyName, out uihintslist))
     			return uihintslist;
     		else
@@ -3171,136 +2484,6 @@ namespace Digiphoto.Lumen.Model
     }
     
     /// <summary>
-    /// No Metadata Documentation available.
-    /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName="Digiphoto.Lumen.Model", Name="RuotaCorrezione")]
-    [Serializable()]
-    [DataContractAttribute(IsReference=true)]
-    public partial class RuotaCorrezione : Correzione
-    {
-        #region Factory Method
-    
-        /// <summary>
-        /// Create a new RuotaCorrezione object.
-        /// </summary>
-        /// <param name="id">Initial value of the id property.</param>
-        /// <param name="cardinalita">Initial value of the cardinalita property.</param>
-        /// <param name="ordinamento">Initial value of the ordinamento property.</param>
-        public static RuotaCorrezione CreateRuotaCorrezione(global::System.Guid id, global::System.Int16 cardinalita, global::System.String ordinamento)
-        {
-            RuotaCorrezione ruotaCorrezione = new RuotaCorrezione();
-            ruotaCorrezione.id = id;
-            ruotaCorrezione.cardinalita = cardinalita;
-            ruotaCorrezione.ordinamento = ordinamento;
-            return ruotaCorrezione;
-        }
-
-        #endregion
-        #region Primitive Properties
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public Nullable<global::System.Int16> gradi
-        {
-            get
-            {
-                return _gradi;
-            }
-            set
-            {
-                OngradiChanging(value);
-                ReportPropertyChanging("gradi");
-                _gradi = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("gradi");
-                OngradiChanged();
-            }
-        }
-        private Nullable<global::System.Int16> _gradi;
-        partial void OngradiChanging(Nullable<global::System.Int16> value);
-        partial void OngradiChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public Nullable<global::System.Boolean> scartoAutomatico
-        {
-            get
-            {
-                return _scartoAutomatico;
-            }
-            set
-            {
-                OnscartoAutomaticoChanging(value);
-                ReportPropertyChanging("scartoAutomatico");
-                _scartoAutomatico = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("scartoAutomatico");
-                OnscartoAutomaticoChanged();
-            }
-        }
-        private Nullable<global::System.Boolean> _scartoAutomatico;
-        partial void OnscartoAutomaticoChanging(Nullable<global::System.Boolean> value);
-        partial void OnscartoAutomaticoChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public Nullable<global::System.Int32> backgroundColor
-        {
-            get
-            {
-                return _backgroundColor;
-            }
-            set
-            {
-                OnbackgroundColorChanging(value);
-                ReportPropertyChanging("backgroundColor");
-                _backgroundColor = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("backgroundColor");
-                OnbackgroundColorChanged();
-            }
-        }
-        private Nullable<global::System.Int32> _backgroundColor;
-        partial void OnbackgroundColorChanging(Nullable<global::System.Int32> value);
-        partial void OnbackgroundColorChanged();
-
-        #endregion
-    	public bool SetValidate(out List<string> warnings, out List<string> errors)
-    	{
-    		bool isOK = true;
-    		warnings = new List<string>();
-    		errors = new List<string>();
-        
-    		return isOK;	
-    	}
-    	public bool Validate(out List<string> warnings, out List<string> errors)
-    	{
-    		bool isOK = true;
-    		warnings = new List<string>();
-    		errors = new List<string>();
-                		
-    		return isOK;	
-    	}
-    	public string[] GetUIHint(string propertyName)
-    	{
-    		Dictionary<string, string[]> UIHints = new Dictionary<string, string[]>(); 
-    
-                		string[] uihintslist;
-    		if (UIHints.TryGetValue(propertyName, out uihintslist))
-    			return uihintslist;
-    		else
-    			return new string[0];
-    	}
-    
-    }
-    
-    /// <summary>
     /// Foto Scattate
     /// </summary>
     /// <LongDescription>
@@ -3475,143 +2658,6 @@ namespace Digiphoto.Lumen.Model
         }
 
         #endregion
-    }
-    
-    /// <summary>
-    /// No Metadata Documentation available.
-    /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName="Digiphoto.Lumen.Model", Name="SeppiaCorrezione")]
-    [Serializable()]
-    [DataContractAttribute(IsReference=true)]
-    public partial class SeppiaCorrezione : Correzione
-    {
-        #region Factory Method
-    
-        /// <summary>
-        /// Create a new SeppiaCorrezione object.
-        /// </summary>
-        /// <param name="id">Initial value of the id property.</param>
-        /// <param name="cardinalita">Initial value of the cardinalita property.</param>
-        /// <param name="ordinamento">Initial value of the ordinamento property.</param>
-        public static SeppiaCorrezione CreateSeppiaCorrezione(global::System.Guid id, global::System.Int16 cardinalita, global::System.String ordinamento)
-        {
-            SeppiaCorrezione seppiaCorrezione = new SeppiaCorrezione();
-            seppiaCorrezione.id = id;
-            seppiaCorrezione.cardinalita = cardinalita;
-            seppiaCorrezione.ordinamento = ordinamento;
-            return seppiaCorrezione;
-        }
-
-        #endregion
-    	public bool SetValidate(out List<string> warnings, out List<string> errors)
-    	{
-    		bool isOK = true;
-    		warnings = new List<string>();
-    		errors = new List<string>();
-        
-    		return isOK;	
-    	}
-    	public bool Validate(out List<string> warnings, out List<string> errors)
-    	{
-    		bool isOK = true;
-    		warnings = new List<string>();
-    		errors = new List<string>();
-    		
-    		return isOK;	
-    	}
-    	public string[] GetUIHint(string propertyName)
-    	{
-    		Dictionary<string, string[]> UIHints = new Dictionary<string, string[]>(); 
-    
-    		string[] uihintslist;
-    		if (UIHints.TryGetValue(propertyName, out uihintslist))
-    			return uihintslist;
-    		else
-    			return new string[0];
-    	}
-    
-    }
-    
-    /// <summary>
-    /// No Metadata Documentation available.
-    /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName="Digiphoto.Lumen.Model", Name="SpecchioCorrezione")]
-    [Serializable()]
-    [DataContractAttribute(IsReference=true)]
-    public partial class SpecchioCorrezione : Correzione
-    {
-        #region Factory Method
-    
-        /// <summary>
-        /// Create a new SpecchioCorrezione object.
-        /// </summary>
-        /// <param name="id">Initial value of the id property.</param>
-        /// <param name="cardinalita">Initial value of the cardinalita property.</param>
-        /// <param name="ordinamento">Initial value of the ordinamento property.</param>
-        public static SpecchioCorrezione CreateSpecchioCorrezione(global::System.Guid id, global::System.Int16 cardinalita, global::System.String ordinamento)
-        {
-            SpecchioCorrezione specchioCorrezione = new SpecchioCorrezione();
-            specchioCorrezione.id = id;
-            specchioCorrezione.cardinalita = cardinalita;
-            specchioCorrezione.ordinamento = ordinamento;
-            return specchioCorrezione;
-        }
-
-        #endregion
-        #region Primitive Properties
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public global::System.String direzione
-        {
-            get
-            {
-                return _direzione;
-            }
-            set
-            {
-                OndirezioneChanging(value);
-                ReportPropertyChanging("direzione");
-                _direzione = StructuralObject.SetValidValue(value, true);
-                ReportPropertyChanged("direzione");
-                OndirezioneChanged();
-            }
-        }
-        private global::System.String _direzione;
-        partial void OndirezioneChanging(global::System.String value);
-        partial void OndirezioneChanged();
-
-        #endregion
-    	public bool SetValidate(out List<string> warnings, out List<string> errors)
-    	{
-    		bool isOK = true;
-    		warnings = new List<string>();
-    		errors = new List<string>();
-        
-    		return isOK;	
-    	}
-    	public bool Validate(out List<string> warnings, out List<string> errors)
-    	{
-    		bool isOK = true;
-    		warnings = new List<string>();
-    		errors = new List<string>();
-        		
-    		return isOK;	
-    	}
-    	public string[] GetUIHint(string propertyName)
-    	{
-    		Dictionary<string, string[]> UIHints = new Dictionary<string, string[]>(); 
-    
-        		string[] uihintslist;
-    		if (UIHints.TryGetValue(propertyName, out uihintslist))
-    			return uihintslist;
-    		else
-    			return new string[0];
-    	}
-    
     }
 
     #endregion

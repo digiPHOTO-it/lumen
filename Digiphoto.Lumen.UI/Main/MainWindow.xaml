@@ -9,7 +9,7 @@
         <lumC:ImmagineToImageSourceConverter x:Key="immagineToImageSourceConverter" />
     </Window.Resources>   
     
-    <TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Left">
+    <TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Top">
         
         <TabItem Header="Scarica" ToolTip="Scarica foto da memory-card o da altra cartella" MinHeight="30" >
             <!-- UserControl per scaricare le foto -->
@@ -17,6 +17,7 @@
         </TabItem>
 
         <TabItem Header="Aggiusta" ToolTip="Correggi, organizza e tagga foto" >
+            <lum:FotoRitocco />
         </TabItem>
 
         <TabItem Header="Mostra" ToolTip="Visualizzare foto" >

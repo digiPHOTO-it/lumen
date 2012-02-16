@@ -1,0 +1,71 @@
+﻿<lumM:UserControlBase x:Class="Digiphoto.Lumen.UI.FotoRitocco"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
+             xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
+             mc:Ignorable="d" 
+             d:DesignHeight="480" d:DesignWidth="640">
+
+    <!-- Istanzio il controllore -->
+    <lumM:UserControlBase.DataContext>
+        <lum:FotoRitoccoViewModel />
+    </lumM:UserControlBase.DataContext>
+    
+    <UserControl.Resources>
+        <ResourceDictionary Source="FotoRitoccoResources.xaml" />
+    </UserControl.Resources>
+
+    
+    <DockPanel LastChildFill="True">
+        
+        <StackPanel DockPanel.Dock="Left">
+            
+            <Label Content="Luminosità" />
+            <Slider ToolTip="Luminosità" />
+
+            <Label Content="Contrasto" />
+            <Slider ToolTip="Contrasto" />
+
+            <StackPanel Orientation="Horizontal">
+                <Button Content="-90°" Command="{Binding ruotareCommand}" CommandParameter="-90" />
+                <Button Content="+90°" Command="{Binding ruotareCommand}" CommandParameter="90" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="B/N" Command="{Binding grayScaleCommand}" />
+                <Button Content="Sepia" />                
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Orig" ToolTip="Torna Originale" 
+                        Command="{Binding tornareOriginaleCommand}" />
+            </StackPanel>
+        </StackPanel>
+            
+        <StackPanel DockPanel.Dock="Right">
+            <Label Content="Parametri" />
+        </StackPanel>
+
+
+
+        <ListBox x:Name="LsImmaginiDaModificare"  DockPanel.Dock="Bottom"
+                 SelectionMode="Multiple"
+                 Style="{StaticResource LsImmaginiDaModificareStyle}"
+                 ItemsSource="{Binding Path=fotografieDaModificareCW}" 
+                 ItemsPanel="{DynamicResource ImmaginiDaModificareItemsPanelTemplate}" 
+                 ItemTemplate="{DynamicResource ImmaginiDaModificareDataTemplate}"
+                 IsSynchronizedWithCurrentItem="True"
+                 ScrollViewer.HorizontalScrollBarVisibility="Visible" MouseDown="LsImmaginiDaModificare_MouseDown">
+           
+        </ListBox>
+
+        <!-- Queste sono le due immagini prima e dopo la cura -->
+        <Grid>
+            <Border>
+                <Image Source="{Binding Path=fotoSelezionata.imgProvino,Converter={StaticResource immagineToImageSourceConverter}}" />
+            </Border>
+        </Grid>
+
+    </DockPanel>
+    
+</lumM:UserControlBase>

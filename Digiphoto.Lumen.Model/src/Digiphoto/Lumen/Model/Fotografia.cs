@@ -43,7 +43,7 @@ namespace Digiphoto.Lumen.Model {
 		}
 
 		public override string ToString() {
-			return String.Format( "Num.{0} Oper={1} del={2}", this.numero, this.fotografo.iniziali, dataOraAcquisizione.ToShortDateString() );
+			return String.Format( "Num.{0} del={1}", numero, dataOraAcquisizione.ToShortDateString() );
 		}
 
 	}

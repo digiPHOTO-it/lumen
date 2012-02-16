@@ -85,6 +85,10 @@
       <DependentUpon>FotoGallery.xaml</DependentUpon>
     </Compile>
     <Compile Include="FotoGallery\FotoGalleryViewModel.cs" />
+    <Compile Include="FotoRitocco\FotoRitocco.xaml.cs">
+      <DependentUpon>FotoRitocco.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FotoRitocco\FotoRitoccoViewModel.cs" />
     <Compile Include="Mvvm\IDialogProvider.cs" />
     <Compile Include="Mvvm\UserControlBase.cs" />
     <Compile Include="SelettoreFormatoCarta\SelettoreFormatoCartaViewModel.cs" />
@@ -94,6 +98,14 @@
       <DependentUpon>SelettoreStampantiInstallateView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
+    <Page Include="FotoRitocco\FotoRitocco.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FotoRitocco\FotoRitoccoResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SelettoreStampantiInstallate\SelettoreStampantiInstallateDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -232,12 +244,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\cani_e_bambini.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <SplashScreen Include="SplashScreen1.png" />
   </ItemGroup>
   <ItemGroup>
-    <SplashScreen Include="SplashScreen1.png" />
+    <None Include="Resources\Stampante.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Printer-48x48.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

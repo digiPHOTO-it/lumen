@@ -1,0 +1,58 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <lumC:ImmagineToImageSourceConverter x:Key="immagineToImageSourceConverter" />
+
+    <!-- Stile della listbox che itera le immagini -->
+    <Style x:Key="LsImmaginiDaModificareStyle" TargetType="ListBox">
+
+        <Setter Property="IsSynchronizedWithCurrentItem" Value="True" />
+
+        <Setter Property="ItemContainerStyle" Value="{DynamicResource ImmaginiDaModificareContainerStyle}" />
+
+    </Style>
+
+    <!-- Style per ogni elemento della collection. Setto il colore selezionato = giallo -->
+    <Style x:Key="ImmaginiDaModificareContainerStyle" TargetType="ListBoxItem">
+        <Style.Resources>
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                             Color="Green"/>
+        </Style.Resources>
+        <Setter Property="IsSelected" Value="{Binding Mode=TwoWay, Path=isSelezionata}"/>
+    </Style>
+
+    <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
+
+    <DataTemplate x:Key="ImmaginiDaModificareDataTemplate">
+
+        <Grid>
+
+            <Border BorderBrush="WhiteSmoke" BorderThickness="1" 
+                    CornerRadius="10" Margin="0,0,2,2" >
+
+                <Image Source="{Binding Path=imgProvino,Converter={StaticResource immagineToImageSourceConverter}}" 
+                       Height="100"  Width="100"
+                       Name="imageMod"
+                       >
+                    <!-- Come tooltip si possono visualizzare informazioni importanti riassuntive -->
+                    <Image.ToolTip>
+                        <Grid>
+                            <Label Content="Foto=123 Oper=QQ" />
+                        </Grid>
+                    </Image.ToolTip>
+                </Image>
+
+            </Border>
+        </Grid>
+
+    </DataTemplate>
+
+
+    <!-- Template per il pannello che contiene tutti gli elementi della lista -->
+    <ItemsPanelTemplate x:Key="ImmaginiDaModificareItemsPanelTemplate">
+        <!-- il wrappanel mi consente di sistemare al meglio le foto in funzione dello spazio disponibile ed andare a capo quando serve -->
+        <WrapPanel Orientation="Horizontal" />
+    </ItemsPanelTemplate>
+    
+</ResourceDictionary>

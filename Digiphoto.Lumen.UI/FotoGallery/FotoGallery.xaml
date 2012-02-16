@@ -24,18 +24,18 @@
     <DockPanel>
         
         <ToolBarTray DockPanel.Dock="Left" Orientation="Vertical">
-            <ToolBar Band="1" BandIndex="1" Name="stampaToolBar" >
-                <Button>
-                    <Image Source="http://www.savinobarbera.com/images/print.gif" Width="48"/>
-                </Button>
-                <Button>
-                    <Image Source="http://icons.iconseeker.com/png/fullsize/glaze/print-printer.png" Width="48"/>
-                </Button>
+
+            <ToolBar Band="1" BandIndex="1" Name="stampaToolBar" 
+                     Header="Stampe"
+                     ItemsSource="{Binding stampantiAbbinate}" 
+                     ItemTemplate="{StaticResource pulsanteDiStampaTemplate}" >                
+            </ToolBar>
+            
+            
+            <ToolBar Band="2" BandIndex="1">
                 <Button Command="{Binding Path=aggiungereAlMasterizzatoreCommand}">
                     <Image Source="http://cdn1.iconfinder.com/data/icons/STROKE/video_production/png/256/dvd_burn.png" Width="48" />
                 </Button>
-            </ToolBar>
-            <ToolBar Band="2" BandIndex="1">
                 <Button>
                     Funz8
                 </Button>
@@ -88,7 +88,8 @@
             </Grid>
             
         </Expander>
-        
+
+        <!-- Questa è la lista delle immagini -->
         <ListBox x:Name="LsImageGallery"  
                  SelectionMode="Multiple"
                  Style="{StaticResource LsImageGalleryStyle}"
@@ -97,14 +98,6 @@
                  ItemTemplate="{DynamicResource ImageGalleryDataTemplate}"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
-        <!--
-            <ListBox.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black"/>
-                    <GradientStop Color="#FF1E2A2F" Offset="1"/>
-                </LinearGradientBrush>
-            </ListBox.Background>
--->
         
         </ListBox>
 

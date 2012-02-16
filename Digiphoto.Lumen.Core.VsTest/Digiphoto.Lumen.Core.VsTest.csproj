@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Crc32.cs" />
+    <Compile Include="SerializzaUtilTest.cs" />
     <Compile Include="src\DatiDiEsempio\DataGenTest.cs" />
     <Compile Include="src\DatiDiEsempio\ParoleCasualiTest.cs" />
     <Compile Include="SpoolStampeSrvImplTest.cs" />

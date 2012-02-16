@@ -45,7 +45,36 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 
 			return sb.ToString();
 		}
+
+		// Mi serve per ordinare i formati carta stampabili in base alla importanza (ordinamento) impostato
+		public static int CompareByImportanza( StampanteAbbinata a, StampanteAbbinata b ) {
+
+			int? ord1 = null;
+			int? ord2 = null;
+
+			if( a != null && a.FormatoCarta != null )
+				ord1 = a.FormatoCarta.ordinamento;
+
+			if( b != null && b.FormatoCarta != null )
+				ord2 = b.FormatoCarta.ordinamento;
+
+			if( ord1 == null ) {
+				if( ord2 == null )
+					return 0;
+				else
+					return -1;
+			} else {
+				if( ord2 == null )
+					return 1;
+				else {
+					return (int)ord1 - (int)ord2;
+				}
+			}
+
+		}
     }
+
+	
 
     public interface IStampantiAbbinateSrv : IServizio 
     {

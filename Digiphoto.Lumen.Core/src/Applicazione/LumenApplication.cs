@@ -17,6 +17,7 @@ using Digiphoto.Lumen.Servizi.EntityRepository;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Servizi.Scaricatore;
+using Digiphoto.Lumen.Servizi.Ritoccare;
 
 namespace Digiphoto.Lumen.Applicazione {
 
@@ -131,6 +132,8 @@ namespace Digiphoto.Lumen.Applicazione {
 			//
 			creaAggiungiAvviaServizio<IGestoreImmagineSrv>();
 			//
+			creaAggiungiAvviaServizio<IFotoRitoccoSrv>();
+			//
 			creaAggiungiAvviaServizio<IFotoExplorerSrv>();
 			//
 			creaAggiungiAvviaServizio<ISpoolStampeSrv>();
@@ -192,11 +195,6 @@ namespace Digiphoto.Lumen.Applicazione {
 
 		public T getServizioAvviato<T>() {
 			return (T)getServizioAvviato( ServizioFactory.calcFullName( typeof(T) ) );
-		}
-
-		/** Ritorno il servizio di gestione dell''immagine */
-		public IGestoreImmagineSrv getGestoreImmaginiSrv() {
-			return (IGestoreImmagineSrv) getServizioAvviato( typeof(IGestoreImmagineSrv).FullName );
 		}
 
 	}
