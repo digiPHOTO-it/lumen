@@ -7,12 +7,14 @@ using Digiphoto.Lumen.Imaging;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Imaging.Correzioni;
+using log4net;
 
 namespace Digiphoto.Lumen.Util {
 	
 	
-	
 	public static class AiutanteFoto {
+
+		private static readonly ILog _giornale = LogManager.GetLogger(typeof(AiutanteFoto));
 
 		public static void disposeImmagini( Fotografia foto ) {
 			if( foto.imgOrig != null )
@@ -37,15 +39,22 @@ namespace Digiphoto.Lumen.Util {
 
 			IGestoreImmagineSrv gis = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
 
-			//
-			if( foto.imgProvino == null )
-				foto.imgProvino = gis.load( PathUtil.nomeCompletoProvino( foto ) );
+			try {	        
+		
+				//
+				if( foto.imgProvino == null )
+					foto.imgProvino = gis.load( PathUtil.nomeCompletoProvino( foto ) );
 
-			//
-			if( foto.imgOrig == null )
-				foto.imgOrig = gis.load( PathUtil.nomeCompletoFoto( foto ) );
+				//
+				if( foto.imgOrig == null )
+					foto.imgOrig = gis.load( PathUtil.nomeCompletoFoto( foto ) );
+	
+					// TODO manca l'immagine risultante (se la gestiamo per davvero)
+			} catch (Exception ee) {
+				// Se non riesco a caricare una immagine, non posso farci niente qui. Devo tirare dritto.
+				_giornale.Debug( "Impossibile caricare immagine della foto " + foto.ToString() );
+			}
 
-			// TODO manca l'immagine risultante (se la gestiamo per davvero)
 		}
 
 		public static void creaProvinoFoto( Fotografia foto ) {

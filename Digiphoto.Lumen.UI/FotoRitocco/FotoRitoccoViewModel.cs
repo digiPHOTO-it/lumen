@@ -102,6 +102,18 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private RelayCommand _sepiaCommand;
+		public ICommand sepiaCommand {
+			get {
+				if( _sepiaCommand == null ) {
+					_sepiaCommand = new RelayCommand( param => this.sepia(),
+						                              param => this.isFotoSelezionata,
+													  true );
+				}
+				return _sepiaCommand;
+			}
+		}
+
 		#endregion
 
 
@@ -118,18 +130,18 @@ namespace Digiphoto.Lumen.UI {
 
 
 		private void grayScale() {
-
 			fotoRitoccoSrv.addCorrezione( Target.Selezionate, new BiancoNeroCorrezione() );
-
-			OnPropertyChanged( "fotoSelezionata" ); // TODO questo evento dovrebbe sollevarlo il servizio per informare tutta l'applicazione
 		}
 
 		private void tornareOriginale() {
-
-			fotoRitoccoSrv.tornaOriginale( Target.Selezionate ); 
-			
-			OnPropertyChanged( "fotoSelezionata" );   // TODO questo evento dovrebbe sollevarlo il servizio per informare tutta l'applicazione
+			fotoRitoccoSrv.tornaOriginale( Target.Selezionate );			
 		}
+
+		private void sepia() {
+			fotoRitoccoSrv.addCorrezione( Target.Selezionate, new SepiaCorrezione() );
+			OnPropertyChanged( "fotoSelezionata" ); // TODO questo evento dovrebbe sollevarlo il servizio per informare tutta l'applicazione
+		}
+
 
 		#endregion
 

@@ -8,6 +8,15 @@ namespace Digiphoto.Lumen.Imaging.Correzioni {
 	
 	[XmlInclude(typeof(RuotaCorrezione))]
 	[XmlInclude(typeof(BiancoNeroCorrezione))]
+	[XmlInclude( typeof( SepiaCorrezione ) )]
 	public abstract class Correzione {
+
+		public virtual bool isSommabile( Correzione altra ) {
+			return false;
+		}
+
+		public virtual Correzione somma( Correzione altra ) {
+			return null;
+		}
 	}
 }

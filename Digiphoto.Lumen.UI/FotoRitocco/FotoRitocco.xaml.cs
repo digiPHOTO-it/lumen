@@ -23,9 +23,6 @@ namespace Digiphoto.Lumen.UI {
 			InitializeComponent();
 		}
 
-		private void LsImmaginiDaModificare_MouseDown( object sender, MouseButtonEventArgs e ) {
-			Console.WriteLine( "STOP" );
-		}
 
 		
 	}

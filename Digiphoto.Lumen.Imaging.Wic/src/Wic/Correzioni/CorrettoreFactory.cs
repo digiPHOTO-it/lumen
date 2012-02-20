@@ -29,12 +29,14 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 					correttore = new BiancoNeroCorrettore();
 				} else if( tipoCorrezione == typeof( ResizeCorrezione ) ) {
 					correttore = new ResizeCorrettore();
+				} else if( tipoCorrezione == typeof( SepiaCorrezione ) ) {
+					correttore = new SepiaCorrettore();
 				} else if( tipoCorrezione == typeof( RuotaCorrezione ) ) {
 					correttore = new RuotaCorrettore();
 				}
 
 				if( correttore == null )
-					throw new ArgumentOutOfRangeException( "correzione non gestita: " + tipoCorrezione );
+					throw new ArgumentOutOfRangeException( "correzioneNuova non gestita: " + tipoCorrezione );
 
 				// Metto in cache
 				_cache.Add( tipoCorrezione, correttore );

@@ -36,6 +36,7 @@
       <HintPath>..\Digiphoto.Lumen.Core\lib\log4net.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
@@ -53,9 +54,13 @@
     <Compile Include="src\Wic\Correzioni\CorrettoreFactory.cs" />
     <Compile Include="src\Wic\Correzioni\ResizeCorrettore.cs" />
     <Compile Include="src\Wic\Correzioni\RuotaCorrettore.cs" />
+    <Compile Include="src\Wic\Correzioni\SepiaCorrettore.cs" />
     <Compile Include="src\Wic\GestoreImmagineSrvImpl.cs" />
     <Compile Include="src\Wic\ImmagineWic.cs" />
     <Compile Include="src\Wic\WicUtil.cs" />
+    <Compile Include="src\Windows\Media\Effects\EffectsUtil.cs" />
+    <Compile Include="src\Windows\Media\Effects\Sepia\SepiaEffect.cs" />
+    <Compile Include="src\Windows\Media\Effects\ShaderEffectBase.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -67,6 +72,10 @@
       <Project>{83D8301E-7999-4179-962C-1BFA507F5396}</Project>
       <Name>Digiphoto.Lumen.Model</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Windows\Media\Effects\Sepia\SepiaEffect.fx" />
+    <Resource Include="src\Windows\Media\Effects\Sepia\SepiaEffect.ps" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
