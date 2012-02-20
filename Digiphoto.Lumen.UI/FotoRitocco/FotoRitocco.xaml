@@ -34,7 +34,7 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Button Content="B/N" Command="{Binding grayScaleCommand}" />
-                <Button Content="Sepia" />                
+                <Button Content="Sepia" Command="{Binding sepiaCommand}" />                
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Button Content="Orig" ToolTip="Torna Originale" 
@@ -46,8 +46,6 @@
             <Label Content="Parametri" />
         </StackPanel>
 
-
-
         <ListBox x:Name="LsImmaginiDaModificare"  DockPanel.Dock="Bottom"
                  SelectionMode="Multiple"
                  Style="{StaticResource LsImmaginiDaModificareStyle}"
@@ -55,17 +53,34 @@
                  ItemsPanel="{DynamicResource ImmaginiDaModificareItemsPanelTemplate}" 
                  ItemTemplate="{DynamicResource ImmaginiDaModificareDataTemplate}"
                  IsSynchronizedWithCurrentItem="True"
-                 ScrollViewer.HorizontalScrollBarVisibility="Visible" MouseDown="LsImmaginiDaModificare_MouseDown">
-           
+                 ScrollViewer.HorizontalScrollBarVisibility="Visible" >           
         </ListBox>
 
-        <!-- Queste sono le due immagini prima e dopo la cura -->
-        <Grid>
-            <Border>
-                <Image Source="{Binding Path=fotoSelezionata.imgProvino,Converter={StaticResource immagineToImageSourceConverter}}" />
-            </Border>
-        </Grid>
+<!--
+        <ItemsPanelTemplate>
+            <UniformGrid />
+        </ItemsPanelTemplate>
+-->
+        
+        <ListBox x:Name="LsImmaginiInModifica"  
+                  
+                 ItemsSource="{Binding ElementName=LsImmaginiDaModificare, Path=SelectedItems}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid  Background="DarkCyan"  />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="Red">
+                            <Image Source="{Binding Path=imgProvino,Converter={StaticResource immagineToImageSourceConverter}}" 
+                                    />
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
 
+        
     </DockPanel>
     
 </lumM:UserControlBase>

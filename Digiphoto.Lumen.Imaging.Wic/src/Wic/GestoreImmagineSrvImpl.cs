@@ -59,6 +59,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 			encoder.Frames.Add( BitmapFrame.Create( bmSource ) );
 			encoder.Save( fileStream );
+			fileStream.Close();
 		}
 
 		public IImmagine applicaCorrezioni( IImmagine immaginePartenza, IEnumerable<Correzione> correzioni ) {

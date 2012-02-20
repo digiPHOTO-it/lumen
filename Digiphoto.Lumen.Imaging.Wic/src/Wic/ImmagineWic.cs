@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Media.Imaging;
+using System.IO;
 
 namespace Digiphoto.Lumen.Imaging.Wic {
 
@@ -19,35 +20,44 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 		public ImmagineWic( string uriString ) {
 
-			/*
-			 * SOLUZIONE 1 : ok ma tiene loccato il file.
-			BitmapImage bitmapImage = new BitmapImage();
-			bitmapImage.BeginInit();
-			bitmapImage.UriSource = new Uri( uriString );
-			bitmapImage.EndInit();
-			*/
+			try {
 
-			BitmapSource bitmapImage = BitmapFrame.Create( new Uri( uriString ), BitmapCreateOptions.None, BitmapCacheOption.OnLoad );
+				// Soluzione 1 (tiene bloccato il file)			
+				//BitmapImage bitmapImage = new BitmapImage();
+				//bitmapImage.BeginInit();
+				//bitmapImage.UriSource = new Uri( uriString );
+				//bitmapImage.EndInit();
+				// this.bitmapSource = bitmapImage;
 
-			/*
-			MemoryStream data = new MemoryStream( File.ReadAllBytes( file ) );
-			BitmapSource bitmap = BitmapFrame.Create( data );
-			*/
+				// Soluzione 2 (forzo il caricamento in memoria della bitmap. Non tiene bloccato il file)
+				// BitmapSource bitmapImage = BitmapFrame.Create( new Uri( uriString ), BitmapCreateOptions.None, BitmapCacheOption.OnLoad );
+				// this.bitmapSource = bitmapImage;
 
-			this.bitmapSource = bitmapImage;
+				// Soluzione 3 (carico diretto da stream di byte)
+				MemoryStream data = new MemoryStream( File.ReadAllBytes( uriString ) );
+				this.bitmapSource = BitmapFrame.Create( data );
+
+			} catch( Exception ee ) {
+				// Che posso fare ? Tiriamo avanti
+				this.bitmapSource = null;
+			}
 		}
 
 		#region Proprietà
 
+
+		/// <summary>
+		/// Rappresenta la larghezza della immagine in pixel.
+		/// </summary>
 		public override long ww {
 			get {
-				return (int)bitmapSource.Width;  // VERIFICARE SE CI POSSONO ESSERE PROBLEMI DI PERDITA DI VALORI
+				return (int)bitmapSource.PixelWidth;  // VERIFICARE SE CI POSSONO ESSERE PROBLEMI DI PERDITA DI VALORI
 			}
 		}
 
 		public override long hh {
 			get {
-				return (int)bitmapSource.Height;  // VERIFICARE SE CI POSSONO ESSERE PROBLEMI DI PERDITA DI VALORI
+				return (int)bitmapSource.PixelHeight;  // VERIFICARE SE CI POSSONO ESSERE PROBLEMI DI PERDITA DI VALORI
 			}
 		}
 

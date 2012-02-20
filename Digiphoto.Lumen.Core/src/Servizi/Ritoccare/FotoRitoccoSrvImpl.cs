@@ -74,7 +74,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		}
 
 		// ok ho deciso che la correzione viene accettata
-		public void addCorrezione( Fotografia fotografia, Correzione correzione, bool salvare ) {
+		public void addCorrezione( Fotografia fotografia, Correzione correzioneNuova, bool salvare ) {
 
 			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
 			CorrezioniList correzioni;
@@ -85,11 +85,29 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 			else
 				correzioni = SerializzaUtil.stringToObject<CorrezioniList>( fotografia.correzioniXml );
 
-			// Aggiungo in fondo
-			correzioni.Add( correzione );
+
+			// Alcune correzioni, non devono andare sempre in aggiunta, ma possono sommarsi l'un l'altra.
+			// Per esempio la rotazione. Se ruoto 90° poi altri 90, l'effetto finale è quello di avere una sola da 180°
+			Correzione daSost = null;
+			Correzione vecchia = null;
+			foreach( Correzione c in correzioni ) {
+				if( c.isSommabile( correzioneNuova ) ) {
+					vecchia = c;
+					daSost = c.somma( correzioneNuova );
+					break;
+				}
+			}
+
+			if( daSost != null ) {
+				// Sostituisco la correzione con quella ricalcolata
+				correzioni.sostituire( vecchia, daSost );
+			} else {
+				// Aggiungo in fondo
+				correzioni.Add( correzioneNuova );
+			}
 
 			// ricalcolo il provino
-			IImmagine nuova = gestoreImmaginiSrv.applicaCorrezione( fotografia.imgProvino, correzione );
+			IImmagine nuova = gestoreImmaginiSrv.applicaCorrezione( fotografia.imgProvino, correzioneNuova );
 
 			// Ora serializzo di nuovo in stringa tutte le correzioni
 			
