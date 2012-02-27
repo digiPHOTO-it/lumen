@@ -49,11 +49,11 @@ namespace Digiphoto.Lumen.UI {
         #region RequestClose [event]
 
         /// <summary>
-        /// Raised when this workspace should be removed from the UI.
+        /// Raised when this windows is closed by the user.
         /// </summary>
         public event EventHandler RequestClose;
 
-        void OnRequestClose()
+        protected virtual void OnRequestClose()
         {
             EventHandler handler = this.RequestClose;
             if (handler != null)

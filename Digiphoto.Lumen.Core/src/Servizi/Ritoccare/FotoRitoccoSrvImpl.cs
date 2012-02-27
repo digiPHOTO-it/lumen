@@ -17,7 +17,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 	/// Lavora sempre sulla "Fotografia" e non sulla IImmagine.
 	/// Gestisce le Correzioni 
 	/// </summary>
-	public class FotoRitoccoSrvImpl : SelettoreMultiFotoImpl, IFotoRitoccoSrv {
+	public class FotoRitoccoSrvImpl : ServizioImpl, IFotoRitoccoSrv {
 
 		public FotoRitoccoSrvImpl() {
 
@@ -67,6 +67,17 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 
 		}
+
+		// TODO Non è efficiente. Sostituire
+		// http://stackoverflow.com/questions/451748/wpf-m-v-vm-get-selected-items-from-a-listcollectionview
+		public IEnumerable<Fotografia> fotoSelezionate {
+			get {
+				return fotografieDaModificare.Where( f => f.isSelezionata == true );
+			}
+		}
+
+
+
 
 		// ok ho deciso che la correzione viene accettata
 		public void addCorrezione( Fotografia fotografia, Correzione correzione ) {
@@ -126,11 +137,6 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 			throw new NotImplementedException();
 		}
 
-		public override IEnumerable<Fotografia> tutteLeFoto {
-			get {
-				return fotografieDaModificare;
-			}
-		}
 
 		private IGestoreImmagineSrv gestoreImmaginiSrv {
 			get {

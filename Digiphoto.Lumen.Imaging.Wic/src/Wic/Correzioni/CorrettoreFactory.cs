@@ -33,6 +33,8 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 					correttore = new SepiaCorrettore();
 				} else if( tipoCorrezione == typeof( RuotaCorrezione ) ) {
 					correttore = new RuotaCorrettore();
+				} else if( tipoCorrezione == typeof( SpecchioCorrezione ) ) {
+					correttore = new SpecchioCorrettore();
 				}
 
 				if( correttore == null )

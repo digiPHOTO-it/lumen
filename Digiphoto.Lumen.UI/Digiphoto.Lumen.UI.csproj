@@ -77,6 +77,7 @@
     </ApplicationDefinition>
     <Compile Include="Converters\BoolInverterConverter.cs" />
     <Compile Include="Converters\ImmagineToImageSourceConverter.cs" />
+    <Compile Include="Converters\PercentualeConverter.cs" />
     <Compile Include="Diapo\Diapositiva.xaml.cs">
       <DependentUpon>Diapositiva.xaml</DependentUpon>
     </Compile>
@@ -91,6 +92,11 @@
     <Compile Include="FotoRitocco\FotoRitoccoViewModel.cs" />
     <Compile Include="Mvvm\IDialogProvider.cs" />
     <Compile Include="Mvvm\UserControlBase.cs" />
+    <Compile Include="Pubblico\SlideShow.cs" />
+    <Compile Include="Pubblico\SlideShowViewModel.cs" />
+    <Compile Include="Pubblico\SlideShowWindow.xaml.cs">
+      <DependentUpon>SlideShowWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SelettoreFormatoCarta\SelettoreFormatoCartaViewModel.cs" />
     <Compile Include="SelettoreFormatoCarta\SelettoreFormatoCartaView.xaml.cs" />
     <Compile Include="SelettoreStampantiInstallate\SelettoreStampantiInstallateViewModel.cs" />
@@ -98,11 +104,27 @@
       <DependentUpon>SelettoreStampantiInstallateView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
+    <Compile Include="src\ScreenCapture\ScreenCapture.cs" />
+    <Compile Include="src\ScreenCapture\ScreenCaptureException.cs" />
+    <Compile Include="src\ScreenCapture\SnapshotUtil.cs" />
+    <Compile Include="src\ScreenCapture\Win32Api\DwmApi.cs" />
+    <Compile Include="src\ScreenCapture\Win32Api\Gdi32.cs" />
+    <Compile Include="src\ScreenCapture\Win32Api\User32.cs" />
+    <Compile Include="src\ScreenCapture\Win32Api\Win32Point.cs" />
+    <Compile Include="src\ScreenCapture\Win32Api\Win32Rect.cs" />
     <Page Include="FotoRitocco\FotoRitocco.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="FotoRitocco\FotoRitoccoResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pubblico\SlideShowWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\GlobalResourceDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

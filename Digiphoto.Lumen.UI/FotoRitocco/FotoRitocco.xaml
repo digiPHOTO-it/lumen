@@ -20,13 +20,17 @@
     
     <DockPanel LastChildFill="True">
         
+        
         <StackPanel DockPanel.Dock="Left">
             
             <Label Content="Luminosità" />
-            <Slider ToolTip="Luminosità" />
+            <Slider ToolTip="Luminosità" Minimum="0" Maximum="2" Value="1" />
 
             <Label Content="Contrasto" />
-            <Slider ToolTip="Contrasto" />
+            <Slider ToolTip="Contrasto" Minimum="0" Maximum="2" Value="1"/>
+
+            <Label Content="Ruota" />
+            <Slider ToolTip="Ruota" Minimum="-180" Maximum="180"/>
 
             <StackPanel Orientation="Horizontal">
                 <Button Content="-90°" Command="{Binding ruotareCommand}" CommandParameter="-90" />
@@ -37,13 +41,47 @@
                 <Button Content="Sepia" Command="{Binding sepiaCommand}" />                
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <Button Content="Orig" ToolTip="Torna Originale" 
-                        Command="{Binding tornareOriginaleCommand}" />
+                <Button Content="Flip" Command="{Binding flipCommand}" />
+                <Button Content="Crop" Background="Red"/>
             </StackPanel>
-        </StackPanel>
+
+            <Separator Height="10" />
             
+            <Button Content="Torna Orig" ToolTip="Torna Originale" 
+                        Command="{Binding tornareOriginaleCommand}" />
+            
+            <Separator Height="10" />
+
+        </StackPanel>
+
+        
+        
+
+        <Expander DockPanel.Dock="Right"  Header="Cornici" MaxWidth="120" ExpandDirection="Left">
+            <StackPanel Orientation="Vertical">
+
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/Printer-48x48.png" />
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/Printer-48x48.png" />
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/Printer-48x48.png" />
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/Printer-48x48.png" />
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/Printer-48x48.png" />
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/Printer-48x48.png" />
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/Printer-48x48.png" />
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/Printer-48x48.png" />
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/Printer-48x48.png" />
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/Printer-48x48.png" />
+            </StackPanel>
+        </Expander>
+
         <StackPanel DockPanel.Dock="Right">
-            <Label Content="Parametri" />
+            
+            <Label Content="Didascalia" />
+            <TextBox Name="didascaliaTextBox" />
+            
+            <Separator Margin="0,10"/>
+            
+            <Button Name="rifiutaModificheButton" Content="Rifiuta" ToolTip="Annulla le modifiche applicate" />
+            <Button Name="applicaModificheButton" Content="Applica" ToolTip="Memorizza le modifiche apportate"/>
         </StackPanel>
 
         <ListBox x:Name="LsImmaginiDaModificare"  DockPanel.Dock="Bottom"
@@ -56,30 +94,31 @@
                  ScrollViewer.HorizontalScrollBarVisibility="Visible" >           
         </ListBox>
 
+        
+        
 <!--
         <ItemsPanelTemplate>
             <UniformGrid />
         </ItemsPanelTemplate>
 -->
-        
-        <ListBox x:Name="LsImmaginiInModifica"  
-                  
-                 ItemsSource="{Binding ElementName=LsImmaginiDaModificare, Path=SelectedItems}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
-            <ListBox.ItemsPanel>
+
+        <ItemsControl x:Name="LsImmaginiInModifica"                    
+                 ItemsSource="{Binding ElementName=LsImmaginiDaModificare, Path=SelectedItems}" 
+                 VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                 >
+            <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <UniformGrid  Background="DarkCyan"  />
                 </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Border BorderBrush="Red">
-                            <Image Source="{Binding Path=imgProvino,Converter={StaticResource immagineToImageSourceConverter}}" 
-                                    />
-                        </Border>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderBrush="Red">
+                        <Image Source="{Binding Path=imgProvino,Converter={StaticResource immagineToImageSourceConverter}}" />
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
         
     </DockPanel>
     

@@ -72,12 +72,13 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 // se idrato le immagini in un thread separato, la UI mi da problemi.
 // mi dice che i dati sono stati caricati in un thread diverso da quello corrente
 // non ho però capito come risolvere.
-				idrataImmaginiFoto();
-/*
-				// idrato le immagini in un thread separato
-				_threadIdrata = new Thread( idrataImmaginiFoto );
-				_threadIdrata.Start();
- */
+				if( 1 == 0 ) {
+					idrataImmaginiFoto();
+				} else {
+					// idrato le immagini in un thread separato
+					_threadIdrata = new Thread( idrataImmaginiFoto );
+					_threadIdrata.Start();
+				}
 
 			}
 
@@ -89,7 +90,8 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 
 			foreach( Fotografia fotografia in fotografie ) {
 
-				AiutanteFoto.idrataImmaginiFoto( fotografia );
+				// Per essere più veloce, idrato solo l'immagine del provino.
+				AiutanteFoto.idrataImmaginiFoto( IdrataTarget.Provino, fotografia );
 				// TODO forse occorre lanciare un evento di foto caricata ??? 
 				//      essendo la collezione bindabile, forse non ce ne sarà bisogno..... 
 				//      vedremo. Per ora risparmio fatica.

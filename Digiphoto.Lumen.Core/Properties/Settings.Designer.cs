@@ -262,5 +262,17 @@ namespace Digiphoto.Lumen.Properties {
                 this["stampantiAbbinate"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool isWindowPubblicaVisibile {
+            get {
+                return ((bool)(this["isWindowPubblicaVisibile"]));
+            }
+            set {
+                this["isWindowPubblicaVisibile"] = value;
+            }
+        }
     }
 }

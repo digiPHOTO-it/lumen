@@ -46,6 +46,14 @@ namespace Digiphoto.Lumen.Model {
 			return String.Format( "Num.{0} del={1}", numero, dataOraAcquisizione.ToShortDateString() );
 		}
 
+		/// <summary>
+		/// Questa è la scritta che faccio vedere al cliente per ordinare la foto
+		/// </summary>
+		public string etichetta {
+			get {
+				return numero.ToString();
+			}
+		}
 	}
 
 }

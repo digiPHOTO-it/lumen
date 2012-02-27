@@ -20,6 +20,14 @@ namespace Digiphoto.Lumen.Applicazione {
 			internal set;
 		}
 
+		public bool isWindowPubblicaVisibile {
+			get;
+			set;
+		}
 
+		public bool isSlideShowRunning {
+			get;
+			set;
+		}
 	}
 }

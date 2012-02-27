@@ -11,7 +11,12 @@ using log4net;
 
 namespace Digiphoto.Lumen.Util {
 	
-	
+	public enum IdrataTarget {
+		Tutte = 0xff,
+		Originale = 0x02,
+		Provino = 0x04,
+	}
+
 	public static class AiutanteFoto {
 
 		private static readonly ILog _giornale = LogManager.GetLogger(typeof(AiutanteFoto));
@@ -25,28 +30,30 @@ namespace Digiphoto.Lumen.Util {
 				foto.imgRisultante.Dispose();
 		}
 
+
+		/// <summary>
+		/// Idrato tutte le immagini associate alla foto.
+		/// Per decidere più puntualmente usare l'altro overload dove si indica il target
+		/// </summary>
+		public static void idrataImmaginiFoto( Fotografia foto ) {
+			idrataImmaginiFoto( IdrataTarget.Tutte, foto );
+		}
+
 		/** 
 		 * Devo caricare gli attributi transienti della fotografia 
-		 * ATTENZIONE:
-		 * chi chiama questo metodo, deve enche preoccuparsi di fare la Dispose() delle immagini
-		 * caricate.
-		 * Purtoppo non ho trovato un modo sicuro per farlo automaticamente.
-		 * Avrei voluto fare l'override di Dispose() dentro Fotografia, ma 
-		 * non viene chiamato da E.F.
-		 * TODO da studiare!
 		 */
-		public static void idrataImmaginiFoto( Fotografia foto ) {
+		public static void idrataImmaginiFoto( IdrataTarget target, Fotografia foto ) {
 
 			IGestoreImmagineSrv gis = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
 
 			try {	        
 		
 				//
-				if( foto.imgProvino == null )
+				if( foto.imgProvino == null && (target & IdrataTarget.Provino) != 0 ) 
 					foto.imgProvino = gis.load( PathUtil.nomeCompletoProvino( foto ) );
 
 				//
-				if( foto.imgOrig == null )
+				if( foto.imgOrig == null  && (target & IdrataTarget.Originale) != 0 )
 					foto.imgOrig = gis.load( PathUtil.nomeCompletoFoto( foto ) );
 	
 					// TODO manca l'immagine risultante (se la gestiamo per davvero)

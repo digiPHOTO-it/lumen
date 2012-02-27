@@ -31,7 +31,7 @@
                 <lum:SelettoreFotografo x:Name="selettoreFotografo1" DataContext="{Binding selettoreFotografoViewModel}"
                                     possoCreare="True" />
 
-                <lum:SelettoreEvento x:Name="selettoreEvento1" 
+                <lum:SelettoreEvento x:Name="selettoreEvento1" possoCreare="True"
                                  DataContext="{Binding selettoreEventoViewModel}" />
 
                 <GroupBox Header="Fasi del giorno">
@@ -59,7 +59,7 @@
                 <Button Name="scaricaButton" Content="go! SCARICA" Command="{Binding scaricareCommand}" />
 
                 <Button Canvas.Left="695" Canvas.Top="87" Content="Code Behind" Height="23" Name="button1" Width="75" />
-
+                
             </StackPanel>
         </StackPanel>
 

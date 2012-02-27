@@ -1,4 +1,5 @@
-﻿using Digiphoto.Lumen.UI.Mvvm;
+﻿using System.Linq;
+using Digiphoto.Lumen.UI.Mvvm;
 using System.ComponentModel;
 using System.Windows.Data;
 using Digiphoto.Lumen.Imaging;
@@ -14,8 +15,8 @@ using System;
 
 namespace Digiphoto.Lumen.UI {
 
-	public class FotoRitoccoViewModel : ViewModelBase {
 
+	public class FotoRitoccoViewModel : ViewModelBase {
 
 		public FotoRitoccoViewModel() {
 
@@ -23,30 +24,15 @@ namespace Digiphoto.Lumen.UI {
 				// caricare qualche foto a casaccio
 			} else {
 				
-				fotografieDaModificareCW = (ListCollectionView)CollectionViewSource.GetDefaultView( fotoRitoccoSrv.fotografieDaModificare );
+				fotografieDaModificareCW = CollectionViewSource.GetDefaultView( fotoRitoccoSrv.fotografieDaModificare );
+//				fotografieDaModificareCW = new CollectionView( fotoRitoccoSrv.fotografieDaModificare );
 
-				fotografieDaModificareCW.CurrentChanged += delegate {
-					fotoSelezionata = (Fotografia)fotografieDaModificareCW.CurrentItem;
-				};
-
-			}
-
-		}
-
-		private Fotografia _fotoSelezionata;
-		public Fotografia fotoSelezionata {
-			get {
-				return _fotoSelezionata;
-			}
-			set {
-				if( _fotoSelezionata != value ) {
-					_fotoSelezionata = value;
-					OnPropertyChanged( "fotoSelezionata" );
-				}
 			}
 		}
 
-		public ListCollectionView fotografieDaModificareCW {
+		#region Proprietà
+
+		public ICollectionView fotografieDaModificareCW {
 			get;
 			set;
 		}
@@ -57,12 +43,22 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-
-		public bool isFotoSelezionata {
+		public bool isAlmenoUnaFotoSelezionata {
 			get {
-				return fotoSelezionata != null;
+				return contaSelez > 0;
 			}
 		}
+
+		int contaSelez {
+			get {
+				int quanti = 0;
+				if( fotografieDaModificareCW != null )
+					quanti = fotografieDaModificareCW.Cast<Fotografia>().Where( f => f.isSelezionata == true ).Count();
+				return quanti;
+			}
+		}
+
+		#endregion
 
 		#region Comandi
 
@@ -71,7 +67,7 @@ namespace Digiphoto.Lumen.UI {
 			get {
 				if( _grayScaleCommand == null ) {
 					_grayScaleCommand = new RelayCommand( param => this.grayScale(),
-														param => this.isFotoSelezionata,
+														param => possoApplicareComando,
 														true );
 				}
 				return _grayScaleCommand;
@@ -83,7 +79,7 @@ namespace Digiphoto.Lumen.UI {
 			get {
 				if( _ruotareCommand == null ) {
 					_ruotareCommand = new RelayCommand( sGradi => this.ruotare( Convert.ToInt16(sGradi) ),
-														sGradi => this.isFotoSelezionata,
+														sGradi => this.possoApplicareComando,
 														true );
 				}
 				return _ruotareCommand;
@@ -95,7 +91,7 @@ namespace Digiphoto.Lumen.UI {
 			get {
 				if( _tornareOriginaleCommand == null ) {
 					_tornareOriginaleCommand = new RelayCommand( param => this.tornareOriginale(),
-														gradi => this.isFotoSelezionata,
+														gradi => this.possoApplicareComando,
 														true );
 				}
 				return _tornareOriginaleCommand;
@@ -107,25 +103,38 @@ namespace Digiphoto.Lumen.UI {
 			get {
 				if( _sepiaCommand == null ) {
 					_sepiaCommand = new RelayCommand( param => this.sepia(),
-						                              param => this.isFotoSelezionata,
+													  param => this.possoApplicareComando,
 													  true );
 				}
 				return _sepiaCommand;
 			}
 		}
 
-		#endregion
+		private RelayCommand _flipCommand;
+		public ICommand flipCommand {
+			get {
+				if( _flipCommand == null ) {
+					_flipCommand = new RelayCommand( param => this.flip(),
+													  param => this.possoApplicareComando,
+													  true );
+				}
+				return _flipCommand;
+			}
+		}
 
+		public bool possoApplicareComando {
+			get {
+				return isAlmenoUnaFotoSelezionata;
+			}
+		}
+		#endregion
 
 		#region Metodi
 
 		private void ruotare( int pGradi ) {
 
-			RuotaCorrezione correzione = new RuotaCorrezione() { gradi = pGradi };
-			
+			RuotaCorrezione correzione = new RuotaCorrezione() { gradi = pGradi };			
 			fotoRitoccoSrv.addCorrezione( Target.Selezionate, correzione );
-
-			OnPropertyChanged( "fotoSelezionata" );
 		}
 
 
@@ -139,9 +148,11 @@ namespace Digiphoto.Lumen.UI {
 
 		private void sepia() {
 			fotoRitoccoSrv.addCorrezione( Target.Selezionate, new SepiaCorrezione() );
-			OnPropertyChanged( "fotoSelezionata" ); // TODO questo evento dovrebbe sollevarlo il servizio per informare tutta l'applicazione
 		}
 
+		private void flip() {
+			fotoRitoccoSrv.addCorrezione( Target.Selezionate, new SpecchioCorrezione() );
+		}
 
 		#endregion
 
