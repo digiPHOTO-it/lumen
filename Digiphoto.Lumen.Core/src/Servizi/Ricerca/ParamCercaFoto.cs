@@ -14,11 +14,18 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 		public Fotografo [] fotografi {	get; set; }
 
 		public string didascalia { get; set; }
-		public FaseDelGiorno [] fasiDelGiorno { get; set; }
+
+		public IList<FaseDelGiorno>  fasiDelGiorno { get; set; }
 		public int [] numeriFotogrammi { get; set; }
 
 		public DateTime? giornataIniz {	get; set; }
 		public DateTime? giornataFine { get; set; }
+
+		public ParamCercaFoto() {
+
+			// Istanzio la lista vuota che mi è più comoda
+			fasiDelGiorno = new List<FaseDelGiorno>();
+		}
 
 
 		public override string ToString() {
@@ -41,7 +48,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 				sb.Append( "\r\nDidascalia :\t" + didascalia );
 
 			if( fasiDelGiorno != null ) {
-				sb.Append( "\r\nFasi del giorno : " + fasiDelGiorno.Length );
+				sb.Append( "\r\nFasi del giorno : " + fasiDelGiorno.Count );
 				foreach( FaseDelGiorno f in fasiDelGiorno )
 					sb.Append( "\r\n\t(" + (short)f + ")\t" + f.ToString() );
 			}
@@ -64,6 +71,17 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			return sb.ToString();
 		}
 
+		public void setFaseGiorno( FaseDelGiorno fase, bool accendiSpegni ) {
+			if( accendiSpegni ) {
+				// Devo accendere
+				if( fasiDelGiorno.Contains( fase ) == false )
+					fasiDelGiorno.Add( fase );
+			} else {
+				// Devo spegnere
+				if( fasiDelGiorno.Contains( fase ) == true )
+					fasiDelGiorno.Remove( fase );
+			}
+		}
 
 
 	}

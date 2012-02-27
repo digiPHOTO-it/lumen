@@ -17,7 +17,7 @@
         </TabItem>
 
         <TabItem Header="Aggiusta" ToolTip="Correggi, organizza e tagga foto" >
-            <lum:FotoRitocco />
+            <lum:FotoRitocco x:Name="fotoRitoccoUserControl" />
         </TabItem>
 
         <TabItem Header="Mostra" ToolTip="Visualizzare foto" >

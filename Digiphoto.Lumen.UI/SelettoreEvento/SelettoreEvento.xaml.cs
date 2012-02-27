@@ -35,5 +35,18 @@ namespace Digiphoto.Lumen.UI {
 				return selettoreEventoViewModel.eventoSelezionato;
 			}
 		}
+
+		#region possoCreare Dependency Property
+		public static readonly DependencyProperty possoCreareProperty = DependencyProperty.Register( "possoCreare", typeof( bool ), typeof( SelettoreEvento ), new FrameworkPropertyMetadata( true, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault ) );
+
+		public bool possoCreare {
+			get {
+				return (bool)GetValue( possoCreareProperty );
+			}
+			set {
+				SetValue( possoCreareProperty, value );
+			}
+		}
+		#endregion
 	}
 }

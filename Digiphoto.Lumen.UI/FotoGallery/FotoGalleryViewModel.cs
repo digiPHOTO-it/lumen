@@ -16,46 +16,37 @@ using Digiphoto.Lumen.Servizi.Masterizzare;
 using Digiphoto.Lumen.Servizi.Vendere;
 using Digiphoto.Lumen.Servizi.Stampare;
 using Digiphoto.Lumen.Config;
+using Digiphoto.Lumen.Core;
+using PeteBrown.ScreenCapture;
+using System.Windows;
+using System.Windows.Media.Imaging;
+using Digiphoto.Lumen.UI.ScreenCapture;
+using Digiphoto.Lumen.UI.Pubblico;
 
 namespace Digiphoto.Lumen.UI {
 
 	public class FotoGalleryViewModel : ViewModelBase {
 
-
-		public IList<StampanteAbbinata> stampantiAbbinate {
-			get;
-			private set;
-		}
-
-
 		public FotoGalleryViewModel() {
 
 			paramCercaFoto = new ParamCercaFoto();
+
+			// Istanzio i ViewModel dei componenti di cui io sono composto
+			selettoreEventoViewModel = new SelettoreEventoViewModel();
+
+			selettoreFotografoViewModel = new SelettoreFotografoViewModel();
+
+			
 
 			if( IsInDesignMode ) {
 
 			} else {
 
-				paramCercaFoto.giornataIniz = new DateTime( 2011, 1, 1 );
-
-				// Faccio una ricerca a vuoto
-				fotoExplorerSrv.cercaFoto( paramCercaFoto );
-				/*
-							var query = from f in fotoExplorerSrv.fotografie
-										select new DiapositivaViewModel( f );
-							diapositiveViewModel = query.ToList<DiapositivaViewModel>();
-				 */
-
-	//			ObservableCollection<Fotografia> appo = new ObservableCollection<Fotografia>( fotoExplorerSrv.fotografie );
-
-				this.fotografieCW = CollectionViewSource.GetDefaultView( fotoExplorerSrv.fotografie );
-				deselezionareTutto();
-
-
 				//
 				caricaStampantiAbbinate();
-			} 
+			}
 		}
+
 
 		/// <summary>
 		/// Carico tutti i formati carta che sono abbinati alle stampanti installate
@@ -101,7 +92,6 @@ namespace Digiphoto.Lumen.UI {
 				return contaSelez > 0;
 			}
 		}
-
 		
 		private IVenditoreSrv venditoreSrv {
 			get {
@@ -109,8 +99,71 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		/// <summary>
+		/// Ritorno la giornata lavorativa corrente
+		/// </summary>
+		public DateTime oggi {
+			get {
+				return LumenApplication.Instance.stato.giornataLavorativa;
+			}
+		}
 
-		#endregion
+		public SelettoreEventoViewModel selettoreEventoViewModel {
+			get;
+			private set;
+		}
+
+		public SelettoreFotografoViewModel selettoreFotografoViewModel {
+			get;
+			private set;
+		}
+
+		public IList<StampanteAbbinata> stampantiAbbinate {
+			get;
+			private set;
+		}
+
+		#region fasi del giorno
+
+		public bool isMattinoChecked {
+			get {
+				return (paramCercaFoto.fasiDelGiorno.Contains( FaseDelGiorno.Mattino ));
+			}
+			set {
+				paramCercaFoto.setFaseGiorno( FaseDelGiorno.Mattino, value );
+			}
+		}
+
+		public bool isPomeriggioChecked {
+			get {
+				return (paramCercaFoto.fasiDelGiorno.Contains( FaseDelGiorno.Pomeriggio ));
+			}
+			set {
+				paramCercaFoto.setFaseGiorno( FaseDelGiorno.Pomeriggio, value );
+			}
+		}
+
+		public bool isSeraChecked {
+			get {
+				return( paramCercaFoto.fasiDelGiorno.Contains( FaseDelGiorno.Sera ) );
+			}
+			set {
+				paramCercaFoto.setFaseGiorno( FaseDelGiorno.Sera, value );
+			}
+		}
+
+		// Questo view model lo recupero dalla application.
+		private SlideShowViewModel slideShowViewModel {
+			get {
+				App myApp = (App)Application.Current;
+				return myApp.slideShowViewModel;
+			}
+		}
+
+		#endregion   // fasi del giorno
+
+
+		#endregion   // Proprietà
 
 		#region Comandi
 
@@ -158,6 +211,54 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private RelayCommand _eseguireRicercaCommand;
+		public ICommand eseguireRicercaCommand {
+			get {
+				if( _eseguireRicercaCommand == null ) {
+					_eseguireRicercaCommand = new RelayCommand( param => eseguireRicerca() );
+				}
+				return _eseguireRicercaCommand;
+			}
+		}
+
+		private RelayCommand _caricareSlideShowCommand;
+		public ICommand caricareSlideShowCommand {
+			get {
+				if( _caricareSlideShowCommand == null ) {
+					_caricareSlideShowCommand = new RelayCommand( param => caricareSlideShow() );
+				}
+				return _caricareSlideShowCommand;
+			}
+		}
+
+		private RelayCommand _controllareSlideShowCommand;
+		public ICommand controllareSlideShowCommand {
+			get {
+				if( _controllareSlideShowCommand == null ) {
+					_controllareSlideShowCommand = new RelayCommand( azione => controllareSlideShow( (string)azione ) );
+				}
+				return _controllareSlideShowCommand;
+			}
+		}
+
+/*
+		private RelayCommand _screenShotPubblicaCommand;
+		public ICommand screenShotPubblicaCommand {
+			get {
+				if( _screenShotPubblicaCommand == null ) {
+					_screenShotPubblicaCommand = new RelayCommand( param => screenShotPubblica( param ) );
+				}
+				return _screenShotPubblicaCommand;
+			}
+		}
+
+
+		private void screenShotPubblica( object param ) {
+			FrameworkElement fwkElem = (FrameworkElement)param;
+			BitmapSource screenShot = SnapshotUtil.CreateBitmap( fwkElem, true );
+			windowPubblicaViewModel.screenShot = screenShot;
+		}
+*/
 		#endregion
 
 
@@ -266,9 +367,65 @@ namespace Digiphoto.Lumen.UI {
 			return p;
 		}
 
+		//public string paramGiornataIniz {
+		//    get;
+		//    set;
+		//}
+
+		/// <summary>
+		/// Chiamo il servizio che esegue la query sul database
+		/// </summary>
+		private void eseguireRicerca() {
+
+			// Aggiungo eventuale parametro il fotografo
+			if( selettoreFotografoViewModel.fotografoSelezionato != null )
+				paramCercaFoto.fotografi = new Fotografo []  { selettoreFotografoViewModel.fotografoSelezionato };
+			else
+				paramCercaFoto.fotografi = null;
+
+			// Aggiungo eventuale parametro l'evento
+			if( selettoreEventoViewModel.eventoSelezionato != null )
+				paramCercaFoto.eventi = new Evento [] { selettoreEventoViewModel.eventoSelezionato };
+			else
+				paramCercaFoto.eventi = null;
+
+
+
+	//		paramCercaFoto.giornataIniz = Convert.ToDateTime( paramGiornataIniz );
+
+
+			// Faccio una ricerca a vuoto
+			fotoExplorerSrv.cercaFoto( paramCercaFoto );
+			/*
+						var query = from f in fotoExplorerSrv.fotografie
+									select new DiapositivaViewModel( f );
+						diapositiveViewModel = query.ToList<DiapositivaViewModel>();
+			 */
+
+			//			ObservableCollection<Fotografia> appo = new ObservableCollection<Fotografia>( fotoExplorerSrv.fotografie );
+
+			this.fotografieCW = CollectionViewSource.GetDefaultView( fotoExplorerSrv.fotografie );
+			OnPropertyChanged( "fotografieCW" );
+
+			deselezionareTutto();
+
+		}
+
+		private void caricareSlideShow() {
+			slideShowViewModel.create( creaListaFotoSelezionate() );
+		}
+
+		private void controllareSlideShow( string operaz ) {
+			
+			if( operaz.Equals( "Start" ) ) {
+				slideShowViewModel.start();
+			} else if( operaz.Equals( "Stop" ) ) {
+				slideShowViewModel.stop();
+			}
+
+		}
+
 		#endregion
-
-
 
 	}
 }

@@ -14,18 +14,15 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( RicercatoreSrvImpl ) );
 
-		ParamCercaFoto _paramRicercaFoto;
 
 		public RicercatoreSrvImpl() {
 		}
 
 		public List<Fotografia> cerca( ParamCercaFoto param ) {
 			
-			this._paramRicercaFoto = param;
-
 			_giornale.Debug( "Parametri di ricerca:\n" + param );
 
-			IQueryable<Fotografia> query = creaQuery();
+			IQueryable<Fotografia> query = creaQueryEntita( param );
 
 			// Eventuale paginazione dei risultati
 			if( param.paginazione != null )
@@ -41,53 +38,77 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			return query.ToList();
 		}
 
-		private IQueryable<Fotografia> creaQuery() {
+		/// <summary>
+		/// Eseguo la stessa query che faccio per le fotografie,
+		/// ma mi faccio tornare soltanto i nomi dei files.
+		/// </summary>
+		public List<string> cercaNomi( ParamCercaFoto param ) {
+			IQueryable<string> queryNomi = creaQueryNomi( param );
+			return queryNomi.ToList();
+		}
 
-			
+
+		/// <summary>
+		///  Creo la query per cercare le foto, però invece che tornarmi 
+		///  le Fotografia, mi faccio ritornare solo i nomi dei files.
+		///  Mi servirà per lo slide-show, dove non voglio tenermi tutte le
+		///  immagini in memoria, ma le carico una alla volta.
+		/// </summary>
+		/// <returns></returns>
+		private IQueryable<string> creaQueryNomi( ParamCercaFoto param ) {
+
+			var qEntita = creaQueryEntita( param );
+			var q2 = from ff in qEntita
+					 select ff.nomeFile;
+
+			return q2;
+		}
+
+
+
+		private IQueryable<Fotografia> creaQueryEntita( ParamCercaFoto param ) {
+
 			IQueryable<Fotografia> query = from ff in this.objectContext.Fotografie
 										   orderby ff.dataOraAcquisizione, ff.numero
 										   select ff;
-
 			// ----- Filtro eventi
-			if( _paramRicercaFoto.eventi != null ) {
+			if( param.eventi != null ) {
 				// Siccome ancora linq non supporta confronto con entità, devo estrarre gli id
-				var listaIds = from le in _paramRicercaFoto.eventi
+				var listaIds = from le in param.eventi
 							   select le.id;
 				query = query.Where( ff => listaIds.Contains( ff.evento.id ) );
 			}
 
-
 			// ----- Filtro fotografo
-			if( _paramRicercaFoto.fotografi != null ) {
+			if( param.fotografi != null ) {
 				// Siccome ancora linq non supporta confronto con entità, devo estrarre gli id
-				var listaIds = from le in _paramRicercaFoto.fotografi
+				var listaIds = from le in param.fotografi
 							   select le.id;
 				query = query.Where( ff => listaIds.Contains( ff.fotografo.id ) );
 			}
 
 			// ----- numeri di fotogramma
-			if( _paramRicercaFoto.numeriFotogrammi != null )
-				query = query.Where( ff => _paramRicercaFoto.numeriFotogrammi.Contains( ff.numero ) );
+			if( param.numeriFotogrammi != null )
+				query = query.Where( ff => param.numeriFotogrammi.Contains( ff.numero ) );
 
 			// ----- fasi del giorno (la Enum non prevede il Contains. Devo trasformarla in una array di interi
-			if( _paramRicercaFoto.fasiDelGiorno != null ) {
-				IEnumerable<short> fasiInt = from p in _paramRicercaFoto.fasiDelGiorno
+			if( param.fasiDelGiorno != null && param.fasiDelGiorno.Count > 0 ) {
+				IEnumerable<short> fasiInt = from p in param.fasiDelGiorno
 											 select Convert.ToInt16( p );
 				query = query.Where( ff => fasiInt.Contains( (short)ff.faseDelGiorno ) );
 			}
 
 			// ----- Didascalia (le didascalie le memorizziamo solo in maiuscolo)
-			if( _paramRicercaFoto.didascalia != null )
-				query = query.Where( ff => ff.didascalia.Contains( _paramRicercaFoto.didascalia.ToUpper() ) );
-
+			if( param.didascalia != null )
+				query = query.Where( ff => ff.didascalia.Contains( param.didascalia.ToUpper() ) );
 
 			// ----- Giornata Inizio
-			if( _paramRicercaFoto.giornataIniz != null )
-				query = query.Where( ff => ff.giornata >= _paramRicercaFoto.giornataIniz );
+			if( param.giornataIniz != null )
+				query = query.Where( ff => ff.giornata >= param.giornataIniz );
 
 			// ----- Giornata Fine
-			if( _paramRicercaFoto.giornataFine != null )
-				query = query.Where( ff => ff.giornata <= _paramRicercaFoto.giornataFine );
+			if( param.giornataFine != null )
+				query = query.Where( ff => ff.giornata <= param.giornataFine );
 
 			return query;
 		}

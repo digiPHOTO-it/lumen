@@ -10,7 +10,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 	///	 Questo servizio serve a pilotare la schermata di ritocco delle foto
 	/// </summary>
 
-	public interface IFotoRitoccoSrv : ISelettoreMultiFotoSrv {
+	public interface IFotoRitoccoSrv : IServizio {
 
 		List<Fotografia> fotografieDaModificare {
 			get;

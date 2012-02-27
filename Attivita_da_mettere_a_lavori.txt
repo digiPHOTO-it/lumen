@@ -1,0 +1,15 @@
+
+Nella pagina di fotoritocco
+===========================
+
+ Il concetto di inizio modifiche e conferma/annulla ritocchi.
+ Gestire modifiche temporanee senza memorizzarle nel xml della foto.
+ Quando si preme APPLICA rendere tutto definitivo.
+
+
+
+Database 
+========
+
+Nel caso in cui si perde il database, creare una funzione che ripristina tutto partendo 
+dal filesystem (se si spacca il db, ora siamo fregati).

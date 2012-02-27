@@ -55,6 +55,7 @@
     <Compile Include="src\Wic\Correzioni\ResizeCorrettore.cs" />
     <Compile Include="src\Wic\Correzioni\RuotaCorrettore.cs" />
     <Compile Include="src\Wic\Correzioni\SepiaCorrettore.cs" />
+    <Compile Include="src\Wic\Correzioni\SpecchioCorrettore.cs" />
     <Compile Include="src\Wic\GestoreImmagineSrvImpl.cs" />
     <Compile Include="src\Wic\ImmagineWic.cs" />
     <Compile Include="src\Wic\WicUtil.cs" />

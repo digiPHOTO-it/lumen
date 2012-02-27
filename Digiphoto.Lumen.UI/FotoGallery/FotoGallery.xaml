@@ -8,7 +8,7 @@
              xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
              xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="600" d:DesignWidth="800">
 
     <!-- Istanzio il controllore -->
     <lumM:UserControlBase.DataContext>
@@ -16,7 +16,12 @@
     </lumM:UserControlBase.DataContext>
 
     <UserControl.Resources>
-        <ResourceDictionary Source="FotoGalleryResources.xaml" />
+        <ResourceDictionary>            
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="FotoGalleryResources.xaml" />
+                <ResourceDictionary Source="/Resources/GlobalResourceDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
 
 
@@ -70,23 +75,61 @@
                     <RadioButton Content="All"  Style="{StaticResource {x:Type ToggleButton}}"  Width="32" GroupName="vediSelezGrp" ToolTip="Vedi tutte le foto" Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="false" />
                     <RadioButton Content="Selez" Style="{StaticResource {x:Type ToggleButton}}"  Width="32" GroupName="vediSelezGrp" ToolTip="Vedi solo le foto selezionate" Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="true" />
                 </ToolBar>
+
+                <ToolBar Band="2" BandIndex="2" Header="Pubblico">
+                    <Button Content="Load" Command="{Binding caricareSlideShowCommand}" />
+                    <ToggleButton Content="Start" Command="{Binding controllareSlideShowCommand}" CommandParameter="Start" />
+                    <ToggleButton Content="Stop"  Command="{Binding controllareSlideShowCommand}" CommandParameter="Stop" />
+                </ToolBar>
             </ToolBarTray>
         </Expander>
         
-        <Expander DockPanel.Dock="Bottom" IsExpanded="True" ExpandDirection="Up">
-            <Grid>
+        <Expander Header="Ricerca foto nell'archivio" DockPanel.Dock="Bottom" IsExpanded="True" ExpandDirection="Up">
+            
+            <StackPanel Orientation="Horizontal">
+                
                 <GroupBox Header="Tempo">
-                    <StackPanel>
-                    <Label Content="Data Inizio" />
-                    <DatePickerTextBox />   
-                    <Label Content="Data Fine" />
-                    <DatePickerTextBox />
+
+                    <StackPanel Orientation="Horizontal">
+
+                        <StackPanel Orientation="Vertical">
+                            <Label Content="Scegliere data inizio e fine"  ToolTip="Cliccare sulla prima data poi scorrere fino alla seconda senza lasciare"/>
+                            <Calendar SelectionMode="SingleRange" Name="calendario" SelectedDatesChanged="calendario_SelectedDatesChanged" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Vertical">
+                            <Button Content="Oggi" Name="oggiButton" Click="oggiButton_Click" />
+                            <Button Content="Ieri" Name="ieriButton" Click="ieriButton_Click" />
+                            <Button Content="Ieri e Oggi" Name="ieriOggiButton" Click="ieriOggiButton_Click" />
+                        </StackPanel>
                     </StackPanel>
                 </GroupBox>
+
+                <!-- eventuale filtro per fotografo -->
+                <lum:SelettoreFotografo x:Name="selettoreFotografo5" possoCreare="False"
+                                        DataContext="{Binding selettoreFotografoViewModel}" />
+
+                <lum:SelettoreEvento x:Name="selettoreEvento5" possoCreare="False"
+                                 DataContext="{Binding selettoreEventoViewModel}" />
+
+                <StackPanel Orientation="Vertical">
+                    <CheckBox Name="checkBoxMattino" Content="Mattino" IsChecked="{Binding isMattinoChecked}"  />
+                    <CheckBox Name="checkBoxPomeriggio" Content="Pomeriggio" IsChecked="{Binding isPomeriggioChecked}"  />
+                    <CheckBox Name="checkBoxSera" Content="Sera" IsChecked="{Binding isSeraChecked}" />              
+                    
+                    <Separator />
+                    
+                    <Label Content="Didascalia" />
+                    <TextBox Name="didascaliaTextBox" />
+                </StackPanel>
                 
+                <Label Content="Altri param" />
                 
-            </Grid>
+                <Button Name="eseguireRicercaButton" Content="Esegui Ricerca" Command="{Binding eseguireRicercaCommand}" />
+                
+            </StackPanel>
             
+           
         </Expander>
 
         <!-- Questa è la lista delle immagini -->
@@ -95,7 +138,7 @@
                  Style="{StaticResource LsImageGalleryStyle}"
                  ItemsSource="{Binding Path=fotografieCW}" 
                  ItemsPanel="{DynamicResource ImageGalleryItemsPanelTemplate}" 
-                 ItemTemplate="{DynamicResource ImageGalleryDataTemplate}"
+                 ItemTemplate="{DynamicResource fotografiaDataTemplate}"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
         

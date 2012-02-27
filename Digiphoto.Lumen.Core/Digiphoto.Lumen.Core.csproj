@@ -83,6 +83,7 @@
     <Compile Include="src\Imaging\Correzioni\ResizeCorrezione.cs" />
     <Compile Include="src\Imaging\Correzioni\RuotaCorrezione.cs" />
     <Compile Include="src\Imaging\Correzioni\SepiaCorrezione.cs" />
+    <Compile Include="src\Imaging\Correzioni\SpecchioCorrezione.cs" />
     <Compile Include="src\Servizi\Selezionare\ISelettoreMultiFotoSrv.cs" />
     <Compile Include="src\Servizi\Ritoccare\FotoRitoccoSrvImpl.cs" />
     <Compile Include="src\Imaging\Immagine.cs" />

@@ -8,9 +8,9 @@ namespace Digiphoto.Lumen.Core {
 
 	/** Notare che i caratteri sono ANCHE in ordine alfabetico cosi si può fare un order by facilmente */
 	public enum FaseDelGiorno : short {
-		Mattino = 1,
-		Pomeriggio = 2,
-		Sera = 3
+		Mattino = 0,
+		Pomeriggio = 1,
+		Sera = 2
 	};
 
 

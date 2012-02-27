@@ -65,5 +65,8 @@
     <Setting Name="stampantiAbbinate" Type="System.String" Scope="User">
       <Value Profile="(Default)">A4;4;PDFCreator;PS1#6x8;5;doPDF v7;qq</Value>
     </Setting>
+    <Setting Name="isWindowPubblicaVisibile" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

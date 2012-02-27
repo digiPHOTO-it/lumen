@@ -3,7 +3,7 @@
                     xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
                     xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo">
 
-    <lumC:ImmagineToImageSourceConverter x:Key="immagineToImageSourceConverter" />
+  
 
     <!-- Stile della listbox che itera le immagini -->
     <Style x:Key="LsImageGalleryStyle" TargetType="ListBox">
@@ -33,30 +33,7 @@
 
 
 
-    <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
-    <DataTemplate x:Key="ImageGalleryDataTemplate">
-
-        <Grid>
-            
-            <Border BorderBrush="WhiteSmoke" BorderThickness="1" 
-                    CornerRadius="10" Margin="0,0,2,2" >
-
-                <Image Source="{Binding Path=imgProvino,Converter={StaticResource immagineToImageSourceConverter}}" 
-                       Height="{Binding ElementName=dimensioneIconeSlider,Path=Value}" 
-                       Width="{Binding ElementName=dimensioneIconeSlider,Path=Value}">
-                    <!-- Come tooltip si possono visualizzare informazioni importanti riassuntive -->
-                    <Image.ToolTip>
-                        <Grid>
-                            <Label Content="Foto=123 Oper=QQ" />
-                        </Grid>
-                    </Image.ToolTip>
-                </Image>
-
-            </Border>
-        </Grid>
-
-    </DataTemplate>
-
+ 
 
     <!-- Template per il pannello che contiene tutti gli elementi della lista -->
     <ItemsPanelTemplate x:Key="ImageGalleryItemsPanelTemplate">
