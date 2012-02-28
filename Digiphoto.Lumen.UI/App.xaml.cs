@@ -44,7 +44,8 @@ namespace Digiphoto.Lumen.UI {
 			_mainWindow.Show();
 
 
-			apriWindowPubblica();
+			// forseApriWindowPubblica();
+			
 		}
 
 
@@ -62,13 +63,17 @@ namespace Digiphoto.Lumen.UI {
 				_mainWindow.Close();
 				_mainWindow = null;
 			}
-
+			
 			LumenApplication.Instance.ferma();
 			
 			base.OnExit( e );
 		}
 
-		public void apriWindowPubblica() {
+		/// <summary>
+		/// Se la finestra del pubblico non è aperta (o non è istanziata)
+		/// la creo sul momento
+		/// </summary>
+		public void forseApriWindowPubblica() {
 
 			// Se è già aperta, non faccio niente
 			if( _slideShowWindow != null )
@@ -77,20 +82,22 @@ namespace Digiphoto.Lumen.UI {
 			// Apro la finestra modeless
 			// Create a window and make this window its owner
 			_slideShowWindow = new SlideShowWindow();
-			_slideShowWindow.Closed += fermaSlideShow;
+			_slideShowWindow.Closed += chiusoSlideShowWindow;
 			_slideShowWindow.Show();
 		}
 
 		public SlideShowViewModel slideShowViewModel {
 			get {
+				forseApriWindowPubblica();
+
 				return (SlideShowViewModel)_slideShowWindow.DataContext;
 			}
 		}
 
-
-		public EventHandler fermaSlideShow {
-			get;
-			set;
+		public void chiusoSlideShowWindow( object sender, EventArgs e ) {
+			_slideShowWindow.Closed -= chiusoSlideShowWindow;
+			_slideShowWindow = null;
 		}
+
 	}
 }

@@ -26,19 +26,10 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			// creo ed associo il datacontext
 			_slideShowViewModel = new SlideShowViewModel();
 			this.DataContext = _slideShowViewModel;
-
-			// Se qualcuno mi chiude la finestra
-			EventHandler handlerChiusura = null;
-
-			handlerChiusura = delegate {
-				_slideShowViewModel.RequestClose -= handlerChiusura;
-				this.Close();
-			};
-
-			_slideShowViewModel.RequestClose += handlerChiusura;
 		}
 
 		protected override void OnClosed( EventArgs e ) {
+
 			_slideShowViewModel.Dispose();
 			base.OnClosed( e );
 		}
