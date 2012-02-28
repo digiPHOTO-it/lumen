@@ -1,0 +1,8 @@
+
+Alla conferma del carrello, dobbiamo visualizzare una finestrella dove mettere:
+  totale delle foto stampate.
+  totale delle foto masterizzate.
+  Totale della spesa
+  Eventuali foto da stornare perchè SCARTI
+
+  ??

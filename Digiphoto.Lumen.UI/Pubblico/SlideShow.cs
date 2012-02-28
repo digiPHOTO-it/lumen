@@ -14,12 +14,12 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 	public class Slide {
 		
-		public ImageSource image {
+		public ImageSource imgProvino {
 			get;
 			set;
 		}
 
-		public string label {
+		public string etichetta {
 			get;
 			set;
 		}

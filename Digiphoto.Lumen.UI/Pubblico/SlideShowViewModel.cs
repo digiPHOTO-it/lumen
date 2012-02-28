@@ -58,15 +58,19 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		protected override void OnDispose() {
 
-			_orologio.Stop();
-			_orologio.Tick -= orologio_Tick;
-			base.OnDispose();
+			try {
+				if( _orologio != null ) {
+					_orologio.Stop();
+					_orologio.Tick -= orologio_Tick;
+				}				
+			} finally {
+				base.OnDispose();
+			}
 		}
 
 		protected override void OnRequestClose() {
+			stop();  // Fermo lo slide show
 			base.OnRequestClose();
-			// Fermo lo slide show
-			stop();
 		} 
 
 		
@@ -92,8 +96,8 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 					AiutanteFoto.idrataImmaginiFoto( IdrataTarget.Provino, ff);
 
 				Slide slide = new Slide();
-				slide.image = ((ImmagineWic)ff.imgProvino).bitmapSource;
-				slide.label = (string)ff.etichetta;
+				slide.imgProvino = ((ImmagineWic)ff.imgProvino).bitmapSource;
+				slide.etichetta = (string)ff.etichetta;
 				slides.Add( slide );
 			}
 			create( slides );

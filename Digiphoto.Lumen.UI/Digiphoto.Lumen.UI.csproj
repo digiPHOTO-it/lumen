@@ -93,6 +93,10 @@
     <Compile Include="Mvvm\IDialogProvider.cs" />
     <Compile Include="Mvvm\UserControlBase.cs" />
     <Compile Include="Pubblico\SlideShow.cs" />
+    <Page Include="Pubblico\SlideShowResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Compile Include="Pubblico\SlideShowViewModel.cs" />
     <Compile Include="Pubblico\SlideShowWindow.xaml.cs">
       <DependentUpon>SlideShowWindow.xaml</DependentUpon>
