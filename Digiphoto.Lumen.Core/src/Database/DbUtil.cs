@@ -12,6 +12,8 @@ using System.Data;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Util;
+using Digiphoto.Lumen.Config;
+using System.Windows.Forms;
 
 namespace Digiphoto.Lumen.Core.Database {
 
@@ -34,14 +36,12 @@ namespace Digiphoto.Lumen.Core.Database {
 			String doveSono = Assembly.GetExecutingAssembly().Location ;
 
 			string appPath = Path.GetDirectoryName( doveSono );
-			nomeFileDbVuoto = Path.Combine( appPath, Properties.Settings.Default.dbNomeDbVuoto );
+			nomeFileDbVuoto = Path.Combine( appPath, ConfigurazioneUserConfigLumen.dbNomeDbVuoto );
 
 			cartellaDatabase = DbUtil.decidiCartellaDatabase();
 
-			nomeFileDbPieno = Path.Combine( cartellaDatabase, Properties.Settings.Default.dbNomeDbPieno );
+            nomeFileDbPieno = Path.Combine(cartellaDatabase, ConfigurazioneUserConfigLumen.dbNomeDbPieno);
 		}
-
-
 
 		/**
 		 * Provo a connettermi fisicamente al database ed eseguo una verifica dello stesso.
@@ -62,8 +62,6 @@ namespace Digiphoto.Lumen.Core.Database {
 
 			return esiste;
 		}
-
-		
 
 		public static bool isDatabasEsistente() {		
 			return System.IO.File.Exists( nomeFileDbPieno );
@@ -86,7 +84,8 @@ namespace Digiphoto.Lumen.Core.Database {
 		 */
 		public static String providerConnectionString {
 			get {
-				string entityConnectionString = ConfigurationManager.ConnectionStrings ["LumenEntities"].ConnectionString;
+				//string entityConnectionString = ConfigurationManager.ConnectionStrings ["LumenEntities"].ConnectionString;
+                string entityConnectionString = ConfigurazioneUserConfigLumen.UserConfigConnectionString;
 				return ExtractConnectionStringFromEntityConnectionString( entityConnectionString );
 			}
 		}
@@ -136,7 +135,8 @@ namespace Digiphoto.Lumen.Core.Database {
 			string ret = null;
 
 			// Decido la cartella dove risiede il database
-			string cd = Properties.Settings.Default.dbCartella;
+			//string cd = Properties.Settings.Default.dbCartella;
+            string cd = ConfigurazioneUserConfigLumen.dbCartella;
 
 			if( String.IsNullOrEmpty( cd ) ) {
 				ret = Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.CommonApplicationData ), "digiPHOTO", "Lumen" );

@@ -23,36 +23,6 @@ namespace Digiphoto.Lumen.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("dbvuoto.sdf")]
-        public string dbNomeDbVuoto {
-            get {
-                return ((string)(this["dbNomeDbVuoto"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("database.sdf")]
-        public string dbNomeDbPieno {
-            get {
-                return ((string)(this["dbNomeDbPieno"]));
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("8")]
-        public short giorniDeleteFoto {
-            get {
-                return ((short)(this["giorniDeleteFoto"]));
-            }
-            set {
-                this["giorniDeleteFoto"] = value;
-            }
-        }
-        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
@@ -253,7 +223,79 @@ namespace Digiphoto.Lumen.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("A4;4;PDFCreator;PS1#6x8;5;doPDF v7;qq")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool primoAvvioLumen {
+            get {
+                return ((bool)(this["primoAvvioLumen"]));
+            }
+            set {
+                this["primoAvvioLumen"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string connectionString {
+            get {
+                return ((string)(this["connectionString"]));
+            }
+            set {
+                this["connectionString"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool primoAvvioConfiguratore {
+            get {
+                return ((bool)(this["primoAvvioConfiguratore"]));
+            }
+            set {
+                this["primoAvvioConfiguratore"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("dbvuoto.sdf")]
+        public string dbNomeDbVuoto {
+            get {
+                return ((string)(this["dbNomeDbVuoto"]));
+            }
+            set {
+                this["dbNomeDbVuoto"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("database.sdf")]
+        public string dbNomeDbPieno {
+            get {
+                return ((string)(this["dbNomeDbPieno"]));
+            }
+            set {
+                this["dbNomeDbPieno"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("8")]
+        public short giorniDeleteFoto {
+            get {
+                return ((short)(this["giorniDeleteFoto"]));
+            }
+            set {
+                this["giorniDeleteFoto"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string stampantiAbbinate {
             get {
                 return ((string)(this["stampantiAbbinate"]));

@@ -7,9 +7,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="194" d:DesignWidth="300">
     <!-- istanzio ed associo il mio rispettivo ViewModel -->
-    <UserControl.DataContext>
+    <!--<UserControl.DataContext>
         <lum:SelettoreStampantiInstallateViewModel />
-    </UserControl.DataContext>
+    </UserControl.DataContext>-->
     
     <UserControl.Resources>
         <ResourceDictionary Source="SelettoreStampantiInstallateDictionary.xaml" />

@@ -13,11 +13,18 @@ namespace Digiphoto.Lumen.Servizi.Stampare
     public class StampantiAbbinateSrvImpl : ServizioImpl, IStampantiAbbinateSrv
     {
 
-
         public StampantiAbbinateSrvImpl()
         {
-			// Carico la lista degli abbinamenti correnti
-			this.stampantiAbbinate = listaStampantiAbbinate( Configurazione.stampantiAbbinate );
+            String stampantiAbbinate = ConfigurazioneUserConfigLumen.stampantiAbbinate;
+            //Carico la configurazione
+            if (stampantiAbbinate != "")
+            {
+                this.stampantiAbbinate = listaStampantiAbbinate(stampantiAbbinate);
+            }
+            else
+            {
+                this.stampantiAbbinate = new List<StampanteAbbinata>();
+            }   
         }
 
         public void addAbbinamento(StampanteAbbinata stampanteAbbinata)
@@ -30,13 +37,28 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 			this.stampantiAbbinate.Remove( stampanteAbbinata );
         }
 
+        public void removeAbbinamentoByIndex(int index)
+        {
+            this.stampantiAbbinate.RemoveAt(index);
+        }
+
+        public void updateAbbinamento()
+        {
+            ConfigurazioneUserConfigLumen.stampantiAbbinate = listaStampantiAbbinateToString();
+        }
+
         public IList<StampanteAbbinata> listaStampantiAbbinate(String stampantiAbbinate)
         {
-			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+            List<StampanteAbbinata> list = new List<StampanteAbbinata>();
+            if (stampantiAbbinate.Equals(""))
+            {
+                return list;
+            }
 			
-			List<StampanteAbbinata> list = new List<StampanteAbbinata>();
             StampantiInstallateSrvImpl stampantiInstallateSrvImpl = new StampantiInstallateSrvImpl();
             String[] st = stampantiAbbinate.Split('#');
+
+            LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext; 
             for (int i = 0; i < st.Length; i++)
             {
                 //formato A4 (12 euro) su Shinko S2115 [PS1]
@@ -55,6 +77,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare
                 //new ObjectParameter("ln", formato),
                 //new ObjectParameter("fn", prezzo));
                 //formatoCarta = contactQuery.First<FormatoCarta>();
+                
 				formatoCarta = dbContext.FormatiCarta.FirstOrDefault() ; // f => f.descrizione.Equals( formato ) && f.prezzo == prezzo );
 				if( formatoCarta != null ) {
 					StampanteInstallata stampanteInstallata = stampantiInstallateSrvImpl.stampanteInstallataByString( stampante );
@@ -73,7 +96,6 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 			this.stampantiAbbinate = listaStampantiAbbinate;
         }
 
-
         public IList<StampanteAbbinata> stampantiAbbinate {
 			get;
 			private set;
@@ -88,6 +110,11 @@ namespace Digiphoto.Lumen.Servizi.Stampare
                 stampantiAbbinateString += stampanteAbbinata.FormatoCarta.prezzo + ";";
                 stampantiAbbinateString += stampanteAbbinata.StampanteInstallata.NomeStampante + ";";
                 stampantiAbbinateString += stampanteAbbinata.StampanteInstallata.PortaStampante + "#";
+            }
+             // Tolgo l'ultimo carattere #
+            if (stampantiAbbinateString.Length>0)
+            {
+                stampantiAbbinateString = stampantiAbbinateString.Remove(stampantiAbbinateString.Length - 1);
             }
             return stampantiAbbinateString;
         }
