@@ -12,6 +12,31 @@ namespace Digiphoto.Lumen.UI {
 	class MainWindowViewModel : ClosableWiewModel {
 
 		public MainWindowViewModel() {
+
+            selettoreStampantiInstallateViewModel = new SelettoreStampantiInstallateViewModel();
+
+            selettoreFormatoCartaViewModel = new SelettoreFormatoCartaViewModel();
+
+            selettoreFormatoCartaAbbinatoViewModel = new SelettoreFormatoCartaAbbinatoViewModel();
+
+        }
+
+        public SelettoreStampantiInstallateViewModel selettoreStampantiInstallateViewModel
+        {
+            get;
+            private set;
+        }
+
+        public SelettoreFormatoCartaViewModel selettoreFormatoCartaViewModel
+        {
+            get;
+            private set;
+        }
+
+        public SelettoreFormatoCartaAbbinatoViewModel selettoreFormatoCartaAbbinatoViewModel
+        {
+            get;
+            private set;
         }
 	}
 }

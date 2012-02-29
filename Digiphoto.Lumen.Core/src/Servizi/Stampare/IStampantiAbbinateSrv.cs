@@ -74,8 +74,6 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 		}
     }
 
-	
-
     public interface IStampantiAbbinateSrv : IServizio 
     {
         void addAbbinamento(StampanteAbbinata stampanteAbbinata);

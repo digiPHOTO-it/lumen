@@ -55,6 +55,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity">
+      <HintPath>lib\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -75,6 +78,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Carrello\Carrello.xaml.cs" />
+    <Compile Include="Carrello\CarrelloViewModel.cs" />
     <Compile Include="Converters\BoolInverterConverter.cs" />
     <Compile Include="Converters\ImmagineToImageSourceConverter.cs" />
     <Compile Include="Converters\PercentualeConverter.cs" />
@@ -97,6 +102,8 @@
     <Compile Include="Pubblico\SlideShowWindow.xaml.cs">
       <DependentUpon>SlideShowWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SelettoreFormatoCartaAbbinato\SelettoreFormatoCartaAbbinato.xaml.cs" />
+    <Compile Include="SelettoreFormatoCartaAbbinato\SelettoreFormatoCartaAbbinatoViewModel.cs" />
     <Compile Include="SelettoreFormatoCarta\SelettoreFormatoCartaViewModel.cs" />
     <Compile Include="SelettoreFormatoCarta\SelettoreFormatoCartaView.xaml.cs" />
     <Compile Include="SelettoreStampantiInstallate\SelettoreStampantiInstallateViewModel.cs" />
@@ -112,6 +119,14 @@
     <Compile Include="src\ScreenCapture\Win32Api\User32.cs" />
     <Compile Include="src\ScreenCapture\Win32Api\Win32Point.cs" />
     <Compile Include="src\ScreenCapture\Win32Api\Win32Rect.cs" />
+    <Page Include="Carrello\Carrello.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Carrello\CarrelloResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="FotoRitocco\FotoRitocco.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -127,6 +142,14 @@
     <Page Include="Resources\GlobalResourceDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SelettoreFormatoCartaAbbinato\SelettoreFormatoCartaAbbinato.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SelettoreFormatoCartaAbbinato\SelettoreFormatoCartaAbbinatoResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="SelettoreStampantiInstallate\SelettoreStampantiInstallateDictionary.xaml">
       <SubType>Designer</SubType>
