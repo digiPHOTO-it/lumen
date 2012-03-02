@@ -225,7 +225,7 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand caricareSlideShowCommand {
 			get {
 				if( _caricareSlideShowCommand == null ) {
-					_caricareSlideShowCommand = new RelayCommand( param => caricareSlideShow() );
+					_caricareSlideShowCommand = new RelayCommand( autoManual => caricareSlideShow( (string) autoManual ) );
 				}
 				return _caricareSlideShowCommand;
 			}
@@ -259,6 +259,16 @@ namespace Digiphoto.Lumen.UI {
 			windowPubblicaViewModel.screenShot = screenShot;
 		}
 */
+		private RelayCommand _azzeraParamRicercaCommand;
+		public ICommand azzeraParamRicercaCommand {
+			get {
+				if( _azzeraParamRicercaCommand == null ) {
+					_azzeraParamRicercaCommand = new RelayCommand( param => azzeraParamRicerca() );
+				}
+				return _azzeraParamRicercaCommand;
+			}
+		}
+
 		#endregion
 
 
@@ -298,13 +308,6 @@ namespace Digiphoto.Lumen.UI {
 			var fotos = fotografieCW.OfType<Fotografia>().Where( f => f.isSelezionata == true );
 
 			return new List<Fotografia>( fotos );
-
-/*
-			IList<Fotografia> fotosSelez = new List<Fotografia>();
-			foreach( Fotografia f in fotografieCW )
-				if( f.isSelezionata )
-					fotosSelez.Add( f );
- */
 		}
 			
 
@@ -377,19 +380,8 @@ namespace Digiphoto.Lumen.UI {
 		/// </summary>
 		private void eseguireRicerca() {
 
-			// Aggiungo eventuale parametro il fotografo
-			if( selettoreFotografoViewModel.fotografoSelezionato != null )
-				paramCercaFoto.fotografi = new Fotografo []  { selettoreFotografoViewModel.fotografoSelezionato };
-			else
-				paramCercaFoto.fotografi = null;
 
-			// Aggiungo eventuale parametro l'evento
-			if( selettoreEventoViewModel.eventoSelezionato != null )
-				paramCercaFoto.eventi = new Evento [] { selettoreEventoViewModel.eventoSelezionato };
-			else
-				paramCercaFoto.eventi = null;
-
-
+			completaParametriRicerca();
 
 	//		paramCercaFoto.giornataIniz = Convert.ToDateTime( paramGiornataIniz );
 
@@ -411,8 +403,33 @@ namespace Digiphoto.Lumen.UI {
 
 		}
 
-		private void caricareSlideShow() {
-			slideShowViewModel.create( creaListaFotoSelezionate() );
+		private void completaParametriRicerca() {
+
+			// Aggiungo eventuale parametro il fotografo
+			if( selettoreFotografoViewModel.fotografoSelezionato != null )
+				paramCercaFoto.fotografi = new Fotografo [] { selettoreFotografoViewModel.fotografoSelezionato };
+			else
+				paramCercaFoto.fotografi = null;
+
+			// Aggiungo eventuale parametro l'evento
+			if( selettoreEventoViewModel.eventoSelezionato != null )
+				paramCercaFoto.eventi = new Evento [] { selettoreEventoViewModel.eventoSelezionato };
+			else
+				paramCercaFoto.eventi = null;
+
+		}
+
+		private void caricareSlideShow( string modo ) {
+
+			if( modo.Equals( "Manual", StringComparison.CurrentCultureIgnoreCase ) )
+				slideShowViewModel.creaShow( creaListaFotoSelezionate() );
+			else if( modo.Equals( "Auto", StringComparison.CurrentCultureIgnoreCase ) ) {
+				completaParametriRicerca();
+				ParamCercaFoto copiaParam = paramCercaFoto.ShallowCopy();
+				slideShowViewModel.creaShow( copiaParam );
+			} else {
+				throw new ArgumentOutOfRangeException( "modo slide show" );
+			}
 		}
 
 		private void controllareSlideShow( string operaz ) {
@@ -423,6 +440,11 @@ namespace Digiphoto.Lumen.UI {
 				slideShowViewModel.stop();
 			}
 
+		}
+
+		void azzeraParamRicerca() {
+			paramCercaFoto = new ParamCercaFoto();
+			OnPropertyChanged( "paramCercaFoto" );
 		}
 
 		#endregion

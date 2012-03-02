@@ -27,6 +27,9 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			fasiDelGiorno = new List<FaseDelGiorno>();
 		}
 
+		public ParamCercaFoto ShallowCopy() {
+			return (ParamCercaFoto)this.MemberwiseClone();
+		}
 
 		public override string ToString() {
 

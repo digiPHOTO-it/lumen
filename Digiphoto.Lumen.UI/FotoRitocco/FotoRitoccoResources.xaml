@@ -3,7 +3,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <lumC:ImmagineToImageSourceConverter x:Key="immagineToImageSourceConverter" />
-
+    <lumC:BoolInverterConverter x:Key="boolInverterConverter" />
+    
     <!-- Stile della listbox che itera le immagini -->
     <Style x:Key="LsImmaginiDaModificareStyle" TargetType="ListBox">
 

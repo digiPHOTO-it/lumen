@@ -12,18 +12,6 @@ using System.Windows.Media;
 
 namespace Digiphoto.Lumen.UI.Pubblico {
 
-	public class Slide {
-		
-		public ImageSource imgProvino {
-			get;
-			set;
-		}
-
-		public string etichetta {
-			get;
-			set;
-		}
-	}
 
 	public class SlideShow {
 
@@ -42,10 +30,12 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			set;
 		}
 
-		public List<Slide> itemsShow {
+		/// <summary>
+		///  Elenco completo delle slide che voglio visualizzare ciclicamente
+		/// </summary>
+		public IList<Fotografia> slides {
 			get;
 			set;
 		}
-
 	}
 }

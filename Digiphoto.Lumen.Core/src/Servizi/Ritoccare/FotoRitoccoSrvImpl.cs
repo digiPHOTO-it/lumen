@@ -10,6 +10,8 @@ using Digiphoto.Lumen.Imaging.Correzioni;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Imaging;
 using Digiphoto.Lumen.Servizi.Selezionare;
+using System.Data.Objects;
+using System.Data;
 
 namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
@@ -62,7 +64,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 			if( target == Target.Selezionate ) {
 				foreach( Fotografia f in fotoSelezionate )
-					addCorrezione( f, correzione );
+					addCorrezione( f, correzione, false );
 			}
 
 
@@ -144,6 +146,9 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 			}
 		}
 
+		/// <summary>
+		/// Elimina tutte le Correzioni da una foto e quindi ricrea il provino
+		/// </summary>
 		public void tornaOriginale( Fotografia fotografia, bool salvare ) {
 
 			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
@@ -152,7 +157,52 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 			AiutanteFoto.creaProvinoFoto( fotografia );
 
+			if( salvare )
+				objContext.SaveChanges();
+		}
+
+
+		/// <summary>
+		/// Rileggo dal db la fotografia. In questo modo, ricopro la proprietà correzioniXml che
+		/// era stata modificata dall'utente applicando delle correzioni che poi non ha confermato.
+		/// </summary>
+		/// <param name="fotografia"></param>
+		public void undoCorrezioniTransienti( Fotografia fotografia ) {
+
+			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
+
+			objectContext.Attach( fotografia );
+			objContext.Refresh( RefreshMode.StoreWins, fotografia );
+
+			fotografia.imgProvino = null;  // Questo forza la rilettura del provino da disco
+			AiutanteFoto.idrataImmaginiFoto( IdrataTarget.Provino, fotografia );
+		}
+
+		public void undoCorrezioniTransienti( Target target ) {
+			if( target == Target.Selezionate ) {
+				foreach( Fotografia f in fotoSelezionate )
+					undoCorrezioniTransienti( f );
+			}
+		}
+
+
+		public void salvaCorrezioniTransienti( Fotografia fotografia ) {
+
+			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
+			
+			objContext.Fotografie.Attach( fotografia );
+			objContext.ObjectStateManager.ChangeObjectState( fotografia, EntityState.Modified );
 			objContext.SaveChanges();
+
+			IGestoreImmagineSrv gis = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
+			gis.save( fotografia.imgProvino, PathUtil.nomeCompletoProvino( fotografia ) );
+		}
+
+		public void salvaCorrezioniTransienti( Target target ) {
+			if( target == Target.Selezionate ) {
+				foreach( Fotografia f in fotoSelezionate )
+					salvaCorrezioniTransienti( f );
+			}
 		}
 	}
 }
