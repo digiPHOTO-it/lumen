@@ -58,6 +58,40 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		/// <summary>
+		/// Le foto selezionate sono in fase di modifica
+		/// </summary>
+		private bool _modificheInCorso;
+		public bool modificheInCorso {
+			get {
+				return _modificheInCorso;
+			}
+			private set {
+				if( _modificheInCorso != value ) {
+					_modificheInCorso = value;
+					OnPropertyChanged( "modificheInCorso" );
+				}
+			}
+		}
+
+		public bool possoSalvareCorrezioni {
+			get {
+				return modificheInCorso == true;
+			}
+		}
+
+		public bool possoRifiutareCorrezioni {
+			get {
+				return possoSalvareCorrezioni;
+			}
+		}
+
+		public bool possoApplicareCorrezione {
+			get {
+				return isAlmenoUnaFotoSelezionata;
+			}
+		}
+
 		#endregion
 
 		#region Comandi
@@ -67,7 +101,7 @@ namespace Digiphoto.Lumen.UI {
 			get {
 				if( _grayScaleCommand == null ) {
 					_grayScaleCommand = new RelayCommand( param => this.grayScale(),
-														param => possoApplicareComando,
+														param => possoApplicareCorrezione,
 														true );
 				}
 				return _grayScaleCommand;
@@ -79,7 +113,7 @@ namespace Digiphoto.Lumen.UI {
 			get {
 				if( _ruotareCommand == null ) {
 					_ruotareCommand = new RelayCommand( sGradi => this.ruotare( Convert.ToInt16(sGradi) ),
-														sGradi => this.possoApplicareComando,
+														sGradi => this.possoApplicareCorrezione,
 														true );
 				}
 				return _ruotareCommand;
@@ -91,7 +125,7 @@ namespace Digiphoto.Lumen.UI {
 			get {
 				if( _tornareOriginaleCommand == null ) {
 					_tornareOriginaleCommand = new RelayCommand( param => this.tornareOriginale(),
-														gradi => this.possoApplicareComando,
+														gradi => this.possoApplicareCorrezione,
 														true );
 				}
 				return _tornareOriginaleCommand;
@@ -103,7 +137,7 @@ namespace Digiphoto.Lumen.UI {
 			get {
 				if( _sepiaCommand == null ) {
 					_sepiaCommand = new RelayCommand( param => this.sepia(),
-													  param => this.possoApplicareComando,
+													  param => this.possoApplicareCorrezione,
 													  true );
 				}
 				return _sepiaCommand;
@@ -115,46 +149,91 @@ namespace Digiphoto.Lumen.UI {
 			get {
 				if( _flipCommand == null ) {
 					_flipCommand = new RelayCommand( param => this.flip(),
-													  param => this.possoApplicareComando,
+													  param => this.possoApplicareCorrezione,
 													  true );
 				}
 				return _flipCommand;
 			}
 		}
 
-		public bool possoApplicareComando {
+		private RelayCommand _salvareCorrezioniCommand;
+		public ICommand salvareCorrezioniCommand {
 			get {
-				return isAlmenoUnaFotoSelezionata;
+				if( _salvareCorrezioniCommand == null ) {
+					_salvareCorrezioniCommand = new RelayCommand( param => salvareCorrezioni(),
+													  param => this.possoSalvareCorrezioni,
+													  true );
+				}
+				return _salvareCorrezioniCommand;
 			}
 		}
+
+		private RelayCommand _rifiutareCorrezioniCommand;
+		public ICommand rifiutareCorrezioniCommand {
+			get {
+				if( _rifiutareCorrezioniCommand == null ) {
+					_rifiutareCorrezioniCommand = new RelayCommand( param => rifiutareCorrezioni(),
+													  param => this.possoRifiutareCorrezioni,
+													  true );
+				}
+				return _rifiutareCorrezioniCommand;
+			}
+		}
+
 		#endregion
 
 		#region Metodi
 
-		private void ruotare( int pGradi ) {
+		/// <summary>
+		/// La prima volta che inizio a toccare una foto,
+		/// devo salvarmi le correzioni attuali di tutte quelle che stanno per essere modificate.
+		/// Mi serve per gestire eventuale rollback
+		/// </summary>
+		private void forseInizioModifiche() {
+			if( !modificheInCorso ) {
+				// devo fare qualcosa al primo cambio di stato ?
+			}
+			modificheInCorso = true;
+		}
 
+
+		private void ruotare( int pGradi ) {
+			forseInizioModifiche();
 			RuotaCorrezione correzione = new RuotaCorrezione() { gradi = pGradi };			
 			fotoRitoccoSrv.addCorrezione( Target.Selezionate, correzione );
 		}
 
-
 		private void grayScale() {
+			forseInizioModifiche();
 			fotoRitoccoSrv.addCorrezione( Target.Selezionate, new BiancoNeroCorrezione() );
 		}
 
 		private void tornareOriginale() {
+			forseInizioModifiche();
 			fotoRitoccoSrv.tornaOriginale( Target.Selezionate );			
 		}
 
 		private void sepia() {
+			forseInizioModifiche();
 			fotoRitoccoSrv.addCorrezione( Target.Selezionate, new SepiaCorrezione() );
 		}
 
 		private void flip() {
+			forseInizioModifiche();
 			fotoRitoccoSrv.addCorrezione( Target.Selezionate, new SpecchioCorrezione() );
 		}
 
+		private void salvareCorrezioni() {
+			fotoRitoccoSrv.salvaCorrezioniTransienti( Target.Selezionate );
+			modificheInCorso = false;
+		}
+
+		private void rifiutareCorrezioni() {
+			fotoRitoccoSrv.undoCorrezioniTransienti( Target.Selezionate );
+			modificheInCorso = false;
+		}
 		#endregion
+
 
 	}
 }

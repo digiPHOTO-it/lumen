@@ -77,7 +77,7 @@
                 </ToolBar>
 
                 <ToolBar Band="2" BandIndex="2" Header="Pubblico">
-                    <Button Content="Load" Command="{Binding caricareSlideShowCommand}" />
+                    <Button Content="Load" Command="{Binding caricareSlideShowCommand}" CommandParameter="Manual" />
                     <ToggleButton Content="Start" Command="{Binding controllareSlideShowCommand}" CommandParameter="Start" />
                     <ToggleButton Content="Stop"  Command="{Binding controllareSlideShowCommand}" CommandParameter="Stop" />
                 </ToolBar>
@@ -113,19 +113,21 @@
                                  DataContext="{Binding selettoreEventoViewModel}" />
 
                 <StackPanel Orientation="Vertical">
-                    <CheckBox Name="checkBoxMattino" Content="Mattino" IsChecked="{Binding isMattinoChecked}"  />
-                    <CheckBox Name="checkBoxPomeriggio" Content="Pomeriggio" IsChecked="{Binding isPomeriggioChecked}"  />
-                    <CheckBox Name="checkBoxSera" Content="Sera" IsChecked="{Binding isSeraChecked}" />              
+                    <CheckBox Name="checkBoxMattino" Content="Mattino" IsChecked="{Binding isMattinoChecked,Mode=TwoWay}"  />
+                    <CheckBox Name="checkBoxPomeriggio" Content="Pomeriggio" IsChecked="{Binding isPomeriggioChecked,Mode=TwoWay}"  />
+                    <CheckBox Name="checkBoxSera" Content="Sera" IsChecked="{Binding isSeraChecked,Mode=TwoWay}" />              
                     
                     <Separator />
                     
                     <Label Content="Didascalia" />
-                    <TextBox Name="didascaliaTextBox" />
+                    <TextBox Name="didascaliaTextBox" Text="{Binding Path=paramCercaFoto.didascalia,Mode=TwoWay}" />
                 </StackPanel>
                 
                 <Label Content="Altri param" />
                 
+                <Button Name="azzeraParamRicercaButton" Content="Azzera param" ToolTip="Azzera i parametri di ricerca" Command="{Binding azzeraParamRicercaCommand}" />
                 <Button Name="eseguireRicercaButton" Content="Esegui Ricerca" Command="{Binding eseguireRicercaCommand}" />
+                <Button Name="caricareSlideShowAuto" Content="Load SS Auto" Command="{Binding caricareSlideShowCommand}" CommandParameter="Auto" />
                 
             </StackPanel>
             

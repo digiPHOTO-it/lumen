@@ -68,11 +68,8 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 
 			if( fotografie != null ) {
 
-// TODO capire come mai
-// se idrato le immagini in un thread separato, la UI mi da problemi.
-// mi dice che i dati sono stati caricati in un thread diverso da quello corrente
-// non ho però capito come risolvere.
 				if( 1 == 0 ) {
+					// Idrato le foto nello stesso thread
 					idrataImmaginiFoto();
 				} else {
 					// idrato le immagini in un thread separato

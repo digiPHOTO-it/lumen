@@ -80,8 +80,8 @@
             
             <Separator Margin="0,10"/>
             
-            <Button Name="rifiutaModificheButton" Content="Rifiuta" ToolTip="Annulla le modifiche applicate" />
-            <Button Name="applicaModificheButton" Content="Applica" ToolTip="Memorizza le modifiche apportate"/>
+            <Button Name="rifiutareCorrezioniButton" Content="Rifiuta" ToolTip="Annulla le correzioni applicate" Command="{Binding rifiutareCorrezioniCommand}" />
+            <Button Name="salvareCorrezioniButton" Content="Applica" ToolTip="Applica le correzioni apportate" Command="{Binding salvareCorrezioniCommand}"/>
         </StackPanel>
 
         <ListBox x:Name="LsImmaginiDaModificare"  DockPanel.Dock="Bottom"
@@ -91,6 +91,7 @@
                  ItemsPanel="{DynamicResource ImmaginiDaModificareItemsPanelTemplate}" 
                  ItemTemplate="{DynamicResource ImmaginiDaModificareDataTemplate}"
                  IsSynchronizedWithCurrentItem="True"
+                 IsEnabled="{Binding Path=modificheInCorso, Converter={StaticResource boolInverterConverter}}"
                  ScrollViewer.HorizontalScrollBarVisibility="Visible" >           
         </ListBox>
 

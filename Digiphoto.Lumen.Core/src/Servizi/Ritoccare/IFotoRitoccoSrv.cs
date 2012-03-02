@@ -35,5 +35,25 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		void tornaOriginale( Fotografia fotografia, bool salvare );
 		void tornaOriginale( Fotografia fotografia );
 		void tornaOriginale( Target target );
+
+		/// <summary>
+		/// Se ho iniziato a correggere la foto, ma poi mi accorgo che il risultato non mi
+		/// piace, devo tornare indietro (UNDO) ed eliminare le modifiche che ho fatto in modo
+		/// temporaneo (transiente).
+		/// Quindi occorre rileggere da disco l'attributo "correzioni" e ricaricare da disco anche 
+		/// l'immagine del provino
+		/// </summary>
+		void undoCorrezioniTransienti( Fotografia fotografia );
+		void undoCorrezioniTransienti( Target target );
+
+		/// <summary>
+		/// Quando correggo le foto, non scrivo subito sul db le modifiche apportate.
+		/// Questo perché voglio essere sempre in grado di annullare.
+		/// Con questo metodo, rendo persistenti le correzioniXml che ancora sono transienti.
+		/// </summary>
+		void salvaCorrezioniTransienti( Fotografia fotografia );
+		void salvaCorrezioniTransienti( Target target );
+
+
 	}
 }

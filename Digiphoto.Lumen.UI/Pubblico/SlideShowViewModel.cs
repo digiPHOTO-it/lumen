@@ -10,10 +10,13 @@ using System.Collections.ObjectModel;
 using System.Windows.Threading;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Imaging.Wic;
+using Digiphoto.Lumen.Servizi.Ricerca;
+using Digiphoto.Lumen.Servizi.Explorer;
+using Digiphoto.Lumen.Servizi.Scaricatore;
 
 namespace Digiphoto.Lumen.UI.Pubblico {
 
-	public class SlideShowViewModel : ClosableWiewModel {
+	public class SlideShowViewModel : ClosableWiewModel, IObserver<ScaricoFotoMsg> {
 
 		private DispatcherTimer _orologio;
 
@@ -27,7 +30,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			set;
 		}
 
-		public ObservableCollection<Slide> slidesVisibili {
+		public ObservableCollection<Fotografia> slidesVisibili {
 			get;
 			set;
 		}
@@ -52,7 +55,25 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			}
 		}
 
-		#endregion
+		IFotoExplorerSrv fotoExplorerSrv {
+			get {
+				return LumenApplication.Instance.getServizioAvviato<IFotoExplorerSrv>();
+			}
+		}
+
+		/// <summary>
+		/// Questo flag mi dice se intanto che sta girando lo show, se si sono acquisite 
+		/// delle nuove foto che potenzialmente devo andare a visualizzare.
+		/// </summary>
+		private bool sonoEntrateNuoveFotoNelFrattempo {
+			get;
+			set;
+		}
+
+
+		#endregion   // Proprietà
+
+
 
 		#region Metodi
 
@@ -82,41 +103,43 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			_orologio.Stop();
 		}
 
-		
-		/// <summary>
-		/// Creo un nuovo slide show.
-		/// </summary>
-		/// <param name="?"></param>
-		public void create( IEnumerable<Fotografia> fotografie ) {
+		public void creaShow( ParamCercaFoto paramCercaFoto ) {
 
-			List<Slide> slides = new List<Slide>();
-			foreach( Fotografia ff in fotografie ) {
+			// Mi faccio dare le foto dal servizio
+			fotoExplorerSrv.cercaFoto( paramCercaFoto );
 
-				if( ff.imgProvino == null )
-					AiutanteFoto.idrataImmaginiFoto( IdrataTarget.Provino, ff);
-
-				Slide slide = new Slide();
-				slide.imgProvino = ((ImmagineWic)ff.imgProvino).bitmapSource;
-				slide.etichetta = (string)ff.etichetta;
-				slides.Add( slide );
-			}
-			create( slides );
+			this.slideShow = new SlideShowAutomatico( paramCercaFoto );
+			this.slideShow.slides = fotoExplorerSrv.fotografie;
+			creaShow();
 		}
 
-		/// <summary>
-		/// creo uno slide show con un elenco di immagini qualsiasi
-		/// </summary>
-		public void create( List<Slide> slides )  {
-
-			SlideShow slideShow = new SlideShow();
-			slideShow.colonne = 3;
-			slideShow.righe = 2;
+		private void creaShow() {
+			// Qualche parametro di default
+			slideShow.colonne = 3;	// TODO deve sceglierle l'utente
+			slideShow.righe = 2;	// TODO deve sceglierle l'utente
 			slideShow.millisecondiIntervallo = 3800;
-			slideShow.itemsShow = slides;
-			this.slideShow = slideShow;
 
+			// Avvio il timer che serve a far girare le foto
 			creaNuovoTimer();
+
+			// Se lo show è automatico, devo ascoltare se arrivano nuove foto.
+			if( slideShow is SlideShowAutomatico ) {
+				IObservable<ScaricoFotoMsg> observable = LumenApplication.Instance.bus.Observe<ScaricoFotoMsg>();
+				observable.Subscribe( this );
+			}				
 		}
+
+		/// <summary>
+		/// creo uno slide show Manuale, con le immagini indicate
+		/// </summary>
+		public void creaShow( IList<Fotografia> newSlides )  {
+			this.slideShow = new SlideShow() { 
+				slides = newSlides 
+			};
+			creaShow();
+		}
+
+
 
 		private void creaNuovoTimer() {
 
@@ -137,7 +160,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			// carico la collezione delle slide visibili andando avanti di una pagina
 
 			if( slidesVisibili == null )
-				slidesVisibili = new ObservableCollection<Slide>();
+				slidesVisibili = new ObservableCollection<Fotografia>();
 			else
 				slidesVisibili.Clear();
 
@@ -145,19 +168,18 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 			do {
 
-				// Se arrivo al massimo, torno all'inizio
-				if( numSlideCorrente >= slideShow.itemsShow.Count )
-					numSlideCorrente = 0;
+				// Se sono arrivato alla fine dello show, ricomincio da capo
+				gestisciFineShow();
 
-				if( numSlideCorrente < slideShow.itemsShow.Count )
-					this.slidesVisibili.Add( slideShow.itemsShow [numSlideCorrente++] );
+				if( numSlideCorrente < slideShow.slides.Count )
+					this.slidesVisibili.Add( slideShow.slides [numSlideCorrente++] );
 				else
 					break;   // si vede che la lista è vuota lunga zero.
 
 				++conta;
 
 				// esco se ho finito la pagina, oppure se ho finito le foto
-			} while( conta < totSlidesPerPagina && conta < slideShow.itemsShow.Count );
+			} while( conta < totSlidesPerPagina && conta < slideShow.slides.Count );
 
 			OnPropertyChanged( "slidesVisibili" );
 
@@ -165,8 +187,46 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			// Dopo che ho visualizzato le foto, se mi accorgo che il numero totale di foto da visualizzare 
 			// è inferiore al numero massimo di foto che stanno nello show,
 			// allora è inutile che lascio il timer acceso, tanto non ho altro da mostrare.
-			if( slideShow.itemsShow.Count <= totSlidesPerPagina )
+			if( slideShow.slides.Count <= totSlidesPerPagina )
 				stop();
+		}
+
+		private void gestisciFineShow() {
+			// Se arrivo al massimo, torno all'inizio
+			if( numSlideCorrente >= slideShow.slides.Count ) {
+
+				if( sonoEntrateNuoveFotoNelFrattempo && slideShow is SlideShowAutomatico ) {
+					// Devo rieseguire la query
+					ParamCercaFoto param = ((SlideShowAutomatico)slideShow).paramCercaFoto;
+					creaShow( param );
+					// Riazzero per prossimo test
+					sonoEntrateNuoveFotoNelFrattempo = false;
+				}
+
+				numSlideCorrente = 0;
+			}
+
+		}
+
+
+
+
+		public void OnCompleted() {
+		}
+
+		public void OnError( Exception error ) {
+		}
+
+		public void OnNext( ScaricoFotoMsg value ) {
+
+			// Qualcuno ha appena scaricato delle nuove foto nell'archivio.
+			sonoEntrateNuoveFotoNelFrattempo = true;
+
+			// Se avevo lo show fermo perchè foto non sufficienti, allora lo riaccendo
+			if( slideShow is SlideShowAutomatico ) 
+				if( slideShow != null && slideShow.slides != null && slideShow.slides.Count <= totSlidesPerPagina )
+					if( isRunning == false )
+						start();
 		}
 	}
 }
