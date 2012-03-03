@@ -26,18 +26,24 @@
 
         
         <TabItem Header="Carrello" ToolTip="Vendere stampe e CD" >
+			<lum:Carrello Height="253" />
         </TabItem>
 
         <TabItem Header="Configurazione" ToolTip="Scarica foto da memory-card o da altra cartella" MinHeight="30" >
         <!-- UserControl per scaricare le foto -->
-            <StackPanel Orientation="Vertical" HorizontalAlignment="Left"> 
-                <lum:SelettoreStampanteInstallata/>
-                <lum:SelettoreFormatoCarta/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Height="405">
+                <StackPanel Orientation="Vertical" Height="405">
+                    <lum:SelettoreFormatoCarta DataContext="{Binding Path=selettoreFormatoCartaViewModel}"/>
+                    <lum:SelettoreStampanteInstallata DataContext="{Binding Path=selettoreStampantiInstallateViewModel}"/>
+                </StackPanel>
+                <lum:SelettoreFormatoCartaAbbinatoView DataContext="{Binding Path=selettoreFormatoCartaAbbinatoViewModel}"/>
+                <Button Content="Modifica" Height="23" Name="button1" Width="75" Click="button1_Click" />
+                <TextBox Height="23" Name="giorniDeleteFoto" Width="220" />
             </StackPanel>
         </TabItem>
 
         <TabItem Header="Utilità" ToolTip="Funzionalità varie" >
-            <Button Content="Uscita" Command="{Binding exitCommand}" />
+            <Button Content="Uscita" Height="100" Width="100" Command="{Binding CloseCommand}" />
         </TabItem>
 
     </TabControl>

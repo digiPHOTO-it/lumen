@@ -66,6 +66,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="src\Config\ConfigurazioneUserConfigLumen.cs" />
     <Compile Include="src\Config\FlashCardConfig.cs" />
     <Compile Include="src\Config\ServiziCollection.cs" />
     <Compile Include="src\Config\ServizioElement.cs" />
@@ -162,6 +163,7 @@
     <Compile Include="src\Util\ParamCerca.cs" />
     <Compile Include="src\Util\PathUtil.cs" />
     <Compile Include="src\Util\SerializzaUtil.cs" />
+    <Compile Include="src\Util\UserConfigXML.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

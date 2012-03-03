@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows;
 using Digiphoto.Lumen.Core.Database;
+using Digiphoto.Lumen.Config;
+using System.Configuration;
 
 namespace Digiphoto.Lumen.UI {
 	/// <summary>
@@ -8,14 +10,15 @@ namespace Digiphoto.Lumen.UI {
 	/// </summary>
 	public partial class MainWindow : Window {
 
-		MainWindowViewModel _mainWindowViewModel = new MainWindowViewModel();
+        MainWindowViewModel _mainWindowViewModel = null;
 
 		public MainWindow() {
 
 			using( new UnitOfWorkScope() ) {
 
 				InitializeComponent();
-
+				 giorniDeleteFoto.Text = ""+Configurazione.GiorniDeleteFotoProperties;
+                 _mainWindowViewModel = new MainWindowViewModel();
 			}
 
 
@@ -31,5 +34,12 @@ namespace Digiphoto.Lumen.UI {
 
 			DataContext = _mainWindowViewModel;
 		}
+
+        private void button1_Click(object sender, RoutedEventArgs e)
+        {
+			Configurazione.GiorniDeleteFotoProperties = short.Parse(this.giorniDeleteFoto.Text);
+            System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
+            System.Diagnostics.Trace.WriteLine(config.FilePath);
+        }
 	}
 }

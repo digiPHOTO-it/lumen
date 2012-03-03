@@ -9,9 +9,9 @@
              d:DesignHeight="381" d:DesignWidth="300">
 
     <!-- istanzio ed associo il mio rispettivo ViewModel -->
-    <UserControl.DataContext>
+    <!--<UserControl.DataContext>
         <lum:SelettoreFormatoCartaViewModel />
-    </UserControl.DataContext>
+    </UserControl.DataContext>-->
 
     <UserControl.Resources>
         <ResourceDictionary Source="SelettoreFormatoCartaResources.xaml" />

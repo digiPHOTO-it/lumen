@@ -7,6 +7,7 @@ using System.Windows;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.UI.Pubblico;
 using log4net;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.UI {
 	/// <summary>
@@ -28,6 +29,9 @@ namespace Digiphoto.Lumen.UI {
 			splashScreen.Show( false, true );
 #endif
 			base.OnStartup( e );
+
+            // Carico le configurazioni per il configuratore
+            Configurazione.setUserConfig();
 
 			// Inizializzo l'applicazione
 			LumenApplication.Instance.avvia();
