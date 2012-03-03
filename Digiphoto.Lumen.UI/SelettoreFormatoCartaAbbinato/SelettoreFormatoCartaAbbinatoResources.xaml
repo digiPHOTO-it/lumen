@@ -1,0 +1,15 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <DataTemplate x:Key="formatoCartaAbbinatoListBoxTemplate">
+
+        <Border BorderBrush="Red" >
+            <StackPanel Orientation="Horizontal">
+                <Label Content="{Binding StampanteInstallata.NomeStampante}" />
+                <Label Content="{Binding FormatoCarta.descrizione}" />
+                <Label Content="{Binding FormatoCarta.prezzo}" />
+            </StackPanel>
+        </Border>
+
+    </DataTemplate>
+</ResourceDictionary>

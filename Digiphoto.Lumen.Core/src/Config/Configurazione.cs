@@ -8,6 +8,8 @@ using System.Configuration;
 using System.Data.EntityClient;
 using System.IO;
 using Digiphoto.Lumen.Servizi.Vendere;
+using System.Windows.Forms;
+using Digiphoto.Lumen.Util;
 
 namespace Digiphoto.Lumen.Config  {
 
@@ -40,6 +42,7 @@ namespace Digiphoto.Lumen.Config  {
 			}
 
 			verificheConfruenza();
+
 		}
 
 		/**
@@ -76,7 +79,7 @@ namespace Digiphoto.Lumen.Config  {
 		private void sostituisciSegnapostoDataDirectoryPerConnectionString() {
 
 			// Ora che ho deciso dove sta il database, sostituisco la cartella nella stringa di connessione.
-			AppDomain.CurrentDomain.SetData( "DataDirectory", DbUtil.cartellaDatabase );
+			//AppDomain.CurrentDomain.SetData( "DataDirectory", DbUtil.cartellaDatabase );
 		}
 
 		
@@ -209,5 +212,79 @@ namespace Digiphoto.Lumen.Config  {
 			}
 		}
 
+        public static short GiorniDeleteFotoProperties
+        {
+            get
+            {
+                return Properties.Settings.Default.giorniDeleteFoto;
+            }
+
+            set
+            {
+                Properties.Settings.Default.giorniDeleteFoto = value;
+                Properties.Settings.Default.Save();
+            }
+        }  
+
+        public static bool PrimoAvvioConfiguratore
+        {
+            get
+            {
+                return Properties.Settings.Default.primoAvvioConfiguratore;
+            }
+            set
+            {
+                Properties.Settings.Default.primoAvvioConfiguratore = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static void setUserConfig()
+        {
+            if (Properties.Settings.Default.primoAvvioLumen)
+            {
+                Properties.Settings.Default.primoAvvioLumen = false;
+                Properties.Settings.Default.cartellaFoto = Properties.Settings.Default.cartellaFoto;
+                Properties.Settings.Default.codicePuntoVendita = Properties.Settings.Default.codicePuntoVendita;
+                Properties.Settings.Default.dbCartella = Properties.Settings.Default.dbCartella;
+                Properties.Settings.Default.defaultChiavetta = Properties.Settings.Default.defaultChiavetta;
+                Properties.Settings.Default.defaultMasterizzatore = Properties.Settings.Default.defaultMasterizzatore;
+                Properties.Settings.Default.descrizionePuntoVendita = Properties.Settings.Default.descrizionePuntoVendita;
+                Properties.Settings.Default.destMasterizza = Properties.Settings.Default.destMasterizza;
+                Properties.Settings.Default.eliminaFileSorgenti = Properties.Settings.Default.eliminaFileSorgenti;
+                Properties.Settings.Default.ereseFotoMemoryCard = Properties.Settings.Default.ereseFotoMemoryCard;
+                Properties.Settings.Default.giorniDeleteFoto = Properties.Settings.Default.giorniDeleteFoto;
+                Properties.Settings.Default.modoVendita = Properties.Settings.Default.modoVendita;
+                Properties.Settings.Default.pixelLatoProvino = Properties.Settings.Default.pixelLatoProvino;
+                Properties.Settings.Default.proiettaDiapo = Properties.Settings.Default.proiettaDiapo;
+                Properties.Settings.Default.pswAdmin = Properties.Settings.Default.pswAdmin;
+                Properties.Settings.Default.stampantiAbbinate = Properties.Settings.Default.stampantiAbbinate;
+                Properties.Settings.Default.stampigli = Properties.Settings.Default.stampigli;
+                Properties.Settings.Default.dbNomeDbPieno = Properties.Settings.Default.dbNomeDbPieno;
+                Properties.Settings.Default.dbNomeDbVuoto = Properties.Settings.Default.dbNomeDbVuoto;
+
+                if (Properties.Settings.Default.connectionString.Equals(""))
+                {
+                    ExeConfigurationFileMap fileMap = new ExeConfigurationFileMap();
+                    //Calcolo il percorso in cui vengono memorizzati i settaggi utente
+                    System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
+                    ConnectionStringsSection connSection = (ConnectionStringsSection)config.GetSection("connectionStrings");
+                    String connectionStrings = connSection.ConnectionStrings["LumenEntities"].ConnectionString;
+
+                    Properties.Settings.Default.connectionString = connectionStrings;
+                }
+                else
+                {
+                    Properties.Settings.Default.connectionString = Properties.Settings.Default.connectionString;
+                }
+                Properties.Settings.Default.Save();
+            }
+            //Testo il primo Avvio
+            if (UserConfigXML.PathUserConfigConfiguratore.Equals(""))
+            {
+                MessageBox.Show("Devi eseguire il Configuratore prima....","Avviso");
+                Environment.Exit(0);
+            }
+        }
 	}
 }

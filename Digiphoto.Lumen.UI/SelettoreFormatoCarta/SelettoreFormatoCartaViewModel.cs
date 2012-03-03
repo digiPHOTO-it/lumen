@@ -10,6 +10,8 @@ using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Core.DatiDiEsempio;
 using System.Windows.Input;
 using System.Windows;
+using Digiphoto.Lumen.Core.Database;
+using System.Data.Objects;
 
 namespace Digiphoto.Lumen.UI
 {
@@ -64,7 +66,7 @@ namespace Digiphoto.Lumen.UI
                 if (value != _formatoCartaSelezionato)
                 {
                     _formatoCartaSelezionato = value;
-                    OnPropertyChanged("_formatoCartaSelezionato");
+                    OnPropertyChanged("formatoCartaSelezionato");
 				}
 			}
 		}

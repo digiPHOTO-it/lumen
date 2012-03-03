@@ -10,16 +10,16 @@ using System.Windows;
 [assembly: AssemblyTitle( "Digiphoto.Lumen.GestoreConfigurazione.UI" )]
 [assembly: AssemblyDescription( "" )]
 [assembly: AssemblyConfiguration( "" )]
-[assembly: AssemblyCompany( "Microsoft" )]
-[assembly: AssemblyProduct( "Digiphoto.Lumen.GestoreConfigurazione.UI" )]
-[assembly: AssemblyCopyright( "Copyright © Microsoft 2011" )]
+[assembly: AssemblyCompany("digiPHOTO.it")]
+[assembly: AssemblyProduct("Digiphoto.Lumen.GestoreConfigurazone.UI")]
+[assembly: AssemblyCopyright("Copyright © digiPHOTO.it 2012")]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible( false )]
+[assembly: ComVisible(true)]
 
 //In order to begin building localizable applications, set 
 //<UICulture>CultureYouAreCodingWith</UICulture> in your .csproj file
@@ -53,3 +53,4 @@ using System.Windows;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion( "1.0.0.0" )]
 [assembly: AssemblyFileVersion( "1.0.0.0" )]
+[assembly: NeutralResourcesLanguageAttribute("it-IT")]

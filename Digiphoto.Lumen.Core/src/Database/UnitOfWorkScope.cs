@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Digiphoto.Lumen.Model;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.Core.Database {
 
@@ -60,7 +61,14 @@ namespace Digiphoto.Lumen.Core.Database {
 																"cannot be nested." );
 			_saveAllChangesAtEndOfScope = saveAllChangesAtEndOfScope;
 			/* Create a new ObjectContext instance: */
-			_objectContext = new LumenEntities();
+            if (ConfigurazioneUserConfigLumen.UserConfigConnectionString != null)
+            {
+                _objectContext = new LumenEntities(ConfigurazioneUserConfigLumen.UserConfigConnectionString);
+            }
+            else
+            {
+				_objectContext = new LumenEntities();
+            }
 			_isDisposed = false;
 			Thread.BeginThreadAffinity();
 			/* Set the current scope to this UnitOfWorkScope object: */
