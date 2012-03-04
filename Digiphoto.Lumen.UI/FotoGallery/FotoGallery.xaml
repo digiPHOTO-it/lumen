@@ -80,6 +80,8 @@
                     <Button Content="Load" Command="{Binding caricareSlideShowCommand}" CommandParameter="Manual" />
                     <ToggleButton Content="Start" Command="{Binding controllareSlideShowCommand}" CommandParameter="Start" />
                     <ToggleButton Content="Stop"  Command="{Binding controllareSlideShowCommand}" CommandParameter="Stop" />
+                    <Separator />
+                    <Button Content="Svuota" Command="{Binding controllareSlideShowCommand}" CommandParameter="Reset" />
                 </ToolBar>
             </ToolBarTray>
         </Expander>

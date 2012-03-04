@@ -30,7 +30,7 @@ namespace Digiphoto.Lumen.Servizi {
 
 			statoRun = Servizi.StatoRun.Running;
 
-			_giornale.Info( "E' statoScarica avviato il servizio: " + this.GetType().Name );
+			_giornale.Info( "E' stato avviato il servizio: " + this.GetType().Name );
 
 		}
 
@@ -38,7 +38,7 @@ namespace Digiphoto.Lumen.Servizi {
 
 			statoRun = Servizi.StatoRun.Stopped;
 
-			_giornale.Info( "E' statoScarica fermato il servizio: " + this.GetType().Name );
+			_giornale.Info( "E' stato fermato il servizio: " + this.GetType().Name );
 		}
 
 		public virtual void Dispose() {
@@ -56,17 +56,14 @@ namespace Digiphoto.Lumen.Servizi {
 		#region Messaggi
 		
 		public virtual void OnCompleted() {
-			// throw new NotImplementedException();
 			_giornale.Debug( "observer.OnCompleted" );
 		}
 
 		public virtual void OnError( Exception error ) {
-			// throw new NotImplementedException();
 			_giornale.Debug( "observer.OnError" );
 		}
 
 		public virtual void OnNext( Messaggio messaggio ) {
-			_giornale.Debug( this.ToString() +  " observer.OnNext = " + messaggio.descrizione );
 		}
 
 		#endregion

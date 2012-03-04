@@ -53,11 +53,15 @@ namespace Digiphoto.Lumen.Core.Database {
 		public static bool verificaSeDatabaseUtilizzabile() {
 
 			bool esiste = false;
-			string conString = DbUtil.providerConnectionString;
-			using( SqlCeEngine objCeEngine = new SqlCeEngine( conString ) ) {
-				if( objCeEngine.Verify() ) {
-					esiste = true;
+
+			try {
+				string conString = DbUtil.providerConnectionString;
+				_giornale.Debug( "provo connessione db = " + conString );
+				using( SqlCeEngine objCeEngine = new SqlCeEngine( conString ) ) {
+					esiste = objCeEngine.Verify();
 				}
+			} catch( Exception ee ) {
+				_giornale.Error( "verifica se db utilizzabile fallita", ee );
 			}
 
 			return esiste;
@@ -118,6 +122,7 @@ namespace Digiphoto.Lumen.Core.Database {
 		}
 
 		public static Fotografo loadFotografoById( string idFotografo ) {
+
 
 			Fotografo f = null;
 

@@ -433,13 +433,21 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		private void controllareSlideShow( string operaz ) {
-			
-			if( operaz.Equals( "Start" ) ) {
-				slideShowViewModel.start();
-			} else if( operaz.Equals( "Stop" ) ) {
-				slideShowViewModel.stop();
-			}
 
+			switch( operaz.ToUpper() ) {
+
+				case "START":
+					slideShowViewModel.start();
+					break;
+				
+				case "STOP":
+					slideShowViewModel.stop();
+					break;
+
+				case "RESET":
+					slideShowViewModel.reset();
+					break;
+			}
 		}
 
 		void azzeraParamRicerca() {

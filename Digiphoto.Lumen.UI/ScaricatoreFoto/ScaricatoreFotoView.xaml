@@ -20,7 +20,7 @@
 
 
     <extToolkit:BusyIndicator x:Name="scaricaBusyIndicator"
-        IsBusy="{Binding Path=possoScaricare, Converter={StaticResource boolInverterConverter}}">
+        IsBusy="{Binding Path=isScaricamentoInCorso}">
         
         <StackPanel>
 
@@ -48,18 +48,15 @@
                         <RadioButton Content="SPOSTA files" GroupName="copiaSpostaGrp" 
                                  Command="{Binding Path=setCopiaSpostaCommad}" 
                                  CommandParameter="true"
-                                 IsChecked="{Binding Path=eliminaFileSorgenti}" />
+                                 IsChecked="{Binding Path=eraseFotoMemoryCard}" />
                         <RadioButton Content="COPIA files"  GroupName="copiaSpostaGrp" 
                                  Command="{Binding Path=setCopiaSpostaCommad}" 
                                  CommandParameter="false"
-                                 IsChecked="{Binding Path=eliminaFileSorgenti, Converter={StaticResource boolInverterConverter}}"/>
+                                 IsChecked="{Binding Path=eraseFotoMemoryCard, Converter={StaticResource boolInverterConverter}}"/>
                     </StackPanel>
                 </GroupBox>
 
                 <Button Name="scaricaButton" Content="go! SCARICA" Command="{Binding scaricareCommand}" />
-
-                <Button Canvas.Left="695" Canvas.Top="87" Content="Code Behind" Height="23" Name="button1" Width="75" />
-                
             </StackPanel>
         </StackPanel>
 

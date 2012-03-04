@@ -60,7 +60,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 
 		public ScaricatoreFotoSrvImpl() {
-			statoScarica = StatoScarica.Attesa;
+			statoScarica = StatoScarica.Idle;
 		}
 
 		~ScaricatoreFotoSrvImpl() {
@@ -94,7 +94,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		private void elaboraFotoAcquisite( EsitoScarico esitoScarico ) {
 
 			ScaricoFotoMsg scaricoFotoMsg = new ScaricoFotoMsg( "Scaricate " + esitoScarico.totFotoCopiateOk + " foto" );
-
+			scaricoFotoMsg.esitoScarico = esitoScarico;
 			// Finito: genero un evento per notificare che l'utente può togliere la flash card.
 			scaricoFotoMsg.fase = Fase.FineScarico;
 			scaricoFotoMsg.descrizione = "Acquisizione foto terminata";
@@ -124,7 +124,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			// Chiudo il worker che ha finito il suo lavoro
 			//_copiaImmaginiWorker.Stop();
 
-			statoScarica = StatoScarica.Attesa;
+			statoScarica = StatoScarica.Idle;
 		}
 
 
@@ -149,15 +149,20 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		// Se mi arriva il messaggio di cambio volume, memorizzo i dati
 		public override void OnNext( Messaggio messaggio ) {
 
-			if( messaggio is VolumeCambiatoMessaggio ) {
-				VolumeCambiatoMessaggio vcm = (VolumeCambiatoMessaggio)messaggio;
+			if( messaggio is VolumeCambiatoMsg ) {
+				VolumeCambiatoMsg vcm = (VolumeCambiatoMsg)messaggio;
 
 				if( vcm.montato ) {
 					// E' stata inserita una flash card (o un disco rimovibile)
 					ultimaChiavettaInserita = creaParamScarica( vcm.nomeVolume );
+
+					if( ultimaChiavettaInserita.flashCardConfig != null ) {
+						Messaggio msg = new Messaggio( this );
+						msg.descrizione = "::OnLetturaFlashCardConfig";
+						pubblicaMessaggio( msg );
+					}
 				} else
 					ultimaChiavettaInserita = null;
-
 			}
 
 			base.OnNext( messaggio );

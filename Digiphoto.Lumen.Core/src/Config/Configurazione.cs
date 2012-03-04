@@ -50,12 +50,13 @@ namespace Digiphoto.Lumen.Config  {
 		 * Questo repository ha un percorso di base, e poi una struttura variabile
 		 * che comprende il giorno in cui ... e l'operatore che ha scattato le foto.
 		 */
-		public string getCartellaRepositoryFoto() {
-
-			if( String.IsNullOrEmpty( Properties.Settings.Default.cartellaFoto ) )
-				return (Path.Combine( cartellaAppData, "Foto" ));
-			else
-				return Properties.Settings.Default.cartellaFoto;
+		public static string cartellaRepositoryFoto {
+			get {
+				if( String.IsNullOrEmpty( Properties.Settings.Default.cartellaFoto ) )
+					return (Path.Combine( cartellaAppData, "Foto" ));
+				else
+					return Properties.Settings.Default.cartellaFoto;
+				}
 		}
 
 
@@ -76,12 +77,14 @@ namespace Digiphoto.Lumen.Config  {
 		 * Per non camblare il nome della cartella nella ConnectionString,
 		 * devo usare un segnaposto che ora vado a sostituire
 		 */
-		private void sostituisciSegnapostoDataDirectoryPerConnectionString() {
-
+		private static void sostituisciSegnapostoDataDirectoryPerConnectionString() {
 			// Ora che ho deciso dove sta il database, sostituisco la cartella nella stringa di connessione.
-			//AppDomain.CurrentDomain.SetData( "DataDirectory", DbUtil.cartellaDatabase );
+			sostituisciSegnapostoDataDirectoryPerConnectionString( DbUtil.cartellaDatabase );
 		}
 
+		private static void sostituisciSegnapostoDataDirectoryPerConnectionString( string cartella ) {
+			AppDomain.CurrentDomain.SetData( "DataDirectory", cartella );
+		}
 		
 		private void autoSistemaPerPartenzaDiDefault() {
 
@@ -182,9 +185,9 @@ namespace Digiphoto.Lumen.Config  {
 			}
 		}
 
-		public static bool eliminaFileSorgenti {
+		public static bool eraseFotoMemoryCard {
 			get {
-				return (bool)Properties.Settings.Default.eliminaFileSorgenti;
+				return (bool)Properties.Settings.Default.eraseFotoMemoryCard;
 			}
 		}
 
@@ -244,15 +247,14 @@ namespace Digiphoto.Lumen.Config  {
             if (Properties.Settings.Default.primoAvvioLumen)
             {
                 Properties.Settings.Default.primoAvvioLumen = false;
-                Properties.Settings.Default.cartellaFoto = Properties.Settings.Default.cartellaFoto;
+				Properties.Settings.Default.cartellaFoto = cartellaRepositoryFoto;  // Se vuota, imposta quella di appdata.
                 Properties.Settings.Default.codicePuntoVendita = Properties.Settings.Default.codicePuntoVendita;
-                Properties.Settings.Default.dbCartella = Properties.Settings.Default.dbCartella;
+				Properties.Settings.Default.dbCartella = Environment.ExpandEnvironmentVariables( Properties.Settings.Default.dbCartella );  // sostituisce %PROGRAMDATA% perchè entity framework non è capace.
                 Properties.Settings.Default.defaultChiavetta = Properties.Settings.Default.defaultChiavetta;
                 Properties.Settings.Default.defaultMasterizzatore = Properties.Settings.Default.defaultMasterizzatore;
                 Properties.Settings.Default.descrizionePuntoVendita = Properties.Settings.Default.descrizionePuntoVendita;
                 Properties.Settings.Default.destMasterizza = Properties.Settings.Default.destMasterizza;
-                Properties.Settings.Default.eliminaFileSorgenti = Properties.Settings.Default.eliminaFileSorgenti;
-                Properties.Settings.Default.ereseFotoMemoryCard = Properties.Settings.Default.ereseFotoMemoryCard;
+                Properties.Settings.Default.eraseFotoMemoryCard = Properties.Settings.Default.eraseFotoMemoryCard;
                 Properties.Settings.Default.giorniDeleteFoto = Properties.Settings.Default.giorniDeleteFoto;
                 Properties.Settings.Default.modoVendita = Properties.Settings.Default.modoVendita;
                 Properties.Settings.Default.pixelLatoProvino = Properties.Settings.Default.pixelLatoProvino;

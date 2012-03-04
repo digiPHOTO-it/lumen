@@ -17,9 +17,6 @@
     <Setting Name="modoVendita" Type="System.Int16" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="eliminaFileSorgenti" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
     <Setting Name="dbCartella" Type="System.String" Scope="User">
       <Value Profile="(Default)">%PROGRAMDATA%\digiPHOTO\Lumen</Value>
     </Setting>
@@ -32,7 +29,7 @@
     <Setting Name="defaultChiavetta" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="ereseFotoMemoryCard" Type="System.String" Scope="User">
+    <Setting Name="eraseFotoMemoryCard" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="pswAdmin" Type="System.String" Scope="User">

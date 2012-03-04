@@ -10,11 +10,19 @@ using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Core;
 using Digiphoto.Lumen.Servizi;
+using Digiphoto.Lumen.Eventi;
+using Digiphoto.Lumen.Servizi.VolumeCambiato;
+using Digiphoto.Lumen.Core.Database;
+using Digiphoto.Lumen.Servizi.EntityRepository;
+using System.IO;
+using log4net;
 
 namespace Digiphoto.Lumen.UI {
 
 
-	public class ScaricatoreFotoViewModel : ViewModelBase, IObserver<CambioStatoMsg> {
+	public class ScaricatoreFotoViewModel : ViewModelBase, IObserver<Messaggio> {
+
+		private static readonly ILog _giornale = LogManager.GetLogger( typeof( ScaricatoreFotoViewModel ) );
 
 
 		public ScaricatoreFotoViewModel() {
@@ -28,14 +36,16 @@ namespace Digiphoto.Lumen.UI {
 
 			applicaConfigurazione();
 
+			faseDelGiorno = null;
+
 			// Ascolto messaggio
-			IObservable<CambioStatoMsg> observable = LumenApplication.Instance.bus.Observe<CambioStatoMsg>();
+			IObservable<Messaggio> observable = LumenApplication.Instance.bus.Observe<Messaggio>();
 			observable.Subscribe( this );
 		}
 
 		private void applicaConfigurazione() {
 
-			this.eliminaFileSorgenti = Configurazione.eliminaFileSorgenti;
+			this.eraseFotoMemoryCard = Configurazione.eraseFotoMemoryCard;
 
 		}
 
@@ -62,7 +72,7 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		public FaseDelGiorno faseDelGiorno {
+		public FaseDelGiorno? faseDelGiorno {
 			get;
 			set;
 		}
@@ -86,19 +96,41 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		
-		private bool _eliminaFileSorgenti;
-		public bool eliminaFileSorgenti {
+		private bool _eraseFotoMemoryCard;
+		public bool eraseFotoMemoryCard {
 			get {
-				return _eliminaFileSorgenti;
+				return _eraseFotoMemoryCard;
 			}
 			set {
-				if( value != _eliminaFileSorgenti ) {
-					_eliminaFileSorgenti = value;
-					OnPropertyChanged( "eliminaFileSorgenti" );
+				if( value != _eraseFotoMemoryCard ) {
+					_eraseFotoMemoryCard = value;
+					OnPropertyChanged( "eraseFotoMemoryCard" );
 				}
 			}
 
 		}
+
+
+		/// <summary>
+		///  Mi dice se il servizio scaricatore foto è impegnato oppure no.
+		///  Se è impegnato, significa che sta scaricando o provinando.
+		/// </summary>
+		public bool isScaricatoreBusy {
+			get {
+				return !isScaricatoreIdle;
+			}
+		}
+
+		public bool isScaricatoreIdle {
+			get {
+				return (scaricatoreFotoSrv != null && scaricatoreFotoSrv.statoScarica == StatoScarica.Idle);
+			}
+		}
+		public bool isScaricamentoInCorso {
+			get {
+				return (scaricatoreFotoSrv != null && scaricatoreFotoSrv.statoScarica == StatoScarica.Scaricamento);
+			}
+		}				
 
 		public bool possoScaricare {
 			get {
@@ -107,12 +139,19 @@ namespace Digiphoto.Lumen.UI {
 
 				bool posso = true;
 
-				if( scaricatoreFotoSrv != null && scaricatoreFotoSrv.isRunning == false )
+				// Verifico che i dati minimi siano stati indicati
+				if( posso && selettoreFotografoViewModel.fotografoSelezionato == null )
 					posso = false;
 
-				if( scaricatoreFotoSrv != null && scaricatoreFotoSrv.statoScarica != StatoScarica.Attesa )
+				if( posso && String.IsNullOrEmpty( cartellaSorgente ) )
 					posso = false;
 
+				if( posso && Directory.Exists( cartellaSorgente ) == false )
+					posso = false;
+
+				if( posso && isScaricatoreBusy )
+					posso = false;
+	
 				return posso;
 			}
 		}
@@ -137,7 +176,7 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand setSpostaCopiaCommand {
 			get {
 				if( _setSpostaCopiaCommand == null ) {
-					_setSpostaCopiaCommand = new RelayCommand( param => eliminaFileSorgenti = Convert.ToBoolean(param) );
+					_setSpostaCopiaCommand = new RelayCommand( param => eraseFotoMemoryCard = Convert.ToBoolean(param) );
 				}
 				return _scaricareCommand;
 			}
@@ -147,7 +186,11 @@ namespace Digiphoto.Lumen.UI {
 
 		#region Metodi
 		private void scaricare() {
-			
+
+			// Per sicurezza domando se va tutto bene.
+			if( chiediConfermaScarico() == false )
+				return;
+
 			ParamScarica paramScarica = new ParamScarica();
 
 			// Cartella sorgente da cui scaricare
@@ -158,16 +201,66 @@ namespace Digiphoto.Lumen.UI {
 				paramScarica.flashCardConfig.idFotografo = fotografo.id;
 
 			// Evento
-			if( selettoreEventoViewModel.eventoSelezionato != null )
+			if( selettoreEventoViewModel.eventoSelezionato != null ) 
 				paramScarica.flashCardConfig.idEvento = selettoreEventoViewModel.eventoSelezionato.id;
 
-			paramScarica.eliminaFilesSorgenti = eliminaFileSorgenti;
+			paramScarica.eliminaFilesSorgenti = eraseFotoMemoryCard;
 
 			paramScarica.faseDelGiorno = faseDelGiorno;
 
-			System.Windows.MessageBox.Show( paramScarica.ToString(), "DEVO SCARICARE" );
-
 			scaricatoreFotoSrv.scarica( paramScarica );
+		}
+
+		private bool chiediConfermaScarico() {
+
+			StringBuilder msg = new StringBuilder( "Confermare scarico foto:\n" );
+			msg.Append( "\nCartella  = " ).Append( selettoreCartellaViewModel.cartellaSelezionata );
+			msg.Append( "\nFotografo = " ).Append( selettoreFotografoViewModel.fotografoSelezionato.cognomeNome );
+			if( selettoreEventoViewModel.eventoSelezionato != null )
+				msg.Append( "\nEvento = " ).Append( selettoreEventoViewModel.eventoSelezionato.descrizione );
+			if( faseDelGiorno != null )
+				msg.Append( "\nFase Giorno = " ).Append( faseDelGiorno.ToString() );
+
+			bool procediPure = false;
+			dialogProvider.ShowConfirmation( msg.ToString(), "Richiesta conferma",
+				( confermato ) => {
+					procediPure = confermato;
+				} );
+
+			return procediPure;
+		}
+
+		/// <summary>
+		///  Se nella chiavetta ci sono i
+		/// 
+		/// </summary>
+		void caricaDatiDaChiavetta() {
+
+			ParamScarica param = scaricatoreFotoSrv.ultimaChiavettaInserita;
+			if( param == null || param.flashCardConfig == null )
+				return;
+
+			// Cartella
+			if( param.cartellaSorgente != null )
+				selettoreCartellaViewModel.cartellaSelezionata = param.cartellaSorgente;
+
+			try {
+				// Attenzione:
+				// Per fare in modo che i componenti grafici si aggiornino sull'elemento selezionato,
+				// devo trovare il giusto elemento nella collezione di valori istanziati.
+				// Se invece rileggo dal db, avrò l'effetto che il SelectedItem della ListBox non si aggiorna.
+
+				// Fotografo
+				if( param.flashCardConfig.idFotografo != null )
+					selettoreFotografoViewModel.fotografoSelezionato = selettoreFotografoViewModel.fotografi.Where( fo => fo.id == param.flashCardConfig.idFotografo ).SingleOrDefault();
+
+				// Evento
+				if( param.flashCardConfig.idEvento != Guid.Empty )
+					selettoreEventoViewModel.eventoSelezionato = selettoreEventoViewModel.eventi.Where( ev => ev.id == param.flashCardConfig.idEvento ).SingleOrDefault();
+
+			} catch( Exception ee ) {
+				_giornale.Error( "Non sono riuscito ad impostare i valori della FlashCardConfig", ee );
+			}
 		}
 
 		#endregion
@@ -179,11 +272,27 @@ namespace Digiphoto.Lumen.UI {
 		public void OnError( Exception error ) {
 		}
 
-		public void OnNext( CambioStatoMsg msg ) {
+		public void OnNext( Messaggio msg ) {
 
-			if( msg.sender is IScaricatoreFotoSrv ) {
-				// Per qualsiasi cambio di stato del servizio, devo rivalutare la possibilità di scaricare le foto
-				OnPropertyChanged( "possoScaricare" );
+			if( msg is CambioStatoMsg ) {
+
+				if( msg.sender is IScaricatoreFotoSrv ) {
+					// Per qualsiasi cambio di stato del servizio, devo rivalutare la possibilità di scaricare le foto
+					OnPropertyChanged( "isScaricatoreBusy" );
+					OnPropertyChanged( "isScaricatoreIdle" );
+					OnPropertyChanged( "isScaricamentoInCorso" );
+				}
+			}
+
+			// Questo messaggio me lo lancia il mio servizio quando ha acquisito i dati di una nuova chiavetta
+			if( msg.descrizione.Equals( "::OnLetturaFlashCardConfig" ) ) {
+
+				// carico i dati dell'ultima chiavetta inserita
+				if( isScaricatoreIdle ) {
+					using( new UnitOfWorkScope() ) {
+						caricaDatiDaChiavetta();
+					}
+				}
 			}
 
 			Console.Write( "stop" );

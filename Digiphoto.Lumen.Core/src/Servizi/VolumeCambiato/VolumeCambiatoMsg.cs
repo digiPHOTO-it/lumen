@@ -4,9 +4,9 @@ using Digiphoto.Lumen.Eventi;
 
 namespace Digiphoto.Lumen.Servizi.VolumeCambiato {
 
-	public class VolumeCambiatoMessaggio : Messaggio {
+	public class VolumeCambiatoMsg : Messaggio {
 		
-		public VolumeCambiatoMessaggio( object sender ) : base( sender ) {
+		public VolumeCambiatoMsg( object sender ) : base( sender ) {
 		}
 
 		public string nomeVolume { get; set; }

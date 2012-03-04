@@ -10,7 +10,7 @@ using Digiphoto.Lumen.Model;
 namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 	public enum StatoScarica {
-		Attesa=401,        // in attesa che qualcuno inserisca una memory-card da scaricare
+		Idle=401,        // in attesa che qualcuno inserisca una memory-card da scaricare
 		Scaricamento=402,  // Sto scaricando le foto dalla memory-card all'HardDisk
 		Provinatura=403    // Sto creando i provini
 	}
@@ -25,15 +25,16 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		public FlashCardConfig flashCardConfig { get; set; }
 		public string cartellaSorgente  { get; set; }
 		public bool eliminaFilesSorgenti { get; set; }
-		public FaseDelGiorno faseDelGiorno  { get; set; }
+		public FaseDelGiorno? faseDelGiorno  { get; set; }
 
 		public override string ToString() {
 			
-			StringBuilder sb = new StringBuilder( "cartella = " ).Append( cartellaSorgente );
+			StringBuilder sb = new StringBuilder( "Cartella = " ).Append( cartellaSorgente );
 			sb.Append( "\n" );
 			sb.Append( flashCardConfig.ToString() );
-			sb.Append( "\nelimina fils = " ).Append( eliminaFilesSorgenti );
-			sb.Append( "\nfase del giorno = " ).Append( faseDelGiorno );
+			sb.Append( "\nElimina files = " ).Append( eliminaFilesSorgenti );
+			if( faseDelGiorno != null )
+				sb.Append( "\nFase del giorno = " ).Append( faseDelGiorno );
 			return sb.ToString();
 		}
 	}

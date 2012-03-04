@@ -11,13 +11,13 @@ using System.Collections.Generic;
 
 namespace Digiphoto.Lumen.UI {
 
-	public class SelettoreCartellaViewModel : ViewModelBase, IObserver<VolumeCambiatoMessaggio> {
+	public class SelettoreCartellaViewModel : ViewModelBase, IObserver<VolumeCambiatoMsg> {
 
 		public SelettoreCartellaViewModel() {
 
 			DisplayName = "Selettore cartella scarico foto";
 
-			IObservable<VolumeCambiatoMessaggio> observable = LumenApplication.Instance.bus.Observe<VolumeCambiatoMessaggio>();
+			IObservable<VolumeCambiatoMsg> observable = LumenApplication.Instance.bus.Observe<VolumeCambiatoMsg>();
 			observable.Subscribe( this );
 
 			caricaElencoDischiRimovibili();
@@ -149,7 +149,7 @@ namespace Digiphoto.Lumen.UI {
 		public void OnError( Exception error ) {
 		}
 
-		public void OnNext( VolumeCambiatoMessaggio value ) {
+		public void OnNext( VolumeCambiatoMsg value ) {
 			aggiungiTogliNomeVolume( value.montato, value.nomeVolume );
 		}
 

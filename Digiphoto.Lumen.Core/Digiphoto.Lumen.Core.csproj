@@ -146,7 +146,7 @@
     <Compile Include="src\Servizi\Vendere\IVenditoreSrv.cs" />
     <Compile Include="src\Servizi\Vendere\VenditoreSrvImpl.cs" />
     <Compile Include="src\Servizi\VolumeCambiato\IVolumeCambiatoSrv.cs" />
-    <Compile Include="src\Servizi\VolumeCambiato\VolumeCambiatoMessaggio.cs" />
+    <Compile Include="src\Servizi\VolumeCambiato\VolumeCambiatoMsg.cs" />
     <Compile Include="src\Servizi\Scaricatore\IScaricatoreFotoSrv.cs" />
     <Compile Include="src\Servizi\Scaricatore\ScaricatoreFotoSrvImpl.cs" />
     <Compile Include="src\Servizi\IServizio.cs" />

@@ -10,6 +10,7 @@ using Digiphoto.Lumen.Applicazione;
 using System.Threading;
 using Digiphoto.Lumen.Model;
 using System.IO;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.Core.VsTest.Servizi.Stampare
 {
@@ -62,8 +63,8 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Stampare
             {
                 foreach (Fotografia fot in dbContext.Fotografie.ToList<Fotografia>())
                 {
-                    System.Diagnostics.Trace.WriteLine("[Foto Aggiunta per la Masterizzazione]: " + app.configurazione.getCartellaRepositoryFoto() + Path.DirectorySeparatorChar + fot.nomeFile);
-                    _impl.addFileToBurner(app.configurazione.getCartellaRepositoryFoto() + Path.DirectorySeparatorChar + fot.nomeFile);
+                    System.Diagnostics.Trace.WriteLine("[Foto Aggiunta per la Masterizzazione]: " + Configurazione.cartellaRepositoryFoto + Path.DirectorySeparatorChar + fot.nomeFile);
+                    _impl.addFileToBurner(Configurazione.cartellaRepositoryFoto + Path.DirectorySeparatorChar + fot.nomeFile);
                 }
             }
         }
@@ -75,8 +76,8 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Stampare
             {
                 foreach (Fotografia fot in dbContext.Fotografie.ToList<Fotografia>())
                 {
-                    System.Diagnostics.Trace.WriteLine("[Foto Aggiunta per la Masterizzazione]: " + app.configurazione.getCartellaRepositoryFoto() + Path.DirectorySeparatorChar + fot.nomeFile);
-                    _impl.addFileToBurner(app.configurazione.getCartellaRepositoryFoto() + Path.DirectorySeparatorChar + fot.nomeFile);
+                    System.Diagnostics.Trace.WriteLine("[Foto Aggiunta per la Masterizzazione]: " + Configurazione.cartellaRepositoryFoto + Path.DirectorySeparatorChar + fot.nomeFile);
+                    _impl.addFileToBurner(Configurazione.cartellaRepositoryFoto + Path.DirectorySeparatorChar + fot.nomeFile);
                 }
             }
             _impl.testMedia();

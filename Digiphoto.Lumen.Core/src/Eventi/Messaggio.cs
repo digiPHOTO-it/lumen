@@ -17,6 +17,7 @@ namespace Digiphoto.Lumen.Eventi {
 		public Messaggio( object sender ) {
 			this.sender = sender;
 			timeStamp = DateTime.Now;
+			this.descrizione = "Messaggio";
 		}
 
 		public Messaggio( object sender, string descrizione ) : this( sender ) {

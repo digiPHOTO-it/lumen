@@ -114,7 +114,7 @@
 
                 <TabItem Header="Preferenze Utente" IsSelected="{Binding Path=PreferenzeUtente}" IsEnabled="{Binding Path=PreferenzeUtente}">
                     <Grid>
-                        <CheckBox Content="Svuota memory card dopo averla scaricata" Height="19" Name="svuotaCardCheckBox" Width="260" Margin="20,31,336,0" VerticalAlignment="Top" HorizontalAlignment="Left" IsChecked="{Binding Path=EreseFotoMemoryCard}"/>
+                        <CheckBox Content="Svuota memory card dopo averla scaricata" Height="19" Name="svuotaCardCheckBox" Width="260" Margin="20,31,336,0" VerticalAlignment="Top" HorizontalAlignment="Left" IsChecked="{Binding Path=EraseFotoMemoryCard}"/>
                         <GroupBox Header="Masterizzare" Height="115" Margin="96,84,158,0" Name="groupBox1" VerticalAlignment="Top" HorizontalAlignment="Center" Width="399">
                             <Grid>
                                 <RadioButton  Content="Direttamente con" Height="18" HorizontalAlignment="Left" Margin="12,15,0,0" Name="masterizzaDirettoRadioButton" VerticalAlignment="Top" Width="129" IsChecked="{Binding Path=DestMasterizzaMasterizzatore}"/>

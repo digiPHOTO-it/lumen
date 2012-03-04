@@ -97,7 +97,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			Configurazione configurazione = LumenApplication.Instance.configurazione;
 			Lumen.Applicazione.Stato stato = LumenApplication.Instance.stato;
 
-			pezzi[0] = configurazione.getCartellaRepositoryFoto();
+			pezzi[0] = Configurazione.cartellaRepositoryFoto;
 			pezzi[1] = String.Format( "{0:yyyy-MM-dd}", stato.giornataLavorativa )+configurazione.suffissoCartellaGiorni();
             pezzi[2] = _paramScarica.flashCardConfig.idFotografo + configurazione.suffissoCartellaFoto();
 
