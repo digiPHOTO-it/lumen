@@ -40,7 +40,7 @@
 
                 <Label Content="Descrizione evento" />
                 <TextBox x:Name="newDescrizioneTextBox" 
-                         Text="{Binding  Path=nuovoEvento.descrizione, UpdateSourceTrigger=PropertyChanged}"                         
+                         Text="{Binding  Path=nuovoEvento.descrizione, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                          Style="{StaticResource newDescrizioneTextBox}"
                          />
 

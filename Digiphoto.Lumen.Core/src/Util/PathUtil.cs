@@ -8,6 +8,7 @@ using log4net;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Applicazione;
 using System.Security.AccessControl;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.Util {
 
@@ -42,7 +43,7 @@ namespace Digiphoto.Lumen.Util {
 		 * appiccico anche la cartella di base del repository delle foto per tornare il nome completo.
 		 */
 		public static string nomeCompletoFoto( Fotografia foto ) {
-			return Path.Combine( LumenApplication.Instance.configurazione.getCartellaRepositoryFoto(), foto.nomeFile ); 
+			return Path.Combine( Configurazione.cartellaRepositoryFoto, foto.nomeFile ); 
 		}
 
 		/** 
@@ -55,7 +56,7 @@ namespace Digiphoto.Lumen.Util {
 		}
 
 		public static string nomeRelativoFoto( FileInfo pathAssoluto ) {
-			int iniz = LumenApplication.Instance.configurazione.getCartellaRepositoryFoto().Length;
+			int iniz = Configurazione.cartellaRepositoryFoto.Length;
 
 			// scarto la parte iniziale di tutto il path togliendo il nome della cartella di base delle foto.
 			return pathAssoluto.FullName.Substring( iniz + 1 );

@@ -103,6 +103,16 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			_orologio.Stop();
 		}
 
+		/// <summary>
+		///  Fermo, svuoto ed azzero lo show
+		/// </summary>
+		public void reset() {
+			stop();
+			this.slideShow = null;
+			this.slidesVisibili.Clear();
+			this.numSlideCorrente = 0;
+		}
+
 		public void creaShow( ParamCercaFoto paramCercaFoto ) {
 
 			// Mi faccio dare le foto dal servizio

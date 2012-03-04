@@ -53,8 +53,9 @@ namespace Digiphoto.Lumen.Config {
 		}
 
 		public override string ToString() {
-			StringBuilder sb = new StringBuilder( "idFotografo = " ).Append( idFotografo );
-			sb.Append( "\nevento = " );
+			StringBuilder sb = new StringBuilder( "Fotografo = " ).Append( idFotografo );
+			if( idEvento != null )
+				sb.Append( "\nEvento = " ).Append( idEvento );
 			if( didascalia != null )
 				sb.Append( "\ndidascalia = " ).Append( didascalia );
 			return sb.ToString();

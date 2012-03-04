@@ -10,6 +10,7 @@ using System.ComponentModel;
 using Digiphoto.Lumen.Servizi.Masterizzare.MyBurner;
 using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Util;
+using Digiphoto.Lumen.Config;
 
 
 namespace Digiphoto.Lumen.Servizi.Masterizzare
@@ -122,7 +123,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                     _burner.start();
                     foreach (Fotografia fot in _fotografie)
                     {
-                        _burner.addFileToBurner(configurazione.getCartellaRepositoryFoto() + Path.DirectorySeparatorChar + fot.nomeFile);
+                        _burner.addFileToBurner(Configurazione.cartellaRepositoryFoto + Path.DirectorySeparatorChar + fot.nomeFile);
                     }
                     _burner.setDiscRecorder(_driverLetter);
 
@@ -201,7 +202,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                         statoCopiaErroreMsg.totFotoNonAggiunte = ++totFotoNonCopiate;
                         statoCopiaErroreMsg.progress = ((totFotoCopiate + totFotoNonCopiate) * 100) / _fotografie.Count;
                         statoCopiaErroreMsg.result = "Il file " + fot.nomeFile + " non è statoScarica copiato sulla chiavetta: " + nomeFileDest;
-                        _giornale.Error("Il file " + @configurazione.getCartellaRepositoryFoto() + Path.DirectorySeparatorChar + fot.nomeFile + " non è statoScarica copiato il file sulla chiavetta " + nomeFileDest, ee);
+                        _giornale.Error("Il file " + Configurazione.cartellaRepositoryFoto + Path.DirectorySeparatorChar + fot.nomeFile + " non è statoScarica copiato il file sulla chiavetta " + nomeFileDest, ee);
                         pubblicaMessaggio(statoCopiaErroreMsg);
                         //System.Diagnostics.Trace.WriteLine("Il file " + fot.nomeFile + " non è statoScarica copiato sulla chiavetta: " + nomeFileDest);
                     }
@@ -249,7 +250,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                     try
                     {
                         nomeFileDest = Path.Combine(_destinazione, Path.GetFileName(fot.nomeFile));
-                        String nomeFileSorgente = configurazione.getCartellaRepositoryFoto() + Path.DirectorySeparatorChar + fot.nomeFile;
+                        String nomeFileSorgente = Configurazione.cartellaRepositoryFoto + Path.DirectorySeparatorChar + fot.nomeFile;
                         File.Copy(@nomeFileSorgente, nomeFileDest, false);
                         //Elimino gli attributi solo lettura                                
                         File.SetAttributes(nomeFileDest, File.GetAttributes(nomeFileDest) & ~(FileAttributes.Archive | FileAttributes.ReadOnly));

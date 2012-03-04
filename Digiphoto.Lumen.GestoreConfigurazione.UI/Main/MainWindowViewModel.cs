@@ -77,7 +77,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
             CartellaFoto = getPropertiesValue(file, "cartellaFoto");
 
-            EreseFotoMemoryCard = Boolean.Parse(getPropertiesValue(file, "ereseFotoMemoryCard"));
+            EraseFotoMemoryCard = Boolean.Parse(getPropertiesValue( file, "eraseFotoMemoryCard" ));
 
             ProiettaDiapo = Boolean.Parse(getPropertiesValue(file, "proiettaDiapo"));
 
@@ -97,7 +97,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
             NomeDbPieno = getPropertiesValue(file, "dbNomeDbPieno");
 
-            DbCartella = getPropertiesValue(file, "dbCartella");
+			DbCartella = getPropertiesValue( file, "dbCartella" );
 
             DataSource = DbCartella + @"\" + NomeDbPieno;
         }
@@ -114,7 +114,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
             setPropertiesValue(file, "cartellaFoto", CartellaFoto);
 
-            setPropertiesValue(file, "ereseFotoMemoryCard", ""+EreseFotoMemoryCard);
+            setPropertiesValue(file, "eraseFotoMemoryCard", ""+EraseFotoMemoryCard);
 
             setPropertiesValue(file, "proiettaDiapo", ""+ProiettaDiapo);
 
@@ -150,7 +150,9 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             setPropertiesValue(file, "dbCartella", DbCartella);
 
             setPropertiesValue(file, "dbNomeDbPieno", stringDbNomePieno);
-        }
+
+			AppDomain.CurrentDomain.SetData( "DataDirectory", DbCartella );
+		}
 
         private void caricaListaMasterizzatori()
         {
@@ -470,7 +472,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             set;
         }
 
-        public bool EreseFotoMemoryCard
+        public bool EraseFotoMemoryCard
         {
             get;
             set;
@@ -858,6 +860,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
         private void testConnection()
         {
             salvaConfigDB();
+			
             if (DbUtil.verificaSeDatabaseUtilizzabile())
             {
                 MessageBox.Show("OK\n--- Funziona solo per CE ---","Test Connection");
@@ -1027,7 +1030,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             OnPropertyChanged("DescrizionePuntoVendita");
             OnPropertyChanged("GiorniDeleteFoto");
             OnPropertyChanged("CartellaFoto");
-            OnPropertyChanged("EreseFotoMemoryCard");
+            OnPropertyChanged("EraseFotoMemoryCard");
             OnPropertyChanged("ProiettaDiapo");
             OnPropertyChanged("ModoVendita");
             OnPropertyChanged("DestMasterizzaMasterizzatore");

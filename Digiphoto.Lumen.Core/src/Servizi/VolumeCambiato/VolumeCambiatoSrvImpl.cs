@@ -96,7 +96,7 @@ namespace Digiphoto.Lumen.Servizi.VolumeCambiato {
 			_giornale.Info( "Volume cambiato! driveName = (" + driveName + ")  tipo = " + eventType );
 
 			// Creo un messaggio da mettere sul bus.
-			VolumeCambiatoMessaggio volumeCambiatoMsg = new VolumeCambiatoMessaggio( this );
+			VolumeCambiatoMsg volumeCambiatoMsg = new VolumeCambiatoMsg( this );
 
 			UInt64 timeCreated = (UInt64)mo.Properties ["TIME_CREATED"].Value;
 			volumeCambiatoMsg.timeStamp = new DateTime( (long)timeCreated );

@@ -79,18 +79,6 @@ namespace Digiphoto.Lumen.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool eliminaFileSorgenti {
-            get {
-                return ((bool)(this["eliminaFileSorgenti"]));
-            }
-            set {
-                this["eliminaFileSorgenti"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("%PROGRAMDATA%\\digiPHOTO\\Lumen")]
         public string dbCartella {
             get {
@@ -140,12 +128,12 @@ namespace Digiphoto.Lumen.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public string ereseFotoMemoryCard {
+        public bool eraseFotoMemoryCard {
             get {
-                return ((string)(this["ereseFotoMemoryCard"]));
+                return ((bool)(this["eraseFotoMemoryCard"]));
             }
             set {
-                this["ereseFotoMemoryCard"] = value;
+                this["eraseFotoMemoryCard"] = value;
             }
         }
         

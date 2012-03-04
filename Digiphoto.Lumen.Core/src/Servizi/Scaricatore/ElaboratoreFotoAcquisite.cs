@@ -26,6 +26,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		private ParamScarica _paramScarica;
 
 		private Fotografo _fotografo;
+		private Evento _evento;
 
 		public int conta {
 			get;
@@ -48,6 +49,12 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			// carico il fotografo che rimane uguale per tutta questa sessione di elaborazione
 			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
 			_fotografo = objContext.Fotografi.Single<Fotografo>( ff => ff.id == _paramScarica.flashCardConfig.idFotografo );
+
+
+			// carico l'evento che rimane uguale per tutta questa sessione di elaborazione			
+			if( _paramScarica.flashCardConfig.idEvento != null && _paramScarica.flashCardConfig.idEvento != Guid.Empty )
+				_evento = objContext.Eventi.SingleOrDefault( e => e.id == _paramScarica.flashCardConfig.idEvento );
+
 
 			_giornale.Debug( "Sto per lavorare le " + _listaFiles.Count + " foto appena acquisite di " + _fotografo.id );
 
@@ -108,18 +115,14 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 				LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
 				try {
 
-					Evento evento = null;
-					if( _paramScarica.flashCardConfig.idEvento != null && _paramScarica.flashCardConfig.idEvento != Guid.Empty )
-						evento = objContext.Eventi.FirstOrDefault<Evento>( ee => ee.id == _paramScarica.flashCardConfig.idEvento );
-
 					foto = new Fotografia();
 					foto.id = Guid.NewGuid();
 					foto.dataOraAcquisizione = fileInfo.CreationTime;
 					foto.fotografo = _fotografo;
-					foto.evento = evento;
+					foto.evento = _evento;
 					foto.didascalia = _paramScarica.flashCardConfig.didascalia;
 					foto.numero = numFotogramma;
-					foto.faseDelGiorno = (short) _paramScarica.faseDelGiorno;
+					foto.faseDelGiorno = (short?) _paramScarica.faseDelGiorno;
 					foto.giornata = LumenApplication.Instance.stato.giornataLavorativa;
 
 					// il nome del file, lo memorizzo solamente relativo

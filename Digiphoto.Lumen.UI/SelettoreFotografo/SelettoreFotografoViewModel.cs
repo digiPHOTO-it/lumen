@@ -118,6 +118,7 @@ namespace Digiphoto.Lumen.UI {
 			nuovoFotografo = new Fotografo();
 			nuovoFotografo.attivo = true;
 			nuovoFotografo.umano = true;
+			nuovoFotografo.cognomeNome = "Cognome e Nome";
 
 			OnPropertyChanged( "idFotografoNew" );
 			OnPropertyChanged( "nuovoFotografo" );
