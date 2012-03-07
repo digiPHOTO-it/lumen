@@ -50,8 +50,11 @@
             <Button Content="Torna Orig" ToolTip="Torna Originale" 
                         Command="{Binding tornareOriginaleCommand}" />
             
-            <Separator Height="10" />
+            <Separator Height="20" />
 
+            <Button Name="rifiutareCorrezioniButton" Content="Rifiuta" ToolTip="Annulla le correzioni applicate" Command="{Binding rifiutareCorrezioniCommand}" />
+            <Button Name="salvareCorrezioniButton" Content="Applica" ToolTip="Applica le correzioni apportate" Command="{Binding salvareCorrezioniCommand}"/>
+            
         </StackPanel>
 
         
@@ -79,12 +82,27 @@
             <TextBox Name="didascaliaTextBox" />
             
             <Separator Margin="0,10"/>
+
+            <GroupBox Header="Fasi del giorno">
+                <ListBox ItemsSource="{Binding fasiDelGiorno}" 
+                         SelectedItem="{Binding faseDelGiorno}" />
+            </GroupBox>
+
+            <Separator />
             
-            <Button Name="rifiutareCorrezioniButton" Content="Rifiuta" ToolTip="Annulla le correzioni applicate" Command="{Binding rifiutareCorrezioniCommand}" />
-            <Button Name="salvareCorrezioniButton" Content="Applica" ToolTip="Applica le correzioni apportate" Command="{Binding salvareCorrezioniCommand}"/>
+            <lum:SelettoreEvento x:Name="selettoreEvento4" />
+            
+            <Separator />
+
+            <Button Content="Salva Metadati" Command="{Binding salvareMetadatiCommand}" />
+
         </StackPanel>
 
+        
+        <!-- nastro basso con tutte le foto che sono in attesa di modifica -->
         <ListBox x:Name="LsImmaginiDaModificare"  DockPanel.Dock="Bottom"
+                 BorderBrush="Blue" BorderThickness="1"
+                 MinHeight="60"
                  SelectionMode="Multiple"
                  Style="{StaticResource LsImmaginiDaModificareStyle}"
                  ItemsSource="{Binding Path=fotografieDaModificareCW}" 
@@ -92,7 +110,7 @@
                  ItemTemplate="{DynamicResource ImmaginiDaModificareDataTemplate}"
                  IsSynchronizedWithCurrentItem="True"
                  IsEnabled="{Binding Path=modificheInCorso, Converter={StaticResource boolInverterConverter}}"
-                 ScrollViewer.HorizontalScrollBarVisibility="Visible" >           
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto" >           
         </ListBox>
 
         

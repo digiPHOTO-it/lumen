@@ -20,6 +20,10 @@
                                 Stretch="Uniform" />
                 </Canvas.Background>
 
+                
+<!-- TODO mettere una immagine per le info aggiuntive in popup -->
+                
+                <!-- IL font con cui stampo il numero, ha grandezza proporzionale al canvas . Per ora uso 8% della grandezza del contenitore della foto -->
                 <Label Content="{Binding Path=etichetta}"        
                                Canvas.Right="2"
                                Canvas.Bottom="2"

@@ -25,7 +25,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("uri/5xsAbTQYEDTkfmssUg==")]
+        [global::System.Configuration.DefaultSettingValueAttribute("uriStr/5xsAbTQYEDTkfmssUg==")]
         public string psw {
             get {
                 return ((string)(this["psw"]));

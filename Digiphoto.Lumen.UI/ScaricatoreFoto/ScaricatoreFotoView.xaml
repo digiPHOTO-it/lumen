@@ -36,7 +36,7 @@
 
                 <GroupBox Header="Fasi del giorno">
                     <ListBox Name="fasiGiornoListBox" 
-                    ItemsSource="{Binding fasiDelGiorno,Mode=OneWay}" 
+                    ItemsSource="{Binding fasiDelGiorno}" 
                     SelectedItem="{Binding faseDelGiorno}" />
                 </GroupBox>
             </StackPanel>

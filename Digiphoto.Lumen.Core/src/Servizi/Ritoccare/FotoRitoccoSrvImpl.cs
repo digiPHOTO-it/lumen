@@ -204,5 +204,11 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 					salvaCorrezioniTransienti( f );
 			}
 		}
+
+
+		public void modificaMetadati( Fotografia foto ) {
+			// TODO
+			throw new NotImplementedException();
+		}
 	}
 }

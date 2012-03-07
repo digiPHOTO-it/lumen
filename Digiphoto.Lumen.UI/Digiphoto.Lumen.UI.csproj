@@ -96,6 +96,9 @@
     </Compile>
     <Compile Include="FotoRitocco\FotoRitoccoViewModel.cs" />
     <Compile Include="Mvvm\IDialogProvider.cs" />
+    <Compile Include="Mvvm\MultiSelect\IMultiSelectCollectionView.cs" />
+    <Compile Include="Mvvm\MultiSelect\MultiSelect.cs" />
+    <Compile Include="Mvvm\MultiSelect\MultiSelectCollectionView.cs" />
     <Compile Include="Mvvm\UserControlBase.cs" />
     <Compile Include="Pubblico\SlideShow.cs" />
     <Page Include="Pubblico\SlideShowResources.xaml">
@@ -302,7 +305,18 @@
   <ItemGroup>
     <Resource Include="Resources\Printer-48x48.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Mvvm\MultiSelect\README.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\ssPause-16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\ssRunning-16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\ssEmpty-16x16.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

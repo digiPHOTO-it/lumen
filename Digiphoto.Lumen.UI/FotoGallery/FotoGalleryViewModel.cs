@@ -22,6 +22,7 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using Digiphoto.Lumen.UI.ScreenCapture;
 using Digiphoto.Lumen.UI.Pubblico;
+using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -62,7 +63,11 @@ namespace Digiphoto.Lumen.UI {
 
 		#region Proprietà
 
-		public ICollectionView fotografieCW {
+		/// <summary>
+		///  Uso questa particolare collectionView perché voglio tenere traccia nel ViewModel degli N-elementi selezionati.
+		///  Sottolineo N perché non c'è supporto nativo per questo. Vedere README.txt nel package di questa classe.
+		/// </summary>
+		public MultiSelectCollectionView<Fotografia> fotografieCW {
 			get;
 			set;
 		}
@@ -77,19 +82,23 @@ namespace Digiphoto.Lumen.UI {
 				return LumenApplication.Instance.getServizioAvviato<IFotoExplorerSrv>();
 			}
 		}
-		
-		int contaSelez {
+
+		public bool isAlmenoUnaSelezionata {
 			get {
-				int quanti = 0;
-				if( fotografieCW != null )
-					quanti = fotografieCW.Cast<Fotografia>().Where( f => f.isSelezionata == true ).Count();
-				return quanti;
+				return fotografieCW.SelectedItems.Count > 0;
 			}
 		}
 
+		public bool possoCaricareSlideShow {
+			get {
+				return fotografieCW != null && fotografieCW.SelectedItems.Count > 0;
+			}
+		}
+
+
 		public bool possoAggiungereAlMasterizzatore {
 			get {
-				return contaSelez > 0;
+				return isAlmenoUnaSelezionata;
 			}
 		}
 		
@@ -122,6 +131,30 @@ namespace Digiphoto.Lumen.UI {
 			get;
 			private set;
 		}
+
+		public BitmapSource statusSlideShowImage {
+
+			get {
+				// Decido qual'è la giusta icona da caricare per mostrare lo stato dello slide show (Running, Pause, Empty)
+
+				// Non so perchè ma se metto il percorso senza il pack, non funziona. boh eppure sono nello stesso assembly.
+				string uriTemplate = @"pack://application:,,,/Digiphoto.Lumen.UI;component/Resources/##-16x16.png";
+				Uri uri = null;
+
+				if( slideShowViewModel.isRunning )
+					uri = new Uri( uriTemplate.Replace( "##", "ssRunning" ) );
+
+				if( slideShowViewModel.isPaused )
+					uri = new Uri( uriTemplate.Replace( "##", "ssPause" ) );
+
+				if( slideShowViewModel.isEmpty )
+					uri = new Uri( uriTemplate.Replace( "##", "ssEmpty" ) );
+
+				return new BitmapImage( uri );
+			}
+		}
+
+
 
 		#region fasi del giorno
 
@@ -225,7 +258,9 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand caricareSlideShowCommand {
 			get {
 				if( _caricareSlideShowCommand == null ) {
-					_caricareSlideShowCommand = new RelayCommand( autoManual => caricareSlideShow( (string) autoManual ) );
+					_caricareSlideShowCommand = 
+						new RelayCommand( autoManual => caricareSlideShow( (string) autoManual ),
+										  autoManual => possoCaricareSlideShow );
 				}
 				return _caricareSlideShowCommand;
 			}
@@ -304,10 +339,7 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		private IList<Fotografia> creaListaFotoSelezionate() {
-
-			var fotos = fotografieCW.OfType<Fotografia>().Where( f => f.isSelezionata == true );
-
-			return new List<Fotografia>( fotos );
+			return fotografieCW.SelectedItems.ToList();
 		}
 			
 
@@ -316,10 +348,15 @@ namespace Digiphoto.Lumen.UI {
 		/// </summary>
 		private void deselezionareTutto() {
 
+			fotografieCW.SelectedItems.Clear();
+			fotografieCW.Refresh();
+			// OnPropertyChanged( "fotografieCW" );
+/*
 			int quanti = contaSelez;
 
 			foreach( Fotografia f in fotografieCW )
 				f.isSelezionata = false;
+ */
 		}
 
 		/// <summary>
@@ -396,11 +433,11 @@ namespace Digiphoto.Lumen.UI {
 
 			//			ObservableCollection<Fotografia> appo = new ObservableCollection<Fotografia>( fotoExplorerSrv.fotografie );
 
-			this.fotografieCW = CollectionViewSource.GetDefaultView( fotoExplorerSrv.fotografie );
+			fotografieCW = new MultiSelectCollectionView<Fotografia>( fotoExplorerSrv.fotografie );
+// non dovrebbe essere necessario perchè è una collezione osservabile.
 			OnPropertyChanged( "fotografieCW" );
 
 			deselezionareTutto();
-
 		}
 
 		private void completaParametriRicerca() {
@@ -448,6 +485,8 @@ namespace Digiphoto.Lumen.UI {
 					slideShowViewModel.reset();
 					break;
 			}
+
+			OnPropertyChanged( "statusSlideShowImage" );
 		}
 
 		void azzeraParamRicerca() {

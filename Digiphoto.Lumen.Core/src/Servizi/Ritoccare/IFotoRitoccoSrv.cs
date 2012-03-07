@@ -54,6 +54,6 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		void salvaCorrezioniTransienti( Fotografia fotografia );
 		void salvaCorrezioniTransienti( Target target );
 
-
+		void modificaMetadati( Fotografia foto );
 	}
 }
