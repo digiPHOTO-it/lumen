@@ -50,7 +50,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare
         public IList<StampanteAbbinata> listaStampantiAbbinate(String stampantiAbbinate)
         {
             List<StampanteAbbinata> list = new List<StampanteAbbinata>();
-            if (stampantiAbbinate.Equals(""))
+            if (String.IsNullOrEmpty(stampantiAbbinate))
             {
                 return list;
             }

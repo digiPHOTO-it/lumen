@@ -5,8 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
              xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
+             xmlns:lumMS="clr-namespace:Digiphoto.Lumen.UI.Mvvm.MultiSelect"
              xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
-             xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo"
+             xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo"         
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
 
@@ -85,6 +86,20 @@
                 </ToolBar>
             </ToolBarTray>
         </Expander>
+
+        <StatusBar DockPanel.Dock="Bottom" >
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Selez: " />
+                    <Label Content="{Binding Path=fotografieCW.SelectedItems.Count}" ToolTip="Foto selezionate"/>
+                    <Label Content="/" />
+                    <Label Content="{Binding Path=fotografieCW.Count}" ToolTip="Tutte le foto visualizzate" />
+                </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem>
+                <Image Source="{Binding statusSlideShowImage}" Width="16" Height="16" ToolTip="Stato dello Slide Show" />
+            </StatusBarItem>
+        </StatusBar>
         
         <Expander Header="Ricerca foto nell'archivio" DockPanel.Dock="Bottom" IsExpanded="True" ExpandDirection="Up">
             
@@ -136,18 +151,19 @@
            
         </Expander>
 
+
+        
+        
         <!-- Questa è la lista delle immagini -->
         <ListBox x:Name="LsImageGallery"  
-                 SelectionMode="Multiple"
+                 SelectionMode="Multiple" 
+                 lumMS:MultiSelect.IsEnabled="True" IsSynchronizedWithCurrentItem="True"
                  Style="{StaticResource LsImageGalleryStyle}"
                  ItemsSource="{Binding Path=fotografieCW}" 
                  ItemsPanel="{DynamicResource ImageGalleryItemsPanelTemplate}" 
                  ItemTemplate="{DynamicResource fotografiaDataTemplate}"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-
-        
-        </ListBox>
-
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+ 
     </DockPanel>
 
 </lumM:UserControlBase>

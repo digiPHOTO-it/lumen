@@ -51,7 +51,19 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		public bool isRunning {
 			get {
-				return _orologio != null && _orologio.IsEnabled;
+				return (_orologio != null && _orologio.IsEnabled && isEmpty == false);
+			}
+		}
+
+		public bool isPaused {
+			get {
+				return (isEmpty == false && isRunning == false);
+			}
+		}
+
+		public bool isEmpty {
+			get {
+				return (slideShow == null || slideShow.slides.Count <= 0);
 			}
 		}
 

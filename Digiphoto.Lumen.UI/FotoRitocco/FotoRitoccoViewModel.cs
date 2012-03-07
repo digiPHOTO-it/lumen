@@ -12,6 +12,7 @@ using Digiphoto.Lumen.Imaging.Correzioni;
 using Digiphoto.Lumen.Servizi.Explorer;
 using Digiphoto.Lumen.Util;
 using System;
+using Digiphoto.Lumen.Core;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -92,7 +93,24 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		#endregion
+		public FaseDelGiorno [] fasiDelGiorno {
+			get {
+				return FaseDelGiornoUtil.fasiDelGiorno;
+			}
+		}
+
+		public FaseDelGiorno? faseDelGiorno {
+			get;
+			set;
+		}
+
+		public bool possoSalvareMetadati {
+			get {
+				return true;   // TODO (solo se ho qualcosa da fare)
+			}
+		}
+
+		#endregion   // Proprietà
 
 		#region Comandi
 
@@ -180,7 +198,21 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		#endregion
+		private RelayCommand _salvareMetadatiCommand;
+		public ICommand salvareMetadatiCommand {
+			get {
+				if( _salvareMetadatiCommand == null ) {
+					_salvareMetadatiCommand = new RelayCommand( param => salvareMetadati(),
+													  param => this.possoSalvareMetadati,
+													  true );
+				}
+				return _salvareMetadatiCommand;
+			}
+		}
+
+
+
+		#endregion Comandi
 
 		#region Metodi
 
@@ -232,7 +264,13 @@ namespace Digiphoto.Lumen.UI {
 			fotoRitoccoSrv.undoCorrezioniTransienti( Target.Selezionate );
 			modificheInCorso = false;
 		}
-		#endregion
+
+		private void salvareMetadati() {
+			// TODO
+		}
+
+		#endregion Metodi
+
 
 
 	}
