@@ -8,16 +8,10 @@
              d:DesignHeight="300" d:DesignWidth="200"
              x:Name="selFotografo">
 
-    <!--
-    <UserControl.DataContext>
-        <lum:SelettoreFotografoViewModel />
-    </UserControl.DataContext>
-    -->
-    
     <UserControl.Resources>
         <ResourceDictionary Source="SelettoreFotografoResources.xaml" />
     </UserControl.Resources>
-    
+
     <StackPanel>
 
         <GroupBox Header="lista Fotografi">
@@ -25,9 +19,7 @@
                 <ListBox Name="fotografiListBox" 
                          ItemsSource="{Binding Path=fotografi}" 
                          ItemTemplate="{StaticResource fotografiListBoxTemplate}"
-                         SelectedItem="{Binding Path=fotografoSelezionato}"
-                         />
-
+                         SelectedItem="{Binding Path=fotografoSelezionato}" />
             </ScrollViewer>
         </GroupBox>
 

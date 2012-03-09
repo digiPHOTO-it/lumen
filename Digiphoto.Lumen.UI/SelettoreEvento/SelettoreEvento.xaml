@@ -9,15 +9,10 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     
-    <!-- istanzio ed associo il ViewModel -->
-    <!--<UserControl.DataContext>
-        <lum:SelettoreEventoViewModel />
-    </UserControl.DataContext>-->
-
+    <!-- includo il dizionario puntuale e quello globale -->
     <UserControl.Resources>
         <ResourceDictionary Source="SelettoreEventoResources.xaml" />
     </UserControl.Resources>
-
 
     <StackPanel>
         <GroupBox Header="Eventi">

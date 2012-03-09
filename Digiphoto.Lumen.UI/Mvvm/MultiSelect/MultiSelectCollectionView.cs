@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System;
 
 namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 
@@ -85,5 +86,60 @@ namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 
 		bool ignoreSelectionChanged;
 		List<Selector> controls = new List<Selector>();
+
+		public void DeselectAll() {
+
+			// Remove all the selected items
+			SelectedItems.Clear();
+
+			// Update the UI control.
+			foreach( Control control in controls )
+				SetSelection( (Selector)control );
+		}
+
+		public void SelectAll() {
+
+			// Reload all the elements in the selected collection
+			SelectedItems.Clear();
+			foreach( T item in SourceCollection )
+				SelectedItems.Add( item );
+
+			// Update the UI control.
+			foreach( Control control in controls )
+				SetSelection( control as Selector );
+		}
+
+		protected override void RefreshOverride() {
+			base.RefreshOverride();
+
+			// Update the UI control.
+			foreach( Control control in controls )
+				SetSelection( control as Selector );
+		}
+
+		/// <summary>
+		///  Per un motivo che non mi è chiaro,
+		///  quando attivo il filtro, il componente UI per esempio la ListBox, mi fa scatenare
+		///  un cambio di selezione, dove vengono rimossi alcuni elementi.
+		///  Per evitare ciò devo alzare il flag che ignora questo evento.
+		///  Inoltre al termine devo riallineare gli elementi selezionati con un refresh.
+		/// </summary>
+		public override Predicate<object> Filter {
+			get { 
+				return base.Filter;
+			}
+			set { 
+
+				this.ignoreSelectionChanged = true;
+
+				// Qui mi provocherebbe un selection changed non voluto.
+				base.Filter = value;
+
+				this.ignoreSelectionChanged = false;
+
+				// non fare Refresh(); perchè non funziona
+			}
+		}
+
 	}
 }
