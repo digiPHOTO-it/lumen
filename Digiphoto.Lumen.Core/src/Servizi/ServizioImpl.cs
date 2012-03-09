@@ -43,7 +43,7 @@ namespace Digiphoto.Lumen.Servizi {
 
 		public virtual void Dispose() {
 			// Qui non devo fare lo stop,  altrimenti mi si accavallano i casini
-
+			stop();  // però ci vuole... ora provo
 			
 			// Se per caso avevo aperto un object context localmente, allora lo rilascio
 			if( _objectContext != null ) {

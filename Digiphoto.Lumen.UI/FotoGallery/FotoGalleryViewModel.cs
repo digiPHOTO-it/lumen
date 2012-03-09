@@ -195,18 +195,30 @@ namespace Digiphoto.Lumen.UI {
 
 		#endregion   // fasi del giorno
 
+		public bool possoSelezionareTutto {
+			get {
+				return fotografieCW != null && fotografieCW.Count > 0;   // Se ho almeno una foto
+			}
+		}
+
+		public bool possoDeselezionareTutto {
+			get {
+				return fotografieCW != null && fotografieCW.SelectedItems.Count > 0;   // Se ho almeno una foto selezionata
+			}
+		}
 
 		#endregion   // Proprietà
 
 		#region Comandi
 
-		private RelayCommand _deselezionareTuttoCommand;
-		public ICommand deselezionareTuttoCommand {
+		private RelayCommand _selezionareTuttoCommand;
+		public ICommand selezionareTuttoCommand {
 			get {
-				if( _deselezionareTuttoCommand == null ) {
-					_deselezionareTuttoCommand = new RelayCommand( param => deselezionareTutto() );
+				if( _selezionareTuttoCommand == null ) {
+					_selezionareTuttoCommand = new RelayCommand( onOff => accendiSpegniTutto( Convert.ToBoolean(onOff) ),
+																 onOff => (Convert.ToBoolean(onOff) ? possoSelezionareTutto : possoDeselezionareTutto) );
 				}
-				return _deselezionareTuttoCommand;
+				return _selezionareTuttoCommand;
 			}
 		}
 
@@ -319,8 +331,7 @@ namespace Digiphoto.Lumen.UI {
 
 				// Creo un oggetto Predicate al volo.
 				fotografieCW.Filter = obj => {
-					Fotografia ff = (Fotografia)obj;
-					return ff.isSelezionata;
+					return fotografieCW.SelectedItems.Contains( obj );
 				};
 
 			} else {
@@ -341,22 +352,23 @@ namespace Digiphoto.Lumen.UI {
 		private IList<Fotografia> creaListaFotoSelezionate() {
 			return fotografieCW.SelectedItems.ToList();
 		}
-			
+
+		private void deselezionareTutto() {
+			accendiSpegniTutto( false );
+		}
+		
+		private void selezionareTutto() {
+			accendiSpegniTutto( true );
+		}
 
 		/// <summary>
-		/// Spengo tutte le selezioni
+		/// Accendo o Spengo tutte le selezioni
 		/// </summary>
-		private void deselezionareTutto() {
-
-			fotografieCW.SelectedItems.Clear();
-			fotografieCW.Refresh();
-			// OnPropertyChanged( "fotografieCW" );
-/*
-			int quanti = contaSelez;
-
-			foreach( Fotografia f in fotografieCW )
-				f.isSelezionata = false;
- */
+		private void accendiSpegniTutto( bool selez ) {
+			if( selez )
+				fotografieCW.SelectAll();
+			else
+				fotografieCW.DeselectAll();
 		}
 
 		/// <summary>
@@ -389,7 +401,7 @@ namespace Digiphoto.Lumen.UI {
 			}
 
 		}
-		
+
 		/// <summary>
 		/// Creo i parametri di stampa, mixando un pò di informazioni prese
 		/// dalla configurazione, dallo stato dell'applicazione, e dalla scelta dell'utente.

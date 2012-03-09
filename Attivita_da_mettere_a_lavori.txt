@@ -1,12 +1,4 @@
 
-Nella pagina di fotoritocco
-===========================
-
- Il concetto di inizio modifiche e conferma/annulla ritocchi.
- Gestire modifiche temporanee senza memorizzarle nel xml della foto.
- Quando si preme APPLICA rendere tutto definitivo.
-
-
 
 Database 
 ========

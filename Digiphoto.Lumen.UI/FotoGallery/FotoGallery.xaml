@@ -17,15 +17,8 @@
     </lumM:UserControlBase.DataContext>
 
     <UserControl.Resources>
-        <ResourceDictionary>            
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="FotoGalleryResources.xaml" />
-                <ResourceDictionary Source="/Resources/GlobalResourceDictionary.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
+        <ResourceDictionary Source="FotoGalleryResources.xaml" />
     </UserControl.Resources>
-
-
     
     <DockPanel>
         
@@ -72,7 +65,8 @@
                             Minimum="32" Maximum="2000"
                             Orientation="Vertical" Height="50" Value="120" HorizontalAlignment="Center" />
                     <Separator />
-                    <Button Content="Desel" Command="{Binding deselezionareTuttoCommand}" />
+                    <Button Content="Selez" Command="{Binding selezionareTuttoCommand}" CommandParameter="True" />
+                    <Button Content="Deselez" Command="{Binding selezionareTuttoCommand}" CommandParameter="False" />
                     <RadioButton Content="All"  Style="{StaticResource {x:Type ToggleButton}}"  Width="32" GroupName="vediSelezGrp" ToolTip="Vedi tutte le foto" Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="false" />
                     <RadioButton Content="Selez" Style="{StaticResource {x:Type ToggleButton}}"  Width="32" GroupName="vediSelezGrp" ToolTip="Vedi solo le foto selezionate" Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="true" />
                 </ToolBar>

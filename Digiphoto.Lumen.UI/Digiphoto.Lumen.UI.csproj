@@ -101,6 +101,10 @@
     <Compile Include="Mvvm\MultiSelect\MultiSelectCollectionView.cs" />
     <Compile Include="Mvvm\UserControlBase.cs" />
     <Compile Include="Pubblico\SlideShow.cs" />
+    <Page Include="Main\MainWindowResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pubblico\SlideShowResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

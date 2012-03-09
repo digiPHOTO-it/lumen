@@ -133,7 +133,7 @@ namespace Digiphoto.Lumen.Servizi.VolumeCambiato {
 
 		public override void Dispose() {
 			_watcher.Dispose();
-		//	base.Dispose();
+			base.Dispose();
 		}
 
 

@@ -35,5 +35,15 @@
 
     </DataTemplate>
 
+    <!-- L'elemento selezionato della lista perde il colore quando non ha il fuoco. Con questo rimetto a posto -->
+    <Style TargetType="ListBoxItem">
+        <Style.Resources>
+            <!--SelectedItem with focus -->
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Red" />
+            
+            <!--SelectedItem without focus-->
+            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Orange" Opacity=".6"/>
+        </Style.Resources>
+    </Style>
     
 </ResourceDictionary>

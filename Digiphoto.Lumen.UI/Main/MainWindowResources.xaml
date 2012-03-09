@@ -1,0 +1,7 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <lumC:ImmagineToImageSourceConverter x:Key="immagineToImageSourceConverter" />
+
+</ResourceDictionary>

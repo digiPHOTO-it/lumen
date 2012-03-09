@@ -6,9 +6,15 @@
         Title="Lumen" WindowStyle="None" WindowState="Maximized"
         >
     <Window.Resources>
-        <lumC:ImmagineToImageSourceConverter x:Key="immagineToImageSourceConverter" />
-    </Window.Resources>   
-    
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/GlobalResourceDictionary.xaml" />
+                <ResourceDictionary Source="MainWindowResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+
     <TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Top">
         
         <TabItem Header="Scarica" ToolTip="Scarica foto da memory-card o da altra cartella" MinHeight="30" >

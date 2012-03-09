@@ -66,19 +66,9 @@ namespace Digiphoto.Lumen.Servizi.Stampare
                 Decimal prezzo = Decimal.Parse(st[i].Split(';')[1]);
                 String stampante = st[i].Split(';')[2];
                 String porta = st[i].Split(';')[3];
-                //String abbinamento = formato + euro + stampante + porta;
 
-                FormatoCarta formatoCarta = null;
-				
+                FormatoCarta formatoCarta = dbContext.FormatiCarta.FirstOrDefault( f => f.descrizione.Equals( formato ) && f.prezzo == prezzo );
 
-                //formatoCarta = dbContext.ExecuteStoreCommand("SELECT * FROM FormatiCarta WHERE descrizione = {0} AND prezzo = {1}", formato, prezzo);
-
-                //ObjectQuery<FormatoCarta> contactQuery = dbContext.FormatiCarta.Where("it.descrizione = @ln AND it.prezzo = @fn",
-                //new ObjectParameter("ln", formato),
-                //new ObjectParameter("fn", prezzo));
-                //formatoCarta = contactQuery.First<FormatoCarta>();
-                
-				formatoCarta = dbContext.FormatiCarta.FirstOrDefault() ; // f => f.descrizione.Equals( formato ) && f.prezzo == prezzo );
 				if( formatoCarta != null ) {
 					StampanteInstallata stampanteInstallata = stampantiInstallateSrvImpl.stampanteInstallataByString( stampante );
 					list.Add( new StampanteAbbinata( stampanteInstallata, formatoCarta ) );

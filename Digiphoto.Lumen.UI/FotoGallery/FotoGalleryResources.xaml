@@ -16,9 +16,6 @@
             </Setter.Value>            
         </Setter>
 
-<!--
-        <Setter Property="IsSynchronizedWithCurrentItem" Value="True" />
--->
         <Setter Property="ItemContainerStyle" Value="{DynamicResource ImageGalleryImageContainerStyle}" />
 
     </Style>
@@ -26,12 +23,12 @@
     <!-- Style per ogni elemento della collection. Setto il colore selezionato = giallo -->
     <Style x:Key="ImageGalleryImageContainerStyle" TargetType="ListBoxItem">
         <Style.Resources>
-            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                             Color="Yellow"/>
+            <!--SelectedItem with focus -->
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Yellow" />
+
+            <!--SelectedItem without focus-->
+            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Yellow" />
         </Style.Resources>
-<!--        
-        <Setter Property="IsSelected" Value="{Binding Mode=TwoWay, Path=isSelezionata}"/>
--->
     </Style>
 
 

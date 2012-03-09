@@ -7,8 +7,8 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="SlideShowResources.xaml" />
                 <ResourceDictionary Source="/Resources/GlobalResourceDictionary.xaml" />
+                <ResourceDictionary Source="SlideShowResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
