@@ -11,7 +11,7 @@ namespace Digiphoto.Lumen.Windows.Media.Effects.Sepia {
 
 		public static readonly DependencyProperty InputProperty = ShaderEffect.RegisterPixelShaderSamplerProperty("Input", typeof(SepiaEffect), 0);
 	
-		public SepiaEffect() {
+		public SepiaEffect() : base() {
 
 			this.UpdateShaderValue(InputProperty);
 		}

@@ -17,13 +17,12 @@
     <!-- Style per ogni elemento della collection. Setto il colore selezionato  -->
     <Style x:Key="ImmaginiDaModificareContainerStyle" TargetType="ListBoxItem">
         <Style.Resources>
-            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                             Color="Green"/>
+            <!--SelectedItem with focus -->
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Yellow" />
+
+            <!--SelectedItem without focus-->
+            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Yellow"/>
         </Style.Resources>
-
-        <!-- Questo mi serve per tenere sincronizzati gli elementi selezionati e poterli testare nel ViewModel -->
-        <Setter Property="IsSelected" Value="{Binding Path=isSelezionata, Mode=TwoWay}"/>
-
     </Style>
 
     <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->

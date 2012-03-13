@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Imaging.Correzioni;
-using Digiphoto.Lumen.Servizi.Selezionare;
 using Digiphoto.Lumen.Util;
+using System;
 
 namespace Digiphoto.Lumen.Servizi.Ritoccare {
 	
@@ -12,6 +12,9 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 	public interface IFotoRitoccoSrv : IServizio {
 
+		/// <summary>
+		/// Attenzione: queste sono TUTTE le foto da modificare. Non quelle che sto attualmente in modifica.
+		/// </summary>
 		List<Fotografia> fotografieDaModificare {
 			get;
 		}
@@ -24,7 +27,8 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		/// <param name="correzione"></param>
 		void addCorrezione( Fotografia fotografia, Correzione correzione, bool salvare );
 		void addCorrezione( Fotografia fotografia, Correzione correzione );
-		void addCorrezione( Target target, Correzione correzione );
+
+		void removeCorrezione( Fotografia fotografia, Type quale );
 
 		/// <summary>
 		/// Partendo dall'immagine iniziale, ricrea il provino applicando tutte le correzioni
@@ -34,7 +38,6 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 		void tornaOriginale( Fotografia fotografia, bool salvare );
 		void tornaOriginale( Fotografia fotografia );
-		void tornaOriginale( Target target );
 
 		/// <summary>
 		/// Se ho iniziato a correggere la foto, ma poi mi accorgo che il risultato non mi
@@ -44,7 +47,6 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		/// l'immagine del provino
 		/// </summary>
 		void undoCorrezioniTransienti( Fotografia fotografia );
-		void undoCorrezioniTransienti( Target target );
 
 		/// <summary>
 		/// Quando correggo le foto, non scrivo subito sul db le modifiche apportate.
@@ -52,7 +54,6 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		/// Con questo metodo, rendo persistenti le correzioniXml che ancora sono transienti.
 		/// </summary>
 		void salvaCorrezioniTransienti( Fotografia fotografia );
-		void salvaCorrezioniTransienti( Target target );
 
 		void modificaMetadati( Fotografia foto );
 	}

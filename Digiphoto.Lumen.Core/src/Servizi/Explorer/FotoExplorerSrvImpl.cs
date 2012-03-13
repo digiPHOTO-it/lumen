@@ -11,11 +11,10 @@ using System.Threading;
 using Digiphoto.Lumen.Util;
 using log4net;
 using Digiphoto.Lumen.Core.Database;
-using Digiphoto.Lumen.Servizi.Selezionare;
 
 namespace Digiphoto.Lumen.Servizi.Explorer {
 
-	public class FotoExplorerSrvImpl : SelettoreMultiFotoImpl, IFotoExplorerSrv {
+	public class FotoExplorerSrvImpl : ServizioImpl, IFotoExplorerSrv {
 
 		#region Proprietà
 
@@ -25,12 +24,6 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 		public List<Fotografia> fotografie {
 			get;
 			private set;
-		}
-
-		public override IEnumerable<Fotografia> tutteLeFoto {
-			get {
-				return fotografie;
-			}
 		}
 
 		public Fotografia fotoCorrente { get; set; }

@@ -13,6 +13,11 @@ using Digiphoto.Lumen.Servizi.Explorer;
 using Digiphoto.Lumen.Util;
 using System;
 using Digiphoto.Lumen.Core;
+using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
+using System.Windows.Media.Effects;
+using Digiphoto.Lumen.Windows.Media.Effects.LuminositaContrasto;
+using Digiphoto.Lumen.Windows.Media.Effects.Sepia;
+using Digiphoto.Lumen.Windows.Media.Effects;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -24,16 +29,15 @@ namespace Digiphoto.Lumen.UI {
 			if( IsInDesignMode ) {
 				// caricare qualche foto a casaccio
 			} else {
-				
-				fotografieDaModificareCW = CollectionViewSource.GetDefaultView( fotoRitoccoSrv.fotografieDaModificare );
-//				fotografieDaModificareCW = new CollectionView( fotoRitoccoSrv.fotografieDaModificare );
-
+				fotografieDaModificareCW = new MultiSelectCollectionView<Fotografia>( fotoRitoccoSrv.fotografieDaModificare );
 			}
+
+			resetEffetti();
 		}
 
 		#region Proprietà
 
-		public ICollectionView fotografieDaModificareCW {
+		public MultiSelectCollectionView<Fotografia> fotografieDaModificareCW {
 			get;
 			set;
 		}
@@ -52,10 +56,7 @@ namespace Digiphoto.Lumen.UI {
 
 		int contaSelez {
 			get {
-				int quanti = 0;
-				if( fotografieDaModificareCW != null )
-					quanti = fotografieDaModificareCW.Cast<Fotografia>().Where( f => f.isSelezionata == true ).Count();
-				return quanti;
+				return fotografieDaModificareCW != null ? fotografieDaModificareCW.SelectedItems.Count : 0;
 			}
 		}
 
@@ -110,6 +111,49 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		public List<ShaderEffectBase> effetti {
+			get;
+			set;
+		}
+
+		private ShaderEffect _effettoCorrente;
+		public ShaderEffect effettoCorrente {
+			get {
+				return _effettoCorrente;
+			}
+			set {
+				if( _effettoCorrente != value ) {
+					_effettoCorrente = value;
+					OnPropertyChanged( "effettoCorrente" );
+
+					forseInizioModifiche();
+				}
+			}
+		}
+
+
+		/// <summary>
+		///  Cerco se esiste lo specifico effetto nella lista di tutti gli effetti
+		/// </summary>
+		public LuminositaContrastoEffect luminositaContrastoEffect {
+
+			get {
+				LuminositaContrastoEffect ret = null;
+
+				if( effetti != null ) {
+
+					foreach( ShaderEffectBase effetto in effetti ) {
+						if( effetto is LuminositaContrastoEffect ) {
+							ret = effetto as LuminositaContrastoEffect;
+							break;
+						}
+					}
+				}
+
+				return ret;
+			}
+		}
+
 		#endregion   // Proprietà
 
 		#region Comandi
@@ -118,7 +162,7 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand grayScaleCommand {
 			get {
 				if( _grayScaleCommand == null ) {
-					_grayScaleCommand = new RelayCommand( param => this.grayScale(),
+					_grayScaleCommand = new RelayCommand( param => this.grayScale( (bool)param ),
 														param => possoApplicareCorrezione,
 														true );
 				}
@@ -154,7 +198,7 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand sepiaCommand {
 			get {
 				if( _sepiaCommand == null ) {
-					_sepiaCommand = new RelayCommand( param => this.sepia(),
+					_sepiaCommand = new RelayCommand( param => this.sepia( (bool)param ),
 													  param => this.possoApplicareCorrezione,
 													  true );
 				}
@@ -228,46 +272,150 @@ namespace Digiphoto.Lumen.UI {
 			modificheInCorso = true;
 		}
 
-
-		private void ruotare( int pGradi ) {
+		/// <summary>
+		/// Aggiungo la correzione a tutte le foto selezionate
+		/// </summary>
+		private void addCorrezione( Correzione correzione ) {
+			
 			forseInizioModifiche();
-			RuotaCorrezione correzione = new RuotaCorrezione() { gradi = pGradi };			
-			fotoRitoccoSrv.addCorrezione( Target.Selezionate, correzione );
+
+			foreach( Fotografia f in fotografieDaModificareCW.SelectedItems )
+				fotoRitoccoSrv.addCorrezione( f, correzione );
 		}
 
-		private void grayScale() {
-			forseInizioModifiche();
-			fotoRitoccoSrv.addCorrezione( Target.Selezionate, new BiancoNeroCorrezione() );
+		private void ruotare( int pGradi ) {
+			addCorrezione( new RuotaCorrezione() { gradi = pGradi } );
+		}
+
+		private void grayScale( bool addRemove ) {
+			if( addRemove )
+				addCorrezione( new BiancoNeroCorrezione() );
+			else
+				removeCorrezione( typeof( BiancoNeroCorrezione ) );
 		}
 
 		private void tornareOriginale() {
-			forseInizioModifiche();
-			fotoRitoccoSrv.tornaOriginale( Target.Selezionate );			
+			resetEffetti();
+			foreach( Fotografia f in fotografieDaModificareCW.SelectedItems )
+				fotoRitoccoSrv.tornaOriginale( f );			
 		}
 
-		private void sepia() {
+		private void sepia( bool addRemove ) {
+			if( addRemove )
+				addCorrezione( new SepiaCorrezione() );
+			else
+				removeCorrezione( typeof( SepiaCorrezione ) );
+		}
+
+		private void removeCorrezione( Type type ) {
+						
 			forseInizioModifiche();
-			fotoRitoccoSrv.addCorrezione( Target.Selezionate, new SepiaCorrezione() );
+
+			foreach( Fotografia f in fotografieDaModificareCW.SelectedItems )
+				fotoRitoccoSrv.removeCorrezione( f, type );
 		}
 
 		private void flip() {
-			forseInizioModifiche();
-			fotoRitoccoSrv.addCorrezione( Target.Selezionate, new SpecchioCorrezione() );
+			addCorrezione( new SpecchioCorrezione() );
 		}
 
 		private void salvareCorrezioni() {
-			fotoRitoccoSrv.salvaCorrezioniTransienti( Target.Selezionate );
+
+			
+			// Purtoppo gli shader effects sono gestiti a parte
+			// Vado ad aggiungerli solo al momento di applicare per davvero
+			foreach( ShaderEffectBase effetto in effetti )
+				addCorrezione( convertiInCorrezione( effetto ) );
+
+			// Ormai che li ho acquisiti, li svuoto
+			resetEffetti();
+
+			foreach( Fotografia f in fotografieDaModificareCW.SelectedItems )
+				fotoRitoccoSrv.salvaCorrezioniTransienti( f );
+
+			// Ora che ho persistito, concludo "dicamo cosi" la transazione, faccio una specie di commit.
 			modificheInCorso = false;
 		}
 
+
+
 		private void rifiutareCorrezioni() {
-			fotoRitoccoSrv.undoCorrezioniTransienti( Target.Selezionate );
+			resetEffetti();
+			foreach( Fotografia f in fotografieDaModificareCW.SelectedItems )
+				fotoRitoccoSrv.undoCorrezioniTransienti( f );
 			modificheInCorso = false;
 		}
 
 		private void salvareMetadati() {
 			// TODO
 		}
+
+		void resetEffetti() {
+
+			effettoCorrente = null;
+
+			if( effetti == null ) {
+				// Creo gli effetti vuoti
+				effetti = new List<ShaderEffectBase>();
+			} else {
+				// Questo serve anche per rimettere gli slider nella posiziona di default
+				foreach( ShaderEffectBase effetto in effetti ) {
+					effetto.reset();
+					BindingOperations.ClearAllBindings( effetto );
+				}
+				effetti.Clear();
+			}
+		}
+
+		private Correzione convertiInCorrezione( ShaderEffectBase effetto ) {
+
+			Correzione ret = null;
+
+			if( effetto is LuminositaContrastoEffect ) {
+				ret = new LuminositaContrastoCorrezione {
+					luminosita = ((LuminositaContrastoEffect)effetto).Brightness,
+					contrasto = ((LuminositaContrastoEffect)effetto).Contrast
+				};
+
+			}
+
+			return ret;
+		}
+
+		/// <summary>
+		///  Imposto un eventuale nuovo effetto.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns>true se l'ho creato davvero</returns>
+		public bool forseCambioEffettoCorrente( Type type ) {
+
+			bool creatoNuovo = false;
+
+			// Controllo se l'effetto corrente è già quello attuale non faccio niente.
+			if( effettoCorrente != null && effettoCorrente.GetType() == type )
+				return false;
+
+			// Se l'effetto indicato è già in lista non faccio niente, altrimenti lo creo
+			bool trovato = false;
+			foreach( ShaderEffectBase effetto in effetti ) {
+				if( effetto.GetType() == type ) {
+					trovato = true;
+					effettoCorrente = effetto;
+					break;
+				}
+			}
+
+			if( !trovato ) {
+				ShaderEffectBase nuovo = (ShaderEffectBase)Activator.CreateInstance( type );
+				effetti.Add( nuovo );
+				effettoCorrente = nuovo;
+				creatoNuovo = true;
+			}
+
+			return creatoNuovo;
+		}
+
+
 
 		#endregion Metodi
 
