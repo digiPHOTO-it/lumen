@@ -6,13 +6,12 @@ using Digiphoto.Lumen.Servizi;
 using System.Collections;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Servizi.Ricerca;
-using Digiphoto.Lumen.Servizi.Selezionare;
 using Digiphoto.Lumen.Util;
 
 namespace Digiphoto.Lumen.Servizi.Explorer {
 
 
-	public interface IFotoExplorerSrv : ISelettoreMultiFotoSrv {
+	public interface IFotoExplorerSrv : IServizio {
 
 		/** Queste sono tutte le foto estratte dall'archivio */
 		List<Fotografia> fotografie { get; }

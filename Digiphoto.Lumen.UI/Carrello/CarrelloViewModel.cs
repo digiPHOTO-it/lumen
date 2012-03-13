@@ -64,10 +64,15 @@ namespace Digiphoto.Lumen.UI
         {
             get
             {
+
+// TODO
+return 0;
+/*
                 int quanti = 0;
                 if (FotoCarrello != null)
                     quanti = FotoCarrello.Cast<Fotografia>().Where(f => f.isSelezionata == true).Count();
                 return quanti;
+ */
             }
         }
 
@@ -78,8 +83,10 @@ namespace Digiphoto.Lumen.UI
                 decimal totale = 0;
                 decimal prezzo = 5;
                 int quanti = 1;
+/* TODO SELEZ
                 if (FotoCarrello != null)
                     quanti = FotoCarrello.Cast<Fotografia>().Where(f => f.isSelezionata == true).Count();
+ */
                 totale = quanti * prezzo;
                 return totale;
             }
@@ -119,9 +126,10 @@ namespace Digiphoto.Lumen.UI
 
         private IList<Fotografia> creaListaFotoSelezionate()
         {
+/* TODO SELEZ
             var fotos = FotoCarrello.OfType<Fotografia>().Where(f => f.isSelezionata == true);
-
-            return new List<Fotografia>(fotos);
+*/
+            return new List<Fotografia>();
         }
 
         /// <summary>
@@ -130,9 +138,10 @@ namespace Digiphoto.Lumen.UI
         private void deselezionareTutto()
         {
             int quanti = TotaleFotoSelezionate;
-
+/* TODO SELEZ
             foreach (Fotografia f in FotoCarrello)
                 f.isSelezionata = false;
+ */
         }
 
         /// <summary>

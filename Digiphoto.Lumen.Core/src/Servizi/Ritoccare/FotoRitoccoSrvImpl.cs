@@ -9,7 +9,6 @@ using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Imaging.Correzioni;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Imaging;
-using Digiphoto.Lumen.Servizi.Selezionare;
 using System.Data.Objects;
 using System.Data;
 
@@ -40,15 +39,6 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 			}
 		}
 
-
-		public void tornaOriginale( Target target ) {
-
-			if( target == Target.Selezionate ) {
-				foreach( Fotografia f in fotoSelezionate )
-					tornaOriginale( f );
-			}
-		}
-
 		public void tornaOriginale( Fotografia fotografia ) {
 
 			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
@@ -59,27 +49,6 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 			objContext.SaveChanges();
 		}
-
-		public void addCorrezione( Target target, Correzione correzione ) {
-
-			if( target == Target.Selezionate ) {
-				foreach( Fotografia f in fotoSelezionate )
-					addCorrezione( f, correzione, false );
-			}
-
-
-		}
-
-		// TODO Non è efficiente. Sostituire
-		// http://stackoverflow.com/questions/451748/wpf-m-v-vm-get-selected-items-from-a-listcollectionview
-		public IEnumerable<Fotografia> fotoSelezionate {
-			get {
-				return fotografieDaModificare.Where( f => f.isSelezionata == true );
-			}
-		}
-
-
-
 
 		// ok ho deciso che la correzione viene accettata
 		public void addCorrezione( Fotografia fotografia, Correzione correzione ) {
@@ -135,6 +104,38 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 			}
 		}
 
+		
+		public void removeCorrezione( Fotografia foto, Type quale ) {
+
+			// Se non ho correzioni è impossibile che ne voglio rimuovere una
+			if( foto.correzioniXml == null )
+				return;
+
+			// Deserializzo la stringa con le eventuali correzioni attuali
+			CorrezioniList correzioni = SerializzaUtil.stringToObject<CorrezioniList>( foto.correzioniXml );
+
+			bool rimossa = false;
+			foreach( Correzione cor in correzioni ) {
+				if( cor.GetType().Equals( quale ) ) {
+					correzioni.Remove( cor );
+					rimossa = true;
+					break;
+				}
+			}
+
+			if( ! rimossa )
+				return;
+
+			// Ora serializzo di nuovo in stringa tutte le correzioni
+			if( correzioni.Count > 0 )
+				foto.correzioniXml = SerializzaUtil.objectToString( correzioni );
+			else
+				foto.correzioniXml = null;
+
+			AiutanteFoto.creaProvinoFoto( foto );
+		}
+
+
 		public void applicaCorrezioniTutte( Fotografia fotografia ) {
 			throw new NotImplementedException();
 		}
@@ -178,13 +179,6 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 			AiutanteFoto.idrataImmaginiFoto( IdrataTarget.Provino, fotografia );
 		}
 
-		public void undoCorrezioniTransienti( Target target ) {
-			if( target == Target.Selezionate ) {
-				foreach( Fotografia f in fotoSelezionate )
-					undoCorrezioniTransienti( f );
-			}
-		}
-
 
 		public void salvaCorrezioniTransienti( Fotografia fotografia ) {
 
@@ -198,17 +192,11 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 			gis.save( fotografia.imgProvino, PathUtil.nomeCompletoProvino( fotografia ) );
 		}
 
-		public void salvaCorrezioniTransienti( Target target ) {
-			if( target == Target.Selezionate ) {
-				foreach( Fotografia f in fotoSelezionate )
-					salvaCorrezioniTransienti( f );
-			}
-		}
-
 
 		public void modificaMetadati( Fotografia foto ) {
 			// TODO
 			throw new NotImplementedException();
 		}
+
 	}
 }

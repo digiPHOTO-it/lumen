@@ -81,11 +81,11 @@
     <Compile Include="src\Imaging\Correzioni\BiancoNeroCorrezione.cs" />
     <Compile Include="src\Imaging\Correzioni\Correzione.cs" />
     <Compile Include="src\Imaging\Correzioni\CorrezioneList.cs" />
+    <Compile Include="src\Imaging\Correzioni\LuminositaContrastoCorrezione.cs" />
     <Compile Include="src\Imaging\Correzioni\ResizeCorrezione.cs" />
     <Compile Include="src\Imaging\Correzioni\RuotaCorrezione.cs" />
     <Compile Include="src\Imaging\Correzioni\SepiaCorrezione.cs" />
     <Compile Include="src\Imaging\Correzioni\SpecchioCorrezione.cs" />
-    <Compile Include="src\Servizi\Selezionare\ISelettoreMultiFotoSrv.cs" />
     <Compile Include="src\Servizi\Ritoccare\FotoRitoccoSrvImpl.cs" />
     <Compile Include="src\Imaging\Immagine.cs" />
     <Compile Include="src\Servizi\Ritoccare\ICorrettoreFactory.cs" />
@@ -129,7 +129,6 @@
     <Compile Include="src\Servizi\Scaricatore\ElaboratoreFotoAcquisite.cs" />
     <Compile Include="src\Servizi\Scaricatore\NuovaFotoMsg.cs" />
     <Compile Include="src\Servizi\Scaricatore\ScaricoFotoMsg.cs" />
-    <Compile Include="src\Servizi\Selezionare\SelettoreMultiFotoImpl.cs" />
     <Compile Include="src\Servizi\ServizioFactory.cs" />
     <Compile Include="src\Servizi\Stampare\ISpoolStampeSrv.cs" />
     <Compile Include="src\Servizi\Stampare\IEsecutoreStampa.cs" />

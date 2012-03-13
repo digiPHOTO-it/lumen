@@ -29,8 +29,8 @@ namespace Digiphoto.Lumen.Windows.Media.Effects {
 		}
 
 
-		///
-
+		public virtual void reset() {
+		}
 
 
 		/// <summary>
@@ -38,7 +38,7 @@ namespace Digiphoto.Lumen.Windows.Media.Effects {
 		///   al compilato di pixel-shader (.PS).
 		///   
 		//   Questa stringa alla fine viene per esempio :
-		//   "/ProveShader;component/Windows/Media/Effects/Grayscale/GrayscaleEffect.ps"
+		//   "/NomeAssembly;component/Windows/Media/Effects/Grayscale/GrayscaleEffect.ps"
 		///  
 		/// </summary>
 		/// <returns></returns>

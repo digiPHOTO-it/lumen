@@ -29,18 +29,6 @@ namespace Digiphoto.Lumen.Model {
 
 		public IImmagine imgRisultante { get; set; }
 
-		private bool _isSelezionata;
-		public bool isSelezionata {
-			get {
-				return _isSelezionata;
-			}
-			set {
-				if( value != _isSelezionata ) {
-					_isSelezionata = value;
-					OnPropertyChanged( "isSelezionata" );
-				}
-			}
-		}
 
 		public override string ToString() {
 			return String.Format( "Num.{0} del={1}", numero, dataOraAcquisizione.ToShortDateString() );
