@@ -20,5 +20,11 @@ namespace Digiphoto.Lumen.Imaging.Correzioni {
 		public virtual Correzione somma( Correzione altra ) {
 			return null;
 		}
+
+		public virtual bool isInutile {
+			get {
+				return false;
+			}
+		}
 	}
 }

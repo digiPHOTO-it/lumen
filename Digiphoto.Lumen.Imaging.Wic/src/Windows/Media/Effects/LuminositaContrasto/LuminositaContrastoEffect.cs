@@ -4,7 +4,7 @@ using System.Windows.Media;
 using System.Windows.Media.Effects;
 using System.Windows.Media.Media3D;
 
-namespace Digiphoto.Lumen.Windows.Media.Effects.LuminositaContrasto {
+namespace Digiphoto.Lumen.Windows.Media.Effects {
 
 	/// <summary>An effect that controls brightness and contrast.</summary>
 	public class LuminositaContrastoEffect : ShaderEffectBase {
@@ -12,7 +12,7 @@ namespace Digiphoto.Lumen.Windows.Media.Effects.LuminositaContrasto {
 		
 		public static readonly DependencyProperty InputProperty = ShaderEffect.RegisterPixelShaderSamplerProperty( "Input", typeof( LuminositaContrastoEffect ), 0 );
 		public static readonly DependencyProperty BrightnessProperty = DependencyProperty.Register( "Brightness", typeof( double ), typeof( LuminositaContrastoEffect ), new UIPropertyMetadata( ((double)(0D)), PixelShaderConstantCallback( 0 ) ) );
-		public static readonly DependencyProperty ContrastProperty = DependencyProperty.Register( "Contrast", typeof( double ), typeof( LuminositaContrastoEffect ), new UIPropertyMetadata( ((double)(1.5D)), PixelShaderConstantCallback( 1 ) ) );
+		public static readonly DependencyProperty ContrastProperty = DependencyProperty.Register( "Contrast", typeof( double ), typeof( LuminositaContrastoEffect ), new UIPropertyMetadata( ((double)(1.0D)), PixelShaderConstantCallback( 1 ) ) );
 
 		public LuminositaContrastoEffect() : base() {
 			

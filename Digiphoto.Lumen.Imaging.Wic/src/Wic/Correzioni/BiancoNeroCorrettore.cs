@@ -6,12 +6,29 @@ using Digiphoto.Lumen.Imaging.Correzioni;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
+using Digiphoto.Lumen.Windows.Media.Effects;
 
 namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 
 	internal class BiancoNeroCorrettore : Correttore {
 
+		private ShaderEffect [] _effetti;
+
+		public BiancoNeroCorrettore() {
+			// Purtroppo devo creare un array con un solo elemento. TODO migliorare
+			_effetti = new ShaderEffect []  { new GrayscaleEffect() };
+		}
+
 		public override IImmagine applica( IImmagine immagineSorgente, Correzione correzione ) {
+
+			ImmagineWic iw = (ImmagineWic)immagineSorgente;
+
+			BitmapSource modificata = EffectsUtil.RenderImageWithEffectsToBitmap( iw.bitmapSource, _effetti );
+
+			return new ImmagineWic( modificata );
+		}
+
+		public IImmagine applicaOld( IImmagine immagineSorgente, Correzione correzione ) {
 
 			FormatConvertedBitmap newFormatedBitmapSource = new FormatConvertedBitmap();
 

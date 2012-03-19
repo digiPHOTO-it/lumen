@@ -15,9 +15,8 @@ using System;
 using Digiphoto.Lumen.Core;
 using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
 using System.Windows.Media.Effects;
-using Digiphoto.Lumen.Windows.Media.Effects.LuminositaContrasto;
-using Digiphoto.Lumen.Windows.Media.Effects.Sepia;
 using Digiphoto.Lumen.Windows.Media.Effects;
+using System.Windows.Media;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -36,6 +35,21 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		#region Proprietà
+
+		private Transform _trasformazioneCorrente;
+		public Transform trasformazioneCorrente {
+			get {
+				return _trasformazioneCorrente;
+			}
+			set {
+				if( _trasformazioneCorrente != value ) {
+					_trasformazioneCorrente = value;
+					OnPropertyChanged( "trasformazioneCorrente" );
+
+					forseInizioModifiche();
+				}	
+			}
+		}
 
 		public MultiSelectCollectionView<Fotografia> fotografieDaModificareCW {
 			get;
@@ -151,6 +165,18 @@ namespace Digiphoto.Lumen.UI {
 				}
 
 				return ret;
+			}
+		}
+
+		public bool isSepiaChecked {
+			get {
+				return  effetti != null && effetti.Exists( e => e is SepiaEffect );
+			}
+		}
+
+		public bool isGrayscaleChecked {
+			get {
+				return effetti != null && effetti.Exists( e => e is GrayscaleEffect );
 			}
 		}
 
@@ -295,7 +321,11 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		private void tornareOriginale() {
+
+			// elimino tutti gli effetti creati
 			resetEffetti();
+			
+			// per ogni foto elimino le correzioni e ricreo il provino partendo dall'originale.
 			foreach( Fotografia f in fotografieDaModificareCW.SelectedItems )
 				fotoRitoccoSrv.tornaOriginale( f );			
 		}
@@ -327,6 +357,13 @@ namespace Digiphoto.Lumen.UI {
 			foreach( ShaderEffectBase effetto in effetti )
 				addCorrezione( convertiInCorrezione( effetto ) );
 
+			// Purtoppo anche la trasformazione di rotazione, è gestita a parte.
+			if( trasformazioneCorrente is RotateTransform ) {
+				RuotaCorrezione rc = new RuotaCorrezione();
+				rc.gradi = (float) ((RotateTransform)trasformazioneCorrente).Angle;
+				addCorrezione( rc );
+			}
+
 			// Ormai che li ho acquisiti, li svuoto
 			resetEffetti();
 
@@ -353,6 +390,7 @@ namespace Digiphoto.Lumen.UI {
 		void resetEffetti() {
 
 			effettoCorrente = null;
+			trasformazioneCorrente = null;
 
 			if( effetti == null ) {
 				// Creo gli effetti vuoti
@@ -364,7 +402,12 @@ namespace Digiphoto.Lumen.UI {
 					BindingOperations.ClearAllBindings( effetto );
 				}
 				effetti.Clear();
+
+				// Questo rimette a posto i bottoni toggle BN e SEPIA
+				OnPropertyChanged( "isSepiaChecked" );
+				OnPropertyChanged( "isGrayscaleChecked" );
 			}
+
 		}
 
 		private Correzione convertiInCorrezione( ShaderEffectBase effetto ) {
@@ -380,6 +423,19 @@ namespace Digiphoto.Lumen.UI {
 			}
 
 			return ret;
+		}
+
+		public bool forseCambioTrasformazioneCorrente( Type type ) {
+
+			bool creatoNuovo = false;
+
+			// Controllo se la trasformazione corrente è già quello attuale non faccio niente.
+			if( trasformazioneCorrente == null || trasformazioneCorrente.GetType() != type ) {
+				trasformazioneCorrente = (Transform) Activator.CreateInstance( type );
+				creatoNuovo = true;
+			}
+
+			return creatoNuovo;
 		}
 
 		/// <summary>

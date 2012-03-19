@@ -5,7 +5,7 @@ using System.Windows.Media.Effects;
 using System.Windows.Media.Media3D;
 
 
-namespace Digiphoto.Lumen.Windows.Media.Effects.Sepia {
+namespace Digiphoto.Lumen.Windows.Media.Effects {
 	
 	public class SepiaEffect : ShaderEffectBase {
 

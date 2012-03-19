@@ -50,9 +50,9 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 			objContext.SaveChanges();
 		}
 
-		// ok ho deciso che la correzione viene accettata
+		// Aggiungo la correzione ma non scrivo il file su disco
 		public void addCorrezione( Fotografia fotografia, Correzione correzione ) {
-			addCorrezione( fotografia, correzione, true );
+			addCorrezione( fotografia, correzione, false );
 		}
 
 		// ok ho deciso che la correzione viene accettata
@@ -70,6 +70,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 			// Alcune correzioni, non devono andare sempre in aggiunta, ma possono sommarsi l'un l'altra.
 			// Per esempio la rotazione. Se ruoto 90° poi altri 90, l'effetto finale è quello di avere una sola da 180°
+			// TODO : gestire il caso che la somma è INEFFICACE (per esempio +90 e -90 fa 0 che non serve a niente)
 			Correzione daSost = null;
 			Correzione vecchia = null;
 			foreach( Correzione c in correzioni ) {

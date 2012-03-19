@@ -62,6 +62,7 @@
     <Compile Include="src\Wic\ImmagineWic.cs" />
     <Compile Include="src\Wic\WicUtil.cs" />
     <Compile Include="src\Windows\Media\Effects\EffectsUtil.cs" />
+    <Compile Include="src\Windows\Media\Effects\Grayscale\GrayscaleEffect.cs" />
     <Compile Include="src\Windows\Media\Effects\LuminositaContrasto\LuminositaContrastoEffect.cs" />
     <Compile Include="src\Windows\Media\Effects\Sepia\SepiaEffect.cs" />
     <Compile Include="src\Windows\Media\Effects\ShaderEffectBase.cs" />
@@ -78,6 +79,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\Windows\Media\Effects\Grayscale\GrayscaleEffect.fx" />
+    <Resource Include="src\Windows\Media\Effects\Grayscale\GrayscaleEffect.ps" />
     <None Include="src\Windows\Media\Effects\LuminositaContrasto\LuminositaContrastoEffect.fx" />
     <Resource Include="src\Windows\Media\Effects\LuminositaContrasto\LuminositaContrastoEffect.ps" />
     <None Include="src\Windows\Media\Effects\Sepia\SepiaEffect.fx" />

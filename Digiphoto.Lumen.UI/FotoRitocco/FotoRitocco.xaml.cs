@@ -1,9 +1,10 @@
 ﻿using System;
 using Digiphoto.Lumen.UI.Mvvm;
-using Digiphoto.Lumen.Windows.Media.Effects.LuminositaContrasto;
 using System.Windows.Data;
 using System.Windows;
 using System.Windows.Controls;
+using Digiphoto.Lumen.Windows.Media.Effects;
+using System.Windows.Media;
 
 
 namespace Digiphoto.Lumen.UI {
@@ -15,18 +16,10 @@ namespace Digiphoto.Lumen.UI {
 		FotoRitoccoViewModel _viewModel;
 
 		public FotoRitocco() {
+			
 			InitializeComponent();
 
 			_viewModel = (FotoRitoccoViewModel) this.DataContext;
-
-			bindaSlidersToEffetti();
-		}
-
-		private void bindaSlidersToEffetti() {
-
-			// Bindings con i componenti per i parametri
-
-
 		}
 
 		private void sliderLuminosita_ValueChanged( object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e ) {
@@ -34,7 +27,6 @@ namespace Digiphoto.Lumen.UI {
 			if( _viewModel != null )
 				if( _viewModel.forseCambioEffettoCorrente( typeof( LuminositaContrastoEffect ) ) )
 					bindaSliderLuminositaContrasto();
-
 		}
 
 		private void sliderContrasto_ValueChanged( object sender, RoutedPropertyChangedEventArgs<double> e ) {
@@ -42,6 +34,23 @@ namespace Digiphoto.Lumen.UI {
 			if( _viewModel != null )
 				if( _viewModel.forseCambioEffettoCorrente( typeof( LuminositaContrastoEffect ) ) )
 					bindaSliderLuminositaContrasto();
+		}
+
+		private void sliderRuota_ValueChanged( object sender, RoutedPropertyChangedEventArgs<double> e ) {
+
+			if( _viewModel != null )
+				if( _viewModel.forseCambioTrasformazioneCorrente( typeof( RotateTransform ) ) )
+					bindaSliderRuota();
+		}
+
+		private void bindaSliderRuota() {
+
+			// Bindings con i componenti per i parametri
+			Binding binding = new Binding();
+			binding.Source = sliderRuota;
+			binding.Mode = BindingMode.TwoWay;  // Mi serve bidirezionale perché posso resettare tutto dal ViewModel
+			binding.Path = new PropertyPath( Slider.ValueProperty );
+			BindingOperations.SetBinding( _viewModel.trasformazioneCorrente, RotateTransform.AngleProperty, binding );
 		}
 
 		/// <summary>

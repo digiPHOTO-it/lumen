@@ -27,5 +27,18 @@ namespace Digiphoto.Lumen.Imaging.Correzioni {
 
 			return ret;
 		}
+
+		public override bool isInutile {
+			get {
+				return (gradi == 0f || (gradi % 360) == 0);
+			}
+		}
+
+		public bool isAngoloRetto {
+			get {
+				return (gradi % 90f) == 0;
+			}
+		}
+
 	}
 }
