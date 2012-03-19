@@ -28,18 +28,18 @@
             <Slider Name="sliderLuminosita" ToolTip="Luminosità" Minimum="-1" Maximum="1" Value="0" ValueChanged="sliderLuminosita_ValueChanged" />
 
             <Label Content="Contrasto" />
-            <Slider Name="sliderContrasto" ToolTip="Contrasto" Minimum="0" Maximum="2" Value="1.5" ValueChanged="sliderContrasto_ValueChanged" />
+            <Slider Name="sliderContrasto" ToolTip="Contrasto" Minimum="0" Maximum="2" Value="1" ValueChanged="sliderContrasto_ValueChanged" />
 
             <Label Content="Ruota" />
-            <Slider ToolTip="Ruota" Minimum="-180" Maximum="180"/>
+            <Slider Name="sliderRuota" ToolTip="Ruota" Minimum="-180" Maximum="180" ValueChanged="sliderRuota_ValueChanged" />
 
             <StackPanel Orientation="Horizontal">
                 <Button Content="-90°" Command="{Binding ruotareCommand}" CommandParameter="-90" />
                 <Button Content="+90°" Command="{Binding ruotareCommand}" CommandParameter="90" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <ToggleButton Content="B/N" Command="{Binding grayScaleCommand}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" />
-                <ToggleButton Content="Sepia" Command="{Binding sepiaCommand}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" />                
+                <ToggleButton Content="B/N" IsChecked="{Binding Path=isGrayscaleCheched}"  Command="{Binding grayScaleCommand}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" />
+                <ToggleButton Content="Sepia" IsChecked="{Binding Path=isSepiaCheched}" Command="{Binding sepiaCommand}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" />                
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Button Content="Flip" Command="{Binding flipCommand}" />
@@ -134,7 +134,7 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Border BorderBrush="Red">
-                        <Image Source="{Binding Path=imgProvino,Converter={StaticResource immagineToImageSourceConverter}}"
+                        <Image LayoutTransform="{Binding Path=DataContext.trasformazione, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  Source="{Binding Path=imgProvino,Converter={StaticResource immagineToImageSourceConverter}}"
                                Effect="{Binding Path=DataContext.effettoCorrente, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
                     </Border>
                 </DataTemplate>

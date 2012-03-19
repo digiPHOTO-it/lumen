@@ -29,51 +29,23 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 			ResizeCorrezione resizeCorrezione = (ResizeCorrezione)correzione;
 			ResizeCorrettore.calcolaEsattaWeH( immagineSorgente, resizeCorrezione.latoMax, out calcW, out calcH );
 
-			ImmagineWic immagineWic = (ImmagineWic)immagineSorgente;
+			BitmapSource bitmapSource = ((ImmagineWic)immagineSorgente).bitmapSource; 
 
-			BitmapFrame bitmapFrame = Resize( immagineWic.bitmapSource, calcW, calcH, DPI_PROVINO );
+			BitmapFrame bitmapFrame = Resize( bitmapSource, calcW, calcH, DPI_PROVINO );
 			return new ImmagineWic( bitmapFrame );
 		}
 
 		/// <summary>
 		/// Vedere articolo:
-		/// http://rongchaua.net/blog/c-wpf-fast-image-resize/
-		/// </summary>
-		private static BitmapFrame FastResize( BitmapSource bitmapSource, long nWidth, long nHeight ) {
-			TransformedBitmap tbBitmap = new TransformedBitmap( bitmapSource, new ScaleTransform( nWidth / bitmapSource.Width, nHeight / bitmapSource.Height, 0, 0 ) );
-			return BitmapFrame.Create( tbBitmap );
-		}
-
-
-		/// <summary>
-		/// Vedere articolo:
 		/// http://weblogs.asp.net/bleroy/archive/2009/12/10/resizing-images-from-the-server-using-wpf-wic-instead-of-gdi.aspx
+		/// Strano ma se non tengo conto dei dpi, anche se dico di fare il resize ad una certa larghezza, 
+		/// mi crea una bitmap piu grande
 		/// </summary>
 		private static BitmapFrame Resize( BitmapSource bitmapSource, long ww, long hh, int dpi ) {
-			double newW = ww / bitmapSource.Width * 96 / bitmapSource.DpiX;
-			double newH = hh / bitmapSource.Height * 96 / bitmapSource.DpiY;
+			double newW = ww / bitmapSource.Width * dpi / bitmapSource.DpiX;
+			double newH = hh / bitmapSource.Height * dpi / bitmapSource.DpiY;
 			var target = new TransformedBitmap( bitmapSource, new ScaleTransform( newW, newH, 0, 0 ) );
 			return BitmapFrame.Create( target );
-		}
-
-
-		private static byte [] ToByteArray( BitmapFrame bfResize ) {
-			using( MemoryStream msStream = new MemoryStream() ) {
-				PngBitmapEncoder pbdDecoder = new PngBitmapEncoder();
-				pbdDecoder.Frames.Add( bfResize );
-				pbdDecoder.Save( msStream );
-				return msStream.ToArray();
-			}
-		}
-
-		/// <summary>
-		///  Crea un bitmapFrame partendo da uno stream binario in ingresso
-		/// </summary>
-		/// <param name="streamPhoto">Strem di byte in entrata</param>
-		/// <returns>un BitmapFrame per poterlo anche visualizzare</returns>
-		private static BitmapFrame ReadBitmapFrame( Stream streamPhoto ) {
-			BitmapDecoder bdDecoder = BitmapDecoder.Create( streamPhoto, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.None );
-			return bdDecoder.Frames [0];
 		}
 
 		/// <summary>

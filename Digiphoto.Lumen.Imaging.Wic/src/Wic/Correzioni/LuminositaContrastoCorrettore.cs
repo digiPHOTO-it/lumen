@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Imaging.Correzioni;
 using System.Windows.Media.Effects;
-using Digiphoto.Lumen.Windows.Media.Effects.LuminositaContrasto;
 using System.Windows.Media.Imaging;
 using Digiphoto.Lumen.Windows.Media.Effects;
 

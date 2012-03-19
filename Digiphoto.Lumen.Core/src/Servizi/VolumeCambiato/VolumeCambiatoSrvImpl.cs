@@ -132,8 +132,8 @@ namespace Digiphoto.Lumen.Servizi.VolumeCambiato {
 		}  
 
 		public override void Dispose() {
+			// base.Dispose();  // se mi chiama lo stop mi da dei problemi. Evito e faccio solo la dispose
 			_watcher.Dispose();
-			base.Dispose();
 		}
 
 

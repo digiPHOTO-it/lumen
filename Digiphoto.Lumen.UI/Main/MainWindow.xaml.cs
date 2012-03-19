@@ -28,7 +28,11 @@ namespace Digiphoto.Lumen.UI {
 			handler = delegate {
 				_mainWindowViewModel.RequestClose -= handler;
 				this.Close();
+				Application.Current.Shutdown();
 			};
+
+
+
 			_mainWindowViewModel.RequestClose += handler;
 
 

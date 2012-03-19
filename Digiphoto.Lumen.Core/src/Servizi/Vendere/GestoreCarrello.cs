@@ -26,20 +26,19 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		public bool isTransient {
 			
 			get {
-
-				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
-
+				bool trans = true;
 				// Get ObjectStateEntry from EntityKey.
-				ObjectStateEntry stateEntry = dbContext.ObjectStateManager.GetObjectStateEntry( ((IEntityWithKey)carrello).EntityKey );
+				IEntityWithKey ek = (IEntityWithKey)carrello;
+				if( ek != null && ek.EntityKey != null ) {
+					LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+					ObjectStateEntry stateEntry = dbContext.ObjectStateManager.GetObjectStateEntry( ek.EntityKey );
+					EntityState stato = stateEntry.State;
 
-				EntityState stato = stateEntry.State;
-
-				if( (int)stato > 0 )
-					return false;
-				else
-					return true;
+					trans = ((int)stato <= 0);
+				}
+				return trans;
 			}
-			
+				
 		}
 
 		public bool isPossibileSalvare {
@@ -189,7 +188,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public void Dispose() {
 
-			if( carrello != null ) {
+			// Se il carrello è stato modificato nel db o aggiunto al db ma non ancora committato, allora devo "tornare indietro"
+			if( carrello != null && isTransient == false ) {
 
 				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
 

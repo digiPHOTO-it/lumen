@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Imaging.Correzioni;
-using Digiphoto.Lumen.Windows.Media.Effects.LuminositaContrasto;
 using System.Windows.Media.Effects;
 using Digiphoto.Lumen.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
-using Digiphoto.Lumen.Windows.Media.Effects.Sepia;
 
 namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 	
