@@ -19,8 +19,8 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 
 			// Purtroppo devo creare un array con un solo elemento. TODO migliorare
 			LuminositaContrastoEffect lce = new LuminositaContrastoEffect();
-			lce.Brightness = ((LuminositaContrastoCorrezione)correzione).luminosita;
-			lce.Contrast = ((LuminositaContrastoCorrezione)correzione).contrasto;
+			lce.Brightness = ((Luce)correzione).luminosita;
+			lce.Contrast = ((Luce)correzione).contrasto;
 			ShaderEffect [] _effetti = new ShaderEffect [] { lce };
 
 			ImmagineWic iw = (ImmagineWic)immagineSorgente;

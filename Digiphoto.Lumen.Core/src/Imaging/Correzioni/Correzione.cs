@@ -6,11 +6,12 @@ using System.Xml.Serialization;
 
 namespace Digiphoto.Lumen.Imaging.Correzioni {
 	
-	[XmlInclude(typeof(RuotaCorrezione))]
-	[XmlInclude(typeof(BiancoNeroCorrezione))]
-	[XmlInclude(typeof(SepiaCorrezione))]
-	[XmlInclude(typeof(SpecchioCorrezione ) )]
-	[XmlInclude(typeof(LuminositaContrastoCorrezione))]
+	[XmlInclude(typeof(Ruota))]
+	[XmlInclude(typeof(BiancoNero))]
+	[XmlInclude(typeof(Sepia))]
+	[XmlInclude(typeof(Specchio ) )]
+	[XmlInclude(typeof(Luce))]
+	[XmlInclude( typeof(Crop))]
 	public abstract class Correzione {
 
 		public virtual bool isSommabile( Correzione altra ) {

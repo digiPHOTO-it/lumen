@@ -141,16 +141,19 @@ namespace Digiphoto.Lumen.UI {
 				string uriTemplate = @"pack://application:,,,/Digiphoto.Lumen.UI;component/Resources/##-16x16.png";
 				Uri uri = null;
 
-				if( slideShowViewModel.isRunning )
-					uri = new Uri( uriTemplate.Replace( "##", "ssRunning" ) );
+				if( slideShowViewModel != null ) {
+					if( slideShowViewModel.isRunning )
+						uri = new Uri( uriTemplate.Replace( "##", "ssRunning" ) );
 
-				if( slideShowViewModel.isPaused )
-					uri = new Uri( uriTemplate.Replace( "##", "ssPause" ) );
+					if( slideShowViewModel.isPaused )
+						uri = new Uri( uriTemplate.Replace( "##", "ssPause" ) );
 
-				if( slideShowViewModel.isEmpty )
-					uri = new Uri( uriTemplate.Replace( "##", "ssEmpty" ) );
+					if( slideShowViewModel.isEmpty )
+						uri = new Uri( uriTemplate.Replace( "##", "ssEmpty" ) );
 
-				return new BitmapImage( uri );
+					return new BitmapImage( uri );
+				} else
+					return null;
 			}
 		}
 

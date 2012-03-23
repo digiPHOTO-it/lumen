@@ -92,9 +92,7 @@ namespace Digiphoto.Lumen.UI {
 
 		public SlideShowViewModel slideShowViewModel {
 			get {
-				forseApriWindowPubblica();
-
-				return (SlideShowViewModel)_slideShowWindow.DataContext;
+				return _slideShowWindow == null ? null : (SlideShowViewModel)_slideShowWindow.DataContext;
 			}
 		}
 

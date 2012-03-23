@@ -7,6 +7,7 @@
              xmlns:lumMS="clr-namespace:Digiphoto.Lumen.UI.Mvvm.MultiSelect"
              xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
              mc:Ignorable="d" 
+             x:Name="fotoRitoccoUserControl"
              d:DesignHeight="480" d:DesignWidth="640">
 
     <!-- Istanzio il controllore -->
@@ -43,9 +44,16 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Button Content="Flip" Command="{Binding flipCommand}" />
-                <Button Content="Crop" Background="Red"/>
+                <Button Content="Crop" Command="{Binding croppareCommand}"/>
             </StackPanel>
 
+            
+            <Separator Height="10" />
+
+            <ToggleButton Content="Selector" Name="toggleSelector" 
+                          Checked="toggleSelector_Checked" Unchecked="toggleSelector_Unchecked" />
+            
+            
             <Separator Height="10" />
             
             <Button Content="Torna Orig" ToolTip="Torna Originale" 
@@ -101,11 +109,11 @@
 
         
         <!-- nastro basso con tutte le foto che sono in attesa di modifica -->
-        <ListBox x:Name="LsImmaginiDaModificare"  DockPanel.Dock="Bottom"
+        <ListBox x:Name="listBoxImmaginiDaModificare"  DockPanel.Dock="Bottom"
                  BorderBrush="Blue" BorderThickness="1"
                  MinHeight="60"
                  SelectionMode="Multiple" lumMS:MultiSelect.IsEnabled="True" 
-                 Style="{StaticResource LsImmaginiDaModificareStyle}"
+                 Style="{StaticResource listBoxImmaginiDaModificareStyle}"
                  ItemsSource="{Binding Path=fotografieDaModificareCW}" 
                  ItemsPanel="{DynamicResource ImmaginiDaModificareItemsPanelTemplate}" 
                  ItemTemplate="{DynamicResource ImmaginiDaModificareDataTemplate}"
@@ -122,8 +130,8 @@
         </ItemsPanelTemplate>
 -->
 
-        <ItemsControl x:Name="LsImmaginiInModifica"                    
-                 ItemsSource="{Binding ElementName=LsImmaginiDaModificare, Path=SelectedItems}" 
+        <ItemsControl x:Name="itemsControlImmaginiInModifica"                    
+                 ItemsSource="{Binding ElementName=listBoxImmaginiDaModificare, Path=SelectedItems}" 
                  VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"
                  >
             <ItemsControl.ItemsPanel>
@@ -134,8 +142,9 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Border BorderBrush="Red">
-                        <Image LayoutTransform="{Binding Path=DataContext.trasformazione, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  Source="{Binding Path=imgProvino,Converter={StaticResource immagineToImageSourceConverter}}"
-                               Effect="{Binding Path=DataContext.effettoCorrente, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+                        <Image Name="imageModTemplate"
+                            LayoutTransform="{Binding Path=DataContext.trasformazioneCorrente, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  Source="{Binding Path=imgProvino,Converter={StaticResource immagineToImageSourceConverter}}"
+                            Effect="{Binding Path=DataContext.effettoCorrente, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
                     </Border>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

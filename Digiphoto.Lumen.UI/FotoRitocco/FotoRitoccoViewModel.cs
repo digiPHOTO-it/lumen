@@ -13,10 +13,13 @@ using Digiphoto.Lumen.Servizi.Explorer;
 using Digiphoto.Lumen.Util;
 using System;
 using Digiphoto.Lumen.Core;
-using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
 using System.Windows.Media.Effects;
 using Digiphoto.Lumen.Windows.Media.Effects;
 using System.Windows.Media;
+using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
+using Digiphoto.Lumen.UI.Adorners;
+using System.Windows;
+using System.Windows.Documents;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -33,6 +36,15 @@ namespace Digiphoto.Lumen.UI {
 
 			resetEffetti();
 		}
+
+		#region Fields
+
+		private CroppingAdorner _croppingAdorner;
+		FrameworkElement _felCur = null;
+		Brush _brOriginal;
+
+		#endregion
+
 
 		#region Proprietà
 
@@ -180,7 +192,21 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		public bool possoAttivareSelector {
+			get {
+				 return (selectorAttivo == false && contaSelez == 1);
+			}
+		}
+
+
+		public bool selectorAttivo {
+			get {
+				return _croppingAdorner != null;
+			}
+		}
+
 		#endregion   // Proprietà
+
 
 		#region Comandi
 
@@ -225,8 +251,7 @@ namespace Digiphoto.Lumen.UI {
 			get {
 				if( _sepiaCommand == null ) {
 					_sepiaCommand = new RelayCommand( param => this.sepia( (bool)param ),
-													  param => this.possoApplicareCorrezione,
-													  true );
+													  param => this.possoApplicareCorrezione );
 				}
 				return _sepiaCommand;
 			}
@@ -236,9 +261,8 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand flipCommand {
 			get {
 				if( _flipCommand == null ) {
-					_flipCommand = new RelayCommand( param => this.flip(),
-													  param => this.possoApplicareCorrezione,
-													  true );
+					_flipCommand = new RelayCommand( p => this.flip(),
+													 p => this.possoApplicareCorrezione );
 				}
 				return _flipCommand;
 			}
@@ -281,8 +305,29 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 
+		private RelayCommand _attivareSelectorCommand;
+		public ICommand attivareSelectorCommand {
+			get {
+				if( _attivareSelectorCommand == null ) {
+					_attivareSelectorCommand = new RelayCommand( param => this.attivareSelector( (FrameworkElement)param ),
+					                                             param => possoAttivareSelector);
+				}
+				return _attivareSelectorCommand;
+			}
+		}
+
+		private RelayCommand _cropoareCommand;
+		public ICommand croppareCommand {
+			get {
+				if( _cropoareCommand == null ) {
+					_cropoareCommand = new RelayCommand( p => this.croppare(), p => possoCroppare );
+				}
+				return _cropoareCommand;
+			}
+		}
 
 		#endregion Comandi
+
 
 		#region Metodi
 
@@ -310,14 +355,14 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		private void ruotare( int pGradi ) {
-			addCorrezione( new RuotaCorrezione() { gradi = pGradi } );
+			addCorrezione( new Ruota() { gradi = pGradi } );
 		}
 
 		private void grayScale( bool addRemove ) {
 			if( addRemove )
-				addCorrezione( new BiancoNeroCorrezione() );
+				addCorrezione( new BiancoNero() );
 			else
-				removeCorrezione( typeof( BiancoNeroCorrezione ) );
+				removeCorrezione( typeof( BiancoNero ) );
 		}
 
 		private void tornareOriginale() {
@@ -332,9 +377,9 @@ namespace Digiphoto.Lumen.UI {
 
 		private void sepia( bool addRemove ) {
 			if( addRemove )
-				addCorrezione( new SepiaCorrezione() );
+				addCorrezione( new Sepia() );
 			else
-				removeCorrezione( typeof( SepiaCorrezione ) );
+				removeCorrezione( typeof( Sepia ) );
 		}
 
 		private void removeCorrezione( Type type ) {
@@ -346,7 +391,7 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		private void flip() {
-			addCorrezione( new SpecchioCorrezione() );
+			addCorrezione( new Specchio() );
 		}
 
 		private void salvareCorrezioni() {
@@ -359,7 +404,7 @@ namespace Digiphoto.Lumen.UI {
 
 			// Purtoppo anche la trasformazione di rotazione, è gestita a parte.
 			if( trasformazioneCorrente is RotateTransform ) {
-				RuotaCorrezione rc = new RuotaCorrezione();
+				Ruota rc = new Ruota();
 				rc.gradi = (float) ((RotateTransform)trasformazioneCorrente).Angle;
 				addCorrezione( rc );
 			}
@@ -391,6 +436,7 @@ namespace Digiphoto.Lumen.UI {
 
 			effettoCorrente = null;
 			trasformazioneCorrente = null;
+			attivareSelector( null );  // Spegno eventuale selettore
 
 			if( effetti == null ) {
 				// Creo gli effetti vuoti
@@ -415,7 +461,7 @@ namespace Digiphoto.Lumen.UI {
 			Correzione ret = null;
 
 			if( effetto is LuminositaContrastoEffect ) {
-				ret = new LuminositaContrastoCorrezione {
+				ret = new Luce {
 					luminosita = ((LuminositaContrastoEffect)effetto).Brightness,
 					contrasto = ((LuminositaContrastoEffect)effetto).Contrast
 				};
@@ -473,9 +519,112 @@ namespace Digiphoto.Lumen.UI {
 
 
 
+
+		/// <summary>
+		/// Attivo il selettore sulla immagine corrente
+		/// </summary>
+		private void attivareSelector( FrameworkElement imageToCrop ) {
+
+			if( imageToCrop != null ) {
+				AddCropToElement( imageToCrop );
+				_brOriginal = _croppingAdorner.Fill;
+				RefreshCropImage();
+			} else {
+				RemoveCropFromCur();
+			}
+		}
+
+		private void AddCropToElement( FrameworkElement fel ) {
+			if( _felCur != null ) {
+				RemoveCropFromCur();
+			}
+			Rect rcInterior = new Rect(
+				fel.ActualWidth * 0.2,
+				fel.ActualHeight * 0.2,
+				fel.ActualWidth * 0.6,
+				fel.ActualHeight * 0.6 );
+			AdornerLayer aly = AdornerLayer.GetAdornerLayer( fel );
+			_croppingAdorner = new CroppingAdorner( fel, rcInterior );
+			aly.Add( _croppingAdorner );
+			// Questa è una anteprima che non mi serve
+			// imgCrop.Source = _croppingAdorner.BpsCrop();
+			_croppingAdorner.CropChanged += CropChanged;
+			_felCur = fel;
+
+			SetClipColorGrey();
+
+		}
+
+
+		private void SetClipColorGrey() {
+			if( _croppingAdorner != null ) {
+				Color clr = Colors.Black;
+				clr.A = 140;
+				_croppingAdorner.Fill = new SolidColorBrush( clr );
+			}
+		}
+
+		private void RefreshCropImage() {
+			if( _croppingAdorner != null ) {
+				Rect rc = _croppingAdorner.ClippingRectangle;
+
+				string testo = string.Format(
+					"Clipping Rectangle: ({0:N1}, {1:N1}, {2:N1}, {3:N1})",
+					rc.Left,
+					rc.Top,
+					rc.Right,
+					rc.Bottom );
+
+				// Questa è una anteprima che non mi serve
+				// imgCrop.Source = _clp.BpsCrop();
+			}
+		}
+
+		private void CropChanged( Object sender, RoutedEventArgs rea ) {
+			RefreshCropImage();
+		}
+
+		private void RemoveCropFromCur() {
+
+			if( selectorAttivo == false )
+				return;
+
+			AdornerLayer aly = AdornerLayer.GetAdornerLayer( _felCur );
+			aly.Remove( _croppingAdorner );
+
+			// Spengo tutto
+			_croppingAdorner.CropChanged -= CropChanged;
+			_croppingAdorner = null;
+			_felCur = null;
+			_brOriginal = null;
+		}
+
+
+		void croppare() {
+
+			Crop cropCorrezione = new Crop();
+			// Questo è il rettangolo da tagliare
+			cropCorrezione.x = (int) _croppingAdorner.ClippingRectangle.X;
+			cropCorrezione.y = (int) _croppingAdorner.ClippingRectangle.Y;
+			cropCorrezione.w = (int) _croppingAdorner.ClippingRectangle.Width;
+			cropCorrezione.h = (int) _croppingAdorner.ClippingRectangle.Height;
+
+			// Queste sono le dimensioni dell'immagine di riferimento per la geometria di cui sopra.
+			cropCorrezione.imgWidth = (int) _croppingAdorner.ActualWidth;
+			cropCorrezione.imgHeight = (int) _croppingAdorner.ActualHeight;
+
+			addCorrezione( cropCorrezione );
+
+			attivareSelector( null );  // Spengo il selector tanto ormai ho tagliato
+		}
+
+		bool possoCroppare {
+			get {
+				return selectorAttivo;
+			}
+		}
+
 		#endregion Metodi
-
-
 
 	}
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Digiphoto.Lumen.Imaging.Correzioni {
 
-	public class LuminositaContrastoCorrezione : Correzione {
+	public class Luce : Correzione {
 
 		/// <summary>
 		/// Valori ammessi da -1 a +1
@@ -18,14 +18,14 @@ namespace Digiphoto.Lumen.Imaging.Correzioni {
 		public double contrasto;
 
 		public override bool isSommabile( Correzione altra ) {
-			return (altra is LuminositaContrastoCorrezione);
+			return (altra is Luce);
 		}
 
 		public override Correzione somma( Correzione altra ) {
 			
-			LuminositaContrastoCorrezione lcAltra = altra as LuminositaContrastoCorrezione;
+			Luce lcAltra = altra as Luce;
 
-			LuminositaContrastoCorrezione ris = new LuminositaContrastoCorrezione {
+			Luce ris = new Luce {
 				contrasto = this.contrasto + lcAltra.contrasto,
 				luminosita = this.luminosita + lcAltra.luminosita
 			};

@@ -54,6 +54,7 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\Applicazione\StartupUtil.cs" />
@@ -78,22 +79,43 @@
     <Compile Include="src\DatiDiEsempio\DataGen.cs" />
     <Compile Include="src\DatiDiEsempio\ParoleCasuali.cs" />
     <Compile Include="src\Eventi\Messaggio.cs" />
-    <Compile Include="src\Imaging\Correzioni\BiancoNeroCorrezione.cs" />
-    <Compile Include="src\Imaging\Correzioni\Correzione.cs" />
-    <Compile Include="src\Imaging\Correzioni\CorrezioneList.cs" />
-    <Compile Include="src\Imaging\Correzioni\LuminositaContrastoCorrezione.cs" />
-    <Compile Include="src\Imaging\Correzioni\ResizeCorrezione.cs" />
-    <Compile Include="src\Imaging\Correzioni\RuotaCorrezione.cs" />
-    <Compile Include="src\Imaging\Correzioni\SepiaCorrezione.cs" />
-    <Compile Include="src\Imaging\Correzioni\SpecchioCorrezione.cs" />
+    <Compile Include="src\Imaging\Correzioni\BiancoNero.cs" />
+    <Compile Include="src\Imaging\Correzioni\Correttore.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\Imaging\Correzioni\Correzione.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\Imaging\Correzioni\CorrezioneList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\Imaging\Correzioni\Crop.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\Imaging\Correzioni\Luce.cs" />
+    <Compile Include="src\Imaging\Correzioni\Resize.cs" />
+    <Compile Include="src\Imaging\Correzioni\Ruota.cs" />
+    <Compile Include="src\Imaging\Correzioni\Sepia.cs" />
+    <Compile Include="src\Imaging\Correzioni\Specchio.cs" />
+    <Compile Include="src\Imaging\Geometrie.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\Imaging\IGestoreImmagineSrv.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\Imaging\ImagingFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\Imaging\Immagine.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\Imaging\Int32Size.cs" />
+    <Compile Include="src\Imaging\ProiettoreArea.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="src\Servizi\Ritoccare\FotoRitoccoSrvImpl.cs" />
-    <Compile Include="src\Imaging\Immagine.cs" />
     <Compile Include="src\Servizi\Ritoccare\ICorrettoreFactory.cs" />
     <Compile Include="src\Servizi\Ritoccare\IFotoRitoccoSrv.cs" />
-    <Compile Include="src\Imaging\ProiettoreArea.cs" />
-    <Compile Include="src\Imaging\Correzioni\Correttore.cs" />
-    <Compile Include="src\Imaging\IGestoreImmagineSrv.cs" />
-    <Compile Include="src\Imaging\ImagingFactory.cs" />
     <Compile Include="src\Servizi\CambioStatoMsg.cs" />
     <Compile Include="src\Servizi\Carrelli\ParamCercaCarrelli.cs" />
     <Compile Include="src\Servizi\EntityRepository\EventiRepositorySrvImpl.cs" />

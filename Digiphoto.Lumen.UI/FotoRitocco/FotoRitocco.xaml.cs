@@ -5,6 +5,10 @@ using System.Windows;
 using System.Windows.Controls;
 using Digiphoto.Lumen.Windows.Media.Effects;
 using System.Windows.Media;
+using Digiphoto.Lumen.UI.Adorners;
+using System.Windows.Documents;
+using Digiphoto.Lumen.UI.Util;
+using System.Collections.Generic;
 
 
 namespace Digiphoto.Lumen.UI {
@@ -14,6 +18,7 @@ namespace Digiphoto.Lumen.UI {
 	public partial class FotoRitocco : UserControlBase {
 
 		FotoRitoccoViewModel _viewModel;
+
 
 		public FotoRitocco() {
 			
@@ -84,5 +89,46 @@ namespace Digiphoto.Lumen.UI {
 			BindingOperations.SetBinding( _viewModel.luminositaContrastoEffect, LuminositaContrastoEffect.BrightnessProperty, lumBinding );
 		}
 
+
+
+		/// <summary>
+		/// A discapito del nome, questa rappresenta l'unica immagine selezionata,
+		/// su cui ho attivato un Selettore Adorner.
+		/// </summary>
+		public Image imageToCrop {
+
+			get {
+
+				if( itemsControlImmaginiInModifica == null || itemsControlImmaginiInModifica.Items.Count != 1 ) 
+					return null;
+
+				// Veder spiegazione qui:
+				// http://msdn.microsoft.com/en-us/library/bb613579.aspx
+
+				// Prendo il primo (e l'unico elemento)
+				object myElement = itemsControlImmaginiInModifica.Items.GetItemAt( 0 );
+
+				ContentPresenter contentPresenter = (ContentPresenter)itemsControlImmaginiInModifica.ItemContainerGenerator.ContainerFromItem( myElement );
+				if( contentPresenter == null )
+					return null;
+
+				// Finding image from the DataTemplate that is set on that ContentPresenter
+				DataTemplate myDataTemplate = contentPresenter.ContentTemplate;
+				return (Image)myDataTemplate.FindName( "imageModTemplate", contentPresenter );
+			}
+		}
+
+		private void toggleSelector_Checked( object sender, RoutedEventArgs e ) {
+
+			if( _viewModel.attivareSelectorCommand.CanExecute( null ) )
+				_viewModel.attivareSelectorCommand.Execute( imageToCrop );
+			else
+				toggleSelector.IsChecked = false;  // Rifiuto
+		}
+
+		private void toggleSelector_Unchecked( object sender, RoutedEventArgs e ) {
+			_viewModel.attivareSelectorCommand.Execute( null );  // Qui vorrei spegnere
+		}
+ 
 	}
 }

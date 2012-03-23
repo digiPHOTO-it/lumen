@@ -16,7 +16,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 		public override IImmagine applica( IImmagine immagineSorgente, Correzione correzione ) {
 
 			BitmapSource bmpsource = ((ImmagineWic)immagineSorgente).bitmapSource;
-			RuotaCorrezione ruotaCorrezione = (RuotaCorrezione)correzione;
+			Ruota ruotaCorrezione = (Ruota)correzione;
 
 			BitmapSource newBmp;
 			if( ruotaCorrezione.isAngoloRetto )
