@@ -7,6 +7,7 @@ using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Servizi.Masterizzare;
 using System.Threading;
+using Digiphoto.Lumen.Servizi.Masterizzare.MyBurner;
 
 namespace Digiphoto.Lumen.Core.VsTest
 {
@@ -50,11 +51,15 @@ namespace Digiphoto.Lumen.Core.VsTest
                 }
             }
             _impl.impostaDestinazione(TipoDestinazione.MASTERIZZATORE, @"E:\");
-			_impl.masterizza();
-            while (!_elaborazioneTerminata)
-            {
-                Thread.Sleep(10000);
-            }
+			BurnerSrvImpl burnerSrvImpl = new BurnerSrvImpl();
+			if (burnerSrvImpl.testMedia())
+			{
+				_impl.masterizza();
+				while (!_elaborazioneTerminata)
+				{
+					Thread.Sleep(10000);
+				}
+			}
             Assert.IsTrue(true);
         }
 
@@ -128,7 +133,7 @@ namespace Digiphoto.Lumen.Core.VsTest
 			System.Diagnostics.Trace.WriteLine("[Result]: " + msg.result);
 			System.Diagnostics.Trace.WriteLine("[Progress]: " + msg.progress);
 
-			if (msg.fase == Fase.CopiaCompletata)
+			if (msg.fase == Digiphoto.Lumen.Servizi.Masterizzare.Fase.CopiaCompletata)
 			{
 				_elaborazioneTerminata = true;
 			}
