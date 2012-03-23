@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Model;
 using System.Collections.Specialized;
-using System.Drawing.Printing;
+
 using Digiphoto.Lumen.Imaging;
 using log4net;
 using Digiphoto.Lumen.Util;

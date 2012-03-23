@@ -3,7 +3,7 @@
 
 namespace Digiphoto.Lumen.Imaging.Correzioni {
 
-	public class ResizeCorrezione : Correzione {
+	public class Resize : Correzione {
 
 		/// <summary>
 		/// Non mi interessa di specificare puntualmente le 2 dimensioni nuove (w,h)

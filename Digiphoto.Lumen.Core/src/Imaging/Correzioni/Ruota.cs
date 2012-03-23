@@ -3,7 +3,7 @@
 
 namespace Digiphoto.Lumen.Imaging.Correzioni {
 
-	public class RuotaCorrezione : Correzione {
+	public class Ruota : Correzione {
 
 		public float gradi;
 		public bool scartoAutomatico;
@@ -11,7 +11,7 @@ namespace Digiphoto.Lumen.Imaging.Correzioni {
 
 		public override bool isSommabile( Correzione altra ) {
 
-			return( altra is RuotaCorrezione );
+			return( altra is Ruota );
 		}
 		
 		// Sommo i gradi.
@@ -20,7 +20,7 @@ namespace Digiphoto.Lumen.Imaging.Correzioni {
 			Correzione ret = null;
 
 			if( isSommabile( altra ) ) {
-				RuotaCorrezione ruotaAltra = (RuotaCorrezione)altra;
+				Ruota ruotaAltra = (Ruota)altra;
 				this.gradi = this.gradi + ruotaAltra.gradi;
 				ret = this;
 			}

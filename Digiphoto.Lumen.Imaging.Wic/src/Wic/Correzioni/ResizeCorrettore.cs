@@ -26,7 +26,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 		public override IImmagine applica( IImmagine immagineSorgente, Correzione correzione ) {
 
 			long calcW, calcH;
-			ResizeCorrezione resizeCorrezione = (ResizeCorrezione)correzione;
+			Resize resizeCorrezione = (Resize)correzione;
 			ResizeCorrettore.calcolaEsattaWeH( immagineSorgente, resizeCorrezione.latoMax, out calcW, out calcH );
 
 			BitmapSource bitmapSource = ((ImmagineWic)immagineSorgente).bitmapSource; 

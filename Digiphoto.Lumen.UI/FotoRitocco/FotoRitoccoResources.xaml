@@ -6,7 +6,7 @@
     <lumC:BoolInverterConverter x:Key="boolInverterConverter" />
     
     <!-- Stile della listbox che itera le immagini -->
-    <Style x:Key="LsImmaginiDaModificareStyle" TargetType="ListBox">
+    <Style x:Key="listBoxImmaginiDaModificareStyle" TargetType="ListBox">
 
         <Setter Property="IsSynchronizedWithCurrentItem" Value="True" />
 

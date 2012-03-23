@@ -68,9 +68,9 @@ namespace Digiphoto.Lumen.Core.VsTest
 		public void objectToStringTest() {
 
 			CorrezioniList lista = new CorrezioniList();
-			lista.Add( new RuotaCorrezione() { gradi = 35 } );
-			lista.Add( new BiancoNeroCorrezione() );
-			lista.Add( new RuotaCorrezione() { gradi = 50 } );
+			lista.Add( new Ruota() { gradi = 35 } );
+			lista.Add( new BiancoNero() );
+			lista.Add( new Ruota() { gradi = 50 } );
 
 			string ris = SerializzaUtil.objectToString( lista, typeof(CorrezioniList) );
 

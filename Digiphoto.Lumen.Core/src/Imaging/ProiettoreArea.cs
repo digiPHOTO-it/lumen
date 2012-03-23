@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Drawing;
 using System.Diagnostics;
+using System.Windows;
 
 namespace Digiphoto.Lumen.Imaging {
 
 	public struct Proiezione {
 
-		public Rectangle sorg {
+		public Int32Rect sorg {
 			get;
 			internal set;
 		}
 
-		public Rectangle dest {
+		public Int32Rect dest {
 			get;
 			internal set;
 		}
@@ -40,7 +40,7 @@ namespace Digiphoto.Lumen.Imaging {
 
 		// -- Questa è l'area di destinazione. 
 		// -- In pratica è la stampante
-		public Rectangle dest {
+		public Int32Rect dest {
 			get;
 			private set;
 		}
@@ -65,17 +65,17 @@ namespace Digiphoto.Lumen.Imaging {
 		#endregion
 
 		/** Questo calcolatore si basa su di una area di destinazione che in pratica è la stampante */
-		public ProiettoreArea( Rectangle dest ) : this( dest, false ) {
+		public ProiettoreArea( Int32Rect dest ) : this( dest, false ) {
 		}
 
-		public ProiettoreArea( Rectangle dest, bool autoZoomToFit ) {
+		public ProiettoreArea( Int32Rect dest, bool autoZoomToFit ) {
 			this.dest = dest;
 			this.autoZoomToFit = autoZoomToFit;
 			this.autoRotate = false;
 			this.autoCentra = true;   // non ha senso lavorare senza centratura, almeno per default.
 		}
 
-		public ProiettoreArea( RectangleF rectangleF ) : this( new Rectangle( (int)rectangleF.Left, (int)rectangleF.Top, (int)rectangleF.Width, (int)rectangleF.Height ) ) {
+		public ProiettoreArea( Rect rectangleF ) : this( new Int32Rect( (int)rectangleF.Left, (int)rectangleF.Top, (int)rectangleF.Width, (int)rectangleF.Height ) ) {
 		}
 
 		/**
@@ -83,10 +83,10 @@ namespace Digiphoto.Lumen.Imaging {
 		 * Calcolo anche l'area di destinazione (stampante) in cui renderizzare
 		 */
 		public Proiezione calcola( IImmagine sorgente ) {
-			return calcola( new Rectangle( 0,0, (int)sorgente.ww, (int)sorgente.hh ) );
+			return calcola( new Int32Rect( 0,0, (int)sorgente.ww, (int)sorgente.hh ) );
 		}
 
-		public Proiezione calcola( Rectangle sorgente ) {
+		public Proiezione calcola( Int32Rect sorgente ) {
 
 			Proiezione proiezione = new Proiezione();
 
@@ -117,32 +117,32 @@ namespace Digiphoto.Lumen.Imaging {
 		 * Siccome l'area di destinazione è tutta da riempire,
 		 * devo calcolare la porzione dell'area sorgente da proiettare sul destinazione
 		 */
-		private Rectangle calcolaAreaSorgente( Rectangle sorgente ) {
+		private Int32Rect calcolaAreaSorgente( Int32Rect sorgente ) {
 
 			// Se le aree non sono omogenee (ossia una verticale e l'altra orizzontale) ed ho il permesso di ruotare,
 			// allora giro per renderle omogenee
-			if( autoRotate && !isStessoOrientamento( sorgente.Size, dest.Size ) )
+			if( autoRotate && !isStessoOrientamento( sorgente, dest ) )
 				_effettuataRotazione = true;
 
 			float localRatio = (_effettuataRotazione ? 1f/ratioDest : ratioDest);
 
-			Rectangle tenta1 = Rectangle.Empty;
+			Int32Rect tenta1 = Int32Rect.Empty;
 			int ww = (int)(((float)sorgente.Height) * localRatio);
 			if( ww <= sorgente.Width )
-				tenta1 = new Rectangle( sorgente.X, sorgente.Y, ww, sorgente.Height );
+				tenta1 = new Int32Rect( sorgente.X, sorgente.Y, ww, sorgente.Height );
 
-			Rectangle tenta2 = Rectangle.Empty;
+			Int32Rect tenta2 = Int32Rect.Empty;
 			int hh = (int)(((float)sorgente.Width) / localRatio);
 			if( hh <= sorgente.Height )
-				tenta2 = new Rectangle( sorgente.X, sorgente.Y, sorgente.Width, hh );
+				tenta2 = new Int32Rect( sorgente.X, sorgente.Y, sorgente.Width, hh );
 
 			// Controllo di sicurezza: non possono essere entrambi vuoti
 			Debug.Assert( !(tenta1.IsEmpty && tenta2.IsEmpty) );
 		
 			// --- decido quale dei due risultati sia meglio calcolando l'area della foto
 			// --- Prendo quella dove l'area è più grande
-			Rectangle esito = Rectangle.Empty;
-			if( sizeCompare( tenta1.Size, tenta2.Size ) > 0 )
+			Int32Rect esito = Int32Rect.Empty;
+			if( sizeCompare( tenta1, tenta2 ) > 0 )
 				esito = tenta1;
 			else
 				esito = tenta2;
@@ -165,15 +165,15 @@ namespace Digiphoto.Lumen.Imaging {
 		 * In questo caso devo calcolare la porzione dell'area destinazione
 		 * su cui proiettare tutta l'area sorgente.
 		 */
-		private Rectangle calcolaAreaDestinazione( Rectangle sorgente ) {
+		private Int32Rect calcolaAreaDestinazione( Int32Rect sorgente ) {
 	
-			Rectangle esito = Rectangle.Empty;
+			Int32Rect esito = Int32Rect.Empty;
 
 			float ratioSrc = (float)sorgente.Width / (float)sorgente.Height;
 
 			// Se le aree non sono omogenee (ossia una verticale e l'altra orizzontale) ed ho il permesso di ruotare,
 			// allora giro per renderle omogenee
-			if( autoRotate && !isStessoOrientamento( sorgente.Size, dest.Size ) ) {
+			if( autoRotate && !isStessoOrientamento( sorgente, dest ) ) {
 				ratioSrc = 1 / ratioSrc;
 				_effettuataRotazione = true;
 			}
@@ -183,13 +183,13 @@ namespace Digiphoto.Lumen.Imaging {
 			//      sw * dh
 			// dw = -------
 			//         sh
-			Rectangle tenta1 = Rectangle.Empty;
+			Int32Rect tenta1 = Int32Rect.Empty;
 			tenta1.Height = dest.Height;
 			tenta1.Width = (int) (tenta1.Height * ratioSrc );  // tronco senza arrotondare
 
 			if( tenta1.Width > dest.Width ) {
 			    //  --- non ci sta. azzero per secondo tentativo
-                tenta1 = Rectangle.Empty;
+                tenta1 = Int32Rect.Empty;
 			}
 
 			// -- secondo tentativo
@@ -197,12 +197,12 @@ namespace Digiphoto.Lumen.Imaging {
 			//      dw * sh
 			// dh = -------
 			//         sw
-			Rectangle tenta2 = Rectangle.Empty;
+			Int32Rect tenta2 = Int32Rect.Empty;
 			tenta2.Width = dest.Width;
 			tenta2.Height = (int) (tenta2.Width / ratioSrc );  // Tronco senza arrotondare
 			if( tenta2.Height > dest.Height ) {
                 // --- non ci sta. impossibile.
-                tenta2 = Rectangle.Empty;
+                tenta2 = Int32Rect.Empty;
 			}
 
 			Debug.Assert( !(tenta1.IsEmpty == true && tenta2.IsEmpty == true) );  // non possono essere entrambi vuoti.
@@ -210,7 +210,7 @@ namespace Digiphoto.Lumen.Imaging {
 			// --- decido quale dei due risultati sia meglio calcolando l'area della foto
 			// --- Prendo quella dove l'area è più grande
 
-			if( sizeCompare( tenta1.Size, tenta2.Size ) > 0 )
+			if( sizeCompare( tenta1, tenta2 ) > 0 )
 				esito = tenta1;
 			else
 				esito = tenta2;
@@ -227,19 +227,19 @@ namespace Digiphoto.Lumen.Imaging {
 			return esito;
 		}
 
-		private void controllaTuttoPositivo( Rectangle esito ) {
-			Debug.Assert( esito.Left >= 0 );
-			Debug.Assert( esito.Top >= 0 );
+		private void controllaTuttoPositivo( Int32Rect esito ) {
+			Debug.Assert( esito.X >= 0 );
+			Debug.Assert( esito.Y >= 0 );
 			Debug.Assert( esito.Width >= 0 );
 			Debug.Assert( esito.Height >= 0 );
 		}
 
-		public static Rectangle ruota( Rectangle rect ) {
-			return new Rectangle( rect.Y, rect.X, rect.Height, rect.Width );
+		public static Int32Rect ruota( Int32Rect rect ) {
+			return new Int32Rect( rect.Y, rect.X, rect.Height, rect.Width );
 		}
 
-		public static RectangleF ruota( RectangleF rect ) {
-			return new RectangleF( rect.Y, rect.X, rect.Height, rect.Width );
+		public static Rect ruota( Rect rect ) {
+			return new Rect( rect.Y, rect.X, rect.Height, rect.Width );
 		}
    
 
@@ -248,16 +248,26 @@ namespace Digiphoto.Lumen.Imaging {
 		 * rispettivamente se l'area1 è più grande della 2
 		 */
 		private static int sizeCompare( Size s1, Size s2 ) {
-
+			
 			if( s2.IsEmpty && !s1.IsEmpty )
 				return 1;
 
 			if( s1.IsEmpty && !s2.IsEmpty )
 				return (-1);
 			
-			int a1 = s1.Width * s1.Height;
-			int a2 = s2.Width * s2.Height;
-			return a1 - a2;
+			double a1 = s1.Width * s1.Height;
+			double a2 = s2.Width * s2.Height;
+			
+			if( a1 == a2 )
+				return 0;
+			else
+				return a1 > a2 ? 1 : -1;
+		}
+
+		private static int sizeCompare( Int32Rect r1, Int32Rect r2 ) {
+			Size s1 = new Size( r1.Width, r1.Height );
+			Size s2 = new Size( r2.Width, r2.Height );
+			return sizeCompare( s1, s2 );
 		}
 
 		/**
@@ -268,15 +278,15 @@ namespace Digiphoto.Lumen.Imaging {
 			return isStessoOrientamento( s1.Width, s1.Height, s2.Width, s2.Height );
 		}
 
-		public static bool isStessoOrientamento( SizeF s1, SizeF s2 ) {
+		public static bool isStessoOrientamento( Int32Rect s1, Int32Rect s2 ) {
 			return isStessoOrientamento( s1.Width, s1.Height, s2.Width, s2.Height );
 		}
 
-		public static bool isStessoOrientamento( SizeF s1, IImmagine s2 ) {
+		public static bool isStessoOrientamento( Size s1, IImmagine s2 ) {
 			return isStessoOrientamento( s1.Width, s1.Height, s2.ww, s2.hh );
 		}
 
-		public static bool isStessoOrientamento( float w1, float h1, float w2, float h2 ) {
+		public static bool isStessoOrientamento( double w1, double h1, double w2, double h2 ) {
 
 			if( w1 > h1 && w2 > h2 )
 				return true;

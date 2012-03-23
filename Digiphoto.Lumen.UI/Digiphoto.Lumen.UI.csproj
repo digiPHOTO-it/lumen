@@ -83,6 +83,8 @@
     <Compile Include="Converters\BoolInverterConverter.cs" />
     <Compile Include="Converters\ImmagineToImageSourceConverter.cs" />
     <Compile Include="Converters\PercentualeConverter.cs" />
+    <Compile Include="Adorners\CroppingAdorner.cs" />
+    <Compile Include="Adorners\PuncturedRect.cs" />
     <Compile Include="Diapo\Diapositiva.xaml.cs">
       <DependentUpon>Diapositiva.xaml</DependentUpon>
     </Compile>
@@ -101,6 +103,7 @@
     <Compile Include="Mvvm\MultiSelect\MultiSelectCollectionView.cs" />
     <Compile Include="Mvvm\UserControlBase.cs" />
     <Compile Include="Pubblico\SlideShow.cs" />
+    <Compile Include="src\Util\AiutanteUI.cs" />
     <Page Include="Main\MainWindowResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

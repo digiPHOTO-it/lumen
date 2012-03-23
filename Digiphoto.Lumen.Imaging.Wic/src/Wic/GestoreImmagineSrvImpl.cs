@@ -13,19 +13,19 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 		private Correttore _provinatore;
 		private ICorrettoreFactory _correttoreFactory;
-		private ResizeCorrezione _correzioneProvino;
+		private Resize _correzioneProvino;
 
 		public GestoreImmagineSrvImpl() {
 
 
 			// Questa è la definizione per provinare.
-			_correzioneProvino = new ResizeCorrezione() { latoMax = Configurazione.pixelLatoProvino	};
+			_correzioneProvino = new Resize() { latoMax = Configurazione.pixelLatoProvino	};
 
 			_correttoreFactory = ImagingFactory.Instance.creaCorrettoreFactory();
 
 			// Questo è il provinatore.
 			// TODO vedere se si può fare con un generics
-			_provinatore = _correttoreFactory.creaCorrettore( typeof(ResizeCorrezione) );
+			_provinatore = _correttoreFactory.creaCorrettore( typeof(Resize) );
 
 		}
 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using System.Drawing;
 using log4net;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Applicazione;

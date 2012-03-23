@@ -25,18 +25,20 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 			} else {
 
 				// In base al tipo di correzione, istanzio il giusto correttore
-				if( tipoCorrezione == typeof( BiancoNeroCorrezione ) ) {
+				if( tipoCorrezione == typeof( BiancoNero ) ) {
 					correttore = new BiancoNeroCorrettore();
-				} else if( tipoCorrezione == typeof( ResizeCorrezione ) ) {
+				} else if( tipoCorrezione == typeof( Resize ) ) {
 					correttore = new ResizeCorrettore();
-				} else if( tipoCorrezione == typeof( SepiaCorrezione ) ) {
+				} else if( tipoCorrezione == typeof( Sepia ) ) {
 					correttore = new SepiaCorrettore();
-				} else if( tipoCorrezione == typeof( RuotaCorrezione ) ) {
+				} else if( tipoCorrezione == typeof( Ruota ) ) {
 					correttore = new RuotaCorrettore();
-				} else if( tipoCorrezione == typeof( SpecchioCorrezione ) ) {
+				} else if( tipoCorrezione == typeof( Specchio ) ) {
 					correttore = new SpecchioCorrettore();
-				} else if( tipoCorrezione == typeof( LuminositaContrastoCorrezione ) ) {
+				} else if( tipoCorrezione == typeof( Luce ) ) {
 					correttore = new LuminositaContrastoCorrettore();
+				} else if( tipoCorrezione == typeof( Crop ) ) {
+					correttore = new CropCorrettore();
 				}
 
 				if( correttore == null )
