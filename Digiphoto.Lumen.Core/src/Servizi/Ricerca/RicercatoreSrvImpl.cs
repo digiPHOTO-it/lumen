@@ -68,7 +68,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 		private IQueryable<Fotografia> creaQueryEntita( ParamCercaFoto param ) {
 
-			IQueryable<Fotografia> query = from ff in this.objectContext.Fotografie
+			IQueryable<Fotografia> query = from ff in this.objectContext.Fotografie.Include( "fotografo" )
 										   orderby ff.dataOraAcquisizione, ff.numero
 										   select ff;
 			// ----- Filtro eventi

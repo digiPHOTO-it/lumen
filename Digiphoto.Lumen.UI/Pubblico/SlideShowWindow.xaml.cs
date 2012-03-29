@@ -23,7 +23,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 			InitializeComponent();
 
-if( 1 == 0 ) {  // TODO
+if( 1 == 1 ) {  // TODO
 			// creo ed associo il datacontext
 			_slideShowViewModel = new SlideShowViewModel();
 			this.DataContext = _slideShowViewModel;

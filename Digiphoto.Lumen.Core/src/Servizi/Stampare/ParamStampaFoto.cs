@@ -40,7 +40,10 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 		 */
 		public bool autoZoomNoBordiBianchi;
 
-		public FormatoCarta formatoCarta;
+		public FormatoCarta formatoCarta {
+			get;
+			set;
+		}
 
 		public short numCopie;
 

@@ -12,6 +12,7 @@ using Digiphoto.Lumen.Eventi;
 using System.Transactions;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Servizi.Masterizzare;
+using Digiphoto.Lumen.Database;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 
@@ -184,10 +185,19 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			RiCaFotoStampata r = new RiCaFotoStampata();
 			r.id = Guid.NewGuid();
+
+			// Riattacco un pò di roba altrimenti si incacchia
+			UnitOfWorkScope.CurrentObjectContext.FormatiCarta.Attach( param.formatoCarta );
+			UnitOfWorkScope.CurrentObjectContext.Fotografie.Attach( fotografia );
+			UnitOfWorkScope.CurrentObjectContext.Fotografi.Attach( fotografia.fotografo );
+
 			r.fotografia = fotografia;
-			r.formatoCarta = param.formatoCarta;
-			r.descrizione = "Stampe formato " + r.formatoCarta.descrizione;
+			r.idFotografia = fotografia.id;
 			r.fotografo = fotografia.fotografo;
+			r.formatoCarta = param.formatoCarta;
+
+			r.descrizione = "Stampe formato " + param.formatoCarta.descrizione;
+
 			r.prezzoLordoUnitario = param.formatoCarta.prezzo;
 			r.quantita = param.numCopie;
 			r.prezzoNettoTotale = r.prezzoLordoUnitario * r.quantita;

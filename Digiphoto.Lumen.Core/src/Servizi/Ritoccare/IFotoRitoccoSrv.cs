@@ -12,12 +12,6 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 	public interface IFotoRitoccoSrv : IServizio {
 
-		/// <summary>
-		/// Attenzione: queste sono TUTTE le foto da modificare. Non quelle che sto attualmente in modifica.
-		/// </summary>
-		List<Fotografia> fotografieDaModificare {
-			get;
-		}
 
 		/// <summary>
 		/// Aggiunge una correzione a quelle esistenti sulla foto.
