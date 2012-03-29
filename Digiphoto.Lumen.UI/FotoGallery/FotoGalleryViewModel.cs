@@ -23,6 +23,7 @@ using System.Windows.Media.Imaging;
 using Digiphoto.Lumen.UI.ScreenCapture;
 using Digiphoto.Lumen.UI.Pubblico;
 using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
+using Digiphoto.Lumen.Servizi.Ritoccare;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -99,6 +100,12 @@ namespace Digiphoto.Lumen.UI {
 		public bool possoAggiungereAlMasterizzatore {
 			get {
 				return isAlmenoUnaSelezionata;
+			}
+		}
+
+		public bool possoStampare {
+			get {
+				return true;
 			}
 		}
 		
@@ -241,9 +248,8 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand stampareCommand {
 			get {
 				if( _stampareCommand == null ) {
-					_stampareCommand = new RelayCommand( param => stampare( param )
-						//  ,param => possoAggiungereAlMasterizzatore 
-																		   );
+					_stampareCommand = new RelayCommand( param => stampare( param ), 
+						param => possoStampare, false );
 				}
 				return _stampareCommand;
 			}
@@ -318,6 +324,18 @@ namespace Digiphoto.Lumen.UI {
 				return _azzeraParamRicercaCommand;
 			}
 		}
+
+		private RelayCommand _mandareInModificaCommand;
+		public ICommand mandareInModificaCommand {
+			get {
+				if( _mandareInModificaCommand == null ) {
+					_mandareInModificaCommand = new RelayCommand( param => mandareInModifica() );
+				}
+				return _mandareInModificaCommand;
+			}
+		}
+
+		
 
 		#endregion
 
@@ -473,6 +491,8 @@ namespace Digiphoto.Lumen.UI {
 
 		private void caricareSlideShow( string modo ) {
 
+			((App)Application.Current).forseApriWindowPubblica();
+
 			if( modo.Equals( "Manual", StringComparison.CurrentCultureIgnoreCase ) )
 				slideShowViewModel.creaShow( creaListaFotoSelezionate() );
 			else if( modo.Equals( "Auto", StringComparison.CurrentCultureIgnoreCase ) ) {
@@ -509,7 +529,19 @@ namespace Digiphoto.Lumen.UI {
 			OnPropertyChanged( "paramCercaFoto" );
 		}
 
-		#endregion
+		/// <summary>
+		/// Aggiungo alla lista delle foto da modificare, tutte le foto che sono illuminate
+		/// </summary>
+		void mandareInModifica() {
+
+			// Pubblico un messaggio indicando che ci sono delle foto da modificare.
+			FotoDaModificareMsg msg = new FotoDaModificareMsg( this );
+			msg.fotosDaModificare.AddRange( creaListaFotoSelezionate() );
+			LumenApplication.Instance.bus.Publish( msg );
+		
+		}
+
+		#endregion Metodi
 
 	}
 }

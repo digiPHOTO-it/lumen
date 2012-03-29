@@ -65,10 +65,12 @@
                             Minimum="32" Maximum="2000"
                             Orientation="Vertical" Height="50" Value="120" HorizontalAlignment="Center" />
                     <Separator />
-                    <Button Content="Selez" Command="{Binding selezionareTuttoCommand}" CommandParameter="True" />
-                    <Button Content="Deselez" Command="{Binding selezionareTuttoCommand}" CommandParameter="False" />
+                    <Button Content="+Selez" Command="{Binding selezionareTuttoCommand}" CommandParameter="True" />
+                    <Button Content="-Deselez" Command="{Binding selezionareTuttoCommand}" CommandParameter="False" />
                     <RadioButton Content="All"  Style="{StaticResource {x:Type ToggleButton}}"  Width="32" GroupName="vediSelezGrp" ToolTip="Vedi tutte le foto" Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="false" />
                     <RadioButton Content="Selez" Style="{StaticResource {x:Type ToggleButton}}"  Width="32" GroupName="vediSelezGrp" ToolTip="Vedi solo le foto selezionate" Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="true" />
+                    <Separator />
+                    <Button Content="Modificare" Command="{Binding mandareInModificaCommand}" ToolTip="aggiunge alla lista delle foto da modificare" />
                 </ToolBar>
 
                 <ToolBar Band="2" BandIndex="2" Header="Pubblico">

@@ -21,22 +21,6 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 	public class FotoRitoccoSrvImpl : ServizioImpl, IFotoRitoccoSrv {
 
 		public FotoRitoccoSrvImpl() {
-
-			// Faccio una prova scema: TODO togliere.
-			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
-			fotografieDaModificare = dbContext.Fotografie.Top( Convert.ToString( 10 ) ).ToList();
-			foreach( Fotografia foto in fotografieDaModificare )
-				Digiphoto.Lumen.Util.AiutanteFoto.idrataImmaginiFoto( foto );
-		}
-
-		private List<Fotografia> _fotografieDaModificare;
-		public List<Fotografia> fotografieDaModificare {
-			get {
-				return _fotografieDaModificare;
-			}
-			set {
-				_fotografieDaModificare = value;
-			}
 		}
 
 		public void tornaOriginale( Fotografia fotografia ) {

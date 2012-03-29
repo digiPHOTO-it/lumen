@@ -6,7 +6,8 @@ using System.Data.Objects;
 using System.Data.Objects.DataClasses;
 using System.Data;
 
-namespace Digiphoto.Lumen.src.Database {
+namespace Digiphoto.Lumen.Database {
+
 	public static class OrmUtil {
 
 		public static void AttachToOrGet<T>( this ObjectContext context, string entitySetName, ref T entity ) where T : IEntityWithKey {

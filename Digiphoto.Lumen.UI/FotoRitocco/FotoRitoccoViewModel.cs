@@ -24,14 +24,21 @@ using System.Windows.Documents;
 namespace Digiphoto.Lumen.UI {
 
 
-	public class FotoRitoccoViewModel : ViewModelBase {
+	public class FotoRitoccoViewModel : ViewModelBase, IObserver<FotoDaModificareMsg> {
 
 		public FotoRitoccoViewModel() {
 
 			if( IsInDesignMode ) {
 				// caricare qualche foto a casaccio
 			} else {
-				fotografieDaModificareCW = new MultiSelectCollectionView<Fotografia>( fotoRitoccoSrv.fotografieDaModificare );
+
+				// Mi sottoscrivo per ascoltare i messaggi di richiesta di modifica delle foto.
+				IObservable<FotoDaModificareMsg> observable = LumenApplication.Instance.bus.Observe<FotoDaModificareMsg>();
+				observable.Subscribe( this );
+
+
+				fotografieDaModificare = new List<Fotografia>();
+				fotografieDaModificareCW = new MultiSelectCollectionView<Fotografia>( fotografieDaModificare );
 			}
 
 			resetEffetti();
@@ -204,6 +211,26 @@ namespace Digiphoto.Lumen.UI {
 				return _croppingAdorner != null;
 			}
 		}
+
+		/*
+			// Faccio una prova scema: TODO togliere.
+			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+			fotografieDaModificare = dbContext.Fotografie.Top( Convert.ToString( 10 ) ).ToList();
+			foreach( Fotografia foto in fotografieDaModificare )
+				Digiphoto.Lumen.Util.AiutanteFoto.idrataImmaginiFoto( foto );
+ */
+		
+
+		private List<Fotografia> _fotografieDaModificare;
+		public List<Fotografia> fotografieDaModificare {
+			get {
+				return _fotografieDaModificare;
+			}
+			set {
+				_fotografieDaModificare = value;
+			}
+		}
+
 
 		#endregion   // Proprietà
 
@@ -586,14 +613,19 @@ namespace Digiphoto.Lumen.UI {
 
 		private void RemoveCropFromCur() {
 
-			if( selectorAttivo == false )
-				return;
+			// Ho remmato le istruzioni di sicurezza.
+			// bisogna evitare che si arrivi qu
 
-			AdornerLayer aly = AdornerLayer.GetAdornerLayer( _felCur );
-			aly.Remove( _croppingAdorner );
+
+			if( _felCur != null ) {
+				AdornerLayer aly = AdornerLayer.GetAdornerLayer( _felCur );
+				if( aly != null )
+					aly.Remove( _croppingAdorner );
+			}
 
 			// Spengo tutto
-			_croppingAdorner.CropChanged -= CropChanged;
+			if( _croppingAdorner != null )
+				_croppingAdorner.CropChanged -= CropChanged;
 			_croppingAdorner = null;
 			_felCur = null;
 			_brOriginal = null;
@@ -625,6 +657,33 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		#endregion Metodi
+
+
+		public void OnCompleted() {
+		}
+
+		public void OnError( Exception error ) {
+		}
+
+		public void OnNext( FotoDaModificareMsg msg ) {
+
+			// Ecco che sono arrivate delle nuove foto da modificare
+			// Devo aggiungerle alla lista delle esistenti
+			foreach( Fotografia f in msg.fotosDaModificare )
+				addFotoDaModificare( f );
+
+			fotografieDaModificareCW = new MultiSelectCollectionView<Fotografia>( fotografieDaModificare );
+			OnPropertyChanged( "fotografieDaModificareCW" );
+		}
+
+		void addFotoDaModificare( Fotografia f ) {
+
+			if( this.fotografieDaModificare.Contains( f ) == false ) {
+				AiutanteFoto.idrataImmaginiFoto( IdrataTarget.Provino, f );
+				//			fotografieDaModificareCW.AddNewItem( f );
+				this.fotografieDaModificare.Add( f );
+			}
+		}
 
 	}
 }

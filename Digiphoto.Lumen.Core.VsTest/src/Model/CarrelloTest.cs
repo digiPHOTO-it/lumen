@@ -10,6 +10,7 @@ using System.Data.EntityClient;
 using System.Data.Common;
 using System.Data;
 using System.Diagnostics;
+using System.Transactions;
 
 namespace Digiphoto.Lumen.Core.VsTest {
 
@@ -103,6 +104,41 @@ namespace Digiphoto.Lumen.Core.VsTest {
 			queryPolimorficaSql();
 			queryPolimorfica();
 		}
+
+		[TestMethod]
+		public void rigaCarrelloStaccaFormatoCarta() {
+
+			FormatoCarta formato;
+			using( LumenEntities dbContext = new LumenEntities() ) {
+				formato = dbContext.FormatiCarta.FirstOrDefault();
+			}
+
+			Fotografia fotografia;
+			using( LumenEntities dbContext = new LumenEntities() ) {
+				fotografia = dbContext.Fotografie.FirstOrDefault();
+			}
+
+			Fotografo fotografo;
+			using( LumenEntities dbContext = new LumenEntities() ) {
+				fotografo = dbContext.Fotografi.FirstOrDefault();
+			}
+
+			using( LumenEntities dbContext = new LumenEntities() ) {
+				
+				dbContext.FormatiCarta.Attach( formato );
+				dbContext.Fotografi.Attach( fotografo );
+				dbContext.Fotografie.Attach( fotografia );
+
+				RiCaFotoStampata rr = new RiCaFotoStampata();
+				rr.formatoCarta =  formato;
+				rr.fotografo = fotografo;
+				rr.fotografia = fotografia;
+			}
+
+
+
+		}
+
 
 		/**
 		 * Provo a leggere tutte le righe di tutti i carrelli ma solo quelle di tipo

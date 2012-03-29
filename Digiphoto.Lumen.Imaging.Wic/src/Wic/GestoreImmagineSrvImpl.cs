@@ -19,7 +19,11 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 
 			// Questa è la definizione per provinare.
-			_correzioneProvino = new Resize() { latoMax = Configurazione.pixelLatoProvino	};
+			_correzioneProvino = new Resize() { 
+//				latoMax = Configurazione.pixelLatoProvino
+
+				latoMax = 400
+			};
 
 			_correttoreFactory = ImagingFactory.Instance.creaCorrettoreFactory();
 
@@ -55,7 +59,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 			JpegBitmapEncoder encoder = new JpegBitmapEncoder();
 			
-			// encoder.QualityLevel = 100;
+			encoder.QualityLevel = 80;
 
 			encoder.Frames.Add( BitmapFrame.Create( bmSource ) );
 			encoder.Save( fileStream );

@@ -113,6 +113,8 @@
     <Compile Include="src\Imaging\ProiettoreArea.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="src\Servizi\Ritoccare\FotoDaModificareMsg.cs" />
+    <Compile Include="src\Servizi\Ritoccare\FotoModificateMsg.cs" />
     <Compile Include="src\Servizi\Ritoccare\FotoRitoccoSrvImpl.cs" />
     <Compile Include="src\Servizi\Ritoccare\ICorrettoreFactory.cs" />
     <Compile Include="src\Servizi\Ritoccare\IFotoRitoccoSrv.cs" />
