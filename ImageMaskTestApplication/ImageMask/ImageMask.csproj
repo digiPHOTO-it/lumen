@@ -107,12 +107,16 @@
     <Resource Include="maschere\mask2.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="immagini\Desert.jpg" />
     <Resource Include="immagini\Koala.jpg" />
-    <Resource Include="immagini\Penguins.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="immagini\modella.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="maschere\mask3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="immagini\verticale1.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

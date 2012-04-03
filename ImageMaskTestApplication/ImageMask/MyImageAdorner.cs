@@ -29,7 +29,6 @@ namespace ImageMask {
 		const int HANDLEMARGIN = 10;
 
 
-
 		public MyImageAdorner( UIElement adornedElement ) : base( adornedElement ) {
 
 			visualChildren = new VisualCollection( this );
@@ -65,7 +64,7 @@ namespace ImageMask {
 
 			// ---
 			scaleHandle = new Thumb();
-			scaleHandle.Cursor = Cursors.Hand;
+			scaleHandle.Cursor = Cursors.SizeNS;
 			scaleHandle.Width = 10;
 			scaleHandle.Height = 10;
 			scaleHandle.Background = Brushes.Green;
@@ -118,6 +117,7 @@ namespace ImageMask {
 
 			//
 			Rect finalRect = new Rect( finalSize );
+			moveHandle.ToolTip = "Sposta";
 			moveHandle.Arrange( finalRect );
 
 			outline.Data = new RectangleGeometry( finalRect );
@@ -190,11 +190,11 @@ namespace ImageMask {
 		/// </summary>
 		/// <returns>la posizione nel vettore</returns>
 		int cercaFlip() {
-			for( int ii = 0; ii < transformGroup.Children.Count; ii++ ) {
+			int pos = -1;
+			for( int ii = 0; ii < transformGroup.Children.Count && pos < 0; ii++ )
 				if( transformGroup.Children[ii].Value.Equals( flip.Value ) )
-					return ii;
-			}
-			return -1;
+					pos = ii;
+			return pos;
 		}
 
 		void rotateHandle_DragDelta( object sender, DragDeltaEventArgs e ) {

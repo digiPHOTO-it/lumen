@@ -74,5 +74,8 @@
     <Setting Name="isWindowPubblicaVisibile" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="cartellaMaschere" Type="System.String" Scope="User">
+      <Value Profile="(Default)">%PROGRAMDATA%\digiPHOTO\Lumen\Maschere</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

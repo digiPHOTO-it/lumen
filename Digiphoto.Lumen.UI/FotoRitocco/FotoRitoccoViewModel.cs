@@ -20,6 +20,9 @@ using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
 using Digiphoto.Lumen.UI.Adorners;
 using System.Windows;
 using System.Windows.Documents;
+using System.IO;
+using Digiphoto.Lumen.Config;
+using System.Windows.Media.Imaging;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -39,6 +42,7 @@ namespace Digiphoto.Lumen.UI {
 
 				fotografieDaModificare = new List<Fotografia>();
 				fotografieDaModificareCW = new MultiSelectCollectionView<Fotografia>( fotografieDaModificare );
+
 			}
 
 			resetEffetti();
@@ -231,8 +235,12 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		public ListCollectionView maschereCW {
+			set;
+			private get;
+		}
 
-		#endregion   // Proprietà
+		#endregion Proprietà
 
 
 		#region Comandi
@@ -350,6 +358,16 @@ namespace Digiphoto.Lumen.UI {
 					_cropoareCommand = new RelayCommand( p => this.croppare(), p => possoCroppare );
 				}
 				return _cropoareCommand;
+			}
+		}
+
+		private RelayCommand _caricareMaschereCommand;
+		public ICommand caricareMaschereCommand {
+			get {
+				if( _caricareMaschereCommand == null ) {
+					_caricareMaschereCommand = new RelayCommand( param => caricareMaschere( (string)param ) );
+				}
+				return _caricareMaschereCommand;
 			}
 		}
 
@@ -682,6 +700,71 @@ namespace Digiphoto.Lumen.UI {
 				AiutanteFoto.idrataImmaginiFoto( IdrataTarget.Provino, f );
 				//			fotografieDaModificareCW.AddNewItem( f );
 				this.fotografieDaModificare.Add( f );
+			}
+		}
+
+		List<BitmapImage> loadMaschereDaDisco() {
+
+			List<BitmapImage> maschere = new List<BitmapImage>();
+
+			// Faccio giri diversi per i vari formati grafici che sono indicati nella configurazione (jpg, tif)
+			foreach( string estensione in Configurazione.estensioniGraficheAmmesse ) {
+
+				string [] files = Directory.GetFiles( Configurazione.cartellaMaschere, searchPattern: estensione, searchOption: SearchOption.AllDirectories );
+
+				// trasferisco tutti i files elencati
+				foreach( string nomeFileSrc in files )
+					maschere.Add( new BitmapImage( new Uri( nomeFileSrc ) ) );
+			}
+
+			return maschere;
+		}
+
+		/*
+		List<FileInfo> caricaMaschere() {
+
+			List<FileInfo> filesInfoMaschere = new List<FileInfo>();
+
+			// Faccio giri diversi per i vari formati grafici che sono indicati nella configurazione (jpg, tif)
+			foreach( string estensione in Configurazione.estensioniGraficheAmmesse ) {
+
+				string [] files = Directory.GetFiles( Configurazione.cartellaMaschere, searchPattern: estensione, searchOption: SearchOption.AllDirectories );
+
+				// trasferisco tutti i files elencati
+				foreach( string nomeFileSrc in files )
+					filesInfoMaschere.Add( new FileInfo(nomeFileSrc) );
+			}
+
+			return filesInfoMaschere;
+		}
+		*/
+
+
+		/// <summary>
+		///  verso:   H = solo orizzontali
+		///           V = solo verticali
+		///           T = tutte
+		///           N = nessuna (svuota)
+		/// </summary>
+		/// <param name="verso"></param>
+		private void caricareMaschere( string verso ) {
+
+			if( verso == "T" ) {
+				maschereCW = new ListCollectionView( loadMaschereDaDisco() );
+			} else if( verso == "N" ) {
+				maschereCW = null;
+			} else {
+
+				maschereCW.Filter = obj => {
+
+					BitmapImage bmp = obj as BitmapImage;
+					if( verso == "V" )
+						return bmp.Width <= bmp.Height;
+					else if( verso == "H" )
+						return bmp.Width >= bmp.Height;
+					else
+						return true;  // Qui è impossibile. Per sicurezza includo tutto
+				};
 			}
 		}
 
