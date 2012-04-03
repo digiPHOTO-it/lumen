@@ -242,51 +242,65 @@ namespace Digiphoto.Lumen.Config  {
             }
         }
 
-        public static void setUserConfig()
-        {
-            if (Properties.Settings.Default.primoAvvioLumen)
-            {
-                Properties.Settings.Default.primoAvvioLumen = false;
+		public static void setUserConfig() {
+			if( Properties.Settings.Default.primoAvvioLumen ) {
+				Properties.Settings.Default.primoAvvioLumen = false;
 				Properties.Settings.Default.cartellaFoto = cartellaRepositoryFoto;  // Se vuota, imposta quella di appdata.
-                Properties.Settings.Default.codicePuntoVendita = Properties.Settings.Default.codicePuntoVendita;
+				Properties.Settings.Default.codicePuntoVendita = Properties.Settings.Default.codicePuntoVendita;
 				Properties.Settings.Default.dbCartella = Environment.ExpandEnvironmentVariables( Properties.Settings.Default.dbCartella );  // sostituisce %PROGRAMDATA% perchè entity framework non è capace.
-                Properties.Settings.Default.defaultChiavetta = Properties.Settings.Default.defaultChiavetta;
-                Properties.Settings.Default.defaultMasterizzatore = Properties.Settings.Default.defaultMasterizzatore;
-                Properties.Settings.Default.descrizionePuntoVendita = Properties.Settings.Default.descrizionePuntoVendita;
-                Properties.Settings.Default.destMasterizza = Properties.Settings.Default.destMasterizza;
-                Properties.Settings.Default.eraseFotoMemoryCard = Properties.Settings.Default.eraseFotoMemoryCard;
-                Properties.Settings.Default.giorniDeleteFoto = Properties.Settings.Default.giorniDeleteFoto;
-                Properties.Settings.Default.modoVendita = Properties.Settings.Default.modoVendita;
-                Properties.Settings.Default.pixelLatoProvino = Properties.Settings.Default.pixelLatoProvino;
-                Properties.Settings.Default.proiettaDiapo = Properties.Settings.Default.proiettaDiapo;
-                Properties.Settings.Default.pswAdmin = Properties.Settings.Default.pswAdmin;
-                Properties.Settings.Default.stampantiAbbinate = Properties.Settings.Default.stampantiAbbinate;
-                Properties.Settings.Default.stampigli = Properties.Settings.Default.stampigli;
-                Properties.Settings.Default.dbNomeDbPieno = Properties.Settings.Default.dbNomeDbPieno;
-                Properties.Settings.Default.dbNomeDbVuoto = Properties.Settings.Default.dbNomeDbVuoto;
+				Properties.Settings.Default.defaultChiavetta = Properties.Settings.Default.defaultChiavetta;
+				Properties.Settings.Default.defaultMasterizzatore = Properties.Settings.Default.defaultMasterizzatore;
+				Properties.Settings.Default.descrizionePuntoVendita = Properties.Settings.Default.descrizionePuntoVendita;
+				Properties.Settings.Default.destMasterizza = Properties.Settings.Default.destMasterizza;
+				Properties.Settings.Default.eraseFotoMemoryCard = Properties.Settings.Default.eraseFotoMemoryCard;
+				Properties.Settings.Default.giorniDeleteFoto = Properties.Settings.Default.giorniDeleteFoto;
+				Properties.Settings.Default.modoVendita = Properties.Settings.Default.modoVendita;
+				Properties.Settings.Default.pixelLatoProvino = Properties.Settings.Default.pixelLatoProvino;
+				Properties.Settings.Default.proiettaDiapo = Properties.Settings.Default.proiettaDiapo;
+				Properties.Settings.Default.pswAdmin = Properties.Settings.Default.pswAdmin;
+				Properties.Settings.Default.stampantiAbbinate = Properties.Settings.Default.stampantiAbbinate;
+				Properties.Settings.Default.stampigli = Properties.Settings.Default.stampigli;
+				Properties.Settings.Default.dbNomeDbPieno = Properties.Settings.Default.dbNomeDbPieno;
+				Properties.Settings.Default.dbNomeDbVuoto = Properties.Settings.Default.dbNomeDbVuoto;
+				Properties.Settings.Default.cartellaMaschere = Environment.ExpandEnvironmentVariables( Properties.Settings.Default.cartellaMaschere );
 
-                if (Properties.Settings.Default.connectionString.Equals(""))
-                {
-                    ExeConfigurationFileMap fileMap = new ExeConfigurationFileMap();
-                    //Calcolo il percorso in cui vengono memorizzati i settaggi utente
-                    System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
-                    ConnectionStringsSection connSection = (ConnectionStringsSection)config.GetSection("connectionStrings");
-                    String connectionStrings = connSection.ConnectionStrings["LumenEntities"].ConnectionString;
 
-                    Properties.Settings.Default.connectionString = connectionStrings;
-                }
-                else
-                {
-                    Properties.Settings.Default.connectionString = Properties.Settings.Default.connectionString;
-                }
-                Properties.Settings.Default.Save();
-            }
-            //Testo il primo Avvio
-            if (UserConfigXML.PathUserConfigConfiguratore.Equals(""))
-            {
-                MessageBox.Show("Devi eseguire il Configuratore prima....","Avviso");
-                Environment.Exit(0);
-            }
-        }
+				if( Properties.Settings.Default.connectionString.Equals( "" ) ) {
+					ExeConfigurationFileMap fileMap = new ExeConfigurationFileMap();
+					//Calcolo il percorso in cui vengono memorizzati i settaggi utente
+					System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration( ConfigurationUserLevel.PerUserRoamingAndLocal );
+					ConnectionStringsSection connSection = (ConnectionStringsSection)config.GetSection( "connectionStrings" );
+					String connectionStrings = connSection.ConnectionStrings ["LumenEntities"].ConnectionString;
+
+					Properties.Settings.Default.connectionString = connectionStrings;
+				} else {
+					Properties.Settings.Default.connectionString = Properties.Settings.Default.connectionString;
+				}
+				Properties.Settings.Default.Save();
+			}
+			//Testo il primo Avvio
+			if( UserConfigXML.PathUserConfigConfiguratore.Equals( "" ) ) {
+				MessageBox.Show( "Devi eseguire il Configuratore prima....", "Avviso" );
+				Environment.Exit( 0 );
+			}
+		}
+
+		public static string cartellaMaschere {
+			get {
+				if( String.IsNullOrEmpty( Properties.Settings.Default.cartellaMaschere ) )
+					return (Path.Combine( cartellaAppData, "Maschere" ));
+				else
+					return Environment.ExpandEnvironmentVariables(Properties.Settings.Default.cartellaMaschere);
+			}
+		}
+
+		/// <summary>
+		///  Ritorno un vetto di stringhe contenente le estesioni grafiche ammesse e che riconosco.
+		/// </summary>
+		public static string [] estensioniGraficheAmmesse {
+			get {
+				return Properties.Settings.Default.estensioniGrafiche.Split( ';' );
+			}
+		}
 	}
 }

@@ -57,5 +57,25 @@
         <!-- il wrappanel mi consente di sistemare al meglio le foto in funzione dello spazio disponibile ed andare a capo quando serve -->
         <WrapPanel Orientation="Horizontal" />
     </ItemsPanelTemplate>
+
     
+    <!-- 
+         MASCHERE 
+    -->
+    
+    <ItemsPanelTemplate x:Key="itemsPanelTemplateMaschere">
+        <WrapPanel Orientation="Horizontal" />
+    </ItemsPanelTemplate>
+
+    <DataTemplate x:Key="itemTemplateMaschera">
+
+        <Image Height="80"  Width="80" Name="imageMaschera" Source="{Binding}" >
+            <Image.ToolTip>
+                <Label Content="{Binding Name}" />
+            </Image.ToolTip>
+        </Image>
+
+    </DataTemplate>
+
+
 </ResourceDictionary>

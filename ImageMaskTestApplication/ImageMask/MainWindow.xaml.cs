@@ -32,6 +32,7 @@ namespace ImageMask {
 			listBoxMaschere.ItemsSource = new List<ImageInfo>() {
 				new ImageInfo(){Height=100, Width=double.NaN, Uri=new Uri("/maschere/mask1.png",UriKind.Relative)},
 				new ImageInfo(){Height=100, Width=double.NaN,Uri=new Uri("/maschere/mask2.png",UriKind.Relative)},
+				new ImageInfo(){Height=100, Width=double.NaN,Uri=new Uri("/maschere/mask3.png",UriKind.Relative)},
 			};
 		}
 
@@ -45,10 +46,9 @@ namespace ImageMask {
 
 		private void listBoxImmagini_Loaded( object sender, RoutedEventArgs e ) {
 			listBoxImmagini.ItemsSource = new List<ImageInfo>() {
-				new ImageInfo(){Height=100, Width=double.NaN,Uri=new Uri("immagini/Desert.jpg",UriKind.Relative)},
 				new ImageInfo(){Height=100, Width=double.NaN,Uri=new Uri("immagini/Koala.jpg",UriKind.Relative)},
-				new ImageInfo(){Height=100, Width=double.NaN,Uri=new Uri("immagini/Penguins.jpg",UriKind.Relative)},
-				new ImageInfo(){Height=100, Width=double.NaN,Uri=new Uri("immagini/modella.jpg",UriKind.Relative)}
+				new ImageInfo(){Height=100, Width=double.NaN,Uri=new Uri("immagini/modella.jpg",UriKind.Relative)},
+				new ImageInfo(){Height=100, Width=double.NaN,Uri=new Uri("immagini/verticale1.jpg",UriKind.Relative)}
 			};
 		}
 

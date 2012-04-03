@@ -304,5 +304,17 @@ namespace Digiphoto.Lumen.Properties {
                 this["isWindowPubblicaVisibile"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("%PROGRAMDATA%\\digiPHOTO\\Lumen\\Maschere")]
+        public string cartellaMaschere {
+            get {
+                return ((string)(this["cartellaMaschere"]));
+            }
+            set {
+                this["cartellaMaschere"] = value;
+            }
+        }
     }
 }
