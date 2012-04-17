@@ -24,8 +24,13 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 		//Use ClassInitialize to run code before running the first test in the class
 		[ClassInitialize()]
-		public static void MyClassInitialize( TestContext testContext ) {
+		public static void CarrelloTestInitialize( TestContext testContext ) {
 			LumenApplication.Instance.avvia();
+		}
+
+		[TestCleanup]
+		public void Cleanup() {
+			LumenApplication.Instance.ferma();
 		}
 
 
@@ -210,11 +215,167 @@ namespace Digiphoto.Lumen.Core.VsTest {
 		}
 
 
-		[TestCleanup]
-		public void Cleanup() {
 
-			LumenApplication.Instance.ferma();
+		[TestMethod]
+		public void simulaUiStaccando() {
+
+			Carrello c3;
+
+			using( LumenEntities dbContext = new LumenEntities() ) {
+
+				c3 = Carrello.CreateCarrello( Guid.NewGuid(), DateTime.Today, DateTime.Now );
+				c3.totaleAPagare = 123m;
+				c3.righeCarrello = new System.Data.Objects.DataClasses.EntityCollection<RigaCarrello>();
+			}
+
+			// ----------
+			FormatoCarta formato;
+			using( LumenEntities dbContext = new LumenEntities() ) {
+				formato = dbContext.FormatiCarta.FirstOrDefault();
+			}
+
+			Fotografia fotografia;
+			using( LumenEntities dbContext = new LumenEntities() ) {
+				fotografia = dbContext.Fotografie.FirstOrDefault();
+			}
+
+			Fotografo fotografo;
+			using( LumenEntities dbContext = new LumenEntities() ) {
+				fotografo = dbContext.Fotografi.FirstOrDefault();
+			}
+
+			// ----------
+
+			using( LumenEntities dbContext = new LumenEntities() ) {
+
+				RiCaFotoStampata r1 = new RiCaFotoStampata();
+				r1.id = Guid.NewGuid();
+				r1.prezzoLordoUnitario = new Decimal( 5 );
+				r1.quantita = 3;
+				r1.prezzoNettoTotale = Decimal.Multiply( r1.prezzoLordoUnitario, r1.quantita );
+				r1.descrizione = "RicaFotoStampata1";
+				r1.totFogliStampati = 11;
+
+				// Riattacco le associazioni
+				dbContext.FormatiCarta.Attach( formato );
+/*
+				dbContext.Fotografi.Attach( fotografo );
+				dbContext.Fotografie.Attach( fotografia );
+*/
+				r1.formatoCarta = formato;
+
+				//r1.fotografo = fotografo;
+				//r1.fotografia = fotografia;
+				
+				c3.righeCarrello.Add( r1 );
+			}
+
+
+			// ----------
+
+			using( LumenEntities dbContext = new LumenEntities() ) {
+				
+				RiCaFotoStampata r1 = (RiCaFotoStampata) c3.righeCarrello.ElementAt( 0 );
+				
+				FormatoCarta fc = r1.formatoCarta;
+				dbContext.RigheCarrelli.AddObject( r1 );
+
+//				r1.formatoCartaReference.EntityKey = fc.EntityKey;
+
+//				dbContext.AttachTo( "FormatiCarta", fc );
+
+				//dbContext.FormatiCarta.Attach( r1.formatoCarta );
+/*
+				Guid pezza = new Guid( "144c0ffe-95ed-4844-8781-70885317535b" );
+				r1.formatoCarta = dbContext.FormatiCarta.Single( ff => ff.id == pezza );
+*/
+				/*
+								EntityKey ek1 = dbContext.CreateEntityKey( "RigheCarrelli", r1  );
+								r1.EntityKey = ek1;
+
+								EntityKey ek2 = dbContext.CreateEntityKey( "Carrelli", c3 );
+
+								FormatoCarta fc = r1.formatoCarta;
+								dbContext.FormatiCarta.Attach( formato );
+								dbContext.Fotografi.Attach( r1.fotografo );
+								dbContext.Fotografie.Attach( r1.fotografia );
+
+				*/
+
+				
+				// The EntityKey property can only be set when the current value of the property is null
+				dbContext.Carrelli.AddObject( c3 );
+				dbContext.SaveChanges();
+			}
+
 		}
 
+
+
+		[TestMethod]
+		public void carrelloConPezziStaccati() {
+
+			Carrello c3 = new Carrello { id = Guid.NewGuid(), giornata = DateTime.Today, tempo = DateTime.Now, totaleAPagare = 123m	};
+			c3.righeCarrello = new System.Data.Objects.DataClasses.EntityCollection<RigaCarrello>();
+
+			// ----------
+			FormatoCarta formato;
+			using( LumenEntities dbContext = new LumenEntities() ) {
+				formato = dbContext.FormatiCarta.FirstOrDefault();
+			}
+
+			Fotografia fotografia;
+			using( LumenEntities dbContext = new LumenEntities() ) {
+				fotografia = dbContext.Fotografie.FirstOrDefault();
+			}
+
+			Fotografo fotografo;
+			using( LumenEntities dbContext = new LumenEntities() ) {
+				fotografo = dbContext.Fotografi.FirstOrDefault();
+			}
+
+			// ----------
+
+			using( LumenEntities dbContext = new LumenEntities() ) {
+
+				// Creo la riga con gli attributi scalari
+				RiCaFotoStampata r1 = new RiCaFotoStampata {
+					id = Guid.NewGuid(),
+					prezzoLordoUnitario = 5,
+					quantita = 3,
+					prezzoNettoTotale = 15,
+					totFogliStampati = 11,
+					descrizione = "RicaFotoStampata1",
+				};
+
+				// Aggiungo le associazioni
+				dbContext.Fotografie.Attach( fotografia );
+				dbContext.FormatiCarta.Attach( formato );
+				dbContext.Fotografi.Attach( fotografo );
+
+				r1.formatoCarta = formato;
+				r1.fotografo = fotografo;
+				r1.fotografia = fotografia;
+
+				// Aggiungo la riga al carrello
+				c3.righeCarrello.Add( r1 );
+			}
+
+
+			// ----------
+
+			using( LumenEntities dbContext = new LumenEntities() ) {
+
+				RiCaFotoStampata r1 = (RiCaFotoStampata)c3.righeCarrello.ElementAt( 0 );
+
+				dbContext.Fotografie.Attach( r1.fotografia );
+				dbContext.FormatiCarta.Attach( r1.formatoCarta );
+				dbContext.Fotografi.Attach( r1.fotografo );
+
+				// The EntityKey property can only be set when the current value of the property is null
+				dbContext.Carrelli.AddObject( c3 );
+				dbContext.SaveChanges();
+			}
+		}
 	}
 }

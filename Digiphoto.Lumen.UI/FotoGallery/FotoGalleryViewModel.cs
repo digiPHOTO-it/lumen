@@ -471,6 +471,10 @@ namespace Digiphoto.Lumen.UI {
 			OnPropertyChanged( "fotografieCW" );
 
 			deselezionareTutto();
+
+			// Se non ho trovato nulla, allora avviso l'utente
+			if( fotografieCW.Count <= 0 )
+				dialogProvider.ShowMessage( "Nessuna fotografia trovata con questi filtri di ricerca", "AVVISO" );
 		}
 
 		private void completaParametriRicerca() {

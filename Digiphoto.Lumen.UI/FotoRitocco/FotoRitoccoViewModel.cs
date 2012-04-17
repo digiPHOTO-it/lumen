@@ -23,12 +23,17 @@ using System.Windows.Documents;
 using System.IO;
 using Digiphoto.Lumen.Config;
 using System.Windows.Media.Imaging;
+using System.Windows.Controls;
 
-namespace Digiphoto.Lumen.UI {
+namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 
 	public class FotoRitoccoViewModel : ViewModelBase, IObserver<FotoDaModificareMsg> {
 
+		public delegate void EditorModeChangedEventHandler( object sender, EditorModeEventArgs args );
+		public event EditorModeChangedEventHandler editorModeChangedEvent;
+
+		
 		public FotoRitoccoViewModel() {
 
 			if( IsInDesignMode ) {
@@ -43,6 +48,7 @@ namespace Digiphoto.Lumen.UI {
 				fotografieDaModificare = new List<Fotografia>();
 				fotografieDaModificareCW = new MultiSelectCollectionView<Fotografia>( fotografieDaModificare );
 
+				modalitaEdit = ModalitaEdit.DefaultFotoRitocco;
 			}
 
 			resetEffetti();
@@ -236,8 +242,55 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		public ListCollectionView maschereCW {
-			set;
-			private get;
+			private set;
+			get;
+		}
+
+		public bool isGestioneMaschereDisattiva {
+			get {
+				return !isGestioneMaschereAttiva;
+			}
+		}
+
+		public bool isGestioneMaschereAttiva {
+			get {
+				return modalitaEdit == ModalitaEdit.GestioneMaschere;
+			}
+		}
+
+		BitmapImage _mascheraAttiva;
+		public BitmapImage mascheraAttiva {
+			get {
+				return _mascheraAttiva;
+			}
+			set {
+				if( _mascheraAttiva != value ) {
+					_mascheraAttiva = value;
+					OnPropertyChanged( "mascheraAttiva" );
+				}
+			}
+		}
+
+		ModalitaEdit _modalitaEdit;
+		public ModalitaEdit modalitaEdit {
+			get {
+				return _modalitaEdit;
+			}
+			set {
+				if( _modalitaEdit != value ) {
+					_modalitaEdit = value;
+					OnPropertyChanged( "modalitaEdit" );
+					OnPropertyChanged( "isGestioneMaschereAttiva" );
+					OnPropertyChanged( "isGestioneMaschereDisattiva" );
+					onEditorModeChanged( new EditorModeEventArgs( modalitaEdit ) );
+				}
+			}
+		}
+		
+		public bool listBoxImmaginiDaModificareEnabled {
+			get {
+				return modificheInCorso || modalitaEdit == ModalitaEdit.GestioneMaschere;
+			}
 		}
 
 		#endregion Proprietà
@@ -339,7 +392,6 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-
 		private RelayCommand _attivareSelectorCommand;
 		public ICommand attivareSelectorCommand {
 			get {
@@ -371,6 +423,17 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private RelayCommand _attivareMascheraCommand;
+		public ICommand attivareMascheraCommand {
+			get {
+				if( _attivareMascheraCommand == null ) {
+					_attivareMascheraCommand = new RelayCommand( param => attivareMaschera( param ) );
+				}
+				return _attivareMascheraCommand;
+			}
+		}
+
+		
 		#endregion Comandi
 
 
@@ -464,8 +527,6 @@ namespace Digiphoto.Lumen.UI {
 			modificheInCorso = false;
 		}
 
-
-
 		private void rifiutareCorrezioni() {
 			resetEffetti();
 			foreach( Fotografia f in fotografieDaModificareCW.SelectedItems )
@@ -499,6 +560,12 @@ namespace Digiphoto.Lumen.UI {
 				OnPropertyChanged( "isGrayscaleChecked" );
 			}
 
+
+			// anche le maschere
+			mascheraAttiva = null;
+
+			// Spengo maschere
+			modalitaEdit = ModalitaEdit.DefaultFotoRitocco;
 		}
 
 		private Correzione convertiInCorrezione( ShaderEffectBase effetto ) {
@@ -676,6 +743,10 @@ namespace Digiphoto.Lumen.UI {
 
 		#endregion Metodi
 
+		protected void onEditorModeChanged( EditorModeEventArgs e ) {
+			if( editorModeChangedEvent != null )
+				editorModeChangedEvent( this, e );
+		}  
 
 		public void OnCompleted() {
 		}
@@ -713,8 +784,10 @@ namespace Digiphoto.Lumen.UI {
 				string [] files = Directory.GetFiles( Configurazione.cartellaMaschere, searchPattern: estensione, searchOption: SearchOption.AllDirectories );
 
 				// trasferisco tutti i files elencati
-				foreach( string nomeFileSrc in files )
-					maschere.Add( new BitmapImage( new Uri( nomeFileSrc ) ) );
+				foreach( string nomeFileSrc in files ) {
+					BitmapImage msk = new BitmapImage( new Uri( nomeFileSrc ) );
+					maschere.Add( msk );
+				}
 			}
 
 			return maschere;
@@ -766,7 +839,39 @@ namespace Digiphoto.Lumen.UI {
 						return true;  // Qui è impossibile. Per sicurezza includo tutto
 				};
 			}
+			OnPropertyChanged( "maschereCW" );
 		}
 
+		void attivareMaschera( object p ) {
+				
+			BitmapImage msk = (BitmapImage)p;
+			mascheraAttiva = msk;
+
+
+			// cambio stato. Vado in modalità di editing maschere
+			modalitaEdit = ModalitaEdit.GestioneMaschere;
+
+			// Mi serve per accendere i pulsanti di rifiuta e salva
+			forseInizioModifiche();
+		}
+
+		void salvareMaschera( Panel workPanel, Image imageMaschera ) {
+		}
+
+
+		// Devo creare una immagine modificata in base
+		internal void salvareImmagineIcorniciata( RenderTargetBitmap bitmapIncorniciata ) {
+
+			BitmapFrame frame = BitmapFrame.Create( bitmapIncorniciata );
+			PngBitmapEncoder encoder = new PngBitmapEncoder();
+			encoder.Frames.Add( frame );
+
+			// ----- scrivo su disco
+			using( FileStream fs = new FileStream( @"c:\temp\modificata.png", FileMode.Create ) ) {
+				encoder.Save( fs );
+				fs.Flush();
+			}
+
+		}
 	}
 }
