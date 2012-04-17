@@ -78,6 +78,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Adorners\ComposingAdorner.cs" />
     <Compile Include="Carrello\Carrello.xaml.cs" />
     <Compile Include="Carrello\CarrelloViewModel.cs" />
     <Compile Include="Converters\BoolInverterConverter.cs" />
@@ -93,6 +94,7 @@
       <DependentUpon>FotoGallery.xaml</DependentUpon>
     </Compile>
     <Compile Include="FotoGallery\FotoGalleryViewModel.cs" />
+    <Compile Include="FotoRitocco\EditorModeEventArgs.cs" />
     <Compile Include="FotoRitocco\FotoRitocco.xaml.cs">
       <DependentUpon>FotoRitocco.xaml</DependentUpon>
     </Compile>

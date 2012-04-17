@@ -13,12 +13,18 @@
                     <GradientStop Color="Black"/>
                     <GradientStop Color="#FF1E2A2F" Offset="1"/>
                 </LinearGradientBrush>
-            </Setter.Value>            
+            </Setter.Value>  
         </Setter>
-
+        
         <Setter Property="ItemContainerStyle" Value="{DynamicResource ImageGalleryImageContainerStyle}" />
 
     </Style>
+    <!--
+    <Style x:Key="LsImageGalleryStyle" TargetType="ListBoxItem">
+        <Setter Property="Background" Value="Red" />
+    </Style>
+    -->
+
 
     <!-- Style per ogni elemento della collection. Setto il colore selezionato = giallo -->
     <Style x:Key="ImageGalleryImageContainerStyle" TargetType="ListBoxItem">

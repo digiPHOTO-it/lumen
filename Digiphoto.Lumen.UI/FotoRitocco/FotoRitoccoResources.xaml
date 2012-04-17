@@ -1,10 +1,13 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                     xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <lumC:ImmagineToImageSourceConverter x:Key="immagineToImageSourceConverter" />
     <lumC:BoolInverterConverter x:Key="boolInverterConverter" />
-    
+
+    <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
+
     <!-- Stile della listbox che itera le immagini -->
     <Style x:Key="listBoxImmaginiDaModificareStyle" TargetType="ListBox">
 
@@ -12,6 +15,10 @@
 
         <Setter Property="ItemContainerStyle" Value="{DynamicResource ImmaginiDaModificareContainerStyle}" />
 
+        <Setter Property="BorderBrush" Value="Blue" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="MinHeight" Value="60" />
+        
     </Style>
 
     <!-- Style per ogni elemento della collection. Setto il colore selezionato  -->
@@ -27,7 +34,7 @@
 
     <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
 
-    <DataTemplate x:Key="ImmaginiDaModificareDataTemplate">
+    <DataTemplate x:Key="immaginiDaModificareDataTemplate">
 
         <Grid>
 
@@ -36,8 +43,8 @@
 
                 <Image Source="{Binding Path=imgProvino,Converter={StaticResource immagineToImageSourceConverter}}" 
                        Height="100"  Width="100"
-                       Name="imageMod"
-                       >
+                       Name="imageMod">
+                    
                     <!-- Come tooltip si possono visualizzare informazioni importanti riassuntive -->
                     <Image.ToolTip>
                         <Grid>
@@ -53,7 +60,7 @@
 
 
     <!-- Template per il pannello che contiene tutti gli elementi della lista -->
-    <ItemsPanelTemplate x:Key="ImmaginiDaModificareItemsPanelTemplate">
+    <ItemsPanelTemplate x:Key="immaginiDaModificareItemsPanelTemplate">
         <!-- il wrappanel mi consente di sistemare al meglio le foto in funzione dello spazio disponibile ed andare a capo quando serve -->
         <WrapPanel Orientation="Horizontal" />
     </ItemsPanelTemplate>
@@ -67,12 +74,19 @@
         <WrapPanel Orientation="Horizontal" />
     </ItemsPanelTemplate>
 
-    <DataTemplate x:Key="itemTemplateMaschera">
+    <DataTemplate x:Key="itemTemplateThumbMaschera">
 
-        <Image Height="80"  Width="80" Name="imageMaschera" Source="{Binding}" >
+        <Image Height="80"  Width="80" Name="thumbMaschera" Source="{Binding}" >
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseUp">
+                    <i:InvokeCommandAction Command="{Binding Path=DataContext.attivareMascheraCommand,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+<!--            
             <Image.ToolTip>
                 <Label Content="{Binding Name}" />
             </Image.ToolTip>
+-->
         </Image>
 
     </DataTemplate>
