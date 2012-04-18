@@ -4,6 +4,7 @@ using Digiphoto.Lumen.Imaging;
 using System.Collections.Generic;
 using System.Data.Objects.DataClasses;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 
 
 namespace Digiphoto.Lumen.Model {
@@ -12,7 +13,7 @@ namespace Digiphoto.Lumen.Model {
 	// Ci penserò io a riempirli a mano
 
 	[MetadataType(typeof(Fotografia))]
-	public partial class Fotografia : IValidatableObject {
+	public partial class Fotografia : IValidatableObject, INotifyPropertyChanged {
 
 		public IImmagine imgOrig { get; set; }
 
@@ -24,6 +25,7 @@ namespace Digiphoto.Lumen.Model {
 			set {
 				if( value != _imgProvino ) {
 					_imgProvino = value;
+					OnPropertyChanged( "imgProvino" );
 				}
 			}
 		}
@@ -52,6 +54,18 @@ namespace Digiphoto.Lumen.Model {
 			
 			return errors;
 		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		protected virtual void OnPropertyChanged( string propertyName ) {
+
+			PropertyChangedEventHandler handler = this.PropertyChanged;
+			if( handler != null ) {
+				var e = new PropertyChangedEventArgs( propertyName );
+				handler( this, e );
+			}
+		}
+
 	}
 
 }
