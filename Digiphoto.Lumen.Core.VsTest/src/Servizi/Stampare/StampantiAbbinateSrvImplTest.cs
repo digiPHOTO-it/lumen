@@ -12,13 +12,14 @@ using Digiphoto.Lumen.Model;
 using System.IO;
 using Digiphoto.Lumen.Servizi.Stampare;
 using Digiphoto.Lumen.Config;
+using Digiphoto.Lumen.Core.Database;
 
 namespace Digiphoto.Lumen.Core.VsTest.Servizi.Stampare
 {
     [TestClass]
     public class StampantiAbbinateSrvImplTest
     {
-        private StampantiAbbinateSrvImpl _impl = new StampantiAbbinateSrvImpl();
+        private StampantiAbbinateSrvImpl _impl = null;
 
         private LumenApplication app;
 
@@ -28,25 +29,34 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Stampare
             System.Diagnostics.Trace.WriteLine("INIZIO");
             app = LumenApplication.Instance;
             app.avvia();
-            _impl.start();
         }
 
         [TestMethod]
         public void TestListaAbbinamenti()
         {
-            IList<StampanteAbbinata> listStampantiAbbinate = _impl.listaStampantiAbbinate(ConfigurazioneUserConfigLumen.stampantiAbbinate);
-            foreach (StampanteAbbinata stampanteAbbinata in listStampantiAbbinate)
-            {
-                System.Diagnostics.Trace.WriteLine("[Stampante]: " + stampanteAbbinata.StampanteInstallata.NomeStampante + " " + stampanteAbbinata.FormatoCarta.prezzo + " " + stampanteAbbinata.FormatoCarta.descrizione);
-            }
+			using (new UnitOfWorkScope(false))
+			{
+				_impl = new StampantiAbbinateSrvImpl();
+				_impl.start();
+				IList<StampanteAbbinata> listStampantiAbbinate = _impl.listaStampantiAbbinate(ConfigurazioneUserConfigLumen.stampantiAbbinate);
+				foreach (StampanteAbbinata stampanteAbbinata in listStampantiAbbinate)
+				{
+					System.Diagnostics.Trace.WriteLine("[Stampante]: " + stampanteAbbinata.StampanteInstallata.NomeStampante + " " + stampanteAbbinata.FormatoCarta.prezzo + " " + stampanteAbbinata.FormatoCarta.descrizione);
+				}
+			}
         }
 
         [TestMethod]
         public void TestListaAbbinamentiToString()
         {
-            IList<StampanteAbbinata> listStampantiAbbinate = _impl.listaStampantiAbbinate(ConfigurazioneUserConfigLumen.stampantiAbbinate);
-            _impl.sostituisciAbbinamento(listStampantiAbbinate);
-            System.Diagnostics.Trace.WriteLine("[Stampante]: " +_impl.listaStampantiAbbinateToString());
+			using (new UnitOfWorkScope(false))
+			{
+				_impl = new StampantiAbbinateSrvImpl();
+				_impl.start();
+				IList<StampanteAbbinata> listStampantiAbbinate = _impl.listaStampantiAbbinate(ConfigurazioneUserConfigLumen.stampantiAbbinate);
+				_impl.sostituisciAbbinamento(listStampantiAbbinate);
+				System.Diagnostics.Trace.WriteLine("[Stampante]: " +_impl.listaStampantiAbbinateToString());
+			}
         }
         
         [TestCleanup]
