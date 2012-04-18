@@ -57,9 +57,11 @@ namespace Digiphoto.Lumen.Core.VsTest
 				{
 					Thread.Sleep(10000);
 				}
+				Assert.IsTrue(_elaborazioneTerminata);
+			}else{
+				Assert.IsTrue(true);
 			}
-            Assert.IsTrue(true);
-		}
+        }
         public void TestMasterizzaCartella()
         {
             using (LumenEntities dbContext = new LumenEntities())
@@ -72,13 +74,19 @@ namespace Digiphoto.Lumen.Core.VsTest
             }
             string strPathDesktop = Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
             _impl.impostaDestinazione(TipoDestinazione.CARTELLA, strPathDesktop + @"\Chiavetta");
-			_impl.masterizza();
+			BurnerSrvImpl burnerSrvImpl = new BurnerSrvImpl();
+			if (burnerSrvImpl.testMedia())
+			{
+				_impl.masterizza();
 
-            while (!_elaborazioneTerminata)
-            {
-                Thread.Sleep(10000);
-            }
-            Assert.IsTrue(_elaborazioneTerminata);
+				while (!_elaborazioneTerminata)
+				{
+					Thread.Sleep(10000);
+				}
+				Assert.IsTrue(_elaborazioneTerminata);
+			}else{
+				Assert.IsTrue(true);
+			}
 		}
         public void TestMasterizzaAggiungiAlbum()
         {
@@ -91,13 +99,20 @@ namespace Digiphoto.Lumen.Core.VsTest
             }
             string strPathDesktop = Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
             _impl.impostaDestinazione(TipoDestinazione.CARTELLA, strPathDesktop + @"\Chiavetta");
-			_impl.masterizza();
+			BurnerSrvImpl burnerSrvImpl = new BurnerSrvImpl();
+			if (burnerSrvImpl.testMedia())
+			{
+				_impl.masterizza();
 
-            while (!_elaborazioneTerminata)
-            {
-                Thread.Sleep(100);
-            }
-            Assert.IsTrue(_elaborazioneTerminata);
+				while (!_elaborazioneTerminata)
+				{
+					Thread.Sleep(100);
+				}
+
+				Assert.IsTrue(_elaborazioneTerminata);
+			}else{
+				Assert.IsTrue(true);
+			}
         }
 
         [TestCleanup]
