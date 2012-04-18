@@ -94,7 +94,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 				// ---
 				
-				dbContext.Carrelli.AddObject( c1 );
+				dbContext.Carrelli.Add( c1 );
 
 				dbContext.SaveChanges();
 
@@ -223,8 +223,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 			using( LumenEntities dbContext = new LumenEntities() ) {
 
-				c3 = Carrello.CreateCarrello( Guid.NewGuid(), DateTime.Today, DateTime.Now );
-				c3.totaleAPagare = 123m;
+				c3 = new Carrello { id=Guid.NewGuid(), giornata=DateTime.Today, tempo=DateTime.Now, totaleAPagare = 123m };
 				c3.righeCarrello = new System.Data.Objects.DataClasses.EntityCollection<RigaCarrello>();
 			}
 
@@ -278,7 +277,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				RiCaFotoStampata r1 = (RiCaFotoStampata) c3.righeCarrello.ElementAt( 0 );
 				
 				FormatoCarta fc = r1.formatoCarta;
-				dbContext.RigheCarrelli.AddObject( r1 );
+				dbContext.RigheCarrelli.Add( r1 );
 
 //				r1.formatoCartaReference.EntityKey = fc.EntityKey;
 
@@ -304,7 +303,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 				
 				// The EntityKey property can only be set when the current value of the property is null
-				dbContext.Carrelli.AddObject( c3 );
+				dbContext.Carrelli.Add( c3 );
 				dbContext.SaveChanges();
 			}
 
@@ -349,10 +348,6 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				};
 
 				// Aggiungo le associazioni
-				dbContext.Fotografie.Attach( fotografia );
-				dbContext.FormatiCarta.Attach( formato );
-				dbContext.Fotografi.Attach( fotografo );
-
 				r1.formatoCarta = formato;
 				r1.fotografo = fotografo;
 				r1.fotografia = fotografia;
@@ -373,7 +368,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				dbContext.Fotografi.Attach( r1.fotografo );
 
 				// The EntityKey property can only be set when the current value of the property is null
-				dbContext.Carrelli.AddObject( c3 );
+				dbContext.Carrelli.Add( c3 );
 				dbContext.SaveChanges();
 			}
 		}

@@ -3,6 +3,7 @@ using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Imaging;
 using System.Collections.Generic;
 using System.Data.Objects.DataClasses;
+using System.ComponentModel.DataAnnotations;
 
 
 namespace Digiphoto.Lumen.Model {
@@ -10,7 +11,8 @@ namespace Digiphoto.Lumen.Model {
 	// Questi attributi sono transienti e non li gestisco sul database.
 	// Ci penserò io a riempirli a mano
 
-	public partial class Fotografia {
+	[MetadataType(typeof(Fotografia))]
+	public partial class Fotografia : IValidatableObject {
 
 		public IImmagine imgOrig { get; set; }
 
@@ -22,7 +24,6 @@ namespace Digiphoto.Lumen.Model {
 			set {
 				if( value != _imgProvino ) {
 					_imgProvino = value;
-					OnPropertyChanged( "imgProvino" );
 				}
 			}
 		}
@@ -41,6 +42,15 @@ namespace Digiphoto.Lumen.Model {
 			get {
 				return numero.ToString();
 			}
+		}
+
+		public IEnumerable<ValidationResult> Validate( ValidationContext validationContext ) {
+			
+			List<ValidationResult> errors = new List<ValidationResult>();
+
+			// TODO 
+			
+			return errors;
 		}
 	}
 

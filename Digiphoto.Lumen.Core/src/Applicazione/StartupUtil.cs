@@ -52,7 +52,7 @@ namespace Digiphoto.Lumen.Applicazione {
 				_giornale.Info( "Informazioni fisse non trovate. Le creo con i default" );
 				infoFissa = new InfoFissa();
 				infoFissa.id = "K";
-				objContext.InfosFisse.AddObject( infoFissa );
+				objContext.InfosFisse.Add( infoFissa );
 				objContext.SaveChanges();
 			}
 		}

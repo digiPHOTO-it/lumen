@@ -5,6 +5,7 @@ using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Core.Database;
 using System.Threading;
+using System.Linq;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Imaging;
 
@@ -92,7 +93,7 @@ namespace Digiphoto.Lumen.Core.VsTest
 				param.nomeStampante = "doPDF v7";
 
 				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
-				var fotos = dbContext.Fotografie.Top( QUANTE.ToString() );
+				var fotos = (from f in dbContext.Fotografie select f).Take( QUANTE );
 				foreach( Fotografia foto in fotos ) {
 					
 					param.autoZoomNoBordiBianchi = true;

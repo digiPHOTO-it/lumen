@@ -35,12 +35,10 @@ namespace Digiphoto.Lumen.Core.VsTest
                 album.titolo = "Test Masterizzazione";
                 album.note = "Note Test Masterizzazione";
                 album.timestamp = DateTime.Now;
-                dbContext.Albums.AddObject(album);
+                dbContext.Albums.Add(album);
             }
             Console.WriteLine("FINE");
-        }
-
-        [TestMethod]
+		}
         public void TestMasterizzaMasterizzatore()
         {
             using (LumenEntities dbContext = new LumenEntities())
@@ -61,9 +59,7 @@ namespace Digiphoto.Lumen.Core.VsTest
 				}
 			}
             Assert.IsTrue(true);
-        }
-
-        [TestMethod]
+		}
         public void TestMasterizzaCartella()
         {
             using (LumenEntities dbContext = new LumenEntities())
@@ -83,9 +79,7 @@ namespace Digiphoto.Lumen.Core.VsTest
                 Thread.Sleep(10000);
             }
             Assert.IsTrue(_elaborazioneTerminata);
-        }
-
-        [TestMethod]
+		}
         public void TestMasterizzaAggiungiAlbum()
         {
             using (LumenEntities dbContext = new LumenEntities())

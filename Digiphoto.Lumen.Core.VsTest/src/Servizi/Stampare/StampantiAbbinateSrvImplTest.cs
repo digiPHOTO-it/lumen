@@ -29,9 +29,7 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Stampare
             app = LumenApplication.Instance;
             app.avvia();
             _impl.start();
-        }
-
-        [TestMethod]
+		}
         public void TestListaAbbinamenti()
         {
             IList<StampanteAbbinata> listStampantiAbbinate = _impl.listaStampantiAbbinate(ConfigurazioneUserConfigLumen.stampantiAbbinate);
