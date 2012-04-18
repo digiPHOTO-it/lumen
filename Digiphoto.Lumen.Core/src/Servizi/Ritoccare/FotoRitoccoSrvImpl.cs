@@ -157,8 +157,8 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
 
-			objectContext.Attach( fotografia );
-			objContext.Refresh( RefreshMode.StoreWins, fotografia );
+			objectContext.Fotografie.Attach( fotografia );
+			objContext.ObjectContext.Refresh( RefreshMode.StoreWins, fotografia );
 
 			fotografia.imgProvino = null;  // Questo forza la rilettura del provino da disco
 			AiutanteFoto.idrataImmaginiFoto( IdrataTarget.Provino, fotografia );
@@ -170,7 +170,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
 			
 			objContext.Fotografie.Attach( fotografia );
-			objContext.ObjectStateManager.ChangeObjectState( fotografia, EntityState.Modified );
+			objContext.ObjectContext.ObjectStateManager.ChangeObjectState( fotografia, EntityState.Modified );
 			objContext.SaveChanges();
 
 			IGestoreImmagineSrv gis = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();

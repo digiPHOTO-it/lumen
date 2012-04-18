@@ -10,6 +10,7 @@ using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Applicazione;
 using System.Data.Objects;
 using System.Data;
+using System.Data.Entity.Infrastructure;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 	
@@ -23,24 +24,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			private set;
 		}
 
-		public bool isTransient {
-			
-			get {
-				bool trans = true;
-				// Get ObjectStateEntry from EntityKey.
-				IEntityWithKey ek = (IEntityWithKey)carrello;
-				if( ek != null && ek.EntityKey != null ) {
-					LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
-					ObjectStateEntry stateEntry = dbContext.ObjectStateManager.GetObjectStateEntry( ek.EntityKey );
-					EntityState stato = stateEntry.State;
-
-					trans = ((int)stato <= 0);
-				}
-				return trans;
-			}
-				
-		}
-
 		public bool isPossibileSalvare {
 			get {
 				return  isCarrelloValido;
@@ -49,8 +32,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public bool isCarrelloTransient {
 			get {
-				ObjectStateEntry s = UnitOfWorkScope.CurrentObjectContext.ObjectStateManager.GetObjectStateEntry( carrello );
-				return s.State == EntityState.Added;
+				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+				DbEntityEntry dbee = dbContext.Entry( carrello );
+				return dbee.State == EntityState.Detached;
 			}
 		}
 
@@ -121,7 +105,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				carrello.giornata = LumenApplication.Instance.stato.giornataLavorativa;
 				carrello.tempo = DateTime.Now;
 				guidCarrello = Guid.NewGuid();
-				dbContext.Carrelli.AddObject( carrello );
+				dbContext.Carrelli.Add( carrello );
 
 			} else {
 				guidCarrello = carrello.id;
@@ -189,18 +173,18 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		public void Dispose() {
 
 			// Se il carrello è stato modificato nel db o aggiunto al db ma non ancora committato, allora devo "tornare indietro"
-			if( carrello != null && isTransient == false ) {
+			if( carrello != null && isCarrelloTransient == false ) {
 
 				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
 
 				// Se il carrello non è stato salvato, allora torno indietro.
-				ObjectStateEntry stateEntry = dbContext.ObjectStateManager.GetObjectStateEntry( ((IEntityWithKey)carrello).EntityKey );
+				ObjectStateEntry stateEntry = dbContext.ObjectContext.ObjectStateManager.GetObjectStateEntry( ((IEntityWithKey)carrello).EntityKey );
 
 				if( stateEntry.State == EntityState.Modified )
-					dbContext.Refresh( RefreshMode.StoreWins, carrello );
+					dbContext.ObjectContext.Refresh( RefreshMode.StoreWins, carrello );
 
 				if( stateEntry.State == EntityState.Added )
-					dbContext.Carrelli.DeleteObject( carrello );
+					dbContext.Carrelli.Remove( carrello );
 
 				carrello = null;
 			}

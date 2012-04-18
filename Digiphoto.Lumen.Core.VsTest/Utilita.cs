@@ -14,17 +14,17 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 		public static Fotografo ottieniFotografoMario2( LumenEntities dbContext ) {
 
-			ObjectQuery<Fotografo> query =
-				dbContext.Fotografi.Where( "it.id = @idMario", new ObjectParameter( "idMario", idMario ) );
+			Fotografo mario = (from f in dbContext.Fotografi
+							   where f.id == idMario
+							   select f).SingleOrDefault();
 
-			Fotografo mario = query.SingleOrDefault<Fotografo>();
 			if( mario == null ) {
 				mario = new Fotografo();
 				mario.id = idMario;
 				mario.iniziali = "RM";
 				mario.attivo = true;
 				mario.cognomeNome = "Rossi Mario";
-				dbContext.Fotografi.AddObject( mario );
+				dbContext.Fotografi.Add( mario );
 			}
 			return mario;
 		}
@@ -35,7 +35,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 			EntityKey key = new EntityKey( "LumenEntities.Fotografi", "id", idMario );
 			Fotografo mario;
 			Object entity;
-			bool trovato = dbContext.TryGetObjectByKey( key, out entity );
+			bool trovato = dbContext.ObjectContext.TryGetObjectByKey( key, out entity );
 
 			if( !trovato ) {
 				mario = new Fotografo();
@@ -43,7 +43,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				mario.iniziali = "RM";
 				mario.attivo = true;
 				mario.cognomeNome = "Rossi Mario";
-				dbContext.Fotografi.AddObject( mario );
+				dbContext.Fotografi.Add( mario );
 			} else
 				mario = (Fotografo)entity;
 
@@ -61,7 +61,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 
 			// ... quindi sono costretto a riprovare a vedere se esiste nelle entita appena aggiunte o modificate
-			mario = dbContext.ObjectStateManager.GetObjectStateEntries( System.Data.EntityState.Added | EntityState.Modified )
+			mario = dbContext.ObjectContext.ObjectStateManager.GetObjectStateEntries( System.Data.EntityState.Added | EntityState.Modified )
 								   .Where( e => !e.IsRelationship )
 								   .Select( e => e.Entity )
 								   .OfType<Fotografo>()
@@ -77,7 +77,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 					mario.iniziali = "RM";
 					mario.attivo = true;
 					mario.cognomeNome = "Rossi Mario";
-					dbContext.Fotografi.AddObject( mario );
+					dbContext.Fotografi.Add( mario );
 				}
 			}
 			return mario;
@@ -88,7 +88,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 			FormatoCarta fc;
 
 			// Provo a vedere se esiste nelle entita appena aggiunte
-			fc = dbContext.ObjectStateManager.GetObjectStateEntries( System.Data.EntityState.Added )
+			fc = dbContext.ObjectContext.ObjectStateManager.GetObjectStateEntries( System.Data.EntityState.Added )
 								   .Where( e => !e.IsRelationship )
 								   .Select( e => e.Entity )
 								   .OfType<FormatoCarta>()
@@ -102,7 +102,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 					fc.id = Guid.NewGuid();
 					fc.prezzo = new Decimal( numeroRandom( 3, 15 ) );
 					fc.descrizione = formato;
-					dbContext.FormatiCarta.AddObject( fc );
+					dbContext.FormatiCarta.Add( fc );
 				}
 			}
 

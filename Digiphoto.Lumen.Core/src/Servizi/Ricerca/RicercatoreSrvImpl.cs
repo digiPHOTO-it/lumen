@@ -30,9 +30,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 			// Eventuale debug della query
 			if( _giornale.IsDebugEnabled ) {
-				ObjectQuery<Fotografia> oq = (ObjectQuery<Fotografia>)query;
-				string sql = oq.ToTraceString();
-				_giornale.Debug( sql );
+				_giornale.Debug( query.ToString() );
 			}
 
 			return query.ToList();

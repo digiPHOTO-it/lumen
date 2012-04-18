@@ -6,6 +6,7 @@ using Digiphoto.Lumen.Servizi.EntityRepository;
 using Digiphoto.Lumen.UI.Mvvm;
 using System.Windows.Input;
 using Digiphoto.Lumen.Core.DatiDiEsempio;
+using Digiphoto.Lumen.Database;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -154,21 +155,7 @@ namespace Digiphoto.Lumen.UI {
 		private bool possoCreareNuovoFotografo {
 			
 			get {
-
-				List<string> avvisi;
-				List<string> errori;
-				bool esito = nuovoFotografo != null && nuovoFotografo.Validate( out avvisi, out errori );
-
-				/*
-				 * Questa validazione non basta. Il PEM validator generato dal modello,
-				 * è errato. Non tiene conto della lunghezza minima.
-				 */
-				if( esito == true ) {
-					if( nuovoFotografo.id.Length < 4 )
-						esito = false;
-				}
-
-				return esito;
+				return nuovoFotografo != null && OrmUtil.isValido( nuovoFotografo );
 			}
 		}
 

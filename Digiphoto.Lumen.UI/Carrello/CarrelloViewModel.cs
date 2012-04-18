@@ -28,13 +28,6 @@ namespace Digiphoto.Lumen.UI
             }
             else
             {
-
-                paramCercaFoto.giornataIniz = new DateTime(2012, 1, 20);
-
-                // Faccio una ricerca a vuoto
-                fotoExplorerSrv.cercaFoto(paramCercaFoto);
-
-                this.FotoCarrello = CollectionViewSource.GetDefaultView(fotoExplorerSrv.fotografie);
             }
 		}
 

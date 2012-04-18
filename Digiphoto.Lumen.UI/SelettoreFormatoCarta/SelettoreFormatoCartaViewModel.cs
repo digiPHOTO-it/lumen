@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows;
 using Digiphoto.Lumen.Core.Database;
 using System.Data.Objects;
+using Digiphoto.Lumen.Database;
 
 namespace Digiphoto.Lumen.UI
 {
@@ -158,13 +159,8 @@ namespace Digiphoto.Lumen.UI
 		}
 
 		private bool possoCreareNuovoFormatoCarta {
-			
 			get {
-
-				List<string> avvisi;
-				List<string> errori;
-				bool esito = nuovoFormatoCarta != null && nuovoFormatoCarta.Validate( out avvisi, out errori );
-				return esito;
+				return nuovoFormatoCarta != null && OrmUtil.isValido( nuovoFormatoCarta );
 			}
 		}
 

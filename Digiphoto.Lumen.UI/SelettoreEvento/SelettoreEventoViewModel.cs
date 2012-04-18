@@ -7,6 +7,7 @@ using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Servizi.EntityRepository;
 using Digiphoto.Lumen.Core.DatiDiEsempio;
 using System.Windows.Input;
+using Digiphoto.Lumen.Database;
 
 namespace Digiphoto.Lumen.UI {
 	
@@ -127,18 +128,7 @@ namespace Digiphoto.Lumen.UI {
 
 		private bool possoCreareNuovoEvento {
 			get {
-				List<string> avvisi;
-				List<string> errori;
-
-				bool esito = nuovoEvento != null && nuovoEvento.Validate( out avvisi, out errori );
-				if( esito == true ) {
-
-					// la dimensione minima non viene testata correttamente
-					if( nuovoEvento.descrizione.Length < 4 )
-						esito = false;
-				}
-
-				return esito;
+				return nuovoEvento != null && OrmUtil.isValido( nuovoEvento );
 			}
 		}
 

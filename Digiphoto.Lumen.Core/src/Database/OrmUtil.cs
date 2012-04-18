@@ -5,6 +5,7 @@ using System.Text;
 using System.Data.Objects;
 using System.Data.Objects.DataClasses;
 using System.Data;
+using System.ComponentModel.DataAnnotations;
 
 namespace Digiphoto.Lumen.Database {
 
@@ -29,6 +30,15 @@ namespace Digiphoto.Lumen.Database {
 				context.AttachTo( entitySetName, entity );
 		}
 
+		/// <summary>
+		/// Controllo se l'entità è valida
+		/// </summary>
+		/// <param name="entity"></param>
+		/// <returns>true se validata</returns>
+		public static bool isValido( object entity ) {
+			IValidatableObject ivo = (IValidatableObject)entity;
+			return ivo.Validate( null ).Count() == 0;
+		}
 
 	}
 }

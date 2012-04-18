@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.4.3.1\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>lib\log4net.dll</HintPath>
     </Reference>
@@ -40,6 +43,7 @@
       <HintPath>lib\MemBus.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
@@ -149,7 +153,6 @@
     <Compile Include="src\Servizi\EliminaFotoVecchie\EliminaFotoVecchieSrvImpl.cs" />
     <Compile Include="src\Servizi\EliminaFotoVecchie\IEliminaFotoVecchieSrv.cs" />
     <Compile Include="src\Servizi\EliminaFotoVecchie\EliminaFotoVecchieMsg.cs" />
-    <Compile Include="src\Servizi\LumenEntities.cs" />
     <Compile Include="src\Servizi\Scaricatore\ElaboratoreFotoAcquisite.cs" />
     <Compile Include="src\Servizi\Scaricatore\NuovaFotoMsg.cs" />
     <Compile Include="src\Servizi\Scaricatore\ScaricoFotoMsg.cs" />
@@ -192,6 +195,7 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

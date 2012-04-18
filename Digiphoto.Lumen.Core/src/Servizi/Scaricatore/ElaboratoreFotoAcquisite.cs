@@ -92,7 +92,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			scaricoCard.fotografo = this._fotografo;
 			scaricoCard.tempo = DateTime.Now;
 
-			objContext.ScarichiCards.AddObject( scaricoCard );
+			objContext.ScarichiCards.Add( scaricoCard );
 
 			objContext.SaveChanges();
 		}
@@ -133,7 +133,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 					caricaMetadatiImmagine( foto );
 
-					objContext.Fotografie.AddObject( foto );
+					objContext.Fotografie.Add( foto );
 					
 					objContext.SaveChanges();
 
@@ -149,8 +149,10 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 				}
 
 
+				// TODO forse non serve neanche. Credo che venga salvato tutto ugualmente.
+				// TODO provare a togliere.
 				if( success )
-					objContext.AcceptAllChanges();
+					objContext.ObjectContext.AcceptAllChanges();
 			}
 
 			return foto;

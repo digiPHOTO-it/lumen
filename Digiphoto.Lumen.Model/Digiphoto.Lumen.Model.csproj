@@ -31,7 +31,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.4.3.1\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Runtime.Serialization" />
@@ -43,18 +47,62 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Album.cs">
+      <DependentUpon>LumenModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Carrello.cs">
+      <DependentUpon>LumenModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Evento.cs">
+      <DependentUpon>LumenModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FormatoCarta.cs">
+      <DependentUpon>LumenModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fotografia.cs">
+      <DependentUpon>LumenModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fotografo.cs">
+      <DependentUpon>LumenModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InfoFissa.cs">
+      <DependentUpon>LumenModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="LumenModel.Designer.cs">
       <DependentUpon>LumenModel.edmx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="PEMValidation1.cs">
+    <Compile Include="LumenModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PEMValidation1.tt</DependentUpon>
+      <DependentUpon>LumenModel.Context.tt</DependentUpon>
     </Compile>
+    <Compile Include="LumenModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LumenModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="src\Digiphoto\Lumen\Model\FormatoCarta.cs" />
+    <Compile Include="src\Digiphoto\Lumen\Model\Fotografo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RiCaDiscoMasterizzato.cs">
+      <DependentUpon>LumenModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RiCaFotoStampata.cs">
+      <DependentUpon>LumenModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RigaAlbum.cs">
+      <DependentUpon>LumenModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RigaCarrello.cs">
+      <DependentUpon>LumenModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ScaricoCard.cs">
+      <DependentUpon>LumenModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="src\Digiphoto\Lumen\Imaging\IImmagine.cs" />
+    <Compile Include="src\Digiphoto\Lumen\Model\Evento.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\Fotografia.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -68,10 +116,15 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="LumenModel.edmx.sqlce" />
-    <None Include="PEMValidation1.tt">
+    <None Include="LumenModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>PEMValidation1.cs</LastGenOutput>
+      <LastGenOutput>LumenModel.Context.cs</LastGenOutput>
     </None>
+    <None Include="LumenModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>LumenModel.cs</LastGenOutput>
+    </None>
+    <None Include="packages.config" />
     <None Include="Properties\DataSources\LumenEntities.datasource" />
   </ItemGroup>
   <ItemGroup>

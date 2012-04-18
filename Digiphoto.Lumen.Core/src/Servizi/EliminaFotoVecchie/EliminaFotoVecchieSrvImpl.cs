@@ -98,9 +98,9 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
             using (new UnitOfWorkScope())
 			{
                 LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
-                objContext.ExecuteStoreCommand("DELETE FROM Fotografie WHERE fotografo_id = {0} AND DATEPART(yyyy, dataOraAcquisizione) = {1} AND DATEPART(mm, dataOraAcquisizione) = {2} AND DATEPART(dd, dataOraAcquisizione)= {3}", fotografoID, dataRiferimento.Year, dataRiferimento.Month, dataRiferimento.Day);
+                objContext.ObjectContext.ExecuteStoreCommand("DELETE FROM Fotografie WHERE fotografo_id = {0} AND DATEPART(yyyy, dataOraAcquisizione) = {1} AND DATEPART(mm, dataOraAcquisizione) = {2} AND DATEPART(dd, dataOraAcquisizione)= {3}", fotografoID, dataRiferimento.Year, dataRiferimento.Month, dataRiferimento.Day);
                 // Elimino tutti gli album rimasti senza foto
-                objContext.ExecuteStoreCommand("DELETE FROM Albums WHERE (id NOT IN(SELECT DISTINCT AlbumRigaAlbum_RigaAlbum_id FROM RigheAlbum))");
+                objContext.ObjectContext.ExecuteStoreCommand("DELETE FROM Albums WHERE (id NOT IN(SELECT DISTINCT AlbumRigaAlbum_RigaAlbum_id FROM RigheAlbum))");
                 objContext.SaveChanges();
 			}
             eliminaFotoVecchieMsg.fase = Fase.FineEliminazione;
@@ -116,7 +116,7 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
             using (new UnitOfWorkScope())
             {
                 LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
-                objContext.ExecuteStoreCommand("DELETE FROM Albums WHERE (id NOT IN(SELECT DISTINCT AlbumRigaAlbum_RigaAlbum_id FROM RigheAlbum))");
+                objContext.ObjectContext.ExecuteStoreCommand("DELETE FROM Albums WHERE (id NOT IN(SELECT DISTINCT AlbumRigaAlbum_RigaAlbum_id FROM RigheAlbum))");
                 objContext.SaveChanges();
                 eliminaFotoVecchieMsg.fase = Fase.FineEliminazioneAlbumNonReferenziati;
                 pubblicaMessaggio(eliminaFotoVecchieMsg);

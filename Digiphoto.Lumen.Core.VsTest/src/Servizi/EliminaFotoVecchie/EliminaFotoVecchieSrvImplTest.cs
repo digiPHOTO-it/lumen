@@ -69,9 +69,7 @@ namespace Digiphoto.Lumen.Core.VsTest
                     Assert.IsTrue(_impl.diChiSonoQuesteFoto(path).id.Equals("ROSSIMARIO"));
                 }
             }
-        }
-
-        [TestMethod()]
+		}
         public void TestGetListaCartelleDaEliminare()
         {
              IList<String> listCartelleDaEliminare = _impl.getListaCartelleDaEliminare();
@@ -145,7 +143,7 @@ namespace Digiphoto.Lumen.Core.VsTest
                  DateTime dataIntervallo = DateTime.Now.AddDays(-giorni);
 
                  string queryString = @"SELECT COUNT(Fot.giornata) AS NumeroFoto, Fot.giornata FROM LumenEntities.Fotografie AS Fot GROUP BY Fot.giornata HAVING (Fot.giornata <= @data)";
-                 ObjectQuery<DbDataRecord> contactQuery = new ObjectQuery<DbDataRecord>(queryString, dbContext);
+                 ObjectQuery<DbDataRecord> contactQuery = new ObjectQuery<DbDataRecord>(queryString, dbContext.ObjectContext);
 
                  contactQuery.Parameters.Add(new ObjectParameter("data", DateTime.Now.AddDays(-giorni)));
 

@@ -18,13 +18,13 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 		}
 
 		public void addNew( TEntity entita ) {
-			ObjectSet<TEntity> objectSet = UnitOfWorkScope.CurrentObjectContext.CreateObjectSet<TEntity>();
+			ObjectSet<TEntity> objectSet = UnitOfWorkScope.CurrentObjectContext.ObjectContext.CreateObjectSet<TEntity>();
 			objectSet.AddObject( entita );
 			_giornale.Info( "Creata nuova entità " + entita.GetType() + " " + entita.ToString() );
 		}
 
 		public IEnumerable<TEntity> getAll() {
-			ObjectSet<TEntity> objectSet = UnitOfWorkScope.CurrentObjectContext.CreateObjectSet<TEntity>();
+			ObjectSet<TEntity> objectSet = UnitOfWorkScope.CurrentObjectContext.ObjectContext.CreateObjectSet<TEntity>();
 			return objectSet.AsEnumerable();
 		}
 
@@ -42,7 +42,7 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 		}
 
 		public void delete( TEntity entita ) {
-			ObjectSet<TEntity> objectSet = UnitOfWorkScope.CurrentObjectContext.CreateObjectSet<TEntity>();
+			ObjectSet<TEntity> objectSet = UnitOfWorkScope.CurrentObjectContext.ObjectContext.CreateObjectSet<TEntity>();
 			objectSet.DeleteObject( entita );
 			_giornale.Info( "Cancellata entità " + entita.GetType() + " " + entita.ToString() );
 		}
