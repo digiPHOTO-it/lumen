@@ -84,7 +84,7 @@ namespace Digiphoto.Lumen.Core.VsTest
 		public void accodaStampaTest() {
 
 			// EsecutoreStampaNet s = new EsecutoreStampaNet();
-			const int QUANTE = 6;
+			const int QUANTE = 1;
 			using( new UnitOfWorkScope() ) {
 
 				ParamStampaFoto param = new ParamStampaFoto();
@@ -93,12 +93,17 @@ namespace Digiphoto.Lumen.Core.VsTest
 				param.nomeStampante = "doPDF v7";
 
 				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
-				var fotos = (from f in dbContext.Fotografie select f).Take( QUANTE );
+				var fotos = (from f in dbContext.Fotografie.Include( "fotografo" ) select f).Take( QUANTE );
+				int quanteDavvero = 0;
 				foreach( Fotografia foto in fotos ) {
-					
+
+					++quanteDavvero;
+
+					// stampo la stessa foto senza bordi bianchi ...
 					param.autoZoomNoBordiBianchi = true;
 					_impl.accodaStampa( foto, param );
 
+					// ... poi anche con i bordi bianchi
 					ParamStampaFoto p2 = (ParamStampaFoto)param.Clone();
 					p2.autoZoomNoBordiBianchi = false;
 					_impl.accodaStampa( foto, p2 );
@@ -106,8 +111,9 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 				// Attendo che le due stampe siano terminate
 				do {
-					Thread.Sleep( 5000 );
-				} while( _contaStampe < QUANTE*2 );
+					 Thread.Sleep( 5000 );
+					//Assert.Fail( "TODO questo sleep non va bene. occorre sostituire con qualcosa di altro" );
+				} while( _contaStampe < quanteDavvero * 2 );
 			}
 
 			

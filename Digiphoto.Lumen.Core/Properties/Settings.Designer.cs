@@ -55,7 +55,7 @@ namespace Digiphoto.Lumen.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("300")]
+        [global::System.Configuration.DefaultSettingValueAttribute("400")]
         public int pixelLatoProvino {
             get {
                 return ((int)(this["pixelLatoProvino"]));

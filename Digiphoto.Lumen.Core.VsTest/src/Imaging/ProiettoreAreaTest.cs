@@ -1542,6 +1542,8 @@ namespace Digiphoto.Lumen.Core.VsTest
 		private float ratio( Int32Rect r ) {
 			return ratio( r.Width, r.Height );
 		}
-
+		private float ratio( Rect r ) {
+			return ratio( r.Width, r.Height );
+		}
 	}
 }

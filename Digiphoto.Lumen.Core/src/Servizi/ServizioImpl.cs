@@ -15,6 +15,9 @@ namespace Digiphoto.Lumen.Servizi {
 	public abstract class ServizioImpl : IServizio {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof(ServizioImpl) );
+		
+		private bool _disposed;
+		private bool _disposing;
 
 		public ServizioImpl() {
 			Console.Write( "STOP" );
@@ -41,18 +44,45 @@ namespace Digiphoto.Lumen.Servizi {
 			_giornale.Info( "E' stato fermato il servizio: " + this.GetType().Name );
 		}
 
-		public virtual void Dispose() {
+		/// <summary>
+		/// Non è virtual perché voglio essere io a chiamare per tutti i figli.
+		/// Eventualmente fare l'override di Dispose(bool).
+		/// </summary>
+ 
+		public void Dispose() {
+			dispose( true );
+		}
 
+		private void dispose( bool disposing ) {
+
+			//do nothing if disposed more than once
+			if( _disposed ) {
+				return;
+			}
+
+			if( disposing ) {
+				_disposing = disposing;
+
+				Dispose( disposing );
+
+				_disposing = false;
+				//mark as disposed
+				_disposed = true;
+			}
+
+		}
+
+		protected virtual void Dispose( bool disposing ) {
+			
 			// Qui non devo fare lo stop,  altrimenti mi si accavallano i casini
 			if( isRunning )
 				stop();  // però ci vuole... ora provo
-			
+
 			// Se per caso avevo aperto un object context localmente, allora lo rilascio
 			if( _objectContext != null ) {
 				_objectContext.Dispose();
 				_objectContext = null;
 			}
-
 		}
 
 		#region Messaggi
@@ -97,7 +127,11 @@ namespace Digiphoto.Lumen.Servizi {
 		}
 
 		protected void pubblicaMessaggio( Messaggio messaggio ) {
-			LumenApplication.Instance.bus.Publish( messaggio );
+			try {
+				LumenApplication.Instance.bus.Publish( messaggio );
+			} catch( Exception ee ) {
+				_giornale.Error( "Impossibile pubblicare messaggio " + messaggio.descrizione, ee );
+			}
 		}
 
 

@@ -241,7 +241,10 @@ namespace Digiphoto.Lumen.Imaging {
 		public static Rect ruota( Rect rect ) {
 			return new Rect( rect.Y, rect.X, rect.Height, rect.Width );
 		}
-   
+
+		public static Size ruota( Size size ) {
+			return new Size( size.Height, size.Width );
+		}
 
 		/**
 		 * Ritorna un intero minore, uguale, maggiore di zero

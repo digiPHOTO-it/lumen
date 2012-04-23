@@ -70,9 +70,14 @@ namespace Digiphoto.Lumen.Threading {
 		}
 
 		public void Stop() {
+			
 			ThrowIfDisposed();
 			_stopping.Set();
-			_stopped.WaitOne();
+
+			// Se il thread non è in stato di running, la successiva wait causa una attesa infinita.
+			// In questo caso innseso un timeout
+			int devoAspettare = _workerThread.ThreadState == ThreadState.Running ? -1 : 5;
+			_stopped.WaitOne( devoAspettare );
 		}
 
 		public void WaitForExit() {
@@ -107,11 +112,13 @@ namespace Digiphoto.Lumen.Threading {
 		}
 
 		protected virtual void Dispose( bool disposing ) {
+
 			//stop the thread;
 			Stop();
 
 			//make sure the thread joins the main thread
-			_workerThread.Join( 1000 );
+			if( _workerThread.ThreadState != ThreadState.Unstarted )
+				_workerThread.Join( 1000 );
 
 			//dispose of the waithandles
 			DisposeWaitHandle( _stopping );
@@ -163,5 +170,12 @@ namespace Digiphoto.Lumen.Threading {
 			Work();
 			_stopped.Set();
 		}
+
+		protected Thread workerThread {
+			get {
+				return _workerThread;
+			}
+		}
+
 	}
 }

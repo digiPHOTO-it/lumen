@@ -39,9 +39,10 @@ namespace Digiphoto.Lumen.Servizi.VolumeCambiato {
 
 		public VolumeCambiatoSrvImpl() {
 			_watcher = new ManagementEventWatcher();
-
+			
 			// WqlEventQuery query = new WqlEventQuery("SELECT * FROM Win32_VolumeChangeEvent WHERE EventType = 2");
 			WqlEventQuery query = new WqlEventQuery( "SELECT * FROM Win32_VolumeChangeEvent" );
+
 			_watcher.Query = query;
 
 			_attivazioneAttesa = null;
@@ -54,8 +55,16 @@ namespace Digiphoto.Lumen.Servizi.VolumeCambiato {
 		}
 
 		public override void stop() {
-			_watcher.Stop();
-			base.stop();
+			if( isRunning ) {
+				base.stop();
+				try {
+					// TODO non so perché ma mi da questo errore:
+					// Impossibile utilizzare oggetti COM separati dai relativi RCW sottostanti.
+					_watcher.Stop();
+				} catch( Exception ee ) {
+					_giornale.Warn( "Non riesco a stoppare questo servizio. Porca paletta" );
+				}
+			}
 		}
 
 		/** Occhio questo loop va chiamato probabilmente in un thread separato */
@@ -131,8 +140,8 @@ namespace Digiphoto.Lumen.Servizi.VolumeCambiato {
 
 		}  
 
-		public override void Dispose() {
-			// base.Dispose();  // se mi chiama lo stop mi da dei problemi. Evito e faccio solo la dispose
+		protected override void Dispose( bool disposing ) {
+			base.Dispose( disposing );  // se mi chiama lo stop mi da dei problemi. Evito e faccio solo la dispose
 			_watcher.Dispose();
 		}
 

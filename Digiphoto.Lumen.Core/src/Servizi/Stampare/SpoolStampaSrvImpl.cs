@@ -29,13 +29,24 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			this.code = new List<CodaDiStampe>();
 		}
 
-		public override void Dispose() {
+		protected override void Dispose( bool disposing ) {
+
+			// Questo mi chiama lo stop del servizio che chiama lo stop delle code.
+ 			// Unico particolare che facendo lo stop, non forza l'abort di eventuali lavori di stampa accodati.
+			// Quindi prima di uscire occorre aspettare che tutto si sia concluso.
+			// Non so se è corretto dal punto di vista filosofico, ma dal punto di vista pratico non vorrei perdere delle stampe che sono già state contabilizzate.
+			// Altrimenti
+			// Bisognerebbe chiamare 				
+			// c.Stop( PendingItemAction.AbortPendingItems );  // Se ci sono lavori in sospeso, devo abortirli.
+			// ma dopo avrei dei problemi con la dispose.
+
+			base.Dispose( disposing );
+
 			// Faccio la dispose di tutte le code
 			foreach( CodaDiStampe c in code ) {
-				c.Stop( PendingItemAction.AbortPendingItems );  // Se ci sono lavori in sospeso, devo abortirli.
 				c.Dispose();
 			}
-			base.Dispose();
+
 		}
 
 		/** Avvio tutte le stampe */
@@ -58,9 +69,6 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 				param.nomeStampante = ricavaStampante( param.formatoCarta );
 
 			CodaDiStampe codaDiStampe = ricavaCodaDiStampa( param.nomeStampante );
-
-			// Se le immagini non sono idratate, le carico
-			AiutanteFoto.idrataImmaginiFoto( foto );
 
 			// Creo un nuovo lavoro di stampa e lo aggiungo alla coda.
 			LavoroDiStampa lavoro = new LavoroDiStampa( foto, param );

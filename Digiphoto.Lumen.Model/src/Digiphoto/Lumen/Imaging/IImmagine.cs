@@ -11,11 +11,11 @@ namespace Digiphoto.Lumen.Imaging {
 
 	public interface IImmagine : IDisposable {
 
-		long ww { 
+		int ww { 
 			get; 
 		}
 		
-		long hh { 
+		int hh { 
 			get; 
 		}
 		

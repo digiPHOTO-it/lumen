@@ -186,8 +186,8 @@ namespace Digiphoto.Lumen.Core.VsTest.Util {
 
 				
 				var risultato = query.Select( ff => ff );
-				ObjectQuery<Fotografia> oq = (ObjectQuery<Fotografia>)query;
-				string s = oq.ToTraceString();
+				//ObjectQuery<Fotografia> oq = (ObjectQuery<Fotografia>)query;
+				//string s = oq.ToTraceString();
 				var lista = risultato.ToList();
 			}
 		}

@@ -86,9 +86,7 @@ namespace Digiphoto.Lumen.Core.VsTest
                  System.Diagnostics.Trace.WriteLine("[Numero Cartelle da Eliminare]: " + listCartelleDaEliminare.Count());
                  Assert.IsTrue(cartelleDaEliminare() == listCartelleDaEliminare.Count());
 			}
-         }
-
-		 [TestMethod()]
+		}
 		 public void TestElimina()
 		 {
 			 if (_impl.getListaCartelleDaEliminare().Count() == 0)

@@ -49,15 +49,15 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		/// <summary>
 		/// Rappresenta la larghezza della immagine in pixel.
 		/// </summary>
-		public override long ww {
+		public override int ww {
 			get {
-				return (int)bitmapSource.PixelWidth;  // VERIFICARE SE CI POSSONO ESSERE PROBLEMI DI PERDITA DI VALORI
+				return bitmapSource.PixelWidth;  // VERIFICARE SE CI POSSONO ESSERE PROBLEMI DI PERDITA DI VALORI
 			}
 		}
 
-		public override long hh {
+		public override int hh {
 			get {
-				return (int)bitmapSource.PixelHeight;  // VERIFICARE SE CI POSSONO ESSERE PROBLEMI DI PERDITA DI VALORI
+				return bitmapSource.PixelHeight;  // VERIFICARE SE CI POSSONO ESSERE PROBLEMI DI PERDITA DI VALORI
 			}
 		}
 
@@ -66,7 +66,6 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		#region Metodi
 
 		public override void Dispose() {
-			// Questo dovrebbe servire a rilasciare il file su disco dove punta l'immagine
 			bitmapSource = null;
 		}
 

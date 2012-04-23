@@ -12,7 +12,7 @@
       <Value Profile="(Default)">*.jpg;*.jpeg;*.png;*.tif;*.tiff</Value>
     </Setting>
     <Setting Name="pixelLatoProvino" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">300</Value>
+      <Value Profile="(Default)">400</Value>
     </Setting>
     <Setting Name="modoVendita" Type="System.Int16" Scope="User">
       <Value Profile="(Default)">0</Value>

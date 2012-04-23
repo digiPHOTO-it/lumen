@@ -41,7 +41,7 @@ namespace Digiphoto.Lumen.Imaging {
 
 		public IEsecutoreStampa creaStampatore( string nomeStampante ) {
 
-			object ooo = Activator.CreateInstance( "Digiphoto.Lumen.Imaging.Nativa", "Digiphoto.Lumen.Imaging.Nativa.EsecutoreStampaNet" ).Unwrap();
+			object ooo = Activator.CreateInstance( "Digiphoto.Lumen.Imaging.Wic", "Digiphoto.Lumen.Imaging.Wic.Stampe.EsecutoreStampaWic" ).Unwrap();
 
 			// TODO sostituire con un setting
 			return (IEsecutoreStampa)ooo;

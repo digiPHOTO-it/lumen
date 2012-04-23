@@ -31,26 +31,30 @@ namespace Digiphoto.Lumen.Core.VsTest
 		#region ButtaSu
 		[ClassInitialize()]
 		public static void MyClassInitialize( TestContext testContext ) {
-			LumenApplication.Instance.avvia();
+
 		}
 
 		[ClassCleanup()]
 		public static void MyClassCleanUp() {
-			LumenApplication.Instance.ferma();
+
 		}
+
+
+		IDisposable ascoltami;
 
 		[TestInitialize()]
 		public void MyTestInitialize() {
-
-			this._impl = (VenditoreSrvImpl) LumenApplication.Instance.getServizioAvviato<IVenditoreSrv>();
+			LumenApplication.Instance.avvia();
+			this._impl = (VenditoreSrvImpl)LumenApplication.Instance.getServizioAvviato<IVenditoreSrv>();
 
 			IObservable<Messaggio> observable = LumenApplication.Instance.bus.Observe<Messaggio>();
-			observable.Subscribe( this );
+			ascoltami = observable.Subscribe( this );
 		}
 
 		[TestCleanup()]
 		public void MyTestCleanup() {
-			this._impl.Dispose();
+			ascoltami.Dispose();
+			LumenApplication.Instance.ferma();
 		}
 
 
@@ -58,12 +62,48 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 		private VenditoreSrvImpl _impl;
 
+		[TestMethod]
+		public void codaDiStampaTestJoin() {
+
+			// Istanzio una coda di stampa e la chiudo
+			CodaDiStampe c1 = new CodaDiStampe( "coda1" );
+			c1.Start();
+			c1.Stop();
+			c1.Dispose();
+
+			CodaDiStampe c2 = new CodaDiStampe( "coda2" );
+			c2.Dispose();
+
+			CodaDiStampe c3 = new CodaDiStampe( "coda3" );
+			c3.Stop();
+			c3.Stop();
+			c3.Dispose();
+
+
+
+
+		}
+
+		[TestMethod]
+		public void codaDiStampeConAbort() {
+
+			CodaDiStampe c3 = new CodaDiStampe( "doPDF v7" );
+			c3.Stop();
+
+			c3.EnqueueItem( new LavoroDiStampa( new Fotografia(), new ParamStampaFoto() ) );
+			// Accodo una stampa in modo da testare l'abort
+
+			c3.Stop( Threading.PendingItemAction.AbortPendingItems );
+			c3.Dispose();
+		}
+
+
 
 		[TestMethod]
 		public void vendiFotoTest() {
 
 
-			using( new UnitOfWorkScope(false) ) {
+			using( new UnitOfWorkScope( false ) ) {
 
 				_impl.creaNuovoCarrello();
 
@@ -95,7 +135,7 @@ namespace Digiphoto.Lumen.Core.VsTest
 			//    System.Threading.Thread.Sleep( 6000 );
 			//}
 
-//			_impl.stop();
+			//			_impl.stop();
 
 
 			Console.WriteLine( "FINITO" );
