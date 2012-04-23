@@ -223,7 +223,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 
 
-		public override void Dispose() {
+		protected override void Dispose( bool disposing ) {
 
 			try {
 
@@ -233,7 +233,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			} catch( Exception e ) {
 				_giornale.Error( "worker copia fallita dispose", e );
 			} finally {
-				base.Dispose();
+				base.Dispose( disposing );
 			}
 		}
 

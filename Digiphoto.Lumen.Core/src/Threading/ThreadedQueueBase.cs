@@ -79,7 +79,10 @@ namespace Digiphoto.Lumen.Threading {
 			_itemArrived.Set();
 
 			_stopping.Set();
-			_stopped.WaitOne();
+			
+			// Se devo processare i pendenti, ed ho la coda ancora piena, aspetto all'infinito
+			if( pendingItemAction == PendingItemAction.ProcessPendingItems && _itemQueue.Count > 0 )
+				_stopped.WaitOne();
 		}
 
 		protected override void Dispose( bool disposing ) {

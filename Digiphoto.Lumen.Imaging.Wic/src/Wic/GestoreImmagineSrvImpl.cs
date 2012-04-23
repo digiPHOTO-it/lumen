@@ -6,10 +6,13 @@ using Digiphoto.Lumen.Config;
 using System.IO;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
+using log4net;
 
 namespace Digiphoto.Lumen.Imaging.Wic {
 
 	public class GestoreImmagineSrvImpl : ServizioImpl, IGestoreImmagineSrv  {
+
+		private static readonly ILog _giornale = LogManager.GetLogger( typeof( GestoreImmagineSrvImpl ) );
 
 		private Correttore _provinatore;
 		private ICorrettoreFactory _correttoreFactory;
@@ -20,9 +23,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 			// Questa è la definizione per provinare.
 			_correzioneProvino = new Resize() { 
-//				latoMax = Configurazione.pixelLatoProvino
-
-				latoMax = 400
+				latoMax = Configurazione.pixelLatoProvino
 			};
 
 			_correttoreFactory = ImagingFactory.Instance.creaCorrettoreFactory();
@@ -35,7 +36,11 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 		public IImmagine load( string nomeFile ) {
 
+			if( !File.Exists( nomeFile ) )
+				_giornale.Warn( "file immagine non esistente: " + nomeFile );
+
 			return new ImmagineWic( nomeFile );
+
 
 /*
 			// Per essere più veloce, uso un BitmapFrame (almeno ci provo)

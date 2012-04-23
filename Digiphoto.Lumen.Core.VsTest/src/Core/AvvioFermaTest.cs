@@ -24,13 +24,16 @@ namespace Digiphoto.Lumen.Core.VsTest.Core {
 			Assert.IsTrue( LumenApplication.Instance.stato.giornataLavorativa.Equals( DateTime.Today ) );
 
 			IServizio srv = LumenApplication.Instance.getServizioAvviato<IVolumeCambiatoSrv>();
+			Assert.IsTrue( srv.isRunning );
+			
+			srv.stop();
+			Assert.IsFalse( srv.isRunning );
 
+			srv.start();
 			Assert.IsTrue( srv.isRunning );
 
 			LumenApplication.Instance.ferma();
-
 			Assert.IsFalse( srv.isRunning );
-
 		}
 
 		[TestMethod]

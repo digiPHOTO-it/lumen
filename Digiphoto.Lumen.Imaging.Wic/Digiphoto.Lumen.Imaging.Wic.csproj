@@ -37,9 +37,12 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="ReachFramework" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Printing" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
@@ -61,6 +64,7 @@
     <Compile Include="src\Wic\Correzioni\SpecchioCorrettore.cs" />
     <Compile Include="src\Wic\GestoreImmagineSrvImpl.cs" />
     <Compile Include="src\Wic\ImmagineWic.cs" />
+    <Compile Include="src\Wic\Stampe\EsecutoreStampaWic.cs" />
     <Compile Include="src\Wic\WicUtil.cs" />
     <Compile Include="src\Windows\Media\Effects\EffectsUtil.cs" />
     <Compile Include="src\Windows\Media\Effects\Grayscale\GrayscaleEffect.cs" />

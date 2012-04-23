@@ -28,9 +28,15 @@ namespace Digiphoto.Lumen.Core.VsTest {
 			LumenApplication.Instance.avvia();
 		}
 
+
+		[ClassCleanup()]
+		public static void classeCleanup() {
+			LumenApplication.Instance.ferma();
+		}
+
+
 		[TestCleanup]
 		public void Cleanup() {
-			LumenApplication.Instance.ferma();
 		}
 
 
@@ -152,7 +158,8 @@ namespace Digiphoto.Lumen.Core.VsTest {
 		private void queryPolimorfica() {
 
 			using( LumenEntities dbContext = new LumenEntities() ) {
-				foreach( RiCaFotoStampata riCaFotoStampata in dbContext.RigheCarrelli.OfType<RiCaFotoStampata>() ) {
+				foreach( RiCaFotoStampata riCaFotoStampata in 
+					dbContext.RigheCarrelli.Include( "fotografo" ).Include( "fotografia" ).Include( "formatoCarta" ).OfType<RiCaFotoStampata>() ) {
 					Trace.WriteLine ( "Riga Carrello foto stampata: " + riCaFotoStampata.fotografo.id + " totFoto=" + riCaFotoStampata.totFogliStampati );
 				}
 			}
@@ -255,16 +262,9 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				r1.descrizione = "RicaFotoStampata1";
 				r1.totFogliStampati = 11;
 
-				// Riattacco le associazioni
-				dbContext.FormatiCarta.Attach( formato );
-/*
-				dbContext.Fotografi.Attach( fotografo );
-				dbContext.Fotografie.Attach( fotografia );
-*/
 				r1.formatoCarta = formato;
-
-				//r1.fotografo = fotografo;
-				//r1.fotografia = fotografia;
+				r1.fotografo = fotografo;
+				r1.fotografia = fotografia;
 				
 				c3.righeCarrello.Add( r1 );
 			}
@@ -275,38 +275,15 @@ namespace Digiphoto.Lumen.Core.VsTest {
 			using( LumenEntities dbContext = new LumenEntities() ) {
 				
 				RiCaFotoStampata r1 = (RiCaFotoStampata) c3.righeCarrello.ElementAt( 0 );
-				
-				FormatoCarta fc = r1.formatoCarta;
-				dbContext.RigheCarrelli.Add( r1 );
 
-//				r1.formatoCartaReference.EntityKey = fc.EntityKey;
+				// Riattacco le associazioni altrimeti si spacca (sembra)
+				dbContext.FormatiCarta.Attach( r1.formatoCarta );
+				dbContext.Fotografi.Attach( r1.fotografo );
+				dbContext.Fotografie.Attach( r1.fotografia );
 
-//				dbContext.AttachTo( "FormatiCarta", fc );
-
-				//dbContext.FormatiCarta.Attach( r1.formatoCarta );
-/*
-				Guid pezza = new Guid( "144c0ffe-95ed-4844-8781-70885317535b" );
-				r1.formatoCarta = dbContext.FormatiCarta.Single( ff => ff.id == pezza );
-*/
-				/*
-								EntityKey ek1 = dbContext.CreateEntityKey( "RigheCarrelli", r1  );
-								r1.EntityKey = ek1;
-
-								EntityKey ek2 = dbContext.CreateEntityKey( "Carrelli", c3 );
-
-								FormatoCarta fc = r1.formatoCarta;
-								dbContext.FormatiCarta.Attach( formato );
-								dbContext.Fotografi.Attach( r1.fotografo );
-								dbContext.Fotografie.Attach( r1.fotografia );
-
-				*/
-
-				
-				// The EntityKey property can only be set when the current value of the property is null
 				dbContext.Carrelli.Add( c3 );
 				dbContext.SaveChanges();
 			}
-
 		}
 
 

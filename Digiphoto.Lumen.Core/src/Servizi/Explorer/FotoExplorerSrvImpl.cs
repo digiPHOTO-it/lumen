@@ -91,7 +91,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			LumenApplication.Instance.bus.Publish( new RicercaModificataMessaggio( this ) );
 		}
 
-		public override void Dispose() {
+		protected override void Dispose( bool disposing ) {
 
 			try {
 
@@ -112,7 +112,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			} finally {
 			}
 
-			base.Dispose();
+			base.Dispose( disposing );
 		}
 
 	}

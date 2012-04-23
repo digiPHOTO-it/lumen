@@ -59,7 +59,7 @@ namespace Digiphoto.Lumen.Util {
 					// TODO manca l'immagine risultante (se la gestiamo per davvero)
 			} catch (Exception ee) {
 				// Se non riesco a caricare una immagine, non posso farci niente qui. Devo tirare dritto.
-				_giornale.Debug( "Impossibile caricare immagine della foto " + foto.ToString() );
+				_giornale.Warn( "Impossibile caricare immagine della foto " + foto.ToString() );
 			}
 
 		}

@@ -386,7 +386,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
         }
         #endregion
 		
-		public override void Dispose()
+		protected override void Dispose( bool disposing )
         {
 
             System.Diagnostics.Trace.WriteLine("DISPOSE");
@@ -410,8 +410,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                 {
                     _burner.Dispose();
                 }
-                base.Dispose();
-                
+                base.Dispose( disposing );
             }
         }
 
