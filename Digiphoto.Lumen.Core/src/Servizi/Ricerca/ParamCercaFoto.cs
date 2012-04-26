@@ -21,10 +21,13 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 		public DateTime? giornataIniz {	get; set; }
 		public DateTime? giornataFine { get; set; }
 
+		public bool idratareImmagini { get; set; }
+
 		public ParamCercaFoto() {
 
 			// Istanzio la lista vuota che mi è più comoda
 			fasiDelGiorno = new List<FaseDelGiorno>();
+			idratareImmagini = true;
 		}
 
 		public ParamCercaFoto ShallowCopy() {

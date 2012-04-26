@@ -156,11 +156,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 				BitmapSource bmpSrc = ((ImmagineWic)foto.imgProvino).bitmapSource;
 
-				WriteableBitmap wb = new WriteableBitmap(bmpSrc);
+				//WriteableBitmap wb = new WriteableBitmap(bmpSrc);
 
-//				image.BeginInit();
-				image.Source = wb;
-//				image.EndInit();
+				image.BeginInit();
+				image.Source = bmpSrc;
+				image.EndInit();
+//				wb.Freeze();
 				
 				Point position = e.GetPosition( canvasMsk );
 				Canvas.SetLeft( image, position.X );
@@ -244,33 +245,37 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// <returns>il canvas con le dimensioni reali della foto grande da generare</returns>
 		private Canvas trasformaCanvasDefinitivo() {
 
-			BitmapSource bmpSource = (BitmapSource)imageMsk.Source;
+			BitmapSource bmpSource = (BitmapSource)imageMask.Source;
 
 			double factorX = 96d / bmpSource.DpiX;
 			double factorY = 96d / bmpSource.DpiY;
+			factorX = factorY = 1;
 			Int32 newWidth = (int)((double)bmpSource.PixelWidth * factorX );
 			Int32 newHeight = (int)((double)bmpSource.PixelHeight * factorY);
 
 			Canvas c = new Canvas();
 			c.Background = new SolidColorBrush( Colors.Transparent );
+			c.Height = 600;
+			c.Width = 800;
 
 			foreach( Visual visual in canvasMsk.Children ) {
 
 				Image fotina = (Image)visual;
-				
+
 				Image fotona = new Image();
-//				fotona.BeginInit();
-				fotona.Source = fotina.Source.Clone();  // Clono l'immagine iniziale della foto
-				// fotona.EndInit();
+				fotona.BeginInit();
+				fotona.Source = fotina.Source; // .Clone();  // Clono l'immagine iniziale della foto
+				fotona.EndInit();
 
 				Rect rectFotina = new Rect( Canvas.GetLeft( fotina ), Canvas.GetTop( fotina ), fotina.ActualWidth, fotina.ActualHeight );
-				Size sizeFondo = new Size( imageMsk.ActualWidth, imageMsk.ActualHeight );
+				Size sizeFondo = new Size( imageMask.ActualWidth, imageMask.ActualHeight );
 				Size sizeMaschera = new Size( newWidth, newHeight );
 
 				Rect newRect = Geometrie.proporziona( rectFotina, sizeFondo, sizeMaschera );
 
 				fotona.Width = newRect.Width;
 				fotona.Height = newRect.Height;
+				fotona.Stretch = Stretch.None;
 
 				c.Children.Add( fotona );
 
@@ -282,7 +287,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				// ----------------------------------------------
 				// ---   ora mi occupo delle trasformazioni   ---
 				// ----------------------------------------------
-
+				#region trasformazioni
 				if( fotina.RenderTransform is TransformGroup ) {
 
 					TransformGroup newTg = new TransformGroup();
@@ -334,11 +339,14 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 					fotona.RenderTransform = newTg;
 				}
+				#endregion trasformazioni
 			}
 
 			// per concludere, aggiungo anche la maschera che deve ricoprire tutto.
 			Image maschera = new Image();
-			maschera.Source = imageMsk.Source.Clone();
+			maschera.BeginInit();
+			maschera.Source = imageMask.Source.Clone();
+			maschera.EndInit();
 			maschera.Width = c.Width;
 			maschera.Height = c.Height;
 			c.Children.Add( maschera );
@@ -349,29 +357,14 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			return c;
 		}
 
-		private void salvareCorrezioniButton_Click( object sender, RoutedEventArgs e ) {
-			
-			Canvas canvasDefinitivo = trasformaCanvasDefinitivo();
+		public void salvaCanvasSuFile( Canvas canvas, string nomeFile ) {
 
-			RenderTargetBitmap bitmapIncorniciata = componiBitmapDaMaschera( canvasDefinitivo );
+			BitmapSource bmpSource = (BitmapSource)imageMask.Source;
 
-			_viewModel.salvareImmagineIcorniciata( bitmapIncorniciata );
-		}
-
-		private RenderTargetBitmap componiBitmapDaMaschera( Canvas canvas ) {
-
-			BitmapSource bmpSource = (BitmapSource)imageMsk.Source;
-
-			Int32 newWidth = bmpSource.PixelWidth;
-			Int32 newHeight = bmpSource.PixelHeight;
+			Int32 newWidth = (int)((double)bmpSource.PixelWidth );
+			Int32 newHeight = (int)((double)bmpSource.PixelHeight );
 
 			RenderTargetBitmap rtb = new RenderTargetBitmap( newWidth, newHeight, bmpSource.DpiX, bmpSource.DpiY, PixelFormats.Pbgra32 );
-
-			// Prima renderizzo le fotine ...
-			foreach( Visual visual in canvas.Children ) {
-				Image fotina = (Image)visual;
-				rtb.Render( visual );
-			}
 
 			// Prima renderizzo le fotine ...
 			foreach( Visual visual in canvas.Children ) {
@@ -385,7 +378,54 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			if( rtb.CanFreeze )
 				rtb.Freeze();
 
+			BitmapFrame frame = BitmapFrame.Create( rtb );
+			PngBitmapEncoder encoder = new PngBitmapEncoder();
+			encoder.Frames.Add( frame );
+
+			// ----- scrivo su disco
+			using( FileStream fs = new FileStream( nomeFile, FileMode.Create ) ) {
+				encoder.Save( fs );
+				fs.Flush();
+			}
+		}
+
+		private void salvareCorrezioniButton_Click( object sender, RoutedEventArgs e ) {
+			
+			Canvas canvasDefinitivo = trasformaCanvasDefinitivo();
+			salvaCanvasSuFile( canvasDefinitivo, @"c:\temp\definitivo.jpg" );
+
+
+			RenderTargetBitmap bitmapIncorniciata = componiBitmapDaMaschera( canvasDefinitivo );
+
+			_viewModel.salvareImmagineIcorniciata( bitmapIncorniciata );
+		}
+
+		private RenderTargetBitmap componiBitmapDaMaschera( Canvas canvas ) {
+
+			BitmapSource bmpSource = (BitmapSource)imageMask.Source;
+
+			Int32 newWidth = bmpSource.PixelWidth;
+			Int32 newHeight = bmpSource.PixelHeight;
+
+			RenderTargetBitmap rtb = new RenderTargetBitmap( newWidth, newHeight, bmpSource.DpiX, bmpSource.DpiY, PixelFormats.Pbgra32 );
+
+			// Prima renderizzo le fotine ...
+			foreach( Visual visual in canvas.Children ) {
+				Image fotina = (Image)visual;
+				rtb.Render( visual );
+			}
+
+			// ... poi la maschera per ultima che copre tutto.
+			rtb.Render( imageMask );
+
+			if( rtb.CanFreeze )
+				rtb.Freeze();
+
 			return rtb;
+		}
+
+		private void buttonSalvareMaschera_Click( object sender, RoutedEventArgs e ) {
+			salvaCanvasSuFile( canvasMsk, @"c:\temp\mask-foto-piccine.png" );
 		}
 
 	}
