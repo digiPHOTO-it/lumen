@@ -59,19 +59,19 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			}
 
 
-			if( fotografie != null ) {
+			if( param.idratareImmagini ) {
+				if( fotografie != null ) {
 
-				if( 1 == 0 ) {
-					// Idrato le foto nello stesso thread
-					idrataImmaginiFoto();
-				} else {
-					// idrato le immagini in un thread separato
-					_threadIdrata = new Thread( idrataImmaginiFoto );
-					_threadIdrata.Start();
+					if( 1 == 0 ) {
+						// Idrato le foto nello stesso thread
+						idrataImmaginiFoto();
+					} else {
+						// idrato le immagini in un thread separato
+						_threadIdrata = new Thread( idrataImmaginiFoto );
+						_threadIdrata.Start();
+					}
 				}
-
 			}
-
 
 		}
 

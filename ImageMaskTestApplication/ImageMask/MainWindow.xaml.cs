@@ -30,7 +30,7 @@ namespace ImageMask {
 
 		private void listBoxMaschere_Loaded( object sender, RoutedEventArgs e ) {
 			listBoxMaschere.ItemsSource = new List<ImageInfo>() {
-				new ImageInfo(){Height=100, Width=double.NaN, Uri=new Uri("/maschere/mask1.png",UriKind.Relative)},
+				new ImageInfo(){Height=100, Width=double.NaN,Uri=new Uri("/maschere/mask1.png",UriKind.Relative)},
 				new ImageInfo(){Height=100, Width=double.NaN,Uri=new Uri("/maschere/mask2.png",UriKind.Relative)},
 				new ImageInfo(){Height=100, Width=double.NaN,Uri=new Uri("/maschere/mask3.png",UriKind.Relative)},
 			};
@@ -149,6 +149,10 @@ namespace ImageMask {
 
 			Canvas destCanvas = trasformaCanvasDefinitivo();
 
+
+			// Non ho capito perchè, ma se non assegno questo canvas ad una finestra, 
+			// allora quando lo andrò a salvare su disco, l'immagine apparirà tutta nera.
+			// boh!...   Con questo trucco tutto si sistema.
 			Window w = new Window();
 			w.Content = destCanvas;
 			w.ShowDialog();
@@ -165,15 +169,30 @@ namespace ImageMask {
 			Int32 newHeight = bmpSource.PixelHeight;
 
 			RenderTargetBitmap rtb = new RenderTargetBitmap( newWidth, newHeight, bmpSource.DpiX, bmpSource.DpiY, PixelFormats.Pbgra32 );
+			rtb.Render( canvas );
+			var enc = new System.Windows.Media.Imaging.PngBitmapEncoder();
+			enc.Frames.Add( System.Windows.Media.Imaging.BitmapFrame.Create( rtb ) );
 
-			// Prima renderizzo le fotine ...
+			using( var stm = System.IO.File.Create( nomeFile ) ) {
+				enc.Save( stm );
+			} 
+		}
+
+
+		void salvaCanvasSuFile2( Canvas canvas, string nomeFile ) {
+
+			BitmapSource bmpSource = (BitmapSource)imgMaschera.Source;
+
+			Int32 newWidth = bmpSource.PixelWidth;
+			Int32 newHeight = bmpSource.PixelHeight;
+
+			RenderTargetBitmap rtb = new RenderTargetBitmap( newWidth, newHeight, bmpSource.DpiX, bmpSource.DpiY, PixelFormats.Pbgra32 );
+
+			// Renderizzo tutte le fotine contenutre nel canvas
             foreach (Visual visual in canvas.Children) {
 				Image fotina = (Image)visual;
 				rtb.Render(visual);
 			}
-
-			// ... poi la maschera per ultima che copre tutto.
-			//rtb.Render( imgMaschera );
 
             if (rtb.CanFreeze) 
 				rtb.Freeze();
@@ -213,7 +232,6 @@ namespace ImageMask {
 				
 				fotona.Width = newRect.Width;
 				fotona.Height = newRect.Height;
-				
 				c.Children.Add( fotona );
 
 				// Imposto la posizione della foto all'interno del canvas della cornice.
@@ -283,11 +301,13 @@ namespace ImageMask {
 			maschera.Source = imgMaschera.Source.Clone();
 			maschera.Width = c.Width;
 			maschera.Height = c.Height;
+
 			c.Children.Add( maschera );
 
 			// Non so se serve, ma dovrebbe provocare un ricalcolo delle posizioni dei componenti all'interno del canvas.
 			c.InvalidateMeasure();
 			c.InvalidateArrange();
+
 			return c;
 		}
 

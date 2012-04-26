@@ -14,7 +14,7 @@ using System.Data.Objects;
 
 namespace Digiphoto.Lumen.Model
 {
-    public  class LumenEntities : DbContext
+    public partial class LumenEntities : DbContext
     {
         public LumenEntities()
             : this(false) { }
@@ -54,6 +54,5 @@ namespace Digiphoto.Lumen.Model
         public DbSet<InfoFissa> InfosFisse { get; set; }
         public DbSet<Carrello> Carrelli { get; set; }
         public DbSet<RigaCarrello> RigheCarrelli { get; set; }
-
-	}
+    }
 }

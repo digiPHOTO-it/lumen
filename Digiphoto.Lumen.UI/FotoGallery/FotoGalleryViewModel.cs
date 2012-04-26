@@ -24,10 +24,15 @@ using Digiphoto.Lumen.UI.ScreenCapture;
 using Digiphoto.Lumen.UI.Pubblico;
 using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
 using Digiphoto.Lumen.Servizi.Ritoccare;
+using Digiphoto.Lumen.Util;
 
 namespace Digiphoto.Lumen.UI {
 
 	public class FotoGalleryViewModel : ViewModelBase {
+
+
+		private BackgroundWorker _bkgIdrata;
+
 
 		public FotoGalleryViewModel() {
 
@@ -38,14 +43,18 @@ namespace Digiphoto.Lumen.UI {
 
 			selettoreFotografoViewModel = new SelettoreFotografoViewModel();
 
-			
-
 			if( IsInDesignMode ) {
 
 			} else {
 
 				//
 				caricaStampantiAbbinate();
+
+				_bkgIdrata = new BackgroundWorker();
+				_bkgIdrata.WorkerReportsProgress = false;  // per ora non mi complico la vita
+				_bkgIdrata.WorkerSupportsCancellation = true; // per ora non mi complico la vita
+				_bkgIdrata.DoWork += new DoWorkEventHandler( bkgIdrata_DoWork );
+
 			}
 		}
 
@@ -450,26 +459,27 @@ namespace Digiphoto.Lumen.UI {
 		/// </summary>
 		private void eseguireRicerca() {
 
+			// Se avevo un worker già attivo, allora provo a cancellarlo.
+			if( _bkgIdrata.WorkerSupportsCancellation == true && _bkgIdrata.IsBusy )
+				_bkgIdrata.CancelAsync();
+				
 
 			completaParametriRicerca();
 
-	//		paramCercaFoto.giornataIniz = Convert.ToDateTime( paramGiornataIniz );
-
-
-			// Faccio una ricerca a vuoto
+			// Eseguo la ricerca nel database
 			fotoExplorerSrv.cercaFoto( paramCercaFoto );
-			/*
-						var query = from f in fotoExplorerSrv.fotografie
-									select new DiapositivaViewModel( f );
-						diapositiveViewModel = query.ToList<DiapositivaViewModel>();
-			 */
 
-			//			ObservableCollection<Fotografia> appo = new ObservableCollection<Fotografia>( fotoExplorerSrv.fotografie );
 
+			// Ora ci penso io ad idratare le immagini, perchè devo fare questa operazione nello stesso thread della UI
+			if( ! _bkgIdrata.IsBusy )
+				_bkgIdrata.RunWorkerAsync();
+
+
+			// ricreo la collection-view e notifico che è cambiato il risultato. Le immagini verranno caricate poi
 			fotografieCW = new MultiSelectCollectionView<Fotografia>( fotoExplorerSrv.fotografie );
-// non dovrebbe essere necessario perchè è una collezione osservabile.
 			OnPropertyChanged( "fotografieCW" );
 
+			// spengo tutte le selezioni eventualmente rimaste da prima
 			deselezionareTutto();
 
 			// Se non ho trovato nulla, allora avviso l'utente
@@ -477,7 +487,30 @@ namespace Digiphoto.Lumen.UI {
 				dialogProvider.ShowMessage( "Nessuna fotografia trovata con questi filtri di ricerca", "AVVISO" );
 		}
 
+		private void bkgIdrata_DoWork( object sender, DoWorkEventArgs e ) {
+			
+			BackgroundWorker worker = sender as BackgroundWorker;
+
+			int tot = fotoExplorerSrv.fotografie.Count;
+
+			for( int ii = 0; (ii < tot); ii++ ) {
+				if( (worker.CancellationPending == true) ) {
+					e.Cancel = true;
+					break;
+				} else {
+
+					// Perform a time consuming operation and report progress.
+					AiutanteFoto.idrataImmaginiFoto( IdrataTarget.Provino, fotoExplorerSrv.fotografie [ii] );
+					// worker.ReportProgress( 123 );
+				}
+			}
+
+			LumenApplication.Instance.bus.Publish( new RicercaModificataMessaggio( this ) );
+		}
+
 		private void completaParametriRicerca() {
+
+			paramCercaFoto.idratareImmagini = false;
 
 			// Aggiungo eventuale parametro il fotografo
 			if( selettoreFotografoViewModel.fotografoSelezionato != null )
