@@ -34,7 +34,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
         {
             //Blocco l'interfaccia fino al login
             Disattivato = false;
-            fwButton = true;
             listaMasterizzatori = new ObservableCollection<String>();
             caricaListaMasterizzatori();
             loadUserConfig();
@@ -268,7 +267,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
         private void setGui()
         {
             rwButton = false;
-            fwButton = true;
+            fwButton = false;
             applicaButton = false;
             annullaButton = false;
             switch (SelectedTabControlIndex)
@@ -279,9 +278,9 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
                     PreferenzeUtente = false;
                     Riservato = true;
                     rwButton = false;
-                    fwButton = true;
+                    fwButton = false;
                     applicaButton = false;
-                    annullaButton = true;
+                    annullaButton = false;
                     if (LumenApplication.Instance.avviata)
                     {
                         LumenApplication.Instance.ferma();
@@ -1066,7 +1065,11 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             if (administratorPasswordMd5.Equals(Properties.Settings.Default.psw))
             {
                 Disattivato = true;
+				fwButton = true;
+				annullaButton = true;
                 OnPropertyChanged("Disattivato");
+				OnPropertyChanged("fwButton");
+				OnPropertyChanged("annullaButton");
                 MessageBox.Show("Password OK", "Avviso");
             }
             else
