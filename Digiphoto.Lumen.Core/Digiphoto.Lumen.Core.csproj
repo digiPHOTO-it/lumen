@@ -72,6 +72,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="src\Config\ConfigurazioneUserConfigLumen.cs" />
+    <Compile Include="src\Config\EditorEsternoConfig.cs" />
     <Compile Include="src\Config\FlashCardConfig.cs" />
     <Compile Include="src\Config\ServiziCollection.cs" />
     <Compile Include="src\Config\ServizioElement.cs" />
@@ -147,6 +148,7 @@
     <Compile Include="src\Servizi\Ricerca\IRicercatoreSrv.cs" />
     <Compile Include="src\Servizi\Ricerca\ParamCercaFoto.cs" />
     <Compile Include="src\Servizi\Ricerca\RicercatoreSrvImpl.cs" />
+    <Compile Include="src\Servizi\Ritoccare\LanciatoreEditor.cs" />
     <Compile Include="src\Servizi\Scaricatore\CopiaImmaginiWorker.cs" />
     <Compile Include="src\Servizi\Scaricatore\EsitoScarico.cs" />
     <Compile Include="src\Servizi\Scaricatore\NumeratoreFotogrammi.cs" />

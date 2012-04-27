@@ -302,5 +302,31 @@ namespace Digiphoto.Lumen.Config  {
 				return Properties.Settings.Default.estensioniGrafiche.Split( ';' );
 			}
 		}
+
+		private EditorEsternoConfig _editorEsternoConfig;
+		public EditorEsternoConfig editorEsternoConfig {
+			get {
+
+				if( _editorEsternoConfig == null ) {
+
+					_editorEsternoConfig = new EditorEsternoConfig();
+
+					if( String.IsNullOrEmpty( Properties.Settings.Default.editorImmagini ) ) {
+						_editorEsternoConfig.commandLine = "MSPAINT";
+						_editorEsternoConfig.gestisceMultiArgs = false;
+					} else {
+						_editorEsternoConfig.commandLine = Properties.Settings.Default.editorImmagini;
+						_editorEsternoConfig.gestisceMultiArgs = Properties.Settings.Default.editorImmaginiMultiArgs;
+					}
+
+					// TODO forzatura da togliere
+					_editorEsternoConfig.commandLine = @"C:\Program Files (x86)\GIMP-2\bin\gimp-2.6.exe";
+					_editorEsternoConfig.gestisceMultiArgs = true;
+				}
+
+				return _editorEsternoConfig;
+			}
+		}
+
 	}
 }

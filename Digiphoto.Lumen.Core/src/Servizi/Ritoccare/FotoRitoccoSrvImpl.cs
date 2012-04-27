@@ -183,5 +183,30 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 			throw new NotImplementedException();
 		}
 
+
+		/// <summary>
+		/// Lancio GIMP e gli passo l'elenco delle foto indicate
+		/// </summary>
+		/// <param name="fotografie"></param>
+		public void modificaConProgrammaEsterno( Fotografia [] fotografie ) {
+
+			LanciatoreEditor lanciatore = new LanciatoreEditor( fotografie );
+			lanciatore.lancia();
+
+			List<Fotografia> modificate = lanciatore.applicaImmaginiModificate();
+
+			foreach( Fotografia foto in modificate ) {
+
+				// Ora idrato l'immagine risultante
+				AiutanteFoto.idrataImmaginiFoto( IdrataTarget.Risultante, foto );
+
+				// Per forza di cose, devo ricreare il provino partendo dalla risultante
+				IGestoreImmagineSrv gis = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
+				foto.imgProvino = gis.creaProvino( foto.imgRisultante );
+
+				gis.save( foto.imgProvino, PathUtil.nomeCompletoProvino( foto ) );
+			}
+
+		}
 	}
 }
