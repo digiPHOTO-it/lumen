@@ -8,6 +8,7 @@ using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Imaging.Correzioni;
 using log4net;
+using System.IO;
 
 namespace Digiphoto.Lumen.Util {
 	
@@ -15,6 +16,7 @@ namespace Digiphoto.Lumen.Util {
 		Tutte = 0xff,
 		Originale = 0x02,
 		Provino = 0x04,
+		Risultante = 0x08
 	}
 
 	public static class AiutanteFoto {
@@ -92,6 +94,16 @@ namespace Digiphoto.Lumen.Util {
 			// Salvo su disco l'immagine risultante
 			foto.imgProvino = immaginePiccola;
 			gis.save( immaginePiccola, PathUtil.nomeCompletoProvino( foto ) );
+		}
+
+		/// <summary>
+		/// Mi dice se esiste già un file con una foto risultante già calcolata
+		/// </summary>
+		/// <param name="?"></param>
+		/// <returns></returns>
+		public static bool esisteFileRisultante( Fotografia foto ) {
+			string fileName = PathUtil.nomeCompletoRisultante( foto );
+			return File.Exists( fileName );
 		}
 
 	}
