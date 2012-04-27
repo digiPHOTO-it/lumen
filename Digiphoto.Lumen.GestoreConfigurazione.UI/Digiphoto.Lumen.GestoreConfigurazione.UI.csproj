@@ -49,12 +49,6 @@
     <Reference Include="MemBus">
       <HintPath>..\Digiphoto.Lumen.Core\lib\MemBus.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Expression.Interactions.resources">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft SDKs\Expression\Blend\.NETFramework\v4.0\Libraries\it\Microsoft.Expression.Interactions.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Expression.Prototyping.Interactivity.resources">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft SDKs\Expression\Blend\.NETFramework\v4.0\Libraries\it\Microsoft.Expression.Prototyping.Interactivity.resources.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
@@ -63,10 +57,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Data.SQLite">
-      <HintPath>..\..\..\..\..\..\..\Program Files\System.Data.SQLite\bin\System.Data.SQLite.dll</HintPath>
+      <HintPath>lib\System.Data.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.SQLite.Linq">
-      <HintPath>..\..\..\..\..\..\..\Program Files\System.Data.SQLite\bin\System.Data.SQLite.Linq.dll</HintPath>
+      <HintPath>lib\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -75,10 +69,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft SDKs\Expression\Blend\.NETFramework\v4.0\Libraries\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Windows.Interactivity.resources">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft SDKs\Expression\Blend\.NETFramework\v4.0\Libraries\it\System.Windows.Interactivity.resources.dll</HintPath>
+      <HintPath>lib\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
