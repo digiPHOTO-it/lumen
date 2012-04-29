@@ -316,5 +316,29 @@ namespace Digiphoto.Lumen.Properties {
                 this["cartellaMaschere"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("MSPAINT.EXE")]
+        public string editorImmagini {
+            get {
+                return ((string)(this["editorImmagini"]));
+            }
+            set {
+                this["editorImmagini"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool editorImmaginiMultiArgs {
+            get {
+                return ((bool)(this["editorImmaginiMultiArgs"]));
+            }
+            set {
+                this["editorImmaginiMultiArgs"] = value;
+            }
+        }
     }
 }

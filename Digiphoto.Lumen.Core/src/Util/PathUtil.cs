@@ -19,6 +19,7 @@ namespace Digiphoto.Lumen.Util {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( PathUtil) );
 		private static readonly string THUMB = ".Thumb";
+		private static readonly string MODIF = ".Modif";
 
 		/** Nel parametro si può passare sia il nome del file della foto, oppure il nome 
 		 * della cartella che contiene le foto
@@ -33,6 +34,17 @@ namespace Digiphoto.Lumen.Util {
 		public static string decidiCartellaProvini( Fotografia foto ) {
 			return decidiCartellaProvini( fileInfoFoto(foto) );
 		}
+
+		/** Nel parametro si può passare sia il nome del file della foto, oppure il nome 
+		 * della cartella che contiene le foto
+		 */
+		public static string decidiCartellaRisultanti( FileInfo fileInfo ) {
+			if( Directory.Exists( fileInfo.FullName ) )
+				return Path.Combine( fileInfo.FullName, MODIF );   // è una cartella
+			else
+				return Path.Combine( fileInfo.DirectoryName, MODIF );   // è un file probabilmente quello della foto.
+		}
+
 
 		public static FileInfo fileInfoFoto( Fotografia foto ) {
 			return new FileInfo( nomeCompletoFoto( foto ) );
@@ -53,6 +65,29 @@ namespace Digiphoto.Lumen.Util {
 			FileInfo fotoInfo = fileInfoFoto( foto );
 			return Path.Combine( decidiCartellaProvini( fotoInfo ), fotoInfo.Name );
 		}
+
+		/** 
+		 * Data una foto (e quindi il suo percorso relativo), decido il nome completo da dare al provino.
+		 * Mi servirà per poter salvare su disco l'immagine rimpicciolita
+		 */
+		public static string nomeCompletoRisultante( Fotografia foto ) {
+
+			FileInfo fotoInfo = fileInfoFoto( foto );
+			return Path.Combine( decidiCartellaRisultanti( fotoInfo ), fotoInfo.Name );
+		}
+
+
+		/// <summary>
+		/// Calcolo il giusto percorso delle foto originali.
+		/// Combino quindo il path ed il nome del file della foto ORIGINALE.
+		/// </summary>
+		/// <param name="foto">la fotografia in questione</param>
+		/// <returns>il percorso completo del file che rappresenta la foto ORIGINALE</returns>
+		public static string nomeCompletoOrig( Fotografia foto ) {
+			return Path.Combine( Configurazione.cartellaRepositoryFoto, foto.nomeFile );
+		}
+
+
 
 		public static string nomeRelativoFoto( FileInfo pathAssoluto ) {
 			int iniz = Configurazione.cartellaRepositoryFoto.Length;
@@ -132,5 +167,16 @@ namespace Digiphoto.Lumen.Util {
 
 			return isWriteAccess;
 		}
+
+		internal static void creaCartellaRisultanti( Fotografia foto ) {
+
+			// Ricavo il nome della foto originale per determinare la cartella
+			string nomeFile = PathUtil.nomeCompletoOrig( foto );
+			string nomeCartella = PathUtil.decidiCartellaRisultanti( new FileInfo( nomeFile ) );
+			if( !Directory.Exists( nomeCartella ) ) {
+				Directory.CreateDirectory( nomeCartella );
+			}
+		}
+
 	}
 }

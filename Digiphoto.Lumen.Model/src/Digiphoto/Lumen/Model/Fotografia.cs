@@ -30,7 +30,18 @@ namespace Digiphoto.Lumen.Model {
 			}
 		}
 
-		public IImmagine imgRisultante { get; set; }
+		private IImmagine _imgRisultante;
+		public IImmagine imgRisultante {
+			get {
+				return _imgRisultante;
+			}
+			set {
+				if( value != _imgRisultante ) {
+					_imgRisultante = value;
+					OnPropertyChanged( "imgRisultante" );
+				}
+			}
+		}
 
 
 		public override string ToString() {
