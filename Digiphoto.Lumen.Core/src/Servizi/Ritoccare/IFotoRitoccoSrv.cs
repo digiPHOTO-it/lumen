@@ -57,7 +57,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		/// Quando il programma avrà terminato il suo lavoro, vado a salvare la foto su disco con un nome diverso.
 		/// </summary>
 		/// <param name="foto">la foto da modificare</param>
-		void modificaConProgrammaEsterno( Fotografia [] fotografie );
+		Fotografia [] modificaConProgrammaEsterno( Fotografia [] fotografie );
 
 	}
 }

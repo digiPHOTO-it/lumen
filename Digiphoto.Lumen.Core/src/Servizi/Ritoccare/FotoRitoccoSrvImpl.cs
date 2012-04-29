@@ -188,7 +188,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		/// Lancio GIMP e gli passo l'elenco delle foto indicate
 		/// </summary>
 		/// <param name="fotografie"></param>
-		public void modificaConProgrammaEsterno( Fotografia [] fotografie ) {
+		public Fotografia [] modificaConProgrammaEsterno( Fotografia [] fotografie ) {
 
 			LanciatoreEditor lanciatore = new LanciatoreEditor( fotografie );
 			lanciatore.lancia();
@@ -207,6 +207,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 				gis.save( foto.imgProvino, PathUtil.nomeCompletoProvino( foto ) );
 			}
 
+			return modificate.ToArray();
 		}
 	}
 }

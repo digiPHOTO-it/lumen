@@ -311,7 +311,8 @@ namespace Digiphoto.Lumen.Config  {
 
 					_editorEsternoConfig = new EditorEsternoConfig();
 
-					if( String.IsNullOrEmpty( Properties.Settings.Default.editorImmagini ) ) {
+					if( String.IsNullOrEmpty( Properties.Settings.Default.editorImmagini ) ||
+						File.Exists( Properties.Settings.Default.editorImmagini ) == false ) {
 						_editorEsternoConfig.commandLine = "MSPAINT";
 						_editorEsternoConfig.gestisceMultiArgs = false;
 					} else {
@@ -320,8 +321,11 @@ namespace Digiphoto.Lumen.Config  {
 					}
 
 					// TODO forzatura da togliere
-					_editorEsternoConfig.commandLine = @"C:\Program Files (x86)\GIMP-2\bin\gimp-2.6.exe";
-					_editorEsternoConfig.gestisceMultiArgs = true;
+					string gimpexe = @"C:\Program Files (x86)\GIMP-2\bin\gimp-2.6.exe";
+					if( File.Exists( gimpexe ) ) {
+						_editorEsternoConfig.commandLine = gimpexe;
+						_editorEsternoConfig.gestisceMultiArgs = true;
+					}
 				}
 
 				return _editorEsternoConfig;

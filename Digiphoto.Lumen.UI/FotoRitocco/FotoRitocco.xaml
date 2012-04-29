@@ -8,6 +8,7 @@
              xmlns:lumFR="clr-namespace:Digiphoto.Lumen.UI.FotoRitocco"
              xmlns:lumMS="clr-namespace:Digiphoto.Lumen.UI.Mvvm.MultiSelect"
              xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
+             xmlns:extToolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
              mc:Ignorable="d" 
              x:Name="fotoRitoccoUserControl"
              d:DesignHeight="480" d:DesignWidth="640">
@@ -21,8 +22,11 @@
         <ResourceDictionary Source="FotoRitoccoResources.xaml" />
     </UserControl.Resources>
 
-    
-    <DockPanel LastChildFill="True">
+
+<!--
+    <extToolkit:BusyIndicator x:Name="busyIndicatorRitocco"  IsBusy="{Binding Path=isTuttoBloccato}">
+-->
+        <DockPanel LastChildFill="True">
                 
         <StackPanel DockPanel.Dock="Left">  <!-- pulsantiera -->
             
@@ -63,8 +67,8 @@
             <Separator Height="20" />
 
             <Button Name="rifiutareCorrezioniButton" Content="Rifiuta" ToolTip="Annulla le correzioni applicate" Command="{Binding rifiutareCorrezioniCommand}" />
-            <Button Name="salvareCorrezioniButton" Content="Applica" ToolTip="Applica le correzioni apportate" Command="{Binding salvareCorrezioniCommand}" Click="salvareCorrezioniButton_Click" />
-            <Button Name="buttonSalvareMaschera" Content="Applica Msk" ToolTip="Applica maschera" Click="buttonSalvareMaschera_Click" />
+            <Button Name="salvareCorrezioniButton" Content="Applica" ToolTip="Applica le correzioni apportate" Command="{Binding salvareCorrezioniCommand}" />
+            <Button Name="buttonModificaConPrgEsterno" Content="Editor" ToolTip="Modifica le foto con un programma esterno" Command="{Binding modificareConEditorEsternoCommand}" />
         </StackPanel>
 
         <Expander DockPanel.Dock="Top"  Header="Cornici" ExpandDirection="Down"> <!-- Cornici -->
@@ -199,5 +203,8 @@
 
 
     </DockPanel>
+<!--
+    </extToolkit:BusyIndicator>
+-->
     
 </lumM:UserControlBase>
