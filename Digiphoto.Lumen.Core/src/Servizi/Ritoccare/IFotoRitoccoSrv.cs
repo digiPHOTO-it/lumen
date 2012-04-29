@@ -50,5 +50,14 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		void salvaCorrezioniTransienti( Fotografia fotografia );
 
 		void modificaMetadati( Fotografia foto );
+
+		/// <summary>
+		/// Data una foto con eventuali modifiche già presenti,
+		/// lancio un programma esterno (per esempio MSPaint oppure Gimp oppure photoshop)
+		/// Quando il programma avrà terminato il suo lavoro, vado a salvare la foto su disco con un nome diverso.
+		/// </summary>
+		/// <param name="foto">la foto da modificare</param>
+		Fotografia [] modificaConProgrammaEsterno( Fotografia [] fotografie );
+
 	}
 }

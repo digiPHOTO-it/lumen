@@ -8,6 +8,7 @@ using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Imaging.Correzioni;
 using log4net;
+using System.IO;
 
 namespace Digiphoto.Lumen.Util {
 	
@@ -15,6 +16,7 @@ namespace Digiphoto.Lumen.Util {
 		Tutte = 0xff,
 		Originale = 0x02,
 		Provino = 0x04,
+		Risultante = 0x08
 	}
 
 	public static class AiutanteFoto {
@@ -55,8 +57,11 @@ namespace Digiphoto.Lumen.Util {
 				//
 				if( foto.imgOrig == null  && (target & IdrataTarget.Originale) != 0 )
 					foto.imgOrig = gis.load( PathUtil.nomeCompletoFoto( foto ) );
-	
-					// TODO manca l'immagine risultante (se la gestiamo per davvero)
+
+				//
+				if( foto.imgRisultante == null && (target & IdrataTarget.Risultante) != 0 )
+					foto.imgRisultante = gis.load( PathUtil.nomeCompletoRisultante( foto ) );
+				
 			} catch (Exception ee) {
 				// Se non riesco a caricare una immagine, non posso farci niente qui. Devo tirare dritto.
 				_giornale.Warn( "Impossibile caricare immagine della foto " + foto.ToString() );
@@ -92,6 +97,16 @@ namespace Digiphoto.Lumen.Util {
 			// Salvo su disco l'immagine risultante
 			foto.imgProvino = immaginePiccola;
 			gis.save( immaginePiccola, PathUtil.nomeCompletoProvino( foto ) );
+		}
+
+		/// <summary>
+		/// Mi dice se esiste già un file con una foto risultante già calcolata
+		/// </summary>
+		/// <param name="?"></param>
+		/// <returns></returns>
+		public static bool esisteFileRisultante( Fotografia foto ) {
+			string fileName = PathUtil.nomeCompletoRisultante( foto );
+			return File.Exists( fileName );
 		}
 
 	}

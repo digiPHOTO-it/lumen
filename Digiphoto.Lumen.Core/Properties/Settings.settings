@@ -77,5 +77,11 @@
     <Setting Name="cartellaMaschere" Type="System.String" Scope="User">
       <Value Profile="(Default)">%PROGRAMDATA%\digiPHOTO\Lumen\Maschere</Value>
     </Setting>
+    <Setting Name="editorImmagini" Type="System.String" Scope="User">
+      <Value Profile="(Default)">MSPAINT.EXE</Value>
+    </Setting>
+    <Setting Name="editorImmaginiMultiArgs" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
