@@ -4,21 +4,8 @@
                     xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo">
 
     <lumC:ImmagineToImageSourceConverter x:Key="immagineToImageSourceConverter" />
-<!--
-    <LinearGradientBrush x:Key="WindowGradient" StartPoint="0,0.3" EndPoint="1,0">
-        <LinearGradientBrush.GradientStops>
-            <GradientStop Color="#B2B6CAFF" Offset="0" />
-            <GradientStop Color="#BFC3D5FF" Offset="0.1" />
-            <GradientStop Color="#E0E4F0FF" Offset="0.3" />
-            <GradientStop Color="#E6EAF5FF" Offset="0.5" />
-            <GradientStop Color="#CFD7E2FF" Offset="0.6" />
-            <GradientStop Color="#BFC5D3FF" Offset="0.8" />
-            <GradientStop Color="#C4CBD8FF" Offset="1" />
-        </LinearGradientBrush.GradientStops>
-    </LinearGradientBrush>
-    -->
 
-    <!-- Stile della listbox che itera le immagini -->
+	<!-- Stile della listbox che itera le RigheCarrello -->
     <Style x:Key="ListCarrelloStyle" TargetType="ListBox">
         <Setter Property="Control.Background">
             <Setter.Value>
@@ -31,12 +18,12 @@
 
         <Setter Property="IsSynchronizedWithCurrentItem" Value="True" />
 
-        <Setter Property="ItemContainerStyle" Value="{DynamicResource ImageGalleryImageContainerStyle}" />
+        <Setter Property="ItemContainerStyle" Value="{DynamicResource ImageCarrelloImageContainerStyle}" />
         
     </Style>
 
-    <!-- Stile della listbox che itera gli album -->
-    <Style x:Key="ListaAlbumStyle" TargetType="ListBox">
+    <!-- Stile della listbox che itera i Carrelli -->
+    <Style x:Key="ListaCarrelliStyle" TargetType="ListBox">
         <Setter Property="Control.Background">
             <Setter.Value>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -48,36 +35,43 @@
 
         <Setter Property="IsSynchronizedWithCurrentItem" Value="True" />
 
-        <Setter Property="ItemContainerStyle" Value="{DynamicResource ListaAlbumImageContainerStyle}" />
+        <Setter Property="ItemContainerStyle" Value="{DynamicResource ListaCarrelliImageContainerStyle}" />
 
     </Style>
 
-    <!-- Style per ogni elemento della collection. Setto il colore selezionato = giallo -->
-    <Style x:Key="ImageGalleryImageContainerStyle" TargetType="ListBoxItem">
-        <Style.Resources>
-            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                             Color="Yellow"/>
-        </Style.Resources>
-        <Setter Property="IsSelected" Value="{Binding Mode=TwoWay, Path=isSelezionata}"/>
-    </Style>
+	<Style x:Key="ImageCarrelloImageContainerStyle" TargetType="ListBoxItem">
+		<Style.Resources>
+			<!--SelectedItem with focus -->
+			<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Yellow" />
 
-    <!-- Style per ogni elemento della collection. Setto il colore selezionato = giallo -->
-    <Style x:Key="ListaAlbumImageContainerStyle" TargetType="ListBoxItem">
+			<!--SelectedItem without focus-->
+			<SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Yellow" />
+		</Style.Resources>
+	</Style>
+
+	<!-- Style per ogni elemento della collection. Setto il colore selezionato = giallo -->
+    <Style x:Key="ListaCarrelliImageContainerStyle" TargetType="ListBoxItem">
         <Style.Resources>
-            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                             Color="Yellow"/>
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Yellow"/>
         </Style.Resources>
+		<!--
         <Setter Property="IsSelected" Value="{Binding Mode=TwoWay, Path=isSelezionata}"/>
+		-->
     </Style>
 
     <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
-    <DataTemplate x:Key="ImageGalleryDataTemplate">
-
-        <StackPanel Orientation="Horizontal">
-
-            <Border BorderBrush="WhiteSmoke" BorderThickness="1" 
-                    CornerRadius="10" Margin="0,0,2,2">
-                <Image Source="{Binding Path=imgProvino,Converter={StaticResource immagineToImageSourceConverter}}"
+    <DataTemplate x:Key="ImageCarrelloDataTemplate">
+		<GroupBox Header="Riga Carrello" Width="Auto" Margin="2,2,2,2" >
+			<Grid Width="Auto">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Border Grid.Row="0" Grid.Column="0" BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="10" Margin="2,2,2,2">
+				<Image Source="{Binding Path=fotografia.imgProvino,Converter={StaticResource immagineToImageSourceConverter}}"
                        Height="100"
                        Width="100"
                        VerticalAlignment="Center"
@@ -86,53 +80,62 @@
                     <!-- Come tooltip si possono visualizzare informazioni importanti riassuntive -->
                     <Image.ToolTip>
                         <Grid>
-                            <Label Content="{Binding Path=nomeFile}" />
+                            <Label Content="{Binding Path=descrizione}" />
                         </Grid>
                     </Image.ToolTip>
                 </Image>
             </Border>
-            <TextBlock Text="{Binding Path=nomeFile}" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,1" />
-            <TextBlock Text="5euro" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="200,0,0,1" />
-            <CheckBox IsChecked="{Binding Path=isSelezionata}"  Margin="200,0,0,1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-        </StackPanel>
-
+				<GroupBox Grid.Row="0" Grid.Column="1" Header="Attributi" Margin="4,4,4,4">
+					<Grid Width="Auto">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="*" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						<Label Content="Descrizione:" Grid.Row="0" Grid.Column="0" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						<Label Content="{Binding Path=descrizione}" Grid.Row="1" Grid.Column="0" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						<Label Content="Quantità:" Grid.Row="0" Grid.Column="1" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						<TextBox Text="{Binding Path=quantita,Mode=TwoWay}" Grid.Row="1" Grid.Column="1" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" />				
+						<Label Content="Prezzo Lordo Unitario:" Grid.Row="0" Grid.Column="2" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						<Label Content="{Binding Path=prezzoLordoUnitario}" Grid.Row="1" Grid.Column="2" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						<Label Content="Prezzo Netto Totale:" Grid.Row="0" Grid.Column="3" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						<Label Content="{Binding Path=prezzoNettoTotale}" Grid.Row="1" Grid.Column="3" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+					</Grid>
+				</GroupBox>
+			</Grid>
+		</GroupBox>
     </DataTemplate>
 
-    <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Album" -->
-    <DataTemplate x:Key="ListaAlbumDataTemplate">
-
+    <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Carrello" -->
+    <DataTemplate x:Key="ListaCarrelliDataTemplate">
         <StackPanel Orientation="Vertical">
-
-            <Border BorderBrush="WhiteSmoke" BorderThickness="1" 
-                    CornerRadius="10" Margin="0,0,2,2">
-                <Button>
-                    <Image Source="http://www.gwci.org/phot_album.gif" Width="40">
-                        <Image.ToolTip>
-                            <Grid>
-                                <Label Content="Nome Album" />
-                            </Grid>
-                        </Image.ToolTip>
-                    </Image>
-                </Button>       
+            <Border BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="10" Margin="0,0,2,2">
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-48x48.png" Width="40">
+					<Image.ToolTip>
+						<Grid>
+							<Label Content="{Binding Path=intestazione}" />
+						</Grid>
+					</Image.ToolTip>
+				</Image>     
             </Border>
         </StackPanel>
-
     </DataTemplate>
 
     <!-- Template per il pannello che contiene tutti gli elementi della lista -->
-    <ItemsPanelTemplate x:Key="ImageGalleryItemsPanelTemplate">
-
+    <ItemsPanelTemplate x:Key="ImageCarrelloItemsPanelTemplate">
         <!-- il wrappanel mi consente di sistemare al meglio le foto in funzione dello spazio disponibile ed andare a capo quando serve -->
         <WrapPanel Orientation="Vertical" />
-
     </ItemsPanelTemplate>
 
     <!-- Template per il pannello che contiene tutti gli elementi della lista -->
-    <ItemsPanelTemplate x:Key="ListaAlbumItemsPanelTemplate">
-
+    <ItemsPanelTemplate x:Key="ListaCarrelliItemsPanelTemplate">
         <!-- il wrappanel mi consente di sistemare al meglio le foto in funzione dello spazio disponibile ed andare a capo quando serve -->
         <WrapPanel Orientation="Horizontal" />
-
     </ItemsPanelTemplate>
 
 </ResourceDictionary>

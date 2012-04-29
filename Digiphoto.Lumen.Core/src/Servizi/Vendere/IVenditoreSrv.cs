@@ -43,7 +43,16 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		 */
 		void confermaCarrello();
 
+		/**
+		 * Consente il Salvattaggio del Carrello senza effettuare ne la stampa ne la Masterizzazione
+         */
+		void salvaCarrello();
+
 		void abbandonaCarrello();
+
+		void removeRigaCarrello(RigaCarrello rigaCarrello);
+
+		void removeCarrello(Carrello carrello);
 
 		/** Lavoro con un carrello alla volta. Esiste un solo carrello "corrente". */
 		Carrello carrello { get; }

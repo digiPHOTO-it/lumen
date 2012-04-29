@@ -25,6 +25,7 @@
                          ItemsSource="{Binding Path=formatiCarta}" 
                          ItemTemplate="{StaticResource formatiCartaListBoxTemplate}"
                          SelectedItem="{Binding Path=formatoCartaSelezionato}"
+						 Height ="100"
                          />
             </ScrollViewer>
         </GroupBox>

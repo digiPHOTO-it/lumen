@@ -13,6 +13,7 @@ using System.Transactions;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Servizi.Masterizzare;
 using Digiphoto.Lumen.Database;
+using System.Windows.Forms;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 
@@ -90,6 +91,43 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			gestoreCarrello.creaNuovo();
 		}
 
+		public void salvaCarrello()
+		{
+
+			_giornale.Debug("carrello valido. Inizio operazioni di produzione");
+
+			//
+			// Siccome l'esito della stampa e della masterizzazione lo riceverò più tardi 
+			// ed in modo asincrono, in questo momento non posso fare altro che dare per scontato
+			// che andrà tutto bene.
+			// Quindi memorizzo il carrello intero. Poi gestirò i problemi (sperando che non ce ne siano).
+			//
+
+			using (TransactionScope transaction = new TransactionScope())
+			{
+
+				try
+				{
+
+					aggiornaTotFotoMasterizzate();
+
+					// Poi salvo il carrello
+					gestoreCarrello.salva();
+
+				}
+				catch (Exception eee)
+				{
+					_giornale.Error("Impossibile salvare il carrello", eee);
+					MessageBox.Show("Carrello non salvato Correttamente \n"+eee, "ERRORE");
+					// Purtoppo devo andare avanti lo stesso, perché non posso permettermi 
+					// di non fare uscire le foto. Altrimenti i clienti in fila si arrabbiano
+					// ed il commesso non può incassare.
+					// In ogni caso è un errore grave.  >>> THE SHOW MUST GO ON !  <<<
+				}
+
+				transaction.Complete();
+			}
+		}
 
 		public void confermaCarrello() {
 
@@ -127,7 +165,18 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			// Poi lancio la masterizzazione
 			eventualeMasterizzazione();
+		}
 
+		public void removeRigaCarrello(RigaCarrello rigaCarrello)
+		{
+			carrello.righeCarrello.Remove(rigaCarrello);
+		}
+
+		public void removeCarrello(Carrello carrello)
+		{
+			UnitOfWorkScope.CurrentObjectContext.Carrelli.Attach(carrello);
+			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+			dbContext.Carrelli.Remove(carrello);
 		}
 
 		//
@@ -331,6 +380,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				gestoreCarrello.Dispose();
 			
 			gestoreCarrello = new GestoreCarrello();
+			gestoreCarrello.creaNuovo();
 
 			if( _masterizzaSrvImpl != null ) {
 				_masterizzaSrvImpl.Dispose();
