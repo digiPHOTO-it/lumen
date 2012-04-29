@@ -22,8 +22,8 @@
                 <ListBox Name="stampantiInstallateListBox" 
                          ItemsSource="{Binding Path=stampantiInstallate}" 
                          ItemTemplate="{StaticResource stampantiInstallateListBoxTemplate}"
-                         SelectedItem="{Binding Path=stampanteSelezionata}"
-                         />
+                         SelectedItem="{Binding Path=stampanteSelezionata}" 
+						 Height="100" />
 
             </ScrollViewer>
         </GroupBox>

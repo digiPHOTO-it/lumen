@@ -24,5 +24,13 @@ namespace Digiphoto.Lumen.UI
         {
             InitializeComponent();
         }
+
+		private CarrelloViewModel carrelloViewModel
+		{
+			get
+			{
+				return (CarrelloViewModel)base.viewModelBase;
+			}
+		}
     }
 }

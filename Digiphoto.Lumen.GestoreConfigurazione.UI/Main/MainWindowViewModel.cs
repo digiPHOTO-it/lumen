@@ -33,7 +33,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
         public MainWindowViewModel()
         {
             //Blocco l'interfaccia fino al login
-            Disattivato = false;
+            Disattivato = true;
             listaMasterizzatori = new ObservableCollection<String>();
             caricaListaMasterizzatori();
             loadUserConfig();

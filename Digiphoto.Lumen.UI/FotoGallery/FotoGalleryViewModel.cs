@@ -377,6 +377,7 @@ namespace Digiphoto.Lumen.UI {
 
 			IEnumerable<Fotografia> listaSelez = creaListaFotoSelezionate();
 			venditoreSrv.aggiungiMasterizzate( listaSelez );
+			deselezionareTutto();
 		}
 
 		private IList<Fotografia> creaListaFotoSelezionate() {
