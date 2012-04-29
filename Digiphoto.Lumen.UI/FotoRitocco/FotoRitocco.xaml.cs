@@ -389,17 +389,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		private void salvareCorrezioniButton_Click( object sender, RoutedEventArgs e ) {
-			
-			Canvas canvasDefinitivo = trasformaCanvasDefinitivo();
-			salvaCanvasSuFile( canvasDefinitivo, @"c:\temp\definitivo.jpg" );
-
-
-			RenderTargetBitmap bitmapIncorniciata = componiBitmapDaMaschera( canvasDefinitivo );
-
-			_viewModel.salvareImmagineIcorniciata( bitmapIncorniciata );
-		}
-
 		private RenderTargetBitmap componiBitmapDaMaschera( Canvas canvas ) {
 
 			BitmapSource bmpSource = (BitmapSource)imageMask.Source;

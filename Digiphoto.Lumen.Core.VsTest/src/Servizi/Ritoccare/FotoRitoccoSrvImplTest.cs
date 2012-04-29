@@ -40,8 +40,12 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Ritoccare {
 			
 			// Carico una foto a caso
 			using( LumenEntities dbContext = new LumenEntities() ) {
+
 				var fotos = dbContext.Fotografie.Take( 2 );
-				_impl.modificaConProgrammaEsterno( fotos.ToArray() );
+	
+				Fotografia [] modificate = _impl.modificaConProgrammaEsterno( fotos.ToArray() );
+
+				Assert.IsTrue( modificate.Length > 0 );
 			}
 		}
 	}

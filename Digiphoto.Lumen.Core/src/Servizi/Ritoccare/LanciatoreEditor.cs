@@ -8,6 +8,7 @@ using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Config;
 using System.Diagnostics;
+using log4net;
 
 namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
@@ -16,6 +17,8 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 	/// per modificare le foto.
 	/// </summary>
 	internal class LanciatoreEditor {
+
+		private static readonly ILog _giornale = LogManager.GetLogger( typeof(LanciatoreEditor) );
 
 		bool _lancioSingolo;
 		List<Fotografia> _fotosDaModificare;
@@ -32,6 +35,20 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 		public LanciatoreEditor( Fotografia [] fotografie ) : this() {
 			_fotosDaModificare.AddRange( fotografie );
+		}
+
+		~LanciatoreEditor() {
+
+			// Se per qualche motivo mi è rimasto qualche file temporaneo, allora lo elimino
+			foreach( FileInfo f in _immaginiTemporanee ) {
+				if( f.Exists ) {
+					_giornale.Warn( "immagine temporanea non ancora eliminata: " + f.Name );
+					try {
+						f.Delete();
+					} catch( Exception ) {
+					}
+				}
+			}
 		}
 
 		public void lancia() {
@@ -145,6 +162,8 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 				File.Copy( nomeFilePartenza, tempFile, true );
 				File.SetAttributes( tempFile, FileAttributes.Normal );
 				tempFilesInfo [ciclo] = new FileInfo( tempFile );
+				
+				Trace.WriteLine( "prima len=" + tempFilesInfo [ciclo].Length + "  wrtime=" + tempFilesInfo [ciclo].LastWriteTime.ToLongTimeString() );
 			}
 
 			return tempFilesInfo;
@@ -161,9 +180,12 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 				// Prima il file era cosi.
 				FileInfo prima = _immaginiTemporanee.ElementAt( ii );
+				Trace.WriteLine( "mezzo len=" + prima.Length + "  wrtime=" + prima.LastWriteTime.ToLongTimeString() );
 
 				// Ora provo a rilegge adesso le info del file
 				FileInfo dopo = new FileInfo( prima.FullName );
+				Trace.WriteLine( "prima len=" + dopo.Length + "  wrtime=" + dopo.LastWriteTime.ToLongTimeString() );
+
 
 				// Cerco di capire se il file è stato modificat
 				if( prima.Length != dopo.Length || prima.LastWriteTime != dopo.LastWriteTime ) {

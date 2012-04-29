@@ -293,6 +293,27 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		public bool possoModificareConEditorEsterno {
+			get {
+				return isAlmenoUnaFotoSelezionata &&
+					   modalitaEdit == ModalitaEdit.DefaultFotoRitocco &&
+					   (!modificheInCorso);
+			}
+		}
+
+		private bool _isTuttoBloccato;
+		public bool isTuttoBloccato {
+			get {
+				return _isTuttoBloccato;
+			}
+			set {
+				if( _isTuttoBloccato != value ) {
+					_isTuttoBloccato = value;
+					OnPropertyChanged( "isTuttoBloccato" );
+				}
+			}
+		}
+
 		#endregion Proprietà
 
 
@@ -433,9 +454,21 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		
+		private RelayCommand _modificareConEditorEsternoCommand;
+		public ICommand modificareConEditorEsternoCommand {
+			get {
+				if( _modificareConEditorEsternoCommand == null ) {
+					_modificareConEditorEsternoCommand = new RelayCommand( p => modificareConEditorEsterno(),
+																		   p => possoModificareConEditorEsterno );
+				}
+				return _modificareConEditorEsternoCommand;
+			}
+		}
+	
 		#endregion Comandi
 
+		// ******************************************************************************************************
+		// ******************************************************************************************************
 
 		#region Metodi
 
@@ -741,30 +774,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		#endregion Metodi
-
-		protected void onEditorModeChanged( EditorModeEventArgs e ) {
-			if( editorModeChangedEvent != null )
-				editorModeChangedEvent( this, e );
-		}  
-
-		public void OnCompleted() {
-		}
-
-		public void OnError( Exception error ) {
-		}
-
-		public void OnNext( FotoDaModificareMsg msg ) {
-
-			// Ecco che sono arrivate delle nuove foto da modificare
-			// Devo aggiungerle alla lista delle esistenti
-			foreach( Fotografia f in msg.fotosDaModificare )
-				addFotoDaModificare( f );
-
-			fotografieDaModificareCW = new MultiSelectCollectionView<Fotografia>( fotografieDaModificare );
-			OnPropertyChanged( "fotografieDaModificareCW" );
-		}
-
 		void addFotoDaModificare( Fotografia f ) {
 
 			if( this.fotografieDaModificare.Contains( f ) == false ) {
@@ -855,23 +864,50 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			forseInizioModifiche();
 		}
 
-		void salvareMaschera( Panel workPanel, Image imageMaschera ) {
-		}
 
+		void modificareConEditorEsterno() {
 
-		// Devo creare una immagine modificata in base
-		internal void salvareImmagineIcorniciata( RenderTargetBitmap bitmapIncorniciata ) {
+			try {
+				isTuttoBloccato = true;
 
-			BitmapFrame frame = BitmapFrame.Create( bitmapIncorniciata );
-			PngBitmapEncoder encoder = new PngBitmapEncoder();
-			encoder.Frames.Add( frame );
+				// Accodo le stampe da modificare
+				fotoRitoccoSrv.modificaConProgrammaEsterno( fotografieDaModificareCW.SelectedItems.ToArray() );
 
-			// ----- scrivo su disco
-			using( FileStream fs = new FileStream( @"c:\temp\modificata.png", FileMode.Create ) ) {
-				encoder.Save( fs );
-				fs.Flush();
+			} finally {
+				isTuttoBloccato = false;
 			}
-
 		}
+
+		#endregion Metodi
+
+		// **********************************************************************************************
+		// **********************************************************************************************
+
+		#region Gestori Eventi
+
+		protected void onEditorModeChanged( EditorModeEventArgs e ) {
+			if( editorModeChangedEvent != null )
+				editorModeChangedEvent( this, e );
+		}
+
+		public void OnCompleted() {
+		}
+
+		public void OnError( Exception error ) {
+		}
+
+		public void OnNext( FotoDaModificareMsg msg ) {
+
+			// Ecco che sono arrivate delle nuove foto da modificare
+			// Devo aggiungerle alla lista delle esistenti
+			foreach( Fotografia f in msg.fotosDaModificare )
+				addFotoDaModificare( f );
+
+			fotografieDaModificareCW = new MultiSelectCollectionView<Fotografia>( fotografieDaModificare );
+			OnPropertyChanged( "fotografieDaModificareCW" );
+		}
+
+		#endregion Gestori Eventi
+
 	}
 }

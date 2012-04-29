@@ -57,8 +57,11 @@ namespace Digiphoto.Lumen.Util {
 				//
 				if( foto.imgOrig == null  && (target & IdrataTarget.Originale) != 0 )
 					foto.imgOrig = gis.load( PathUtil.nomeCompletoFoto( foto ) );
-	
-					// TODO manca l'immagine risultante (se la gestiamo per davvero)
+
+				//
+				if( foto.imgRisultante == null && (target & IdrataTarget.Risultante) != 0 )
+					foto.imgRisultante = gis.load( PathUtil.nomeCompletoRisultante( foto ) );
+				
 			} catch (Exception ee) {
 				// Se non riesco a caricare una immagine, non posso farci niente qui. Devo tirare dritto.
 				_giornale.Warn( "Impossibile caricare immagine della foto " + foto.ToString() );
