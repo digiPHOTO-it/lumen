@@ -377,12 +377,43 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 		#region NotificaMessaggiBurner
 		private void inviaMessaggioStatoMasterizzazione(object sender, BurnerMsg burnerMsg)
         {
-            MasterizzaMsg masterizzaMsg = new MasterizzaMsg( this );
-            masterizzaMsg.totFotoAggiunte = burnerMsg.totaleFileAggiunti;
-            masterizzaMsg.totFotoNonAggiunte = 0;
-            masterizzaMsg.result = burnerMsg.statusMessage;
-            masterizzaMsg.progress = burnerMsg.progress;
-            pubblicaMessaggio(masterizzaMsg);
+			MasterizzaMsg masterizzaMsg = new MasterizzaMsg(this);
+			masterizzaMsg.totFotoAggiunte = burnerMsg.totaleFileAggiunti;
+			masterizzaMsg.totFotoNonAggiunte = 0;
+			masterizzaMsg.esito = Esito.Ok;
+			switch (burnerMsg.fase)
+			{
+				case Digiphoto.Lumen.Servizi.Masterizzare.MyBurner.Fase.ErrorMedia:
+					masterizzaMsg.fase = Fase.ErroreMedia;
+					break;
+				case Digiphoto.Lumen.Servizi.Masterizzare.MyBurner.Fase.MasterizzazioneIniziata:
+					masterizzaMsg.fase = Fase.InizioCopia;
+					break;
+				case Digiphoto.Lumen.Servizi.Masterizzare.MyBurner.Fase.FormattazioneIniziata:
+					masterizzaMsg.fase = Fase.InizioCopia;
+					break;
+				case Digiphoto.Lumen.Servizi.Masterizzare.MyBurner.Fase.Completed:
+					masterizzaMsg.fase = Fase.CopiaCompletata;
+					break;
+				case Digiphoto.Lumen.Servizi.Masterizzare.MyBurner.Fase.MasterizzazioneCompletata:
+					masterizzaMsg.fase = Fase.CopiaCompletata;
+					break;
+				case Digiphoto.Lumen.Servizi.Masterizzare.MyBurner.Fase.FormattazioneCompletata:
+					masterizzaMsg.fase = Fase.CopiaCompletata;
+					break;
+				case Digiphoto.Lumen.Servizi.Masterizzare.MyBurner.Fase.MasterizzazioneFallita:
+					masterizzaMsg.esito = Esito.Errore;
+					masterizzaMsg.fase = Fase.CopiaCompletata;
+					break;
+				case Digiphoto.Lumen.Servizi.Masterizzare.MyBurner.Fase.FormattazioneFallita:
+					masterizzaMsg.esito = Esito.Errore;
+					masterizzaMsg.fase = Fase.CopiaCompletata;
+					break;
+			}
+
+			masterizzaMsg.result = burnerMsg.statusMessage;
+			masterizzaMsg.progress = burnerMsg.progress;
+			pubblicaMessaggio(masterizzaMsg);
         }
         #endregion
 		
