@@ -10,7 +10,8 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
     public enum Fase
     {
         InizioCopia,
-        CopiaCompletata
+        CopiaCompletata,
+		ErroreMedia
     };
 
     public class MasterizzaMsg : Messaggio
