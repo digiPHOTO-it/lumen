@@ -856,7 +856,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			BitmapImage msk = (BitmapImage)p;
 			mascheraAttiva = msk;
 
-
 			// cambio stato. Vado in modalità di editing maschere
 			modalitaEdit = ModalitaEdit.GestioneMaschere;
 
@@ -864,6 +863,20 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			forseInizioModifiche();
 		}
 
+
+		// Devo creare una immagine modificata in base
+		internal void salvareImmagineIcorniciata( RenderTargetBitmap bitmapIncorniciata ) {
+
+			BitmapFrame frame = BitmapFrame.Create( bitmapIncorniciata );
+			PngBitmapEncoder encoder = new PngBitmapEncoder();
+			encoder.Frames.Add( frame );
+
+			// ----- scrivo su disco
+			using( FileStream fs = new FileStream( @"c:\temp\modificata.png", FileMode.Create ) ) {
+				encoder.Save( fs );
+				fs.Flush();
+			}
+		}
 
 		void modificareConEditorEsterno() {
 

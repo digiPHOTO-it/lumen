@@ -37,7 +37,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		public IImmagine load( string nomeFile ) {
 
 			if( !File.Exists( nomeFile ) )
-				_giornale.Warn( "file immagine non esistente: " + nomeFile );
+				return null;
 
 			return new ImmagineWic( nomeFile );
 
