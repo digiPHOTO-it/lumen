@@ -67,8 +67,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		}
 
-		
-
+		void updateCarrello()
+		{
+			GestoreCarrelloMsg msg = new GestoreCarrelloMsg(this);
+			msg.fase = Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.UpdateCarrello;
+			LumenApplication.Instance.bus.Publish(msg);
+		}
 
 		/** 
 		 * Per ogni foto indicata, creo una nuova riga di carrello
@@ -78,6 +82,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				AiutanteFoto.idrataImmaginiFoto( foto );
 				carrello.righeCarrello.Add( creaRiCaFotoStampata( foto, param ) );
 			}
+			// Notifico al carrello l'evento
+			updateCarrello();
 		}
 
 		
@@ -282,7 +288,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				return;
 
 			_masterizzaSrvImpl.start();
-
 			_masterizzaSrvImpl.masterizza( carrello.id );
 		}
 
@@ -321,9 +326,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			// TODO gestire lo storno
 			// Vado a correggere questa riga
-			using( GestoreCarrello altroGestoreCarrello = new GestoreCarrello() ) {
-				altroGestoreCarrello.stornoMasterizzate( (Guid)masterizzaMsg.senderTag, (short)masterizzaMsg.totFotoAggiunte, (short)masterizzaMsg.totFotoNonAggiunte );
-			}
+			//using( GestoreCarrello altroGestoreCarrello = new GestoreCarrello() ) {
+			//    altroGestoreCarrello.stornoMasterizzate( (Guid)masterizzaMsg.senderTag, (short)masterizzaMsg.totFotoAggiunte, (short)masterizzaMsg.totFotoNonAggiunte );
+			//}
 
 		}
 
@@ -359,9 +364,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			_giornale.Error( "il lavoro di stampa non è andato a buon fine: " + lavoroDiStampa.ToString() );
 
 			// Vado a correggere questa riga
-			using( GestoreCarrello altroGestoreCarrello = new GestoreCarrello() ) {
-				altroGestoreCarrello.stornoRiga( lavoroDiStampa.param.idRigaCarrello );
-			}
+			//using( GestoreCarrello altroGestoreCarrello = new GestoreCarrello() ) {
+			//    altroGestoreCarrello.stornoRiga( lavoroDiStampa.param.idRigaCarrello );
+			//}
 
 		}
 
@@ -413,6 +418,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			// Aggiungo le foto alla lista
 			_masterizzaSrvImpl.addFotografie( fotografie );
+			// Notifico al carrello l'evento
+			updateCarrello();
 		}
 
 

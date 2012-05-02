@@ -110,18 +110,27 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				guidCarrello = Guid.NewGuid();
 
 				foreach(RigaCarrello rigaCarrello in carrello.righeCarrello){
-					RiCaFotoStampata rica = rigaCarrello as RiCaFotoStampata;
-					dbContext.Fotografie.Attach(rica.fotografia);
-					dbContext.FormatiCarta.Attach(rica.formatoCarta);
-					dbContext.Fotografi.Attach(rica.fotografo);
+					if (rigaCarrello is RiCaFotoStampata)
+					{
+						RiCaFotoStampata rica = rigaCarrello as RiCaFotoStampata;
+						dbContext.Fotografie.Attach(rica.fotografia);
+						dbContext.FormatiCarta.Attach(rica.formatoCarta);
+						dbContext.Fotografi.Attach(rica.fotografo);
+					}
 				}
 
 				dbContext.Carrelli.Add( carrello );
 
 				foreach (RigaCarrello rigaCarrello in carrello.righeCarrello)
 				{
-					RiCaFotoStampata rica = rigaCarrello as RiCaFotoStampata;
-					dbContext.RigheCarrelli.Add(rica);
+					if (rigaCarrello is RiCaFotoStampata)
+					{
+						RiCaFotoStampata rica = rigaCarrello as RiCaFotoStampata;
+						dbContext.RigheCarrelli.Add(rica);
+					}else{
+						RiCaDiscoMasterizzato rica = rigaCarrello as RiCaDiscoMasterizzato;
+						dbContext.RigheCarrelli.Add(rica);
+					}
 				}
 
 			} else {
