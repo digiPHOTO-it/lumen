@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using Digiphoto.Lumen.Imaging;
 using System.Diagnostics;
 using System.IO;
+using Digiphoto.Lumen.Util;
 
 
 
@@ -150,18 +151,26 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			Fotografia foto = e.Data.GetData( typeof( Fotografia ) ) as Fotografia;
 			if( foto != null ) {
+				
 				Image image = new Image();
-				image.Width = foto.imgProvino.ww;
-				image.Height = foto.imgProvino.hh;
 
-				BitmapSource bmpSrc = ((ImmagineWic)foto.imgProvino).bitmapSource;
+				AiutanteFoto.idrataImmaginiFoto( IdrataTarget.Risultante, foto, true );
+				AiutanteFoto.idrataImmaginiFoto( IdrataTarget.Originale, foto, true );
 
-				//WriteableBitmap wb = new WriteableBitmap(bmpSrc);
+				IImmagine immagine = foto.imgRisultante != null ? foto.imgRisultante : foto.imgOrig; 
+				//image.Height = double.NaN;
+				//image.Width = double.NaN;
+
+				if( immagine.orientamento == Orientamento.Orizzontale )
+					image.Width = imageMask.Width / 2;
+				else
+					image.Height = imageMask.Height / 2;
+
+				BitmapSource bmpSrc = ((ImmagineWic)immagine).bitmapSource;
 
 				image.BeginInit();
 				image.Source = bmpSrc;
 				image.EndInit();
-//				wb.Freeze();
 				
 				Point position = e.GetPosition( canvasMsk );
 				Canvas.SetLeft( image, position.X );
@@ -249,39 +258,57 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			double factorX = 96d / bmpSource.DpiX;
 			double factorY = 96d / bmpSource.DpiY;
-			factorX = factorY = 1;
+			//factorX = factorY = 1;
 			Int32 newWidth = (int)((double)bmpSource.PixelWidth * factorX );
 			Int32 newHeight = (int)((double)bmpSource.PixelHeight * factorY);
 
 			Canvas c = new Canvas();
 			c.Background = new SolidColorBrush( Colors.Transparent );
-			c.Height = 600;
-			c.Width = 800;
+			c.Width = newWidth;
+			c.Height = newHeight;
+			c.HorizontalAlignment = HorizontalAlignment.Left;
+			c.VerticalAlignment = VerticalAlignment.Top;
+			
+
 
 			foreach( Visual visual in canvasMsk.Children ) {
 
 				Image fotina = (Image)visual;
 
+				WriteableBitmap wb = new WriteableBitmap( (BitmapSource)fotina.Source );
+
+				BitmapSource bs = (BitmapSource)fotina.Source;
 				Image fotona = new Image();
+				fotona.HorizontalAlignment = HorizontalAlignment.Left;
+				fotona.VerticalAlignment = VerticalAlignment.Top;
+	
 				fotona.BeginInit();
-				fotona.Source = fotina.Source; // .Clone();  // Clono l'immagine iniziale della foto
+
+				fotona.Source = wb;
+
 				fotona.EndInit();
+
+				double fotinaFactorX = 96d / bs.DpiX;
 
 				Rect rectFotina = new Rect( Canvas.GetLeft( fotina ), Canvas.GetTop( fotina ), fotina.ActualWidth, fotina.ActualHeight );
 				Size sizeFondo = new Size( imageMask.ActualWidth, imageMask.ActualHeight );
-				Size sizeMaschera = new Size( newWidth, newHeight );
+				Size sizeMaschera = new Size( bmpSource.PixelWidth, bmpSource.PixelHeight );
 
 				Rect newRect = Geometrie.proporziona( rectFotina, sizeFondo, sizeMaschera );
-
-				fotona.Width = newRect.Width;
-				fotona.Height = newRect.Height;
-				fotona.Stretch = Stretch.None;
+				fotona.Width = newRect.Width * factorX;
+				fotona.Height = newRect.Height * factorY;
+				fotona.Stretch = Stretch.Uniform;
 
 				c.Children.Add( fotona );
 
+				double test = Canvas.GetLeft( fotona );
+
 				// Imposto la posizione della foto all'interno del canvas della cornice.
-				Canvas.SetLeft( fotona, newRect.Left );
-				Canvas.SetTop( fotona, newRect.Top );
+				Canvas.SetLeft( fotona, newRect.Left * factorX );
+				Canvas.SetTop( fotona, newRect.Top * factorY );
+//				Canvas.SetLeft( fotona, 0 );
+//				Canvas.SetTop( fotona, 0 );
+
 
 
 				// ----------------------------------------------
@@ -345,6 +372,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			// per concludere, aggiungo anche la maschera che deve ricoprire tutto.
 			Image maschera = new Image();
 			maschera.BeginInit();
+			maschera.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+			maschera.VerticalAlignment = System.Windows.VerticalAlignment.Top;
 			maschera.Source = imageMask.Source.Clone();
 			maschera.EndInit();
 			maschera.Width = c.Width;
@@ -389,6 +418,31 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		private void salvareMascheraButton_Click( object sender, RoutedEventArgs e ) {
+
+			Canvas canvasDefinitivo = trasformaCanvasDefinitivo();
+
+			// salvaCanvasSuFile( canvasDefinitivo, @"c:\temp\definitivo.jpg" );
+
+			// Non ho capito perchè, ma se non assegno questo canvas ad una finestra, 
+			// allora quando lo andrò a salvare su disco, l'immagine apparirà tutta nera.
+			// boh!...   Con questo trucco tutto si sistema.
+			Window w = new Window();
+			try {
+				w.Visibility = Visibility.Visible;
+				w.Content = canvasDefinitivo;
+				w.ShowDialog();
+
+				RenderTargetBitmap bitmapIncorniciata = componiBitmapDaMaschera( canvasDefinitivo );
+
+				_viewModel.salvareImmagineIcorniciata( bitmapIncorniciata );
+			} finally {
+				w.Close();
+			}
+
+		}
+
+
 		private RenderTargetBitmap componiBitmapDaMaschera( Canvas canvas ) {
 
 			BitmapSource bmpSource = (BitmapSource)imageMask.Source;
@@ -398,14 +452,14 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			RenderTargetBitmap rtb = new RenderTargetBitmap( newWidth, newHeight, bmpSource.DpiX, bmpSource.DpiY, PixelFormats.Pbgra32 );
 
-			// Prima renderizzo le fotine ...
+			// Renderizzo tutte le images che contengono sia le fotine che la maschera.
 			foreach( Visual visual in canvas.Children ) {
 				Image fotina = (Image)visual;
 				rtb.Render( visual );
 			}
 
 			// ... poi la maschera per ultima che copre tutto.
-			rtb.Render( imageMask );
+			// rtb.Render( imageMask );
 
 			if( rtb.CanFreeze )
 				rtb.Freeze();
@@ -413,9 +467,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			return rtb;
 		}
 
-		private void buttonSalvareMaschera_Click( object sender, RoutedEventArgs e ) {
-			salvaCanvasSuFile( canvasMsk, @"c:\temp\mask-foto-piccine.png" );
-		}
 
 	}
 }

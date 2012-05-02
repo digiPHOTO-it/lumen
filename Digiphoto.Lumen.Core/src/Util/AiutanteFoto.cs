@@ -45,22 +45,29 @@ namespace Digiphoto.Lumen.Util {
 		 * Devo caricare gli attributi transienti della fotografia 
 		 */
 		public static void idrataImmaginiFoto( IdrataTarget target, Fotografia foto ) {
+			idrataImmaginiFoto( target, foto, false );
+		}
 
+		public static void idrataImmaginiFoto( IdrataTarget target, Fotografia foto, bool forzatamente ) {
+			
 			IGestoreImmagineSrv gis = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
 
 			try {	        
 		
 				//
-				if( foto.imgProvino == null && (target & IdrataTarget.Provino) != 0 ) 
-					foto.imgProvino = gis.load( PathUtil.nomeCompletoProvino( foto ) );
+				if( forzatamente || foto.imgProvino == null )
+					if( (target & IdrataTarget.Provino) != 0 )
+						foto.imgProvino = gis.load( PathUtil.nomeCompletoProvino( foto ) );
 
 				//
-				if( foto.imgOrig == null  && (target & IdrataTarget.Originale) != 0 )
-					foto.imgOrig = gis.load( PathUtil.nomeCompletoFoto( foto ) );
+				if( forzatamente || foto.imgOrig == null )
+					if( (target & IdrataTarget.Originale) != 0 )
+						foto.imgOrig = gis.load( PathUtil.nomeCompletoFoto( foto ) );
 
 				//
-				if( foto.imgRisultante == null && (target & IdrataTarget.Risultante) != 0 )
-					foto.imgRisultante = gis.load( PathUtil.nomeCompletoRisultante( foto ) );
+				if( forzatamente || foto.imgRisultante == null )
+					if( (target & IdrataTarget.Risultante) != 0 )
+						foto.imgRisultante = gis.load( PathUtil.nomeCompletoRisultante( foto ) );
 				
 			} catch (Exception ee) {
 				// Se non riesco a caricare una immagine, non posso farci niente qui. Devo tirare dritto.
@@ -108,6 +115,7 @@ namespace Digiphoto.Lumen.Util {
 			string fileName = PathUtil.nomeCompletoRisultante( foto );
 			return File.Exists( fileName );
 		}
+
 
 	}
 }
