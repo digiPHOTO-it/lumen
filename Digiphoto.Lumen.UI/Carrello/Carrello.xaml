@@ -48,7 +48,16 @@
 						<Label Content="Operazioni di Riga" HorizontalContentAlignment="Center"/>
 					<Separator />
 					<RadioButton Content="Elimina Riga" Tag="240" Style="{StaticResource {x:Type ToggleButton}}" Width="200" GroupName="vediSelezGrp" ToolTip="Vedi tutte le foto"  CommandParameter="false" Command="{Binding eliminaRigaCommand}" />
-				</ToolBar>
+                    <RadioButton Content="Elimina Dischetto" Tag="240" Style="{StaticResource {x:Type ToggleButton}}" Width="200" GroupName="vediSelezGrp" ToolTip="Vedi tutte le foto"  CommandParameter="false" Command="{Binding eliminaDischettoCommand}" />
+					<Separator />
+                    <DockPanel Visibility="{Binding Path=IsQuantitaControlVisible}">
+                        <Label DockPanel.Dock="Top" Content="Quantita" HorizontalContentAlignment="Center"/>
+                        <Separator DockPanel.Dock="Top" />
+                        <RadioButton DockPanel.Dock="Top" Content="+" Tag="240" Style="{StaticResource {x:Type ToggleButton}}" Height="50"  Width="100" GroupName="vediSelezGrp" ToolTip="Aggiungi foto"  CommandParameter="+" Command="{Binding UpdateQuantitaCommand}" FontSize="24" />
+                        <TextBox DockPanel.Dock="Top" Text="{Binding Path=QuantitaRigaSelezionata,Mode=TwoWay}" Grid.Row="2" Grid.Column="3" TextAlignment="Center" FontSize="24" />
+                        <RadioButton DockPanel.Dock="Top" Content="-" Tag="240" Style="{StaticResource {x:Type ToggleButton}}"  Height="50"  Width="100" GroupName="vediSelezGrp" ToolTip="Elimina Foto"  CommandParameter="-" Command="{Binding UpdateQuantitaCommand}" FontSize="24" />
+                    </DockPanel>
+                </ToolBar>
             </ToolBarTray>
         </Expander>
 
@@ -139,24 +148,33 @@
 				</Grid>
 			</Expander>
 
-			<Grid DockPanel.Dock="Top" x:Name="listMasterizzate" Visibility="{Binding Path=IsControlVisible}">
-				<Image Source="/Digiphoto.Lumen.UI;component/Resources/DvdBurn-48x48.png" Width="48" VerticalAlignment="Top" HorizontalAlignment="Center"/>
-			</Grid>
+            <Grid DockPanel.Dock="Top" x:Name="listMasterizzate" Visibility="{Binding Path=IsControlVisible}">
+                <ListBox 
+                    Height="100"
+                    ItemsSource="{Binding Path=RiCaDiscoMasterizzatoCv}" Name="dataGrid"
+                    ItemsPanel="{DynamicResource ImageMasterizzatoreItemsPanelTemplate}" 
+					ItemTemplate="{DynamicResource ImageMasterizzatoreDataTemplate}"
+                    Margin="0,10">
+                </ListBox>
+            </Grid>
+            
 			<!-- Questa è la lista delle immagini -->
-			<ListView x:Name="listCarrello" 
+			<ListBox x:Name="listCarrello" 
 					 SelectionMode="Single" 
 					 Style="{StaticResource ListCarrelloStyle}"
-					 ItemsSource="{Binding Path=RigheCarrelloCv}"
+					 ItemsSource="{Binding Path=RiCaFotoStampataCv}"
+					 SelectedIndex="{Binding Path=RigheCarrelloCvSelectedIndex, Mode=TwoWay}"
+					 SelectedItem="{Binding Path=RigheCarrelloCvSelected}"
 					 ItemsPanel="{DynamicResource ImageCarrelloItemsPanelTemplate}" 
 					 ItemTemplate="{DynamicResource ImageCarrelloDataTemplate}"
-					 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+					 ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
 
 					<i:Interaction.Triggers>
 						<i:EventTrigger EventName="SelectionChanged">
 							<i:InvokeCommandAction Command="{Binding CalcolaTotali}"/>
 						</i:EventTrigger>
 					</i:Interaction.Triggers>
-			</ListView>
+			</ListBox>
 		</DockPanel>
 	</DockPanel>
 </lumM:UserControlBase>
