@@ -777,7 +777,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		void addFotoDaModificare( Fotografia f ) {
 
 			if( this.fotografieDaModificare.Contains( f ) == false ) {
-				AiutanteFoto.idrataImmaginiFoto( IdrataTarget.Provino, f );
+				AiutanteFoto.idrataImmaginiFoto( f, IdrataTarget.Provino );
 				//			fotografieDaModificareCW.AddNewItem( f );
 				this.fotografieDaModificare.Add( f );
 			}
