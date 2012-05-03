@@ -5,17 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
              xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
+			 xmlns:lumMS="clr-namespace:Digiphoto.Lumen.UI.Mvvm.MultiSelect"
              xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
              xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo"
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:extToolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
              mc:Ignorable="d" 
-             d:DesignHeight="669" d:DesignWidth="776">
-<!--
-    <Style TargetType="{x:Type lumM:Carrello}">
-        <Setter Property="Background" Value="{DynamicResource WindowGradient}" />
-    </Style>
-    -->
+             d:DesignHeight="600" d:DesignWidth="800">
     
     <!-- Istanzio il controllore -->
 
@@ -27,121 +23,158 @@
         <ResourceDictionary Source="CarrelloResources.xaml" />
     </UserControl.Resources>
 
-            <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="200" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="200" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="250"/>
-        </Grid.ColumnDefinitions>
+	<DockPanel>
 
-
-        <Expander DockPanel.Dock="Bottom" IsExpanded="True" ExpandDirection="Down" Grid.Column = "1" Grid.Row = "0">
-            <Grid Height="177">
-                <ListBox x:Name="listAlbum" SelectionMode="Multiple"
-                 Style="{StaticResource ListaAlbumStyle}"
-                 ItemsSource="{Binding Path=FotoCarrello}" 
-                 ItemsPanel="{DynamicResource ListaAlbumItemsPanelTemplate}" 
-                 ItemTemplate="{DynamicResource ListaAlbumDataTemplate}"
-                 ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                 ScrollViewer.HorizontalScrollBarVisibility="Visible" Margin="1,23,-1,82">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="SelectionChanged">
-                            <i:InvokeCommandAction Command="{Binding CalcolaTotali}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </ListBox>
-                <GroupBox Header="Proprietà" Margin="0,101,0,12">
-                    <Grid Height="54">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <!--Grid.ColumnSpan="2"-->
-                        <Label Content="Nome Album" Width="157" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" />
-                        <TextBlock Text="{Binding Path=NomeAlbum}" Width="157" Grid.Row="0" Grid.Column="1"/>
-                        <Label Content="Fotografo" Grid.Row="0" Grid.Column="1"/>
-                        <TextBlock Text="Fotografo" Grid.Row="1" Grid.Column="1"/>
-                        <Label Content="Totale Foto Album" Grid.Row="0" Grid.Column="3"/>
-                        <TextBlock Text="50" Grid.Row="1" Grid.Column="3"/>
-                    </Grid>
-                </GroupBox>
-                <Label Content="Vista Foto Album Selezionato" Height="28" HorizontalAlignment="Left" Margin="1,143,0,0" Name="label2" VerticalAlignment="Top" Width="277" />
-            </Grid>
-        </Expander>
-
-        <ToolBarTray DockPanel.Dock="Left" Orientation="Vertical" Grid.Column = "0" Grid.Row = "0">
+		<ToolBarTray DockPanel.Dock="Left" Orientation="Vertical">
             <ToolBar Band="1" BandIndex="1" Name="stampaToolBar" >
-                <Button>
-                    <Image Source="http://www.savinobarbera.com/images/print.gif" Width="48"/>
-                </Button>
-                <Button>
-                    <Image Source="http://icons.iconseeker.com/png/fullsize/glaze/print-printer.png" Width="48"/>
-                </Button>
-                <Button Command="{Binding Path=aggiungereAlMasterizzatoreCommand}">
-                    <Image Source="http://cdn1.iconfinder.com/data/icons/STROKE/video_production/png/256/dvd_burn.png" Width="48" />
+				<Button Command="{Binding vendereCommand}">
+					<Image Source="/Digiphoto.Lumen.UI;component/Resources/Cassa-48x48.png" Width="48"/>
                 </Button>
             </ToolBar>      
         </ToolBarTray>
-<!--
-        <Expander DockPanel.Dock="Bottom" IsExpanded="True" ExpandDirection="Up">
-            <Grid></Grid>
-        </Expander>-->
 
-        <ListBox x:Name="listCarrello" Grid.Column = "1" Grid.Row = "1" 
-                 SelectionMode="Multiple"
-                 Style="{StaticResource ListCarrelloStyle}"
-                 ItemsSource="{Binding Path=FotoCarrello}" 
-                 ItemsPanel="{DynamicResource ImageGalleryItemsPanelTemplate}" 
-                 ItemTemplate="{DynamicResource ImageGalleryDataTemplate}"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-            <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="SelectionChanged">
-                        <i:InvokeCommandAction Command="{Binding CalcolaTotali}"/>
-                    </i:EventTrigger>
-                 </i:Interaction.Triggers>
-        </ListBox>
-
-        <Expander DockPanel.Dock="Right" Header="View" IsExpanded="True" ExpandDirection="Left" Grid.Column = "2" Grid.RowSpan="2" Margin="0,0,0,164">
+		<Expander DockPanel.Dock="Right" Header="View" IsExpanded="True" ExpandDirection="Left">
 
             <ToolBarTray Background="White" Orientation="Vertical">
 
                 <ToolBar Band="1" BandIndex="1" >
-                    <Button Content="Album" />
-                    <RadioButton Content="Crea Nuovo Album" Tag="600"  Style="{StaticResource {x:Type ToggleButton}}" Width="200" Name="creaAlbumRadioButton" />
-                    <RadioButton Content="Elimina Album" Tag="240" Style="{StaticResource {x:Type ToggleButton}}" Width="200" Name="eliminaAlbumRadioButton" />
-                    <RadioButton Content="Salva Album" Tag="60" Style="{StaticResource {x:Type ToggleButton}}" Width="200" Name="salvaAlbumRadioButton" />
-                    <Separator />
-                    <Button Content="Selezione Foto" />
-                    <RadioButton Content="All" Tag="600"  Style="{StaticResource {x:Type ToggleButton}}" Width="200" Name="selezionaAllFotoRadioButton" />
-                    <RadioButton Content="Desel" Tag="240" Style="{StaticResource {x:Type ToggleButton}}" Width="200" Name="deselezionaAllFotoMediaRadioButton" />
-                    <Separator />
-                    <Button Content="Filtro Foto" />
-                    <RadioButton Content="All" Tag="240" Style="{StaticResource {x:Type ToggleButton}}" Width="200" GroupName="vediSelezGrp" ToolTip="Vedi tutte le foto"  CommandParameter="false" />
-                    <RadioButton Content="Desel" Tag="240"  Style="{StaticResource {x:Type ToggleButton}}" Width="200" GroupName="vediSelezGrp" ToolTip="Vedi solo le foto selezionate"  CommandParameter="true" />
+					<Label Content="Operazioni sul Carrello " HorizontalContentAlignment="Center"/>
+					<RadioButton Content="Aggiorna" Tag="600"  Style="{StaticResource {x:Type ToggleButton}}" Width="200" Name="updateRadioButton" Command="{Binding updateGUICommand}"/>
+					<RadioButton Content="Crea Nuovo Carrello" Tag="600"  Style="{StaticResource {x:Type ToggleButton}}" Width="200" Name="creaCarrelloRadioButton" Command="{Binding creaNuovoCarrelloCommand}"/>
+					<RadioButton Content="Elimina Carrello" Tag="240" Style="{StaticResource {x:Type ToggleButton}}" Width="200" Name="eliminaCarrelloadioButton" Command="{Binding eliminaCarrelloCommand}" />
+					<RadioButton Content="Salva Carrello" Tag="60" Style="{StaticResource {x:Type ToggleButton}}" Width="200" Name="salvaCarrelloRadioButton" Command="{Binding salvaCarrelloCommand}" />
+					<RadioButton Content="Svuota Carrello" Tag="60" Style="{StaticResource {x:Type ToggleButton}}" Width="200" Name="svuotaCarrelloRadioButton" Command="{Binding svuotaCarrelloCommand}" />
+					<Separator />
+						<Label Content="Operazioni di Riga" HorizontalContentAlignment="Center"/>
+					<Separator />
+					<RadioButton Content="Elimina Riga" Tag="240" Style="{StaticResource {x:Type ToggleButton}}" Width="200" GroupName="vediSelezGrp" ToolTip="Vedi tutte le foto"  CommandParameter="false" Command="{Binding eliminaRigaCommand}" />
+                    <RadioButton Content="Elimina Dischetto" Tag="240" Style="{StaticResource {x:Type ToggleButton}}" Width="200" GroupName="vediSelezGrp" ToolTip="Vedi tutte le foto"  CommandParameter="false" Command="{Binding eliminaDischettoCommand}" />
+					<Separator />
+                    <DockPanel Visibility="{Binding Path=IsQuantitaControlVisible}">
+                        <Label DockPanel.Dock="Top" Content="Quantita" HorizontalContentAlignment="Center"/>
+                        <Separator DockPanel.Dock="Top" />
+                        <RadioButton DockPanel.Dock="Top" Content="+" Tag="240" Style="{StaticResource {x:Type ToggleButton}}" Height="50"  Width="100" GroupName="vediSelezGrp" ToolTip="Aggiungi foto"  CommandParameter="+" Command="{Binding UpdateQuantitaCommand}" FontSize="24" />
+                        <TextBox DockPanel.Dock="Top" Text="{Binding Path=QuantitaRigaSelezionata,Mode=TwoWay}" Grid.Row="2" Grid.Column="3" TextAlignment="Center" FontSize="24" />
+                        <RadioButton DockPanel.Dock="Top" Content="-" Tag="240" Style="{StaticResource {x:Type ToggleButton}}"  Height="50"  Width="100" GroupName="vediSelezGrp" ToolTip="Elimina Foto"  CommandParameter="-" Command="{Binding UpdateQuantitaCommand}" FontSize="24" />
+                    </DockPanel>
                 </ToolBar>
             </ToolBarTray>
         </Expander>
 
-        <Label Content="Sconto" Height="28" HorizontalAlignment="Left" Margin="550,660,0,0" Name="label1" VerticalAlignment="Top" Width="65" />
-        <GroupBox Header="Cassa" Grid.Column = "1" Grid.Row = "2" Margin="0,32,0,12">
-            <StackPanel>
-                <Label Content="Totale Foto Selezionate" />
-                <TextBlock Text="{Binding Path=TotaleFotoSelezionate}" />
-                <Label Content="Sconto Applicato" />
-                <TextBlock Text="30%" />
-                <Label Content="Totale" />
-                <TextBlock Text="{Binding Path=PrezzoTotale}" />
-            </StackPanel>
-        </GroupBox>
-    </Grid>
+		<Expander Header="Cassa" DockPanel.Dock="Top" IsExpanded="True" ExpandDirection="Down">	
+			<GroupBox Header="Cassa">
+				<Grid Height="80">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="*" />
+						<RowDefinition Height="*" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<Label Content="Prezzo Intero" Grid.Row="0" Grid.Column="0" />
+					<Label Content="€ " Grid.Row="0" Grid.Column="1" />
+					<Label Content="Intestazione" Grid.Row="0" Grid.Column="2" />
+					<TextBox Text="{Binding Path=IntestazioneCarrello}" Grid.Row="0" Grid.Column="3" />
+					<Label Content="{Binding Path=PrezzoTotaleIntero}" Grid.Column="1" Height="27" Margin="10,0,0,0" />
+					<Label Content="Sconto Applicato" Grid.Row="1" Grid.Column="0" />
+					<Label Content="{Binding Path=ScontoApplicato}" Grid.Row="1" Grid.Column="1"/>
+					<Label Content="Giornata" Grid.Row="1" Grid.Column="2" />
+					<Label Content="{Binding Path=GiornataCarrello}" Grid.Row="1" Grid.Column="3" Height="27" VerticalAlignment="Bottom" />
+					<Label Content="Totale A Pagare Euro:" Grid.Row="2" Grid.Column="2" />
+					<TextBox Text="{Binding Path=PrezzoTotaleForfettario, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="3" TextAlignment="Left" />
+				</Grid>
+			</GroupBox>
+		</Expander>
+
+		<DockPanel>
+
+			<StatusBar DockPanel.Dock="Bottom" >
+				<StatusBarItem>
+					<StackPanel Orientation="Horizontal">
+						<Label Content="Operazione in Corso: " />
+						<StatusBarItem>
+							<Image Source="{Binding StatusStatoMasterizzazioneImage}" Width="16" Height="16" ToolTip="Stato della Masterizzazione" />
+						</StatusBarItem>
+						<Label Content="Percentuale Completamento: "/>
+						<Label Content="{Binding Path=MasterizzazionePorgress}" ToolTip="Operazione In Corso"/>
+					</StackPanel>
+				</StatusBarItem>
+			</StatusBar>
+			
+			
+			<Expander Header="Carrelli Salvati" DockPanel.Dock="Bottom" IsExpanded="True" ExpandDirection="Up">
+				<Grid >
+					<ListBox x:Name="listCarrelli" SelectionMode="Single"
+						Style="{StaticResource ListaCarrelliStyle}"
+						ItemsSource="{Binding Path=Carrelli}" 
+						ItemsPanel="{DynamicResource ListaCarrelliItemsPanelTemplate}" 
+						ItemTemplate="{DynamicResource ListaCarrelliDataTemplate}"
+						ScrollViewer.VerticalScrollBarVisibility="Disabled"
+						ScrollViewer.HorizontalScrollBarVisibility="Visible" Margin="1,23,-1,92" Height="75">
+						<i:Interaction.Triggers>
+							<i:EventTrigger EventName="SelectionChanged">
+								<i:InvokeCommandAction Command="{Binding UpdateDatiCarrello}"/>
+							</i:EventTrigger>
+						</i:Interaction.Triggers>
+					</ListBox>
+					<GroupBox Header="Proprietà" Margin="0,101,0,12">
+						<Grid Height="54">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="*" />
+								<RowDefinition Height="*" />
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+							<!--Grid.ColumnSpan="2"-->
+							<Label Content="Nome Carrello" Grid.Row="0" Grid.Column="0" />
+							<Label Content="{Binding Path=NomeCarrelloMemorizzato}" Grid.Row="1" Grid.Column="0" />
+							<Label Content="Fotografo" Grid.Row="0" Grid.Column="1" />
+							<TextBlock Text="{Binding Path=FotografoCarrelloMemorizzato}" Grid.Row="1" Grid.Column="1" />
+							<Label Content="Totale Foto Carrello" Grid.Row="0" Grid.Column="2" />
+							<Label Content="{Binding Path=TotaleFotoCarrelloMemorizzato}" Grid.Row="1" Grid.Column="2" />
+							<Label Content="{Binding Path=FotografoAlbum}" Grid.Row="0" Grid.Column="0" />
+							<Label Content="Prezzo" Grid.Row="0" Grid.Column="3" />
+							<Label Content="{Binding Path=TotalePrezzoCarrelloMemorizzato}" Grid.Row="1" Grid.Column="3" />
+						</Grid>
+					</GroupBox>
+				</Grid>
+			</Expander>
+
+            <Grid DockPanel.Dock="Top" x:Name="listMasterizzate" Visibility="{Binding Path=IsControlVisible}">
+                <ListBox 
+                    Height="100"
+                    ItemsSource="{Binding Path=RiCaDiscoMasterizzatoCv}" Name="dataGrid"
+                    ItemsPanel="{DynamicResource ImageMasterizzatoreItemsPanelTemplate}" 
+					ItemTemplate="{DynamicResource ImageMasterizzatoreDataTemplate}"
+                    Margin="0,10">
+                </ListBox>
+            </Grid>
+            
+			<!-- Questa è la lista delle immagini -->
+			<ListBox x:Name="listCarrello" 
+					 SelectionMode="Single" 
+					 Style="{StaticResource ListCarrelloStyle}"
+					 ItemsSource="{Binding Path=RiCaFotoStampataCv}"
+					 SelectedIndex="{Binding Path=RigheCarrelloCvSelectedIndex, Mode=TwoWay}"
+					 SelectedItem="{Binding Path=RigheCarrelloCvSelected}"
+					 ItemsPanel="{DynamicResource ImageCarrelloItemsPanelTemplate}" 
+					 ItemTemplate="{DynamicResource ImageCarrelloDataTemplate}"
+					 ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+
+					<i:Interaction.Triggers>
+						<i:EventTrigger EventName="SelectionChanged">
+							<i:InvokeCommandAction Command="{Binding CalcolaTotali}"/>
+						</i:EventTrigger>
+					</i:Interaction.Triggers>
+			</ListBox>
+		</DockPanel>
+	</DockPanel>
 </lumM:UserControlBase>

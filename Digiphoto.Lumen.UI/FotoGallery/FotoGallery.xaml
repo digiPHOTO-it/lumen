@@ -33,7 +33,7 @@
             
             <ToolBar Band="2" BandIndex="1">
                 <Button Command="{Binding Path=aggiungereAlMasterizzatoreCommand}">
-                    <Image Source="http://cdn1.iconfinder.com/data/icons/STROKE/video_production/png/256/dvd_burn.png" Width="48" />
+					<Image Source="/Digiphoto.Lumen.UI;component/Resources/DvdBurn-48x48.png" Width="48" />
                 </Button>
                 <Button>
                     Funz8

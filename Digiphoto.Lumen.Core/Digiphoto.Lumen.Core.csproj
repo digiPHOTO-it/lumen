@@ -170,6 +170,7 @@
     <Compile Include="src\Servizi\Stampare\StampantiAbbinateSrvImpl.cs" />
     <Compile Include="src\Servizi\Stampare\StampantiInstallateSrvImpl.cs" />
     <Compile Include="src\Servizi\Stampare\StampatoMsg.cs" />
+    <Compile Include="src\Servizi\Vendere\GestoreCarrelloMsg.cs" />
     <Compile Include="src\Servizi\Vendere\GestoreCarrello.cs" />
     <Compile Include="src\Servizi\Vendere\IVenditoreSrv.cs" />
     <Compile Include="src\Servizi\Vendere\VenditoreSrvImpl.cs" />

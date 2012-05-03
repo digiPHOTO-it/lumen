@@ -13,6 +13,7 @@ using System.Transactions;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Servizi.Masterizzare;
 using Digiphoto.Lumen.Database;
+using System.Windows.Forms;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 
@@ -66,8 +67,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		}
 
-		
-
+		void updateCarrello()
+		{
+			GestoreCarrelloMsg msg = new GestoreCarrelloMsg(this);
+			msg.fase = Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.UpdateCarrello;
+			LumenApplication.Instance.bus.Publish(msg);
+		}
 
 		/** 
 		 * Per ogni foto indicata, creo una nuova riga di carrello
@@ -77,6 +82,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				AiutanteFoto.idrataImmaginiFoto( foto );
 				carrello.righeCarrello.Add( creaRiCaFotoStampata( foto, param ) );
 			}
+			// Notifico al carrello l'evento
+			updateCarrello();
 		}
 
 		
@@ -90,6 +97,43 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			gestoreCarrello.creaNuovo();
 		}
 
+		public void salvaCarrello()
+		{
+
+			_giornale.Debug("carrello valido. Inizio operazioni di produzione");
+
+			//
+			// Siccome l'esito della stampa e della masterizzazione lo riceverò più tardi 
+			// ed in modo asincrono, in questo momento non posso fare altro che dare per scontato
+			// che andrà tutto bene.
+			// Quindi memorizzo il carrello intero. Poi gestirò i problemi (sperando che non ce ne siano).
+			//
+
+			using (TransactionScope transaction = new TransactionScope())
+			{
+
+				try
+				{
+
+					aggiornaTotFotoMasterizzate();
+
+					// Poi salvo il carrello
+					gestoreCarrello.salva();
+
+				}
+				catch (Exception eee)
+				{
+					_giornale.Error("Impossibile salvare il carrello", eee);
+					MessageBox.Show("Carrello non salvato Correttamente \n"+eee, "ERRORE");
+					// Purtoppo devo andare avanti lo stesso, perché non posso permettermi 
+					// di non fare uscire le foto. Altrimenti i clienti in fila si arrabbiano
+					// ed il commesso non può incassare.
+					// In ogni caso è un errore grave.  >>> THE SHOW MUST GO ON !  <<<
+				}
+
+				transaction.Complete();
+			}
+		}
 
 		public void confermaCarrello() {
 
@@ -127,7 +171,18 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			// Poi lancio la masterizzazione
 			eventualeMasterizzazione();
+		}
 
+		public void removeRigaCarrello(RigaCarrello rigaCarrello)
+		{
+			carrello.righeCarrello.Remove(rigaCarrello);
+		}
+
+		public void removeCarrello(Carrello carrello)
+		{
+			UnitOfWorkScope.CurrentObjectContext.Carrelli.Attach(carrello);
+			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+			dbContext.Carrelli.Remove(carrello);
 		}
 
 		//
@@ -233,7 +288,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				return;
 
 			_masterizzaSrvImpl.start();
-
 			_masterizzaSrvImpl.masterizza( carrello.id );
 		}
 
@@ -272,9 +326,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			// TODO gestire lo storno
 			// Vado a correggere questa riga
-			using( GestoreCarrello altroGestoreCarrello = new GestoreCarrello() ) {
-				altroGestoreCarrello.stornoMasterizzate( (Guid)masterizzaMsg.senderTag, (short)masterizzaMsg.totFotoAggiunte, (short)masterizzaMsg.totFotoNonAggiunte );
-			}
+			//using( GestoreCarrello altroGestoreCarrello = new GestoreCarrello() ) {
+			//    altroGestoreCarrello.stornoMasterizzate( (Guid)masterizzaMsg.senderTag, (short)masterizzaMsg.totFotoAggiunte, (short)masterizzaMsg.totFotoNonAggiunte );
+			//}
 
 		}
 
@@ -310,9 +364,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			_giornale.Error( "il lavoro di stampa non è andato a buon fine: " + lavoroDiStampa.ToString() );
 
 			// Vado a correggere questa riga
-			using( GestoreCarrello altroGestoreCarrello = new GestoreCarrello() ) {
-				altroGestoreCarrello.stornoRiga( lavoroDiStampa.param.idRigaCarrello );
-			}
+			//using( GestoreCarrello altroGestoreCarrello = new GestoreCarrello() ) {
+			//    altroGestoreCarrello.stornoRiga( lavoroDiStampa.param.idRigaCarrello );
+			//}
 
 		}
 
@@ -331,6 +385,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				gestoreCarrello.Dispose();
 			
 			gestoreCarrello = new GestoreCarrello();
+			gestoreCarrello.creaNuovo();
 
 			if( _masterizzaSrvImpl != null ) {
 				_masterizzaSrvImpl.Dispose();
@@ -363,6 +418,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			// Aggiungo le foto alla lista
 			_masterizzaSrvImpl.addFotografie( fotografie );
+			// Notifico al carrello l'evento
+			updateCarrello();
 		}
 
 

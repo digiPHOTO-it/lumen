@@ -11,6 +11,7 @@ using Digiphoto.Lumen.Applicazione;
 using System.Data.Objects;
 using System.Data;
 using System.Data.Entity.Infrastructure;
+using System.Windows.Forms;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 	
@@ -53,8 +54,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		public void creaNuovo() {
 			carrello = new Carrello();
 			carrello.righeCarrello = new EntityCollection<RigaCarrello>();
+			//Metto un'intestazione automatica per distinguere i carrello autogenerato dagli altri
+			carrello.intestazione = "Auto";
+		
 		}
-
 
 		/**
 		 * Mi dice se il carrello corrente è valido e pronto per essere salvato.
@@ -105,7 +108,30 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				carrello.giornata = LumenApplication.Instance.stato.giornataLavorativa;
 				carrello.tempo = DateTime.Now;
 				guidCarrello = Guid.NewGuid();
+
+				foreach(RigaCarrello rigaCarrello in carrello.righeCarrello){
+					if (rigaCarrello is RiCaFotoStampata)
+					{
+						RiCaFotoStampata rica = rigaCarrello as RiCaFotoStampata;
+						dbContext.Fotografie.Attach(rica.fotografia);
+						dbContext.FormatiCarta.Attach(rica.formatoCarta);
+						dbContext.Fotografi.Attach(rica.fotografo);
+					}
+				}
+
 				dbContext.Carrelli.Add( carrello );
+
+				foreach (RigaCarrello rigaCarrello in carrello.righeCarrello)
+				{
+					if (rigaCarrello is RiCaFotoStampata)
+					{
+						RiCaFotoStampata rica = rigaCarrello as RiCaFotoStampata;
+						dbContext.RigheCarrelli.Add(rica);
+					}else{
+						RiCaDiscoMasterizzato rica = rigaCarrello as RiCaDiscoMasterizzato;
+						dbContext.RigheCarrelli.Add(rica);
+					}
+				}
 
 			} else {
 				guidCarrello = carrello.id;

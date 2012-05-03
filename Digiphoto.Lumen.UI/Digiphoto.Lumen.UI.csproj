@@ -331,6 +331,24 @@
   <ItemGroup>
     <Resource Include="Resources\ssEmpty-16x16.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\DvdBurn-48x48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Cassa-48x48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Carrello-48x48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\ssBurn-16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\ssCompleate-16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\ssErroreMedia-16x16.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
