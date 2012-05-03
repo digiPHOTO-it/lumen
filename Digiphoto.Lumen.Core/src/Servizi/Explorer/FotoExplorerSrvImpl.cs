@@ -81,7 +81,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			foreach( Fotografia fotografia in fotografie ) {
 
 				// Per essere più veloce, idrato solo l'immagine del provino.
-				AiutanteFoto.idrataImmaginiFoto( IdrataTarget.Provino, fotografia );
+				AiutanteFoto.idrataImmaginiFoto( fotografia, IdrataTarget.Provino );
 				// TODO forse occorre lanciare un evento di foto caricata ??? 
 				//      essendo la collezione bindabile, forse non ce ne sarà bisogno..... 
 				//      vedremo. Per ora risparmio fatica.

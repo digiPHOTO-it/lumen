@@ -161,7 +161,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 			objContext.ObjectContext.Refresh( RefreshMode.StoreWins, fotografia );
 
 			fotografia.imgProvino = null;  // Questo forza la rilettura del provino da disco
-			AiutanteFoto.idrataImmaginiFoto( IdrataTarget.Provino, fotografia );
+			AiutanteFoto.idrataImmaginiFoto( fotografia, IdrataTarget.Provino );
 		}
 
 
@@ -198,7 +198,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 			foreach( Fotografia foto in modificate ) {
 
 				// Ora idrato l'immagine risultante
-				AiutanteFoto.idrataImmaginiFoto( IdrataTarget.Risultante, foto );
+				AiutanteFoto.idrataImmaginiFoto( foto, IdrataTarget.Risultante );
 
 				// Per forza di cose, devo ricreare il provino partendo dalla risultante
 				IGestoreImmagineSrv gis = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();

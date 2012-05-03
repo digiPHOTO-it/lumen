@@ -500,7 +500,7 @@ namespace Digiphoto.Lumen.UI {
 				} else {
 
 					// Perform a time consuming operation and report progress.
-					AiutanteFoto.idrataImmaginiFoto( IdrataTarget.Provino, fotoExplorerSrv.fotografie [ii] );
+					AiutanteFoto.idrataImmaginiFoto( fotoExplorerSrv.fotografie[ii], IdrataTarget.Provino );
 					// worker.ReportProgress( 123 );
 				}
 			}

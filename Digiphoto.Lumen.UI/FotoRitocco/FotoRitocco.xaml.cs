@@ -139,11 +139,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		void cambiareModoEditor( object sender, EditorModeEventArgs args ) {
+
 			if( args.modalitaEdit == ModalitaEdit.GestioneMaschere ) {
 				primoPianoCanvasMask( false );
-				Console.Write( "STOP" );
 			} else {
 				primoPianoCanvasMask( true );
+
+				azzeraGestioneMaschere();
 			}
 		}
 
@@ -152,15 +154,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			Fotografia foto = e.Data.GetData( typeof( Fotografia ) ) as Fotografia;
 			if( foto != null ) {
 				
+				// Devo creare una image con la foto grande (il provino non basta più).
 				Image image = new Image();
 
-				AiutanteFoto.idrataImmaginiFoto( IdrataTarget.Risultante, foto, true );
-				AiutanteFoto.idrataImmaginiFoto( IdrataTarget.Originale, foto, true );
+				IImmagine immagine = AiutanteFoto.idrataImmagineGrande( foto );
 
-				IImmagine immagine = foto.imgRisultante != null ? foto.imgRisultante : foto.imgOrig; 
-				//image.Height = double.NaN;
-				//image.Width = double.NaN;
-
+				// per evitare che l'immagine sfori le dimensioni del video, la faccio sempre grande la metà della zona visibile.
 				if( immagine.orientamento == Orientamento.Orizzontale )
 					image.Width = imageMask.Width / 2;
 				else
@@ -429,9 +428,16 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			// boh!...   Con questo trucco tutto si sistema.
 			Window w = new Window();
 			try {
-				w.Visibility = Visibility.Visible;
+
 				w.Content = canvasDefinitivo;
-				w.ShowDialog();
+				if( 1 == 1 ) {
+					w.Visibility = Visibility.Hidden;
+					w.Show();
+				} else {
+					// per debug si può anche visualizzare il risultato
+					w.Visibility = Visibility.Visible;
+					w.ShowDialog();
+				}
 
 				RenderTargetBitmap bitmapIncorniciata = componiBitmapDaMaschera( canvasDefinitivo );
 
@@ -440,6 +446,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				w.Close();
 			}
 
+			rimuoviTutteLeManigliette();
 		}
 
 
@@ -467,6 +474,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			return rtb;
 		}
 
+		/// <summary>
+		/// Quando rifiuto la maschera, devo togliere dal video eventuali componenti grafici rimasti in mezzo ai piedi.
+		/// </summary>
+		void azzeraGestioneMaschere() {
+			// Elimino le foto che sono state droppate sul canvas
+			canvasMsk.Children.Clear();
+		}
 
 	}
 }

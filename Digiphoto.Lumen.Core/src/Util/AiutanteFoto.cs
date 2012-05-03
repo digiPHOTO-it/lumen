@@ -38,17 +38,17 @@ namespace Digiphoto.Lumen.Util {
 		/// Per decidere più puntualmente usare l'altro overload dove si indica il target
 		/// </summary>
 		public static void idrataImmaginiFoto( Fotografia foto ) {
-			idrataImmaginiFoto( IdrataTarget.Tutte, foto );
+			idrataImmaginiFoto( foto, IdrataTarget.Tutte );
 		}
 
 		/** 
 		 * Devo caricare gli attributi transienti della fotografia 
 		 */
-		public static void idrataImmaginiFoto( IdrataTarget target, Fotografia foto ) {
-			idrataImmaginiFoto( target, foto, false );
+		public static void idrataImmaginiFoto( Fotografia foto, IdrataTarget target ) {
+			idrataImmaginiFoto( foto, target, false );
 		}
 
-		public static void idrataImmaginiFoto( IdrataTarget target, Fotografia foto, bool forzatamente ) {
+		public static void idrataImmaginiFoto( Fotografia foto, IdrataTarget target, bool forzatamente ) {
 			
 			IGestoreImmagineSrv gis = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
 
@@ -74,6 +74,29 @@ namespace Digiphoto.Lumen.Util {
 				_giornale.Warn( "Impossibile caricare immagine della foto " + foto.ToString() );
 			}
 
+		}
+
+		/// <summary>
+		/// Voglio ricavare l'immagine grande.
+		///  Se la foto in esame possiede una immagine grande risultante (quindi modificata) prendo quella.
+		///  Se invece non esiste l'immagine modificata, prendo quella grande originale.
+		///  L'immagine in questione viene anche idratata
+		/// </summary>
+		/// <param name="foto"></param>
+		/// <returns></returns>
+		public static IImmagine idrataImmagineGrande( Fotografia foto ) {
+			
+			IImmagine immagine = null;
+
+			AiutanteFoto.idrataImmaginiFoto( foto, IdrataTarget.Risultante );
+			immagine = foto.imgRisultante;
+
+			// Se non l'ho trovata, prendo l'immagine grande originale
+			if( immagine == null ) {
+				AiutanteFoto.idrataImmaginiFoto( foto, IdrataTarget.Originale );
+				immagine = foto.imgOrig;
+			}
+			return immagine;
 		}
 
 		public static void creaProvinoFoto( Fotografia foto ) {
