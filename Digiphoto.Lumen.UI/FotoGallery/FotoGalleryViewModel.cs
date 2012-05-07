@@ -25,6 +25,7 @@ using Digiphoto.Lumen.UI.Pubblico;
 using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
 using Digiphoto.Lumen.Servizi.Ritoccare;
 using Digiphoto.Lumen.Util;
+using Digiphoto.Lumen.UI.Main;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -42,6 +43,8 @@ namespace Digiphoto.Lumen.UI {
 			selettoreEventoViewModel = new SelettoreEventoViewModel();
 
 			selettoreFotografoViewModel = new SelettoreFotografoViewModel();
+
+			dimensioneIconaFoto = 120;  // Valore di default per la grandezza dei fotogrammi da visualizzare.
 
 			if( IsInDesignMode ) {
 
@@ -212,7 +215,7 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		#endregion   // fasi del giorno
+		#endregion fasi del giorno
 
 		public bool possoSelezionareTutto {
 			get {
@@ -226,7 +229,21 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		#endregion   // Proprietà
+		double _dimensioneIconaFoto;
+		public double dimensioneIconaFoto {
+			get {
+				return _dimensioneIconaFoto;
+			}
+			set {
+				if( _dimensioneIconaFoto != value ) {
+					_dimensioneIconaFoto = value;
+					OnPropertyChanged( "dimensioneIconaFoto" );
+				}
+			}
+		}
+
+
+		#endregion Proprietà
 
 		#region Comandi
 
@@ -574,9 +591,17 @@ namespace Digiphoto.Lumen.UI {
 
 			// Pubblico un messaggio indicando che ci sono delle foto da modificare.
 			FotoDaModificareMsg msg = new FotoDaModificareMsg( this );
-			msg.fotosDaModificare.AddRange( creaListaFotoSelezionate() );
+			msg.fotosDaModificare.InsertRange( 0, creaListaFotoSelezionate() );
 			LumenApplication.Instance.bus.Publish( msg );
 		
+		}
+
+		internal void mandareInModificaImmediata( Fotografia foto ) {
+			// Pubblico un messaggio indicando che ci sono delle foto da modificare.
+			FotoDaModificareMsg msg = new FotoDaModificareMsg( this );
+			msg.immediata = true;
+			msg.fotosDaModificare.Insert( 0, foto );
+			LumenApplication.Instance.bus.Publish( msg );
 		}
 
 		#endregion Metodi

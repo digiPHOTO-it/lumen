@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using Digiphoto.Lumen.Servizi.Stampare;
 using Digiphoto.Lumen.UI.Mvvm;
 using Digiphoto.Lumen.UI.ScreenCapture;
+using Digiphoto.Lumen.Model;
 
 namespace Digiphoto.Lumen.UI {
 	/// <summary>
@@ -96,6 +97,13 @@ namespace Digiphoto.Lumen.UI {
 		}
 		public static DateTime maxDate( DateTime aa, DateTime bb ) {
 			return aa > bb ? aa : bb;
+		}
+		
+		private void listBoxItemImageGallery_MouseDoubleClick( object sender, RoutedEventArgs e ) {
+
+			ListBoxItem lbItem = (ListBoxItem) sender;
+			Fotografia f = lbItem.Content as Fotografia;
+			fotoGalleryViewModel.mandareInModificaImmediata( f );
 		}
 
 	}

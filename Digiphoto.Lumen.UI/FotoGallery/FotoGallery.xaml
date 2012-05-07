@@ -17,40 +17,32 @@
     </lumM:UserControlBase.DataContext>
 
     <UserControl.Resources>
+
         <ResourceDictionary Source="FotoGalleryResources.xaml" />
+
     </UserControl.Resources>
     
     <DockPanel>
         
         <ToolBarTray DockPanel.Dock="Left" Orientation="Vertical">
-
-            <ToolBar Band="1" BandIndex="1" Name="stampaToolBar" 
+            
+            <ToolBar>
+                <Button Command="{Binding mandareInModificaCommand}" ToolTip="aggiunge alla lista delle foto da modificare" >
+                    <Image Source="/Digiphoto.Lumen.UI;component/Resources/PhotoEdit-48x48.png" />
+                </Button>
+                <Separator />
+                
+                <Button Command="{Binding Path=aggiungereAlMasterizzatoreCommand}">
+                    <Image Name="qqq" Source="/Digiphoto.Lumen.UI;component/Resources/DvdBurn-48x48.png"  />
+                </Button>
+            </ToolBar>
+            
+            <ToolBar Name="stampaToolBar" 
                      Header="Stampe"
                      ItemsSource="{Binding stampantiAbbinate}" 
                      ItemTemplate="{StaticResource pulsanteDiStampaTemplate}" >                
             </ToolBar>
-            
-            
-            <ToolBar Band="2" BandIndex="1">
-                <Button Command="{Binding Path=aggiungereAlMasterizzatoreCommand}">
-					<Image Source="/Digiphoto.Lumen.UI;component/Resources/DvdBurn-48x48.png" Width="48" />
-                </Button>
-                <Button>
-                    Funz8
-                </Button>
-                <Button>
-                    Funz9
-                </Button>
-            </ToolBar>
-            <ToolBar Band="2" BandIndex="2">
-                <Button Content="Funz1" />
-                <Button Content="Funz2" />
-                <Button Content="Funz3" />
-                <Separator/>
-                <Button Content="Funz4" />
-                <Button Content="Funz5" />
-                <Button Content="Funz6" />
-            </ToolBar>
+
         </ToolBarTray>
 
         <Expander DockPanel.Dock="Right" Header="View" IsExpanded="True" ExpandDirection="Left">
@@ -63,14 +55,16 @@
                     <RadioButton Content="***" Tag="60" Style="{StaticResource {x:Type ToggleButton}}" Width="32" Name="viewPiccolaRadioButton" Checked="viewPiccolaRadioButton_Checked" />
                     <Slider Name="dimensioneIconeSlider" 
                             Minimum="32" Maximum="2000"
-                            Orientation="Vertical" Height="50" Value="120" HorizontalAlignment="Center" />
+                            Orientation="Vertical" Height="50" 
+                            Value="{Binding Path=dimensioneIconaFoto,Mode=TwoWay}"
+                            HorizontalAlignment="Center" />
                     <Separator />
                     <Button Content="+Selez" Command="{Binding selezionareTuttoCommand}" CommandParameter="True" />
                     <Button Content="-Deselez" Command="{Binding selezionareTuttoCommand}" CommandParameter="False" />
                     <RadioButton Content="All"  Style="{StaticResource {x:Type ToggleButton}}"  Width="32" GroupName="vediSelezGrp" ToolTip="Vedi tutte le foto" Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="false" />
                     <RadioButton Content="Selez" Style="{StaticResource {x:Type ToggleButton}}"  Width="32" GroupName="vediSelezGrp" ToolTip="Vedi solo le foto selezionate" Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="true" />
-                    <Separator />
-                    <Button Content="Modificare" Command="{Binding mandareInModificaCommand}" ToolTip="aggiunge alla lista delle foto da modificare" />
+                   
+                   
                 </ToolBar>
 
                 <ToolBar Band="2" BandIndex="2" Header="Pubblico">
@@ -158,8 +152,16 @@
                  ItemsSource="{Binding Path=fotografieCW}" 
                  ItemsPanel="{DynamicResource ImageGalleryItemsPanelTemplate}" 
                  ItemTemplate="{DynamicResource fotografiaDataTemplate}"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
- 
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                    <EventSetter Event="MouseDoubleClick" Handler="listBoxItemImageGallery_MouseDoubleClick" />
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            
+        </ListBox>
+
     </DockPanel>
 
 </lumM:UserControlBase>

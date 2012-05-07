@@ -19,9 +19,9 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 			fotosDaModificare = new List<Fotografia>();
 		}
 
-		public List<Fotografia> fotosDaModificare {
-			get;
-			set;
-		}
+		public List<Fotografia> fotosDaModificare { get; set; }
+
+		public bool immediata { get; set; }
+
 	}
 }

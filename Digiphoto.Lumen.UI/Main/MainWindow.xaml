@@ -16,14 +16,14 @@
     </Window.Resources>
 
 
-    <TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Top">
+    <TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Top" Name="tabControlPagine">
         
         <TabItem Header="Scarica" ToolTip="Scarica foto da memory-card o da altra cartella" MinHeight="30" >
             <!-- UserControl per scaricare le foto -->
             <lum:ScaricatoreFoto />
         </TabItem>
 
-        <TabItem Header="Aggiusta" ToolTip="Correggi, organizza e tagga foto" >
+        <TabItem Name="tabItemAggiusta" Header="Aggiusta" ToolTip="Correggi, organizza e tagga foto" >
             <lumFR:FotoRitocco x:Name="fotoRitoccoUserControl" />
         </TabItem>
 

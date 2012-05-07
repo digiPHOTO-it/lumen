@@ -2,7 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
                     xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo">
-
   
 
     <!-- Stile della listbox che itera le immagini -->
@@ -28,6 +27,7 @@
 
     <!-- Style per ogni elemento della collection. Setto il colore selezionato = giallo -->
     <Style x:Key="ImageGalleryImageContainerStyle" TargetType="ListBoxItem">
+
         <Style.Resources>
             <!--SelectedItem with focus -->
             <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Yellow" />
@@ -70,6 +70,5 @@
             </StackPanel>
         </Button>
     </DataTemplate>
-
 
 </ResourceDictionary>

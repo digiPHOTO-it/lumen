@@ -49,7 +49,9 @@ namespace Digiphoto.Lumen.Util {
 		}
 
 		public static void idrataImmaginiFoto( Fotografia foto, IdrataTarget target, bool forzatamente ) {
-			
+
+			System.Diagnostics.Debug.Assert( foto != null );  // Non deve succedere. Punto e basta.
+
 			IGestoreImmagineSrv gis = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
 
 			try {	        
@@ -71,7 +73,7 @@ namespace Digiphoto.Lumen.Util {
 				
 			} catch (Exception ee) {
 				// Se non riesco a caricare una immagine, non posso farci niente qui. Devo tirare dritto.
-				_giornale.Warn( "Impossibile caricare immagine della foto " + foto.ToString() );
+				_giornale.Warn( "Impossibile caricare immagine della foto " + foto );
 			}
 
 		}
