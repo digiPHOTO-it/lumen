@@ -21,6 +21,8 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		private DispatcherTimer _orologio;
 
 		public SlideShowViewModel() {
+			// La dimensione delle foto deve essere calcolata in automatico in base alle dimensione del canvas che le contiene
+			dimensioneIconaFoto = double.NaN;
 		}
 
 		#region Proprietà
@@ -80,6 +82,19 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		private bool sonoEntrateNuoveFotoNelFrattempo {
 			get;
 			set;
+		}
+
+		double _dimensioneIconaFoto;
+		public double dimensioneIconaFoto {
+			get {
+				return _dimensioneIconaFoto;
+			}
+			set {
+				if( _dimensioneIconaFoto != value ) {
+					_dimensioneIconaFoto = value;
+					OnPropertyChanged( "dimensioneIconaFoto" );
+				}
+			}
 		}
 
 

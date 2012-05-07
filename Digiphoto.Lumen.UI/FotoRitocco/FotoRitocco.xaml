@@ -70,6 +70,9 @@
             <Button Name="salvareCorrezioniButton" Content="Applica" ToolTip="Applica le correzioni apportate" Command="{Binding salvareCorrezioniCommand}"  />
             <Button Name="salvareMascheraButton" Content="Salva Msk" ToolTip="Salva la maschera" Click="salvareMascheraButton_Click" />
             <Button Name="buttonModificaConPrgEsterno" Content="Editor" ToolTip="Modifica le foto con un programma esterno" Command="{Binding modificareConEditorEsternoCommand}" />
+            <Separator />
+            <Button Content="-All" ToolTip="Svuota la lista delle foto in attesa di essere modificate" Command="{Binding svuotareListaDaModificareCommand}" />
+            
         </StackPanel>
 
         <Expander DockPanel.Dock="Top"  Header="Cornici" ExpandDirection="Down"> <!-- Cornici -->
@@ -131,7 +134,7 @@
         <ListBox x:Name="listBoxImmaginiDaModificare"  DockPanel.Dock="Bottom"
                  SelectionMode="Multiple" lumMS:MultiSelect.IsEnabled="True" 
                  Style="{StaticResource listBoxImmaginiDaModificareStyle}"
-                 ItemsSource="{Binding Path=fotografieDaModificareCW}" 
+                 ItemsSource="{Binding Path=fotografieDaModificareCW,Mode=TwoWay}" 
                  ItemsPanel="{DynamicResource immaginiDaModificareItemsPanelTemplate}" 
                  ItemTemplate="{DynamicResource immaginiDaModificareDataTemplate}"
                  IsSynchronizedWithCurrentItem="True"
@@ -142,6 +145,7 @@
                     <Setter Property="Background" Value="Red" />
                     <Setter Property="BorderBrush" Value="Green" />
                     <Setter Property="BorderThickness" Value="3" />
+                    <!-- Questo evento serve per fare il drag della foto sulla cornice -->
                     <EventSetter Event="PreviewMouseDown" Handler="listBoxImmaginiDaModificare_PreviewMouseDown"/>
                 </Style>
             </ListBox.ItemContainerStyle>

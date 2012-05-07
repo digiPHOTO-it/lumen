@@ -24,6 +24,8 @@ using System.IO;
 using Digiphoto.Lumen.Config;
 using System.Windows.Media.Imaging;
 using System.Windows.Controls;
+using Digiphoto.Lumen.UI.Main;
+using System.Collections.ObjectModel;
 
 namespace Digiphoto.Lumen.UI.FotoRitocco {
 
@@ -45,7 +47,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				observable.Subscribe( this );
 
 
-				fotografieDaModificare = new List<Fotografia>();
+				fotografieDaModificare = new ObservableCollection<Fotografia>();
 				fotografieDaModificareCW = new MultiSelectCollectionView<Fotografia>( fotografieDaModificare );
 
 				modalitaEdit = ModalitaEdit.DefaultFotoRitocco;
@@ -229,10 +231,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			foreach( Fotografia foto in fotografieDaModificare )
 				Digiphoto.Lumen.Util.AiutanteFoto.idrataImmaginiFoto( foto );
  */
-		
 
-		private List<Fotografia> _fotografieDaModificare;
-		public List<Fotografia> fotografieDaModificare {
+		
+		private ObservableCollection<Fotografia> _fotografieDaModificare;
+		public ObservableCollection<Fotografia> fotografieDaModificare {
 			get {
 				return _fotografieDaModificare;
 			}
@@ -311,6 +313,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					_isTuttoBloccato = value;
 					OnPropertyChanged( "isTuttoBloccato" );
 				}
+			}
+		}
+
+		bool possoSvuotareListaDaModificare {
+			get {
+				return modificheInCorso == false &&
+					   fotografieDaModificare != null && fotografieDaModificare.Count > 0;
 			}
 		}
 
@@ -464,7 +473,20 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				return _modificareConEditorEsternoCommand;
 			}
 		}
+
+		private RelayCommand _svuotareListaDaModificareCommand;
+		public ICommand svuotareListaDaModificareCommand {
+			get {
+				if( _svuotareListaDaModificareCommand == null ) {
+					_svuotareListaDaModificareCommand = new RelayCommand( p => svuotareListaDaModificare(),
+																		  p => possoSvuotareListaDaModificare );
+				}
+				return _svuotareListaDaModificareCommand;
+			}
+		}
+
 	
+
 		#endregion Comandi
 
 		// ******************************************************************************************************
@@ -778,8 +800,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			if( this.fotografieDaModificare.Contains( f ) == false ) {
 				AiutanteFoto.idrataImmaginiFoto( f, IdrataTarget.Provino );
-				//			fotografieDaModificareCW.AddNewItem( f );
-				this.fotografieDaModificare.Add( f );
+				this.fotografieDaModificare.Insert( 0, f );
 			}
 		}
 
@@ -891,6 +912,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		void svuotareListaDaModificare() {
+			this.fotografieDaModificare.Clear();
+		}
+
 		#endregion Metodi
 
 		// **********************************************************************************************
@@ -912,12 +937,28 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		public void OnNext( FotoDaModificareMsg msg ) {
 
 			// Ecco che sono arrivate delle nuove foto da modificare
-			// Devo aggiungerle alla lista delle esistenti
+			// Devo aggiungerle alla lista delle foto in attesa di modifica.
 			foreach( Fotografia f in msg.fotosDaModificare )
 				addFotoDaModificare( f );
 
-			fotografieDaModificareCW = new MultiSelectCollectionView<Fotografia>( fotografieDaModificare );
-			OnPropertyChanged( "fotografieDaModificareCW" );
+			// Se richiesta la modifica immediata...
+			if( msg.immediata ) {
+				// ... e sono in modalità di fotoritocco
+				if( this.modalitaEdit == ModalitaEdit.DefaultFotoRitocco ) {
+					// ... e non ho nessuna altra modifica in corso ...
+					if( modificheInCorso == false ) {
+						fotografieDaModificareCW.SelectedItems.Clear();
+						foreach( Fotografia f in msg.fotosDaModificare )
+							fotografieDaModificareCW.SelectedItems.Add( f );
+						fotografieDaModificareCW.Refresh();
+					}
+				}
+
+				// Pubblico un messaggio di richiesta cambio pagina. Voglio andare sulla pagina del fotoritocco
+				CambioPaginaMsg cambioPaginaMsg = new CambioPaginaMsg( this );
+				cambioPaginaMsg.nuovaPag = "FotoRitoccoPag";
+				LumenApplication.Instance.bus.Publish( cambioPaginaMsg );
+			}
 		}
 
 		#endregion Gestori Eventi

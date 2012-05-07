@@ -103,6 +103,7 @@
       <DependentUpon>FotoRitocco.xaml</DependentUpon>
     </Compile>
     <Compile Include="FotoRitocco\FotoRitoccoViewModel.cs" />
+    <Compile Include="Main\CambioPaginaMsg.cs" />
     <Compile Include="Mvvm\IDialogProvider.cs" />
     <Compile Include="Mvvm\MultiSelect\IMultiSelectCollectionView.cs" />
     <Compile Include="Mvvm\MultiSelect\MultiSelect.cs" />
@@ -348,6 +349,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\ssErroreMedia-16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\PhotoEdit-48x48.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
