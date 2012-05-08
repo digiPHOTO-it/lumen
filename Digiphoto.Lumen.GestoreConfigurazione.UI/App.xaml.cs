@@ -38,7 +38,10 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI {
         {
             _giornale.Info("Uscita dall'applicazione");
 
-            // LumenApplication.Instance.ferma();
+			if (LumenApplication.Instance.avviata)
+			{
+				LumenApplication.Instance.ferma();
+			}
 
             base.OnExit(e);
         }
