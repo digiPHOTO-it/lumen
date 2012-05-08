@@ -33,7 +33,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
         public MainWindowViewModel()
         {
             //Blocco l'interfaccia fino al login
-            Disattivato = true;
+			Abilitato = false;
             listaMasterizzatori = new ObservableCollection<String>();
             caricaListaMasterizzatori();
             loadUserConfig();
@@ -359,18 +359,18 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
         #region Proprietà
 
-        private bool _disattivato;
-        public bool Disattivato
+		private bool _abilitato;
+		public bool Abilitato
         {
             get
             {
-                return _disattivato;
+				return _abilitato;
             }
             set{
-                if (_disattivato != value)
+				if (_abilitato != value)
                 {
-                    _disattivato = value;
-                    OnPropertyChanged("Disattivato");
+					_abilitato = value;
+					OnPropertyChanged("Abilitato");
                 }
             }
         }
@@ -1064,10 +1064,9 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             String administratorPasswordMd5 = Md5.MD5GenerateHash(LoginPassword.ToString());
             if (administratorPasswordMd5.Equals(Properties.Settings.Default.psw))
             {
-                Disattivato = true;
+                Abilitato = true;
 				fwButton = true;
 				annullaButton = true;
-                OnPropertyChanged("Disattivato");
 				OnPropertyChanged("fwButton");
 				OnPropertyChanged("annullaButton");
                 MessageBox.Show("Password OK", "Avviso");
@@ -1075,6 +1074,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             else
             {
                 MessageBox.Show("Password ERROR", "Avviso");
+				Abilitato = false;
             }
 
         }
