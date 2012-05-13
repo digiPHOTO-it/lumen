@@ -11,6 +11,9 @@ using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Imaging;
 using System.Data.Objects;
 using System.Data;
+using Digiphoto.Lumen.Servizi.Scaricatore;
+using Digiphoto.Lumen.Config;
+using System.Threading;
 
 namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
@@ -209,5 +212,27 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 			return modificate.ToArray();
 		}
+
+		public void acquisisciImmagineIncorniciata( string nomeFileImg ) {
+
+			// Per fare entrare la nuova foto, uso lo stesso servizio che uso normalmente per scaricare le memory-card
+			using( IScaricatoreFotoSrv srv = LumenApplication.Instance.creaServizio<IScaricatoreFotoSrv>() ) {
+
+				srv.start();
+
+				ParamScarica param = new ParamScarica();
+				param.nomeFileSingolo = nomeFileImg;
+				param.flashCardConfig = new Config.FlashCardConfig {
+					idFotografo = Configurazione.ID_FOTOGRAFO_ARTISTA
+				};
+
+				srv.scarica( param );
+
+				// Non devo attendere il completamento, perché quando scarico la singola foto, tutto avviene nello stesso thread
+			}
+	
+		
+		}
+
 	}
 }

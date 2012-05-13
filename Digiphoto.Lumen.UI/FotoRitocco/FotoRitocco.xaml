@@ -23,9 +23,7 @@
     </UserControl.Resources>
 
 
-<!--
-    <extToolkit:BusyIndicator x:Name="busyIndicatorRitocco"  IsBusy="{Binding Path=isTuttoBloccato}">
--->
+
         <DockPanel LastChildFill="True">
                 
         <StackPanel DockPanel.Dock="Left">  <!-- pulsantiera -->
@@ -208,8 +206,5 @@
 
 
     </DockPanel>
-<!--
-    </extToolkit:BusyIndicator>
--->
     
 </lumM:UserControlBase>

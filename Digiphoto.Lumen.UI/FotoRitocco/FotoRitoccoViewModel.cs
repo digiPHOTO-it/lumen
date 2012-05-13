@@ -26,11 +26,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Controls;
 using Digiphoto.Lumen.UI.Main;
 using System.Collections.ObjectModel;
+using Digiphoto.Lumen.Eventi;
+using Digiphoto.Lumen.Servizi.Scaricatore;
+using System.Windows.Threading;
 
 namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 
-	public class FotoRitoccoViewModel : ViewModelBase, IObserver<FotoDaModificareMsg> {
+	public class FotoRitoccoViewModel : ViewModelBase, IObserver<Messaggio> {
 
 		public delegate void EditorModeChangedEventHandler( object sender, EditorModeEventArgs args );
 		public event EditorModeChangedEventHandler editorModeChangedEvent;
@@ -43,13 +46,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			} else {
 
 				// Mi sottoscrivo per ascoltare i messaggi di richiesta di modifica delle foto.
-				IObservable<FotoDaModificareMsg> observable = LumenApplication.Instance.bus.Observe<FotoDaModificareMsg>();
+				IObservable<Messaggio> observable = LumenApplication.Instance.bus.Observe<Messaggio>();
 				observable.Subscribe( this );
 
 
 				fotografieDaModificare = new ObservableCollection<Fotografia>();
 				fotografieDaModificareCW = new MultiSelectCollectionView<Fotografia>( fotografieDaModificare );
-
+				
 				modalitaEdit = ModalitaEdit.DefaultFotoRitocco;
 			}
 
@@ -799,8 +802,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		void addFotoDaModificare( Fotografia f ) {
 
 			if( this.fotografieDaModificare.Contains( f ) == false ) {
-				AiutanteFoto.idrataImmaginiFoto( f, IdrataTarget.Provino );
+				//				fotografieDaModificareCW.AddNewItem( f );
 				this.fotografieDaModificare.Insert( 0, f );
+
+				AiutanteFoto.idrataImmaginiFoto( f, IdrataTarget.Provino );
 			}
 		}
 
@@ -886,18 +891,27 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 
 		// Devo creare una immagine modificata in base
-		internal void salvareImmagineIcorniciata( RenderTargetBitmap bitmapIncorniciata ) {
+		internal void salvareImmagineIncorniciata( RenderTargetBitmap bitmapIncorniciata ) {
 
 			BitmapFrame frame = BitmapFrame.Create( bitmapIncorniciata );
 			PngBitmapEncoder encoder = new PngBitmapEncoder();
 			encoder.Frames.Add( frame );
 
+			string tempFile = PathUtil.dammiTempFileConEstesione( "png" );
+
 			// ----- scrivo su disco
-			using( FileStream fs = new FileStream( @"c:\temp\modificata.png", FileMode.Create ) ) {
+			using( FileStream fs = new FileStream( tempFile, FileMode.Create ) ) {
 				encoder.Save( fs );
 				fs.Flush();
 			}
+
+			// Ora che il file su disco, devo portarlo dentro il database ed acquisirlo come una normale fotografia.
+			fotoRitoccoSrv.acquisisciImmagineIncorniciata( tempFile );
+
+			// spengo tutto
+			resetEffetti();
 		}
+
 
 		void modificareConEditorEsterno() {
 
@@ -913,7 +927,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		void svuotareListaDaModificare() {
-			this.fotografieDaModificare.Clear();
+
+			fotografieDaModificare.Clear();
+
+//			this.fotografieDaModificareCW.Refresh();
 		}
 
 		#endregion Metodi
@@ -934,21 +951,43 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		public void OnError( Exception error ) {
 		}
 
-		public void OnNext( FotoDaModificareMsg msg ) {
+		public void OnNext( Messaggio msg ) {
+
+			if( msg is FotoDaModificareMsg )
+				gestisciFotoDaModificareMsg( msg as FotoDaModificareMsg );
+
+			if( msg is NuovaFotoMsg )
+				gestisciNuovaFotoMsg( msg as NuovaFotoMsg );
+		}
+
+		private void gestisciNuovaFotoMsg( NuovaFotoMsg nuovaFotoMsg) {
+
+			if( AiutanteFoto.isMaschera( nuovaFotoMsg.foto ) ) {
+				// E' stata memorizzata una nuova fotografia che in realtà è una cornice
+				addFotoDaModificare( nuovaFotoMsg.foto );
+
+				// Visto che l'immagine del provino viene caricata in un altro thread, qui non sono in grado di visualizzarla. La devo rileggere per forza.
+				// Questo mi consente di visualizzare il provino come primo elemento 
+				AiutanteFoto.idrataImmaginiFoto( nuovaFotoMsg.foto, IdrataTarget.Provino, true );
+			}
+		}
+
+
+		private void gestisciFotoDaModificareMsg( FotoDaModificareMsg fotoDaModificareMsg ) {
 
 			// Ecco che sono arrivate delle nuove foto da modificare
 			// Devo aggiungerle alla lista delle foto in attesa di modifica.
-			foreach( Fotografia f in msg.fotosDaModificare )
+			foreach( Fotografia f in fotoDaModificareMsg.fotosDaModificare )
 				addFotoDaModificare( f );
 
 			// Se richiesta la modifica immediata...
-			if( msg.immediata ) {
+			if( fotoDaModificareMsg.immediata ) {
 				// ... e sono in modalità di fotoritocco
 				if( this.modalitaEdit == ModalitaEdit.DefaultFotoRitocco ) {
 					// ... e non ho nessuna altra modifica in corso ...
 					if( modificheInCorso == false ) {
 						fotografieDaModificareCW.SelectedItems.Clear();
-						foreach( Fotografia f in msg.fotosDaModificare )
+						foreach( Fotografia f in fotoDaModificareMsg.fotosDaModificare )
 							fotografieDaModificareCW.SelectedItems.Add( f );
 						fotografieDaModificareCW.Refresh();
 					}

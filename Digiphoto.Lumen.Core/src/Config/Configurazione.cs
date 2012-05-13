@@ -19,6 +19,8 @@ namespace Digiphoto.Lumen.Config  {
 		private IDictionary<String, String> _nomiServizi;
 		bool _autoSistemazione;
 
+		// Codice del fotografo usato per il fotoritocco
+		public const string ID_FOTOGRAFO_ARTISTA = "_Photo_Retouch";
 
 		public static string cartellaBaseFoto {
 			get {
@@ -320,12 +322,6 @@ namespace Digiphoto.Lumen.Config  {
 						_editorEsternoConfig.gestisceMultiArgs = Properties.Settings.Default.editorImmaginiMultiArgs;
 					}
 
-					// TODO forzatura da togliere
-					string gimpexe = @"C:\Program Files (x86)\GIMP-2\bin\gimp-2.6.exe";
-					if( File.Exists( gimpexe ) ) {
-						_editorEsternoConfig.commandLine = gimpexe;
-						_editorEsternoConfig.gestisceMultiArgs = true;
-					}
 				}
 
 				return _editorEsternoConfig;

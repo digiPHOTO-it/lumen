@@ -69,11 +69,15 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 				AiutanteFoto.disposeImmagini( foto );
 
-				// Quando sono a posto con la foto, sollevo un evento per avvisare tutti
-				// Siccome questa operazione è un pò onerosa, per il momento la disabilito.
-				// se servirà vedremo poi.
-				// NuovaFotoMsg msg = new NuovaFotoMsg( this, foto );
-				// LumenApplication.Instance.bus.Publish( msg );
+
+				// Se lavoro con una singola foto, allora lancio l'evento che mi dice che è pronta.
+				if( String.IsNullOrEmpty(_paramScarica.nomeFileSingolo) == false ) {
+					// Quando sono a posto con la foto, sollevo un evento per avvisare tutti
+					// Siccome questa operazione è un pò onerosa, per il momento la abilito
+					// soltanto sulla singola foto. Se ne scarico 1000 di foto, non voglio lanciare 1000 eventi!!!
+					NuovaFotoMsg msg = new NuovaFotoMsg( this, foto );
+					LumenApplication.Instance.bus.Publish( msg );
+				}
 			}
 
 			_giornale.Info( "Terminato di lavorare " + _listaFiles.Count + " foto appena acqusite" );
@@ -83,6 +87,10 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 		/** Quando ho finito di scaricar le foto, aggiorno il totale in apposita tabella */
 		private void incrementaTotaleFotoScaricate() {
+
+			// Se il fotografo è quello fasullo, non scrivo niente.
+			if( this._fotografo.id == Digiphoto.Lumen.Config.Configurazione.ID_FOTOGRAFO_ARTISTA )
+				return;
 
 			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
 			ScaricoCard scaricoCard = new ScaricoCard();

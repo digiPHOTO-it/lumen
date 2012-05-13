@@ -441,7 +441,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 				RenderTargetBitmap bitmapIncorniciata = componiBitmapDaMaschera( canvasDefinitivo );
 
-				_viewModel.salvareImmagineIcorniciata( bitmapIncorniciata );
+				_viewModel.salvareImmagineIncorniciata( bitmapIncorniciata );
+
 			} finally {
 				w.Close();
 			}
