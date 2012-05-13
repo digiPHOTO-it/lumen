@@ -178,5 +178,36 @@ namespace Digiphoto.Lumen.Util {
 			}
 		}
 
+
+		/// <summary>
+		/// Mi torna il nome di un file temporaneo ma con l'estensione che voglio io.
+		/// </summary>
+		/// <param name="estensione">Può essere sia con il punto che senza.</param>
+		/// <returns>nome completo di un file temporaneo che sicuramente non esiste</returns>
+		public static string dammiTempFileConEstesione( string estensione ) {
+
+			string nomeTemp;
+
+			do {
+				nomeTemp = Path.Combine( Path.GetTempPath(), Guid.NewGuid().ToString() );
+				if( estensione.StartsWith( "." ) == false )
+					nomeTemp += ".";
+				nomeTemp += estensione;
+
+			} while( File.Exists( nomeTemp ) );
+
+			return nomeTemp.ToString();
+		}
+
+		public static string createTempDirectory() {
+			string path;
+			do {
+				path = Path.Combine( Path.GetTempPath(), Path.GetRandomFileName() ); 
+			} while( Directory.Exists(path) );
+
+			Directory.CreateDirectory(path);
+			return path; 
+		}
+
 	}
 }

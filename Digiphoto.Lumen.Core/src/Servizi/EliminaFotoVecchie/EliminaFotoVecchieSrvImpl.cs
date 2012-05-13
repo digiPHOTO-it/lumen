@@ -131,15 +131,8 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
 		{
             //EliminaFotoVecchieMsg eliminaFotoVecchieMsg = new EliminaFotoVecchieMsg();
             String fotografoID= PathUtil.fotografoIDFromPath(path);
-			Fotografo fotografo = null;
-            using (new UnitOfWorkScope())
-			{
-                LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
-                fotografo = objContext.Fotografi.SingleOrDefault(f => f.id == fotografoID);
-                //eliminaFotoVecchieMsg.fotografo = fotografo;
-                //pubblicaMessaggio(eliminaFotoVecchieMsg);
-                return fotografo;
-			}
+            LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
+            return objContext.Fotografi.SingleOrDefault(f => f.id == fotografoID);
 		}
     }
 }

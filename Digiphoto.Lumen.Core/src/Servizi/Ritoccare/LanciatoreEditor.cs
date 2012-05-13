@@ -156,7 +156,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 					nomeFilePartenza = PathUtil.nomeCompletoOrig( foto );
 
 				// Creo un nome di file temporaneo
-				string tempFile = Path.GetTempPath() + Guid.NewGuid().ToString() + Path.GetExtension( foto.nomeFile );
+				string tempFile = PathUtil.dammiTempFileConEstesione( Path.GetExtension( foto.nomeFile ) );
 
 				// copio il file da modificare e tolgo il flag di read-only
 				File.Copy( nomeFilePartenza, tempFile, true );
