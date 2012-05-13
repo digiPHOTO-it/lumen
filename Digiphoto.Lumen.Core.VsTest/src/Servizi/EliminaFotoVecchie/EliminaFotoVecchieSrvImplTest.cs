@@ -14,6 +14,7 @@ using Digiphoto.Lumen.Properties;
 using Digiphoto.Lumen.Util;
 using System.Data.Objects;
 using System.Data.Common;
+using Digiphoto.Lumen.Core.VsTest.Servizi.Scaricatore;
 
 namespace Digiphoto.Lumen.Core.VsTest
 {
@@ -55,20 +56,19 @@ namespace Digiphoto.Lumen.Core.VsTest
         [TestMethod()]
         public void TestDiChiSonoQuesteFoto()
         {
-            IList<String> listCartelleDaEliminare = _impl.getListaCartelleDaEliminare();
-            if (listCartelleDaEliminare.Count() == 0)
-            {
-                System.Diagnostics.Trace.WriteLine("Non vi sono Cartelle da Eliminare");
-                Assert.IsTrue(true);
-            }
-            else
-            {
-                foreach (String path in listCartelleDaEliminare)
-                {
-                    System.Diagnostics.Trace.WriteLine(path);
-                    Assert.IsTrue(_impl.diChiSonoQuesteFoto(path).id.Equals("ROSSIMARIO"));
-                }
-            }
+			using( new UnitOfWorkScope() ) {
+
+				IList<String> listCartelleDaEliminare = _impl.getListaCartelleDaEliminare();
+				if( listCartelleDaEliminare.Count() == 0 ) {
+					System.Diagnostics.Trace.WriteLine( "Non vi sono Cartelle da Eliminare" );
+					Assert.IsTrue( true );
+				} else {
+					foreach( String path in listCartelleDaEliminare ) {
+						System.Diagnostics.Trace.WriteLine( path );
+						Assert.IsNotNull( _impl.diChiSonoQuesteFoto( path ) );
+					}
+				}
+			}
 		}
         public void TestGetListaCartelleDaEliminare()
         {

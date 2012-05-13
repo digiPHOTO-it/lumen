@@ -39,6 +39,17 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			}
 		}
 
+		/// <summary>
+		/// In alcune situazioni, devo evitare di far partire la copia e la elaborazione in thread
+		/// separati.
+		/// Per esempio quando lavoro una sola foto per la cornice.
+		/// In questo caso, non avvio i worker, ma eseguo il metodo work in modo assestante.
+		/// </summary>
+		public void StartSingleThread() {
+			ThrowIfDisposedOrDisposing();
+			Work();
+		}
+
 		/**
 		 * Processo reale di trasferimento immagini
 		 */
@@ -51,8 +62,6 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			_giornale.Debug( "Inizio a trasferire le foto da " + _paramScarica.cartellaSorgente );
 			
 
-			// Pattern Unit-of-work
-			using( new UnitOfWorkScope( true ) ) {
 
 				string nomeDirDest = calcolaCartellaDestinazione();
 
@@ -63,19 +72,29 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 				PathUtil.creaCartellaProvini( new FileInfo( nomeDirDest ) );
 
 				_esitoScarico = new EsitoScarico();
-				
-				// Faccio giri diversi per i vari formati grafici che sono indicati nella configurazione (jpg, tif)
-				string [] estensioni = Properties.Settings.Default.estensioniGrafiche.Split( ';' );
-				foreach( string estensione in estensioni ) {
 
-					string [] files = Directory.GetFiles( _paramScarica.cartellaSorgente, searchPattern: estensione, searchOption: SearchOption.AllDirectories );
 
-					// trasferisco tutti i files elencati
-					foreach( string nomeFileSrc in files ) {
-						if( scaricaAsincronoUnFile( nomeFileSrc, nomeDirDest ) )
-							++conta;
+				if( _paramScarica.nomeFileSingolo != null ) {
+
+					// Lavoro un solo file che mi è stato indicato. Serve per creare una maschera quando lavoro con le cornici.
+					if( scaricaAsincronoUnFile( _paramScarica.nomeFileSingolo, nomeDirDest ) )
+						++conta;
+
+				} else {
+
+					// Faccio giri diversi per i vari formati grafici che sono indicati nella configurazione (jpg, tif)
+					string [] estensioni = Properties.Settings.Default.estensioniGrafiche.Split( ';' );
+					foreach( string estensione in estensioni ) {
+
+						string [] files = Directory.GetFiles( _paramScarica.cartellaSorgente, searchPattern: estensione, searchOption: SearchOption.AllDirectories );
+
+						// trasferisco tutti i files elencati
+						foreach( string nomeFileSrc in files ) {
+							if( scaricaAsincronoUnFile( nomeFileSrc, nomeDirDest ) )
+								++conta;
+						}
+
 					}
-
 				}
 
 				// Nel log scrivo anche il tempo che ci ho messo a scaricare le foto. Mi servirà per profilare
@@ -83,10 +102,13 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 				_giornale.Info( "Terminato trasferimento di " + conta + " foto. Tempo impiegato = " + tempoImpiegato );
 
 
-				// ::: Ultima fase eleboro le foto memorizzando nel db e creando le dovute cache
+			// Deve essere già aperto
+			using( new UnitOfWorkScope( true ) ) {
+					// ::: Ultima fase eleboro le foto memorizzando nel db e creando le dovute cache
 				_elaboraImmaginiAcquisiteCallback.Invoke( _esitoScarico );
-
 			}
+
+
 		}
 
 

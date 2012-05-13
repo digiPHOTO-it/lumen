@@ -10,8 +10,10 @@ using System.Transactions;
 using System.Data.Objects;
 using Digiphoto.Lumen.Model;
 using System.Reflection;
+using Digiphoto.Lumen.Config;
+using Digiphoto.Lumen.Util;
 
-namespace Digiphoto.Lumen.Core.VsTest {
+namespace Digiphoto.Lumen.Core.VsTest.Servizi.Scaricatore {
 	
 	[TestClass]
 	public class ScaricatoreFotoImplTest : IObserver<ScaricoFotoMsg> {
@@ -20,8 +22,10 @@ namespace Digiphoto.Lumen.Core.VsTest {
 		private bool _puoiTogliereLaFlashCard;
 
 		Fotografo _mario = null;
+		Fotografo _artista = null;
 		Evento _ballo = null;
 		Evento _briscola = null;
+		bool _rimaniQui = true;
 
 		
 
@@ -50,6 +54,9 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				InfoFissa i = dbContext.InfosFisse.Single<InfoFissa>( f => f.id == "K" );
 
 				_mario = Utilita.ottieniFotografoMario( dbContext );
+
+				// Se hai fatto bene la configurazione, il fotografo artista deve sempre esistere
+				_artista = dbContext.Fotografi.Single( f => f.id == Configurazione.ID_FOTOGRAFO_ARTISTA );
 
 					// cerco l'evento con la descrizione
 				_ballo = (from e in dbContext.Eventi
@@ -86,7 +93,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 
 		[TestMethod]
-		public void scaricaFileTest() {
+		public void scaricaCartellaTest() {
 
 			Guid guid = Guid.NewGuid();
 
@@ -97,7 +104,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 			string [] nomiFiles = Directory.GetFiles( cartella , "*.jpg" );
 
 
-			string dir = creaDirTemp();
+			string dir = PathUtil.createTempDirectory();
 
 			foreach( string nomeSrc in nomiFiles ) {
 
@@ -131,12 +138,106 @@ namespace Digiphoto.Lumen.Core.VsTest {
 			Console.WriteLine( "Ecco finito" );
 		}
 
-		private string creaDirTemp() {
-			string path = Path.GetRandomFileName();
-			string tempDir = Path.Combine( Path.GetTempPath(), path );
-			Directory.CreateDirectory( tempDir );
+		[TestMethod]
+		public void scaricaFileTest() {
 
-			return tempDir;
+
+
+			Guid guid = Guid.NewGuid();
+
+			String doveSono = Assembly.GetExecutingAssembly().Location;
+
+			string appPath = Path.GetDirectoryName( doveSono );
+			string cartella = Path.Combine( appPath, "images" );
+			string nomeSrc = Directory.GetFiles( cartella, "*.jpg" ).ElementAt( 0 );
+
+			FileInfo fiInfo = new FileInfo( nomeSrc );
+
+			ParamScarica param = new ParamScarica();
+			param.nomeFileSingolo = nomeSrc;
+			param.cartellaSorgente = null;
+			param.eliminaFilesSorgenti = false;
+
+
+			param.flashCardConfig = new Config.FlashCardConfig( _artista );
+			_impl.scarica( param );
+
+			while( !_puoiTogliereLaFlashCard ) {
+				Thread.Sleep( 10000 );
+			}
+
+			Console.Write( "ok puoi togliere la flash card. Attendere elaborazione in corso ..." );
+
+			while( !_elaborazioneTerminata ) {
+				Thread.Sleep( 10000 );
+			}
+
+			Console.WriteLine( "Ecco finito" );
+		}
+
+		/// <summary>
+		/// Provo ad aprire e chiudere il servizio dicendo di scaricare da una cartella vuota
+		/// </summary>
+		[TestMethod]
+		public void scaricatoreApriChiudi() {
+
+			for( int ii = 0; ii < 10; ii++ ) {
+
+				using( IScaricatoreFotoSrv srv = LumenApplication.Instance.creaServizio<IScaricatoreFotoSrv>() ) {
+
+					srv.start();
+
+					// creo una cartella vuota temporanea che poi andrò a buttare
+					string cartella = PathUtil.createTempDirectory();
+
+					ParamScarica param = new ParamScarica();
+					param.cartellaSorgente = cartella;
+					param.flashCardConfig = new Config.FlashCardConfig {
+						idFotografo = Configurazione.ID_FOTOGRAFO_ARTISTA
+					};
+
+					srv.scarica( param );
+
+					System.Diagnostics.Trace.WriteLine( "Attendo un pò di secondi" );
+					Thread.Sleep( 3000 );
+
+					srv.stop();
+
+					Directory.Delete( cartella );
+				}
+			}
+		}
+
+		[TestMethod]
+		public void workerApriChiudi() {
+
+			for( int ii = 0; ii < 20; ii++ ) {
+
+				// creo una cartella vuota temporanea che poi andrò a buttare
+				string cartella = PathUtil.createTempDirectory();
+
+				ParamScarica param = new ParamScarica();
+				param.cartellaSorgente = cartella;
+				param.flashCardConfig = new Config.FlashCardConfig {
+					idFotografo = Configurazione.ID_FOTOGRAFO_ARTISTA
+				};
+
+				_rimaniQui = true;
+				using( CopiaImmaginiWorker wkr = new CopiaImmaginiWorker( param, elaboraNessunaImmagine ) ) {
+
+					wkr.Start();
+					do {
+						Thread.Sleep( 500 );
+					} while ( _rimaniQui );
+
+					Directory.Delete( cartella );
+					wkr.Stop();
+				}
+			}
+		}
+
+		void elaboraNessunaImmagine( EsitoScarico esitoScarico ) {
+			_rimaniQui = false;
 		}
 
 		public void OnCompleted() {
@@ -167,6 +268,8 @@ namespace Digiphoto.Lumen.Core.VsTest {
 			get;
 			set;
 		}
+
+
 	}
 }
 
