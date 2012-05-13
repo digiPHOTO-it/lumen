@@ -9,8 +9,10 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 	public class NuovaFotoMsg : Messaggio {
 
-		Fotografia foto;
-
+		public Fotografia foto {
+			get;
+			private set;
+		}
 
 		public NuovaFotoMsg( object sender, Fotografia foto ) : base( sender ) {
 			this.foto = foto;

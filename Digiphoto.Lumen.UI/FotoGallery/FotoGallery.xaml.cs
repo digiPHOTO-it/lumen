@@ -98,12 +98,14 @@ namespace Digiphoto.Lumen.UI {
 		public static DateTime maxDate( DateTime aa, DateTime bb ) {
 			return aa > bb ? aa : bb;
 		}
-		
+
+		/// <summary>
+		/// Tramite il doppio click sulla foto, mando direttamente in modifica quella immagine.
+		/// </summary>
 		private void listBoxItemImageGallery_MouseDoubleClick( object sender, RoutedEventArgs e ) {
 
 			ListBoxItem lbItem = (ListBoxItem) sender;
-			Fotografia f = lbItem.Content as Fotografia;
-			fotoGalleryViewModel.mandareInModificaImmediata( f );
+			fotoGalleryViewModel.mandareInModificaImmediata( lbItem.Content as Fotografia );
 		}
 
 	}

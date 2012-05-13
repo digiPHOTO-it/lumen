@@ -24,6 +24,8 @@ using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Model;
 using System.Security;
 using Digiphoto.Lumen.GestoreConfigurazione.UI.Util;
+using Digiphoto.Lumen.Servizi.EntityRepository;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 {
@@ -186,7 +188,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
                     //textBoxDataSource.Text = sqliteConnString.DataSource;
                     index = 1;
                     break;
-                case "System.Data.SQServer":
+                case "System.Data.SqlServer":
                     var sqlConnString = new SqlConnectionStringBuilder(entityConnString.ProviderConnectionString);
                     //textBoxDataSource.Text = sqlConnString.DataSource;
                     index = 2;
@@ -273,7 +275,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             switch (SelectedTabControlIndex)
             {    
                 case 0:
-                    Configurazione = true;
+                    configurazione = true;
                     CartaEStampanti = false;
                     PreferenzeUtente = false;
                     Riservato = true;
@@ -287,7 +289,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
                     }
                     break;
                 case 1:
-                    Configurazione = false;
+                    configurazione = false;
                     CartaEStampanti = true;
                     PreferenzeUtente = false;
                     Riservato = true;
@@ -296,13 +298,16 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
                     applicaButton = false;
                     annullaButton = true;
                     LumenApplication.Instance.avvia();
-                    using (new UnitOfWorkScope())
-                    {
-                        loadDataContext();
-                    }
+
+					using( new UnitOfWorkScope( true ) ) {
+
+						creaAlcuniDatiDiDefault();
+						loadDataContext();
+					}
+
                     break;
                 case 2:
-                    Configurazione = false;
+                    configurazione = false;
                     CartaEStampanti = false;
                     PreferenzeUtente = true;
                     Riservato = true;
@@ -312,7 +317,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
                     annullaButton = true;
                     break;
                 case 3:
-                    Configurazione = false;
+                    configurazione = false;
                     CartaEStampanti = false;
                     PreferenzeUtente = false;
                     Riservato = true;
@@ -322,7 +327,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
                     annullaButton = true;
                     break;
             }
-            OnPropertyChanged("Configurazione");
+            OnPropertyChanged("configurazione");
             OnPropertyChanged("CartaEStampanti");
             OnPropertyChanged("PreferenzeUtente");
             OnPropertyChanged("Riservato");
@@ -331,6 +336,23 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             OnPropertyChanged("applicaButton");
             OnPropertyChanged("annullaButton");
         }
+
+		private void creaAlcuniDatiDiDefault() {
+
+			// Devo creare un fotografo pre-stabilito per assegnare le foto modificate con GIMP
+			IEntityRepositorySrv<Fotografo> repo =  LumenApplication.Instance.getServizioAvviato<IEntityRepositorySrv<Fotografo>>();
+			Fotografo artista = repo.getById( Configurazione.ID_FOTOGRAFO_ARTISTA );
+			if( artista == null ) {
+				artista = new Fotografo();
+				artista.id = Configurazione.ID_FOTOGRAFO_ARTISTA;
+				artista.umano = false;
+				artista.attivo = true;
+				artista.cognomeNome = "Photo Retouch";
+				artista.iniziali = "XY";
+				artista.note = "used for masks and frames";
+				repo.addNew( artista );
+			}
+		}
 
         private SelettoreFormatoCartaViewModel selettoreFormatoCartaViewModel = null;
 
@@ -399,7 +421,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             set;
         }
 
-        public bool Configurazione
+        public bool configurazione
         {
             get;
             set;
@@ -1045,7 +1067,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
         private void applica()
         {
             saveUserConfig();
-            System.Windows.MessageBox.Show("Configurazione Salvata", "Avviso");
+            System.Windows.MessageBox.Show("configurazione Salvata", "Avviso");
             Digiphoto.Lumen.Config.Configurazione.PrimoAvvioConfiguratore = false;
         }
 

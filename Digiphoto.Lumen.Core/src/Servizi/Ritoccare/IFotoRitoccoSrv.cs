@@ -59,5 +59,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		/// <param name="foto">la foto da modificare</param>
 		Fotografia [] modificaConProgrammaEsterno( Fotografia [] fotografie );
 
+		void acquisisciImmagineIncorniciata( string nomeFileImg );
+
 	}
 }

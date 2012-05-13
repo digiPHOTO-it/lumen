@@ -86,7 +86,14 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			seNonPossoScaricareSpaccati();
 
 			_copiaImmaginiWorker = new CopiaImmaginiWorker( paramScarica, elaboraFotoAcquisite );
-			_copiaImmaginiWorker.Start();
+			
+			// Lancio il worker che scarica ed elabora le foto.
+			bool usaThreadSeparato = String.IsNullOrEmpty( paramScarica.nomeFileSingolo );
+			if( usaThreadSeparato )
+				_copiaImmaginiWorker.Start();
+			else
+				_copiaImmaginiWorker.StartSingleThread();
+
 			statoScarica = StatoScarica.Scaricamento;
 		}
 
@@ -98,8 +105,8 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			// Finito: genero un evento per notificare che l'utente può togliere la flash card.
 			scaricoFotoMsg.fase = Fase.FineScarico;
 			scaricoFotoMsg.descrizione = "Acquisizione foto terminata";
-			scaricoFotoMsg.cartellaSorgente = _paramScarica.cartellaSorgente;
-
+			scaricoFotoMsg.sorgente =  _paramScarica.cartellaSorgente != null ? _paramScarica.cartellaSorgente : _paramScarica.nomeFileSingolo;
+			
 			// battezzo la flashcard al fotografo corrente
 			battezzaFlashCard( _paramScarica );
 
@@ -115,16 +122,17 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			elab.elabora();
 
 			_giornale.Debug( "Elaborazione terminata. Inserite " + elab.conta + " foto nel database" );
-			
+
+			statoScarica = StatoScarica.Idle;
+
 			// Rendo pubblico l'esito dell'elaborazione così che si può aggiornare la libreria.
 			scaricoFotoMsg.fase = Fase.FineLavora;
 			scaricoFotoMsg.descrizione = "Provinatura foto terminata";
 			pubblicaMessaggio( scaricoFotoMsg );
 
 			// Chiudo il worker che ha finito il suo lavoro
-			//_copiaImmaginiWorker.Stop();
-
-			statoScarica = StatoScarica.Idle;
+			// _copiaImmaginiWorker.Stop();
+			
 		}
 
 
@@ -134,8 +142,14 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			if( isRunning == false )
 				throw new InvalidOperationException( "Il servizio è fermo. Impossibile scaricare le foto adesso" );
 
-			if( !Directory.Exists( _paramScarica.cartellaSorgente ) )
+			if( !(_paramScarica.nomeFileSingolo == null ^ _paramScarica.cartellaSorgente == null) )
+				throw new ArgumentException( "specificare la cartella da scaricare, oppure il nome del file singolo da scaricare. Uno, l'altro ma non tutti e due" );
+
+			if( _paramScarica.cartellaSorgente != null && Directory.Exists( _paramScarica.cartellaSorgente ) == false )
 				throw new FileNotFoundException( "cartella da scaricare inesistente:\n" + _paramScarica.cartellaSorgente );
+
+			if( _paramScarica.nomeFileSingolo != null && File.Exists( _paramScarica.nomeFileSingolo ) == false )
+				throw new FileNotFoundException( "file da scaricare inesistente:\n" + _paramScarica.nomeFileSingolo );
 
 			// Se devo spostare le foto, allora testo che la cartella sia scrivibile
 			if( _paramScarica.eliminaFilesSorgenti && !PathUtil.isCartellaScrivibile( _paramScarica.cartellaSorgente ) )
@@ -194,27 +208,33 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		/**
 		 * Scrive il file xml di configurazione sulla flash card.
 		 * Se il disco NON è rimovibile, non faccio nulla.
-		 * Ritorna true se tutto bene.
+		 * Eseguo anche il controllo che il fotografo non sia l'ARTISTA. Infatti se sto creando 
+		 * delle cornici, non ho bisogno di battezzare la card (perché non esiste una card).
+		 * <returns>Ritorna true se dovevo battezzare ed è andato tutto bene</returns>
 		 */
 		public bool battezzaFlashCard( ParamScarica param ) {
 
 			bool riuscito = false;
 
-			// Eseguo il controllo soltanto se il disco è rimovibile
-			DriveInfo driveInfo = new DriveInfo( param.cartellaSorgente );
-			if( driveInfo.DriveType == DriveType.Removable ) {
+			// Se il fotografo è l'ARTiSTA, non battezzo nulla.
+			if( param.flashCardConfig.idFotografo != Configurazione.ID_FOTOGRAFO_ARTISTA ) {
 
-				try {
+				// Eseguo il controllo soltanto se il disco è rimovibile
+				DriveInfo driveInfo = new DriveInfo( param.cartellaSorgente );
+				if( driveInfo.DriveType == DriveType.Removable ) {
 
-					string nomeFileConfig = Path.Combine( param.cartellaSorgente, FlashCardConfig.NOMEFILECONFIG );
+					try {
 
-					FlashCardConfig.serialize( nomeFileConfig, param.flashCardConfig );
+						string nomeFileConfig = Path.Combine( param.cartellaSorgente, FlashCardConfig.NOMEFILECONFIG );
 
-					riuscito = true;
+						FlashCardConfig.serialize( nomeFileConfig, param.flashCardConfig );
 
-				} catch( Exception ee ) {
-					// pazienza. Non è grave.
-					_giornale.Debug( "Non sono riuscito a battezzare la flash card", ee );
+						riuscito = true;
+
+					} catch( Exception ee ) {
+						// pazienza. Non è grave.
+						_giornale.Debug( "Non sono riuscito a battezzare la flash card", ee );
+					}
 				}
 			}
 

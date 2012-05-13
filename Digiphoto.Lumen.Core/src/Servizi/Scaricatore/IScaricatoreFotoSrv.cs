@@ -24,6 +24,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 		public FlashCardConfig flashCardConfig { get; set; }
 		public string cartellaSorgente  { get; set; }
+		public string nomeFileSingolo { get; set; }
 		public bool eliminaFilesSorgenti { get; set; }
 		public FaseDelGiorno? faseDelGiorno  { get; set; }
 

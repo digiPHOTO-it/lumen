@@ -17,7 +17,10 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		public ScaricoFotoMsg( string descrizione ) : base( descrizione ) {
 		}
 
-		public string cartellaSorgente {
+		/// <summary>
+		/// Occhio può contenere il nome della cartella, oppure il nome del file singolo scaricato.
+		/// </summary>
+		public string sorgente {
 			get;
 			set;
 		}
