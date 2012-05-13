@@ -35,7 +35,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
         public MainWindowViewModel()
         {
             //Blocco l'interfaccia fino al login
-            Disattivato = true;
+			Abilitato = false;
             listaMasterizzatori = new ObservableCollection<String>();
             caricaListaMasterizzatori();
             loadUserConfig();
@@ -188,7 +188,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
                     //textBoxDataSource.Text = sqliteConnString.DataSource;
                     index = 1;
                     break;
-                case "System.Data.SqlServer":
+                case "System.Data.SQServer":
                     var sqlConnString = new SqlConnectionStringBuilder(entityConnString.ProviderConnectionString);
                     //textBoxDataSource.Text = sqlConnString.DataSource;
                     index = 2;
@@ -298,13 +298,11 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
                     applicaButton = false;
                     annullaButton = true;
                     LumenApplication.Instance.avvia();
-
-					using( new UnitOfWorkScope( true ) ) {
-
+                    using (new UnitOfWorkScope())
+                    {
 						creaAlcuniDatiDiDefault();
-						loadDataContext();
-					}
-
+                        loadDataContext();
+                    }
                     break;
                 case 2:
                     configurazione = false;
@@ -340,7 +338,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 		private void creaAlcuniDatiDiDefault() {
 
 			// Devo creare un fotografo pre-stabilito per assegnare le foto modificate con GIMP
-			IEntityRepositorySrv<Fotografo> repo =  LumenApplication.Instance.getServizioAvviato<IEntityRepositorySrv<Fotografo>>();
+			IEntityRepositorySrv<Fotografo> repo = LumenApplication.Instance.getServizioAvviato<IEntityRepositorySrv<Fotografo>>();
 			Fotografo artista = repo.getById( Configurazione.ID_FOTOGRAFO_ARTISTA );
 			if( artista == null ) {
 				artista = new Fotografo();
@@ -353,6 +351,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 				repo.addNew( artista );
 			}
 		}
+
 
         private SelettoreFormatoCartaViewModel selettoreFormatoCartaViewModel = null;
 
@@ -381,18 +380,18 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
         #region Proprietà
 
-        private bool _disattivato;
-        public bool Disattivato
+		private bool _abilitato;
+		public bool Abilitato
         {
             get
             {
-                return _disattivato;
+				return _abilitato;
             }
             set{
-                if (_disattivato != value)
+				if (_abilitato != value)
                 {
-                    _disattivato = value;
-                    OnPropertyChanged("Disattivato");
+					_abilitato = value;
+					OnPropertyChanged("Abilitato");
                 }
             }
         }
@@ -1086,10 +1085,9 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             String administratorPasswordMd5 = Md5.MD5GenerateHash(LoginPassword.ToString());
             if (administratorPasswordMd5.Equals(Properties.Settings.Default.psw))
             {
-                Disattivato = true;
+                Abilitato = true;
 				fwButton = true;
 				annullaButton = true;
-                OnPropertyChanged("Disattivato");
 				OnPropertyChanged("fwButton");
 				OnPropertyChanged("annullaButton");
                 MessageBox.Show("Password OK", "Avviso");
@@ -1097,6 +1095,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             else
             {
                 MessageBox.Show("Password ERROR", "Avviso");
+				Abilitato = false;
             }
 
         }
