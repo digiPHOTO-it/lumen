@@ -29,18 +29,21 @@ using Digiphoto.Lumen.UI.Main;
 
 namespace Digiphoto.Lumen.UI {
 
+
+
 	public class FotoGalleryViewModel : ViewModelBase {
 
 
 		private BackgroundWorker _bkgIdrata;
 
-
 		public FotoGalleryViewModel() {
 
 			paramCercaFoto = new ParamCercaFoto();
+			metadati = new MetadatiFoto();
 
 			// Istanzio i ViewModel dei componenti di cui io sono composto
-			selettoreEventoViewModel = new SelettoreEventoViewModel();
+			selettoreEventoFiltro = new SelettoreEventoViewModel();
+			selettoreEventoMetadato = new SelettoreEventoViewModel();
 
 			selettoreFotografoViewModel = new SelettoreFotografoViewModel();
 
@@ -98,7 +101,7 @@ namespace Digiphoto.Lumen.UI {
 
 		public bool isAlmenoUnaSelezionata {
 			get {
-				return fotografieCW.SelectedItems.Count > 0;
+				return fotografieCW != null && fotografieCW.SelectedItems != null && fotografieCW.SelectedItems.Count > 0;
 			}
 		}
 
@@ -120,6 +123,18 @@ namespace Digiphoto.Lumen.UI {
 				return true;
 			}
 		}
+
+		public bool possoApplicareMetadati {
+			get {
+				return isAlmenoUnaSelezionata;
+			}
+		}
+
+		public bool possoEliminareMetadati {
+			get {
+				return isAlmenoUnaSelezionata;
+			}
+		}
 		
 		private IVenditoreSrv venditoreSrv {
 			get {
@@ -136,7 +151,7 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		public SelettoreEventoViewModel selettoreEventoViewModel {
+		public SelettoreEventoViewModel selettoreEventoFiltro {
 			get;
 			private set;
 		}
@@ -215,6 +230,12 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		public FaseDelGiorno [] fasiDelGiorno {
+			get {
+				return FaseDelGiornoUtil.fasiDelGiorno;
+			}
+		}
+
 		#endregion fasi del giorno
 
 		public bool possoSelezionareTutto {
@@ -242,8 +263,18 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		public SelettoreEventoViewModel selettoreEventoMetadato {
+			get;
+			private set;
+		}
+
 
 		#endregion Proprietà
+
+		public MetadatiFoto metadati {
+			get;
+			private set;
+		}
 
 		#region Comandi
 
@@ -361,7 +392,27 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private RelayCommand _applicareMetadatiCommand;
+		public ICommand applicareMetadatiCommand {
+			get {
+				if( _applicareMetadatiCommand == null ) {
+					_applicareMetadatiCommand = new RelayCommand( p => applicareMetadati(),
+					                                              p => possoApplicareMetadati, false );
+				}
+				return _applicareMetadatiCommand;
+			}
+		}
 		
+		private RelayCommand _eliminareMetadatiCommand;
+		public ICommand eliminareMetadatiCommand {
+			get {
+				if( _eliminareMetadatiCommand == null ) {
+					_eliminareMetadatiCommand = new RelayCommand( p => eliminareMetadati(),
+					                                              p => possoEliminareMetadati, false );
+				}
+				return _eliminareMetadatiCommand;
+			}
+		}
 
 		#endregion
 
@@ -537,8 +588,8 @@ namespace Digiphoto.Lumen.UI {
 				paramCercaFoto.fotografi = null;
 
 			// Aggiungo eventuale parametro l'evento
-			if( selettoreEventoViewModel.eventoSelezionato != null )
-				paramCercaFoto.eventi = new Evento [] { selettoreEventoViewModel.eventoSelezionato };
+			if( selettoreEventoFiltro.eventoSelezionato != null )
+				paramCercaFoto.eventi = new Evento [] { selettoreEventoFiltro.eventoSelezionato };
 			else
 				paramCercaFoto.eventi = null;
 
@@ -602,6 +653,39 @@ namespace Digiphoto.Lumen.UI {
 			msg.immediata = true;
 			msg.fotosDaModificare.Insert( 0, foto );
 			LumenApplication.Instance.bus.Publish( msg );
+		}
+
+		void applicareMetadati() {
+
+			// Ricavo l'Evento dall'apposito componente di selezione.
+			// Tutti gli altri attributi sono bindati direttamente sulla struttura MetadatiFoto.
+			metadati.evento = selettoreEventoMetadato.eventoSelezionato;
+
+			fotoExplorerSrv.modificaMetadatiFotografie( creaListaFotoSelezionate(), metadati );
+
+			// Svuoto ora i metadati per prossime elaborazioni
+			metadati = new MetadatiFoto();
+			selettoreEventoMetadato.eventoSelezionato = null;
+			OnPropertyChanged( "metadati" );
+		}
+
+		void eliminareMetadati() {
+
+			bool procediPure = false;
+			dialogProvider.ShowConfirmation( "Sei sicuro di voler eliminare i metadati\ndelle " + fotografieCW.SelectedItems.Count + " fotografie selezionate?", "Eliminazione metadati",
+								  ( confermato ) => {
+									  procediPure = confermato;
+								  } );
+
+			if( !procediPure )
+				return;
+
+			fotoExplorerSrv.modificaMetadatiFotografie( creaListaFotoSelezionate(), new MetadatiFoto() );
+
+			// Svuoto ora i metadati
+			metadati = new MetadatiFoto();
+			selettoreEventoMetadato.eventoSelezionato = null;
+			dialogProvider.ShowMessage( "Eliminati i metadati delle " + fotografieCW.SelectedItems.Count + " fotografie selezionate!", "Operazione eseguita" );
 		}
 
 		#endregion Metodi

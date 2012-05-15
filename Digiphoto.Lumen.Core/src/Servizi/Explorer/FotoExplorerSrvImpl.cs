@@ -11,6 +11,8 @@ using System.Threading;
 using Digiphoto.Lumen.Util;
 using log4net;
 using Digiphoto.Lumen.Core.Database;
+using System.Transactions;
+using Digiphoto.Lumen.Database;
 
 namespace Digiphoto.Lumen.Servizi.Explorer {
 
@@ -113,6 +115,64 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			}
 
 			base.Dispose( disposing );
+		}
+
+
+		public void  modificaMetadatiFotografie( IEnumerable<Fotografia> fotografie, MetadatiFoto metadati ) {
+			
+			using (TransactionScope transaction = new TransactionScope()) {
+
+				// riattacco l'entità che non si sa mai
+				if( metadati.evento != null )
+					UnitOfWorkScope.CurrentObjectContext.Eventi.Attach( metadati.evento );
+
+				foreach( Fotografia fotografia in fotografie ) {
+					modificaMetadatiFotografie( fotografia, metadati );
+				}
+
+				UnitOfWorkScope.CurrentObjectContext.SaveChanges();
+				transaction.Complete();
+				_giornale.Debug( "effettuata modifica dei metadati sulle foto" );
+			}
+
+		}
+
+		private void modificaMetadatiFotografie( Fotografia foto, MetadatiFoto metadati ) {
+
+			// Se tutti i metadati sono nulli, allora forzo l'eliminazione degli stessi.
+			// Se invece almeno uno è pieno, setto solo quello (cioè vado in aggiunta a quelli eventualmente
+			// già esistenti sulla foto
+			bool forzaNullo = metadati.isEmpty();
+
+			modificaMetadatiFotografie( foto, metadati, forzaNullo );
+		}
+
+		private void modificaMetadatiFotografie( Fotografia foto, MetadatiFoto metadati, bool forzaNullo ) {
+
+			// L'entità è sicuramente staccata
+			UnitOfWorkScope.CurrentObjectContext.Fotografie.Attach( foto );
+
+			//
+			if( !String.IsNullOrWhiteSpace( metadati.didascalia ) )
+				foto.didascalia = metadati.didascalia.Trim();
+			else {
+				if( forzaNullo )
+					foto.didascalia = null;
+			}
+
+			if( metadati.faseDelGiorno != null )
+				foto.faseDelGiorno = (short)metadati.faseDelGiorno;
+			else {
+				if( forzaNullo )
+					foto.faseDelGiorno = null;
+			}
+
+			if( metadati.evento != null )
+				foto.evento = metadati.evento;
+			else {
+				if( forzaNullo )
+					foto.evento = null;
+			}
 		}
 
 	}
