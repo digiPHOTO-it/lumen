@@ -9,7 +9,7 @@
              xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
              xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo"         
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="800">
+             d:DesignHeight="600" d:DesignWidth="800" FontStretch="Condensed">
 
     <!-- Istanzio il controllore -->
     <lumM:UserControlBase.DataContext>
@@ -33,7 +33,7 @@
                 <Separator />
                 
                 <Button Command="{Binding Path=aggiungereAlMasterizzatoreCommand}">
-                    <Image Name="qqq" Source="/Digiphoto.Lumen.UI;component/Resources/DvdBurn-48x48.png"  />
+                    <Image Source="/Digiphoto.Lumen.UI;component/Resources/DvdBurn-48x48.png"  />
                 </Button>
             </ToolBar>
             
@@ -45,6 +45,38 @@
 
         </ToolBarTray>
 
+        <Expander DockPanel.Dock="Top" Header="Metadati da imporre" IsExpanded="True" ExpandDirection="Down">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0">
+                    <Label>Didascalia</Label>
+                    <TextBox Text="{Binding Path=metadati.didascalia}" MinWidth="80" />
+                </StackPanel>
+
+                <GroupBox Header="Fasi del giorno" Grid.Row="0" Grid.Column="1">
+                    <ListBox ItemsSource="{Binding fasiDelGiorno}" 
+                         SelectedItem="{Binding Path=metadati.faseDelGiorno}" />
+                </GroupBox>
+
+                <lum:SelettoreEvento x:Name="selettoreEventoMetadato" Grid.Column="2" MaxHeight="200"
+                                     DataContext="{Binding selettoreEventoMetadato}" possoCreare="True"/>
+
+                <StackPanel Grid.Column="3" Orientation="Vertical">
+                    <Button Content="Elimina metadati" ToolTip="Elimina tutti i metadati dalle fotografie selezioanate" Command="{Binding eliminareMetadatiCommand}" Height="20" FontStretch="ExtraCondensed" />
+                    <Separator />
+                    <Button Content="Applica Metadati" ToolTip="Salva metadati fotografie selezionate" Command="{Binding applicareMetadatiCommand}" Height="40" />
+                </StackPanel>
+                
+            </Grid>
+        </Expander>
+        
+        
         <Expander DockPanel.Dock="Right" Header="View" IsExpanded="True" ExpandDirection="Left">
             
             <ToolBarTray Background="White" Orientation="Vertical">
@@ -117,7 +149,7 @@
                                         DataContext="{Binding selettoreFotografoViewModel}" />
 
                 <lum:SelettoreEvento x:Name="selettoreEvento5" possoCreare="False"
-                                 DataContext="{Binding selettoreEventoViewModel}" />
+                                 DataContext="{Binding selettoreEventoFiltro}" />
 
                 <StackPanel Orientation="Vertical">
                     <CheckBox Name="checkBoxMattino" Content="Mattino" IsChecked="{Binding isMattinoChecked,Mode=TwoWay}"  />

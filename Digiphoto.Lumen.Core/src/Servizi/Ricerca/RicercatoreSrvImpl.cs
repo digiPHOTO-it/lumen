@@ -97,7 +97,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			}
 
 			// ----- Didascalia (le didascalie le memorizziamo solo in maiuscolo)
-			if( param.didascalia != null )
+			if( ! String.IsNullOrWhiteSpace( param.didascalia ) )
 				query = query.Where( ff => ff.didascalia.Contains( param.didascalia.ToUpper() ) );
 
 			// ----- Giornata Inizio

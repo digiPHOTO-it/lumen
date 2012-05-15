@@ -120,7 +120,7 @@
 
             <Separator />
             
-            <lum:SelettoreEvento x:Name="selettoreEvento4" />
+            <lum:SelettoreEvento x:Name="selettoreEvento4"  />
             
             <Separator />
 
