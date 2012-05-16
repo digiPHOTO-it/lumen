@@ -6,6 +6,7 @@
              xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
              xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
              xmlns:lumMS="clr-namespace:Digiphoto.Lumen.UI.Mvvm.MultiSelect"
+             xmlns:extToolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
              xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
              xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo"         
              mc:Ignorable="d" 
@@ -45,7 +46,7 @@
 
         </ToolBarTray>
 
-        <Expander DockPanel.Dock="Top" Header="Metadati da imporre" IsExpanded="True" ExpandDirection="Down">
+        <Expander DockPanel.Dock="Top" Header="Metadati da imporre" IsExpanded="False" ExpandDirection="Down">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
@@ -103,6 +104,8 @@
                     <Button Content="Load" Command="{Binding caricareSlideShowCommand}" CommandParameter="Manual" />
                     <ToggleButton Content="Start" Command="{Binding controllareSlideShowCommand}" CommandParameter="Start" />
                     <ToggleButton Content="Stop"  Command="{Binding controllareSlideShowCommand}" CommandParameter="Stop" />
+                    <extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. righe Slide-Show" Value="{Binding numRigheSlideShow}" />
+                    <extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. colonne Slide-Show" Value="{Binding numColonneSlideShow}" />
                     <Separator />
                     <Button Content="Svuota" Command="{Binding controllareSlideShowCommand}" CommandParameter="Reset" />
                 </ToolBar>

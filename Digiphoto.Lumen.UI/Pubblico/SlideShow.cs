@@ -15,12 +15,12 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 	public class SlideShow {
 
-		public int righe {
+		public short righe {
 			get;
 			set;
 		}
 
-		public int colonne {
+		public short colonne {
 			get;
 			set;
 		}

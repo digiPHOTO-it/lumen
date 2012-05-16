@@ -1,7 +1,8 @@
 ﻿<Window x:Class="Digiphoto.Lumen.UI.Pubblico.SlideShowWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="SlideShowWindow" Height="400" Width="500">
+        x:Name="windowSlideShow"
+        Title="SlideShowWindow" Height="400" Width="500" Background="Black">
 
     <!-- faccio il merge di due dizionari -->
     <Window.Resources>
@@ -15,7 +16,7 @@
 
     <!-- Questo è l'iteratore della collezione di Slide -->
     <ItemsControl ItemsSource="{Binding Path=slidesVisibili}" 
-                  ItemTemplate="{DynamicResource fotografiaDataTemplate}"
+                  ItemTemplate="{DynamicResource fotoShowDataTemplate}"
                   ItemsPanel="{DynamicResource slideShowItemsPanelTemplate}">
 
     </ItemsControl>
