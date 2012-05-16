@@ -98,6 +98,30 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		}
 
 
+		public short slideShowRighe {
+			get {
+				return slideShow != null ? slideShow.righe : (short)0;
+			}
+			set {
+				if( slideShow.righe != value ) {
+					slideShow.righe = value;
+					OnPropertyChanged( "slideShowRighe" );
+				}
+			}
+		}
+
+		public short slideShowColonne {
+			get {
+				return slideShow != null ? slideShow.colonne : (short)0;
+			}
+			set {
+				if( slideShow.colonne != value ) {
+					slideShow.colonne = value;
+					OnPropertyChanged( "slideShowColonne" );
+				}
+			}
+		}
+
 		#endregion   // Proprietà
 
 
@@ -142,7 +166,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		public void creaShow( ParamCercaFoto paramCercaFoto ) {
 
-			// Mi faccio dare le foto dal servizio
+			// Mi f accio dare le foto dal servizio
 			fotoExplorerSrv.cercaFoto( paramCercaFoto );
 
 			this.slideShow = new SlideShowAutomatico( paramCercaFoto );
@@ -219,6 +243,13 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			} while( conta < totSlidesPerPagina && conta < slideShow.slides.Count );
 
 			OnPropertyChanged( "slidesVisibili" );
+
+			// Le foto ritornate dal servizio di ricerca, non sono idratate. 
+			// Quindi le idrato un pò alla volta quando passano da qui
+			// Al primo giro sarà più lento perché le deve idratare per davvero. 
+			// Dal secondo giro, invece non ci sarà più bisogno
+			foreach( Fotografia f in slidesVisibili )
+				AiutanteFoto.idrataImmaginiFoto( f, IdrataTarget.Provino );
 
 
 			// Dopo che ho visualizzato le foto, se mi accorgo che il numero totale di foto da visualizzare 

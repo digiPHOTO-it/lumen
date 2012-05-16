@@ -10,13 +10,7 @@
     <DataTemplate x:Key="fotografiaDataTemplate" >
 
         <Border BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="8" Margin="0,0,2,2" >
-
             
-            <!-- TODO purtroppo le due dimensioni del canvas, non si riescono a bindare nello slide show
-                 infatti lo slidesho non è uno UserControl ma bensi una Window.
-                 Ho provato quindi a bindare sul tipo ContentControl da cui derivano entrambi, ma senza successo.
-                 Sarebbe carino trovare una soluzione che funzioni per entrambi.
-            -->
             <Canvas x:Name="fotoCanvas"
                     Height="{Binding  Path=DataContext.dimensioneIconaFoto, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
                     Width="{Binding  Path=DataContext.dimensioneIconaFoto, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" >

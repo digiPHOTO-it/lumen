@@ -11,6 +11,7 @@ using System.Data.Common;
 using System.Data;
 using System.Diagnostics;
 using System.Transactions;
+using System.Data.Objects;
 
 namespace Digiphoto.Lumen.Core.VsTest {
 
@@ -37,6 +38,46 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 		[TestCleanup]
 		public void Cleanup() {
+		}
+
+		/// <summary>
+		/// Carico i carrelli con anche le righe
+		/// </summary>
+		[TestMethod]
+		public void eagerLodingTest() {
+
+			using( LumenEntities dbContext = new LumenEntities() ) {
+
+				ObjectContext oc = dbContext.ObjectContext;
+				
+				var carrelli = dbContext.Carrelli.Include( "righeCarrello" ).Where( cc => cc.righeCarrello.Count > 1 ).Take( 5 );
+
+				foreach( Carrello c in carrelli ) {
+					Debug.WriteLine( "\n\n*** Carrello = " + c.id + " " + c.giornata );
+
+					foreach( RigaCarrello r in c.righeCarrello ) {
+
+						Debug.WriteLine( "\n\t" + r.GetType().Name + " "  + r.id + " " + r.descrizione  );
+
+						if( r is RiCaFotoStampata ) {
+							
+							RiCaFotoStampata rfs = r as RiCaFotoStampata;
+							Debug.WriteLine( "\t\tFotografo     = " + rfs.fotografo );
+							Debug.WriteLine( "\t\tFormato Carta = " + rfs.formatoCarta );
+							Debug.WriteLine( "\t\tFotografia    = " + rfs.fotografia );
+							if( rfs.fotografia != null )
+								Debug.WriteLine( "\t\tDataOra = " + rfs.fotografia.dataOraAcquisizione );
+						}
+						if( r is RiCaDiscoMasterizzato ) {
+							RiCaDiscoMasterizzato rdm = r as RiCaDiscoMasterizzato;
+							Debug.WriteLine( "\t\tTot. foto masterizzate = " + rdm.totFotoMasterizzate );
+						}
+
+					}
+				}
+
+			}
+
 		}
 
 

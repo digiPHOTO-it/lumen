@@ -36,6 +36,9 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 				// Soluzione 3 (carico diretto da stream di byte)
 				MemoryStream data = new MemoryStream( File.ReadAllBytes( uriString ) );
 				this.bitmapSource = BitmapFrame.Create( data );
+				
+				// Se non frizzo, non riesco a passare queste bitmap da un thread all'altro.
+				this.bitmapSource.Freeze();
 
 			} catch( Exception ee ) {
 				// Che posso fare ? Tiriamo avanti

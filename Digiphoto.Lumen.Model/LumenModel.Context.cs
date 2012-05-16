@@ -17,7 +17,7 @@ namespace Digiphoto.Lumen.Model
     public partial class LumenEntities : DbContext
     {
         public LumenEntities()
-            : this(false) { }
+            : this(true) { }
     
         public LumenEntities(bool proxyCreationEnabled)	    
             : base("name=LumenEntities")

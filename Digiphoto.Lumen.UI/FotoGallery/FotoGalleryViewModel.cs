@@ -268,6 +268,27 @@ namespace Digiphoto.Lumen.UI {
 			private set;
 		}
 
+		public short numRigheSlideShow {
+			
+			get {
+				return ( slideShowViewModel != null ) ? slideShowViewModel.slideShow.righe : (short)0;
+			}
+			set {
+				if( slideShowViewModel != null )
+					slideShowViewModel.slideShow.righe = value;
+			}
+		}
+
+		public short numColonneSlideShow {
+			get {
+				return (slideShowViewModel != null) ? slideShowViewModel.slideShow.colonne : (short)0;
+			}
+			set {
+				if( slideShowViewModel != null )
+					slideShowViewModel.slideShow.colonne = value;
+			}
+		} 
+
 
 		#endregion Proprietà
 

@@ -1,11 +1,47 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+    <lumC:ImmagineToImageSourceConverter x:Key="immagineToImageSourceConverter" />
+    <lumC:PercentualeConverter x:Key="percentualeConverter" />
+
+
+
+
+    <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
+    <DataTemplate x:Key="fotoShowDataTemplate" >
+
+        <Border BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="8" Margin="0,0,2,2" >
+
+            <Canvas x:Name="canvasUnaFotoShow">
+
+                <Canvas.Background>
+                    <ImageBrush ImageSource="{Binding Path=imgProvino,Converter={StaticResource immagineToImageSourceConverter}}" 
+                                Stretch="Uniform" />
+                </Canvas.Background>
+
+<!--
+                Image Source="{Binding Path=imgProvino,Converter={StaticResource immagineToImageSourceConverter}}" 
+-->                      
+                
+                <!-- IL font con cui stampo il numero, ha grandezza proporzionale al canvas . Per ora uso 8% della grandezza del contenitore della foto -->
+                <Label Content="{Binding Path=etichetta}"        
+                               Canvas.Right="2"
+                               Canvas.Bottom="2"
+                               FontSize="{Binding Converter={StaticResource percentualeConverter},ElementName=canvasUnaFotoShow,Path=ActualHeight,ConverterParameter=0.08}"
+                               Background="#FFC90E" />
+            </Canvas>
+
+
+        </Border>
+    </DataTemplate>
 
 
     <!-- Template per il pannello che contiene tutti gli elementi della lista -->
     <ItemsPanelTemplate x:Key="slideShowItemsPanelTemplate">
-        
-        <UniformGrid Rows="2" Columns="3" />
+
+        <UniformGrid Rows="{Binding Path=slideShowRighe,Mode=TwoWay}" Columns="{Binding Path=slideShowColonne,Mode=TwoWay}" />
         
     </ItemsPanelTemplate>
     
