@@ -15,6 +15,9 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 	public class SlideShow {
 
+		public SlideShow() {
+		}
+
 		public short righe {
 			get;
 			set;

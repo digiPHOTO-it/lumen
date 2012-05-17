@@ -271,21 +271,27 @@ namespace Digiphoto.Lumen.UI {
 		public short numRigheSlideShow {
 			
 			get {
-				return ( slideShowViewModel != null ) ? slideShowViewModel.slideShow.righe : (short)0;
+				return ( slideShowViewModel != null ) ? slideShowViewModel.slideShow.righe : (short)1;
 			}
 			set {
 				if( slideShowViewModel != null )
-					slideShowViewModel.slideShow.righe = value;
+					if( slideShowViewModel.slideShowRighe != value ) {
+						slideShowViewModel.slideShowRighe = value;
+						OnPropertyChanged( "numRigheSlideShow" );
+					}
 			}
 		}
 
 		public short numColonneSlideShow {
 			get {
-				return (slideShowViewModel != null) ? slideShowViewModel.slideShow.colonne : (short)0;
+				return (slideShowViewModel != null) ? slideShowViewModel.slideShow.colonne : (short)2;
 			}
 			set {
 				if( slideShowViewModel != null )
-					slideShowViewModel.slideShow.colonne = value;
+					if( slideShowViewModel.slideShowColonne != value ) {
+						slideShowViewModel.slideShowColonne = value;
+						OnPropertyChanged( "numColonneSlideShow" );
+					}
 			}
 		} 
 
