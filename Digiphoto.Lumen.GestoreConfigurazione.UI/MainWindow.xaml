@@ -28,7 +28,7 @@
         <!--<extToolkit:BusyIndicator x:Name="scaricaBusyIndicator" IsBusy="{Binding Path=Disattivato}">-->
             
             <TabControl Name="tabControl1" SelectedIndex="{Binding Path=SelectedTabControlIndex}" IsEnabled="{Binding Path=Disattivato}">
-                <TabItem Header="Configurazione" Name="tabItem1" IsSelected="{Binding Path=Configurazione}" IsEnabled="{Binding Path=Configurazione}">
+                <TabItem Header="Configurazione" Name="tabItem1" IsSelected="{Binding Path=configurazione}" IsEnabled="{Binding Path=Configurazione}">
 					<Grid IsEnabled="{Binding Path=Abilitato}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="127" />
