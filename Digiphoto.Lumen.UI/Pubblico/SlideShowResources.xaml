@@ -40,9 +40,7 @@
 
     <!-- Template per il pannello che contiene tutti gli elementi della lista -->
     <ItemsPanelTemplate x:Key="slideShowItemsPanelTemplate">
-
-        <UniformGrid Rows="{Binding Path=slideShowRighe,Mode=TwoWay}" Columns="{Binding Path=slideShowColonne,Mode=TwoWay}" />
-        
+        <UniformGrid Rows="{Binding Path=slideShowRighe}" Columns="{Binding Path=slideShowColonne}" />
     </ItemsPanelTemplate>
     
 </ResourceDictionary>
