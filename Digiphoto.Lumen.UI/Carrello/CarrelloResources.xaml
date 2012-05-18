@@ -60,6 +60,18 @@
 		-->
     </Style>
 
+	<!-- This storyboard will make the image grow to double its size in 0.2 seconds -->
+	<Storyboard x:Key="expandStoryboard">
+		<DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" To="5" Duration="0:0:0.2" />
+		<DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" To="5" Duration="0:0:0.2" />
+	</Storyboard>
+	
+	<!-- This storyboard will make the image revert to its original size -->
+	<Storyboard x:Key="shrinkStoryboard">
+		<DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" To="1" Duration="0:0:0.2" />
+		<DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" To="1" Duration="0:0:0.2" />
+	</Storyboard>
+
     <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
     <DataTemplate x:Key="ImageCarrelloDataTemplate" >
         <GroupBox Header="Riga Carrello" Width="Auto" Margin="2,2,2,2" >
@@ -73,8 +85,8 @@
 				</Grid.ColumnDefinitions>
 				<Border Grid.Row="0" Grid.Column="0" BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="10" Margin="2,2,2,2">
 				<Image Source="{Binding Path=fotografia.imgProvino,Converter={StaticResource immagineToImageSourceConverter}}"
-                       Height="100"
-                       Width="100"
+                       Height="50"
+                       Width="50"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Left"
                        >
@@ -84,6 +96,17 @@
                             <Label Content="{Binding Path=descrizione}" />
                         </Grid>
                     </Image.ToolTip>
+					<Image.Triggers>
+						<EventTrigger RoutedEvent="Image.MouseEnter" >
+							<BeginStoryboard Storyboard="{StaticResource expandStoryboard}" />
+						</EventTrigger>
+						<EventTrigger RoutedEvent="Image.MouseLeave">
+							<BeginStoryboard Storyboard="{StaticResource shrinkStoryboard}" />
+						</EventTrigger>
+					</Image.Triggers>
+						<Image.RenderTransform>
+						<ScaleTransform ScaleX="1" ScaleY="1"/>
+					</Image.RenderTransform>
                 </Image>
             </Border>
 				<GroupBox Grid.Row="0" Grid.Column="1" Header="Attributi" Margin="4,4,4,4">
@@ -98,8 +121,8 @@
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="Auto" />
 						</Grid.ColumnDefinitions>
-						<Label Content="Descrizione:" Grid.Row="0" Grid.Column="0" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-						<Label Content="{Binding Path=descrizione}" Grid.Row="1" Grid.Column="0" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						<Label Content="Numero Foto:" Grid.Row="0" Grid.Column="0" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						<Label Content="{Binding Path=fotografia.numero}" Grid.Row="1" Grid.Column="0" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 						<Label Content="Quantità:" Grid.Row="0" Grid.Column="1" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 						<Label Content="{Binding Path=quantita}" Grid.Row="1" Grid.Column="1" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" />			
 						<Label Content="Prezzo Lordo Unitario:" Grid.Row="0" Grid.Column="2" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>

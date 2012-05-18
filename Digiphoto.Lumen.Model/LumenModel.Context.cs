@@ -26,7 +26,7 @@ namespace Digiphoto.Lumen.Model
         }
     
         public LumenEntities(string connectionString)
-          : this(connectionString, false) { }
+          : this(connectionString, true) { }
     
         public LumenEntities(string connectionString, bool proxyCreationEnabled)
             : base(connectionString)

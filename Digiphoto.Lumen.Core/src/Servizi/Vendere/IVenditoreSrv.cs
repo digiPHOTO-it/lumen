@@ -44,11 +44,18 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		void confermaCarrello();
 
 		/**
+		 * Il carrello corrente viene venduto. Diventa definitivo
+		 */
+		void confermaCarrelloCaricato(Carrello carrello);
+
+		/**
 		 * Consente il Salvattaggio del Carrello senza effettuare ne la stampa ne la Masterizzazione
          */
 		void salvaCarrello();
 
 		void abbandonaCarrello();
+
+		void rimasterizza();
 
 		void removeRigaCarrello(RigaCarrello rigaCarrello);
 
@@ -56,6 +63,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		/** Lavoro con un carrello alla volta. Esiste un solo carrello "corrente". */
 		Carrello carrello { get; }
+
+		void sostituisciCarrelloCorrente(Carrello carrello);
 
 	}
 }
