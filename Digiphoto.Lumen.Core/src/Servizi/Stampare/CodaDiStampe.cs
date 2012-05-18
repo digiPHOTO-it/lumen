@@ -74,7 +74,8 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			// Per evitare problemi di multi-thread, le immagini le idrato nello stesso thread con cui le manderò in stampa.
 			// Non anticipare questo metodo altrimenti poi non va.
 			// Se le immagini non sono idratate, le carico!
-			AiutanteFoto.idrataImmaginiFoto( lavoroDiStampa.fotografia );
+			IdrataTarget quale = lavoroDiStampa.fotografia.imgRisultante != null ? IdrataTarget.Risultante : IdrataTarget.Originale;
+			AiutanteFoto.idrataImmaginiFoto( lavoroDiStampa.fotografia, quale, true );
 
 
 			EsitoStampa esito = _stampatore.esegui( lavoroDiStampa );
