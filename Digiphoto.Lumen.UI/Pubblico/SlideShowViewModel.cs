@@ -100,7 +100,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		public short slideShowRighe {
 			get {
-				return slideShow != null ? slideShow.righe : (short)0;
+				return slideShow != null ? slideShow.righe : (short)1;
 			}
 			set {
 				if( slideShow.righe != value ) {
@@ -112,7 +112,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		public short slideShowColonne {
 			get {
-				return slideShow != null ? slideShow.colonne : (short)0;
+				return slideShow != null ? slideShow.colonne : (short)2;
 			}
 			set {
 				if( slideShow.colonne != value ) {
@@ -176,8 +176,8 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		private void creaShow() {
 			// Qualche parametro di default
-			slideShow.colonne = 3;	// TODO deve sceglierle l'utente
-			slideShow.righe = 2;	// TODO deve sceglierle l'utente
+			slideShow.colonne = 2;	// TODO deve sceglierle l'utente
+			slideShow.righe = 1;	// TODO deve sceglierle l'utente
 			slideShow.millisecondiIntervallo = 3800;
 
 			// Avvio il timer che serve a far girare le foto
