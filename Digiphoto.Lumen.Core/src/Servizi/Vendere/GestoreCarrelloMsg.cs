@@ -16,7 +16,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 	{
 		public enum Fase
 		{
-			UpdateCarrello
+			UpdateCarrello,
+			LoadCarrelloSalvato,
+			ErroreMasterizzazione
 		};
 
 		public GestoreCarrelloMsg( object sender ) : base( sender ) {

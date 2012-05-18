@@ -118,6 +118,9 @@
     <Compile Include="src\Imaging\ProiettoreArea.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="src\Servizi\Explorer\CarrelloExplorerSrvImpl.cs" />
+    <Compile Include="src\Servizi\Explorer\ICarrelloExplorerSrv.cs" />
+    <Compile Include="src\Servizi\Ricerca\ParamCercaCarrello.cs" />
     <Compile Include="src\Servizi\Ritoccare\FotoDaModificareMsg.cs" />
     <Compile Include="src\Servizi\Ritoccare\FotoModificateMsg.cs" />
     <Compile Include="src\Servizi\Ritoccare\FotoRitoccoSrvImpl.cs" />

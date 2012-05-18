@@ -36,6 +36,42 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			return query.ToList();
 		}
 
+		public ICollection<Carrello> cerca(ParamCercaCarrello param)
+		{
+			IQueryable<Carrello> query = from ff in this.objectContext.Carrelli.Include("righeCarrello")
+										   select ff;
+
+			// Devo usare prima tutto se no dopo non me lo ricollega più!!! Perchè ho chiuso la connessione?!?!?!?!?!!?
+			foreach (Carrello c in query.ToList())
+			{
+				System.Diagnostics.Trace.WriteLine("\n\n*** Carrello = " + c.id + " " + c.giornata);
+
+				foreach (RigaCarrello r in c.righeCarrello)
+				{
+					System.Diagnostics.Trace.WriteLine("\n\t" + r.GetType().Name + " " + r.id + " " + r.descrizione);
+
+					if (r is RiCaFotoStampata)
+					{
+
+						RiCaFotoStampata rfs = r as RiCaFotoStampata;
+						System.Diagnostics.Trace.WriteLine("\t\tFotografo     = " + rfs.fotografo);
+						System.Diagnostics.Trace.WriteLine("\t\tFormato Carta = " + rfs.formatoCarta);
+						System.Diagnostics.Trace.WriteLine("\t\tFotografia    = " + rfs.fotografia);
+						if (rfs.fotografia != null)
+							System.Diagnostics.Trace.WriteLine("\t\tDataOra = " + rfs.fotografia.dataOraAcquisizione);
+					}
+					if (r is RiCaDiscoMasterizzato)
+					{
+						RiCaDiscoMasterizzato rdm = r as RiCaDiscoMasterizzato;
+						System.Diagnostics.Trace.WriteLine("\t\tTot. foto masterizzate = " + rdm.totFotoMasterizzate);
+					}
+				}
+			}
+
+			return query.ToList();
+		}
+
+
 		/// <summary>
 		/// Eseguo la stessa query che faccio per le fotografie,
 		/// ma mi faccio tornare soltanto i nomi dei files.
