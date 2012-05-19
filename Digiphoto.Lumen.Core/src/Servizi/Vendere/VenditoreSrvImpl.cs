@@ -32,6 +32,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			get {
 				return gestoreCarrello.carrello;
 			}
+
+			set
+			{
+			}
 		}
 
 		public ModoVendita modoVendita {
@@ -72,6 +76,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			GestoreCarrelloMsg msg = new GestoreCarrelloMsg(this);
 			msg.fase = Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.UpdateCarrello;
 			LumenApplication.Instance.bus.Publish(msg);
+		}
+
+		public void sostituisciCarrelloCorrente(Carrello carrello)
+		{
+			gestoreCarrello.sostituisciCarrelloCorrente(carrello);
 		}
 
 		/** 
@@ -165,6 +174,17 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 				transaction.Complete();
 			}
+
+			// Prima lancio le stampe
+			eventualeStampa();
+
+			// Poi lancio la masterizzazione
+			eventualeMasterizzazione();
+		}
+
+		public void confermaCarrelloCaricato(Carrello carrello)
+		{
+			gestoreCarrello.sostituisciCarrelloCorrente(carrello);
 
 			// Prima lancio le stampe
 			eventualeStampa();
@@ -291,7 +311,17 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			_masterizzaSrvImpl.masterizza( carrello.id );
 		}
 
+		public void rimasterizza()
+		{
+			if (masterizzaSrv == null)
+				return;
 
+			if (masterizzaSrv.fotografie.Count <= 0)
+				return;
+
+			_masterizzaSrvImpl.start();
+			_masterizzaSrvImpl.masterizza(carrello.id);
+		}
 
 		public override void OnNext( Messaggio messaggio ) {
 			

@@ -11,6 +11,8 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 		List<Fotografia> cerca( ParamCercaFoto param );
 
+		ICollection<Carrello> cerca(ParamCercaCarrello param);
+
 		List<string> cercaNomi( ParamCercaFoto param );
 
 	}

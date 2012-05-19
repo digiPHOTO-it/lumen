@@ -8,6 +8,7 @@ using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.UI.Pubblico;
 using log4net;
 using Digiphoto.Lumen.Config;
+using System.Threading;
 
 namespace Digiphoto.Lumen.UI {
 	/// <summary>
@@ -17,38 +18,47 @@ namespace Digiphoto.Lumen.UI {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( App ) );
 
+		private static Mutex mutex;
 
 		private SlideShowWindow _slideShowWindow;
 		private MainWindow _mainWindow;
 
 		protected override void OnStartup( StartupEventArgs e ) {
+			mutex = new Mutex( true, Application.ResourceAssembly.FullName ); 
+			if (mutex.WaitOne(0, false)) {
+				#if (! DEBUG)			
+							// Preparo finestra di attesa
+							SplashScreen splashScreen = new SplashScreen( "SplashScreen1.png" );
+							splashScreen.Show( false, true );
+				#endif
+							base.OnStartup( e );
 
-#if (! DEBUG)			
-			// Preparo finestra di attesa
-			SplashScreen splashScreen = new SplashScreen( "SplashScreen1.png" );
-			splashScreen.Show( false, true );
-#endif
-			base.OnStartup( e );
+							// Carico le configurazioni per il configuratore
+							Configurazione.setUserConfig();
 
-            // Carico le configurazioni per il configuratore
-            Configurazione.setUserConfig();
+							// Inizializzo l'applicazione
+							LumenApplication.Instance.avvia();
 
-			// Inizializzo l'applicazione
-			LumenApplication.Instance.avvia();
-
-#if (! DEBUG)
-			// Chiudo lo splash
-			splashScreen.Close( new TimeSpan() );
-#endif
+				#if (! DEBUG)
+							// Chiudo lo splash
+							splashScreen.Close( new TimeSpan() );
+				#endif
 				
-			_giornale.Info( "Applicazione avviata" );
+				_giornale.Info( "Applicazione avviata" );
 
 
-			_mainWindow = new MainWindow();
-			_mainWindow.Show();
+				_mainWindow = new MainWindow();
+				_mainWindow.Show();
 
 
-			// forseApriWindowPubblica();
+				// forseApriWindowPubblica();
+
+			}
+			else
+			{
+				MessageBox.Show("L'applicazione è già in esecuzione");
+				Environment.Exit(0);
+			}
 			
 		}
 

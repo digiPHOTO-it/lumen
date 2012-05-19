@@ -138,6 +138,8 @@ namespace Digiphoto.Lumen.Applicazione {
 			//
 			creaAggiungiAvviaServizio<IFotoExplorerSrv>();
 			//
+			creaAggiungiAvviaServizio<ICarrelloExplorerSrv>();
+			//
 			creaAggiungiAvviaServizio<ISpoolStampeSrv>();
 			//
 			creaAggiungiAvviaServizio<IVenditoreSrv>();

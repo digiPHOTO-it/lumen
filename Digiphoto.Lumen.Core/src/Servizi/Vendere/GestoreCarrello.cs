@@ -54,9 +54,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		public void creaNuovo() {
 			carrello = new Carrello();
 			carrello.righeCarrello = new EntityCollection<RigaCarrello>();
-			//Metto un'intestazione automatica per distinguere i carrello autogenerato dagli altri
+			//Metto un'intestazione automatica per distinguere il carrello autogenerato dagli altri
 			carrello.intestazione = "Auto";
 		
+		}
+
+		public void sostituisciCarrelloCorrente(Carrello carrello)
+		{
+			this.carrello = carrello;
 		}
 
 		/**
@@ -134,6 +139,20 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				}
 
 			} else {
+				dbContext.Carrelli.Attach(carrello);
+				foreach (RigaCarrello rigaCarrello in carrello.righeCarrello)
+				{
+					if (rigaCarrello is RiCaFotoStampata)
+					{
+						RiCaFotoStampata rica = rigaCarrello as RiCaFotoStampata;
+						dbContext.RigheCarrelli.Attach(rica);
+					}
+					else
+					{
+						RiCaDiscoMasterizzato rica = rigaCarrello as RiCaDiscoMasterizzato;
+						dbContext.RigheCarrelli.Attach(rica);
+					}
+				}
 				guidCarrello = carrello.id;
 			}
 
@@ -204,14 +223,16 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
 
 				// Se il carrello non è stato salvato, allora torno indietro.
-				ObjectStateEntry stateEntry = dbContext.ObjectContext.ObjectStateManager.GetObjectStateEntry( ((IEntityWithKey)carrello).EntityKey );
+				if (carrello is IEntityWithKey)
+				{
+					ObjectStateEntry stateEntry = dbContext.ObjectContext.ObjectStateManager.GetObjectStateEntry( ((IEntityWithKey)carrello).EntityKey );
 
-				if( stateEntry.State == EntityState.Modified )
-					dbContext.ObjectContext.Refresh( RefreshMode.StoreWins, carrello );
+					if( stateEntry.State == EntityState.Modified )
+						dbContext.ObjectContext.Refresh( RefreshMode.StoreWins, carrello );
 
-				if( stateEntry.State == EntityState.Added )
-					dbContext.Carrelli.Remove( carrello );
-
+					if( stateEntry.State == EntityState.Added )
+						dbContext.Carrelli.Remove( carrello );
+				}
 				carrello = null;
 			}
 		}
