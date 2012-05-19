@@ -21,8 +21,28 @@
                                 Stretch="Uniform" />
                 </Canvas.Background>
 
-                
-<!-- TODO mettere una immagine per le info aggiuntive in popup -->
+                <Image 
+                    Source="/Digiphoto.Lumen.UI;component/Resources/info-16x16.png" Width="16" Height="16"
+                    Canvas.Left="2"
+                    Canvas.Bottom="2" >
+
+                    <Image.ToolTip>
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="Num = {0}&#x0a;gg =  {1:dd/mmm/yy}&#x0a;Ope = {2}&#x0a;- - - - -&#x0a;{3}&#x0a;{4}">
+                                    <Binding Path="numero" />
+                                    <Binding Path="giornata" />
+                                    <Binding Path="fotografo.id" />
+                                    <Binding Path="faseDelGiornoString" />
+                                    <Binding Path="didascalia" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </Image.ToolTip>
+                </Image>
+
+
+                <!-- TODO mettere una immagine per le info aggiuntive in popup -->
                 
                 <!-- IL font con cui stampo il numero, ha grandezza proporzionale al canvas . Per ora uso 8% della grandezza del contenitore della foto -->
                 <Label Content="{Binding Path=etichetta}"        
