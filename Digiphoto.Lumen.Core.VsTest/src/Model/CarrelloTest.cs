@@ -390,5 +390,79 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				dbContext.SaveChanges();
 			}
 		}
+
+
+		[TestMethod]
+		public void aggiungiUnaRigaAdUnCarrelloEsistente() {
+
+			int countRigheCarrello = 0;
+			Carrello carrelloCorrente;
+
+			using( LumenEntities dbContext = new LumenEntities() ) {
+				carrelloCorrente = dbContext.Carrelli.Include( "righeCarrello" ).Take( 1 ).Single();
+				countRigheCarrello = carrelloCorrente.righeCarrello.Count();
+			}
+
+			FormatoCarta formato;
+			using( LumenEntities dbContext = new LumenEntities() ) {
+				formato = dbContext.FormatiCarta.First();
+			}
+
+			Fotografia fotografia;
+			using( LumenEntities dbContext = new LumenEntities() ) {
+				fotografia = dbContext.Fotografie.Include("fotografo").Where( f => f.fotografo != null ).First();
+			}
+
+			Fotografo fotografo;
+			using( LumenEntities dbContext = new LumenEntities() ) {
+				fotografo = dbContext.Fotografi.First();
+			}
+
+			using( LumenEntities dbContext = new LumenEntities() ) {
+
+				carrelloCorrente = dbContext.Carrelli.Attach( carrelloCorrente );
+				ObjectStateEntry s1 = dbContext.ObjectContext.ObjectStateManager.GetObjectStateEntry( carrelloCorrente );
+
+				formato = dbContext.FormatiCarta.Attach( formato );
+				ObjectStateEntry s2 = dbContext.ObjectContext.ObjectStateManager.GetObjectStateEntry( formato );
+
+				fotografia = dbContext.Fotografie.Attach( fotografia );
+				ObjectStateEntry s3 = dbContext.ObjectContext.ObjectStateManager.GetObjectStateEntry( fotografia );
+
+
+
+				// ======= Occhio qui !!!! poi ti spiego =====
+ 				if( fotografo.id.Equals( fotografia.fotografo.id ) )
+					fotografo = fotografia.fotografo;
+				else
+					fotografo = dbContext.Fotografi.Attach( fotografo );
+				ObjectStateEntry s4 = dbContext.ObjectContext.ObjectStateManager.GetObjectStateEntry( fotografo );
+				// ======= Occhio qui !!!! poi ti spiego =====
+
+
+
+				RiCaFotoStampata riga = dbContext.ObjectContext.CreateObject<RiCaFotoStampata>();
+				riga.id = Guid.NewGuid();
+				riga.prezzoLordoUnitario = new Decimal( 5 );
+				riga.quantita = 3;
+				riga.prezzoNettoTotale = Decimal.Multiply( riga.prezzoLordoUnitario, riga.quantita );
+				riga.descrizione = "SaveCarrelloLodingTest";
+				riga.totFogliStampati = 3;
+				riga.formatoCarta = formato;
+				riga.fotografo = fotografo;
+				riga.fotografia = fotografia;
+
+				carrelloCorrente.righeCarrello.Add( riga );
+				s1 = dbContext.ObjectContext.ObjectStateManager.GetObjectStateEntry( carrelloCorrente );
+
+				dbContext.SaveChanges();
+			}
+
+			// Controllo che le righe siano aumentate di uno.
+			using( LumenEntities dbContext = new LumenEntities() ) {
+				var testCarrello2 = dbContext.Carrelli.Where( c => c.id == carrelloCorrente.id ).Single();
+				Assert.IsTrue( countRigheCarrello + 1 == testCarrello2.righeCarrello.Count );
+			}
+		}
 	}
 }
