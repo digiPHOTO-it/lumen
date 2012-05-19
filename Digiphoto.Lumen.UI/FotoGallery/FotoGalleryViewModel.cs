@@ -31,8 +31,9 @@ namespace Digiphoto.Lumen.UI {
 
 
 
-	public class FotoGalleryViewModel : ViewModelBase {
+	public class FotoGalleryViewModel : ViewModelBase, IObserver<GestoreCarrelloMsg> {
 
+		private Boolean operazioniCarrelloBloccanti = false;
 
 		private BackgroundWorker _bkgIdrata;
 
@@ -114,13 +115,37 @@ namespace Digiphoto.Lumen.UI {
 
 		public bool possoAggiungereAlMasterizzatore {
 			get {
-				return isAlmenoUnaSelezionata;
+
+				if (IsInDesignMode)
+					return true;
+
+				bool posso = true;
+
+				//if (posso && isAlmenoUnaSelezionata)
+				//	posso = false;
+
+				// Verifico che non abbia fatto nel carrello operazioni di 
+				// stampa con errore o abbia caricato un carrello salvato
+				if (posso && operazioniCarrelloBloccanti)
+					posso = false;
+
+				return posso;
 			}
 		}
 
 		public bool possoStampare {
 			get {
+				if (IsInDesignMode)
 				return true;
+
+				bool posso = true;
+
+				// Verifico che non abbia fatto nel carrello operazioni di 
+				// stampa con errore o abbia caricato un carrello salvato
+				if (posso && operazioniCarrelloBloccanti)
+					posso = false;
+
+				return posso;
 			}
 		}
 
@@ -716,6 +741,28 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		#endregion Metodi
+		
+		#region MemBus
+
+		public void OnCompleted()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void OnError(Exception error)
+		{
+			throw new NotImplementedException();
+		}
+		
+		public void OnNext(GestoreCarrelloMsg msg)
+		{
+			if (msg.fase == Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.ErroreMasterizzazione)
+			{
+				operazioniCarrelloBloccanti = true;
+			}
+		}
+
+		#endregion
 
 	}
 }
