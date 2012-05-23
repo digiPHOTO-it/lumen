@@ -36,7 +36,7 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Stampare
 			{
 				_impl = new StampantiAbbinateSrvImpl();
 				_impl.start();
-				IList<StampanteAbbinata> listStampantiAbbinate = _impl.listaStampantiAbbinate(ConfigurazioneUserConfigLumen.stampantiAbbinate);
+				IList<StampanteAbbinata> listStampantiAbbinate = _impl.listaStampantiAbbinate(UserConfigLumen.StampantiAbbinate);
 				foreach (StampanteAbbinata stampanteAbbinata in listStampantiAbbinate)
 				{
 					System.Diagnostics.Trace.WriteLine("[Stampante]: " + stampanteAbbinata.StampanteInstallata.NomeStampante + " " + stampanteAbbinata.FormatoCarta.prezzo + " " + stampanteAbbinata.FormatoCarta.descrizione);
@@ -51,7 +51,7 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Stampare
 			{
 				_impl = new StampantiAbbinateSrvImpl();
 				_impl.start();
-				IList<StampanteAbbinata> listStampantiAbbinate = _impl.listaStampantiAbbinate(ConfigurazioneUserConfigLumen.stampantiAbbinate);
+				IList<StampanteAbbinata> listStampantiAbbinate = _impl.listaStampantiAbbinate(UserConfigLumen.StampantiAbbinate);
 				_impl.sostituisciAbbinamento(listStampantiAbbinate);
 				System.Diagnostics.Trace.WriteLine("[Stampante]: " +_impl.listaStampantiAbbinateToString());
 			}

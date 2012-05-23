@@ -536,7 +536,7 @@ namespace Digiphoto.Lumen.UI {
 			// Se ho selezionato più di una foto, e lavoro in stampa diretta, allora chiedo conferma
 			bool procediPure = true;
 			int quante = listaSelez.Count;
-			if( quante > 1 && Configurazione.modoVendita == ModoVendita.StampaDiretta ) {
+			if( quante > 1 && UserConfigLumen.ModoVendita == ModoVendita.StampaDiretta ) {
 				dialogProvider.ShowConfirmation( "Confermi la stampa di " + quante + " foto ?", "Richiesta conferma",
 				  (confermato) => {
 					  procediPure = confermato;

@@ -10,83 +10,47 @@ namespace Digiphoto.Lumen.Util
 {
     public class UserConfigXML
     {
+		//Calcolo il percorso in cui vengono memorizzati i settaggi utente
+		private static String userConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),".Digiphoto");
 
-        public static String PathUserConfigLumen
-        {
-            get
-            {
-                return pathUserConfigLumen();
-            }
-        }
+		private static String userConfigFilePath = userConfigPath + @"\user.config"; 
 
-        public static String PathUserConfigConfiguratore
-        {
-            get
-            {
-                return pathUserConfigConfiguratore();
-            }
-        }
+		private static UserConfigXML userConfigXML = null;
 
-        private static String pathUserConfigLumen()
-        {
-            //Calcolo il percorso in cui vengono memorizzati i settaggi utente
-            String userConfigPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+		private UserConfigXML()
+		{
+			createUserConfigFile();
+		}
 
-            String userConfigFilePath = userConfigPath + @"\digiPHOTO.it\";
+		public static UserConfigXML Instance
+		{
+			get 
+			{
+				if (userConfigXML == null)
+				{
+					userConfigXML = new UserConfigXML();
+				}
+				return userConfigXML;
+			}
+		}
 
-            String filePath = "";
+		private static void createUserConfigFile()
+		{
+			if (!Directory.Exists(userConfigPath))
+			{
+				Directory.CreateDirectory(userConfigPath);
+				creaXmlFile();
+			}
+			else
+			{
+				if (!File.Exists(userConfigFilePath)) 
+				{
+					creaXmlFile();
+				}
+			}
+		}
 
-            if (!Directory.Exists(userConfigFilePath))
-            {
-                return filePath;
-            }
-
-            String[] listUserConfigFilePath = Directory.GetDirectories(userConfigFilePath);
-
-            foreach (String path in listUserConfigFilePath)
-            {
-                String dirName = Path.GetFileName(path);
-                // Filtro su Digiphoto.Lumen.UI potrebbe essere necessario filtrare sulla data di creazione
-                // ma fose con un MSI installer non serve; se cambio la versione del programma devo cambare 1.0.0.0
-                if (dirName.Substring(0, 18).Equals("Digiphoto.Lumen.UI"))
-                {
-                    filePath = path + @"\1.0.0.0\user.config";
-                }
-            }
-            return filePath;
-        }
-
-        private static String pathUserConfigConfiguratore()
-        {
-            //Calcolo il percorso in cui vengono memorizzati i settaggi utente
-            String userConfigPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-
-            String userConfigFilePath = userConfigPath + @"\digiPHOTO.it\";
-
-            String filePath = "";
-
-            if (!Directory.Exists(userConfigFilePath))
-            {
-                return filePath;
-            }
-
-            String[] listUserConfigFilePath = Directory.GetDirectories(userConfigFilePath);
-
-            foreach (String path in listUserConfigFilePath)
-            {
-                String dirName = Path.GetFileName(path);
-                // Filtro su Digiphoto.Lumen.UI potrebbe essere necessario filtrare sulla data di creazione
-                // ma fose con un MSI installer non serve; se cambio la versione del programma devo cambare 1.0.0.0
-
-                if (dirName.Substring(0, 25).Equals("Digiphoto.Lumen.GestoreCo"))
-                {
-                    filePath = path + @"\1.0.0.0\user.config";
-                }
-            }
-            return filePath;
-        }
-
-        public static String getPropertiesValue(String file, String properties)
+        public String getPropertiesValue(String file, String properties)
         {
             XmlDocument myXmlDocument = new XmlDocument();
             if (file.Equals(""))
@@ -118,7 +82,12 @@ namespace Digiphoto.Lumen.Util
             return null;
         }
 
-        public static void setPropertiesValue(String file, String properties, String value)
+		public String getPropertiesValue(String properties)
+		{
+			return getPropertiesValue(userConfigFilePath, properties);
+		}
+
+        public void setPropertiesValue(String file, String properties, String value)
         {
             XmlDocument myXmlDocument = new XmlDocument();
             myXmlDocument.Load(file);
@@ -126,6 +95,9 @@ namespace Digiphoto.Lumen.Util
             XmlNode node;
             // configuration
             node = myXmlDocument.DocumentElement;
+
+			bool addNewNode = true;
+
             // userSettings
             foreach (XmlNode node1 in node.ChildNodes)
             {
@@ -144,13 +116,86 @@ namespace Digiphoto.Lumen.Util
                                 foreach (XmlNode node5 in node3.ChildNodes)
                                 {
                                     node5.InnerText = value;
+									addNewNode = false;
                                 }
                             }
                         }
                     }
+
+					// Non ho aggiornato quindi il nodo non esiste lo aggiungo
+					if (addNewNode)
+					{
+						XmlNode newNode;
+
+						XmlAttribute attributeName, attributeSerializeAs;
+
+						newNode = AppendChildNode(node2, "setting", null);
+
+						attributeName = node2.OwnerDocument.CreateAttribute("name");
+
+						attributeName.Value = properties;
+
+						newNode.Attributes.Append(attributeName);
+
+						attributeSerializeAs = node2.OwnerDocument.CreateAttribute("serializeAs");
+
+						attributeSerializeAs.Value = "String";
+
+						newNode.Attributes.Append(attributeSerializeAs);
+
+						AppendChildNode(newNode, "value", value);
+					}
                 }
             }
+	
             myXmlDocument.Save(file);
         }
+
+		public void setPropertiesValue(String properties, String value)
+		{
+			setPropertiesValue(userConfigFilePath, properties, value); 
+		}
+
+		private static void creaXmlFile()
+		{
+			// Create XML document
+
+			XmlDocument doc = new XmlDocument();
+
+			// Create and attach root node
+
+			XmlNode configurationNode = doc.CreateElement("configuration");
+
+			doc.AppendChild(configurationNode);
+
+			// Create and attach version
+
+			XmlNode version = doc.CreateXmlDeclaration("1.0", "utf-8", "yes");
+
+			doc.InsertBefore(version, configurationNode);
+
+			XmlNode userSettingsNode = configurationNode.OwnerDocument.CreateElement("userSettings");
+
+			configurationNode.AppendChild(userSettingsNode);
+
+			XmlNode settingsNode = configurationNode.OwnerDocument.CreateElement("Digiphoto.Lumen.Properties.Settings");
+
+			userSettingsNode.AppendChild(settingsNode);
+
+			doc.Save(userConfigFilePath);
+		}
+
+		private XmlNode AppendChildNode(XmlNode Parent, string ChildName, string ChildValue)
+		{
+			XmlNode node = Parent.OwnerDocument.CreateElement(ChildName);
+
+			node.InnerText = ChildValue;
+
+			Parent.AppendChild(node);
+
+			return node;
+		}
+
+
     }
 }

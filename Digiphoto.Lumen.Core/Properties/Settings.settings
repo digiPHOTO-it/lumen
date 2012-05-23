@@ -2,86 +2,11 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Digiphoto.Lumen.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="cartellaFoto" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="oraCambioGiornata" Type="System.String" Scope="Application">
       <Value Profile="(Default)">05:30</Value>
     </Setting>
     <Setting Name="estensioniGrafiche" Type="System.String" Scope="Application">
       <Value Profile="(Default)">*.jpg;*.jpeg;*.png;*.tif;*.tiff</Value>
-    </Setting>
-    <Setting Name="pixelLatoProvino" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">400</Value>
-    </Setting>
-    <Setting Name="modoVendita" Type="System.Int16" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
-    <Setting Name="dbCartella" Type="System.String" Scope="User">
-      <Value Profile="(Default)">%PROGRAMDATA%\digiPHOTO\Lumen</Value>
-    </Setting>
-    <Setting Name="descrizionePuntoVendita" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="defaultMasterizzatore" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="defaultChiavetta" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="eraseFotoMemoryCard" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="pswAdmin" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="stampigli" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="codicePuntoVendita" Type="System.String" Scope="User">
-      <Value Profile="(Default)">cod</Value>
-    </Setting>
-    <Setting Name="proiettaDiapo" Type="System.String" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="destMasterizza" Type="System.String" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
-    <Setting Name="autoZoomNoBordiBianchi" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="primoAvvioLumen" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="connectionString" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="primoAvvioConfiguratore" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="dbNomeDbVuoto" Type="System.String" Scope="User">
-      <Value Profile="(Default)">dbvuoto.sdf</Value>
-    </Setting>
-    <Setting Name="dbNomeDbPieno" Type="System.String" Scope="User">
-      <Value Profile="(Default)">database.sdf</Value>
-    </Setting>
-    <Setting Name="giorniDeleteFoto" Type="System.Int16" Scope="User">
-      <Value Profile="(Default)">8</Value>
-    </Setting>
-    <Setting Name="stampantiAbbinate" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="isWindowPubblicaVisibile" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="cartellaMaschere" Type="System.String" Scope="User">
-      <Value Profile="(Default)">%PROGRAMDATA%\digiPHOTO\Lumen\Maschere</Value>
-    </Setting>
-    <Setting Name="editorImmagini" Type="System.String" Scope="User">
-      <Value Profile="(Default)">MSPAINT.EXE</Value>
-    </Setting>
-    <Setting Name="editorImmaginiMultiArgs" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>

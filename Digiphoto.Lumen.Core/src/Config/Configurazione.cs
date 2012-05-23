@@ -10,6 +10,7 @@ using System.IO;
 using Digiphoto.Lumen.Servizi.Vendere;
 using System.Windows.Forms;
 using Digiphoto.Lumen.Util;
+using Digiphoto.Lumen.src.Config;
 
 namespace Digiphoto.Lumen.Config  {
 
@@ -54,13 +55,12 @@ namespace Digiphoto.Lumen.Config  {
 		 */
 		public static string cartellaRepositoryFoto {
 			get {
-				if( String.IsNullOrEmpty( Properties.Settings.Default.cartellaFoto ) )
+				if( String.IsNullOrEmpty( UserConfigLumen.CartellaFoto ) )
 					return (Path.Combine( cartellaAppData, "Foto" ));
 				else
-					return Properties.Settings.Default.cartellaFoto;
+					return UserConfigLumen.CartellaFoto;
 				}
 		}
-
 
 		/** Faccio un controllo. Se tutto a posto sto zitto, altrimenti sollevo un eccezione */
 		private void verificheConfruenza() {
@@ -166,11 +166,6 @@ namespace Digiphoto.Lumen.Config  {
 			}
 		}
 
-		public int getGiorniDeleteFoto()
-		{
-			return Properties.Settings.Default.giorniDeleteFoto;
-		}
-
         public String suffissoCartellaFoto()
         {
             return ".Fot";
@@ -181,118 +176,14 @@ namespace Digiphoto.Lumen.Config  {
             return ".Gio";
         }
 
-		public static ModoVendita modoVendita {
-			get {
-				return (ModoVendita) Properties.Settings.Default.modoVendita;
-			}
-		}
-
-		public static bool eraseFotoMemoryCard {
-			get {
-				return (bool)Properties.Settings.Default.eraseFotoMemoryCard;
-			}
-		}
-
-		public static int pixelLatoProvino {
-			get {
-				return Properties.Settings.Default.pixelLatoProvino;
-			}
-		}
-
-        public static String stampantiAbbinate
-        {
-            get
-            {
-                return Properties.Settings.Default.stampantiAbbinate;
-            }
-        }
-
-		/// <summary>
-		/// L'auto zoom, significa che la foto viene automaticamente ingrandita per
-		/// essere stampata senza bordi bianchi, e riempire quindi interamente l'area stampabile.
-		/// </summary>
-		public bool autoZoomNoBordiBianchi {
-			get {
-				return Properties.Settings.Default.autoZoomNoBordiBianchi;
-			}
-		}
-
-        public static short GiorniDeleteFotoProperties
-        {
-            get
-            {
-                return Properties.Settings.Default.giorniDeleteFoto;
-            }
-
-            set
-            {
-                Properties.Settings.Default.giorniDeleteFoto = value;
-                Properties.Settings.Default.Save();
-            }
-        }  
-
-        public static bool PrimoAvvioConfiguratore
-        {
-            get
-            {
-                return Properties.Settings.Default.primoAvvioConfiguratore;
-            }
-            set
-            {
-                Properties.Settings.Default.primoAvvioConfiguratore = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
-		public static void setUserConfig() {
-			if( Properties.Settings.Default.primoAvvioLumen ) {
-				Properties.Settings.Default.primoAvvioLumen = false;
-				Properties.Settings.Default.cartellaFoto = cartellaRepositoryFoto;  // Se vuota, imposta quella di appdata.
-				Properties.Settings.Default.codicePuntoVendita = Properties.Settings.Default.codicePuntoVendita;
-				Properties.Settings.Default.dbCartella = Environment.ExpandEnvironmentVariables( Properties.Settings.Default.dbCartella );  // sostituisce %PROGRAMDATA% perchè entity framework non è capace.
-				Properties.Settings.Default.defaultChiavetta = Properties.Settings.Default.defaultChiavetta;
-				Properties.Settings.Default.defaultMasterizzatore = Properties.Settings.Default.defaultMasterizzatore;
-				Properties.Settings.Default.descrizionePuntoVendita = Properties.Settings.Default.descrizionePuntoVendita;
-				Properties.Settings.Default.destMasterizza = Properties.Settings.Default.destMasterizza;
-				Properties.Settings.Default.eraseFotoMemoryCard = Properties.Settings.Default.eraseFotoMemoryCard;
-				Properties.Settings.Default.giorniDeleteFoto = Properties.Settings.Default.giorniDeleteFoto;
-				Properties.Settings.Default.modoVendita = Properties.Settings.Default.modoVendita;
-				Properties.Settings.Default.pixelLatoProvino = Properties.Settings.Default.pixelLatoProvino;
-				Properties.Settings.Default.proiettaDiapo = Properties.Settings.Default.proiettaDiapo;
-				Properties.Settings.Default.pswAdmin = Properties.Settings.Default.pswAdmin;
-				Properties.Settings.Default.stampantiAbbinate = Properties.Settings.Default.stampantiAbbinate;
-				Properties.Settings.Default.stampigli = Properties.Settings.Default.stampigli;
-				Properties.Settings.Default.dbNomeDbPieno = Properties.Settings.Default.dbNomeDbPieno;
-				Properties.Settings.Default.dbNomeDbVuoto = Properties.Settings.Default.dbNomeDbVuoto;
-				Properties.Settings.Default.cartellaMaschere = Environment.ExpandEnvironmentVariables( Properties.Settings.Default.cartellaMaschere );
-
-
-				if( Properties.Settings.Default.connectionString.Equals( "" ) ) {
-					ExeConfigurationFileMap fileMap = new ExeConfigurationFileMap();
-					//Calcolo il percorso in cui vengono memorizzati i settaggi utente
-					System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration( ConfigurationUserLevel.PerUserRoamingAndLocal );
-					ConnectionStringsSection connSection = (ConnectionStringsSection)config.GetSection( "connectionStrings" );
-					String connectionStrings = connSection.ConnectionStrings ["LumenEntities"].ConnectionString;
-
-					Properties.Settings.Default.connectionString = connectionStrings;
-				} else {
-					Properties.Settings.Default.connectionString = Properties.Settings.Default.connectionString;
-				}
-				Properties.Settings.Default.Save();
-			}
-			//Testo il primo Avvio
-			if( UserConfigXML.PathUserConfigConfiguratore.Equals( "" ) ) {
-				MessageBox.Show( "Devi eseguire il Configuratore prima....", "Avviso" );
-				Environment.Exit( 0 );
-			}
-		}
-
 		public static string cartellaMaschere {
 			get {
-				if( String.IsNullOrEmpty( Properties.Settings.Default.cartellaMaschere ) )
-					return (Path.Combine( cartellaAppData, "Maschere" ));
-				else
-					return Environment.ExpandEnvironmentVariables(Properties.Settings.Default.cartellaMaschere);
+				if (String.IsNullOrEmpty(UserConfigLumen.CartellaMaschere))
+				{
+					UserConfigLumen.CartellaMaschere = Path.Combine(cartellaAppData, "Maschere");
+					return Path.Combine(cartellaAppData, "Maschere");
+				}
+				return UserConfigLumen.CartellaMaschere;
 			}
 		}
 
@@ -301,7 +192,7 @@ namespace Digiphoto.Lumen.Config  {
 		/// </summary>
 		public static string [] estensioniGraficheAmmesse {
 			get {
-				return Properties.Settings.Default.estensioniGrafiche.Split( ';' );
+				return UserConfigLumen.EstensioniGrafiche.Split(';');
 			}
 		}
 
@@ -313,13 +204,14 @@ namespace Digiphoto.Lumen.Config  {
 
 					_editorEsternoConfig = new EditorEsternoConfig();
 
-					if( String.IsNullOrEmpty( Properties.Settings.Default.editorImmagini ) ||
-						File.Exists( Properties.Settings.Default.editorImmagini ) == false ) {
+					if (String.IsNullOrEmpty(UserConfigLumen.EditorImmagini) ||
+						File.Exists(UserConfigLumen.EditorImmagini) == false)
+					{
 						_editorEsternoConfig.commandLine = "MSPAINT";
 						_editorEsternoConfig.gestisceMultiArgs = false;
 					} else {
-						_editorEsternoConfig.commandLine = Properties.Settings.Default.editorImmagini;
-						_editorEsternoConfig.gestisceMultiArgs = Properties.Settings.Default.editorImmaginiMultiArgs;
+						_editorEsternoConfig.commandLine = UserConfigLumen.EditorImmagini;
+						_editorEsternoConfig.gestisceMultiArgs = Boolean.Parse(UserConfigLumen.EditorImmaginiMultiArgs);
 					}
 
 				}

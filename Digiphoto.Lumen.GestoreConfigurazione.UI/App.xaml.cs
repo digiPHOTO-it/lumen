@@ -28,13 +28,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI {
 
             base.OnStartup(e);
 
-            //Testo se è stato avviato Lumen
-            if (UserConfigXML.PathUserConfigLumen.Equals(""))
-            {
-                MessageBox.Show("Devi eseguire Lumen prima", "Avviso");
-                Environment.Exit(0);
-            }
-
             // Inizializzo l'applicazione
             //LumenApplication.Instance.avvia();
             _giornale.Info("Applicazione avviata");

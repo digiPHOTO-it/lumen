@@ -19,8 +19,8 @@ namespace Digiphoto.Lumen.UI {
 			using( new UnitOfWorkScope() ) {
 
 				InitializeComponent();
-				 giorniDeleteFoto.Text = ""+Configurazione.GiorniDeleteFotoProperties;
-                 _mainWindowViewModel = new MainWindowViewModel();
+				giorniDeleteFoto.Text = ""+UserConfigLumen.GiorniDeleteFoto;
+                _mainWindowViewModel = new MainWindowViewModel();
 			}
 
 
@@ -45,7 +45,7 @@ namespace Digiphoto.Lumen.UI {
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
-			Configurazione.GiorniDeleteFotoProperties = short.Parse(this.giorniDeleteFoto.Text);
+			UserConfigLumen.GiorniDeleteFoto = short.Parse(this.giorniDeleteFoto.Text);
             System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
             System.Diagnostics.Trace.WriteLine(config.FilePath);
         }

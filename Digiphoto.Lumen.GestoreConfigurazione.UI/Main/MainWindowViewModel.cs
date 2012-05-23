@@ -26,6 +26,7 @@ using System.Security;
 using Digiphoto.Lumen.GestoreConfigurazione.UI.Util;
 using Digiphoto.Lumen.Servizi.EntityRepository;
 using Digiphoto.Lumen.Config;
+using Digiphoto.Lumen.Util;
 
 namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 {
@@ -42,97 +43,71 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             setGui();
         }
 
-        private String calcolaPathUserConfig()
-        {
-            //Calcolo il percorso in cui vengono memorizzati i settaggi utente
-            String userConfigPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            
-            String userConfigFilePath = userConfigPath + @"\digiPHOTO.it\";
-
-            String[] listUserConfigFilePath = Directory.GetDirectories(userConfigFilePath);
-
-            String filePath = "";
-
-            foreach(String path in listUserConfigFilePath){
-                String dirName = Path.GetFileName(path);
-                // Filtro su Digiphoto.Lumen.UI potrebbe essere necessario filtrare sulla data di creazione
-                // ma fose con un MSI installer non serve; se cambio la versione del programma devo cambare 1.0.0.0
-                if (dirName.Substring(0, 18).Equals("Digiphoto.Lumen.UI"))
-                {
-                    filePath = path + @"\1.0.0.0\user.config";
-                }
-            }
-
-            return filePath;
-        }
-
         private void loadUserConfig()
         {
-            String file = calcolaPathUserConfig();
+            CodicePuntoVendita = UserConfigLumen.CodicePuntoVendita;
 
-            CodicePuntoVendita = getPropertiesValue(file, "codicePuntoVendita");
+			UserConfigLumen.CodicePuntoVendita = "Test";
 
-            DescrizionePuntoVendita = getPropertiesValue(file, "descrizionePuntoVendita");
+			DescrizionePuntoVendita = UserConfigLumen.DescrizionePuntoVendita;
 
-            GiorniDeleteFoto = int.Parse(getPropertiesValue(file, "giorniDeleteFoto"));
+			GiorniDeleteFoto = UserConfigLumen.GiorniDeleteFoto;
 
-            CartellaFoto = getPropertiesValue(file, "cartellaFoto");
+			CartellaFoto = UserConfigLumen.CartellaFoto;
 
-            EraseFotoMemoryCard = Boolean.Parse(getPropertiesValue( file, "eraseFotoMemoryCard" ));
+			EraseFotoMemoryCard = UserConfigLumen.EraseFotoMemoryCard;
 
-            ProiettaDiapo = Boolean.Parse(getPropertiesValue(file, "proiettaDiapo"));
+			ProiettaDiapo = UserConfigLumen.ProiettaDiapo;
 
-            ModoVendita = short.Parse(getPropertiesValue(file, "modoVendita"));
+			ModoVendita = (short)UserConfigLumen.ModoVendita;
 
-            DestMasterizzaMasterizzatore = (getPropertiesValue(file, "destMasterizza")).Equals("0") ? true : false;
+			DestMasterizzaMasterizzatore = (UserConfigLumen.DestMasterizza).Equals("0") ? true : false;
 
             DestMasterizzaCartella = !DestMasterizzaMasterizzatore;
 
-            MasterizzatoreSelezionato = getPropertiesValue(file, "defaultMasterizzatore");
+			MasterizzatoreSelezionato = UserConfigLumen.DefaultMasterizzatore;
 
-            DefaultChiavetta = getPropertiesValue(file, "defaultChiavetta");
+			DefaultChiavetta = UserConfigLumen.DefaultChiavetta;
 
-            ConnectionString = getPropertiesValue(file, "connectionString");
+			ConnectionString = ConfigurationManager.ConnectionStrings["LumenEntities"].ConnectionString;
 
             MotoreDataBase = parseConnectionStringToDriver(ConnectionString);
 
-            NomeDbPieno = getPropertiesValue(file, "dbNomeDbPieno");
+			NomeDbPieno = UserConfigLumen.DbNomeDbPieno;
 
-			DbCartella = getPropertiesValue( file, "dbCartella" );
+			DbCartella = UserConfigLumen.DbCartella;
 
             DataSource = DbCartella + @"\" + NomeDbPieno;
         }
 
         private void saveUserConfig()
         {
-            String file = calcolaPathUserConfig();
+            UserConfigLumen.CodicePuntoVendita = CodicePuntoVendita;
 
-            setPropertiesValue(file, "codicePuntoVendita", CodicePuntoVendita);
+			UserConfigLumen.DescrizionePuntoVendita = DescrizionePuntoVendita;
 
-            setPropertiesValue(file, "descrizionePuntoVendita", DescrizionePuntoVendita);
+			UserConfigLumen.GiorniDeleteFoto = GiorniDeleteFoto;
 
-            setPropertiesValue(file, "giorniDeleteFoto", ""+GiorniDeleteFoto);
+			UserConfigLumen.CartellaFoto = CartellaFoto;
 
-            setPropertiesValue(file, "cartellaFoto", CartellaFoto);
+			UserConfigLumen.EraseFotoMemoryCard = EraseFotoMemoryCard;
 
-            setPropertiesValue(file, "eraseFotoMemoryCard", ""+EraseFotoMemoryCard);
+			UserConfigLumen.ProiettaDiapo = ProiettaDiapo;
 
-            setPropertiesValue(file, "proiettaDiapo", ""+ProiettaDiapo);
-
-            ModoVendita = short.Parse(getPropertiesValue(file, "modoVendita"));
+            ModoVendita = (short)UserConfigLumen.ModoVendita;
 
             if (DestMasterizzaMasterizzatore)
             {
-                setPropertiesValue(file, "destMasterizza", "0");
+				UserConfigLumen.DestMasterizza = "0";
             }
             else
             {
-                setPropertiesValue(file, "destMasterizza", "1");
+				UserConfigLumen.DestMasterizza = "1";
             }
 
-            setPropertiesValue(file, "defaultMasterizzatore", "" + MasterizzatoreSelezionato);
+			UserConfigLumen.DefaultMasterizzatore = MasterizzatoreSelezionato;
 
-            setPropertiesValue(file, "defaultChiavetta", DefaultChiavetta);
+			UserConfigLumen.DefaultChiavetta = DefaultChiavetta;
 
             salvaConfigDB();
 
@@ -140,17 +115,13 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
         private void salvaConfigDB()
         {
-            String file = calcolaPathUserConfig();
-
-            setPropertiesValue(file, "connectionString", ConnectionString);
-
             String stringDbCartella = Path.GetDirectoryName(DataSource);
 
             String stringDbNomePieno = Path.GetFileName(DataSource);
 
-            setPropertiesValue(file, "dbCartella", DbCartella);
+            UserConfigLumen.DbCartella = DbCartella;
 
-            setPropertiesValue(file, "dbNomeDbPieno", stringDbNomePieno);
+            UserConfigLumen.DbNomeDbPieno = stringDbNomePieno;
 
 			AppDomain.CurrentDomain.SetData( "DataDirectory", DbCartella );
 		}
@@ -197,75 +168,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             return index;
         }
 
-        #region XML_DOCUMENT
-
-        private String getPropertiesValue(String file, String properties){
-            XmlDocument myXmlDocument = new XmlDocument();
-            if(file.Equals("")){
-                MessageBox.Show("Devi eseguire Lumen prima","Avviso");
-                Environment.Exit(0);
-            }
-            myXmlDocument.Load(file);
-
-            XmlNode node;
-            node = myXmlDocument.DocumentElement;
-
-            foreach (XmlNode node1 in node.ChildNodes)
-            {
-                foreach (XmlNode node2 in node1.ChildNodes)
-                {
-                    foreach (XmlNode node3 in node2.ChildNodes)
-                    {
-                        foreach (XmlNode node4 in node3.Attributes)
-                        {
-                            if (node4.InnerText.Equals(properties))
-                            {
-                                return node3.InnerText;
-                            }
-                        }
-                    }
-                }
-            }
-            return null;
-        }
-
-        private void setPropertiesValue(String file, String properties, String value)
-        {
-            XmlDocument myXmlDocument = new XmlDocument();
-            myXmlDocument.Load(file);
-
-            XmlNode node;
-            // configuration
-            node = myXmlDocument.DocumentElement;
-            // userSettings
-            foreach (XmlNode node1 in node.ChildNodes)
-            {
-                // Digiphoto.Lumen.Properties.Settings
-                foreach (XmlNode node2 in node1.ChildNodes)
-                {
-                    // setting
-                    foreach (XmlNode node3 in node2.ChildNodes)
-                    {
-                        // setting name=
-                        foreach (XmlNode node4 in node3.Attributes)
-                        {
-                            if (node4.InnerText.Equals(properties))
-                            {
-                                // value
-                                foreach (XmlNode node5 in node3.ChildNodes)
-                                {
-                                    node5.InnerText = value;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            myXmlDocument.Save(file);
-        }
-
-        #endregion
-
         private void setGui()
         {
             rwButton = false;
@@ -283,6 +185,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
                     fwButton = false;
                     applicaButton = false;
                     annullaButton = false;
+					DbCartellaButton = true;
                     if (LumenApplication.Instance.avviata)
                     {
                         LumenApplication.Instance.ferma();
@@ -349,6 +252,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 				artista.iniziali = "XY";
 				artista.note = "used for masks and frames";
 				repo.addNew( artista );
+				repo.update(artista);
 			}
 		}
 
@@ -468,101 +372,276 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             set;
         }
 
+		private int _giorniDeleteFoto;
         public int GiorniDeleteFoto
         {
-            get;
-            set;
+			get
+			{
+				return _giorniDeleteFoto;
+			}
+			set
+			{
+				if(_giorniDeleteFoto!=value){
+					_giorniDeleteFoto = value;
+					OnPropertyChanged("GiorniDeleteFoto");
+				}
+			}
         }
 
-        public String CodicePuntoVendita
-        {
-            get;
-            set;
-        }
+		private String _codicePuntoVendita;
+		public String CodicePuntoVendita
+		{
+			get
+			{
+				return _codicePuntoVendita;
+			}
+			set
+			{
+				if (_codicePuntoVendita != value)
+				{
+					_codicePuntoVendita = value;
+					OnPropertyChanged("CodicePuntoVendita");
+				}
+			}
+		}
 
-        public String DescrizionePuntoVendita
-        {
-            get;
-            set;
-        }
+		private String _descrizionePuntoVendita;
+		public String DescrizionePuntoVendita
+		{
+			get
+			{
+				return _descrizionePuntoVendita;
+			}
+			set
+			{
+				if (_descrizionePuntoVendita != value)
+				{
+					_descrizionePuntoVendita = value;
+					OnPropertyChanged("DescrizionePuntoVendita");
+				}
+			}
+		}
 
-        public String CartellaFoto
-        {
-            get;
-            set;
-        }
+		private String _cartellaFoto;
+		public String CartellaFoto
+		{
+			get
+			{
+				return _cartellaFoto;
+			}
+			set
+			{
+				if (_cartellaFoto != value)
+				{
+					_cartellaFoto = value;
+					OnPropertyChanged("CartellaFoto");
+				}
+			}
+		}
 
-        public bool EraseFotoMemoryCard
-        {
-            get;
-            set;
-        }
+		private Boolean _eraseFotoMemoryCard;
+		public Boolean EraseFotoMemoryCard
+		{
+			get
+			{
+				return _eraseFotoMemoryCard;
+			}
+			set
+			{
+				if (_eraseFotoMemoryCard != value)
+				{
+					_eraseFotoMemoryCard = value;
+					OnPropertyChanged("EraseFotoMemoryCard");
+				}
+			}
+		}
 
-        public bool ProiettaDiapo
-        {
-            get;
-            set;
-        }
+		private Boolean _proiettaDiapo;
+		public Boolean ProiettaDiapo
+		{
+			get
+			{
+				return _proiettaDiapo;
+			}
+			set
+			{
+				if (_proiettaDiapo != value)
+				{
+					_proiettaDiapo = value;
+					OnPropertyChanged("ProiettaDiapo");
+				}
+			}
+		}
 
-        public short ModoVendita
-        {
-            get;
-            set;
-        }
+		private short _modoVendita;
+		public short ModoVendita
+		{
+			get
+			{
+				return _modoVendita;
+			}
+			set
+			{
+				if (_modoVendita != value)
+				{
+					_modoVendita = value;
+					OnPropertyChanged("ModoVendita");
+				}
+			}
+		}
 
-        public Boolean DestMasterizzaMasterizzatore
-        {
-            get;
-            set;
-        }
+		private Boolean _destMasterizzaMasterizzatore;
+		public Boolean DestMasterizzaMasterizzatore
+		{
+			get
+			{
+				return _destMasterizzaMasterizzatore;
+			}
+			set
+			{
+				if (_destMasterizzaMasterizzatore != value)
+				{
+					_destMasterizzaMasterizzatore = value;
+					OnPropertyChanged("DestMasterizzaMasterizzatore");
+				}
+			}
+		}
 
-        public Boolean DestMasterizzaCartella
-        {
-            get;
-            set;
-        }
+		private String _defaultChiavetta;
+		public String DefaultChiavetta
+		{
+			get
+			{
+				return _defaultChiavetta;
+			}
+			set
+			{
+				if (_defaultChiavetta != value)
+				{
+					_defaultChiavetta = value;
+					OnPropertyChanged("DefaultChiavetta");
+				}
+			}
+		}
 
-        public String DefaultChiavetta
-        {
-            get;
-            set;
-        }
+		private Boolean _destMasterizzaCartella;
+		public Boolean DestMasterizzaCartella
+		{
+			get
+			{
+				return _destMasterizzaCartella;
+			}
+			set
+			{
+				if (_destMasterizzaCartella != value)
+				{
+					_destMasterizzaCartella = value;
+					OnPropertyChanged("DestMasterizzaCartella");
+				}
+			}
+		}
 
-        public int MotoreDataBase
-        {
-            get;
-            set;
-        }
+		private int _motoreDataBase;
+		public int MotoreDataBase
+		{
+			get
+			{
+				return _motoreDataBase;
+			}
+			set
+			{
+				if (_motoreDataBase != value)
+				{
+					_motoreDataBase = value;
+					OnPropertyChanged("MotoreDataBase");
+				}
+			}
+		}
 
-        public string DbCartella
-        {
-            get;
-            set;
-        }
+		private String _dbCartella;
+		public String DbCartella
+		{
+			get
+			{
+				return _dbCartella;
+			}
+			set
+			{
+				if (_dbCartella != value)
+				{
+					_dbCartella = value;
+					OnPropertyChanged("DbCartella");
+				}
+			}
+		}
 
-        public string DataSource
-        {
-            get;
-            set;
-        }
+		private String _dataSource;
+		public String DataSource
+		{
+			get
+			{
+				return _dataSource;
+			}
+			set
+			{
+				if (_dataSource != value)
+				{
+					_dataSource = value;
+					OnPropertyChanged("DataSource");
+				}
+			}
+		}
 
+		private string _nomeDbPieno;
         public string NomeDbPieno
         {
-            get;
-            set;
+            get
+			{
+				return _nomeDbPieno;
+			}
+            set
+			{
+				if(_nomeDbPieno != value){
+					_nomeDbPieno = value;
+					OnPropertyChanged("NomeDbPieno");
+				}
+			}
         }
 
-        public String ConnectionString
-        {
-            get;
-            set;
-        }
 
-        public bool DbCartellaButton
-        {
-            get;
-            set;
-        }
+		private String _connectionString;
+		public String ConnectionString
+		{
+			get
+			{
+				return _connectionString;
+			}
+			set
+			{
+				if (_connectionString != value)
+				{
+					_connectionString = value;
+					OnPropertyChanged("ConnectionString");
+				}
+			}
+		}
+
+		private bool _dbCartellaButton;
+		public bool DbCartellaButton
+		{
+			get
+			{
+				return _dbCartellaButton;
+			}
+			set
+			{
+				if (_dbCartellaButton != value)
+				{
+					_dbCartellaButton = value;
+					OnPropertyChanged("DbCartellaButton");
+				}
+			}
+		}
 
         public FormatoCarta formatoCartaSelezionato
         {
@@ -1045,29 +1124,12 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
         private void annulla()
         {
             loadUserConfig();
-            // Notifico i cambiamenti
-            OnPropertyChanged("CodicePuntoVendita");
-            OnPropertyChanged("DescrizionePuntoVendita");
-            OnPropertyChanged("GiorniDeleteFoto");
-            OnPropertyChanged("CartellaFoto");
-            OnPropertyChanged("EraseFotoMemoryCard");
-            OnPropertyChanged("ProiettaDiapo");
-            OnPropertyChanged("ModoVendita");
-            OnPropertyChanged("DestMasterizzaMasterizzatore");
-            OnPropertyChanged("DestMasterizzaCartella");
-            OnPropertyChanged("MasterizzatoreSelezionato");
-            OnPropertyChanged("DestMasterizzaCartella");
-            OnPropertyChanged("DefaultChiavetta");
-            OnPropertyChanged("MotoreDataBase");
-            OnPropertyChanged("DataSorce");
-            OnPropertyChanged("ConnectionString");
         }
 
         private void applica()
         {
             saveUserConfig();
             System.Windows.MessageBox.Show("configurazione Salvata", "Avviso");
-            Digiphoto.Lumen.Config.Configurazione.PrimoAvvioConfiguratore = false;
         }
 
         private void createDataBase()

@@ -15,7 +15,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 
         public StampantiAbbinateSrvImpl()
         {
-            String stampantiAbbinate = ConfigurazioneUserConfigLumen.stampantiAbbinate;
+            String stampantiAbbinate = UserConfigLumen.StampantiAbbinate;
             //Carico la configurazione
             if (stampantiAbbinate != "")
             {
@@ -44,7 +44,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 
         public void updateAbbinamento()
         {
-            ConfigurazioneUserConfigLumen.stampantiAbbinate = listaStampantiAbbinateToString();
+            UserConfigLumen.StampantiAbbinate = listaStampantiAbbinateToString();
         }
 
         public IList<StampanteAbbinata> listaStampantiAbbinate(String stampantiAbbinate)

@@ -33,9 +33,6 @@ namespace Digiphoto.Lumen.UI {
 				#endif
 							base.OnStartup( e );
 
-							// Carico le configurazioni per il configuratore
-							Configurazione.setUserConfig();
-
 							// Inizializzo l'applicazione
 							LumenApplication.Instance.avvia();
 

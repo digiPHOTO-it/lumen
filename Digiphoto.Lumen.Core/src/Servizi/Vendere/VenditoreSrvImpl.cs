@@ -14,6 +14,7 @@ using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Servizi.Masterizzare;
 using Digiphoto.Lumen.Database;
 using System.Windows.Forms;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 
@@ -65,7 +66,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			gestoreCarrello = new GestoreCarrello();
 			gestoreCarrello.creaNuovo();
 
-			modoVendita = Digiphoto.Lumen.Config.Configurazione.modoVendita;
+			modoVendita = UserConfigLumen.ModoVendita;
 			
 			contaMessaggiInCoda = 0;
 
@@ -474,7 +475,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			ParamStampaFoto p = new ParamStampaFoto();
 			p.autoRuota = true;    // non ha senso stampare una foto orizzontale nella carta verticale
 			p.numCopie = 1;
-			p.autoZoomNoBordiBianchi = configurazione.autoZoomNoBordiBianchi;
+			p.autoZoomNoBordiBianchi = UserConfigLumen.AutoZoomNoBordiBianchi;
 
 			// TODO la stampante dovrei prendere quella di default di windows.
 			return p;
