@@ -95,7 +95,7 @@ namespace Digiphoto.Lumen.Applicazione {
 			
 			stato = new Stato();
 			stato.giornataLavorativa = StartupUtil.calcolaGiornataLavorativa();
-			stato.isWindowPubblicaVisibile = Properties.Settings.Default.isWindowPubblicaVisibile;
+			stato.isWindowPubblicaVisibile = UserConfigLumen.IsWindowPubblicaVisibile;
 			stato.isSlideShowRunning = false;
 		}
 

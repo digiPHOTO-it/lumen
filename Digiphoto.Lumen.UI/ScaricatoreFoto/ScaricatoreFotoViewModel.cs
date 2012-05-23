@@ -45,7 +45,7 @@ namespace Digiphoto.Lumen.UI {
 
 		private void applicaConfigurazione() {
 
-			this.eraseFotoMemoryCard = Configurazione.eraseFotoMemoryCard;
+			this.eraseFotoMemoryCard = UserConfigLumen.EraseFotoMemoryCard;
 
 		}
 

@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="src\Applicazione\StartupUtil.cs" />
     <Compile Include="src\Applicazione\Stato.cs" />
+    <Compile Include="src\Config\ConfigDefaultValue.cs" />
     <Compile Include="src\Config\Configurazione.cs" />
     <Compile Include="src\Config\ConfigurazioneNonValidaException.cs" />
     <Compile Include="src\Applicazione\LumenApplication.cs" />
@@ -71,7 +72,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="src\Config\ConfigurazioneUserConfigLumen.cs" />
+    <Compile Include="src\Config\UserConfigLumen.cs" />
     <Compile Include="src\Config\EditorEsternoConfig.cs" />
     <Compile Include="src\Config\FlashCardConfig.cs" />
     <Compile Include="src\Config\ServiziCollection.cs" />
