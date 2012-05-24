@@ -78,7 +78,6 @@
     <Compile Include="src\Config\ServiziCollection.cs" />
     <Compile Include="src\Config\ServizioElement.cs" />
     <Compile Include="src\Config\StartupServiziConfigSection.cs" />
-    <Compile Include="src\Core\FaseDelGiornoUtil.cs" />
     <Compile Include="src\Database\DbUtil.cs" />
     <Compile Include="src\Database\OrmUtil.cs" />
     <Compile Include="src\Database\UnitOfWorkScope.cs" />
@@ -216,6 +215,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\Comandi\" />
+    <Folder Include="src\Core\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Digiphoto.Lumen.Model\Digiphoto.Lumen.Model.csproj">

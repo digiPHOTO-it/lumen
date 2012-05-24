@@ -288,6 +288,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			param.numCopie = riCaFotoStampata.quantita;
 			param.nomeStampante = "doPDF v7";    // TODO definire la stampa
 
+			// Stampigli
+			param.stampigli = configurazione.stampigli;
+
 			// Questa informazione mi serve nella callback
 			System.Diagnostics.Debug.Assert( ! riCaFotoStampata.id.Equals( Guid.Empty ) );
 			param.idRigaCarrello = riCaFotoStampata.id;
