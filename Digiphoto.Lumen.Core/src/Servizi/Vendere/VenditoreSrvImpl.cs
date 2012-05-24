@@ -14,6 +14,7 @@ using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Servizi.Masterizzare;
 using Digiphoto.Lumen.Database;
 using System.Windows.Forms;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 
@@ -286,6 +287,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			param.formatoCarta = riCaFotoStampata.formatoCarta;
 			param.numCopie = riCaFotoStampata.quantita;
 			param.nomeStampante = "doPDF v7";    // TODO definire la stampa
+
+			// Stampigli
+			param.stampigli = configurazione.stampigli;
 
 			// Questa informazione mi serve nella callback
 			System.Diagnostics.Debug.Assert( ! riCaFotoStampata.id.Equals( Guid.Empty ) );

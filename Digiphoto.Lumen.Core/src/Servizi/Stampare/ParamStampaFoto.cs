@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Model;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.Servizi.Stampare {
 
 	public class ParamStampaFoto : ICloneable {
+
 
 		public ParamStampaFoto() {
 			this.autoRuota = true;
@@ -46,6 +48,11 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 		}
 
 		public short numCopie;
+
+		public Stampigli stampigli {
+			get;
+			set;
+		}
 
 		public override string ToString() {
 

@@ -99,8 +99,15 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             NomeDbPieno = getPropertiesValue(file, "dbNomeDbPieno");
 
 			DbCartella = getPropertiesValue( file, "dbCartella" );
-
             DataSource = DbCartella + @"\" + NomeDbPieno;
+
+			string appo;
+			appo = getPropertiesValue( file, "stampiglioGiornata" );
+			stampiglioGiornata = appo == null ? false : Boolean.Parse( appo );
+			appo = getPropertiesValue( file, "stampiglioOperatore" );
+			stampiglioOperatore = appo == null ? false : Boolean.Parse( appo );
+			appo = getPropertiesValue( file, "stampiglioNumFoto" );
+			stampiglioNumFoto = appo == null ? false : Boolean.Parse( appo );
         }
 
         private void saveUserConfig()
@@ -643,6 +650,23 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
                 }
             }
         }
+
+
+		public bool stampiglioOperatore {
+			get;
+			set;
+		}
+
+		public bool stampiglioGiornata {
+			get;
+			set;
+		}
+
+		public bool stampiglioNumFoto {
+			get;
+			set;
+		}
+
 
         #endregion
 
