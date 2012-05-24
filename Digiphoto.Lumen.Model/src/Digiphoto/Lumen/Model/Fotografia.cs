@@ -77,6 +77,12 @@ namespace Digiphoto.Lumen.Model {
 			}
 		}
 
+		public string faseDelGiornoString {
+			get {
+				return FaseDelGiornoUtil.valoreToString( faseDelGiorno );
+			}
+		}
+
 	}
 
 }
