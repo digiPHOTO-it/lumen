@@ -45,6 +45,10 @@ namespace Digiphoto.Lumen.Config  {
 
 			verificheConfruenza();
 
+			// Alcuni settaggi sono statici perché non vogliamo che siano cambiati
+			// Altri settaggi invece sono di istanza perché così si possono anche modificare al volo (senza renderli persistenti)
+			valorizzaSettaggiNonStatici();
+
 		}
 
 		/**
@@ -158,6 +162,15 @@ namespace Digiphoto.Lumen.Config  {
 			}
 		}
 
+		void valorizzaSettaggiNonStatici() {
+
+			// Gli stampigli sulla foto volendo si possono modificare
+			Stampigli s;
+			s.giornata = Properties.Settings.Default.stampiglioGiornata;
+			s.operatore = Properties.Settings.Default.stampiglioOperatore;
+			s.numFoto = Properties.Settings.Default.stampiglioNumFoto;
+			stampigli = s;
+		}
 
 		public static string cartellaAppData {
 			get {
@@ -261,7 +274,9 @@ namespace Digiphoto.Lumen.Config  {
 				Properties.Settings.Default.proiettaDiapo = Properties.Settings.Default.proiettaDiapo;
 				Properties.Settings.Default.pswAdmin = Properties.Settings.Default.pswAdmin;
 				Properties.Settings.Default.stampantiAbbinate = Properties.Settings.Default.stampantiAbbinate;
-				Properties.Settings.Default.stampigli = Properties.Settings.Default.stampigli;
+				Properties.Settings.Default.stampiglioGiornata = Properties.Settings.Default.stampiglioGiornata;
+				Properties.Settings.Default.stampiglioOperatore = Properties.Settings.Default.stampiglioOperatore;
+				Properties.Settings.Default.stampiglioNumFoto = Properties.Settings.Default.stampiglioNumFoto;
 				Properties.Settings.Default.dbNomeDbPieno = Properties.Settings.Default.dbNomeDbPieno;
 				Properties.Settings.Default.dbNomeDbVuoto = Properties.Settings.Default.dbNomeDbVuoto;
 				Properties.Settings.Default.cartellaMaschere = Environment.ExpandEnvironmentVariables( Properties.Settings.Default.cartellaMaschere );
@@ -328,5 +343,18 @@ namespace Digiphoto.Lumen.Config  {
 			}
 		}
 
+		public Stampigli stampigli {
+			get;
+			private set;
+		}
+
+
 	}
+
+	public struct Stampigli {
+		public bool numFoto;
+		public bool operatore;
+		public bool giornata;
+	}
+
 }

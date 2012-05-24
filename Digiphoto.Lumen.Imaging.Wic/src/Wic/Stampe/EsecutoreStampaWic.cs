@@ -12,6 +12,7 @@ using System.Windows;
 using System.Printing;
 using System.Windows.Markup;
 using System.Text;
+using Digiphoto.Lumen.Model;
 
 namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 
@@ -145,14 +146,10 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 						page1.Children.Add( image );
 
 
-						if( _giornale.IsDebugEnabled ) {
-							// metto una scritta di prova
-							TextBlock page1Text = new TextBlock();
-							page1Text.Text = _lavoroDiStampa.fotografia.numero.ToString();
-							page1Text.FontSize = 40; // 30pt text
-							page1Text.Margin = new Thickness( 96 ); // 1 inch margin
-							page1.Children.Add( page1Text );
-						}
+
+						//
+						eventualiStampigli( page1, _lavoroDiStampa );
+
 
 						// add the page to the document
 						PageContent page1Content = new PageContent();
@@ -179,6 +176,49 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 		
 			_giornale.Info( "Completato lavoro di stampa. Esito = " + _esito + " lavoro = " + lavoroDiStampa.ToString() );
 			return _esito;
+		}
+
+		private static void eventualiStampigli( FixedPage page1, LavoroDiStampa lavoroDiStampa ) {
+
+			SolidColorBrush coloreFg = new SolidColorBrush( Colors.LightGray );
+			SolidColorBrush coloreBg = new SolidColorBrush( Colors.White );
+
+			// Numero della foto
+			if( lavoroDiStampa.param.stampigli.numFoto ) {
+				TextBlock textNumero = new TextBlock();
+				textNumero.Text = lavoroDiStampa.fotografia.numero.ToString();
+				textNumero.FontSize = 6; // 30pt text
+				textNumero.Foreground = coloreFg;
+				textNumero.Background = coloreBg;
+				FixedPage.SetTop( textNumero, 1 );
+				FixedPage.SetLeft( textNumero, 1 );
+				page1.Children.Add( textNumero );
+			}
+
+			// Giornata
+			if( lavoroDiStampa.param.stampigli.giornata ) {
+				TextBlock textGiorno = new TextBlock();
+				textGiorno.Text = lavoroDiStampa.fotografia.giornata.ToString( "d" );
+				textGiorno.FontSize = 6; // 30pt text
+				textGiorno.Foreground = coloreFg;
+				textGiorno.Background = coloreBg;
+				FixedPage.SetBottom( textGiorno, 1 );
+				FixedPage.SetLeft( textGiorno, 1 );
+				page1.Children.Add( textGiorno );
+			}
+
+			// Operatore
+			if( lavoroDiStampa.param.stampigli.operatore ) {
+				TextBlock textOperatore = new TextBlock();
+				textOperatore.Text = lavoroDiStampa.fotografia.fotografo.iniziali;
+				textOperatore.FontSize = 6; // 30pt text
+				textOperatore.Foreground = coloreFg;
+				textOperatore.Background = coloreBg;
+				FixedPage.SetBottom( textOperatore, 1 );
+				FixedPage.SetRight( textOperatore, 1 );
+				page1.Children.Add( textOperatore );
+			}
+
 		}
 
 		/**

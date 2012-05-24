@@ -36,7 +36,10 @@ namespace Digiphoto.Lumen.UI {
 
 		#region ToggleButton per dimensione lato immagine
 		private void viewGrandeRadioButton_Checked( object sender, RoutedEventArgs e ) {
-			cambiaDimensioneImmagini( Convert.ToDouble( ((RadioButton)sender).Tag ) );
+
+			double dimensione = Convert.ToDouble( ((RadioButton)sender).Tag );
+			dimensione = Math.Min( LsImageGallery.ActualWidth, LsImageGallery.ActualHeight ) - 6;
+			cambiaDimensioneImmagini( dimensione );
 		}
 
 		private void viewMediaRadioButton_Checked( object sender, RoutedEventArgs e ) {

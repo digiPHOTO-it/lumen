@@ -35,8 +35,8 @@
     <Setting Name="pswAdmin" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="stampigli" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="stampiglioGiornata" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="codicePuntoVendita" Type="System.String" Scope="User">
       <Value Profile="(Default)">cod</Value>
@@ -81,6 +81,12 @@
       <Value Profile="(Default)">MSPAINT.EXE</Value>
     </Setting>
     <Setting Name="editorImmaginiMultiArgs" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="stampiglioNumFoto" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="stampiglioOperatore" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
