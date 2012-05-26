@@ -9,7 +9,14 @@ using System.IO;
 
 namespace Digiphoto.Lumen.Config
 {
+	public struct Stampigli {
+		public bool numFoto;
+		public bool operatore;
+		public bool giornata;
+	}
+
     
+
     public class UserConfigLumen
     {
 
@@ -417,5 +424,48 @@ namespace Digiphoto.Lumen.Config
 				UserConfigXML.Instance.setPropertiesValue("isWindowPubblicaVisibile", ""+value);
 			}
 		}
+
+		public static Boolean stampiglioGiornata {
+			get {
+				if( UserConfigXML.Instance.getPropertiesValue( "stampiglioGiornata" ) == null ) {
+					UserConfigXML.Instance.setPropertiesValue( "stampiglioGiornata", ConfigDefaultValue.STAMPIGLIO_GIORNATA );
+					return Boolean.Parse( ConfigDefaultValue.STAMPIGLIO_GIORNATA );
+				}
+				return Boolean.Parse( UserConfigXML.Instance.getPropertiesValue( "stampiglioGiornata" ) );
+			}
+
+			set {
+				UserConfigXML.Instance.setPropertiesValue( "stampiglioGiornata", "" + value );
+			}
+		}
+
+		public static Boolean stampiglioOperatore {
+			get {
+				if( UserConfigXML.Instance.getPropertiesValue( "stampiglioOperatore" ) == null ) {
+					UserConfigXML.Instance.setPropertiesValue( "stampiglioOperatore", ConfigDefaultValue.STAMPIGLIO_OPERATORE );
+					return Boolean.Parse( ConfigDefaultValue.STAMPIGLIO_OPERATORE );
+				}
+				return Boolean.Parse( UserConfigXML.Instance.getPropertiesValue( "stampiglioOperatore" ) );
+			}
+
+			set {
+				UserConfigXML.Instance.setPropertiesValue( "stampiglioOperatore", "" + value );
+			}
+		}
+
+		public static Boolean stampiglioNumFoto {
+			get {
+				if( UserConfigXML.Instance.getPropertiesValue( "stampiglioNumFoto" ) == null ) {
+					UserConfigXML.Instance.setPropertiesValue( "stampiglioNumFoto", ConfigDefaultValue.STAMPIGLIO_NUMFOTO );
+					return Boolean.Parse( ConfigDefaultValue.STAMPIGLIO_NUMFOTO );
+				}
+				return Boolean.Parse( UserConfigXML.Instance.getPropertiesValue( "stampiglioNumFoto" ) );
+			}
+
+			set {
+				UserConfigXML.Instance.setPropertiesValue( "stampiglioNumFoto", "" + value );
+			}
+		}
+
     }
 }

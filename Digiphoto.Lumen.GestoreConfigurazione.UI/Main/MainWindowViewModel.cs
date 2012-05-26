@@ -78,13 +78,9 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			DbCartella = UserConfigLumen.DbCartella;
             DataSource = DbCartella + @"\" + NomeDbPieno;
 
-			string appo;
-			appo = getPropertiesValue( file, "stampiglioGiornata" );
-			stampiglioGiornata = appo == null ? false : Boolean.Parse( appo );
-			appo = getPropertiesValue( file, "stampiglioOperatore" );
-			stampiglioOperatore = appo == null ? false : Boolean.Parse( appo );
-			appo = getPropertiesValue( file, "stampiglioNumFoto" );
-			stampiglioNumFoto = appo == null ? false : Boolean.Parse( appo );
+			stampiglioGiornata = UserConfigLumen.stampiglioGiornata;
+			stampiglioOperatore = UserConfigLumen.stampiglioOperatore;
+			stampiglioNumFoto = UserConfigLumen.stampiglioNumFoto;
         }
 
         private void saveUserConfig()
@@ -115,6 +111,10 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			UserConfigLumen.DefaultMasterizzatore = MasterizzatoreSelezionato;
 
 			UserConfigLumen.DefaultChiavetta = DefaultChiavetta;
+
+			UserConfigLumen.stampiglioGiornata = stampiglioGiornata;
+			UserConfigLumen.stampiglioOperatore = stampiglioOperatore;
+			UserConfigLumen.stampiglioNumFoto = stampiglioNumFoto;
 
             salvaConfigDB();
 
@@ -730,22 +730,44 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             }
         }
 
-
+		bool _stampiglioOperatore;
 		public bool stampiglioOperatore {
-			get;
-			set;
+			get {
+				return _stampiglioOperatore;
+			}
+			set {
+				if( _stampiglioOperatore != value ) {
+					_stampiglioOperatore = value;
+					OnPropertyChanged( "stampiglioOperatore" );
+				}
+			}
 		}
 
+		bool _stampiglioGiornata;
 		public bool stampiglioGiornata {
-			get;
-			set;
+			get {
+				return _stampiglioGiornata;
+			}
+			set {
+				if( _stampiglioGiornata != value ) {
+					_stampiglioGiornata = value;
+					OnPropertyChanged( "stampiglioGiornata" );
+				}
+			}
 		}
 
+		bool _stampiglioNumFoto;
 		public bool stampiglioNumFoto {
-			get;
-			set;
+			get {
+				return _stampiglioNumFoto;
+			}
+			set {
+				if( _stampiglioNumFoto != value ) {
+					_stampiglioNumFoto = value;
+					OnPropertyChanged( "stampiglioNumFoto" );
+				}
+			}
 		}
-
 
         #endregion
 
