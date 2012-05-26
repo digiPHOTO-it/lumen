@@ -46,6 +46,10 @@ namespace Digiphoto.Lumen.Config  {
 
 			verificheConfruenza();
 
+			// Alcuni settaggi sono statici perché non vogliamo che siano cambiati
+			// Altri settaggi invece sono di istanza perché così si possono anche modificare al volo (senza renderli persistenti)
+			valorizzaSettaggiNonStatici();
+
 		}
 
 		/**
@@ -218,6 +222,22 @@ namespace Digiphoto.Lumen.Config  {
 
 				return _editorEsternoConfig;
 			}
+		}
+
+		void valorizzaSettaggiNonStatici() {
+
+			// Gli stampigli sulla foto volendo si possono modificare
+			Stampigli s;
+			s.giornata =  UserConfigLumen.stampiglioGiornata;
+			s.operatore = UserConfigLumen.stampiglioOperatore;
+			s.numFoto = UserConfigLumen.stampiglioNumFoto;
+			stampigli = s;
+		}
+
+
+		public Stampigli stampigli {
+			get;
+			private set;
 		}
 
 	}
