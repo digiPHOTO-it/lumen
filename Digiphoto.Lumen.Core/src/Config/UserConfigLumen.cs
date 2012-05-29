@@ -283,7 +283,7 @@ namespace Digiphoto.Lumen.Config
 		{
 			get
 			{
-				string _editorImmagini = UserConfigXML.Instance.getPropertiesValue("editorImmagini");
+				string _editorImmagini = UserConfigXML.Instance.getPropertiesValueDictionary("editorImmagini");
 				if (_editorImmagini == null)
 				{
 					UserConfigXML.Instance.setPropertiesValue("editorImmagini", ConfigDefaultValue.EDITOR_IMMAGINI);
@@ -321,12 +321,12 @@ namespace Digiphoto.Lumen.Config
 		{
 			get
 			{
-				if (UserConfigXML.Instance.getPropertiesValue("codicePuntoVendita") == null)
+				if (UserConfigXML.Instance.getPropertiesValueDictionary("codicePuntoVendita") == null)
 				{
 					UserConfigXML.Instance.setPropertiesValue("codicePuntoVendita", ConfigDefaultValue.CODICE_PUNTO_VENDITA);
 					return ConfigDefaultValue.CODICE_PUNTO_VENDITA;
 				}
-				return UserConfigXML.Instance.getPropertiesValue("codicePuntoVendita");
+				return UserConfigXML.Instance.getPropertiesValueDictionary("codicePuntoVendita");
 			}
 
 			set
@@ -339,12 +339,12 @@ namespace Digiphoto.Lumen.Config
 		{
 			get
 			{
-				if (UserConfigXML.Instance.getPropertiesValue("descrizionePuntoVendita") == null)
+				if (UserConfigXML.Instance.getPropertiesValueDictionary("descrizionePuntoVendita") == null)
 				{
 					UserConfigXML.Instance.setPropertiesValue("descrizionePuntoVendita", ConfigDefaultValue.DESCRIZIONE_PUNTO_VENDITA);
 					return ConfigDefaultValue.DESCRIZIONE_PUNTO_VENDITA;
 				}
-				return UserConfigXML.Instance.getPropertiesValue("descrizionePuntoVendita");
+				return UserConfigXML.Instance.getPropertiesValueDictionary("descrizionePuntoVendita");
 			}
 
 			set
@@ -357,12 +357,12 @@ namespace Digiphoto.Lumen.Config
 		{
 			get
 			{
-				if (UserConfigXML.Instance.getPropertiesValue("destMasterizza") == null)
+				if (UserConfigXML.Instance.getPropertiesValueDictionary("destMasterizza") == null)
 				{
 					UserConfigXML.Instance.setPropertiesValue("destMasterizza", ConfigDefaultValue.DEST_MASTERIZZA);
 					return ConfigDefaultValue.DEST_MASTERIZZA;
 				}
-				return UserConfigXML.Instance.getPropertiesValue("destMasterizza");
+				return UserConfigXML.Instance.getPropertiesValueDictionary("destMasterizza");
 			}
 
 			set
@@ -375,12 +375,12 @@ namespace Digiphoto.Lumen.Config
 		{
 			get
 			{
-				if (UserConfigXML.Instance.getPropertiesValue("defaultMasterizzatore") == null)
+				if (UserConfigXML.Instance.getPropertiesValueDictionary("defaultMasterizzatore") == null)
 				{
 					UserConfigXML.Instance.setPropertiesValue("defaultMasterizzatore", ConfigDefaultValue.DEFAULT_MASTERIZZATORE);
 					return ConfigDefaultValue.DEFAULT_MASTERIZZATORE;
 				}
-				return UserConfigXML.Instance.getPropertiesValue("defaultMasterizzatore");
+				return UserConfigXML.Instance.getPropertiesValueDictionary("defaultMasterizzatore");
 			}
 
 			set
@@ -393,7 +393,7 @@ namespace Digiphoto.Lumen.Config
 		{
 			get
 			{
-				if (UserConfigXML.Instance.getPropertiesValue("defaultChiavetta") == null)
+				if (UserConfigXML.Instance.getPropertiesValueDictionary("defaultChiavetta") == null)
 				{
 					UserConfigXML.Instance.setPropertiesValue("defaultChiavetta", ConfigDefaultValue.DEFAULT_CHIAVETTA);
 					return ConfigDefaultValue.DEFAULT_CHIAVETTA;
@@ -411,7 +411,7 @@ namespace Digiphoto.Lumen.Config
 		{
 			get
 			{
-				if (UserConfigXML.Instance.getPropertiesValue("isWindowPubblicaVisibile") == null)
+				if (UserConfigXML.Instance.getPropertiesValueDictionary("isWindowPubblicaVisibile") == null)
 				{
 					UserConfigXML.Instance.setPropertiesValue("isWindowPubblicaVisibile", ConfigDefaultValue.IS_WINDOW_PUBBLICA_VISIBILE);
 					return Boolean.Parse(ConfigDefaultValue.IS_WINDOW_PUBBLICA_VISIBILE);
@@ -427,7 +427,8 @@ namespace Digiphoto.Lumen.Config
 
 		public static Boolean stampiglioGiornata {
 			get {
-				if( UserConfigXML.Instance.getPropertiesValue( "stampiglioGiornata" ) == null ) {
+				if (UserConfigXML.Instance.getPropertiesValueDictionary("stampiglioGiornata") == null)
+				{
 					UserConfigXML.Instance.setPropertiesValue( "stampiglioGiornata", ConfigDefaultValue.STAMPIGLIO_GIORNATA );
 					return Boolean.Parse( ConfigDefaultValue.STAMPIGLIO_GIORNATA );
 				}
@@ -441,7 +442,8 @@ namespace Digiphoto.Lumen.Config
 
 		public static Boolean stampiglioOperatore {
 			get {
-				if( UserConfigXML.Instance.getPropertiesValue( "stampiglioOperatore" ) == null ) {
+				if (UserConfigXML.Instance.getPropertiesValueDictionary("stampiglioOperatore") == null)
+				{
 					UserConfigXML.Instance.setPropertiesValue( "stampiglioOperatore", ConfigDefaultValue.STAMPIGLIO_OPERATORE );
 					return Boolean.Parse( ConfigDefaultValue.STAMPIGLIO_OPERATORE );
 				}
@@ -455,7 +457,7 @@ namespace Digiphoto.Lumen.Config
 
 		public static Boolean stampiglioNumFoto {
 			get {
-				if( UserConfigXML.Instance.getPropertiesValue( "stampiglioNumFoto" ) == null ) {
+				if( UserConfigXML.Instance.getPropertiesValueDictionary( "stampiglioNumFoto" ) == null ) {
 					UserConfigXML.Instance.setPropertiesValue( "stampiglioNumFoto", ConfigDefaultValue.STAMPIGLIO_NUMFOTO );
 					return Boolean.Parse( ConfigDefaultValue.STAMPIGLIO_NUMFOTO );
 				}
