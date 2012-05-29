@@ -21,17 +21,26 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI {
 
 		private static Mutex mutex;
 
+		private static Mutex mutexSingle;
+
         protected override void OnStartup(StartupEventArgs e)
         {
-			mutex = new Mutex( true, Application.ResourceAssembly.FullName ); 
-			if (mutex.WaitOne(0, false)) {
-
-            base.OnStartup(e);
-
-            // Inizializzo l'applicazione
-            //LumenApplication.Instance.avvia();
-            _giornale.Info("Applicazione avviata");
-
+			mutex = new Mutex(true, "Digiphoto.Lumen.GestoreConfigurazione"); 
+			if (mutex.WaitOne(0, false))
+			{
+				mutexSingle = new Mutex(true, "Digiphoto.Lumen.Single");
+				if (mutexSingle.WaitOne(0, false))
+				{
+					base.OnStartup(e);
+					// Inizializzo l'applicazione
+					//LumenApplication.Instance.avvia();
+					_giornale.Info("Applicazione avviata");
+				}
+				else
+				{
+					MessageBox.Show("L'applicazione di Digiphoto.Lumen.UI è in esecuzione\nChiudere l'Applicazione e Riavviare il Configuratore");
+					Environment.Exit(0);
+				} 
 			} else 
 			{
 				MessageBox.Show("L'applicazione di Configurazione è già in esecuzione");
