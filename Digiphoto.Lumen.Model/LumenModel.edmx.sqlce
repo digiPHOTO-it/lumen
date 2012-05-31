@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server Compact Edition
 -- --------------------------------------------------
--- Date Created: 02/14/2012 00:21:56
--- Generated from EDMX file: C:\Users\bluca\Documents\Visual Studio 2010\Projects\lumen\Digiphoto.Lumen.Model\LumenModel.edmx
+-- Date Created: 05/31/2012 07:07:31
+-- Generated from EDMX file: C:\Users\bluca\Documents\Visual Studio 2010\Projects\Lumen\Digiphoto.Lumen.Model\LumenModel.edmx
 -- --------------------------------------------------
 
 
@@ -30,7 +30,6 @@ GO
 GO
     ALTER TABLE [RigheCarrelli] DROP CONSTRAINT [FK_FotografiaRiCaFotoStampata];
 GO
-
 
 -- --------------------------------------------------
 -- Dropping existing tables
@@ -120,6 +119,7 @@ CREATE TABLE [ScarichiCards] (
     [id] uniqueidentifier  NOT NULL,
     [tempo] datetime  NOT NULL,
     [totFoto] smallint  NOT NULL,
+    [giornata] datetime  NOT NULL,
     [fotografo_id] nvarchar(16)  NOT NULL
 );
 GO
@@ -149,8 +149,9 @@ CREATE TABLE [Carrelli] (
     [id] uniqueidentifier  NOT NULL,
     [giornata] datetime  NOT NULL,
     [tempo] datetime  NOT NULL,
-    [totaleAPagare] decimal(18,0)  NULL,
-    [intestazione] nvarchar(4000)  NULL
+    [totaleAPagare] decimal(18,0)  NOT NULL,
+    [intestazione] nvarchar(4000)  NULL,
+    [venduto] bit  NOT NULL
 );
 GO
 

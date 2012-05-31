@@ -15,6 +15,9 @@ using Digiphoto.Lumen.Servizi.Masterizzare;
 using Digiphoto.Lumen.Database;
 using System.Windows.Forms;
 using Digiphoto.Lumen.Config;
+using Digiphoto.Lumen.Servizi.Reports;
+using System.Data.Entity;
+using System.Data.Objects;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 
@@ -483,5 +486,158 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			// TODO la stampante dovrei prendere quella di default di windows.
 			return p;
 		}
+
+
+		public List<RigaReportVendite> creaReportVendite( ParamRangeGiorni p ) {
+
+			Dictionary<DateTime,RigaReportVendite> reportVendite = new Dictionary<DateTime,RigaReportVendite>();
+
+			creaReportVenditeStep0( ref reportVendite, p );
+			creaReportVenditeStep1( ref reportVendite, p );
+			creaReportVenditeStep2( ref reportVendite, p );
+			creaReportVenditeStep3( ref reportVendite, p );
+
+			return reportVendite.Values.ToList();
+		}
+
+		/// <summary>
+		/// Calcolo le foto scattate (cioè quelle acquisite)
+		/// </summary>
+		void creaReportVenditeStep0( ref Dictionary<DateTime, RigaReportVendite> reportVendite, ParamRangeGiorni p ) {
+
+			// Siccome ho dei valori con il tempo, testo < del giorno dopo.
+			DateTime giornoDopo = p.dataFine.AddDays( 1 );
+
+			var queryh = from ff in UnitOfWorkScope.CurrentObjectContext.ScarichiCards
+						 where ff.giornata >= p.dataIniz && ff.giornata <= p.dataFine
+						 group ff by ff.giornata into grp
+						 select new RigaReportVendite {
+							 giornata = grp.Key,
+							 totFotoScattate = grp.Sum( q => q.totFoto )
+						 };
+
+			// Ora ciclo i risultati e li metto nella mappa
+			foreach( RigaReportVendite riga in queryh )
+				reportVendite.Add( riga.giornata, riga );
+		}
+
+		/// <summary>
+		/// Calcolo le foto stampate
+		/// </summary>
+		void creaReportVenditeStep1( ref Dictionary<DateTime, RigaReportVendite> reportVendite, ParamRangeGiorni p ) {
+
+			// Qui ho necessità di fare una join tra il carrello e le righe di tipo FotoScattata
+			var querya = from cc in UnitOfWorkScope.CurrentObjectContext.Carrelli.Include( "righeCarrello" )
+						 from rr in cc.righeCarrello.OfType<RiCaFotoStampata>()
+						 where cc.giornata >= p.dataIniz && cc.giornata <= p.dataFine
+						 select new { 
+							 cc, 
+							 rr 
+						 };
+
+			// totalizzo le foto stampate divise per formato carta
+			var queryb = from dd in querya
+						 group dd by new {
+							 dd.cc.giornata,
+							 dd.rr.formatoCarta.descrizione
+			             } into grp
+						 select new {
+							 gg = grp.Key.giornata,
+							 fc = grp.Key.descrizione,
+							 fogli = grp.Sum( a => a.rr.totFogliStampati )
+						 };
+
+			// Ora ciclo i risultati e creo l'apposita riga
+			foreach( var ris in queryb ) {
+				RigaReportVendite riga;
+				if( reportVendite.ContainsKey( ris.gg ) )
+					riga = reportVendite [ris.gg];
+				else {
+					riga = new RigaReportVendite {
+						giornata = ris.gg
+					};
+					reportVendite.Add( ris.gg, riga );
+				}
+				// Sommo i campi
+				riga.totFotoStampate += (ris.fogli == null ? 0 : (int)ris.fogli);
+				// TODO sommare anche i diversi formati carta
+			}
+		}
+
+
+		/// <summary>
+		/// Calcolo i dischetti masterizzati
+		/// </summary>
+		void creaReportVenditeStep2( ref Dictionary<DateTime, RigaReportVendite> reportVendite, ParamRangeGiorni p ) {
+
+			// Estraggo le righe carrello di tipo disco masterizzato
+			var queryc = from cc in UnitOfWorkScope.CurrentObjectContext.Carrelli.Include( "righeCarrello" )
+						 from rr in cc.righeCarrello.OfType<RiCaDiscoMasterizzato>()
+						 where cc.giornata >= p.dataIniz && cc.giornata <= p.dataFine
+						 select new {
+							 cc,
+							 rr
+						 };
+
+			// Calcolo i cd masterizzati divisi per giornata
+			var queryd = from dd in queryc
+						 group dd by new {
+							 dd.cc.giornata
+						 } into grp
+						 select new {
+							 gg = grp.Key.giornata,
+							 dvd = grp.Sum( a => a.rr.quantita )
+						 };
+
+			// Ora ciclo i risultati e creo l'apposita riga
+			foreach( var ris in queryd ) {
+				RigaReportVendite riga;
+				if( reportVendite.ContainsKey( ris.gg ) )
+					riga = reportVendite [ris.gg];
+				else {
+					riga = new RigaReportVendite {
+						giornata = ris.gg
+					};
+					reportVendite.Add( ris.gg, riga );
+				}
+				// Sommo i campi
+				riga.totDischettiMasterizzati += (ris.dvd == null ? 0 : (int)ris.dvd);
+			}
+		}
+
+		/// <summary>
+		/// Calcolo il totale incasso previsto
+		/// </summary>
+		void creaReportVenditeStep3( ref Dictionary<DateTime, RigaReportVendite> reportVendite, ParamRangeGiorni p ) {
+
+			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+
+			//
+			var querye = from cc in dbContext.Carrelli.Include( "righeCarrello" )
+						 from rr in cc.righeCarrello.OfType<RiCaDiscoMasterizzato>()
+						 where cc.giornata >= p.dataIniz && cc.giornata <= p.dataFine
+						 group cc by cc.giornata into grp
+						 select new {
+							 gg = grp.Key,
+							 inca = grp.Sum( k => k.totaleAPagare )
+						 };
+
+
+			// Ora ciclo i risultati e creo l'apposita riga
+			foreach( var ris in querye ) {
+				RigaReportVendite riga;
+				if( reportVendite.ContainsKey( ris.gg ) )
+					riga = reportVendite [ris.gg];
+				else {
+					riga = new RigaReportVendite {
+						giornata = ris.gg
+					};
+					reportVendite.Add( ris.gg, riga );
+				}
+				// setto il totale dell'incasso giornaliero
+				riga.totIncassoDichiarato = (ris.inca == null ? 0 : (decimal)ris.inca);
+			}
+		}
+
 	}
 }

@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Servizi.Masterizzare;
 using System.IO;
+using Digiphoto.Lumen.Servizi.Reports;
+using System.Diagnostics;
 
 namespace Digiphoto.Lumen.Core.VsTest
 {
@@ -189,6 +191,90 @@ namespace Digiphoto.Lumen.Core.VsTest
 				// return contaStampate == QUANTE && this._impl.masterizzaSrv.isCompletato;
 			}
 		}
+
+
+		[TestMethod]
+		public void queryVenditeConTotali() {
+
+			using( new UnitOfWorkScope() ) {
+			
+				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+				DateTime dataIniz = new DateTime( 2012, 04, 01 );
+				DateTime dataFine = new DateTime( 2012, 04, 30 );
+
+
+				var porc = from c in dbContext.Carrelli.Include( "righeCarrello" )
+						   from r in c.righeCarrello.OfType<RiCaFotoStampata>()
+						   select new { c, r }
+						   ;
+
+				var porc2 = from d in porc
+							group d by new {
+								d.c.giornata,
+								d.r.formatoCarta.descrizione
+							} into grp
+							select new {
+								gg = grp.Key.giornata,
+								fc = grp.Key.descrizione,
+								fogli = grp.Sum( a => a.r.totFogliStampati )
+							};
+
+
+				foreach( var item in porc2 ) {
+					Trace.WriteLine( item );
+				}
+
+
+
+
+				var query =
+						from c in dbContext.Carrelli
+							.Include( "righeCarrello" )
+						where c.giornata >= dataIniz && c.giornata <= dataFine
+						orderby c.giornata descending
+						select c;
+
+
+				RigaReportVendite riga = null;
+
+				foreach( var carrello in query ) {
+
+					if( riga == null || !riga.giornata.Equals( carrello.giornata ) )
+						riga = new RigaReportVendite {
+							giornata = carrello.giornata
+						};
+
+					foreach( RigaCarrello rc in carrello.righeCarrello ) {
+
+						if( rc is RiCaFotoStampata ) {
+							RiCaFotoStampata rfs = (RiCaFotoStampata)rc;
+
+						}
+
+						if( rc is RiCaDiscoMasterizzato ) {
+
+						}
+
+					}
+
+					var qq = carrello.righeCarrello.OfType<RiCaFotoStampata>()
+							 .GroupBy( t => t.formatoCarta.descrizione )
+							 .Select( r => new {
+								 ff = r.Key,
+								 tot = r.Sum( t => t.quantita )
+							 } );
+
+
+					foreach( var qq2 in qq ) {
+						Trace.WriteLine( qq2 );
+					}
+				}
+
+			}
+
+		}
+
+
 
 	}
 }

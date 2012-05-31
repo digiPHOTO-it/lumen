@@ -14,6 +14,7 @@ using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Imaging;
 using System.Reflection;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
@@ -99,6 +100,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			scaricoCard.fotografo = this._fotografo;
 			scaricoCard.tempo = DateTime.Now;
+			scaricoCard.giornata = LumenApplication.Instance.stato.giornataLavorativa;
 
 			objContext.ScarichiCards.Add( scaricoCard );
 

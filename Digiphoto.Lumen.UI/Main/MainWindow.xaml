@@ -50,7 +50,10 @@
         </TabItem>
 
         <TabItem Header="Utilità" ToolTip="Funzionalità varie" >
-            <Button Content="Uscita" Height="100" Width="100" Command="{Binding CloseCommand}" />
+            <StackPanel>
+                <Button Content="Report Vendite" Height="50" Name="buttonReport" Command="{Binding reportVenditeCommand}" Width="150" />
+                <Button Content="Uscita" Height="50" Command="{Binding CloseCommand}" Width="150" />
+            </StackPanel>
         </TabItem>
 
     </TabControl>

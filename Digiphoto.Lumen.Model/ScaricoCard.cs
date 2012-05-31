@@ -24,6 +24,8 @@ namespace Digiphoto.Lumen.Model
         public System.DateTime tempo { get; set; }
         [DataMember]
         public short totFoto { get; set; }
+        [DataMember]
+        public System.DateTime giornata { get; set; }
     
         [DataMember]
         public virtual Fotografo fotografo { get; set; }
