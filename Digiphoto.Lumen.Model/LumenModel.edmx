@@ -116,6 +116,7 @@
 		<Property Name="id" Type="uniqueidentifier" Nullable="false" />
 		<Property Name="tempo" Type="datetime" Nullable="false" />
 		<Property Name="totFoto" Type="smallint" Nullable="false" />
+		<Property Name="giornata" Type="datetime" Nullable="false" />
 		<Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="false" />
     </EntityType>
     <EntityType Name="FormatiCarta">
@@ -145,8 +146,9 @@
 		<Property Name="id" Type="uniqueidentifier" Nullable="false" />
 		<Property Name="giornata" Type="datetime" Nullable="false" />
 		<Property Name="tempo" Type="datetime" Nullable="false" />
-		<Property Name="totaleAPagare" Type="decimal" Nullable="true" />
+		<Property Name="totaleAPagare" Type="decimal" Nullable="false" />
 		<Property Name="intestazione" Type="nvarchar" Nullable="true" />
+		<Property Name="venduto" Type="bit" Nullable="false" DefaultValue="false" />
     </EntityType>
     <EntityType Name="RigheCarrelli">
         <Key>
@@ -454,6 +456,7 @@
           <Property Type="DateTime" Name="tempo" Nullable="false" />
           <Property Type="Int16" Name="totFoto" Nullable="false" />
           <NavigationProperty Name="fotografo" Relationship="Digiphoto.Lumen.Model.FotografoScaricoCard" FromRole="ScaricoCard" ToRole="Fotografo" />
+          <Property Type="DateTime" Name="giornata" Nullable="false" />
         </EntityType>
         <EntityType Name="FormatoCarta">
           <Key>
@@ -512,9 +515,10 @@
           <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" />
           <Property Type="DateTime" Name="giornata" Nullable="false" />
           <Property Type="DateTime" Name="tempo" Nullable="false" />
-          <Property Type="Decimal" Name="totaleAPagare" Nullable="true" />
+          <Property Type="Decimal" Name="totaleAPagare" Nullable="false" />
           <NavigationProperty Name="righeCarrello" Relationship="Digiphoto.Lumen.Model.CarrelloRigaCarrello" FromRole="Carrello" ToRole="RigaCarrello" />
           <Property Type="String" Name="intestazione" Nullable="true" />
+          <Property Type="Boolean" Name="venduto" Nullable="false" DefaultValue="false" />
         </EntityType>
         <EntityType Name="RigaCarrello" Abstract="false">
           <Key>
@@ -627,6 +631,7 @@
 					<ScalarProperty Name="id" ColumnName="id" />
 					<ScalarProperty Name="tempo" ColumnName="tempo" />
 					<ScalarProperty Name="totFoto" ColumnName="totFoto" />
+					<ScalarProperty Name="giornata" ColumnName="giornata" />
 				</MappingFragment>
 			</EntityTypeMapping>
 		</EntitySetMapping>
@@ -660,6 +665,7 @@
 					<ScalarProperty Name="tempo" ColumnName="tempo" />
 					<ScalarProperty Name="totaleAPagare" ColumnName="totaleAPagare" />
 					<ScalarProperty Name="intestazione" ColumnName="intestazione" />
+					<ScalarProperty Name="venduto" ColumnName="venduto" />
 				</MappingFragment>
 			</EntityTypeMapping>
 		</EntitySetMapping>
@@ -807,7 +813,7 @@
     </edmx:Options>
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram Name="ModelloEntita" ZoomLevel="59" >
+      <Diagram Name="ModelloEntita" ZoomLevel="101" >
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografo" Width="2.375" PointX="12" PointY="6" Height="2.1725878906249996" />
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografia" Width="1.5" PointX="11.75" PointY="2.25" Height="3.1340950520833326" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.FotografoFotografia">
@@ -834,23 +840,23 @@
           <ConnectorPoint PointX="11.75" PointY="10.393992513020834" />
         </AssociationConnector>
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.InfoFissa" PointX="5" PointY="0.875" Width="1.5" Height="1.9802864583333331" />
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Carrello" Width="1.5" PointX="19" PointY="4.5" Height="2.1725878906249996" />
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RigaCarrello" Width="1.5" PointX="21.25" PointY="4.75" Height="2.1725878906249996" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Carrello" Width="1.5" PointX="18.875" PointY="4.125" Height="2.3648893229166665" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RigaCarrello" Width="1.5" PointX="21.375" PointY="3.875" Height="2.1725878906249996" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.CarrelloRigaCarrello">
-          <ConnectorPoint PointX="20.5" PointY="5.7112939453125" />
-          <ConnectorPoint PointX="21.25" PointY="5.7112939453125" />
+          <ConnectorPoint PointX="20.375" PointY="5.0862939453125" />
+          <ConnectorPoint PointX="21.375" PointY="5.0862939453125" />
         </AssociationConnector>
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RiCaDiscoMasterizzato" Width="1.5" PointX="22.875" PointY="7.875" Height="1.2110807291666665" />
         <InheritanceConnector EntityType="Digiphoto.Lumen.Model.RiCaDiscoMasterizzato" ManuallyRouted="false" >
-          <ConnectorPoint PointX="22" PointY="6.922587890625" />
-          <ConnectorPoint PointX="22" PointY="7.297587890625" />
-          <ConnectorPoint PointX="23.625" PointY="7.297587890625" />
+          <ConnectorPoint PointX="22.125" PointY="6.047587890625" />
+          <ConnectorPoint PointX="22.125" PointY="6.422587890625" />
+          <ConnectorPoint PointX="23.625" PointY="6.422587890625" />
           <ConnectorPoint PointX="23.625" PointY="7.875" />
         </InheritanceConnector>
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RiCaFotoStampata" Width="1.5" PointX="21.125" PointY="7.75" Height="1.7879850260416674" />
         <InheritanceConnector EntityType="Digiphoto.Lumen.Model.RiCaFotoStampata" ManuallyRouted="false" >
-          <ConnectorPoint PointX="22" PointY="6.922587890625" />
-          <ConnectorPoint PointX="22" PointY="7.375" />
+          <ConnectorPoint PointX="22.125" PointY="6.047587890625" />
+          <ConnectorPoint PointX="22.125" PointY="7.375" />
           <ConnectorPoint PointX="21.875" PointY="7.375" />
           <ConnectorPoint PointX="21.875" PointY="7.75" />
         </InheritanceConnector>

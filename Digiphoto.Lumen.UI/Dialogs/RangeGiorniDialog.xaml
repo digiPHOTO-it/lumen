@@ -1,0 +1,18 @@
+﻿<Window x:Class="Digiphoto.Lumen.UI.Dialogs.RangeGiorniDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Seleziona periodo" Height="320" Width="300" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+        
+    <Grid>
+        <Calendar SelectionMode="SingleRange" Name="calendario" Margin="0,5,0,0" SelectedDatesChanged="calendario_SelectedDatesChanged" />
+        <Button Content="OK" Height="23" HorizontalAlignment="Left" Margin="191,240,0,0" Name="buttonOk" VerticalAlignment="Top" Width="75" IsDefault="True" Click="buttonOk_Click" />
+        <Button Content="Annulla" Height="23" HorizontalAlignment="Left" Margin="12,240,0,0" Name="buttonAnnulla" VerticalAlignment="Top" Width="75" IsCancel="True" Click="buttonAnnulla_Click" />
+        <Label HorizontalAlignment="Left" Margin="12,174,0,0" Name="label1" VerticalAlignment="Top" Width="254">
+            <AccessText TextWrapping="Wrap">
+                Per selezionare un periodo, cliccare sul primo giorno, e senza rilasciare il mouse, trascinare fino al secondo giorno
+            </AccessText>
+        </Label>
+    </Grid>    
+        
+
+</Window>

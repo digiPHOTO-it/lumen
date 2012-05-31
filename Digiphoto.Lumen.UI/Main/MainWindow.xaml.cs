@@ -5,12 +5,14 @@ using Digiphoto.Lumen.Config;
 using System.Configuration;
 using Digiphoto.Lumen.UI.Main;
 using Digiphoto.Lumen.Applicazione;
+using Digiphoto.Lumen.UI.Reports;
+using Digiphoto.Lumen.UI.Mvvm;
 
 namespace Digiphoto.Lumen.UI {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
-	public partial class MainWindow : Window, IObserver<CambioPaginaMsg> {
+	public partial class MainWindow : Window, IObserver<CambioPaginaMsg>, IDialogProvider {
 
         MainWindowViewModel _mainWindowViewModel = null;
 
@@ -21,6 +23,7 @@ namespace Digiphoto.Lumen.UI {
 				InitializeComponent();
 				giorniDeleteFoto.Text = ""+UserConfigLumen.GiorniDeleteFoto;
                 _mainWindowViewModel = new MainWindowViewModel();
+				_mainWindowViewModel.dialogProvider = this;
 			}
 
 
@@ -61,6 +64,34 @@ namespace Digiphoto.Lumen.UI {
 			
 			if( cambioPaginaMsg.nuovaPag == "FotoRitoccoPag" )
 				tabControlPagine.SelectedItem = tabControlPagine.FindName( "tabItemAggiusta" );
+		}
+
+
+		/// <summary>
+		/// Visualizza un messaggio
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="title"></param>
+		/// <param name="afterHideCallback"></param>
+		public void ShowError( string message, string title, Action afterHideCallback ) {
+
+			var risultato = MessageBox.Show( message, title, MessageBoxButton.OK, MessageBoxImage.Error );
+			if( afterHideCallback != null )
+				afterHideCallback();
+		}
+
+		public void ShowMessage( string message, string title ) {
+			MessageBox.Show( message, title, MessageBoxButton.OK, MessageBoxImage.Information );
+		}
+
+
+		/// <summary>
+		/// Chiedo conferma SI/NO.
+		/// Chiamo la callback passando TRUE se l'utente ha scelto SI.
+		/// </summary>
+		public void ShowConfirmation( string message, string title, Action<bool> afterHideCallback ) {
+			var tastoPremuto = MessageBox.Show( message, title, MessageBoxButton.YesNo, MessageBoxImage.Question );
+			afterHideCallback( tastoPremuto == MessageBoxResult.Yes );
 		}
 	}
 }

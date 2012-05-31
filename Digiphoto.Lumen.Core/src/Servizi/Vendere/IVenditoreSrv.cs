@@ -5,6 +5,7 @@ using System.Text;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Servizi.Stampare;
 using Digiphoto.Lumen.Servizi.Masterizzare;
+using Digiphoto.Lumen.Servizi.Reports;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 
@@ -66,5 +67,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		void sostituisciCarrelloCorrente(Carrello carrello);
 
+		List<RigaReportVendite> creaReportVendite( ParamRangeGiorni param );
 	}
 }

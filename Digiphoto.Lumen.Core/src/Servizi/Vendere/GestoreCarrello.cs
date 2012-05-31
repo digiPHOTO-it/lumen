@@ -81,8 +81,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				errore = "Giornata vuota";
 			else if( carrello.tempo == DateTime.MinValue )
 				errore = "tempo non indicato";
-			else if( carrello.totaleAPagare == null )
-				errore = "totale a pagare non indicato";
 			else {
 			}
 
@@ -197,8 +195,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				totaleAPagare += r.prezzoNettoTotale;
 			}
 
-			if( carrello.totaleAPagare == null )
-				carrello.totaleAPagare = totaleAPagare;
+			carrello.totaleAPagare = totaleAPagare;
 
 
 

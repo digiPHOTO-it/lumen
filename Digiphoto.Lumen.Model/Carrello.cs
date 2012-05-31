@@ -20,6 +20,7 @@ namespace Digiphoto.Lumen.Model
     {
         public Carrello()
         {
+            this.venduto = false;
             this.righeCarrello = new HashSet<RigaCarrello>();
         }
     
@@ -30,9 +31,11 @@ namespace Digiphoto.Lumen.Model
         [DataMember]
         public System.DateTime tempo { get; set; }
         [DataMember]
-        public Nullable<decimal> totaleAPagare { get; set; }
+        public decimal totaleAPagare { get; set; }
         [DataMember]
         public string intestazione { get; set; }
+        [DataMember]
+        public bool venduto { get; set; }
     
         [DataMember]
         public virtual ICollection<RigaCarrello> righeCarrello { get; set; }

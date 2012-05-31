@@ -200,7 +200,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 			using( LumenEntities dbContext = new LumenEntities() ) {
 				foreach( RiCaFotoStampata riCaFotoStampata in 
-					dbContext.RigheCarrelli.Include( "fotografo" ).Include( "fotografia" ).Include( "formatoCarta" ).OfType<RiCaFotoStampata>() ) {
+					dbContext.RigheCarrelli.Include( "fotografo" ).Include( "fotografia" ).OfType<RiCaFotoStampata>() ) {
 					Trace.WriteLine ( "Riga Carrello foto stampata: " + riCaFotoStampata.fotografo.id + " totFoto=" + riCaFotoStampata.totFogliStampati );
 				}
 			}
@@ -455,7 +455,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				carrelloCorrente.righeCarrello.Add( riga );
 				s1 = dbContext.ObjectContext.ObjectStateManager.GetObjectStateEntry( carrelloCorrente );
 
-				dbContext.SaveChanges();
+				int quanti = dbContext.SaveChanges();
 			}
 
 			// Controllo che le righe siano aumentate di uno.

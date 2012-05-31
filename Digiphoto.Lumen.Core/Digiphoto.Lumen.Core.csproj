@@ -120,6 +120,9 @@
     </Compile>
     <Compile Include="src\Servizi\Explorer\CarrelloExplorerSrvImpl.cs" />
     <Compile Include="src\Servizi\Explorer\ICarrelloExplorerSrv.cs" />
+    <Compile Include="src\Servizi\Reports\RigaReport.cs" />
+    <Compile Include="src\Servizi\Reports\ParamReports.cs" />
+    <Compile Include="src\Servizi\Vendere\RigaReportVendite.cs" />
     <Compile Include="src\Servizi\Ricerca\ParamCercaCarrello.cs" />
     <Compile Include="src\Servizi\Ritoccare\FotoDaModificareMsg.cs" />
     <Compile Include="src\Servizi\Ritoccare\FotoModificateMsg.cs" />
@@ -202,6 +205,8 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\Digiphoto.Lumen.Servizi.Reports.ReportVendite.datasource" />
+    <None Include="Properties\DataSources\Digiphoto.Lumen.Servizi.Reports.ReportVenditeDettaglio.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
