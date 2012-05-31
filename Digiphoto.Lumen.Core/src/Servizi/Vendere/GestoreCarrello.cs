@@ -33,9 +33,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public bool isCarrelloTransient {
 			get {
-				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
-				DbEntityEntry dbee = dbContext.Entry( carrello );
-				return dbee.State == EntityState.Detached;
+				return carrello.id == null || carrello.id.Equals( Guid.Empty );
 			}
 		}
 

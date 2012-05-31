@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Digiphoto.Lumen.Servizi.Reports {
 
-	public class RigaReportVendite : RigaReport {
+	public class RigaReportVendite  {
 
 		public RigaReportVendite() {
 			this.dettaglioFormatiCarta = new List<ReportVenditeDettaglio>();
