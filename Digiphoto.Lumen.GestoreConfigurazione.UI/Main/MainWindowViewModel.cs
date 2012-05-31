@@ -47,8 +47,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
         {
             CodicePuntoVendita = UserConfigLumen.CodicePuntoVendita;
 
-			UserConfigLumen.CodicePuntoVendita = "Test";
-
 			DescrizionePuntoVendita = UserConfigLumen.DescrizionePuntoVendita;
 
 			GiorniDeleteFoto = UserConfigLumen.GiorniDeleteFoto;
@@ -1141,6 +1139,8 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             OnPropertyChanged("DbCartellaButton");
         }
 
+		private String abbinamentiLoaded = UserConfigLumen.StampantiAbbinate;
+
         private void abbinaButton()
         {
             using (new UnitOfWorkScope())
@@ -1170,12 +1170,24 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
         private void annulla()
         {
             loadUserConfig();
+			if(stampantiAbbinateSrvImpl!=null){
+				using (new UnitOfWorkScope())
+				{
+					stampantiAbbinateSrvImpl.sostituisciAbbinamento(stampantiAbbinateSrvImpl.listaStampantiAbbinate(abbinamentiLoaded));
+					stampantiAbbinateSrvImpl.updateAbbinamento();
+					selettoreFormatoCartaAbbinatoViewModel = null;
+					selettoreFormatoCartaAbbinatoViewModel = new SelettoreFormatoCartaAbbinatoViewModel();
+					DataContextAbbinamenti = selettoreFormatoCartaAbbinatoViewModel;
+				}
+				OnPropertyChanged("DataContextAbbinamenti");
+			}
         }
 
         private void applica()
         {
             saveUserConfig();
-            System.Windows.MessageBox.Show("configurazione Salvata", "Avviso");
+			abbinamentiLoaded = UserConfigLumen.StampantiAbbinate;
+            System.Windows.MessageBox.Show("Configurazione Salvata", "Avviso");
         }
 
         private void createDataBase()

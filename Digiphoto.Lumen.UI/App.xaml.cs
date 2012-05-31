@@ -20,35 +20,48 @@ namespace Digiphoto.Lumen.UI {
 
 		private static Mutex mutex;
 
+		private static Mutex mutexSingle;
+
 		private SlideShowWindow _slideShowWindow;
 		private MainWindow _mainWindow;
 
 		protected override void OnStartup( StartupEventArgs e ) {
-			mutex = new Mutex( true, Application.ResourceAssembly.FullName ); 
-			if (mutex.WaitOne(0, false)) {
-				#if (! DEBUG)			
-							// Preparo finestra di attesa
-							SplashScreen splashScreen = new SplashScreen( "SplashScreen1.png" );
-							splashScreen.Show( false, true );
-				#endif
-							base.OnStartup( e );
+			mutex = new Mutex(true, "Digiphoto.Lumen.UI");
+			if (mutex.WaitOne(0, false)) 
+			{
 
-							// Inizializzo l'applicazione
-							LumenApplication.Instance.avvia();
+				mutexSingle = new Mutex(true, "Digiphoto.Lumen.Single");
+				if (mutexSingle.WaitOne(0, false))
+				{
+					#if (! DEBUG)			
+						// Preparo finestra di attesa
+						SplashScreen splashScreen = new SplashScreen( "SplashScreen1.png" );
+						splashScreen.Show( false, true );
+					#endif
+					base.OnStartup(e);
 
-				#if (! DEBUG)
-							// Chiudo lo splash
-							splashScreen.Close( new TimeSpan() );
-				#endif
-				
-				_giornale.Info( "Applicazione avviata" );
+					// Inizializzo l'applicazione
+					LumenApplication.Instance.avvia();
+
+					#if (! DEBUG)
+						// Chiudo lo splash
+						splashScreen.Close( new TimeSpan() );
+					#endif
+
+					_giornale.Info("Applicazione avviata");
 
 
-				_mainWindow = new MainWindow();
-				_mainWindow.Show();
+					_mainWindow = new MainWindow();
+					_mainWindow.Show();
 
 
-				// forseApriWindowPubblica();
+					// forseApriWindowPubblica();
+				}
+				else
+				{
+					MessageBox.Show("L'applicazione di Digiphoto.Lumen.Configuratore è in esecuzione\nChiudere l'Applicazione e Riavviare");
+					Environment.Exit(0);
+				} 
 
 			}
 			else
