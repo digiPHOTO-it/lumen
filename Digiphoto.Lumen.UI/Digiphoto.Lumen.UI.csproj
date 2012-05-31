@@ -108,15 +108,6 @@
     <Compile Include="Converters\PercentualeConverter.cs" />
     <Compile Include="Adorners\CroppingAdorner.cs" />
     <Compile Include="Adorners\PuncturedRect.cs" />
-    <Compile Include="DataSetFotografi.cs">
-      <DependentUpon>DataSetFotografi.xsd</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="DataSetFotografi.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>DataSetFotografi.xsd</DependentUpon>
-    </Compile>
     <Compile Include="Dialogs\RangeGiorniDialog.xaml.cs">
       <DependentUpon>RangeGiorniDialog.xaml</DependentUpon>
     </Compile>
@@ -334,17 +325,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <None Include="app.config" />
-    <None Include="DataSetFotografi.xsc">
-      <DependentUpon>DataSetFotografi.xsd</DependentUpon>
-    </None>
-    <None Include="DataSetFotografi.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>DataSetFotografi.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="DataSetFotografi.xss">
-      <DependentUpon>DataSetFotografi.xsd</DependentUpon>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
