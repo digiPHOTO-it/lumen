@@ -116,15 +116,17 @@
 				<Label Content="Prezzo Intero" Grid.Row="0" Grid.Column="0" />
 				<Label Content="€ " Grid.Row="0" Grid.Column="1" />
 				<Label Content="Intestazione" Grid.Row="0" Grid.Column="2" />
-				<TextBox Text="{Binding Path=IntestazioneCarrello}" Grid.Row="0" Grid.Column="3" />
-				<Label Content="{Binding Path=PrezzoTotaleIntero}" Grid.Column="1" Height="27" Margin="10,0,0,0" />
+				<TextBox Text="{Binding Path=carrelloCorrente.intestazione}" Grid.Row="0" Grid.Column="3" />
+				<Label Content="{Binding Path=PrezzoTotaleIntero}" Grid.Column="1" Margin="10,0,0,0" />
 				<Label Content="Totale A Pagare Euro:" Grid.Row="1" Grid.Column="0" />
 				<TextBox Text="{Binding Path=PrezzoTotaleForfettario, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" TextAlignment="Left" />
 				<Label Content="Sconto Applicato" Grid.Row="2" Grid.Column="0" />
 				<Label Content="{Binding Path=ScontoApplicato}" Grid.Row="2" Grid.Column="1"/>
 				<Label Content="Giornata" Grid.Row="1" Grid.Column="2" />
-				<Label Content="{Binding Path=GiornataCarrello}" Grid.Row="1" Grid.Column="3" Height="27" VerticalAlignment="Bottom" />
-			</Grid>
+				<Label Content="{Binding Path=carrelloCorrente.giornata}" Grid.Row="1" Grid.Column="3" />
+                <Label Content="id" Grid.Row="2" Grid.Column="2" />
+                <TextBox Text="{Binding Path=carrelloCorrente.id,Mode=OneWay}" IsReadOnly="True" Grid.Row="2" Grid.Column="3" />
+            </Grid>
 		</GroupBox>
 
 
