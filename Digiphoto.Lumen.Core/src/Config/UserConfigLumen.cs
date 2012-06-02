@@ -15,20 +15,15 @@ namespace Digiphoto.Lumen.Config
 		public bool giornata;
 	}
 
-    
-
     public class UserConfigLumen
     {
-
-		public static String CartellaFoto
+		private string _cartellaFoto;
+		public string CartellaFoto
 		{
 			get
 			{
-				string _cartellaFoto = UserConfigXML.Instance.getPropertiesValue("cartellaFoto");
 				if (_cartellaFoto == null)
 				{
-
-					UserConfigXML.Instance.setPropertiesValue("cartellaFoto", ConfigDefaultValue.CARTELLA_FOTO);
 					return ConfigDefaultValue.CARTELLA_FOTO;
 				}
 				return _cartellaFoto;
@@ -36,7 +31,7 @@ namespace Digiphoto.Lumen.Config
 
 			set
 			{
-				UserConfigXML.Instance.setPropertiesValue("cartellaFoto", value);
+				_cartellaFoto = value;
 			}
 		}
 
@@ -44,230 +39,202 @@ namespace Digiphoto.Lumen.Config
 		/// L'auto zoom, significa che la foto viene automaticamente ingrandita per
 		/// essere stampata senza bordi bianchi, e riempire quindi interamente l'area stampabile.
 		/// </summary>
-		public static bool AutoZoomNoBordiBianchi
+		private bool? _autoZoomNoBordiBianchi;
+		public bool AutoZoomNoBordiBianchi
 		{
 			get
 			{
-				if (UserConfigXML.Instance.getPropertiesValue("autoZoomNoBordiBianchi") == null)
+				if (_autoZoomNoBordiBianchi == null)
 				{
-					UserConfigXML.Instance.setPropertiesValue("autoZoomNoBordiBianchi", ConfigDefaultValue.AUTO_ZOOM_NO_BORDI_BIANCHI);
 					return Boolean.Parse(ConfigDefaultValue.AUTO_ZOOM_NO_BORDI_BIANCHI);
 				}
-				return Boolean.Parse(UserConfigXML.Instance.getPropertiesValue("autoZoomNoBordiBianchi"));
+				return (bool)_autoZoomNoBordiBianchi;
 			}
 
 			set
 			{
-				UserConfigXML.Instance.setPropertiesValue("autoZoomNoBordiBianchi", ""+value);
+				_autoZoomNoBordiBianchi = value;
 			}
 		}
 
-		public static ModoVendita ModoVendita
+		private ModoVendita _modoVendita = (ModoVendita)(short.Parse(ConfigDefaultValue.MODO_VENDITA));
+		public ModoVendita ModoVendita
 		{
 			get
 			{
-				if (UserConfigXML.Instance.getPropertiesValue("modoVendita") == null)
-				{
-					UserConfigXML.Instance.setPropertiesValue("modoVendita", ConfigDefaultValue.MODO_VENDITA);
-					return (ModoVendita)(short.Parse(ConfigDefaultValue.MODO_VENDITA));
-				}
-				return (ModoVendita)short.Parse(UserConfigXML.Instance.getPropertiesValue("modoVendita"));
+				return _modoVendita;
 			}
 
 			set
 			{
-				UserConfigXML.Instance.setPropertiesValue("modoVendita", "" + value);
+				_modoVendita = value;
 			}
 		}
 
-		public static bool EraseFotoMemoryCard
+		private bool? _eraseFotoMemoryCard;
+		public bool EraseFotoMemoryCard
 		{
 			get
 			{
-				if (UserConfigXML.Instance.getPropertiesValue("eraseFotoMemoryCard") == null)
+				if (_eraseFotoMemoryCard == null)
 				{
-					UserConfigXML.Instance.setPropertiesValue("eraseFotoMemoryCard", ConfigDefaultValue.ERASE_FOTO_MEMORY_CARD);
 					return ConfigDefaultValue.MODO_VENDITA.Equals(0) ? true : false;
 				}
-				return UserConfigXML.Instance.getPropertiesValue("eraseFotoMemoryCard").Equals(0) ? true : false;;
+				return (bool)_eraseFotoMemoryCard;
 			}
 
 			set
 			{
-				UserConfigXML.Instance.setPropertiesValue("eraseFotoMemoryCard", "" + value);
+				_eraseFotoMemoryCard = value;
 			}
 		}
 
-		public static int PixelLatoProvino
+		private int? _pixelLatoProvino;
+		public int PixelLatoProvino
 		{
 			get
 			{
-				if (UserConfigXML.Instance.getPropertiesValue("pixelLatoProvino") == null)
+				if (_pixelLatoProvino == null)
 				{
-					UserConfigXML.Instance.setPropertiesValue("pixelLatoProvino", ConfigDefaultValue.PIXEL_LATO_PROVINO);
 					return Int32.Parse(ConfigDefaultValue.PIXEL_LATO_PROVINO);
 				}
-				return Int32.Parse(UserConfigXML.Instance.getPropertiesValue("pixelLatoProvino"));
-			}
-
-			set
-			{
-				UserConfigXML.Instance.setPropertiesValue("pixelLatoProvino", "" + value);
-			}
-		}
-
-        public static String UserConfigConnectionString
-        {
-            get
-            {
-				if (UserConfigXML.Instance.getPropertiesValue("connectionString")==null)
-				{
-					//UserConfigXML.Instance.setPropertiesValue("connectionString", ConfigDefaultValue.);
-					return UserConfigXML.Instance.getPropertiesValue("connectionString");
-				}
-				return UserConfigXML.Instance.getPropertiesValue("connectionString");
+				return (int)_pixelLatoProvino;
             }
 
             set
             {
-                UserConfigXML.Instance.setPropertiesValue("connectionString", value);
+				_pixelLatoProvino = value;
             }
         }
 
-		public static int GiorniDeleteFoto
+		private int? _giorniDeleteFoto;
+		public int GiorniDeleteFoto
 		{
 			get
 			{
-				if (UserConfigXML.Instance.getPropertiesValue("giorniDeleteFoto") == null)
+				if (_giorniDeleteFoto == null)
 				{
-					UserConfigXML.Instance.setPropertiesValue("giorniDeleteFoto", ConfigDefaultValue.GIORNI_DELETE_FOTO);
 					return Int32.Parse(ConfigDefaultValue.GIORNI_DELETE_FOTO);
 				}
-				return Int32.Parse(UserConfigXML.Instance.getPropertiesValue("giorniDeleteFoto"));
+				return (int)_giorniDeleteFoto;
 			}
 			set
 			{
-				UserConfigXML.Instance.setPropertiesValue("giorniDeleteFoto", ""+value);
+				_giorniDeleteFoto = value;
 			}
 		}
 
-
-		public static string CartellaMaschere
+		private string _cartellaMaschere;
+		public string CartellaMaschere
 		{
 			get
 			{
-				if (String.IsNullOrEmpty(UserConfigXML.Instance.getPropertiesValue("cartellaMaschere")))
+				if (_cartellaMaschere == null)
 				{
-					UserConfigXML.Instance.setPropertiesValue("cartellaMaschere", ConfigDefaultValue.CARTELLA_MASCHERE);
 					return ConfigDefaultValue.CARTELLA_MASCHERE;
 				}
-				return UserConfigXML.Instance.getPropertiesValue("cartellaMaschere");
+				return _cartellaMaschere;
 			}
 
 			set 
 			{
-				UserConfigXML.Instance.setPropertiesValue("cartellaMaschere", "" + value);
+				_cartellaMaschere = value;
 			}
 		}
 
-        public static String StampantiAbbinate
+		private string _stampantiAbbinate;
+		public string StampantiAbbinate
         {
             get
             {
-				string _stampantiAbbinate = UserConfigXML.Instance.getPropertiesValue("stampantiAbbinate");
 				if (_stampantiAbbinate==null)
 				{
-					UserConfigXML.Instance.setPropertiesValue("stampantiAbbinate", ConfigDefaultValue.STAMPANTI_ABBINATE);
 					return ConfigDefaultValue.STAMPANTI_ABBINATE;
 				}
 				return _stampantiAbbinate;
             }
             set
             {
-                UserConfigXML.Instance.setPropertiesValue("stampantiAbbinate", value);
+                _stampantiAbbinate = value;
             }
         }
 
-		public static Boolean ProiettaDiapo
+		private bool? _proiettaDiapo;
+		public bool ProiettaDiapo
 		{
 			get
 			{
-				if (UserConfigXML.Instance.getPropertiesValue("proiettaDiapo") == null)
+				if (_proiettaDiapo == null)
 				{
-					UserConfigXML.Instance.setPropertiesValue("proiettaDiapo", ConfigDefaultValue.PROIETTA_DIAPO);
 					return Boolean.Parse(ConfigDefaultValue.PROIETTA_DIAPO);
 				}
-				return Boolean.Parse(UserConfigXML.Instance.getPropertiesValue("proiettaDiapo"));
+				return (bool)_proiettaDiapo;
 			}
 
 			set
 			{
-				UserConfigXML.Instance.setPropertiesValue("proiettaDiapo", ""+value);
+				_proiettaDiapo = value;
 			}
 		}
 
-        public static String DbNomeDbVuoto
+		private string _dbNomeDbVuoto;
+		public string DbNomeDbVuoto
         {
             get
             {
-				string _dbNomeDbVuoto = UserConfigXML.Instance.getPropertiesValue("dbNomeDbVuoto");
 				if (_dbNomeDbVuoto==null)
 				{
-					UserConfigXML.Instance.setPropertiesValue("dbNomeDbVuoto", ConfigDefaultValue.DB_NOME_DB_VUOTO);
 					return ConfigDefaultValue.DB_NOME_DB_VUOTO;
 				}
 				return _dbNomeDbVuoto;
             }
             set
             {
-                UserConfigXML.Instance.setPropertiesValue("dbNomeDbVuoto", value);
+                _dbNomeDbVuoto = value;
             }
         }
 
-        public static String DbNomeDbPieno
+		private string _dbNomeDbPieno;
+		public string DbNomeDbPieno
         {
             get
             {
-				string _dbNomeDbPieno = UserConfigXML.Instance.getPropertiesValue("dbNomeDbPieno");
 				if (_dbNomeDbPieno == null)
 				{
-					UserConfigXML.Instance.setPropertiesValue("dbNomeDbPieno", ConfigDefaultValue.DB_NOME_DB_PIENO);
 					return ConfigDefaultValue.DB_NOME_DB_PIENO;
 				}
 				return _dbNomeDbPieno;
             }
             set
             {
-                UserConfigXML.Instance.setPropertiesValue("dbNomeDbPieno", value);
+                _dbNomeDbPieno = value;
             }
         }
 
-        public static String DbCartella
+		private string _dbCartella;
+		public string DbCartella
         {
             get
             {
-				string _dbCartella = UserConfigXML.Instance.getPropertiesValue("dbCartella");
 				if (_dbCartella == null)
 				{
-					UserConfigXML.Instance.setPropertiesValue("dbCartella", ConfigDefaultValue.DB_CARTELLA);
 					return ConfigDefaultValue.DB_CARTELLA;
 				}
 				return _dbCartella;
             }
             set
             {
-                UserConfigXML.Instance.setPropertiesValue("dbCartella", value);
+                _dbCartella = value;
             }
         }
 
-		public static string EstensioniGrafiche
+		private string _estensioniGrafiche;
+		public string EstensioniGrafiche
 		{
 			get
 			{
-				string _estensioniGrafiche = UserConfigXML.Instance.getPropertiesValue("estensioniGrafiche");
 				if (_estensioniGrafiche == null)
 				{
-					UserConfigXML.Instance.setPropertiesValue("estensioniGrafiche", ConfigDefaultValue.ESTENSIONI_GRAFICHE);
 					return ConfigDefaultValue.ESTENSIONI_GRAFICHE;
 				}
 				return _estensioniGrafiche;
@@ -275,18 +242,17 @@ namespace Digiphoto.Lumen.Config
 
 			set
 			{
-				UserConfigXML.Instance.setPropertiesValue("estensioniGrafiche", value);
+				_estensioniGrafiche = value;
 			}
 		}
 
-		public static string EditorImmagini
+		private string _editorImmagini;
+		public string EditorImmagini
 		{
 			get
 			{
-				string _editorImmagini = UserConfigXML.Instance.getPropertiesValueDictionary("editorImmagini");
 				if (_editorImmagini == null)
 				{
-					UserConfigXML.Instance.setPropertiesValue("editorImmagini", ConfigDefaultValue.EDITOR_IMMAGINI);
 					return ConfigDefaultValue.EDITOR_IMMAGINI;
 				}
 				return _editorImmagini;
@@ -294,18 +260,17 @@ namespace Digiphoto.Lumen.Config
 
 			set
 			{
-				UserConfigXML.Instance.setPropertiesValue("editorImmagini", value);
+				_editorImmagini = value;
 			}
 		}
 
-		public static string EditorImmaginiMultiArgs
+		private string _editorImmaginiMultiArgs;
+		public string EditorImmaginiMultiArgs
 		{
 			get
 			{
-				string _editorImmaginiMultiArgs = UserConfigXML.Instance.getPropertiesValue("editorImmaginiMultiArgs");
 				if (_editorImmaginiMultiArgs == null)
 				{
-					UserConfigXML.Instance.setPropertiesValue("editorImmaginiMultiArgs", ConfigDefaultValue.EDITOR_IMMAGINI_MULTI_ARGS);
 					return ConfigDefaultValue.EDITOR_IMMAGINI_MULTI_ARGS;
 				}
 				return _editorImmaginiMultiArgs;
@@ -313,160 +278,169 @@ namespace Digiphoto.Lumen.Config
 
 			set
 			{
-				UserConfigXML.Instance.setPropertiesValue("editorImmaginiMultiArgs", value);
+				_editorImmaginiMultiArgs = value;
 			}
 		}
 
-		public static string CodicePuntoVendita
+		private string _codicePuntoVendita;
+		public string CodicePuntoVendita
 		{
 			get
 			{
-				if (UserConfigXML.Instance.getPropertiesValueDictionary("codicePuntoVendita") == null)
+				if (_codicePuntoVendita == null)
 				{
-					UserConfigXML.Instance.setPropertiesValue("codicePuntoVendita", ConfigDefaultValue.CODICE_PUNTO_VENDITA);
 					return ConfigDefaultValue.CODICE_PUNTO_VENDITA;
 				}
-				return UserConfigXML.Instance.getPropertiesValueDictionary("codicePuntoVendita");
+				return _codicePuntoVendita;
 			}
 
 			set
 			{
-				UserConfigXML.Instance.setPropertiesValue("codicePuntoVendita", "" + value);
+				_codicePuntoVendita = value;
 			}
 		}
 
-		public static string DescrizionePuntoVendita
+		private string _descrizionePuntoVendita;
+		public string DescrizionePuntoVendita
 		{
 			get
 			{
-				if (UserConfigXML.Instance.getPropertiesValueDictionary("descrizionePuntoVendita") == null)
+				if (_descrizionePuntoVendita == null)
 				{
-					UserConfigXML.Instance.setPropertiesValue("descrizionePuntoVendita", ConfigDefaultValue.DESCRIZIONE_PUNTO_VENDITA);
 					return ConfigDefaultValue.DESCRIZIONE_PUNTO_VENDITA;
 				}
-				return UserConfigXML.Instance.getPropertiesValueDictionary("descrizionePuntoVendita");
+				return _descrizionePuntoVendita;
 			}
 
 			set
 			{
-				UserConfigXML.Instance.setPropertiesValue("descrizionePuntoVendita", "" + value);
+				_descrizionePuntoVendita = value;
 			}
 		}
 
-		public static string DestMasterizza
+		private string _destMasterizza;
+		public string DestMasterizza
 		{
 			get
 			{
-				if (UserConfigXML.Instance.getPropertiesValueDictionary("destMasterizza") == null)
+				if (_destMasterizza == null)
 				{
-					UserConfigXML.Instance.setPropertiesValue("destMasterizza", ConfigDefaultValue.DEST_MASTERIZZA);
 					return ConfigDefaultValue.DEST_MASTERIZZA;
 				}
-				return UserConfigXML.Instance.getPropertiesValueDictionary("destMasterizza");
+				return _destMasterizza;
 			}
 
 			set
 			{
-				UserConfigXML.Instance.setPropertiesValue("destMasterizza", value);
+				_destMasterizza = value;
 			}
 		}
 
-		public static string DefaultMasterizzatore
+		private string _defaultMasterizzatore;
+		public string DefaultMasterizzatore
 		{
 			get
 			{
-				if (UserConfigXML.Instance.getPropertiesValueDictionary("defaultMasterizzatore") == null)
+				if (_defaultMasterizzatore == null)
 				{
-					UserConfigXML.Instance.setPropertiesValue("defaultMasterizzatore", ConfigDefaultValue.DEFAULT_MASTERIZZATORE);
 					return ConfigDefaultValue.DEFAULT_MASTERIZZATORE;
 				}
-				return UserConfigXML.Instance.getPropertiesValueDictionary("defaultMasterizzatore");
+				return _defaultMasterizzatore;
 			}
 
 			set
 			{
-				UserConfigXML.Instance.setPropertiesValue("defaultMasterizzatore", value);
+				_defaultMasterizzatore = value;
 			}
 		}
 
-		public static string DefaultChiavetta
+		private string _defaultChiavetta;
+		public string DefaultChiavetta
 		{
 			get
 			{
-				if (UserConfigXML.Instance.getPropertiesValueDictionary("defaultChiavetta") == null)
+				if (_defaultChiavetta == null)
 				{
-					UserConfigXML.Instance.setPropertiesValue("defaultChiavetta", ConfigDefaultValue.DEFAULT_CHIAVETTA);
 					return ConfigDefaultValue.DEFAULT_CHIAVETTA;
 				}
-				return UserConfigXML.Instance.getPropertiesValue("defaultChiavetta");
+				return _defaultChiavetta;
 			}
 
 			set
 			{
-				UserConfigXML.Instance.setPropertiesValue("defaultChiavetta", value);
+				_defaultChiavetta = value;
 			}
 		}
 
-		public static Boolean IsWindowPubblicaVisibile
+		private bool? _isWindowPubblicaVisibile;
+		public bool IsWindowPubblicaVisibile
 		{
 			get
 			{
-				if (UserConfigXML.Instance.getPropertiesValueDictionary("isWindowPubblicaVisibile") == null)
+				if (_isWindowPubblicaVisibile == null)
 				{
-					UserConfigXML.Instance.setPropertiesValue("isWindowPubblicaVisibile", ConfigDefaultValue.IS_WINDOW_PUBBLICA_VISIBILE);
 					return Boolean.Parse(ConfigDefaultValue.IS_WINDOW_PUBBLICA_VISIBILE);
 				}
-				return Boolean.Parse(UserConfigXML.Instance.getPropertiesValue("isWindowPubblicaVisibile"));
+				return (bool)_isWindowPubblicaVisibile;
 			}
 
 			set
 			{
-				UserConfigXML.Instance.setPropertiesValue("isWindowPubblicaVisibile", ""+value);
+				_isWindowPubblicaVisibile = value;
 			}
 		}
 
-		public static Boolean stampiglioGiornata {
+		private bool? _stampiglioGiornata;
+		public bool stampiglioGiornata 
+		{
 			get {
-				if (UserConfigXML.Instance.getPropertiesValueDictionary("stampiglioGiornata") == null)
+				if (_stampiglioGiornata == null)
 				{
-					UserConfigXML.Instance.setPropertiesValue( "stampiglioGiornata", ConfigDefaultValue.STAMPIGLIO_GIORNATA );
 					return Boolean.Parse( ConfigDefaultValue.STAMPIGLIO_GIORNATA );
 				}
-				return Boolean.Parse( UserConfigXML.Instance.getPropertiesValue( "stampiglioGiornata" ) );
+				return (bool)_stampiglioGiornata;
 			}
 
 			set {
-				UserConfigXML.Instance.setPropertiesValue( "stampiglioGiornata", "" + value );
+				_stampiglioGiornata = value;
 			}
 		}
 
-		public static Boolean stampiglioOperatore {
+		private bool? _stampiglioOperatore;
+		public bool stampiglioOperatore 
+		{
 			get {
-				if (UserConfigXML.Instance.getPropertiesValueDictionary("stampiglioOperatore") == null)
+				if (_stampiglioOperatore == null)
 				{
-					UserConfigXML.Instance.setPropertiesValue( "stampiglioOperatore", ConfigDefaultValue.STAMPIGLIO_OPERATORE );
 					return Boolean.Parse( ConfigDefaultValue.STAMPIGLIO_OPERATORE );
 				}
-				return Boolean.Parse( UserConfigXML.Instance.getPropertiesValue( "stampiglioOperatore" ) );
+				return (bool)_stampiglioOperatore;
 			}
 
 			set {
-				UserConfigXML.Instance.setPropertiesValue( "stampiglioOperatore", "" + value );
+				_stampiglioOperatore = value;
 			}
 		}
 
-		public static Boolean stampiglioNumFoto {
+		private bool? _stampiglioNumFoto;
+		public bool stampiglioNumFoto
+		{
 			get {
-				if( UserConfigXML.Instance.getPropertiesValueDictionary( "stampiglioNumFoto" ) == null ) {
-					UserConfigXML.Instance.setPropertiesValue( "stampiglioNumFoto", ConfigDefaultValue.STAMPIGLIO_NUMFOTO );
+				if (_stampiglioNumFoto == null)
+				{
 					return Boolean.Parse( ConfigDefaultValue.STAMPIGLIO_NUMFOTO );
 				}
-				return Boolean.Parse( UserConfigXML.Instance.getPropertiesValue( "stampiglioNumFoto" ) );
+				return (bool)_stampiglioNumFoto;
 			}
 
 			set {
-				UserConfigXML.Instance.setPropertiesValue( "stampiglioNumFoto", "" + value );
+				_stampiglioNumFoto = value;
 			}
+		}
+
+		public void SalvaUserConfig()
+		{
+			UserConfigXML.Instance.SaveUserConfig();
 		}
 
     }

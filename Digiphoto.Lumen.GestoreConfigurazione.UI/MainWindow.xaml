@@ -132,8 +132,8 @@
                         <CheckBox Content="Proietta area stampabile sulle diapositive" HorizontalAlignment="Left" Margin="356,228,0,0" Name="checkBox2" VerticalAlignment="Top" Width="207" IsChecked="{Binding Path=ProiettaDiapo}"/>
                         <Label Content="Modalità di vendita" HorizontalAlignment="Left" Margin="351,26,0,0" Name="label9" VerticalAlignment="Top" Width="113" />
                         <ComboBox Height="22" HorizontalAlignment="Left" Margin="471,23,0,0" Name="comboBox2" VerticalAlignment="Top" Width="118" SelectedIndex="{Binding Path=ModoVendita}">
-                            <ComboBoxItem Content="Diretta" />
                             <ComboBoxItem Content="con Carrello" />
+							<ComboBoxItem Content="Diretta" />
                         </ComboBox>
                     <GroupBox Header="Stampigli" HorizontalAlignment="Left" Margin="64,290,0,0"  VerticalAlignment="Top" Width="138">
                         <StackPanel Orientation="Vertical" Margin="5,5,0,0">                            

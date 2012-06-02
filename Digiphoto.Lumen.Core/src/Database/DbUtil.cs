@@ -36,11 +36,11 @@ namespace Digiphoto.Lumen.Core.Database {
 			String doveSono = Assembly.GetExecutingAssembly().Location ;
 
 			string appPath = Path.GetDirectoryName( doveSono );
-			nomeFileDbVuoto = Path.Combine( appPath, UserConfigLumen.DbNomeDbVuoto );
+			nomeFileDbVuoto = Path.Combine(appPath, Configurazione.UserConfigLumen.DbNomeDbVuoto);
 
 			cartellaDatabase = DbUtil.decidiCartellaDatabase();
 
-            nomeFileDbPieno = Path.Combine(cartellaDatabase, UserConfigLumen.DbNomeDbPieno);
+			nomeFileDbPieno = Path.Combine(cartellaDatabase, Configurazione.UserConfigLumen.DbNomeDbPieno);
 		}
 
 		/**
@@ -141,7 +141,7 @@ namespace Digiphoto.Lumen.Core.Database {
 
 			// Decido la cartella dove risiede il database
 			//string cd = Properties.Settings.Default.dbCartella;
-            string cd = UserConfigLumen.DbCartella;
+			string cd = Configurazione.UserConfigLumen.DbCartella;
 
 			if( String.IsNullOrEmpty( cd ) ) {
 				ret = Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.CommonApplicationData ), "digiPHOTO", "Lumen" );

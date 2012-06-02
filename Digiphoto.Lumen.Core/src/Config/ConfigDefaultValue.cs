@@ -54,7 +54,9 @@ namespace Digiphoto.Lumen.src.Config
 		public static string EDITOR_IMMAGINI_MULTI_ARGS = "False";
 
 		public static string STAMPIGLIO_GIORNATA = "False";
+
 		public static string STAMPIGLIO_OPERATORE = "False";
+
 		public static string STAMPIGLIO_NUMFOTO = "False";
 
 	}

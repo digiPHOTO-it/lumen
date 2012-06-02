@@ -89,7 +89,7 @@ namespace Digiphoto.Lumen.UI
             else
             {
                 stampantiAbbinateSrvImpl = new StampantiAbbinateSrvImpl();
-				listaS = stampantiAbbinateSrvImpl.listaStampantiAbbinate(UserConfigLumen.StampantiAbbinate);
+				listaS = stampantiAbbinateSrvImpl.listaStampantiAbbinate(Configurazione.UserConfigLumen.StampantiAbbinate);
             }
 
             // purtoppo pare che rimpiazzare il reference con uno nuovo, causa dei problemi.
