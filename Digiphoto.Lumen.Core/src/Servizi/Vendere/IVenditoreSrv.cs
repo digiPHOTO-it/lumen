@@ -42,17 +42,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/**
 		 * Il carrello corrente viene venduto. Diventa definitivo
 		 */
-		void confermaCarrello();
-
-		/**
-		 * Il carrello corrente viene venduto. Diventa definitivo
-		 */
-		void confermaCarrelloCaricato(Carrello carrello);
+		bool vendereCarrello();
 
 		/**
 		 * Consente il Salvattaggio del Carrello senza effettuare ne la stampa ne la Masterizzazione
          */
-		void salvaCarrello();
+		bool salvaCarrello();
 
 		void abbandonaCarrello();
 
@@ -65,8 +60,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/** Lavoro con un carrello alla volta. Esiste un solo carrello "corrente". */
 		Carrello carrello { get; }
 
-		void sostituisciCarrelloCorrente(Carrello carrello);
+		void caricaCarrello( Carrello c );
 
 		List<RigaReportVendite> creaReportVendite( ParamRangeGiorni param );
+
+		public bool isStatoModifica {
+			get;
+		}
 	}
 }

@@ -18,6 +18,7 @@ using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Servizi.Reports;
 using System.Data.Entity;
 using System.Data.Objects;
+using System.Data.Common;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 
@@ -82,18 +83,19 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			LumenApplication.Instance.bus.Publish(msg);
 		}
 
-		public void sostituisciCarrelloCorrente(Carrello carrello)
+		public void caricaCarrello( Carrello c )
 		{
-			gestoreCarrello.sostituisciCarrelloCorrente(carrello);
+			gestoreCarrello.caricaCarrello( c.id );
 		}
 
 		/** 
 		 * Per ogni foto indicata, creo una nuova riga di carrello
 		 */
 		public void aggiungiStampe( IEnumerable<Fotografia> fotografie, Stampare.ParamStampaFoto param ) {
+
 			foreach( Fotografia foto in fotografie ) {
 				AiutanteFoto.idrataImmaginiFoto( foto );
-				carrello.righeCarrello.Add( creaRiCaFotoStampata( foto, param ) );
+				gestoreCarrello.aggiungiRiga( creaRiCaFotoStampata( foto, param ) );
 			}
 			// Notifico al carrello l'evento
 			updateCarrello();
@@ -110,10 +112,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			gestoreCarrello.creaNuovo();
 		}
 
-		public void salvaCarrello()
+		public bool salvaCarrello()
 		{
+			bool esito = false;
 
-			_giornale.Debug("carrello valido. Inizio operazioni di produzione");
 
 			//
 			// Siccome l'esito della stampa e della masterizzazione lo riceverò più tardi 
@@ -127,74 +129,45 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 				try
 				{
-
 					aggiornaTotFotoMasterizzate();
 
 					// Poi salvo il carrello
 					gestoreCarrello.salva();
+					_giornale.Debug( "salvataggio eseguito. Ora committo la transazione" );
 
+					transaction.Complete();
+					_giornale.Debug( "commit transazione ok" );
+					esito = true;
 				}
 				catch (Exception eee)
 				{
+					esito = false;
 					_giornale.Error("Impossibile salvare il carrello", eee);
-					MessageBox.Show("Carrello non salvato Correttamente \n"+eee, "ERRORE");
-					// Purtoppo devo andare avanti lo stesso, perché non posso permettermi 
-					// di non fare uscire le foto. Altrimenti i clienti in fila si arrabbiano
-					// ed il commesso non può incassare.
-					// In ogni caso è un errore grave.  >>> THE SHOW MUST GO ON !  <<<
 				}
-
-				transaction.Complete();
 			}
+
+			return esito;
 		}
 
-		public void confermaCarrello() {
+		public bool vendereCarrello() {
 
 			_giornale.Debug( "carrello valido. Inizio operazioni di produzione" );
 
-			//
-			// Siccome l'esito della stampa e della masterizzazione lo riceverò più tardi 
-			// ed in modo asincrono, in questo momento non posso fare altro che dare per scontato
-			// che andrà tutto bene.
-			// Quindi memorizzo il carrello intero. Poi gestirò i problemi (sperando che non ce ne siano).
-			//
+			bool esito = false;
 
-			using( TransactionScope transaction = new TransactionScope() ) {
+			try {
+				
+				esito = salvaCarrello();
 
-				try {
+			} finally {
+				// Vado avanti ugualmente
+				// Prima lancio le stampe
+				eventualeStampa();
 
-					aggiornaTotFotoMasterizzate();
-
-					// Poi salvo il carrello
-					gestoreCarrello.salva();
-
-				} catch( Exception eee ) {
-					_giornale.Error( "Impossibile salvare il carrello", eee );
-					// Purtoppo devo andare avanti lo stesso, perché non posso permettermi 
-					// di non fare uscire le foto. Altrimenti i clienti in fila si arrabbiano
-					// ed il commesso non può incassare.
-					// In ogni caso è un errore grave.  >>> THE SHOW MUST GO ON !  <<<
-				}
-
-				transaction.Complete();
+				// Poi lancio la masterizzazione
+				eventualeMasterizzazione();
 			}
-
-			// Prima lancio le stampe
-			eventualeStampa();
-
-			// Poi lancio la masterizzazione
-			eventualeMasterizzazione();
-		}
-
-		public void confermaCarrelloCaricato(Carrello carrello)
-		{
-			gestoreCarrello.sostituisciCarrelloCorrente(carrello);
-
-			// Prima lancio le stampe
-			eventualeStampa();
-
-			// Poi lancio la masterizzazione
-			eventualeMasterizzazione();
+			return esito;
 		}
 
 		public void removeRigaCarrello(RigaCarrello rigaCarrello)
@@ -204,7 +177,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public void removeCarrello(Carrello carrello)
 		{
-			UnitOfWorkScope.CurrentObjectContext.Carrelli.Attach(carrello);
+			OrmUtil.forseAttacca<Carrello>( "Carrelli", ref carrello );
 			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
 			dbContext.Carrelli.Remove(carrello);
 		}
@@ -263,13 +236,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		private RiCaFotoStampata creaRiCaFotoStampata( Fotografia fotografia, ParamStampaFoto param ) {
 
 			RiCaFotoStampata r = new RiCaFotoStampata();
-			r.id = Guid.NewGuid();
-
+			
 			// Riattacco un pò di roba altrimenti si incacchia
-			UnitOfWorkScope.CurrentObjectContext.FormatiCarta.Attach( param.formatoCarta );
-			UnitOfWorkScope.CurrentObjectContext.Fotografie.Attach( fotografia );
-			UnitOfWorkScope.CurrentObjectContext.Fotografi.Attach( fotografia.fotografo );
-
+			OrmUtil.forseAttacca<Fotografia>( "Fotografie", ref fotografia );
+			FormatoCarta fc = param.formatoCarta;
+			OrmUtil.forseAttacca<FormatoCarta>( "FormatiCarta", ref fc );
+			Fotografo fo = fotografia.fotografo;
+			OrmUtil.forseAttacca<Fotografo>( "Fotografi", ref fo );
+			
 			r.fotografia = fotografia;
 			r.idFotografia = fotografia.id;
 			r.fotografo = fotografia.fotografo;
@@ -639,5 +613,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
+
+
+		public bool isStatoModifica {
+			get {
+				return gestoreCarrello.isStatoModifica;
+			}
+		}
 	}
 }
