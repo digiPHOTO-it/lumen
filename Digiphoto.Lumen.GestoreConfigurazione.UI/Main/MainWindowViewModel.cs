@@ -27,6 +27,7 @@ using Digiphoto.Lumen.GestoreConfigurazione.UI.Util;
 using Digiphoto.Lumen.Servizi.EntityRepository;
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Util;
+using Digiphoto.Lumen.Servizi.Vendere;
 
 namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 {
@@ -45,74 +46,74 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
         private void loadUserConfig()
         {
-            CodicePuntoVendita = UserConfigLumen.CodicePuntoVendita;
+			CodicePuntoVendita = Configurazione.UserConfigLumen.CodicePuntoVendita;
 
-			DescrizionePuntoVendita = UserConfigLumen.DescrizionePuntoVendita;
+			DescrizionePuntoVendita = Configurazione.UserConfigLumen.DescrizionePuntoVendita;
 
-			GiorniDeleteFoto = UserConfigLumen.GiorniDeleteFoto;
+			GiorniDeleteFoto = Configurazione.UserConfigLumen.GiorniDeleteFoto;
 
-			CartellaFoto = UserConfigLumen.CartellaFoto;
+			CartellaFoto = Configurazione.UserConfigLumen.CartellaFoto;
 
-			EraseFotoMemoryCard = UserConfigLumen.EraseFotoMemoryCard;
+			EraseFotoMemoryCard = Configurazione.UserConfigLumen.EraseFotoMemoryCard;
 
-			ProiettaDiapo = UserConfigLumen.ProiettaDiapo;
+			ProiettaDiapo = Configurazione.UserConfigLumen.ProiettaDiapo;
 
-			ModoVendita = (short)UserConfigLumen.ModoVendita;
+			ModoVendita = (short)Configurazione.UserConfigLumen.ModoVendita;
 
-			DestMasterizzaMasterizzatore = (UserConfigLumen.DestMasterizza).Equals("0") ? true : false;
+			DestMasterizzaMasterizzatore = (Configurazione.UserConfigLumen.DestMasterizza).Equals("0") ? true : false;
 
             DestMasterizzaCartella = !DestMasterizzaMasterizzatore;
 
-			MasterizzatoreSelezionato = UserConfigLumen.DefaultMasterizzatore;
+			MasterizzatoreSelezionato = Configurazione.UserConfigLumen.DefaultMasterizzatore;
 
-			DefaultChiavetta = UserConfigLumen.DefaultChiavetta;
+			DefaultChiavetta = Configurazione.UserConfigLumen.DefaultChiavetta;
 
 			ConnectionString = ConfigurationManager.ConnectionStrings["LumenEntities"].ConnectionString;
 
             MotoreDataBase = parseConnectionStringToDriver(ConnectionString);
 
-			NomeDbPieno = UserConfigLumen.DbNomeDbPieno;
+			NomeDbPieno = Configurazione.UserConfigLumen.DbNomeDbPieno;
 
-			DbCartella = UserConfigLumen.DbCartella;
+			DbCartella = Configurazione.UserConfigLumen.DbCartella;
             DataSource = DbCartella + @"\" + NomeDbPieno;
 
-			stampiglioGiornata = UserConfigLumen.stampiglioGiornata;
-			stampiglioOperatore = UserConfigLumen.stampiglioOperatore;
-			stampiglioNumFoto = UserConfigLumen.stampiglioNumFoto;
+			stampiglioGiornata = Configurazione.UserConfigLumen.stampiglioGiornata;
+			stampiglioOperatore = Configurazione.UserConfigLumen.stampiglioOperatore;
+			stampiglioNumFoto = Configurazione.UserConfigLumen.stampiglioNumFoto;
         }
 
         private void saveUserConfig()
         {
-            UserConfigLumen.CodicePuntoVendita = CodicePuntoVendita;
+			Configurazione.UserConfigLumen.CodicePuntoVendita = CodicePuntoVendita;
 
-			UserConfigLumen.DescrizionePuntoVendita = DescrizionePuntoVendita;
+			Configurazione.UserConfigLumen.DescrizionePuntoVendita = DescrizionePuntoVendita;
 
-			UserConfigLumen.GiorniDeleteFoto = GiorniDeleteFoto;
+			Configurazione.UserConfigLumen.GiorniDeleteFoto = GiorniDeleteFoto;
 
-			UserConfigLumen.CartellaFoto = CartellaFoto;
+			Configurazione.UserConfigLumen.CartellaFoto = CartellaFoto;
 
-			UserConfigLumen.EraseFotoMemoryCard = EraseFotoMemoryCard;
+			Configurazione.UserConfigLumen.EraseFotoMemoryCard = EraseFotoMemoryCard;
 
-			UserConfigLumen.ProiettaDiapo = ProiettaDiapo;
+			Configurazione.UserConfigLumen.ProiettaDiapo = ProiettaDiapo;
 
-            ModoVendita = (short)UserConfigLumen.ModoVendita;
+			Configurazione.UserConfigLumen.ModoVendita = (ModoVendita)ModoVendita;
 
             if (DestMasterizzaMasterizzatore)
             {
-				UserConfigLumen.DestMasterizza = "0";
+				Configurazione.UserConfigLumen.DestMasterizza = "0";
             }
             else
             {
-				UserConfigLumen.DestMasterizza = "1";
+				Configurazione.UserConfigLumen.DestMasterizza = "1";
             }
 
-			UserConfigLumen.DefaultMasterizzatore = MasterizzatoreSelezionato;
+			Configurazione.UserConfigLumen.DefaultMasterizzatore = MasterizzatoreSelezionato;
 
-			UserConfigLumen.DefaultChiavetta = DefaultChiavetta;
+			Configurazione.UserConfigLumen.DefaultChiavetta = DefaultChiavetta;
 
-			UserConfigLumen.stampiglioGiornata = stampiglioGiornata;
-			UserConfigLumen.stampiglioOperatore = stampiglioOperatore;
-			UserConfigLumen.stampiglioNumFoto = stampiglioNumFoto;
+			Configurazione.UserConfigLumen.stampiglioGiornata = stampiglioGiornata;
+			Configurazione.UserConfigLumen.stampiglioOperatore = stampiglioOperatore;
+			Configurazione.UserConfigLumen.stampiglioNumFoto = stampiglioNumFoto;
 
             salvaConfigDB();
 
@@ -124,11 +125,13 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
             String stringDbNomePieno = Path.GetFileName(DataSource);
 
-            UserConfigLumen.DbCartella = DbCartella;
+			Configurazione.UserConfigLumen.DbCartella = DbCartella;
 
-            UserConfigLumen.DbNomeDbPieno = stringDbNomePieno;
+			Configurazione.UserConfigLumen.DbNomeDbPieno = stringDbNomePieno;
 
 			AppDomain.CurrentDomain.SetData( "DataDirectory", DbCartella );
+
+			Configurazione.UserConfigLumen.SalvaUserConfig();
 		}
 
         private void caricaListaMasterizzatori()
@@ -1139,7 +1142,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             OnPropertyChanged("DbCartellaButton");
         }
 
-		private String abbinamentiLoaded = UserConfigLumen.StampantiAbbinate;
+		private String abbinamentiLoaded = Configurazione.UserConfigLumen.StampantiAbbinate;
 
         private void abbinaButton()
         {
@@ -1186,7 +1189,8 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
         private void applica()
         {
             saveUserConfig();
-			abbinamentiLoaded = UserConfigLumen.StampantiAbbinate;
+			abbinamentiLoaded = Configurazione.UserConfigLumen.StampantiAbbinate;
+			Configurazione.UserConfigLumen.SalvaUserConfig();
             System.Windows.MessageBox.Show("Configurazione Salvata", "Avviso");
         }
 

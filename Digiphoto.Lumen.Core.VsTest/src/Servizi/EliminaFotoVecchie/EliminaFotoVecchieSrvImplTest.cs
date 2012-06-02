@@ -44,7 +44,7 @@ namespace Digiphoto.Lumen.Core.VsTest
             scaricatore.Init();
             scaricatore.scaricaFileTest();
 
-			giorni = UserConfigLumen.GiorniDeleteFoto;
+			giorni = Configurazione.UserConfigLumen.GiorniDeleteFoto;
             System.Diagnostics.Trace.WriteLine("GIORNI " + giorni);
 
 			using (LumenEntities dbContext = new LumenEntities()) {

@@ -9,6 +9,7 @@ using Digiphoto.Lumen.UI.Pubblico;
 using log4net;
 using Digiphoto.Lumen.Config;
 using System.Threading;
+using Digiphoto.Lumen.Util;
 
 namespace Digiphoto.Lumen.UI {
 	/// <summary>
@@ -33,6 +34,8 @@ namespace Digiphoto.Lumen.UI {
 				mutexSingle = new Mutex(true, "Digiphoto.Lumen.Single");
 				if (mutexSingle.WaitOne(0, false))
 				{
+					// Carico la Configurazione
+					UserConfigXML userConfigXML = UserConfigXML.Instance;
 					#if (! DEBUG)			
 						// Preparo finestra di attesa
 						SplashScreen splashScreen = new SplashScreen( "SplashScreen1.png" );

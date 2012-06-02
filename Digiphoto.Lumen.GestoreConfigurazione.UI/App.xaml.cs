@@ -31,6 +31,8 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI {
 				mutexSingle = new Mutex(true, "Digiphoto.Lumen.Single");
 				if (mutexSingle.WaitOne(0, false))
 				{
+					// Carico la Configurazione
+					UserConfigXML userConfigXML = UserConfigXML.Instance;
 					base.OnStartup(e);
 					// Inizializzo l'applicazione
 					//LumenApplication.Instance.avvia();

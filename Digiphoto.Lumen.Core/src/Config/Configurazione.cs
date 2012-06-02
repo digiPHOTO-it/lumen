@@ -20,6 +20,20 @@ namespace Digiphoto.Lumen.Config  {
 		private IDictionary<String, String> _nomiServizi;
 		bool _autoSistemazione;
 
+		private static UserConfigLumen _userConfigLumen;
+		public static UserConfigLumen UserConfigLumen
+		{
+			get
+			{
+				return _userConfigLumen;
+			}
+
+			set
+			{
+				_userConfigLumen = value;
+			}
+		}
+
 		// Codice del fotografo usato per il fotoritocco
 		public const string ID_FOTOGRAFO_ARTISTA = "_Photo_Retouch";
 
