@@ -12,6 +12,8 @@ using System.Data.Objects;
 using System.Data;
 using System.Data.Entity.Infrastructure;
 using System.Windows.Forms;
+using System.Data.Common;
+using Digiphoto.Lumen.Database;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 	
@@ -20,7 +22,21 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( GestoreCarrello ) );
 
 #region Propietà
+		private Carrello _carrello;
 		public Carrello carrello {
+			get {
+				return _carrello;
+			}
+			private set {
+				_carrello = value;
+			}
+		}
+
+		/// <summary>
+		/// True  = sono in modifica
+		/// False = sono in inserimento 
+		/// </summary>
+		public bool isStatoModifica {
 			get;
 			private set;
 		}
@@ -54,12 +70,18 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			carrello.righeCarrello = new EntityCollection<RigaCarrello>();
 			//Metto un'intestazione automatica per distinguere il carrello autogenerato dagli altri
 			carrello.intestazione = "Auto";
-		
+			isStatoModifica = false;
 		}
 
-		public void sostituisciCarrelloCorrente(Carrello carrello)
+		/// <summary>
+		/// Carico da disco un carrello esistente
+		/// </summary>
+		/// <param name="idCarrello"></param>
+		public void caricaCarrello( Guid idCarrello)
 		{
-			this.carrello = carrello;
+			this.carrello = UnitOfWorkScope.CurrentObjectContext.Carrelli.Include( "righeCarrello" ).Single( r => r.id == idCarrello );
+			Digiphoto.Lumen.Database.OrmUtil.vediEntitaInCache( UnitOfWorkScope.CurrentObjectContext, typeof( Carrello ) );
+			isStatoModifica = true;
 		}
 
 		/**
@@ -85,106 +107,115 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			return errore;
 		}
 
+		public void aggiungiRiga( RiCaFotoStampata riga ) {
+
+			// Prima di aggiungere la riga al carrello, provo a riattaccarlo. Non si sa mai.
+			Digiphoto.Lumen.Database.OrmUtil.forseAttacca<Carrello>( "Carrelli", ref _carrello );	
+			carrello.righeCarrello.Add( riga );
+		}
 
 		public void abbandonaCarrello() {
 			throw new NotImplementedException();
 		}
 
 		/**
-		 * Salvo il carrello e ritorno l'id che ho attribuito
+		 * Salvo il carrello corrente (se era transiente, viene valorizzata la Guid della chiave primaria
+		 * Se qualcosa va storto viene sollevata una eccezione.
 		 */
-		public Guid salva() {
+		public void salva() {
 
+			// Sistemo un pò di campi ma NON quelli di chiave primaria!
 			completaAttributiMancanti();
-
-
+			
 			if( ! isPossibileSalvare )
 				throw new InvalidOperationException( "Impossibile salvare carrello : " + msgValidaCarrello() );
 
 			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
 
-			Guid guidCarrello;
-
 			if( isCarrelloTransient ) {
-				carrello.giornata = LumenApplication.Instance.stato.giornataLavorativa;
-				carrello.tempo = DateTime.Now;
-				guidCarrello = Guid.NewGuid();
+				carrello.id = Guid.NewGuid();
 
 				foreach(RigaCarrello rigaCarrello in carrello.righeCarrello){
+					rigaCarrello.id = Guid.NewGuid();
 					if (rigaCarrello is RiCaFotoStampata)
 					{
 						RiCaFotoStampata rica = rigaCarrello as RiCaFotoStampata;
-						dbContext.Fotografie.Attach(rica.fotografia);
-						dbContext.FormatiCarta.Attach(rica.formatoCarta);
-						dbContext.Fotografi.Attach(rica.fotografo);
+						Fotografia f = rica.fotografia;
+						OrmUtil.forseAttacca<Fotografia>( "Fotografie", ref f );
+						FormatoCarta fc = rica.formatoCarta;
+						OrmUtil.forseAttacca<FormatoCarta>( "FormatiCarta", ref fc );
+						Fotografo fo = rica.fotografo;
+						OrmUtil.forseAttacca<Fotografo>( "Fotografi", ref fo );
 					}
 				}
 
 				dbContext.Carrelli.Add( carrello );
-
-				foreach (RigaCarrello rigaCarrello in carrello.righeCarrello)
-				{
-					if (rigaCarrello is RiCaFotoStampata)
-					{
-						RiCaFotoStampata rica = rigaCarrello as RiCaFotoStampata;
-						dbContext.RigheCarrelli.Add(rica);
-					}else{
-						RiCaDiscoMasterizzato rica = rigaCarrello as RiCaDiscoMasterizzato;
-						dbContext.RigheCarrelli.Add(rica);
-					}
-				}
-
 			} else {
-				dbContext.Carrelli.Attach(carrello);
-				foreach (RigaCarrello rigaCarrello in carrello.righeCarrello)
-				{
-					if (rigaCarrello is RiCaFotoStampata)
-					{
-						RiCaFotoStampata rica = rigaCarrello as RiCaFotoStampata;
-						dbContext.RigheCarrelli.Attach(rica);
-					}
-					else
-					{
-						RiCaDiscoMasterizzato rica = rigaCarrello as RiCaDiscoMasterizzato;
-						dbContext.RigheCarrelli.Attach(rica);
+
+				// Sono in variazione. Riattacco il carrello e tutti i grafi interni
+				Digiphoto.Lumen.Database.OrmUtil.forseAttacca<Carrello>( "Carrelli", ref _carrello );
+
+
+				dbContext.ObjectContext.ObjectStateManager.ChangeObjectState( carrello, EntityState.Modified );
+
+				foreach( RigaCarrello rc in carrello.righeCarrello ) {
+
+					// Devo capire quali righe sono in modifica e quali sono state aggiunte
+					ObjectStateEntry entry;
+					bool esiste = dbContext.ObjectContext.ObjectStateManager.TryGetObjectStateEntry( rc, out entry );
+
+					if( Guid.Empty.Equals( rc.id ) ) {
+						// E' una riga nuova
+						rc.id = Guid.NewGuid();
+						if( esiste && entry.State != EntityState.Added )
+							dbContext.ObjectContext.ObjectStateManager.ChangeObjectState( rc, EntityState.Added );
+					} else {
+						// la riga esiste. Forzo la modifica
+						if( esiste && entry.State != EntityState.Modified )
+							dbContext.ObjectContext.ObjectStateManager.ChangeObjectState( rc, EntityState.Modified );
 					}
 				}
-				guidCarrello = carrello.id;
 			}
 
-			dbContext.SaveChanges();
+			int quanti = dbContext.SaveChanges();
 
-			_giornale.Info( "Registrato carrello id = " + carrello.id + " totale a pagare = " + carrello.totaleAPagare );
+			if( quanti <= 0 ) {
+				string msg = "salvato carrello ma nessun record aggiornato. Possibile problema di EntityFramework";
+				_giornale.Warn( msg );
+				throw new InvalidOperationException( msg );
+			}
 
-			return guidCarrello;
+			// non so perché ma se salvo un carrello di 3 righe mi dice che sono stati modificati 6 record
+			if( quanti == carrello.righeCarrello.Count || quanti == carrello.righeCarrello.Count * 2 ) {
+				// ok
+			} else {
+				string msg = "carrello id = " + carrello.id + " righe= " + carrello.righeCarrello.Count + " salvate=" + quanti;
+				_giornale.Warn( msg );
+			}
+
+			string msg2 = "Registrato carrello id = " + carrello.id + " totale a pagare = " + carrello.totaleAPagare + " con " + carrello.righeCarrello.Count + " righe";
+			_giornale.Info( msg2 );
 		}
 
+
+		/// <summary>
+		/// Sistemo qualcosa ma NON le chiavi primarie
+		/// </summary>
 		private void completaAttributiMancanti() {
 
 			if( isCarrelloTransient ) {
 
 				// Giornata lavorativa
-				if( carrello.giornata == null || carrello.giornata.Equals( DateTime.MinValue ) )
-					carrello.giornata = LumenApplication.Instance.stato.giornataLavorativa;
+				carrello.giornata = LumenApplication.Instance.stato.giornataLavorativa;
 
 				// Tempo di creazione
-				if( carrello.tempo == null || carrello.tempo.Equals( DateTime.MinValue ) )
-					carrello.tempo = DateTime.Now;
-
-				// Id del carrello
-				if( carrello.id == null || carrello.id.Equals( Guid.Empty ) )
-					carrello.id = Guid.NewGuid();
+				carrello.tempo = DateTime.Now;
 			}
 
 
 			// :: loop su tutte le righe
 			decimal totaleAPagare = 0;
 			foreach( RigaCarrello r in carrello.righeCarrello ) {
-
-				// Id delle righe
-				if( isCarrelloTransient ) 
-					if( r.id == null || r.id.Equals( Guid.Empty ) )
-						r.id = Guid.NewGuid();
 
 				// ricalcolo il valore della riga
 				r.prezzoNettoTotale = calcValoreRiga( r );
@@ -194,9 +225,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 
 			carrello.totaleAPagare = totaleAPagare;
-
-
-
 		}
 
 		/** 

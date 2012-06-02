@@ -124,7 +124,7 @@ namespace Digiphoto.Lumen.Core.VsTest
 				_impl.masterizzaSrv.impostaDestinazione( TipoDestinazione.CARTELLA, Path.GetTempPath() );
 				_impl.masterizzaSrv.prezzoForfaittario = 7;
 
-				_impl.confermaCarrello();
+				_impl.vendereCarrello();
 
 				Assert.IsTrue( _impl.carrello.totaleAPagare == 15 + 7 );
 			}
