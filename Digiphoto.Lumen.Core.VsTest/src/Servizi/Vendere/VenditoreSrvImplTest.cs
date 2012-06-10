@@ -13,6 +13,7 @@ using Digiphoto.Lumen.Servizi.Masterizzare;
 using System.IO;
 using Digiphoto.Lumen.Servizi.Reports;
 using System.Diagnostics;
+using Digiphoto.Lumen.Database;
 
 namespace Digiphoto.Lumen.Core.VsTest
 {
@@ -124,8 +125,11 @@ namespace Digiphoto.Lumen.Core.VsTest
 				_impl.masterizzaSrv.impostaDestinazione( TipoDestinazione.CARTELLA, Path.GetTempPath() );
 				_impl.masterizzaSrv.prezzoForfaittario = 7;
 
+				Assert.IsFalse( _impl.carrello.venduto );
+
 				_impl.vendereCarrello();
 
+				Assert.IsTrue( _impl.carrello.venduto );
 				Assert.IsTrue( _impl.carrello.totaleAPagare == 15 + 7 );
 			}
 
@@ -155,8 +159,11 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 			FormatoCarta formato = Utilita.ottieniFormatoCarta( dbContext, "A5" );
 			formato.prezzo = 5;
-
 			p.formatoCarta = formato;
+
+			// Qui non si deve spaccare
+			Digiphoto.Lumen.Database.OrmUtil.forseAttacca<FormatoCarta>( dbContext.ObjectContext, "LumenEntities.FormatiCarta", ref formato );
+
 			return p;
 		}
 

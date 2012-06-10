@@ -10,44 +10,68 @@ using System.IO;
 using Digiphoto.Lumen.Servizi.Vendere;
 using System.Windows.Forms;
 using Digiphoto.Lumen.Util;
-using Digiphoto.Lumen.src.Config;
 
 namespace Digiphoto.Lumen.Config  {
 
-	public class Configurazione {
+	public sealed class Configurazione {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof(Configurazione) );
 		private IDictionary<String, String> _nomiServizi;
 		bool _autoSistemazione;
 
-		private static UserConfigLumen _userConfigLumen;
-		public static UserConfigLumen UserConfigLumen
-		{
-			get
-			{
-				return _userConfigLumen;
-			}
-
-			set
-			{
-				_userConfigLumen = value;
-			}
-		}
 
 		// Codice del fotografo usato per il fotoritocco
-		public const string ID_FOTOGRAFO_ARTISTA = "_Photo_Retouch";
+		public static readonly string ID_FOTOGRAFO_ARTISTA = "_Photo_Retouch";
+		public static readonly string companyName = "digiPHOTO.it";  // si potrebbero leggere dall'Assembly Info
+		public static readonly string applicationName = "Lumen";     // si potrebbero leggere dall'Assembly Info
+
+
 
 		public static string cartellaBaseFoto {
 			get {
 				return Path.Combine( cartellaAppData, "Foto" );
 			}
 		}
-		
+
+		static Configurazione() {
+			UserConfigLumen = caricaUserConfig();
+		}
+
+		public static UserConfigLumen caricaUserConfig() {
+
+			// Carico i settaggi che ho appoggiato su un xml esterno
+			UserConfigLumen userConfigDefault = UserConfigSerializer.deserialize();
+
+			if( userConfigDefault == null ) {
+
+				userConfigDefault = new UserConfigLumen();
+
+				// Alcuni default NON naturali. Quelli naturali non li nomino.
+				userConfigDefault.autoZoomNoBordiBianchi = true;
+				userConfigDefault.giorniDeleteFoto = 8;
+				userConfigDefault.modoVendita = ModoVendita.Carrello;
+				userConfigDefault.pixelLatoProvino = 400;
+				userConfigDefault.dbNomeDbVuoto = "dbvuoto.sdf";
+				userConfigDefault.dbNomeDbPieno = "database.sdf";
+				userConfigDefault.dbCartella = decidiCartellaDatabase();
+				userConfigDefault.cartellaFoto = Path.Combine( Configurazione.cartellaAppData, "Foto" );
+				userConfigDefault.cartellaMaschere = Path.Combine( Configurazione.cartellaAppData, "Maschere" );
+				userConfigDefault.estensioniGrafiche = "*.jpg;*.jpeg;*.png;*.tif;*.tiff";
+				userConfigDefault.editorImmagini = "MSPAINT.EXE";
+				userConfigDefault.masterizzaDirettamente = false;
+			} else {
+				// Sistemare eventuali parametri nuovi di release future..
+			}
+
+			return userConfigDefault;
+		}
+
+
 		internal Configurazione() : this( true ) {
 		}
 
 		internal Configurazione( bool autoSistemazione ) {
-		
+	
 			caricaMappaNomiServizi();
 
 			_autoSistemazione = autoSistemazione;
@@ -63,20 +87,21 @@ namespace Digiphoto.Lumen.Config  {
 			// Alcuni settaggi sono statici perché non vogliamo che siano cambiati
 			// Altri settaggi invece sono di istanza perché così si possono anche modificare al volo (senza renderli persistenti)
 			valorizzaSettaggiNonStatici();
-
 		}
 
-		/**
-		 * Le foto sono memorizzate in una cartella che chiamiamo Repository.
-		 * Questo repository ha un percorso di base, e poi una struttura variabile
-		 * che comprende il giorno in cui ... e l'operatore che ha scattato le foto.
-		 */
+
+		///
+		/// <summary>
+		/// Le foto sono memorizzate in una cartella che chiamiamo Repository.
+		/// Questo repository ha un percorso di base, e poi una struttura variabile
+		/// che comprende il giorno in cui ... e l'operatore che ha scattato le foto.
+		/// </summary>
 		public static string cartellaRepositoryFoto {
 			get {
-				if( String.IsNullOrEmpty( UserConfigLumen.CartellaFoto ) )
+				if( String.IsNullOrEmpty( UserConfigLumen.cartellaFoto ) )
 					return (Path.Combine( cartellaAppData, "Foto" ));
 				else
-					return UserConfigLumen.CartellaFoto;
+					return UserConfigLumen.cartellaFoto;
 				}
 		}
 
@@ -98,8 +123,9 @@ namespace Digiphoto.Lumen.Config  {
 		 * devo usare un segnaposto che ora vado a sostituire
 		 */
 		private static void sostituisciSegnapostoDataDirectoryPerConnectionString() {
+
 			// Ora che ho deciso dove sta il database, sostituisco la cartella nella stringa di connessione.
-			sostituisciSegnapostoDataDirectoryPerConnectionString( DbUtil.cartellaDatabase );
+			sostituisciSegnapostoDataDirectoryPerConnectionString( UserConfigLumen.dbCartella );
 		}
 
 		private static void sostituisciSegnapostoDataDirectoryPerConnectionString( string cartella ) {
@@ -176,11 +202,18 @@ namespace Digiphoto.Lumen.Config  {
 			}
 		}
 
+		public static void SalvaUserConfig() {
+			UserConfigSerializer.serializeToFile( UserConfigLumen );
+		}
 
+		/// <summary>
+		/// E' la cartella dove vengono memorizzati i dati dell'applicazione.
+		/// Per esempio ci mettiamo il database.
+		/// </summary>
 		public static string cartellaAppData {
 			get {
 				string cd = Environment.GetFolderPath( Environment.SpecialFolder.CommonApplicationData );
-				return (Path.Combine( cd, "digiPHOTO", "Lumen" ));
+				return (Path.Combine( cd, companyName, applicationName ));
 			}
 		}
 
@@ -194,23 +227,13 @@ namespace Digiphoto.Lumen.Config  {
             return ".Gio";
         }
 
-		public static string cartellaMaschere {
-			get {
-				if (String.IsNullOrEmpty(UserConfigLumen.CartellaMaschere))
-				{
-					UserConfigLumen.CartellaMaschere = Path.Combine(cartellaAppData, "Maschere");
-					return Path.Combine(cartellaAppData, "Maschere");
-				}
-				return UserConfigLumen.CartellaMaschere;
-			}
-		}
 
 		/// <summary>
 		///  Ritorno un vetto di stringhe contenente le estesioni grafiche ammesse e che riconosco.
 		/// </summary>
 		public static string [] estensioniGraficheAmmesse {
 			get {
-				return UserConfigLumen.EstensioniGrafiche.Split(';');
+				return UserConfigLumen.estensioniGrafiche.Split(';');
 			}
 		}
 
@@ -222,14 +245,13 @@ namespace Digiphoto.Lumen.Config  {
 
 					_editorEsternoConfig = new EditorEsternoConfig();
 
-					if (String.IsNullOrEmpty(UserConfigLumen.EditorImmagini) ||
-						File.Exists(UserConfigLumen.EditorImmagini) == false)
-					{
+					if( String.IsNullOrEmpty( UserConfigLumen.editorImmagini ) ||
+						File.Exists( UserConfigLumen.editorImmagini ) == false ) {
 						_editorEsternoConfig.commandLine = "MSPAINT";
 						_editorEsternoConfig.gestisceMultiArgs = false;
 					} else {
-						_editorEsternoConfig.commandLine = UserConfigLumen.EditorImmagini;
-						_editorEsternoConfig.gestisceMultiArgs = Boolean.Parse(UserConfigLumen.EditorImmaginiMultiArgs);
+						_editorEsternoConfig.commandLine = UserConfigLumen.editorImmagini;
+						_editorEsternoConfig.gestisceMultiArgs = UserConfigLumen.editorImmaginiMultiArgs;
 					}
 
 				}
@@ -252,6 +274,21 @@ namespace Digiphoto.Lumen.Config  {
 		public Stampigli stampigli {
 			get;
 			private set;
+		}
+
+		public static UserConfigLumen UserConfigLumen {
+			get;
+			set;
+		}
+
+
+		private static string decidiCartellaDatabase() {
+
+			string ret = Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.CommonApplicationData ), Configurazione.companyName, Configurazione.applicationName );
+
+			ret = Environment.ExpandEnvironmentVariables( ret );
+
+			return ret;
 		}
 
 	}

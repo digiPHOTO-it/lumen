@@ -23,7 +23,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 			// Questa è la definizione per provinare.
 			_correzioneProvino = new Resize() { 
-				latoMax = Configurazione.UserConfigLumen.PixelLatoProvino
+				latoMax = Configurazione.UserConfigLumen.pixelLatoProvino
 			};
 
 			_correttoreFactory = ImagingFactory.Instance.creaCorrettoreFactory();

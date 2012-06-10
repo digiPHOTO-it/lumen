@@ -19,7 +19,7 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Stampare
     [TestClass]
     public class StampantiAbbinateSrvImplTest
     {
-        private StampantiAbbinateSrvImpl _impl = null;
+        private StampantiAbbinateCollection _impl = null;
 
         private LumenApplication app;
 
@@ -34,13 +34,19 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Stampare
         {
 			using (new UnitOfWorkScope(false))
 			{
-				_impl = new StampantiAbbinateSrvImpl();
-				_impl.start();
-				IList<StampanteAbbinata> listStampantiAbbinate = _impl.listaStampantiAbbinate(Configurazione.UserConfigLumen.StampantiAbbinate);
-				foreach (StampanteAbbinata stampanteAbbinata in listStampantiAbbinate)
+				_impl = new StampantiAbbinateCollection( Configurazione.UserConfigLumen.stampantiAbbinate );
+
+				foreach( StampanteAbbinata stampanteAbbinata in _impl )
 				{
 					System.Diagnostics.Trace.WriteLine("[Stampante]: " + stampanteAbbinata.StampanteInstallata.NomeStampante + " " + stampanteAbbinata.FormatoCarta.prezzo + " " + stampanteAbbinata.FormatoCarta.descrizione);
 				}
+			}
+
+			Assert.IsTrue( String.IsNullOrEmpty( Configurazione.UserConfigLumen.stampantiAbbinate ) && _impl.Count == 0 );
+
+
+			if( Configurazione.UserConfigLumen.stampantiAbbinate != null ) {
+				Assert.IsTrue( Configurazione.UserConfigLumen.stampantiAbbinate.Length > 0 && _impl.Count > 0 );
 			}
         }
 
@@ -49,18 +55,14 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Stampare
         {
 			using (new UnitOfWorkScope(false))
 			{
-				_impl = new StampantiAbbinateSrvImpl();
-				_impl.start();
-				IList<StampanteAbbinata> listStampantiAbbinate = _impl.listaStampantiAbbinate(Configurazione.UserConfigLumen.StampantiAbbinate);
-				_impl.sostituisciAbbinamento(listStampantiAbbinate);
-				System.Diagnostics.Trace.WriteLine("[Stampante]: " +_impl.listaStampantiAbbinateToString());
+				_impl = new StampantiAbbinateCollection( Configurazione.UserConfigLumen.stampantiAbbinate );
+				System.Diagnostics.Trace.WriteLine( "[Stampante]: " + _impl.serializzaToString() );
 			}
         }
         
         [TestCleanup]
         public void Cleanup()
         {
-            _impl.Dispose();
         }
     }
 }

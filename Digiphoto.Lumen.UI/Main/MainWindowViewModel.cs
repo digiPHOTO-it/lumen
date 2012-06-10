@@ -87,7 +87,7 @@ namespace Digiphoto.Lumen.UI {
 				// Imposto qualche parametro da stampare nel report
 				ReportParameter p1 = new ReportParameter( "dataIniz", paramRangeGiorni.dataIniz.ToString() );
 				ReportParameter p2 = new ReportParameter( "dataFine", paramRangeGiorni.dataFine.ToString() );
-				string appo = String.IsNullOrEmpty(Configurazione.UserConfigLumen.DescrizionePuntoVendita) ? "pdv " + Configurazione.UserConfigLumen.CodicePuntoVendita : Configurazione.UserConfigLumen.DescrizionePuntoVendita;
+				string appo = String.IsNullOrEmpty(Configurazione.UserConfigLumen.descrizionePuntoVendita) ? "pdv " + Configurazione.UserConfigLumen.codicePuntoVendita : Configurazione.UserConfigLumen.descrizionePuntoVendita;
 				ReportParameter p3 = new ReportParameter( "nomePdv", appo );
 
 				ReportParameter [] repoParam = { p1, p2, p3 };
