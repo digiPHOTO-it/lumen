@@ -32,10 +32,9 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI {
 				if (mutexSingle.WaitOne(0, false))
 				{
 					// Carico la Configurazione
-					UserConfigXML userConfigXML = UserConfigXML.Instance;
 					base.OnStartup(e);
 					// Inizializzo l'applicazione
-					//LumenApplication.Instance.avvia();
+					LumenApplication.Instance.avvia();
 					_giornale.Info("Applicazione avviata");
 				}
 				else

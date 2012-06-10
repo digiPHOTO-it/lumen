@@ -54,18 +54,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 			Fotografo mario;
 
-			// ATTENZIONE:
-			// incredibile, ma le entità che sono state appena aggiunte con addObject
-			// e che non sono state committate, non si vedono nella seguente query
-			// CHE SCHIFO!  ...
-
-
-			// ... quindi sono costretto a riprovare a vedere se esiste nelle entita appena aggiunte o modificate
-			mario = dbContext.ObjectContext.ObjectStateManager.GetObjectStateEntries( System.Data.EntityState.Added | EntityState.Modified )
-								   .Where( e => !e.IsRelationship )
-								   .Select( e => e.Entity )
-								   .OfType<Fotografo>()
-								   .SingleOrDefault( m => m.id.Equals( idMario ) );
+			mario = dbContext.Fotografi.SingleOrDefault( f => f.id == idMario );
 
 			if( mario == null ) {
 

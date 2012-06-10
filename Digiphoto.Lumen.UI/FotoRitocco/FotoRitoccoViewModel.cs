@@ -816,7 +816,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			// Faccio giri diversi per i vari formati grafici che sono indicati nella configurazione (jpg, tif)
 			foreach( string estensione in Configurazione.estensioniGraficheAmmesse ) {
 
-				string [] files = Directory.GetFiles( Configurazione.cartellaMaschere, searchPattern: estensione, searchOption: SearchOption.AllDirectories );
+				string [] files = Directory.GetFiles( Configurazione.UserConfigLumen.cartellaMaschere, searchPattern: estensione, searchOption: SearchOption.AllDirectories );
 
 				// trasferisco tutti i files elencati
 				foreach( string nomeFileSrc in files ) {

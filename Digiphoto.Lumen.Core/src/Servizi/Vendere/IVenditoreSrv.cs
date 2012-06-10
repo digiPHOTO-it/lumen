@@ -6,13 +6,9 @@ using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Servizi.Stampare;
 using Digiphoto.Lumen.Servizi.Masterizzare;
 using Digiphoto.Lumen.Servizi.Reports;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
-
-	public enum ModoVendita : short {
-		Carrello = 0,
-		StampaDiretta = 1
-	}
 
 	/**
 	 * Questo servizio funge da Gestore di Carrello ed anche come facade per il servizio IMasterizzaSrv

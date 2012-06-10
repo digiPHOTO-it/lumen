@@ -14,8 +14,7 @@
             <PasswordBox Height="23" Name="amministratorePasswordBox" Width="120"
                 PasswordChar="*"
                 xamlHelpers:PasswordBoxAssistant.BindPassword="true"
-                xamlHelpers:PasswordBoxAssistant.BoundPassword="{Binding Path=LoginPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-             />
+                xamlHelpers:PasswordBoxAssistant.BoundPassword="{Binding Path=LoginPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Password="Lumen" />
             <Button Name="amministratoreLoginButton" Content="&gt;" Height="23"  Margin="5,0,5,0"  Width="22" Command="{Binding Path=loginCommand}" />
         </StackPanel>
 
@@ -46,15 +45,17 @@
                             <ColumnDefinition Width="4*" />
                         </Grid.ColumnDefinitions>
                         <Label Content="Database Connection String" Height="28" HorizontalAlignment="Left" Margin="2,60,0,0" Name="label4" VerticalAlignment="Top" Grid.Column="1" />
-                        <TextBox Height="44" TextWrapping="Wrap" Margin="3,95,1,0" Name="textBox1" VerticalAlignment="Top" Grid.Column="1" Grid.ColumnSpan="5" IsEnabled="False" Width="634" Text="{Binding Path=ConnectionString}" Grid.RowSpan="2" />
+                        <TextBox Height="44" TextWrapping="Wrap" Margin="3,95,1,0"  VerticalAlignment="Top" Grid.Column="1" Grid.ColumnSpan="5" IsEnabled="False" Width="634" Text="{Binding Path=ConnectionString}" Grid.RowSpan="2" />
+                        
                         <Label Content="Cartella Rullini" Height="25" HorizontalAlignment="Left" Margin="3,105,0,0" Name="label5" VerticalAlignment="Top" Width="152" Grid.Column="1" Grid.Row="2" />
-                            <TextBox Height="21" Margin="111,109,51,0" Name="textBox2" VerticalAlignment="Top" Grid.Column="1" Grid.ColumnSpan="5" Width="476" Grid.Row="2" Text="{Binding Path=CartellaFoto}" />
+                        <TextBox Margin="111,109,51,0" Height="23"  VerticalAlignment="Top" Grid.Column="1" Grid.ColumnSpan="5" Width="476" Grid.Row="2" Text="{Binding Path=cfg.cartellaFoto}" />
+                        
                         <Button Content="..." Height="23" Margin="0,105,6,0" Name="button1" VerticalAlignment="Top" ToolTip="Sfoglia cartelle" HorizontalAlignment="Right" Width="22" Grid.Column="5"  Command="{Binding Path=cartellaRulliniCommand}" Grid.Row="2" />
                         <Label Content="Punto Vendita: codice" Height="26" HorizontalAlignment="Left" Margin="3,154,0,0" Name="label6" VerticalAlignment="Top" Width="136" Grid.Column="1" Grid.Row="2" />
-                        <TextBox Height="24" HorizontalAlignment="Left" Margin="155,156,0,0" Name="textBox3" VerticalAlignment="Top" Width="34" Grid.Column="1" Grid.Row="2" Text="{Binding Path=CodicePuntoVendita}" Grid.ColumnSpan="2" />
+                        <TextBox Height="23" HorizontalAlignment="Left" Margin="155,156,0,0" Name="textBox3" VerticalAlignment="Top" Width="34" Grid.Column="1" Grid.Row="2" Text="{Binding Path=cfg.codicePuntoVendita}" Grid.ColumnSpan="2" />
                         <Label Content="Descrizione" Height="26" HorizontalAlignment="Left" Margin="39,154,0,0" Name="label7" VerticalAlignment="Top" Width="79" Grid.Column="2" Grid.Row="2" Grid.ColumnSpan="2" />
-                        <TextBox Height="23" HorizontalAlignment="Left" Margin="74,156,0,0" Name="textBox4" VerticalAlignment="Top" Width="165" Grid.Column="3" Grid.Row="2" Text="{Binding Path=DescrizionePuntoVendita}" Grid.ColumnSpan="2" />
-					<ComboBox Height="23" HorizontalAlignment="Left" Margin="160,19,0,0" Name="databaseSupoortatiComboBox" VerticalAlignment="Top" Width="206" Grid.Column="1" SelectedIndex="{Binding Path=MotoreDataBase}" IsEnabled="False" Grid.ColumnSpan="4">
+                        <TextBox Height="23" HorizontalAlignment="Left" Margin="74,156,0,0" Name="textBox4" VerticalAlignment="Top" Width="293" Grid.Column="3" Grid.Row="2" Text="{Binding Path=cfg.descrizionePuntoVendita}" Grid.ColumnSpan="3" />
+					    <ComboBox Height="23" HorizontalAlignment="Left" Margin="160,19,0,0" Name="databaseSupoortatiComboBox" VerticalAlignment="Top" Width="206" Grid.Column="1" SelectedIndex="{Binding Path=MotoreDataBase}" IsEnabled="False" Grid.ColumnSpan="4">
                             <ComboBoxItem Content="Sql Server Compact Edition" />
                             <ComboBoxItem Content="SqLite" />
                             <ComboBoxItem Content="Sql Server" />
@@ -67,12 +68,12 @@
                         <Label Content="Motore di database" Height="28" HorizontalAlignment="Left" Margin="2,19,0,0" Name="label10" VerticalAlignment="Top" Width="152" Grid.Column="1" />
 
                         <Label Content="DataDirectory" Height="27" HorizontalAlignment="Left" Margin="3,0,0,0" Name="label13" VerticalAlignment="Top" Width="116" Grid.Column="1" Grid.Row="2" />
-                        <TextBox Grid.ColumnSpan="5" Height="23" HorizontalAlignment="Right" Margin="0,4,51,0" Name="textBoxDataSource" VerticalAlignment="Top" Width="476" Grid.Column="1" Text="{Binding Path=DbCartella}" Grid.Row="2" IsEnabled="{Binding Path=DbCartellaButton}" />
+                        <TextBox Grid.ColumnSpan="5" Height="23" HorizontalAlignment="Right" Margin="0,4,51,0" Name="textBoxDataSource" VerticalAlignment="Top" Width="476" Grid.Column="1" Text="{Binding Path=cfg.dbCartella}" Grid.Row="2" IsEnabled="{Binding Path=DbCartellaButton}" />
                         <Button Content="..." Grid.Column="5"  Name="dataSourceButton" Grid.Row="2" Height="23" HorizontalAlignment="Left" Margin="145,6,0,0" VerticalAlignment="Top" Width="22" Command="{Binding Path=DbCartellaCommand}" IsEnabled="{Binding Path=DbCartellaButton}"/>
 					<Button Content="Test Connection" Grid.Column="1" Grid.Row="2" Height="23" HorizontalAlignment="Left" Margin="3,66,0,0" Name="button2" VerticalAlignment="Top" Width="152" Command="{Binding Path=testConnectionCommand}"/>
 					<Button Content="Create DataBase" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="2" Height="23" HorizontalAlignment="Left" Margin="175,66,0,0" Name="button3" VerticalAlignment="Top" Width="123" Command="{Binding Path=CreateDataBaseCommand}"/>
                         <Label Content="DataBase" Grid.Column="1" Grid.Row="1" Height="28" HorizontalAlignment="Left" Margin="3,37,0,0" Name="label11" VerticalAlignment="Top" Width="71" />
-                        <TextBox Grid.Column="1" IsEnabled="False" Grid.ColumnSpan="5" Grid.Row="1" Height="23" HorizontalAlignment="Left" Margin="111,39,0,0" Name="textBox6" VerticalAlignment="Top" Width="476" Text="{Binding Path=NomeDbPieno}"/>
+                        <TextBox Grid.Column="1" IsEnabled="False" Grid.ColumnSpan="5" Grid.Row="1" Height="23" HorizontalAlignment="Left" Margin="111,39,0,0" Name="textBox6" VerticalAlignment="Top" Width="476" Text="{Binding Path=cfg.dbNomeDbPieno}"/>
                     </Grid>
                 </TabItem>
 
@@ -114,32 +115,30 @@
 
                 <TabItem Header="Preferenze Utente" IsSelected="{Binding Path=PreferenzeUtente}" IsEnabled="{Binding Path=PreferenzeUtente}">
                     <Grid>
-                        <CheckBox Content="Svuota memory card dopo averla scaricata" Height="19" Name="svuotaCardCheckBox" Width="260" Margin="20,31,336,0" VerticalAlignment="Top" HorizontalAlignment="Left" IsChecked="{Binding Path=EraseFotoMemoryCard}"/>
+                        <CheckBox Content="Svuota memory card dopo averla scaricata" Height="19" Name="svuotaCardCheckBox" Width="260" Margin="20,31,336,0" VerticalAlignment="Top" HorizontalAlignment="Left" IsChecked="{Binding Path=cfg.eraseFotoMemoryCard,Mode=TwoWay}"/>
                         <GroupBox Header="Masterizzare" Height="115" Margin="96,84,158,0" Name="groupBox1" VerticalAlignment="Top" HorizontalAlignment="Center" Width="399">
                             <Grid>
-                                <RadioButton  Content="Direttamente con" Height="18" HorizontalAlignment="Left" Margin="12,15,0,0" Name="masterizzaDirettoRadioButton" VerticalAlignment="Top" Width="129" IsChecked="{Binding Path=DestMasterizzaMasterizzatore}"/>
-                                <RadioButton  Content="usa cartella" Height="15" HorizontalAlignment="Left" Margin="12,47,0,0" Name="masterizzaCartellaRadioButton" VerticalAlignment="Top" Width="115" IsChecked="{Binding Path=DestMasterizzaCartella}"/>
-                                <ComboBox Height="20" HorizontalAlignment="Left" Margin="133,13,0,0" Name="comboBox1" VerticalAlignment="Top" Width="248" 
-                                          IsEnabled="{Binding ElementName=masterizzaDirettoRadioButton, Path=IsChecked}" ItemsSource="{Binding Path=listaMasterizzatori}"  SelectedItem="{Binding Path=MasterizzatoreSelezionato}" />
+                                <RadioButton  Content="Direttamente con" Height="18" HorizontalAlignment="Left" Margin="12,15,0,0" Name="masterizzaDirettoRadioButton" VerticalAlignment="Top" Width="129" IsChecked="{Binding Path=cfg.masterizzaDirettamente}"/>
+                                <RadioButton  Content="usa cartella" Height="15" HorizontalAlignment="Left" Margin="12,47,0,0" Name="masterizzaCartellaRadioButton" VerticalAlignment="Top" Width="115" IsChecked="{Binding Path=notMasterizzaDirettamente}"/>
+                                <ComboBox Height="20" HorizontalAlignment="Left" Margin="133,13,0,0" VerticalAlignment="Top" Width="248" 
+                                          IsEnabled="{Binding ElementName=masterizzaDirettoRadioButton, Path=IsChecked}" ItemsSource="{Binding Path=listaMasterizzatori}"  SelectedItem="{Binding Path=cfg.defaultMasterizzatore}" />
                                 <TextBox Height="23" Margin="133,40,36,0" Name="cartellaMasterizzaTextBox" VerticalAlignment="Top"
-                                         IsEnabled="{Binding ElementName=masterizzaCartellaRadioButton, Path=IsChecked}" Text="{Binding Path=DefaultChiavetta}"  />
+                                         IsEnabled="{Binding ElementName=masterizzaCartellaRadioButton, Path=IsChecked}" Text="{Binding Path=cfg.defaultChiavetta}"  />
                                 <Button Content="..." Height="20" HorizontalAlignment="Left" Margin="362,40,0,0" Name="cartellaMasterizzaBrowseButton" VerticalAlignment="Top" Width="19" 
                                         IsEnabled="{Binding ElementName=masterizzaCartellaRadioButton, Path=IsChecked}"  Command="{Binding Path=desMasterizzaCartellaCommand}" />
                             </Grid>
                         </GroupBox>
                         <Label Content="Num. giorni permanenza foto" Height="26" HorizontalAlignment="Left" Margin="20,228,0,0" Name="label8" VerticalAlignment="Top" Width="182" />
-                        <TextBox Height="23" HorizontalAlignment="Left" Margin="192,231,0,0" Name="textBox5" VerticalAlignment="Top" Width="36" ToolTip="N.giorni dopo cui cancellare le foto vecchie" Text="{Binding Path=GiorniDeleteFoto}" />
-                        <CheckBox Content="Proietta area stampabile sulle diapositive" HorizontalAlignment="Left" Margin="356,228,0,0" Name="checkBox2" VerticalAlignment="Top" Width="207" IsChecked="{Binding Path=ProiettaDiapo}"/>
+                        <TextBox Height="23" HorizontalAlignment="Left" Margin="192,231,0,0" Name="textBox5" VerticalAlignment="Top" Width="36" ToolTip="N.giorni dopo cui cancellare le foto vecchie" Text="{Binding Path=cfg.giorniDeleteFoto}" />
+                        <CheckBox Content="Proietta area stampabile sulle diapositive" HorizontalAlignment="Left" Margin="356,228,0,0" Name="checkBox2" VerticalAlignment="Top" Width="207" IsChecked="{Binding Path=cfg.proiettaDiapo}"/>
                         <Label Content="Modalità di vendita" HorizontalAlignment="Left" Margin="351,26,0,0" Name="label9" VerticalAlignment="Top" Width="113" />
-                        <ComboBox Height="22" HorizontalAlignment="Left" Margin="471,23,0,0" Name="comboBox2" VerticalAlignment="Top" Width="118" SelectedIndex="{Binding Path=ModoVendita}">
-                            <ComboBoxItem Content="con Carrello" />
-							<ComboBoxItem Content="Diretta" />
-                        </ComboBox>
+                    <ComboBox Name="comboBoxModalitaVendita" Height="22" HorizontalAlignment="Left" Margin="471,23,0,0" VerticalAlignment="Top" Width="118" ItemsSource="{Binding modoVenditaValues}" SelectedValue="{Binding Path=cfg.modoVendita}" />
+                        
                     <GroupBox Header="Stampigli" HorizontalAlignment="Left" Margin="64,290,0,0"  VerticalAlignment="Top" Width="138">
                         <StackPanel Orientation="Vertical" Margin="5,5,0,0">                            
-                            <CheckBox Content="Operatore" IsChecked="{Binding stampiglioOperatore}" />
-                            <CheckBox Content="Giornata" IsChecked="{Binding stampiglioGiornata}" />
-                            <CheckBox Content="N° foto" IsChecked="{Binding stampiglioNumFoto}" />
+                            <CheckBox Content="Operatore" IsChecked="{Binding cfg.stampiglioOperatore}" />
+                            <CheckBox Content="Giornata" IsChecked="{Binding cfg.stampiglioGiornata}" />
+                            <CheckBox Content="N° foto" IsChecked="{Binding cfg.stampiglioNumFoto}" />
                         </StackPanel>
                     </GroupBox>
                 </Grid>

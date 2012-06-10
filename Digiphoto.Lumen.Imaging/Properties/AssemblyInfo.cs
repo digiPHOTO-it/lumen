@@ -9,7 +9,7 @@ using System.Resources;
 [assembly: AssemblyTitle( "Lumen Imaging Nativa" )]
 [assembly: AssemblyDescription( "Funzioni grafiche native .net e Windows (System.Drawing e GDI+)" )]
 [assembly: AssemblyConfiguration( "" )]
-[assembly: AssemblyCompany( "digiPHOTO" )]
+[assembly: AssemblyCompany( "digiPHOTO.it" )]
 [assembly: AssemblyProduct( "Digiphoto.Lumen.Imaging.Nativa" )]
 [assembly: AssemblyCopyright( "Copyright © Microsoft 2011" )]
 [assembly: AssemblyTrademark( "" )]

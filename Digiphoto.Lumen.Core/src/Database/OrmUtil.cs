@@ -25,7 +25,9 @@ namespace Digiphoto.Lumen.Database {
 			
 			// Track whether we need to perform an attach
 			bool attach = false;
-			if( context.ObjectStateManager.TryGetObjectStateEntry( context.CreateEntityKey( entitySetName, entity ), out entry ) ) {
+			bool trovato = context.ObjectStateManager.TryGetObjectStateEntry( entity, out entry );
+			
+			if( trovato ) {
 				// Re-attach if necessary
 				attach = entry.State == EntityState.Detached;
 				// Get the discovered entity to the ref
@@ -34,7 +36,8 @@ namespace Digiphoto.Lumen.Database {
 				// Attach for the first time
 				attach = true;
 			}
-			if( attach )
+
+			if( attach )		
 				context.AttachTo( entitySetName, entity );
 		}
 
@@ -63,7 +66,7 @@ namespace Digiphoto.Lumen.Database {
 			var cachedEnt = ctx.ChangeTracker.Entries().Where( x =>  ObjectContext.GetObjectType( x.Entity.GetType() ) == t );
 
 			foreach( var ent in cachedEnt ) {
-				System.Diagnostics.Trace.WriteLine( "entità = " + ent + " " + ent.Property( "id" ) );
+				System.Diagnostics.Trace.WriteLine( "entità = " + ent.Entity + "\tstato=" + ent.State + "\tid=" + ent.Property( "id" ) );
 			}
 
 		}

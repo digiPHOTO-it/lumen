@@ -26,7 +26,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( VenditoreSrvImpl ) );
 
-#region Proprietà
+		#region Proprietà
 
 		private GestoreCarrello gestoreCarrello {
 			get;
@@ -38,8 +38,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				return gestoreCarrello.carrello;
 			}
 
-			set
-			{
+			set {
 			}
 		}
 
@@ -60,7 +59,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 
-#endregion
+		#endregion
 
 		private Object thisLock = new Object();
 
@@ -70,21 +69,19 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			gestoreCarrello = new GestoreCarrello();
 			gestoreCarrello.creaNuovo();
 
-			modoVendita = Configurazione.UserConfigLumen.ModoVendita;
-			
+			modoVendita = Configurazione.UserConfigLumen.modoVendita;
+
 			contaMessaggiInCoda = 0;
 
 		}
 
-		void updateCarrello()
-		{
-			GestoreCarrelloMsg msg = new GestoreCarrelloMsg(this);
+		void updateCarrello() {
+			GestoreCarrelloMsg msg = new GestoreCarrelloMsg( this );
 			msg.fase = Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.UpdateCarrello;
-			LumenApplication.Instance.bus.Publish(msg);
+			LumenApplication.Instance.bus.Publish( msg );
 		}
 
-		public void caricaCarrello( Carrello c )
-		{
+		public void caricaCarrello( Carrello c ) {
 			gestoreCarrello.caricaCarrello( c.id );
 		}
 
@@ -101,19 +98,18 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			updateCarrello();
 		}
 
-		
+
 		public void creaNuovoCarrello() {
 
 			if( modoVendita != ModoVendita.Carrello )
 				throw new InvalidOperationException( "La modalità di vendita non è impostata su 'Carrello'" );
 
-			abbandonaCarrello();   // se ce n'era uno già apero, lo rimuovo
+			// abbandonaCarrello();   // se ce n'era uno già apero, lo rimuovo
 
 			gestoreCarrello.creaNuovo();
 		}
 
-		public bool salvaCarrello()
-		{
+		public bool salvaCarrello() {
 			bool esito = false;
 
 
@@ -124,11 +120,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			// Quindi memorizzo il carrello intero. Poi gestirò i problemi (sperando che non ce ne siano).
 			//
 
-			using (TransactionScope transaction = new TransactionScope())
-			{
+			using( TransactionScope transaction = new TransactionScope() ) {
 
-				try
-				{
+				try {
 					aggiornaTotFotoMasterizzate();
 
 					// Poi salvo il carrello
@@ -138,11 +132,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					transaction.Complete();
 					_giornale.Debug( "commit transazione ok" );
 					esito = true;
-				}
-				catch (Exception eee)
-				{
+				} catch( Exception eee ) {
 					esito = false;
-					_giornale.Error("Impossibile salvare il carrello", eee);
+					_giornale.Error( "Impossibile salvare il carrello", eee );
 				}
 			}
 
@@ -156,8 +148,13 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			bool esito = false;
 
 			try {
-				
+
+				carrello.venduto = true;
+
 				esito = salvaCarrello();
+
+				if( !esito )
+					carrello.venduto = false;
 
 			} finally {
 				// Vado avanti ugualmente
@@ -170,16 +167,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			return esito;
 		}
 
-		public void removeRigaCarrello(RigaCarrello rigaCarrello)
-		{
-			carrello.righeCarrello.Remove(rigaCarrello);
+		public void removeRigaCarrello( RigaCarrello rigaCarrello ) {
+			carrello.righeCarrello.Remove( rigaCarrello );
 		}
 
-		public void removeCarrello(Carrello carrello)
-		{
+		public void removeCarrello( Carrello carrello ) {
 			OrmUtil.forseAttacca<Carrello>( "Carrelli", ref carrello );
 			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
-			dbContext.Carrelli.Remove(carrello);
+			dbContext.Carrelli.Remove( carrello );
 		}
 
 		//
@@ -196,7 +191,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					if( r is RiCaDiscoMasterizzato ) {
 						RiCaDiscoMasterizzato rdm = (RiCaDiscoMasterizzato)r;
 						rdm.totFotoMasterizzate = (short)_masterizzaSrvImpl.fotografie.Count;
-						
+
 						// Sto attento a non sovrascrivere con una informazione vuota.
 						if( _masterizzaSrvImpl.prezzoForfaittario != null )
 							rdm.prezzoLordoUnitario = _masterizzaSrvImpl.prezzoForfaittario;
@@ -216,16 +211,16 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			int conta = 0;
 			foreach( RigaCarrello riga in carrello.righeCarrello ) {
-				
+
 				if( riga is RiCaFotoStampata ) {
-					
+
 					RiCaFotoStampata riCaFotoStampata = (RiCaFotoStampata)riga;
-					
+
 					++conta;
 
 					// Creo nuovamente i parametri di stampa perché potrebbero essere cambiati nell GUI
 					ParamStampaFoto paramStampaFoto = creaParamStampaFoto( riCaFotoStampata );
-					spoolStampeSrv.accodaStampa( riCaFotoStampata.fotografia, paramStampaFoto );					
+					spoolStampeSrv.accodaStampa( riCaFotoStampata.fotografia, paramStampaFoto );
 				}
 			}
 		}
@@ -236,14 +231,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		private RiCaFotoStampata creaRiCaFotoStampata( Fotografia fotografia, ParamStampaFoto param ) {
 
 			RiCaFotoStampata r = new RiCaFotoStampata();
-			
+
 			// Riattacco un pò di roba altrimenti si incacchia
 			OrmUtil.forseAttacca<Fotografia>( "Fotografie", ref fotografia );
 			FormatoCarta fc = param.formatoCarta;
 			OrmUtil.forseAttacca<FormatoCarta>( "FormatiCarta", ref fc );
 			Fotografo fo = fotografia.fotografo;
 			OrmUtil.forseAttacca<Fotografo>( "Fotografi", ref fo );
-			
+
 			r.fotografia = fotografia;
 			r.idFotografia = fotografia.id;
 			r.fotografo = fotografia.fotografo;
@@ -269,7 +264,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			param.stampigli = configurazione.stampigli;
 
 			// Questa informazione mi serve nella callback
-			System.Diagnostics.Debug.Assert( ! riCaFotoStampata.id.Equals( Guid.Empty ) );
+			System.Diagnostics.Debug.Assert( !riCaFotoStampata.id.Equals( Guid.Empty ) );
 			param.idRigaCarrello = riCaFotoStampata.id;
 			return param;
 		}
@@ -292,20 +287,19 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			_masterizzaSrvImpl.masterizza( carrello.id );
 		}
 
-		public void rimasterizza()
-		{
-			if (masterizzaSrv == null)
+		public void rimasterizza() {
+			if( masterizzaSrv == null )
 				return;
 
-			if (masterizzaSrv.fotografie.Count <= 0)
+			if( masterizzaSrv.fotografie.Count <= 0 )
 				return;
 
 			_masterizzaSrvImpl.start();
-			_masterizzaSrvImpl.masterizza(carrello.id);
+			_masterizzaSrvImpl.masterizza( carrello.id );
 		}
 
 		public override void OnNext( Messaggio messaggio ) {
-			
+
 			base.OnNext( messaggio );
 
 			lock( thisLock ) {
@@ -362,7 +356,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 				} catch( Exception ee ) {
 					_giornale.Error( "Impossibile rilasciare immagini dopo stampa", ee );
-			
+
 					// Devo andare avanti lo stesso perché devo notificare tutti
 				}
 			}
@@ -394,7 +388,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			if( gestoreCarrello != null )
 				gestoreCarrello.Dispose();
-			
+
 			gestoreCarrello = new GestoreCarrello();
 			gestoreCarrello.creaNuovo();
 
@@ -455,7 +449,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			ParamStampaFoto p = new ParamStampaFoto();
 			p.autoRuota = true;    // non ha senso stampare una foto orizzontale nella carta verticale
 			p.numCopie = 1;
-			p.autoZoomNoBordiBianchi = Configurazione.UserConfigLumen.AutoZoomNoBordiBianchi;
+			p.autoZoomNoBordiBianchi = Configurazione.UserConfigLumen.autoZoomNoBordiBianchi;
 
 			// TODO la stampante dovrei prendere quella di default di windows.
 			return p;
@@ -464,12 +458,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public List<RigaReportVendite> creaReportVendite( ParamRangeGiorni p ) {
 
-			Dictionary<DateTime,RigaReportVendite> reportVendite = new Dictionary<DateTime,RigaReportVendite>();
+			Dictionary<DateTime, RigaReportVendite> reportVendite = new Dictionary<DateTime, RigaReportVendite>();
 
-			creaReportVenditeStep0( ref reportVendite, p );
-			creaReportVenditeStep1( ref reportVendite, p );
-			creaReportVenditeStep2( ref reportVendite, p );
-			creaReportVenditeStep3( ref reportVendite, p );
+			creaReportVenditeStep0( ref reportVendite, p );   // Foto scattate
+			creaReportVenditeStep1( ref reportVendite, p );   // Foto stampate (cioè vendute)
+			creaReportVenditeStep2( ref reportVendite, p );   // Dischetti masterizzati
+			creaReportVenditeStep3( ref reportVendite, p );   // Totale incasso previsto
 
 			return reportVendite.Values.ToList();
 		}
@@ -504,9 +498,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			var querya = from cc in UnitOfWorkScope.CurrentObjectContext.Carrelli.Include( "righeCarrello" )
 						 from rr in cc.righeCarrello.OfType<RiCaFotoStampata>()
 						 where cc.giornata >= p.dataIniz && cc.giornata <= p.dataFine
-						 select new { 
-							 cc, 
-							 rr 
+						       && cc.venduto == true
+						 select new {
+							 cc,
+							 rr
 						 };
 
 			// totalizzo le foto stampate divise per formato carta
@@ -514,7 +509,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 						 group dd by new {
 							 dd.cc.giornata,
 							 dd.rr.formatoCarta.descrizione
-			             } into grp
+						 } into grp
 						 select new {
 							 gg = grp.Key.giornata,
 							 fc = grp.Key.descrizione,
@@ -548,6 +543,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			var queryc = from cc in UnitOfWorkScope.CurrentObjectContext.Carrelli.Include( "righeCarrello" )
 						 from rr in cc.righeCarrello.OfType<RiCaDiscoMasterizzato>()
 						 where cc.giornata >= p.dataIniz && cc.giornata <= p.dataFine
+						       && cc.venduto == true
 						 select new {
 							 cc,
 							 rr
@@ -590,6 +586,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			var querye = from cc in dbContext.Carrelli.Include( "righeCarrello" )
 						 from rr in cc.righeCarrello.OfType<RiCaDiscoMasterizzato>()
 						 where cc.giornata >= p.dataIniz && cc.giornata <= p.dataFine
+						       && cc.venduto == true
 						 group cc by cc.giornata into grp
 						 select new {
 							 gg = grp.Key,

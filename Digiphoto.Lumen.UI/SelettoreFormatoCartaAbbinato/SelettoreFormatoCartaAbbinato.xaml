@@ -17,10 +17,10 @@
 
     <StackPanel Height="250">
 
-        <GroupBox Header="lista Stampanti Installate">
+        <GroupBox Header="Carte stampabili disponibili">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <ListBox Name="stampantiInstallateListBox" 
-                         ItemsSource="{Binding Path=formatoCartaAbbinato}" 
+                         ItemsSource="{Binding Path=formatiCartaAbbinati}" 
                          ItemTemplate="{StaticResource formatoCartaAbbinatoListBoxTemplate}"
                          SelectedItem="{Binding Path=formatoCartaAbbinatoSelezionato}"
                          SelectedIndex="{Binding SelectedAbbinamentoIndex,Mode=TwoWay}" Height="116" />

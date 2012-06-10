@@ -44,79 +44,41 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             setGui();
         }
 
+		public UserConfigLumen cfg {
+			get;
+			set;
+		}
+
+		public IEnumerable<ModoVendita> modoVenditaValues {
+			get {
+				return Enum.GetValues( typeof(ModoVendita) ).Cast<ModoVendita>();
+			}
+		}
+
+		public bool notMasterizzaDirettamente {
+			get {
+				return ! cfg.masterizzaDirettamente;
+			}
+			set {
+				cfg.masterizzaDirettamente = !(value);
+			}
+		}
+
         private void loadUserConfig()
         {
-			CodicePuntoVendita = Configurazione.UserConfigLumen.CodicePuntoVendita;
+			// La carico da disco, non uso quella statica già caricata dentro Configurazione.
+			this.cfg = Configurazione.caricaUserConfig();
 
-			DescrizionePuntoVendita = Configurazione.UserConfigLumen.DescrizionePuntoVendita;
+			ConnectionString = ConfigurationManager.ConnectionStrings ["LumenEntities"].ConnectionString;
 
-			GiorniDeleteFoto = Configurazione.UserConfigLumen.GiorniDeleteFoto;
-
-			CartellaFoto = Configurazione.UserConfigLumen.CartellaFoto;
-
-			EraseFotoMemoryCard = Configurazione.UserConfigLumen.EraseFotoMemoryCard;
-
-			ProiettaDiapo = Configurazione.UserConfigLumen.ProiettaDiapo;
-
-			ModoVendita = (short)Configurazione.UserConfigLumen.ModoVendita;
-
-			DestMasterizzaMasterizzatore = (Configurazione.UserConfigLumen.DestMasterizza).Equals("0") ? true : false;
-
-            DestMasterizzaCartella = !DestMasterizzaMasterizzatore;
-
-			MasterizzatoreSelezionato = Configurazione.UserConfigLumen.DefaultMasterizzatore;
-
-			DefaultChiavetta = Configurazione.UserConfigLumen.DefaultChiavetta;
-
-			ConnectionString = ConfigurationManager.ConnectionStrings["LumenEntities"].ConnectionString;
-
-            MotoreDataBase = parseConnectionStringToDriver(ConnectionString);
-
-			NomeDbPieno = Configurazione.UserConfigLumen.DbNomeDbPieno;
-
-			DbCartella = Configurazione.UserConfigLumen.DbCartella;
-            DataSource = DbCartella + @"\" + NomeDbPieno;
-
-			stampiglioGiornata = Configurazione.UserConfigLumen.stampiglioGiornata;
-			stampiglioOperatore = Configurazione.UserConfigLumen.stampiglioOperatore;
-			stampiglioNumFoto = Configurazione.UserConfigLumen.stampiglioNumFoto;
+			MotoreDataBase = parseConnectionStringToDriver( ConnectionString );
         }
 
         private void saveUserConfig()
         {
-			Configurazione.UserConfigLumen.CodicePuntoVendita = CodicePuntoVendita;
-
-			Configurazione.UserConfigLumen.DescrizionePuntoVendita = DescrizionePuntoVendita;
-
-			Configurazione.UserConfigLumen.GiorniDeleteFoto = GiorniDeleteFoto;
-
-			Configurazione.UserConfigLumen.CartellaFoto = CartellaFoto;
-
-			Configurazione.UserConfigLumen.EraseFotoMemoryCard = EraseFotoMemoryCard;
-
-			Configurazione.UserConfigLumen.ProiettaDiapo = ProiettaDiapo;
-
-			Configurazione.UserConfigLumen.ModoVendita = (ModoVendita)ModoVendita;
-
-            if (DestMasterizzaMasterizzatore)
-            {
-				Configurazione.UserConfigLumen.DestMasterizza = "0";
-            }
-            else
-            {
-				Configurazione.UserConfigLumen.DestMasterizza = "1";
-            }
-
-			Configurazione.UserConfigLumen.DefaultMasterizzatore = MasterizzatoreSelezionato;
-
-			Configurazione.UserConfigLumen.DefaultChiavetta = DefaultChiavetta;
-
-			Configurazione.UserConfigLumen.stampiglioGiornata = stampiglioGiornata;
-			Configurazione.UserConfigLumen.stampiglioOperatore = stampiglioOperatore;
-			Configurazione.UserConfigLumen.stampiglioNumFoto = stampiglioNumFoto;
+			UserConfigSerializer.serializeToFile( cfg );
 
             salvaConfigDB();
-
         }
 
         private void salvaConfigDB()
@@ -125,13 +87,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
             String stringDbNomePieno = Path.GetFileName(DataSource);
 
-			Configurazione.UserConfigLumen.DbCartella = DbCartella;
-
-			Configurazione.UserConfigLumen.DbNomeDbPieno = stringDbNomePieno;
-
-			AppDomain.CurrentDomain.SetData( "DataDirectory", DbCartella );
-
-			Configurazione.UserConfigLumen.SalvaUserConfig();
+			AppDomain.CurrentDomain.SetData( "DataDirectory", cfg.dbCartella );
 		}
 
         private void caricaListaMasterizzatori()
@@ -271,13 +227,15 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
         private SelettoreStampantiInstallateViewModel selettoreStampantiInstallateViewModel = null;
 
-        private StampantiAbbinateSrvImpl stampantiAbbinateSrvImpl = null;
 
         private void loadDataContext(){
-            selettoreFormatoCartaViewModel = new SelettoreFormatoCartaViewModel();
-            selettoreFormatoCartaAbbinatoViewModel = new SelettoreFormatoCartaAbbinatoViewModel();
+           
+			selettoreFormatoCartaViewModel = new SelettoreFormatoCartaViewModel();
+            
+			selettoreFormatoCartaAbbinatoViewModel = new SelettoreFormatoCartaAbbinatoViewModel( cfg.stampantiAbbinate );
+
             selettoreStampantiInstallateViewModel = new SelettoreStampantiInstallateViewModel();
-            stampantiAbbinateSrvImpl  = new StampantiAbbinateSrvImpl();
+			
 
             DataContextFormatoCarta = selettoreFormatoCartaViewModel;
 
@@ -380,175 +338,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             set;
         }
 
-		private int _giorniDeleteFoto;
-        public int GiorniDeleteFoto
-        {
-			get
-			{
-				return _giorniDeleteFoto;
-			}
-			set
-			{
-				if(_giorniDeleteFoto!=value){
-					_giorniDeleteFoto = value;
-					OnPropertyChanged("GiorniDeleteFoto");
-				}
-			}
-        }
-
-		private String _codicePuntoVendita;
-		public String CodicePuntoVendita
-		{
-			get
-			{
-				return _codicePuntoVendita;
-			}
-			set
-			{
-				if (_codicePuntoVendita != value)
-				{
-					_codicePuntoVendita = value;
-					OnPropertyChanged("CodicePuntoVendita");
-				}
-			}
-		}
-
-		private String _descrizionePuntoVendita;
-		public String DescrizionePuntoVendita
-		{
-			get
-			{
-				return _descrizionePuntoVendita;
-			}
-			set
-			{
-				if (_descrizionePuntoVendita != value)
-				{
-					_descrizionePuntoVendita = value;
-					OnPropertyChanged("DescrizionePuntoVendita");
-				}
-			}
-		}
-
-		private String _cartellaFoto;
-		public String CartellaFoto
-		{
-			get
-			{
-				return _cartellaFoto;
-			}
-			set
-			{
-				if (_cartellaFoto != value)
-				{
-					_cartellaFoto = value;
-					OnPropertyChanged("CartellaFoto");
-				}
-			}
-		}
-
-		private Boolean _eraseFotoMemoryCard;
-		public Boolean EraseFotoMemoryCard
-		{
-			get
-			{
-				return _eraseFotoMemoryCard;
-			}
-			set
-			{
-				if (_eraseFotoMemoryCard != value)
-				{
-					_eraseFotoMemoryCard = value;
-					OnPropertyChanged("EraseFotoMemoryCard");
-				}
-			}
-		}
-
-		private Boolean _proiettaDiapo;
-		public Boolean ProiettaDiapo
-		{
-			get
-			{
-				return _proiettaDiapo;
-			}
-			set
-			{
-				if (_proiettaDiapo != value)
-				{
-					_proiettaDiapo = value;
-					OnPropertyChanged("ProiettaDiapo");
-				}
-			}
-		}
-
-		private short _modoVendita;
-		public short ModoVendita
-		{
-			get
-			{
-				return _modoVendita;
-			}
-			set
-			{
-				if (_modoVendita != value)
-				{
-					_modoVendita = value;
-					OnPropertyChanged("ModoVendita");
-				}
-			}
-		}
-
-		private Boolean _destMasterizzaMasterizzatore;
-		public Boolean DestMasterizzaMasterizzatore
-		{
-			get
-			{
-				return _destMasterizzaMasterizzatore;
-			}
-			set
-			{
-				if (_destMasterizzaMasterizzatore != value)
-				{
-					_destMasterizzaMasterizzatore = value;
-					OnPropertyChanged("DestMasterizzaMasterizzatore");
-				}
-			}
-		}
-
-		private String _defaultChiavetta;
-		public String DefaultChiavetta
-		{
-			get
-			{
-				return _defaultChiavetta;
-			}
-			set
-			{
-				if (_defaultChiavetta != value)
-				{
-					_defaultChiavetta = value;
-					OnPropertyChanged("DefaultChiavetta");
-				}
-			}
-		}
-
-		private Boolean _destMasterizzaCartella;
-		public Boolean DestMasterizzaCartella
-		{
-			get
-			{
-				return _destMasterizzaCartella;
-			}
-			set
-			{
-				if (_destMasterizzaCartella != value)
-				{
-					_destMasterizzaCartella = value;
-					OnPropertyChanged("DestMasterizzaCartella");
-				}
-			}
-		}
-
 		private int _motoreDataBase;
 		public int MotoreDataBase
 		{
@@ -566,70 +355,36 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
-		private String _dbCartella;
-		public String DbCartella
-		{
-			get
-			{
-				return _dbCartella;
-			}
-			set
-			{
-				if (_dbCartella != value)
-				{
-					_dbCartella = value;
-					OnPropertyChanged("DbCartella");
-				}
-			}
-		}
-
 		private String _dataSource;
-		public String DataSource
+		public String DataSource 
 		{
-			get
+			get 
 			{
 				return _dataSource;
 			}
-			set
+			set 
 			{
-				if (_dataSource != value)
+				if( _dataSource != value ) 
 				{
 					_dataSource = value;
-					OnPropertyChanged("DataSource");
+					OnPropertyChanged( "DataSource" );
 				}
 			}
 		}
 
-		private string _nomeDbPieno;
-        public string NomeDbPieno
-        {
-            get
-			{
-				return _nomeDbPieno;
-			}
-            set
-			{
-				if(_nomeDbPieno != value){
-					_nomeDbPieno = value;
-					OnPropertyChanged("NomeDbPieno");
-				}
-			}
-        }
-
-
 		private String _connectionString;
-		public String ConnectionString
+		public String ConnectionString 
 		{
-			get
+			get 
 			{
 				return _connectionString;
 			}
-			set
+			set 
 			{
-				if (_connectionString != value)
+				if( _connectionString != value ) 
 				{
 					_connectionString = value;
-					OnPropertyChanged("ConnectionString");
+					OnPropertyChanged( "ConnectionString" );
 				}
 			}
 		}
@@ -710,65 +465,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             get;
             set;
         }
-
-        /// <summary>
-        /// Il Masterizzatore attualmente selezionato
-        /// </summary>
-        String _masterizzatoreSelezionato;
-        public String MasterizzatoreSelezionato
-        {
-            get
-            {
-                return _masterizzatoreSelezionato;
-            }
-            set
-            {
-                if (value != _masterizzatoreSelezionato)
-                {
-                    _masterizzatoreSelezionato = value;
-                    OnPropertyChanged("MasterizzatoreSelezionato"); 
-                }
-            }
-        }
-
-		bool _stampiglioOperatore;
-		public bool stampiglioOperatore {
-			get {
-				return _stampiglioOperatore;
-			}
-			set {
-				if( _stampiglioOperatore != value ) {
-					_stampiglioOperatore = value;
-					OnPropertyChanged( "stampiglioOperatore" );
-				}
-			}
-		}
-
-		bool _stampiglioGiornata;
-		public bool stampiglioGiornata {
-			get {
-				return _stampiglioGiornata;
-			}
-			set {
-				if( _stampiglioGiornata != value ) {
-					_stampiglioGiornata = value;
-					OnPropertyChanged( "stampiglioGiornata" );
-				}
-			}
-		}
-
-		bool _stampiglioNumFoto;
-		public bool stampiglioNumFoto {
-			get {
-				return _stampiglioNumFoto;
-			}
-			set {
-				if( _stampiglioNumFoto != value ) {
-					_stampiglioNumFoto = value;
-					OnPropertyChanged( "stampiglioNumFoto" );
-				}
-			}
-		}
 
         #endregion
 
@@ -885,7 +581,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             {
                 if (_abbinaCommand == null)
                 {
-                    _abbinaCommand = new RelayCommand(param => this.abbinaButton());
+                    _abbinaCommand = new RelayCommand(param => this.abbinaButton() , param => true, false );
                 }
                 return _abbinaCommand;
             }
@@ -986,8 +682,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             DialogResult result = dlg.ShowDialog();
             if (result == System.Windows.Forms.DialogResult.OK)
             {
-                CartellaFoto = dlg.SelectedPath;
-                OnPropertyChanged("CartellaFoto");
+                cfg.cartellaFoto = dlg.SelectedPath;
             }    
         }
 
@@ -998,8 +693,8 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             DialogResult result = dlg.ShowDialog();
             if (result == System.Windows.Forms.DialogResult.OK)
             {
-                DefaultChiavetta = dlg.SelectedPath;
-                OnPropertyChanged("DefaultChiavetta");
+                cfg.defaultChiavetta = dlg.SelectedPath;
+                OnPropertyChanged("cfg.defaultChiavetta");
             }    
         }
 
@@ -1009,11 +704,11 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			
             if (DbUtil.verificaSeDatabaseUtilizzabile())
             {
-                MessageBox.Show("OK\n--- Funziona solo per CE ---","Test Connection");
+                dialogProvider.ShowMessage("OK\n--- Funziona solo per CE ---","Test Connection");
             }
             else
             {
-                MessageBox.Show("ERRORE CONNESSIONE","Test Connection");
+				dialogProvider.ShowMessage( "ERRORE CONNESSIONE", "Test Connection" );
             }
         }
 
@@ -1024,7 +719,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             DialogResult result = dlg.ShowDialog();
             if (result == System.Windows.Forms.DialogResult.OK)
             {
-                DbCartella = dlg.SelectedPath;
+                cfg.dbCartella = dlg.SelectedPath;
             }   
             var entityConnString = new EntityConnectionStringBuilder(ConnectionString);
             switch (MotoreDataBase)
@@ -1034,14 +729,14 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
                     //entityConnString.ProviderConnectionString = sqliteConnString.ConnectionString;
                     SqlCeConnectionStringBuilder sqlCeConnString = new SqlCeConnectionStringBuilder(entityConnString.ProviderConnectionString);
-                    sqlCeConnString.DataSource = DbCartella + @"\" + NomeDbPieno;
+                    sqlCeConnString.DataSource = cfg.dbCartella + @"\" + cfg.dbNomeDbPieno;
                     entityConnString.ProviderConnectionString = sqlCeConnString.ConnectionString;
                     ConnectionString = entityConnString.ConnectionString;
                     break;
                 case 1:
                     entityConnString.Provider = "System.Data.SQLite";
                     var sqliteConnString = new SQLiteConnectionStringBuilder(entityConnString.ProviderConnectionString);
-                    sqliteConnString.DataSource = DbCartella + @"\" + NomeDbPieno;
+                    sqliteConnString.DataSource = cfg.dbCartella + @"\" + cfg.dbNomeDbPieno;
                     entityConnString.ProviderConnectionString = sqliteConnString.ConnectionString;
                     ConnectionString = entityConnString.ConnectionString;
                     break;
@@ -1053,7 +748,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
                     ConnectionString = entityConnString.ConnectionString;
                     break;
             }
-            OnPropertyChanged("DbCartella");
             OnPropertyChanged("ConnectionString");
         }
 
@@ -1073,7 +767,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
                     dlg.Filter = "Config File (.sqlite)|*.sqlite"; // Filter files by extension
                     break;
                 case 2:
-                    System.Windows.MessageBox.Show("Il Data Sorce prevede un Server", "Avviso");
+					dialogProvider.ShowMessage( "Il Data Sorce prevede un Server", "Avviso" );
                     break;
             }
 
@@ -1097,14 +791,14 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
                         //entityConnString.ProviderConnectionString = sqliteConnString.ConnectionString;
                         SqlCeConnectionStringBuilder sqlCeConnString = new SqlCeConnectionStringBuilder(entityConnString.ProviderConnectionString);
-                        sqlCeConnString.DataSource = DbCartella + @"\" + NomeDbPieno;
+                        sqlCeConnString.DataSource = cfg.dbCartella + @"\" + cfg.dbNomeDbPieno;
                         entityConnString.ProviderConnectionString = sqlCeConnString.ConnectionString;
                         ConnectionString = entityConnString.ConnectionString;
                         break;
                     case 1:
                         entityConnString.Provider = "System.Data.SQLite";
                         var sqliteConnString = new SQLiteConnectionStringBuilder(entityConnString.ProviderConnectionString);
-                        sqliteConnString.DataSource = DbCartella + @"\" + NomeDbPieno;
+                        sqliteConnString.DataSource = cfg.dbCartella + @"\" + cfg.dbNomeDbPieno;
                         entityConnString.ProviderConnectionString = sqliteConnString.ConnectionString;
                         ConnectionString = entityConnString.ConnectionString;
                         break;
@@ -1126,15 +820,15 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             switch (MotoreDataBase)
             {
                 case 0:
-                    NomeDbPieno = "database.sdf";
+					cfg.dbNomeDbPieno = "database.sdf";
                     DbCartellaButton = true;
                     break;
                 case 1:
-                    NomeDbPieno = "database.sqlite";
+                    cfg.dbNomeDbPieno = "database.sqlite";
                     DbCartellaButton = true;
                     break;
                 case 2:
-                    System.Windows.MessageBox.Show("Il Data Sorce prevede un Server", "Avviso");
+					dialogProvider.ShowMessage( "Il Data Sorce prevede un Server", "Avviso" );
                     DbCartellaButton = false;
                     break;
             }
@@ -1142,56 +836,50 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             OnPropertyChanged("DbCartellaButton");
         }
 
-		private String abbinamentiLoaded = Configurazione.UserConfigLumen.StampantiAbbinate;
+		private String abbinamentiLoaded {
+			get {
+				return cfg.stampantiAbbinate;
+			}
+		}
 
         private void abbinaButton()
         {
-            using (new UnitOfWorkScope())
-            {
-                stampantiAbbinateSrvImpl.addAbbinamento(new StampanteAbbinata(selettoreStampantiInstallateViewModel.stampanteSelezionata, selettoreFormatoCartaViewModel.formatoCartaSelezionato));
-                stampantiAbbinateSrvImpl.updateAbbinamento();
-                selettoreFormatoCartaAbbinatoViewModel = null;
-                selettoreFormatoCartaAbbinatoViewModel = new SelettoreFormatoCartaAbbinatoViewModel();
-                DataContextAbbinamenti = selettoreFormatoCartaAbbinatoViewModel;
-            }
-            OnPropertyChanged("DataContextAbbinamenti");
+			// Aggiungo un nuovo elemento alla collezione
+			StampanteAbbinata sa = new StampanteAbbinata( selettoreStampantiInstallateViewModel.stampanteSelezionata, selettoreFormatoCartaViewModel.formatoCartaSelezionato );
+			selettoreFormatoCartaAbbinatoViewModel.formatiCartaAbbinati.Add( sa );
+				
+			// Aggiorno la stringa serializzata
+			string s = selettoreFormatoCartaAbbinatoViewModel.formatiCartaAbbinati.serializzaToString();
+			cfg.stampantiAbbinate = s;
         }
 
         private void rimuoviAbbinamento()
         {
-            using (new UnitOfWorkScope())
-            {
-                stampantiAbbinateSrvImpl.removeAbbinamentoByIndex(Convert.ToInt32(selettoreFormatoCartaAbbinatoViewModel.SelectedAbbinamentoIndex));
-                stampantiAbbinateSrvImpl.updateAbbinamento();
-                selettoreFormatoCartaAbbinatoViewModel = null;
-                selettoreFormatoCartaAbbinatoViewModel = new SelettoreFormatoCartaAbbinatoViewModel();
-                DataContextAbbinamenti = selettoreFormatoCartaAbbinatoViewModel;
-            }
-            OnPropertyChanged("DataContextAbbinamenti");
-        }
+			selettoreFormatoCartaAbbinatoViewModel.removeSelected();
+
+			// Aggiorno la stringa serializzata
+			string s = selettoreFormatoCartaAbbinatoViewModel.formatiCartaAbbinati.serializzaToString();
+			cfg.stampantiAbbinate = s;
+		}
 
         private void annulla()
         {
-            loadUserConfig();
-			if(stampantiAbbinateSrvImpl!=null){
-				using (new UnitOfWorkScope())
-				{
-					stampantiAbbinateSrvImpl.sostituisciAbbinamento(stampantiAbbinateSrvImpl.listaStampantiAbbinate(abbinamentiLoaded));
-					stampantiAbbinateSrvImpl.updateAbbinamento();
-					selettoreFormatoCartaAbbinatoViewModel = null;
-					selettoreFormatoCartaAbbinatoViewModel = new SelettoreFormatoCartaAbbinatoViewModel();
-					DataContextAbbinamenti = selettoreFormatoCartaAbbinatoViewModel;
-				}
-				OnPropertyChanged("DataContextAbbinamenti");
-			}
+			bool esciPure = false;
+
+			// TODO sarebbe meglio sostituire con il dialog provider
+			dialogProvider.ShowConfirmation( "Sei sicuro di voler uscire senza salvare?", "Uscita", 			
+				(confermato) => {
+					  esciPure = confermato;
+				  } );
+
+			if( esciPure )
+				this.CloseCommand.Execute( null );
         }
 
         private void applica()
         {
             saveUserConfig();
-			abbinamentiLoaded = Configurazione.UserConfigLumen.StampantiAbbinate;
-			Configurazione.UserConfigLumen.SalvaUserConfig();
-            System.Windows.MessageBox.Show("Configurazione Salvata", "Avviso");
+            dialogProvider.ShowMessage("Configurazione Salvata", "Avviso");
         }
 
         private void createDataBase()
@@ -1201,7 +889,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             DbUtil.creaCartellaPerDb();
             // Controllo il database. Se non esiste nessuna impostazione diversa, lo creo.
             DbUtil.copiaDbVuotoSuDbDiLavoro();
-            MessageBox.Show("DataBase creato con successo in \n " + DbUtil.cartellaDatabase, "Avviso");
+			dialogProvider.ShowMessage( "DataBase creato con successo in \n " + DbUtil.cartellaDatabase, "Avviso" );
         }
 
         private void login()
@@ -1214,11 +902,10 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 				annullaButton = true;
 				OnPropertyChanged("fwButton");
 				OnPropertyChanged("annullaButton");
-                MessageBox.Show("Password OK", "Avviso");
             }
             else
             {
-                MessageBox.Show("Password ERROR", "Avviso");
+				dialogProvider.ShowMessage( "Password ERROR", "Avviso" );
 				Abilitato = false;
             }
 
@@ -1230,11 +917,11 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             {
                 Properties.Settings.Default.psw = Md5.MD5GenerateHash(NuovaPassword);
                 Properties.Settings.Default.Save();
-                MessageBox.Show("Password Cambiata", "Avviso");
+				dialogProvider.ShowMessage( "Password Cambiata", "Avviso" );
             }
             else
             {
-                MessageBox.Show("Le Password sono Diverse", "Avviso");
+				dialogProvider.ShowError( "Le Password sono Diverse", "Avviso", null );
             }
             
         }

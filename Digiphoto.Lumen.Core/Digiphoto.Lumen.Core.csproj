@@ -63,7 +63,6 @@
   <ItemGroup>
     <Compile Include="src\Applicazione\StartupUtil.cs" />
     <Compile Include="src\Applicazione\Stato.cs" />
-    <Compile Include="src\Config\ConfigDefaultValue.cs" />
     <Compile Include="src\Config\Configurazione.cs" />
     <Compile Include="src\Config\ConfigurazioneNonValidaException.cs" />
     <Compile Include="src\Applicazione\LumenApplication.cs" />
@@ -78,6 +77,7 @@
     <Compile Include="src\Config\ServiziCollection.cs" />
     <Compile Include="src\Config\ServizioElement.cs" />
     <Compile Include="src\Config\StartupServiziConfigSection.cs" />
+    <Compile Include="src\Database\CustomExtensions.cs" />
     <Compile Include="src\Database\DbUtil.cs" />
     <Compile Include="src\Database\OrmUtil.cs" />
     <Compile Include="src\Database\UnitOfWorkScope.cs" />
@@ -121,6 +121,8 @@
     <Compile Include="src\Servizi\Explorer\CarrelloExplorerSrvImpl.cs" />
     <Compile Include="src\Servizi\Explorer\ICarrelloExplorerSrv.cs" />
     <Compile Include="src\Servizi\Reports\ParamReports.cs" />
+    <Compile Include="src\Servizi\Stampare\StampanteAbbinata.cs" />
+    <Compile Include="src\Servizi\Stampare\StampantiAbbinateUtil.cs" />
     <Compile Include="src\Servizi\Vendere\RigaReportVendite.cs" />
     <Compile Include="src\Servizi\Ricerca\ParamCercaCarrello.cs" />
     <Compile Include="src\Servizi\Ritoccare\FotoDaModificareMsg.cs" />
@@ -166,13 +168,12 @@
     <Compile Include="src\Servizi\ServizioFactory.cs" />
     <Compile Include="src\Servizi\Stampare\ISpoolStampeSrv.cs" />
     <Compile Include="src\Servizi\Stampare\IEsecutoreStampa.cs" />
-    <Compile Include="src\Servizi\Stampare\IStampantiAbbinateSrv.cs" />
     <Compile Include="src\Servizi\Stampare\IStampantiInstallateSrv.cs" />
     <Compile Include="src\Servizi\Stampare\LavoroDiStampa.cs" />
     <Compile Include="src\Servizi\Stampare\ParamStampaFoto.cs" />
     <Compile Include="src\Servizi\Stampare\SpoolStampaSrvImpl.cs" />
     <Compile Include="src\Servizi\Stampare\CodaDiStampe.cs" />
-    <Compile Include="src\Servizi\Stampare\StampantiAbbinateSrvImpl.cs" />
+    <Compile Include="src\Servizi\Stampare\StampantiAbbinateCollection.cs" />
     <Compile Include="src\Servizi\Stampare\StampantiInstallateSrvImpl.cs" />
     <Compile Include="src\Servizi\Stampare\StampatoMsg.cs" />
     <Compile Include="src\Servizi\Vendere\GestoreCarrelloMsg.cs" />
@@ -192,12 +193,13 @@
     <Compile Include="src\Threading\ThreadedQueueBase.cs" />
     <Compile Include="src\Threading\WorkerThreadBase.cs" />
     <Compile Include="src\Util\AiutanteFoto.cs" />
+    <Compile Include="src\Util\SpecialFolderPatternConverter.cs" />
     <Compile Include="src\Util\Target.cs" />
     <Compile Include="src\Util\Paginazione.cs" />
     <Compile Include="src\Util\ParamCerca.cs" />
     <Compile Include="src\Util\PathUtil.cs" />
     <Compile Include="src\Util\SerializzaUtil.cs" />
-    <Compile Include="src\Util\UserConfigXML.cs" />
+    <Compile Include="src\Config\UserConfigSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

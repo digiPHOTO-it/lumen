@@ -72,9 +72,8 @@ namespace Digiphoto.Lumen.UI {
 		/// </summary>
 		private void caricaStampantiAbbinate() {
 
-			using( IStampantiAbbinateSrv srv = LumenApplication.Instance.creaServizio<IStampantiAbbinateSrv>() ) {
-				this.stampantiAbbinate = srv.stampantiAbbinate;
-			}
+			string ss = Configurazione.UserConfigLumen.stampantiAbbinate;
+			this.stampantiAbbinate = StampantiAbbinateUtil.deserializza( ss );
 		}
 
 
@@ -536,7 +535,7 @@ namespace Digiphoto.Lumen.UI {
 			// Se ho selezionato più di una foto, e lavoro in stampa diretta, allora chiedo conferma
 			bool procediPure = true;
 			int quante = listaSelez.Count;
-			if (quante > 1 && Configurazione.UserConfigLumen.ModoVendita == ModoVendita.StampaDiretta)
+			if (quante > 1 && Configurazione.UserConfigLumen.modoVendita == ModoVendita.StampaDiretta)
 			{
 				dialogProvider.ShowConfirmation( "Confermi la stampa di " + quante + " foto ?", "Richiesta conferma",
 				  (confermato) => {

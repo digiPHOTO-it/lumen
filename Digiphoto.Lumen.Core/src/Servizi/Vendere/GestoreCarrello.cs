@@ -14,6 +14,7 @@ using System.Data.Entity.Infrastructure;
 using System.Windows.Forms;
 using System.Data.Common;
 using Digiphoto.Lumen.Database;
+using Digiphoto.Lumen.src.Database;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 	
@@ -49,7 +50,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public bool isCarrelloTransient {
 			get {
-				return carrello.id == null || carrello.id.Equals( Guid.Empty );
+				return isStatoModifica == false && (carrello.id == null || carrello.id.Equals( Guid.Empty ));
 			}
 		}
 
@@ -69,7 +70,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			carrello = new Carrello();
 			carrello.righeCarrello = new EntityCollection<RigaCarrello>();
 			//Metto un'intestazione automatica per distinguere il carrello autogenerato dagli altri
-			carrello.intestazione = "Auto";
+			// scarrello.intestazione = "Auto";
 			isStatoModifica = false;
 		}
 
@@ -110,7 +111,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		public void aggiungiRiga( RiCaFotoStampata riga ) {
 
 			// Prima di aggiungere la riga al carrello, provo a riattaccarlo. Non si sa mai.
-			Digiphoto.Lumen.Database.OrmUtil.forseAttacca<Carrello>( "Carrelli", ref _carrello );	
+			if( isStatoModifica )
+				Digiphoto.Lumen.Database.OrmUtil.forseAttacca<Carrello>( "Carrelli", ref _carrello );	
 			carrello.righeCarrello.Add( riga );
 		}
 
@@ -176,6 +178,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					}
 				}
 			}
+
+			string appo = CustomExtensions.ToTraceString( dbContext.ObjectContext );
+			_giornale.Debug( appo );
 
 			int quanti = dbContext.SaveChanges();
 

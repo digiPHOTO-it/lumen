@@ -95,7 +95,7 @@ namespace Digiphoto.Lumen.Applicazione {
 			
 			stato = new Stato();
 			stato.giornataLavorativa = StartupUtil.calcolaGiornataLavorativa();
-			stato.isWindowPubblicaVisibile = Configurazione.UserConfigLumen.IsWindowPubblicaVisibile;
+			stato.isWindowPubblicaVisibile = Configurazione.UserConfigLumen.isWindowPubblicaVisibile;
 			stato.isSlideShowRunning = false;
 		}
 
@@ -103,7 +103,9 @@ namespace Digiphoto.Lumen.Applicazione {
 		 * Faccio un controllo che tutto sia a posto e che il programma possa partire
 		 */
 		private void avviaConfigurazione() {
+			
 			_configurazione = new Configurazione();
+
 			_servizioFactory = new ServizioFactory();
 		}
 

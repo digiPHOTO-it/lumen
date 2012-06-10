@@ -16,25 +16,34 @@ namespace Digiphoto.Lumen.UI
     public class SelettoreFormatoCartaAbbinatoViewModel : ViewModelBase 
     {
 
-        private StampantiAbbinateSrvImpl stampantiAbbinateSrvImpl = null;
-
-        public SelettoreFormatoCartaAbbinatoViewModel()
+		/// <summary>
+		/// Se nessuno mi dice niente, allora deserializzo la configurazione statica
+		/// </summary>
+        public SelettoreFormatoCartaAbbinatoViewModel() : this( Configurazione.UserConfigLumen.stampantiAbbinate )
         {
-            // istanzio la lista vuota
-            formatoCartaAbbinato = new ObservableCollection<StampanteAbbinata>();
-            rileggereFormatiCartaAbbinati();
         }
+
+		/// <summary>
+		/// Deserializzo la stringa indicata. Il formato è:
+		///   FC;ST#FC;ST#
+		/// dove FC = Guid del formato carta ; ST=Nome della stampante installata
+		/// </summary>
+		public SelettoreFormatoCartaAbbinatoViewModel( string strAbbinamenti ) : base() {
+
+			_strAbbinamenti = strAbbinamenti;
+
+			refresh();  // carico la lista
+		}
+
+		private string _strAbbinamenti;
+
 
         #region Proprietà
 
-        /// <summary>
-        /// Tutti i fotografi da visualizzare
-        /// </summary>
-        public ObservableCollection<StampanteAbbinata> formatoCartaAbbinato
-        {
-            get;
-            set;
-        }
+		public StampantiAbbinateCollection formatiCartaAbbinati {
+			get;
+			set;
+		}
 
         /// <summary>
         /// La Stampante attualmente selezionata
@@ -76,27 +85,24 @@ namespace Digiphoto.Lumen.UI
         #endregion
 
         #region Metodi
-        private void rileggereFormatiCartaAbbinati()
+
+		/// <summary>
+		/// Partendo dalla stringa con gli abbinamenti, ricreo la collezione di oggetti.
+		/// </summary>
+        private void refresh()
         {
 
-            IEnumerable<StampanteAbbinata> listaS = null;
             if (IsInDesignMode)
             {
                 // genero dei dati casuali
                 DataGen<StampanteAbbinata> dg = new DataGen<StampanteAbbinata>();
-                listaS = dg.generaMolti(5);
+				formatiCartaAbbinati = new StampantiAbbinateCollection( dg.generaMolti(5) );
             }
             else
             {
-                stampantiAbbinateSrvImpl = new StampantiAbbinateSrvImpl();
-				listaS = stampantiAbbinateSrvImpl.listaStampantiAbbinate(Configurazione.UserConfigLumen.StampantiAbbinate);
+				// Popolo la collezione partendo dalla stringa serializzata aumma aumma
+				formatiCartaAbbinati = StampantiAbbinateUtil.deserializza(_strAbbinamenti );
             }
-
-            // purtoppo pare che rimpiazzare il reference con uno nuovo, causa dei problemi.
-            // Non posso istanziare nuovamente la lista, ma la devo svuotare e ripopolare.
-            formatoCartaAbbinato.Clear();
-            foreach (StampanteAbbinata s in listaS)
-                formatoCartaAbbinato.Add(s);
         }
 
         #endregion
@@ -110,7 +116,7 @@ namespace Digiphoto.Lumen.UI
             {
                 if (_rileggereFormatiCartaAbbinatiCommand == null)
                 {
-                    _rileggereFormatiCartaAbbinatiCommand = new RelayCommand(param => this.rileggereFormatiCartaAbbinati(), null, false);
+                    _rileggereFormatiCartaAbbinatiCommand = new RelayCommand(param => this.refresh(), null, false);
                 }
                 return _rileggereFormatiCartaAbbinatiCommand;
             }
@@ -145,47 +151,24 @@ namespace Digiphoto.Lumen.UI
         #endregion
         #region esecuzioneComandi
 
+		/// <summary>
+		/// Sposto in SU
+		/// </summary>
         private void suAbbina()
         {
-            int index = 0;
-            foreach (StampanteAbbinata fC in formatoCartaAbbinato)
-            {
-                if(fC.FormatoCarta == formatoCartaAbbinatoSelezionato.FormatoCarta && 
-                    fC.StampanteInstallata == formatoCartaAbbinatoSelezionato.StampanteInstallata)
-                {
-                    int oldIndex = index;
-                    int newIndex = --index;
-                    newIndex = newIndex < 0 ? formatoCartaAbbinato.Count - 1 : newIndex;
-                    formatoCartaAbbinato.Move(oldIndex, newIndex);
-                    break;
-                }
-                index++;
-            }
-            stampantiAbbinateSrvImpl.sostituisciAbbinamento(formatoCartaAbbinato);
-			stampantiAbbinateSrvImpl.updateAbbinamento();
-            OnPropertyChanged("formatoCartaAbbinato");
+			if( SelectedAbbinamentoIndex > 0 )
+				formatiCartaAbbinati.Move( SelectedAbbinamentoIndex, SelectedAbbinamentoIndex - 1 );
         }
 
         private void giuAbbina()
         {
-            int index = 0;
-            foreach (StampanteAbbinata fC in formatoCartaAbbinato)
-            {
-                if (fC.FormatoCarta == formatoCartaAbbinatoSelezionato.FormatoCarta &&
-                    fC.StampanteInstallata == formatoCartaAbbinatoSelezionato.StampanteInstallata)
-                {
-                    int oldIndex = index;
-                    int newIndex = ++index;
-                    newIndex = newIndex > formatoCartaAbbinato.Count - 1 ? 0 : newIndex;
-                    formatoCartaAbbinato.Move(oldIndex, newIndex);
-                    break;
-                }
-                index++;
-            }
-            stampantiAbbinateSrvImpl.sostituisciAbbinamento(formatoCartaAbbinato);
-            stampantiAbbinateSrvImpl.updateAbbinamento();
-            OnPropertyChanged("formatoCartaAbbinato");
+			if( SelectedAbbinamentoIndex < formatiCartaAbbinati.Count - 1 )
+				formatiCartaAbbinati.Move( SelectedAbbinamentoIndex, SelectedAbbinamentoIndex + 1 );
         }
+
+		public void removeSelected() {
+			formatiCartaAbbinati.RemoveAt( SelectedAbbinamentoIndex );
+		}
 
         #endregion
     }

@@ -55,6 +55,23 @@ namespace Digiphoto.Lumen.Servizi.Stampare
             stampanteInstallata.PortaStampante = portaStampante;
             return stampanteInstallata;
         }
+
+		public override int GetHashCode() {
+			return 17 + 31 * NomeStampante.GetHashCode();
+		}
+
+		public override bool Equals( object obj ) {
+
+			bool sonoUguali = false;
+
+			if( obj is StampanteInstallata ) {
+				StampanteInstallata altra = (StampanteInstallata)obj;
+				sonoUguali = this.NomeStampante.Equals( altra.NomeStampante );
+			}
+
+			return sonoUguali;
+		}
+
     }
 
     public interface IStampantiInstallateSrv : IServizio 
