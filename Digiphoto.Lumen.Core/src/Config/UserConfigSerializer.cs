@@ -19,6 +19,9 @@ namespace Digiphoto.Lumen.Config
 
 		public static void serializeToFile( UserConfigLumen userConfig )
 		{
+			if( Directory.Exists( userConfigPath ) == false )
+				Directory.CreateDirectory( userConfigPath );
+
 			TextWriter writer = new StreamWriter(userConfigFilePath, false);
 			XmlSerializer x = new XmlSerializer( typeof(UserConfigLumen) );
 			x.Serialize( writer, userConfig );
