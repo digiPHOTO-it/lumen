@@ -83,9 +83,9 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
         private void salvaConfigDB()
         {
-            String stringDbCartella = Path.GetDirectoryName(DataSource);
+            //String stringDbCartella = Path.GetDirectoryName(DataSource);
 
-            String stringDbNomePieno = Path.GetFileName(DataSource);
+            //String stringDbNomePieno = Path.GetFileName(DataSource);
 
 			AppDomain.CurrentDomain.SetData( "DataDirectory", cfg.dbCartella );
 		}
@@ -466,6 +466,13 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             set;
         }
 
+		public bool canCreateDatabase {
+			get {
+				// Per poter creare il database, non deve esistere
+				DbUtil dbUtil = new DbUtil( cfg );
+				return ! dbUtil.isDatabasEsistente;
+			}
+		}
         #endregion
 
         #region Comandi
@@ -633,7 +640,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             {
                 if (_createDataBaseCommand == null)
                 {
-                    _createDataBaseCommand = new RelayCommand(param => this.createDataBase());
+                    _createDataBaseCommand = new RelayCommand(param => this.createDataBase(), canCreateDatabase );
                 }
                 return _createDataBaseCommand;
             }
@@ -701,8 +708,10 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
         private void testConnection()
         {
             salvaConfigDB();
-			
-            if (DbUtil.verificaSeDatabaseUtilizzabile())
+
+			DbUtil dbUtil = new DbUtil( cfg );
+
+            if (dbUtil.verificaSeDatabaseUtilizzabile())
             {
                 dialogProvider.ShowMessage("OK\n--- Funziona solo per CE ---","Test Connection");
             }
@@ -741,7 +750,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
                     ConnectionString = entityConnString.ConnectionString;
                     break;
                 case 2:
-                    entityConnString.Provider = "System.Data.SQServer";
+                    entityConnString.Provider = "System.Data.SQL'Server";
                     var sqlConnString = new SqlConnectionStringBuilder(entityConnString.ProviderConnectionString);
                     sqlConnString.DataSource = DataSource;
                     entityConnString.ProviderConnectionString = sqlConnString.ConnectionString;
@@ -884,12 +893,16 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
         private void createDataBase()
         {
+
+			DbUtil qdbUtil = new DbUtil( cfg );
+
             salvaConfigDB();
             // Se non esiste la cartella per il database, allora la creo.
-            DbUtil.creaCartellaPerDb();
+			qdbUtil.creaCartellaPerDb();
+
             // Controllo il database. Se non esiste nessuna impostazione diversa, lo creo.
-            DbUtil.copiaDbVuotoSuDbDiLavoro();
-			dialogProvider.ShowMessage( "DataBase creato con successo in \n " + DbUtil.cartellaDatabase, "Avviso" );
+			qdbUtil.copiaDbVuotoSuDbDiLavoro();
+			dialogProvider.ShowMessage( "DataBase creato con successo in \n " + qdbUtil.cartellaDatabase, "Avviso" );
         }
 
         private void login()

@@ -25,7 +25,7 @@ namespace Digiphoto.Lumen.Config  {
 		public static readonly string companyName = "digiPHOTO.it";  // si potrebbero leggere dall'Assembly Info
 		public static readonly string applicationName = "Lumen";     // si potrebbero leggere dall'Assembly Info
 
-
+		DbUtil _dbUtil;
 
 		public static string cartellaBaseFoto {
 			get {
@@ -71,7 +71,9 @@ namespace Digiphoto.Lumen.Config  {
 		}
 
 		internal Configurazione( bool autoSistemazione ) {
-	
+
+			_dbUtil = new DbUtil();
+
 			caricaMappaNomiServizi();
 
 			_autoSistemazione = autoSistemazione;
@@ -137,10 +139,11 @@ namespace Digiphoto.Lumen.Config  {
 			_giornale.Debug( "La configurazione attuale non è sufficiente. Devo sistemarla con valori di default" );
 
 			// Se non esiste la cartella per il database, allora la creo.
-			DbUtil.creaCartellaPerDb();
+			_dbUtil.creaCartellaPerDb();
 
 			// Controllo il database. Se non esiste nessuna impostazione diversa, lo creo.
-			DbUtil.copiaDbVuotoSuDbDiLavoro();
+			if( ! _dbUtil.isDatabasEsistente )
+				_dbUtil.copiaDbVuotoSuDbDiLavoro();
 
 
 			// ----
@@ -168,13 +171,13 @@ namespace Digiphoto.Lumen.Config  {
 		String getMotivoErrore() {
 
 			// Controllo che esista il database vuoto. Mi serve in caso di copia iniziale
-			if( !System.IO.File.Exists( DbUtil.nomeFileDbVuoto ) ) {
-				return "il Database template\n" + DbUtil.nomeFileDbVuoto + "\nnon esiste. Probabile installazione rovinata";
+			if( !System.IO.File.Exists( _dbUtil.nomeFileDbVuoto ) ) {
+				return "il Database template\n" + UserConfigLumen.dbNomeDbVuoto + "\nnon esiste. Probabile installazione rovinata";
 			}
 
 			// Controllo che esista e che sia valido anche il database vero di lavoro
-			if( !DbUtil.verificaSeDatabaseUtilizzabile() )
-				return "Database di lavoro\n" + DbUtil.nomeFileDbPieno + "\nnon trovato, oppure non utilizzabile.";
+			if( !_dbUtil.verificaSeDatabaseUtilizzabile() )
+				return "Database di lavoro\n" + _dbUtil.nomeFileDbPieno + "\nnon trovato, oppure non utilizzabile.";
 
 			// Controllo che la cartella contenente le foto esista e sia scrivibile
 			if( !Directory.Exists( cartellaBaseFoto ) ) {
