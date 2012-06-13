@@ -17,23 +17,31 @@ using System.Windows.Forms;
 
 namespace Digiphoto.Lumen.Core.Database {
 
-	public static class DbUtil {
+	public class DbUtil {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof(DbUtil) );
 
-		public static readonly string nomeFileDbVuoto;
-		public static readonly string nomeFileDbPieno;
+		public string nomeFileDbVuoto;
+		public string nomeFileDbPieno;
 
-		public static string cartellaDatabase {
+		private UserConfigLumen _userConfig;
+
+		public string cartellaDatabase {
 			get {
-				return Configurazione.UserConfigLumen.dbCartella;
+				return _userConfig.dbCartella;
 			}
 			
 		}
 
+		// Per default lo costruisco con la configurazione statica
+		public DbUtil() : this( Configurazione.UserConfigLumen ) {
+		}
+
 		/** Costruttore statico */
-		static DbUtil() {
-			
+		public DbUtil( UserConfigLumen cfg ) {
+
+			_userConfig = cfg;
+
 			// determino il nome del file del database vuoto (il template di partenza)
 			String doveSono = Assembly.GetExecutingAssembly().Location ;
 
@@ -50,12 +58,12 @@ namespace Digiphoto.Lumen.Core.Database {
 		 * return TRUE se riesco a connettermi ed il db è buono ed utilizzabile.
 		 *        FALSE se è spaccato oppure non è presente
 		 */
-		public static bool verificaSeDatabaseUtilizzabile() {
+		public  bool verificaSeDatabaseUtilizzabile() {
 
 			bool esiste = false;
 
 			try {
-				string conString = DbUtil.providerConnectionString;
+				string conString = providerConnectionString;
 				_giornale.Debug( "provo connessione db = " + conString );
 				using( SqlCeEngine objCeEngine = new SqlCeEngine( conString ) ) {
 					esiste = objCeEngine.Verify();
@@ -67,17 +75,19 @@ namespace Digiphoto.Lumen.Core.Database {
 			return esiste;
 		}
 
-		public static bool isDatabasEsistente() {		
-			return System.IO.File.Exists( nomeFileDbPieno );
+		public bool isDatabasEsistente {
+			get {
+				return System.IO.File.Exists( nomeFileDbPieno );
+			}
 		}
 
 		/** Controllo se non esiste la cartella dove risiederà il database, allora la creo 
 		 */
-		public static void creaCartellaPerDb() {
+		public void creaCartellaPerDb() {
 			// Controllo se esiste la cartella di base dei dati dell'applicazione
-			if( !Directory.Exists( DbUtil.cartellaDatabase ) ) {
-				_giornale.Info( "Creo la cartella dei dati perchè non esiste:\r\n" + DbUtil.cartellaDatabase );
-				Directory.CreateDirectory( DbUtil.cartellaDatabase );
+			if( !Directory.Exists( cartellaDatabase ) ) {
+				_giornale.Info( "Creo la cartella dei dati perchè non esiste:\r\n" + cartellaDatabase );
+				Directory.CreateDirectory( cartellaDatabase );
 			}
 		}
 
@@ -86,7 +96,7 @@ namespace Digiphoto.Lumen.Core.Database {
 		 * io ho bisogno di avere solo la dichiarazione del datasource.
 		 * La estraggo con una apposita utilità:
 		 */
-		public static String providerConnectionString {
+		public String providerConnectionString {
 			get {
 				string entityConnectionString = ConfigurationManager.ConnectionStrings ["LumenEntities"].ConnectionString;
                 //string entityConnectionString = UserConfigLumen.UserConfigConnectionString;
@@ -94,7 +104,7 @@ namespace Digiphoto.Lumen.Core.Database {
 			}
 		}
 
-		private static string ExtractConnectionStringFromEntityConnectionString( string entityConnectionString ) {
+		private string ExtractConnectionStringFromEntityConnectionString( string entityConnectionString ) {
 			// create a entity connection string from the input
 			EntityConnectionStringBuilder entityBuilder = new EntityConnectionStringBuilder( entityConnectionString );
 
@@ -107,35 +117,25 @@ namespace Digiphoto.Lumen.Core.Database {
 		 * Per qualsiasi problema, ed anche se il file di destinazione esiste gia,
 		 * viene sollevata una eccezione
 		 */
-		public static void copiaDbVuotoSuDbDiLavoro() {
+		public void copiaDbVuotoSuDbDiLavoro() {
 
 			if( !File.Exists( nomeFileDbPieno ) ) {
 				_giornale.Info( @"Il database di lavoro\r\n" + nomeFileDbPieno + "\r\nnon esiste. Lo creo partendo dal template vuoto" );
 
-				
 				File.Copy( nomeFileDbVuoto, nomeFileDbPieno );
 
 				_giornale.Debug( "ok copia vuoto -> pieno riuscita" );
-			} else
-				_giornale.Debug( "Il database di lavoror\r\n" + nomeFileDbPieno + "\r\nesiste già. Uso quello" );
+			} else {
+				throw new InvalidOperationException( "Il database " + nomeFileDbPieno + " esiste già. Copia fallita" );
+			}
 		
 		}
 
-		public static Fotografo loadFotografoById( string idFotografo ) {
-
-
-			Fotografo f = null;
+		public Fotografo loadFotografoById( string idFotografo ) {
 
 			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
-
-			f = dbContext.Fotografi.FirstOrDefault<Fotografo>( ff => ff.id == idFotografo );
-
-			return f;
+			return dbContext.Fotografi.SingleOrDefault<Fotografo>( ff => ff.id == idFotografo );
 		}
-
-
-
-
 
 	}
 }
