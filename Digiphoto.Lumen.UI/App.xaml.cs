@@ -34,7 +34,6 @@ namespace Digiphoto.Lumen.UI {
 				mutexSingle = new Mutex(true, "Digiphoto.Lumen.Single");
 				if (mutexSingle.WaitOne(0, false))
 				{
-					// Carico la Configurazione
 					#if (! DEBUG)			
 						// Preparo finestra di attesa
 						SplashScreen splashScreen = new SplashScreen( "SplashScreen1.png" );

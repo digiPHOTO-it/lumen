@@ -9,6 +9,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 
     public enum Fase
     {
+		Attesa,
         InizioCopia,
         CopiaCompletata,
 		ErroreMedia

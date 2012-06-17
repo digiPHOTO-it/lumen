@@ -19,9 +19,9 @@ namespace Digiphoto.Lumen.UI
     /// <summary>
     /// Interaction logic for Carrello.xaml
     /// </summary>
-    public partial class Carrello : UserControlBase
+    public partial class CarrelloView : UserControlBase
     {
-        public Carrello() 
+        public CarrelloView() 
         {
             InitializeComponent();
         }

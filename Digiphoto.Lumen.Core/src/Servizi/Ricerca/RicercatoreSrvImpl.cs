@@ -38,8 +38,13 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 		public ICollection<Carrello> cerca(ParamCercaCarrello param)
 		{
-			IQueryable<Carrello> query = from ff in this.objectContext.Carrelli.Include("righeCarrello")
-										   select ff;
+			//IQueryable<Carrello> query = from ff in this.objectContext.Carrelli.Include("righeCarrello")
+			//							   select ff;
+
+
+			_giornale.Debug("Parametri di ricerca:\n" + param);
+
+			IQueryable<Carrello> query = creaQueryEntita(param);
 
 			// Devo usare prima tutto se no dopo non me lo ricollega più!!! Perchè ho chiuso la connessione?!?!?!?!?!!?
 			foreach (Carrello c in query.ToList())
@@ -66,6 +71,18 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 						System.Diagnostics.Trace.WriteLine("\t\tTot. foto masterizzate = " + rdm.totFotoMasterizzate);
 					}
 				}
+			}
+
+			// Eventuale paginazione dei risultati
+			if (param.paginazione != null)
+			{
+				query = query.Skip(param.paginazione.skip).Take(param.paginazione.take);
+			}
+
+			// Eventuale debug della query
+			if (_giornale.IsDebugEnabled)
+			{
+				_giornale.Debug(query.ToString());
 			}
 
 			return query.ToList();
@@ -143,6 +160,53 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			// ----- Giornata Fine
 			if( param.giornataFine != null )
 				query = query.Where( ff => ff.giornata <= param.giornataFine );
+
+			return query;
+		}
+
+		private IQueryable<Carrello> creaQueryEntita(ParamCercaCarrello param)
+		{
+			IQueryable<Carrello> query = from ff in this.objectContext.Carrelli.Include("righeCarrello")
+										   select ff;
+
+			//Filtro solo i carrelli che non sono stati venduti
+			if (param.isVenduto != null)
+			{
+				if(param.isVenduto==false){
+					query = query.Where(ff => ff.venduto != true);
+				}
+			}
+
+			// ----- Filtro fotografo
+			if (param.fotografi != null)
+			{
+				// Siccome ancora linq non supporta confronto con entità, devo estrarre gli id
+				var listaIds = from le in param.fotografi
+							   select le.id;
+
+				query = query.Where(ff => listaIds.Equals(ff.righeCarrello.OfType<RiCaFotoStampata>().First<RiCaFotoStampata>().fotografo));
+			}
+
+			// ----- fasi del giorno (la Enum non prevede il Contains. Devo trasformarla in una array di interi
+			if (param.fasiDelGiorno != null && param.fasiDelGiorno.Count > 0)
+			{
+				IEnumerable<short> fasiInt = from p in param.fasiDelGiorno
+											 select Convert.ToInt16(p);
+
+				query = query.Where(ff => fasiInt.Equals(ff.righeCarrello.OfType<RiCaFotoStampata>().First<RiCaFotoStampata>().fotografia.faseDelGiorno));
+			}
+
+			// ----- Intestazione 
+			if (!String.IsNullOrWhiteSpace(param.intestazione))
+				query = query.Where(ff => ff.intestazione.ToLower().Contains(param.intestazione.ToLower()));
+
+			// ----- Giornata Inizio
+			if (param.giornataIniz != null)
+				query = query.Where(ff => ff.giornata >= param.giornataIniz);
+
+			// ----- Giornata Fine
+			if (param.giornataFine != null)
+				query = query.Where(ff => ff.giornata <= param.giornataFine);
 
 			return query;
 		}

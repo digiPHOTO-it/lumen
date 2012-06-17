@@ -26,9 +26,7 @@ namespace Digiphoto.Lumen.UI
 {
 	public class CarrelloViewModel : ViewModelBase, IObserver<MasterizzaMsg>, IObserver<GestoreCarrelloMsg>
     {
-		private Digiphoto.Lumen.Servizi.Masterizzare.Fase StatoMasterizzazione = Fase.CopiaCompletata;
-
-
+		private Digiphoto.Lumen.Servizi.Masterizzare.Fase StatoMasterizzazione = Fase.Attesa;
 
 		private BackgroundWorker _bkgIdrata = null;
 
@@ -66,10 +64,7 @@ namespace Digiphoto.Lumen.UI
 				PrezzoTotaleIntero = prezzoTotaleIntero;
 				ScontoApplicato = "0%";
 
-				IsControlVisible = "Hidden";
-				IsRimasterizzaVisibile = "Hidden";
-				IsQuantitaControlVisible = "Hidden";
-				IsEnabledPrezzo = true;
+				IsErroriMasterizzazione = false;
 			}
 		}
 
@@ -77,7 +72,14 @@ namespace Digiphoto.Lumen.UI
 		/// Creo le viste sulle collezioni di righe che rappresentano il carrello.
 		/// </summary>
 		private void rinfrescaViewRighe() {
-			RiCaFotoStampataCv = CollectionViewSource.GetDefaultView( carrelloCorrente.righeCarrello.OfType<RiCaFotoStampata>() );
+			if (IsErroriMasterizzazione)
+			{
+				RiCaFotoStampataCv = null;
+			}
+			else
+			{
+				RiCaFotoStampataCv = CollectionViewSource.GetDefaultView(carrelloCorrente.righeCarrello.OfType<RiCaFotoStampata>());
+			}
 			RiCaDiscoMasterizzatoCv = CollectionViewSource.GetDefaultView( carrelloCorrente.righeCarrello.OfType<RiCaDiscoMasterizzato>() );
 			OnPropertyChanged( "RiCaFotoStampataCv" );
 			OnPropertyChanged( "RiCaDiscoMasterizzatoCv" );
@@ -164,6 +166,45 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
+		public Digiphoto.Lumen.Model.Carrello CarrelloSelezionato
+		{
+			get;
+			set;
+		}
+
+		#region Ricerca
+
+		private string _intestazioneSearch;
+		public string IntestazioneSearch
+		{
+			get
+			{
+				return _intestazioneSearch;
+			}
+			set
+			{
+				if (_intestazioneSearch !=value)
+				{
+					_intestazioneSearch = value;
+					OnPropertyChanged("IntestazioneSearch");
+				}
+			}
+		}
+
+		public bool? IsVendutoChecked
+		{
+			get
+			{
+				return (paramCercaCarrello.isVenduto);
+			}
+			set
+			{
+				paramCercaCarrello.isVenduto = value;
+			}
+		}
+
+		#endregion
+
 		#region Servizi
 		/// <summary>
 		/// Ritorno la giornata lavorativa corrente
@@ -194,158 +235,23 @@ namespace Digiphoto.Lumen.UI
 
 		#endregion
 
-		private int _riCaDiscoMasterizzatoCvHeight;
-		public int RiCaDiscoMasterizzatoCvHeight
-		{
-			get
-			{
-				return _riCaDiscoMasterizzatoCvHeight;
-			}
-			set
-			{
-				_riCaDiscoMasterizzatoCvHeight = value;
-				OnPropertyChanged("RiCaDiscoMasterizzatoCvHeight");
-			}
-		}
-
-
 		public ParamCercaCarrello paramCercaCarrello
 		{
 			get;
 			set;
 		}
 
-		private String _isControlVisible;
-		public String IsControlVisible
+		bool _isErroriMasterizzazione;
+		public bool IsErroriMasterizzazione
 		{
 			get
 			{
-				return _isControlVisible;
+				return _isErroriMasterizzazione;
 			}
 			set
 			{
-				_isControlVisible = value;
-				if (value == "Hidden")
-				{
-					RiCaDiscoMasterizzatoCvHeight = 0;
-				}
-				else
-				{
-					RiCaDiscoMasterizzatoCvHeight = 100;
-				}
-				OnPropertyChanged("IsControlVisible");
-			}
-		}
-
-		public String _isRimasterizzaVisibile;
-		public String IsRimasterizzaVisibile
-		{
-			get
-			{
-				return _isRimasterizzaVisibile;
-			}
-			set
-			{
-				_isRimasterizzaVisibile = value;
-				OnPropertyChanged("IsRimasterizzaVisibile");
-			}
-		}
-
-		public String _isQuantitaControlVisible;
-		public String IsQuantitaControlVisible
-		{
-			get
-			{
-				return _isQuantitaControlVisible;
-			}
-			set
-			{
-				_isQuantitaControlVisible = value;
-				OnPropertyChanged("IsQuantitaControlVisible");
-			}
-		}
-
-		public Boolean _isEnabledPrezzo;
-		public Boolean IsEnabledPrezzo
-		{
-			get
-			{
-				return _isEnabledPrezzo;
-			}
-			set
-			{
-				_isEnabledPrezzo = value;
-				OnPropertyChanged("IsEnabledPrezzo");
-			}
-		}
-
-		private int _totaleFotoCarrelloMemorizzato;
-		public int TotaleFotoCarrelloMemorizzato
-		{
-			get
-			{
-				return _totaleFotoCarrelloMemorizzato;
-			}
-			set
-			{
-				if (_totaleFotoCarrelloMemorizzato != value)
-				{
-					_totaleFotoCarrelloMemorizzato = value;
-					OnPropertyChanged("TotaleFotoCarrelloMemorizzato");
-				}
-			}
-		}
-
-		private String _giornataCarrelloMemorizzato;
-		public String GiornataCarrelloMemorizzato
-		{
-			get
-			{
-				//Digiphoto.Lumen.Model.Carrello carrello = Carrelli.CurrentItem as Digiphoto.Lumen.Model.Carrello;
-				//_fotografoAlbum = carrello.intestazione;
-				return _giornataCarrelloMemorizzato;
-			}
-			set
-			{
-				if (_giornataCarrelloMemorizzato != value)
-				{
-					_giornataCarrelloMemorizzato = value;
-					OnPropertyChanged("GiornataCarrelloMemorizzato");
-				}
-			}
-		}
-
-		private String _nomeCarrelloMemorizzato;
-		public String NomeCarrelloMemorizzato
-		{
-			get
-			{
-				return _nomeCarrelloMemorizzato;
-			}
-			set
-			{
-				if (_nomeCarrelloMemorizzato != value)
-				{
-					_nomeCarrelloMemorizzato = value;
-					OnPropertyChanged("NomeCarrelloMemorizzato");
-				}
-			}
-		}
-
-		private decimal? _totalePrezzoCarrelloMemorizzato;
-		public decimal? TotalePrezzoCarrelloMemorizzato
-		{
-			get
-			{
-				return _totalePrezzoCarrelloMemorizzato;
-			}
-			set
-			{
-				if (_totalePrezzoCarrelloMemorizzato != value)
-				{
-					_totalePrezzoCarrelloMemorizzato = value;
-					OnPropertyChanged("TotalePrezzoCarrelloMemorizzato");
-				}
+				_isErroriMasterizzazione = value;
+				OnPropertyChanged("IsErroriMasterizzazione");
 			}
 		}
 
@@ -454,12 +360,16 @@ namespace Digiphoto.Lumen.UI
 
 				bool posso = true;
 
+				//Verifico che il carrello non sia stato venduto
+				if(posso && carrelloCorrente.venduto)
+					posso = false;
+
 				// Verifico che i dati minimi siano stati indicati
 				if (posso && RiCaFotoStampataCv.IsEmpty && RiCaDiscoMasterizzatoCv.IsEmpty)
 					posso = false;
 
 				// Ce un errore nella masterizzazione 
-				if (posso && IsRimasterizzaVisibile.Equals("Visible"))
+				if (posso && IsErroriMasterizzazione)
 					posso = false;
 
 				return posso;
@@ -475,12 +385,16 @@ namespace Digiphoto.Lumen.UI
 
 				bool posso = true;
 
+				//Verifico che il carrello non sia stato venduto
+				if (posso && carrelloCorrente.venduto)
+					posso = false;
+
 				// Verifico che i dati minimi siano stati indicati
 				if (posso && RiCaDiscoMasterizzatoCv.IsEmpty)
 					posso = false;
 
 				// Ce un errore nella masterizzazione 
-				if (posso && IsRimasterizzaVisibile.Equals("Visible"))
+				if (posso && IsErroriMasterizzazione)
 					posso = false;
 
 				return posso;
@@ -496,12 +410,16 @@ namespace Digiphoto.Lumen.UI
 
 				bool posso = true;
 
+				//Verifico che il carrello non sia stato venduto
+				if (posso && carrelloCorrente.venduto)
+					posso = false;
+
 				// Verifico che i dati minimi siano stati indicati
 				if (posso && RiCaFotoStampataCv.IsEmpty)
 					posso = false;
 
 				// Ce un errore nella masterizzazione 
-				if (posso && IsRimasterizzaVisibile.Equals("Visible"))
+				if (posso && IsErroriMasterizzazione)
 					posso = false;
 
 				return posso;
@@ -517,6 +435,10 @@ namespace Digiphoto.Lumen.UI
 
 				bool posso = true;
 
+				//Verifico che il carrello non sia stato venduto
+				if (posso && carrelloCorrente.venduto)
+					posso = false;
+
 				// Verifico che i dati minimi siano stati indicati
 				// Elimino solo se il carrello è stato caricato in caso contrario è transiente e quindi
 				//posso fare svuota
@@ -528,7 +450,7 @@ namespace Digiphoto.Lumen.UI
 					posso = false;
 
 				// Ce un errore nella masterizzazione 
-				if (posso && IsRimasterizzaVisibile.Equals("Visible"))
+				if (posso && IsErroriMasterizzazione)
 					posso = false;
 
 				return posso;
@@ -551,7 +473,7 @@ namespace Digiphoto.Lumen.UI
 					posso = false;
 
 				// Ce un errore nella masterizzazione 
-				if (posso && IsRimasterizzaVisibile.Equals("Visible"))
+				if (posso && IsErroriMasterizzazione)
 					posso = false;
 
 				return posso;
@@ -569,20 +491,28 @@ namespace Digiphoto.Lumen.UI
 
 				Uri uri = null;
 
+				if (StatoMasterizzazione == Digiphoto.Lumen.Servizi.Masterizzare.Fase.Attesa)
+				{
+					uri = new Uri(uriTemplate.Replace("##", "ssCompleate"));
+					IsErroriMasterizzazione = false;
+				}
 				if (StatoMasterizzazione == Digiphoto.Lumen.Servizi.Masterizzare.Fase.ErroreMedia)
 				{
 					uri = new Uri(uriTemplate.Replace("##", "ssErroreMedia"));
-					IsRimasterizzaVisibile = "Visible";
+					IsErroriMasterizzazione = true;
+					trayIconProvider.showError("Avviso", "Errore Media", 5000);
 				}
 				if (StatoMasterizzazione == Digiphoto.Lumen.Servizi.Masterizzare.Fase.InizioCopia)
 				{
 					uri = new Uri(uriTemplate.Replace("##", "ssBurn"));
-					IsRimasterizzaVisibile = "Hidden";
+					IsErroriMasterizzazione = false;
+					trayIconProvider.showInfo("Avviso", "Inizio Copia", 5000);
 				}
 				if (StatoMasterizzazione == Digiphoto.Lumen.Servizi.Masterizzare.Fase.CopiaCompletata)
 				{
 					uri = new Uri(uriTemplate.Replace("##", "ssCompleate"));
-					IsRimasterizzaVisibile = "Hidden";
+					IsErroriMasterizzazione = false;
+					trayIconProvider.showInfo("Avviso", "CopiaCompletata", 5000);
 				}
 
 				return new BitmapImage(uri);	
@@ -596,67 +526,14 @@ namespace Digiphoto.Lumen.UI
 		// TODO questa è da togliere
 		public void updateGUI()
 		{
-			if( 1 == 1 ) {
-
-				OnPropertyChanged( "carrelloCorrente" );
-				rinfrescaViewRighe();
-				return;
-			}
-
-
-
-
-
-// TODO Edi non serve. Da togliere.
-
-			IList<RiCaFotoStampata> fS = new List<RiCaFotoStampata>();
-			IList<RiCaDiscoMasterizzato> dM = new List<RiCaDiscoMasterizzato>();
-
-			foreach (RigaCarrello rigaCarrello in carrelloCorrente.righeCarrello)
-			{
-				if (rigaCarrello is RiCaFotoStampata)
-				{
-					fS.Add(rigaCarrello as RiCaFotoStampata);
-				}
-				else
-				{
-					dM.Add(rigaCarrello as RiCaDiscoMasterizzato);
-				}
-			}
-
-			// Controllo se visualizzare l'aggiornamento quantita riga
-			if (fS.Count > 0)
-			{
-				IsQuantitaControlVisible = "Visible";
-			}
-			else
-			{
-				IsQuantitaControlVisible = "Hidden";
-			}
-
-			// Controllo se visualizzare o meno la riga delle foto Masterizzate
-			if (dM.Count > 0)
-			{
-				IsControlVisible = "Visible";
-			}
-			else
-			{
-				IsControlVisible = "Hidden";
-				IsRimasterizzaVisibile = "Hidden";
-				IsEnabledPrezzo = true;
-			}
-
-			RiCaFotoStampataCv = CollectionViewSource.GetDefaultView(fS);
-			RiCaDiscoMasterizzatoCv = CollectionViewSource.GetDefaultView(dM);
-			OnPropertyChanged("RiCaFotoStampataCv");
-			OnPropertyChanged("RiCaDiscoMasterizzatoCv");
+			OnPropertyChanged( "carrelloCorrente" );
+			rinfrescaViewRighe();
 
 			carrelloExplorerSrv.cercaCarrello(paramCercaCarrello);
 			CarrelliSalvatiCv = CollectionViewSource.GetDefaultView(carrelloExplorerSrv.carrelli);
 			OnPropertyChanged("CarrelliSalvatiCv");
 
 			OnPropertyChanged("PrezzoTotaleForfettario");
-// TODO Edi non serve. Da togliere.
 		}
 
         /// <summary>
@@ -673,32 +550,54 @@ namespace Digiphoto.Lumen.UI
 				venditoreSrv.masterizzaSrv.prezzoForfaittario = PrezzoTotaleForfettario-PrezzoTotaleIntero;
 			}
 
-			venditoreSrv.vendereCarrello();
-
-			//Controllo se ci sono stati errori nella masterizzazione
-			if (IsRimasterizzaVisibile == "Hidden")
-			{
-				//Creo un nuovo carrello
-				venditoreSrv.creaNuovoCarrello();
-			updateGUI();
-        }
-			else
-			{
-				//dialogProvider.ShowMessage("Errore nella Masterizzazione", "AVVISO");
-				IsEnabledPrezzo = false;
-
-				GestoreCarrelloMsg msg = new GestoreCarrelloMsg(this);
-				msg.fase = Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.ErroreMasterizzazione;
-				LumenApplication.Instance.bus.Publish(msg);
-
-				updateGUI();
-				
-				//Svuoto la lista foto stampate per estetica grafica...
-
-				rinfrescaViewRighe();
-
-				IsQuantitaControlVisible = "Hidden";
+			if(PrezzoTotaleForfettario==0){
+				dialogProvider.ShowMessage("Si sta cercando di effetuare una vendita a prezzo uguale a 0", "Errore");
+				return;
 			}
+
+			if(venditoreSrv.vendereCarrello())
+			{
+
+				//Controllo se ci sono stati errori nella masterizzazione
+				if (!IsErroriMasterizzazione)
+				{
+					short totaleFotoMasterizzate = 0;
+					short totoleFotoStampate = 0;
+					short totoleErrori = 0;
+
+					foreach( RigaCarrello r in carrelloCorrente.righeCarrello ) {
+
+						if (r is RiCaFotoStampata)
+						{
+							RiCaFotoStampata rfs = (RiCaFotoStampata)r;
+							totoleFotoStampate += (short)rfs.quantita;
+						}
+
+						if( r is RiCaDiscoMasterizzato ) {
+							RiCaDiscoMasterizzato rdm = (RiCaDiscoMasterizzato)r;
+							totaleFotoMasterizzate = (short)rdm.totFotoMasterizzate;
+						}
+					}
+
+					dialogProvider.ShowMessage("Carrello venduto:" +
+												"\nTotale: " + venditoreSrv.carrello.totaleAPagare +
+												"\nN° Fotografie: " + totoleFotoStampate +
+												"\nN° Foto Masterizzate: "+ totaleFotoMasterizzate +
+												"\nN° Errori: " + totoleErrori, "Avviso");
+
+					//Creo un nuovo carrello
+					venditoreSrv.creaNuovoCarrello();
+				}
+				else
+				{
+					//dialogProvider.ShowMessage("Errore nella Masterizzazione", "AVVISO");
+					GestoreCarrelloMsg msg = new GestoreCarrelloMsg(this);
+					msg.fase = Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.ErroreMasterizzazione;
+					LumenApplication.Instance.bus.Publish(msg);
+				}
+			}
+
+			updateGUI();
         }
 
 		/// <summary>
@@ -707,6 +606,7 @@ namespace Digiphoto.Lumen.UI
 		/// per la stampa: il formato carta e la stampante
 		private void rimasterizza()
 		{
+			faseOld = Fase.Attesa;
 			venditoreSrv.rimasterizza();
         }
 
@@ -732,6 +632,12 @@ namespace Digiphoto.Lumen.UI
 		{
 			if(!RiCaDiscoMasterizzatoCv.IsEmpty){
 				dialogProvider.ShowMessage("Il carrello contiene un Dischetto!!!\nSi ricorda che i dischetti non potranno più essere recuperati", "Avviso");
+			}
+
+			if (String.IsNullOrEmpty(carrelloCorrente.intestazione))
+			{
+				dialogProvider.ShowMessage("Non è possibile salvare il carrello senza Intestazione", "Avviso");
+				return;
 			}
 
 			venditoreSrv.carrello.totaleAPagare = PrezzoTotaleForfettario;
@@ -793,15 +699,14 @@ namespace Digiphoto.Lumen.UI
 
 		private void caricaCarrelloSelezionato()
 		{
-			venditoreSrv.caricaCarrello( (Digiphoto.Lumen.Model.Carrello)CarrelliSalvatiCv.CurrentItem );
-
-			int index = CarrelliSalvatiCvSelectedIndex;
-			updateGUI();
-
 			GestoreCarrelloMsg msg = new GestoreCarrelloMsg(this);
 			msg.fase = Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.LoadCarrelloSalvato;
 			LumenApplication.Instance.bus.Publish(msg);
 
+			venditoreSrv.caricaCarrello( (Digiphoto.Lumen.Model.Carrello)CarrelliSalvatiCv.CurrentItem );
+
+			int index = CarrelliSalvatiCvSelectedIndex;
+			updateGUI();
 
 			CarrelliSalvatiCvSelectedIndex = index;
 
@@ -849,7 +754,7 @@ namespace Digiphoto.Lumen.UI
 		{
 			venditoreSrv.creaNuovoCarrello();
 			MasterizzazionePorgress = "";
-			StatoMasterizzazione = Fase.CopiaCompletata;
+			StatoMasterizzazione = Fase.Attesa;
 			OnPropertyChanged("StatusStatoMasterizzazioneImage");
 			updateGUI();
 		}
@@ -858,7 +763,7 @@ namespace Digiphoto.Lumen.UI
 		{
 			venditoreSrv.abbandonaCarrello();
 			MasterizzazionePorgress = "";
-			StatoMasterizzazione = Fase.CopiaCompletata;
+			StatoMasterizzazione = Fase.Attesa;
 			OnPropertyChanged("StatusStatoMasterizzazioneImage");
 			updateGUI();
 		}
@@ -866,10 +771,11 @@ namespace Digiphoto.Lumen.UI
 		private void updateDatiCarrelloSelected()
 		{
 			Digiphoto.Lumen.Model.Carrello carrelloSelezionato = CarrelliSalvatiCv.CurrentItem as Digiphoto.Lumen.Model.Carrello;
-			TotaleFotoCarrelloMemorizzato = carrelloSelezionato.righeCarrello.Count;
-			TotalePrezzoCarrelloMemorizzato = carrelloSelezionato.totaleAPagare;
-			NomeCarrelloMemorizzato = carrelloSelezionato.intestazione;
-			GiornataCarrelloMemorizzato = "" + carrelloSelezionato.giornata;
+			if (carrelloSelezionato != null)
+			{
+				CarrelloSelezionato = carrelloSelezionato;
+				OnPropertyChanged("CarrelloSelezionato");
+			}
 		}
 			 
 		private void azzeraParamRicerca()
@@ -885,7 +791,7 @@ namespace Digiphoto.Lumen.UI
 		{
 
 			// Se avevo un worker già attivo, allora provo a cancellarlo.
-			if (_bkgIdrata.WorkerSupportsCancellation == true && _bkgIdrata.IsBusy)
+			if (_bkgIdrata!=null && _bkgIdrata.WorkerSupportsCancellation == true && _bkgIdrata.IsBusy)
 				_bkgIdrata.CancelAsync();
 
 
@@ -896,7 +802,7 @@ namespace Digiphoto.Lumen.UI
 
 
 			// Ora ci penso io ad idratare le immagini, perchè devo fare questa operazione nello stesso thread della UI
-			if (!_bkgIdrata.IsBusy)
+			if (_bkgIdrata!=null && !_bkgIdrata.IsBusy)
 				_bkgIdrata.RunWorkerAsync();
 
 
@@ -906,27 +812,33 @@ namespace Digiphoto.Lumen.UI
 
 			// Se non ho trovato nulla, allora avviso l'utente
 			if (CarrelliSalvatiCv.IsEmpty)
-				dialogProvider.ShowMessage("Nessuna fotografia trovata con questi filtri di ricerca", "AVVISO");
+				dialogProvider.ShowMessage("Nessuna Carrello trovata con questi filtri di ricerca", "AVVISO");
 		}
 
 		private void completaParametriRicerca()
 		{
 
 			paramCercaCarrello.idratareImmagini = false;
-			/*
-			// Aggiungo eventuale parametro il fotografo
-			if (selettoreFotografoViewModel.fotografoSelezionato != null)
-				paramCercaFoto.fotografi = new Fotografo[] { selettoreFotografoViewModel.fotografoSelezionato };
-			else
-				paramCercaFoto.fotografi = null;
 
-			// Aggiungo eventuale parametro l'evento
-			if (selettoreEventoViewModel.eventoSelezionato != null)
-				paramCercaFoto.eventi = new Evento[] { selettoreEventoViewModel.eventoSelezionato };
+			// Aggiungo eventuale parametro l'intestazione
+			if (!String.IsNullOrEmpty(IntestazioneSearch))
+			{
+				paramCercaCarrello.intestazione = IntestazioneSearch;
+			}
 			else
-				paramCercaFoto.eventi = null;
-			 */ 
+			{
+				paramCercaCarrello.intestazione = null;
+			}
 
+			// Aggiungo eventuale parametro l'intestazione
+			if (!String.IsNullOrEmpty(IntestazioneSearch))
+			{
+				paramCercaCarrello.intestazione = IntestazioneSearch;
+			}
+			else
+			{
+				paramCercaCarrello.intestazione = null;
+			}
 		}
 
 		private void selectedRiga()
@@ -961,29 +873,7 @@ namespace Digiphoto.Lumen.UI
 			}
 
 			// Ridisegno la listView con le righe aggiornate
-
-
-			if( 1 == 0 ) {
-// TODO EDI vedi se si può eliminare
-				IList<RiCaFotoStampata> fS = new List<RiCaFotoStampata>();
-				IList<RiCaDiscoMasterizzato> dM = new List<RiCaDiscoMasterizzato>();
-
-				foreach( RigaCarrello rigaCarrello in carrelloCorrente.righeCarrello ) {
-					RiCaFotoStampata riga = rigaCarrello as RiCaFotoStampata;
-					if( riga != null ) {
-						fS.Add( riga );
-
-					} else {
-						dM.Add( rigaCarrello as RiCaDiscoMasterizzato );
-						IsControlVisible = "Visible";
-					}
-				}
-
-				RiCaFotoStampataCv = CollectionViewSource.GetDefaultView( fS );
-				OnPropertyChanged( "RiCaFotoStampataCv" );
-			} else {
 				rinfrescaViewRighe();
-			}
 
 			RigheCarrelloCvSelectedIndex = index;
 			
@@ -1122,7 +1012,7 @@ namespace Digiphoto.Lumen.UI
 			{
 				if (_rimasterizzaCommand == null)
 				{
-					_rimasterizzaCommand = new RelayCommand(param => rimasterizza(), param => true, false);
+					_rimasterizzaCommand = new RelayCommand(param => rimasterizza(), param => IsErroriMasterizzazione, false);
 				}
 				return _rimasterizzaCommand;
 			}
@@ -1217,6 +1107,8 @@ namespace Digiphoto.Lumen.UI
 			throw new NotImplementedException();
 		}
 
+
+		private Digiphoto.Lumen.Servizi.Masterizzare.Fase faseOld = Fase.Attesa;
 		public void OnNext(MasterizzaMsg msg)
 		{
 			
@@ -1231,6 +1123,9 @@ namespace Digiphoto.Lumen.UI
 			 
 
 			StatoMasterizzazione = msg.fase;
+			if (faseOld != StatoMasterizzazione)
+			{
+				faseOld = StatoMasterizzazione;
 			if (msg.result == null)
 			{
 				MasterizzazionePorgress = msg.progress + " %";
@@ -1238,6 +1133,7 @@ namespace Digiphoto.Lumen.UI
 			else
 			{
 				MasterizzazionePorgress = msg.result;
+				
 				if (msg.result.Equals("Error Media"))
 				{
 					StatoMasterizzazione = Fase.ErroreMedia;
@@ -1245,7 +1141,7 @@ namespace Digiphoto.Lumen.UI
 			}
 			OnPropertyChanged("StatusStatoMasterizzazioneImage");
 		}
-
+		}
 
 		public void OnNext(GestoreCarrelloMsg msg)
 		{

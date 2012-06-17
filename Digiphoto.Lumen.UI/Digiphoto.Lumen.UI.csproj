@@ -104,9 +104,16 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Adorners\ComposingAdorner.cs" />
-    <Compile Include="Carrello\Carrello.xaml.cs" />
+    <Compile Include="Carrello\CarrelloView.xaml.cs">
+      <DependentUpon>CarrelloView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Carrello\CarrelloViewModel.cs" />
     <Compile Include="Converters\BoolInverterConverter.cs" />
+    <Compile Include="Converters\CollectionViewVisibilityConverter.cs" />
+    <Compile Include="Converters\CollectionViewVisibilityMultiConverter.cs" />
+    <Compile Include="Converters\BoolVisibilityConverter.cs" />
+    <Compile Include="Converters\BoolBackgroundConverter.cs" />
+    <Compile Include="Converters\SumQuantitaConverter.cs" />
     <Compile Include="Converters\ImmagineToImageSourceConverter.cs" />
     <Compile Include="Converters\PercentualeConverter.cs" />
     <Compile Include="Adorners\CroppingAdorner.cs" />
@@ -202,7 +209,8 @@
     <Compile Include="src\ScreenCapture\Win32Api\User32.cs" />
     <Compile Include="src\ScreenCapture\Win32Api\Win32Point.cs" />
     <Compile Include="src\ScreenCapture\Win32Api\Win32Rect.cs" />
-    <Page Include="Carrello\Carrello.xaml">
+    <Page Include="Carrello\CarrelloView.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

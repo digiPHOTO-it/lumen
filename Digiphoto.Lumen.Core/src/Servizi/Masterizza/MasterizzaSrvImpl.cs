@@ -134,7 +134,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                     }else{
                          MasterizzaMsg errorTestMediaMsg = new MasterizzaMsg( this );
 						 errorTestMediaMsg.senderTag = senderTag;
-                        errorTestMediaMsg.fase = Fase.CopiaCompletata;
+						errorTestMediaMsg.fase = Fase.ErroreMedia;
                         errorTestMediaMsg.esito = Esito.Errore;
                         errorTestMediaMsg.progress = 0;
                         errorTestMediaMsg.result = "Error Media";
@@ -209,7 +209,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                 }
                 MasterizzaMsg copiaCompletataMsg = new MasterizzaMsg( this );
 				copiaCompletataMsg.senderTag = senderTag;
-				copiaCompletataMsg.fase = Fase.CopiaCompletata;
+				copiaCompletataMsg.fase = errori ? Fase.ErroreMedia : Fase.CopiaCompletata;
 				copiaCompletataMsg.esito = errori ? Esito.Errore : Esito.Ok;
 				copiaCompletataMsg.result = errori ? "Riscontrati errori" : "Copia Completata con Successo";
 				copiaCompletataMsg.progress = 100;
@@ -316,7 +316,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
         {
             MasterizzaMsg statoCopiaCompletatoMsg = new MasterizzaMsg( this );
             statoCopiaCompletatoMsg.esito = erroriCopia ? Esito.Errore : Esito.Ok;
-			statoCopiaCompletatoMsg.fase = Fase.CopiaCompletata;
+			statoCopiaCompletatoMsg.fase = erroriCopia ? Fase.ErroreMedia : Fase.CopiaCompletata;
             statoCopiaCompletatoMsg.totFotoNonAggiunte = totFotoNonCopiate;
             statoCopiaCompletatoMsg.totFotoAggiunte = totFotoCopiate;
             pubblicaMessaggio(statoCopiaCompletatoMsg);
@@ -384,6 +384,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 			switch (burnerMsg.fase)
 			{
 				case Digiphoto.Lumen.Servizi.Masterizzare.MyBurner.Fase.ErrorMedia:
+					masterizzaMsg.esito = Esito.Errore;
 					masterizzaMsg.fase = Fase.ErroreMedia;
 					break;
 				case Digiphoto.Lumen.Servizi.Masterizzare.MyBurner.Fase.MasterizzazioneIniziata:
@@ -396,6 +397,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 					masterizzaMsg.fase = Fase.CopiaCompletata;
 					break;
 				case Digiphoto.Lumen.Servizi.Masterizzare.MyBurner.Fase.MasterizzazioneCompletata:
+					
 					masterizzaMsg.fase = Fase.CopiaCompletata;
 					break;
 				case Digiphoto.Lumen.Servizi.Masterizzare.MyBurner.Fase.FormattazioneCompletata:
@@ -403,11 +405,11 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 					break;
 				case Digiphoto.Lumen.Servizi.Masterizzare.MyBurner.Fase.MasterizzazioneFallita:
 					masterizzaMsg.esito = Esito.Errore;
-					masterizzaMsg.fase = Fase.CopiaCompletata;
+					masterizzaMsg.fase = Fase.ErroreMedia;
 					break;
 				case Digiphoto.Lumen.Servizi.Masterizzare.MyBurner.Fase.FormattazioneFallita:
 					masterizzaMsg.esito = Esito.Errore;
-					masterizzaMsg.fase = Fase.CopiaCompletata;
+					masterizzaMsg.fase = Fase.ErroreMedia;
 					break;
 			}
 
