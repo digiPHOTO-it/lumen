@@ -124,18 +124,16 @@
       <DependentUpon>FotoRitocco.xaml</DependentUpon>
     </Compile>
     <Compile Include="FotoRitocco\FotoRitoccoViewModel.cs" />
-    <Compile Include="Logging\LoggingShowWindowl.xaml.cs">
-      <DependentUpon>LoggingShowWindowl.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Logging\LoggingShowViewModel.cs" />
+    <Compile Include="Logging\LoggingShowWindowl.xaml.cs" />
+    <Compile Include="Logging\NotificationView.xaml.cs" />
+    <Compile Include="Logging\NotificationViewModel.cs" />
     <Compile Include="Main\CambioPaginaMsg.cs" />
     <Compile Include="Mvvm\IDialogProvider.cs" />
     <Compile Include="Mvvm\MultiSelect\IMultiSelectCollectionView.cs" />
     <Compile Include="Mvvm\MultiSelect\MultiSelect.cs" />
     <Compile Include="Mvvm\MultiSelect\MultiSelectCollectionView.cs" />
     <Compile Include="Mvvm\UserControlBase.cs" />
-    <Compile Include="Logging\NotificationView.xaml.cs">
-      <DependentUpon>NotificationView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pubblico\SlideShow.cs" />
     <Compile Include="Reports\ReportHostWindow.xaml.cs">
       <DependentUpon>ReportHostWindow.xaml</DependentUpon>
