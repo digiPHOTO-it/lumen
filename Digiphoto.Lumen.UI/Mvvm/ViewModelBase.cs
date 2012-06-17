@@ -20,6 +20,12 @@ namespace Digiphoto.Lumen.UI.Mvvm
 			set;
 		}
 
+		public ITrayIconProvider trayIconProvider
+		{
+			get;
+			set;
+		}
+
         #region Constructor
 
         protected ViewModelBase()

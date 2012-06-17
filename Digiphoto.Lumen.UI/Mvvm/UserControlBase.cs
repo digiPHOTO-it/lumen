@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Windows.Controls;
 using System.Windows;
+using Digiphoto.Lumen.UI.TrayIcon;
 
 
 namespace Digiphoto.Lumen.UI.Mvvm {
 
-	public class UserControlBase : UserControl, IDialogProvider {
+	public class UserControlBase : UserControl, IDialogProvider, ITrayIconProvider {
 
 
 		protected ViewModelBase viewModelBase {
@@ -25,6 +26,7 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 			if( this.DataContext != null && this.DataContext is ViewModelBase ) {
 				viewModelBase = (ViewModelBase) this.DataContext;
 				viewModelBase.dialogProvider = this;
+				viewModelBase.trayIconProvider = this;
 			}
 
 		}
@@ -56,5 +58,39 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 			var tastoPremuto = MessageBox.Show( message, title, MessageBoxButton.YesNo, MessageBoxImage.Question );
 			afterHideCallback( tastoPremuto == MessageBoxResult.Yes );
 		}
+
+		#region TrayIcon
+
+		public void showAbout(string title, string msg, int? sleep)
+		{
+			ShowTrayIcon trayIcon = new ShowTrayIcon();
+			trayIcon.showAbout(title, msg, sleep);
+		}
+
+		public void showAboutCloud(string title, string msg, int? sleep)
+		{
+			ShowTrayIcon trayIcon = new ShowTrayIcon();
+			trayIcon.showAboutCloud(title, msg, sleep);
+		}
+
+		public void showError(string title, string msg, int? sleep)
+		{
+			ShowTrayIcon trayIcon = new ShowTrayIcon();
+			trayIcon.showError(title, msg, sleep);
+		}
+
+		public void showInfo(string title, string msg, int? sleep)
+		{
+			ShowTrayIcon trayIcon = new ShowTrayIcon();
+			trayIcon.showInfo(title, msg, sleep);
+		}
+
+		public void showWarning(string title, string msg, int? sleep)
+		{
+			ShowTrayIcon trayIcon = new ShowTrayIcon();
+			trayIcon.showWarning(title, msg, sleep);
+		}
+
+		#endregion;
 	}
 }
