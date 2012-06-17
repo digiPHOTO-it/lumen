@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 
 namespace Digiphoto.Lumen.UI.Mvvm {
 
@@ -9,5 +10,7 @@ namespace Digiphoto.Lumen.UI.Mvvm {
         void ShowMessage( string message, string title );
 
 		void ShowConfirmation( string message, string title, Action<bool> afterHideCallback );
+		
+		void ShowConfirmationAnnulla(string message, string title, Action<MessageBoxResult> afterHideCallback);
     }
 }

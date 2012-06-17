@@ -18,6 +18,7 @@ using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Servizi.Scaricatore;
 using Digiphoto.Lumen.Servizi.Ritoccare;
+using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
 
 namespace Digiphoto.Lumen.Applicazione {
 
@@ -151,6 +152,8 @@ namespace Digiphoto.Lumen.Applicazione {
 			creaAggiungiAvviaServizio<IEntityRepositorySrv<Evento>>();
 
             creaAggiungiAvviaServizio<IEntityRepositorySrv<FormatoCarta>>();
+
+			creaAggiungiAvviaServizio<IEliminaFotoVecchieSrv>();
 
 		}
 

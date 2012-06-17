@@ -22,7 +22,6 @@ namespace Digiphoto.Lumen.UI {
 			using( new UnitOfWorkScope() ) {
 
 				InitializeComponent();
-				giorniDeleteFoto.Text = "" + Configurazione.UserConfigLumen.giorniDeleteFoto;
                 _mainWindowViewModel = new MainWindowViewModel();
 				_mainWindowViewModel.dialogProvider = this;
 				_mainWindowViewModel.trayIconProvider = this;
@@ -47,14 +46,6 @@ namespace Digiphoto.Lumen.UI {
 			IObservable<CambioPaginaMsg> observable = LumenApplication.Instance.bus.Observe<CambioPaginaMsg>();
 			observable.Subscribe( this );
 		}
-
-        private void button1_Click(object sender, RoutedEventArgs e)
-        {
-			Configurazione.UserConfigLumen.giorniDeleteFoto = short.Parse(this.giorniDeleteFoto.Text);
-			Configurazione.SalvaUserConfig();
-            System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
-            System.Diagnostics.Trace.WriteLine(config.FilePath);
-        }
 
 		public void OnCompleted() {
 		}
@@ -95,6 +86,16 @@ namespace Digiphoto.Lumen.UI {
 		public void ShowConfirmation( string message, string title, Action<bool> afterHideCallback ) {
 			var tastoPremuto = MessageBox.Show( message, title, MessageBoxButton.YesNo, MessageBoxImage.Question );
 			afterHideCallback( tastoPremuto == MessageBoxResult.Yes );
+		}
+		
+		/// <summary>
+		/// Chiedo conferma SI/NO/ANNULLA.
+		/// Chiamo la callback passando TRUE se l'utente ha scelto SI.
+		/// </summary>
+		public void ShowConfirmationAnnulla(string message, string title, Action<MessageBoxResult> afterHideCallback)
+		{
+			var tastoPremuto = MessageBox.Show(message, title, MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+			afterHideCallback(tastoPremuto);
 		}
 
 		#region TrayIcon

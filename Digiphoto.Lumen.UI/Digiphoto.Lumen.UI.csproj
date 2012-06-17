@@ -118,6 +118,10 @@
       <DependentUpon>Diapositiva.xaml</DependentUpon>
     </Compile>
     <Compile Include="Diapo\DiapositivaViewModel.cs" />
+    <Compile Include="EliminaVecchiRullini\EliminaVecchiRulliniView.xaml.cs">
+      <DependentUpon>EliminaVecchiRulliniView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EliminaVecchiRullini\EliminaVecchiRulliniViewModel.cs" />
     <Compile Include="FotoGallery\FotoGallery.xaml.cs">
       <DependentUpon>FotoGallery.xaml</DependentUpon>
     </Compile>
@@ -152,6 +156,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="EliminaVecchiRullini\EliminaVecchiRulliniView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Logging\LoggingShowWindowl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -173,10 +181,14 @@
     <Compile Include="Pubblico\SlideShowWindow.xaml.cs">
       <DependentUpon>SlideShowWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SelettoreFormatoCartaAbbinato\SelettoreFormatoCartaAbbinato.xaml.cs" />
+    <Compile Include="SelettoreFormatoCartaAbbinato\SelettoreFormatoCartaAbbinato.xaml.cs">
+      <DependentUpon>SelettoreFormatoCartaAbbinato.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SelettoreFormatoCartaAbbinato\SelettoreFormatoCartaAbbinatoViewModel.cs" />
     <Compile Include="SelettoreFormatoCarta\SelettoreFormatoCartaViewModel.cs" />
-    <Compile Include="SelettoreFormatoCarta\SelettoreFormatoCartaView.xaml.cs" />
+    <Compile Include="SelettoreFormatoCarta\SelettoreFormatoCartaView.xaml.cs">
+      <DependentUpon>SelettoreFormatoCartaView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SelettoreStampantiInstallate\SelettoreStampantiInstallateViewModel.cs" />
     <Compile Include="SelettoreStampantiInstallate\SelettoreStampantiInstallateView.xaml.cs">
       <DependentUpon>SelettoreStampantiInstallateView.xaml</DependentUpon>

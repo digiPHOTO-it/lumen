@@ -1,0 +1,21 @@
+﻿<lumM:UserControlBase x:Class="Digiphoto.Lumen.UI.EliminaVecchiRullini.EliminaVecchiRulliniView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
+			 xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
+			 xmlns:lumE="clr-namespace:Digiphoto.Lumen.UI.EliminaVecchiRullini"
+             mc:Ignorable="d" 
+             d:DesignHeight="311" d:DesignWidth="552">
+
+	<lumM:UserControlBase.DataContext>
+		<lumE:EliminaVecchiRulliniViewModel />
+	</lumM:UserControlBase.DataContext>
+
+	<Grid>	
+		<TextBox Height="23" HorizontalAlignment="Left" Margin="150,29,0,0" Name="textBox1" VerticalAlignment="Top" Width="362" Text="{Binding Path=cfg.giorniDeleteFoto}" />
+		<Button Content="Applica" Height="23" HorizontalAlignment="Left" Margin="36,29,0,0" Name="button1" VerticalAlignment="Top" Width="75" />
+		<Button Content="Clean" Height="23" HorizontalAlignment="Left" Margin="38,93,0,0" Name="button2" VerticalAlignment="Top" Width="75" Command="{Binding cleanCommand}"/>
+	</Grid>
+</lumM:UserControlBase>

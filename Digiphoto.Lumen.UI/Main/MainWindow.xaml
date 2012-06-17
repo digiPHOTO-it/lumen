@@ -4,6 +4,7 @@
         xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
         xmlns:lumFR="clr-namespace:Digiphoto.Lumen.UI.FotoRitocco"
         xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
+		xmlns:lumE="clr-namespace:Digiphoto.Lumen.UI.EliminaVecchiRullini"
         Title="Lumen" WindowStyle="None" WindowState="Maximized"
         >
     <Window.Resources>
@@ -37,24 +38,55 @@
         </TabItem>
 
         <TabItem Header="Configurazione" ToolTip="Scarica foto da memory-card o da altra cartella" MinHeight="30" >
-        <!-- UserControl per scaricare le foto -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Height="405">
-                <StackPanel Orientation="Vertical" Height="405">
-                    <lum:SelettoreFormatoCarta DataContext="{Binding Path=selettoreFormatoCartaViewModel}"/>
-                    <lum:SelettoreStampanteInstallata DataContext="{Binding Path=selettoreStampantiInstallateViewModel}"/>
-                </StackPanel>
-                <lum:SelettoreFormatoCartaAbbinatoView DataContext="{Binding Path=selettoreFormatoCartaAbbinatoViewModel}"/>
-                <Button Content="Modifica" Height="23" Name="button1" Width="75" Click="button1_Click" />
-                <TextBox Height="23" Name="giorniDeleteFoto" Width="220" />
-            </StackPanel>
+			<TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Left" Name="tabConfigPagine" >
+
+				<TabItem ToolTip="Consente di Gestire le entita">
+					<TabItem.Header>
+						<TextBlock Text="Gestione Entita" FontSize="14" />
+					</TabItem.Header>
+					<!-- UserControl per scaricare le foto -->
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Height="405">
+						<StackPanel Orientation="Vertical" Height="405">
+							<lum:SelettoreFormatoCarta DataContext="{Binding Path=selettoreFormatoCartaViewModel}"/>
+							<lum:SelettoreStampanteInstallata DataContext="{Binding Path=selettoreStampantiInstallateViewModel}"/>
+						</StackPanel>
+						<lum:SelettoreFormatoCartaAbbinatoView DataContext="{Binding Path=selettoreFormatoCartaAbbinatoViewModel}"/>
+					</StackPanel>
+				</TabItem>							
+			</TabControl>
         </TabItem>
 
         <TabItem Header="Utilità" ToolTip="Funzionalità varie" >
-            <StackPanel>
-                <Button Content="Report Vendite" Height="50" Name="buttonReport" Command="{Binding reportVenditeCommand}" Width="150" />
-				<Button Content="Log" Height="50" Command="{Binding LogCommand}" Width="150" />
-				<Button Content="Uscita" Height="50" Command="{Binding CloseCommand}" Width="150" />
-            </StackPanel>
+			<TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Left" Name="tabUtilityPagine" >
+			
+				<TabItem ToolTip="Elimina Rullini">
+					<TabItem.Header>
+						<TextBlock Text="Elimina Rullini" FontSize="14" />
+					</TabItem.Header>
+					<lumE:EliminaVecchiRulliniView/>
+				</TabItem>
+			
+				<TabItem ToolTip="Report Vendite">
+					<TabItem.Header>
+						<TextBlock Text="Report Vendite" FontSize="14" />
+					</TabItem.Header>
+					<Button Content="Report Vendite" Height="50" Name="buttonReport" Command="{Binding reportVenditeCommand}" Width="150" />
+				</TabItem>	
+				
+				<TabItem ToolTip="Funzione di Logging e Debug">
+					<TabItem.Header>
+						<TextBlock Text="Log" FontSize="14" />
+					</TabItem.Header>
+					<Button Content="Log" Height="50" Command="{Binding LogCommand}" Width="150" />
+				</TabItem>	
+				
+				<TabItem ToolTip="Uscita">
+					<TabItem.Header>
+						<TextBlock Text="Uscita" FontSize="14" />
+					</TabItem.Header>
+					<Button Content="Uscita" Height="50" Command="{Binding CloseCommand}" Width="150" />
+				</TabItem>	
+			</TabControl>
         </TabItem>
 
     </TabControl>
