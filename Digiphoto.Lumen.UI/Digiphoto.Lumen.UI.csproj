@@ -58,6 +58,9 @@
     <Reference Include="EntityFramework">
       <HintPath>..\packages\EntityFramework.4.3.1\lib\net40\EntityFramework.dll</HintPath>
     </Reference>
+    <Reference Include="Hardcodet.Wpf.TaskbarNotification">
+      <HintPath>lib\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Digiphoto.Lumen.Core\lib\log4net.dll</HintPath>
@@ -128,6 +131,7 @@
       <DependentUpon>LoggingShowWindowl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Main\CambioPaginaMsg.cs" />
+    <Compile Include="Mvvm\ITrayIconProvider.cs" />
     <Compile Include="Mvvm\IDialogProvider.cs" />
     <Compile Include="Mvvm\MultiSelect\IMultiSelectCollectionView.cs" />
     <Compile Include="Mvvm\MultiSelect\MultiSelect.cs" />
@@ -141,6 +145,9 @@
       <DependentUpon>ReportHostWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="src\Util\AiutanteUI.cs" />
+    <Compile Include="TrayIcon\ShowTrayIcon.xaml.cs">
+      <DependentUpon>ShowTrayIcon.xaml</DependentUpon>
+    </Compile>
     <Page Include="Dialogs\RangeGiorniDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -315,6 +322,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="TrayIcon\ShowTrayIcon.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Mvvm\ViewModelBase.cs" />
@@ -432,6 +443,17 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\about.png" />
+    <Resource Include="Resources\about2.png" />
+    <Resource Include="Resources\add-16x16.png" />
+    <Resource Include="Resources\close-16x16.png" />
+    <Resource Include="Resources\error.png" />
+    <Resource Include="Resources\info.png" />
+    <Resource Include="Resources\remove-16x16.png" />
+    <Resource Include="Resources\warning.png" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

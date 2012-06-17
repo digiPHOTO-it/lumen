@@ -7,12 +7,13 @@ using Digiphoto.Lumen.UI.Main;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.UI.Reports;
 using Digiphoto.Lumen.UI.Mvvm;
+using Digiphoto.Lumen.UI.TrayIcon;
 
 namespace Digiphoto.Lumen.UI {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
-	public partial class MainWindow : Window, IObserver<CambioPaginaMsg>, IDialogProvider {
+	public partial class MainWindow : Window, IObserver<CambioPaginaMsg>, IDialogProvider, ITrayIconProvider {
 
         MainWindowViewModel _mainWindowViewModel = null;
 
@@ -24,6 +25,7 @@ namespace Digiphoto.Lumen.UI {
 				giorniDeleteFoto.Text = "" + Configurazione.UserConfigLumen.giorniDeleteFoto;
                 _mainWindowViewModel = new MainWindowViewModel();
 				_mainWindowViewModel.dialogProvider = this;
+				_mainWindowViewModel.trayIconProvider = this;
 			}
 
 
@@ -94,5 +96,39 @@ namespace Digiphoto.Lumen.UI {
 			var tastoPremuto = MessageBox.Show( message, title, MessageBoxButton.YesNo, MessageBoxImage.Question );
 			afterHideCallback( tastoPremuto == MessageBoxResult.Yes );
 		}
+
+		#region TrayIcon
+
+		public void showAbout(string title, string msg, int? sleep)
+		{
+			ShowTrayIcon trayIcon = new ShowTrayIcon();
+			trayIcon.showAbout(title, msg, sleep);
+		}
+
+		public void showAboutCloud(string title, string msg, int? sleep)
+		{
+			ShowTrayIcon trayIcon = new ShowTrayIcon();
+			trayIcon.showAboutCloud(title, msg, sleep);
+		}
+
+		public void showError(string title, string msg, int? sleep)
+		{
+			ShowTrayIcon trayIcon = new ShowTrayIcon();
+			trayIcon.showError(title, msg, sleep);
+		}
+
+		public void showInfo(string title, string msg, int? sleep)
+		{
+			ShowTrayIcon trayIcon = new ShowTrayIcon();
+			trayIcon.showInfo(title, msg, sleep);
+		}
+
+		public void showWarning(string title, string msg, int? sleep)
+		{
+			ShowTrayIcon trayIcon = new ShowTrayIcon();
+			trayIcon.showWarning(title, msg, sleep);
+		}
+
+		#endregion;
 	}
 }
