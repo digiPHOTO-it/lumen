@@ -72,6 +72,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			//Metto un'intestazione automatica per distinguere il carrello autogenerato dagli altri
 			// scarrello.intestazione = "Auto";
 			isStatoModifica = false;
+
+			GestoreCarrelloMsg msg = new GestoreCarrelloMsg(this);
+			msg.fase = Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.CreatoNuovoCarrello;
+			LumenApplication.Instance.bus.Publish(msg);
 		}
 
 		/// <summary>
@@ -109,11 +113,18 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 		public void aggiungiRiga( RiCaFotoStampata riga ) {
-
+			if (!rigaIsInCarrello(_carrello, riga))
+			{
 			// Prima di aggiungere la riga al carrello, provo a riattaccarlo. Non si sa mai.
 			if( isStatoModifica )
+				{
 				Digiphoto.Lumen.Database.OrmUtil.forseAttacca<Carrello>( "Carrelli", ref _carrello );	
+				}
 			carrello.righeCarrello.Add( riga );
+			}else
+			{
+				MessageBox.Show("La fotografia è già stata caricata nel carrello\nModificare la quantita","Avviso");
+			}	
 		}
 
 		public void abbandonaCarrello() {
@@ -202,6 +213,19 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			_giornale.Info( msg2 );
 		}
 
+		private bool rigaIsInCarrello(Carrello carrello, RiCaFotoStampata riga)
+		{
+			bool isInCarrello = false;
+			foreach(RigaCarrello r in carrello.righeCarrello){
+				if(r is RiCaFotoStampata){
+					RiCaFotoStampata rica = r as RiCaFotoStampata;
+					if(rica.idFotografia == riga.idFotografia){
+						isInCarrello = true;
+					}
+				}
+			}
+			return isInCarrello;
+		}
 
 		/// <summary>
 		/// Sistemo qualcosa ma NON le chiavi primarie

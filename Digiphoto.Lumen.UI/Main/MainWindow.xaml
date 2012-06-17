@@ -34,7 +34,7 @@
 
         
         <TabItem Header="Carrello" ToolTip="Vendere stampe e CD" >
-			<lum:Carrello/>
+			<lum:CarrelloView/>
         </TabItem>
 
         <TabItem Header="Configurazione" ToolTip="Scarica foto da memory-card o da altra cartella" MinHeight="30" >

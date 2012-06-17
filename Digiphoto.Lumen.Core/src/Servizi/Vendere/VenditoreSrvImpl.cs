@@ -58,7 +58,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			set;
 		}
 
-
 		#endregion
 
 		private Object thisLock = new Object();

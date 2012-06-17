@@ -5,6 +5,12 @@
                     xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo">
 
     <lumC:ImmagineToImageSourceConverter x:Key="immagineToImageSourceConverter" />
+	<lumC:CollectionViewVisibilityConverter x:Key="collectionViewVisibilityConverter" />
+	<lumC:CollectionViewVisibilityMultiConverter x:Key="collectionViewVisibilityMultiConverter" />
+	<lumC:BoolInverterConverter x:Key="boolInverterConverter" />
+	<lumC:SumQuantitaConverter x:Key="sumQuantitaConverter" />
+	<lumC:BoolVisibilityConverter x:Key="boolVisibilityConverter" />
+	<lumC:BoolBackgroundConverter x:Key="boolBackgroundConverter" />
 
 	<!-- Stile della listbox che itera le RigheCarrello -->
     <Style x:Key="ListCarrelloStyle" TargetType="ListBox">
@@ -120,15 +126,18 @@
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
 						</Grid.ColumnDefinitions>
-						<Label Content="Numero Foto:" Grid.Row="0" Grid.Column="0" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-						<Label Content="{Binding Path=fotografia.numero}" Grid.Row="1" Grid.Column="0" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-						<Label Content="Quantità:" Grid.Row="0" Grid.Column="1" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-						<Label Content="{Binding Path=quantita}" Grid.Row="1" Grid.Column="1" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" />			
-						<Label Content="Prezzo Lordo Unitario:" Grid.Row="0" Grid.Column="2" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-						<Label Content="{Binding Path=prezzoLordoUnitario}" Grid.Row="1" Grid.Column="2" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-						<Label Content="Prezzo Netto Totale:" Grid.Row="0" Grid.Column="3" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-						<Label Content="{Binding Path=prezzoNettoTotale}" Grid.Row="1" Grid.Column="3" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Label Content="Formato Carta:" Grid.Row="0" Grid.Column="0" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Label Content="{Binding Path=formatoCarta.descrizione}" Grid.Row="1" Grid.Column="0" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Label Content="Numero Foto:" Grid.Row="0" Grid.Column="1" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						<Label Content="{Binding Path=fotografia.numero}" Grid.Row="1" Grid.Column="1" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						<Label Content="Quantità:" Grid.Row="0" Grid.Column="2" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						<Label Content="{Binding Path=quantita}" Grid.Row="1" Grid.Column="2" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" />			
+						<Label Content="Prezzo Lordo Unitario:" Grid.Row="0" Grid.Column="3" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						<Label Content="{Binding Path=prezzoLordoUnitario}" Grid.Row="1" Grid.Column="3" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						<Label Content="Prezzo Netto Totale:" Grid.Row="0" Grid.Column="4" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						<Label Content="{Binding Path=prezzoNettoTotale}" Grid.Row="1" Grid.Column="4" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 					</Grid>
 				</GroupBox>
 			</Grid>
@@ -138,7 +147,7 @@
     <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Carrello" -->
     <DataTemplate x:Key="ListaCarrelliDataTemplate">
         <StackPanel Orientation="Vertical">
-            <Border BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="10" Margin="0,0,2,2">
+			<Border BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="10" Margin="0,0,2,2" Background="{Binding Path=venduto, Converter={StaticResource boolBackgroundConverter}}">
 				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-48x48.png" Width="40">
 					<Image.ToolTip>
 						<Grid>

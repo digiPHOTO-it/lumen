@@ -39,6 +39,9 @@ namespace Digiphoto.Lumen.UI {
 
 		public FotoGalleryViewModel() {
 
+			IObservable<GestoreCarrelloMsg> observableCarrello = LumenApplication.Instance.bus.Observe<GestoreCarrelloMsg>();
+			observableCarrello.Subscribe(this);
+
 			paramCercaFoto = new ParamCercaFoto();
 			metadati = new MetadatiFoto();
 
@@ -120,8 +123,8 @@ namespace Digiphoto.Lumen.UI {
 
 				bool posso = true;
 
-				//if (posso && isAlmenoUnaSelezionata)
-				//	posso = false;
+				if (posso && !isAlmenoUnaSelezionata)
+					posso = false;
 
 				// Verifico che non abbia fatto nel carrello operazioni di 
 				// stampa con errore o abbia caricato un carrello salvato
@@ -139,6 +142,9 @@ namespace Digiphoto.Lumen.UI {
 
 				bool posso = true;
 
+				if (posso && !isAlmenoUnaSelezionata)
+					posso = false;
+
 				// Verifico che non abbia fatto nel carrello operazioni di 
 				// stampa con errore o abbia caricato un carrello salvato
 				if (posso && operazioniCarrelloBloccanti)
@@ -154,6 +160,13 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		public bool possoMandareInModifica
+		{
+			get {
+				return isAlmenoUnaSelezionata;
+			}
+		}
+		
 		public bool possoEliminareMetadati {
 			get {
 				return isAlmenoUnaSelezionata;
@@ -345,7 +358,7 @@ namespace Digiphoto.Lumen.UI {
 			get {
 				if( _aggiungereAlMasterizzatoreCommand == null ) {
 					_aggiungereAlMasterizzatoreCommand = new RelayCommand( param => aggiungereAlMasterizzatore()
-				                                                         //  ,param => possoAggiungereAlMasterizzatore 
+				                                                           ,param => possoAggiungereAlMasterizzatore 
 																		   );
 				}
 				return _aggiungereAlMasterizzatoreCommand;
@@ -437,7 +450,8 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand mandareInModificaCommand {
 			get {
 				if( _mandareInModificaCommand == null ) {
-					_mandareInModificaCommand = new RelayCommand( param => mandareInModifica() );
+					_mandareInModificaCommand = new RelayCommand( param => mandareInModifica(),
+																  param => possoMandareInModifica	);
 				}
 				return _mandareInModificaCommand;
 			}
@@ -756,9 +770,15 @@ namespace Digiphoto.Lumen.UI {
 		
 		public void OnNext(GestoreCarrelloMsg msg)
 		{
-			if (msg.fase == Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.ErroreMasterizzazione)
+			if (msg.fase == Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.ErroreMasterizzazione ||
+				msg.fase == Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.LoadCarrelloSalvato)
 			{
 				operazioniCarrelloBloccanti = true;
+			}
+
+			if (msg.fase == Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.CreatoNuovoCarrello)
+			{
+				operazioniCarrelloBloccanti = false;
 			}
 		}
 

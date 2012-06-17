@@ -18,7 +18,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		{
 			UpdateCarrello,
 			LoadCarrelloSalvato,
-			ErroreMasterizzazione
+			ErroreMasterizzazione,
+			CreatoNuovoCarrello
 		};
 
 		public GestoreCarrelloMsg( object sender ) : base( sender ) {
