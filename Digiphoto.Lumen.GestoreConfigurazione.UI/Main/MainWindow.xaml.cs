@@ -73,6 +73,16 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI {
 			afterHideCallback( tastoPremuto == MessageBoxResult.Yes );
 		}
 
+		/// <summary>
+		/// Chiedo conferma SI/NO/ANNULLA.
+		/// Chiamo la callback passando TRUE se l'utente ha scelto SI.
+		/// </summary>
+		public void ShowConfirmationAnnulla(string message, string title, Action<MessageBoxResult> afterHideCallback)
+		{
+			var tastoPremuto = MessageBox.Show(message, title, MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+			afterHideCallback(tastoPremuto);
+		}
+		
 		#region TrayIcon
 
 		public void showAbout(string title, string msg, int? sleep)

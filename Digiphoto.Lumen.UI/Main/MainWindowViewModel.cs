@@ -17,6 +17,7 @@ using Digiphoto.Lumen.UI.Reports;
 using Microsoft.Reporting.WinForms;
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.UI.Logging;
+using Digiphoto.Lumen.UI.EliminaVecchiRullini;
 namespace Digiphoto.Lumen.UI {
 
 	class MainWindowViewModel : ClosableWiewModel {
