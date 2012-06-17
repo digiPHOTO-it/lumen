@@ -1,0 +1,21 @@
+﻿<lumM:UserControlBase x:Class="Digiphoto.Lumen.UI.Logging.NotificationView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:res="clr-namespace:Digiphoto.Lumen.Core.Util.Logging;assembly=Digiphoto.Lumen.Core"
+	xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
+	xmlns:log="clr-namespace:Digiphoto.Lumen.UI.Logging"
+	xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"  				  
+    Height="446" Width="707">
+
+	<!-- istanzio ed associo il mio rispettivo ViewModel -->
+	<!--UserControl.DataContext>
+		<log:NotificationViewModel />
+	</UserControl.DataContext-->
+
+	<UserControl.Resources>
+        <res:NotifyAppender x:Key="Log" />
+    </UserControl.Resources>
+    <Grid DataContext="{StaticResource Log}" Height="427">
+		<TextBox  Name="TextAreaLog" Text="{Binding Appender.Notification, Mode=Default}" Margin="5,5,5,5" VerticalScrollBarVisibility="Visible" Background="Black" Foreground="White" TextChanged="autoScroll" />
+	</Grid>
+</lumM:UserControlBase>

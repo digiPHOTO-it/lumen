@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using Digiphoto.Lumen.UI.Reports;
 using Microsoft.Reporting.WinForms;
 using Digiphoto.Lumen.Config;
+using Digiphoto.Lumen.UI.Logging;
 namespace Digiphoto.Lumen.UI {
 
 	class MainWindowViewModel : ClosableWiewModel {
@@ -99,6 +100,25 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private void log(){
+			LoggingShowWindows loggingShowWindows = new LoggingShowWindows();
+			loggingShowWindows.Show();
+		}
+
+		private RelayCommand _logCommand;
+		public ICommand LogCommand
+		{
+			get
+			{
+				if (_logCommand == null)
+				{
+					_logCommand = new RelayCommand(param => log(),
+															  param => true,
+															  false);
+				}
+				return _logCommand;
+			}
+		}
 
 	}
 }
