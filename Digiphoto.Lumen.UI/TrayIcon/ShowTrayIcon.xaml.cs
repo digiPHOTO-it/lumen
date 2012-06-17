@@ -47,7 +47,7 @@ namespace Digiphoto.Lumen.UI.TrayIcon
 		public static readonly DependencyProperty TrayIconTitleProperty =
 			DependencyProperty.Register("TrayIconTitle",
 										typeof(string),
-										typeof(TrayIcon),
+										typeof(ShowTrayIcon),
 										new FrameworkPropertyMetadata(""));
 
 		/// <summary>
@@ -56,7 +56,7 @@ namespace Digiphoto.Lumen.UI.TrayIcon
 		public static readonly DependencyProperty TrayIconMessageProperty =
 			DependencyProperty.Register("TrayIconMessage",
 										typeof(string),
-										typeof(TrayIcon),
+										typeof(ShowTrayIcon),
 										new FrameworkPropertyMetadata(""));
 
 		/// <summary>
@@ -65,7 +65,7 @@ namespace Digiphoto.Lumen.UI.TrayIcon
 		public static readonly DependencyProperty TypeIconProperty =
 			DependencyProperty.Register("TypeIcon",
 										typeof(string),
-										typeof(TrayIcon),
+										typeof(ShowTrayIcon),
 										new FrameworkPropertyMetadata(""));
 
 		/// <summary>
@@ -74,7 +74,7 @@ namespace Digiphoto.Lumen.UI.TrayIcon
 		public static readonly DependencyProperty TrayIconBackgroundProperty =
 			DependencyProperty.Register("TrayIconBackground",
 										typeof(string),
-										typeof(TrayIcon),
+										typeof(ShowTrayIcon),
 										new FrameworkPropertyMetadata(""));
 
 		/// <summary>
@@ -200,7 +200,7 @@ namespace Digiphoto.Lumen.UI.TrayIcon
 
 		public void showTryIcon(IconType iconType, string title, String msg, int? sleep)
 		{
-			Digiphoto.Lumen.UI.TrayIcon.TrayIcon balloon = new Digiphoto.Lumen.UI.TrayIcon.TrayIcon();
+			ShowTrayIcon balloon = new ShowTrayIcon();
 			balloon.TrayIconTitle = title;
 			balloon.TrayIconMessage = msg;
 			balloon.TypeIcon = ConvertTypeToSourcePath(iconType);
