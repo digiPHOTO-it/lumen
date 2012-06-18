@@ -7,6 +7,7 @@ using System.Data.Objects;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Core;
 using log4net;
+using Digiphoto.Lumen.Database;
 
 namespace Digiphoto.Lumen.Servizi.Ricerca {
 	
@@ -105,11 +106,14 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			IQueryable<Fotografia> query = from ff in this.objectContext.Fotografie.Include( "fotografo" )
 										   orderby ff.dataOraAcquisizione, ff.numero
 										   select ff;
+			
+			
 			// ----- Filtro eventi
+			// Siccome non esiste la WhereIn, me la sono creata io. 
+			// Seguire questa discussione : http://social.msdn.microsoft.com/Forums/en-US/adodotnetentityframework/thread/095745fe-dcf0-4142-b684-b7e4a1ab59f0
 			if( param.eventi != null ) {
 				// Siccome ancora linq non supporta confronto con entità, devo estrarre gli id
-				var listaIds = from le in param.eventi
-							   select le.id;
+				IEnumerable<Guid> listaIds = from le in param.eventi select le.id;
 				query = query.Where( ff => listaIds.Contains( ff.evento.id ) );
 			}
 

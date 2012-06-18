@@ -45,7 +45,7 @@
                             <ColumnDefinition Width="4*" />
                         </Grid.ColumnDefinitions>
                         <Label Content="Database Connection String" Height="28" HorizontalAlignment="Left" Margin="2,60,0,0" Name="label4" VerticalAlignment="Top" Grid.Column="1" />
-                        <TextBox Height="44" TextWrapping="Wrap" Margin="3,95,1,0"  VerticalAlignment="Top" Grid.Column="1" Grid.ColumnSpan="5" IsEnabled="False" Width="634" Text="{Binding Path=ConnectionString}" Grid.RowSpan="2" />
+                        <TextBox Height="44" TextWrapping="Wrap" Margin="3,95,1,0"  VerticalAlignment="Top" Grid.Column="1" Grid.ColumnSpan="5" IsEnabled="False" Width="634" Text="{Binding Path=ConnectionString,Mode=OneWay}" Grid.RowSpan="2" />
                         
                         <Label Content="Cartella Rullini" Height="25" HorizontalAlignment="Left" Margin="3,105,0,0" Name="label5" VerticalAlignment="Top" Width="152" Grid.Column="1" Grid.Row="2" />
                         <TextBox Margin="111,109,51,0" Height="23"  VerticalAlignment="Top" Grid.Column="1" Grid.ColumnSpan="5" Width="476" Grid.Row="2" Text="{Binding Path=cfg.cartellaFoto}" />
@@ -55,16 +55,17 @@
                         <TextBox Height="23" HorizontalAlignment="Left" Margin="155,156,0,0" Name="textBox3" VerticalAlignment="Top" Width="34" Grid.Column="1" Grid.Row="2" Text="{Binding Path=cfg.codicePuntoVendita}" Grid.ColumnSpan="2" />
                         <Label Content="Descrizione" Height="26" HorizontalAlignment="Left" Margin="39,154,0,0" Name="label7" VerticalAlignment="Top" Width="79" Grid.Column="2" Grid.Row="2" Grid.ColumnSpan="2" />
                         <TextBox Height="23" HorizontalAlignment="Left" Margin="74,156,0,0" Name="textBox4" VerticalAlignment="Top" Width="293" Grid.Column="3" Grid.Row="2" Text="{Binding Path=cfg.descrizionePuntoVendita}" Grid.ColumnSpan="3" />
-					    <ComboBox Height="23" HorizontalAlignment="Left" Margin="160,19,0,0" Name="databaseSupoortatiComboBox" VerticalAlignment="Top" Width="206" Grid.Column="1" SelectedIndex="{Binding Path=MotoreDataBase}" IsEnabled="False" Grid.ColumnSpan="4">
-                            <ComboBoxItem Content="Sql Server Compact Edition" />
-                            <ComboBoxItem Content="SqLite" />
-                            <ComboBoxItem Content="Sql Server" />
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="SelectionChanged">
-                                    <i:InvokeCommandAction Command="{Binding MotoreDataBaseCommand}"/>
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-                        </ComboBox>
+
+                        <ComboBox Height="23" HorizontalAlignment="Left" Margin="160,19,0,0" Name="databaseSupoortatiComboBox" VerticalAlignment="Top" Width="206" Grid.Column="1" Grid.ColumnSpan="4" 
+                              IsEnabled="{Binding Abilitato}"
+                              ItemsSource="{Binding motoriDatabasesValues}"
+                              SelectedValue="{Binding Path=cfg.motoreDatabase,Mode=TwoWay}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding MotoreDataBaseCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ComboBox>
                         <Label Content="Motore di database" Height="28" HorizontalAlignment="Left" Margin="2,19,0,0" Name="label10" VerticalAlignment="Top" Width="152" Grid.Column="1" />
 
                         <Label Content="DataDirectory" Height="27" HorizontalAlignment="Left" Margin="3,0,0,0" Name="label13" VerticalAlignment="Top" Width="116" Grid.Column="1" Grid.Row="2" />

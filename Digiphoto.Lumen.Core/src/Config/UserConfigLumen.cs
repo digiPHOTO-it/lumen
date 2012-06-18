@@ -22,6 +22,12 @@ namespace Digiphoto.Lumen.Config
 		StampaDiretta = 1
 	}
 
+	public enum MotoreDatabase : short {
+		SqlServerCE = 0,
+		SqLite = 1,
+		SqlServer = 2
+	}
+
 
     public sealed class UserConfigLumen : INotifyPropertyChanged
     {
@@ -94,9 +100,17 @@ namespace Digiphoto.Lumen.Config
 			set;
 		}
 
+		private string _dbNomeDbPieno;
 		public string dbNomeDbPieno {
-			get;
-			set;
+			get {
+				return _dbNomeDbPieno;
+			}
+			set {
+				if( _dbNomeDbPieno != value ) {
+					_dbNomeDbPieno = value;
+					OnPropertyChanged( "dbNomeDbPieno" );
+				}
+			}
 		}
 
 		string _dbCartella;
@@ -188,6 +202,34 @@ namespace Digiphoto.Lumen.Config
 			PropertyChangedEventHandler handler = PropertyChanged;
 			if( handler != null ) {
 				handler( this, new PropertyChangedEventArgs( name ) );
+			}
+		}
+
+		private MotoreDatabase _motoreDatabase;
+		public MotoreDatabase motoreDatabase {
+			get {
+				return _motoreDatabase;
+			}
+			set {
+				if( _motoreDatabase != value ) {
+					_motoreDatabase = value;
+					OnPropertyChanged( "motoreDatabase" );
+				}
+			}
+		}
+
+		public string qualeConnectionString {
+			get {
+				switch( motoreDatabase ) {
+					case MotoreDatabase.SqlServerCE:
+						return "LumenEntities-sqlCE";
+					case MotoreDatabase.SqLite:
+						return "LumenEntities-sqLite";
+					case MotoreDatabase.SqlServer:
+						return "LumenEntities-sqlServer";
+					default:
+						return null;
+				}
 			}
 		}
 	}

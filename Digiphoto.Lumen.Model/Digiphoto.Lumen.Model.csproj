@@ -116,6 +116,9 @@
     <None Include="App.Config">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="dbVuoto.sqlite">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="LumenModel.edmx.sqlce" />
     <None Include="LumenModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -133,9 +136,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="dbVuoto.sdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="IstruzioniCreazioneDatabaseDaModello.txt" />
+    <None Include="LumenModel.edmx.sqLite.sql">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
