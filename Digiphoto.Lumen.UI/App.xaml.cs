@@ -43,7 +43,7 @@ namespace Digiphoto.Lumen.UI {
 					base.OnStartup(e);
 
 					// Inizializzo l'applicazione
-					LumenApplication.Instance.avvia();
+					LumenApplication.Instance.avvia( false );
 
 					#if (! DEBUG)
 						// Chiudo lo splash

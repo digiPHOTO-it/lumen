@@ -61,6 +61,10 @@ namespace Digiphoto.Lumen.Applicazione {
 		 * Avvio della applicazione. Accendiamo la baracca.
 		 */
 		public void avvia() {
+			avvia( true );
+		}
+
+		public void avvia( bool autoSistema ) {
 
 /*
  * Purtoppo non posso mettere questo controllo perché gli Test-Case si inciampano qui.
@@ -73,7 +77,7 @@ namespace Digiphoto.Lumen.Applicazione {
 			// Configuro il logger
 			XmlConfigurator.Configure();
 
-			avviaConfigurazione();
+			avviaConfigurazione( autoSistema );
 
 			using( new UnitOfWorkScope() ) {
 
@@ -102,9 +106,9 @@ namespace Digiphoto.Lumen.Applicazione {
 		/**\
 		 * Faccio un controllo che tutto sia a posto e che il programma possa partire
 		 */
-		private void avviaConfigurazione() {
+		private void avviaConfigurazione( bool autoSistema ) {
 			
-			_configurazione = new Configurazione();
+			_configurazione = new Configurazione( autoSistema );
 
 			_servizioFactory = new ServizioFactory();
 		}

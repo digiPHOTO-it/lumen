@@ -60,8 +60,14 @@ namespace Digiphoto.Lumen.Core.Database {
 				throw new InvalidOperationException( "ObjectContextScope instances " +
 																"cannot be nested." );
 			_saveAllChangesAtEndOfScope = saveAllChangesAtEndOfScope;
+
+
+			string ncs = Configurazione.UserConfigLumen.qualeConnectionString;
+
 			/* Create a new ObjectContext instance: */
-			_objectContext = new LumenEntities();
+			_objectContext = new LumenEntities( ncs );
+			
+				
 			_isDisposed = false;
 			Thread.BeginThreadAffinity();
 			/* Set the current scope to this UnitOfWorkScope object: */

@@ -287,7 +287,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				carrello = query.SingleOrDefault();
 
 				if( carrello == null )
-					throw new ObjectNotFoundException( "La riga carrello con id = " + idRigaCarrello + " non è esiste" );
+					throw new ObjectNotFoundException( "La riga carrello con id = " + idRigaCarrello + " non è usabile" );
 
 				// Carattere speciale che non c'è sulla tastiera per evitare cancellazioni fraudolente
 				char marca = '\u0251';
@@ -348,7 +348,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				carrello = query.SingleOrDefault();
 
 				if( carrello == null )
-					throw new ObjectNotFoundException( "Il carrello con id = " + idCarrello + " non è esiste" );
+					throw new ObjectNotFoundException( "Il carrello con id = " + idCarrello + " non è usabile" );
 
 				// Carattere speciale che non c'è sulla tastiera per evitare cancellazioni fraudolente
 				char marca = '\u0251';

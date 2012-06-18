@@ -55,6 +55,13 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
+		public IEnumerable<MotoreDatabase> motoriDatabasesValues {
+			get {
+				return Enum.GetValues( typeof( MotoreDatabase ) ).Cast<MotoreDatabase>();
+			}
+		}
+
+	
 		public bool notMasterizzaDirettamente {
 			get {
 				return ! cfg.masterizzaDirettamente;
@@ -68,25 +75,17 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
         {
 			// La carico da disco, non uso quella statica già caricata dentro Configurazione.
 			this.cfg = Configurazione.caricaUserConfig();
-
-			ConnectionString = ConfigurationManager.ConnectionStrings ["LumenEntities"].ConnectionString;
-
-			MotoreDataBase = parseConnectionStringToDriver( ConnectionString );
         }
 
         private void saveUserConfig()
         {
 			UserConfigSerializer.serializeToFile( cfg );
-
             salvaConfigDB();
         }
 
+		// TODO rivedere. non so se serve piu
         private void salvaConfigDB()
         {
-            //String stringDbCartella = Path.GetDirectoryName(DataSource);
-
-            //String stringDbNomePieno = Path.GetFileName(DataSource);
-
 			AppDomain.CurrentDomain.SetData( "DataDirectory", cfg.dbCartella );
 		}
 
@@ -103,34 +102,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             }   
         }
 
-        public static int parseConnectionStringToDriver(String connectionString)
-        {
-            var entityConnString = new EntityConnectionStringBuilder(connectionString);
-            //entityConnString.Metadata = "res://*/Model2.csdl|res://*/Model2.ssdl|res://*/Model2.msl";
-            //entityConnString.Provider = "System.Data.SQLite";
-            //entityConnString.ProviderConnectionString = sqliteConnString.ConnectionString;
-            int index = 0;
-            //currentProvider = entityConnString.Provider;
-            switch (entityConnString.Provider)
-            {
-                case "System.Data.SqlServerCe.4.0":
-                    SqlCeConnectionStringBuilder sqlCeConnString = new SqlCeConnectionStringBuilder(entityConnString.ProviderConnectionString);
-                    //textBoxDataSource.Text = sqlCeConnString.DataSource;
-                    index = 0;
-                    break;
-                case "System.Data.SQLite":
-                    var sqliteConnString = new SQLiteConnectionStringBuilder(entityConnString.ProviderConnectionString);
-                    //textBoxDataSource.Text = sqliteConnString.DataSource;
-                    index = 1;
-                    break;
-                case "System.Data.SQServer":
-                    var sqlConnString = new SqlConnectionStringBuilder(entityConnString.ProviderConnectionString);
-                    //textBoxDataSource.Text = sqlConnString.DataSource;
-                    index = 2;
-                    break;
-            }
-            return index;
-        }
 
         private void setGui()
         {
@@ -338,23 +309,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             set;
         }
 
-		private int _motoreDataBase;
-		public int MotoreDataBase
-		{
-			get
-			{
-				return _motoreDataBase;
-			}
-			set
-			{
-				if (_motoreDataBase != value)
-				{
-					_motoreDataBase = value;
-					OnPropertyChanged("MotoreDataBase");
-				}
-			}
-		}
-
 		private String _dataSource;
 		public String DataSource 
 		{
@@ -372,20 +326,11 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
-		private String _connectionString;
 		public String ConnectionString 
 		{
-			get 
+			get
 			{
-				return _connectionString;
-			}
-			set 
-			{
-				if( _connectionString != value ) 
-				{
-					_connectionString = value;
-					OnPropertyChanged( "ConnectionString" );
-				}
+				return ConfigurationManager.ConnectionStrings [cfg.qualeConnectionString].ToString();
 			}
 		}
 
@@ -473,6 +418,13 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 				return ! dbUtil.isDatabasEsistente;
 			}
 		}
+
+		public bool possoCambiareMotoreDb {
+			get {
+				return Abilitato ? true : false;
+			}
+		}
+
         #endregion
 
         #region Comandi
@@ -568,6 +520,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             }
         }
 
+
         private RelayCommand _motoreDataBaseCommand;
         public ICommand MotoreDataBaseCommand
         {
@@ -640,7 +593,8 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             {
                 if (_createDataBaseCommand == null)
                 {
-                    _createDataBaseCommand = new RelayCommand(param => this.createDataBase(), canCreateDatabase );
+                    _createDataBaseCommand = new RelayCommand(param => this.createDataBase(), 
+						                                      param => canCreateDatabase );
                 }
                 return _createDataBaseCommand;
             }
@@ -713,7 +667,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
             if (dbUtil.verificaSeDatabaseUtilizzabile())
             {
-                dialogProvider.ShowMessage("OK\n--- Funziona solo per CE ---","Test Connection");
+                dialogProvider.ShowMessage("OK\nConnessione al database riuscita","Test Connection");
             }
             else
             {
@@ -730,35 +684,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             {
                 cfg.dbCartella = dlg.SelectedPath;
             }   
-            var entityConnString = new EntityConnectionStringBuilder(ConnectionString);
-            switch (MotoreDataBase)
-            {
-                case 0:
-                    entityConnString.Provider = "System.Data.SqlServerCe.4.0";
-
-                    //entityConnString.ProviderConnectionString = sqliteConnString.ConnectionString;
-                    SqlCeConnectionStringBuilder sqlCeConnString = new SqlCeConnectionStringBuilder(entityConnString.ProviderConnectionString);
-                    sqlCeConnString.DataSource = cfg.dbCartella + @"\" + cfg.dbNomeDbPieno;
-                    entityConnString.ProviderConnectionString = sqlCeConnString.ConnectionString;
-                    ConnectionString = entityConnString.ConnectionString;
-                    break;
-                case 1:
-                    entityConnString.Provider = "System.Data.SQLite";
-                    var sqliteConnString = new SQLiteConnectionStringBuilder(entityConnString.ProviderConnectionString);
-                    sqliteConnString.DataSource = cfg.dbCartella + @"\" + cfg.dbNomeDbPieno;
-                    entityConnString.ProviderConnectionString = sqliteConnString.ConnectionString;
-                    ConnectionString = entityConnString.ConnectionString;
-                    break;
-                case 2:
-                    entityConnString.Provider = "System.Data.SQL'Server";
-                    var sqlConnString = new SqlConnectionStringBuilder(entityConnString.ProviderConnectionString);
-                    sqlConnString.DataSource = DataSource;
-                    entityConnString.ProviderConnectionString = sqlConnString.ConnectionString;
-                    ConnectionString = entityConnString.ConnectionString;
-                    break;
-            }
-            OnPropertyChanged("ConnectionString");
-        }
+		}
 
         private void selezionaDataSource()
         {
@@ -767,15 +693,15 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
             //dlg.FileName = ; // Default file name
             //dlg.DefaultExt = ".config"; // Default file extension
-            switch (MotoreDataBase)
+            switch (cfg.motoreDatabase)
             {
-                case 0:
+                case MotoreDatabase.SqlServerCE:
                     dlg.Filter = "Config File (.sdf)|*.sdf"; // Filter files by extension
                     break;
-                case 1:
+                case MotoreDatabase.SqLite:
                     dlg.Filter = "Config File (.sqlite)|*.sqlite"; // Filter files by extension
                     break;
-                case 2:
+                case MotoreDatabase.SqlServer:
 					dialogProvider.ShowMessage( "Il Data Sorce prevede un Server", "Avviso" );
                     break;
             }
@@ -788,61 +714,37 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             {
                 // Open document
                 DataSource = dlg.FileName;
-                // Creo la nuova stringa di connessione
-                var entityConnString = new EntityConnectionStringBuilder(ConnectionString);
-
-                //entityConnString.Metadata = "res://*/Model2.csdl|res://*/Model2.ssdl|res://*/Model2.msl";
-
-                switch (MotoreDataBase)
-                {
-                    case 0:
-                        entityConnString.Provider = "System.Data.SqlServerCe.4.0";
-
-                        //entityConnString.ProviderConnectionString = sqliteConnString.ConnectionString;
-                        SqlCeConnectionStringBuilder sqlCeConnString = new SqlCeConnectionStringBuilder(entityConnString.ProviderConnectionString);
-                        sqlCeConnString.DataSource = cfg.dbCartella + @"\" + cfg.dbNomeDbPieno;
-                        entityConnString.ProviderConnectionString = sqlCeConnString.ConnectionString;
-                        ConnectionString = entityConnString.ConnectionString;
-                        break;
-                    case 1:
-                        entityConnString.Provider = "System.Data.SQLite";
-                        var sqliteConnString = new SQLiteConnectionStringBuilder(entityConnString.ProviderConnectionString);
-                        sqliteConnString.DataSource = cfg.dbCartella + @"\" + cfg.dbNomeDbPieno;
-                        entityConnString.ProviderConnectionString = sqliteConnString.ConnectionString;
-                        ConnectionString = entityConnString.ConnectionString;
-                        break;
-                    case 2:
-                        entityConnString.Provider = "System.Data.SQServer";
-                        var sqlConnString = new SqlConnectionStringBuilder(entityConnString.ProviderConnectionString);
-                        sqlConnString.DataSource = DataSource;
-                        entityConnString.ProviderConnectionString = sqlConnString.ConnectionString;
-                        ConnectionString = entityConnString.ConnectionString;
-                        break;
-                }
-            }
-            OnPropertyChanged("DataSource");
-            OnPropertyChanged("ConnectionString");
-        }
+                
+				OnPropertyChanged("DataSource");
+				OnPropertyChanged("ConnectionString");
+			}
+		}
 
         private void abilitaDataSorceButton()
         {
-            switch (MotoreDataBase)
+				
+			switch ( cfg.motoreDatabase )
             {
-                case 0:
+                case MotoreDatabase.SqlServerCE:
+					cfg.dbNomeDbVuoto = "dbVuoto.sdf";
 					cfg.dbNomeDbPieno = "database.sdf";
                     DbCartellaButton = true;
                     break;
-                case 1:
-                    cfg.dbNomeDbPieno = "database.sqlite";
+                case MotoreDatabase.SqLite:
+					cfg.dbNomeDbVuoto = "dbVuoto.sqlite";
+					cfg.dbNomeDbPieno = "database.sqlite";
                     DbCartellaButton = true;
                     break;
-                case 2:
+                case MotoreDatabase.SqlServer:
+					cfg.dbNomeDbVuoto = null;
+					cfg.dbNomeDbPieno = null;
 					dialogProvider.ShowMessage( "Il Data Sorce prevede un Server", "Avviso" );
                     DbCartellaButton = false;
                     break;
             }
-            OnPropertyChanged("NomeDbPieno");
+
             OnPropertyChanged("DbCartellaButton");
+			OnPropertyChanged( "ConnectionString" );
         }
 
 		private String abbinamentiLoaded {
@@ -875,7 +777,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
         {
 			bool esciPure = false;
 
-			// TODO sarebbe meglio sostituire con il dialog provider
 			dialogProvider.ShowConfirmation( "Sei sicuro di voler uscire senza salvare?", "Uscita", 			
 				(confermato) => {
 					  esciPure = confermato;
@@ -887,8 +788,14 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
         private void applica()
         {
-            saveUserConfig();
-            dialogProvider.ShowMessage("Configurazione Salvata", "Avviso");
+			string errore = Configurazione.getMotivoErrore( cfg );
+
+			if( errore != null ) {
+				dialogProvider.ShowError( "Configurazione non valida.\nImpossibile salvare!\n\nMotivo errore:\n" + errore, "ERRORE", null );
+			} else {
+				saveUserConfig();
+				dialogProvider.ShowMessage( "OK\nConfigurazione Salvata", "Avviso" );
+			}
         }
 
         private void createDataBase()
@@ -902,7 +809,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
             // Controllo il database. Se non esiste nessuna impostazione diversa, lo creo.
 			qdbUtil.copiaDbVuotoSuDbDiLavoro();
-			dialogProvider.ShowMessage( "DataBase creato con successo in \n " + qdbUtil.cartellaDatabase, "Avviso" );
+			dialogProvider.ShowMessage( "DataBase creato con successo\n" + qdbUtil.nomeFileDbPieno, "Avviso" );
         }
 
         private void login()

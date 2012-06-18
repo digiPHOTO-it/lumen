@@ -32,24 +32,6 @@ namespace Digiphoto.Lumen.Model
         public bool attivo { get; set; }
         [DataMember]
         public Nullable<short> ordinamento { get; set; }
-
-
-		public override int GetHashCode() {
-			return 17 + 31 * id.GetHashCode();
-		}
-
-		public override bool Equals( object obj ) {
-
-			bool sonoUguali = false;
-
-			if( obj is FormatoCarta ) {
-
-				FormatoCarta altra = (FormatoCarta)obj;
-				sonoUguali = this.id.Equals( altra.id );
-			}
-
-			return sonoUguali;
-		}
     }
     
 }
