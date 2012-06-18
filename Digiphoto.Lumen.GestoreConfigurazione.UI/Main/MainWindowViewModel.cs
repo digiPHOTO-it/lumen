@@ -593,7 +593,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             {
                 if (_createDataBaseCommand == null)
                 {
-                    _createDataBaseCommand = new RelayCommand(param => this.createDataBase(), canCreateDatabase );
+                    _createDataBaseCommand = new RelayCommand(param => this.createDataBase(), p => canCreateDatabase );
                 }
                 return _createDataBaseCommand;
             }
