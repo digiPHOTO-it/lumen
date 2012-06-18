@@ -47,13 +47,18 @@ namespace Digiphoto.Lumen.Config  {
 				userConfigDefault = new UserConfigLumen();
 
 				// Alcuni default NON naturali. Quelli naturali non li nomino.
-				userConfigDefault.autoZoomNoBordiBianchi = true;
-				userConfigDefault.giorniDeleteFoto = 8;
-				userConfigDefault.modoVendita = ModoVendita.Carrello;
+
+				// Il più importante è il motore del database
+				userConfigDefault.motoreDatabase = MotoreDatabase.SqLite;
+				userConfigDefault.dbNomeDbVuoto = "dbvuoto.sqlite";
+				userConfigDefault.dbNomeDbPieno = "database.sqlite";
+
+				// Questo molto importante. Determina la grandezza delle cache
 				userConfigDefault.pixelLatoProvino = 400;
-				userConfigDefault.dbNomeDbVuoto = "dbvuoto.sdf";
-				userConfigDefault.dbNomeDbPieno = "database.sdf";
+
 				userConfigDefault.dbCartella = decidiCartellaDatabase();
+				userConfigDefault.autoZoomNoBordiBianchi = true;
+				userConfigDefault.modoVendita = ModoVendita.Carrello;
 				userConfigDefault.cartellaFoto = Path.Combine( Configurazione.cartellaAppData, "Foto" );
 				userConfigDefault.cartellaMaschere = Path.Combine( Configurazione.cartellaAppData, "Maschere" );
 				userConfigDefault.estensioniGrafiche = "*.jpg;*.jpeg;*.png;*.tif;*.tiff";
@@ -82,9 +87,8 @@ namespace Digiphoto.Lumen.Config  {
 
 			if( autoSistemazione ) {
 				autoSistemaPerPartenzaDiDefault();
-			}
-
-			verificheConfruenza();
+			} else
+				verificheConfruenza();
 
 			// Alcuni settaggi sono statici perché non vogliamo che siano cambiati
 			// Altri settaggi invece sono di istanza perché così si possono anche modificare al volo (senza renderli persistenti)
@@ -149,7 +153,7 @@ namespace Digiphoto.Lumen.Config  {
 			// ----
 			// Se non esiste la cartella dove mettere i rullini, allora la creo
 			if( !Directory.Exists( Configurazione.cartellaBaseFoto ) ) {
-				_giornale.Debug( "La cartella contenente le foto non esiste. La creo!\n" + cartellaBaseFoto );
+				_giornale.Debug( "La cartella contenente le foto non usabile. La creo!\n" + cartellaBaseFoto );
 
 				DirectoryInfo dInfo = Directory.CreateDirectory( cartellaBaseFoto );
 
@@ -168,26 +172,14 @@ namespace Digiphoto.Lumen.Config  {
 		 * allora ritorno una stringa con il motivo.
 		 * Altrimenti ritorno null se va tutto bene.
 		 */
-		String getMotivoErrore() {
+		public String getMotivoErrore() {
 
 			// Controllo che esista il database vuoto. Mi serve in caso di copia iniziale
 			if( !System.IO.File.Exists( _dbUtil.nomeFileDbVuoto ) ) {
-				return "il Database template\n" + UserConfigLumen.dbNomeDbVuoto + "\nnon esiste. Probabile installazione rovinata";
+				return "il Database template\n" + UserConfigLumen.dbNomeDbVuoto + "\nnon usabile. Probabile installazione rovinata";
 			}
 
-			// Controllo che esista e che sia valido anche il database vero di lavoro
-			if( !_dbUtil.verificaSeDatabaseUtilizzabile() )
-				return "Database di lavoro\n" + _dbUtil.nomeFileDbPieno + "\nnon trovato, oppure non utilizzabile.";
-
-			// Controllo che la cartella contenente le foto esista e sia scrivibile
-			if( !Directory.Exists( cartellaBaseFoto ) ) {
-				return( "Cartella foto inesistente: " + cartellaBaseFoto );
-			}
-
-			// TODO verificare se la cartella delle foto è scrivibile.
-
-			// tutto bene
-			return null;
+			return getMotivoErrore( UserConfigLumen );
 		}
 
 
@@ -293,6 +285,32 @@ namespace Digiphoto.Lumen.Config  {
 
 			return ret;
 		}
+
+		/// <summary>
+		///  Mi dice se 
+		/// </summary>
+		/// <param name="userConfig"></param>
+		/// <returns></returns>
+		public static bool isUserConfigValida( UserConfigLumen userConfig ) {
+			return getMotivoErrore( userConfig ) == null;
+		}
+
+		public static string getMotivoErrore( UserConfigLumen userConfig ) {
+
+			DbUtil mioDbUtil = new DbUtil( userConfig );
+
+			// Controllo che esista e che sia valido anche il database vero di lavoro
+			if( ! mioDbUtil.verificaSeDatabaseUtilizzabile() )
+				return "Database di lavoro\n" + mioDbUtil.nomeFileDbPieno + "\nnon trovato, oppure non utilizzabile.";
+
+			// Controllo che la cartella contenente le foto esista e sia scrivibile
+			if( !Directory.Exists( userConfig.cartellaFoto ) ) {
+				return( "Cartella foto inesistente: " + userConfig.cartellaFoto );
+			}
+
+			return null;
+		}
+
 
 	}
 }

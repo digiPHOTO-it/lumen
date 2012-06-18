@@ -63,7 +63,7 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
             }
             else
             {
-                _giornale.Info("Non esiste il percorso");
+                _giornale.Info("Non usabile il percorso");
             }
             return listaCartelleDaEliminare;
         }
