@@ -12,6 +12,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Transactions;
 using System.Data.Objects;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.Core.VsTest {
 
@@ -238,7 +239,8 @@ namespace Digiphoto.Lumen.Core.VsTest {
 		 */
 		private void queryPolimorficaSql() {
 
-			using( EntityConnection conn = new EntityConnection( "name=LumenEntities" ) ) {
+			string cs = Configurazione.UserConfigLumen.qualeConnectionString;
+			using( EntityConnection conn = new EntityConnection( "name=" + cs ) ) {
 
 				conn.Open();
 				// Create a query that specifies to 
@@ -460,7 +462,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 			// Controllo che le righe siano aumentate di uno.
 			using( LumenEntities dbContext = new LumenEntities() ) {
-				var testCarrello2 = dbContext.Carrelli.Where( c => c.id == carrelloCorrente.id ).Single();
+				var testCarrello2 = dbContext.Carrelli.Include( "righeCarrello" ).Where( c => c.id == carrelloCorrente.id ).Single();
 				Assert.IsTrue( countRigheCarrello + 1 == testCarrello2.righeCarrello.Count );
 			}
 		}

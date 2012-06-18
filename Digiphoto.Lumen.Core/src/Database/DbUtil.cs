@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Configuration;
-using System.Data.SqlServerCe;
 using System.Data.EntityClient;
 using System.IO;
 using log4net;
@@ -14,6 +13,7 @@ using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Config;
 using System.Windows.Forms;
+using System.Data.Common;
 
 namespace Digiphoto.Lumen.Core.Database {
 
@@ -46,9 +46,16 @@ namespace Digiphoto.Lumen.Core.Database {
 			String doveSono = Assembly.GetExecutingAssembly().Location ;
 
 			string appPath = Path.GetDirectoryName( doveSono );
-			nomeFileDbVuoto = Path.Combine(appPath, Configurazione.UserConfigLumen.dbNomeDbVuoto);
 
-			nomeFileDbPieno = Path.Combine(cartellaDatabase, Configurazione.UserConfigLumen.dbNomeDbPieno);
+			if( cfg.dbNomeDbVuoto == null )
+				nomeFileDbVuoto = null;
+			else
+				nomeFileDbVuoto = Path.Combine(appPath, cfg.dbNomeDbVuoto);
+
+			if( cfg.dbNomeDbPieno == null )
+				nomeFileDbPieno = null;
+			else
+				nomeFileDbPieno = Path.Combine(cartellaDatabase, cfg.dbNomeDbPieno);
 		}
 
 		/**
@@ -60,19 +67,54 @@ namespace Digiphoto.Lumen.Core.Database {
 		 */
 		public  bool verificaSeDatabaseUtilizzabile() {
 
-			bool esiste = false;
-
+			bool usabile = false;
+			
 			try {
-				string conString = providerConnectionString;
-				_giornale.Debug( "provo connessione db = " + conString );
-				using( SqlCeEngine objCeEngine = new SqlCeEngine( conString ) ) {
-					esiste = objCeEngine.Verify();
+
+				DbProviderFactory factory = DbProviderFactories.GetFactory( provider );
+				using( DbConnection conn = factory.CreateConnection() ) {
+
+					conn.ConnectionString = providerConnectionString;
+
+					conn.Open();
+
+					string sql = "select count(*) from fotografi";
+					using( DbCommand comm = conn.CreateCommand() ) {
+						comm.CommandText = sql;
+						using( DbDataReader rdr = comm.ExecuteReader() ) {
+							while( rdr.Read() ) {
+								int quanti = rdr.GetInt32( 0 );
+								usabile = true;
+							}
+						}
+					}
+
+
+					// TODO
+					// Solo se stiamo usando Sql CE si può abilitare questo controllo
+					// Istanziare però l'engine in modo dinamico perché non voglio tenere il reference
+
+					/*
+
+								try {
+									string conString = providerConnectionString;
+									if( conString.EndsWith( "sdf" ) ) {
+										_giornale.Debug( "provo connessione db = " + conString );
+										using( SqlCeEngine objCeEngine = new SqlCeEngine( conString ) ) {
+											esiste = objCeEngine.Verify();
+										}
+									}
+								} catch( Exception ee ) {
+									_giornale.Error( "verifica se db utilizzabile fallita", ee );
+								}
+					*/
+					_giornale.Info( "OK il database risulta utilizzabile" );
 				}
 			} catch( Exception ee ) {
 				_giornale.Error( "verifica se db utilizzabile fallita", ee );
 			}
 
-			return esiste;
+			return usabile;
 		}
 
 		public bool isDatabasEsistente {
@@ -86,7 +128,7 @@ namespace Digiphoto.Lumen.Core.Database {
 		public void creaCartellaPerDb() {
 			// Controllo se esiste la cartella di base dei dati dell'applicazione
 			if( !Directory.Exists( cartellaDatabase ) ) {
-				_giornale.Info( "Creo la cartella dei dati perchè non esiste:\r\n" + cartellaDatabase );
+				_giornale.Info( "Creo la cartella dei dati perchè non usabile:\r\n" + cartellaDatabase );
 				Directory.CreateDirectory( cartellaDatabase );
 			}
 		}
@@ -98,9 +140,17 @@ namespace Digiphoto.Lumen.Core.Database {
 		 */
 		public String providerConnectionString {
 			get {
-				string entityConnectionString = ConfigurationManager.ConnectionStrings ["LumenEntities"].ConnectionString;
+				string entityConnectionString = ConfigurationManager.ConnectionStrings [_userConfig.qualeConnectionString].ConnectionString;
                 //string entityConnectionString = UserConfigLumen.UserConfigConnectionString;
 				return ExtractConnectionStringFromEntityConnectionString( entityConnectionString );
+			}
+		}
+
+		public String provider {
+			get {
+				string entityConnectionString = ConfigurationManager.ConnectionStrings [_userConfig.qualeConnectionString].ConnectionString;
+                //string entityConnectionString = UserConfigLumen.UserConfigConnectionString;
+				return ExtractProviderStringFromEntityConnectionString( entityConnectionString );
 			}
 		}
 
@@ -112,6 +162,14 @@ namespace Digiphoto.Lumen.Core.Database {
 			return entityBuilder.ProviderConnectionString;
 		}
 
+		private string ExtractProviderStringFromEntityConnectionString( string entityConnectionString ) {
+			// create a entity connection string from the input
+			EntityConnectionStringBuilder entityBuilder = new EntityConnectionStringBuilder( entityConnectionString );
+
+			// read the provider
+			return entityBuilder.Provider;
+		}
+
 		/**
 		 * Copia il db vuoto su quello pieno.
 		 * Per qualsiasi problema, ed anche se il file di destinazione esiste gia,
@@ -120,13 +178,13 @@ namespace Digiphoto.Lumen.Core.Database {
 		public void copiaDbVuotoSuDbDiLavoro() {
 
 			if( !File.Exists( nomeFileDbPieno ) ) {
-				_giornale.Info( @"Il database di lavoro\r\n" + nomeFileDbPieno + "\r\nnon esiste. Lo creo partendo dal template vuoto" );
+				_giornale.Info( @"Il database di lavoro\r\n" + nomeFileDbPieno + "\r\nnon usabile. Lo creo partendo dal template vuoto" );
 
 				File.Copy( nomeFileDbVuoto, nomeFileDbPieno );
 
 				_giornale.Debug( "ok copia vuoto -> pieno riuscita" );
 			} else {
-				throw new InvalidOperationException( "Il database " + nomeFileDbPieno + " esiste già. Copia fallita" );
+				throw new InvalidOperationException( "Il database " + nomeFileDbPieno + " usabile già. Copia fallita" );
 			}
 		
 		}

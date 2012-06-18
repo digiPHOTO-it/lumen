@@ -17,16 +17,16 @@ namespace Digiphoto.Lumen.Model
     public partial class LumenEntities : DbContext
     {
         public LumenEntities()
-            : this(true) { }
+            : this(false) { }
     
         public LumenEntities(bool proxyCreationEnabled)	    
-            : base("name=LumenEntities")
+            : base("name=LumenEntities-sqLite")
         {
             this.Configuration.ProxyCreationEnabled = proxyCreationEnabled;
         }
     
         public LumenEntities(string connectionString)
-          : this(connectionString, true) { }
+          : this(connectionString, false) { }
     
         public LumenEntities(string connectionString, bool proxyCreationEnabled)
             : base(connectionString)

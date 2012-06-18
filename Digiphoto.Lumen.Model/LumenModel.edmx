@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="Digiphoto.Lumen.Model.Store" Alias="Self" Provider="System.Data.SqlServerCe.4.0" ProviderManifestToken="4.0" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator">
+    <Schema Namespace="Digiphoto.Lumen.Model.Store" Alias="Self" Provider="System.Data.SQLite" ProviderManifestToken="ISO8601" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator">
     <EntityContainer Name="DigiphotoLumenModelStoreContainer">
 
         <EntitySet Name="Fotografi" EntityType="Digiphoto.Lumen.Model.Store.Fotografi" store:Type="Tables" Schema="dbo" />
@@ -374,13 +374,19 @@
             </Documentation>
           <a:Display Order="0" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" /></Property>
           <Property Type="String" Name="cognomeNome" Nullable="false" ><a:Display Order="1" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" /><pem:Validations xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" Enforcement="None"><pem:DataFieldLength MinimumLength="5" MaximumLength="50" ErrorMessage="Il nominativo deve essere almeno 4 caratteri" Enforcement="Must" /><pem:Required ErrorMessage="Cognome e Nome del fotografo obbligatorio" Enforcement="Must" /></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" /></Property>
+          
           <Property Name="iniziali" Nullable="false" MaxLength="2" Type="String" ><a:Display Order="2" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" /><pem:Validations xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" Enforcement="None"><pem:RegularExpression Pattern="^[A-Z]{1,2}$" ErrorMessage="Le iniziali del fotografo devono essere di una o due lettere maiuscole" Enforcement="Must" /><pem:Required ErrorMessage="Iniziali obbligatorie" Enforcement="Must" /><pem:Message ErrorMessage="Il fotografo non è valido" /></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" /></Property>
           <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true" ><a:Display Order="4" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" /></Property>
+
           <Property Type="Boolean" Name="umano" Nullable="false" DefaultValue="true" >
-            <Documentation>
+          <Documentation>
               <Summary>Umano oppure Automatico (OnRide)</Summary>
             </Documentation>
-          <a:Display Order="3" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" /></Property>
+            <a:Display Order="3" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" />
+          </Property>
+
+
+
           <Property Type="String" Name="note" Nullable="true" ><a:Display Order="5" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" /></Property>
         <pem:Validations xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" Enforcement="Must" ></pem:Validations></EntityType>
         <EntityType Name="Fotografia">
@@ -578,8 +584,8 @@
 					<ScalarProperty Name="cognomeNome" ColumnName="cognomeNome" />
 					<ScalarProperty Name="iniziali" ColumnName="iniziali" />
 					<ScalarProperty Name="attivo" ColumnName="attivo" />
-					<ScalarProperty Name="umano" ColumnName="umano" />
-					<ScalarProperty Name="note" ColumnName="note" />
+          <ScalarProperty Name="umano" ColumnName="umano" />
+          <ScalarProperty Name="note" ColumnName="note" />
 				</MappingFragment>
 			</EntityTypeMapping>
 		</EntitySetMapping>
@@ -807,13 +813,13 @@
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="False" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
-        <DesignerProperty Name="DDLGenerationTemplate" Value="$(VSEFTools)\DBGen\SSDLToSQL10.tt" />
+        <DesignerProperty Name="DDLGenerationTemplate" Value="$(VSEFTools)\DBGen\SSDLToSQLite3.tt" />
         <DesignerProperty Name="DatabaseGenerationWorkflow" Value="$(VSEFTools)\DBGen\Generate T-SQL Via T4 (TPH).xaml" />
       </DesignerInfoPropertySet>
     </edmx:Options>
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram Name="ModelloEntita" ZoomLevel="101" >
+      <Diagram Name="ModelloEntita" ZoomLevel="100" >
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografo" Width="2.375" PointX="12" PointY="6" Height="2.1725878906249996" />
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografia" Width="1.5" PointX="11.75" PointY="2.25" Height="3.1340950520833326" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.FotografoFotografia">

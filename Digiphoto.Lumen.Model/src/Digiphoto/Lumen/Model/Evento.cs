@@ -20,5 +20,25 @@ namespace Digiphoto.Lumen.Model {
 			return errors;
 		}
 
+		public override int GetHashCode() {
+			return 17 + 31 * id.GetHashCode();
+		}
+
+		public override bool Equals( object obj ) {
+
+			bool sonoUguali = false;
+
+			if( obj is Evento ) {
+
+				Evento altra = (Evento)obj;
+
+				if( this.id != Guid.Empty && altra.id != Guid.Empty ) {
+					sonoUguali = this.id.Equals( altra.id );
+				}
+			}
+
+			return sonoUguali;
+		}
+
 	}
 }
