@@ -549,7 +549,7 @@ namespace Digiphoto.Lumen.UI {
 			// Se ho selezionato più di una foto, e lavoro in stampa diretta, allora chiedo conferma
 			bool procediPure = true;
 			int quante = listaSelez.Count;
-			if (quante > 1 && Configurazione.UserConfigLumen.modoVendita == ModoVendita.StampaDiretta)
+			if (quante >= 1 && Configurazione.UserConfigLumen.modoVendita == ModoVendita.StampaDiretta)
 			{
 				dialogProvider.ShowConfirmation( "Confermi la stampa di " + quante + " foto ?", "Richiesta conferma",
 				  (confermato) => {
@@ -558,9 +558,20 @@ namespace Digiphoto.Lumen.UI {
 			}
 
 			if( procediPure ) {
-				// Aggiungo al carrello oppure stampo direttamente
-				venditoreSrv.aggiungiStampe( listaSelez, creaParamStampaFoto( stampanteAbbinata ) );
-				
+				if(Configurazione.UserConfigLumen.modoVendita == ModoVendita.StampaDiretta){
+					venditoreSrv.creaNuovoCarrelloStampaDiretta();
+					venditoreSrv.effettuaStampaDiretta( listaSelez, creaParamStampaFoto( stampanteAbbinata ) );
+					if (venditoreSrv.vendereCarrelloStampaDiretta())
+					{
+						dialogProvider.ShowMessage("Carrello venduto Correttamente", "Avviso");
+					}
+					else
+					{
+						dialogProvider.ShowError("Errore inserimento carrello nella cassa","Errore", null);
+					}
+				}else{
+					venditoreSrv.aggiungiStampe( listaSelez, creaParamStampaFoto( stampanteAbbinata ) );
+				}
 				// Spengo tutto
 				deselezionareTutto();
 			}

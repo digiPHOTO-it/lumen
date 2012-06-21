@@ -148,6 +148,33 @@ namespace Digiphoto.Lumen.Core.VsTest
 		}
 
 
+		[TestMethod]
+		public void vendiFotoStampaDirettaTest()
+		{
+			using (new UnitOfWorkScope(false))
+			{
+
+				_impl.creaNuovoCarrelloStampaDiretta();
+
+				ParamStampaFoto p = ricavaParamStampa();
+
+				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+				List<Fotografia> fotos = (from f in dbContext.Fotografie.Include("fotografo")
+										  select f).Take(QUANTE).ToList();
+
+				contaStampate = 0;
+
+				_impl.effettuaStampaDiretta(fotos, p);
+
+				_impl.vendereCarrelloStampaDiretta();
+
+				Assert.IsTrue(_impl.carrelloStampaDiretta.venduto);
+				Assert.IsTrue(_impl.carrelloStampaDiretta.totaleAPagare == 15);
+			}
+
+			Console.WriteLine("FINITO");
+		}
+
 		private ParamStampaFoto ricavaParamStampa() {
 
 			ParamStampaFoto p = new ParamStampaFoto();
