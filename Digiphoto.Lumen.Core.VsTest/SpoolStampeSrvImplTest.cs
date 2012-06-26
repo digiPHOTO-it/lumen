@@ -101,12 +101,12 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 					// stampo la stessa foto senza bordi bianchi ...
 					param.autoZoomNoBordiBianchi = true;
-					_impl.accodaStampa( foto, param );
+					_impl.accodaStampaFoto( foto, param );
 
 					// ... poi anche con i bordi bianchi
 					ParamStampaFoto p2 = (ParamStampaFoto)param.Clone();
 					p2.autoZoomNoBordiBianchi = false;
-					_impl.accodaStampa( foto, p2 );
+					_impl.accodaStampaFoto( foto, p2 );
 				}
 
 				// Attendo che le due stampe siano terminate

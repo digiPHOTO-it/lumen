@@ -7,19 +7,7 @@ using System.Collections.Specialized;
 
 namespace Digiphoto.Lumen.Servizi.Stampare {
 
-
-
 	public class LavoroDiStampa {
-
-		public Fotografia fotografia {
-			get;
-			private set;
-		}
-
-		public ParamStampaFoto param {
-			get;
-			private set;
-		}
 
 		public enum Stato {
 			Accodato,
@@ -37,13 +25,15 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			internal set;
 		}
 
-		public LavoroDiStampa( Fotografia fotografia, ParamStampaFoto param ) {
-			this.fotografia = fotografia;
-			this.param = param;
+		public ParamStampa param
+		{
+			get;
+			private set;
 		}
 
-		public override string ToString() {
-			return string.Format( "Foto={0} ; param={1}", fotografia.ToString(), param.ToString() );
+		public LavoroDiStampa(ParamStampa param)
+		{
+			this.param = param;
 		}
 
 	}
