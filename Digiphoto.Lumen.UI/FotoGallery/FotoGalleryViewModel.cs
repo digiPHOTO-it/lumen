@@ -26,6 +26,7 @@ using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
 using Digiphoto.Lumen.Servizi.Ritoccare;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.UI.Main;
+using Digiphoto.Lumen.UI.Dialogs;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -376,6 +377,19 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private RelayCommand _stampareProviniCommand;
+		public ICommand stampareProviniCommand
+		{
+			get {
+				if (_stampareProviniCommand == null)
+				{
+					_stampareProviniCommand = new RelayCommand(param => stampareProvini(), 
+						param => possoStampare, false );
+				}
+				return _stampareProviniCommand;
+			}
+		}
+
 		private RelayCommand _filtrareSelezionateCommand;
 		public ICommand filtrareSelezionateCommand {
 			get {
@@ -578,6 +592,32 @@ namespace Digiphoto.Lumen.UI {
 
 		}
 
+		private void stampareProvini()
+		{
+			StampaProviniDialog d = new StampaProviniDialog();
+			d.totaleFotoSelezionate = fotografieCW.SelectedItems.Count;
+			d.totoleFotoGallery = fotografieCW.Count;
+			bool? esito = d.ShowDialog();
+
+			if (esito == true)
+			{
+				if (!d.stampaSoloSelezionate)
+				{
+					selezionareTutto();
+				}
+
+				IList<Fotografia> listaSelez = creaListaFotoSelezionate();
+				
+				venditoreSrv.aggiungiStampe(listaSelez, creaParamStampaProvini(d.paramStampaProvini));
+			}
+
+			d.Close();
+
+			// Spengo tutto
+			deselezionareTutto();
+
+		}
+		
 		/// <summary>
 		/// Creo i parametri di stampa, mixando un pò di informazioni prese
 		/// dalla configurazione, dallo stato dell'applicazione, e dalla scelta dell'utente.
@@ -590,6 +630,20 @@ namespace Digiphoto.Lumen.UI {
 
 			p.nomeStampante = stampanteAbbinata.StampanteInstallata.NomeStampante;
 			p.formatoCarta = stampanteAbbinata.FormatoCarta;
+			// TODO per ora il nome della Porta a cui è collegata la stampante non lo uso. Non so cosa farci.
+
+			return p;
+		}
+		
+		private ParamStampaProvini creaParamStampaProvini( ParamStampaProvini param ) {
+
+			ParamStampaProvini p = venditoreSrv.creaParamStampaProvini();
+
+			p.nomeStampante = param.nomeStampante;
+			p.formatoCarta = param.formatoCarta;
+			p.numeroColonne = param.numeroColonne;
+			p.numeroRighe = param.numeroRighe;
+			p.intestazione = param.intestazione;
 			// TODO per ora il nome della Porta a cui è collegata la stampante non lo uso. Non so cosa farci.
 
 			return p;

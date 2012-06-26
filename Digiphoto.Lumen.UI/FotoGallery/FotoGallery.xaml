@@ -38,6 +38,12 @@
                 </Button>
             </ToolBar>
             
+			<ToolBar Name="stampaProvini" Visibility="{Binding Path=stampantiAbbinate, Converter={StaticResource listVisibilityConverter}}">  
+                <Button Command="{Binding Path=stampareProviniCommand}">
+                    <Image Source="/Digiphoto.Lumen.UI;component/Resources/Provini-48x48.png"  />
+                </Button>            
+            </ToolBar>
+			
             <ToolBar Name="stampaToolBar" 
                      Header="Stampe"
                      ItemsSource="{Binding stampantiAbbinate}" 
