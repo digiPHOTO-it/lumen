@@ -36,6 +36,8 @@ namespace Digiphoto.Lumen.Model
         public string intestazione { get; set; }
         [DataMember]
         public bool venduto { get; set; }
+        [DataMember]
+        public string note { get; set; }
     
         [DataMember]
         public virtual ICollection<RigaCarrello> righeCarrello { get; set; }

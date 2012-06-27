@@ -239,8 +239,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 		 */
 		private void queryPolimorficaSql() {
 
-			string cs = Configurazione.UserConfigLumen.qualeConnectionString;
-			using( EntityConnection conn = new EntityConnection( "name=" + cs ) ) {
+			using( EntityConnection conn = new EntityConnection( "name=LumenEntities" ) ) {
 
 				conn.Open();
 				// Create a query that specifies to 

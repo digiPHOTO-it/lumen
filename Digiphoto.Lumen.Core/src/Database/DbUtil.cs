@@ -21,6 +21,7 @@ namespace Digiphoto.Lumen.Core.Database {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof(DbUtil) );
 
+
 		public string nomeFileDbVuoto;
 		public string nomeFileDbPieno;
 
@@ -28,7 +29,7 @@ namespace Digiphoto.Lumen.Core.Database {
 
 		public string cartellaDatabase {
 			get {
-				return _userConfig.dbCartella;
+				return _userConfig.cartellaDatabase;
 			}
 			
 		}
@@ -65,10 +66,11 @@ namespace Digiphoto.Lumen.Core.Database {
 		 * return TRUE se riesco a connettermi ed il db è buono ed utilizzabile.
 		 *        FALSE se è spaccato oppure non è presente
 		 */
-		public  bool verificaSeDatabaseUtilizzabile() {
+		public bool verificaSeDatabaseUtilizzabile( out string msgErrore ) {
 
 			bool usabile = false;
-			
+			msgErrore = null;
+
 			try {
 
 				DbProviderFactory factory = DbProviderFactories.GetFactory( provider );
@@ -112,6 +114,7 @@ namespace Digiphoto.Lumen.Core.Database {
 				}
 			} catch( Exception ee ) {
 				_giornale.Error( "verifica se db utilizzabile fallita", ee );
+				msgErrore = ee.Message;
 			}
 
 			return usabile;
@@ -140,16 +143,14 @@ namespace Digiphoto.Lumen.Core.Database {
 		 */
 		public String providerConnectionString {
 			get {
-				string entityConnectionString = ConfigurationManager.ConnectionStrings [_userConfig.qualeConnectionString].ConnectionString;
-                //string entityConnectionString = UserConfigLumen.UserConfigConnectionString;
+				string entityConnectionString = ConfigurationManager.ConnectionStrings ["LumenEntities"].ConnectionString;
 				return ExtractConnectionStringFromEntityConnectionString( entityConnectionString );
 			}
 		}
 
 		public String provider {
 			get {
-				string entityConnectionString = ConfigurationManager.ConnectionStrings [_userConfig.qualeConnectionString].ConnectionString;
-                //string entityConnectionString = UserConfigLumen.UserConfigConnectionString;
+				string entityConnectionString = ConfigurationManager.ConnectionStrings ["LumenEntities"].ConnectionString;
 				return ExtractProviderStringFromEntityConnectionString( entityConnectionString );
 			}
 		}

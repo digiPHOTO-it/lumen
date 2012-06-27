@@ -7,6 +7,9 @@ using Digiphoto.Lumen.UI.Mvvm;
 using System.Windows.Input;
 using Digiphoto.Lumen.Core.DatiDiEsempio;
 using Digiphoto.Lumen.Database;
+using System;
+using Digiphoto.Lumen.Core.Database;
+using Digiphoto.Lumen.Util;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -98,14 +101,26 @@ namespace Digiphoto.Lumen.UI {
 
 		private void creareNuovoFotografo() {
 
-			// Salvo nel database
-			fotografiReporitorySrv.addNew( nuovoFotografo );
+			try {
 
-			// Aggiungo alla collezione visuale (per non dover rifare la query)
-			fotografi.Add( nuovoFotografo );
+				// Salvo nel database
+				fotografiReporitorySrv.addNew( nuovoFotografo );
 
-			// Svuoto per nuova creazione
-			istanziaNuovoFotografo();
+				// Occhio qui potrebbe saltare per eccezione.
+				UnitOfWorkScope.CurrentObjectContext.SaveChanges();
+
+				// Aggiungo alla collezione visuale (per non dover rifare la query)
+				fotografi.Add( nuovoFotografo );
+
+				// Svuoto per nuova creazione
+				istanziaNuovoFotografo();
+
+
+			} catch( Exception ee ) {
+				// probabilmente sono state inserite le iniziali doppie (not unique)
+				fotografiReporitorySrv.delete( nuovoFotografo );
+				dialogProvider.ShowError( ErroriUtil.estraiMessage( ee ), "Salva Fotografo", null );
+			}
 
 		}
 

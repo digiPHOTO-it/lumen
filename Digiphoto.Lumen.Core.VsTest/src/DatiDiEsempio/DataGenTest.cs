@@ -3,6 +3,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using Digiphoto.Lumen.Model;
+using Digiphoto.Lumen.Applicazione;
+using Digiphoto.Lumen.Servizi.EntityRepository;
+using Digiphoto.Lumen.Core.Database;
 
 namespace Digiphoto.Lumen.Core.VsTest
 {
@@ -93,5 +96,24 @@ namespace Digiphoto.Lumen.Core.VsTest
 			generaMoltiTestHelper<Fotografo>();
 		}
 
+		[TestMethod]
+		public void infosFisseRepositoryTest() {
+
+			LumenApplication.Instance.avvia();
+
+			using( new UnitOfWorkScope() ) {
+
+				IEntityRepositorySrv<InfoFissa> repo = LumenApplication.Instance.creaServizio<IEntityRepositorySrv<InfoFissa>>();
+				repo.start();
+
+				// -- carico anche le informazioni fisse che possono essere modificate
+				InfoFissa infoFissa = repo.getById( "K" );
+
+				infoFissa.varie = DateTime.Now.ToString();
+
+				repo.update( ref infoFissa );
+			}
+			LumenApplication.Instance.ferma();
+		}
 	}
 }

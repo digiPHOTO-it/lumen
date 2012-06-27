@@ -6,28 +6,36 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d" 
              d:DesignHeight="194" d:DesignWidth="300">
-    <!-- istanzio ed associo il mio rispettivo ViewModel -->
-    <!--<UserControl.DataContext>
-        <lum:SelettoreStampantiInstallateViewModel />
-    </UserControl.DataContext>-->
     
     <UserControl.Resources>
         <ResourceDictionary Source="SelettoreStampantiInstallateDictionary.xaml" />
     </UserControl.Resources>
 
-    <StackPanel Height="189">
+    <GroupBox Header="Selezionare una Stampante">
 
-        <GroupBox Header="lista Stampanti Installate">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <ListBox Name="stampantiInstallateListBox" 
-                         ItemsSource="{Binding Path=stampantiInstallate}" 
-                         ItemTemplate="{StaticResource stampantiInstallateListBoxTemplate}"
-                         SelectedItem="{Binding Path=stampanteSelezionata}" 
-						 Height="100" />
+        <Grid>
 
-            </ScrollViewer>
-        </GroupBox>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition  />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-        <Button Name="refreshButton" Content="Rileggi" Command="{Binding Path=rileggereStampantiInstallateCommand}" />
-    </StackPanel>
+
+            <ListBox Name="stampantiInstallateListBox" 
+                     ItemsSource="{Binding Path=stampantiInstallate}" 
+                     ItemTemplate="{StaticResource stampantiInstallateListBoxTemplate}"
+                     SelectedItem="{Binding Path=stampanteSelezionata}"
+                     Grid.Row="0" Grid.Column="0"
+                     ScrollViewer.CanContentScroll="True"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     ScrollViewer.HorizontalScrollBarVisibility="Auto"	/>
+
+            <Button Name="refreshButton" Content="Rileggi" Command="{Binding Path=rileggereStampantiInstallateCommand}"
+                    Grid.Row="1" Grid.Column="0" />
+        </Grid>
+    </GroupBox>
+
 </UserControl>

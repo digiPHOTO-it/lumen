@@ -21,7 +21,7 @@ namespace Digiphoto.Lumen.Model
         {
             this.id = "K";
             this.versioneDbCompatibile = "1.0";
-            this.modoNumerazione = "M";
+            this.modoNumerazFoto = "M";
         }
     
         [DataMember]
@@ -33,7 +33,17 @@ namespace Digiphoto.Lumen.Model
         [DataMember]
         public string versioneDbCompatibile { get; set; }
         [DataMember]
-        public string modoNumerazione { get; set; }
+        public string modoNumerazFoto { get; set; }
+        [DataMember]
+        public short pixelProvino { get; set; }
+        [DataMember]
+        public string idPuntoVendita { get; set; }
+        [DataMember]
+        public string descrizPuntoVendita { get; set; }
+        [DataMember]
+        public short numGiorniEliminaFoto { get; set; }
+        [DataMember]
+        public string varie { get; set; }
     }
     
 }

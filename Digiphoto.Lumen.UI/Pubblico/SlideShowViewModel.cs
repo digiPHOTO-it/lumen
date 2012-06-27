@@ -13,6 +13,7 @@ using Digiphoto.Lumen.Imaging.Wic;
 using Digiphoto.Lumen.Servizi.Ricerca;
 using Digiphoto.Lumen.Servizi.Explorer;
 using Digiphoto.Lumen.Servizi.Scaricatore;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.UI.Pubblico {
 
@@ -178,7 +179,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			// Qualche parametro di default
 			slideShow.colonne = 2;	// TODO deve sceglierle l'utente
 			slideShow.righe = 1;	// TODO deve sceglierle l'utente
-			slideShow.millisecondiIntervallo = 3800;
+			slideShow.millisecondiIntervallo = Configurazione.UserConfigLumen.millisIntervalloSlideShow;
 
 			// Avvio il timer che serve a far girare le foto
 			creaNuovoTimer();

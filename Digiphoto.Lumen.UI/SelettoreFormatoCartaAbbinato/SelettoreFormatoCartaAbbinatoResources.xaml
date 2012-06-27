@@ -12,4 +12,13 @@
         </Border>
 
     </DataTemplate>
+
+
+
+    <Style TargetType="{x:Type Button}" x:Name="spostaGiuAbbinamentoButton">
+        <Style.Setters>
+            <Setter Property="Margin" Value="5,0" />
+        </Style.Setters>
+    </Style>
+
 </ResourceDictionary>

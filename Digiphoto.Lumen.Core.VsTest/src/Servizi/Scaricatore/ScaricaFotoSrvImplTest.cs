@@ -48,7 +48,6 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Scaricatore {
 			
 
 			// -------
-
 			using( LumenEntities dbContext = new LumenEntities() ) {
 
 				InfoFissa i = dbContext.InfosFisse.Single<InfoFissa>( f => f.id == "K" );

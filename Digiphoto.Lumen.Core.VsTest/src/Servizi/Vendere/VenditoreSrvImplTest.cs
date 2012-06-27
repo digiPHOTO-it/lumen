@@ -117,20 +117,23 @@ namespace Digiphoto.Lumen.Core.VsTest
 				List<Fotografia> fotos = (from f in dbContext.Fotografie.Include( "fotografo" )
 										  select f).Take( QUANTE ).ToList();
 
-				contaStampate = 0;
+				if( fotos.Count == QUANTE ) {
 
-				_impl.aggiungiStampe( fotos, p );
+					contaStampate = 0;
 
-				_impl.aggiungiMasterizzate( fotos );
-				_impl.masterizzaSrv.impostaDestinazione( TipoDestinazione.CARTELLA, Path.GetTempPath() );
-				_impl.masterizzaSrv.prezzoForfaittario = 7;
+					_impl.aggiungiStampe( fotos, p );
 
-				Assert.IsFalse( _impl.carrello.venduto );
+					_impl.aggiungiMasterizzate( fotos );
+					_impl.masterizzaSrv.impostaDestinazione( TipoDestinazione.CARTELLA, Path.GetTempPath() );
+					_impl.masterizzaSrv.prezzoForfaittario = 7;
 
-				_impl.vendereCarrello();
+					Assert.IsFalse( _impl.carrello.venduto );
 
-				Assert.IsTrue( _impl.carrello.venduto );
-				Assert.IsTrue( _impl.carrello.totaleAPagare == 15 + 7 );
+					_impl.vendereCarrello();
+
+					Assert.IsTrue( _impl.carrello.venduto );
+					Assert.IsTrue( _impl.carrello.totaleAPagare == 15 + 7 );
+				}
 			}
 
 

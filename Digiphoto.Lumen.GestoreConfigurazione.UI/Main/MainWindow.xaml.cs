@@ -116,5 +116,29 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI {
 		}
 
 		#endregion;
+
+		private void comboBoxMotoreDatabase_SelectionChanged( object sender, SelectionChangedEventArgs e ) {
+
+			if( e.RemovedItems.Count == 0 )
+				return;
+
+			if( !((ComboBox)sender).IsEnabled )
+				return;
+
+			string dbPrec = e.RemovedItems [0].ToString();
+			string dbCorr = e.AddedItems [0].ToString();
+
+			if( MessageBox.Show( "Sei sicuro di voler cambiare il motore del database\nda" + dbPrec + " a " + dbCorr + " ??\nATTENTO che perdi tutti i dati !\nConfermi ? ", "ATTENZIONE: cambio database", MessageBoxButton.YesNo, MessageBoxImage.Warning ) == MessageBoxResult.Yes ) {
+
+			} else {
+				
+				ComboBox cb = (ComboBox)sender;
+				e.Handled = true;
+				cb.IsEnabled = false;
+				cb.SelectedItem = e.RemovedItems[0];
+				cb.IsEnabled = true;
+				e.Handled = true;
+			}
+		}
 	}
 }

@@ -19,8 +19,8 @@ namespace Digiphoto.Lumen.Model
         public LumenEntities()
             : this(false) { }
     
-        public LumenEntities(bool proxyCreationEnabled)	    
-            : base("name=LumenEntities-sqLite")
+        public LumenEntities(bool proxyCreationEnabled)
+			: base( "name=LumenEntities" )
         {
             this.Configuration.ProxyCreationEnabled = proxyCreationEnabled;
         }

@@ -27,7 +27,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			int ultimoNum = infoFissa.ultimoNumFotogramma;
 
 			if( ultimoNum > 0 )
-				ultimoNum = eventualeAzzeramento( infoFissa.modoNumerazione, infoFissa.ultimoNumFotogramma, infoFissa.dataUltimoScarico );
+				ultimoNum = eventualeAzzeramento( infoFissa.modoNumerazFoto, infoFissa.ultimoNumFotogramma, infoFissa.dataUltimoScarico );
 
 			// Aggiorno sempre e comunque
 			infoFissa.ultimoNumFotogramma = ultimoNum + quante;
@@ -57,7 +57,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 				switch( modoAzzeramento [0] ) {
 
-					case 'G':    // giornaliento
+					case 'G':    // giornaliero
 						if( diff.Days > 0 )
 							numero = 0;
 						break;

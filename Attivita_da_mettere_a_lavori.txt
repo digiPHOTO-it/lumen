@@ -1,11 +1,2 @@
 
-
-Database 
-========
-
-Nel caso in cui si perde il database, creare una funzione che ripristina tutto partendo 
-dal filesystem (se si spacca il db, ora siamo fregati).
-
-Report da stampare.
-
 Quando finisce di scaricare le foto, accendere un fumetto.

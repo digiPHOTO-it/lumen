@@ -208,12 +208,26 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
 
+
+			StampantiAbbinateCollection stampantiAbbinate = StampantiAbbinateUtil.deserializza( Configurazione.UserConfigLumen.stampantiAbbinate );
+			
+
 			int conta = 0;
 			foreach( RigaCarrello riga in carrello.righeCarrello ) {
 
 				if( riga is RiCaFotoStampata ) {
 
 					RiCaFotoStampata riCaFotoStampata = (RiCaFotoStampata)riga;
+
+					// Siccome il nome della stampante è un attributo transiente,
+					// eventualmente lo assegno. Potrebbe essere null, quando carico un carrello dal db.
+					if( riCaFotoStampata.nomeStampante == null ) {
+						StampanteAbbinata sa = stampantiAbbinate.FirstOrDefault<StampanteAbbinata>( s => s.FormatoCarta.Equals( riCaFotoStampata.formatoCarta ) );
+						if( sa != null )
+							riCaFotoStampata.nomeStampante = sa.StampanteInstallata.NomeStampante;
+						else
+							_giornale.Warn( "Non riesco a stabilire la stampante di questa carta: " + riCaFotoStampata.formatoCarta.descrizione + "(id=" + riCaFotoStampata.formatoCarta.id + ")" );
+					}
 
 					++conta;
 
@@ -242,6 +256,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			r.idFotografia = fotografia.id;
 			r.fotografo = fotografia.fotografo;
 			r.formatoCarta = param.formatoCarta;
+			r.nomeStampante = param.nomeStampante;   // Questo è un attributo transiente mi serve solo a runtime.
 
 			r.descrizione = "Stampe formato " + param.formatoCarta.descrizione;
 
@@ -257,7 +272,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			param.autoZoomNoBordiBianchi = true;
 			param.formatoCarta = riCaFotoStampata.formatoCarta;
 			param.numCopie = riCaFotoStampata.quantita;
-			param.nomeStampante = "doPDF v7";    // TODO definire la stampa
+			param.nomeStampante = riCaFotoStampata.nomeStampante;  // Attributo transiente.
 
 			// Stampigli
 			param.stampigli = configurazione.stampigli;
@@ -267,8 +282,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			param.idRigaCarrello = riCaFotoStampata.id;
 			return param;
 		}
-
-
 
 		/**
 		 * Siccome il carrello in questione viene chiuso prima che termini la masterizzazione,

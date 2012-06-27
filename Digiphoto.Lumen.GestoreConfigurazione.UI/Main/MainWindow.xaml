@@ -6,7 +6,7 @@
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:xamlHelpers="clr-namespace:TestingPasswordBox.XamlHelpers"
         xmlns:extToolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
-        Title="Lumen Gestore Configurazione" Height="759" Width="686" WindowState="Maximized">
+        Title="Lumen Gestore Configurazione" Height="600" Width="800" WindowState="Normal" WindowStartupLocation="CenterScreen" >
 
         <DockPanel LastChildFill="True">
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Right">
@@ -14,159 +14,168 @@
             <PasswordBox Height="23" Name="amministratorePasswordBox" Width="120"
                 PasswordChar="*"
                 xamlHelpers:PasswordBoxAssistant.BindPassword="true"
-                xamlHelpers:PasswordBoxAssistant.BoundPassword="{Binding Path=LoginPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Password="Lumen" />
-            <Button Name="amministratoreLoginButton" Content="&gt;" Height="23"  Margin="5,0,5,0"  Width="22" Command="{Binding Path=loginCommand}" />
+                xamlHelpers:PasswordBoxAssistant.BoundPassword="{Binding Path=LoginPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <Button Name="amministratoreLoginButton" Content="&gt;" Height="23"  Margin="5,0,5,0"  Width="22" Command="{Binding Path=loginCommand}" ToolTip="Esegui Login" />
         </StackPanel>
 
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" >
-            <Button Content="&lt;&lt;" Height="23" Name="rwButton" Width="75" Margin="5,0,5,0" IsEnabled="{Binding Path=rwButton}" Command="{Binding Path=rwButtonCommand}" />
-            <Button Content=">>" Height="23" Name="fwButton" Width="75" Margin="5,0,5,0" IsEnabled="{Binding Path=fwButton}" Command="{Binding Path=fwButtonCommand}"/>
-            <Button Content="Applica" Height="23" Name="applicaButton" Width="75" Margin="5,0,5,0" IsEnabled="{Binding Path=applicaButton}" Command="{Binding Path=applicaCommand}"/>
-            <Button Content="Annulla" Height="23" Name="annullaButton" Width="75" Margin="5,0,5,0" IsEnabled="{Binding Path=annullaButton}" Command="{Binding Path=annullaCommand}"/>
+            <Button Content="&lt;&lt;" Height="23"  Width="75" Margin="5,0,5,0" Command="{Binding Path=commandStepIndietro}" />
+            <Button Content=">>" Height="23" Width="75" Margin="5,0,5,0" Command="{Binding Path=commandStepAvanti}"/>
+            <Button Content="Applica" Height="23" Name="applicaButton" Width="75" Margin="5,0,5,0" Command="{Binding Path=applicaCommand}"/>
+            <Button Content="Annulla" Height="23" Name="annullaButton" Width="75" Margin="5,0,5,0" Command="{Binding Path=annullaCommand}"/>
         </StackPanel>
-        <!--<extToolkit:BusyIndicator x:Name="scaricaBusyIndicator" IsBusy="{Binding Path=Disattivato}">-->
             
-            <TabControl Name="tabControl1" SelectedIndex="{Binding Path=SelectedTabControlIndex}" IsEnabled="{Binding Path=Disattivato}">
-                <TabItem Header="Configurazione" Name="tabItem1" IsSelected="{Binding Path=configurazione}" IsEnabled="{Binding Path=Configurazione}">
-					<Grid IsEnabled="{Binding Path=Abilitato}">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="127" />
-                            <RowDefinition Height="84" />
-                            <RowDefinition Height="284" />
-                            <RowDefinition Height="142*" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="12" />
-                            <ColumnDefinition Width="180" />
-                            <ColumnDefinition Width="40" />
-                            <ColumnDefinition Width="134" />
-                            <ColumnDefinition Width="110" />
-                            <ColumnDefinition Width="174" />
-                            <ColumnDefinition Width="4*" />
-                        </Grid.ColumnDefinitions>
-                        <Label Content="Database Connection String" Height="28" HorizontalAlignment="Left" Margin="2,60,0,0" Name="label4" VerticalAlignment="Top" Grid.Column="1" />
-                        <TextBox Height="44" TextWrapping="Wrap" Margin="3,95,1,0"  VerticalAlignment="Top" Grid.Column="1" Grid.ColumnSpan="5" IsEnabled="False" Width="634" Text="{Binding Path=ConnectionString,Mode=OneWay}" Grid.RowSpan="2" />
-                        
-                        <Label Content="Cartella Rullini" Height="25" HorizontalAlignment="Left" Margin="3,105,0,0" Name="label5" VerticalAlignment="Top" Width="152" Grid.Column="1" Grid.Row="2" />
-                        <TextBox Margin="111,109,51,0" Height="23"  VerticalAlignment="Top" Grid.Column="1" Grid.ColumnSpan="5" Width="476" Grid.Row="2" Text="{Binding Path=cfg.cartellaFoto}" />
-                        
-                        <Button Content="..." Height="23" Margin="0,105,6,0" Name="button1" VerticalAlignment="Top" ToolTip="Sfoglia cartelle" HorizontalAlignment="Right" Width="22" Grid.Column="5"  Command="{Binding Path=cartellaRulliniCommand}" Grid.Row="2" />
-                        <Label Content="Punto Vendita: codice" Height="26" HorizontalAlignment="Left" Margin="3,154,0,0" Name="label6" VerticalAlignment="Top" Width="136" Grid.Column="1" Grid.Row="2" />
-                        <TextBox Height="23" HorizontalAlignment="Left" Margin="155,156,0,0" Name="textBox3" VerticalAlignment="Top" Width="34" Grid.Column="1" Grid.Row="2" Text="{Binding Path=cfg.codicePuntoVendita}" Grid.ColumnSpan="2" />
-                        <Label Content="Descrizione" Height="26" HorizontalAlignment="Left" Margin="39,154,0,0" Name="label7" VerticalAlignment="Top" Width="79" Grid.Column="2" Grid.Row="2" Grid.ColumnSpan="2" />
-                        <TextBox Height="23" HorizontalAlignment="Left" Margin="74,156,0,0" Name="textBox4" VerticalAlignment="Top" Width="293" Grid.Column="3" Grid.Row="2" Text="{Binding Path=cfg.descrizionePuntoVendita}" Grid.ColumnSpan="3" />
+            <TabControl Name="tabControl1" IsEnabled="{Binding Path=Disattivato}">
 
-                        <ComboBox Height="23" HorizontalAlignment="Left" Margin="160,19,0,0" Name="databaseSupoortatiComboBox" VerticalAlignment="Top" Width="206" Grid.Column="1" Grid.ColumnSpan="4" 
-                              IsEnabled="{Binding Abilitato}"
-                              ItemsSource="{Binding motoriDatabasesValues}"
-                              SelectedValue="{Binding Path=cfg.motoreDatabase,Mode=TwoWay}">
+            <TabItem Header="1) Database" Name="tabItemDatabase" IsSelected="{Binding Path=isPassoMotoreDb,Mode=OneWay}" IsEnabled="{Binding Path=isPassoMotoreDb}">
+                    
+					<Grid IsEnabled="{Binding Path=loginEffettuato}">
+
+                        <Label Content="Database Connection String" Height="28" HorizontalAlignment="Left" Margin="11,61,0,0" Name="label4" VerticalAlignment="Top"  />
+                        <TextBox Height="44" TextWrapping="Wrap" Margin="11,95,15,0"  VerticalAlignment="Top" IsEnabled="False" Width="628" Text="{Binding Path=ConnectionString,Mode=OneWay}" />
+
+                        <ComboBox Height="23" HorizontalAlignment="Left" Margin="183,19,0,0" 
+                                  Name="comboBoxMotoreDatabase" VerticalAlignment="Top" Width="206" 
+                                  IsEnabled="{Binding loginEffettuato}"
+                                  ItemsSource="{Binding motoriDatabasesValues}"
+                                  SelectedValue="{Binding Path=cfg.motoreDatabase,Mode=TwoWay}" 
+                                  SelectionChanged="comboBoxMotoreDatabase_SelectionChanged">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectionChanged">
-                                <i:InvokeCommandAction Command="{Binding MotoreDataBaseCommand}"/>
+                                <i:InvokeCommandAction Command="{Binding cambiareMotoreDataBaseCommand}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </ComboBox>
-                        <Label Content="Motore di database" Height="28" HorizontalAlignment="Left" Margin="2,19,0,0" Name="label10" VerticalAlignment="Top" Width="152" Grid.Column="1" />
+                        
+                    <Label Content="Motore di database" Height="28" HorizontalAlignment="Left" Margin="11,19,0,0" Name="label10" VerticalAlignment="Top" Width="152"  />
 
-                        <Label Content="DataDirectory" Height="27" HorizontalAlignment="Left" Margin="3,0,0,0" Name="label13" VerticalAlignment="Top" Width="116" Grid.Column="1" Grid.Row="2" />
-                        <TextBox Grid.ColumnSpan="5" Height="23" HorizontalAlignment="Right" Margin="0,4,51,0" Name="textBoxDataSource" VerticalAlignment="Top" Width="476" Grid.Column="1" Text="{Binding Path=cfg.dbCartella}" Grid.Row="2" IsEnabled="{Binding Path=DbCartellaButton}" />
-                        <Button Content="..." Grid.Column="5"  Name="dataSourceButton" Grid.Row="2" Height="23" HorizontalAlignment="Left" Margin="145,6,0,0" VerticalAlignment="Top" Width="22" Command="{Binding Path=DbCartellaCommand}" IsEnabled="{Binding Path=DbCartellaButton}"/>
-					<Button Content="Test Connection" Grid.Column="1" Grid.Row="2" Height="23" HorizontalAlignment="Left" Margin="3,66,0,0" Name="button2" VerticalAlignment="Top" Width="152" Command="{Binding Path=testConnectionCommand}"/>
-					<Button Content="Create DataBase" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="2" Height="23" HorizontalAlignment="Left" Margin="175,66,0,0" Name="button3" VerticalAlignment="Top" Width="123" Command="{Binding Path=CreateDataBaseCommand}"/>
-                        <Label Content="DataBase" Grid.Column="1" Grid.Row="1" Height="28" HorizontalAlignment="Left" Margin="3,37,0,0" Name="label11" VerticalAlignment="Top" Width="71" />
-                        <TextBox Grid.Column="1" IsEnabled="False" Grid.ColumnSpan="5" Grid.Row="1" Height="23" HorizontalAlignment="Left" Margin="111,39,0,0" Name="textBox6" VerticalAlignment="Top" Width="476" Text="{Binding Path=cfg.dbNomeDbPieno}"/>
+                    <Label Content="DataDirectory" Height="27" HorizontalAlignment="Left" Margin="11,211,0,0" Name="label13" VerticalAlignment="Top" Width="102" />
+                    <TextBox Height="23" HorizontalAlignment="Right" Margin="0,211,165,0" Name="textBoxDataSource" VerticalAlignment="Top" Width="476" Text="{Binding Path=cfg.cartellaDatabase}" IsEnabled="{Binding Path=possoCambiareCartellaDb}" />
+                    <Button Content="..." Height="23" Margin="608,210,138,0" VerticalAlignment="Top" Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="db" IsEnabled="{Binding Path=possoCambiareCartellaDb}"/>
+					<Button Content="Prova la connessione" Height="25" HorizontalAlignment="Left" Margin="127,274,0,0"  VerticalAlignment="Top" Width="152" Command="{Binding Path=testConnectionCommand}" ToolTip="Prova la connessione al database" />
+					<Button Content="Crea nuovo Database" Height="25" HorizontalAlignment="Left" Margin="297,274,0,0"  VerticalAlignment="Top" Width="157" Command="{Binding Path=CreateDataBaseCommand}"/>
+                    <Label Content="Nome Database" Height="28" HorizontalAlignment="Left" Margin="11,164,0,0" Name="label11" VerticalAlignment="Top" Width="102" />
+                    <TextBox IsEnabled="False" Height="23" HorizontalAlignment="Left" Margin="127,166,0,0"  VerticalAlignment="Top" Width="199" Text="{Binding Path=cfg.dbNomeDbPieno}"/>
                     </Grid>
                 </TabItem>
 
-                <TabItem Header="Carta e Stampanti" IsSelected="{Binding Path=CartaEStampanti}" IsEnabled="{Binding Path=CartaEStampanti}">
-                    <StackPanel Orientation="Horizontal" Height="621">
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="10">
-                            <ListBox Margin="10,10,10,10" Name="stampantiInstallateListBox">
-                                <vc:SelettoreStampanteInstallata DataContext="{Binding Path=DataContextStampantiInstallate}"/>
-                            </ListBox>
+            <TabItem Header="2) Punto Vendita" IsSelected="{Binding Path=isPassoPuntoVendita,Mode=OneWay}" IsEnabled="{Binding Path=isPassoPuntoVendita}">
+                    <Grid>                
+                        <Label Content="Codice PdV" Height="26" HorizontalAlignment="Left" Margin="30,65,0,0" VerticalAlignment="Top" Width="155" />
+                        <TextBox Height="23" Margin="217,67,0,0" VerticalAlignment="Top" Text="{Binding Path=infoFissa.idPuntoVendita}" HorizontalAlignment="Left" Width="91" MaxLength="5" />
+                        <Label Content="Descrizione" Height="26" Margin="30,95,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="155" />
+                        <TextBox Height="23" Margin="217,97,137,0" VerticalAlignment="Top" Text="{Binding Path=infoFissa.descrizPuntoVendita}" />
+                        <Label Content="Pixel lato provino" Height="28" Margin="30,151,0,0" Name="label6" VerticalAlignment="Top" Width="155" HorizontalAlignment="Left" />
+                        <TextBox Height="23" HorizontalAlignment="Left" Margin="217,153,0,0"  VerticalAlignment="Top" Width="66" Text="{Binding Path=infoFissa.pixelProvino,Mode=TwoWay}" />
+                        <TextBlock Height="71" Margin="0,6,6,0" Text="ATTENZIONE  queste preferenze sono univoche per tutto il Punto Vendita e quindi per tutti i computer collegati alla rete" VerticalAlignment="Top" TextWrapping="Wrap" Width="189" HorizontalAlignment="Right" />
+                        <Label Content="N° giorni elimina foto" HorizontalAlignment="Left" Margin="30,199,0,0" VerticalAlignment="Top" Width="155" />
+                        <TextBox Height="23" HorizontalAlignment="Left" Margin="217,201,0,0" MaxLength="3" Text="{Binding Path=infoFissa.numGiorniEliminaFoto}" ToolTip="N.giorni dopo cui cancellare le foto vecchie" VerticalAlignment="Top" Width="66" />
+                        <Label Content="Numerazione fotogrammi" Height="28" HorizontalAlignment="Left" Margin="30,258,0,0" Name="label7" VerticalAlignment="Top" Width="155" />
+                    </Grid>
+                </TabItem>
 
-                            <Separator Height="10" />
+            <TabItem Header="3) Carta e Stampanti" IsSelected="{Binding Path=isPassoCartaEStampanti,Mode=OneWay}" IsEnabled="{Binding Path=isPassoCartaEStampanti}">
+
+                    <Grid>
                         
-                            <ListBox Margin="10,10,10,10" Name="formatiCartaListBox">
-                                <vc:SelettoreFormatoCarta x:Name="selez" DataContext="{Binding Path=DataContextFormatoCarta}"/>                    
-                            </ListBox>
-    <!--
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Button Name="creaNuovoFormatoCartaButton" Content="+" ToolTip="Crea nuovo formato carta" Margin="10,0,10,0"/>
-                                <Button Name="modificaFormatoCartaButton" Content="O" ToolTip="modifica formato carta" Margin="10,0,10,0"/>
-                            </StackPanel>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
 
-                            <Label Content="Nota1..." ToolTip="quando un elemento viene abbinato diventa disabilitato "/>
-                            <Label Content="Nota2..." ToolTip="Quando premo + si apre una mascherina per inserire un nuovo formato carta"/>
-                            <Label Content="Nota3..." ToolTip="I formati carta per ora non li facciamo eliminare."/>
-    -->
-                        </StackPanel>
+                    <Grid Grid.Row="0" Grid.Column="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
 
-                        <StackPanel VerticalAlignment="Center">
+                            <vc:SelettoreStampanteInstallata DataContext="{Binding Path=DataContextStampantiInstallate}" Grid.Row="0" Grid.Column="0" />
+
+                            <vc:SelettoreFormatoCarta DataContext="{Binding Path=DataContextFormatoCarta}" Grid.Row="1" Grid.Column="0"/>
+                            
+                        </Grid>
+                        
+                        <StackPanel VerticalAlignment="Center" Grid.Row="0" Grid.Column="1">
                             <Button Content="Abbina ---&gt;" Name="abbinaButton" Margin="5,5,5,5" Command="{Binding Path=abbinaCommand}" />
                             <Button Content="&lt;--- Rimuovi abbinamento" Name="rimuoviAbbinamentoButton" Margin="5,5,5,5" Command="{Binding Path=rimuoviAbbinamentoCommand}"/>
                         </StackPanel>
-                        <HeaderedContentControl Header="Abbinamenti" >
+
+                        <HeaderedContentControl Header="Abbinamenti" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" >
                             <StackPanel Orientation="Vertical" Height="252">
                                 <vc:SelettoreFormatoCartaAbbinatoView DataContext="{Binding Path=DataContextAbbinamenti}" Height="252" />
                             </StackPanel>
                         </HeaderedContentControl>
-                    </StackPanel>
+
+                    </Grid>
+
+                    
                 </TabItem>
 
-                <TabItem Header="Preferenze Utente" IsSelected="{Binding Path=PreferenzeUtente}" IsEnabled="{Binding Path=PreferenzeUtente}">
+            <TabItem Header="4) Preferenze Utente" IsSelected="{Binding Path=isPassoPreferenzeUtente,Mode=OneWay}" IsEnabled="{Binding Path=isPassoPreferenzeUtente}">
                     <Grid>
-                        <CheckBox Content="Svuota memory card dopo averla scaricata" Height="19" Name="svuotaCardCheckBox" Width="260" Margin="20,31,336,0" VerticalAlignment="Top" HorizontalAlignment="Left" IsChecked="{Binding Path=cfg.eraseFotoMemoryCard,Mode=TwoWay}"/>
-                        <GroupBox Header="Masterizzare" Height="115" Margin="96,84,158,0" Name="groupBox1" VerticalAlignment="Top" HorizontalAlignment="Center" Width="399">
+                        <CheckBox Content="Svuota memory card dopo averla scaricata" Height="19" Name="svuotaCardCheckBox" Width="260" Margin="209,246,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" IsChecked="{Binding Path=cfg.eraseFotoMemoryCard,Mode=TwoWay}"/>
+                        <GroupBox Header="Masterizzare" Height="104" Margin="28,126,26,0"  VerticalAlignment="Top" HorizontalAlignment="Center" Width="599">
                             <Grid>
-                                <RadioButton  Content="Direttamente con" Height="18" HorizontalAlignment="Left" Margin="12,15,0,0" Name="masterizzaDirettoRadioButton" VerticalAlignment="Top" Width="129" IsChecked="{Binding Path=cfg.masterizzaDirettamente}"/>
-                                <RadioButton  Content="usa cartella" Height="15" HorizontalAlignment="Left" Margin="12,47,0,0" Name="masterizzaCartellaRadioButton" VerticalAlignment="Top" Width="115" IsChecked="{Binding Path=notMasterizzaDirettamente}"/>
-                                <ComboBox Height="20" HorizontalAlignment="Left" Margin="133,13,0,0" VerticalAlignment="Top" Width="248" 
+                                <RadioButton  Content="Direttamente con" Height="23" HorizontalAlignment="Left" Margin="12,15,0,0" Name="masterizzaDirettoRadioButton" VerticalAlignment="Top" Width="116" IsChecked="{Binding Path=cfg.masterizzaDirettamente}"/>
+                                <RadioButton  Content="usa cartella" Height="23" HorizontalAlignment="Left" Margin="12,50,0,0" Name="masterizzaCartellaRadioButton" VerticalAlignment="Top" Width="115" IsChecked="{Binding Path=notMasterizzaDirettamente}"/>
+                                <ComboBox Height="23" HorizontalAlignment="Left" Margin="145,15,0,0" VerticalAlignment="Top" Width="248" 
                                           IsEnabled="{Binding ElementName=masterizzaDirettoRadioButton, Path=IsChecked}" ItemsSource="{Binding Path=listaMasterizzatori}"  SelectedItem="{Binding Path=cfg.defaultMasterizzatore}" />
-                                <TextBox Height="23" Margin="133,40,36,0" Name="cartellaMasterizzaTextBox" VerticalAlignment="Top"
+                                <TextBox Height="23" Margin="145,47,36,0" Name="cartellaMasterizzaTextBox" VerticalAlignment="Top"
                                          IsEnabled="{Binding ElementName=masterizzaCartellaRadioButton, Path=IsChecked}" Text="{Binding Path=cfg.defaultChiavetta}"  />
-                                <Button Content="..." Height="20" HorizontalAlignment="Left" Margin="362,40,0,0" Name="cartellaMasterizzaBrowseButton" VerticalAlignment="Top" Width="19" 
-                                        IsEnabled="{Binding ElementName=masterizzaCartellaRadioButton, Path=IsChecked}"  Command="{Binding Path=desMasterizzaCartellaCommand}" />
+                            <Button Content="..." Height="23" Margin="558,46,6,0" VerticalAlignment="Top" Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="burn" Width="22" />
+                            
                             </Grid>
                         </GroupBox>
-                        <Label Content="Num. giorni permanenza foto" Height="26" HorizontalAlignment="Left" Margin="20,228,0,0" Name="label8" VerticalAlignment="Top" Width="182" />
-                        <TextBox Height="23" HorizontalAlignment="Left" Margin="192,231,0,0" Name="textBox5" VerticalAlignment="Top" Width="36" ToolTip="N.giorni dopo cui cancellare le foto vecchie" Text="{Binding Path=cfg.giorniDeleteFoto}" />
-                        <CheckBox Content="Proietta area stampabile sulle diapositive" HorizontalAlignment="Left" Margin="356,228,0,0" Name="checkBox2" VerticalAlignment="Top" Width="207" IsChecked="{Binding Path=cfg.proiettaDiapo}"/>
-                        <Label Content="Modalità di vendita" HorizontalAlignment="Left" Margin="351,26,0,0" Name="label9" VerticalAlignment="Top" Width="113" />
-                    <ComboBox Name="comboBoxModalitaVendita" Height="22" HorizontalAlignment="Left" Margin="471,23,0,0" VerticalAlignment="Top" Width="118" ItemsSource="{Binding modoVenditaValues}" SelectedValue="{Binding Path=cfg.modoVendita}" />
+                    <CheckBox Content="Proietta area stampabile sulle diapositive" HorizontalAlignment="Left" Margin="209,271,0,0" Name="checkBox2" VerticalAlignment="Top" Width="207" IsChecked="{Binding Path=cfg.proiettaDiapo}"/>
+                        <Label Content="Modalità di vendita" HorizontalAlignment="Left" Margin="13,87,0,0" Name="label9" VerticalAlignment="Top" Width="113" />
+                    <ComboBox Name="comboBoxModalitaVendita"  HorizontalAlignment="Left" Margin="151,91,0,0" VerticalAlignment="Top" Width="148" ItemsSource="{Binding modoVenditaValues}" SelectedValue="{Binding Path=cfg.modoVendita}" />
                         
-                    <GroupBox Header="Stampigli" HorizontalAlignment="Left" Margin="64,290,0,0"  VerticalAlignment="Top" Width="138">
+                    <GroupBox Header="Stampigli" HorizontalAlignment="Left" Margin="24,264,0,0"  VerticalAlignment="Top" Width="157" Height="87">
                         <StackPanel Orientation="Vertical" Margin="5,5,0,0">                            
                             <CheckBox Content="Operatore" IsChecked="{Binding cfg.stampiglioOperatore}" />
                             <CheckBox Content="Giornata" IsChecked="{Binding cfg.stampiglioGiornata}" />
                             <CheckBox Content="N° foto" IsChecked="{Binding cfg.stampiglioNumFoto}" />
                         </StackPanel>
                     </GroupBox>
+                    <Label Content="Fuori Standard" Height="28" HorizontalAlignment="Left" Margin="209,364,0,0" Name="label12" VerticalAlignment="Top" Width="133" />
+                    <TextBox Height="23" Margin="409,364,100,0" VerticalAlignment="Top" Text="{Binding Path=cfg.fuoriStandard}" ToolTip="Identificatvo per personalizzazioni fuori standard." />
+                    <Label Content="Cartella Rullini" Height="25" HorizontalAlignment="Left" Margin="13,22,0,0" Name="label5" VerticalAlignment="Top" Width="121" />
+                    <TextBox Height="23" Margin="151,22,0,0" Text="{Binding Path=cfg.cartellaFoto}" VerticalAlignment="Top" HorizontalAlignment="Left" Width="562" />
+                    <Label Content="Cartella Maschere" Height="25" HorizontalAlignment="Left" Margin="13,51,0,0" Name="label14" VerticalAlignment="Top" Width="121" />
+                    <TextBox Height="23" Margin="151,51,0,0" Text="{Binding Path=cfg.cartellaMaschere}" VerticalAlignment="Top" Width="562" HorizontalAlignment="Left" />
+                    <Button  Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="foto" Content="..." Height="Auto" Margin="730,21,0,0" ToolTip="Sfoglia cartelle" VerticalAlignment="Top" HorizontalAlignment="Left" Width="22" />
+                    <Label Content="Millisecondi intervallo SlideShow" HorizontalAlignment="Left" Margin="209,325,0,0" VerticalAlignment="Top" Width="193" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="409,327,0,0" Text="{Binding Path=cfg.millisIntervalloSlideShow}" ToolTip="esempio 1500 = 1 secondo e mezzo" VerticalAlignment="Top" Width="75" />
+                    <Button Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="mask" Content="..." Margin="730,51,16,0"  ToolTip="Sfoglia cartelle" VerticalAlignment="Top" Width="22" />
+                    <Label Content="Programma esterno foto-ritocco" Height="26" HorizontalAlignment="Left" Margin="6,420,0,0" Name="label8" VerticalAlignment="Top" Width="192" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="209,423,0,0" Name="textBox1" VerticalAlignment="Top" Width="515"  Text="{Binding Path=cfg.editorImmagini}"/>
+                    <Button Content="..." Height="Auto" HorizontalAlignment="Left" Margin="730,422,0,0" Name="button1" VerticalAlignment="Top" Width="22" />
                 </Grid>
                 </TabItem>
-                <TabItem Header="Riservato" IsEnabled="{Binding Path=Riservato}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="148" />
-                            <ColumnDefinition Width="506" />
-                        </Grid.ColumnDefinitions>
-                        <Label Content="Nuova password" Height="27" Name="label1" Width="174" Margin="88,74,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.ColumnSpan="2" />
-                        <PasswordBox Margin="130,78,95,0" Name="nuovaPasswordBox" Height="23" VerticalAlignment="Top" Grid.Column="1" 
-                                PasswordChar="*"
+
+            <TabItem Header="5) Riservato" IsSelected="{Binding Path=isPassoRiservato,Mode=OneWay}" IsEnabled="{Binding Path=isPassoRiservato,Mode=OneWay}">
+
+                <Grid>
+                    <Label Content="Nuova password" Height="27" Margin="88,74,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <PasswordBox Margin="325,74,276,0" Name="nuovaPasswordBox" Height="23" VerticalAlignment="Top" PasswordChar="*"
                                 xamlHelpers:PasswordBoxAssistant.BindPassword="true"
-                                xamlHelpers:PasswordBoxAssistant.BoundPassword="{Binding Path=NuovaPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        />
-                        <Label Content="Conferma nuova password" Height="27" Margin="88,119,0,0" Name="label3" Width="174" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.ColumnSpan="2" />
-                        <PasswordBox Margin="130,119,95,0" Name="confermaNuovaPasswordBox" Height="23" VerticalAlignment="Top" Grid.Column="1" 
-                                PasswordChar="*"
+                                xamlHelpers:PasswordBoxAssistant.BoundPassword="{Binding Path=NuovaPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="167" />
+                    <Label Content="Conferma nuova password" Height="27" Margin="88,119,0,0" Name="label3" Width="174" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.ColumnSpan="2" />
+                    <PasswordBox Margin="325,119,276,0" Name="confermaNuovaPasswordBox" Height="23" VerticalAlignment="Top" PasswordChar="*"
                                 xamlHelpers:PasswordBoxAssistant.BindPassword="true"
-                                xamlHelpers:PasswordBoxAssistant.BoundPassword="{Binding Path=NuovaPassword2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        />
-                        <Button Content="Conferma" Height="25" HorizontalAlignment="Left" Margin="98,180,0,0" Name="button4" VerticalAlignment="Top" Width="103" Command="{Binding Path=cambiaPasswordCommand}" Grid.ColumnSpan="2" />
-                    </Grid>
-                </TabItem>
-            </TabControl>
-        <!--</extToolkit:BusyIndicator>-->
+                                xamlHelpers:PasswordBoxAssistant.BoundPassword="{Binding Path=NuovaPassword2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="167" />
+                    <Button Content="Conferma" Height="25" HorizontalAlignment="Left" Margin="234,178,0,0" VerticalAlignment="Top" Width="103" Command="{Binding Path=cambiaPasswordCommand}" />
+                </Grid>
+            </TabItem>
+        </TabControl>
+
     </DockPanel>
 
 </Window>

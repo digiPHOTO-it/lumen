@@ -77,8 +77,10 @@ namespace Digiphoto.Lumen.UI
             }
             else
             {
-                StampantiInstallateSrvImpl stampantiInstallateSrvImpl = new StampantiInstallateSrvImpl();
-                listaS = stampantiInstallateSrvImpl.listaStampantiInstallate();
+				using( IStampantiInstallateSrv stampantiInstallateSrv = LumenApplication.Instance.creaServizio<IStampantiInstallateSrv>() ) {
+					stampantiInstallateSrv.start();
+					listaS = stampantiInstallateSrv.listaStampantiInstallate();
+				}
             }
 
             // purtoppo pare che rimpiazzare il reference con uno nuovo, causa dei problemi.
@@ -99,7 +101,7 @@ namespace Digiphoto.Lumen.UI
             {
                 if (_rileggereStampantiInstallateCommand == null)
                 {
-                    _rileggereStampantiInstallateCommand = new RelayCommand(param => this.rileggereStampantiInstallate(), null, false);
+                    _rileggereStampantiInstallateCommand = new RelayCommand(param => this.rileggereStampantiInstallate() );
                 }
                 return _rileggereStampantiInstallateCommand;
             }

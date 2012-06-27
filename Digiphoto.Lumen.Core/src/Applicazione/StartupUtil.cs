@@ -43,19 +43,23 @@ namespace Digiphoto.Lumen.Applicazione {
 		}
 
 		// Se non esistono le informazioni fisse, allora le creo di default
-		internal static void forseCreaInfoFisse() {
+		internal static InfoFissa forseCreaInfoFisse() {
 
 			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
-			InfoFissa infoFissa = objContext.InfosFisse.SingleOrDefault<InfoFissa>( f => f.id == "K" );
-
+			InfoFissa infoFissa = objContext.InfosFisse.SingleOrDefault( f => f.id == "K" );
+       
 			if( infoFissa == null ) {
 				_giornale.Info( "Informazioni fisse non trovate. Le creo con i default" );
 				infoFissa = new InfoFissa();
 				infoFissa.id = "K";
+				infoFissa.pixelProvino = 400;
 				objContext.InfosFisse.Add( infoFissa );
 				objContext.SaveChanges();
 			}
+		
+			return infoFissa;
 		}
+
 
 	}
 }

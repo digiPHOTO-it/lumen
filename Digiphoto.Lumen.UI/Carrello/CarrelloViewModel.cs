@@ -583,7 +583,7 @@ namespace Digiphoto.Lumen.UI
 												"\nTotale: " + venditoreSrv.carrello.totaleAPagare +
 												"\nN° Fotografie: " + totoleFotoStampate +
 												"\nN° Foto Masterizzate: "+ totaleFotoMasterizzate +
-												"\nN° Errori: " + totoleErrori, "Avviso");
+												"\nN° ErroriUtil: " + totoleErrori, "Avviso");
 
 					//Creo un nuovo carrello
 					venditoreSrv.creaNuovoCarrello();

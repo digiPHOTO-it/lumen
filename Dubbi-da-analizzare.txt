@@ -5,4 +5,6 @@ Alla conferma del carrello, dobbiamo visualizzare una finestrella dove mettere:
   Totale della spesa
   Eventuali foto da stornare perchè SCARTI
 
-  ??
+Gestione loghi: serve ?
+
+La rotazione automatica delle foto mentre si scarica : serve ?
