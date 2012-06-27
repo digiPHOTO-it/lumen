@@ -42,6 +42,18 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
+		public Carrello carrelloStampaDiretta
+		{
+			get
+			{
+				return gestoreCarrello.carrelloStampaDiretta;
+			}
+
+			set
+			{
+			}
+		}
+
 		public ModoVendita modoVendita {
 			get;
 			set;
@@ -87,16 +99,38 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/** 
 		 * Per ogni foto indicata, creo una nuova riga di carrello
 		 */
-		public void aggiungiStampe( IEnumerable<Fotografia> fotografie, Stampare.ParamStampaFoto param ) {
+		public void aggiungiStampe( IEnumerable<Fotografia> fotografie, Stampare.ParamStampa param ) {
 
-			foreach( Fotografia foto in fotografie ) {
-				AiutanteFoto.idrataImmaginiFoto( foto );
-				gestoreCarrello.aggiungiRiga( creaRiCaFotoStampata( foto, param ) );
+			if (param is ParamStampaFoto)
+			{
+				foreach (Fotografia foto in fotografie)
+				{
+					AiutanteFoto.idrataImmaginiFoto( foto );
+					gestoreCarrello.aggiungiRiga(creaRiCaFotoStampata(foto, param as ParamStampaFoto));
+				}
+				// Notifico al carrello l'evento
+				updateCarrello();
 			}
-			// Notifico al carrello l'evento
-			updateCarrello();
+			else if(param is ParamStampaProvini)
+			{
+				ParamStampaProvini paramStampaProvini = param as ParamStampaProvini;
+
+				// Stampigli
+				paramStampaProvini.stampigli = configurazione.stampigli;
+
+				paramStampaProvini.nomeStampante = "doPDF v7";    // TODO definire la stampa
+				spoolStampeSrv.accodaStampaProvini(fotografie.ToList<Fotografia>(), paramStampaProvini);
+			}
 		}
 
+		public void effettuaStampaDiretta(IEnumerable<Fotografia> fotografie, Stampare.ParamStampaFoto param)
+		{
+
+			foreach (Fotografia foto in fotografie)
+			{
+				gestoreCarrello.aggiungiRigaPerStampaDiretta(creaRiCaFotoStampata(foto, param));
+			}
+		}
 
 		public void creaNuovoCarrello() {
 
@@ -106,6 +140,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			// abbandonaCarrello();   // se ce n'era uno già apero, lo rimuovo
 
 			gestoreCarrello.creaNuovo();
+		}
+
+		public void creaNuovoCarrelloStampaDiretta()
+		{
+			gestoreCarrello.creaNuovoStampaDiretta();
 		}
 
 		public bool salvaCarrello() {
@@ -140,6 +179,41 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			return esito;
 		}
 
+		public bool salvaCarrelloStampaDiretta()
+		{
+			bool esito = false;
+
+
+			//
+			// Siccome l'esito della stampa e della masterizzazione lo riceverò più tardi 
+			// ed in modo asincrono, in questo momento non posso fare altro che dare per scontato
+			// che andrà tutto bene.
+			// Quindi memorizzo il carrello intero. Poi gestirò i problemi (sperando che non ce ne siano).
+			//
+
+			using (TransactionScope transaction = new TransactionScope())
+			{
+
+				try
+				{
+					// Poi salvo il carrello
+					gestoreCarrello.salvaStampaDiretta();
+					_giornale.Debug("salvataggio eseguito. Ora committo la transazione");
+
+					transaction.Complete();
+					_giornale.Debug("commit transazione ok");
+					esito = true;
+				}
+				catch (Exception eee)
+				{
+					esito = false;
+					_giornale.Error("Impossibile salvare il carrello", eee);
+				}
+			}
+
+			return esito;
+		}
+
 		public bool vendereCarrello() {
 
 			_giornale.Debug( "carrello valido. Inizio operazioni di produzione" );
@@ -158,10 +232,36 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			} finally {
 				// Vado avanti ugualmente
 				// Prima lancio le stampe
-				eventualeStampa();
+				eventualeStampa(carrello);
 
 				// Poi lancio la masterizzazione
 				eventualeMasterizzazione();
+			}
+			return esito;
+		}
+
+		public bool vendereCarrelloStampaDiretta()
+		{
+			_giornale.Debug("carrello valido. Inizio operazioni di produzione");
+
+			bool esito = false;
+
+			try
+			{
+
+				carrelloStampaDiretta.venduto = true;
+
+				esito = salvaCarrelloStampaDiretta();
+
+				if (!esito)
+					carrelloStampaDiretta.venduto = false;
+
+			}
+			finally
+			{
+				// Vado avanti ugualmente
+				// Prima lancio le stampe
+				eventualeStampa(carrelloStampaDiretta);
 			}
 			return esito;
 		}
@@ -200,7 +300,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
-		private void eventualeStampa() {
+		private void eventualeStampa(Carrello carrello) {
 
 			// Se non ho righe nel carrello da stampare, allora esco.
 			if( carrello == null || carrello.righeCarrello.Count == 0 )
@@ -233,7 +333,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 					// Creo nuovamente i parametri di stampa perché potrebbero essere cambiati nell GUI
 					ParamStampaFoto paramStampaFoto = creaParamStampaFoto( riCaFotoStampata );
-					spoolStampeSrv.accodaStampa( riCaFotoStampata.fotografia, paramStampaFoto );
+					spoolStampeSrv.accodaStampaFoto( riCaFotoStampata.fotografia, paramStampaFoto );
 				}
 			}
 		}
@@ -354,22 +454,28 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		 */
 		private void gestioneEsitoStampa( LavoroDiStampa lavoroDiStampa ) {
 
-			if( false && lavoroDiStampa.fotografia != null ) {
-				try {
-					// Prima che sia troppo tardi devo rilasciare le immagini (altrimenti rimangono loccate)
-					if( lavoroDiStampa.fotografia.imgOrig != null )
-						lavoroDiStampa.fotografia.imgOrig.Dispose();
+			if (lavoroDiStampa is LavoroDiStampaFoto)
+			{
+				LavoroDiStampaFoto lavoroDiStampaFoto = lavoroDiStampa as LavoroDiStampaFoto;
 
-					if( lavoroDiStampa.fotografia.imgProvino != null )
-						lavoroDiStampa.fotografia.imgProvino.Dispose();
-
-					if( lavoroDiStampa.fotografia.imgRisultante != null )
-						lavoroDiStampa.fotografia.imgRisultante.Dispose();
-
-				} catch( Exception ee ) {
-					_giornale.Error( "Impossibile rilasciare immagini dopo stampa", ee );
-
-					// Devo andare avanti lo stesso perché devo notificare tutti
+				if (false && lavoroDiStampaFoto.fotografia != null)
+				{
+					try {
+						// Prima che sia troppo tardi devo rilasciare le immagini (altrimenti rimangono loccate)
+							if (lavoroDiStampaFoto.fotografia.imgOrig != null)
+								lavoroDiStampaFoto.fotografia.imgOrig.Dispose();
+	
+							if (lavoroDiStampaFoto.fotografia.imgProvino != null)
+								lavoroDiStampaFoto.fotografia.imgProvino.Dispose();
+	
+							if (lavoroDiStampaFoto.fotografia.imgRisultante != null)
+								lavoroDiStampaFoto.fotografia.imgRisultante.Dispose();
+	
+					} catch( Exception ee ) {
+						_giornale.Error( "Impossibile rilasciare immagini dopo stampa", ee );
+	
+						// Devo andare avanti lo stesso perché devo notificare tutti
+					}
 				}
 			}
 
@@ -462,6 +568,17 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			p.autoRuota = true;    // non ha senso stampare una foto orizzontale nella carta verticale
 			p.numCopie = 1;
 			p.autoZoomNoBordiBianchi = Configurazione.UserConfigLumen.autoZoomNoBordiBianchi;
+
+			// TODO la stampante dovrei prendere quella di default di windows.
+			return p;
+		}
+
+		public ParamStampaProvini creaParamStampaProvini()
+		{
+
+			ParamStampaProvini p = new ParamStampaProvini();
+			p.autoRuota = true;    // non ha senso stampare una foto orizzontale nella carta verticale
+			p.numCopie = 1;
 
 			// TODO la stampante dovrei prendere quella di default di windows.
 			return p;

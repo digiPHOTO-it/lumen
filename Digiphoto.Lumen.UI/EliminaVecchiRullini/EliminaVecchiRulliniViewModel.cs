@@ -19,12 +19,15 @@ namespace Digiphoto.Lumen.UI.EliminaVecchiRullini
 			this.cfg = Configurazione.UserConfigLumen;
 		}
 
+		#region Proprietà
+
 		public UserConfigLumen cfg
 		{
 			get;
 			set;
 		}
 
+		#endregion
 
 		#region Servizi
 
@@ -64,6 +67,21 @@ namespace Digiphoto.Lumen.UI.EliminaVecchiRullini
 			}
 		}
 
+		private void applica()
+		{
+			string errore = Configurazione.getMotivoErrore(cfg);
+
+			if (errore != null)
+			{
+				dialogProvider.ShowError("Configurazione non valida.\nImpossibile salvare!\n\nMotivo errore:\n" + errore, "ERRORE", null);
+			}
+			else
+			{
+				UserConfigSerializer.serializeToFile(cfg);
+				dialogProvider.ShowMessage("OK\nConfigurazione Salvata", "Avviso");
+			}
+		}
+
 		private MessageBoxResult chiediConfermaEliminazionePath(String path)
 		{
 
@@ -81,6 +99,40 @@ namespace Digiphoto.Lumen.UI.EliminaVecchiRullini
 
 		#endregion
 
+		#region Controlli
+
+		public bool abilitaClean
+		{
+			get
+			{
+				bool posso = true;
+
+				if (posso && Configurazione.infoFissa.numGiorniEliminaFoto <= 0)
+				{
+					posso = false;
+				}
+
+				return posso;
+			}
+		}
+
+		public bool abilitaApplica
+		{
+			get
+			{
+				bool posso = true;
+
+				if (posso && Configurazione.infoFissa.numGiorniEliminaFoto <= 0)
+				{
+					posso = false;
+				}
+
+				return posso;
+			}
+		}
+
+		#endregion
+
 		#region Comandi
 
 		private RelayCommand _cleanCommand;
@@ -90,9 +142,22 @@ namespace Digiphoto.Lumen.UI.EliminaVecchiRullini
 			{
 				if (_cleanCommand == null)
 				{
-					_cleanCommand = new RelayCommand(param => clean());
+					_cleanCommand = new RelayCommand(param => clean(), param => abilitaClean, false);
 				}
 				return _cleanCommand;
+			}
+		}
+
+		private RelayCommand _applicaCommand;
+		public ICommand applicaCommand
+		{
+			get
+			{
+				if (_applicaCommand == null)
+				{
+					_applicaCommand = new RelayCommand(param => applica(), param => abilitaApplica, false);
+				}
+				return _applicaCommand;
 			}
 		}
 

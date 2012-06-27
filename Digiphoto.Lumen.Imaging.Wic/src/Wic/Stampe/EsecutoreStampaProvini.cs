@@ -13,10 +13,12 @@ using System.Printing;
 using System.Windows.Markup;
 using System.Text;
 using Digiphoto.Lumen.Model;
+using System.IO;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 
-	public class EsecutoreStampaWic : IEsecutoreStampa {
+	public class EsecutoreStampaProvini : IEsecutoreStampa {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( EsecutoreStampaWic ) );
 
@@ -24,10 +26,8 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 
 		private long _conta = 0;
 
-		public EsecutoreStampaWic() {
+		public EsecutoreStampaProvini() {
 		}
-
-		
 
 		/**
 		 * Attenzione:
@@ -36,8 +36,8 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 		 */
 		public EsitoStampa esegui( LavoroDiStampa lavoroDiStampa ) {
 
-			LavoroDiStampaFoto _lavoroDiStampa;
-			_lavoroDiStampa = lavoroDiStampa as LavoroDiStampaFoto;
+			LavoroDiStampaProvini _lavoroDiStampa;
+			_lavoroDiStampa = (LavoroDiStampaProvini)lavoroDiStampa;
 
 			_giornale.Debug( "Sto per avviare il lavoro di stampa: " + lavoroDiStampa.ToString() );
 
@@ -46,8 +46,10 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 			try {
 
 				// Ricavo l'immagine da stampare
-				IImmagine immagineDaStampare = _lavoroDiStampa.fotografia.imgRisultante != null ? _lavoroDiStampa.fotografia.imgRisultante : _lavoroDiStampa.fotografia.imgOrig;
-				BitmapSource bmp = ((ImmagineWic)immagineDaStampare).bitmapSource;
+				//IImmagine immagineDaStampare = _lavoroDiStampa.fotografia.imgRisultante != null ? _lavoroDiStampa.fotografia.imgRisultante : _lavoroDiStampa.fotografia.imgOrig;
+
+				
+				//BitmapSource bmp = ((ImmagineWic)immagineDaStampare).bitmapSource;
 
 				// Come print-server uso me stesso
 				using( PrintServer ps1 = new PrintServer() ) {
@@ -71,10 +73,11 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 
 						// Compongo il titolo della stampa che comparirà nella descrizione della riga nello spooler di windows
 						StringBuilder titolo = new StringBuilder();
-						titolo.AppendFormat( "foto N.{0} Oper={1} gg={2}",
-							_lavoroDiStampa.fotografia.numero,
-							_lavoroDiStampa.fotografia.fotografo.iniziali,
-							String.Format("{0:dd-MMM}", _lavoroDiStampa.fotografia.dataOraAcquisizione));
+						titolo.AppendFormat( "Intestazione={0} Righe={1} Colonne={2}",
+							_lavoroDiStampa.param.intestazione+" "+Configurazione.infoFissa.idPuntoVendita,
+							_lavoroDiStampa.param.numeroRighe,
+							_lavoroDiStampa.param.numeroColonne
+							);
 
 						if( _giornale.IsDebugEnabled ) {
 							titolo.Append( " #" );
@@ -84,9 +87,6 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 						// Eventuale rotazione dell'orientamento dell'area di stampa
 						// Devo decidere in anticipo se la stampante va girata. Dopo che ho chiamato Print non si può più fare !!!
 						bool _ruotareStampante = false;
-						if( _lavoroDiStampa.param.autoRuota )
-							if( !ProiettoreArea.isStessoOrientamento( areaStampabile, immagineDaStampare ) )
-								_ruotareStampante = true;
 
 						if( _ruotareStampante ) {
 
@@ -119,8 +119,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 						// Ora creo il documento che andrò a stampare.
 						// L'uso di un FixedDocument, mi permetterà di interagire con misure, dimensioni e margini
 						FixedDocument document = new FixedDocument();
-						document.DocumentPaginator.PageSize = new Size( dialog.PrintableAreaWidth, dialog.PrintableAreaHeight );
-
+						document.DocumentPaginator.PageSize = new Size( dialog.PrintableAreaWidth, dialog.PrintableAreaHeight);
 
 						// Creo una pagina della grandezza massima
 						FixedPage page1 = new FixedPage();
@@ -129,33 +128,99 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 						page1.VerticalAlignment = VerticalAlignment.Center;
 						page1.HorizontalAlignment = HorizontalAlignment.Center;
 
-						// Creo una immagine che contiene la bitmap da stampare
-						Image image = new Image();
-						image.Width = page1.Width;
-						image.Height = page1.Height;
-						image.VerticalAlignment = VerticalAlignment.Center;
-						image.HorizontalAlignment = HorizontalAlignment.Center;
-						image.BeginInit();
-						image.Source = bmp;
-						image.EndInit();
-						if (_lavoroDiStampa.param.autoZoomNoBordiBianchi)
-							image.Stretch = Stretch.UniformToFill;
-						else
-							image.Stretch = Stretch.Uniform;
-						image.StretchDirection = StretchDirection.Both;
+						Canvas c = new Canvas();
+						c.Background = new SolidColorBrush(Colors.Transparent);
+						c.Width = page1.Width;
+						c.Height = page1.Height;
+						c.HorizontalAlignment = HorizontalAlignment.Left;
+						c.VerticalAlignment = VerticalAlignment.Top;
 
-						page1.Children.Add( image );
+						Image img = null;
 
+						double x = 1;
+						double y = 1;
 
+						int countFotoRighe = 0;
+						int countFotoColonne = 0;
+
+						int sizeLato = Configurazione.infoFissa.pixelProvino;
+
+						if (_lavoroDiStampa.param.numeroColonne > 0)
+						{
+							sizeLato = (int)c.Width / _lavoroDiStampa.param.numeroColonne;
+						}
+
+						foreach (Fotografia foto in _lavoroDiStampa.fotografie)
+						{
+							// Ricavo l'immagine da stampare
+							IImmagine fotina = foto.imgProvino;
+
+							img = new Image();
+							
+							BitmapSource bmp1 = ((ImmagineWic)fotina).bitmapSource;
+
+							img.Source = bmp1;
+							img.Width = sizeLato;
+							img.Height = sizeLato;
+							img.HorizontalAlignment = HorizontalAlignment.Left;
+							img.VerticalAlignment = VerticalAlignment.Top;
+							img.Stretch = Stretch.UniformToFill;
+
+							if ((int)(img.Width*(x)) >= (int)c.Width && 
+								countFotoColonne <= _lavoroDiStampa.param.numeroColonne)
+							{	
+								x = 1;
+								y++;
+								countFotoColonne++;
+							}
+							// Devo cambiare pagina
+							if ((int)(img.Height*(y)) >= (int)c.Height && 
+								countFotoRighe >= _lavoroDiStampa.param.numeroRighe)
+							{
+								FixedPage pages = new FixedPage();
+								pages.Width = document.DocumentPaginator.PageSize.Width;
+								pages.Height = document.DocumentPaginator.PageSize.Height;
+								pages.VerticalAlignment = VerticalAlignment.Center;
+								pages.HorizontalAlignment = HorizontalAlignment.Center;
+
+								pages.Children.Add(imageToCavas(c, pages.Width, pages.Height));
+
+								//
+								//eventualiStampigli(pages, _lavoroDiStampa);
+
+								// add the page to the document
+								PageContent pagesContent = new PageContent();
+								((IAddChild)pagesContent).AddChild(pages);
+
+								document.Pages.Add(pagesContent);
+
+								x = 1;
+								y = 1;
+
+								countFotoRighe = 0;
+								countFotoColonne = 0;
+							}
+
+							img.SetValue(Canvas.TopProperty, (Double)(img.Height*(y-1)));
+							img.SetValue(Canvas.LeftProperty, (Double)(img.Width*(x-1)));
+
+							x++;
+							countFotoRighe++;
+
+							c.Children.Add(img);
+
+						}
+
+						page1.Children.Add(imageToCavas(c, page1.Width, page1.Height));
 
 						//
-						eventualiStampigli( page1, _lavoroDiStampa );
-
+						//eventualiStampigli( page1, _lavoroDiStampa );
 
 						// add the page to the document
 						PageContent page1Content = new PageContent();
 						((IAddChild)page1Content).AddChild( page1 );
-						document.Pages.Add( page1Content );
+
+						document.Pages.Add(page1Content);
 
 						//
 						// ----- STAMPA per davvero
@@ -179,7 +244,50 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 			return _esito;
 		}
 
-		private static void eventualiStampigli( FixedPage page1, LavoroDiStampaFoto lavoroDiStampa ) {
+
+		private Image imageToCavas(Canvas c, double width, double height)
+		{
+			//Create a Bitmap and render the content of the canvas
+			// save current canvas transform
+			Transform transform = c.LayoutTransform;
+
+			// get size of control
+			Size sizeOfControl = new Size(c.ActualWidth, c.ActualHeight);
+			// measure and arrange the control
+			c.Measure(sizeOfControl);
+			// arrange the surface
+			c.Arrange(new Rect(sizeOfControl));
+
+			// craete and render surface and push bitmap to it
+			//RenderTargetBitmap renderBitmap = new RenderTargetBitmap((Int32)sizeOfControl.Width, (Int32)sizeOfControl.Height, 96d, 96d, PixelFormats.Pbgra32);
+			RenderTargetBitmap renderBitmap = new RenderTargetBitmap((Int32)c.Width, (Int32)c.Height, 96d, 96d, PixelFormats.Pbgra32);
+			// now render surface to bitmap
+			renderBitmap.Render(c);
+
+			// encode png data
+			PngBitmapEncoder pngEncoder = new PngBitmapEncoder();
+			// puch rendered bitmap into it
+			pngEncoder.Frames.Add(BitmapFrame.Create(renderBitmap));
+
+
+
+			// Creo una immagine che contiene la bitmap da stampare
+			Image image = new Image();
+			image.Width = width;
+			image.Height = height;
+			image.VerticalAlignment = VerticalAlignment.Center;
+			image.HorizontalAlignment = HorizontalAlignment.Center;
+
+			image.BeginInit();
+			image.Source = pngEncoder.Frames[0];
+			image.EndInit();
+			image.Stretch = Stretch.Uniform;
+			image.StretchDirection = StretchDirection.Both;
+
+			return image;
+		}
+
+		private static void eventualiStampigli( FixedPage page1, LavoroDiStampaProvini lavoroDiStampa ) {
 
 			SolidColorBrush coloreFg = new SolidColorBrush( Colors.LightGray );
 			SolidColorBrush coloreBg = new SolidColorBrush( Colors.White );
@@ -187,7 +295,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 			// Numero della foto
 			if( lavoroDiStampa.param.stampigli.numFoto ) {
 				TextBlock textNumero = new TextBlock();
-				textNumero.Text = lavoroDiStampa.fotografia.numero.ToString();
+				//textNumero.Text = lavoroDiStampa.fotografia.numero.ToString();
 				textNumero.FontSize = 6; // 30pt text
 				textNumero.Foreground = coloreFg;
 				textNumero.Background = coloreBg;
@@ -199,7 +307,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 			// Giornata
 			if( lavoroDiStampa.param.stampigli.giornata ) {
 				TextBlock textGiorno = new TextBlock();
-				textGiorno.Text = lavoroDiStampa.fotografia.giornata.ToString( "d" );
+				//textGiorno.Text = lavoroDiStampa.fotografia.giornata.ToString( "d" );
 				textGiorno.FontSize = 6; // 30pt text
 				textGiorno.Foreground = coloreFg;
 				textGiorno.Background = coloreBg;
@@ -211,7 +319,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 			// Operatore
 			if( lavoroDiStampa.param.stampigli.operatore ) {
 				TextBlock textOperatore = new TextBlock();
-				textOperatore.Text = lavoroDiStampa.fotografia.fotografo.iniziali;
+				//textOperatore.Text = lavoroDiStampa.fotografia.fotografo.iniziali;
 				textOperatore.FontSize = 6; // 30pt text
 				textOperatore.Foreground = coloreFg;
 				textOperatore.Background = coloreBg;

@@ -63,16 +63,31 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			base.stop();
 		}
 
-		public void accodaStampa( Fotografia foto, ParamStampaFoto param ) {
+		public void accodaStampaFoto( Fotografia foto, ParamStampaFoto param ) {
 
 			if( param.nomeStampante == null )
 				param.nomeStampante = ricavaStampante( param.formatoCarta );
 
-			CodaDiStampe codaDiStampe = ricavaCodaDiStampa( param.nomeStampante );
+			CodaDiStampe codaDiStampe = ricavaCodaDiStampa( param);
 
 			// Creo un nuovo lavoro di stampa e lo aggiungo alla coda.
-			LavoroDiStampa lavoro = new LavoroDiStampa( foto, param );
+			LavoroDiStampaFoto lavoro = new LavoroDiStampaFoto(foto, param);
 			codaDiStampe.EnqueueItem( lavoro );
+
+		}
+
+		public void accodaStampaProvini(IList<Fotografia> foto, ParamStampaProvini param)
+		{
+
+			if (param.nomeStampante == null)
+				param.nomeStampante = ricavaStampante(param.formatoCarta);
+
+			CodaDiStampe codaDiStampe = ricavaCodaDiStampa(param);
+
+			// Creo un nuovo lavoro di stampa e lo aggiungo alla coda.
+			LavoroDiStampaProvini lavoro = new LavoroDiStampaProvini(foto, param);
+			codaDiStampe.EnqueueItem(lavoro);
+
 		}
 
 		private string ricavaStampante( FormatoCarta formatoCarta ) {
@@ -80,14 +95,18 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			return "dOPDF v7";
 		}
 
-		private CodaDiStampe ricavaCodaDiStampa( string nomeStampante ) {
+		private CodaDiStampe ricavaCodaDiStampa( ParamStampa param) {
+			string nomeStampante = param.nomeStampante; 
 			// Se non esiste già la stampante nella collezione, allora la istanzio
+			/*
 			CodaDiStampe coda = (from c in this.code
 								 where c.Name.Equals( nomeStampante )
 								 select c).SingleOrDefault<CodaDiStampe>();
+			*/
+			CodaDiStampe coda = null;
 
 			if( coda == null  ) {
-				coda = new CodaDiStampe( nomeStampante, stampaCompletataCallback );
+				coda = new CodaDiStampe( param, nomeStampante, stampaCompletataCallback );
 				coda.Start();
 				this.code.Add( coda );
 			}
