@@ -64,11 +64,19 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 
 		public void Execute( object parameter ) {
 
+			// null significa che questo comando, non svolge operazioni sul database.
 			if( salvaAllaFineDelComando == null )
 				_execute( parameter );
 			else {
-				using( new UnitOfWorkScope( (bool)salvaAllaFineDelComando ) ) {
+
+				// Se per caso esiste già un una unit-of-work attiva, allora uso quella.
+				if( UnitOfWorkScope.CurrentObjectContext != null )
 					_execute( parameter );
+				else {
+					// creo una unit-of-work nuova che verrà subito chiusa. In questo modo stacco sempre le entità e chiudo la sessione di lavoro.
+					using( new UnitOfWorkScope( (bool)salvaAllaFineDelComando ) ) {
+						_execute( parameter );
+					}
 				}
 			}
 		}

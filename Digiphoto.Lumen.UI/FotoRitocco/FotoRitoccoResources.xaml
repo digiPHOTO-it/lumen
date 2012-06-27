@@ -48,6 +48,7 @@
                     <!-- Come tooltip si possono visualizzare informazioni importanti riassuntive -->
                     <Image.ToolTip>
                         <Grid>
+                            <!-- TODO sistemare tooltip -->
                             <Label Content="Foto=123 Oper=QQ" />
                         </Grid>
                     </Image.ToolTip>

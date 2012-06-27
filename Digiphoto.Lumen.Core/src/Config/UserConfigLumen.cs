@@ -70,19 +70,17 @@ namespace Digiphoto.Lumen.Config
 			set;
 		}
 
-		public int pixelLatoProvino {
-			get;
-			set;
-		}
-
-		public int giorniDeleteFoto {
-			set;
-			get;
-		}
-
+		private string _cartellaMaschere;
 		public string cartellaMaschere {
-			get;
-			set;
+			get {
+				return _cartellaMaschere;
+			}
+			set {
+				if( _cartellaMaschere != value ) {
+					_cartellaMaschere = value;
+					OnPropertyChanged( "cartellaMaschere" );
+				}
+			}
 		}
 
 		public string stampantiAbbinate {
@@ -113,15 +111,15 @@ namespace Digiphoto.Lumen.Config
 			}
 		}
 
-		string _dbCartella;
-		public string dbCartella {
+		string _cartellaDatabase;
+		public string cartellaDatabase {
 			get {
-				return _dbCartella;
+				return _cartellaDatabase;
 			}
 			set {
-				if( _dbCartella != value ) {
-					_dbCartella = value;
-					OnPropertyChanged( "dbCartella" );
+				if( _cartellaDatabase != value ) {
+					_cartellaDatabase = value;
+					OnPropertyChanged( "cartellaDatabase" );
 				}
 			}
         }
@@ -137,16 +135,6 @@ namespace Digiphoto.Lumen.Config
 		}
 
 		public bool editorImmaginiMultiArgs {
-			get;
-			set;
-		}
-
-		public string codicePuntoVendita {
-			get;
-			set;
-		}
-
-		public string descrizionePuntoVendita {
 			get;
 			set;
 		}
@@ -194,6 +182,14 @@ namespace Digiphoto.Lumen.Config
 			set;
 		}
 
+		/// <summary>
+		/// Nome per gestire i fuori standard
+		/// </summary>
+		public string fuoriStandard {
+			get;
+			set;
+		}
+
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -218,19 +214,9 @@ namespace Digiphoto.Lumen.Config
 			}
 		}
 
-		public string qualeConnectionString {
-			get {
-				switch( motoreDatabase ) {
-					case MotoreDatabase.SqlServerCE:
-						return "LumenEntities-sqlCE";
-					case MotoreDatabase.SqLite:
-						return "LumenEntities-sqLite";
-					case MotoreDatabase.SqlServer:
-						return "LumenEntities-sqlServer";
-					default:
-						return null;
-				}
-			}
+		public int millisIntervalloSlideShow {
+			get;
+			set;
 		}
 	}
 }

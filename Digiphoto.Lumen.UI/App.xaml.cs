@@ -10,12 +10,18 @@ using log4net;
 using Digiphoto.Lumen.Config;
 using System.Threading;
 using Digiphoto.Lumen.Util;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace Digiphoto.Lumen.UI {
+
+
+
 	/// <summary>
 	/// Interaction logic for App.xaml
 	/// </summary>
 	public partial class App : Application {
+
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( App ) );
 
@@ -26,7 +32,10 @@ namespace Digiphoto.Lumen.UI {
 		private SlideShowWindow _slideShowWindow;
 		private MainWindow _mainWindow;
 
+
 		protected override void OnStartup( StartupEventArgs e ) {
+
+
 			mutex = new Mutex(true, "Digiphoto.Lumen.UI");
 			if (mutex.WaitOne(0, false)) 
 			{
@@ -41,39 +50,52 @@ namespace Digiphoto.Lumen.UI {
 					#endif
 					base.OnStartup(e);
 
-					// Inizializzo l'applicazione
-					LumenApplication.Instance.avvia( false );
+
+					try {
+
+						// Provo ad iniziare l'applicazione.
+						// Se la configurazione è mancante, allora rimando all'apposita gestione
+						LumenApplication.Instance.avvia();
+
+					} catch( Exception ee ) {
+						
+						_giornale.Error( "Impossibile avviare applicazione", ee );
+
+						// Metto due message box perché la prima non si ferma !
+						MessageBox.Show( "ATTENZIONE" );
+						MessageBox.Show( "Impossibile avviare l'applicazione!\nOccorre creare la configurazione iniziale.\nLanciare prima il gestore della configurazione!", "ERRORE avvio", MessageBoxButton.OK, MessageBoxImage.Error );
+						Environment.Exit( 2 );
+					}
 
 					#if (! DEBUG)
 						// Chiudo lo splash
 						splashScreen.Close( new TimeSpan() );
 					#endif
 
-					_giornale.Info("Applicazione avviata");
-
+					_giornale.Info("Applicazione avviata. Apro il form principale.");
 
 					_mainWindow = new MainWindow();
 					_mainWindow.Show();
 
-
-					// forseApriWindowPubblica();
 				}
 				else
 				{
-					MessageBox.Show("L'applicazione di Digiphoto.Lumen.Configuratore è in esecuzione\nChiudere l'Applicazione e Riavviare");
-					Environment.Exit(0);
+					// Metto due message box perché la prima non si ferma !
+					MessageBox.Show( "ATTENZIONE" );
+					MessageBox.Show( "L'applicazione di Digiphoto.Lumen.Configuratore è in esecuzione\nChiudere l'Applicazione e Riavviare" );
+					Environment.Exit(1);
 				} 
 
 			}
 			else
 			{
-				MessageBox.Show("L'applicazione è già in esecuzione");
-				Environment.Exit(0);
+				// Metto due message box perché la prima non si ferma !
+				MessageBox.Show( "ATTENZIONE" );
+				MessageBox.Show( "L'applicazione è già in esecuzione" );
+				Environment.Exit(3);
 			}
 			
 		}
-
-
 
 		protected override void OnExit( ExitEventArgs e ) {
 

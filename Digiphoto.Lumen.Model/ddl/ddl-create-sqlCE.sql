@@ -1,61 +1,11 @@
-
+﻿
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server Compact Edition
 -- --------------------------------------------------
--- Date Created: 05/31/2012 07:07:31
--- Generated from EDMX file: C:\Users\bluca\Documents\Visual Studio 2010\Projects\Lumen\Digiphoto.Lumen.Model\LumenModel.edmx
+-- Date Created: 06/21/2012 13:18:48
+-- Generated from EDMX file: C:\Users\bluca\Documents\Visual Studio 2010\Projects\lumen\Digiphoto.Lumen.Model\LumenModel.edmx
 -- --------------------------------------------------
 
-
--- --------------------------------------------------
--- Dropping existing FOREIGN KEY constraints
--- NOTE: if the constraint does not exist, an ignorable error will be reported.
--- --------------------------------------------------
-
-    ALTER TABLE [Fotografie] DROP CONSTRAINT [FK_FotografoFotografia];
-GO
-    ALTER TABLE [Fotografie] DROP CONSTRAINT [FK_EventoFotografia];
-GO
-    ALTER TABLE [RigheAlbum] DROP CONSTRAINT [FK_AlbumRigaAlbum];
-GO
-    ALTER TABLE [ScarichiCards] DROP CONSTRAINT [FK_FotografoScaricoCard];
-GO
-    ALTER TABLE [RigheCarrelli] DROP CONSTRAINT [FK_CarrelloRigaCarrello];
-GO
-    ALTER TABLE [RigheCarrelli] DROP CONSTRAINT [FK_FormatoCartaRiCaFotoStampata];
-GO
-    ALTER TABLE [RigheCarrelli] DROP CONSTRAINT [FK_FotografoRiCaFotoStampata];
-GO
-    ALTER TABLE [RigheAlbum] DROP CONSTRAINT [FK_FotografiaRigaAlbum];
-GO
-    ALTER TABLE [RigheCarrelli] DROP CONSTRAINT [FK_FotografiaRiCaFotoStampata];
-GO
-
--- --------------------------------------------------
--- Dropping existing tables
--- NOTE: if the table does not exist, an ignorable error will be reported.
--- --------------------------------------------------
-
-    DROP TABLE [Fotografi];
-GO
-    DROP TABLE [Fotografie];
-GO
-    DROP TABLE [Eventi];
-GO
-    DROP TABLE [Albums];
-GO
-    DROP TABLE [RigheAlbum];
-GO
-    DROP TABLE [ScarichiCards];
-GO
-    DROP TABLE [FormatiCarta];
-GO
-    DROP TABLE [InfosFisse];
-GO
-    DROP TABLE [Carrelli];
-GO
-    DROP TABLE [RigheCarrelli];
-GO
 
 -- --------------------------------------------------
 -- Creating all tables
@@ -64,7 +14,7 @@ GO
 -- Creating table 'Fotografi'
 CREATE TABLE [Fotografi] (
     [id] nvarchar(16)  NOT NULL,
-    [cognomeNome] nvarchar(4000)  NOT NULL,
+    [cognomeNome] nvarchar(50)  NOT NULL,
     [iniziali] nvarchar(2)  NOT NULL,
     [attivo] bit  NOT NULL,
     [umano] bit  NOT NULL,
@@ -75,7 +25,7 @@ GO
 -- Creating table 'Fotografie'
 CREATE TABLE [Fotografie] (
     [id] uniqueidentifier  NOT NULL,
-    [nomeFile] nvarchar(4000)  NOT NULL,
+    [nomeFile] nvarchar(100)  NOT NULL,
     [dataOraScatto] datetime  NULL,
     [didascalia] nvarchar(4000)  NULL,
     [dataOraAcquisizione] datetime  NOT NULL,
@@ -91,7 +41,7 @@ GO
 -- Creating table 'Eventi'
 CREATE TABLE [Eventi] (
     [id] uniqueidentifier  NOT NULL,
-    [descrizione] nvarchar(4000)  NOT NULL,
+    [descrizione] nvarchar(50)  NOT NULL,
     [attivo] bit  NOT NULL,
     [ordinamento] smallint  NULL
 );
@@ -100,7 +50,7 @@ GO
 -- Creating table 'Albums'
 CREATE TABLE [Albums] (
     [id] int IDENTITY(1,1) NOT NULL,
-    [titolo] nvarchar(40)  NOT NULL,
+    [titolo] nvarchar(50)  NOT NULL,
     [note] nvarchar(4000)  NOT NULL,
     [timestamp] datetime  NOT NULL
 );
@@ -127,7 +77,7 @@ GO
 -- Creating table 'FormatiCarta'
 CREATE TABLE [FormatiCarta] (
     [id] uniqueidentifier  NOT NULL,
-    [descrizione] nvarchar(4000)  NOT NULL,
+    [descrizione] nvarchar(50)  NOT NULL,
     [prezzo] decimal(18,0)  NOT NULL,
     [attivo] bit  NOT NULL,
     [ordinamento] smallint  NULL
@@ -140,7 +90,12 @@ CREATE TABLE [InfosFisse] (
     [ultimoNumFotogramma] int  NOT NULL,
     [dataUltimoScarico] datetime  NULL,
     [versioneDbCompatibile] nvarchar(10)  NOT NULL,
-    [modoNumerazione] nvarchar(4000)  NOT NULL
+    [modoNumerazFoto] nvarchar(4000)  NOT NULL,
+    [pixelProvino] smallint  NOT NULL,
+    [idPuntoVendita] nvarchar(5)  NULL,
+    [descrizPuntoVendita] nvarchar(50)  NULL,
+    [numGiorniEliminaFoto] smallint  NOT NULL,
+    [varie] nvarchar(4000)  NULL
 );
 GO
 
@@ -150,8 +105,9 @@ CREATE TABLE [Carrelli] (
     [giornata] datetime  NOT NULL,
     [tempo] datetime  NOT NULL,
     [totaleAPagare] decimal(18,0)  NOT NULL,
-    [intestazione] nvarchar(4000)  NULL,
-    [venduto] bit  NOT NULL
+    [intestazione] nvarchar(100)  NULL,
+    [venduto] bit  NOT NULL,
+    [note] nvarchar(4000)  NULL
 );
 GO
 
@@ -173,6 +129,8 @@ CREATE TABLE [RigheCarrelli] (
     [fotografia_id] uniqueidentifier  NULL
 );
 GO
+
+
 
 -- --------------------------------------------------
 -- Creating all PRIMARY KEY constraints
@@ -238,6 +196,8 @@ ADD CONSTRAINT [PK_RigheCarrelli]
     PRIMARY KEY ([id] );
 GO
 
+
+
 -- --------------------------------------------------
 -- Creating all FOREIGN KEY constraints
 -- --------------------------------------------------
@@ -249,11 +209,10 @@ ADD CONSTRAINT [FK_FotografoFotografia]
     REFERENCES [Fotografi]
         ([id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_FotografoFotografia'
-CREATE INDEX [IX_FK_FotografoFotografia]
-ON [Fotografie]
-    ([fotografo_id]);
+CREATE INDEX [IX_FK_FotografoFotografia] ON [Fotografie] ([fotografo_id]);
 GO
 
 -- Creating foreign key on [evento_id] in table 'Fotografie'
@@ -263,11 +222,10 @@ ADD CONSTRAINT [FK_EventoFotografia]
     REFERENCES [Eventi]
         ([id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_EventoFotografia'
-CREATE INDEX [IX_FK_EventoFotografia]
-ON [Fotografie]
-    ([evento_id]);
+CREATE INDEX [IX_FK_EventoFotografia] ON [Fotografie] ([evento_id]);
 GO
 
 -- Creating foreign key on [AlbumRigaAlbum_RigaAlbum_id] in table 'RigheAlbum'
@@ -277,11 +235,10 @@ ADD CONSTRAINT [FK_AlbumRigaAlbum]
     REFERENCES [Albums]
         ([id])
     ON DELETE CASCADE ON UPDATE NO ACTION;
+GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_AlbumRigaAlbum'
-CREATE INDEX [IX_FK_AlbumRigaAlbum]
-ON [RigheAlbum]
-    ([AlbumRigaAlbum_RigaAlbum_id]);
+CREATE INDEX [IX_FK_AlbumRigaAlbum] ON [RigheAlbum]   ([AlbumRigaAlbum_RigaAlbum_id]);
 GO
 
 -- Creating foreign key on [fotografo_id] in table 'ScarichiCards'
@@ -291,6 +248,7 @@ ADD CONSTRAINT [FK_FotografoScaricoCard]
     REFERENCES [Fotografi]
         ([id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_FotografoScaricoCard'
 CREATE INDEX [IX_FK_FotografoScaricoCard]
@@ -305,6 +263,7 @@ ADD CONSTRAINT [FK_CarrelloRigaCarrello]
     REFERENCES [Carrelli]
         ([id])
     ON DELETE CASCADE ON UPDATE NO ACTION;
+GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_CarrelloRigaCarrello'
 CREATE INDEX [IX_FK_CarrelloRigaCarrello]
@@ -319,6 +278,7 @@ ADD CONSTRAINT [FK_FormatoCartaRiCaFotoStampata]
     REFERENCES [FormatiCarta]
         ([id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_FormatoCartaRiCaFotoStampata'
 CREATE INDEX [IX_FK_FormatoCartaRiCaFotoStampata]
@@ -333,6 +293,7 @@ ADD CONSTRAINT [FK_FotografoRiCaFotoStampata]
     REFERENCES [Fotografi]
         ([id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_FotografoRiCaFotoStampata'
 CREATE INDEX [IX_FK_FotografoRiCaFotoStampata]
@@ -347,6 +308,7 @@ ADD CONSTRAINT [FK_FotografiaRigaAlbum]
     REFERENCES [Fotografie]
         ([id])
     ON DELETE CASCADE ON UPDATE NO ACTION;
+GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_FotografiaRigaAlbum'
 CREATE INDEX [IX_FK_FotografiaRigaAlbum]
@@ -361,6 +323,7 @@ ADD CONSTRAINT [FK_FotografiaRiCaFotoStampata]
     REFERENCES [Fotografie]
         ([id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_FotografiaRiCaFotoStampata'
 CREATE INDEX [IX_FK_FotografiaRiCaFotoStampata]

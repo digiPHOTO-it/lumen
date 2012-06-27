@@ -45,7 +45,6 @@ namespace Digiphoto.Lumen.Applicazione {
 		#endregion
 
 
-
 		public static LumenApplication Instance {
 			get {
 				return _instance;
@@ -62,10 +61,12 @@ namespace Digiphoto.Lumen.Applicazione {
 		 * Avvio della applicazione. Accendiamo la baracca.
 		 */
 		public void avvia() {
-			avvia( true );
+			avvia( false, (string)null );
 		}
 
-		public void avvia( bool autoSistema ) {
+
+		// TODO questa dovrebbe essere internal usata solo dalla configurazione
+		public void avvia( bool autoSistema, string connectionString ) {
 
 /*
  * Purtoppo non posso mettere questo controllo perché gli Test-Case si inciampano qui.
@@ -80,13 +81,17 @@ namespace Digiphoto.Lumen.Applicazione {
 
 			avviaConfigurazione( autoSistema );
 
-			using( new UnitOfWorkScope() ) {
+			using( new UnitOfWorkScope( false, connectionString ) ) {
 
-				StartupUtil.forseCreaInfoFisse();
+				Configurazione.infoFissa = StartupUtil.forseCreaInfoFisse();
 
 				creaStato();
 
 				avviaServizi();
+
+				if( autoSistema )
+					creaAlcuniDatiDiDefault();
+
 			}
 
 			avviata = true;
@@ -94,6 +99,24 @@ namespace Digiphoto.Lumen.Applicazione {
 			_bus.Publish( "primo" );
 
 			_giornale.Info( "L'applicazione è avviata." );
+		}
+
+		private void creaAlcuniDatiDiDefault() {
+
+			// Devo creare un fotografo pre-stabilito per assegnare le foto modificate con GIMP
+			IEntityRepositorySrv<Fotografo> repo = LumenApplication.Instance.getServizioAvviato<IEntityRepositorySrv<Fotografo>>();
+			Fotografo artista = repo.getById( Configurazione.ID_FOTOGRAFO_ARTISTA );
+			if( artista == null ) {
+				artista = new Fotografo();
+				artista.id = Configurazione.ID_FOTOGRAFO_ARTISTA;
+				artista.umano = false;
+				artista.attivo = true;
+				artista.cognomeNome = "Photo Retouch";
+				artista.iniziali = "XY";
+				artista.note = "used for masks and frames";
+				repo.addNew( artista );
+				repo.saveChanges();
+			}
 		}
 
 		private void creaStato() {

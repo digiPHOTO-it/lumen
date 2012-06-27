@@ -8,6 +8,7 @@ using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Applicazione;
 using System.Security.AccessControl;
 using Digiphoto.Lumen.Config;
+using System.Windows.Forms;
 
 namespace Digiphoto.Lumen.Util {
 
@@ -207,6 +208,18 @@ namespace Digiphoto.Lumen.Util {
 
 			Directory.CreateDirectory(path);
 			return path; 
+		}
+
+		public static string scegliCartella() {
+			string cartella = null;
+
+			FolderBrowserDialog dlg = new FolderBrowserDialog();
+			dlg.ShowNewFolderButton = true;
+			DialogResult result = dlg.ShowDialog();
+			if( result == System.Windows.Forms.DialogResult.OK )
+				cartella = dlg.SelectedPath;
+
+			return cartella;
 		}
 
 	}

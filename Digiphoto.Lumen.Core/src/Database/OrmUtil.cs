@@ -14,13 +14,17 @@ namespace Digiphoto.Lumen.Database {
 
 	public static class OrmUtil {
 
-
-		public static void forseAttacca<T>( string entitySetName, ref T entity ) {
-			ObjectContext ctx =  UnitOfWorkScope.CurrentObjectContext.ObjectContext;
-			forseAttacca( ctx, entitySetName, ref entity );
+		public static bool forseAttacca<TEntity>( ref TEntity entity ) where TEntity : class {
+			ObjectSet<TEntity> objectSet = UnitOfWorkScope.CurrentObjectContext.ObjectContext.CreateObjectSet<TEntity>();
+			return forseAttacca( objectSet.EntitySet.Name, ref entity );
 		}
 
-		public static void forseAttacca<T>( this ObjectContext context, string entitySetName, ref T entity ) {
+		public static bool forseAttacca<T>( string entitySetName, ref T entity ) {
+			ObjectContext ctx = UnitOfWorkScope.CurrentObjectContext.ObjectContext;
+			return forseAttacca( ctx, entitySetName, ref entity );
+		}
+
+		public static bool forseAttacca<T>( this ObjectContext context, string entitySetName, ref T entity ) {
 
 			ObjectStateEntry entry;
 			
@@ -40,6 +44,8 @@ namespace Digiphoto.Lumen.Database {
 
 			if( attach )		
 				context.AttachTo( entitySetName, entity );
+
+			return attach;
 		}
 
 		public static void Evict( DbContext ctx, Type t, string primaryKeyName, object id ) {
@@ -149,6 +155,7 @@ namespace Digiphoto.Lumen.Database {
 
 			return Expression.Lambda<Func<TElement, bool>>( body, p );
 		}
+
 
 	}
 }

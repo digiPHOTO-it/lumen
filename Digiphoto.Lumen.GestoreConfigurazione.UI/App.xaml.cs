@@ -33,12 +33,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI {
 				{
 					// Carico la Configurazione
 					base.OnStartup(e);
-					
-					
-					// Inizializzo l'applicazione
-
-					LumenApplication.Instance.avvia( true );
-					_giornale.Info("Applicazione avviata");
 				}
 				else
 				{

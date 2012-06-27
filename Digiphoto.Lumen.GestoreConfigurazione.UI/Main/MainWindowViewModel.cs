@@ -1,47 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Digiphoto.Lumen.UI;
-using Digiphoto.Lumen.UI.Mvvm;
 using System.Windows.Input;
 using System.Configuration;
 using Digiphoto.Lumen.Servizi.Masterizzare.MyBurner;
 using IMAPI2.Interop;
 using System.IO;
-using System.Xml;
 using System.Collections.ObjectModel;
-using Digiphoto.Lumen.Servizi.Masterizzare;
-using System.Windows.Forms;
-using System.Data.EntityClient;
-using System.Data.SqlServerCe;
-using System.Data.SQLite;
-using System.Data.SqlClient;
-using Digiphoto.Lumen.Servizi;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Servizi.Stampare;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Model;
-using System.Security;
 using Digiphoto.Lumen.GestoreConfigurazione.UI.Util;
 using Digiphoto.Lumen.Servizi.EntityRepository;
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Util;
-using Digiphoto.Lumen.Servizi.Vendere;
+using Digiphoto.Lumen.UI;
+using Digiphoto.Lumen.UI.Mvvm;
 
 namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 {
+
+	public enum PassoWiz {
+
+		Login = 0,
+		MotoreDb = 1,
+		PuntoVendita = 2,
+		CartaEStampanti = 3,
+		PreferenzeUtente = 4,
+		Riservato = 5
+	}
+
     public class MainWindowViewModel : ClosableWiewModel
     {
-
         public MainWindowViewModel()
         {
             //Blocco l'interfaccia fino al login
-			Abilitato = false;
+			loginEffettuato = false;
             listaMasterizzatori = new ObservableCollection<String>();
             caricaListaMasterizzatori();
             loadUserConfig();
-            setGui();
+			passo = PassoWiz.Login;
         }
 
 		public UserConfigLumen cfg {
@@ -61,6 +60,24 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
+		private UnitOfWorkScope unitOfWorkScope {
+			get;
+			set;
+		}
+
+		private InfoFissa _infoFissa;
+		public InfoFissa infoFissa {
+			get {
+				return _infoFissa;
+			}
+			set {
+				if( _infoFissa != value ) {
+					_infoFissa = value;
+					OnPropertyChanged( "infoFissa" );
+				}
+			}
+		}
+
 	
 		public bool notMasterizzaDirettamente {
 			get {
@@ -71,10 +88,24 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
+		public MotoreDatabase? motorePrecedente {
+			get;
+			set;
+		}
+
         private void loadUserConfig()
         {
 			// La carico da disco, non uso quella statica già caricata dentro Configurazione.
 			this.cfg = Configurazione.caricaUserConfig();
+
+			// Se è nullo, significa che è la prima volta che parte il programma, ma non è ancora stata avviata la configurazione.
+			if( this.cfg == null ) {
+				this.cfg = Configurazione.creaUserConfig();
+				Configurazione.UserConfigLumen = this.cfg;
+			}
+
+			// Mi parcheggio il Motore di database precedente per fare dei ragionamenti
+			motorePrecedente = cfg.motoreDatabase;
         }
 
         private void saveUserConfig()
@@ -86,7 +117,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 		// TODO rivedere. non so se serve piu
         private void salvaConfigDB()
         {
-			AppDomain.CurrentDomain.SetData( "DataDirectory", cfg.dbCartella );
+			AppDomain.CurrentDomain.SetData( "DataDirectory", cfg.cartellaDatabase );
 		}
 
         private void caricaListaMasterizzatori()
@@ -102,95 +133,97 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             }   
         }
 
-
-        private void setGui()
-        {
-            rwButton = false;
-            fwButton = false;
-            applicaButton = false;
-            annullaButton = false;
-            switch (SelectedTabControlIndex)
-            {    
-                case 0:
-                    configurazione = true;
-                    CartaEStampanti = false;
-                    PreferenzeUtente = false;
-                    Riservato = true;
-                    rwButton = false;
-                    fwButton = false;
-                    applicaButton = false;
-                    annullaButton = false;
-					DbCartellaButton = true;
-                    if (LumenApplication.Instance.avviata)
-                    {
-                        LumenApplication.Instance.ferma();
-                    }
-                    break;
-                case 1:
-                    configurazione = false;
-                    CartaEStampanti = true;
-                    PreferenzeUtente = false;
-                    Riservato = true;
-                    rwButton = true;
-                    fwButton = true;
-                    applicaButton = false;
-                    annullaButton = true;
-                    LumenApplication.Instance.avvia();
-                    using (new UnitOfWorkScope())
-                    {
-						creaAlcuniDatiDiDefault();
-                        loadDataContext();
-                    }
-                    break;
-                case 2:
-                    configurazione = false;
-                    CartaEStampanti = false;
-                    PreferenzeUtente = true;
-                    Riservato = true;
-                    rwButton = true;
-                    fwButton = true;
-                    applicaButton = true;
-                    annullaButton = true;
-                    break;
-                case 3:
-                    configurazione = false;
-                    CartaEStampanti = false;
-                    PreferenzeUtente = false;
-                    Riservato = true;
-                    rwButton = true;
-                    fwButton = false;
-                    applicaButton = true;
-                    annullaButton = true;
-                    break;
-            }
-            OnPropertyChanged("configurazione");
-            OnPropertyChanged("CartaEStampanti");
-            OnPropertyChanged("PreferenzeUtente");
-            OnPropertyChanged("Riservato");
-            OnPropertyChanged("rwButton");
-            OnPropertyChanged("fwButton");
-            OnPropertyChanged("applicaButton");
-            OnPropertyChanged("annullaButton");
-        }
-
-		private void creaAlcuniDatiDiDefault() {
-
-			// Devo creare un fotografo pre-stabilito per assegnare le foto modificate con GIMP
-			IEntityRepositorySrv<Fotografo> repo = LumenApplication.Instance.getServizioAvviato<IEntityRepositorySrv<Fotografo>>();
-			Fotografo artista = repo.getById( Configurazione.ID_FOTOGRAFO_ARTISTA );
-			if( artista == null ) {
-				artista = new Fotografo();
-				artista.id = Configurazione.ID_FOTOGRAFO_ARTISTA;
-				artista.umano = false;
-				artista.attivo = true;
-				artista.cognomeNome = "Photo Retouch";
-				artista.iniziali = "XY";
-				artista.note = "used for masks and frames";
-				repo.addNew( artista );
-				repo.update(artista);
+		PassoWiz _passo;
+		public PassoWiz passo {
+			get {
+				return _passo;
+			}
+			set {
+				if( _passo != value ) {
+					_passo = value;
+					OnPropertyChanged( "passo" );
+					OnPropertyChanged( "isPassoMotoreDb" );
+					OnPropertyChanged( "isPassoPuntoVendita" );
+					OnPropertyChanged( "isPassoCartaEStampanti" );
+					OnPropertyChanged( "isPassoPreferenzeUtente" );
+					OnPropertyChanged( "isPassoRiservato" );
+					OnPropertyChanged( "possoStepAvanti" );
+					OnPropertyChanged( "possoStepIndietro" );
+					OnPropertyChanged( "possoApplicare" );
+				}
 			}
 		}
 
+		public bool isPassoMotoreDb {
+			get {
+				return passo == PassoWiz.MotoreDb;
+			}
+		}
+
+		public bool isPassoPuntoVendita {
+			get {
+				return passo == PassoWiz.PuntoVendita;
+			}
+		}
+
+		public bool isPassoCartaEStampanti {
+			get {
+				return passo == PassoWiz.CartaEStampanti;
+			}
+		}
+
+		public bool isPassoPreferenzeUtente {
+			get {
+				return passo == PassoWiz.PreferenzeUtente;
+			}
+		}
+
+		public bool isPassoRiservato {
+			get {
+				return passo == PassoWiz.Riservato;
+			}
+		}
+
+		public bool possoStepIndietro {
+			get {
+				return loginEffettuato && passo > 0;
+			}
+		}
+
+		public bool possoStepAvanti {
+			get {
+				return loginEffettuato && passo < PassoWiz.Riservato;
+			}
+		}
+
+		void apriTutto() {
+
+			// Se è la prima volta, avvio tutto
+			if( !LumenApplication.Instance.avviata )
+				LumenApplication.Instance.avvia( true, qualeConnectionString );
+
+
+			// Se è la prima volta, avvio tutto
+			impostaConnectionStringFittizzia();
+			if( this.unitOfWorkScope == null )
+				this.unitOfWorkScope = new UnitOfWorkScope( false, qualeConnectionString );
+
+			// carico un pò di dati dal database se per caso esiste già.
+			loadDataContextFromDb();
+		}
+
+		void chiudiTutto() {
+
+			// Se sono tornato qui chiudo tutto
+			if( this.unitOfWorkScope != null ) {
+				this.unitOfWorkScope.Dispose();
+				this.unitOfWorkScope = null;
+			}
+
+			// Se sono tornato qui chiudo tutto
+			if( LumenApplication.Instance.avviata )
+				LumenApplication.Instance.ferma();
+		}
 
         private SelettoreFormatoCartaViewModel selettoreFormatoCartaViewModel = null;
 
@@ -199,7 +232,10 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
         private SelettoreStampantiInstallateViewModel selettoreStampantiInstallateViewModel = null;
 
 
-        private void loadDataContext(){
+		/// <summary>
+		/// Ora che ho stabilito quale db usare, carico i dati necessari dal db.
+		/// </summary>
+        private void loadDataContextFromDb() {
            
 			selettoreFormatoCartaViewModel = new SelettoreFormatoCartaViewModel();
             
@@ -217,22 +253,28 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             OnPropertyChanged("DataContextFormatoCarta");
             OnPropertyChanged("DataContextAbbinamenti");
             OnPropertyChanged("DataContextStampantiInstallate");
+
+			infoFisseRepository = LumenApplication.Instance.creaServizio<IEntityRepositorySrv<InfoFissa>>();
+			infoFisseRepository.start();
+
+			// -- carico anche le informazioni fisse che possono essere modificate
+			infoFissa = infoFisseRepository.getById( "K" );
         }
 
         #region Proprietà
 
-		private bool _abilitato;
-		public bool Abilitato
+		private bool _loginEffettuato;
+		public bool loginEffettuato
         {
             get
             {
-				return _abilitato;
+				return _loginEffettuato;
             }
             set{
-				if (_abilitato != value)
+				if (_loginEffettuato != value)
                 {
-					_abilitato = value;
-					OnPropertyChanged("Abilitato");
+					_loginEffettuato = value;
+					OnPropertyChanged("loginEffettuato");
                 }
             }
         }
@@ -250,60 +292,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
         }
 
         public SelettoreStampantiInstallateViewModel DataContextStampantiInstallate
-        {
-            get;
-            set;
-        }
-
-        public int SelectedTabControlIndex
-        {
-            get;
-            set;
-        }
-
-        public bool configurazione
-        {
-            get;
-            set;
-        }
-
-        public bool CartaEStampanti
-        {
-            get;
-            set;
-        }
-
-        public bool PreferenzeUtente
-        {
-            get;
-            set;
-        }
-
-        public bool Riservato
-        {
-            get;
-            set;
-        }
-
-        public bool rwButton
-        {
-            get;
-            set;
-        }
-
-        public bool fwButton
-        {
-            get;
-            set;
-        }
-
-        public bool applicaButton
-        {
-            get;
-            set;
-        }
-
-        public bool annullaButton
         {
             get;
             set;
@@ -330,24 +318,28 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 		{
 			get
 			{
-				return ConfigurationManager.ConnectionStrings [cfg.qualeConnectionString].ToString();
+				return ConfigurationManager.ConnectionStrings [qualeConnectionString].ToString();
 			}
 		}
 
-		private bool _dbCartellaButton;
-		public bool DbCartellaButton
+		private string qualeConnectionString {
+			get {
+				if( cfg.motoreDatabase == MotoreDatabase.SqLite )
+					return "LumenEntities-sqLite";
+				else if( cfg.motoreDatabase == MotoreDatabase.SqlServerCE )
+					return "LumenEntities-sqlCE";
+				else if( cfg.motoreDatabase == MotoreDatabase.SqlServer )
+					return "LumenEntities-sqlServer";
+				else
+					return null;
+			}
+		}
+
+		public bool possoCambiareCartellaDb
 		{
 			get
 			{
-				return _dbCartellaButton;
-			}
-			set
-			{
-				if (_dbCartellaButton != value)
-				{
-					_dbCartellaButton = value;
-					OnPropertyChanged("DbCartellaButton");
-				}
+				return cfg.motoreDatabase == MotoreDatabase.SqLite || cfg.motoreDatabase == MotoreDatabase.SqlServerCE;
 			}
 		}
 
@@ -411,6 +403,14 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             set;
         }
 
+		/// <summary>
+		/// Questo mi permette di leggere/scrivere le info fisse
+		/// </summary>
+		private IEntityRepositorySrv<InfoFissa> infoFisseRepository {
+			get;
+			set;
+		}
+
 		public bool canCreateDatabase {
 			get {
 				// Per poter creare il database, non deve esistere
@@ -419,9 +419,28 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
+		public bool canTestConnection {
+			get {
+				DbUtil dbUtil = new DbUtil( cfg );
+				return dbUtil.isDatabasEsistente;				
+			}
+		}
+
 		public bool possoCambiareMotoreDb {
 			get {
-				return Abilitato ? true : false;
+				return loginEffettuato ? true : false;
+			}
+		}
+
+		public bool possoApplicare {
+			get {
+				return loginEffettuato && passo > PassoWiz.MotoreDb;
+			}
+		}
+
+		public bool possoAnnullare {
+			get {
+				return loginEffettuato;
 			}
 		}
 
@@ -429,16 +448,16 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
         #region Comandi
 
-        private RelayCommand _rwButtonCommand;
-        public ICommand rwButtonCommand
+        private RelayCommand _commandStepIndietro;
+        public ICommand commandStepIndietro
         {
             get
             {
-                if (_rwButtonCommand == null)
+                if (_commandStepIndietro == null)
                 {
-                    _rwButtonCommand = new RelayCommand(param => this.rwControlTab());
+                    _commandStepIndietro = new RelayCommand(param => this.stepIndietro(), param => possoStepIndietro );
                 }
-                return _rwButtonCommand;
+                return _commandStepIndietro;
             }
         }
 
@@ -449,7 +468,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             {
                 if (_annullaCommand == null)
                 {
-                    _annullaCommand = new RelayCommand(param => this.annulla());
+                    _annullaCommand = new RelayCommand(param => this.annulla(), param => possoAnnullare );
                 }
                 return _annullaCommand;
             }
@@ -462,75 +481,46 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             {
                 if (_applicaCommand == null)
                 {
-                    _applicaCommand = new RelayCommand(param => this.applica());
+                    _applicaCommand = new RelayCommand(param => this.applica(), param => possoApplicare );
                 }
                 return _applicaCommand;
             }
         }
 
-        private RelayCommand _fwButtonCommand;
-        public ICommand fwButtonCommand
+        private RelayCommand _commandStepAvanti;
+        public ICommand commandStepAvanti
         {
             get
             {
-                if (_fwButtonCommand == null)
+                if (_commandStepAvanti == null)
                 {
-                    _fwButtonCommand = new RelayCommand(param => this.fwControlTab());
+                    _commandStepAvanti = new RelayCommand(param => this.stepAvanti(), param => possoStepAvanti );
                 }
-                return _fwButtonCommand;
+                return _commandStepAvanti;
             }
         }
 
-        private RelayCommand _cartellaRulliniCommand;
-        public ICommand cartellaRulliniCommand
+		private RelayCommand _scegliereCartellaCommand;
+		public ICommand scegliereCartellaCommand {
+			get {
+				if( _scegliereCartellaCommand == null ) {
+					_scegliereCartellaCommand = new RelayCommand( quale => scegliereCartella( quale as string ) );
+				}
+				return _scegliereCartellaCommand;
+			}
+		}
+
+
+        private RelayCommand _cambiareMotoreDataBaseCommand;
+        public ICommand cambiareMotoreDataBaseCommand
         {
             get
             {
-                if (_cartellaRulliniCommand == null)
+                if (_cambiareMotoreDataBaseCommand == null)
                 {
-                    _cartellaRulliniCommand = new RelayCommand(param => this.selezionaCartellaRullini());
+					_cambiareMotoreDataBaseCommand = new RelayCommand( param => this.cambiareMotoreDatabase() );
                 }
-                return _cartellaRulliniCommand;
-            }
-        }
-
-        private RelayCommand _desMasterizzaCartellaCommand;
-        public ICommand desMasterizzaCartellaCommand
-        {
-            get
-            {
-                if (_desMasterizzaCartellaCommand == null)
-                {
-                    _desMasterizzaCartellaCommand = new RelayCommand(param => this.selezionaCartellaMasterizza());
-                }
-                return _desMasterizzaCartellaCommand;
-            }
-        }
-
-        private RelayCommand _dbCartellaCommand;
-        public ICommand DbCartellaCommand
-        {
-            get
-            {
-                if (_dbCartellaCommand == null)
-                {
-                    _dbCartellaCommand = new RelayCommand(param => this.selezionaDbCartella());
-                }
-                return _dbCartellaCommand;
-            }
-        }
-
-
-        private RelayCommand _motoreDataBaseCommand;
-        public ICommand MotoreDataBaseCommand
-        {
-            get
-            {
-                if (_motoreDataBaseCommand == null)
-                {
-                    _motoreDataBaseCommand = new RelayCommand(param => this.abilitaDataSorceButton());
-                }
-                return _motoreDataBaseCommand;
+                return _cambiareMotoreDataBaseCommand;
             }
         }
 
@@ -541,7 +531,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             {
                 if (_abbinaCommand == null)
                 {
-                    _abbinaCommand = new RelayCommand(param => this.abbinaButton() , param => true, false );
+                    _abbinaCommand = new RelayCommand(param => this.abbinaButton());
                 }
                 return _abbinaCommand;
             }
@@ -567,7 +557,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             {
                 if (_testConnectionCommand == null)
                 {
-                    _testConnectionCommand = new RelayCommand(param => this.testConnection());
+                    _testConnectionCommand = new RelayCommand(param => this.testConnection(), p => canTestConnection );
                 }
                 return _testConnectionCommand;
             }
@@ -580,7 +570,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             {
                 if (_loginCommand == null)
                 {
-                    _loginCommand = new RelayCommand(param => this.login());
+                    _loginCommand = new RelayCommand(param => this.login(), param => loginEffettuato == false );
                 }
                 return _loginCommand;
             }
@@ -616,74 +606,154 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
         #region esecuzioneComandi
 
-        private void rwControlTab()
+        private void stepIndietro()
         {
-            if (SelectedTabControlIndex > 0)
-            {
-                SelectedTabControlIndex--;
-                OnPropertyChanged("SelectedTabControlIndex");
-                setGui();
-            }
+			--passo;
+
+			// Quando ritorno sulla prima pagina, chiudo tutto perché si può modificare il database.
+			if( passo == PassoWiz.MotoreDb )
+				chiudiTutto();
         }
 
-        private void fwControlTab()
+        private void stepAvanti()
         {
-            if (SelectedTabControlIndex < 4)
-            {
-                SelectedTabControlIndex++;
-                OnPropertyChanged("SelectedTabControlIndex");
-                setGui();
-            }
+			if( forseEseguiCambioMotore() == false )
+				return;
+
+			++passo;
+
+			// Dalla pagina 1 sto andando sulla 2
+			if( passo == PassoWiz.PuntoVendita )
+				apriTutto();
         }
 
-        private void selezionaCartellaRullini(){
-            FolderBrowserDialog dlg = new FolderBrowserDialog();
-            dlg.ShowNewFolderButton = true;
-            DialogResult result = dlg.ShowDialog();
-            if (result == System.Windows.Forms.DialogResult.OK)
-            {
-                cfg.cartellaFoto = dlg.SelectedPath;
-            }    
-        }
 
-        private void selezionaCartellaMasterizza()
-        {
-            FolderBrowserDialog dlg = new FolderBrowserDialog();
-            dlg.ShowNewFolderButton = true;
-            DialogResult result = dlg.ShowDialog();
-            if (result == System.Windows.Forms.DialogResult.OK)
-            {
-                cfg.defaultChiavetta = dlg.SelectedPath;
-                OnPropertyChanged("cfg.defaultChiavetta");
-            }    
+		private bool forseEseguiCambioMotore() {
+
+			if( passo != PassoWiz.MotoreDb )
+				return true;
+
+			if( motorePrecedente == cfg.motoreDatabase )
+				return true;
+
+			bool prosegui = false;
+
+			dialogProvider.ShowConfirmation( "La modifica del motore del database viene eseguita adesso. Confermi?", "Cambio motore database",
+				( sino ) => {
+					prosegui = sino;
+				} );
+
+			if( prosegui ) {
+
+				try {
+					eseguiCambioMotore();
+					prosegui = true;
+				} catch( Exception ee ) {
+					dialogProvider.ShowError( "Impossibile modificare il motore del database.\n" + ee.Message, "ERRORE", null );
+				}
+			}
+
+			return prosegui;
+		}
+
+		/// <summary>
+		/// In base al motore di database selezionato in questo momento, mi creo una 
+		/// connection string di nome "LumenEntities" in memoria, senza salvarla su disco nel .config
+		/// </summary>
+		void impostaConnectionStringFittizzia() {
+
+			ConnectionStringSettings giusta = ConfigurationManager.ConnectionStrings[qualeConnectionString];
+			int quanti = ConfigurationManager.ConnectionStrings.Count;
+
+			Configuration config = ConfigurationManager.OpenExeConfiguration( ConfigurationUserLevel.None );
+
+			// Mi creo in memoria una connection string anche per me ma senza salvarla
+			var test = config.ConnectionStrings.ConnectionStrings["LumenEntities"];
+			if( test == null ) {
+				test = new ConnectionStringSettings( "LumenEntities", giusta.ConnectionString );
+				config.ConnectionStrings.ConnectionStrings.Add( test );
+			} else {
+				test.ConnectionString = giusta.ConnectionString;
+			}
+			config.Save();
+
+			int quanti2 = ConfigurationManager.ConnectionStrings.Count;
+			ConfigurationManager.RefreshSection( "connectionStrings" );
+			int quanti3 = ConfigurationManager.ConnectionStrings.Count;
+		}
+
+		private void eseguiCambioMotore() {
+
+			const string nomeExe = "Digiphoto.Lumen.UI.exe";
+
+			impostaConnectionStringFittizzia();
+			ConnectionStringSettings csGiusta = ConfigurationManager.ConnectionStrings [qualeConnectionString];
+
+
+			FileInfo [] filesInfo;
+
+#if (DEBUG)			
+			// Probabilmente sono in debug.
+			DirectoryInfo dInfo = new DirectoryInfo( Directory.GetCurrentDirectory() );
+			DirectoryInfo padre = dInfo.Parent.Parent.Parent;   // Mi trovo nella cartella:  lumen\Digiphoto.Lumen.GestoreConfigurazione.UI\bin\Debug e devo risalire nella cartella dove c'è la solution. Salgo di 3.
+			filesInfo = padre.GetFiles( nomeExe, SearchOption.AllDirectories );
+#else
+			if( File.Exists( nomeExe ) ) {
+				FileInfo f = new FileInfo( nomeExe );
+				filesInfo = new FileInfo [] { f };
+			}
+#endif
+			
+			foreach( FileInfo fileInfo in filesInfo ) {
+
+				// Get the application configuration file.
+				Configuration config = ConfigurationManager.OpenExeConfiguration( fileInfo.FullName );
+				if( ! config.HasFile )
+					continue;
+				// Get the connection strings section.
+				ConnectionStringsSection csSection = config.ConnectionStrings;
+
+				csSection.ConnectionStrings["LumenEntities"].ConnectionString = csGiusta.ConnectionString;
+				config.Save();
+			}
+
+		}
+
+		private void scegliereCartella( string quale ) {
+
+			string appo = PathUtil.scegliCartella();
+			if( appo != null ) {
+
+				if( quale.Equals( "mask", StringComparison.CurrentCultureIgnoreCase ) )
+					cfg.cartellaMaschere = appo;
+				else if( quale.Equals( "burn", StringComparison.CurrentCultureIgnoreCase ) )
+					cfg.defaultChiavetta = appo;
+				else if( quale.Equals( "foto", StringComparison.CurrentCultureIgnoreCase ) )
+					cfg.cartellaFoto = appo;
+				else if( quale.Equals( "db", StringComparison.CurrentCultureIgnoreCase ) )
+					cfg.cartellaDatabase = appo;
+				else
+					throw new ArgumentException( "quale cartella : non riconosciuto" );
+			}
         }
 
         private void testConnection()
         {
             salvaConfigDB();
+			impostaConnectionStringFittizzia();
 
 			DbUtil dbUtil = new DbUtil( cfg );
-
-            if (dbUtil.verificaSeDatabaseUtilizzabile())
+			string msgErrore;
+            if (dbUtil.verificaSeDatabaseUtilizzabile( out msgErrore ))
             {
                 dialogProvider.ShowMessage("OK\nConnessione al database riuscita","Test Connection");
             }
             else
             {
-				dialogProvider.ShowMessage( "ERRORE CONNESSIONE", "Test Connection" );
+				dialogProvider.ShowError( msgErrore, "Connessione fallita", null );
             }
         }
 
-        private void selezionaDbCartella()
-        {
-            FolderBrowserDialog dlg = new FolderBrowserDialog();
-            dlg.ShowNewFolderButton = true;
-            DialogResult result = dlg.ShowDialog();
-            if (result == System.Windows.Forms.DialogResult.OK)
-            {
-                cfg.dbCartella = dlg.SelectedPath;
-            }   
-		}
 
         private void selezionaDataSource()
         {
@@ -719,30 +789,26 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
-        private void abilitaDataSorceButton()
-        {
-				
+		private void cambiareMotoreDatabase() {
+
 			switch ( cfg.motoreDatabase )
             {
-                case MotoreDatabase.SqlServerCE:
+				case MotoreDatabase.SqlServerCE:
 					cfg.dbNomeDbVuoto = "dbVuoto.sdf";
 					cfg.dbNomeDbPieno = "database.sdf";
-                    DbCartellaButton = true;
                     break;
                 case MotoreDatabase.SqLite:
 					cfg.dbNomeDbVuoto = "dbVuoto.sqlite";
 					cfg.dbNomeDbPieno = "database.sqlite";
-                    DbCartellaButton = true;
                     break;
                 case MotoreDatabase.SqlServer:
 					cfg.dbNomeDbVuoto = null;
 					cfg.dbNomeDbPieno = null;
 					dialogProvider.ShowMessage( "Il Data Sorce prevede un Server", "Avviso" );
-                    DbCartellaButton = false;
                     break;
             }
 
-            OnPropertyChanged("DbCartellaButton");
+			OnPropertyChanged( "possoCambiareCartellaDb" );
 			OnPropertyChanged( "ConnectionString" );
         }
 
@@ -781,21 +847,48 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 					  esciPure = confermato;
 				  } );
 
-			if( esciPure )
+			if( esciPure ) {
+				chiudiTutto();
 				this.CloseCommand.Execute( null );
+			}
         }
 
         private void applica()
         {
 			string errore = Configurazione.getMotivoErrore( cfg );
+			int qquanti = ConfigurationManager.ConnectionStrings.Count;
 
 			if( errore != null ) {
 				dialogProvider.ShowError( "Configurazione non valida.\nImpossibile salvare!\n\nMotivo errore:\n" + errore, "ERRORE", null );
 			} else {
-				saveUserConfig();
-				dialogProvider.ShowMessage( "OK\nConfigurazione Salvata", "Avviso" );
+
+				try {
+
+					int quanti = saveInfoFisse();
+					
+					saveUserConfig();
+
+					string msg = "Configurazione utente salvata";
+					if( quanti > 0 )
+						msg += "\nConfigurazione PdV salvata";
+
+					dialogProvider.ShowMessage( msg, "OK" );
+
+				} catch( Exception ee ) {
+					dialogProvider.ShowError( ee.Message, "ERRORE salvataggio", null );
+				}
 			}
         }
+
+		private int saveInfoFisse() {
+
+			// TODO: importante gestire la concorrenza.
+			//       Che succede se io qui salvo e da un'altro pc qualcuno sta scaricando
+			//       le foto che incrementano il numero dell'ultimo rullino ?
+
+			infoFisseRepository.update( ref _infoFissa );
+			return infoFisseRepository.saveChanges();
+		}
 
         private void createDataBase()
         {
@@ -816,16 +909,13 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             String administratorPasswordMd5 = Md5.MD5GenerateHash(LoginPassword.ToString());
             if (administratorPasswordMd5.Equals(Properties.Settings.Default.psw))
             {
-                Abilitato = true;
-				fwButton = true;
-				annullaButton = true;
-				OnPropertyChanged("fwButton");
-				OnPropertyChanged("annullaButton");
+                loginEffettuato = true;
+				stepAvanti();
             }
             else
             {
 				dialogProvider.ShowMessage( "Password ERROR", "Avviso" );
-				Abilitato = false;
+				loginEffettuato = false;
             }
 
         }

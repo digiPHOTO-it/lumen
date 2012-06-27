@@ -17,7 +17,7 @@
     </Window.Resources>
 
 
-    <TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Top" Name="tabControlPagine">
+    <TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Top" Name="tabControlPagine" SelectedIndex="2">
         
         <TabItem Header="Scarica" ToolTip="Scarica foto da memory-card o da altra cartella" MinHeight="30" >
             <!-- UserControl per scaricare le foto -->

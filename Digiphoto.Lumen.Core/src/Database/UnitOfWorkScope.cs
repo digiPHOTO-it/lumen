@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Config;
+using log4net;
+using Digiphoto.Lumen.Util;
 
 namespace Digiphoto.Lumen.Core.Database {
 
@@ -14,6 +16,8 @@ namespace Digiphoto.Lumen.Core.Database {
 	/// supposed to be used in a using() statement.
 	/// </summary>
 	public sealed class UnitOfWorkScope : IDisposable {
+
+		private static readonly ILog _giornale = LogManager.GetLogger( typeof( UnitOfWorkScope ) );
 
 		[ThreadStatic]
 		private static UnitOfWorkScope _currentScope;
@@ -36,11 +40,12 @@ namespace Digiphoto.Lumen.Core.Database {
 		/// Returns a reference to the Lumen Object Context that is created 
 		/// for the current scope. If no scope currently exists, null is returned.
 		/// </summary>
-		internal static LumenEntities CurrentObjectContext {
+		public static LumenEntities CurrentObjectContext {
 			get {
 				return _currentScope != null ? _currentScope._objectContext : null;
 			}
 		}
+
 		/// <summary>
 		/// Default constructor. Object changes are not automatically saved 
 		/// at the end of the scope.
@@ -48,6 +53,11 @@ namespace Digiphoto.Lumen.Core.Database {
 		public UnitOfWorkScope()
 			: this( false ) {
 		}
+
+		public UnitOfWorkScope( bool saveAllChangesAtEndOfScope ) 
+			: this( saveAllChangesAtEndOfScope, null ) {
+		}
+
 		/// <summary>
 		/// Parameterized constructor.
 		/// </summary>
@@ -55,19 +65,20 @@ namespace Digiphoto.Lumen.Core.Database {
 		/// A boolean value that indicates whether to automatically save 
 		/// all object changes at end of the scope.
 		/// </param>
-		public UnitOfWorkScope( bool saveAllChangesAtEndOfScope ) {
+		public UnitOfWorkScope( bool saveAllChangesAtEndOfScope, string connectionString ) {
+
 			if( _currentScope != null && !_currentScope._isDisposed )
 				throw new InvalidOperationException( "ObjectContextScope instances " +
 																"cannot be nested." );
 			_saveAllChangesAtEndOfScope = saveAllChangesAtEndOfScope;
 
 
-			string ncs = Configurazione.UserConfigLumen.qualeConnectionString;
+			/* Create a new ObjectContext instance: uso il proxy */
+			if( String.IsNullOrEmpty(connectionString ) )
+				_objectContext = new LumenEntities( true );
+			else
+				_objectContext = new LumenEntities( connectionString, true );
 
-			/* Create a new ObjectContext instance: */
-			_objectContext = new LumenEntities( ncs );
-			
-				
 			_isDisposed = false;
 			Thread.BeginThreadAffinity();
 			/* Set the current scope to this UnitOfWorkScope object: */
@@ -77,13 +88,33 @@ namespace Digiphoto.Lumen.Core.Database {
 		/// Called on the end of the scope. Disposes the NorthwindObjectContext.
 		/// </summary>
 		public void Dispose() {
+
 			if( !_isDisposed ) {
+
 				/* End of scope, so clear the thread static 
 				 * _currentScope member: */
 				_currentScope = null;
 				Thread.EndThreadAffinity();
-				if( _saveAllChangesAtEndOfScope )
-					_objectContext.SaveChanges();
+
+				if( _saveAllChangesAtEndOfScope ) {
+
+					try {
+						// Qui ci potrebbero essere delle eccezioni
+
+						_objectContext.SaveChanges();
+
+					} catch( Exception ee ) {
+
+						_giornale.Error( "Salvataggio sul db fallito", ee );
+
+						// TODO : non è molto mvvm. Rivedere! Magari cercare di redirigere l'applicazione in un form di errore? Leggere un pò di letteratura
+						System.Windows.Forms.MessageBox.Show( ErroriUtil.estraiMessage( ee ), "Salvataggio sul database", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+
+						// Decido di non rilanciare l'eccezione perché effettivamente il programma si spaccherebbe.
+						// Però non sono in grado di gestirla. Quindi l'unica cosa che posso fare è loggarla ed avvisare l'utente.
+					}
+				}
+				
 				/* Dispose the scoped ObjectContext instance: */
 				_objectContext.Dispose();
 				_isDisposed = true;

@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 namespace Digiphoto.Lumen.Servizi.EntityRepository {
 
 	/** Questa interfaccia serve per realizzare le operazioni CRUD sulle entità semplici */
-	public interface IEntityRepositorySrv<T> : IServizio {
+	public interface IEntityRepositorySrv<T> : IServizio where T : class  {
 
 		// Create
 		void addNew( T entita );
@@ -21,11 +21,30 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 		// Read by quert
 		IQueryable<T> Query( Expression<Func<T, bool>> filter );
 
-		// Update
-		void update( T entita );
+		/// <summary>
+		/// Update in realtà non fa nulla. Si limita a riattaccare 
+		/// una entità nel caso sia staccata.
+		/// Occorre poi fare un SaveChanges separato.
+		/// </summary>
+		/// <param name="entita">L'entità da riattaccare</param>
+		void update( ref T entita );
 
-		// Delete
+		/// <summary>
+		/// Delete in realtà non fa nulla.
+		/// Occorre poi fare un SaveChanges separato.
+		/// </summary>
+		/// <param name="entita">L'entità da cancellare</param>
+
 		void delete( T entita );
+
+		/// <summary>
+		/// Attenzione che questo metodo salva tutto, 
+		/// e non solo le modifiche fatte da questo servizio.
+		/// Tutte le entità che sono pronte per essere salvate, subiscono
+		/// la modifica.
+		/// </summary>
+		/// <returns>Il numero di entità coinvolte</returns>
+		int saveChanges();
 	}
 
 }

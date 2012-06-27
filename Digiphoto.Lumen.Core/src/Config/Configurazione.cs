@@ -10,6 +10,7 @@ using System.IO;
 using Digiphoto.Lumen.Servizi.Vendere;
 using System.Windows.Forms;
 using Digiphoto.Lumen.Util;
+using Digiphoto.Lumen.Model;
 
 namespace Digiphoto.Lumen.Config  {
 
@@ -40,35 +41,7 @@ namespace Digiphoto.Lumen.Config  {
 		public static UserConfigLumen caricaUserConfig() {
 
 			// Carico i settaggi che ho appoggiato su un xml esterno
-			UserConfigLumen userConfigDefault = UserConfigSerializer.deserialize();
-
-			if( userConfigDefault == null ) {
-
-				userConfigDefault = new UserConfigLumen();
-
-				// Alcuni default NON naturali. Quelli naturali non li nomino.
-
-				// Il più importante è il motore del database
-				userConfigDefault.motoreDatabase = MotoreDatabase.SqLite;
-				userConfigDefault.dbNomeDbVuoto = "dbvuoto.sqlite";
-				userConfigDefault.dbNomeDbPieno = "database.sqlite";
-
-				// Questo molto importante. Determina la grandezza delle cache
-				userConfigDefault.pixelLatoProvino = 400;
-
-				userConfigDefault.dbCartella = decidiCartellaDatabase();
-				userConfigDefault.autoZoomNoBordiBianchi = true;
-				userConfigDefault.modoVendita = ModoVendita.Carrello;
-				userConfigDefault.cartellaFoto = Path.Combine( Configurazione.cartellaAppData, "Foto" );
-				userConfigDefault.cartellaMaschere = Path.Combine( Configurazione.cartellaAppData, "Maschere" );
-				userConfigDefault.estensioniGrafiche = "*.jpg;*.jpeg;*.png;*.tif;*.tiff";
-				userConfigDefault.editorImmagini = "MSPAINT.EXE";
-				userConfigDefault.masterizzaDirettamente = false;
-			} else {
-				// Sistemare eventuali parametri nuovi di release future..
-			}
-
-			return userConfigDefault;
+			return UserConfigSerializer.deserialize();
 		}
 
 
@@ -76,6 +49,10 @@ namespace Digiphoto.Lumen.Config  {
 		}
 
 		internal Configurazione( bool autoSistemazione ) {
+
+			// Per prima cosa controllo se ho i settaggi. Altrimenti fallisco.
+			if( autoSistemazione == false && UserConfigLumen == null )
+				throw new ConfigurationErrorsException( "Configurazione utente non trovata" );
 
 			_dbUtil = new DbUtil();
 
@@ -131,7 +108,7 @@ namespace Digiphoto.Lumen.Config  {
 		private static void sostituisciSegnapostoDataDirectoryPerConnectionString() {
 
 			// Ora che ho deciso dove sta il database, sostituisco la cartella nella stringa di connessione.
-			sostituisciSegnapostoDataDirectoryPerConnectionString( UserConfigLumen.dbCartella );
+			sostituisciSegnapostoDataDirectoryPerConnectionString( UserConfigLumen.cartellaDatabase );
 		}
 
 		private static void sostituisciSegnapostoDataDirectoryPerConnectionString( string cartella ) {
@@ -141,6 +118,14 @@ namespace Digiphoto.Lumen.Config  {
 		private void autoSistemaPerPartenzaDiDefault() {
 
 			_giornale.Debug( "La configurazione attuale non è sufficiente. Devo sistemarla con valori di default" );
+
+			if( UserConfigLumen == null ) {
+				UserConfigLumen = creaUserConfig();
+			} else {
+				// Sistemare eventuali parametri nuovi di release future..
+			}
+
+			// ---
 
 			// Se non esiste la cartella per il database, allora la creo.
 			_dbUtil.creaCartellaPerDb();
@@ -161,6 +146,29 @@ namespace Digiphoto.Lumen.Config  {
 			}
 			
 
+		}
+
+		public static Config.UserConfigLumen creaUserConfig() {
+
+			UserConfigLumen userConfig = new UserConfigLumen();
+
+			// Alcuni default NON naturali. Quelli naturali non li nomino.
+
+			// Il più importante è il motore del database
+			userConfig.motoreDatabase = MotoreDatabase.SqLite;
+			userConfig.dbNomeDbVuoto = "dbvuoto.sqlite";
+			userConfig.dbNomeDbPieno = "database.sqlite";
+
+			userConfig.cartellaDatabase = decidiCartellaDatabase();
+			userConfig.autoZoomNoBordiBianchi = true;
+			userConfig.modoVendita = ModoVendita.Carrello;
+			userConfig.cartellaFoto = Path.Combine( Configurazione.cartellaAppData, "Foto" );
+			userConfig.cartellaMaschere = Path.Combine( Configurazione.cartellaAppData, "Maschere" );
+			userConfig.estensioniGrafiche = "*.jpg;*.jpeg;*.png;*.tif;*.tiff";
+			userConfig.editorImmagini = "MSPAINT.EXE";
+			userConfig.masterizzaDirettamente = false;
+			userConfig.millisIntervalloSlideShow = 2500;
+			return userConfig;
 		}
 
 		bool isValida() {
@@ -300,8 +308,9 @@ namespace Digiphoto.Lumen.Config  {
 			DbUtil mioDbUtil = new DbUtil( userConfig );
 
 			// Controllo che esista e che sia valido anche il database vero di lavoro
-			if( ! mioDbUtil.verificaSeDatabaseUtilizzabile() )
-				return "Database di lavoro\n" + mioDbUtil.nomeFileDbPieno + "\nnon trovato, oppure non utilizzabile.";
+			string msgErrore;
+			if( ! mioDbUtil.verificaSeDatabaseUtilizzabile( out msgErrore ) )
+				return "Database di lavoro\n" + mioDbUtil.nomeFileDbPieno + "\n" + msgErrore;
 
 			// Controllo che la cartella contenente le foto esista e sia scrivibile
 			if( !Directory.Exists( userConfig.cartellaFoto ) ) {
@@ -312,5 +321,18 @@ namespace Digiphoto.Lumen.Config  {
 		}
 
 
+		/// <summary>
+		/// Mi dice se devo attivare le personalizzazioni fuori standard per ciccio
+		/// </summary>
+		public static bool isFuoriStandardCiccio {
+			get {
+				return UserConfigLumen.fuoriStandard != null && UserConfigLumen.fuoriStandard.Equals( "CICCIO", StringComparison.CurrentCultureIgnoreCase );
+			}
+		}
+
+		public static InfoFissa infoFissa {
+			get;
+			internal set;
+		}
 	}
 }

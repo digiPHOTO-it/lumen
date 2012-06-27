@@ -36,7 +36,8 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
         {
 			IList<String> listaCartelleDaEliminare = new List<String>();
             String pathCartellaRepositoryFoto = Configurazione.cartellaRepositoryFoto;
-			DateTime dataIntervallo = DateTime.Now.AddDays(-Configurazione.UserConfigLumen.giorniDeleteFoto);
+			int ggDel = Configurazione.infoFissa.numGiorniEliminaFoto;
+			DateTime dataIntervallo = DateTime.Now.AddDays( -ggDel );
 
             if (System.IO.Directory.Exists(pathCartellaRepositoryFoto))
             {

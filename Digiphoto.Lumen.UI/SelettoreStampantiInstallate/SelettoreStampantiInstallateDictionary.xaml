@@ -12,4 +12,11 @@
 
     </DataTemplate>
 
+    <Style TargetType="Button" x:Name="refreshButton">
+        <Style.Setters>
+            <Setter Property="Margin" Value="0,3,0,3" />
+            <Setter Property="Width" Value="100" />
+        </Style.Setters>
+    </Style>
+    
 </ResourceDictionary>

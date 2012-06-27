@@ -10,7 +10,7 @@ using System.Xml.Serialization;
 
 namespace Digiphoto.Lumen.Config
 {
-    public class UserConfigSerializer
+    public static class UserConfigSerializer
     {
 		//Calcolo il percorso in cui vengono memorizzati i settaggi utente
 		private static String userConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Configurazione.companyName, Configurazione.applicationName );
@@ -31,8 +31,8 @@ namespace Digiphoto.Lumen.Config
 		public static UserConfigLumen deserialize()
 		{
 			UserConfigLumen userConfigXML = null;
-			
-			if( File.Exists( userConfigFilePath ) ) {
+
+			if( esisteUserConfig ) {
 
 				// A FileStream is needed to read the XML document.
 				XmlSerializer x = new XmlSerializer( typeof( UserConfigLumen ) );
@@ -42,6 +42,15 @@ namespace Digiphoto.Lumen.Config
 			} 
 
 			return userConfigXML;
+		}
+
+		/// <summary>
+		///  Mi dice soltanto se il file con la configurazione utente è presente su disco
+		/// </summary>
+		public static bool esisteUserConfig {
+			get {
+				return File.Exists( userConfigFilePath );
+			}
 		}
     }
 }
