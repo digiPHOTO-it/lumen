@@ -68,32 +68,32 @@ namespace Digiphoto.Lumen.Core.VsTest
 		[TestMethod]
 		public void codaDiStampaTestJoin() {
 
+			ParamStampaFoto param = new ParamStampaFoto();
+
 			// Istanzio una coda di stampa e la chiudo
-			CodaDiStampe c1 = new CodaDiStampe( "coda1" );
+			CodaDiStampe c1 = new CodaDiStampe( param, "coda1" );
 			c1.Start();
 			c1.Stop();
 			c1.Dispose();
 
-			CodaDiStampe c2 = new CodaDiStampe( "coda2" );
+			CodaDiStampe c2 = new CodaDiStampe( param, "coda2" );
 			c2.Dispose();
 
-			CodaDiStampe c3 = new CodaDiStampe( "coda3" );
+			CodaDiStampe c3 = new CodaDiStampe( param, "coda3" );
 			c3.Stop();
 			c3.Stop();
 			c3.Dispose();
-
-
-
-
 		}
 
 		[TestMethod]
 		public void codaDiStampeConAbort() {
 
-			CodaDiStampe c3 = new CodaDiStampe( "doPDF v7" );
+			ParamStampaFoto param = new ParamStampaFoto();
+
+			CodaDiStampe c3 = new CodaDiStampe( param, "doPDF v7" );
 			c3.Stop();
 
-			c3.EnqueueItem( new LavoroDiStampa( new Fotografia(), new ParamStampaFoto() ) );
+			c3.EnqueueItem( new LavoroDiStampaFoto( new Fotografia(), new ParamStampaFoto() ) );
 			// Accodo una stampa in modo da testare l'abort
 
 			c3.Stop( Threading.PendingItemAction.AbortPendingItems );
@@ -150,6 +150,33 @@ namespace Digiphoto.Lumen.Core.VsTest
 			Console.WriteLine( "FINITO" );
 		}
 
+
+		[TestMethod]
+		public void vendiFotoStampaDirettaTest()
+		{
+			using (new UnitOfWorkScope(false))
+			{
+
+				_impl.creaNuovoCarrelloStampaDiretta();
+
+				ParamStampaFoto p = ricavaParamStampa();
+
+				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+				List<Fotografia> fotos = (from f in dbContext.Fotografie.Include("fotografo")
+										  select f).Take(QUANTE).ToList();
+
+				contaStampate = 0;
+
+				_impl.effettuaStampaDiretta(fotos, p);
+
+				_impl.vendereCarrelloStampaDiretta();
+
+				Assert.IsTrue(_impl.carrelloStampaDiretta.venduto);
+				Assert.IsTrue(_impl.carrelloStampaDiretta.totaleAPagare == 15);
+			}
+
+			Console.WriteLine("FINITO");
+		}
 
 		private ParamStampaFoto ricavaParamStampa() {
 

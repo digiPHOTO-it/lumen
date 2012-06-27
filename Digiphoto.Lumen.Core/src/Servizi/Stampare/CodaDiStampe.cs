@@ -8,6 +8,7 @@ using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Imaging;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Eventi;
+using Digiphoto.Lumen.Model;
 
 namespace Digiphoto.Lumen.Servizi.Stampare {
 	
@@ -25,17 +26,17 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 		IEsecutoreStampa _stampatore;
 
 
-		public CodaDiStampe( string nomeStampante ) : this( nomeStampante, null ) {
+		public CodaDiStampe( ParamStampa param, string nomeStampante ) : this( param, nomeStampante, null ) {
 		}
 
-		public CodaDiStampe( string nomeStampante, StampaCompletataCallback callback ) : base( nomeStampante ) {
+		public CodaDiStampe( ParamStampa param, string nomeStampante, StampaCompletataCallback callback ) : base( nomeStampante ) {
 
 			this.workerThread.SetApartmentState( System.Threading.ApartmentState.STA );
 
 			if( String.IsNullOrEmpty( nomeStampante ) )
 				throw new ArgumentException( "Nome stampante vuota" );
 
-			_stampatore = ImagingFactory.Instance.creaStampatore( nomeStampante );
+			_stampatore = ImagingFactory.Instance.creaStampatore(param, nomeStampante );
 			this.stampaCompletataCallback = callback;
 		}
 
@@ -74,10 +75,21 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			// Per evitare problemi di multi-thread, le immagini le idrato nello stesso thread con cui le manderò in stampa.
 			// Non anticipare questo metodo altrimenti poi non va.
 			// Se le immagini non sono idratate, le carico!
-			IdrataTarget quale = lavoroDiStampa.fotografia.imgRisultante != null ? IdrataTarget.Risultante : IdrataTarget.Originale;
-			AiutanteFoto.idrataImmaginiFoto( lavoroDiStampa.fotografia, quale, true );
 
+			if(lavoroDiStampa is LavoroDiStampaFoto){
+				LavoroDiStampaFoto lavoroDiStampaFoto = lavoroDiStampa as LavoroDiStampaFoto;
+				IdrataTarget quale = lavoroDiStampaFoto.fotografia.imgRisultante != null ? IdrataTarget.Risultante : IdrataTarget.Originale;
+				AiutanteFoto.idrataImmaginiFoto(lavoroDiStampaFoto.fotografia, quale, true);
 
+			}else if(lavoroDiStampa is LavoroDiStampaProvini){
+				LavoroDiStampaProvini lavoroDiStampaProvini = lavoroDiStampa as LavoroDiStampaProvini;
+
+				foreach (Fotografia fot in lavoroDiStampaProvini.fotografie)
+				{
+					IdrataTarget quale = IdrataTarget.Provino;
+					AiutanteFoto.idrataImmaginiFoto(fot, quale, true);
+				}
+			}
 			EsitoStampa esito = _stampatore.esegui( lavoroDiStampa );
 
 			lavoroDiStampa.esitostampa = esito;

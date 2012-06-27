@@ -113,6 +113,7 @@
     <Compile Include="Converters\CollectionViewVisibilityMultiConverter.cs" />
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
     <Compile Include="Converters\BoolBackgroundConverter.cs" />
+    <Compile Include="Converters\ListVisibilityConverter.cs" />
     <Compile Include="Converters\SumQuantitaConverter.cs" />
     <Compile Include="Converters\ImmagineToImageSourceConverter.cs" />
     <Compile Include="Converters\PercentualeConverter.cs" />
@@ -120,6 +121,9 @@
     <Compile Include="Adorners\PuncturedRect.cs" />
     <Compile Include="Dialogs\RangeGiorniDialog.xaml.cs">
       <DependentUpon>RangeGiorniDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\StampaProviniDialog.xaml.cs">
+      <DependentUpon>StampaProviniDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Diapo\Diapositiva.xaml.cs">
       <DependentUpon>Diapositiva.xaml</DependentUpon>
@@ -160,6 +164,14 @@
       <DependentUpon>ShowTrayIcon.xaml</DependentUpon>
     </Compile>
     <Page Include="Dialogs\RangeGiorniDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\StampaProviniDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\StampaProviniDialogResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -436,6 +448,9 @@
     <Resource Include="Resources\PhotoEdit-48x48.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Provini-48x48.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="Resources\info-16x16.png" />
   </ItemGroup>
   <ItemGroup>
@@ -475,7 +490,6 @@
     <Resource Include="Resources\remove-16x16.png" />
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

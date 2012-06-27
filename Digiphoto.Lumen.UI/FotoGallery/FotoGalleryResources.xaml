@@ -4,6 +4,8 @@
                     xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo">
   
 
+	<lumC:ListVisibilityConverter x:Key="listVisibilityConverter" />
+
     <!-- Stile della listbox che itera le immagini -->
     <Style x:Key="LsImageGalleryStyle" TargetType="ListBox">
         <Setter Property="Control.Background">
