@@ -19,7 +19,7 @@ rem =============================================================
 rem =============================================================
 
 echo ---( Sql Compact )---
-del dbVuoto.sdf
+del ..\dbVuoto.sdf
 
 echo Creazione database ...
 SqlCeCmd40.exe -d "Data Source=..\dbVuoto.sdf" -e create 

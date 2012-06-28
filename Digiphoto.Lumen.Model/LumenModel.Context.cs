@@ -19,8 +19,8 @@ namespace Digiphoto.Lumen.Model
         public LumenEntities()
             : this(false) { }
     
-        public LumenEntities(bool proxyCreationEnabled)
-			: base( "name=LumenEntities" )
+        public LumenEntities(bool proxyCreationEnabled)	    
+            : base("name=LumenEntities")
         {
             this.Configuration.ProxyCreationEnabled = proxyCreationEnabled;
         }
@@ -54,5 +54,6 @@ namespace Digiphoto.Lumen.Model
         public DbSet<InfoFissa> InfosFisse { get; set; }
         public DbSet<Carrello> Carrelli { get; set; }
         public DbSet<RigaCarrello> RigheCarrelli { get; set; }
+        public DbSet<ConsumoCartaGiornaliero> ConsumiCartaGiornalieri { get; set; }
     }
 }
