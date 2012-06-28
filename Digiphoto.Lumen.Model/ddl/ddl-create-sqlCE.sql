@@ -2,10 +2,9 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server Compact Edition
 -- --------------------------------------------------
--- Date Created: 06/21/2012 13:18:48
+-- Date Created: 06/28/2012 14:03:04
 -- Generated from EDMX file: C:\Users\bluca\Documents\Visual Studio 2010\Projects\lumen\Digiphoto.Lumen.Model\LumenModel.edmx
 -- --------------------------------------------------
-
 
 -- --------------------------------------------------
 -- Creating all tables
@@ -130,7 +129,16 @@ CREATE TABLE [RigheCarrelli] (
 );
 GO
 
-
+-- Creating table 'ConsumiCartaGiornalieri'
+CREATE TABLE [ConsumiCartaGiornalieri] (
+    [id] uniqueidentifier  NOT NULL,
+    [giornata] datetime  NOT NULL,
+    [totFogli] smallint  NOT NULL,
+    [diCuiProvini] smallint  NOT NULL,
+    [diCuiFoto] smallint  NOT NULL,
+    [formatoCarta_id] uniqueidentifier  NOT NULL
+);
+GO
 
 -- --------------------------------------------------
 -- Creating all PRIMARY KEY constraints
@@ -141,6 +149,7 @@ ALTER TABLE [Fotografi]
 ADD CONSTRAINT [PK_Fotografi]
     PRIMARY KEY ([id] );
 GO
+
 
 -- Creating primary key on [id] in table 'Fotografie'
 ALTER TABLE [Fotografie]
@@ -196,11 +205,16 @@ ADD CONSTRAINT [PK_RigheCarrelli]
     PRIMARY KEY ([id] );
 GO
 
-
+-- Creating primary key on [id] in table 'ConsumiCartaGiornalieri'
+ALTER TABLE [ConsumiCartaGiornalieri]
+ADD CONSTRAINT [PK_ConsumiCartaGiornalieri]
+    PRIMARY KEY ([id] );
+GO
 
 -- --------------------------------------------------
 -- Creating all FOREIGN KEY constraints
 -- --------------------------------------------------
+
 
 -- Creating foreign key on [fotografo_id] in table 'Fotografie'
 ALTER TABLE [Fotografie]
@@ -211,8 +225,11 @@ ADD CONSTRAINT [FK_FotografoFotografia]
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
 
+
 -- Creating non-clustered index for FOREIGN KEY 'FK_FotografoFotografia'
-CREATE INDEX [IX_FK_FotografoFotografia] ON [Fotografie] ([fotografo_id]);
+CREATE INDEX [IX_FK_FotografoFotografia]
+ON [Fotografie]
+    ([fotografo_id]);
 GO
 
 -- Creating foreign key on [evento_id] in table 'Fotografie'
@@ -222,10 +239,12 @@ ADD CONSTRAINT [FK_EventoFotografia]
     REFERENCES [Eventi]
         ([id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
+go
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_EventoFotografia'
-CREATE INDEX [IX_FK_EventoFotografia] ON [Fotografie] ([evento_id]);
+CREATE INDEX [IX_FK_EventoFotografia]
+ON [Fotografie]
+    ([evento_id]);
 GO
 
 -- Creating foreign key on [AlbumRigaAlbum_RigaAlbum_id] in table 'RigheAlbum'
@@ -238,7 +257,9 @@ ADD CONSTRAINT [FK_AlbumRigaAlbum]
 GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_AlbumRigaAlbum'
-CREATE INDEX [IX_FK_AlbumRigaAlbum] ON [RigheAlbum]   ([AlbumRigaAlbum_RigaAlbum_id]);
+CREATE INDEX [IX_FK_AlbumRigaAlbum]
+ON [RigheAlbum]
+    ([AlbumRigaAlbum_RigaAlbum_id]);
 GO
 
 -- Creating foreign key on [fotografo_id] in table 'ScarichiCards'
@@ -248,12 +269,13 @@ ADD CONSTRAINT [FK_FotografoScaricoCard]
     REFERENCES [Fotografi]
         ([id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- LUCA questo go l ho dovuto mettere io a mano perché non lo mette da solo.
 GO
 
+
 -- Creating non-clustered index for FOREIGN KEY 'FK_FotografoScaricoCard'
-CREATE INDEX [IX_FK_FotografoScaricoCard]
-ON [ScarichiCards]
-    ([fotografo_id]);
+CREATE INDEX [IX_FK_FotografoScaricoCard] ON [ScarichiCards] ([fotografo_id]);
 GO
 
 -- Creating foreign key on [CarrelloRigaCarrello_RigaCarrello_id] in table 'RigheCarrelli'
@@ -263,7 +285,10 @@ ADD CONSTRAINT [FK_CarrelloRigaCarrello]
     REFERENCES [Carrelli]
         ([id])
     ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- LUCA questo go l ho dovuto mettere io a mano perché non lo mette da solo.
 GO
+
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_CarrelloRigaCarrello'
 CREATE INDEX [IX_FK_CarrelloRigaCarrello]
@@ -278,6 +303,8 @@ ADD CONSTRAINT [FK_FormatoCartaRiCaFotoStampata]
     REFERENCES [FormatiCarta]
         ([id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- LUCA questo go l ho dovuto mettere io a mano perché non lo mette da solo.
 GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_FormatoCartaRiCaFotoStampata'
@@ -293,6 +320,8 @@ ADD CONSTRAINT [FK_FotografoRiCaFotoStampata]
     REFERENCES [Fotografi]
         ([id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- LUCA questo go l ho dovuto mettere io a mano perché non lo mette da solo.
 GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_FotografoRiCaFotoStampata'
@@ -308,6 +337,8 @@ ADD CONSTRAINT [FK_FotografiaRigaAlbum]
     REFERENCES [Fotografie]
         ([id])
     ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- LUCA questo go l ho dovuto mettere io a mano perché non lo mette da solo.
 GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_FotografiaRigaAlbum'
@@ -323,12 +354,32 @@ ADD CONSTRAINT [FK_FotografiaRiCaFotoStampata]
     REFERENCES [Fotografie]
         ([id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- LUCA questo go l ho dovuto mettere io a mano perché non lo mette da solo.
 GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_FotografiaRiCaFotoStampata'
 CREATE INDEX [IX_FK_FotografiaRiCaFotoStampata]
 ON [RigheCarrelli]
     ([fotografia_id]);
+GO
+
+-- Creating foreign key on [formatoCarta_id] in table 'ConsumiCartaGiornalieri'
+ALTER TABLE [ConsumiCartaGiornalieri]
+ADD CONSTRAINT [FK_FormatoCartaConsumoCartaGiornaliero]
+    FOREIGN KEY ([formatoCarta_id])
+    REFERENCES [FormatiCarta]
+        ([id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- LUCA questo go l ho dovuto mettere io a mano perché non lo mette da solo.
+GO
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_FormatoCartaConsumoCartaGiornaliero'
+CREATE INDEX [IX_FK_FormatoCartaConsumoCartaGiornaliero]
+ON [ConsumiCartaGiornalieri]
+    ([formatoCarta_id]);
 GO
 
 -- --------------------------------------------------

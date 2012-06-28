@@ -39,6 +39,8 @@
 
 	create index [fnumerof_idx] on Fotografie (numero);
 
+	create unique index [cggcarta_idx] on ConsumiCartaGiornalieri (giornata,formatoCarta_id);
+
 -- --------------------------------------------------
 -- Script has ended
 -- --------------------------------------------------

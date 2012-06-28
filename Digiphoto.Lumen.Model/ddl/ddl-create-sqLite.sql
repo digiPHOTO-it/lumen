@@ -1,6 +1,6 @@
 
 -- --------------------------------------------------
--- Date Created: 06/21/2012 07:07:10
+-- Date Created: 06/28/2012 14:00:50
 -- compatible SQLite
 -- Generated from EDMX file: C:\Users\bluca\Documents\Visual Studio 2010\Projects\lumen\Digiphoto.Lumen.Model\LumenModel.edmx
 -- --------------------------------------------------
@@ -27,6 +27,8 @@
 	DROP TABLE if exists [Carrelli];
     
 	DROP TABLE if exists [RigheCarrelli];
+    
+	DROP TABLE if exists [ConsumiCartaGiornalieri];
 
 -- --------------------------------------------------
 -- Creating all tables
@@ -45,7 +47,7 @@ CREATE TABLE [Fotografi] (
 -- Creating table 'Fotografie'
 CREATE TABLE [Fotografie] (
     [id] uniqueidentifier   NOT NULL ,
-    [nomeFile] nvarchar(2147483647)   NOT NULL ,
+    [nomeFile] nvarchar(100)   NOT NULL ,
     [dataOraScatto] datetime   NULL ,
     [didascalia] nvarchar(2147483647)   NULL ,
     [dataOraAcquisizione] datetime   NOT NULL ,
@@ -132,7 +134,7 @@ CREATE TABLE [InfosFisse] (
     [modoNumerazFoto] nvarchar(2147483647)   DEFAULT 'M' NOT NULL ,
     [pixelProvino] smallint   NOT NULL ,
     [idPuntoVendita] nvarchar(5)   NULL ,
-    [descrizPuntoVendita] nvarchar(50)    NULL ,
+    [descrizPuntoVendita] nvarchar(50)   NULL ,
     [numGiorniEliminaFoto] smallint   NOT NULL ,
     [varie] nvarchar(2147483647)   NULL 
 );
@@ -143,7 +145,7 @@ CREATE TABLE [Carrelli] (
     [giornata] datetime   NOT NULL ,
     [tempo] datetime   NOT NULL ,
     [totaleAPagare] decimal(18,0)   NOT NULL ,
-    [intestazione] nvarchar(50)   NULL ,
+    [intestazione] nvarchar(100)   NULL ,
     [venduto] bit   DEFAULT 'False' NOT NULL ,
     [note] nvarchar(2147483647)   NULL 
 );
@@ -155,7 +157,7 @@ CREATE TABLE [RigheCarrelli] (
     [quantita] smallint   NOT NULL ,
     [prezzoNettoTotale] decimal(18,0)   NOT NULL ,
     [sconto] decimal(18,0)   NULL ,
-    [descrizione] nvarchar(100)   NOT NULL ,
+    [descrizione] nvarchar(2147483647)   NOT NULL ,
     [totFogliStampati] smallint   NULL ,
     [idFotografia] uniqueidentifier   NULL ,
     [totFotoMasterizzate] smallint   NULL ,
@@ -183,6 +185,21 @@ CREATE TABLE [RigheCarrelli] (
 		,CONSTRAINT [FK_FotografiaRiCaFotoStampata]
     		FOREIGN KEY ([fotografia_id])
     		REFERENCES [Fotografie] ([id])					
+    		
+			);
+
+-- Creating table 'ConsumiCartaGiornalieri'
+CREATE TABLE [ConsumiCartaGiornalieri] (
+    [id] uniqueidentifier   NOT NULL ,
+    [giornata] datetime   NOT NULL ,
+    [totFogli] smallint   NOT NULL ,
+    [diCuiProvini] smallint   NOT NULL ,
+    [diCuiFoto] smallint   NOT NULL ,
+    [formatoCarta_id] uniqueidentifier   NOT NULL 
+			
+		,CONSTRAINT [FK_FormatoCartaConsumoCartaGiornaliero]
+    		FOREIGN KEY ([formatoCarta_id])
+    		REFERENCES [FormatiCarta] ([id])					
     		
 			);
 

@@ -4,9 +4,8 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="Digiphoto.Lumen.Model.Store" Alias="Self" 
-            Provider="System.Data.SQLite" 
-            ProviderManifestToken="ISO8601"
+    <Schema Namespace="Digiphoto.Lumen.Model.Store" Alias="Self"
+           Provider="System.Data.SQLite" ProviderManifestToken="ISO8601" 
             xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl" 
             xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator">
     <EntityContainer Name="DigiphotoLumenModelStoreContainer">
@@ -21,6 +20,7 @@
         <EntitySet Name="InfosFisse" EntityType="Digiphoto.Lumen.Model.Store.InfosFisse" store:Type="Tables" Schema="dbo" />
         <EntitySet Name="Carrelli" EntityType="Digiphoto.Lumen.Model.Store.Carrelli" store:Type="Tables" Schema="dbo" />
         <EntitySet Name="RigheCarrelli" EntityType="Digiphoto.Lumen.Model.Store.RigheCarrelli" store:Type="Tables" Schema="dbo" />
+        <EntitySet Name="ConsumiCartaGiornalieri" EntityType="Digiphoto.Lumen.Model.Store.ConsumiCartaGiornalieri" store:Type="Tables" Schema="dbo" />
         <AssociationSet Name="FotografoFotografia" Association="Digiphoto.Lumen.Model.Store.FotografoFotografia">
             <End Role="Fotografo" EntitySet="Fotografi" />
             <End Role="Fotografia" EntitySet="Fotografie" />
@@ -56,6 +56,10 @@
         <AssociationSet Name="FotografiaRiCaFotoStampata" Association="Digiphoto.Lumen.Model.Store.FotografiaRiCaFotoStampata">
             <End Role="Fotografia" EntitySet="Fotografie" />
             <End Role="RiCaFotoStampata" EntitySet="RigheCarrelli" />
+        </AssociationSet>
+        <AssociationSet Name="FormatoCartaConsumoCartaGiornaliero" Association="Digiphoto.Lumen.Model.Store.FormatoCartaConsumoCartaGiornaliero">
+            <End Role="FormatoCarta" EntitySet="FormatiCarta" />
+            <End Role="ConsumoCartaGiornaliero" EntitySet="ConsumiCartaGiornalieri" />
         </AssociationSet>
 
     </EntityContainer>
@@ -143,7 +147,7 @@
 		<Property Name="versioneDbCompatibile" Type="nvarchar" Nullable="false" DefaultValue="1.0" MaxLength="10" />
 		<Property Name="modoNumerazFoto" Type="nvarchar" Nullable="false" DefaultValue="M" />
 		<Property Name="pixelProvino" Type="smallint" Nullable="false" />
-		<Property Name="idPuntoVendita" Type="nvarchar" Nullable="true" MaxLength="5"/>
+		<Property Name="idPuntoVendita" Type="nvarchar" Nullable="true" MaxLength="5" />
 		<Property Name="descrizPuntoVendita" Type="nvarchar" Nullable="true" MaxLength="50" />
 		<Property Name="numGiorniEliminaFoto" Type="smallint" Nullable="false" />
 		<Property Name="varie" Type="nvarchar" Nullable="true" MaxLength="Max" />
@@ -178,6 +182,17 @@
 		<Property Name="formatoCarta_id" Type="uniqueidentifier" Nullable="true" />
 		<Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="true" />
 		<Property Name="fotografia_id" Type="uniqueidentifier" Nullable="true" />
+    </EntityType>
+    <EntityType Name="ConsumiCartaGiornalieri">
+        <Key>
+            <PropertyRef Name="id" />
+        </Key>
+		<Property Name="id" Type="uniqueidentifier" Nullable="false" />
+		<Property Name="giornata" Type="datetime" Nullable="false" />
+		<Property Name="totFogli" Type="smallint" Nullable="false" />
+		<Property Name="diCuiProvini" Type="smallint" Nullable="false" />
+		<Property Name="diCuiFoto" Type="smallint" Nullable="false" />
+		<Property Name="formatoCarta_id" Type="uniqueidentifier" Nullable="false" />
     </EntityType>
 	<Association Name="FotografoFotografia">
 		<End Role="Fotografo" Type="Digiphoto.Lumen.Model.Store.Fotografi" Multiplicity="1">
@@ -317,6 +332,21 @@
 			</Dependent>
 		</ReferentialConstraint>
 	</Association>
+	<Association Name="FormatoCartaConsumoCartaGiornaliero">
+		<End Role="FormatoCarta" Type="Digiphoto.Lumen.Model.Store.FormatiCarta" Multiplicity="1">
+		</End>				
+		<End Role="ConsumoCartaGiornaliero" Type="Digiphoto.Lumen.Model.Store.ConsumiCartaGiornalieri" Multiplicity="*">
+		</End>				
+		<ReferentialConstraint>
+			<Principal Role="FormatoCarta">
+				<PropertyRef Name="id" />
+			</Principal>
+			<Dependent Role="ConsumoCartaGiornaliero">
+				<PropertyRef Name="formatoCarta_id" />
+			
+			</Dependent>
+		</ReferentialConstraint>
+	</Association>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -367,6 +397,11 @@
           <AssociationSet Name="FotografiaRiCaFotoStampata" Association="Digiphoto.Lumen.Model.FotografiaRiCaFotoStampata">
             <End Role="Fotografia" EntitySet="Fotografie" />
             <End Role="RiCaFotoStampata" EntitySet="RigheCarrelli" />
+          </AssociationSet>
+          <EntitySet Name="ConsumiCartaGiornalieri" EntityType="Digiphoto.Lumen.Model.ConsumoCartaGiornaliero" />
+          <AssociationSet Name="FormatoCartaConsumoCartaGiornaliero" Association="Digiphoto.Lumen.Model.FormatoCartaConsumoCartaGiornaliero">
+            <End Role="FormatoCarta" EntitySet="FormatiCarta" />
+            <End Role="ConsumoCartaGiornaliero" EntitySet="ConsumiCartaGiornalieri" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Fotografo">
@@ -587,6 +622,21 @@
           <End Type="Digiphoto.Lumen.Model.Fotografia" Role="Fotografia" Multiplicity="0..1" />
           <End Type="Digiphoto.Lumen.Model.RiCaFotoStampata" Role="RiCaFotoStampata" Multiplicity="*" />
         </Association>
+        <EntityType Name="ConsumoCartaGiornaliero">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Type="DateTime" Name="giornata" Nullable="false" />
+          <Property Name="totFogli" Nullable="false" Type="Int16" />
+          <Property Type="Int16" Name="diCuiProvini" Nullable="false" />
+          <Property Type="Int16" Name="diCuiFoto" Nullable="false" />
+          <NavigationProperty Name="formatoCarta" Relationship="Digiphoto.Lumen.Model.FormatoCartaConsumoCartaGiornaliero" FromRole="ConsumoCartaGiornaliero" ToRole="FormatoCarta" />
+        </EntityType>
+        <Association Name="FormatoCartaConsumoCartaGiornaliero">
+          <End Type="Digiphoto.Lumen.Model.FormatoCarta" Role="FormatoCarta" Multiplicity="1" />
+          <End Type="Digiphoto.Lumen.Model.ConsumoCartaGiornaliero" Role="ConsumoCartaGiornaliero" Multiplicity="*" />
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -735,6 +785,17 @@
 				</MappingFragment>
 			</EntityTypeMapping>
 		</EntitySetMapping>
+		<EntitySetMapping Name="ConsumiCartaGiornalieri">
+			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.ConsumoCartaGiornaliero">
+				<MappingFragment StoreEntitySet="ConsumiCartaGiornalieri">
+					<ScalarProperty Name="id" ColumnName="id" />
+					<ScalarProperty Name="giornata" ColumnName="giornata" />
+					<ScalarProperty Name="totFogli" ColumnName="totFogli" />
+					<ScalarProperty Name="diCuiProvini" ColumnName="diCuiProvini" />
+					<ScalarProperty Name="diCuiFoto" ColumnName="diCuiFoto" />
+				</MappingFragment>
+			</EntityTypeMapping>
+		</EntitySetMapping>
 		<AssociationSetMapping Name="FotografoFotografia" TypeName="Digiphoto.Lumen.Model.FotografoFotografia" StoreEntitySet="Fotografie">
 			<EndProperty Name="Fotografo">
 				<ScalarProperty Name="id" ColumnName="fotografo_id" />
@@ -820,6 +881,15 @@
 			<Condition ColumnName="fotografia_id" IsNull="false" />
 		</AssociationSetMapping>
 
+		<AssociationSetMapping Name="FormatoCartaConsumoCartaGiornaliero" TypeName="Digiphoto.Lumen.Model.FormatoCartaConsumoCartaGiornaliero" StoreEntitySet="ConsumiCartaGiornalieri">
+			<EndProperty Name="FormatoCarta">
+				<ScalarProperty Name="id" ColumnName="formatoCarta_id" />
+			</EndProperty>
+			<EndProperty Name="ConsumoCartaGiornaliero">
+				<ScalarProperty Name="id" ColumnName="id" />
+			</EndProperty>
+		</AssociationSetMapping>
+
 	</EntityContainerMapping>
 </Mapping></edmx:Mappings>
   </edmx:Runtime>
@@ -835,7 +905,7 @@
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="False" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
-        <DesignerProperty Name="DDLGenerationTemplate" Value="$(VSEFTools)\DBGen\SSDLToSQLite3.tt" />
+        <DesignerProperty Name="DDLGenerationTemplate" Value="$(VSEFTools)\DBGen\SSDLToSQL10.tt" />
         <DesignerProperty Name="DatabaseGenerationWorkflow" Value="$(VSEFTools)\DBGen\Generate T-SQL Via T4 (TPH).xaml" />
       </DesignerInfoPropertySet>
     </edmx:Options>
@@ -861,11 +931,11 @@
           <ConnectorPoint PointX="15" PointY="3.5" />
         </AssociationConnector>
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.ScaricoCard" Width="1.75" PointX="10" PointY="9.5" Height="1.7879850260416665" />
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.FormatoCarta" Width="1.5" PointX="18.25" PointY="8.75" Height="2.0002864583333331" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.FormatoCarta" Width="1.5" PointX="18.25" PointY="8.75" Height="1.9802864583333335" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.FotografoScaricoCard">
           <ConnectorPoint PointX="13.1875" PointY="8.172587890625" />
-          <ConnectorPoint PointX="13.1875" PointY="10.393992513020834" />
-          <ConnectorPoint PointX="11.75" PointY="10.393992513020834" />
+          <ConnectorPoint PointX="13.1875" PointY="10.490143229166666" />
+          <ConnectorPoint PointX="11.75" PointY="10.490143229166666" />
         </AssociationConnector>
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.InfoFissa" PointX="3.75" PointY="0.875" Width="2.75" Height="2.9417936197916665" />
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Carrello" Width="1.5" PointX="18.875" PointY="4.125" Height="2.5571907552083317" />
@@ -906,6 +976,11 @@
           <ConnectorPoint PointX="13.104166666666666" PointY="8.4612939453125" />
           <ConnectorPoint PointX="13.270833333333334" PointY="8.4612939453125" />
           <ConnectorPoint PointX="21.125" PointY="8.4612939453125" />
+        </AssociationConnector>
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.ConsumoCartaGiornaliero" Width="2" PointX="15" PointY="9.5" Height="2.1725878906249996" />
+        <AssociationConnector Association="Digiphoto.Lumen.Model.FormatoCartaConsumoCartaGiornaliero">
+          <ConnectorPoint PointX="18.25" PointY="10.115143229166666" />
+          <ConnectorPoint PointX="17" PointY="10.115143229166666" />
         </AssociationConnector>
         </Diagram>
     </edmx:Diagrams>

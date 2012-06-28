@@ -53,6 +53,9 @@
     <Compile Include="Carrello.cs">
       <DependentUpon>LumenModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ConsumoCartaGiornaliero.cs">
+      <DependentUpon>LumenModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Evento.cs">
       <DependentUpon>LumenModel.tt</DependentUpon>
     </Compile>
