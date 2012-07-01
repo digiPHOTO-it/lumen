@@ -9,7 +9,6 @@ using Digiphoto.Lumen.Servizi.Ricerca;
 using Digiphoto.Lumen.Servizi.Explorer;
 using Digiphoto.Lumen.Applicazione;
 using System.Windows.Forms;
-using System.Drawing;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Servizi.Vendere;
 using System.Windows.Input;
@@ -812,7 +811,7 @@ namespace Digiphoto.Lumen.UI
 
 			// Se non ho trovato nulla, allora avviso l'utente
 			if (CarrelliSalvatiCv.IsEmpty)
-				dialogProvider.ShowMessage("Nessuna Carrello trovata con questi filtri di ricerca", "AVVISO");
+				dialogProvider.ShowMessage("Nessun Carrello trovato con questi filtri di ricerca", "AVVISO");
 		}
 
 		private void completaParametriRicerca()

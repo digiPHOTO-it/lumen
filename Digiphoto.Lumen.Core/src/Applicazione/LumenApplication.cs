@@ -77,7 +77,8 @@ namespace Digiphoto.Lumen.Applicazione {
 
 */
 			// Configuro il logger
-			XmlConfigurator.Configure();
+			log4net.Config.XmlConfigurator.Configure();
+			
 
 			avviaConfigurazione( autoSistema );
 
