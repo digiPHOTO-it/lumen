@@ -106,8 +106,7 @@ namespace Digiphoto.Lumen.UI {
 				// Salvo nel database
 				fotografiReporitorySrv.addNew( nuovoFotografo );
 
-				// Occhio qui potrebbe saltare per eccezione.
-				UnitOfWorkScope.CurrentObjectContext.SaveChanges();
+				fotografiReporitorySrv.saveChanges();
 
 				// Aggiungo alla collezione visuale (per non dover rifare la query)
 				fotografi.Add( nuovoFotografo );

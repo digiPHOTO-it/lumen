@@ -4,6 +4,7 @@ using System;
 using System.Collections.Specialized;
 using System.Threading;
 using System.Collections.ObjectModel;
+using Digiphoto.Lumen.Threading;
 
 namespace Digiphoto.Lumen.UI.Mvvm.VsTest
 {

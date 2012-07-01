@@ -25,6 +25,10 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI {
 
         protected override void OnStartup(StartupEventArgs e)
         {
+			// Facci partire il log
+			log4net.Config.XmlConfigurator.Configure();
+			_giornale.Debug( "GestoreConfiguratore sta per partire" );
+
 			mutex = new Mutex(true, "Digiphoto.Lumen.GestoreConfigurazione"); 
 			if (mutex.WaitOne(0, false))
 			{
@@ -33,14 +37,18 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI {
 				{
 					// Carico la Configurazione
 					base.OnStartup(e);
+
+					_giornale.Info( "ok startup effettuato" );
 				}
 				else
 				{
+					_giornale.Info( "Lumen UI già in esecuzione. Uscita forzata" );
 					MessageBox.Show("L'applicazione di Digiphoto.Lumen.UI è in esecuzione\nChiudere l'Applicazione e Riavviare il Configuratore");
 					Environment.Exit(0);
 				} 
 			} else 
 			{
+				_giornale.Info( "Gestore Configurazione già in esecuzione. Uscita forzata" );
 				MessageBox.Show("L'applicazione di Configurazione è già in esecuzione");
 				Environment.Exit(0);
 			} 

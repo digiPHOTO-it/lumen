@@ -78,10 +78,12 @@
     <ProjectReference Include="..\Digiphoto.Lumen.Core\Digiphoto.Lumen.Core.csproj">
       <Project>{34477397-B3B8-4DD1-8418-D7E9EED4D006}</Project>
       <Name>Digiphoto.Lumen.Core</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Digiphoto.Lumen.Model\Digiphoto.Lumen.Model.csproj">
       <Project>{83D8301E-7999-4179-962C-1BFA507F5396}</Project>
       <Name>Digiphoto.Lumen.Model</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
