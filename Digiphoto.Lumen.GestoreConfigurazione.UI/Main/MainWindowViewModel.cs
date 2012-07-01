@@ -17,6 +17,7 @@ using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.UI;
 using Digiphoto.Lumen.UI.Mvvm;
+using log4net;
 
 namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 {
@@ -33,13 +34,18 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
     public class MainWindowViewModel : ClosableWiewModel
     {
+		private static readonly ILog _giornale = LogManager.GetLogger( typeof( MainWindowViewModel ) );
+
         public MainWindowViewModel()
         {
             //Blocco l'interfaccia fino al login
 			loginEffettuato = false;
             listaMasterizzatori = new ObservableCollection<String>();
+
             caricaListaMasterizzatori();
+
             loadUserConfig();
+
 			passo = PassoWiz.Login;
         }
 
@@ -95,11 +101,16 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
         private void loadUserConfig()
         {
+			_giornale.Debug( "Carico eventuale configurazione utente già presente" );
+
 			// La carico da disco, non uso quella statica già caricata dentro Configurazione.
 			this.cfg = Configurazione.caricaUserConfig();
 
 			// Se è nullo, significa che è la prima volta che parte il programma, ma non è ancora stata avviata la configurazione.
 			if( this.cfg == null ) {
+
+				_giornale.Debug( "La configurazione utente non esite. La creo adesso in memoria." );
+
 				this.cfg = Configurazione.creaUserConfig();
 				Configurazione.UserConfigLumen = this.cfg;
 			}
@@ -110,7 +121,11 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
         private void saveUserConfig()
         {
+			_giornale.Debug( "Devo salvare la configurazione utente su file xml" );
+
 			UserConfigSerializer.serializeToFile( cfg );
+			_giornale.Info( "Salvata la configurazione utente su file xml" );
+
             salvaConfigDB();
         }
 
@@ -122,6 +137,8 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
         private void caricaListaMasterizzatori()
         {
+			_giornale.Debug( "Carico lista masterizzatori" );
+
             // purtoppo pare che rimpiazzare il reference con uno nuovo, causa dei problemi.
             // Non posso istanziare nuovamente la lista, ma la devo svuotare e ripopolare.
             listaMasterizzatori.Clear();
@@ -130,7 +147,9 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             foreach (IDiscRecorder2 masterizzatore in burner.listaMasterizzatori())
             {
                 listaMasterizzatori.Add(""+masterizzatore.VolumePathNames.GetValue(0));
-            }   
+            }
+
+			_giornale.Debug( "Trovati " + listaMasterizzatori.Count + " masterizzatori" );
         }
 
 		PassoWiz _passo;
@@ -278,6 +297,12 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
                 }
             }
         }
+
+		public bool loginDaEffettuare {
+			get {
+				return !loginEffettuato;
+			}
+		}
 
         public SelettoreFormatoCartaAbbinatoViewModel DataContextAbbinamenti
         {
@@ -662,10 +687,14 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 		/// </summary>
 		void impostaConnectionStringFittizzia() {
 
+			_giornale.Debug( "qq-1" );
 			ConnectionStringSettings giusta = ConfigurationManager.ConnectionStrings[qualeConnectionString];
+			_giornale.Debug( "qq-2   : giusta=" + giusta );
 			int quanti = ConfigurationManager.ConnectionStrings.Count;
+			_giornale.Debug( "qq-3   : quanti=" + quanti );
 
 			Configuration config = ConfigurationManager.OpenExeConfiguration( ConfigurationUserLevel.None );
+			_giornale.Debug( "qq-4   :  config=" + config );
 
 			// Mi creo in memoria una connection string anche per me ma senza salvarla
 			var test = config.ConnectionStrings.ConnectionStrings["LumenEntities"];
@@ -675,11 +704,23 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			} else {
 				test.ConnectionString = giusta.ConnectionString;
 			}
-			config.Save();
+			_giornale.Debug( "qq-5  :  test=" + test );
 
-			int quanti2 = ConfigurationManager.ConnectionStrings.Count;
-			ConfigurationManager.RefreshSection( "connectionStrings" );
-			int quanti3 = ConfigurationManager.ConnectionStrings.Count;
+			try {
+
+				config.Save( ConfigurationSaveMode.Modified );
+
+				_giornale.Debug( "qq-6   :   salvataggio ok" );
+
+				int quanti2 = ConfigurationManager.ConnectionStrings.Count;
+				ConfigurationManager.RefreshSection( "connectionStrings" );
+				int quanti3 = ConfigurationManager.ConnectionStrings.Count;
+				_giornale.Debug( "qq-7" );
+			} catch( Exception ee ) {
+				_giornale.Warn( "Impossibile salvare .config", ee );
+			}
+
+			_giornale.Debug( "Imposto questa connection string: " + test.ConnectionString );
 		}
 
 		private void eseguiCambioMotore() {
@@ -690,7 +731,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			ConnectionStringSettings csGiusta = ConfigurationManager.ConnectionStrings [qualeConnectionString];
 
 
-			FileInfo [] filesInfo;
+			FileInfo [] filesInfo = null;
 
 #if (DEBUG)			
 			// Probabilmente sono in debug.
@@ -703,18 +744,20 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 				filesInfo = new FileInfo [] { f };
 			}
 #endif
-			
-			foreach( FileInfo fileInfo in filesInfo ) {
 
-				// Get the application configuration file.
-				Configuration config = ConfigurationManager.OpenExeConfiguration( fileInfo.FullName );
-				if( ! config.HasFile )
-					continue;
-				// Get the connection strings section.
-				ConnectionStringsSection csSection = config.ConnectionStrings;
+			if( filesInfo != null ) {
+				foreach( FileInfo fileInfo in filesInfo ) {
 
-				csSection.ConnectionStrings["LumenEntities"].ConnectionString = csGiusta.ConnectionString;
-				config.Save();
+					// Get the application configuration file.
+					Configuration config = ConfigurationManager.OpenExeConfiguration( fileInfo.FullName );
+					if( !config.HasFile )
+						continue;
+					// Get the connection strings section.
+					ConnectionStringsSection csSection = config.ConnectionStrings;
+
+					csSection.ConnectionStrings ["LumenEntities"].ConnectionString = csGiusta.ConnectionString;
+					config.Save();
+				}
 			}
 
 		}
@@ -739,14 +782,23 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
         private void testConnection()
         {
+			_giornale.Debug( "Devo provare a connettermi al db" );
+
             salvaConfigDB();
+			_giornale.Debug( "stop1" );
+
 			impostaConnectionStringFittizzia();
+			_giornale.Debug( "stop2" );
 
 			DbUtil dbUtil = new DbUtil( cfg );
+			_giornale.Debug( "stop3" );
+
 			string msgErrore;
             if (dbUtil.verificaSeDatabaseUtilizzabile( out msgErrore ))
             {
-                dialogProvider.ShowMessage("OK\nConnessione al database riuscita","Test Connection");
+				_giornale.Debug( "stop4" );
+				dialogProvider.ShowMessage( "OK\nConnessione al database riuscita", "Test Connection" );
+				_giornale.Info( "Connessione al db riuscita. Tutto ok" );
             }
             else
             {

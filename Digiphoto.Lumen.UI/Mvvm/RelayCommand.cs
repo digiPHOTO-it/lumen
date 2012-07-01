@@ -70,7 +70,7 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 			else {
 
 				// Se per caso esiste già un una unit-of-work attiva, allora uso quella.
-				if( UnitOfWorkScope.CurrentObjectContext != null )
+				if( UnitOfWorkScope.hasCurrent )
 					_execute( parameter );
 				else {
 					// creo una unit-of-work nuova che verrà subito chiusa. In questo modo stacco sempre le entità e chiudo la sessione di lavoro.

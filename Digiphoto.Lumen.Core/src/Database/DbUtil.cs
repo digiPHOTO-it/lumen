@@ -73,8 +73,15 @@ namespace Digiphoto.Lumen.Core.Database {
 
 			try {
 
+				_giornale.Debug( "Devo ricavare la factory di questo provider = " + provider );
+
 				DbProviderFactory factory = DbProviderFactories.GetFactory( provider );
+
+				_giornale.Debug( "Ok factory trovata. Ora creo la connessione al db" );
+
 				using( DbConnection conn = factory.CreateConnection() ) {
+
+					_giornale.Debug( "connessione al db creata. Ora apro la apro con questa connection string: " + providerConnectionString );
 
 					conn.ConnectionString = providerConnectionString;
 
