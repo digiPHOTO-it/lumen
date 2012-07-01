@@ -35,6 +35,8 @@ namespace Digiphoto.Lumen.UI {
 
 		protected override void OnStartup( StartupEventArgs e ) {
 
+			// Faccio partire il log
+			log4net.Config.XmlConfigurator.Configure();
 
 			mutex = new Mutex(true, "Digiphoto.Lumen.UI");
 			if (mutex.WaitOne(0, false)) 

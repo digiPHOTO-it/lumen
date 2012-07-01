@@ -47,6 +47,15 @@ namespace Digiphoto.Lumen.Core.Database {
 		}
 
 		/// <summary>
+		/// Mi dice se ho un contesto corrente attivo
+		/// </summary>
+		public static bool hasCurrent {
+			get {
+				return CurrentObjectContext != null;
+			}
+		}
+
+		/// <summary>
 		/// Default constructor. Object changes are not automatically saved 
 		/// at the end of the scope.
 		/// </summary>

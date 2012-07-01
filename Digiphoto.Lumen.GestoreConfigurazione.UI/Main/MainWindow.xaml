@@ -6,16 +6,23 @@
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:xamlHelpers="clr-namespace:TestingPasswordBox.XamlHelpers"
         xmlns:extToolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
-        Title="Lumen Gestore Configurazione" Height="600" Width="800" WindowState="Normal" WindowStartupLocation="CenterScreen" >
+        xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters;assembly=Digiphoto.Lumen.UI"
+        FocusManager.FocusedElement="{Binding ElementName=PasswordBox}"
+        Title="Lumen Gestore Configurazione" Height="600" Width="800" WindowState="Normal" WindowStartupLocation="CenterScreen" Icon="/Digiphoto.Lumen.GestoreConfigurazione.UI;component/Images/Configuration-48x48.ico">
+    
+    <Window.Resources>
+        <lumC:BoolInverterConverter x:Key="boolInverterConverter" />
+        <lumC:BoolVisibilityConverter x:Key="boolVisibilityConverter" />
+    </Window.Resources>
 
-        <DockPanel LastChildFill="True">
+    <DockPanel LastChildFill="True">
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Right">
             <Label Content="Password amministratore" Height="28" Margin="5,0,5,0" Name="label2"  Width="149" />
             <PasswordBox Height="23" Name="amministratorePasswordBox" Width="120"
                 PasswordChar="*"
                 xamlHelpers:PasswordBoxAssistant.BindPassword="true"
-                xamlHelpers:PasswordBoxAssistant.BoundPassword="{Binding Path=LoginPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            <Button Name="amministratoreLoginButton" Content="&gt;" Height="23"  Margin="5,0,5,0"  Width="22" Command="{Binding Path=loginCommand}" ToolTip="Esegui Login" />
+                xamlHelpers:PasswordBoxAssistant.BoundPassword="{Binding Path=LoginPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" KeyboardNavigation.TabIndex="0" />
+            <Button Name="amministratoreLoginButton" Content="&gt;" Height="23"  Margin="5,0,5,0"  Width="22" Command="{Binding Path=loginCommand}" ToolTip="Esegui Login" TabIndex="2" />
         </StackPanel>
 
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" >
@@ -24,12 +31,12 @@
             <Button Content="Applica" Height="23" Name="applicaButton" Width="75" Margin="5,0,5,0" Command="{Binding Path=applicaCommand}"/>
             <Button Content="Annulla" Height="23" Name="annullaButton" Width="75" Margin="5,0,5,0" Command="{Binding Path=annullaCommand}"/>
         </StackPanel>
-            
-            <TabControl Name="tabControl1" IsEnabled="{Binding Path=Disattivato}">
+
+        <TabControl Name="tabControl1" Visibility="{Binding Path=loginEffettuato,Converter={StaticResource boolVisibilityConverter}}">
 
             <TabItem Header="1) Database" Name="tabItemDatabase" IsSelected="{Binding Path=isPassoMotoreDb,Mode=OneWay}" IsEnabled="{Binding Path=isPassoMotoreDb}">
-                    
-					<Grid IsEnabled="{Binding Path=loginEffettuato}">
+
+                <Grid IsEnabled="{Binding Path=loginEffettuato}">
 
                         <Label Content="Database Connection String" Height="28" HorizontalAlignment="Left" Margin="11,61,0,0" Name="label4" VerticalAlignment="Top"  />
                         <TextBox Height="44" TextWrapping="Wrap" Margin="11,95,15,0"  VerticalAlignment="Top" IsEnabled="False" Width="628" Text="{Binding Path=ConnectionString,Mode=OneWay}" />
@@ -39,7 +46,7 @@
                                   IsEnabled="{Binding loginEffettuato}"
                                   ItemsSource="{Binding motoriDatabasesValues}"
                                   SelectedValue="{Binding Path=cfg.motoreDatabase,Mode=TwoWay}" 
-                                  SelectionChanged="comboBoxMotoreDatabase_SelectionChanged">
+                                  SelectionChanged="comboBoxMotoreDatabase_SelectionChanged" IsReadOnly="True">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectionChanged">
                                 <i:InvokeCommandAction Command="{Binding cambiareMotoreDataBaseCommand}"/>
@@ -50,13 +57,13 @@
                     <Label Content="Motore di database" Height="28" HorizontalAlignment="Left" Margin="11,19,0,0" Name="label10" VerticalAlignment="Top" Width="152"  />
 
                     <Label Content="DataDirectory" Height="27" HorizontalAlignment="Left" Margin="11,211,0,0" Name="label13" VerticalAlignment="Top" Width="102" />
-                    <TextBox Height="23" HorizontalAlignment="Right" Margin="0,211,165,0" Name="textBoxDataSource" VerticalAlignment="Top" Width="476" Text="{Binding Path=cfg.cartellaDatabase}" IsEnabled="{Binding Path=possoCambiareCartellaDb}" />
+                    <TextBox Height="23" HorizontalAlignment="Right" Margin="0,211,165,0" Name="textBoxDataSource" VerticalAlignment="Top" Width="476" Text="{Binding Path=cfg.cartellaDatabase}" IsEnabled="{Binding Path=possoCambiareCartellaDb}" TabIndex="3" />
                     <Button Content="..." Height="23" Margin="608,210,138,0" VerticalAlignment="Top" Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="db" IsEnabled="{Binding Path=possoCambiareCartellaDb}"/>
 					<Button Content="Prova la connessione" Height="25" HorizontalAlignment="Left" Margin="127,274,0,0"  VerticalAlignment="Top" Width="152" Command="{Binding Path=testConnectionCommand}" ToolTip="Prova la connessione al database" />
 					<Button Content="Crea nuovo Database" Height="25" HorizontalAlignment="Left" Margin="297,274,0,0"  VerticalAlignment="Top" Width="157" Command="{Binding Path=CreateDataBaseCommand}"/>
                     <Label Content="Nome Database" Height="28" HorizontalAlignment="Left" Margin="11,164,0,0" Name="label11" VerticalAlignment="Top" Width="102" />
                     <TextBox IsEnabled="False" Height="23" HorizontalAlignment="Left" Margin="127,166,0,0"  VerticalAlignment="Top" Width="199" Text="{Binding Path=cfg.dbNomeDbPieno}"/>
-                    </Grid>
+                </Grid>
                 </TabItem>
 
             <TabItem Header="2) Punto Vendita" IsSelected="{Binding Path=isPassoPuntoVendita,Mode=OneWay}" IsEnabled="{Binding Path=isPassoPuntoVendita}">
