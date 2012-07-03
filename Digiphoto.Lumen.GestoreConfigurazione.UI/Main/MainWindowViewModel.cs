@@ -18,6 +18,8 @@ using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.UI;
 using Digiphoto.Lumen.UI.Mvvm;
 using log4net;
+using System.Data.Entity.Validation;
+using System.Text;
 
 namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 {
@@ -48,6 +50,19 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 			passo = PassoWiz.Login;
         }
+
+		private IDictionary<string, string> _modiAzzeramentoNumeroFoto;
+		public IDictionary<string,string> modiAzzeramentoNumeroFoto {
+			get {
+				if( _modiAzzeramentoNumeroFoto == null ) {
+					_modiAzzeramentoNumeroFoto = new Dictionary<string,string>();
+					_modiAzzeramentoNumeroFoto.Add( "M", "Mai" );
+					_modiAzzeramentoNumeroFoto.Add( "G", "Giornaliero" );
+					_modiAzzeramentoNumeroFoto.Add( "S", "Settimanale" );
+				}
+				return _modiAzzeramentoNumeroFoto;
+			}
+		}
 
 		public UserConfigLumen cfg {
 			get;
@@ -733,7 +748,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 			FileInfo [] filesInfo = null;
 
-#if (DEBUG)			
+#if (DEBUG)
 			// Probabilmente sono in debug.
 			DirectoryInfo dInfo = new DirectoryInfo( Directory.GetCurrentDirectory() );
 			DirectoryInfo padre = dInfo.Parent.Parent.Parent;   // Mi trovo nella cartella:  lumen\Digiphoto.Lumen.GestoreConfigurazione.UI\bin\Debug e devo risalire nella cartella dove c'è la solution. Salgo di 3.
@@ -926,7 +941,24 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 					dialogProvider.ShowMessage( msg, "OK" );
 
+				} catch( DbEntityValidationException dbeve ) {
+					
+					// Cerco di dare un messaggio di errore più preciso
+					_giornale.Warn( "Salvataggio configurazione pdv fallito", dbeve );
+
+					StringBuilder msg = new StringBuilder();
+					foreach( var valRes in dbeve.EntityValidationErrors ) {
+						if( valRes.IsValid == false )
+							foreach( var erro in valRes.ValidationErrors ) {
+								msg.Append( "\n* Proprietà " + erro.PropertyName + " non valida!\n   " + erro.ErrorMessage );
+							}
+					}
+
+					dialogProvider.ShowError( msg.ToString(), dbeve.Message, null );
+
 				} catch( Exception ee ) {
+					// Messaggio di errore generico
+					_giornale.Warn( "Salvataggio configurazione fallito", ee );
 					dialogProvider.ShowError( ee.Message, "ERRORE salvataggio", null );
 				}
 			}
@@ -958,8 +990,15 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
         private void login()
         {
+			bool indovinata = false;
+#if (DEBUG)
+			indovinata = true;
+#else
             String administratorPasswordMd5 = Md5.MD5GenerateHash(LoginPassword.ToString());
-            if (administratorPasswordMd5.Equals(Properties.Settings.Default.psw))
+			indovinata = administratorPasswordMd5.Equals( Properties.Settings.Default.psw );
+#endif
+
+			if( indovinata )
             {
                 loginEffettuato = true;
 				stepAvanti();
