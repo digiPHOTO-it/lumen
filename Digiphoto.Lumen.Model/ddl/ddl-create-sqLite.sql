@@ -131,7 +131,7 @@ CREATE TABLE [InfosFisse] (
     [ultimoNumFotogramma] integer   NOT NULL ,
     [dataUltimoScarico] datetime   NULL ,
     [versioneDbCompatibile] nvarchar(10)   DEFAULT '1.0' NOT NULL ,
-    [modoNumerazFoto] nvarchar(2147483647)   DEFAULT 'M' NOT NULL ,
+    [modoNumerazFoto] nvarchar(1)   DEFAULT 'M' NOT NULL ,
     [pixelProvino] smallint   NOT NULL ,
     [idPuntoVendita] nvarchar(5)   NULL ,
     [descrizPuntoVendita] nvarchar(50)   NULL ,

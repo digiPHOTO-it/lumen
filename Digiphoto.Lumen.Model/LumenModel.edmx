@@ -549,7 +549,7 @@
               <LongDescription>Indica il numero di revisione della struttura del database. Il programma qando parte deve controllare di essere compatibile</LongDescription>
             </Documentation>
           </Property>
-          <Property Type="String" Name="modoNumerazFoto" Nullable="false" DefaultValue="M" >
+          <Property Type="String" Name="modoNumerazFoto" Nullable="false" DefaultValue="M" MaxLength="1" >
             <Documentation>
               <Summary>Modo azzeramento sequenza fotogrammi</Summary>
               <LongDescription>Ogni foto che entra, viene numerata. Questo numeratore può essere azzerato in vari modi:

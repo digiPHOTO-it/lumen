@@ -26,10 +26,10 @@
         </StackPanel>
 
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" >
-            <Button Content="&lt;&lt;" Height="23"  Width="75" Margin="5,0,5,0" Command="{Binding Path=commandStepIndietro}" />
-            <Button Content=">>" Height="23" Width="75" Margin="5,0,5,0" Command="{Binding Path=commandStepAvanti}"/>
-            <Button Content="Applica" Height="23" Name="applicaButton" Width="75" Margin="5,0,5,0" Command="{Binding Path=applicaCommand}"/>
-            <Button Content="Annulla" Height="23" Name="annullaButton" Width="75" Margin="5,0,5,0" Command="{Binding Path=annullaCommand}"/>
+            <Button Content="&lt;&lt;" Height="30"  Width="75" Margin="5,0,5,0" Command="{Binding Path=commandStepIndietro}" ToolTip="Pagina precedente" />
+            <Button Content=">>" Height="30" Width="75" Margin="5,0,5,0" Command="{Binding Path=commandStepAvanti}" ToolTip="Pagina successiva"/>
+            <Button Content="Applica" Height="30" Name="applicaButton" Width="75" Margin="5,0,5,0" Command="{Binding Path=applicaCommand}" ToolTip="Salva tutta la configurazione"/>
+            <Button Content="Annulla" Height="30" Name="annullaButton" Width="75" Margin="5,0,5,0" Command="{Binding Path=annullaCommand}" ToolTip="Esci senza salvare"/>
         </StackPanel>
 
         <TabControl Name="tabControl1" Visibility="{Binding Path=loginEffettuato,Converter={StaticResource boolVisibilityConverter}}">
@@ -77,8 +77,14 @@
                         <TextBlock Height="71" Margin="0,6,6,0" Text="ATTENZIONE  queste preferenze sono univoche per tutto il Punto Vendita e quindi per tutti i computer collegati alla rete" VerticalAlignment="Top" TextWrapping="Wrap" Width="189" HorizontalAlignment="Right" />
                         <Label Content="N° giorni elimina foto" HorizontalAlignment="Left" Margin="30,199,0,0" VerticalAlignment="Top" Width="155" />
                         <TextBox Height="23" HorizontalAlignment="Left" Margin="217,201,0,0" MaxLength="3" Text="{Binding Path=infoFissa.numGiorniEliminaFoto}" ToolTip="N.giorni dopo cui cancellare le foto vecchie" VerticalAlignment="Top" Width="66" />
-                        <Label Content="Numerazione fotogrammi" Height="28" HorizontalAlignment="Left" Margin="30,258,0,0" Name="label7" VerticalAlignment="Top" Width="155" />
-                    </Grid>
+                        <Label Content="Quando azzerare il numeratore fotogrammi" Height="28" HorizontalAlignment="Left" Margin="30,258,0,0" Name="label7" VerticalAlignment="Top" Width="253" />
+                    <ComboBox Height="23" HorizontalAlignment="Left" Margin="289,258,0,0" VerticalAlignment="Top" Width="120"
+                              ItemsSource="{Binding modiAzzeramentoNumeroFoto}"
+                              SelectedValuePath="Key" DisplayMemberPath="Value"
+                              ToolTip="Scegliere con quale frequenza viene azzerato il numeratore dei fotogrammi scaricati"
+                              SelectedValue="{Binding Path=infoFissa.modoNumerazFoto}" >
+                    </ComboBox>
+                </Grid>
                 </TabItem>
 
             <TabItem Header="3) Carta e Stampanti" IsSelected="{Binding Path=isPassoCartaEStampanti,Mode=OneWay}" IsEnabled="{Binding Path=isPassoCartaEStampanti}">
