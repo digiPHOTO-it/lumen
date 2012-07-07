@@ -10,6 +10,7 @@ using Digiphoto.Lumen.Imaging;
 using log4net;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Threading;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.Servizi.Stampare {
 
@@ -68,12 +69,11 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			if( param.nomeStampante == null )
 				param.nomeStampante = ricavaStampante( param.formatoCarta );
 
-			CodaDiStampe codaDiStampe = ricavaCodaDiStampa( param);
+			CodaDiStampe codaDiStampe = ricavaCodaDiStampa( param );
 
 			// Creo un nuovo lavoro di stampa e lo aggiungo alla coda.
 			LavoroDiStampaFoto lavoro = new LavoroDiStampaFoto(foto, param);
 			codaDiStampe.EnqueueItem( lavoro );
-
 		}
 
 		public void accodaStampaProvini(IList<Fotografia> foto, ParamStampaProvini param)
@@ -91,19 +91,27 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 		}
 
 		private string ricavaStampante( FormatoCarta formatoCarta ) {
-			// TODO gestire le preferenze utente dove indicare l'associazione tra stampanti e formati carta
-			return "dOPDF v7";
+
+			_giornale.Warn( "Come mai non è definita la stampante? Va beh, la determino io" );
+
+			StampanteAbbinata sa = stampantiAbbinate.FirstOrDefault<StampanteAbbinata>( s => s.FormatoCarta.Equals( formatoCarta ) );
+			String nomeStampante = null;
+			if( sa != null )
+				nomeStampante = sa.StampanteInstallata.NomeStampante;
+			else
+				_giornale.Warn( "Non riesco a stabilire la stampante di questa carta: " + formatoCarta.descrizione + "(id=" + formatoCarta.id + ")" );
+
+			return nomeStampante;
 		}
 
 		private CodaDiStampe ricavaCodaDiStampa( ParamStampa param) {
+
 			string nomeStampante = param.nomeStampante; 
+
 			// Se non esiste già la stampante nella collezione, allora la istanzio
-			/*
 			CodaDiStampe coda = (from c in this.code
 								 where c.Name.Equals( nomeStampante )
 								 select c).SingleOrDefault<CodaDiStampe>();
-			*/
-			CodaDiStampe coda = null;
 
 			if( coda == null  ) {
 				coda = new CodaDiStampe( param, nomeStampante, stampaCompletataCallback );
@@ -118,7 +126,6 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 
 			_giornale.Info( "Stampa completata. Esito = " + eventArgs.lavoroDiStampa.esitostampa );
 
-
 			// Notifico tutta l'applicazione
 			pubblicaMessaggio( eventArgs );
 		}
@@ -131,5 +138,17 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			foreach( CodaDiStampe c in this.code )
 				c.Clear();
 		}
+
+
+		private StampantiAbbinateCollection _stampantiAbbinate;
+		public StampantiAbbinateCollection stampantiAbbinate {
+			get {
+				if( _stampantiAbbinate == null )
+					_stampantiAbbinate = StampantiAbbinateUtil.deserializza( Configurazione.UserConfigLumen.stampantiAbbinate );
+				return _stampantiAbbinate;
+			}
+		}
+
+
 	}
 }
