@@ -220,13 +220,15 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 		public bool possoStepIndietro {
 			get {
-				return loginEffettuato && passo > 0;
+				return loginEffettuato && passo > PassoWiz.MotoreDb;
 			}
 		}
 
 		public bool possoStepAvanti {
 			get {
-				return loginEffettuato && passo < PassoWiz.Riservato;
+				return loginEffettuato
+					&& passo < PassoWiz.Riservato
+					&& File.Exists( Path.Combine( cfg.cartellaDatabase, cfg.dbNomeDbPieno ) );
 			}
 		}
 
@@ -985,6 +987,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
             // Controllo il database. Se non esiste nessuna impostazione diversa, lo creo.
 			qdbUtil.copiaDbVuotoSuDbDiLavoro();
+
 			dialogProvider.ShowMessage( "DataBase creato con successo\n" + qdbUtil.nomeFileDbPieno, "Avviso" );
         }
 

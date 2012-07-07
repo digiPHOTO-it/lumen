@@ -129,22 +129,31 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 						page1.VerticalAlignment = VerticalAlignment.Center;
 						page1.HorizontalAlignment = HorizontalAlignment.Center;
 
+
+						// Per fare in modo che l'immagine venga centrata bene automaticamente, e non venga tagliata solo da una parte ma nel centro,
+						// non devo mettere le dimensioni al componente Image, ma devo creare 
+						// una Grid più esterna con le dimensioni precise.
+						Grid grid = new Grid();
+						grid.Height = page1.Height;
+						grid.Width = page1.Width;
+
+
 						// Creo una immagine che contiene la bitmap da stampare
 						Image image = new Image();
-						image.Width = page1.Width;
-						image.Height = page1.Height;
+						image.BeginInit();
 						image.VerticalAlignment = VerticalAlignment.Center;
 						image.HorizontalAlignment = HorizontalAlignment.Center;
-						image.BeginInit();
 						image.Source = bmp;
-						image.EndInit();
 						if (_lavoroDiStampa.param.autoZoomNoBordiBianchi)
 							image.Stretch = Stretch.UniformToFill;
 						else
 							image.Stretch = Stretch.Uniform;
-						image.StretchDirection = StretchDirection.Both;
+//						image.StretchDirection = StretchDirection.Both;
 
-						page1.Children.Add( image );
+						image.EndInit();
+
+						grid.Children.Add( image );
+						page1.Children.Add( grid );
 
 
 

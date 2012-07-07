@@ -222,5 +222,24 @@ namespace Digiphoto.Lumen.Util {
 			return cartella;
 		}
 
+
+		// Adds an ACL entry on the specified file for the specified account.
+		public static void AddFileSecurity( string fileName, string account, FileSystemRights rights, AccessControlType controlType ) {
+
+			// Get a FileSecurity object that represents the
+			// current security settings.
+			FileSecurity fSecurity = File.GetAccessControl( fileName );
+
+			// Add the FileSystemAccessRule to the security settings.
+			fSecurity.AddAccessRule( new FileSystemAccessRule( account, rights, controlType ) );
+
+			// Set the new access settings.
+			File.SetAccessControl( fileName, fSecurity );
+		}
+
+		// Adds an ACL entry on the specified file for the specified account.
+		public static void AddFileSecurity( string fileName, FileSystemRights rights, AccessControlType controlType ) {
+			AddFileSecurity( fileName, Environment.UserName, rights, controlType );
+		}
 	}
 }

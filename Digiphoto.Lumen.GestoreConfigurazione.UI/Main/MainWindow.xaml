@@ -43,7 +43,7 @@
 
                         <ComboBox Height="23" HorizontalAlignment="Left" Margin="183,19,0,0" 
                                   Name="comboBoxMotoreDatabase" VerticalAlignment="Top" Width="206" 
-                                  IsEnabled="{Binding loginEffettuato}"
+                                  IsEnabled="False"
                                   ItemsSource="{Binding motoriDatabasesValues}"
                                   SelectedValue="{Binding Path=cfg.motoreDatabase,Mode=TwoWay}" 
                                   SelectionChanged="comboBoxMotoreDatabase_SelectionChanged" IsReadOnly="True">
