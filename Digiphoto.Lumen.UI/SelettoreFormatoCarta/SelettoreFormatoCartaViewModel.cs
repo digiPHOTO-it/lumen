@@ -11,7 +11,7 @@ using Digiphoto.Lumen.Core.DatiDiEsempio;
 using System.Windows.Input;
 using System.Windows;
 using Digiphoto.Lumen.Core.Database;
-using System.Data.Objects;
+
 using Digiphoto.Lumen.Database;
 
 namespace Digiphoto.Lumen.UI

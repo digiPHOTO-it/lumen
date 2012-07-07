@@ -14,6 +14,7 @@ using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Config;
 using System.Windows.Forms;
 using System.Data.Common;
+using System.Security.AccessControl;
 
 namespace Digiphoto.Lumen.Core.Database {
 
@@ -191,6 +192,10 @@ namespace Digiphoto.Lumen.Core.Database {
 				File.Copy( nomeFileDbVuoto, nomeFileDbPieno );
 
 				_giornale.Debug( "ok copia vuoto -> pieno riuscita" );
+
+
+				PathUtil.AddFileSecurity( nomeFileDbPieno, FileSystemRights.WriteData|FileSystemRights.WriteData, AccessControlType.Allow );
+
 			} else {
 				throw new InvalidOperationException( "Il database " + nomeFileDbPieno + " usabile già. Copia fallita" );
 			}
