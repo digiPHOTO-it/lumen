@@ -86,7 +86,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 
 				foreach (Fotografia fot in lavoroDiStampaProvini.fotografie)
 				{
-					IdrataTarget quale = IdrataTarget.Provino;
+					IdrataTarget quale = fot.imgRisultante != null ? IdrataTarget.Risultante : IdrataTarget.Originale;
 					AiutanteFoto.idrataImmaginiFoto(fot, quale, true);
 				}
 			}

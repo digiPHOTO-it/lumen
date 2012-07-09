@@ -31,7 +31,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 				Guid idFormatoCarta = new Guid( campi[0] );
 				String stampante = campi[1];
 
-				FormatoCarta formatoCarta = dbContext.FormatiCarta.SingleOrDefault( f => f.id == idFormatoCarta );
+				FormatoCarta formatoCarta = dbContext.FormatiCarta.FirstOrDefault( f => f.id == idFormatoCarta );
 
 				if( formatoCarta != null ) {
 					StampantiInstallateSrvImpl stampantiInstallateSrvImpl = new StampantiInstallateSrvImpl();

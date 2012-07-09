@@ -8,6 +8,23 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 {
 	public class ParamStampaProvini : ParamStampa
 	{
+		private bool _macchiaProvini;
+		public bool macchiaProvini
+		{
+			get
+			{
+				return _macchiaProvini;
+			}
+			set
+			{
+				if (_macchiaProvini != value)
+				{
+					_macchiaProvini = value;
+					OnPropertyChanged("macchiaProvini");
+				}
+			}
+		}
+
 		private string _intestazione;
 		public string intestazione
 		{
@@ -54,6 +71,23 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 				if( _numeroColonne != value ) {
 					_numeroColonne = value;
 					OnPropertyChanged( "numeroColonne" );
+				}
+			}
+		}
+
+		private short _numPag;
+		public short numPag
+		{
+			get
+			{
+				return _numPag;
+			}
+			set
+			{
+				if (_numPag != value)
+				{
+					_numPag = value;
+					OnPropertyChanged("numPag");
 				}
 			}
 		}

@@ -10,182 +10,158 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Digiphoto.Lumen.Config;
-using Digiphoto.Lumen.Servizi.Stampare;
-using Digiphoto.Lumen.UI.Mvvm;
 using System.ComponentModel;
+using Digiphoto.Lumen.UI.TrayIcon;
+using Digiphoto.Lumen.UI.Mvvm;
+using Digiphoto.Lumen.Servizi.Stampare;
 
 namespace Digiphoto.Lumen.UI.Dialogs
 {
 	/// <summary>
 	/// Interaction logic for StampaProviniDialog.xaml
 	/// </summary>
-	public partial class StampaProviniDialog : Window
+	public partial class StampaProviniDialog : Window, IDialogProvider, ITrayIconProvider
 	{
+
+		StampaProviniDialogViewModel model = null;
 
 		public StampaProviniDialog()
 		{
 			InitializeComponent();
 
-			DataContext = this;
+			model = new StampaProviniDialogViewModel(this);
 
-			caricaStampantiAbbinate();
-
-			paramStampaProvini = new ParamStampaProvini();
-
-			stampaSoloSelezionate = true;
+			DataContext = model;
+			model.dialogProvider = this;
+			model.trayIconProvider = this;
 
 		}
 
-		#region Proprietà
-
-		public IList<StampanteAbbinata> stampantiAbbinate
+		public int totaleFotoSelezionate
 		{
-			get;
-			private set;
+			get
+			{
+				return model.totaleFotoSelezionate;
+		}
+			set
+		{
+				model.totaleFotoSelezionate = value;
+			}
+		}
+
+		public int totoleFotoGallery
+		{
+			get
+		{
+				return model.totoleFotoGallery;
+			}
+			set
+			{
+				model.totoleFotoGallery = value;
+			}
 		}
 
 		public ParamStampaProvini paramStampaProvini
 		{
-			get;
-			set;
-		}
-
-		public bool stampaTuttaLaGallery
-		{
-			get;
-			set;
+			get
+			{
+				return model.paramStampaProvini;
+			}
+			set
+			{
+				model.paramStampaProvini = value;
+			}
 		}
 
 		public bool stampaSoloSelezionate
 		{
 			get
 			{
-				return !stampaTuttaLaGallery;
-			}
+				return model.stampaSoloSelezionate;
+		}
 			set
-			{
-				stampaTuttaLaGallery = !(value);
+		{
+				model.stampaSoloSelezionate = value;
 			}
 		}
 
-		public int totoleFotoGallery
-		{
-			get;
-			set;
-		}
-
-		public int totaleFotoSelezionate
-		{
-			get;
-			set;
-		}
-
-		#endregion
-
-		#region Metodi
+		#region Dialog
 
 		/// <summary>
-		/// Carico tutti i formati carta che sono abbinati alle stampanti installate
-		/// Per ognuno di questi elementi, dovrò visualizzare un pulsante per la stampa
+		/// Visualizza un messaggio
 		/// </summary>
-		private void caricaStampantiAbbinate() {
+		/// <param name="message"></param>
+		/// <param name="title"></param>
+		/// <param name="afterHideCallback"></param>
+		public void ShowError(string message, string title, Action afterHideCallback)
+		{
 
-			string ss = Configurazione.UserConfigLumen.stampantiAbbinate;
-			this.stampantiAbbinate = StampantiAbbinateUtil.deserializza( ss );
+			var risultato = MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Error);
+			if (afterHideCallback != null)
+				afterHideCallback();
+		}
+
+		public void ShowMessage(string message, string title)
+		{
+			MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Information);
 		}
 
 
-		private void stampare(object objStampanteAbbinata)
-		{
-			StampanteAbbinata stampanteAbbinata = (StampanteAbbinata)objStampanteAbbinata;
-			paramStampaProvini.formatoCarta = stampanteAbbinata.FormatoCarta;
-			paramStampaProvini.nomeStampante = stampanteAbbinata.StampanteInstallata.NomeStampante;
-			this.DialogResult = true;
-			this.Hide();
-		}
-
-		private void updateQuantitaColonneCommand(object param)
-		{
-			String type = (string)param;
-
-			switch (type)
-			{
-				case "+":
-					++paramStampaProvini.numeroColonne;
-					break;
-				case "-":
-					// Se voglio una quantita uguale a 0 elimino la riga
-					--paramStampaProvini.numeroColonne;
-					if (paramStampaProvini.numeroColonne < 0)
+		/// <summary>
+		/// Chiedo conferma SI/NO.
+		/// Chiamo la callback passando TRUE se l'utente ha scelto SI.
+		/// </summary>
+		public void ShowConfirmation(string message, string title, Action<bool> afterHideCallback)
 					{
-						paramStampaProvini.numeroColonne = 0;
-					}
-					break;
-			}
+			var tastoPremuto = MessageBox.Show(message, title, MessageBoxButton.YesNo, MessageBoxImage.Question);
+			afterHideCallback(tastoPremuto == MessageBoxResult.Yes);
 		}
 
-		private void updateQuantitaRigheCommand(object param)
-		{
-			String type = (string)param;
-
-			switch (type)
-			{
-				case "+":
-					++paramStampaProvini.numeroRighe;
-					break;
-				case "-":
-					// Se voglio una quantita uguale a 0 elimino la riga
-					--paramStampaProvini.numeroRighe;
-					if (paramStampaProvini.numeroRighe < 0)
+		/// <summary>
+		/// Chiedo conferma SI/NO/ANNULLA.
+		/// Chiamo la callback passando TRUE se l'utente ha scelto SI.
+		/// </summary>
+		public void ShowConfirmationAnnulla(string message, string title, Action<MessageBoxResult> afterHideCallback)
 					{
-						paramStampaProvini.numeroRighe = 0;
-					}
-					break;
-			}
+			var tastoPremuto = MessageBox.Show(message, title, MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+			afterHideCallback(tastoPremuto);
 		}
 
 		#endregion
 
+		#region TrayIcon
 
-		private RelayCommand _stampareCommand;
-		public ICommand stampareCommand
-		{
-			get
+		public void showAbout(string title, string msg, int? sleep)
 			{
-				if (_stampareCommand == null)
-				{
-					_stampareCommand = new RelayCommand(param => stampare(param), param => true);
-				}
-				return _stampareCommand;
-			}
+			ShowTrayIcon trayIcon = new ShowTrayIcon();
+			trayIcon.showAbout(title, msg, sleep);
 		}
 
-		private RelayCommand _updateQuantitaColonneCommand;
-		public ICommand UpdateQuantitaColonneCommand
-		{
-			get
-			{
-				if (_updateQuantitaColonneCommand == null)
+		public void showAboutCloud(string title, string msg, int? sleep)
 				{
-					_updateQuantitaColonneCommand = new RelayCommand(param => updateQuantitaColonneCommand(param));
-				}
-				return _updateQuantitaColonneCommand;
-			}
+			ShowTrayIcon trayIcon = new ShowTrayIcon();
+			trayIcon.showAboutCloud(title, msg, sleep);
 		}
 
-		private RelayCommand _updateQuantitaRigheCommand;
-		public ICommand UpdateQuantitaRigheCommand
+		public void showError(string title, string msg, int? sleep)
 		{
-			get
-			{
-				if (_updateQuantitaRigheCommand == null)
-				{
-					_updateQuantitaRigheCommand = new RelayCommand(param => updateQuantitaRigheCommand(param));
+			ShowTrayIcon trayIcon = new ShowTrayIcon();
+			trayIcon.showError(title, msg, sleep);
 				}
-				return _updateQuantitaRigheCommand;
+
+		public void showInfo(string title, string msg, int? sleep)
+		{
+			ShowTrayIcon trayIcon = new ShowTrayIcon();
+			trayIcon.showInfo(title, msg, sleep);
 			}
+
+		public void showWarning(string title, string msg, int? sleep)
+		{
+			ShowTrayIcon trayIcon = new ShowTrayIcon();
+			trayIcon.showWarning(title, msg, sleep);
 		}
+
+		#endregion;
 
 	}
 }
