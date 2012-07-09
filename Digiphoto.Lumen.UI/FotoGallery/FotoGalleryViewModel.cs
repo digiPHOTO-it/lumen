@@ -611,10 +611,15 @@ namespace Digiphoto.Lumen.UI {
 			{
 				if (!d.stampaSoloSelezionate)
 				{
+					deselezionareTutto();
 					selezionareTutto();
 				}
 
 				IList<Fotografia> listaSelez = creaListaFotoSelezionate();
+
+				// Riordino i Provini per data acquisizione foto + numero foto (Prima quelli più vecchi)
+				IEnumerable<Fotografia> sortedEnum = listaSelez.OrderBy(f => f.dataOraAcquisizione).OrderBy(f => f.numero);
+				listaSelez = sortedEnum.ToList();
 				
 				venditoreSrv.aggiungiStampe(listaSelez, creaParamStampaProvini(d.paramStampaProvini));
 			}
