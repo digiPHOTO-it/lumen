@@ -115,6 +115,13 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		public bool possoControllareSlideShow
+		{
+			get
+			{
+				return slideShowViewModel != null;
+			}
+		}
 
 		public bool possoAggiungereAlMasterizzatore {
 			get {
@@ -426,7 +433,8 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand controllareSlideShowCommand {
 			get {
 				if( _controllareSlideShowCommand == null ) {
-					_controllareSlideShowCommand = new RelayCommand( azione => controllareSlideShow( (string)azione ) );
+					_controllareSlideShowCommand = new RelayCommand( azione => controllareSlideShow( (string)azione ),
+																	azione => possoControllareSlideShow);
 				}
 				return _controllareSlideShowCommand;
 			}
