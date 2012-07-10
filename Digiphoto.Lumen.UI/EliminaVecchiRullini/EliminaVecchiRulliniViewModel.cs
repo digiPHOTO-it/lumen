@@ -105,6 +105,9 @@ namespace Digiphoto.Lumen.UI.EliminaVecchiRullini
 		{
 			get
 			{
+				if (IsInDesignMode)
+					return true;
+
 				bool posso = true;
 
 				if (posso && Configurazione.infoFissa.numGiorniEliminaFoto <= 0)
@@ -120,6 +123,9 @@ namespace Digiphoto.Lumen.UI.EliminaVecchiRullini
 		{
 			get
 			{
+				if (IsInDesignMode)
+					return true;
+
 				bool posso = true;
 
 				if (posso && Configurazione.infoFissa.numGiorniEliminaFoto <= 0)
