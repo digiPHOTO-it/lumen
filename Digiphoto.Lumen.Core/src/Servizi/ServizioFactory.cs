@@ -22,6 +22,9 @@ namespace Digiphoto.Lumen.Servizi {
 			// calcolo il nome completo della interfaccia che mi fa da chiave per la mappa.
 			string key = calcFullName( tipo );
 
+			if( app.configurazione.nomiServizi.Keys.Contains( key ) == false )
+				throw new NotSupportedException( "servizio " + key + " non definito nella configurazione" );
+
 			/** Puo essere separato da virgola */
 			string [] pezzi = app.configurazione.nomiServizi [key].Split( ',' );
 			string nomeImpl = pezzi[0];

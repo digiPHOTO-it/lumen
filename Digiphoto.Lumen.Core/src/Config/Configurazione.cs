@@ -164,10 +164,11 @@ namespace Digiphoto.Lumen.Config  {
 			userConfig.modoVendita = ModoVendita.Carrello;
 			userConfig.cartellaFoto = Path.Combine( Configurazione.cartellaAppData, "Foto" );
 			userConfig.cartellaMaschere = Path.Combine( Configurazione.cartellaAppData, "Maschere" );
-			userConfig.estensioniGrafiche = "*.jpg;*.jpeg;*.png;*.tif;*.tiff";
+			userConfig.estensioniGrafiche = ".jpg;.jpeg;.png;.tif;.tiff";
 			userConfig.editorImmagini = "MSPAINT.EXE";
 			userConfig.masterizzaDirettamente = false;
 			userConfig.millisIntervalloSlideShow = 2500;
+			userConfig.oraCambioGiornata = "05:00";
 			return userConfig;
 		}
 
@@ -220,16 +221,10 @@ namespace Digiphoto.Lumen.Config  {
 			}
 		}
 
-        public String suffissoCartellaFoto()
-        {
-            return ".Fot";
-        }
+		// TODO rinominare. Non Foto ma Fotografo
+        public const String suffissoCartellaFoto = ".Fot";
 
-        public String suffissoCartellaGiorni()
-        {
-            return ".Gio";
-        }
-
+        public const String suffissoCartellaGiorni = ".Gio";
 
 		/// <summary>
 		///  Ritorno un vetto di stringhe contenente le estesioni grafiche ammesse e che riconosco.

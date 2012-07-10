@@ -5,6 +5,7 @@ using System.Text;
 using Digiphoto.Lumen.Model;
 using log4net;
 using Digiphoto.Lumen.Core.Database;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.Applicazione {
 	
@@ -21,7 +22,7 @@ namespace Digiphoto.Lumen.Applicazione {
 		public static DateTime calcolaGiornataLavorativa() {
 
 			DateTime gionata = DateTime.Today;
-			string oraCambioGiornata = Properties.Settings.Default.oraCambioGiornata;
+			string oraCambioGiornata = Configurazione.UserConfigLumen.oraCambioGiornata;
 
 			if( String.IsNullOrEmpty( oraCambioGiornata ) || oraCambioGiornata.Equals( "00:00" ) ) {
 				// vuoto: non faccio niente

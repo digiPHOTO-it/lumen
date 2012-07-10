@@ -83,10 +83,10 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 				} else {
 
 					// Faccio giri diversi per i vari formati grafici che sono indicati nella configurazione (jpg, tif)
-					string [] estensioni = Properties.Settings.Default.estensioniGrafiche.Split( ';' );
+					string [] estensioni = Configurazione.UserConfigLumen.estensioniGrafiche.Split( ';' );
 					foreach( string estensione in estensioni ) {
 
-						string [] files = Directory.GetFiles( _paramScarica.cartellaSorgente, searchPattern: estensione, searchOption: SearchOption.AllDirectories );
+						string [] files = Directory.GetFiles( _paramScarica.cartellaSorgente, searchPattern: "*" + estensione, searchOption: SearchOption.AllDirectories );
 
 						// trasferisco tutti i files elencati
 						foreach( string nomeFileSrc in files ) {
@@ -120,8 +120,8 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			Lumen.Applicazione.Stato stato = LumenApplication.Instance.stato;
 
 			pezzi[0] = Configurazione.cartellaRepositoryFoto;
-			pezzi[1] = String.Format( "{0:yyyy-MM-dd}", stato.giornataLavorativa )+configurazione.suffissoCartellaGiorni();
-            pezzi[2] = _paramScarica.flashCardConfig.idFotografo + configurazione.suffissoCartellaFoto();
+			pezzi[1] = String.Format( "{0:yyyy-MM-dd}", stato.giornataLavorativa )+Configurazione.suffissoCartellaGiorni;
+            pezzi[2] = _paramScarica.flashCardConfig.idFotografo + Configurazione.suffissoCartellaFoto;
 
 			return Path.Combine( pezzi );
 		}

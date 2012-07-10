@@ -1,12 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Digiphoto.Lumen.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
   <Profiles />
-  <Settings>
-    <Setting Name="oraCambioGiornata" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">05:30</Value>
-    </Setting>
-    <Setting Name="estensioniGrafiche" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">*.jpg;*.jpeg;*.png;*.tif;*.tiff</Value>
-    </Setting>
-  </Settings>
+  <Settings />
 </SettingsFile>
