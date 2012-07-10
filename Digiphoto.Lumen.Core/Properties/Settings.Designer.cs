@@ -22,23 +22,5 @@ namespace Digiphoto.Lumen.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("05:30")]
-        public string oraCambioGiornata {
-            get {
-                return ((string)(this["oraCambioGiornata"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("*.jpg;*.jpeg;*.png;*.tif;*.tiff")]
-        public string estensioniGrafiche {
-            get {
-                return ((string)(this["estensioniGrafiche"]));
-            }
-        }
     }
 }

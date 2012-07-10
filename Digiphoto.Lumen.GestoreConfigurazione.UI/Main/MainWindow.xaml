@@ -63,6 +63,7 @@
 					<Button Content="Crea nuovo Database" Height="25" HorizontalAlignment="Left" Margin="297,274,0,0"  VerticalAlignment="Top" Width="157" Command="{Binding Path=CreateDataBaseCommand}"/>
                     <Label Content="Nome Database" Height="28" HorizontalAlignment="Left" Margin="11,164,0,0" Name="label11" VerticalAlignment="Top" Width="102" />
                     <TextBox IsEnabled="False" Height="23" HorizontalAlignment="Left" Margin="127,166,0,0"  VerticalAlignment="Top" Width="199" Text="{Binding Path=cfg.dbNomeDbPieno}"/>
+                    
                 </Grid>
                 </TabItem>
 
@@ -185,6 +186,10 @@
                                 xamlHelpers:PasswordBoxAssistant.BindPassword="true"
                                 xamlHelpers:PasswordBoxAssistant.BoundPassword="{Binding Path=NuovaPassword2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="167" />
                     <Button Content="Conferma" Height="25" HorizontalAlignment="Left" Margin="234,178,0,0" VerticalAlignment="Top" Width="103" Command="{Binding Path=cambiaPasswordCommand}" />
+
+                    <Button Content="Ricostruzione Database" Height="23" HorizontalAlignment="Left" Margin="237,295,0,0"  VerticalAlignment="Top" Width="160" Command="{Binding Path=commandRicostruireDb}" />
+                    <Label Content="Analisi congruenza dati" Height="28" HorizontalAlignment="Left" Margin="98,295,0,0" Name="label1" VerticalAlignment="Top" />
+                    <Separator Height="19" HorizontalAlignment="Left" Margin="88,227,0,0" Name="separator1" VerticalAlignment="Top" Width="404" />
                 </Grid>
             </TabItem>
         </TabControl>

@@ -123,6 +123,8 @@
     <Compile Include="src\Servizi\Explorer\CarrelloExplorerSrvImpl.cs" />
     <Compile Include="src\Servizi\Explorer\ICarrelloExplorerSrv.cs" />
     <Compile Include="src\Servizi\Reports\ParamReports.cs" />
+    <Compile Include="src\Servizi\Ricostruzione\IDbRebuilderSrv.cs" />
+    <Compile Include="src\Servizi\Ricostruzione\DbRebuilderSrvImpl.cs" />
     <Compile Include="src\Servizi\Stampare\LavoroDiStampaFoto.cs" />
     <Compile Include="src\Servizi\Stampare\LavoroDiStampaProvini.cs" />
     <Compile Include="src\Servizi\Stampare\ParamStampa.cs" />

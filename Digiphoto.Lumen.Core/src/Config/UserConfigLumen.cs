@@ -218,5 +218,10 @@ namespace Digiphoto.Lumen.Config
 			get;
 			set;
 		}
+
+		public string oraCambioGiornata {
+			get;
+			set;
+		}
 	}
 }

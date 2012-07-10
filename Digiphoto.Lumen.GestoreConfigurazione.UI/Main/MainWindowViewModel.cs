@@ -20,6 +20,7 @@ using Digiphoto.Lumen.UI.Mvvm;
 using log4net;
 using System.Data.Entity.Validation;
 using System.Text;
+using Digiphoto.Lumen.Servizi.Ricostruzione;
 
 namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 {
@@ -297,6 +298,51 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			infoFissa = infoFisseRepository.getById( "K" );
         }
 
+		private void ricostruireDb() {
+
+			dialogProvider.ShowConfirmation( "Questa operazione potrebbe durare parecchi minuti.\nSei sicuro di voler cominciare l'analisi?", "Fase 1 : analisi foto", 
+				(sino) => {
+					if( sino == false )
+						return;
+				} );
+
+			IDbRebuilderSrv rebuilderSrv = LumenApplication.Instance.creaServizio<IDbRebuilderSrv>();
+
+			rebuilderSrv.analizzare();
+
+			if( rebuilderSrv.necessarioRicostruire ) {
+
+				StringBuilder msg = new StringBuilder( "L'analisi ha riscontrato alcuni dati mancanti nel database:" );
+				if( rebuilderSrv.contaFotografiMancanti > 0 )
+					msg.Append( "\nFotografi mancanti = " + rebuilderSrv.contaFotografiMancanti );
+				if( rebuilderSrv.contaFotoMancanti > 0 )
+					msg.Append( "\nFotografie mancanti = " + rebuilderSrv.contaFotoMancanti );
+				msg.Append( "\n" );
+				msg.Append( "\nAvviando la ricostruzione verranno rigenerati" );
+				msg.Append( "\ni dati mancanti." );
+				msg.Append( "\n\nSei sicuro di voler proseguire nella ricostruzione?" );
+
+				dialogProvider.ShowConfirmation( msg.ToString(), "Analisi terminata",
+					(sino) => {
+						if( sino == false )
+							return;
+					} );
+
+				rebuilderSrv.ricostruire();
+
+				msg.Clear();
+				msg.Append( "Sono state apportate le seguenti modifiche:" );
+				msg.Append( "\nAggiunti " + rebuilderSrv.contaFotografiAggiunti + " fotografi." );
+				msg.Append( "\nAggiunte " + rebuilderSrv.contaFotoAggiunte + " fotografie." );
+				dialogProvider.ShowMessage( msg.ToString(), "Ricostruzione terminata" );
+
+			} else {
+				dialogProvider.ShowMessage( "Nessuna ricostruzione necessaria.", "Analisi terminata" );
+			}
+
+		}
+
+
         #region Proprietà
 
 		private bool _loginEffettuato;
@@ -486,6 +532,12 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
+		public bool possoRicostruireDb {
+			get {
+				return canTestConnection;
+			}
+		}
+
         #endregion
 
         #region Comandi
@@ -643,6 +695,18 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
                 return _cambiaPasswordCommand;
             }
         }
+
+		private RelayCommand _commandRicostruireDb;
+		public ICommand commandRicostruireDb {
+			get {
+				if( _commandRicostruireDb == null ) {
+					_commandRicostruireDb = new RelayCommand( param => this.ricostruireDb(),
+						                                      param => possoRicostruireDb,
+															  false );
+				}
+				return _commandRicostruireDb;
+			}
+		}
 
         #endregion
 
