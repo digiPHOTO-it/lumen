@@ -122,6 +122,7 @@
     <Compile Include="src\Servizi\EntityRepository\InfosFisseRepositorySrvImpl.cs" />
     <Compile Include="src\Servizi\Explorer\CarrelloExplorerSrvImpl.cs" />
     <Compile Include="src\Servizi\Explorer\ICarrelloExplorerSrv.cs" />
+    <Compile Include="src\Servizi\Reports\ConsumoCarta\RigaReportConsumoCarta.cs" />
     <Compile Include="src\Servizi\Reports\ParamReports.cs" />
     <Compile Include="src\Servizi\Stampare\LavoroDiStampaFoto.cs" />
     <Compile Include="src\Servizi\Stampare\LavoroDiStampaProvini.cs" />
@@ -216,6 +217,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\Digiphoto.Lumen.Servizi.Reports.ConsumoCarta.RigaReportConsumoCarta.datasource" />
     <None Include="Properties\DataSources\Digiphoto.Lumen.Servizi.Reports.ReportVendite.datasource" />
     <None Include="Properties\DataSources\Digiphoto.Lumen.Servizi.Reports.ReportVenditeDettaglio.datasource" />
     <None Include="Properties\Settings.settings">
