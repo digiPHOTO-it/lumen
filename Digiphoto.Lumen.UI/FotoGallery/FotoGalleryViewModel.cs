@@ -270,6 +270,9 @@ namespace Digiphoto.Lumen.UI {
 		// Questo view model lo recupero dalla application.
 		private SlideShowViewModel slideShowViewModel {
 			get {
+				if (IsInDesignMode)
+					return null;
+
 				App myApp = (App)Application.Current;
 				return myApp.slideShowViewModel;
 			}
