@@ -523,6 +523,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 						
 						DateTime giornata = DateTime.Today;
 						FormatoCarta formatoCarta = lavoroDiStampaProvini.param.formatoCarta;
+						OrmUtil.forseAttacca<FormatoCarta>("FormatiCarta", ref formatoCarta);
 						//Verifico se sono già stati stampati dei provini all'interno della giornata.
 						ConsumoCartaGiornaliero consumoCarta = dbContext.ConsumiCartaGiornalieri.FirstOrDefault(cC => System.DateTime.Equals(cC.giornata,giornata) && cC.formatoCarta.id == formatoCarta.id);
 						
