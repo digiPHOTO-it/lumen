@@ -18,6 +18,7 @@ using Microsoft.Reporting.WinForms;
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.UI.Logging;
 using Digiphoto.Lumen.UI.EliminaVecchiRullini;
+using Digiphoto.Lumen.Servizi.Reports.ConsumoCarta;
 namespace Digiphoto.Lumen.UI {
 
 	class MainWindowViewModel : ClosableWiewModel {
@@ -118,6 +119,58 @@ namespace Digiphoto.Lumen.UI {
 															  false);
 				}
 				return _logCommand;
+			}
+		}
+
+
+		private void reportConsumoCarta()
+		{
+			ParamRangeGiorni paramRangeGiorni = new ParamRangeGiorni();
+			//IVenditoreSrv srv = LumenApplication.Instance.getServizioAvviato<IVenditoreSrv>();
+
+			RangeGiorniDialog d = new RangeGiorniDialog();
+			bool? esito = d.ShowDialog();
+
+			if (esito == true)
+			{
+				paramRangeGiorni.dataIniz = d.giornoIniz;
+				paramRangeGiorni.dataFine = d.giornoFine;
+			}
+
+			d.Close();
+
+			if (esito == true)
+			{
+				ReportHostWindow rhw = new ReportHostWindow();
+				rhw.impostaDataSource(RigaReportConsumoCarta.righe(paramRangeGiorni));
+				rhw.reportPath = ".\\Reports\\ReportConsumoCarta.rdlc";
+
+				// Imposto qualche parametro da stampare nel report
+				ReportParameter p1 = new ReportParameter("dataIniz", paramRangeGiorni.dataIniz.ToString());
+				ReportParameter p2 = new ReportParameter("dataFine", paramRangeGiorni.dataFine.ToString());
+				string appo = String.IsNullOrEmpty(Configurazione.infoFissa.descrizPuntoVendita) ? "pdv " + Configurazione.infoFissa.idPuntoVendita : Configurazione.infoFissa.descrizPuntoVendita;
+				ReportParameter p3 = new ReportParameter("nomePdv", appo);
+
+				ReportParameter[] repoParam = { p1, p2, p3 };
+				rhw.viewerInstance.LocalReport.SetParameters(repoParam);
+
+				rhw.renderReport();
+				rhw.ShowDialog();
+			}
+		}
+
+		private RelayCommand _reportConsumoCartaCommand;
+		public ICommand reportConsumoCartaCommand
+		{
+			get
+			{
+				if (_reportConsumoCartaCommand == null)
+				{
+					_reportConsumoCartaCommand = new RelayCommand(param => reportConsumoCarta(),
+															  param => true,
+															  false);
+				}
+				return _reportConsumoCartaCommand;
 			}
 		}
 

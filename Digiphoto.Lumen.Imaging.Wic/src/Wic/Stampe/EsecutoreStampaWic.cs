@@ -13,6 +13,7 @@ using System.Printing;
 using System.Windows.Markup;
 using System.Text;
 using Digiphoto.Lumen.Model;
+using Digiphoto.Lumen.Util;
 
 namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 
@@ -46,7 +47,10 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 			try {
 
 				// Ricavo l'immagine da stampare
-				IImmagine immagineDaStampare = _lavoroDiStampa.fotografia.imgRisultante != null ? _lavoroDiStampa.fotografia.imgRisultante : _lavoroDiStampa.fotografia.imgOrig;
+				//IImmagine immagineDaStampare = _lavoroDiStampa.fotografia.imgRisultante != null ? _lavoroDiStampa.fotografia.imgRisultante : _lavoroDiStampa.fotografia.imgOrig;
+
+				// Ricavo l'immagine da stampare
+				IImmagine immagineDaStampare = AiutanteFoto.idrataImmagineGrande(_lavoroDiStampa.fotografia);
 				BitmapSource bmp = ((ImmagineWic)immagineDaStampare).bitmapSource;
 
 				// Come print-server uso me stesso
@@ -144,11 +148,12 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 						image.VerticalAlignment = VerticalAlignment.Center;
 						image.HorizontalAlignment = HorizontalAlignment.Center;
 						image.Source = bmp;
+
 						if (_lavoroDiStampa.param.autoZoomNoBordiBianchi)
 							image.Stretch = Stretch.UniformToFill;
 						else
 							image.Stretch = Stretch.Uniform;
-//						image.StretchDirection = StretchDirection.Both;
+						image.StretchDirection = StretchDirection.Both;
 
 						image.EndInit();
 
