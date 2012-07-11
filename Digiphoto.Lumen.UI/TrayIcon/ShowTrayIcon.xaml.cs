@@ -78,6 +78,26 @@ namespace Digiphoto.Lumen.UI.TrayIcon
 										new FrameworkPropertyMetadata(""));
 
 		/// <summary>
+		/// Description
+		/// </summary>
+		public static readonly DependencyProperty TrayIconMessageForegroundProperty =
+			DependencyProperty.Register("TrayIconMessageForeground",
+										typeof(string),
+										typeof(ShowTrayIcon),
+										new FrameworkPropertyMetadata(""));
+
+		/// <summary>
+		/// Description
+		/// </summary>
+		public static readonly DependencyProperty TrayIconTitleForegroundProperty =
+			DependencyProperty.Register("TrayIconTitleForeground",
+										typeof(string),
+										typeof(ShowTrayIcon),
+										new FrameworkPropertyMetadata(""));
+		
+
+
+		/// <summary>
 		/// A property wrapper for the <see cref="BalloonTextProperty"/>
 		/// dependency property:<br/>
 		/// Description
@@ -121,6 +141,29 @@ namespace Digiphoto.Lumen.UI.TrayIcon
 			get { return (string)GetValue(TrayIconBackgroundProperty); }
 			set { SetValue(TrayIconBackgroundProperty, value); }
 		}
+
+		/// <summary>
+		/// A property wrapper for the <see cref="TrayIconMessageProperty"/>
+		/// dependency property:<br/>
+		/// Description
+		/// </summary>
+		public string TrayIconMessageForeground
+		{
+			get { return (string)GetValue(TrayIconMessageForegroundProperty); }
+			set { SetValue(TrayIconMessageForegroundProperty, value); }
+		}
+
+		/// <summary>
+		/// A property wrapper for the <see cref="TrayIconMessageProperty"/>
+		/// dependency property:<br/>
+		/// Description
+		/// </summary>
+		public string TrayIconTitleForeground
+		{
+			get { return (string)GetValue(TrayIconTitleForegroundProperty); }
+			set { SetValue(TrayIconTitleForegroundProperty, value); }
+		}
+
 
 		#endregion
 
@@ -205,6 +248,8 @@ namespace Digiphoto.Lumen.UI.TrayIcon
 			balloon.TrayIconMessage = msg;
 			balloon.TypeIcon = ConvertTypeToSourcePath(iconType);
 			balloon.TrayIconBackground = ConvertTypeToColor(iconType).ToString();
+			balloon.TrayIconMessageForeground = ConvertTypeToColorMessage(iconType).ToString();
+			balloon.TrayIconTitleForeground = ConvertTypeToColorMessage(iconType).ToString();
 			//show and close after sleep seconds
 			TaskbarIcon tb = (TaskbarIcon)FindResource("MyNotifyIcon"); ;
 			tb.ShowCustomBalloon(balloon, PopupAnimation.Slide, sleep);
@@ -231,7 +276,7 @@ namespace Digiphoto.Lumen.UI.TrayIcon
 				uri = new Uri(uriTemplate.Replace("##", "error"));
 			}
 
-			if (iconType == IconType.AboutCloud)
+			if (iconType == IconType.About)
 			{
 				uri = new Uri(uriTemplate.Replace("##", "about"));
 			}
@@ -261,7 +306,7 @@ namespace Digiphoto.Lumen.UI.TrayIcon
 				return Colors.Red;
 			}
 
-			if (iconType == IconType.AboutCloud)
+			if (iconType == IconType.About)
 			{
 				return Colors.Azure;
 			}
@@ -269,6 +314,36 @@ namespace Digiphoto.Lumen.UI.TrayIcon
 			if (iconType == IconType.AboutCloud)
 			{
 				return Colors.Azure;
+			}
+
+			return Colors.Black;
+		}
+
+		private Color ConvertTypeToColorMessage(IconType iconType)
+		{
+			if (iconType == IconType.Info)
+			{
+				return Colors.Black;
+			}
+
+			if (iconType == IconType.Warning)
+			{
+				return Colors.White;
+			}
+
+			if (iconType == IconType.Error)
+			{
+				return Colors.White;
+			}
+
+			if (iconType == IconType.About)
+			{
+				return Colors.Black;
+			}
+
+			if (iconType == IconType.AboutCloud)
+			{
+				return Colors.Black;
 			}
 
 			return Colors.Black;
