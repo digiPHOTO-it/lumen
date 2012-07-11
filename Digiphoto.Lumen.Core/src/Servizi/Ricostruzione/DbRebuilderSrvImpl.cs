@@ -89,8 +89,7 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 			Fotografo mancante = new Fotografo();
 			mancante.id = id;
 			mancante.cognomeNome = id;
-			int prog = idsFotografiMancanti.Count + 1;
-			mancante.iniziali = Convert.ToString( prog );
+			mancante.iniziali = Convert.ToString( ++contaFotografiAggiunti );
 			mancante.umano = true;
 			mancante.attivo = true;
 			mancante.note = "Generato automaticamente da DbRebuilder";
@@ -173,15 +172,10 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 			if( !analisiEffettuata )
 				throw new InvalidOperationException( "Prima di ricostruire, occorre lanciare l'analisi" );
 
-			// Creo eventuali fotografi mancanti
-			using( TransactionScope transaction = new TransactionScope() ) {
-
-				foreach( string idFotografoMancante in idsFotografiMancanti ) {
-					creaFotografoMancante( idFotografoMancante );
-					++contaFotografiAggiunti;
-				}
-				transaction.Complete();
+			foreach( string idFotografoMancante in idsFotografiMancanti ) {
+				creaFotografoMancante( idFotografoMancante );
 			}
+			int test = UnitOfWorkScope.CurrentObjectContext.SaveChanges();
 
 			int ultimoNumFoto = NumeratoreFotogrammi.incrementaNumeratoreFoto( fiFotosMancanti.Count );
 			int conta = 0;
