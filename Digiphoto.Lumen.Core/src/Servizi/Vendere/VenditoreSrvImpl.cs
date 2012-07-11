@@ -105,7 +105,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			{
 				foreach (Fotografia foto in fotografie)
 				{
-					AiutanteFoto.idrataImmaginiFoto( foto );
+					// Non so perchè me devo fare la versione forzata perchè se no non mi idrata i provini del carrello. 
+					// Nel caso in cui ricarico una foto che è già stata stampata precedentemente. 
+					AiutanteFoto.idrataImmaginiFoto( foto , IdrataTarget.Tutte, true);
 					gestoreCarrello.aggiungiRiga(creaRiCaFotoStampata(foto, param as ParamStampaFoto));
 				}
 				// Notifico al carrello l'evento
@@ -117,8 +119,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 				// Stampigli
 				paramStampaProvini.stampigli = configurazione.stampigli;
-
-				paramStampaProvini.nomeStampante = "doPDF v7";    // TODO definire la stampa
+				paramStampaProvini.macchiaProvini = false;
 				spoolStampeSrv.accodaStampaProvini(fotografie.ToList<Fotografia>(), paramStampaProvini);
 			}
 		}
@@ -454,22 +455,25 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		 */
 		private void gestioneEsitoStampa( LavoroDiStampa lavoroDiStampa ) {
 
+			LavoroDiStampaFoto lavoroDiStampaFoto = null;
+			LavoroDiStampaProvini lavoroDiStampaProvini = null;
+
 			if (lavoroDiStampa is LavoroDiStampaFoto)
 			{
-				LavoroDiStampaFoto lavoroDiStampaFoto = lavoroDiStampa as LavoroDiStampaFoto;
+				lavoroDiStampaFoto = lavoroDiStampa as LavoroDiStampaFoto;
 
-				if (false && lavoroDiStampaFoto.fotografia != null)
+				if (lavoroDiStampaFoto.fotografia != null)
 				{
 					try {
 						// Prima che sia troppo tardi devo rilasciare le immagini (altrimenti rimangono loccate)
-							if (lavoroDiStampaFoto.fotografia.imgOrig != null)
-								lavoroDiStampaFoto.fotografia.imgOrig.Dispose();
+						if (lavoroDiStampaFoto.fotografia.imgOrig != null)
+							lavoroDiStampaFoto.fotografia.imgOrig.Dispose();
 	
-							if (lavoroDiStampaFoto.fotografia.imgProvino != null)
-								lavoroDiStampaFoto.fotografia.imgProvino.Dispose();
+						if (lavoroDiStampaFoto.fotografia.imgProvino != null)
+							lavoroDiStampaFoto.fotografia.imgProvino.Dispose();
 	
-							if (lavoroDiStampaFoto.fotografia.imgRisultante != null)
-								lavoroDiStampaFoto.fotografia.imgRisultante.Dispose();
+						if (lavoroDiStampaFoto.fotografia.imgRisultante != null)
+							lavoroDiStampaFoto.fotografia.imgRisultante.Dispose();
 	
 					} catch( Exception ee ) {
 						_giornale.Error( "Impossibile rilasciare immagini dopo stampa", ee );
@@ -478,18 +482,82 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					}
 				}
 			}
+			else if (lavoroDiStampa is LavoroDiStampaProvini)
+			{
+				lavoroDiStampaProvini = lavoroDiStampa as LavoroDiStampaProvini;
+				foreach(Fotografia foto in lavoroDiStampaProvini.fotografie){
+					if (foto != null)
+					{
+						try
+						{
+							// Prima che sia troppo tardi devo rilasciare le immagini (altrimenti rimangono loccate)
+							if (foto.imgOrig != null)
+								foto.imgOrig.Dispose();
+
+							if (foto.imgProvino != null)
+								foto.imgProvino.Dispose();
+
+							if (foto.imgRisultante != null)
+								foto.imgRisultante.Dispose();
+
+						}
+						catch (Exception ee)
+						{
+							_giornale.Error("Impossibile rilasciare immagini dopo stampa", ee);
+
+							// Devo andare avanti lo stesso perché devo notificare tutti
+						}
+					}
+				}
+			}
 
 			// Se la stampa è stata completata correttamente, non faccio niente. Sono già a posto.
 			// TODO rimettere a posto con ==
 			if( lavoroDiStampa.esitostampa == EsitoStampa.Ok )
+			{
+				if (lavoroDiStampaProvini != null)
+				{
+					using (new UnitOfWorkScope(true))
+					{
+						LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+						
+						DateTime giornata = DateTime.Today;
+						FormatoCarta formatoCarta = lavoroDiStampaProvini.param.formatoCarta;
+						OrmUtil.forseAttacca<FormatoCarta>("FormatiCarta", ref formatoCarta);
+						//Verifico se sono già stati stampati dei provini all'interno della giornata.
+						ConsumoCartaGiornaliero consumoCarta = dbContext.ConsumiCartaGiornalieri.FirstOrDefault(cC => System.DateTime.Equals(cC.giornata,giornata) && cC.formatoCarta.id == formatoCarta.id);
+						
+						if (consumoCarta != null)
+						{
+							consumoCarta.diCuiProvini += lavoroDiStampaProvini.param.numPag;
+						}
+						else
+						{
+							consumoCarta = new ConsumoCartaGiornaliero();
+							consumoCarta.id = Guid.NewGuid();
+							consumoCarta.diCuiProvini = lavoroDiStampaProvini.param.numPag;
+							consumoCarta.formatoCarta = formatoCarta;
+							consumoCarta.giornata = giornata;
+							dbContext.ConsumiCartaGiornalieri.Add(consumoCarta);
+						}
+						dbContext.SaveChanges();
+					}
+				}
 				return;
-
+			}
 			_giornale.Error( "il lavoro di stampa non è andato a buon fine: " + lavoroDiStampa.ToString() );
 
 			// Vado a correggere questa riga
-			//using( GestoreCarrello altroGestoreCarrello = new GestoreCarrello() ) {
-			//    altroGestoreCarrello.stornoRiga( lavoroDiStampa.param.idRigaCarrello );
-			//}
+			if(lavoroDiStampaFoto != null){
+				using( GestoreCarrello altroGestoreCarrello = new GestoreCarrello() ) {
+					altroGestoreCarrello.stornoRiga(lavoroDiStampaFoto.param.idRigaCarrello);
+				}
+			}
+			// TODO Fare storno errore provini
+			if (lavoroDiStampaProvini != null)
+			{
+				
+			}
 
 		}
 

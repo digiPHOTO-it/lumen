@@ -68,9 +68,25 @@
 			
 				<TabItem ToolTip="Report Vendite">
 					<TabItem.Header>
-						<TextBlock Text="Report Vendite" FontSize="14" />
+						<TextBlock Text="Report" FontSize="14" />
 					</TabItem.Header>
-					<Button Content="Report Vendite" Height="50" Name="buttonReport" Command="{Binding reportVenditeCommand}" Width="150" />
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="*" />
+							<RowDefinition Height="*" />
+							<RowDefinition Height="*" />
+							<RowDefinition Height="*" />
+							<RowDefinition Height="*" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<Button Grid.Row="2" Grid.Column="1" Content="Report Vendite" Height="50" Name="buttonReport" Command="{Binding reportVenditeCommand}" Width="150" />
+						<Button Grid.Row="3" Grid.Column="1" Content="Report Consumo Carta" Height="50" Name="buttonConsumoCarta" Command="{Binding reportConsumoCartaCommand}" Width="150" />
+					</Grid>
 				</TabItem>	
 				
 				<TabItem ToolTip="Funzione di Logging e Debug">

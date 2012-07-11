@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
         Title="StampaProviniDialog" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-		d:DesignHeight="570" d:DesignWidth="504" SizeToContent="WidthAndHeight">
+		d:DesignHeight="570" d:DesignWidth="504" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
 
 	<Window.Resources>
 		<ResourceDictionary Source="StampaProviniDialogResources.xaml" />
@@ -57,11 +57,13 @@
 			</Grid>
 		</GroupBox>
 
-		<GroupBox DockPanel.Dock="Bottom" Header="Formato Carta" Height="120">
+		<GroupBox DockPanel.Dock="Bottom" Header="Formato Carta" >
 			<ListBox
-				Height="90"
 				ItemsSource="{Binding stampantiAbbinate}" 
-                ItemTemplate="{StaticResource pulsanteDiStampaTemplate}" >
+				ItemsPanel="{DynamicResource listaPulsantiDiStampaItemsPanelTemplate}" 
+                ItemTemplate="{StaticResource pulsanteDiStampaTemplate}"
+				ScrollViewer.VerticalScrollBarVisibility="Disabled"
+				ScrollViewer.HorizontalScrollBarVisibility="Visible">
 			</ListBox>
 		</GroupBox>
 

@@ -15,6 +15,13 @@ using System.Text;
 using Digiphoto.Lumen.Model;
 using System.IO;
 using Digiphoto.Lumen.Config;
+using System.Windows.Shapes;
+using System.Runtime.InteropServices;
+using System.Windows.Data;
+using System.Collections.Generic;
+using System.Collections;
+using Digiphoto.Lumen.Util;
+using System.Globalization;
 
 namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 
@@ -25,6 +32,10 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 		private EsitoStampa _esito;
 
 		private long _conta = 0;
+
+		private int testataH = 30;
+		
+		private int margin = 8;
 
 		public EsecutoreStampaProvini() {
 		}
@@ -44,13 +55,6 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 			_conta++;
 
 			try {
-
-				// Ricavo l'immagine da stampare
-				//IImmagine immagineDaStampare = _lavoroDiStampa.fotografia.imgRisultante != null ? _lavoroDiStampa.fotografia.imgRisultante : _lavoroDiStampa.fotografia.imgOrig;
-
-				
-				//BitmapSource bmp = ((ImmagineWic)immagineDaStampare).bitmapSource;
-
 				// Come print-server uso me stesso
 				using( PrintServer ps1 = new PrintServer() ) {
 
@@ -121,106 +125,62 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 						FixedDocument document = new FixedDocument();
 						document.DocumentPaginator.PageSize = new Size( dialog.PrintableAreaWidth, dialog.PrintableAreaHeight);
 
-						// Creo una pagina della grandezza massima
-						FixedPage page1 = new FixedPage();
-						page1.Width = document.DocumentPaginator.PageSize.Width;
-						page1.Height = document.DocumentPaginator.PageSize.Height;
-						page1.VerticalAlignment = VerticalAlignment.Center;
-						page1.HorizontalAlignment = HorizontalAlignment.Center;
+						int sizeLatoH = Configurazione.infoFissa.pixelProvino;
+						int sizeLatoW = Configurazione.infoFissa.pixelProvino;
 
-						Canvas c = new Canvas();
-						c.Background = new SolidColorBrush(Colors.Transparent);
-						c.Width = page1.Width;
-						c.Height = page1.Height;
-						c.HorizontalAlignment = HorizontalAlignment.Left;
-						c.VerticalAlignment = VerticalAlignment.Top;
+						int numFotPag = _lavoroDiStampa.fotografie.Count;
 
-						Image img = null;
-
-						double x = 1;
-						double y = 1;
-
-						int countFotoRighe = 0;
-						int countFotoColonne = 0;
-
-						int sizeLato = Configurazione.infoFissa.pixelProvino;
-
-						if (_lavoroDiStampa.param.numeroColonne > 0)
+						if (_lavoroDiStampa.param.numeroRighe > 0 && _lavoroDiStampa.param.numeroColonne > 0)
 						{
-							sizeLato = (int)c.Width / _lavoroDiStampa.param.numeroColonne;
-						}
+							sizeLatoH = (int)((document.DocumentPaginator.PageSize.Height - testataH) / _lavoroDiStampa.param.numeroRighe);
 
-						foreach (Fotografia foto in _lavoroDiStampa.fotografie)
-						{
-							// Ricavo l'immagine da stampare
-							IImmagine fotina = foto.imgProvino;
+							sizeLatoW = (int)(document.DocumentPaginator.PageSize.Width / _lavoroDiStampa.param.numeroColonne);
 
-							img = new Image();
-							
-							BitmapSource bmp1 = ((ImmagineWic)fotina).bitmapSource;
-
-							img.Source = bmp1;
-							img.Width = sizeLato;
-							img.Height = sizeLato;
-							img.HorizontalAlignment = HorizontalAlignment.Left;
-							img.VerticalAlignment = VerticalAlignment.Top;
-							img.Stretch = Stretch.UniformToFill;
-
-							if ((int)(img.Width*(x)) >= (int)c.Width && 
-								countFotoColonne <= _lavoroDiStampa.param.numeroColonne)
-							{	
-								x = 1;
-								y++;
-								countFotoColonne++;
+							numFotPag = _lavoroDiStampa.param.numeroRighe * _lavoroDiStampa.param.numeroColonne;
 							}
-							// Devo cambiare pagina
-							if ((int)(img.Height*(y)) >= (int)c.Height && 
-								countFotoRighe >= _lavoroDiStampa.param.numeroRighe)
+						else
+						{	
+							double volume = (document.DocumentPaginator.PageSize.Width) * (document.DocumentPaginator.PageSize.Height - testataH);
+							double volumeProvino = volume / _lavoroDiStampa.fotografie.Count;
+							double c = document.DocumentPaginator.PageSize.Width /(document.DocumentPaginator.PageSize.Height - testataH) ;
+
+							// Utilizzo le foto con il lato lungo
+							sizeLatoW = (int)Math.Sqrt(volumeProvino / c);
+							sizeLatoH = (int)(sizeLatoW * c);
+							double volumeProvino2 = sizeLatoH * sizeLatoW;
+							double errore = volumeProvino - volumeProvino2;
+
+							int numFotH = (int)Math.Ceiling((document.DocumentPaginator.PageSize.Height - testataH) / sizeLatoH);
+
+							int numFotW = (int)Math.Ceiling(document.DocumentPaginator.PageSize.Width / sizeLatoW);
+
+							sizeLatoH = (int)((document.DocumentPaginator.PageSize.Height - testataH) / numFotH);
+
+							sizeLatoW = (int)(document.DocumentPaginator.PageSize.Width / numFotW);
+
+							}
+
+						int numPag = numFotPag > 0 ? (int)Math.Ceiling((decimal)_lavoroDiStampa.fotografie.Count / numFotPag) : 1;
+
+						_lavoroDiStampa.param.numPag = (short)numPag;
+
+						List<Fotografia> list = (List<Fotografia>)_lavoroDiStampa.fotografie;
+
+						IEnumerator<Fotografia> iterator = _lavoroDiStampa.fotografie.GetEnumerator();
+
+						for (int pagStampate = 0; pagStampate < numPag; pagStampate++)
+						{
+							int numFoto = 0;
+							IList<Fotografia> fotos = new List<Fotografia>();
+							while (numFoto < numFotPag && iterator.MoveNext())
 							{
-								FixedPage pages = new FixedPage();
-								pages.Width = document.DocumentPaginator.PageSize.Width;
-								pages.Height = document.DocumentPaginator.PageSize.Height;
-								pages.VerticalAlignment = VerticalAlignment.Center;
-								pages.HorizontalAlignment = HorizontalAlignment.Center;
-
-								pages.Children.Add(imageToCavas(c, pages.Width, pages.Height));
-
-								//
-								//eventualiStampigli(pages, _lavoroDiStampa);
-
-								// add the page to the document
-								PageContent pagesContent = new PageContent();
-								((IAddChild)pagesContent).AddChild(pages);
-
-								document.Pages.Add(pagesContent);
-
-								x = 1;
-								y = 1;
-
-								countFotoRighe = 0;
-								countFotoColonne = 0;
+								fotos.Add(iterator.Current);
+								numFoto++;
 							}
 
-							img.SetValue(Canvas.TopProperty, (Double)(img.Height*(y-1)));
-							img.SetValue(Canvas.LeftProperty, (Double)(img.Width*(x-1)));
-
-							x++;
-							countFotoRighe++;
-
-							c.Children.Add(img);
+							stampaUnaPagina(document, fotos, _lavoroDiStampa.param, sizeLatoW, sizeLatoH);
 
 						}
-
-						page1.Children.Add(imageToCavas(c, page1.Width, page1.Height));
-
-						//
-						//eventualiStampigli( page1, _lavoroDiStampa );
-
-						// add the page to the document
-						PageContent page1Content = new PageContent();
-						((IAddChild)page1Content).AddChild( page1 );
-
-						document.Pages.Add(page1Content);
 
 						//
 						// ----- STAMPA per davvero
@@ -244,90 +204,174 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 			return _esito;
 		}
 
-
-		private Image imageToCavas(Canvas c, double width, double height)
+		private void stampaUnaPagina(FixedDocument document, IList<Fotografia> fotos, ParamStampaProvini param, int sizeLatoW, int sizeLatoH)
 		{
-			//Create a Bitmap and render the content of the canvas
-			// save current canvas transform
-			Transform transform = c.LayoutTransform;
+			FixedPage page = new FixedPage();
+			page.Width = document.DocumentPaginator.PageSize.Width;
+			page.Height = document.DocumentPaginator.PageSize.Height;
+			page.VerticalAlignment = VerticalAlignment.Center;
+			page.HorizontalAlignment = HorizontalAlignment.Center;
 
-			// get size of control
-			Size sizeOfControl = new Size(c.ActualWidth, c.ActualHeight);
-			// measure and arrange the control
-			c.Measure(sizeOfControl);
-			// arrange the surface
-			c.Arrange(new Rect(sizeOfControl));
+			var c = new Canvas();
+			c.Background = new SolidColorBrush(Colors.Transparent);
+			c.Width = page.Width;
+			c.Height = page.Height;
+			c.HorizontalAlignment = HorizontalAlignment.Left;
+			c.VerticalAlignment = VerticalAlignment.Top;
 
-			// craete and render surface and push bitmap to it
-			//RenderTargetBitmap renderBitmap = new RenderTargetBitmap((Int32)sizeOfControl.Width, (Int32)sizeOfControl.Height, 96d, 96d, PixelFormats.Pbgra32);
-			RenderTargetBitmap renderBitmap = new RenderTargetBitmap((Int32)c.Width, (Int32)c.Height, 96d, 96d, PixelFormats.Pbgra32);
-			// now render surface to bitmap
-			renderBitmap.Render(c);
+			double x = 1;
+			double y = 1;
 
-			// encode png data
-			PngBitmapEncoder pngEncoder = new PngBitmapEncoder();
-			// puch rendered bitmap into it
-			pngEncoder.Frames.Add(BitmapFrame.Create(renderBitmap));
+			foreach (Fotografia foto in fotos)
+		{
+				//Devo cambiare Riga
+				if ((double)(sizeLatoW * (x)) >= (double)c.Width )
+		{
+					x = 1;
+					y++;
+				}
+				aggiungiImmagineAlCanvas(c, param, foto, x, y, sizeLatoW, sizeLatoH);
+				x++;
+			}
+			page.Children.Add(c);
 
+			// add the page to the document
+			PageContent pageContent = new PageContent();
+			((IAddChild)pageContent).AddChild(page);
 
-
-			// Creo una immagine che contiene la bitmap da stampare
-			Image image = new Image();
-			image.Width = width;
-			image.Height = height;
-			image.VerticalAlignment = VerticalAlignment.Center;
-			image.HorizontalAlignment = HorizontalAlignment.Center;
-
-			image.BeginInit();
-			image.Source = pngEncoder.Frames[0];
-			image.EndInit();
-			image.Stretch = Stretch.Uniform;
-			image.StretchDirection = StretchDirection.Both;
-
-			return image;
+			document.Pages.Add(pageContent);
 		}
 
-		private static void eventualiStampigli( FixedPage page1, LavoroDiStampaProvini lavoroDiStampa ) {
+		private void aggiungiImmagineAlCanvas(Canvas c, ParamStampaProvini param, Fotografia foto, double x, double y, int sizeLatoW, int sizeLatoH)
+		{
+			// Ricavo l'immagine da stampare
+			IImmagine fotina = AiutanteFoto.idrataImmagineGrande(foto);
+
+			Image img = new Image();
+
+			BitmapSource bmp1 = ((ImmagineWic)fotina).bitmapSource;
+
+			img.Width = sizeLatoW - margin;
+			img.Height = sizeLatoH - margin;
+
+			img.HorizontalAlignment = HorizontalAlignment.Center;
+			img.VerticalAlignment = VerticalAlignment.Center;
+			img.BeginInit();
+			img.Source = bmp1;
+			img.EndInit();
+			img.Stretch = Stretch.Uniform;
+			img.StretchDirection = StretchDirection.Both;
+
+			img.SetValue(Canvas.TopProperty, (Double)(sizeLatoH * (y - 1)) + testataH);
+			img.SetValue(Canvas.LeftProperty, (Double)(sizeLatoW * (x - 1) + margin/2));
+
+			c.Children.Add(img);
+
+			eventualiStampigli(c, x, y, sizeLatoH, sizeLatoW, param, foto);
+		}
+
+		private void eventualiStampigli( Canvas c, double x, double y, int sizeLatoH, int sizeLatoW, ParamStampaProvini param,Fotografia foto) {
 
 			SolidColorBrush coloreFg = new SolidColorBrush( Colors.LightGray );
 			SolidColorBrush coloreBg = new SolidColorBrush( Colors.White );
 
-			// Numero della foto
-			if( lavoroDiStampa.param.stampigli.numFoto ) {
+			double riquadroH = 0;
+			double riquadroW = 0;
+
+			// Intestazione
+			if (true)
+			{
+				TextBlock textIntestazione = new TextBlock();
+				textIntestazione.Text = Configurazione.infoFissa.descrizPuntoVendita.ToString() +" NOTE: "+ param.intestazione;
+				textIntestazione.FontSize = testataH * 65 / 100; 
+				textIntestazione.Foreground = new SolidColorBrush(Colors.Black); ;
+				textIntestazione.Background = new SolidColorBrush(Colors.Orange); ;
+				textIntestazione.SetValue(Canvas.TopProperty, 1.0);
+				textIntestazione.SetValue(Canvas.LeftProperty, 1.0);
+				c.Children.Add(textIntestazione);
+			}
+
+			// Riquadro
+			if (true)
+			{
+				Rectangle riquadro = new Rectangle();
+				riquadro.Height = sizeLatoH - margin / 4;
+				riquadro.Width = sizeLatoW - margin / 4;
+
+				riquadroH = riquadro.Height;
+				riquadroW = riquadro.Width;
+
+				riquadro.StrokeThickness = 1;
+				riquadro.Stroke = System.Windows.Media.Brushes.Black;
+
+				riquadro.SetValue(Canvas.TopProperty, (Double)(sizeLatoH * (y - 1)) + testataH);
+				riquadro.SetValue(Canvas.LeftProperty, (Double)(sizeLatoW * (x - 1)) + margin / 8);
+				c.Children.Add(riquadro);
+			}
+
+			// Marchia Provini
+			if(param.macchiaProvini)
+			{
 				TextBlock textNumero = new TextBlock();
-				//textNumero.Text = lavoroDiStampa.fotografia.numero.ToString();
-				textNumero.FontSize = 6; // 30pt text
-				textNumero.Foreground = coloreFg;
-				textNumero.Background = coloreBg;
-				FixedPage.SetTop( textNumero, 1 );
-				FixedPage.SetLeft( textNumero, 1 );
-				page1.Children.Add( textNumero );
+				textNumero.Text = "DIGIPHOTO.IT";
+				textNumero.FontSize = sizeLatoH / 10; // 30pt text
+				textNumero.Foreground = coloreFg; ;
+				textNumero.Background = new SolidColorBrush(Colors.Transparent); ;
+				textNumero.SetValue(Canvas.TopProperty, (Double)(sizeLatoH * (y)) - 2 * textNumero.FontSize + testataH - sizeLatoH/2);
+				textNumero.SetValue(Canvas.LeftProperty, (Double)(sizeLatoW * (x - 1)) + riquadroW - MeasureString(textNumero).Width);
+				c.Children.Add(textNumero);
+			}
+
+			// Numero della foto
+			if( true )
+			{
+				TextBlock textNumero = new TextBlock();
+				textNumero.Text = foto.numero.ToString();
+				textNumero.FontSize = sizeLatoH / 10; // 30pt text
+				textNumero.Foreground = new SolidColorBrush(Colors.Black); ;
+				textNumero.Background = new SolidColorBrush(Colors.Orange); ;
+				textNumero.SetValue(Canvas.TopProperty, (Double)(sizeLatoH * (y)) - 2 * textNumero.FontSize + testataH);
+				textNumero.SetValue(Canvas.LeftProperty, (Double)(sizeLatoW * (x - 1)) + riquadroW - MeasureString(textNumero).Width);
+				c.Children.Add(textNumero);
 			}
 
 			// Giornata
-			if( lavoroDiStampa.param.stampigli.giornata ) {
+			if( true ) 
+			{
 				TextBlock textGiorno = new TextBlock();
-				//textGiorno.Text = lavoroDiStampa.fotografia.giornata.ToString( "d" );
-				textGiorno.FontSize = 6; // 30pt text
+				textGiorno.Text = foto.giornata.ToString("d");
+				textGiorno.FontSize = sizeLatoH / 30; // 30pt text
 				textGiorno.Foreground = coloreFg;
 				textGiorno.Background = coloreBg;
-				FixedPage.SetBottom( textGiorno, 1 );
-				FixedPage.SetLeft( textGiorno, 1 );
-				page1.Children.Add( textGiorno );
+				textGiorno.SetValue(Canvas.TopProperty, (Double)(sizeLatoH * (y - 1)) + testataH);
+				textGiorno.SetValue(Canvas.LeftProperty, (Double)(sizeLatoW * (x - 1)) + riquadroW - MeasureString(textGiorno).Width);
+				c.Children.Add(textGiorno);
 			}
 
 			// Operatore
-			if( lavoroDiStampa.param.stampigli.operatore ) {
+			if( true ) 
+			{
 				TextBlock textOperatore = new TextBlock();
-				//textOperatore.Text = lavoroDiStampa.fotografia.fotografo.iniziali;
-				textOperatore.FontSize = 6; // 30pt text
+				StringBuilder operatore = new StringBuilder();
+				textOperatore.Text = foto.fotografo.iniziali;
+				textOperatore.FontSize = sizeLatoH / 30; // 30pt text
 				textOperatore.Foreground = coloreFg;
 				textOperatore.Background = coloreBg;
-				FixedPage.SetBottom( textOperatore, 1 );
-				FixedPage.SetRight( textOperatore, 1 );
-				page1.Children.Add( textOperatore );
+				textOperatore.SetValue(Canvas.TopProperty, (Double)(sizeLatoH * (y - 1)) + testataH);
+				textOperatore.SetValue(Canvas.LeftProperty, (Double)(sizeLatoW * (x - 1)));
+				c.Children.Add(textOperatore);
 			}
 
+		}
+
+		private Size MeasureString(TextBlock textBlock)
+		{
+			var formattedText = new FormattedText(
+				textBlock.Text,
+				CultureInfo.CurrentCulture,
+				FlowDirection.LeftToRight,
+				new Typeface(textBlock.FontFamily, textBlock.FontStyle, textBlock.FontWeight, textBlock.FontStretch),textBlock.FontSize,Brushes.Black);
+			return new Size(formattedText.Width, formattedText.Height);
 		}
 
 		/**
