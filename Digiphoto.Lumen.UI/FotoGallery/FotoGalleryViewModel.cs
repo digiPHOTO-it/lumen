@@ -115,6 +115,13 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		public bool possoControllareSlideShow
+		{
+			get
+			{
+				return slideShowViewModel != null;
+			}
+		}
 
 		public bool possoAggiungereAlMasterizzatore {
 			get {
@@ -263,6 +270,9 @@ namespace Digiphoto.Lumen.UI {
 		// Questo view model lo recupero dalla application.
 		private SlideShowViewModel slideShowViewModel {
 			get {
+				if (IsInDesignMode)
+					return null;
+
 				App myApp = (App)Application.Current;
 				return myApp.slideShowViewModel;
 			}
@@ -426,7 +436,8 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand controllareSlideShowCommand {
 			get {
 				if( _controllareSlideShowCommand == null ) {
-					_controllareSlideShowCommand = new RelayCommand( azione => controllareSlideShow( (string)azione ) );
+					_controllareSlideShowCommand = new RelayCommand( azione => controllareSlideShow( (string)azione ),
+																	azione => possoControllareSlideShow);
 				}
 				return _controllareSlideShowCommand;
 			}
@@ -603,10 +614,15 @@ namespace Digiphoto.Lumen.UI {
 			{
 				if (!d.stampaSoloSelezionate)
 				{
+					deselezionareTutto();
 					selezionareTutto();
 				}
 
 				IList<Fotografia> listaSelez = creaListaFotoSelezionate();
+
+				// Riordino i Provini per data acquisizione foto + numero foto (Prima quelli più vecchi)
+				IEnumerable<Fotografia> sortedEnum = listaSelez.OrderBy(f => f.dataOraAcquisizione).OrderBy(f => f.numero);
+				listaSelez = sortedEnum.ToList();
 				
 				venditoreSrv.aggiungiStampe(listaSelez, creaParamStampaProvini(d.paramStampaProvini));
 			}

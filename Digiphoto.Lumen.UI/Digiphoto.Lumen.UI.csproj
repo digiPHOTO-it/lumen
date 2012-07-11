@@ -135,6 +135,7 @@
     <Compile Include="Dialogs\StampaProviniDialog.xaml.cs">
       <DependentUpon>StampaProviniDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\StampaProviniDialogViewModel.cs" />
     <Compile Include="Diapo\Diapositiva.xaml.cs">
       <DependentUpon>Diapositiva.xaml</DependentUpon>
     </Compile>
@@ -388,6 +389,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Reports\ReportConsumoCarta.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportVendite.rdlc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -396,6 +400,9 @@
     </None>
     <None Include="app.manifest" />
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\Digiphoto.Lumen.Model.ConsumoCartaGiornaliero.datasource" />
+    <None Include="Properties\DataSources\Digiphoto.Lumen.Model.FormatoCarta.datasource" />
+    <None Include="Properties\DataSources\Digiphoto.Lumen.Servizi.Reports.ConsumoCarta.RigaReportConsumoCarta.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

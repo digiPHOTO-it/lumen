@@ -158,20 +158,24 @@
                             <CheckBox Content="N° foto" IsChecked="{Binding cfg.stampiglioNumFoto}" />
                         </StackPanel>
                     </GroupBox>
-                    <Label Content="Fuori Standard" Height="28" HorizontalAlignment="Left" Margin="209,364,0,0" Name="label12" VerticalAlignment="Top" Width="133" />
-                    <TextBox Height="23" Margin="409,364,100,0" VerticalAlignment="Top" Text="{Binding Path=cfg.fuoriStandard}" ToolTip="Identificatvo per personalizzazioni fuori standard." />
-                    <Label Content="Cartella Rullini" Height="25" HorizontalAlignment="Left" Margin="13,22,0,0" Name="label5" VerticalAlignment="Top" Width="121" />
+                    <Label Content="Fuori Standard" Height="28" HorizontalAlignment="Left" Margin="209,334,0,0" Name="label12" VerticalAlignment="Top" Width="133" />
+					<TextBox Height="23" HorizontalAlignment="Left" Margin="409,336,0,0" Text="{Binding Path=cfg.fuoriStandard}" ToolTip="Identificatvo per personalizzazioni fuori standard." Name="indFuroStandard" VerticalAlignment="Top" Width="75" />
+					<Label Content="Cartella Rullini" Height="25" HorizontalAlignment="Left" Margin="13,22,0,0" Name="label5" VerticalAlignment="Top" Width="121" />
                     <TextBox Height="23" Margin="151,22,0,0" Text="{Binding Path=cfg.cartellaFoto}" VerticalAlignment="Top" HorizontalAlignment="Left" Width="562" />
                     <Label Content="Cartella Maschere" Height="25" HorizontalAlignment="Left" Margin="13,51,0,0" Name="label14" VerticalAlignment="Top" Width="121" />
                     <TextBox Height="23" Margin="151,51,0,0" Text="{Binding Path=cfg.cartellaMaschere}" VerticalAlignment="Top" Width="562" HorizontalAlignment="Left" />
                     <Button  Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="foto" Content="..." Height="Auto" Margin="730,21,0,0" ToolTip="Sfoglia cartelle" VerticalAlignment="Top" HorizontalAlignment="Left" Width="22" />
-                    <Label Content="Millisecondi intervallo SlideShow" HorizontalAlignment="Left" Margin="209,325,0,0" VerticalAlignment="Top" Width="193" />
-                    <TextBox Height="23" HorizontalAlignment="Left" Margin="409,327,0,0" Text="{Binding Path=cfg.millisIntervalloSlideShow}" ToolTip="esempio 1500 = 1 secondo e mezzo" VerticalAlignment="Top" Width="75" />
+                    <Label Content="Millisecondi intervallo SlideShow" HorizontalAlignment="Left" Margin="209,300,0,0" VerticalAlignment="Top" Width="193" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="409,302,0,0" Text="{Binding Path=cfg.millisIntervalloSlideShow}" ToolTip="esempio 1500 = 1 secondo e mezzo" VerticalAlignment="Top" Width="75" />
                     <Button Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="mask" Content="..." Margin="730,51,16,0"  ToolTip="Sfoglia cartelle" VerticalAlignment="Top" Width="22" />
-                    <Label Content="Programma esterno foto-ritocco" Height="26" HorizontalAlignment="Left" Margin="6,420,0,0" Name="label8" VerticalAlignment="Top" Width="192" />
-                    <TextBox Height="23" HorizontalAlignment="Left" Margin="209,423,0,0" Name="textBox1" VerticalAlignment="Top" Width="515"  Text="{Binding Path=cfg.editorImmagini}"/>
-                    <Button Content="..." Height="Auto" HorizontalAlignment="Left" Margin="730,422,0,0" Name="button1" VerticalAlignment="Top" Width="22" />
-                </Grid>
+                    <Label Content="Programma esterno foto-ritocco" Height="26" HorizontalAlignment="Left" Margin="6,437,0,0" Name="label8" VerticalAlignment="Top" Width="192" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="209,440,0,0" Name="textBox1" VerticalAlignment="Top" Width="515"  Text="{Binding Path=cfg.editorImmagini}"/>
+                    <Button Content="..." Height="Auto" HorizontalAlignment="Left" Margin="730,439,0,0" Name="button1" VerticalAlignment="Top" Width="22" />
+					<TextBox Height="23" HorizontalAlignment="Left" Margin="410,372,0,0" Text="{Binding Path=cfg.numColoneProvini}" ToolTip="N.colonne Provini" VerticalAlignment="Top" Width="66" />
+					<Label Content="Numero colonne Provini" Height="28" HorizontalAlignment="Left" Margin="208,370,0,0" Name="colonneProvini" VerticalAlignment="Top" Width="155" />
+					<TextBox Height="23" HorizontalAlignment="Left" Margin="410,406,0,0" Text="{Binding Path=cfg.numRigheProvini}" ToolTip="N.colonne Provini" VerticalAlignment="Top" Width="66" />
+					<Label Content="Numero righe Provini" Height="28" HorizontalAlignment="Left" Margin="209,0,0,41" Name="rgheProvini" VerticalAlignment="Bottom" Width="155" />
+				</Grid>
                 </TabItem>
 
             <TabItem Header="5) Riservato" IsSelected="{Binding Path=isPassoRiservato,Mode=OneWay}" IsEnabled="{Binding Path=isPassoRiservato,Mode=OneWay}">

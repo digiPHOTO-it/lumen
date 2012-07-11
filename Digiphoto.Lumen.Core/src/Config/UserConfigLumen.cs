@@ -223,5 +223,16 @@ namespace Digiphoto.Lumen.Config
 			get;
 			set;
 		}
+		public int numRigheProvini 
+		{ 
+			get;
+			set; 
+		}
+
+		public int numColoneProvini
+		{ 
+			get; 
+			set; 
+		}
 	}
 }

@@ -8,6 +8,7 @@
       ** Quindi creo un pulsante che ha una didascalia sotto.
     -->
 	<DataTemplate x:Key="pulsanteDiStampaTemplate">
+		<StackPanel Orientation="Horizontal" >
 		<Button ToolTip="{Binding}" 
                 Command="{Binding Path=DataContext.stampareCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
                 CommandParameter="{Binding}">
@@ -16,7 +17,13 @@
 				<Label Content="{Binding FormatoCarta.descrizione}" Width="48" HorizontalAlignment="Center" />
 			</StackPanel>
 		</Button>
+		</StackPanel>
 	</DataTemplate>
 
+	<!-- Template per il pannello che contiene tutti gli elementi della lista -->
+	<ItemsPanelTemplate x:Key="listaPulsantiDiStampaItemsPanelTemplate">
+		<!-- il wrappanel mi consente di sistemare al meglio le foto in funzione dello spazio disponibile ed andare a capo quando serve -->
+		<WrapPanel Orientation="Horizontal" />
+	</ItemsPanelTemplate>
 
 </ResourceDictionary>

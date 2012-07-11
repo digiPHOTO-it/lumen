@@ -106,13 +106,14 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 
 		private CodaDiStampe ricavaCodaDiStampa( ParamStampa param) {
 
-			string nomeStampante = param.nomeStampante; 
-
+			string nomeStampante = param.nomeStampante;
+			CodaDiStampe coda = null;
+			/* Nel caso in cui passo da una stampa provini ad una stampa normale o viceversa mi da dei problemi.
 			// Se non esiste già la stampante nella collezione, allora la istanzio
 			CodaDiStampe coda = (from c in this.code
 								 where c.Name.Equals( nomeStampante )
 								 select c).SingleOrDefault<CodaDiStampe>();
-
+			*/
 			if( coda == null  ) {
 				coda = new CodaDiStampe( param, nomeStampante, stampaCompletataCallback );
 				coda.Start();
