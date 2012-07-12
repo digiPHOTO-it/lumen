@@ -95,7 +95,7 @@
 		<TextBlock
       Margin="72,49.2,10,0"
       VerticalAlignment="Top"
-      Foreground="#FFECAD25"
+      Foreground="{Binding Path=TrayIconMessageForeground, ElementName=me, Mode=Default}"
       TextWrapping="Wrap"><Run Text="{Binding Path=TrayIconMessage, ElementName=me, Mode=Default}"/></TextBlock>
 		<Path
       Fill="#FFFFFFFF"
@@ -117,7 +117,7 @@
 				</LinearGradientBrush>
 			</Path.Stroke>
 		</Path>
-		<TextBlock Margin="72,10,10,0" VerticalAlignment="Top" Height="23.2" Text="{Binding Path=TrayIconTitle, ElementName=me, Mode=Default}" TextWrapping="Wrap" Foreground="#FFECAD25" FontWeight="Bold"/>
+		<TextBlock Margin="72,10,10,0" VerticalAlignment="Top" Height="23.2" Text="{Binding Path=TrayIconTitle, ElementName=me, Mode=Default}" TextWrapping="Wrap" Foreground="{Binding Path=TrayIconTitleForeground, ElementName=me, Mode=Default}" FontWeight="Bold"/>
 		<Image HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="16" Height="16" Source="/Digiphoto.Lumen.UI;component/Resources/close-16x16.png" Stretch="Fill" Opacity="0.4" ToolTip="Close Balloon" x:Name="imgClose" MouseDown="imgClose_MouseDown"/>
 	</Grid>
 </UserControl>
