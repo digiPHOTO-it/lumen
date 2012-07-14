@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Lumen"
-#define MyAppVersion "0.5"
+#define MyAppVersion "0.6"
 #define MyAppPublisher "digiPHOTO.it"
 #define MyAppURL "http://www.digiphoto.it/Lumen"
 #define MyAppExeName "Digiphoto.Lumen.UI.exe"
@@ -23,7 +23,7 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\digiPHOTO.Lumen
 DefaultGroupName=digiPHOTO
 DisableProgramGroupPage=yes
-LicenseFile=C:\Users\bluca\Documents\Visual Studio 2010\Projects\Lumen\Digiphoto.Lumen.UI\bin\Release\License_it.txt
+LicenseFile=..\Digiphoto.Lumen.UI\bin\Release\License_it.txt
 OutputDir=C:\rilasci\Lumen
 OutputBaseFilename=setup-{#MyAppName}-{#MyAppVersion}
 Compression=lzma
@@ -64,8 +64,8 @@ Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\bin\Release\Digiphoto.Lumen
 Source: "..\packages\System.Data.SQLite.1.0.81.0\lib\net40\System.Data.SQLite.dll"; DestDir: "{app}";  Check: "not IsWin64"; Flags: ignoreversion
 Source: "..\packages\System.Data.SQLite.1.0.81.0\lib\net40\System.Data.SQLite.Linq.dll"; DestDir: "{app}"; Check: "not IsWin64"; Flags: ignoreversion
 ; --- Driver sql x86 ---
-Source: "..\packages\System.Data.SQLite.x64.1.0.81.0\lib\net40\System.Data.SQLite.dll"; DestDir: "{app}";  Check: "IsWin64"; Flags: ignoreversion
-Source: "..\packages\System.Data.SQLite.x64.1.0.81.0\lib\net40\System.Data.SQLite.Linq.dll"; DestDir: "{app}"; Check: "IsWin64"; Flags: ignoreversion
+Source: "..\packages\System.Data.SQLite.1.0.81.0\lib\net40\System.Data.SQLite.dll"; DestDir: "{app}";  Check: "IsWin64"; Flags: ignoreversion
+Source: "..\packages\System.Data.SQLite.1.0.81.0\lib\net40\System.Data.SQLite.Linq.dll"; DestDir: "{app}"; Check: "IsWin64"; Flags: ignoreversion
 
 
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files

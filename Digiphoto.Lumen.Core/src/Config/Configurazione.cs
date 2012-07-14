@@ -30,7 +30,8 @@ namespace Digiphoto.Lumen.Config  {
 
 		public static string cartellaBaseFoto {
 			get {
-				return Path.Combine( cartellaAppData, "Foto" );
+				string p = Environment.GetFolderPath( Environment.SpecialFolder.CommonPictures );
+				return Path.Combine( p, applicationName, "Foto" );
 			}
 		}
 
@@ -162,8 +163,12 @@ namespace Digiphoto.Lumen.Config  {
 			userConfig.cartellaDatabase = decidiCartellaDatabase();
 			userConfig.autoZoomNoBordiBianchi = true;
 			userConfig.modoVendita = ModoVendita.Carrello;
-			userConfig.cartellaFoto = Path.Combine( Configurazione.cartellaAppData, "Foto" );
-			userConfig.cartellaMaschere = Path.Combine( Configurazione.cartellaAppData, "Maschere" );
+
+			// Le foto e le maschere le metto nella CommonPictures
+			string pp = Environment.GetFolderPath( Environment.SpecialFolder.CommonPictures );
+			userConfig.cartellaFoto = Path.Combine( pp, applicationName, "Foto" );
+			userConfig.cartellaMaschere = Path.Combine( pp, applicationName, "Maschere" );
+			
 			userConfig.estensioniGrafiche = ".jpg;.jpeg;.png;.tif;.tiff";
 			userConfig.editorImmagini = "MSPAINT.EXE";
 			userConfig.masterizzaDirettamente = false;
