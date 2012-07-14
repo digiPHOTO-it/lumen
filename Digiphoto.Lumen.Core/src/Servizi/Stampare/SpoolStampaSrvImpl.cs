@@ -107,13 +107,13 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 		private CodaDiStampe ricavaCodaDiStampa( ParamStampa param) {
 
 			string nomeStampante = param.nomeStampante;
-			CodaDiStampe coda = null;
-			/* Nel caso in cui passo da una stampa provini ad una stampa normale o viceversa mi da dei problemi.
+
+			/* TODO: Nel caso in cui passo da una stampa provini ad una stampa normale o viceversa mi da dei problemi. */
 			// Se non esiste già la stampante nella collezione, allora la istanzio
 			CodaDiStampe coda = (from c in this.code
 								 where c.Name.Equals( nomeStampante )
 								 select c).SingleOrDefault<CodaDiStampe>();
-			*/
+			
 			if( coda == null  ) {
 				coda = new CodaDiStampe( param, nomeStampante, stampaCompletataCallback );
 				coda.Start();
@@ -125,7 +125,10 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 
 		private void stampaCompletataCallback( object sender, StampatoMsg eventArgs ) {
 
-			_giornale.Info( "Stampa completata. Esito = " + eventArgs.lavoroDiStampa.esitostampa );
+			if( eventArgs.lavoroDiStampa.esitostampa == EsitoStampa.Errore )
+				_giornale.Error( "Stampa fallita. Esito = " + eventArgs.lavoroDiStampa.esitostampa );
+			else
+				_giornale.Info( "Stampa completata. Esito = " + eventArgs.lavoroDiStampa.esitostampa );
 
 			// Notifico tutta l'applicazione
 			pubblicaMessaggio( eventArgs );
