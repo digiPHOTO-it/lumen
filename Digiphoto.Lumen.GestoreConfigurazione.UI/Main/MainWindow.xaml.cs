@@ -15,6 +15,7 @@ using Digiphoto.Lumen.UI;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.UI.Mvvm;
 using Digiphoto.Lumen.UI.TrayIcon;
+using Digiphoto.Lumen.GestoreConfigurazione.UI.About;
 
 namespace Digiphoto.Lumen.GestoreConfigurazione.UI {
 	/// <summary>
@@ -139,6 +140,12 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI {
 				cb.IsEnabled = true;
 				e.Handled = true;
 			}
+		}
+
+		private void about_Click(object sender, RoutedEventArgs e)
+		{
+			AboutBox about = new AboutBox(this);
+			about.ShowDialog();
 		}
 	}
 }
