@@ -282,7 +282,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 			if (true)
 			{
 				TextBlock textIntestazione = new TextBlock();
-				textIntestazione.Text = Configurazione.infoFissa.descrizPuntoVendita.ToString() +" NOTE: "+ param.intestazione;
+				textIntestazione.Text = param.intestazione + "   " + Configurazione.infoFissa.descrizPuntoVendita;
 				textIntestazione.FontSize = testataH * 65 / 100; 
 				textIntestazione.Foreground = new SolidColorBrush(Colors.Black); ;
 				textIntestazione.Background = new SolidColorBrush(Colors.Orange); ;
