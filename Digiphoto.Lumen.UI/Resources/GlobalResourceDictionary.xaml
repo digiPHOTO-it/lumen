@@ -29,7 +29,7 @@
                     <Image.ToolTip>
                         <TextBlock>
                             <TextBlock.Text>
-                                <MultiBinding StringFormat="Num = {0}&#x0a;gg =  {1:dd/mmm/yy}&#x0a;Ope = {2}&#x0a;- - - - -&#x0a;{3}&#x0a;{4}">
+                                <MultiBinding StringFormat="Num = {0}&#x0a;gg =  {1:dd/MM/yy}&#x0a;Ope = {2}&#x0a;- - - - -&#x0a;{3}&#x0a;{4}">
                                     <Binding Path="numero" />
                                     <Binding Path="giornata" />
                                     <Binding Path="fotografo.id" />

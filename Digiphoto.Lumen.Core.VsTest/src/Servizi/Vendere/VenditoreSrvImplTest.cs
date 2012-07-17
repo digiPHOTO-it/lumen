@@ -14,6 +14,7 @@ using System.IO;
 using Digiphoto.Lumen.Servizi.Reports;
 using System.Diagnostics;
 using Digiphoto.Lumen.Database;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.Core.VsTest
 {
@@ -156,6 +157,13 @@ namespace Digiphoto.Lumen.Core.VsTest
 		{
 			using (new UnitOfWorkScope(false))
 			{
+				
+				// Ho bisogno di una stampante con il formato carta A5
+				StampantiAbbinateCollection stampantiAbbinate = StampantiAbbinateUtil.deserializza( Configurazione.UserConfigLumen.stampantiAbbinate );
+				
+
+				// TODO  il test presume che ci sia una stampante abbinata con la carta A5.
+				//       se non esiste, creare un abbinamento ad hoc.
 
 				_impl.creaNuovoCarrelloStampaDiretta();
 
