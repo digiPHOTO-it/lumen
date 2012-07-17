@@ -342,6 +342,16 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 		}
 
+		bool possoLogin {
+			get {
+				 bool posso = loginEffettuato == false;
+#if (! DEBUG)
+				if( posso ) 
+					posso = LoginPassword != null;
+#endif
+				return posso;
+			}
+		}
 
         #region Proprietà
 
@@ -664,7 +674,8 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             {
                 if (_loginCommand == null)
                 {
-                    _loginCommand = new RelayCommand(param => this.login(), param => loginEffettuato == false );
+                    _loginCommand = new RelayCommand(param => this.login(),
+													 param => possoLogin );
                 }
                 return _loginCommand;
             }
