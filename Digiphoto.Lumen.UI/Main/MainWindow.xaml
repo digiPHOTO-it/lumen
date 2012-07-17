@@ -98,6 +98,13 @@
 				
 				<TabItem ToolTip="Uscita">
 					<TabItem.Header>
+						<TextBlock Text="About" FontSize="14"/>
+					</TabItem.Header>
+					<Button Content="About" Height="50" Width="150" Click="Button_Click" />
+				</TabItem>
+
+				<TabItem ToolTip="Uscita">
+					<TabItem.Header>
 						<TextBlock Text="Uscita" FontSize="14" />
 					</TabItem.Header>
 					<Button Content="Uscita" Height="50" Command="{Binding CloseCommand}" Width="150" />

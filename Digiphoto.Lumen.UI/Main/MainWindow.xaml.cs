@@ -8,6 +8,7 @@ using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.UI.Reports;
 using Digiphoto.Lumen.UI.Mvvm;
 using Digiphoto.Lumen.UI.TrayIcon;
+using Digiphoto.Lumen.UI.About;
 
 namespace Digiphoto.Lumen.UI {
 	/// <summary>
@@ -131,5 +132,12 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		#endregion;
+
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+			AboutBox about = new AboutBox(this);
+			about.ShowDialog();
+
+		}
 	}
 }
