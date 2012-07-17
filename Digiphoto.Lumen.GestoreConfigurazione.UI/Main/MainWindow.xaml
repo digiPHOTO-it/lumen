@@ -16,7 +16,7 @@
     </Window.Resources>
 
     <DockPanel LastChildFill="True">
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Right">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Right" Height="32" Width="419">
             <Label Content="Password amministratore" Height="28" Margin="5,0,5,0" Name="label2"  Width="149" />
             <PasswordBox Height="23" Name="amministratorePasswordBox" Width="120"
                 PasswordChar="*"
@@ -24,7 +24,7 @@
                 xamlHelpers:PasswordBoxAssistant.BoundPassword="{Binding Path=LoginPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" KeyboardNavigation.TabIndex="0" />
             <Button Name="amministratoreLoginButton" Content="&gt;" Height="23"  Margin="5,0,5,0"  Width="22" Command="{Binding Path=loginCommand}" ToolTip="Esegui Login" TabIndex="2" />
 
-			<Button Content="About" Name="about" Width="100" Click="about_Click" />
+			<Button Content="About" Name="about" Height="23" Width="100" Click="about_Click"  Margin="5,0,5,0"/>
         </StackPanel>
 
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" >
