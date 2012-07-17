@@ -19,9 +19,11 @@ using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.UI.Logging;
 using Digiphoto.Lumen.UI.EliminaVecchiRullini;
 using Digiphoto.Lumen.Servizi.Reports.ConsumoCarta;
+using Digiphoto.Lumen.Eventi;
+using Digiphoto.Lumen.Servizi.Stampare;
 namespace Digiphoto.Lumen.UI {
 
-	class MainWindowViewModel : ClosableWiewModel {
+	class MainWindowViewModel : ClosableWiewModel, IObserver<Messaggio> {
 
 		public MainWindowViewModel() {
 
@@ -31,6 +33,9 @@ namespace Digiphoto.Lumen.UI {
 
             selettoreFormatoCartaAbbinatoViewModel = new SelettoreFormatoCartaAbbinatoViewModel();
 
+			// Ascolto i messaggi
+			IObservable<Messaggio> observable = LumenApplication.Instance.bus.Observe<Messaggio>();
+			observable.Subscribe( this );
         }
 
         public SelettoreStampantiInstallateViewModel selettoreStampantiInstallateViewModel
@@ -174,5 +179,26 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+
+		public void OnCompleted() {
+			// throw new NotImplementedException();
+		}
+
+		public void OnError( Exception error ) {
+			// throw new NotImplementedException();
+		}
+
+		public void OnNext( Messaggio msg ) {
+
+			if( msg is StampatoMsg ) {
+
+				StampatoMsg sm = (StampatoMsg)msg;
+
+				if( sm.lavoroDiStampa.esitostampa == EsitoStampa.Errore ) {
+					dialogProvider.ShowError( sm.lavoroDiStampa.ToString(), "Lavoro di stampa fallito", null );
+				}
+			}
+
+		}
 	}
 }

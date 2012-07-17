@@ -72,17 +72,29 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		#endregion
 
+		#region Fields
 		private Object thisLock = new Object();
+		private StampantiAbbinateCollection _stampantiAbbinate;
+		#endregion Fields
+
 
 		public VenditoreSrvImpl() : base() {
 
 			// istanzio il gestore del carrello e creo subito un carrello nuovo per iniziare a lavorare subito.
 			gestoreCarrello = new GestoreCarrello();
-			gestoreCarrello.creaNuovo();
 
 			modoVendita = Configurazione.UserConfigLumen.modoVendita;
 
 			contaMessaggiInCoda = 0;
+
+		}
+
+		public override void start() {
+
+			base.start();
+
+			gestoreCarrello.creaNuovo();
+			_stampantiAbbinate = StampantiAbbinateUtil.deserializza( Configurazione.UserConfigLumen.stampantiAbbinate );
 
 		}
 
@@ -309,8 +321,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
 
-
-			StampantiAbbinateCollection stampantiAbbinate = StampantiAbbinateUtil.deserializza( Configurazione.UserConfigLumen.stampantiAbbinate );
 			
 
 			int conta = 0;
@@ -323,7 +333,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					// Siccome il nome della stampante è un attributo transiente,
 					// eventualmente lo assegno. Potrebbe essere null, quando carico un carrello dal db.
 					if( riCaFotoStampata.nomeStampante == null ) {
-						StampanteAbbinata sa = stampantiAbbinate.FirstOrDefault<StampanteAbbinata>( s => s.FormatoCarta.Equals( riCaFotoStampata.formatoCarta ) );
+						StampanteAbbinata sa = _stampantiAbbinate.FirstOrDefault<StampanteAbbinata>( s => s.FormatoCarta.Equals( riCaFotoStampata.formatoCarta ) );
 						if( sa != null )
 							riCaFotoStampata.nomeStampante = sa.StampanteInstallata.NomeStampante;
 						else

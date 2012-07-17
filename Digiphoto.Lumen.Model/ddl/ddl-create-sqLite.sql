@@ -36,7 +36,7 @@
 
 -- Creating table 'Fotografi'
 CREATE TABLE [Fotografi] (
-    [id] nvarchar(16)   NOT NULL ,
+    [id] nvarchar(16) PRIMARY KEY  NOT NULL ,
     [cognomeNome] nvarchar(50)   NOT NULL ,
     [iniziali] nvarchar(2)   NOT NULL ,
     [attivo] bit   DEFAULT 'True' NOT NULL ,
@@ -46,7 +46,7 @@ CREATE TABLE [Fotografi] (
 
 -- Creating table 'Fotografie'
 CREATE TABLE [Fotografie] (
-    [id] uniqueidentifier   NOT NULL ,
+    [id] uniqueidentifier PRIMARY KEY  NOT NULL ,
     [nomeFile] nvarchar(100)   NOT NULL ,
     [dataOraScatto] datetime   NULL ,
     [didascalia] nvarchar(2147483647)   NULL ,
@@ -71,7 +71,7 @@ CREATE TABLE [Fotografie] (
 
 -- Creating table 'Eventi'
 CREATE TABLE [Eventi] (
-    [id] uniqueidentifier   NOT NULL ,
+    [id] uniqueidentifier PRIMARY KEY  NOT NULL ,
     [descrizione] nvarchar(50)   NOT NULL ,
     [attivo] bit   DEFAULT 'True' NOT NULL ,
     [ordinamento] smallint   NULL 
@@ -104,7 +104,7 @@ CREATE TABLE [RigheAlbum] (
 
 -- Creating table 'ScarichiCards'
 CREATE TABLE [ScarichiCards] (
-    [id] uniqueidentifier   NOT NULL ,
+    [id] uniqueidentifier  PRIMARY KEY NOT NULL ,
     [tempo] datetime   NOT NULL ,
     [totFoto] smallint   NOT NULL ,
     [giornata] datetime   NOT NULL ,
@@ -118,7 +118,7 @@ CREATE TABLE [ScarichiCards] (
 
 -- Creating table 'FormatiCarta'
 CREATE TABLE [FormatiCarta] (
-    [id] uniqueidentifier   NOT NULL ,
+    [id] uniqueidentifier PRIMARY KEY  NOT NULL ,
     [descrizione] nvarchar(50)   NOT NULL ,
     [prezzo] decimal(18,0)   NOT NULL ,
     [attivo] bit   DEFAULT 'True' NOT NULL ,
@@ -127,7 +127,7 @@ CREATE TABLE [FormatiCarta] (
 
 -- Creating table 'InfosFisse'
 CREATE TABLE [InfosFisse] (
-    [id] nvarchar(1)   DEFAULT 'K' NOT NULL ,
+    [id] nvarchar(1) PRIMARY KEY  DEFAULT 'K' NOT NULL ,
     [ultimoNumFotogramma] integer   NOT NULL ,
     [dataUltimoScarico] datetime   NULL ,
     [versioneDbCompatibile] nvarchar(10)   DEFAULT '1.0' NOT NULL ,
@@ -141,7 +141,7 @@ CREATE TABLE [InfosFisse] (
 
 -- Creating table 'Carrelli'
 CREATE TABLE [Carrelli] (
-    [id] uniqueidentifier   NOT NULL ,
+    [id] uniqueidentifier PRIMARY KEY  NOT NULL ,
     [giornata] datetime   NOT NULL ,
     [tempo] datetime   NOT NULL ,
     [totaleAPagare] decimal(18,0)   NOT NULL ,
@@ -152,7 +152,7 @@ CREATE TABLE [Carrelli] (
 
 -- Creating table 'RigheCarrelli'
 CREATE TABLE [RigheCarrelli] (
-    [id] uniqueidentifier   NOT NULL ,
+    [id] uniqueidentifier PRIMARY KEY  NOT NULL ,
     [prezzoLordoUnitario] decimal(18,0)   NOT NULL ,
     [quantita] smallint   NOT NULL ,
     [prezzoNettoTotale] decimal(18,0)   NOT NULL ,
@@ -190,7 +190,7 @@ CREATE TABLE [RigheCarrelli] (
 
 -- Creating table 'ConsumiCartaGiornalieri'
 CREATE TABLE [ConsumiCartaGiornalieri] (
-    [id] uniqueidentifier   NOT NULL ,
+    [id] uniqueidentifier PRIMARY KEY  NOT NULL ,
     [giornata] datetime   NOT NULL ,
     [totFogli] smallint   NOT NULL ,
     [diCuiProvini] smallint   NOT NULL ,
