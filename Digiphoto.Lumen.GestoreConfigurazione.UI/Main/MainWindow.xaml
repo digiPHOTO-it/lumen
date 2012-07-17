@@ -23,6 +23,8 @@
                 xamlHelpers:PasswordBoxAssistant.BindPassword="true"
                 xamlHelpers:PasswordBoxAssistant.BoundPassword="{Binding Path=LoginPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" KeyboardNavigation.TabIndex="0" />
             <Button Name="amministratoreLoginButton" Content="&gt;" Height="23"  Margin="5,0,5,0"  Width="22" Command="{Binding Path=loginCommand}" ToolTip="Esegui Login" TabIndex="2" />
+
+			<Button Content="About" Name="about" Width="100" Click="about_Click" />
         </StackPanel>
 
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" >
