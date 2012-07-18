@@ -81,6 +81,11 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 				IdrataTarget quale = lavoroDiStampaFoto.fotografia.imgRisultante != null ? IdrataTarget.Risultante : IdrataTarget.Originale;
 				AiutanteFoto.idrataImmaginiFoto(lavoroDiStampaFoto.fotografia, quale, true);
 
+				//Rinstanzio il stampatore che potrebbe essere di un tipo differente dal mio
+				LavoroDiStampaFoto lsp = (LavoroDiStampaFoto)lavoroDiStampa;
+				ParamStampa param = lsp.param;
+				_stampatore = ImagingFactory.Instance.creaStampatore(param, param.nomeStampante);
+
 			}else if(lavoroDiStampa is LavoroDiStampaProvini){
 				LavoroDiStampaProvini lavoroDiStampaProvini = lavoroDiStampa as LavoroDiStampaProvini;
 
@@ -89,6 +94,12 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 					IdrataTarget quale = fot.imgRisultante != null ? IdrataTarget.Risultante : IdrataTarget.Originale;
 					AiutanteFoto.idrataImmaginiFoto(fot, quale, true);
 				}
+
+				//Rinstanzio il stampatore che potrebbe essere di un tipo differente dal mio
+				LavoroDiStampaProvini lsp = (LavoroDiStampaProvini)lavoroDiStampa;
+				ParamStampa param = lsp.param;
+				_stampatore = ImagingFactory.Instance.creaStampatore( param,param.nomeStampante);
+
 			}
 			EsitoStampa esito = _stampatore.esegui( lavoroDiStampa );
 

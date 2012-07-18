@@ -22,6 +22,7 @@ namespace Digiphoto.Lumen.UI.Dialogs
 
 			paramStampaProvini.numeroColonne = Configurazione.UserConfigLumen.numColoneProvini;
 			paramStampaProvini.numeroRighe = Configurazione.UserConfigLumen.numRigheProvini;
+			paramStampaProvini.macchiaProvini = Configurazione.UserConfigLumen.macchiaProvini;
 		}
 
 		private StampaProviniDialog stampaProviniDialog;

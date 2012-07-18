@@ -131,7 +131,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 				// Stampigli
 				paramStampaProvini.stampigli = configurazione.stampigli;
-				paramStampaProvini.macchiaProvini = false;
 				spoolStampeSrv.accodaStampaProvini(fotografie.ToList<Fotografia>(), paramStampaProvini);
 			}
 		}

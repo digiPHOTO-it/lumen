@@ -153,14 +153,15 @@
                         <Label Content="Modalità di vendita" HorizontalAlignment="Left" Margin="13,87,0,0" Name="label9" VerticalAlignment="Top" Width="113" />
                     <ComboBox Name="comboBoxModalitaVendita"  HorizontalAlignment="Left" Margin="151,91,0,0" VerticalAlignment="Top" Width="148" ItemsSource="{Binding modoVenditaValues}" SelectedValue="{Binding Path=cfg.modoVendita}" />
                         
-                    <GroupBox Header="Stampigli" HorizontalAlignment="Left" Margin="24,264,0,0"  VerticalAlignment="Top" Width="157" Height="87">
+                    <GroupBox Header="Stampigli" HorizontalAlignment="Left" Margin="24,264,0,0"  VerticalAlignment="Top" Width="157" Height="98">
                         <StackPanel Orientation="Vertical" Margin="5,5,0,0">                            
                             <CheckBox Content="Operatore" IsChecked="{Binding cfg.stampiglioOperatore}" />
                             <CheckBox Content="Giornata" IsChecked="{Binding cfg.stampiglioGiornata}" />
                             <CheckBox Content="N° foto" IsChecked="{Binding cfg.stampiglioNumFoto}" />
+                            <CheckBox Content="Macchia Provini" IsChecked="{Binding cfg.macchiaProvini}" />
                         </StackPanel>
                     </GroupBox>
-                    <Label Content="Fuori Standard" Height="28" HorizontalAlignment="Left" Margin="209,334,0,0" Name="label12" VerticalAlignment="Top" Width="133" />
+                    <Label Content="Fuori Standard" Height="28" HorizontalAlignment="Right" Margin="0,334,426,0" Name="label12" VerticalAlignment="Top" Width="133" />
 					<TextBox Height="23" HorizontalAlignment="Left" Margin="409,336,0,0" Text="{Binding Path=cfg.fuoriStandard}" ToolTip="Identificatvo per personalizzazioni fuori standard." Name="indFuroStandard" VerticalAlignment="Top" Width="75" />
 					<Label Content="Cartella Rullini" Height="25" HorizontalAlignment="Left" Margin="13,22,0,0" Name="label5" VerticalAlignment="Top" Width="121" />
                     <TextBox Height="23" Margin="151,22,0,0" Text="{Binding Path=cfg.cartellaFoto}" VerticalAlignment="Top" HorizontalAlignment="Left" Width="562" />

@@ -32,7 +32,8 @@ namespace Digiphoto.Lumen.UI {
 
 
 
-	public class FotoGalleryViewModel : ViewModelBase, IObserver<GestoreCarrelloMsg> {
+	public class FotoGalleryViewModel : ViewModelBase, IObserver<GestoreCarrelloMsg>, IObserver<StampatoMsg>
+	{
 
 		private Boolean operazioniCarrelloBloccanti = false;
 
@@ -42,6 +43,9 @@ namespace Digiphoto.Lumen.UI {
 
 			IObservable<GestoreCarrelloMsg> observableCarrello = LumenApplication.Instance.bus.Observe<GestoreCarrelloMsg>();
 			observableCarrello.Subscribe(this);
+
+			IObservable<StampatoMsg> observableStampato = LumenApplication.Instance.bus.Observe<StampatoMsg>();
+			observableStampato.Subscribe(this);
 
 			paramCercaFoto = new ParamCercaFoto();
 			metadati = new MetadatiFoto();
@@ -860,6 +864,14 @@ namespace Digiphoto.Lumen.UI {
 			if (msg.fase == Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.CreatoNuovoCarrello)
 			{
 				operazioniCarrelloBloccanti = false;
+			}
+		}
+
+		public void OnNext(StampatoMsg value)
+		{
+			if (value.lavoroDiStampa.esitostampa == EsitoStampa.Errore)
+			{
+				dialogProvider.ShowError("Stampa non Eseguita Correttamente", "Errore", null);
 			}
 		}
 

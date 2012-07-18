@@ -47,8 +47,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 		 */
 		public EsitoStampa esegui( LavoroDiStampa lavoroDiStampa ) {
 
-			LavoroDiStampaProvini _lavoroDiStampa;
-			_lavoroDiStampa = (LavoroDiStampaProvini)lavoroDiStampa;
+			LavoroDiStampaProvini _lavoroDiStampa = lavoroDiStampa as LavoroDiStampaProvini;
 
 			_giornale.Debug( "Sto per avviare il lavoro di stampa: " + lavoroDiStampa.ToString() );
 
