@@ -22,6 +22,8 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 
 		private VenditoreSrvImpl _impl;
 
+		IDisposable ascoltami;
+
 		[TestInitialize]
 		public void initTest()
 		{
@@ -31,12 +33,13 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 			this._impl = (VenditoreSrvImpl)LumenApplication.Instance.getServizioAvviato<IVenditoreSrv>();
 
 			IObservable<StampatoMsg> observable = app.bus.Observe<StampatoMsg>();
-			observable.Subscribe(this);
+			ascoltami = observable.Subscribe(this);
 		}
 
 		[TestCleanup()]
 		public void MyTestCleanup()
 		{
+			ascoltami.Dispose();
 			LumenApplication.Instance.ferma();
 		}
 
