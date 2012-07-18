@@ -471,7 +471,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			{
 				lavoroDiStampaFoto = lavoroDiStampa as LavoroDiStampaFoto;
 
-				if (lavoroDiStampaFoto.fotografia != null)
+				if (false && lavoroDiStampaFoto.fotografia != null)
 				{
 					try {
 						// Prima che sia troppo tardi devo rilasciare le immagini (altrimenti rimangono loccate)
@@ -495,7 +495,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			{
 				lavoroDiStampaProvini = lavoroDiStampa as LavoroDiStampaProvini;
 				foreach(Fotografia foto in lavoroDiStampaProvini.fotografie){
-					if (foto != null)
+					if (false && foto != null)
 					{
 						try
 						{
