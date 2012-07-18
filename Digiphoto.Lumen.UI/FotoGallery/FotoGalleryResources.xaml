@@ -73,4 +73,13 @@
         </Button>
     </DataTemplate>
 
+	<DataTemplate x:Key="stampaRapidaMenu">
+		<MenuItem Header="{Binding}"
+				Command="{Binding Path=DataContext.stampaRapidaCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
+				CommandParameter="{Binding}">
+			<MenuItem.Icon>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Printer-48x48.png" />
+			</MenuItem.Icon>
+		</MenuItem>
+	</DataTemplate>
 </ResourceDictionary>
