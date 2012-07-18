@@ -107,6 +107,7 @@
     <Compile Include="src\Servizi\Ritoccare\FotoRitoccoSrvImplTest.cs" />
     <Compile Include="src\Servizi\Stampare\StampantiAbbinateSrvImplTest.cs" />
     <Compile Include="src\Servizi\Stampare\StampantiInstallateSrvImplTest.cs" />
+    <Compile Include="src\Servizi\Stampare\StampaProviniTest.cs" />
     <Compile Include="src\Util\QueriesVarieTest.cs" />
     <Compile Include="src\Servizi\EliminaFotoVecchie\EliminaFotoVecchieSrvImplTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

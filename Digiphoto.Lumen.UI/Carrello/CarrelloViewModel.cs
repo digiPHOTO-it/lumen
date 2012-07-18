@@ -23,7 +23,7 @@ using Digiphoto.Lumen.Database;
 
 namespace Digiphoto.Lumen.UI
 {
-	public class CarrelloViewModel : ViewModelBase, IObserver<MasterizzaMsg>, IObserver<GestoreCarrelloMsg>
+	public class CarrelloViewModel : ViewModelBase, IObserver<MasterizzaMsg>, IObserver<GestoreCarrelloMsg>, IObserver<StampatoMsg>
     {
 		private Digiphoto.Lumen.Servizi.Masterizzare.Fase StatoMasterizzazione = Fase.Attesa;
 
@@ -42,6 +42,9 @@ namespace Digiphoto.Lumen.UI
 
 				IObservable<GestoreCarrelloMsg> observableCarrello = LumenApplication.Instance.bus.Observe<GestoreCarrelloMsg>();
 				observableCarrello.Subscribe(this);
+
+				IObservable<StampatoMsg> observableStampato = LumenApplication.Instance.bus.Observe<StampatoMsg>();
+				observableStampato.Subscribe(this);
 
 				// Creo due view diverse per le righe del carrello
 				rinfrescaViewRighe();
@@ -1146,6 +1149,14 @@ namespace Digiphoto.Lumen.UI
 		{
 			if(msg.fase== Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.UpdateCarrello){
 				updateGUI();
+			}
+		}
+
+		public void OnNext(StampatoMsg value)
+		{
+			if (value.lavoroDiStampa.esitostampa == EsitoStampa.Errore)
+			{
+				dialogProvider.ShowError("Stampa non Eseguita Correttamente", "Errore", null);
 			}
 		}
 

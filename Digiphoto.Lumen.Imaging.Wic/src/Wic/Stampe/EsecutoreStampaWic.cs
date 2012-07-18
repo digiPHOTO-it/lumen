@@ -37,8 +37,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 		 */
 		public EsitoStampa esegui( LavoroDiStampa lavoroDiStampa ) {
 
-			LavoroDiStampaFoto _lavoroDiStampa;
-			_lavoroDiStampa = lavoroDiStampa as LavoroDiStampaFoto;
+			LavoroDiStampaFoto _lavoroDiStampa = lavoroDiStampa as LavoroDiStampaFoto;
 
 			_giornale.Debug( "Sto per avviare il lavoro di stampa: " + lavoroDiStampa.ToString() );
 
@@ -47,10 +46,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 			try {
 
 				// Ricavo l'immagine da stampare
-				//IImmagine immagineDaStampare = _lavoroDiStampa.fotografia.imgRisultante != null ? _lavoroDiStampa.fotografia.imgRisultante : _lavoroDiStampa.fotografia.imgOrig;
-
-				// Ricavo l'immagine da stampare
-				IImmagine immagineDaStampare = AiutanteFoto.idrataImmagineGrande(_lavoroDiStampa.fotografia);
+				IImmagine immagineDaStampare = _lavoroDiStampa.fotografia.imgRisultante != null ? _lavoroDiStampa.fotografia.imgRisultante : _lavoroDiStampa.fotografia.imgOrig;
 				BitmapSource bmp = ((ImmagineWic)immagineDaStampare).bitmapSource;
 
 				// Come print-server uso me stesso

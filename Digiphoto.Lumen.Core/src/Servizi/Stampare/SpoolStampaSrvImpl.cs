@@ -108,7 +108,6 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 
 			string nomeStampante = param.nomeStampante;
 
-			/* TODO: Nel caso in cui passo da una stampa provini ad una stampa normale o viceversa mi da dei problemi. */
 			// Se non esiste già la stampante nella collezione, allora la istanzio
 			CodaDiStampe coda = (from c in this.code
 								 where c.Name.Equals( nomeStampante )

@@ -234,5 +234,11 @@ namespace Digiphoto.Lumen.Config
 			get; 
 			set; 
 		}
+
+		public bool macchiaProvini
+		{
+			get;
+			set;
+		}
 	}
 }
