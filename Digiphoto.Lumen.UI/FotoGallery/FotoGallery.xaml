@@ -17,12 +17,15 @@
         <lum:FotoGalleryViewModel />
     </lumM:UserControlBase.DataContext>
 
-    <UserControl.Resources>
+	<UserControl.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/Resources/GlobalResourceDictionary.xaml" />
+				<ResourceDictionary Source="FotoGalleryResources.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</UserControl.Resources>
 
-        <ResourceDictionary Source="FotoGalleryResources.xaml" />
-
-    </UserControl.Resources>
-    
     <DockPanel>
         
         <ToolBarTray DockPanel.Dock="Left" Orientation="Vertical">
@@ -200,8 +203,16 @@
                     <EventSetter Event="MouseDoubleClick" Handler="listBoxItemImageGallery_MouseDoubleClick" />
                     </Style>
                 </ListBox.ItemContainerStyle>
-            
-        </ListBox>
+			<ListBox.ContextMenu>
+				<ContextMenu >
+					<MenuItem Header="Stampa"
+							ItemsSource="{Binding stampantiAbbinate}" 
+							ItemTemplate="{StaticResource stampaRapidaMenu}" >
+					</MenuItem>
+				</ContextMenu>
+			</ListBox.ContextMenu>
+
+		</ListBox>
 
     </DockPanel>
 

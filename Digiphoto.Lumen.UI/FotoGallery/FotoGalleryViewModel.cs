@@ -391,6 +391,20 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private RelayCommand _stampaRapidaCommand;
+		public ICommand stampaRapidaCommand
+		{
+			get
+			{
+				if (_stampaRapidaCommand == null)
+				{
+					_stampaRapidaCommand = new RelayCommand(param => stampaRapida( param ),
+						param => true, false);
+				}
+				return _stampaRapidaCommand;
+			}
+		}
+
 		private RelayCommand _stampareProviniCommand;
 		public ICommand stampareProviniCommand
 		{
@@ -604,7 +618,26 @@ namespace Digiphoto.Lumen.UI {
 				// Spengo tutto
 				deselezionareTutto();
 			}
+		}
 
+		private void stampaRapida(object objStampanteAbbinata)
+		{
+			StampanteAbbinata stampanteAbbinata = (StampanteAbbinata)objStampanteAbbinata;
+
+			IList<Fotografia> listaSelez = creaListaFotoSelezionate();
+
+			venditoreSrv.creaNuovoCarrelloStampaDiretta();
+			venditoreSrv.effettuaStampaDiretta(listaSelez, creaParamStampaFoto(stampanteAbbinata));
+			if (venditoreSrv.vendereCarrelloStampaDiretta())
+			{
+				dialogProvider.ShowMessage("Carrello venduto Correttamente", "Avviso");
+			}
+			else
+			{
+				dialogProvider.ShowError("Errore inserimento carrello nella cassa", "Errore", null);
+			}
+			// Spengo tutto
+			deselezionareTutto();
 		}
 
 		private void stampareProvini()
