@@ -80,7 +80,10 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Stampare
                     _impl.addFileToBurner(Configurazione.cartellaRepositoryFoto + Path.DirectorySeparatorChar + fot.nomeFile);
                 }
             }
-            _impl.testMedia();
+			if(!_impl.testMedia())
+			{
+				return;
+			}
             _impl.etichetta = "Masterizza";
             _impl.burning();
             while (!_elaborazioneTerminata)
@@ -93,7 +96,10 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Stampare
         [TestMethod]
         public void TestFormatting()
         {
-            _impl.testMedia();
+			if (!_impl.testMedia())
+			{
+				return;
+			}
             _impl.formatting();
             while (!_elaborazioneTerminata)
             {
