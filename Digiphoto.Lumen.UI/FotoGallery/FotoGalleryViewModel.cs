@@ -664,6 +664,7 @@ namespace Digiphoto.Lumen.UI {
 			p.numeroColonne = param.numeroColonne;
 			p.numeroRighe = param.numeroRighe;
 			p.intestazione = param.intestazione;
+			p.macchiaProvini = param.macchiaProvini;
 			// TODO per ora il nome della Porta a cui è collegata la stampante non lo uso. Non so cosa farci.
 
 			return p;
