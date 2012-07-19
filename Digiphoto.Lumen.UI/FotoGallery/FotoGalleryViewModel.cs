@@ -630,11 +630,12 @@ namespace Digiphoto.Lumen.UI {
 			venditoreSrv.effettuaStampaDiretta(listaSelez, creaParamStampaFoto(stampanteAbbinata));
 			if (venditoreSrv.vendereCarrelloStampaDiretta())
 			{
-				dialogProvider.ShowMessage("Carrello venduto Correttamente", "Avviso");
+				// quando tutto va bene non diciamo niente. Segnaliamo solo gli errori.
+				// dialogProvider.ShowMessage("Carrello venduto Correttamente", "Avviso");
 			}
 			else
 			{
-				dialogProvider.ShowError("Errore inserimento carrello nella cassa", "Errore", null);
+				dialogProvider.ShowError("Stampa diretta non riuscita.", "Errore", null);
 			}
 			// Spengo tutto
 			deselezionareTutto();
