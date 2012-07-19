@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using Digiphoto.Lumen.Eventi;
+using log4net;
 
 namespace Digiphoto.Lumen.UI.Mvvm
 {
@@ -14,6 +15,8 @@ namespace Digiphoto.Lumen.UI.Mvvm
     /// </summary>
 	public abstract class ViewModelBase : INotifyPropertyChanged, IDisposable
     {
+		protected static readonly ILog _giornale = LogManager.GetLogger( typeof( MainWindowViewModel ) );
+
 
 		public IDialogProvider dialogProvider {
 			get;

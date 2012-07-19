@@ -790,6 +790,10 @@ namespace Digiphoto.Lumen.UI {
 			// Pubblico un messaggio indicando che ci sono delle foto da modificare.
 			FotoDaModificareMsg msg = new FotoDaModificareMsg( this );
 			msg.fotosDaModificare.InsertRange( 0, creaListaFotoSelezionate() );
+
+			// Per semplificare le operazioni lavoro ancora in modalità immediata altrimenti ci sono troppi tasti da premere.
+			msg.immediata = true;
+
 			LumenApplication.Instance.bus.Publish( msg );
 		
 		}
