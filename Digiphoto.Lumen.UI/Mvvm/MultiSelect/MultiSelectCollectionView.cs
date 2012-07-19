@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System;
+using System.Windows;
 
 namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 
@@ -96,6 +97,29 @@ namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 			foreach( Control control in controls )
 				SetSelection( (Selector)control );
 		}
+
+		public void Deselect( T elem ) {
+
+			if( SelectedItems.Contains( elem ) ) {
+
+				this.ignoreSelectionChanged = true;
+
+				try {
+
+					this.SelectedItems.Remove( elem );
+
+					// Update the UI control.
+					foreach( Selector control in this.controls )
+							SetSelection( control );
+
+				} finally {
+					this.ignoreSelectionChanged = false;
+				}
+
+			}
+
+		}
+
 
 		public void SelectAll() {
 

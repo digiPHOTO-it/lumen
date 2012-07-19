@@ -142,6 +142,19 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		public bool possoRiempireElencoInModifica {
+			get {
+				return modificheInCorso == false && esistonoFotoInAttesaDiModifica;
+			}
+		}
+
+		public bool possoSvuotareElencoInModifica {
+			get {
+				return modificheInCorso == false && isAlmenoUnaFotoSelezionata;
+			}
+		}
+
+
 		public FaseDelGiorno [] fasiDelGiorno {
 			get {
 				return FaseDelGiornoUtil.fasiDelGiorno;
@@ -319,10 +332,21 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		public int contaFotoInAttesaDiModifica {
+			get {
+				return fotografieDaModificare != null ? fotografieDaModificare.Count : 0;
+			}
+		}
+
+		public bool esistonoFotoInAttesaDiModifica {
+			get {
+				return contaFotoInAttesaDiModifica > 0;
+			}
+		}
+
 		bool possoSvuotareListaDaModificare {
 			get {
-				return modificheInCorso == false &&
-					   fotografieDaModificare != null && fotografieDaModificare.Count > 0;
+				return modificheInCorso == false && esistonoFotoInAttesaDiModifica;
 			}
 		}
 
@@ -488,6 +512,29 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		private RelayCommand _commandRiempireElencoInModifica;
+		public ICommand commandRiempireElencoInModifica {
+			get {
+				if( _commandRiempireElencoInModifica == null ) {
+					_commandRiempireElencoInModifica = new RelayCommand( p => riempireElencoInModifica(),
+																		 p => possoRiempireElencoInModifica );
+				}
+				return _commandRiempireElencoInModifica;
+			}
+		}
+
+		private RelayCommand _commandSvuotareElencoInModifica;
+		public ICommand commandSvuotareElencoInModifica {
+			get {
+				if( _commandSvuotareElencoInModifica == null ) {
+					_commandSvuotareElencoInModifica = new RelayCommand( p => svuotareElencoInModifica(),
+																		 p => possoSvuotareElencoInModifica );
+				}
+				return _commandSvuotareElencoInModifica;
+			}
+		}
+		
+
 	
 
 		#endregion Comandi
@@ -588,8 +635,26 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		private void rifiutareCorrezioni() {
 			resetEffetti();
 			foreach( Fotografia f in fotografieDaModificareCW.SelectedItems )
-				fotoRitoccoSrv.undoCorrezioniTransienti( f );
+				rifiutareCorrezioni( f, false );
 			modificheInCorso = false;
+		}
+
+		/// <summary>
+		/// Voglio rinunciare a modificare una foto e la tolgo anche dall'elenco di quelle in modifica.
+		/// </summary>
+		/// <param name="daTogliere"></param>
+		internal void rifiutareCorrezioni( Fotografia daTogliere, bool toglila ) {
+
+			fotoRitoccoSrv.undoCorrezioniTransienti( daTogliere );
+			if( toglila ) {
+				// La spengo
+				fotografieDaModificareCW.Deselect( daTogliere );
+
+				// Se non mi rimane piu nulla, azzero tutti gli effetti.
+				if( fotografieDaModificareCW.SelectedItems.Count <= 0 )
+					resetEffetti();
+			}
+
 		}
 
 		private void salvareMetadati() {
@@ -816,12 +881,16 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			// Faccio giri diversi per i vari formati grafici che sono indicati nella configurazione (jpg, tif)
 			foreach( string estensione in Configurazione.estensioniGraficheAmmesse ) {
 
-				string [] files = Directory.GetFiles( Configurazione.UserConfigLumen.cartellaMaschere, searchPattern: estensione, searchOption: SearchOption.AllDirectories );
+				string [] files = Directory.GetFiles( Configurazione.UserConfigLumen.cartellaMaschere, searchPattern: "*"+estensione, searchOption: SearchOption.AllDirectories );
 
 				// trasferisco tutti i files elencati
 				foreach( string nomeFileSrc in files ) {
-					BitmapImage msk = new BitmapImage( new Uri( nomeFileSrc ) );
-					maschere.Add( msk );
+					try {
+						BitmapImage msk = new BitmapImage( new Uri( nomeFileSrc ) );
+						maschere.Add( msk );
+					} catch( Exception ee ) {
+						_giornale.Error( "La maschera: " + nomeFileSrc + " non è valida quindi non viene caricata" );
+					}
 				}
 			}
 
@@ -929,8 +998,14 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		void svuotareListaDaModificare() {
 
 			fotografieDaModificare.Clear();
+		}
 
-//			this.fotografieDaModificareCW.Refresh();
+		void riempireElencoInModifica() {
+			fotografieDaModificareCW.SelectAll();
+		}
+
+		void svuotareElencoInModifica() {
+			fotografieDaModificareCW.DeselectAll();
 		}
 
 		#endregion Metodi
@@ -1001,6 +1076,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		#endregion Gestori Eventi
+
+
 
 	}
 }
