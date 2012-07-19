@@ -17,6 +17,7 @@ using Digiphoto.Lumen.Imaging;
 using System.Diagnostics;
 using System.IO;
 using Digiphoto.Lumen.Util;
+using Digiphoto.Lumen.Core.Database;
 
 
 
@@ -240,6 +241,18 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				primoPianoCanvasMask( false );
 				DragDrop.DoDragDrop( container, container.DataContext, DragDropEffects.Copy );
 			}
+		}
+
+		/// <summary>
+		/// Questo mi serve per togliere dalla modifica una foto.
+		/// </summary>
+		private void itemsControlImmaginiInModifica_PreviewMouseDown( object sender, MouseButtonEventArgs e ) {
+
+			if( e.OriginalSource is Image ) {
+				Image image = e.OriginalSource as Image;
+				DragDrop.DoDragDrop( image, image.DataContext, DragDropEffects.Move );
+			}
+
 		}
 
 		/// <summary>
@@ -482,6 +495,23 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			// Elimino le foto che sono state droppate sul canvas
 			canvasMsk.Children.Clear();
 		}
+
+		private void listBoxImmaginiDaModificare_Drop( object sender, DragEventArgs e ) {
+
+			using( new UnitOfWorkScope() ) {
+
+				var oo = e.Data.GetData( typeof( Fotografia ) );
+
+				if( oo != null ) {
+					Fotografia daTogliere = oo as Fotografia;
+					_viewModel.rifiutareCorrezioni( daTogliere, true );
+				}
+
+			}
+
+		}
+
+
 
 	}
 }
