@@ -52,7 +52,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 				fotografieDaModificare = new ObservableCollection<Fotografia>();
 				fotografieDaModificareCW = new MultiSelectCollectionView<Fotografia>( fotografieDaModificare );
-				
+
 				modalitaEdit = ModalitaEdit.DefaultFotoRitocco;
 			}
 
@@ -350,6 +350,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+
+
+
 		#endregion Proprietà
 
 
@@ -434,18 +437,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 													  true );
 				}
 				return _rifiutareCorrezioniCommand;
-			}
-		}
-
-		private RelayCommand _salvareMetadatiCommand;
-		public ICommand salvareMetadatiCommand {
-			get {
-				if( _salvareMetadatiCommand == null ) {
-					_salvareMetadatiCommand = new RelayCommand( param => salvareMetadati(),
-													  param => this.possoSalvareMetadati,
-													  true );
-				}
-				return _salvareMetadatiCommand;
 			}
 		}
 
@@ -657,9 +648,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		}
 
-		private void salvareMetadati() {
-			// TODO
-		}
+
 
 		void resetEffetti() {
 
