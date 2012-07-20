@@ -108,28 +108,7 @@
 
         </Expander>
 
-        <StackPanel DockPanel.Dock="Right">  <!-- Pulsantiera -->
-            
-            <Label Content="Didascalia" />
-            <TextBox Name="didascaliaTextBox" />
-            
-            <Separator Margin="0,10"/>
-
-            <GroupBox Header="Fasi del giorno">
-                <ListBox ItemsSource="{Binding fasiDelGiorno}" 
-                         SelectedItem="{Binding faseDelGiorno}" />
-            </GroupBox>
-
-            <Separator />
-            
-            <lum:SelettoreEvento x:Name="selettoreEvento4"  />
-            
-            <Separator />
-
-            <Button Content="Salva Metadati" Command="{Binding salvareMetadatiCommand}" />
-
-        </StackPanel>
-  
+       
         <!-- nastro basso con tutte le foto che sono in attesa di modifica -->
         <ListBox x:Name="listBoxImmaginiDaModificare"  DockPanel.Dock="Bottom"
                  SelectionMode="Multiple" lumMS:MultiSelect.IsEnabled="True" 
