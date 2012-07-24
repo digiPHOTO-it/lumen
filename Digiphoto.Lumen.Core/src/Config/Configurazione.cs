@@ -53,7 +53,7 @@ namespace Digiphoto.Lumen.Config  {
 
 			// Per prima cosa controllo se ho i settaggi. Altrimenti fallisco.
 			if( autoSistemazione == false && UserConfigLumen == null )
-				throw new ConfigurationErrorsException( "Configurazione utente non trovata" );
+				throw new ConfigurazioneMancanteException( "Configurazione utente non trovata" );
 
 			_dbUtil = new DbUtil();
 

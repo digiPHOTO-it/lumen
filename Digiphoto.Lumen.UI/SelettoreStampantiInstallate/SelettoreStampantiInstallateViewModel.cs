@@ -77,10 +77,7 @@ namespace Digiphoto.Lumen.UI
             }
             else
             {
-				using( IStampantiInstallateSrv stampantiInstallateSrv = LumenApplication.Instance.creaServizio<IStampantiInstallateSrv>() ) {
-					stampantiInstallateSrv.start();
-					listaS = stampantiInstallateSrv.listaStampantiInstallate();
-				}
+				listaS = LumenApplication.Instance.stampantiInstallate;
             }
 
             // purtoppo pare che rimpiazzare il reference con uno nuovo, causa dei problemi.

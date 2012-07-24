@@ -1,4 +1,10 @@
 
+Con Ciccio cercare di capire se il container usato attualmente per la FotoGallery (WrapPanel)
+può andare bene, oppure se occorre usare una UniformGrid.
+La differenza che adesso le foto sono ridimensionabili a piacimento, se usiamo la UniformGrid invece
+diventa come il vecchio digiphoto (però forse sarebbe più comodo il lavoro).
+
+
 Alla conferma del carrello, dobbiamo visualizzare una finestrella dove mettere:
   totale delle foto stampate.
   totale delle foto masterizzate.
@@ -7,4 +13,8 @@ Alla conferma del carrello, dobbiamo visualizzare una finestrella dove mettere:
 
 Gestione loghi: serve ?
 
+
+
+EXIF
 La rotazione automatica delle foto mentre si scarica : serve ?
+La ricerca per orario di scatto : serve ?

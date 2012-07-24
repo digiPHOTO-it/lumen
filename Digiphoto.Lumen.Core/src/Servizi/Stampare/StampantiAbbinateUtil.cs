@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Model;
+using Digiphoto.Lumen.Applicazione;
 
 namespace Digiphoto.Lumen.Servizi.Stampare {
 
@@ -33,9 +34,9 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 
 				FormatoCarta formatoCarta = dbContext.FormatiCarta.FirstOrDefault( f => f.id == idFormatoCarta );
 
-				if( formatoCarta != null ) {
-					StampantiInstallateSrvImpl stampantiInstallateSrvImpl = new StampantiInstallateSrvImpl();
-					StampanteInstallata stampanteInstallata = stampantiInstallateSrvImpl.stampanteInstallataByString( stampante );
+				if( formatoCarta != null ) {					
+					IStampantiInstallateSrv stampantiInstallateSrv = LumenApplication.Instance.getServizioAvviato<IStampantiInstallateSrv>();
+					StampanteInstallata stampanteInstallata = stampantiInstallateSrv.getStampanteInstallataByString( stampante );
 					list.Add( new StampanteAbbinata( stampanteInstallata, formatoCarta ) );
 				}
 			}

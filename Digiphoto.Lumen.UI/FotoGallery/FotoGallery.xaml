@@ -92,9 +92,9 @@
             <ToolBarTray Background="White" Orientation="Vertical">
                 
                 <ToolBar Band="1" BandIndex="1" >
-                    <RadioButton Content="*" Tag="600"  Style="{StaticResource {x:Type ToggleButton}}" Width="32" Name="viewGrandeRadioButton" Checked="viewGrandeRadioButton_Checked" />
-                    <RadioButton Content="**" Tag="240" Style="{StaticResource {x:Type ToggleButton}}" Width="32" Name="viewMediaRadioButton" Checked="viewMediaRadioButton_Checked" />
-                    <RadioButton Content="***" Tag="60" Style="{StaticResource {x:Type ToggleButton}}" Width="32" Name="viewPiccolaRadioButton" Checked="viewPiccolaRadioButton_Checked" />
+                    <RadioButton Content="*" Tag="1" Style="{StaticResource {x:Type ToggleButton}}" Width="32" Checked="radioButtonQuanteNeVedo_Checked" />
+                    <RadioButton Content="**" Tag="2" Style="{StaticResource {x:Type ToggleButton}}" Width="32"  Checked="radioButtonQuanteNeVedo_Checked" />
+                    <RadioButton Content="***" Tag="4" Style="{StaticResource {x:Type ToggleButton}}" Width="32"  Checked="radioButtonQuanteNeVedo_Checked" />
                     <Slider Name="dimensioneIconeSlider" 
                             Minimum="32" Maximum="2000"
                             Orientation="Vertical" Height="50" 
