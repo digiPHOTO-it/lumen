@@ -76,8 +76,10 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 
     public interface IStampantiInstallateSrv : IServizio 
     {
-        IList<StampanteInstallata> listaStampantiInstallate();
+		IList<StampanteInstallata> stampantiInstallate {
+			get;
+		}
 
-        StampanteInstallata stampanteInstallataByString(String nomeStampante);
+        StampanteInstallata getStampanteInstallataByString(String nomeStampante);
     }
 }

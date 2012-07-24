@@ -33,7 +33,7 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Stampare
         [TestMethod]
         public void TestListaStampanti()
         {
-            foreach (StampanteInstallata stampanteInstallata in _impl.listaStampantiInstallate())
+            foreach (StampanteInstallata stampanteInstallata in _impl.stampantiInstallate)
             {
                 System.Diagnostics.Trace.WriteLine("[Stampante]: " + stampanteInstallata.NomeStampante+ " "+ stampanteInstallata.PortaStampante);
             }

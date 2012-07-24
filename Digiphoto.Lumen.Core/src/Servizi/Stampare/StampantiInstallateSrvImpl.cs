@@ -9,7 +9,6 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 {
     public class StampantiInstallateSrvImpl : ServizioImpl, IStampantiInstallateSrv
     {
-        private IList<StampanteInstallata> listStampantiInstallate = null;
 
         public StampantiInstallateSrvImpl() {
 			caricaStampanti();
@@ -18,7 +17,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 
 		private void caricaStampanti() {
 
-			listStampantiInstallate = new List<StampanteInstallata>();
+			stampantiInstallate = new List<StampanteInstallata>();
 
 			// Use the ObjectQuery to get the list of configured printers
 			ObjectQuery oquery = new ObjectQuery( "SELECT * FROM Win32_Printer" );
@@ -41,8 +40,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 				}
 
 				StampanteInstallata stp = StampanteInstallata.CreateStampanteInstallata( nomeStampante, nomePorta );
-                listStampantiInstallate.Add( stp );
-
+                stampantiInstallate.Add( stp );
 			}
 		}
 
@@ -59,10 +57,9 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 			}
 		}
 
-
-        public StampanteInstallata stampanteInstallataByString(String nomeStampante)
+        public StampanteInstallata getStampanteInstallataByString(String nomeStampante)
         {
-            foreach(StampanteInstallata stampanteInstallata in listStampantiInstallate)
+            foreach(StampanteInstallata stampanteInstallata in stampantiInstallate)
             {
                 if (stampanteInstallata.NomeStampante.Equals(nomeStampante))
                 {
@@ -72,9 +69,9 @@ namespace Digiphoto.Lumen.Servizi.Stampare
             return null;
         }
 
-        public IList<StampanteInstallata> listaStampantiInstallate()
-        {
-            return listStampantiInstallate;
-        }
+		public IList<StampanteInstallata> stampantiInstallate {
+			get;
+			private set;
+		}
     }
 }

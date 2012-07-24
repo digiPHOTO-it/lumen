@@ -59,14 +59,30 @@ namespace Digiphoto.Lumen.UI {
 						// Se la configurazione è mancante, allora rimando all'apposita gestione
 						LumenApplication.Instance.avvia();
 
+					} catch( ConfigurazioneMancanteException em ) {
+
+						_giornale.Warn( "Configurazione mancante. Occorre prima creare la configurazione", em );
+						MessageBox.Show( em.Message, "ATTENZIONE" );
+						MessageBox.Show( "Impossibile avviare l'applicazione adesso!\nOccorre prima creare la configurazione iniziale.\nLanciare il gestore della configurazione!", "Dimenticanza", MessageBoxButton.OK, MessageBoxImage.Exclamation );
+						Environment.Exit( 2 );
+					
+					} catch( ConfigurazioneNonValidaException  nve ) {
+
+						_giornale.Error( "Impossibile avviare applicazione", nve );
+
+						// Metto due message box perché la prima non si ferma !
+						MessageBox.Show( nve.Message, "ATTENZIONE" );
+						MessageBox.Show( "Impossibile avviare l'applicazione!\nLa configurazione non è valida, oppure\nnon è stata aggiornata dopo un cambio release.\nLanciare apposito programma di gestione configurazione.", "ERRORE non previsto", MessageBoxButton.OK, MessageBoxImage.Error );
+						Environment.Exit( 6 );
+
 					} catch( Exception ee ) {
 						
 						_giornale.Error( "Impossibile avviare applicazione", ee );
 
 						// Metto due message box perché la prima non si ferma !
-						MessageBox.Show( "ATTENZIONE" );
-						MessageBox.Show( "Impossibile avviare l'applicazione!\nOccorre creare la configurazione iniziale.\nLanciare prima il gestore della configurazione!", "ERRORE avvio", MessageBoxButton.OK, MessageBoxImage.Error );
-						Environment.Exit( 2 );
+						MessageBox.Show( ee.Message, "ATTENZIONE" );
+						MessageBox.Show( "Impossibile avviare l'applicazione!\nErrore bloccante!\nVedere il log", "ERRORE non previsto", MessageBoxButton.OK, MessageBoxImage.Error );
+						Environment.Exit( 9 );
 					}
 
 					#if (! DEBUG)

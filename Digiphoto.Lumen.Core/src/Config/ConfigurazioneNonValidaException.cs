@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Configuration;
 
 namespace Digiphoto.Lumen.Config {
 
-	class ConfigurazioneNonValidaException : Exception {
+	public class ConfigurazioneNonValidaException : ConfigurationErrorsException {
 
 		public ConfigurazioneNonValidaException( string msg ) : base( msg ) {
 		}

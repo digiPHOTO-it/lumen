@@ -160,6 +160,8 @@ namespace Digiphoto.Lumen.Applicazione {
 			IVolumeCambiatoSrv vcs = creaAggiungiAvviaServizio<IVolumeCambiatoSrv>();
 			vcs.attesaBloccante = false;
 			vcs.attesaEventi();
+
+			creaAggiungiAvviaServizio<IStampantiInstallateSrv>();
 			//
 			creaAggiungiAvviaServizio<IScaricatoreFotoSrv>();
 			//
@@ -233,6 +235,13 @@ namespace Digiphoto.Lumen.Applicazione {
 
 		public T getServizioAvviato<T>() {
 			return (T)getServizioAvviato( ServizioFactory.calcFullName( typeof(T) ) );
+		}
+
+
+		public IList<StampanteInstallata> stampantiInstallate {
+			get {
+				return getServizioAvviato<IStampantiInstallateSrv>().stampantiInstallate;
+			}
 		}
 
 	}

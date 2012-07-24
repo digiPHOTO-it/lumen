@@ -65,6 +65,7 @@
     <Compile Include="src\Applicazione\StartupUtil.cs" />
     <Compile Include="src\Applicazione\Stato.cs" />
     <Compile Include="src\Config\Configurazione.cs" />
+    <Compile Include="src\Config\ConfigurazioneMancanteException.cs" />
     <Compile Include="src\Config\ConfigurazioneNonValidaException.cs" />
     <Compile Include="src\Applicazione\LumenApplication.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
