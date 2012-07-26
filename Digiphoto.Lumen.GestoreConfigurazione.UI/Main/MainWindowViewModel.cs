@@ -235,6 +235,8 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 		void apriTutto() {
 
+			dialogProvider.attenderePrego = true;
+
 			// Se è la prima volta, avvio tutto
 			if( !LumenApplication.Instance.avviata )
 				LumenApplication.Instance.avvia( true, qualeConnectionString );
@@ -247,6 +249,8 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 			// carico un pò di dati dal database se per caso esiste già.
 			loadDataContextFromDb();
+
+			dialogProvider.attenderePrego = false;
 		}
 
 		void chiudiTutto() {

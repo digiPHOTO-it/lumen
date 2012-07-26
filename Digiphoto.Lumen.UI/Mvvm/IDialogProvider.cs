@@ -12,5 +12,10 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 		void ShowConfirmation( string message, string title, Action<bool> afterHideCallback );
 		
 		void ShowConfirmationAnnulla(string message, string title, Action<MessageBoxResult> afterHideCallback);
+
+		bool attenderePrego {
+			get;
+			set;
+		}
     }
 }
