@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows;
 using Digiphoto.Lumen.UI.TrayIcon;
+using System.Windows.Input;
 
 
 namespace Digiphoto.Lumen.UI.Mvvm {
@@ -102,5 +103,23 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 		}
 
 		#endregion;
+
+		private bool _attenderePrego;
+		public bool attenderePrego {
+			get {
+				return _attenderePrego;
+			}
+			set {
+
+				if( _attenderePrego != value ) {
+					_attenderePrego = value;
+
+					if( value == true )
+						this.Cursor = Cursors.Wait;
+					else
+						this.Cursor = Cursors.AppStarting;  // normale
+				}
+			}
+		}
 	}
 }
