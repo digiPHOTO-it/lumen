@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle( "Digiphoto.Lumen.Imaging.Wic" )]
-[assembly: AssemblyDescription( "" )]
+[assembly: AssemblyDescription( "Libreria per elaborazioni grafiche sulle immagini sfruttando la grafica nativa WPF e DirectX." )]
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "digiPHOTO.it" )]
 [assembly: AssemblyProduct( "Digiphoto.Lumen.Imaging.Wic" )]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion( "0.6.1.0" )]
-[assembly: AssemblyFileVersion( "0.6.1.0" )]
+[assembly: AssemblyVersion( "0.8.0.0" )]
+[assembly: AssemblyFileVersion( "0.8.0.0" )]
