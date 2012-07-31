@@ -47,14 +47,14 @@ namespace Digiphoto.Lumen.UI {
 			IObservable<StampatoMsg> observableStampato = LumenApplication.Instance.bus.Observe<StampatoMsg>();
 			observableStampato.Subscribe(this);
 
-			paramCercaFoto = new ParamCercaFoto();
 			metadati = new MetadatiFoto();
 
 			// Istanzio i ViewModel dei componenti di cui io sono composto
 			selettoreEventoFiltro = new SelettoreEventoViewModel();
 			selettoreEventoMetadato = new SelettoreEventoViewModel();
-
 			selettoreFotografoViewModel = new SelettoreFotografoViewModel();
+
+			azzeraParamRicerca();
 
 			dimensioneIconaFoto = 120;  // Valore di default per la grandezza dei fotogrammi da visualizzare.
 
@@ -345,8 +345,25 @@ namespace Digiphoto.Lumen.UI {
 						OnPropertyChanged( "numColonneSlideShow" );
 					}
 			}
-		} 
+		}
 
+		public string stringaNumeriFotogrammi {
+			get {
+				return paramCercaFoto.numeriFotogrammi == null || paramCercaFoto.numeriFotogrammi.Length == 0 ? null : String.Join( ",", paramCercaFoto.numeriFotogrammi );
+			}
+			set {
+				if( String.IsNullOrEmpty(value) )
+					paramCercaFoto.numeriFotogrammi = null;
+				else
+
+					try {
+						paramCercaFoto.numeriFotogrammi = value.Split( ',' ).Select( nn => Convert.ToInt32( nn ) ).ToArray();
+					} catch( Exception ) {
+						dialogProvider.ShowError( "I numeri dei fotogrammi devono essere separati da virgola", "Formato errato", null );
+						OnPropertyChanged( "stringaNumeriFotogrammi" );
+					}
+			}
+		}
 
 		#endregion Proprietà
 
@@ -818,7 +835,17 @@ namespace Digiphoto.Lumen.UI {
 
 		void azzeraParamRicerca() {
 			paramCercaFoto = new ParamCercaFoto();
+			
 			OnPropertyChanged( "paramCercaFoto" );
+			OnPropertyChanged( "stringaNumeriFotogrammi" );
+
+			OnPropertyChanged( "isMattinoChecked" );
+			OnPropertyChanged( "isPomeriggioChecked" );
+			OnPropertyChanged( "isSeraChecked" );
+
+
+			selettoreEventoFiltro.eventoSelezionato = null;
+			selettoreFotografoViewModel.fotografoSelezionato = null;
 		}
 
 		/// <summary>

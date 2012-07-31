@@ -153,9 +153,13 @@
                             <Button Content="Ieri" Name="ieriButton" Click="ieriButton_Click" />
                             <Button Content="Ieri e Oggi" Name="ieriOggiButton" Click="ieriOggiButton_Click" />
                         </StackPanel>
+                        
                     </StackPanel>
                 </GroupBox>
 
+
+                
+                
                 <!-- eventuale filtro per fotografo -->
                 <lum:SelettoreFotografo x:Name="selettoreFotografo5" possoCreare="False"
                                         DataContext="{Binding selettoreFotografoViewModel}" />
@@ -172,9 +176,15 @@
                     
                     <Label Content="Didascalia" />
                     <TextBox Name="didascaliaTextBox" Text="{Binding Path=paramCercaFoto.didascalia,Mode=TwoWay}" />
+
+                    <Separator />
+                    
+                    <Label>Numeri</Label>
+                    <TextBox  Text="{Binding Path=stringaNumeriFotogrammi}" Name="textBoxNumFotogrammi" ToolTip="Indicare i numeri separati da virgola ," />
+
                 </StackPanel>
                 
-                <Label Content="Altri param" />
+        
                 
                 <Button Name="azzeraParamRicercaButton" Content="Azzera param" ToolTip="Azzera i parametri di ricerca" Command="{Binding azzeraParamRicercaCommand}" />
                 <Button Name="eseguireRicercaButton" Content="Esegui Ricerca" Command="{Binding eseguireRicercaCommand}" />
