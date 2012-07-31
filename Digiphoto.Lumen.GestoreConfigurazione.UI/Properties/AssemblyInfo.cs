@@ -8,7 +8,7 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle( "Digiphoto.Lumen.GestoreConfigurazione.UI" )]
-[assembly: AssemblyDescription( "" )]
+[assembly: AssemblyDescription( "Gestore della configurazione per Lumen. Consente di modificare sia le informazioni fisse uniche per tutto il punto vendita, che le preferenze dell'utente tipiche di una singola postazione di lavoro." )]
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany("digiPHOTO.it")]
 [assembly: AssemblyProduct("Digiphoto.Lumen.GestoreConfigurazone.UI")]
@@ -51,6 +51,6 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion( "0.6.1.0" )]
-[assembly: AssemblyFileVersion( "0.6.1.0" )]
+[assembly: AssemblyVersion( "0.8.0.0" )]
+[assembly: AssemblyFileVersion( "0.8.0.0" )]
 [assembly: NeutralResourcesLanguageAttribute("it-IT")]

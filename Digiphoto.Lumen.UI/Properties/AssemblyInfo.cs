@@ -8,7 +8,7 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle( "Digiphoto.Lumen.UI" )]
-[assembly: AssemblyDescription( "" )]
+[assembly: AssemblyDescription( "Questo programma consente di acquisire fotografie, catalogandole in un database. Consente di effettuare ricerche nell'archivio. E' possibile effettuare il foto-ritocco, la stampa e la gestione della cassa del punto vendita." )]
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "digiPHOTO.it" )]
 [assembly: AssemblyProduct( "Digiphoto.Lumen.UI" )]
@@ -51,5 +51,5 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion( "0.6.1.0" )]
-[assembly: AssemblyFileVersion( "0.6.1.0" )]
+[assembly: AssemblyVersion( "0.8.0.0" )]
+[assembly: AssemblyFileVersion( "0.8.0.0" )]
