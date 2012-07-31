@@ -85,6 +85,24 @@ namespace Digiphoto.Lumen.UI.Dialogs
 			}
 		}
 
+		private bool _attenderePrego;
+		public bool attenderePrego {
+			get {
+				return _attenderePrego;
+			}
+			set {
+
+				if( _attenderePrego != value ) {
+					_attenderePrego = value;
+
+					if( value == true )
+						this.Cursor = Cursors.Wait;
+					else
+						this.Cursor = Cursors.AppStarting;  // normale
+				}
+			}
+		}
+
 		#region Dialog
 
 		/// <summary>
