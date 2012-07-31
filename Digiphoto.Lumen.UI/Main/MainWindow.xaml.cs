@@ -9,6 +9,7 @@ using Digiphoto.Lumen.UI.Reports;
 using Digiphoto.Lumen.UI.Mvvm;
 using Digiphoto.Lumen.UI.TrayIcon;
 using Digiphoto.Lumen.UI.About;
+using System.Windows.Input;
 
 namespace Digiphoto.Lumen.UI {
 	/// <summary>
@@ -138,6 +139,24 @@ namespace Digiphoto.Lumen.UI {
 			AboutBox about = new AboutBox(this);
 			about.ShowDialog();
 
+		}
+
+		private bool _attenderePrego;
+		public bool attenderePrego {
+			get {
+				return _attenderePrego;
+			}
+			set {
+
+				if( _attenderePrego != value ) {
+					_attenderePrego = value;
+
+					if( value == true )
+						this.Cursor = Cursors.Wait;
+					else
+						this.Cursor = Cursors.AppStarting;  // normale
+				}
+			}
 		}
 	}
 }

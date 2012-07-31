@@ -16,6 +16,7 @@ using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.UI.Mvvm;
 using Digiphoto.Lumen.UI.TrayIcon;
 using Digiphoto.Lumen.GestoreConfigurazione.UI.About;
+using System.Windows.Threading;
 
 namespace Digiphoto.Lumen.GestoreConfigurazione.UI {
 	/// <summary>
@@ -146,6 +147,24 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI {
 		{
 			AboutBox about = new AboutBox(this);
 			about.ShowDialog();
+		}
+
+		private bool _attenderePrego;
+		public bool attenderePrego {
+			get {
+				return _attenderePrego;
+			}
+			set {
+
+				if( _attenderePrego != value ) {
+					_attenderePrego = value;
+
+					if( value == true )
+						this.Cursor = Cursors.Wait;
+					else
+						this.Cursor = Cursors.Arrow;  // normale
+				}
+			}
 		}
 	}
 }
