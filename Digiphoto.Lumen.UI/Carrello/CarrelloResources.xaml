@@ -11,6 +11,8 @@
 	<lumC:SumQuantitaConverter x:Key="sumQuantitaConverter" />
 	<lumC:BoolVisibilityConverter x:Key="boolVisibilityConverter" />
 	<lumC:BoolBackgroundConverter x:Key="boolBackgroundConverter" />
+	<lumC:PercentualeConverter x:Key="percentualeConverter" />
+	<lumC:ListItemIndexConverter x:Key="listItemIndexConverter" />
 
 	<!-- Stile della listbox che itera le RigheCarrello -->
     <Style x:Key="ListCarrelloStyle" TargetType="ListBox">
@@ -148,14 +150,25 @@
     <DataTemplate x:Key="ListaCarrelliDataTemplate">
         <StackPanel Orientation="Vertical">
 			<Border BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="10" Margin="0,0,2,2" Background="{Binding Path=venduto, Converter={StaticResource boolBackgroundConverter}}">
-				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-48x48.png" Width="40">
-					<Image.ToolTip>
-						<Grid>
-							<Label Content="{Binding Path=intestazione}" />
-						</Grid>
-					</Image.ToolTip>
-				</Image>     
-            </Border>
+
+				<Canvas x:Name="fotoCanvas" Width="45" Height="45">
+
+					<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-48x48.png" Width="40">
+						<Image.ToolTip>
+							<Grid>
+								<Label Content="{Binding Path=intestazione}" />
+							</Grid>
+						</Image.ToolTip>
+					</Image>
+
+					<!-- IL font con cui stampo il numero, ha grandezza proporzionale al canvas . Per ora uso 8% della grandezza del contenitore della foto -->
+					<Label Content="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Converter={StaticResource listItemIndexConverter}}"        
+                               Canvas.Right="2"
+                               Canvas.Bottom="2"
+                               FontSize="{Binding Converter={StaticResource percentualeConverter},ElementName=fotoCanvas,Path=ActualHeight,ConverterParameter=0.2}"
+                               Background="Orange" />
+				</Canvas>
+			</Border>
         </StackPanel>
     </DataTemplate>
 
