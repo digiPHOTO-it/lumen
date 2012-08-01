@@ -125,6 +125,7 @@
     <Compile Include="Converters\CollectionViewVisibilityMultiConverter.cs" />
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
     <Compile Include="Converters\BoolBackgroundConverter.cs" />
+    <Compile Include="Converters\ListItemIndexConverter.cs" />
     <Compile Include="Converters\ListVisibilityConverter.cs" />
     <Compile Include="Converters\SumQuantitaConverter.cs" />
     <Compile Include="Converters\ImmagineToImageSourceConverter.cs" />
