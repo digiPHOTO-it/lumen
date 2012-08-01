@@ -93,33 +93,6 @@
 					</ToolBar>
 				</ToolBarTray>
 			</Expander>
-
-			<Expander Header="Ricerca Carrelli nell'archivio" IsExpanded="True" ExpandDirection="Up">
-				<StackPanel Orientation="Horizontal">
-					<GroupBox Header="Tempo">
-						<StackPanel Orientation="Horizontal">
-
-							<StackPanel Orientation="Vertical">
-								<Label Content="Scegliere data inizio e fine"  ToolTip="Cliccare sulla prima data poi scorrere fino alla seconda senza lasciare"/>
-								<Calendar SelectionMode="SingleRange" Name="calendario" SelectedDatesChanged="calendario_SelectedDatesChanged" />
-								<Label Content="Ricerca Intestazione:" ToolTip="Inserire l'intestazione su cui si desidera filtrare"/>
-								<TextBox Text="{Binding Path=IntestazioneSearch}" />
-								<CheckBox Name="checkBoxVenduto" Content="Venduto" IsChecked="{Binding Path=IsVendutoChecked,Mode=TwoWay}" />
-							</StackPanel>
-
-							<StackPanel Orientation="Vertical">
-								<Button Content="Oggi" Name="oggiButton" Click="oggiButton_Click" />
-								<Button Content="Ieri" Name="ieriButton" Click="ieriButton_Click" />
-								<Button Content="Ieri e Oggi" Name="ieriOggiButton" Click="ieriOggiButton_Click" />
-								<Label Content="Altri param" />
-
-								<Button Name="azzeraParamRicercaButton" Content="Azzera param" ToolTip="Azzera i parametri di ricerca" Command="{Binding azzeraParamRicercaCommand}" />
-								<Button Name="eseguireRicercaButton" Content="Esegui Ricerca" Command="{Binding eseguireRicercaCommand}" />
-							</StackPanel>
-						</StackPanel>
-					</GroupBox>
-				</StackPanel>
-			</Expander>
 		</StackPanel>	
 		
 		<GroupBox Header="Testata Carrello" DockPanel.Dock="Top" IsEnabled="{Binding Path=carrelloCorrente.venduto,Converter={StaticResource boolInverterConverter}}">
@@ -169,22 +142,39 @@
 			
 			
 			<Expander Header="Carrelli Salvati" DockPanel.Dock="Bottom" IsExpanded="True" ExpandDirection="Up">
-				<Grid >
-					<ListBox x:Name="listCarrelli" SelectionMode="Single"
+				<Grid Margin="5">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="*" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+					
+					<ListBox 
+						Grid.Row="0"
+						Grid.ColumnSpan="2"
+						x:Name="listCarrelli" SelectionMode="Single"
 						Style="{StaticResource ListaCarrelliStyle}"
 						ItemsSource="{Binding Path=CarrelliSalvatiCv}" 
 						SelectedIndex="{Binding Path=CarrelliSalvatiCvSelectedIndex, Mode=TwoWay}"
 						ItemsPanel="{DynamicResource ListaCarrelliItemsPanelTemplate}" 
 						ItemTemplate="{DynamicResource ListaCarrelliDataTemplate}"
 						ScrollViewer.VerticalScrollBarVisibility="Disabled"
-						ScrollViewer.HorizontalScrollBarVisibility="Visible" Margin="1,23,-1,92" Height="75">
+						ScrollViewer.HorizontalScrollBarVisibility="Visible" Height="75">
 						<i:Interaction.Triggers>
 							<i:EventTrigger EventName="SelectionChanged">
 								<i:InvokeCommandAction Command="{Binding UpdateDatiCarrelloSelected}"/>
 							</i:EventTrigger>
 						</i:Interaction.Triggers>
 					</ListBox>
-					<GroupBox Header="Proprietà" Margin="0,101,0,12">
+					
+					<GroupBox 
+						Grid.Row="1"
+						Grid.ColumnSpan="2"
+						Header="Proprietà">
 						<Grid Height="54">
 							<Grid.RowDefinitions>
 								<RowDefinition Height="*" />
@@ -207,6 +197,30 @@
 							<Label Content="{Binding Path=CarrelloSelezionato.totaleAPagare}" Grid.Row="1" Grid.Column="3" />
 						</Grid>
 					</GroupBox>
+
+					<Expander Header="Search" Grid.RowSpan="2" Grid.Column="2" IsExpanded="True" ExpandDirection="Right">
+						<GroupBox Header="Tempo">
+							<StackPanel Orientation="Horizontal">
+
+								<StackPanel Orientation="Vertical">
+									<Label Content="Scegliere data inizio e fine"  ToolTip="Cliccare sulla prima data poi scorrere fino alla seconda senza lasciare"/>
+									<Calendar SelectionMode="SingleRange" Name="calendario" SelectedDatesChanged="calendario_SelectedDatesChanged" />
+									<Label Content="Ricerca Intestazione:" ToolTip="Inserire l'intestazione su cui si desidera filtrare"/>
+									<TextBox Text="{Binding Path=IntestazioneSearch}" />
+									<CheckBox Name="checkBoxVenduto" Content="Venduto" IsChecked="{Binding Path=IsVendutoChecked,Mode=TwoWay}" />
+								</StackPanel>
+
+								<StackPanel Orientation="Vertical">
+									<Button Content="Oggi" Name="oggiButton" Click="oggiButton_Click" />
+									<Button Content="Ieri" Name="ieriButton" Click="ieriButton_Click" />
+									<Button Content="Ieri e Oggi" Name="ieriOggiButton" Click="ieriOggiButton_Click" />
+									<Label Content="Altri param" />
+									<Button Name="azzeraParamRicercaButton" Content="Azzera param" ToolTip="Azzera i parametri di ricerca" Command="{Binding azzeraParamRicercaCommand}" />
+									<Button Name="eseguireRicercaButton" Content="Esegui Ricerca" Command="{Binding eseguireRicercaCommand}" />
+								</StackPanel>
+							</StackPanel>
+						</GroupBox>
+					</Expander>
 				</Grid>
 			</Expander>
 
