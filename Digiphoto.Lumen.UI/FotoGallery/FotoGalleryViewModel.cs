@@ -27,6 +27,7 @@ using Digiphoto.Lumen.Servizi.Ritoccare;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.UI.Main;
 using Digiphoto.Lumen.UI.Dialogs;
+using Digiphoto.Lumen.src.Util;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -349,19 +350,50 @@ namespace Digiphoto.Lumen.UI {
 
 		public string stringaNumeriFotogrammi {
 			get {
-				return paramCercaFoto.numeriFotogrammi == null || paramCercaFoto.numeriFotogrammi.Length == 0 ? null : String.Join( ",", paramCercaFoto.numeriFotogrammi );
+				if (paramCercaFoto.numeriFotogrammi == null || paramCercaFoto.numeriFotogrammi.Length == 0)
+				{
+					return null;
+				}
+
+				if(!Configurazione.UserConfigLumen.compNumFoto){
+					return String.Join(",",  paramCercaFoto.numeriFotogrammi);
+				}else{
+					
+					IEnumerable<string> v  = paramCercaFoto.numeriFotogrammi.Select(nn => CompNumFoto.getStringValue((long)nn));
+					return  String.Join(",", v.ToArray());
+				}
 			}
 			set {
+				
 				if( String.IsNullOrEmpty(value) )
 					paramCercaFoto.numeriFotogrammi = null;
 				else
-
-					try {
+					if (!Configurazione.UserConfigLumen.compNumFoto)
+					{
+						try
+						{
 						paramCercaFoto.numeriFotogrammi = value.Split( ',' ).Select( nn => Convert.ToInt32( nn ) ).ToArray();
-					} catch( Exception ) {
+						}
+						catch (Exception)
+						{
 						dialogProvider.ShowError( "I numeri dei fotogrammi devono essere separati da virgola", "Formato errato", null );
 						OnPropertyChanged( "stringaNumeriFotogrammi" );
 					}
+			}
+					else
+					{
+						try
+						{
+							IEnumerable<int> v = ((string)value).Split(',').Select(nn => (int)CompNumFoto.getLongValue(nn));
+							paramCercaFoto.numeriFotogrammi =  v.ToArray<int>();
+						}
+						catch (Exception)
+						{
+							dialogProvider.ShowError("I numeri dei fotogrammi devono essere separati da virgola", "Formato errato", null);
+							OnPropertyChanged("stringaNumeriFotogrammi");
+						}
+					}
+				
 			}
 		}
 
@@ -416,7 +448,7 @@ namespace Digiphoto.Lumen.UI {
 				if (_stampaRapidaCommand == null)
 				{
 					_stampaRapidaCommand = new RelayCommand(param => stampaRapida( param ),
-						param => true, false);
+						param => possoStampare, false);
 				}
 				return _stampaRapidaCommand;
 			}

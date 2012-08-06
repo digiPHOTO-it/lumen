@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data.Objects.DataClasses;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using Digiphoto.Lumen.src.Util;
 
 
 namespace Digiphoto.Lumen.Model {
@@ -14,6 +15,12 @@ namespace Digiphoto.Lumen.Model {
 
 	[MetadataType(typeof(Fotografia))]
 	public partial class Fotografia : IValidatableObject, INotifyPropertyChanged {
+
+		public static Boolean compNumFoto
+		{
+			get;
+			set;
+		}
 
 		public IImmagine imgOrig { get; set; }
 
@@ -45,7 +52,7 @@ namespace Digiphoto.Lumen.Model {
 
 
 		public override string ToString() {
-			return String.Format( "Num.{0} del={1}", numero, dataOraAcquisizione.ToShortDateString() );
+			return String.Format( "Num.{0} del={1}", etichetta, dataOraAcquisizione.ToShortDateString() );
 		}
 
 		/// <summary>
@@ -53,6 +60,9 @@ namespace Digiphoto.Lumen.Model {
 		/// </summary>
 		public string etichetta {
 			get {
+				if(compNumFoto){
+					return CompNumFoto.getStringValue(numero);
+				}
 				return numero.ToString();
 			}
 		}
