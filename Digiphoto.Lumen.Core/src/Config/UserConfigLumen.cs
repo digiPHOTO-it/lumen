@@ -240,5 +240,11 @@ namespace Digiphoto.Lumen.Config
 			get;
 			set;
 		}
+
+		public bool compNumFoto
+		{
+			get;
+			set;
+		}
 	}
 }
