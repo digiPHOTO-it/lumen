@@ -95,6 +95,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		public void creaNuovoStampaDiretta()
 		{
 			carrelloStampaDiretta = new Carrello();
+			carrelloStampaDiretta.intestazione = "Stampa Diretta o Rapida";
 			carrelloStampaDiretta.righeCarrello = new EntityCollection<RigaCarrello>();
 		}
 

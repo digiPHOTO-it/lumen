@@ -72,7 +72,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 						// Compongo il titolo della stampa che comparirà nella descrizione della riga nello spooler di windows
 						StringBuilder titolo = new StringBuilder();
 						titolo.AppendFormat( "foto N.{0} Oper={1} gg={2}",
-							_lavoroDiStampa.fotografia.numero,
+						_lavoroDiStampa.fotografia.etichetta,
 							_lavoroDiStampa.fotografia.fotografo.iniziali,
 							String.Format("{0:dd-MMM}", _lavoroDiStampa.fotografia.dataOraAcquisizione));
 
@@ -197,7 +197,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 			// Numero della foto
 			if( lavoroDiStampa.param.stampigli.numFoto ) {
 				TextBlock textNumero = new TextBlock();
-				textNumero.Text = lavoroDiStampa.fotografia.numero.ToString();
+				textNumero.Text = lavoroDiStampa.fotografia.etichetta;
 				textNumero.FontSize = 6; // 30pt text
 				textNumero.Foreground = coloreFg;
 				textNumero.Background = coloreBg;

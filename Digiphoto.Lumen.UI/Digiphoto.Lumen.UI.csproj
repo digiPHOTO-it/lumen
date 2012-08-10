@@ -120,11 +120,16 @@
       <DependentUpon>CarrelloView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Carrello\CarrelloViewModel.cs" />
+    <Compile Include="ComNumFoto\CompNumFotoView.xaml.cs">
+      <DependentUpon>CompNumFotoView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\BoolInverterConverter.cs" />
     <Compile Include="Converters\CollectionViewVisibilityConverter.cs" />
     <Compile Include="Converters\CollectionViewVisibilityMultiConverter.cs" />
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
     <Compile Include="Converters\BoolBackgroundConverter.cs" />
+    <Compile Include="Converters\CompNumFotoConverter.cs" />
+    <Compile Include="Converters\ListItemIndexConverter.cs" />
     <Compile Include="Converters\ListVisibilityConverter.cs" />
     <Compile Include="Converters\SumQuantitaConverter.cs" />
     <Compile Include="Converters\ImmagineToImageSourceConverter.cs" />
@@ -177,6 +182,14 @@
       <DependentUpon>ShowTrayIcon.xaml</DependentUpon>
     </Compile>
     <Page Include="About\AboutBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ComNumFoto\CompNumFotoResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ComNumFoto\CompNumFotoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

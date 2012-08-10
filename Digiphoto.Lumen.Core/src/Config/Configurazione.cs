@@ -71,6 +71,9 @@ namespace Digiphoto.Lumen.Config  {
 			// Alcuni settaggi sono statici perché non vogliamo che siano cambiati
 			// Altri settaggi invece sono di istanza perché così si possono anche modificare al volo (senza renderli persistenti)
 			valorizzaSettaggiNonStatici();
+
+			//Valorizzo la compressione del numero della foto
+			Fotografia.compNumFoto = UserConfigLumen.compNumFoto;
 		}
 
 
