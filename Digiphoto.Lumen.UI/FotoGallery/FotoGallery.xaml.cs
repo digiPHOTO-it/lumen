@@ -107,5 +107,10 @@ namespace Digiphoto.Lumen.UI {
 			fotoGalleryViewModel.mandareInModificaImmediata( lbItem.Content as Fotografia );
 		}
 
+		private void LsImageGallery_PreviewMouseRightButtonDown( object sender, MouseButtonEventArgs e ) {
+			// Questo mi evita di selezionare la foto quando clicco con il destro.
+			e.Handled = true;
+		}
+
 	}
 }

@@ -158,5 +158,43 @@ namespace Digiphoto.Lumen.Core.VsTest
              System.Diagnostics.Trace.WriteLine("[Numero Cartelle da Eliminare]: " + count);
              return count;
          }
+
+		 [TestMethod]
+		 public void eliminaUnaFotoTest() {
+
+			 using( new UnitOfWorkScope() ) {
+
+				 LumenEntities entities = UnitOfWorkScope.CurrentObjectContext;
+
+				 IEnumerable<Fotografia> listaDacanc = entities.Fotografie.Take( 1 );
+
+				 if( listaDacanc.Count() == 1 ) {
+
+					 Fotografia fDacanc = listaDacanc.Single();
+					 string nomeFileOrig = PathUtil.nomeCompletoOrig( fDacanc );
+
+					 Object [] parametri = new Object [] { fDacanc.id };
+
+					 Assert.IsTrue( File.Exists( nomeFileOrig ) );
+					 ObjectResult<int> test1 = entities.ObjectContext.ExecuteStoreQuery<int>( @"select count(*) from Fotografie where id = {0}", parametri );
+					 Assert.IsTrue( test1.ElementAt( 0 ) == 1 );
+
+					 using( IEliminaFotoVecchieSrv srv = LumenApplication.Instance.creaServizio<IEliminaFotoVecchieSrv>() ) {
+
+						 int quante = srv.elimina( listaDacanc );
+
+						 Assert.IsTrue( quante == 1 );
+					 }
+
+					 Assert.IsFalse( File.Exists( nomeFileOrig ) );
+					 ObjectResult<int> test2 = entities.ObjectContext.ExecuteStoreQuery<int>( @"select count(*) from Fotografie where id = {0}", parametri );
+					 Assert.IsTrue( test2.ElementAt( 0 ) == 0 );
+
+					 //
+					 // Siccome non mi fido, provo a fare una query per vedere che la foto in questione sia davvero sparita.
+
+				 }
+			 }
+		 }
     }
 }

@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.IO;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Core.Database;
+using System.ComponentModel;
 
 
 
@@ -37,6 +38,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			_viewModel = (FotoRitoccoViewModel) this.DataContext;
 
 			_viewModel.editorModeChangedEvent += cambiareModoEditor;
+
+			_viewModel.PropertyChanged += propertyCambiata;
 		}
 
 		private void sliderLuminosita_ValueChanged( object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e ) {
@@ -139,10 +142,23 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			_viewModel.attivareSelectorCommand.Execute( null );  // Qui vorrei spegnere
 		}
 
+		/// <summary>
+		/// Quando viene modificata una maschera, chiudo l'expander delle maschere
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="pcea"></param>
+		void propertyCambiata( object sender, PropertyChangedEventArgs pcea ) {
+			if( pcea.PropertyName == "mascheraAttiva" ) {
+				if( _viewModel.mascheraAttiva != null )
+					expanderMaschere.IsExpanded = false;
+			}
+		}
+
 		void cambiareModoEditor( object sender, EditorModeEventArgs args ) {
 
 			if( args.modalitaEdit == ModalitaEdit.GestioneMaschere ) {
 				primoPianoCanvasMask( false );
+				expanderMaschere.IsExpanded = false;  // chiudo l'expander per fare spazio
 			} else {
 				primoPianoCanvasMask( true );
 

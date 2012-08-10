@@ -26,7 +26,7 @@
 
         <DockPanel LastChildFill="True">
                 
-        <StackPanel DockPanel.Dock="Left">  <!-- pulsantiera -->
+        <StackPanel DockPanel.Dock="Right">  <!-- pulsantiera -->
             
             <Label Content="Luminosità" />
             <Slider Name="sliderLuminosita" ToolTip="Luminosità" Minimum="-1" Maximum="1" Value="0" ValueChanged="sliderLuminosita_ValueChanged" />
@@ -75,7 +75,7 @@
             
         </StackPanel>
 
-        <Expander DockPanel.Dock="Top"  Header="Cornici" ExpandDirection="Down"> <!-- Cornici -->
+        <Expander DockPanel.Dock="Top"  Header="Maschere" ExpandDirection="Down" Name="expanderMaschere"> <!-- Maschere -->
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Expanded">
                     <i:InvokeCommandAction Command="{Binding caricareMaschereCommand}" CommandParameter="T"/>
@@ -94,9 +94,10 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 
-                <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" >
-                    <RadioButton Content="Vert"  Style="{StaticResource {x:Type ToggleButton}}" GroupName="groupMaskOrient" Command="{Binding caricareMaschereCommand}" CommandParameter="V" />
-                    <RadioButton Content="Horiz" Style="{StaticResource {x:Type ToggleButton}}" GroupName="groupMaskOrient" Command="{Binding caricareMaschereCommand}" CommandParameter="H" />
+                <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Top">
+                    <RadioButton Content="Vert"  Style="{StaticResource {x:Type ToggleButton}}" GroupName="groupMaskOrient" Command="{Binding caricareMaschereCommand}" CommandParameter="V" ToolTip="Filtra solo maschere verticali" />
+                    <RadioButton Content="Horiz" Style="{StaticResource {x:Type ToggleButton}}" GroupName="groupMaskOrient" Command="{Binding caricareMaschereCommand}" CommandParameter="H" ToolTip="Filtra solo maschere orizzontali"/>
+                    <Button Content="..." ToolTip="Carica maschera da un'altra cartella" Command="{Binding commandBrowseForFileCornice}" />
                 </StackPanel>
 
                 <ItemsControl Name="itemsContolMaschere" Grid.Row="0" Grid.Column="1"                               

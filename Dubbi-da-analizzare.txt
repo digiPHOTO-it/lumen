@@ -13,7 +13,9 @@ Alla conferma del carrello, dobbiamo visualizzare una finestrella dove mettere:
 
 Gestione loghi: serve ?
 
-
+Nella gallery con il tasto destro si eseguono azioni solo sulle selezionate e 
+non sulla singola foto. Può andare bene oppure bisogna avere la doppia possibilità
+(una e selezionate) ?
 
 EXIF
 La rotazione automatica delle foto mentre si scarica : serve ?

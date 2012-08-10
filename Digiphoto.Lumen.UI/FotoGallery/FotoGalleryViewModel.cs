@@ -27,6 +27,8 @@ using Digiphoto.Lumen.Servizi.Ritoccare;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.UI.Main;
 using Digiphoto.Lumen.UI.Dialogs;
+using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
+using System.Collections;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -365,12 +367,13 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		#endregion Proprietà
-
 		public MetadatiFoto metadati {
 			get;
 			private set;
 		}
+
+		#endregion Proprietà
+
 
 		#region Comandi
 
@@ -536,6 +539,17 @@ namespace Digiphoto.Lumen.UI {
 					                                              p => possoEliminareMetadati, false );
 				}
 				return _eliminareMetadatiCommand;
+			}
+		}
+
+		private RelayCommand _eliminareFotoCommand;
+		public ICommand eliminareFotoCommand {
+			get {
+				if( _eliminareFotoCommand == null ) {
+					_eliminareFotoCommand = new RelayCommand( param => eliminareFoto( param ),
+															 p => true, false );
+				}
+				return _eliminareFotoCommand;
 			}
 		}
 
@@ -903,6 +917,53 @@ namespace Digiphoto.Lumen.UI {
 			metadati = new MetadatiFoto();
 			selettoreEventoMetadato.eventoSelezionato = null;
 			dialogProvider.ShowMessage( "Eliminati i metadati delle " + fotografieCW.SelectedItems.Count + " fotografie selezionate!", "Operazione eseguita" );
+		}
+
+		/// <summary>
+		/// Eliminazione definitiva delle foto selezionate.
+		/// </summary>
+		/// <param name="param">Se param è una stringa e contiene il valore "SEL" allora elimino le foto selezionate.</param>
+		void eliminareFoto( object param ) {
+
+			IEnumerable<Fotografia> itemsToDelete = null;
+
+			if( param.Equals( "SEL" ) ) {
+
+				if( fotografieCW.SelectedItems.Count <= 0 )
+					return;
+
+				itemsToDelete = fotografieCW.SelectedItems;
+
+			} else {
+				// TODO eliminare una sola foto, quella su cui ho premuto il tasto destro.
+				//      per ora non me ne preoccupo ed esco.
+				return;
+			}
+
+			bool procediPure = false;
+			dialogProvider.ShowConfirmation( "Sei sicuro di voler eliminare definitivamente\nle " + fotografieCW.SelectedItems.Count + " fotografie selezionate?", "Eliminazione definitiva foto",
+								  ( confermato ) => {
+									  procediPure = confermato;
+								  } );
+
+			if( !procediPure )
+				return;
+
+			// chiamo il servizio che mi elimina fisicamente i files immagini, e le Fotografie dal db.
+			int quanti = 0;
+			using( IEliminaFotoVecchieSrv srv = LumenApplication.Instance.creaServizio<IEliminaFotoVecchieSrv>() ) {
+				quanti = srv.elimina( itemsToDelete );
+			}
+
+			// Poi visto che erano a video, elimino le fotografie dalla Gallery.	
+			// Devo però duplicare la collezione perché non posso iterare e rimuovere contemporaneamente dalla stessa.
+			if( quanti > 0 ) {
+				Fotografia [] listaClone = itemsToDelete.ToArray();
+				foreach( Fotografia fDacanc in listaClone )
+					fotografieCW.Remove( fDacanc );
+				deselezionareTutto();
+			} else
+				dialogProvider.ShowError( "Impossibile eliminare le foto indicate", "ERRORE", null );
 		}
 
 		#endregion Metodi
