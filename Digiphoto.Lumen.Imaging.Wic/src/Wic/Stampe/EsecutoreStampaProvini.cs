@@ -311,21 +311,21 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 			// Marchia Provini
 			if(param.macchiaProvini)
 			{
-				TextBlock textNumero = new TextBlock();
-				textNumero.Text = "DIGIPHOTO.IT";
-				textNumero.FontSize = sizeLatoH / 10; // 30pt text
-				textNumero.Foreground = coloreFg; ;
-				textNumero.Background = new SolidColorBrush(Colors.Transparent); ;
-				textNumero.SetValue(Canvas.TopProperty, (Double)(sizeLatoH * (y)) - 2 * textNumero.FontSize + testataH - sizeLatoH/2);
-				textNumero.SetValue(Canvas.LeftProperty, (Double)(sizeLatoW * (x - 1)) + riquadroW - MeasureString(textNumero).Width);
-				c.Children.Add(textNumero);
+				TextBlock textMacchiaProvini = new TextBlock();
+				textMacchiaProvini.Text = "DIGIPHOTO.IT";
+				textMacchiaProvini.FontSize = sizeLatoH / 10; // 30pt text
+				textMacchiaProvini.Foreground = coloreFg; ;
+				textMacchiaProvini.Background = new SolidColorBrush(Colors.Transparent); ;
+				textMacchiaProvini.SetValue(Canvas.TopProperty, (Double)(sizeLatoH * (y)) - 2 * textMacchiaProvini.FontSize + testataH - sizeLatoH / 2);
+				textMacchiaProvini.SetValue(Canvas.LeftProperty, (Double)(sizeLatoW * (x - 1)) + riquadroW - MeasureString(textMacchiaProvini).Width);
+				c.Children.Add(textMacchiaProvini);
 			}
 
 			// Numero della foto
 			if( true )
 			{
 				TextBlock textNumero = new TextBlock();
-				textNumero.Text = foto.numero.ToString();
+				textNumero.Text = foto.etichetta;
 				textNumero.FontSize = sizeLatoH / 10; // 30pt text
 				textNumero.Foreground = new SolidColorBrush(Colors.Black); ;
 				textNumero.Background = new SolidColorBrush(Colors.Orange); ;

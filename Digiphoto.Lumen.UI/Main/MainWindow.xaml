@@ -5,6 +5,7 @@
         xmlns:lumFR="clr-namespace:Digiphoto.Lumen.UI.FotoRitocco"
         xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
 		xmlns:lumE="clr-namespace:Digiphoto.Lumen.UI.EliminaVecchiRullini"
+		xmlns:lumCF="clr-namespace:Digiphoto.Lumen.UI.ComNumFoto"
         Title="Lumen" WindowStyle="None" WindowState="Maximized"
         >
     <Window.Resources>
@@ -73,6 +74,13 @@
 					<lumE:EliminaVecchiRulliniView/>
 				</TabItem>
 			
+				<TabItem ToolTip="Converti Numero Foto">
+					<TabItem.Header>
+						<TextBlock Text="Comprimi Numero Foto" FontSize="14" />
+					</TabItem.Header>
+					<lumCF:CompNumFotoView/>
+				</TabItem>
+
 				<TabItem ToolTip="Report Vendite">
 					<TabItem.Header>
 						<TextBlock Text="Report" FontSize="14" />
