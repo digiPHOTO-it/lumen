@@ -258,8 +258,10 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Scaricatore {
 			if( msg.fase == Fase.FineScarico )
 				_puoiTogliereLaFlashCard = true;
 
-			if( msg.fase == Fase.FineLavora )
+			if( msg.fase == Fase.FineLavora ) {
+				_puoiTogliereLaFlashCard = true;
 				_elaborazioneTerminata = true;
+			}
 
 		}
 

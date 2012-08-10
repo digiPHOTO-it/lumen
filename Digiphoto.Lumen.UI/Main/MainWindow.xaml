@@ -58,8 +58,15 @@
 
         <TabItem Header="Utilità" ToolTip="Funzionalità varie" >
 			<TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Left" Name="tabUtilityPagine" >
-			
-				<TabItem ToolTip="Elimina Rullini">
+
+                <TabItem ToolTip="Uscita" Height="Auto">
+                    <TabItem.Header>
+                        <TextBlock Text="Uscita" FontSize="16" />
+                    </TabItem.Header>
+                    <Button Content="Uscita" Height="50" Command="{Binding CloseCommand}" Width="150" />
+                </TabItem>
+
+                <TabItem ToolTip="Cancella foto vecchie">
 					<TabItem.Header>
 						<TextBlock Text="Elimina Rullini" FontSize="14" />
 					</TabItem.Header>
@@ -89,26 +96,20 @@
 					</Grid>
 				</TabItem>	
 				
-				<TabItem ToolTip="Funzione di Logging e Debug">
+				<TabItem ToolTip="Consultazione giornale e messaggi applicativi">
 					<TabItem.Header>
 						<TextBlock Text="Log" FontSize="14" />
 					</TabItem.Header>
 					<Button Content="Log" Height="50" Command="{Binding LogCommand}" Width="150" />
 				</TabItem>	
 				
-				<TabItem ToolTip="Uscita">
+				<TabItem ToolTip="Informazioni sul programma">
 					<TabItem.Header>
 						<TextBlock Text="About" FontSize="14"/>
 					</TabItem.Header>
 					<Button Content="About" Height="50" Width="150" Click="Button_Click" />
 				</TabItem>
 
-				<TabItem ToolTip="Uscita">
-					<TabItem.Header>
-						<TextBlock Text="Uscita" FontSize="14" />
-					</TabItem.Header>
-					<Button Content="Uscita" Height="50" Command="{Binding CloseCommand}" Width="150" />
-				</TabItem>	
 			</TabControl>
         </TabItem>
 

@@ -12,6 +12,7 @@ using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Model;
 using System.Collections;
 using Digiphoto.Lumen.Util;
+using Digiphoto.Lumen.Database;
 
 namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
 {
@@ -73,8 +74,9 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
         /// Consente di eliminare tutte le foto contenute nel path
         /// </summary>
         /// <param name="pathCartella"></param>
-        public void elimina(String pathCartella)
+        public int elimina(String pathCartella)
         {
+			int quante = 0;
             String fotografoID = PathUtil.fotografoIDFromPath(pathCartella);
             DateTime dataRiferimento = Convert.ToDateTime(PathUtil.giornoFromPath(pathCartella)).Date;
 
@@ -99,14 +101,84 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
             using (new UnitOfWorkScope())
 			{
                 LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
-                objContext.ObjectContext.ExecuteStoreCommand("DELETE FROM Fotografie WHERE fotografo_id = {0} AND DATEPART(yyyy, dataOraAcquisizione) = {1} AND DATEPART(mm, dataOraAcquisizione) = {2} AND DATEPART(dd, dataOraAcquisizione)= {3}", fotografoID, dataRiferimento.Year, dataRiferimento.Month, dataRiferimento.Day);
+                quante = objContext.ObjectContext.ExecuteStoreCommand("DELETE FROM Fotografie WHERE fotografo_id = {0} AND DATEPART(yyyy, dataOraAcquisizione) = {1} AND DATEPART(mm, dataOraAcquisizione) = {2} AND DATEPART(dd, dataOraAcquisizione)= {3}", fotografoID, dataRiferimento.Year, dataRiferimento.Month, dataRiferimento.Day);
                 // Elimino tutti gli album rimasti senza foto
                 objContext.ObjectContext.ExecuteStoreCommand("DELETE FROM Albums WHERE (id NOT IN(SELECT DISTINCT AlbumRigaAlbum_RigaAlbum_id FROM RigheAlbum))");
                 objContext.SaveChanges();
 			}
             eliminaFotoVecchieMsg.fase = Fase.FineEliminazione;
             pubblicaMessaggio(eliminaFotoVecchieMsg);
+			return quante;
         }
+
+		/// <summary>
+		/// Elimino e distruggo le foto sparse indicate
+		/// </summary>
+		/// <param name="fotosDaCanc"></param>
+		public int elimina( IEnumerable<Fotografia> fotosDaCanc ) {
+
+			int conta = 0;
+			_giornale.Info( "E' stata richiesta la distruzione di " + fotosDaCanc.Count() + " fotografie. Iniizo eliminazione" );
+
+			LumenEntities lumenEntities = UnitOfWorkScope.CurrentObjectContext;
+
+			foreach( Fotografia ff in fotosDaCanc ) {
+
+				Fotografia ff2 = ff;
+				OrmUtil.forseAttacca<Fotografia>( ref ff2 );
+
+				AiutanteFoto.disposeImmagini( ff2 );
+
+				// Elimino la foto da disco
+				seEsisteCancella( PathUtil.nomeCompletoRisultante( ff2 ) );
+				seEsisteCancella( PathUtil.nomeCompletoProvino( ff2 ) );
+				seEsisteCancella( PathUtil.nomeCompletoOrig( ff2 ) );
+
+				// Poi dal database
+
+				var appo = lumenEntities.Fotografie.Remove( ff2 );
+				++conta;
+			}
+
+	
+			int test3 = lumenEntities.ObjectContext.SaveChanges();
+
+
+			_giornale.Info( "Eliminazione foto completata. Tot = " + conta );
+			_giornale.Debug( "la SaveChanges ha ritornato: " + test3 );
+
+			if( test3 > 0 ) {
+				// Rilancio un messaggio in modo che tutta l'applicazione (e tutti i componenti) vengano notificati 
+				EliminateFotoMsg msg = new EliminateFotoMsg( this as IEliminaFotoVecchieSrv );
+				msg.listaFotoEliminate = fotosDaCanc;
+				pubblicaMessaggio( msg );
+			}
+
+			return conta;
+		}
+
+		/// <summary>
+		/// Se esiste il file indicato lo cancello, altrimenti pazienza
+		/// </summary>
+		/// <param name="nomeFile"></param>
+		void seEsisteCancella( string nomeFile ) {
+			
+			if( File.Exists(nomeFile) ) {
+				try {
+
+					//Elimino gli attributi solo lettura file nascosti
+					File.SetAttributes( nomeFile, File.GetAttributes( nomeFile ) & ~FileAttributes.Hidden );
+					//Elimino gli attributi solo lettura                                
+					File.SetAttributes( nomeFile, File.GetAttributes( nomeFile ) & ~(FileAttributes.Archive | FileAttributes.ReadOnly) );
+
+					File.Delete( nomeFile );
+
+					_giornale.Debug( "Eliminata immagine " + nomeFile );
+				} catch( Exception ee ) {
+					_giornale.Warn( "Impossibile eliminare immagine " + nomeFile, ee );
+				}
+			}
+		}
 
         /// <summary>
         /// Consente di eliminare tutti gli album rimasti senza foto

@@ -206,7 +206,7 @@
                  ItemsSource="{Binding Path=fotografieCW}" 
                  ItemsPanel="{DynamicResource ImageGalleryItemsPanelTemplate}" 
                  ItemTemplate="{DynamicResource fotografiaDataTemplate}"
-            ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled" PreviewMouseRightButtonDown="LsImageGallery_PreviewMouseRightButtonDown">
 
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}">
@@ -219,6 +219,10 @@
 							ItemsSource="{Binding stampantiAbbinate}" 
 							ItemTemplate="{StaticResource stampaRapidaMenu}" >
 					</MenuItem>
+                    <MenuItem Header="Elimina" 
+                              Command="{Binding Path=eliminareFotoCommand}"
+                              CommandParameter="SEL" />
+                    
 				</ContextMenu>
 			</ListBox.ContextMenu>
 

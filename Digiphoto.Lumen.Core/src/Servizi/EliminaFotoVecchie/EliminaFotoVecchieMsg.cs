@@ -31,5 +31,15 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
         public int totFotoEliminate { get; set; }
     }
 
+	public class EliminateFotoMsg : Messaggio {
+
+		public EliminateFotoMsg( object sender ) : base( sender ) {
+		}
+
+		public IEnumerable<Fotografia> listaFotoEliminate {
+			get;
+			set;
+		}
+	}
 
 }

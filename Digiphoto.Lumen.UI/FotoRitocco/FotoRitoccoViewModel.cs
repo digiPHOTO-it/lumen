@@ -29,6 +29,8 @@ using System.Collections.ObjectModel;
 using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Servizi.Scaricatore;
 using System.Windows.Threading;
+using System.Text;
+using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
 
 namespace Digiphoto.Lumen.UI.FotoRitocco {
 
@@ -259,6 +261,11 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		private ObservableCollection<BitmapImage> maschere {
+			get;
+			set;
+		}
+
 		public ListCollectionView maschereCW {
 			private set;
 			get;
@@ -350,7 +357,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		public bool possoCaricareMaschere( string param ) {
 
+			if( param == "V" || param == "H" )
+				return maschereCW != null && maschereCW.IsEmpty == false;
+			else
+				return true;  // T=tutto ; N=Niente
+		}
 
 
 		#endregion Proprietà
@@ -465,7 +478,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		public ICommand caricareMaschereCommand {
 			get {
 				if( _caricareMaschereCommand == null ) {
-					_caricareMaschereCommand = new RelayCommand( param => caricareMaschere( (string)param ) );
+					_caricareMaschereCommand = new RelayCommand( param => caricareMaschere( (string)param ),
+						                                         param => possoCaricareMaschere( (string)param ) );
 				}
 				return _caricareMaschereCommand;
 			}
@@ -525,7 +539,18 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 		
+		private RelayCommand _commandBrowseForFileCornice;
+		public ICommand commandBrowseForFileCornice {
+			get {
+				if( _commandBrowseForFileCornice == null ) {
+					_commandBrowseForFileCornice = new RelayCommand( p => browseForFileCornice() );
+				}
+				return _commandBrowseForFileCornice;
+			}
+		}
 
+
+		
 	
 
 		#endregion Comandi
@@ -863,27 +888,50 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		List<BitmapImage> loadMaschereDaDisco() {
 
-			List<BitmapImage> maschere = new List<BitmapImage>();
+		/// <summary>
+		/// Carico la collezione con le 
+		/// </summary>
+		void loadMaschereDaDisco() {
 
-			// Faccio giri diversi per i vari formati grafici che sono indicati nella configurazione (jpg, tif)
-			foreach( string estensione in Configurazione.estensioniGraficheAmmesse ) {
+			if( maschere == null ) {
 
-				string [] files = Directory.GetFiles( Configurazione.UserConfigLumen.cartellaMaschere, searchPattern: "*"+estensione, searchOption: SearchOption.AllDirectories );
+				maschere = new ObservableCollection<BitmapImage>();
 
-				// trasferisco tutti i files elencati
-				foreach( string nomeFileSrc in files ) {
-					try {
-						BitmapImage msk = new BitmapImage( new Uri( nomeFileSrc ) );
-						maschere.Add( msk );
-					} catch( Exception ee ) {
-						_giornale.Error( "La maschera: " + nomeFileSrc + " non è valida quindi non viene caricata" );
+				// Faccio giri diversi per i vari formati grafici che sono indicati nella configurazione (jpg, tif)
+				foreach( string estensione in Configurazione.estensioniGraficheAmmesse ) {
+
+					string [] files = Directory.GetFiles( Configurazione.UserConfigLumen.cartellaMaschere, searchPattern: "*" + estensione, searchOption: SearchOption.AllDirectories );
+
+					// trasferisco tutti i files elencati
+					foreach( string nomeFileSrc in files ) {
+						try {
+							maschere.Add( loadMascheraDaDisco( nomeFileSrc ) );
+						} catch( Exception ee ) {
+							_giornale.Error( "La maschera: " + nomeFileSrc + " non è valida quindi non viene caricata" );
+						}
 					}
 				}
 			}
 
-			return maschere;
+
+		}
+
+		/// <summary>
+		/// Ne carica una sola e la ritorna
+		/// </summary>
+		/// <param name="nomeFileSrc">Il nome completo della maschera da caricare</param>
+		/// <returns>una BitmapImage piccolina</returns>
+		BitmapImage loadMascheraDaDisco( string nomeFileSrc ) {
+			BitmapImage msk = new BitmapImage();
+			msk.BeginInit();
+			//						msk.CacheOption = BitmapCacheOption.OnDemand;
+			//						msk.CreateOptions = BitmapCreateOptions.DelayCreation;
+			msk.DecodePixelWidth = 80;
+			msk.UriSource = new Uri( nomeFileSrc );
+			msk.EndInit();
+			msk.Freeze();
+			return msk;
 		}
 
 		/*
@@ -916,7 +964,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		private void caricareMaschere( string verso ) {
 
 			if( verso == "T" ) {
-				maschereCW = new ListCollectionView( loadMaschereDaDisco() );
+				loadMaschereDaDisco();
+				maschereCW = new ListCollectionView( maschere );
 			} else if( verso == "N" ) {
 				maschereCW = null;
 			} else {
@@ -937,7 +986,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		void attivareMaschera( object p ) {
 				
-			BitmapImage msk = (BitmapImage)p;
+			// Siccome la bitmap selezionata è solo una thumnail di 80 pixel, rileggo il file vero effettivo.
+			Uri uriMask = ((BitmapImage)p).UriSource;
+			BitmapImage msk = new BitmapImage( uriMask );
 			mascheraAttiva = msk;
 
 			// cambio stato. Vado in modalità di editing maschere
@@ -997,6 +1048,41 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			fotografieDaModificareCW.DeselectAll();
 		}
 
+		private void browseForFileCornice() {
+
+			Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+
+			// Devo aggiungere gli asterischi
+			string testo = Configurazione.UserConfigLumen.estensioniGrafiche;
+			StringBuilder extWithStar = new StringBuilder();
+			foreach( string ext in Configurazione.estensioniGraficheAmmesse ) {
+				extWithStar.Append( '*' );
+				extWithStar.Append( ext );
+				extWithStar.Append( ';' );
+			}
+
+			extWithStar.Remove( extWithStar.Length-1, 1 );  // tolgo l'ultimo punto e virgola
+
+			dlg.DefaultExt = ".png";
+			dlg.Filter = "Images |" + extWithStar;
+
+			// Display OpenFileDialog by calling ShowDialog method
+			Nullable<bool> result = dlg.ShowDialog();
+ 
+			// Get the selected file name and display in a TextBox
+			if( result == true ) {
+
+				try {
+					// Carico la immagine e la aggiungo alla lista che sta a video
+					BitmapImage bmp = loadMascheraDaDisco( dlg.FileName );
+					maschere.Add( bmp );
+				} catch( Exception ee ) {
+					_giornale.Warn( "Errore in caricamento maschera : " + dlg.FileName, ee );
+					dialogProvider.ShowError( ee.Message, "Imposssibile caricare cornice", null );
+				}
+			}
+		}
+
 		#endregion Metodi
 
 		// **********************************************************************************************
@@ -1022,6 +1108,18 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			if( msg is NuovaFotoMsg )
 				gestisciNuovaFotoMsg( msg as NuovaFotoMsg );
+
+			if( msg is EliminateFotoMsg )
+				gestisciFotoEliminate( msg as EliminateFotoMsg );
+
+		}
+
+		// Sono state eliminate delle foto. Se per caso le avevo in modifica, le devo togliere
+		private void gestisciFotoEliminate( EliminateFotoMsg eliminateFotoMsg ) {
+			foreach( Fotografia ff in eliminateFotoMsg.listaFotoEliminate ) {
+				rifiutareCorrezioni( ff, true );
+				fotografieDaModificare.Remove( ff );
+			}
 		}
 
 		private void gestisciNuovaFotoMsg( NuovaFotoMsg nuovaFotoMsg) {

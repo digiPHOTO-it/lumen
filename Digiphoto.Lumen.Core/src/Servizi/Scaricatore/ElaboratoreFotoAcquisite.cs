@@ -67,8 +67,9 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 				Fotografia foto = aggiungiFoto( fileInfo, ++conta + ultimoNumFoto );
 
 				AiutanteFoto.creaProvinoFoto( fileInfo.FullName, foto );
-
-				AiutanteFoto.disposeImmagini( foto );
+				
+				// ** non so perché lanciavo la dispose .. boh non mi ricordo più
+				// AiutanteFoto.disposeImmagini( foto );
 
 
 				// Se lavoro con una singola foto, allora lancio l'evento che mi dice che è pronta.

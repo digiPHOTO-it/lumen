@@ -51,11 +51,11 @@ namespace Digiphoto.Lumen.Util {
 			return new FileInfo( nomeCompletoFoto( foto ) );
 		}
 
-		/** Dato in input una foto che contiene al suo interno un nome file relativo,
-		 * appiccico anche la cartella di base del repository delle foto per tornare il nome completo.
-		 */
+		/// <summary>
+		/// Questo metodo è un doppione. Usare nomeCompletoOrig
+		/// </summary>
 		public static string nomeCompletoFoto( Fotografia foto ) {
-			return Path.Combine( Configurazione.cartellaRepositoryFoto, foto.nomeFile ); 
+			return nomeCompletoOrig( foto );
 		}
 
 		/** 
