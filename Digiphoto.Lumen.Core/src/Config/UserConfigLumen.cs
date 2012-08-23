@@ -246,5 +246,64 @@ namespace Digiphoto.Lumen.Config
 			get;
 			set;
 		}
+
+		# region SlideShowParam
+
+		public short deviceEnum
+		{
+			get;
+			set;
+		}
+
+		public int screenHeight
+		{
+			get;
+			set;
+		}
+
+		public int screenWidth
+		{
+			get;
+			set;
+		}
+
+		public int slideHeight
+		{
+			get;
+			set;
+		}
+
+		public int slideWidth
+		{
+			get;
+			set;
+		}
+
+		public int slideTop
+		{
+			get;
+			set;
+		}
+
+		public int slideLeft
+		{
+			get;
+			set;
+		}
+
+		public int slideBoundsX
+		{
+			get;
+			set;
+		}
+
+		public int slideBoundsY
+		{
+			get;
+			set;
+		}
+
+		# endregion
+
 	}
 }

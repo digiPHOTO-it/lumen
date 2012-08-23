@@ -6,6 +6,7 @@
         xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
 		xmlns:lumE="clr-namespace:Digiphoto.Lumen.UI.EliminaVecchiRullini"
 		xmlns:lumCF="clr-namespace:Digiphoto.Lumen.UI.ComNumFoto"
+		xmlns:lumGS="clr-namespace:Digiphoto.Lumen.UI.Pubblico"
         Title="Lumen" WindowStyle="None" WindowState="Maximized"
         >
     <Window.Resources>
@@ -54,6 +55,14 @@
 						<lum:SelettoreFormatoCartaAbbinatoView DataContext="{Binding Path=selettoreFormatoCartaAbbinatoViewModel}"/>
 					</StackPanel>
 				</TabItem>							
+
+				<TabItem ToolTip="Gestione SlideShow">
+					<TabItem.Header>
+						<TextBlock Text="Gestione SlideShow" FontSize="14" />
+					</TabItem.Header>
+					<lumGS:GestSlideShowView/>
+				</TabItem>
+
 			</TabControl>
         </TabItem>
 
