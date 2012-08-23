@@ -116,6 +116,7 @@
       <DependentUpon>AboutBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Adorners\ComposingAdorner.cs" />
+    <Compile Include="Adorners\ResizingAdorner.cs" />
     <Compile Include="Carrello\CarrelloView.xaml.cs">
       <DependentUpon>CarrelloView.xaml</DependentUpon>
     </Compile>
@@ -129,6 +130,8 @@
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
     <Compile Include="Converters\BoolBackgroundConverter.cs" />
     <Compile Include="Converters\CompNumFotoConverter.cs" />
+    <Compile Include="Converters\PercentualeConverterSlideY.cs" />
+    <Compile Include="Converters\PercentualeConverterSlideX.cs" />
     <Compile Include="Converters\ListItemIndexConverter.cs" />
     <Compile Include="Converters\ListVisibilityConverter.cs" />
     <Compile Include="Converters\SumQuantitaConverter.cs" />
@@ -173,11 +176,17 @@
     <Compile Include="Logging\NotificationView.xaml.cs">
       <DependentUpon>NotificationView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pubblico\GestioneGeometria\GestSlideShowView.xaml.cs">
+      <DependentUpon>GestSlideShowView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pubblico\GestioneGeometria\GestSlideShowViewModel.cs" />
+    <Compile Include="Pubblico\GestioneGeometria\ParamSlideShowGeom.cs" />
     <Compile Include="Pubblico\SlideShow.cs" />
     <Compile Include="Reports\ReportHostWindow.xaml.cs">
       <DependentUpon>ReportHostWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="src\Util\AiutanteUI.cs" />
+    <Compile Include="Pubblico\GestioneGeometria\WpfScreen.cs" />
     <Compile Include="TrayIcon\ShowTrayIcon.xaml.cs">
       <DependentUpon>ShowTrayIcon.xaml</DependentUpon>
     </Compile>
@@ -218,6 +227,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Main\MainWindowResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pubblico\GestioneGeometria\GestSlideShowResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pubblico\GestioneGeometria\GestSlideShowView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

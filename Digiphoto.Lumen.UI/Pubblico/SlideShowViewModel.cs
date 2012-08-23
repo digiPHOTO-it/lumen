@@ -14,6 +14,9 @@ using Digiphoto.Lumen.Servizi.Ricerca;
 using Digiphoto.Lumen.Servizi.Explorer;
 using Digiphoto.Lumen.Servizi.Scaricatore;
 using Digiphoto.Lumen.Config;
+using Digiphoto.Lumen.UI.Pubblico.GestioneGeometria;
+using System.Configuration;
+using System.Windows;
 
 namespace Digiphoto.Lumen.UI.Pubblico {
 
@@ -24,9 +27,17 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		public SlideShowViewModel() {
 			// La dimensione delle foto deve essere calcolata in automatico in base alle dimensione del canvas che le contiene
 			dimensioneIconaFoto = double.NaN;
+
+			pSSG = GestSlideShowViewModel.pSSG;
 		}
 
 		#region Proprietà
+
+		public ParamSlideShowGeom pSSG
+		{
+			get;
+			set;
+		}
 
 		private int numSlideCorrente {
 			get;

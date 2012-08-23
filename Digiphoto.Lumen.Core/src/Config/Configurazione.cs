@@ -177,7 +177,27 @@ namespace Digiphoto.Lumen.Config  {
 			userConfig.masterizzaDirettamente = false;
 			userConfig.millisIntervalloSlideShow = 2500;
 			userConfig.oraCambioGiornata = "05:00";
+
+			// Geometria di default per lo slideShow
+			creaGeometriaSlideShowSDefault(userConfig);
+
 			return userConfig;
+		}
+
+		public static void creaGeometriaSlideShowSDefault(UserConfigLumen userConfig)
+		{
+			userConfig.deviceEnum = 0;
+
+			userConfig.screenHeight = 1024;
+			userConfig.screenWidth = 1280;
+
+			userConfig.slideHeight = 400;
+			userConfig.slideWidth = 400;
+			userConfig.slideLeft = (userConfig.screenWidth - userConfig.slideWidth) / 2; // 312
+			userConfig.slideTop = (userConfig.screenHeight - userConfig.slideHeight) / 2; // 440
+
+			userConfig.slideBoundsX = 0;
+			userConfig.slideBoundsY = 0;
 		}
 
 		bool isValida() {
