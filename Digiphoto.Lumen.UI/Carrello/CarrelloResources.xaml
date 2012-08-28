@@ -13,6 +13,7 @@
 	<lumC:BoolBackgroundConverter x:Key="boolBackgroundConverter" />
 	<lumC:PercentualeConverter x:Key="percentualeConverter" />
 	<lumC:ListItemIndexConverter x:Key="listItemIndexConverter" />
+	<lumC:SumConverter x:Key="sumConverter" />
 
 	<!-- Stile della listbox che itera le RigheCarrello -->
     <Style x:Key="ListCarrelloStyle" TargetType="ListBox">
@@ -70,19 +71,19 @@
 
 	<!-- This storyboard will make the image grow to double its size in 0.2 seconds -->
 	<Storyboard x:Key="expandStoryboard">
-		<DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" To="5" Duration="0:0:0.2" />
-		<DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" To="5" Duration="0:0:0.2" />
+		<DoubleAnimation Storyboard.TargetName="zoom"  Storyboard.TargetProperty="ScaleX" To="8" Duration="0:0:0.2" />
+		<DoubleAnimation Storyboard.TargetName="zoom"  Storyboard.TargetProperty="ScaleY" To="8" Duration="0:0:0.2" />
 	</Storyboard>
 	
 	<!-- This storyboard will make the image revert to its original size -->
 	<Storyboard x:Key="shrinkStoryboard">
-		<DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" To="1" Duration="0:0:0.2" />
-		<DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" To="1" Duration="0:0:0.2" />
+		<DoubleAnimation Storyboard.TargetName="zoom"  Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.2" />
+		<DoubleAnimation Storyboard.TargetName="zoom"  Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.2" />
 	</Storyboard>
 
     <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
     <DataTemplate x:Key="ImageCarrelloDataTemplate" >
-        <GroupBox Header="Riga Carrello" Width="Auto" Margin="2,2,2,2" >
+		<GroupBox x:Name="RigaCarrelloGroupBox" Header="Riga Carrello" Width="Auto" Margin="2,2,2,2" >
 			<Grid Width="Auto">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="*" />
@@ -92,31 +93,56 @@
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
 				<Border Grid.Row="0" Grid.Column="0" BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="10" Margin="2,2,2,2">
-				<Image Source="{Binding Path=fotografia.imgProvino,Converter={StaticResource immagineToImageSourceConverter}}"
-                       Height="50"
-                       Width="50"
-                       VerticalAlignment="Center"
-                       HorizontalAlignment="Left"
-                       >
-                    <!-- Come tooltip si possono visualizzare informazioni importanti riassuntive -->
-                    <Image.ToolTip>
-                        <Grid>
-                            <Label Content="{Binding Path=descrizione}" />
-                        </Grid>
-                    </Image.ToolTip>
-					<Image.Triggers>
-						<EventTrigger RoutedEvent="Image.MouseEnter" >
-							<BeginStoryboard Storyboard="{StaticResource expandStoryboard}" />
-						</EventTrigger>
-						<EventTrigger RoutedEvent="Image.MouseLeave">
-							<BeginStoryboard Storyboard="{StaticResource shrinkStoryboard}" />
-						</EventTrigger>
-					</Image.Triggers>
-						<Image.RenderTransform>
-						<ScaleTransform ScaleX="1" ScaleY="1"/>
-					</Image.RenderTransform>
-                </Image>
-            </Border>
+					<Canvas	Height="50"
+							Width="50">
+							<Image 
+								Name="icon"
+								Source="{Binding Path=fotografia.imgProvino,Converter={StaticResource immagineToImageSourceConverter}}"
+	             				Height="50"
+	             				Width="50"
+	             				VerticalAlignment="Center"
+	             				HorizontalAlignment="Center"
+								Canvas.Left="0"
+	             			>
+							<!-- Come tooltip si possono visualizzare informazioni importanti riassuntive -->
+							<Image.ToolTip>
+								<Grid>
+									<Label Content="{Binding Path=descrizione}" />
+								</Grid>
+							</Image.ToolTip>
+							<Image.Triggers>
+								<EventTrigger RoutedEvent="Image.MouseEnter" >
+									<BeginStoryboard Storyboard="{StaticResource expandStoryboard}" />
+								</EventTrigger>
+								<EventTrigger RoutedEvent="Image.MouseLeave">
+									<BeginStoryboard Storyboard="{StaticResource shrinkStoryboard}" />
+								</EventTrigger>
+							</Image.Triggers>
+						</Image>
+						<Popup
+            				Name="popup"
+							IsOpen="{Binding IsMouseOver, ElementName=icon, Mode=OneWay}"
+							PlacementTarget="{Binding ElementName=listCarrello}"
+							Placement="Absolute"
+							HorizontalOffset="{Binding Converter={StaticResource sumConverter},ElementName=RigaCarrelloGroupBox,Path=ActualWidth,ConverterParameter=80}"
+							Width="800"
+							Height="800"
+							StaysOpen="true"
+							AllowsTransparency="True">
+							<Image
+								Width="50"
+								Height="50"
+								Source="{Binding Path=fotografia.imgProvino,Converter={StaticResource immagineToImageSourceConverter}}">
+								<Image.RenderTransform>
+									<ScaleTransform
+											x:Name="zoom"
+											ScaleX="1"
+											ScaleY="1" />
+								</Image.RenderTransform>
+							</Image>
+						</Popup>
+					</Canvas>
+				</Border>
 				<GroupBox Grid.Row="0" Grid.Column="1" Header="Attributi" Margin="4,4,4,4">
 					<Grid Width="Auto">
 						<Grid.RowDefinitions>
