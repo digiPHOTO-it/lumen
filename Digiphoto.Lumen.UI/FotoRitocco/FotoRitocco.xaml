@@ -24,58 +24,58 @@
 
 
 
-        <DockPanel LastChildFill="True">
-                
-        <StackPanel DockPanel.Dock="Right">  <!-- pulsantiera -->
-            
-            <Label Content="Luminosità" />
-            <Slider Name="sliderLuminosita" ToolTip="Luminosità" Minimum="-1" Maximum="1" Value="0" ValueChanged="sliderLuminosita_ValueChanged" />
+	<DockPanel LastChildFill="True">
 
-            <Label Content="Contrasto" />
-            <Slider Name="sliderContrasto" ToolTip="Contrasto" Minimum="0" Maximum="2" Value="1" ValueChanged="sliderContrasto_ValueChanged" />
 
-            <Label Content="Ruota" />
-            <Slider Name="sliderRuota" ToolTip="Ruota" Minimum="-180" Maximum="180" ValueChanged="sliderRuota_ValueChanged" />
+		<StackPanel DockPanel.Dock="Right" Name="panelPulsantiera"> <!-- pulsantiera -->
 
-            <StackPanel Orientation="Horizontal">
-                <Button Content="-90°" Command="{Binding ruotareCommand}" CommandParameter="-90" />
-                <Button Content="+90°" Command="{Binding ruotareCommand}" CommandParameter="90" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <ToggleButton Content="B/N" IsChecked="{Binding Path=isGrayscaleCheched}"  Command="{Binding grayScaleCommand}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" />
-                <ToggleButton Content="Sepia" IsChecked="{Binding Path=isSepiaCheched}" Command="{Binding sepiaCommand}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" />                
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <Button Content="Flip" Command="{Binding flipCommand}" />
-                <Button Content="Crop" Command="{Binding croppareCommand}"/>
-            </StackPanel>
+			<Label Content="Luminosità" />
+			<Slider Name="sliderLuminosita" ToolTip="Luminosità" Minimum="-1" Maximum="1" Value="0" ValueChanged="sliderLuminosita_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" />
 
-            
-            <Separator Height="10" />
+			<Label Content="Contrasto" />
+			<Slider Name="sliderContrasto" ToolTip="Contrasto" Minimum="0" Maximum="2" Value="1" ValueChanged="sliderContrasto_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" />
 
-            <ToggleButton Content="Selector" Name="toggleSelector" 
-                          Checked="toggleSelector_Checked" Unchecked="toggleSelector_Unchecked" />
-            
-            
-            <Separator Height="10" />
-            
-            <Button Content="Torna Orig" ToolTip="Torna Originale" 
-                        Command="{Binding tornareOriginaleCommand}" />
+			<Label Content="Ruota" />
+			<Slider Name="sliderRuota" ToolTip="Ruota" Minimum="-180" Maximum="180" ValueChanged="sliderRuota_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" />
+
+
+			<StackPanel Orientation="Horizontal">
+				<Button Content="-90°" Command="{Binding ruotareCommand}" CommandParameter="-90" Margin="2" />
+				<Button Content="+90°" Command="{Binding ruotareCommand}" CommandParameter="90" Margin="2"/>
+				<Button Content="Flip" Command="{Binding flipCommand}" Margin="2"/>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal">
+				<ToggleButton Content="B/N" IsChecked="{Binding Path=isGrayscaleCheched}"  Command="{Binding grayScaleCommand}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" Margin="2"/>
+				<ToggleButton Content="Sepia" IsChecked="{Binding Path=isSepiaCheched}" Command="{Binding sepiaCommand}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" Margin="2"/>
+				<Button Name="buttonModificaConPrgEsterno" Content="Prg." ToolTip="Modifica le foto con un programma esterno" Command="{Binding modificareConEditorEsternoCommand}" />
+			</StackPanel>
+					
+			<Separator Height="10" />
+
+			<ToggleButton Content="Selector" Name="toggleSelector" IsChecked="{Binding Path=selectorAttivo,Mode=OneWay}" IsEnabled="{Binding Path=selectorEnabled,Mode=OneWay}"
+							Checked="toggleSelector_Checked" Unchecked="toggleSelector_Unchecked" />
+
+
+
+			<Button Content="Crop" Command="{Binding croppareCommand}"/>
+
+			<Separator Height="10" />			
+
+			<Button Content="Torna Orig" ToolTip="Torna Originale" Command="{Binding tornareOriginaleCommand}" />
             
             <Separator Height="20" />
 
             <Button Name="rifiutareCorrezioniButton" Content="Rifiuta" ToolTip="Annulla le correzioni applicate" Command="{Binding rifiutareCorrezioniCommand}"  />
             <Button Name="salvareCorrezioniButton" Content="Applica" ToolTip="Applica le correzioni apportate" Command="{Binding salvareCorrezioniCommand}"  />
-            <Button Name="salvareMascheraButton" Content="Salva Msk" ToolTip="Salva la maschera" Click="salvareMascheraButton_Click" />
-            <Button Name="buttonModificaConPrgEsterno" Content="Editor" ToolTip="Modifica le foto con un programma esterno" Command="{Binding modificareConEditorEsternoCommand}" />
+            <Button Name="salvareMascheraButton" Content="Salva Msk" ToolTip="Salva la maschera" Click="salvareMascheraButton_Click" IsEnabled="{Binding possoSalvareMaschera}" />
             <Separator />
             <Button Content="+All" ToolTip="Mette tutte le foto in modifica" Command="{Binding commandRiempireElencoInModifica}" />
             <Button Content="-All" ToolTip="Toglie tutte le foto dalla modifica" Command="{Binding commandSvuotareElencoInModifica}" />
             <Button Content="Svuota lista" ToolTip="Svuota la lista delle foto in attesa di essere modificate" Command="{Binding svuotareListaDaModificareCommand}" />
             
-        </StackPanel>
+		</StackPanel>
 
-        <Expander DockPanel.Dock="Top"  Header="Maschere" ExpandDirection="Down" Name="expanderMaschere"> <!-- Maschere -->
+		<Expander DockPanel.Dock="Top"  Header="Maschere" ExpandDirection="Down" Name="expanderMaschere"> <!-- Maschere -->
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Expanded">
                     <i:InvokeCommandAction Command="{Binding caricareMaschereCommand}" CommandParameter="T"/>
