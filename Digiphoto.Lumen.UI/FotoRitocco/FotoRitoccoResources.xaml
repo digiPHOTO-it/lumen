@@ -8,6 +8,10 @@
 
     <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
 
+	<Style x:Name="panelPulsantiera" TargetType="StackPanel">
+		<Setter Property="Width" Value="100" />
+	</Style>
+	
     <!-- Stile della listbox che itera le immagini -->
     <Style x:Key="listBoxImmaginiDaModificareStyle" TargetType="ListBox">
 
