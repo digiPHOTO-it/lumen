@@ -5,7 +5,7 @@
 
     <lumC:ImmagineToImageSourceConverter x:Key="immagineToImageSourceConverter" />
     <lumC:PercentualeConverter x:Key="percentualeConverter" />
-
+	<lumC:BoolWindowStateConverter x:Key="boolWindowStateConverter" />
 
 
 

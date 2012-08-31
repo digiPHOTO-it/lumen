@@ -23,6 +23,8 @@ namespace Digiphoto.Lumen.UI.Pubblico
 
 			pSSG = new ParamSlideShowGeom();
 
+			pSSG.fullScreen = cfg.fullScreen;
+
 			pSSG.slideHeight = cfg.slideHeight;
 			pSSG.slideWidth = cfg.slideWidth;
 
@@ -62,7 +64,7 @@ namespace Digiphoto.Lumen.UI.Pubblico
 			}
 		}
 
-		public static void salva()
+		private void salva()
 		{
 			cfg = Configurazione.UserConfigLumen;
 
@@ -74,21 +76,28 @@ namespace Digiphoto.Lumen.UI.Pubblico
 
 			cfg.deviceEnum = pSSG.deviceEnum;
 
+			cfg.fullScreen = pSSG.fullScreen;
+
 			_giornale.Debug("Devo salvare la configurazione utente su file xml");
 			UserConfigSerializer.serializeToFile(Configurazione.UserConfigLumen);
 			_giornale.Info("Salvata la configurazione utente su file xml");
+
+			dialogProvider.ShowMessage("Posizione salvata Correttamente", "Avviso");
 		}
 
 		private void ripristina()
 		{
 			Configurazione.UserConfigLumen = UserConfigSerializer.deserialize();
 			riposiziona();
+			dialogProvider.ShowMessage("La posizione dello slideShow è stata ripristinata\nPremere salva per confermare","Avviso");
 		}
 
 		private void reset()
 		{
 			Configurazione.creaGeometriaSlideShowSDefault(Configurazione.UserConfigLumen);
 			riposiziona();
+			dialogProvider.ShowMessage("Modifica Applicata", "Avviso");
+			dialogProvider.ShowMessage("La posizione dello slideShow è stata ripristinata\nPremere salva per confermare", "Avviso");
 		}
 
 		public static void riposiziona()
@@ -98,6 +107,8 @@ namespace Digiphoto.Lumen.UI.Pubblico
 
 			pSSG.slideHeight = Configurazione.UserConfigLumen.slideHeight;
 			pSSG.slideWidth = Configurazione.UserConfigLumen.slideWidth;
+
+			pSSG.fullScreen = Configurazione.UserConfigLumen.fullScreen;
 		}
 
 		#endregion

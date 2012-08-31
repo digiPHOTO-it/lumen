@@ -118,13 +118,20 @@ if( 1 == 1 ) {  // TODO
 			if (salvaNuoviValori)
 			{
 				_giornale.Debug("Devo salvare i nuovi valori ricalcolati");
-				GestSlideShowViewModel.salva();
+				_giornale.Debug("Devo salvare la configurazione utente su file xml");
+				UserConfigSerializer.serializeToFile(cfg);
+				_giornale.Info("Salvata la configurazione utente su file xml");
 			}
 		}
 
 		private bool verificaProiettabile(WpfScreen scr, UserConfigLumen cfg)
 		{
 			bool proiettabile = true;
+
+			if(cfg.fullScreen)
+			{
+				return true;
+			}
 
 			if (proiettabile && cfg.slideLeft < 0)
 			{
