@@ -59,6 +59,23 @@ namespace Digiphoto.Lumen.UI.Pubblico.GestioneGeometria
 			}
 		}
 
+		private bool _fullScreen;
+		public bool fullScreen
+		{
+			get
+			{
+				return _fullScreen;
+			}
+			set
+			{
+				if (_fullScreen != value)
+				{
+					_fullScreen = value;
+					OnPropertyChanged("fullScreen");
+				}
+			}
+		}
+
 		private int _slideHeight;
 		public int slideHeight
 		{

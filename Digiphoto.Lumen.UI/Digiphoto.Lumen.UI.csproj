@@ -130,6 +130,7 @@
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
     <Compile Include="Converters\BoolBackgroundConverter.cs" />
     <Compile Include="Converters\CompNumFotoConverter.cs" />
+    <Compile Include="Converters\BoolWindowStateConverter.cs" />
     <Compile Include="Converters\SumConverter.cs" />
     <Compile Include="Converters\PercentualeConverterSlideY.cs" />
     <Compile Include="Converters\PercentualeConverterSlideX.cs" />

@@ -267,6 +267,12 @@ namespace Digiphoto.Lumen.Config
 			set;
 		}
 
+		public bool fullScreen
+		{
+			get;
+			set;
+		}
+
 		public int slideHeight
 		{
 			get;
