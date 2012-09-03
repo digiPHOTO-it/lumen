@@ -514,17 +514,29 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		private void listBoxImmaginiDaModificare_Drop( object sender, DragEventArgs e ) {
 
-			using( new UnitOfWorkScope() ) {
+			var s1 = e.Source;
+			var s2 = e.OriginalSource;
 
-				var oo = e.Data.GetData( typeof( Fotografia ) );
+			if( e.Effects == DragDropEffects.Move ) {
 
-				if( oo != null ) {
-					Fotografia daTogliere = oo as Fotografia;
-					_viewModel.rifiutareCorrezioni( daTogliere, true );
+				// Ok sto spostando la foto dal canvas di modifica alla lista di attesa.
+				using( new UnitOfWorkScope() ) {
+
+					var oo = e.Data.GetData( typeof( Fotografia ) );
+
+					if( oo != null ) {
+						Fotografia daTogliere = oo as Fotografia;
+						_viewModel.rifiutareCorrezioni( daTogliere, true );
+					}
 				}
 
-			}
+			} else {
 
+				// Sto cliccando sulla foto nella lista di attesa. Non so perché mi 
+				// solleva questo evento.
+				_viewModel.forzaRefreshStato();
+
+			}
 		}
 
 

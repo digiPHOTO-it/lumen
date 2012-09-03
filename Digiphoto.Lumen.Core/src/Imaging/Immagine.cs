@@ -31,6 +31,8 @@ namespace Digiphoto.Lumen.Imaging {
 
 		public abstract void Dispose();
 
+		public abstract object Clone();
+
 		#endregion
 	}
 }

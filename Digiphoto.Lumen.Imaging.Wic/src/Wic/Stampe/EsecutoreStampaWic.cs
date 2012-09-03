@@ -47,7 +47,10 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 
 				// Ricavo l'immagine da stampare
 				IImmagine immagineDaStampare = _lavoroDiStampa.fotografia.imgRisultante != null ? _lavoroDiStampa.fotografia.imgRisultante : _lavoroDiStampa.fotografia.imgOrig;
-				BitmapSource bmp = ((ImmagineWic)immagineDaStampare).bitmapSource;
+
+// TODO BLUCA provo a duplicare l'immagine per evitare l'errore che è di proprietà del thread chiamante.
+				BitmapSource bmp = new WriteableBitmap( ((ImmagineWic)immagineDaStampare).bitmapSource );
+				bmp.Freeze();
 
 				// Come print-server uso me stesso
 				using( PrintServer ps1 = new PrintServer() ) {
