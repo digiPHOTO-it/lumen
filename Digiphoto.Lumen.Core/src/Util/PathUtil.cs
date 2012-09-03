@@ -51,6 +51,16 @@ namespace Digiphoto.Lumen.Util {
 			return new FileInfo( nomeCompletoFoto( foto ) );
 		}
 
+		public static string nomeCompletoFile( Fotografia foto, IdrataTarget quale ) {
+			if( quale == IdrataTarget.Originale )
+				return nomeCompletoFoto( foto );
+			if( quale == IdrataTarget.Provino )
+				return nomeCompletoProvino( foto );
+			if( quale == IdrataTarget.Risultante )
+				return nomeCompletoRisultante( foto );
+			throw new ArgumentException( quale.ToString() );
+		}
+
 		/// <summary>
 		/// Questo metodo è un doppione. Usare nomeCompletoOrig
 		/// </summary>
@@ -167,6 +177,16 @@ namespace Digiphoto.Lumen.Util {
            }
 
 			return isWriteAccess;
+		}
+
+		internal static void creaCartellaProvini( Fotografia foto ) {
+
+			// Ricavo il nome della foto originale per determinare la cartella
+			string nomeFile = PathUtil.nomeCompletoOrig( foto );
+			string nomeCartella = PathUtil.decidiCartellaProvini( new FileInfo( nomeFile ) );
+			if( !Directory.Exists( nomeCartella ) ) {
+				Directory.CreateDirectory( nomeCartella );
+			}
 		}
 
 		internal static void creaCartellaRisultanti( Fotografia foto ) {

@@ -72,6 +72,24 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			bitmapSource = null;
 		}
 
+		public override object Clone() {
+
+			if( this.bitmapSource == null )
+				throw new ObjectDisposedException( "immagineWic" );
+
+
+
+			// Per motivi di thread multipli non posso chiamare il clone della mia sorgente, ma ne devo creare una nuova
+// TODO purtroppo queste operazioni mi fanno sciupare un sacco di memoria RAM inutile.
+//      Devo assolutamente risolvere in altro modo.
+var wb = new WriteableBitmap( this.bitmapSource );
+
+
+
+
+			return new ImmagineWic( wb );  // Se la bitmap è nulla mi sta bene che si spacchi. In tal caso correggere il programma chiamante.
+		}
+
 		#endregion
 	}
 }

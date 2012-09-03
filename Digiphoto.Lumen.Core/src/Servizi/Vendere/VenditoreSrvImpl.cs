@@ -119,7 +119,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				{
 					// Non so perchè me devo fare la versione forzata perchè se no non mi idrata i provini del carrello. 
 					// Nel caso in cui ricarico una foto che è già stata stampata precedentemente. 
-					AiutanteFoto.idrataImmaginiFoto( foto , IdrataTarget.Tutte, true);
+					AiutanteFoto.idrataImmaginiFoto( foto , IdrataTarget.Provino, true);
 					gestoreCarrello.aggiungiRiga(creaRiCaFotoStampata(foto, param as ParamStampaFoto));
 				}
 				// Notifico al carrello l'evento
@@ -474,16 +474,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				if (false && lavoroDiStampaFoto.fotografia != null)
 				{
 					try {
-						// Prima che sia troppo tardi devo rilasciare le immagini (altrimenti rimangono loccate)
-						if (lavoroDiStampaFoto.fotografia.imgOrig != null)
-							lavoroDiStampaFoto.fotografia.imgOrig.Dispose();
-	
-						if (lavoroDiStampaFoto.fotografia.imgProvino != null)
-							lavoroDiStampaFoto.fotografia.imgProvino.Dispose();
-	
-						if (lavoroDiStampaFoto.fotografia.imgRisultante != null)
-							lavoroDiStampaFoto.fotografia.imgRisultante.Dispose();
-	
+						// Rilascio un pò di memoria
+						AiutanteFoto.disposeImmagini( lavoroDiStampaFoto.fotografia, IdrataTarget.Originale );
+						AiutanteFoto.disposeImmagini( lavoroDiStampaFoto.fotografia, IdrataTarget.Risultante );
+
 					} catch( Exception ee ) {
 						_giornale.Error( "Impossibile rilasciare immagini dopo stampa", ee );
 	
@@ -499,16 +493,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					{
 						try
 						{
-							// Prima che sia troppo tardi devo rilasciare le immagini (altrimenti rimangono loccate)
-							if (foto.imgOrig != null)
-								foto.imgOrig.Dispose();
-
-							if (foto.imgProvino != null)
-								foto.imgProvino.Dispose();
-
-							if (foto.imgRisultante != null)
-								foto.imgRisultante.Dispose();
-
+							AiutanteFoto.disposeImmagini( foto, IdrataTarget.Originale );
+							AiutanteFoto.disposeImmagini( foto, IdrataTarget.Risultante );
 						}
 						catch (Exception ee)
 						{
@@ -789,8 +775,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
 
 			//
-			var querye = from cc in dbContext.Carrelli.Include( "righeCarrello" )
-						 from rr in cc.righeCarrello.OfType<RiCaDiscoMasterizzato>()
+			var querye = from cc in dbContext.Carrelli
 						 where cc.giornata >= p.dataIniz && cc.giornata <= p.dataFine
 						       && cc.venduto == true
 						 group cc by cc.giornata into grp

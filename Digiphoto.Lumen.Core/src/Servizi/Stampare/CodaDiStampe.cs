@@ -77,9 +77,10 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			// Se le immagini non sono idratate, le carico!
 
 			if(lavoroDiStampa is LavoroDiStampaFoto){
+
 				LavoroDiStampaFoto lavoroDiStampaFoto = lavoroDiStampa as LavoroDiStampaFoto;
-				IdrataTarget quale = lavoroDiStampaFoto.fotografia.imgRisultante != null ? IdrataTarget.Risultante : IdrataTarget.Originale;
-				AiutanteFoto.idrataImmaginiFoto(lavoroDiStampaFoto.fotografia, quale, true);
+
+				AiutanteFoto.idrataImmagineDaStampare( lavoroDiStampaFoto.fotografia );
 
 				//Rinstanzio il stampatore che potrebbe essere di un tipo differente dal mio
 				LavoroDiStampaFoto lsp = (LavoroDiStampaFoto)lavoroDiStampa;
@@ -113,5 +114,8 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			if( stampaCompletataCallback != null )
 				stampaCompletataCallback.Invoke( this, eventArgs ); 
 		}
+
+		
+
 	}
 }

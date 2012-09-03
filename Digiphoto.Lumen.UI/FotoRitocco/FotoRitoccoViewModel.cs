@@ -1060,8 +1060,19 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		void svuotareListaDaModificare() {
+
+			// Prima di svuotare la lista, voglio provare a liberare un pò di memoria che forse è inutile.
+			foreach( Fotografia foto in fotografieDaModificare )
+				AiutanteFoto.disposeImmagini( foto, IdrataTarget.Originale );
+
 			fotografieDaModificare.Clear();
 			resetEffetti();
+
+			// Pubblico un messaggio di richiesta cambio pagina. Voglio tornare sulla gallery
+			CambioPaginaMsg cambioPaginaMsg = new CambioPaginaMsg( this );
+			cambioPaginaMsg.nuovaPag = "GalleryPag";
+			LumenApplication.Instance.bus.Publish( cambioPaginaMsg );
+
 		}
 
 		void riempireElencoInModifica() {

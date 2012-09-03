@@ -179,6 +179,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
 
+
+			// Loop per tutte le righe
+
+
+
 			if( isCarrelloTransient ) {
 				carrello.id = Guid.NewGuid();
 
@@ -226,6 +231,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			string appo = CustomExtensions.ToTraceString( dbContext.ObjectContext );
 			_giornale.Debug( appo );
+
+
+			// Ora sistemo 
+
 
 			int quanti = dbContext.SaveChanges();
 
@@ -360,6 +369,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 				// totalizzo il totale a pagare.
 				totaleAPagare += r.prezzoNettoTotale;
+
+				// Se ho venduto il carrello, valorizzo i fogli stampati con la quantità
+				if( carrello.venduto ) {
+					if( r is RiCaFotoStampata ) {
+						RiCaFotoStampata rfs = r as RiCaFotoStampata;
+						rfs.totFogliStampati = rfs.quantita;
+					}
+				}
 			}
 
 			carrello.totaleAPagare = totaleAPagare;

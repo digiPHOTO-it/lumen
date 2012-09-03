@@ -14,6 +14,7 @@ using System.Data;
 using Digiphoto.Lumen.Servizi.Scaricatore;
 using Digiphoto.Lumen.Config;
 using System.Threading;
+using System.IO;
 
 namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
@@ -24,17 +25,6 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 	public class FotoRitoccoSrvImpl : ServizioImpl, IFotoRitoccoSrv {
 
 		public FotoRitoccoSrvImpl() {
-		}
-
-		public void tornaOriginale( Fotografia fotografia ) {
-
-			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
-
-			fotografia.correzioniXml = null;
-
-			AiutanteFoto.creaProvinoFoto( fotografia );
-
-			objContext.SaveChanges();
 		}
 
 		// Aggiungo la correzione ma non scrivo il file su disco
@@ -138,11 +128,26 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		/// <summary>
 		/// Elimina tutte le Correzioni da una foto e quindi ricrea il provino
 		/// </summary>
+		public void tornaOriginale( Fotografia fotografia ) {
+			tornaOriginale( fotografia, true );
+		}
+
+		/// <summary>
+		/// Elimina tutte le Correzioni da una foto e quindi ricrea il provino
+		/// </summary>
 		public void tornaOriginale( Fotografia fotografia, bool salvare ) {
 
 			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
 
 			fotografia.correzioniXml = null;
+			
+			// Rimuovo anche eventuale file su disco
+			string nomeFileRis = PathUtil.nomeCompletoRisultante( fotografia );
+			if( File.Exists( nomeFileRis ) )
+				File.Delete( nomeFileRis );
+			
+			AiutanteFoto.disposeImmagini( fotografia, IdrataTarget.Provino );
+			AiutanteFoto.disposeImmagini( fotografia, IdrataTarget.Risultante );
 
 			AiutanteFoto.creaProvinoFoto( fotografia );
 

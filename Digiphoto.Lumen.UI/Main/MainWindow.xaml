@@ -30,7 +30,7 @@
             <lumFR:FotoRitocco x:Name="fotoRitoccoUserControl" />
         </TabItem>
 
-        <TabItem Header="Mostra" ToolTip="Visualizzare foto" >
+        <TabItem Name="tabItemGallery" Header="Mostra" ToolTip="Visualizzare foto" >
             <lum:FotoGallery />
         </TabItem>
 
