@@ -9,7 +9,7 @@ namespace Digiphoto.Lumen.Imaging {
 		Verticale, Orizzontale
 	}
 
-	public interface IImmagine : IDisposable {
+	public interface IImmagine : IDisposable, ICloneable {
 
 		int ww { 
 			get; 

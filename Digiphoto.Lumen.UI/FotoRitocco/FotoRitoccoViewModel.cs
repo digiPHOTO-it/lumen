@@ -128,7 +128,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		public bool possoSalvareCorrezioni {
 			get {
-				return modificheInCorso == true;
+				return isGestioneMaschereDisattiva && modificheInCorso == true && isAlmenoUnaFotoSelezionata;
 			}
 		}
 
@@ -139,6 +139,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		public bool possoApplicareCorrezione {
+			get {
+				return isGestioneMaschereDisattiva && isAlmenoUnaFotoSelezionata;
+			}
+		}
+
+		public bool possoTornareOriginale {
 			get {
 				return isAlmenoUnaFotoSelezionata;
 			}
@@ -229,27 +235,17 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		public bool possoAttivareSelector {
+		public bool selectorChecked {
 			get {
-				 return (selectorAttivo == false && contaSelez == 1);
+				return _croppingAdorner != null && esistonoFotoInAttesaDiModifica;
 			}
 		}
 
-
-		public bool selectorAttivo {
+		public bool selectorEnabled {
 			get {
-				return _croppingAdorner != null;
+				return (isGestioneMaschereDisattiva && contaSelez == 1);
 			}
 		}
-
-		/*
-			// Faccio una prova scema: TODO togliere.
-			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
-			fotografieDaModificare = dbContext.Fotografie.Top( Convert.ToString( 10 ) ).ToList();
-			foreach( Fotografia foto in fotografieDaModificare )
-				Digiphoto.Lumen.Util.AiutanteFoto.idrataImmaginiFoto( foto );
- */
-
 		
 		private ObservableCollection<Fotografia> _fotografieDaModificare;
 		public ObservableCollection<Fotografia> fotografieDaModificare {
@@ -292,6 +288,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				if( _mascheraAttiva != value ) {
 					_mascheraAttiva = value;
 					OnPropertyChanged( "mascheraAttiva" );
+					OnPropertyChanged( "possoSalvareMaschera" );
 				}
 			}
 		}
@@ -307,6 +304,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					OnPropertyChanged( "modalitaEdit" );
 					OnPropertyChanged( "isGestioneMaschereAttiva" );
 					OnPropertyChanged( "isGestioneMaschereDisattiva" );
+					OnPropertyChanged( "possoSalvareMaschera" );
+					
 					onEditorModeChanged( new EditorModeEventArgs( modalitaEdit ) );
 				}
 			}
@@ -320,9 +319,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		public bool possoModificareConEditorEsterno {
 			get {
-				return isAlmenoUnaFotoSelezionata &&
+				return String.IsNullOrEmpty( Configurazione.UserConfigLumen.editorImmagini ) == false &&
 					   modalitaEdit == ModalitaEdit.DefaultFotoRitocco &&
-					   (!modificheInCorso);
+					   (!modificheInCorso) &&
+					   isAlmenoUnaFotoSelezionata;
 			}
 		}
 
@@ -365,6 +365,11 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				return true;  // T=tutto ; N=Niente
 		}
 
+		public bool possoSalvareMaschera {
+			get {
+				return isGestioneMaschereAttiva && mascheraAttiva != null;
+			}
+		}
 
 		#endregion Proprietà
 
@@ -400,8 +405,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			get {
 				if( _tornareOriginaleCommand == null ) {
 					_tornareOriginaleCommand = new RelayCommand( param => this.tornareOriginale(),
-														gradi => this.possoApplicareCorrezione,
-														true );
+				                                                 param => possoTornareOriginale,
+				                                                 true );
 				}
 				return _tornareOriginaleCommand;
 			}
@@ -458,7 +463,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			get {
 				if( _attivareSelectorCommand == null ) {
 					_attivareSelectorCommand = new RelayCommand( param => this.attivareSelector( (FrameworkElement)param ),
-					                                             param => possoAttivareSelector);
+																 param => selectorEnabled );
 				}
 				return _attivareSelectorCommand;
 			}
@@ -669,12 +674,30 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				// Se non mi rimane piu nulla, azzero tutti gli effetti.
 				if( fotografieDaModificareCW.SelectedItems.Count <= 0 )
 					resetEffetti();
+				else {
+					forzaRefreshStato();
+				}
 			}
 
 		}
 
+		/// <summary>
+		/// Siccome alcune azioni avvengono solo nella UI, devo forzare in qualche 
+		/// modo l'aggiornamento dello stato dei pulsanti.
+		/// </summary>
+		public void forzaRefreshStato() {
+			
+			// TODO queste due proprietà non sarebbero da gestire qui nel viewmodel, ma nella ui.
+			OnPropertyChanged( "selectorChecked" );
+			OnPropertyChanged( "selectorEnabled" );
+			
+			OnPropertyChanged( "possoTornareOriginale" );
+			OnPropertyChanged( "possoApplicareCorrezione" );
+			OnPropertyChanged( "possoSalvareCorrezioni" );
+			OnPropertyChanged( "possoRifiutareCorrezioni" );
+		}
 
-
+		
 		void resetEffetti() {
 
 			effettoCorrente = null;
@@ -692,9 +715,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				}
 				effetti.Clear();
 
-				// Questo rimette a posto i bottoni toggle BN e SEPIA
-				OnPropertyChanged( "isSepiaChecked" );
-				OnPropertyChanged( "isGrayscaleChecked" );
+				forzaRefreshStato();
 			}
 
 
@@ -781,6 +802,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			} else {
 				RemoveCropFromCur();
 			}
+
+			OnPropertyChanged( "selectorChecked" );
+			OnPropertyChanged( "selectorEnabled" );
 		}
 
 		private void AddCropToElement( FrameworkElement fel ) {
@@ -874,7 +898,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		bool possoCroppare {
 			get {
-				return selectorAttivo;
+				return selectorChecked;
 			}
 		}
 
@@ -1037,15 +1061,28 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		void svuotareListaDaModificare() {
 
+			// Prima di svuotare la lista, voglio provare a liberare un pò di memoria che forse è inutile.
+			foreach( Fotografia foto in fotografieDaModificare )
+				AiutanteFoto.disposeImmagini( foto, IdrataTarget.Originale );
+
 			fotografieDaModificare.Clear();
+			resetEffetti();
+
+			// Pubblico un messaggio di richiesta cambio pagina. Voglio tornare sulla gallery
+			CambioPaginaMsg cambioPaginaMsg = new CambioPaginaMsg( this );
+			cambioPaginaMsg.nuovaPag = "GalleryPag";
+			LumenApplication.Instance.bus.Publish( cambioPaginaMsg );
+
 		}
 
 		void riempireElencoInModifica() {
 			fotografieDaModificareCW.SelectAll();
+			resetEffetti();
 		}
 
 		void svuotareElencoInModifica() {
 			fotografieDaModificareCW.DeselectAll();
+			resetEffetti();
 		}
 
 		private void browseForFileCornice() {

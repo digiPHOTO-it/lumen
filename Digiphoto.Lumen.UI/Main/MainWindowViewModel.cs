@@ -134,6 +134,7 @@ namespace Digiphoto.Lumen.UI {
 			//IVenditoreSrv srv = LumenApplication.Instance.getServizioAvviato<IVenditoreSrv>();
 
 			RangeGiorniDialog d = new RangeGiorniDialog();
+			d.noteAggiuntive = "Attenzione: questo report attualmente conteggia solo i fogli dei provini e non le fotografie.";
 			bool? esito = d.ShowDialog();
 
 			if (esito == true)
@@ -146,6 +147,8 @@ namespace Digiphoto.Lumen.UI {
 
 			if (esito == true)
 			{
+				dialogProvider.ShowMessage( "Attualmente questo report conteggia soltanto i provini stampati, e non le fotografie", "Avviso" );
+
 				ReportHostWindow rhw = new ReportHostWindow();
 				rhw.impostaDataSource(RigaReportConsumoCarta.righe(paramRangeGiorni));
 				rhw.reportPath = ".\\Reports\\ReportConsumoCarta.rdlc";
