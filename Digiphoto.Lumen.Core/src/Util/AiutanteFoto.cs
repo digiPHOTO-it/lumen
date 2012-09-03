@@ -10,6 +10,7 @@ using Digiphoto.Lumen.Imaging.Correzioni;
 using log4net;
 using System.IO;
 using Digiphoto.Lumen.Config;
+using System.Diagnostics;
 
 namespace Digiphoto.Lumen.Util {
 	
@@ -25,12 +26,31 @@ namespace Digiphoto.Lumen.Util {
 		private static readonly ILog _giornale = LogManager.GetLogger(typeof(AiutanteFoto));
 
 		public static void disposeImmagini( Fotografia foto ) {
-			if( foto.imgOrig != null )
-				foto.imgOrig.Dispose();
-			if( foto.imgProvino != null )
-				foto.imgProvino.Dispose();
-			if( foto.imgRisultante != null )
-				foto.imgRisultante.Dispose();
+			disposeImmagini( foto, IdrataTarget.Tutte );
+		}
+
+		public static void disposeImmagini( Fotografia foto, IdrataTarget quale ) {
+
+			if( quale == IdrataTarget.Tutte || quale == IdrataTarget.Originale ) {
+				if( foto.imgOrig != null ) {
+					foto.imgOrig.Dispose();
+					foto.imgOrig = null;
+				}
+			}
+
+			if( quale == IdrataTarget.Tutte || quale == IdrataTarget.Provino ) {
+				if( foto.imgProvino != null ) {
+					foto.imgProvino.Dispose();
+					foto.imgProvino = null;
+				}
+			}
+
+			if( quale == IdrataTarget.Tutte || quale == IdrataTarget.Risultante ) {
+				if( foto.imgRisultante != null ) {
+					foto.imgRisultante.Dispose();
+					foto.imgRisultante = null;
+				}
+			}
 		}
 
 
@@ -79,6 +99,28 @@ namespace Digiphoto.Lumen.Util {
 
 		}
 
+
+		/// <summary>
+		/// Devo stampare la foto.
+		/// Quindi mi serve indietro una immagine grande, che può essere l'originale, oppure quella modificata.
+		/// L'immagine modificata, però potrebbe ancora non essere stata calcolata. In tal caso ci penso io.
+		/// 
+		/// </summary>
+		/// <param name="foto"></param>
+		public static void idrataImmagineDaStampare( Fotografia foto ) {
+
+			// Ho delle correzioni che non sono ancora state applicate. Lo faccio adesso.
+			if( foto.imgRisultante == null && foto.correzioniXml != null ) {
+				// Se il file esiste già su disco, allora uso quello.
+				if( ! File.Exists( PathUtil.nomeCompletoRisultante( foto ) ) )
+	 				creaRisultanteFoto( foto );
+			}
+
+			IdrataTarget quale = foto.imgRisultante != null ? IdrataTarget.Risultante : IdrataTarget.Originale;
+
+			AiutanteFoto.idrataImmaginiFoto( foto, quale );
+		}
+
 		/// <summary>
 		/// Voglio ricavare l'immagine grande.
 		///  Se la foto in esame possiede una immagine grande risultante (quindi modificata) prendo quella.
@@ -102,35 +144,85 @@ namespace Digiphoto.Lumen.Util {
 			return immagine;
 		}
 
+		/// <summary>
+		/// Crea fisicamente su disco il file con il JPG del provino della foto. Se esiste viene sovrascritto.
+		/// </summary>
+		/// <param name="foto">la foto di riferimento</param>
 		public static void creaProvinoFoto( Fotografia foto ) {
 			creaProvinoFoto( PathUtil.nomeCompletoFoto( foto ), foto );
 		}
 
-		public static void creaProvinoFoto( string nomeFileFoto, Fotografia foto ) {
+		/// <summary>
+		/// Crea fisicamente su disco il file con il JPG della risultante della foto. Se esiste viene sovrascritto.
+		/// Se non esistono correzioni, me ne frego e scrivo comunque. Verrà un duplicato della Originale.
+		/// </summary>
+		/// <param name="foto">la foto di riferimento</param>
+		public static void creaRisultanteFoto( Fotografia foto ) {
+			creaCacheFotoSuDisco( foto, IdrataTarget.Risultante );
+		}
+
+		/// <summary>
+		/// Creo il profino partendo dalla immagine indicata nel nome del file.
+		/// </summary>
+		/// <param name="nomeFilePartenza">Attenzione: questo è il nome del file di partenza da cui creare il provino</param>
+		/// <param name="foto"></param>
+		public static void creaProvinoFoto( string nomeFilePartenza, Fotografia foto ) {
+			creaCacheFotoSuDisco( foto, IdrataTarget.Provino, nomeFilePartenza );
+		}
+
+		private static void creaCacheFotoSuDisco( Fotografia foto, IdrataTarget quale ) {
+			creaCacheFotoSuDisco( foto, quale, PathUtil.nomeCompletoFoto(foto) );
+		}
+
+		/// <summary>
+		/// Creo il Provino, oppure la Risultante di una foto e scrivo l'immagine su disco nel file indicato
+		/// </summary>
+		/// <param name="nomeFileSorgente">E' il nome del file della foto vera, grande</param>
+		/// <param name="foto"></param>
+		private static void creaCacheFotoSuDisco( Fotografia foto, IdrataTarget quale, string nomeFileOriginale ) {
+
+			Debug.Assert( quale == IdrataTarget.Provino || quale == IdrataTarget.Risultante );
 
 			IGestoreImmagineSrv gis = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
 
 			// Carico l'immagine grande originale (solo la prima volta)
 			if( foto.imgOrig == null )
-				foto.imgOrig = gis.load( nomeFileFoto );
+				foto.imgOrig = gis.load( nomeFileOriginale );
 
-			// Scale per ridimensionare
-			IImmagine immaginePiccola = gis.creaProvino( foto.imgOrig );
+			IImmagine immagineDestinazione = null; 
+			if( quale == IdrataTarget.Provino ) {
+				// Scale per ridimensionare
+				immagineDestinazione = gis.creaProvino( foto.imgOrig );   // creo una immagine più piccola
+				PathUtil.creaCartellaProvini( foto );
+			} else if( quale == IdrataTarget.Risultante ) {
+				immagineDestinazione = (IImmagine) foto.imgOrig.Clone();  // creo un duplicato
+				PathUtil.creaCartellaRisultanti( foto );   // se non esiste la cartelle delle modificate, la creo al volo
+			} else 
+				throw new ArgumentException( "target per creazione cache non gestito : " + quale );
+
 
 			// applico eventuali correzioni
 			if( foto.correzioniXml != null ) {
 				CorrezioniList correzioni = SerializzaUtil.stringToObject<CorrezioniList>( foto.correzioniXml );
-				immaginePiccola = gis.applicaCorrezioni( immaginePiccola, correzioni );
+				immagineDestinazione = gis.applicaCorrezioni( immagineDestinazione, correzioni );
 			}
 
-			// Se avevo già un provino caricato, qui lo vado a sovrascrivere, quindi devo rilasciarlo
-			if( foto.imgProvino != null )
-				foto.imgProvino.Dispose();
-
 			// Salvo su disco l'immagine risultante
-			foto.imgProvino = immaginePiccola;
-			gis.save( immaginePiccola, PathUtil.nomeCompletoProvino( foto ) );
+			string nomeFileDest = PathUtil.nomeCompletoFile( foto, quale );
+			gis.save( immagineDestinazione, nomeFileDest );
+
+			_giornale.Debug( "Ho ricreato il file immagine di cache: " + nomeFileDest );
+
+			// Eventualmente chiudo l'immagine precedente (per pulizia)
+			AiutanteFoto.disposeImmagini( foto, quale );
+
+			// Modifico la foto che mi è stata passata.
+			if( quale == IdrataTarget.Provino ) 
+				foto.imgProvino = immagineDestinazione;
+			if( quale == IdrataTarget.Risultante )
+				foto.imgRisultante = immagineDestinazione;
 		}
+		
 
 		/// <summary>
 		/// Mi dice se esiste già un file con una foto risultante già calcolata

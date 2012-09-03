@@ -57,9 +57,11 @@ namespace Digiphoto.Lumen.UI {
 
 		public void OnNext( CambioPaginaMsg cambioPaginaMsg ) {
 
-			
 			if( cambioPaginaMsg.nuovaPag == "FotoRitoccoPag" )
 				tabControlPagine.SelectedItem = tabControlPagine.FindName( "tabItemAggiusta" );
+			else if( cambioPaginaMsg.nuovaPag == "GalleryPag" )
+				tabControlPagine.SelectedItem = tabControlPagine.FindName( "tabItemGallery" );
+
 		}
 
 
