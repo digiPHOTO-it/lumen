@@ -165,7 +165,7 @@ namespace Digiphoto.Lumen.Core.VsTest
 				// TODO  il test presume che ci sia una stampante abbinata con la carta A5.
 				//       se non esiste, creare un abbinamento ad hoc.
 
-				_impl.creaNuovoCarrelloStampaDiretta();
+				_impl.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_RAPIDA;
 
 				ParamStampaFoto p = ricavaParamStampa();
 
@@ -175,12 +175,12 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 				contaStampate = 0;
 
-				_impl.effettuaStampaDiretta(fotos, p);
+				_impl.aggiungiStampe(fotos, p);
 
-				_impl.vendereCarrelloStampaDiretta();
+				_impl.vendereCarrello();
 
-				Assert.IsTrue(_impl.carrelloStampaDiretta.venduto);
-				Assert.IsTrue(_impl.carrelloStampaDiretta.totaleAPagare == 15);
+				Assert.IsTrue(_impl.carrello.venduto);
+				Assert.IsTrue(_impl.carrello.totaleAPagare == 15);
 			}
 
 			Console.WriteLine("FINITO");

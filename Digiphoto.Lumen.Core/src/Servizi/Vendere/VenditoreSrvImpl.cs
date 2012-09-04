@@ -26,6 +26,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( VenditoreSrvImpl ) );
 
+		public static readonly String INTESTAZIONE_STAMPA_RAPIDA = "Stampa Diretta o Rapida";
+
 		#region Proprietà
 
 		private GestoreCarrello gestoreCarrello {
@@ -39,18 +41,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 
 			set {
-			}
-		}
-
-		public Carrello carrelloStampaDiretta
-		{
-			get
-			{
-				return gestoreCarrello.carrelloStampaDiretta;
-			}
-
-			set
-			{
 			}
 		}
 
@@ -135,15 +125,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
-		public void effettuaStampaDiretta(IEnumerable<Fotografia> fotografie, Stampare.ParamStampaFoto param)
-		{
-
-			foreach (Fotografia foto in fotografie)
-			{
-				gestoreCarrello.aggiungiRigaPerStampaDiretta(creaRiCaFotoStampata(foto, param));
-			}
-		}
-
 		public void creaNuovoCarrello() {
 
 			if( modoVendita != ModoVendita.Carrello )
@@ -152,11 +133,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			// abbandonaCarrello();   // se ce n'era uno già apero, lo rimuovo
 
 			gestoreCarrello.creaNuovo();
-		}
-
-		public void creaNuovoCarrelloStampaDiretta()
-		{
-			gestoreCarrello.creaNuovoStampaDiretta();
 		}
 
 		public bool salvaCarrello() {
@@ -191,41 +167,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			return esito;
 		}
 
-		public bool salvaCarrelloStampaDiretta()
-		{
-			bool esito = false;
-
-
-			//
-			// Siccome l'esito della stampa e della masterizzazione lo riceverò più tardi 
-			// ed in modo asincrono, in questo momento non posso fare altro che dare per scontato
-			// che andrà tutto bene.
-			// Quindi memorizzo il carrello intero. Poi gestirò i problemi (sperando che non ce ne siano).
-			//
-
-			using (TransactionScope transaction = new TransactionScope())
-			{
-
-				try
-				{
-					// Poi salvo il carrello
-					gestoreCarrello.salvaStampaDiretta();
-					_giornale.Debug("salvataggio eseguito. Ora committo la transazione");
-
-					transaction.Complete();
-					_giornale.Debug("commit transazione ok");
-					esito = true;
-				}
-				catch (Exception eee)
-				{
-					esito = false;
-					_giornale.Error("Impossibile salvare il carrello", eee);
-				}
-			}
-
-			return esito;
-		}
-
 		public bool vendereCarrello() {
 
 			_giornale.Debug( "carrello valido. Inizio operazioni di produzione" );
@@ -252,31 +193,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			return esito;
 		}
 
-		public bool vendereCarrelloStampaDiretta()
-		{
-			_giornale.Debug("carrello valido. Inizio operazioni di produzione");
-
-			bool esito = false;
-
-			try
-			{
-
-				carrelloStampaDiretta.venduto = true;
-
-				esito = salvaCarrelloStampaDiretta();
-
-				if (!esito)
-					carrelloStampaDiretta.venduto = false;
-
-			}
-			finally
-			{
-				// Vado avanti ugualmente
-				// Prima lancio le stampe
-				eventualeStampa(carrelloStampaDiretta);
-			}
-			return esito;
-		}
 
 		public void removeRigaCarrello( RigaCarrello rigaCarrello ) {
 			carrello.righeCarrello.Remove( rigaCarrello );

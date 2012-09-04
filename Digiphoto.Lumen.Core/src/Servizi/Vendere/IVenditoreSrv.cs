@@ -29,8 +29,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/** Foto da vendere come stampe */
 		void aggiungiStampe( IEnumerable<Fotografia> fotografie, ParamStampa param );
 
-		void effettuaStampaDiretta(IEnumerable<Fotografia> fotografie, ParamStampaFoto param);
-
 		void aggiungiMasterizzate( IEnumerable<Fotografia> fotografie );
 
 		/** 
@@ -39,15 +37,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		 */
 		void creaNuovoCarrello();
 
-		void creaNuovoCarrelloStampaDiretta();
-
 		/**
 		 * Il carrello corrente viene venduto. Diventa definitivo
 		 */
 		bool vendereCarrello();
-
-		bool vendereCarrelloStampaDiretta();
-
 
 		/**
 		 * Consente il Salvattaggio del Carrello senza effettuare ne la stampa ne la Masterizzazione

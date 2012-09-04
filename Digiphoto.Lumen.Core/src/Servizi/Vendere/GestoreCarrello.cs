@@ -34,19 +34,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
-		private Carrello _carrelloStampaDiretta;
-		public Carrello carrelloStampaDiretta
-		{
-			get
-			{
-				return _carrelloStampaDiretta;
-			}
-			private set
-			{
-				_carrelloStampaDiretta = value;
-			}
-		}
-
 		/// <summary>
 		/// True  = sono in modifica
 		/// False = sono in inserimento 
@@ -90,13 +77,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			GestoreCarrelloMsg msg = new GestoreCarrelloMsg(this);
 			msg.fase = Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.CreatoNuovoCarrello;
 			LumenApplication.Instance.bus.Publish(msg);
-		}
-
-		public void creaNuovoStampaDiretta()
-		{
-			carrelloStampaDiretta = new Carrello();
-			carrelloStampaDiretta.intestazione = "Stampa Diretta o Rapida";
-			carrelloStampaDiretta.righeCarrello = new EntityCollection<RigaCarrello>();
 		}
 
 		/// <summary>
@@ -146,19 +126,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			{
 				MessageBox.Show("La fotografia è già stata caricata nel carrello\nModificare la quantita","Avviso");
 			}	
-		}
-
-		public void aggiungiRigaPerStampaDiretta(RiCaFotoStampata riga)
-		{
-			if (!rigaIsInCarrello(_carrelloStampaDiretta, riga))
-			{
-				// Prima di aggiungere la riga al carrello, provo a riattaccarlo. Non si sa mai.
-				if (isStatoModifica)
-				{
-					Digiphoto.Lumen.Database.OrmUtil.forseAttacca<Carrello>("Carrelli", ref _carrelloStampaDiretta);
-				}
-				carrelloStampaDiretta.righeCarrello.Add(riga);
-			}
 		}
 
 		public void abbandonaCarrello() {
@@ -254,81 +221,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			string msg2 = "Registrato carrello id = " + carrello.id + " totale a pagare = " + carrello.totaleAPagare + " con " + carrello.righeCarrello.Count + " righe";
 			_giornale.Info( msg2 );
-		}
-
-		/**
-	 * Salvo il carrello corrente (se era transiente, viene valorizzata la Guid della chiave primaria
-	 * Se qualcosa va storto viene sollevata una eccezione.
-	 */
-		public void salvaStampaDiretta()
-		{
-
-			// Giornata lavorativa
-			carrelloStampaDiretta.giornata = LumenApplication.Instance.stato.giornataLavorativa;
-
-			// Tempo di creazione
-			carrelloStampaDiretta.tempo = DateTime.Now;
-
-			// :: loop su tutte le righe
-			decimal totaleAPagare = 0;
-			foreach (RigaCarrello r in carrelloStampaDiretta.righeCarrello)
-			{
-
-				// ricalcolo il valore della riga
-				r.prezzoNettoTotale = calcValoreRiga(r);
-
-				// totalizzo il totale a pagare.
-				totaleAPagare += r.prezzoNettoTotale;
-			}
-
-			carrelloStampaDiretta.totaleAPagare = totaleAPagare;
-
-			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
-
-			carrelloStampaDiretta.id = Guid.NewGuid();
-
-			foreach (RigaCarrello rigaCarrello in carrelloStampaDiretta.righeCarrello)
-			{
-				rigaCarrello.id = Guid.NewGuid();
-				if (rigaCarrello is RiCaFotoStampata)
-				{
-					RiCaFotoStampata rica = rigaCarrello as RiCaFotoStampata;
-					Fotografia f = rica.fotografia;
-					OrmUtil.forseAttacca<Fotografia>("Fotografie", ref f);
-					FormatoCarta fc = rica.formatoCarta;
-					OrmUtil.forseAttacca<FormatoCarta>("FormatiCarta", ref fc);
-					Fotografo fo = rica.fotografo;
-					OrmUtil.forseAttacca<Fotografo>("Fotografi", ref fo);
-				}
-			}
-
-			dbContext.Carrelli.Add(carrelloStampaDiretta);
-
-			string appo = CustomExtensions.ToTraceString(dbContext.ObjectContext);
-			_giornale.Debug(appo);
-
-			int quanti = dbContext.SaveChanges();
-
-			if (quanti <= 0)
-			{
-				string msg = "salvato carrello ma nessun record aggiornato. Possibile problema di EntityFramework";
-				_giornale.Warn(msg);
-				throw new InvalidOperationException(msg);
-			}
-
-			// non so perché ma se salvo un carrello di 3 righe mi dice che sono stati modificati 6 record
-			if (quanti == carrelloStampaDiretta.righeCarrello.Count || quanti == carrelloStampaDiretta.righeCarrello.Count * 2)
-			{
-				// ok
-			}
-			else
-			{
-				string msg = "carrello id = " + carrelloStampaDiretta.id + " righe= " + carrelloStampaDiretta.righeCarrello.Count + " salvate=" + quanti;
-				_giornale.Warn(msg);
-			}
-
-			string msg2 = "Registrato carrello id = " + carrelloStampaDiretta.id + " totale a pagare = " + carrelloStampaDiretta.totaleAPagare + " con " + carrelloStampaDiretta.righeCarrello.Count + " righe";
-			_giornale.Info(msg2);
 		}
 
 		private bool rigaIsInCarrello(Carrello carrello, RiCaFotoStampata riga)
