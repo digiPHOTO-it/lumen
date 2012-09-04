@@ -66,7 +66,7 @@
                 
                 <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0">
                     <Label>Didascalia</Label>
-                    <TextBox Text="{Binding Path=metadati.didascalia}" MinWidth="80" />
+					<TextBox Text="{Binding Path=metadati.didascalia}" CharacterCasing="Upper" MinWidth="80" />
                 </StackPanel>
 
                 <GroupBox Header="Fasi del giorno" Grid.Row="0" Grid.Column="1">
@@ -175,7 +175,7 @@
                     <Separator />
                     
                     <Label Content="Didascalia" />
-                    <TextBox Name="didascaliaTextBox" Text="{Binding Path=paramCercaFoto.didascalia,Mode=TwoWay}" />
+					<TextBox Name="didascaliaTextBox" CharacterCasing="Upper" Text="{Binding Path=paramCercaFoto.didascalia,Mode=TwoWay}" />
 
                     <Separator />
                     

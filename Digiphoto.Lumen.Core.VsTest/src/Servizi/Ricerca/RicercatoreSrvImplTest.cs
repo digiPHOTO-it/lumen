@@ -63,7 +63,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				param.eventi = new Evento[] { ev };
 				param.fotografi = new Fotografo [] { op };
 				param.fasiDelGiorno = new FaseDelGiorno [] { FaseDelGiorno.Mattino, FaseDelGiorno.Sera };
-				param.didascalia = "pollo";  // deve trovarla ugualmente
+				param.didascalia = "POLLO";  // deve trovarla ugualmente
 
 
 				IList<Fotografia> ris = _impl.cerca( param );
