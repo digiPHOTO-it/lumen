@@ -665,15 +665,19 @@ namespace Digiphoto.Lumen.UI {
 
 			if( procediPure ) {
 				if(Configurazione.UserConfigLumen.modoVendita == ModoVendita.StampaDiretta){
-					venditoreSrv.creaNuovoCarrelloStampaDiretta();
-					venditoreSrv.effettuaStampaDiretta( listaSelez, creaParamStampaFoto( stampanteAbbinata ) );
-					if (venditoreSrv.vendereCarrelloStampaDiretta())
+					using( IVenditoreSrv venditoreStampaDiretta = LumenApplication.Instance.creaServizio<IVenditoreSrv>() ) 
 					{
-						dialogProvider.ShowMessage("Carrello venduto Correttamente", "Avviso");
-					}
-					else
-					{
-						dialogProvider.ShowError("Errore inserimento carrello nella cassa","Errore", null);
+						venditoreStampaDiretta.creaNuovoCarrello();
+						venditoreStampaDiretta.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_RAPIDA;
+						venditoreStampaDiretta.aggiungiStampe(listaSelez, creaParamStampaFoto(stampanteAbbinata));
+						if (venditoreStampaDiretta.vendereCarrello())
+						{
+							dialogProvider.ShowMessage("Carrello venduto Correttamente", "Avviso");
+						}
+						else
+						{
+							dialogProvider.ShowError("Errore inserimento carrello nella cassa","Errore", null);
+						}
 					}
 				}else{
 					venditoreSrv.aggiungiStampe( listaSelez, creaParamStampaFoto( stampanteAbbinata ) );
@@ -689,19 +693,24 @@ namespace Digiphoto.Lumen.UI {
 
 			IList<Fotografia> listaSelez = creaListaFotoSelezionate();
 
-			venditoreSrv.creaNuovoCarrelloStampaDiretta();
-			venditoreSrv.effettuaStampaDiretta(listaSelez, creaParamStampaFoto(stampanteAbbinata));
-			if (venditoreSrv.vendereCarrelloStampaDiretta())
+			using (IVenditoreSrv venditoreSpampaRapida = LumenApplication.Instance.creaServizio<IVenditoreSrv>())
 			{
-				// quando tutto va bene non diciamo niente. Segnaliamo solo gli errori.
-				// dialogProvider.ShowMessage("Carrello venduto Correttamente", "Avviso");
+				venditoreSpampaRapida.creaNuovoCarrello();
+				venditoreSpampaRapida.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_RAPIDA;
+				venditoreSpampaRapida.aggiungiStampe(listaSelez, creaParamStampaFoto(stampanteAbbinata));
+
+				if (venditoreSpampaRapida.vendereCarrello())
+				{
+					// quando tutto va bene non diciamo niente. Segnaliamo solo gli errori.
+					// dialogProvider.ShowMessage("Carrello venduto Correttamente", "Avviso");
+				}
+				else
+				{
+					dialogProvider.ShowError("Stampa diretta non riuscita.", "Errore", null);
+				}
+				// Spengo tutto
+				deselezionareTutto();
 			}
-			else
-			{
-				dialogProvider.ShowError("Stampa diretta non riuscita.", "Errore", null);
-			}
-			// Spengo tutto
-			deselezionareTutto();
 		}
 
 		private void stampareProvini()
