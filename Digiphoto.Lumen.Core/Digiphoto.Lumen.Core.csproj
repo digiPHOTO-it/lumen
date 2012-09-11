@@ -220,7 +220,6 @@
     <Compile Include="src\Servizi\Ritoccare\ICorrettoreFactory.cs" />
     <Compile Include="src\Servizi\Ritoccare\IFotoRitoccoSrv.cs" />
     <Compile Include="src\Servizi\CambioStatoMsg.cs" />
-    <Compile Include="src\Servizi\Carrelli\ParamCercaCarrelli.cs" />
     <Compile Include="src\Servizi\EntityRepository\EventiRepositorySrvImpl.cs" />
     <Compile Include="src\Servizi\EntityRepository\EntityRepositorySrvImpl.cs" />
     <Compile Include="src\Servizi\EntityRepository\FormatiCartaRepositorySrvImpl.cs" />
