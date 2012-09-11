@@ -32,7 +32,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 
         private Thread _threadCopiaSuChiavetta;
 
-        private BackgroundWorker backgroundWorkerCopia;
+        private BackgroundWorker backgroundWorkerCopia = null;
 
         private Fotografia fotCopia;
 
