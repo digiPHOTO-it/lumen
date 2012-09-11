@@ -26,6 +26,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 
 			ManagementObjectCollection moc = mosearcher.Get();
 
+
 			foreach( ManagementObject mo in moc ) {
 
 				// Solo per debug
@@ -33,14 +34,14 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 
 				string nomePorta = null;
 
-				string nomeStampante = (string) mo["Name"];
+				string nomeStampante = (string)mo ["Name"];
 				try {
-					nomePorta = (string) mo["PortName"];
+					nomePorta = (string)mo ["PortName"];
 				} catch( Exception ) {
 				}
-
+				
 				StampanteInstallata stp = StampanteInstallata.CreateStampanteInstallata( nomeStampante, nomePorta );
-                stampantiInstallate.Add( stp );
+				stampantiInstallate.Add( stp );
 			}
 		}
 

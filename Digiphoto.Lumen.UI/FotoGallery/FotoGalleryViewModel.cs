@@ -84,6 +84,8 @@ namespace Digiphoto.Lumen.UI {
 		private void caricaStampantiAbbinate() {
 
 			string ss = Configurazione.UserConfigLumen.stampantiAbbinate;
+
+			// TODO sostituire con la lista presa da spoolsrv
 			this.stampantiAbbinate = StampantiAbbinateUtil.deserializza( ss );
 		}
 

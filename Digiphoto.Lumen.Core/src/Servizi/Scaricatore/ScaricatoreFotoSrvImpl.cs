@@ -262,7 +262,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		/// StatoRun di questo servizio. Vedere apposita enumerazione
 		/// </summary>
 		private StatoScarica _statoScarica;
-		public new StatoScarica statoScarica {
+		public StatoScarica statoScarica {
 			get {
 				return _statoScarica;
 			}

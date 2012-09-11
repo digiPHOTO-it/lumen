@@ -62,7 +62,7 @@ namespace Digiphoto.Lumen.Servizi.VolumeCambiato {
 					// Impossibile utilizzare oggetti COM separati dai relativi RCW sottostanti.
 					_watcher.Stop();
 				} catch( Exception ee ) {
-					_giornale.Warn( "Non riesco a stoppare questo servizio. Porca paletta" );
+					_giornale.Warn( "Non riesco a stoppare questo servizio. Porca paletta", ee );
 				}
 			}
 		}

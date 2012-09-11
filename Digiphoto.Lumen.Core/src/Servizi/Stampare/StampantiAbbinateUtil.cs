@@ -37,7 +37,11 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 				if( formatoCarta != null ) {					
 					IStampantiInstallateSrv stampantiInstallateSrv = LumenApplication.Instance.getServizioAvviato<IStampantiInstallateSrv>();
 					StampanteInstallata stampanteInstallata = stampantiInstallateSrv.getStampanteInstallataByString( stampante );
-					list.Add( new StampanteAbbinata( stampanteInstallata, formatoCarta ) );
+
+
+					list.Add( create(stampanteInstallata, formatoCarta) );
+
+
 				}
 			}
 
@@ -47,6 +51,17 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			return list;
 		}
 
+		/// <summary>
+		/// metodo factory
+		/// </summary>
+		/// <param name="stampanteInstallata"></param>
+		/// <param name="formatoCarta"></param>
+		/// <returns></returns>
+		public static StampanteAbbinata create( StampanteInstallata stampanteInstallata, FormatoCarta formatoCarta ) {
+			StampanteAbbinata stpAbbi = new StampanteAbbinata( stampanteInstallata, formatoCarta );
+			stpAbbi.ratio = determinaRatio( stampanteInstallata.NomeStampante );
+			return stpAbbi;
+		}
 
 		public static string serializzaToString( StampantiAbbinateCollection collection ) {
 
@@ -61,5 +76,15 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			return stampantiAbbinateString.ToString();
 		}
 
+
+		private static float determinaRatio( string nomeStampante ) {
+
+			float ratio = 0f;
+			using( IInformatore informatore = Imaging.ImagingFactory.Instance.creaInformatore( nomeStampante ) ) {
+				ratio = informatore.rapporto;
+			}
+			return ratio;
+		}
+				
 	}
 }

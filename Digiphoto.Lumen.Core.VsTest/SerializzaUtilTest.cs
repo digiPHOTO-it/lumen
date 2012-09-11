@@ -79,21 +79,5 @@ namespace Digiphoto.Lumen.Core.VsTest
 			object oo = SerializzaUtil.stringToObject( ris, typeof( CorrezioniList ) );
 
 		}
-
-		/// <summary>
-		///A test for stringToObject
-		///</summary>
-		[TestMethod()]
-		public void stringToObjectTest() {
-			if( 1 == 0 ) {
-				string xml = "<>";
-				Type objType = null; // TODO: Initialize to an appropriate value
-				object expected = null; // TODO: Initialize to an appropriate value
-				object actual;
-				actual = SerializzaUtil.stringToObject( xml, objType );
-				Assert.AreEqual( expected, actual );
-				Assert.Inconclusive( "Verify the correctness of this test method." );
-			}
-		}
 	}
 }

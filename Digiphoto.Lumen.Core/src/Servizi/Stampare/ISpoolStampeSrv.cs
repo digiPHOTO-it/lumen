@@ -26,5 +26,16 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 		IList<CodaDiStampe> code {
 			get;
 		}
+
+		StampantiAbbinateCollection stampantiAbbinate {
+			get;
+		}
+
+		/// <summary>
+		///  Prendo la prima stampante, e da questa ricavo il rapporto tra W/H
+		/// </summary>
+		float ratioAreaStampabile {
+			get;
+		}
 	}
 }

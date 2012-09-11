@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 using Point=System.Drawing.Point;
+using System.Windows.Data;
 
 namespace Digiphoto.Lumen.UI.Adorners
 {
@@ -31,6 +32,9 @@ namespace Digiphoto.Lumen.UI.Adorners
 		// The Thumbs have built-in mouse input handling.
 		private CropThumb _crtTopLeft, _crtTopRight, _crtBottomLeft, _crtBottomRight;
 		private CropThumb _crtTop, _crtLeft, _crtBottom, _crtRight;
+		private CropThumb _moveHandle;
+		private CheckBox _checkBoxKeepAspect;
+		private Line _lineVert, _lineHoriz;
 
 		// To store and manage the adorner's visual children.
 		private VisualCollection _vc;
@@ -47,6 +51,28 @@ namespace Digiphoto.Lumen.UI.Adorners
 				return _prCropMask.RectInterior;
 			}
 		}
+
+		/// <summary>
+		/// Se voglio costringere l'area di crop ad essere proporzionale al
+		/// Ratio dell'area di stampa, posso impostare qui il rapporto tra 
+		/// la larghezza e l'altezza (esempio per un A4 = 297/210 = 1,414285714285714
+		/// L'orientamento in realtà non è importante. Ci penso io a farlo coincidere
+		/// </summary>
+		public float AspectRatio {
+			get;
+			set;
+		}
+
+		private bool _mantainAspectRatio;
+		public bool MantainAspectRatio {
+			get {
+				return _mantainAspectRatio;
+			}
+			set {
+				_mantainAspectRatio = value;
+			}
+		}
+
 		#endregion
 
 		#region Routed Events
@@ -137,6 +163,45 @@ namespace Digiphoto.Lumen.UI.Adorners
 			_crtRight.DragDelta += new DragDeltaEventHandler(HandleRight);
 			_crtLeft.DragDelta += new DragDeltaEventHandler(HandleLeft);
 
+
+			// Aggiungo maniglia per spostamento
+			_moveHandle = new CropThumb( 15 );
+			_moveHandle.Cursor = Cursors.SizeAll;
+			_cnvThumbs.Children.Add( _moveHandle );
+			_moveHandle.ToolTip = "Sposta";
+//			_moveHandle.Background = Brushes.Orange;  // TODO non funziona il colore. Perché ??
+			_moveHandle.Background = new SolidColorBrush( Colors.Orange );
+			_moveHandle.DragDelta += new DragDeltaEventHandler( moveHandle_DragDelta );
+
+			// Aggiungo una checkbox per gestire il rispetto delle proporzioni della carta.
+			_checkBoxKeepAspect = new CheckBox();
+
+			Binding bind = new Binding();
+			// bind.Mode = BindingMode.TwoWay;
+			bind.Source = this;
+			bind.Path = new PropertyPath( "MantainAspectRatio" );
+
+			_checkBoxKeepAspect.DataContext = this;
+			_checkBoxKeepAspect.SetBinding( CheckBox.IsCheckedProperty, bind );
+			_checkBoxKeepAspect.IsChecked = true;  // non so perché ma il binding non funziona alla prima battuta. Io imposto la property ma non si illumina la checkbox. Allora lo forzo io.
+			_checkBoxKeepAspect.ToolTip = "Mantieni proporzioni";
+			_cnvThumbs.Children.Add( _checkBoxKeepAspect );
+			//
+
+			// Linee
+			_lineVert = new Line();
+			_lineVert.StrokeThickness = 1;
+			_lineVert.Stroke = System.Windows.Media.Brushes.Red;
+			_lineVert.StrokeDashArray = new DoubleCollection() { 4, 5 };
+			_cnvThumbs.Children.Add( _lineVert );
+			//
+			_lineHoriz = new Line();
+			_lineHoriz.Stroke = _lineVert.Stroke;
+			_lineHoriz.StrokeThickness = _lineVert.StrokeThickness;
+			_lineHoriz.StrokeDashArray = _lineVert.StrokeDashArray;
+			_cnvThumbs.Children.Add( _lineHoriz );
+			//
+
 			// We have to keep the clipping interior withing the bounds of the adorned element
 			// so we have to track it's size to guarantee that...
 			FrameworkElement fel = adornedElement as FrameworkElement;
@@ -146,6 +211,7 @@ namespace Digiphoto.Lumen.UI.Adorners
 				fel.SizeChanged += new SizeChangedEventHandler(AdornedElement_SizeChanged);
 			}
 		}
+
 		#endregion
 
 		#region Thumb handlers
@@ -159,6 +225,10 @@ namespace Digiphoto.Lumen.UI.Adorners
 			double dy)
 		{
 			Rect rcInterior = _prCropMask.RectInterior;
+
+			bool stoMuovendoInOrizzontale = (drcL != 0 || drcW != 0) && dx != 0;
+			bool stoMuovendoInVerticale = (drcT != 0 || drcH != 0) && dy != 0;
+
 
 			if (rcInterior.Width + drcW * dx < 0)
 			{
@@ -176,9 +246,99 @@ namespace Digiphoto.Lumen.UI.Adorners
 				rcInterior.Width + drcW * dx,
 				rcInterior.Height + drcH * dy);
 
+
+
+			if( 1==0 || MantainAspectRatio ) {
+				if( stoMuovendoInOrizzontale || stoMuovendoInVerticale ) {
+					KeepAspectRatio( ref rcInterior, stoMuovendoInOrizzontale );
+				}
+			}
+
+
 			_prCropMask.RectInterior = rcInterior;
 			SetThumbs(_prCropMask.RectInterior);
 			RaiseEvent( new RoutedEventArgs(CropChangedEvent, this));
+		}
+
+		/// <summary>
+		/// Se richiesto, devo forzare il rettangolo di crop a mantenere le proporzioni
+		/// </summary>
+		/// <param name="rect">E' il rettangolo tratteggiato che rappresenta l'area di crop</param>
+		private void KeepAspectRatio( ref Rect rect, bool stoMuovendoInOrizzontale ) {
+
+			if( AspectRatio <= 0f )
+				throw new ArgumentOutOfRangeException( "aspect ratio not valid : " + AspectRatio );
+
+
+			// Controllo sforamento del minimo. Succede di brutto.
+			if( rect.Top < 0 )
+				rect.Y = 0;
+			if( rect.Left < 0 )
+				rect.X = 0;
+
+			if( stoMuovendoInOrizzontale ) {
+				// -- tengo buona la larghezza
+				rect.Height = ControlloPerimetroW(rect.Width, rect.Left) / AspectRatio;
+        
+				// -- conrollo di non sforare il massimo
+		        double testSforaH;
+				testSforaH = ControlloPerimetroH( rect.Height, rect.Top );
+				if( testSforaH < rect.Height ) {
+					rect.Height = testSforaH;
+					rect.Width = rect.Height * AspectRatio;
+				}
+
+			} else {
+				// -- tengo buona l'altezza
+				rect.Width = ControlloPerimetroH(rect.Height, rect.Top) * AspectRatio;
+    
+				// -- conrollo di non sforare il massimo
+				double testSforaW;
+				testSforaW = ControlloPerimetroW( rect.Width, rect.Left );
+				if( testSforaW != rect.Width ) {
+					rect.Width = testSforaW;
+					rect.Height = rect.Width / AspectRatio;
+				}
+			}
+
+			
+
+			// Faccio qualche controllo di sicurezza, ma soltanto se sono compilato in debug.
+			System.Diagnostics.Debug.Assert( rect.Left >= 0 );
+			System.Diagnostics.Debug.Assert( rect.Top >= 0 );
+			System.Diagnostics.Debug.Assert( rect.Width > 0 );	
+			System.Diagnostics.Debug.Assert( rect.Width <= AdornedElement.RenderSize.Width );
+			System.Diagnostics.Debug.Assert( rect.Height > 0 );
+			System.Diagnostics.Debug.Assert( rect.Height <= AdornedElement.RenderSize.Height );
+			System.Diagnostics.Debug.Assert( Math.Abs( ((rect.Width / rect.Height) - AspectRatio) ) < 0.0000001 );
+		}
+
+		private double ControlloPerimetroH( double newH, double newT ) {
+			if( newT + newH > AdornedElement.RenderSize.Height )
+				newH = AdornedElement.RenderSize.Height - newT;
+			return newH;
+		}
+
+		private double ControlloPerimetroW( double newW, double newL ) {
+			if( newL + newW > AdornedElement.RenderSize.Width )
+				newW = AdornedElement.RenderSize.Width - newL;
+			return newW;
+		}
+
+		private double ControlloPerimetroL( double newL, double newW ) {
+			if( newL < 0 )
+				newL = 0;
+			else if( newL + newW > AdornedElement.RenderSize.Width )
+				newL = AdornedElement.RenderSize.Width - newW;
+			return newL;
+		}
+
+		private double ControlloPerimetroT( double newT, double newH ) {
+			if( newT < 0 )
+				newT = 0;
+			else if( newT + newH > AdornedElement.RenderSize.Height )
+				newT = AdornedElement.RenderSize.Height - newH;
+			return newT;
 		}
 
 		// Handler for Cropping from the bottom-left.
@@ -320,6 +480,23 @@ namespace Digiphoto.Lumen.UI.Adorners
 				_prCropMask.RectInterior = new Rect(intLeft, intTop, intWidth, intHeight);
 			}
 		}
+
+		void moveHandle_DragDelta( object sender, DragDeltaEventArgs e ) {
+
+			Rect rcInterior = _prCropMask.RectInterior;
+
+			double newL = rcInterior.Left + e.HorizontalChange;
+			rcInterior.X = ControlloPerimetroL( newL, rcInterior.Width );
+
+			double newT = rcInterior.Top + e.VerticalChange;
+			rcInterior.Y = ControlloPerimetroT( newT, rcInterior.Height );
+
+
+			_prCropMask.RectInterior = rcInterior;
+			SetThumbs( _prCropMask.RectInterior );
+			RaiseEvent( new RoutedEventArgs( CropChangedEvent, this ) );
+		}
+
 		#endregion
 
 		#region Arranging/positioning
@@ -333,6 +510,26 @@ namespace Digiphoto.Lumen.UI.Adorners
 			_crtBottom.SetPos(rc.Left + rc.Width / 2, rc.Bottom);
 			_crtLeft.SetPos(rc.Left, rc.Top + rc.Height / 2);
 			_crtRight.SetPos(rc.Right, rc.Top + rc.Height / 2);
+
+			// maniglia centrale per spostare l'area
+			_moveHandle.SetPos(   rc.Left+(rc.Width/2),  rc.Top+(rc.Height/2) );
+
+			// Check Box per sganciare la proporzione
+			Canvas.SetLeft( _checkBoxKeepAspect, rc.Left + (rc.Width / 2) - (_checkBoxKeepAspect.ActualWidth / 2) );
+			Canvas.SetTop( _checkBoxKeepAspect, rc.Top + (rc.Height / 4) - (_checkBoxKeepAspect.ActualHeight / 2) );
+
+			// righe
+			_lineHoriz.X1 = rc.Left;
+			_lineHoriz.Y1 = rc.Top + (rc.Height / 2);
+			_lineHoriz.X2 = rc.Right;
+			_lineHoriz.Y2 = _lineHoriz.Y1;
+
+
+			_lineVert.X1 = rc.Left + rc.Width / 2;
+			_lineVert.Y1 = rc.Top;
+			_lineVert.X2 = _lineVert.X1;
+			_lineVert.Y2 = rc.Bottom;
+
 		}
 
 		// Arrange the Adorners.

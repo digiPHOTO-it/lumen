@@ -53,5 +53,13 @@ namespace Digiphoto.Lumen.Imaging {
 			return (IEsecutoreStampa)ooo;
 		}
 
+
+		public IInformatore creaInformatore( string nomeStampante ) {
+			object ooo = Activator.CreateInstance( "Digiphoto.Lumen.Imaging.Wic", "Digiphoto.Lumen.Imaging.Wic.Stampe.InformatoreWic" ).Unwrap();
+			IInformatore informatore = (IInformatore)ooo;
+			informatore.load( nomeStampante );
+			return informatore;
+		}
+
 	}
 }

@@ -129,6 +129,7 @@
     <Compile Include="src\Wic\ImmagineWic.cs" />
     <Compile Include="src\Wic\Stampe\EsecutoreStampaProvini.cs" />
     <Compile Include="src\Wic\Stampe\EsecutoreStampaWic.cs" />
+    <Compile Include="src\Wic\Stampe\InformatoreWic.cs" />
     <Compile Include="src\Wic\WicUtil.cs" />
     <Compile Include="src\Windows\Media\Effects\EffectsUtil.cs" />
     <Compile Include="src\Windows\Media\Effects\Grayscale\GrayscaleEffect.cs" />

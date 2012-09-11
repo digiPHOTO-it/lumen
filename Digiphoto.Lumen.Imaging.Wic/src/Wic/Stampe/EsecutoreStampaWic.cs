@@ -51,7 +51,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 // TODO BLUCA provo a duplicare l'immagine per evitare l'errore che è di proprietà del thread chiamante.
 				BitmapSource bmp = new WriteableBitmap( ((ImmagineWic)immagineDaStampare).bitmapSource );
 				bmp.Freeze();
-
+				;
 				// Come print-server uso me stesso
 				using( PrintServer ps1 = new PrintServer() ) {
 
@@ -67,7 +67,8 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 						Size areaStampabile = new Size( dialog.PrintableAreaWidth, dialog.PrintableAreaHeight );
 
 						// Imposto qualche attributo della stampa
-						if( 1 == 0 ) { // Meglio non essere più realisti del re.
+						bool piuRealistaDelRe = false;
+						if( piuRealistaDelRe ) { // Meglio non essere più realisti del re.
 							dialog.PrintTicket.OutputQuality = OutputQuality.Photographic;
 							dialog.PrintTicket.PhotoPrintingIntent = PhotoPrintingIntent.PhotoBest;
 						}

@@ -22,9 +22,6 @@ namespace Digiphoto.Lumen.UI {
 
 	public class ScaricatoreFotoViewModel : ViewModelBase, IObserver<Messaggio> {
 
-		private static readonly ILog _giornale = LogManager.GetLogger( typeof( ScaricatoreFotoViewModel ) );
-
-
 		public ScaricatoreFotoViewModel() {
 
 			// Istanzio i ViewModel dei componenti di cui io sono composto

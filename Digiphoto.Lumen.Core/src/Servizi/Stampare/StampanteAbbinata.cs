@@ -7,10 +7,10 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 
 	public class StampanteAbbinata {
 
-		public StampanteAbbinata() {
-		}
-
-		public StampanteAbbinata( StampanteInstallata stampanteInstallata, FormatoCarta formatoCarta ) {
+		/// <summary>
+		/// Per costruire questa classe passare per il metodo StampantiAbbinateUtil::create
+		/// </summary>
+		internal StampanteAbbinata( StampanteInstallata stampanteInstallata, FormatoCarta formatoCarta ) {
 			this.StampanteInstallata = stampanteInstallata;
 			this.FormatoCarta = formatoCarta;
 		}
@@ -21,6 +21,11 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 		}
 
 		public FormatoCarta FormatoCarta {
+			get;
+			set;
+		}
+
+		public float ratio {
 			get;
 			set;
 		}

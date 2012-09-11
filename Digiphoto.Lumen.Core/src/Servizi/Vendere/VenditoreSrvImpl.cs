@@ -84,6 +84,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			base.start();
 
 			gestoreCarrello.creaNuovo();
+
+			// TODO sostituire con la lista che è dentro il servizio spoolsrv
 			_stampantiAbbinate = StampantiAbbinateUtil.deserializza( Configurazione.UserConfigLumen.stampantiAbbinate );
 
 		}
@@ -220,7 +222,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 						rdm.totFotoMasterizzate = (short)_masterizzaSrvImpl.fotografie.Count;
 
 						// Sto attento a non sovrascrivere con una informazione vuota.
-						if( _masterizzaSrvImpl.prezzoForfaittario != null )
+//						if( _masterizzaSrvImpl.prezzoForfaittario != null )
 							rdm.prezzoLordoUnitario = _masterizzaSrvImpl.prezzoForfaittario;
 						break;
 					}
@@ -387,7 +389,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			{
 				lavoroDiStampaFoto = lavoroDiStampa as LavoroDiStampaFoto;
 
-				if (false && lavoroDiStampaFoto.fotografia != null)
+
+				bool provaRisparmio = false;
+				if (provaRisparmio && lavoroDiStampaFoto.fotografia != null)
 				{
 					try {
 						// Rilascio un pò di memoria
@@ -461,7 +465,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			// Vado a correggere questa riga
 			if(lavoroDiStampaFoto != null){
 				using( GestoreCarrello altroGestoreCarrello = new GestoreCarrello() ) {
-					altroGestoreCarrello.stornoRiga(lavoroDiStampaFoto.param.idRigaCarrello);
+					ParamStampaFoto psf = lavoroDiStampa.param as ParamStampaFoto;
+					altroGestoreCarrello.stornoRiga( psf.idRigaCarrello );
 				}
 			}
 			// TODO Fare storno errore provini
@@ -568,6 +573,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			Dictionary<DateTime, RigaReportVendite> reportVendite = new Dictionary<DateTime, RigaReportVendite>();
 
+			_giornale.Debug( "Devo preparare il report vendite da " + p.dataIniz + " a " + p.dataFine );
+
 			creaReportVenditeStep0( ref reportVendite, p );   // Foto scattate
 			creaReportVenditeStep1( ref reportVendite, p );   // Foto stampate (cioè vendute)
 			creaReportVenditeStep2( ref reportVendite, p );   // Dischetti masterizzati
@@ -595,6 +602,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			// Ora ciclo i risultati e li metto nella mappa
 			foreach( RigaReportVendite riga in queryh )
 				reportVendite.Add( riga.giornata, riga );
+
+			_giornale.Debug( "report vendite: calcolate le foto scattate." );
 		}
 
 		/// <summary>
@@ -639,6 +648,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				riga.totFotoStampate += (ris.fogli == null ? 0 : (int)ris.fogli);
 				// TODO sommare anche i diversi formati carta
 			}
+
+			_giornale.Debug( "report vendite: calcolate le foto stampate." );
 		}
 
 
@@ -679,8 +690,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					reportVendite.Add( ris.gg, riga );
 				}
 				// Sommo i campi
-				riga.totDischettiMasterizzati += (ris.dvd == null ? 0 : (int)ris.dvd);
+				riga.totDischettiMasterizzati += (int)ris.dvd;
 			}
+
+			_giornale.Debug( "report vendite: calcolati i dischetti masterizzati." );
 		}
 
 		/// <summary>
@@ -713,8 +726,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					reportVendite.Add( ris.gg, riga );
 				}
 				// setto il totale dell'incasso giornaliero
-				riga.totIncassoDichiarato = (ris.inca == null ? 0 : (decimal)ris.inca);
+				riga.totIncassoDichiarato = (decimal)ris.inca;
 			}
+
+			_giornale.Debug( "report vendite: calcolato l'incasso previsto." );
 		}
 
 

@@ -1,7 +1,6 @@
 ﻿using Digiphoto.Lumen.Imaging.Correzioni;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
-using Digiphoto.Lumen.Imaging.Correzioni;
 using System;
 using System.Windows;
 

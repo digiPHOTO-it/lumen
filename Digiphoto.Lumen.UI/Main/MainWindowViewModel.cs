@@ -73,7 +73,8 @@ namespace Digiphoto.Lumen.UI {
 
 			ParamRangeGiorni paramRangeGiorni = new ParamRangeGiorni();
 			IVenditoreSrv srv = LumenApplication.Instance.getServizioAvviato<IVenditoreSrv>();
-			
+
+			_giornale.Debug( "Sto per aprire il dialogo con il calendario per richiesta date" );
 			RangeGiorniDialog d = new RangeGiorniDialog();
 			bool? esito = d.ShowDialog();
 			
@@ -87,9 +88,12 @@ namespace Digiphoto.Lumen.UI {
 			if( esito == true ) {
 				List<RigaReportVendite> righe = srv.creaReportVendite( paramRangeGiorni );
 
+				string nomeRpt = ".\\Reports\\ReportVendite.rdlc";
+				_giornale.Debug( "devo caricare il report: " + nomeRpt );
+
 				ReportHostWindow rhw = new ReportHostWindow();
 				rhw.impostaDataSource( righe );
-				rhw.reportPath = ".\\Reports\\ReportVendite.rdlc";
+				rhw.reportPath = nomeRpt;
 
 
 				// Imposto qualche parametro da stampare nel report
@@ -101,9 +105,14 @@ namespace Digiphoto.Lumen.UI {
 				ReportParameter [] repoParam = { p1, p2, p3 };
 				rhw.viewerInstance.LocalReport.SetParameters( repoParam );
 
+				_giornale.Debug( "Impostati i parametri del report: " + paramRangeGiorni.dataIniz + " -> " + paramRangeGiorni.dataFine );
 
 				rhw.renderReport();
+
+				_giornale.Debug( "render del report" );
 				rhw.ShowDialog();
+
+				_giornale.Info( "Completato il report delle vendite DAL" + paramRangeGiorni.dataIniz + " -> " + paramRangeGiorni.dataFine );
 			}
 		}
 

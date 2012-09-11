@@ -35,6 +35,11 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 			set;
 		}
 
+		public float rapporto {
+			get;
+			internal set;
+		}
+
 		public override string ToString() {
 			StringBuilder sb = new StringBuilder();
 			if( NomeStampante != null )

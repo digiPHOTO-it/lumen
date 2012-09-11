@@ -55,6 +55,10 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			foreach( CodaDiStampe c in code )
 				c.Start();
 			base.start();
+
+			// Provoco la deserializzazine delle stampanti abbinate dalla 
+			float dummy = ratioAreaStampabile;
+			System.Diagnostics.Debug.Assert( dummy >= 0f );
 		}
 
 		/** Fermo tutte le stampe */
@@ -109,9 +113,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			string nomeStampante = param.nomeStampante;
 
 			// Se non esiste già la stampante nella collezione, allora la istanzio
-			CodaDiStampe coda = (from c in this.code
-								 where c.Name.Equals( nomeStampante )
-								 select c).SingleOrDefault<CodaDiStampe>();
+			CodaDiStampe coda = ricavaCodaDiStampa( nomeStampante );
 			
 			if( coda == null  ) {
 				coda = new CodaDiStampe( param, nomeStampante, stampaCompletataCallback );
@@ -121,6 +123,14 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 
 			return coda;
 		}
+
+		private CodaDiStampe ricavaCodaDiStampa( string nomeStampante ) {
+		
+			return (from c in this.code
+					where c.Name.Equals( nomeStampante )
+					select c).SingleOrDefault<CodaDiStampe>();
+		}
+
 
 		private void stampaCompletataCallback( object sender, StampatoMsg eventArgs ) {
 
@@ -152,6 +162,17 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			}
 		}
 
+		/// <summary>
+		///  Prendo la prima stampante, e da questa ricavo il rapporto tra W/H
+		/// </summary>
+		public float ratioAreaStampabile {
+			
+			get {
+				// ricavo la prima stampante
+				StampanteAbbinata primaAbbi = stampantiAbbinate.FirstOrDefault();
+				return primaAbbi != null ? primaAbbi.ratio : 0f;
+			}
 
+		}
 	}
 }
