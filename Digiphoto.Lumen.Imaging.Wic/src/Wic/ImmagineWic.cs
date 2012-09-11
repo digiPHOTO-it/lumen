@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Windows.Media.Imaging;
 using System.IO;
+using log4net;
 
 namespace Digiphoto.Lumen.Imaging.Wic {
 
 	public class ImmagineWic : Immagine {
+
+		private static readonly ILog _giornale = LogManager.GetLogger( typeof( ImmagineWic ) );
 
 		public BitmapSource bitmapSource {
 			get;
@@ -41,6 +44,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 				this.bitmapSource.Freeze();
 
 			} catch( Exception ee ) {
+				_giornale.Error( "fallita creazione immagine " + uriString, ee );
 				// Che posso fare ? Tiriamo avanti
 				this.bitmapSource = null;
 			}

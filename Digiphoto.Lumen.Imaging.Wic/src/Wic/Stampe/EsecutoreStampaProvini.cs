@@ -69,7 +69,8 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 						Size areaStampabile = new Size( dialog.PrintableAreaWidth, dialog.PrintableAreaHeight );
 
 						// Imposto qualche attributo della stampa
-						if( 1 == 0 ) { // Meglio non essere più realisti del re.
+						bool piuRealistaDelRe = false;
+						if( piuRealistaDelRe ) { // Meglio non essere più realisti del re.
 							dialog.PrintTicket.OutputQuality = OutputQuality.Photographic;
 							dialog.PrintTicket.PhotoPrintingIntent = PhotoPrintingIntent.PhotoBest;
 						}

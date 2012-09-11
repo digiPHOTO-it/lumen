@@ -37,7 +37,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
     public class MainWindowViewModel : ClosableWiewModel
     {
-		private static readonly ILog _giornale = LogManager.GetLogger( typeof( MainWindowViewModel ) );
 
         public MainWindowViewModel()
         {
@@ -969,7 +968,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
         private void abbinaButton()
         {
 			// Aggiungo un nuovo elemento alla collezione
-			StampanteAbbinata sa = new StampanteAbbinata( selettoreStampantiInstallateViewModel.stampanteSelezionata, selettoreFormatoCartaViewModel.formatoCartaSelezionato );
+			StampanteAbbinata sa = StampantiAbbinateUtil.create( selettoreStampantiInstallateViewModel.stampanteSelezionata, selettoreFormatoCartaViewModel.formatoCartaSelezionato );
 			selettoreFormatoCartaAbbinatoViewModel.formatiCartaAbbinati.Add( sa );
 				
 			// Aggiorno la stringa serializzata

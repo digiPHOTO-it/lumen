@@ -108,10 +108,8 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 				s.Append(" Stampante=" + nomeStampante);
 			if (formatoCarta != null)
 				s.Append(" Carta=" + formatoCarta.descrizione);
-			if (numeroRighe != null)
-				s.Append(" Righe=" + numeroRighe);
-			if (numeroColonne != null)
-				s.Append(" Righe=" + numeroColonne);
+			s.Append(" Righe=" + numeroRighe);
+			s.Append(" Righe=" + numeroColonne);
 			s.Append(" Copie=" + numCopie);
 
 			return s.ToString();

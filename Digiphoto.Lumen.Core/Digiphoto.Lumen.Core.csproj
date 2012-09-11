@@ -114,6 +114,7 @@
   <ItemGroup>
     <Reference Include="EntityFramework, Version=4.3.1.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.4.3.1\lib\net40\EntityFramework.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="log4net">
       <HintPath>lib\log4net.dll</HintPath>
@@ -204,6 +205,7 @@
     <Compile Include="src\Servizi\Reports\ParamReports.cs" />
     <Compile Include="src\Servizi\Ricostruzione\IDbRebuilderSrv.cs" />
     <Compile Include="src\Servizi\Ricostruzione\DbRebuilderSrvImpl.cs" />
+    <Compile Include="src\Servizi\Stampare\IInformatore.cs" />
     <Compile Include="src\Servizi\Stampare\LavoroDiStampaFoto.cs" />
     <Compile Include="src\Servizi\Stampare\LavoroDiStampaProvini.cs" />
     <Compile Include="src\Servizi\Stampare\ParamStampa.cs" />

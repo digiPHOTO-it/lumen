@@ -28,7 +28,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 		public ParamStampa param
 		{
 			get;
-			private set;
+			protected set;
 		}
 
 		public LavoroDiStampa(ParamStampa param)

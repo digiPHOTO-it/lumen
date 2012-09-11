@@ -15,7 +15,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 			private set;
 		}
 
-		public ParamStampaFoto param
+		public new ParamStampaFoto param
 		{
 			get;
 			private set;

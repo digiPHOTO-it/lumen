@@ -31,6 +31,7 @@ using Digiphoto.Lumen.Servizi.Scaricatore;
 using System.Windows.Threading;
 using System.Text;
 using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
+using Digiphoto.Lumen.Servizi.Stampare;
 
 namespace Digiphoto.Lumen.UI.FotoRitocco {
 
@@ -793,6 +794,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// <summary>
 		/// Attivo il selettore sulla immagine corrente
 		/// </summary>
+		/// TODO questo metodo non dovrebbe stare qui ma nel form. Però forse mi serviva per
 		private void attivareSelector( FrameworkElement imageToCrop ) {
 
 			if( imageToCrop != null ) {
@@ -817,7 +819,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				fel.ActualWidth * 0.6,
 				fel.ActualHeight * 0.6 );
 			AdornerLayer aly = AdornerLayer.GetAdornerLayer( fel );
+
 			_croppingAdorner = new CroppingAdorner( fel, rcInterior );
+
+
+			_croppingAdorner.AspectRatio = determinaRatioAreaStampa();
+			_croppingAdorner.MantainAspectRatio = (_croppingAdorner.AspectRatio >= 0);
+
 			aly.Add( _croppingAdorner );
 			// Questa è una anteprima che non mi serve
 			// imgCrop.Source = _croppingAdorner.BpsCrop();
@@ -826,6 +834,17 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			SetClipColorGrey();
 
+		}
+
+
+		/// <summary>
+		/// Prendo la prima stampante dalla lista di quelle abbinate.
+		/// </summary>
+		/// <returns></returns>
+		private float determinaRatioAreaStampa() {
+
+			ISpoolStampeSrv srv = LumenApplication.Instance.getServizioAvviato<ISpoolStampeSrv>();
+			return srv.ratioAreaStampabile;
 		}
 
 
@@ -932,7 +951,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 						try {
 							maschere.Add( loadMascheraDaDisco( nomeFileSrc ) );
 						} catch( Exception ee ) {
-							_giornale.Error( "La maschera: " + nomeFileSrc + " non è valida quindi non viene caricata" );
+							_giornale.Error( "La maschera: " + nomeFileSrc + " non è valida quindi non viene caricata", ee );
 						}
 					}
 				}

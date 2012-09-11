@@ -459,7 +459,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			try {
 
 				w.Content = canvasDefinitivo;
-				if( 1 == 1 ) {
+				bool voglioDebuggare = false;
+				if( ! voglioDebuggare ) {
 					w.Visibility = Visibility.Hidden;
 					w.Show();
 				} else {

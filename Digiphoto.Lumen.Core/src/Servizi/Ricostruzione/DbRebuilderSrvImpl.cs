@@ -228,6 +228,8 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 
 				
 //			}
+
+				_giornale.Debug( "success = " + success );
 		}
 
 

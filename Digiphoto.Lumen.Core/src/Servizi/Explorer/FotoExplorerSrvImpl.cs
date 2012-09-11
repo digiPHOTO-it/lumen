@@ -63,9 +63,9 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 
 			if( param.idratareImmagini ) {
 				if( fotografie != null ) {
-
-					if( 1 == 0 ) {
-						// Idrato le foto nello stesso thread
+					bool bloccoTuttoQuindiPeggioro = false;
+					if( bloccoTuttoQuindiPeggioro ) {
+						// Idrato le foto nello stesso thread della UI
 						idrataImmaginiFoto();
 					} else {
 						// idrato le immagini in un thread separato
