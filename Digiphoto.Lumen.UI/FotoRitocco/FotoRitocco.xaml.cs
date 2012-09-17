@@ -535,12 +535,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 				// Sto cliccando sulla foto nella lista di attesa. Non so perché mi 
 				// solleva questo evento.
-				_viewModel.forzaRefreshStato();
+// DACANC:				_viewModel.forzaRefreshStato();
 
 			}
 		}
-
-
-
 	}
 }

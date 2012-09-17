@@ -61,5 +61,11 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 		void acquisisciImmagineIncorniciata( string nomeFileImg );
 
+		/// <summary>
+		/// Ritorno l'elenco delle miniature delle maschere.
+		/// Se le miniature non esistono, allora le creo.
+		/// </summary>
+		String [] caricaMiniatureMaschere();
+
 	}
 }

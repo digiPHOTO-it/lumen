@@ -15,6 +15,8 @@ namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 			: base( list ) {
 			SelectedItems = new ObservableCollection<T>();
 		}
+		
+		public event SelectionChangedEventHandler SelectionChanged;
 
 		void IMultiSelectCollectionView.AddControl( Selector selector ) {
 			this.controls.Add( selector );
@@ -79,6 +81,11 @@ namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 							}
 						}
 					}
+
+					// Rilascio questo stesso evento
+					if( SelectionChanged != null ) 
+						SelectionChanged( sender, e );
+
 				} finally {
 					this.ignoreSelectionChanged = false;
 				}

@@ -1,0 +1,18 @@
+﻿<Window x:Class="Digiphoto.Lumen.UI.PanAndZoom.PanAndZoomWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Lumen"
+    xmlns:Anno="http://schemas.microsoft.com/expression/blend/extensions/annotations/2008"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d Anno"
+	xmlns:local="clr-namespace:Digiphoto.Lumen.UI.PanAndZoom"
+    WindowState="Maximized"
+    KeyUp="Window_KeyUp">
+
+	<local:PanAndZoomViewer x:Name="zoomViewer" MinimumZoom="0.4" MaximumZoom="50">
+		<Canvas x:Name="LayoutRoot">
+			<Image Source="{Binding imageSource}" />
+		</Canvas>
+	</local:PanAndZoomViewer>
+</Window>

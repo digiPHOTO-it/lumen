@@ -1,0 +1,56 @@
+Dove mettiamo la visualizzazione dell'immagine grande a piena risoluzione ?
+Non possiamo usare il visualizzatore di windows perché ha anche il pulsante di stampa.
+Trovare un altro attrezzo, oppure aprire una popup da programma. e gestire lo zoom e il pan.
+
+
+	
+
+Questa richiesta di Ciccio mi sembra peggio:
+Fotoritocco: quando salvo, svuotare la lista e tornare alla gallery. ??? (serve per davvero??)
+
+
+
+Alla conferma del carrello, dobbiamo visualizzare una finestrella dove mettere:
+  totale delle foto stampate.
+  totale delle foto masterizzate.
+  Totale della spesa
+  Eventuali foto da stornare perchè SCARTI
+
+Gestione loghi: serve ?
+
+
+EXIF
+La rotazione automatica delle foto mentre si scarica : serve ?
+La ricerca per orario di scatto : serve ?
+
+Vedere tutti i lavori sul sito che non sono ancora assegnati se servono.
+
+
+La stampa provini : vanno raggruppati per operatore ?
+Oppure si stampano un operatore per volta ?
+
+I provini li ordiniamo per data/numero foto ?
+
+
+Niente codice a barre.
+
+Il numero di fogli stampati con i provini vanno conteggiati ?
+Dove li stampiamo ? Nel report totalizzatone? Vanno divisi per formato ?
+
+
+La stampa attuale del consumo carta tiene conto solo dei provini.
+Dobbiamo unire anche i dati della carta usata per le foto ?
+Vanno anche qui divise per formato ?
+
+
+Data/ora di scatto della foto : è importante ? Serve oppure no ?
+Se serve, dove va usata ?
+
+
+
+Quali settaggi possono essere modificati dall'utente ? Ora sono tutti sotto una unica password.
+
+Chiusura di cassa. Serve? se si come.
+
+La paginazione dei risultati. Serve ? 
+

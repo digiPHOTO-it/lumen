@@ -21,6 +21,8 @@ namespace Digiphoto.Lumen.Imaging {
 
 		/** Crea una immagine piccola (thumbnail) riducendo quella grande passata per parametro */
 		IImmagine creaProvino( IImmagine immagineGrande );
+		//
+		IImmagine creaProvino( IImmagine immagineGrande, long sizeLatoMax );
 
 		/** Salva l'immagine indicata sul filesystem */
 		void save( IImmagine immagine, string fileName );

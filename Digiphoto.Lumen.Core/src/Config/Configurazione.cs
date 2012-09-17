@@ -178,6 +178,9 @@ namespace Digiphoto.Lumen.Config  {
 			userConfig.millisIntervalloSlideShow = 2500;
 			userConfig.oraCambioGiornata = "05:00";
 
+			userConfig.numRigheProvini = 6;
+			userConfig.numColoneProvini = 4;
+
 			// Geometria di default per lo slideShow
 			creaGeometriaSlideShowSDefault(userConfig);
 

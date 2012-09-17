@@ -244,6 +244,11 @@
     <Compile Include="Logging\NotificationView.xaml.cs">
       <DependentUpon>NotificationView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PanAndZoom\PanAndZoom.cs" />
+    <Compile Include="PanAndZoom\PanAndZoomViewModel.cs" />
+    <Compile Include="PanAndZoom\PanAndZoomWindow.xaml.cs">
+      <DependentUpon>PanAndZoomWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pubblico\GestioneGeometria\GestSlideShowView.xaml.cs">
       <DependentUpon>GestSlideShowView.xaml</DependentUpon>
     </Compile>
@@ -295,6 +300,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Main\MainWindowResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PanAndZoom\PanAndZoomWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -621,6 +630,7 @@
     </Content>
     <None Include="Resources\Lumen-64x64.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <PropertyGroup>
