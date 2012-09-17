@@ -30,6 +30,7 @@ using Digiphoto.Lumen.UI.Dialogs;
 using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
 using Digiphoto.Lumen.Model.Util;
 using System.Collections;
+using Digiphoto.Lumen.UI.PanAndZoom;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -587,6 +588,16 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private RelayCommand _viewFotoFullScreenCommand;
+		public ICommand viewFotoFullScreenCommand {
+			get {
+				if( _viewFotoFullScreenCommand == null ) {
+					_viewFotoFullScreenCommand = new RelayCommand( param => viewFotoFullScreen(), p => true, false );
+				}
+				return _viewFotoFullScreenCommand;
+			}
+		}
+
 		#endregion
 
 
@@ -1007,6 +1018,21 @@ namespace Digiphoto.Lumen.UI {
 				deselezionareTutto();
 			} else
 				dialogProvider.ShowError( "Impossibile eliminare le foto indicate", "ERRORE", null );
+		}
+
+		private void viewFotoFullScreen() {
+
+			if( fotografieCW.SelectedItems.Count <= 0 )
+				return;
+
+			// TODO devo gestire le modifiche
+			string nomeFile = PathUtil.nomeCompletoFoto( fotografieCW.SelectedItems.First() );
+
+			PanAndZoomViewModel panZommViewModel = new PanAndZoomViewModel( nomeFile );
+			PanAndZoomWindow w = new Digiphoto.Lumen.UI.PanAndZoom.PanAndZoomWindow();
+			w.DataContext = panZommViewModel;
+			w.ShowDialog();
+
 		}
 
 		#endregion Metodi

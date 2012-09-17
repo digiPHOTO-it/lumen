@@ -15,6 +15,7 @@ using Digiphoto.Lumen.Servizi.Scaricatore;
 using Digiphoto.Lumen.Config;
 using System.Threading;
 using System.IO;
+using log4net;
 
 namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
@@ -23,6 +24,8 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 	/// Gestisce le Correzioni 
 	/// </summary>
 	public class FotoRitoccoSrvImpl : ServizioImpl, IFotoRitoccoSrv {
+
+		private static readonly ILog _giornale = LogManager.GetLogger( typeof( FotoRitoccoSrvImpl ) );
 
 		public FotoRitoccoSrvImpl() {
 		}
@@ -239,5 +242,62 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		
 		}
 
+
+		public string [] caricaMiniatureMaschere() {
+
+			List<string> nomiFileMiniature = new List<string>();
+
+			string dirMaschere = Configurazione.UserConfigLumen.cartellaMaschere;
+			if( ! Directory.Exists(dirMaschere) )
+				return null;
+
+			// preparo la cartella per le miniature
+			string dirMiniature = Path.Combine( dirMaschere, PathUtil.THUMB );
+			if( ! Directory.Exists(dirMiniature) ) 
+				Directory.CreateDirectory( dirMiniature );
+
+
+			// Faccio giri diversi per i vari formati grafici che sono indicati nella configurazione (jpg, tif)
+			foreach( string estensione in Configurazione.estensioniGraficheAmmesse ) {
+
+				// Questa è la lista dei files di dimensioni grandi.
+				string [] nomiFilesMaschere = Directory.GetFiles( Configurazione.UserConfigLumen.cartellaMaschere, searchPattern: "*" + estensione, searchOption: SearchOption.TopDirectoryOnly );
+
+				// Adesso controllo che per ogni file grande, esista la sua miniatura.
+				foreach( string nomeFileMaschera in nomiFilesMaschere ) {
+
+					FileInfo fi = new FileInfo( nomeFileMaschera );
+					string nomeFileMiniatura = Path.Combine( dirMiniature, fi.Name );
+
+					if( creaMiniaturaMaschera( nomeFileMaschera, nomeFileMiniatura ) )
+						nomiFileMiniature.Add( nomeFileMiniatura );
+				}
+			}
+
+			return nomiFileMiniature.ToArray();
+		}
+
+
+		private bool creaMiniaturaMaschera( string nomeFileMaschera, string nomeFileMiniatura ) {
+
+			bool esiste = false;
+
+			if( !File.Exists( nomeFileMiniatura ) ) {
+
+				try {
+					IGestoreImmagineSrv gis = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
+					IImmagine immagineMaschera = gis.load( nomeFileMaschera );
+					IImmagine immagineMiniatura = gis.creaProvino( immagineMaschera, 80 );   // creo una immagine più piccola
+					gis.save( immagineMiniatura, nomeFileMiniatura );
+					esiste = true;
+				} catch( Exception ee ) {
+					_giornale.Error( "Non riesco a creare la miniatura della maschera : " + nomeFileMaschera, ee );
+				}
+
+			} else
+				esiste = true;
+
+			return esiste;
+		}
 	}
 }

@@ -56,6 +56,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				fotografieDaModificare = new ObservableCollection<Fotografia>();
 				fotografieDaModificareCW = new MultiSelectCollectionView<Fotografia>( fotografieDaModificare );
 
+				fotografieDaModificareCW.SelectionChanged += onFotografieDaModificareSelectionChanged;
+
 				modalitaEdit = ModalitaEdit.DefaultFotoRitocco;
 			}
 
@@ -135,7 +137,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		public bool possoRifiutareCorrezioni {
 			get {
-				return possoSalvareCorrezioni;
+
+				return modalitaEdit == ModalitaEdit.GestioneMaschere || possoSalvareCorrezioni;
 			}
 		}
 
@@ -302,10 +305,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			set {
 				if( _modalitaEdit != value ) {
 					_modalitaEdit = value;
+
 					OnPropertyChanged( "modalitaEdit" );
 					OnPropertyChanged( "isGestioneMaschereAttiva" );
 					OnPropertyChanged( "isGestioneMaschereDisattiva" );
 					OnPropertyChanged( "possoSalvareMaschera" );
+					forzaRefreshStato();
 					
 					onEditorModeChanged( new EditorModeEventArgs( modalitaEdit ) );
 				}
@@ -676,7 +681,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				if( fotografieDaModificareCW.SelectedItems.Count <= 0 )
 					resetEffetti();
 				else {
-					forzaRefreshStato();
+					forzaRefreshStato();  // In teoria dovrebbe farlo già il Deselect. ma non funziona. da controllare.
 				}
 			}
 
@@ -696,6 +701,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			OnPropertyChanged( "possoApplicareCorrezione" );
 			OnPropertyChanged( "possoSalvareCorrezioni" );
 			OnPropertyChanged( "possoRifiutareCorrezioni" );
+
+			OnPropertyChanged( "possoRiempireElencoInModifica" );
+			OnPropertyChanged( "possoSvuotareElencoInModifica" );
 		}
 
 		
@@ -715,8 +723,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					BindingOperations.ClearAllBindings( effetto );
 				}
 				effetti.Clear();
-
-				forzaRefreshStato();
 			}
 
 
@@ -941,24 +947,21 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 				maschere = new ObservableCollection<BitmapImage>();
 
-				// Faccio giri diversi per i vari formati grafici che sono indicati nella configurazione (jpg, tif)
-				foreach( string estensione in Configurazione.estensioniGraficheAmmesse ) {
+				string [] nomiMiniature = fotoRitoccoSrv.caricaMiniatureMaschere();
+				foreach( string nomeMiniatura in nomiMiniature ) {
 
-					string [] files = Directory.GetFiles( Configurazione.UserConfigLumen.cartellaMaschere, searchPattern: "*" + estensione, searchOption: SearchOption.AllDirectories );
+					try {
+						maschere.Add( loadMascheraDaDisco( nomeMiniatura ) );
 
-					// trasferisco tutti i files elencati
-					foreach( string nomeFileSrc in files ) {
-						try {
-							maschere.Add( loadMascheraDaDisco( nomeFileSrc ) );
-						} catch( Exception ee ) {
-							_giornale.Error( "La maschera: " + nomeFileSrc + " non è valida quindi non viene caricata", ee );
-						}
+					} catch( Exception ee ) {
+						_giornale.Error( "Maschera non caricata", ee );						
 					}
 				}
 			}
-
-
 		}
+
+
+
 
 		/// <summary>
 		/// Ne carica una sola e la ritorna
@@ -968,7 +971,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		BitmapImage loadMascheraDaDisco( string nomeFileSrc ) {
 			BitmapImage msk = new BitmapImage();
 			msk.BeginInit();
-			//						msk.CacheOption = BitmapCacheOption.OnDemand;
+			msk.CacheOption = BitmapCacheOption.OnLoad;
 			//						msk.CreateOptions = BitmapCreateOptions.DelayCreation;
 			msk.DecodePixelWidth = 80;
 			msk.UriSource = new Uri( nomeFileSrc );
@@ -1030,12 +1033,18 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		void attivareMaschera( object p ) {
 				
 			// Siccome la bitmap selezionata è solo una thumnail di 80 pixel, rileggo il file vero effettivo.
-			Uri uriMask = ((BitmapImage)p).UriSource;
-			BitmapImage msk = new BitmapImage( uriMask );
+			string nomeFile = Path.GetFileName( ((BitmapImage)p).UriSource.LocalPath );
+			string nomeMaschera = Path.Combine( Configurazione.UserConfigLumen.cartellaMaschere, nomeFile );
+
+//			Uri uriMask = ((BitmapImage)p).UriSource;
+			BitmapImage msk = new BitmapImage( new Uri(nomeMaschera) );
 			mascheraAttiva = msk;
+
+			svuotareElencoInModifica( false );
 
 			// cambio stato. Vado in modalità di editing maschere
 			modalitaEdit = ModalitaEdit.GestioneMaschere;
+
 
 			// Mi serve per accendere i pulsanti di rifiuta e salva
 			forseInizioModifiche();
@@ -1046,6 +1055,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		internal void salvareImmagineIncorniciata( RenderTargetBitmap bitmapIncorniciata ) {
 
 			BitmapFrame frame = BitmapFrame.Create( bitmapIncorniciata );
+
 			PngBitmapEncoder encoder = new PngBitmapEncoder();
 			encoder.Frames.Add( frame );
 
@@ -1100,8 +1110,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		void svuotareElencoInModifica() {
+			svuotareElencoInModifica( true );
+		}
+
+		void svuotareElencoInModifica( bool ancheResetEffetti ) {
 			fotografieDaModificareCW.DeselectAll();
-			resetEffetti();
+			if( ancheResetEffetti )
+				resetEffetti();
 		}
 
 		private void browseForFileCornice() {
@@ -1208,14 +1223,22 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 						foreach( Fotografia f in fotoDaModificareMsg.fotosDaModificare )
 							fotografieDaModificareCW.SelectedItems.Add( f );
 						fotografieDaModificareCW.Refresh();
+
+// DACANC:						forzaRefreshStato();
 					}
 				}
-
+				
 				// Pubblico un messaggio di richiesta cambio pagina. Voglio andare sulla pagina del fotoritocco
 				CambioPaginaMsg cambioPaginaMsg = new CambioPaginaMsg( this );
 				cambioPaginaMsg.nuovaPag = "FotoRitoccoPag";
 				LumenApplication.Instance.bus.Publish( cambioPaginaMsg );
 			}
+		}
+
+
+		void onFotografieDaModificareSelectionChanged( object sender, SelectionChangedEventArgs e ) {
+			// Provoco la rilettura delle property che determinano lo stato dei pulsanti.
+			forzaRefreshStato();
 		}
 
 		#endregion Gestori Eventi

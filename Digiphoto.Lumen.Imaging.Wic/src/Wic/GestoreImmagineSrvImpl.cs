@@ -52,6 +52,13 @@ namespace Digiphoto.Lumen.Imaging.Wic {
  */
 		}
 
+		public IImmagine creaProvino( IImmagine immagineGrande, long sizeLatoMax ) {
+			Resize resize = new Resize {
+				latoMax = sizeLatoMax
+			};
+			return _provinatore.applica( immagineGrande, resize );
+		}
+
 		public IImmagine creaProvino( IImmagine immagineGrande ) {
 			return _provinatore.applica( immagineGrande, _correzioneProvino );
 		}

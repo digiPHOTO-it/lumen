@@ -19,7 +19,7 @@ namespace Digiphoto.Lumen.Util {
 	public class PathUtil {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( PathUtil) );
-		private static readonly string THUMB = ".Thumb";
+		public static readonly string THUMB = ".Thumb";
 		private static readonly string MODIF = ".Modif";
 
 		/** Nel parametro si può passare sia il nome del file della foto, oppure il nome 

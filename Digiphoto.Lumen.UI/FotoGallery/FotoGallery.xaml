@@ -219,7 +219,9 @@
 							ItemsSource="{Binding stampantiAbbinate}" 
 							ItemTemplate="{StaticResource stampaRapidaMenu}" >
 					</MenuItem>
-                    <MenuItem Header="Elimina" 
+					<MenuItem Header="Vedi a tutto schermo"
+                              Command="{Binding Path=viewFotoFullScreenCommand}" />
+					<MenuItem Header="Elimina" 
                               Command="{Binding Path=eliminareFotoCommand}"
                               CommandParameter="SEL" />
                     
