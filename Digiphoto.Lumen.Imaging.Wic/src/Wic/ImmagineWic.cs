@@ -25,23 +25,26 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 			try {
 
-				// Soluzione 1 (tiene bloccato il file)			
-				//BitmapImage bitmapImage = new BitmapImage();
-				//bitmapImage.BeginInit();
-				//bitmapImage.UriSource = new Uri( uriString );
-				//bitmapImage.EndInit();
-				// this.bitmapSource = bitmapImage;
+				const char metodo = 'A';
 
-				// Soluzione 2 (forzo il caricamento in memoria della bitmap. Non tiene bloccato il file)
-				// BitmapSource bitmapImage = BitmapFrame.Create( new Uri( uriString ), BitmapCreateOptions.None, BitmapCacheOption.OnLoad );
-				// this.bitmapSource = bitmapImage;
+				if( metodo == 'A' ) {
+					// Soluzione A
+					BitmapImage bitmapImage = new BitmapImage();
+					bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+					bitmapImage.BeginInit();
+					bitmapImage.UriSource = new Uri( uriString );
+					bitmapImage.EndInit();
+					this.bitmapSource = bitmapImage;
 
-				// Soluzione 3 (carico diretto da stream di byte)
-				MemoryStream data = new MemoryStream( File.ReadAllBytes( uriString ) );
-				this.bitmapSource = BitmapFrame.Create( data );
-				
+				} else {
+					// Soluzione B (carico diretto da stream di byte). In questo caso, però chi è che fa il dispose ?
+					MemoryStream data = new MemoryStream( File.ReadAllBytes( uriString ) );
+					this.bitmapSource = BitmapFrame.Create( data );
+				}
+
 				// Se non frizzo, non riesco a passare queste bitmap da un thread all'altro.
 				this.bitmapSource.Freeze();
+				
 
 			} catch( Exception ee ) {
 				_giornale.Error( "fallita creazione immagine " + uriString, ee );
@@ -73,7 +76,11 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		#region Metodi
 
 		public override void Dispose() {
-			bitmapSource = null;
+
+			if( bitmapSource != null ) {
+				bitmapSource = null;				
+			}
+
 		}
 
 		public override object Clone() {

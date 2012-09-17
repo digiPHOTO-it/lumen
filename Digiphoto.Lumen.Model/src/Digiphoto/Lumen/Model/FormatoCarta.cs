@@ -20,6 +20,16 @@ namespace Digiphoto.Lumen.Model {
 
 			return errors;
 		}
+
+		public override bool Equals( object obj ) {
+
+			bool isEqual = false;
+			if( obj is FormatoCarta ) {
+				FormatoCarta altro = (FormatoCarta)obj;
+				isEqual = this.id.Equals( altro.id );
+			}
+			return isEqual;
+		}   
 	}
 
 }

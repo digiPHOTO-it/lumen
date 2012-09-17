@@ -61,14 +61,17 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 		[TestInitialize]
 		public void Init() {
-
+		
 			LumenApplication app = LumenApplication.Instance;
 
-			IObservable<StampatoMsg> observable = app.bus.Observe<StampatoMsg>();
-			observable.Subscribe( this );
+			using( new UnitOfWorkScope() ) {
 
-			_impl = new SpoolStampeSrvImpl();
-			_impl.start();
+				IObservable<StampatoMsg> observable = app.bus.Observe<StampatoMsg>();
+				observable.Subscribe( this );
+
+				_impl = new SpoolStampeSrvImpl();
+				_impl.start();
+			}
 		}
 
 		[TestCleanup]
