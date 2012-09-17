@@ -65,17 +65,20 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 		public void save( IImmagine immagine, string fileName ) {
 
-			FileStream fileStream = new FileStream( fileName, FileMode.Create );
+			using( FileStream fileStream = new FileStream( fileName, FileMode.Create ) ) {
 
-			BitmapSource bmSource = ((ImmagineWic)immagine).bitmapSource;
+				BitmapSource bmSource = ((ImmagineWic)immagine).bitmapSource;
 
-			JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+				JpegBitmapEncoder encoder = new JpegBitmapEncoder();
 			
-			encoder.QualityLevel = 80;
+				encoder.QualityLevel = 80;
 
-			encoder.Frames.Add( BitmapFrame.Create( bmSource ) );
-			encoder.Save( fileStream );
-			fileStream.Close();
+				encoder.Frames.Add( BitmapFrame.Create( bmSource ) );
+				encoder.Save( fileStream );
+
+				fileStream.Close();
+			}
+			
 		}
 
 		public IImmagine applicaCorrezioni( IImmagine immaginePartenza, IEnumerable<Correzione> correzioni ) {
