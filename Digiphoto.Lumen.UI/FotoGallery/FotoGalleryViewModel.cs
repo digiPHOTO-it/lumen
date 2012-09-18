@@ -31,6 +31,8 @@ using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
 using Digiphoto.Lumen.Model.Util;
 using System.Collections;
 using Digiphoto.Lumen.UI.PanAndZoom;
+using Digiphoto.Lumen.UI.Util;
+using System.Text.RegularExpressions;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -355,50 +357,44 @@ namespace Digiphoto.Lumen.UI {
 
 		public string stringaNumeriFotogrammi {
 			get {
-				if (paramCercaFoto.numeriFotogrammi == null || paramCercaFoto.numeriFotogrammi.Length == 0)
-				{
-					return null;
-				}
-
-				if(!Configurazione.UserConfigLumen.compNumFoto){
-					return String.Join(",",  paramCercaFoto.numeriFotogrammi);
-				}else{
-					
-					IEnumerable<string> v  = paramCercaFoto.numeriFotogrammi.Select(nn => CompNumFoto.getStringValue((long)nn));
-					return  String.Join(",", v.ToArray());
-				}
+				return paramCercaFoto.numeriFotogrammi;
 			}
 			set {
-				
-				if( String.IsNullOrEmpty(value) )
+
+				if (String.IsNullOrEmpty(value))
 					paramCercaFoto.numeriFotogrammi = null;
 				else
-					if (!Configurazione.UserConfigLumen.compNumFoto)
+				{
+					if(Configurazione.UserConfigLumen.compNumFoto)
 					{
-						try
+						if (Regex.IsMatch(value, "^[a-zA-Z0-9]+((,^[a-zA-Z0-9]+)?)*"))
 						{
-						paramCercaFoto.numeriFotogrammi = value.Split( ',' ).Select( nn => Convert.ToInt32( nn ) ).ToArray();
+							paramCercaFoto.numeriFotogrammi = value;
 						}
-						catch (Exception)
+						else if (Regex.IsMatch(value, "^\\-[a-zA-Z0-9]+((-^[a-zA-Z0-9]+)?)*"))
 						{
-						dialogProvider.ShowError( "I numeri dei fotogrammi devono essere separati da virgola", "Formato errato", null );
-						OnPropertyChanged( "stringaNumeriFotogrammi" );
-					}
-			}
-					else
-					{
-						try
-						{
-							IEnumerable<int> v = ((string)value).Split(',').Select(nn => (int)CompNumFoto.getLongValue(nn));
-							paramCercaFoto.numeriFotogrammi =  v.ToArray<int>();
+							paramCercaFoto.numeriFotogrammi = value;
 						}
-						catch (Exception)
+						else
 						{
 							dialogProvider.ShowError("I numeri dei fotogrammi devono essere separati da virgola", "Formato errato", null);
-							OnPropertyChanged("stringaNumeriFotogrammi");
+						}		
+					}else{
+						if (Regex.IsMatch(value, "\\d+((,\\d+)?)*"))
+						{
+							paramCercaFoto.numeriFotogrammi = value;
+						}
+						else if (Regex.IsMatch(value, "\\d+((-\\d+)?)*"))
+						{
+							paramCercaFoto.numeriFotogrammi = value;
+						}
+						else
+						{
+							dialogProvider.ShowError("I numeri dei fotogrammi devono essere separati da virgola", "Formato errato", null);
 						}
 					}
-				
+					OnPropertyChanged("stringaNumeriFotogrammi");
+				}
 			}
 		}
 

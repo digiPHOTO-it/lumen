@@ -59,7 +59,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				dbContext.SaveChanges();
 
 
-				param.numeriFotogrammi = new int [] { 3, 5, 7, f.numero };
+				param.numeriFotogrammi =  "3, 5, 7," + f.numero;
 				param.eventi = new Evento[] { ev };
 				param.fotografi = new Fotografo [] { op };
 				param.fasiDelGiorno = new FaseDelGiorno [] { FaseDelGiorno.Mattino, FaseDelGiorno.Sera };
