@@ -598,6 +598,10 @@ namespace Digiphoto.Lumen.UI
 					LumenApplication.Instance.bus.Publish(msg);
 				}
 			}
+			else
+			{
+				dialogProvider.ShowError("Attenzione: Il carrello non è stato salvato correttamente\nsegnalare l'anomalia", "ERRORE", null);
+			}
 
 			updateGUI();
         }
