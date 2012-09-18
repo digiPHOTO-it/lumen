@@ -76,6 +76,23 @@ namespace Digiphoto.Lumen.UI.Pubblico.GestioneGeometria
 			}
 		}
 
+		private bool _extendMonitor;
+		public bool extendMonitor
+		{
+			get
+			{
+				return _extendMonitor;
+			}
+			set
+			{
+				if (_extendMonitor != value)
+				{
+					_extendMonitor = value;
+					OnPropertyChanged("extendMonitor");
+				}
+			}
+		}
+
 		private int _slideHeight;
 		public int slideHeight
 		{

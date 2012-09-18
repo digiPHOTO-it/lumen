@@ -41,6 +41,7 @@
 				<TextBox Height="23" HorizontalAlignment="Left" Margin="97,24,0,0" Name="textBox1" VerticalAlignment="Top" Width="120" Text="{Binding Path= pSSG.deviceEnum,Mode=TwoWay}" IsEnabled="False"/>
 				<Label Content="Monitor" Height="28" HorizontalAlignment="Left" Margin="14,24,0,0" Name="label1" VerticalAlignment="Top" Width="69" />
 				<CheckBox Content="FullScreen" IsChecked="{Binding Path=pSSG.fullScreen,Mode=TwoWay}" Height="16" HorizontalAlignment="Left" Margin="254,27,0,0" Name="checkBox1" VerticalAlignment="Top" Width="114" />
+				<CheckBox Content="Clone Monitor" IsChecked="{Binding Path=pSSG.extendMonitor,Mode=TwoWay}" Height="16" HorizontalAlignment="Left" Margin="374,27,0,0" Name="checkBox2" VerticalAlignment="Top" Width="114" Command="{Binding extendMonitorCommand}"/>
 			</Grid>
 		</GroupBox>
 	</DockPanel>
