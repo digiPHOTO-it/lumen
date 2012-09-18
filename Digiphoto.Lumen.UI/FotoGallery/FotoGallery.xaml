@@ -180,8 +180,10 @@
                     <Separator />
                     
                     <Label>Numeri</Label>
-                    <TextBox  Text="{Binding Path=stringaNumeriFotogrammi}" Name="textBoxNumFotogrammi" ToolTip="Indicare i numeri separati da virgola ," />
-
+					<TextBox  Text="{Binding Path=stringaNumeriFotogrammi}" 
+							  Name="textBoxNumFotogrammi"
+							  CharacterCasing="Upper"
+							  ToolTip="Indicare i numeri separati da virgola ," />
                 </StackPanel>
                 
         

@@ -8,6 +8,7 @@ using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Core;
 using log4net;
 using Digiphoto.Lumen.Database;
+using Digiphoto.Lumen.UI.Util;
 
 namespace Digiphoto.Lumen.Servizi.Ricerca {
 	
@@ -142,9 +143,29 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 				query = query.Where( ff => listaIds.Contains( ff.fotografo.id ) );
 			}
 
-			// ----- numeri di fotogramma
-			if( param.numeriFotogrammi != null )
-				query = query.Where( ff => param.numeriFotogrammi.Contains( ff.numero ) );
+			if (param.numeriFotogrammi != null)
+			{
+				int[] range = FotoRangeUtil.rangeToString(param.numeriFotogrammi);
+
+				// Testo se ho un range o una lista
+				if (param.numeriFotogrammi.Contains('-'))
+				{
+					int estInf = range[0];
+					int estSup = range[1]; 
+
+					// ----- RANGE di fotogramma
+					query = query.Where(ff => ff.numero >= estInf);
+					if (range[1]>0)
+					{
+						query = query.Where(ff => ff.numero <= estSup);
+					}
+				}
+				else
+				{
+					// ----- numeri di fotogramma
+					query = query.Where(ff => range.Contains(ff.numero));
+				}
+			}
 
 			// ----- fasi del giorno (la Enum non prevede il Contains. Devo trasformarla in una array di interi
 			if( param.fasiDelGiorno != null && param.fasiDelGiorno.Count > 0 ) {
