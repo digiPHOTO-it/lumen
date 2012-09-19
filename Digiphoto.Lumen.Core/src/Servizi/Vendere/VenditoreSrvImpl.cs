@@ -519,9 +519,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				// Siccome non voglio che si chiami il metodo masterizza da fuori, faccio una forzatura.
 				// Uso io direttamente la impl internamente.
 				_masterizzaSrvImpl = (MasterizzaSrvImpl)LumenApplication.Instance.creaServizio<IMasterizzaSrv>();
-
-				carrello.righeCarrello.Add( creaRiCaDiscoMasterizzato() );
+	
 			}
+			// Aggiungo le foto al carrello
+			carrello.righeCarrello.Add(creaRiCaDiscoMasterizzato());
 
 			// Aggiungo le foto alla lista
 			_masterizzaSrvImpl.addFotografie( fotografie );
