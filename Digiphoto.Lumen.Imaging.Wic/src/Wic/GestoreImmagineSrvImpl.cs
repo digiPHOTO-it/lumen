@@ -65,6 +65,8 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 		public void save( IImmagine immagine, string fileName ) {
 
+			_giornale.Debug( "Richiesto di salvare l'immagine su disco: " + fileName );
+
 			using( FileStream fileStream = new FileStream( fileName, FileMode.Create ) ) {
 
 				BitmapSource bmSource = ((ImmagineWic)immagine).bitmapSource;
@@ -72,11 +74,13 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 				JpegBitmapEncoder encoder = new JpegBitmapEncoder();
 			
 				encoder.QualityLevel = 80;
+				_giornale.Debug( "Uso quality Level = " + encoder.QualityLevel );
 
 				encoder.Frames.Add( BitmapFrame.Create( bmSource ) );
 				encoder.Save( fileStream );
 
 				fileStream.Close();
+				_giornale.Debug( "Ok salvataggio file immagine completato" );
 			}
 			
 		}
@@ -94,6 +98,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 		public IImmagine applicaCorrezione( IImmagine immaginePartenza, Correzione correzione ) {
 			Correttore correttore = _correttoreFactory.creaCorrettore( correzione.GetType() );
+			_giornale.Debug( "applico correzione: " + correttore );
 			return correttore.applica( immaginePartenza, correzione );
 		}
 

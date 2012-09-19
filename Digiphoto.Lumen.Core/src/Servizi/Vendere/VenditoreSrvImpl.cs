@@ -158,7 +158,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					_giornale.Debug( "salvataggio eseguito. Ora committo la transazione" );
 
 					transaction.Complete();
-					_giornale.Debug( "commit transazione ok" );
+					_giornale.Info( "commit carrello a buon fine" );
 					esito = true;
 				} catch( Exception eee ) {
 					esito = false;

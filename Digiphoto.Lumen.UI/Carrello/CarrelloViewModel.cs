@@ -20,6 +20,7 @@ using System.Windows.Media.Imaging;
 using Digiphoto.Lumen.Servizi.Masterizzare;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Database;
+using System.IO;
 
 namespace Digiphoto.Lumen.UI
 {
@@ -546,6 +547,7 @@ namespace Digiphoto.Lumen.UI
         private void vendere()
         {
 			venditoreSrv.carrello.totaleAPagare = PrezzoTotaleForfettario;
+			_giornale.Debug( "Mi preparo a vendere questo carrello da " + PrezzoTotaleForfettario + " euro" );
 
 			if (venditoreSrv.masterizzaSrv!=null)
 			{
@@ -557,50 +559,10 @@ namespace Digiphoto.Lumen.UI
 				return;
 			}
 
-			//Testo se devo masterizzare su CD o su Chiavetta
-			if (Configurazione.UserConfigLumen.masterizzaDirettamente)
-			{
-				bool procediPure = true;
-				dialogProvider.ShowConfirmation("Voi continuare la masterizzazione sul CD/DVD ?",
-					"Richiesta conferma",
-					  (confermato) =>
-					  {
-						  procediPure = confermato;
-					  });
+			if( richiediDoveMasterizzare() == false )
+				return;
 
-				if (!procediPure)
-				{
-					string chiavettaPath = Configurazione.UserConfigLumen.defaultChiavetta;
-
-					if (!Configurazione.isFuoriStandardCiccio)
-					{
-						System.Windows.Forms.FolderBrowserDialog fBD = new System.Windows.Forms.FolderBrowserDialog();
-						//fBD.RootFolder = Environment.SpecialFolder.Desktop;
-						fBD.SelectedPath = Configurazione.UserConfigLumen.defaultChiavetta;
-						DialogResult result = fBD.ShowDialog();
-
-						if (result == DialogResult.OK)
-						{
-							chiavettaPath = fBD.SelectedPath;
-						}
-					}
-					else
-					{
-						string path = PathUtil.scegliCartella();
-						if (path != null)
-						{
-							chiavettaPath = path;
-						}
-					}
-
-					venditoreSrv.masterizzaSrv.impostaDestinazione(TipoDestinazione.CARTELLA, chiavettaPath);
-				}
-			}
-			else
-			{
-				venditoreSrv.masterizzaSrv.impostaDestinazione(TipoDestinazione.CARTELLA, Configurazione.UserConfigLumen.defaultChiavetta);
-			}
-
+			_giornale.Debug( "Sono pronto per vendere il carrello. Tot a pagare = " + venditoreSrv.carrello.totaleAPagare );
 
 			if(venditoreSrv.vendereCarrello())
 			{
@@ -611,6 +573,8 @@ namespace Digiphoto.Lumen.UI
 					short totaleFotoMasterizzate = 0;
 					short totoleFotoStampate = 0;
 					short totoleErrori = 0;
+
+					_giornale.Debug( "Non ci sono errori durante la masterizzazione" );
 
 					foreach( RigaCarrello r in carrelloCorrente.righeCarrello ) {
 
@@ -626,11 +590,14 @@ namespace Digiphoto.Lumen.UI
 						}
 					}
 
-					dialogProvider.ShowMessage("Carrello venduto:" +
+					string msg = "Carrello venduto:" +
 												"\nTotale: " + venditoreSrv.carrello.totaleAPagare +
 												"\nN° Fotografie: " + totoleFotoStampate +
 												"\nN° Foto Masterizzate: "+ totaleFotoMasterizzate +
-												"\nN° ErroriUtil: " + totoleErrori, "Avviso");
+												"\nN° ErroriUtil: " + totoleErrori;
+
+					dialogProvider.ShowMessage( msg, "Avviso");
+					_giornale.Info( msg );
 
 					//Creo un nuovo carrello
 					venditoreSrv.creaNuovoCarrello();
@@ -638,7 +605,7 @@ namespace Digiphoto.Lumen.UI
 				}
 				else
 				{
-					//dialogProvider.ShowMessage("Errore nella Masterizzazione", "AVVISO");
+					_giornale.Warn( "Riscontrati errori durante la masterizzazione" );
 					GestoreCarrelloMsg msg = new GestoreCarrelloMsg(this);
 					msg.fase = Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.ErroreMasterizzazione;
 					LumenApplication.Instance.bus.Publish(msg);
@@ -646,11 +613,86 @@ namespace Digiphoto.Lumen.UI
 			}
 			else
 			{
+				_giornale.Warn( "il carrello" + carrelloCorrente + " + non è stato salvato correttamente" );
 				dialogProvider.ShowError("Attenzione: Il carrello non è stato salvato correttamente\nsegnalare l'anomalia", "ERRORE", null);
 			}
 
 			updateGUI();
         }
+
+		private bool richiediDoveMasterizzare() {
+
+			//Testo se devo masterizzare su CD o su Chiavetta
+			if( Configurazione.UserConfigLumen.masterizzaDirettamente ) {
+
+				bool procediPure = true;
+				dialogProvider.ShowConfirmation( "Voi continuare la masterizzazione sul CD/DVD ?",
+					"Richiesta conferma",
+					  ( confermato ) => {
+						  procediPure = confermato;
+					  } );
+
+				#region cartella
+				if( !procediPure ) {
+					string chiavettaPath = Configurazione.UserConfigLumen.defaultChiavetta;
+					if( !Configurazione.isFuoriStandardCiccio ) {
+						System.Windows.Forms.FolderBrowserDialog fBD = new System.Windows.Forms.FolderBrowserDialog();
+						//fBD.RootFolder = Environment.SpecialFolder.Desktop;
+						fBD.SelectedPath = Configurazione.UserConfigLumen.defaultChiavetta;
+						DialogResult result = fBD.ShowDialog();
+
+						if( result == DialogResult.OK ) {
+							chiavettaPath = fBD.SelectedPath;
+						}
+					} else {
+						string path = PathUtil.scegliCartella();
+						if( path != null ) {
+							chiavettaPath = path;
+						}
+					}
+
+					if( ! testCartellaMasterizza( chiavettaPath ) ) {
+						dialogProvider.ShowError( "path = " + chiavettaPath, "Cartella non scrivibile", null );
+						return false;
+					}
+
+					venditoreSrv.masterizzaSrv.impostaDestinazione( TipoDestinazione.CARTELLA, chiavettaPath );
+					_giornale.Debug( "Masterizzo i files su : " + chiavettaPath );
+				}
+				#endregion cartella
+
+			} else {
+				// cartella
+				if( !testCartellaMasterizza( Configurazione.UserConfigLumen.defaultChiavetta ) ) {
+					dialogProvider.ShowError( "path = " + Configurazione.UserConfigLumen.defaultChiavetta, "Cartella non scrivibile", null );
+					return false;
+				}
+
+				_giornale.Debug( "Masterizzo i files su : " + Configurazione.UserConfigLumen.defaultChiavetta );
+				venditoreSrv.masterizzaSrv.impostaDestinazione( TipoDestinazione.CARTELLA, Configurazione.UserConfigLumen.defaultChiavetta );
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// Controllo che la cartella indicata sia valida, esiste ed è scrivibile.
+		/// </summary>
+		/// <param name="nomeCartella"></param>
+		/// <returns>true se tutto ok.</returns>
+		bool testCartellaMasterizza( string nomeCartella ) {
+
+			if( nomeCartella == null )
+				return false;
+
+			if( !Directory.Exists( nomeCartella ) )
+				return false;
+
+			if( !PathUtil.isCartellaScrivibile( nomeCartella ) )
+				return false;
+			
+			return true;
+		}
 
 		/// <summary>
 		/// Devo mandare in stampa le foto selezionate
@@ -1211,5 +1253,6 @@ namespace Digiphoto.Lumen.UI
 		}
 
 		#endregion
+
 	}
 }
