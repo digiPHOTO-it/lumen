@@ -16,7 +16,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 		public string didascalia { get; set; }
 
 		public IList<FaseDelGiorno>  fasiDelGiorno { get; set; }
-		public int [] numeriFotogrammi { get; set; }
+		public string numeriFotogrammi { get; set; }
 
 		public DateTime? giornataIniz {	get; set; }
 		public DateTime? giornataFine { get; set; }

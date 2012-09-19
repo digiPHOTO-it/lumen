@@ -10,11 +10,35 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using Digiphoto.Lumen.UI.Pubblico.GestioneGeometria;
+using System.Diagnostics;
 
 namespace Digiphoto.Lumen.UI.Pubblico
 {
 	public class GestSlideShowViewModel : ViewModelBase
 	{
+
+		private Process DisplayChangerExtend = new Process
+		{
+			StartInfo =
+			{
+				CreateNoWindow = true,
+				WindowStyle = ProcessWindowStyle.Hidden,
+				FileName = "DisplaySwitch.exe",
+				Arguments = "/extend"
+			}
+		};
+
+		private Process DisplayChangerClone = new Process
+		{
+			StartInfo =
+			{
+				CreateNoWindow = true,
+				WindowStyle = ProcessWindowStyle.Hidden,
+				FileName = "DisplaySwitch.exe",
+				Arguments = "/clone"
+			}
+		};
+
 		#region CostruttoreStatico
 
 		static GestSlideShowViewModel()
@@ -111,6 +135,17 @@ namespace Digiphoto.Lumen.UI.Pubblico
 			pSSG.fullScreen = Configurazione.UserConfigLumen.fullScreen;
 		}
 
+		private void extendMonitor(){
+			if (pSSG.extendMonitor)
+			{
+				DisplayChangerExtend.Start();
+			}
+			else
+			{
+				DisplayChangerClone.Start();
+			}
+		}
+
 		#endregion
 
 		#region Comandi
@@ -151,6 +186,19 @@ namespace Digiphoto.Lumen.UI.Pubblico
 					_resetCommand = new RelayCommand(param => reset());
 				}
 				return _resetCommand;
+			}
+		}
+
+		private RelayCommand _extendMonitorCommand;
+		public ICommand extendMonitorCommand
+		{
+			get
+			{
+				if (_extendMonitorCommand == null)
+				{
+					_extendMonitorCommand = new RelayCommand(param => extendMonitor());
+				}
+				return _extendMonitorCommand;
 			}
 		}
 

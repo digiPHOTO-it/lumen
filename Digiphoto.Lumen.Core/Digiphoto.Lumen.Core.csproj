@@ -283,6 +283,7 @@
     <Compile Include="src\Threading\WorkerThreadBase.cs" />
     <Compile Include="src\Util\AiutanteFoto.cs" />
     <Compile Include="src\Util\ErroriUtil.cs" />
+    <Compile Include="src\Util\FotoRangeUtil.cs" />
     <Compile Include="src\Util\Logging\Log.cs" />
     <Compile Include="src\Util\Logging\NotifyAppender.cs" />
     <Compile Include="src\Util\SpecialFolderPatternConverter.cs" />
