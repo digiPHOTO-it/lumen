@@ -228,13 +228,16 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// <param name="avanti"></param>
 		void primoPianoCanvasMask( bool avanti ) {
 			if( avanti ) {
+
 				// Porto davanti il canvas con la maschera in modo che si sovrapponga alla foto (tanto ha il buco trasparente)
-				Canvas.SetZIndex( canvasMskCopertura, 99 );
+				Grid.SetZIndex( canvasMskCopertura, 99 );
 				Canvas.SetZIndex( canvasMsk, 10 );
+
+
 			} else {
 				// Porto davanti il canvas che riceverà la fotina (per permettere il drop)
 				Canvas.SetZIndex( canvasMsk, 99 );
-				Canvas.SetZIndex( canvasMskCopertura, 10 );
+				Grid.SetZIndex( canvasMskCopertura, 10 );
 			}
 		}
 
@@ -319,10 +322,15 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				double fotinaFactorX = 96d / bs.DpiX;
 
 				Rect rectFotina = new Rect( Canvas.GetLeft( fotina ), Canvas.GetTop( fotina ), fotina.ActualWidth, fotina.ActualHeight );
-				Size sizeFondo = new Size( imageMask.ActualWidth, imageMask.ActualHeight );
+				
+				Vector offset = VisualTreeHelper.GetOffset( imageMask );
+				Rect rectFondo = new Rect( offset.X, offset.Y, imageMask.ActualWidth, imageMask.ActualHeight );
+				
 				Size sizeMaschera = new Size( bmpSource.PixelWidth, bmpSource.PixelHeight );
 
-				Rect newRect = Geometrie.proporziona( rectFotina, sizeFondo, sizeMaschera );
+
+				Rect newRect = Geometrie.proporziona( rectFotina, rectFondo, sizeMaschera );
+				
 				fotona.Width = newRect.Width * factorX;
 				fotona.Height = newRect.Height * factorY;
 				fotona.Stretch = Stretch.Uniform;
