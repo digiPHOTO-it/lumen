@@ -185,6 +185,7 @@ namespace Digiphoto.Lumen.Util {
 			string nomeFile = PathUtil.nomeCompletoOrig( foto );
 			string nomeCartella = PathUtil.decidiCartellaProvini( new FileInfo( nomeFile ) );
 			if( !Directory.Exists( nomeCartella ) ) {
+				_giornale.Debug( "Creo cartella Provini: " + nomeCartella );
 				Directory.CreateDirectory( nomeCartella );
 			}
 		}
@@ -195,6 +196,7 @@ namespace Digiphoto.Lumen.Util {
 			string nomeFile = PathUtil.nomeCompletoOrig( foto );
 			string nomeCartella = PathUtil.decidiCartellaRisultanti( new FileInfo( nomeFile ) );
 			if( !Directory.Exists( nomeCartella ) ) {
+				_giornale.Debug( "Creo cartella img Risultanti: " + nomeCartella );
 				Directory.CreateDirectory( nomeCartella );
 			}
 		}

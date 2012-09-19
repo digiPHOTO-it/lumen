@@ -6,6 +6,7 @@ using Digiphoto.Lumen.Imaging.Correzioni;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.IO;
+using log4net;
 
 namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 
@@ -21,9 +22,13 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 
 	public class ResizeCorrettore : Correttore {
 
+		private static readonly ILog _giornale = LogManager.GetLogger( typeof( ResizeCorrettore ) );
+
 		static readonly int DPI_PROVINO = 96;
 
 		public override IImmagine applica( IImmagine immagineSorgente, Correzione correzione ) {
+
+			_giornale.Debug( "Richiesta correzione: " + correzione.GetType().Name );
 
 			long calcW, calcH;
 			Resize resizeCorrezione = (Resize)correzione;
@@ -32,6 +37,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 			BitmapSource bitmapSource = ((ImmagineWic)immagineSorgente).bitmapSource; 
 
 			BitmapFrame bitmapFrame = Resize( bitmapSource, calcW, calcH, DPI_PROVINO );
+			_giornale.Debug( "effettuato resize" );
 			return new ImmagineWic( bitmapFrame );
 		}
 

@@ -181,13 +181,18 @@ namespace Digiphoto.Lumen.Util {
 		/// <param name="foto"></param>
 		private static void creaCacheFotoSuDisco( Fotografia foto, IdrataTarget quale, string nomeFileOriginale ) {
 
+			_giornale.Debug( "Creo provino foto n."  + foto.numero + "  target=" + quale );
+
 			Debug.Assert( quale == IdrataTarget.Provino || quale == IdrataTarget.Risultante );
 
 			IGestoreImmagineSrv gis = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
 
 			// Carico l'immagine grande originale (solo la prima volta)
-			if( foto.imgOrig == null )
+			if( foto.imgOrig == null ) {
+				_giornale.Debug( "carico immagine originale da disco: " + nomeFileOriginale );
 				foto.imgOrig = gis.load( nomeFileOriginale );
+			}
+
 
 			IImmagine immagineDestinazione = null; 
 			if( quale == IdrataTarget.Provino ) {
@@ -204,6 +209,7 @@ namespace Digiphoto.Lumen.Util {
 			// applico eventuali correzioni
 			if( foto.correzioniXml != null ) {
 				CorrezioniList correzioni = SerializzaUtil.stringToObject<CorrezioniList>( foto.correzioniXml );
+				_giornale.Debug( "Su questa foto esistono correzioni. Le applico" );
 				immagineDestinazione = gis.applicaCorrezioni( immagineDestinazione, correzioni );
 			}
 

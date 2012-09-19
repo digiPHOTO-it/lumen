@@ -31,10 +31,11 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 				query = query.Skip( param.paginazione.skip ).Take( param.paginazione.take );
 
 			// Eventuale debug della query
-			if( _giornale.IsDebugEnabled ) {
+			if( false && _giornale.IsDebugEnabled ) {
 				_giornale.Debug( query.ToString() );
 			}
 
+			_giornale.Debug( "Eseguita query di ricerca foto." );
 			return query.ToList();
 		}
 
@@ -82,11 +83,12 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			}
 
 			// Eventuale debug della query
-			if (_giornale.IsDebugEnabled)
+			if (false && _giornale.IsDebugEnabled)
 			{
 				_giornale.Debug(query.ToString());
 			}
 
+			_giornale.Debug( "Eseguita query ricerca carrelli" );
 			return query.ToList();
 		}
 

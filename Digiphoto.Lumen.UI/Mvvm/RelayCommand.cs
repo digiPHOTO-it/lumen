@@ -3,10 +3,13 @@ using System.Windows.Input;
 using System.Diagnostics;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Core.Database;
+using log4net;
 
 namespace Digiphoto.Lumen.UI.Mvvm {
 
 	public class RelayCommand : ICommand {
+
+		private static readonly ILog _giornale = LogManager.GetLogger( typeof( RelayCommand ) );
 
 		#region Fields
 
@@ -63,6 +66,28 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 		}
 
 		public void Execute( object parameter ) {
+
+			try {
+
+				_giornale.Debug( "Eseguo RelayCommad: " + _execute.Method.ToString() + " parametro=" + parameter );
+
+				esegui( parameter );
+
+			} catch( Exception ee ) {
+				
+				_giornale.Error( _execute.Method.ToString(), ee );
+
+				if( _execute.Target is ViewModelBase ) {
+					ViewModelBase viewModel = _execute.Target as ViewModelBase;
+					if( viewModel.dialogProvider != null )
+						viewModel.dialogProvider.ShowError( ee.Message, "Errore imprevisto. Consultare il Log", null );
+				}
+
+				throw ee;
+			}
+		}
+
+		private void esegui( object parameter ) {
 
 			// null significa che questo comando, non svolge operazioni sul database.
 			if( salvaAllaFineDelComando == null )

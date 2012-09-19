@@ -607,6 +607,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		private void tornareOriginale() {
 
+			_giornale.Debug( "Richiesto tornaoriginale" );
 			// elimino tutti gli effetti creati
 			resetEffetti();
 			
@@ -709,6 +710,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		
 		void resetEffetti() {
 
+			_giornale.Debug( "Reset effetti" );
 			effettoCorrente = null;
 			trasformazioneCorrente = null;
 			attivareSelector( null );  // Spegno eventuale selettore

@@ -24,16 +24,18 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		public ImmagineWic( string uriString ) {
 
 			try {
+				_giornale.Debug( "carico immagine da disco : " + uriString );
 
-				const char metodo = 'A';
+				const char metodo = 'B';
 
 				if( metodo == 'A' ) {
-					// Soluzione A
+					// Soluzione A  : NON FUNZIONA!!! Lascia il file aperto su disco.
 					BitmapImage bitmapImage = new BitmapImage();
 					bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
 					bitmapImage.BeginInit();
 					bitmapImage.UriSource = new Uri( uriString );
 					bitmapImage.EndInit();
+
 					this.bitmapSource = bitmapImage;
 
 				} else {
@@ -42,9 +44,12 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 					this.bitmapSource = BitmapFrame.Create( data );
 				}
 
+				_giornale.Debug( "ok caricata. Ora freezzo" );
+
 				// Se non frizzo, non riesco a passare queste bitmap da un thread all'altro.
 				this.bitmapSource.Freeze();
-				
+
+				_giornale.Debug( "ok freezata" );
 
 			} catch( Exception ee ) {
 				_giornale.Error( "fallita creazione immagine " + uriString, ee );
