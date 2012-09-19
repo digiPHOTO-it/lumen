@@ -5,6 +5,7 @@ rem scarico eventuali pacchetti necessari
 
 msbuild ..\Digiphoto.Lumen.sln /property:Configuration=Release /property:Platform=x86
 IF %ERRORLEVEL% NEQ 0 goto sub_problema
+pause
 
 msbuild ..\Digiphoto.Lumen.sln /property:Configuration=Release /property:Platform=x64
 IF %ERRORLEVEL% NEQ 0 goto GesErrore
@@ -16,6 +17,7 @@ goto Fine
 
 :GesErrore
 echo Ci sono stati degli errori
+pause
 exit 1
 
 

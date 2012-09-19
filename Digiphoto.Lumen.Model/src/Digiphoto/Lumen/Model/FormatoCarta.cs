@@ -29,7 +29,12 @@ namespace Digiphoto.Lumen.Model {
 				isEqual = this.id.Equals( altro.id );
 			}
 			return isEqual;
-		}   
+		}
+
+        public override int GetHashCode() {
+            return this.id != null ? this.id.GetHashCode() : 0;
+        }
+
 	}
 
 }
