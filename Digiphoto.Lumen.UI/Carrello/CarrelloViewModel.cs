@@ -557,10 +557,55 @@ namespace Digiphoto.Lumen.UI
 				return;
 			}
 
+			//Testo se devo masterizzare su CD o su Chiavetta
+			if (Configurazione.UserConfigLumen.masterizzaDirettamente)
+			{
+				bool procediPure = true;
+				dialogProvider.ShowConfirmation("Voi continuare la masterizzazione sul CD/DVD ?",
+					"Richiesta conferma",
+					  (confermato) =>
+					  {
+						  procediPure = confermato;
+					  });
+
+				if (!procediPure)
+				{
+					string chiavettaPath = Configurazione.UserConfigLumen.defaultChiavetta;
+
+					if (!Configurazione.isFuoriStandardCiccio)
+					{
+						System.Windows.Forms.FolderBrowserDialog fBD = new System.Windows.Forms.FolderBrowserDialog();
+						//fBD.RootFolder = Environment.SpecialFolder.Desktop;
+						fBD.SelectedPath = Configurazione.UserConfigLumen.defaultChiavetta;
+						DialogResult result = fBD.ShowDialog();
+
+						if (result == DialogResult.OK)
+						{
+							chiavettaPath = fBD.SelectedPath;
+						}
+					}
+					else
+					{
+						string path = PathUtil.scegliCartella();
+						if (path != null)
+						{
+							chiavettaPath = path;
+						}
+					}
+
+					venditoreSrv.masterizzaSrv.impostaDestinazione(TipoDestinazione.CARTELLA, chiavettaPath);
+				}
+			}
+			else
+			{
+				venditoreSrv.masterizzaSrv.impostaDestinazione(TipoDestinazione.CARTELLA, Configurazione.UserConfigLumen.defaultChiavetta);
+			}
+
+
 			if(venditoreSrv.vendereCarrello())
 			{
-
-				//Controllo se ci sono stati errori nella masterizzazione
+				
+				//Controllo se ci sono stati errori nella masterizzazione/copia su chiavetta
 				if (!IsErroriMasterizzazione)
 				{
 					short totaleFotoMasterizzate = 0;
@@ -589,6 +634,7 @@ namespace Digiphoto.Lumen.UI
 
 					//Creo un nuovo carrello
 					venditoreSrv.creaNuovoCarrello();
+					PrezzoTotaleForfettario = 0;
 				}
 				else
 				{
