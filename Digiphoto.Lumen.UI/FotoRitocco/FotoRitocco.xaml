@@ -132,26 +132,20 @@
             </ListBox.ItemContainerStyle>
         </ListBox>
 
-        
-        
-<!--
-        <ItemsPanelTemplate>
-            <UniformGrid />
-        </ItemsPanelTemplate>
--->
+   
 
-        <Grid> <!-- area di lavoro per modifiche -->
-
-                    <!-- Questo è il canvas di copertura dove compare la cornice bucata -->
-                    <Canvas Name="canvasMskCopertura"
+        <!-- area di lavoro per modifiche -->
+		<Grid>
+			<!-- Questo è il canvas di copertura dove compare la cornice bucata -->
+			<Grid Name="canvasMskCopertura"
                             Visibility="{Binding isGestioneMaschereAttiva,Converter={StaticResource booleanToVisibilityConverter}}"
                             >
-                        <Image Name="imageMask"  HorizontalAlignment="Left" VerticalAlignment="top"  
+				<Image Name="imageMask" 
                                Width="500" Height="500" 
                                Source="{Binding mascheraAttiva}" />
-                    </Canvas>
-                
-                    <!-- Questo è il canvas di lavoro, dove consento il drag-n-drop delle foto -->
+			</Grid>
+
+			<!-- Questo è il canvas di lavoro, dove consento il drag-n-drop delle foto -->
                     <Canvas  Name="canvasMsk" Background="Transparent" AllowDrop="True" 
                              MouseDown="canvasMsk_MouseDown" Drop="canvasMsk_Drop"
                              Visibility="{Binding isGestioneMaschereAttiva,Converter={StaticResource booleanToVisibilityConverter}}"
@@ -184,8 +178,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-        </Grid>
-
+		</Grid>
 
     </DockPanel>
     
