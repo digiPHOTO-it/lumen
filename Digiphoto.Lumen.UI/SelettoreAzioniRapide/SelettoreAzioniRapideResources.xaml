@@ -1,0 +1,91 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI">
+	
+	<!--
+      ** I pulsanti di stampa, siccome sono tutti uguali,
+      ** devo distinguerli con una scritta.
+      ** Quindi creo un pulsante che ha una didascalia sotto.
+    -->
+	<DataTemplate x:Key="pulsanteDiStampaTemplateContextMenu">
+		<Button ToolTip="{Binding}" 
+                Command="{Binding Path=DataContext.stampareCommand,RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
+				CommandParameter="{Binding}">
+			<StackPanel Orientation="Vertical" >
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Printer-48x48.png" Width="48" />
+				<Label Content="{Binding FormatoCarta.descrizione}" Width="48" HorizontalAlignment="Center" />
+			</StackPanel>
+		</Button>
+		
+	</DataTemplate>
+
+	<DataTemplate x:Key="stampaRapidaMenu">
+		<MenuItem Header="{Binding}"
+					Command="{Binding Path=DataContext.stampaRapidaCommand, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}" 
+					CommandParameter="{Binding}">
+			<MenuItem.Icon>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Printer-48x48.png" />
+			</MenuItem.Icon>
+		</MenuItem>
+	</DataTemplate >
+
+	<ContextMenu x:Key="azioniRapideMenu" x:Shared="true"  DataContext="{Binding Path=selettoreAzioniRapideViewModel}">
+		<MenuItem Header="Stampa"
+				  ItemsSource="{Binding Path=stampantiAbbinate}"
+			      ItemTemplate="{StaticResource stampaRapidaMenu}"
+				  DataContext="{Binding}">
+		</MenuItem>
+
+		<MenuItem Header="Aggiungi al Carrello"
+				  ItemsSource="{Binding Path=stampantiAbbinate}" 
+				  ItemTemplate="{StaticResource pulsanteDiStampaTemplateContextMenu}"
+				  DataContext="{Binding}">
+		</MenuItem>
+
+		<MenuItem Header="Aggiungi al CD" 
+                        Command="{Binding Path=aggiungereAlMasterizzatoreCommand}" 
+						DataContext="{Binding}"/>
+
+		<MenuItem Header="Torna All'originale" 
+                        Command="{Binding Path=tornareOriginaleCommand}"
+						DataContext="{Binding}"	/>
+
+		<MenuItem Header="Ruota" >
+			<MenuItem Header="-90°"
+					  Command="{Binding Path=ruotareCommand}" 
+					  CommandParameter="-90"
+					  DataContext="{Binding}">
+			</MenuItem>
+			<MenuItem Header="+90°"
+					  Command="{Binding Path=ruotareCommand}" 
+					  CommandParameter="+90"
+					  DataContext="{Binding}">
+			</MenuItem>
+		</MenuItem>
+
+		<MenuItem Header="Modifica Metadati" 
+				  Command="{Binding Path=modificaMetadatiCommand}"
+				  CommandParameter="SEL" 
+				  DataContext="{Binding}"/>
+
+		<MenuItem Header="Modifica con Programma Esterno" 
+				  Command="{Binding Path=modificareConEditorEsternoCommand}"
+				  DataContext="{Binding}"/>
+
+		<MenuItem Header="Aggiungi allo slide show" 
+				  Command="{Binding caricareSlideShowCommand}" 
+				  CommandParameter="Manual" 
+				  DataContext="{Binding}"/>
+
+		<MenuItem Header="Vedi a tutto schermo"
+				  Command="{Binding Path=viewFotoFullScreenCommand}" 
+				  DataContext="{Binding}"/>
+		
+		<MenuItem Header="Elimina" 
+				  Command="{Binding eliminareFotoCommand}"
+				  CommandParameter="SEL" 
+				  DataContext="{Binding}"/>
+	</ContextMenu>
+
+	
+</ResourceDictionary>

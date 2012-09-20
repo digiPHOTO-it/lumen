@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.UI.Mvvm;
+using System.ComponentModel;
 
 namespace Digiphoto.Lumen.UI {
 	/// <summary>
@@ -47,6 +48,37 @@ namespace Digiphoto.Lumen.UI {
 				SetValue( possoCreareProperty, value );
 			}
 		}
+
+		public static readonly DependencyProperty selectedIndexProperty = DependencyProperty.Register("MySelectedItem",
+																			typeof(Evento),
+																			typeof(SelettoreEvento),
+																			 new FrameworkPropertyMetadata(
+		 new PropertyChangedCallback(ChangeSelectedItem)));
+
+
+		private static void ChangeSelectedItem(DependencyObject source, DependencyPropertyChangedEventArgs e)
+		{
+			(source as SelettoreEvento).UpdateSelectedItem((Evento)e.NewValue);
+		}
+
+		private void UpdateSelectedItem(Evento NewText)
+		{
+			eventiListBox.SelectedItem = NewText;
+		}
+
+		[Description("MySelectedItem")]
+		public Evento MySelectedItem
+		{
+			get
+			{
+				return (Evento)GetValue(selectedIndexProperty);
+			}
+			set
+			{
+				SetValue(selectedIndexProperty, value);
+			}
+		}
+
 		#endregion
 	}
 }

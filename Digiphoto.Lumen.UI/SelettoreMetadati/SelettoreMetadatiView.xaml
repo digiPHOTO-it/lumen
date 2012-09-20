@@ -1,0 +1,59 @@
+﻿<lumM:UserControlBase x:Class="Digiphoto.Lumen.UI.SelettoreMetadatiView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+			 xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
+			 xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
+			 xmlns:lumMS="clr-namespace:Digiphoto.Lumen.UI.Mvvm.MultiSelect"
+			 xmlns:model="clr-namespace:Digiphoto.Lumen.Model;assembly=Digiphoto.Lumen.Model"
+             mc:Ignorable="d" 
+			 x:Name="this"
+             d:DesignHeight="300" d:DesignWidth="912">
+
+	<UserControl.Resources>
+		<ResourceDictionary Source="SelettoreMetadatiResources.xaml" />
+	</UserControl.Resources>
+
+	<!--lumM:UserControlBase.DataContext>
+		<lum:SelettoreMetadatiViewModel />
+	</lumM:UserControlBase.DataContext-->
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition />
+			<ColumnDefinition />
+			<ColumnDefinition />
+			<ColumnDefinition Width="Auto" />
+		</Grid.ColumnDefinitions>
+
+		<StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0">
+			<Label>Didascalia</Label>
+			<TextBox x:Name="didascalia" Text="{Binding ElementName=LsImageGallery,Path=SelectedValue.didascalia}" IsEnabled="{Binding DidascaliaEnabled}" CharacterCasing="Upper" MinWidth="80" />
+			<ListBox x:Name="LsImageGallery"
+					 Height="100"
+					 SelectionMode="Extended" 
+					 lumMS:MultiSelect.IsEnabled="True" 
+					 ItemsSource="{Binding ElementName=this, Path=MyItemsSource}">
+			</ListBox>
+		</StackPanel>
+
+		<GroupBox Header="Fasi del giorno" Grid.Row="0" Grid.Column="1">
+			<ListBox x:Name="fasiDelGiorno" ItemsSource="{Binding fasiDelGiorno}"
+                         SelectedItem="{Binding ElementName=LsImageGallery,Path=SelectedValue.faseDelGiorno,Converter={StaticResource fasiDelGiornoConverter}}" IsEnabled="{Binding GiornataEnabled}" />
+		</GroupBox>
+
+		<!-- MySelectedItem="{Binding ElementName=LsImageGallery,Path=SelectedValue.evento}"-->
+
+		<lum:SelettoreEvento x:Name="selettoreEventoMetadatoName" Grid.Column="2" MaxHeight="200"
+                             DataContext="{Binding Path=selettoreEventoMetadato}" 
+							 MySelectedItem="{Binding ElementName=LsImageGallery, Path=SelectedValue.evento}"
+							 IsEnabled="{Binding Path=DataContext.EventoEnabled, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
+							 possoCreare="True"/>
+
+		<StackPanel Grid.Column="3" Orientation="Vertical">
+			<Button Content="Elimina metadati" ToolTip="Elimina tutti i metadati dalle fotografie selezioanate" Command="{Binding eliminareMetadatiCommand}" Height="40" FontStretch="ExtraCondensed" />
+			<Separator />
+			<Button Content="Applica Metadati" ToolTip="Salva metadati fotografie selezionate" Command="{Binding applicareMetadatiCommand}" Height="40" />
+		</StackPanel>
+	</Grid>
+</lumM:UserControlBase>

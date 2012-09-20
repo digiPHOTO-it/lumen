@@ -30,7 +30,6 @@ using Digiphoto.Lumen.UI.Dialogs;
 using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
 using Digiphoto.Lumen.Model.Util;
 using System.Collections;
-using Digiphoto.Lumen.UI.PanAndZoom;
 using Digiphoto.Lumen.UI.Util;
 using System.Text.RegularExpressions;
 
@@ -59,6 +58,7 @@ namespace Digiphoto.Lumen.UI {
 			selettoreEventoFiltro = new SelettoreEventoViewModel();
 			selettoreEventoMetadato = new SelettoreEventoViewModel();
 			selettoreFotografoViewModel = new SelettoreFotografoViewModel();
+			selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel();
 
 			azzeraParamRicerca();
 
@@ -99,9 +99,22 @@ namespace Digiphoto.Lumen.UI {
 		///  Uso questa particolare collectionView perché voglio tenere traccia nel ViewModel degli N-elementi selezionati.
 		///  Sottolineo N perché non c'è supporto nativo per questo. Vedere README.txt nel package di questa classe.
 		/// </summary>
-		public MultiSelectCollectionView<Fotografia> fotografieCW {
-			get;
-			set;
+		private MultiSelectCollectionView<Fotografia> _fotografieCW;
+		public MultiSelectCollectionView<Fotografia> fotografieCW 
+		{
+			get
+			{
+				return _fotografieCW;
+			}
+			set
+			{
+				if (_fotografieCW != value)
+				{
+					_fotografieCW = value;
+					selettoreAzioniRapideViewModel.fotografieCW = value;
+					OnPropertyChanged("fotografieCW");
+				}
+			}
 		}
 
 		public ParamCercaFoto paramCercaFoto {
@@ -403,6 +416,12 @@ namespace Digiphoto.Lumen.UI {
 			private set;
 		}
 
+		public SelettoreAzioniRapideViewModel selettoreAzioniRapideViewModel
+		{
+			get;
+			set;
+		}
+
 		#endregion Proprietà
 
 
@@ -439,20 +458,6 @@ namespace Digiphoto.Lumen.UI {
 						param => possoStampare, false );
 				}
 				return _stampareCommand;
-			}
-		}
-
-		private RelayCommand _stampaRapidaCommand;
-		public ICommand stampaRapidaCommand
-		{
-			get
-			{
-				if (_stampaRapidaCommand == null)
-				{
-					_stampaRapidaCommand = new RelayCommand(param => stampaRapida( param ),
-						param => possoStampare, false);
-				}
-				return _stampaRapidaCommand;
 			}
 		}
 
@@ -548,49 +553,6 @@ namespace Digiphoto.Lumen.UI {
 																  param => possoMandareInModifica	);
 				}
 				return _mandareInModificaCommand;
-			}
-		}
-
-		private RelayCommand _applicareMetadatiCommand;
-		public ICommand applicareMetadatiCommand {
-			get {
-				if( _applicareMetadatiCommand == null ) {
-					_applicareMetadatiCommand = new RelayCommand( p => applicareMetadati(),
-					                                              p => possoApplicareMetadati, false );
-				}
-				return _applicareMetadatiCommand;
-			}
-		}
-		
-		private RelayCommand _eliminareMetadatiCommand;
-		public ICommand eliminareMetadatiCommand {
-			get {
-				if( _eliminareMetadatiCommand == null ) {
-					_eliminareMetadatiCommand = new RelayCommand( p => eliminareMetadati(),
-					                                              p => possoEliminareMetadati, false );
-				}
-				return _eliminareMetadatiCommand;
-			}
-		}
-
-		private RelayCommand _eliminareFotoCommand;
-		public ICommand eliminareFotoCommand {
-			get {
-				if( _eliminareFotoCommand == null ) {
-					_eliminareFotoCommand = new RelayCommand( param => eliminareFoto( param ),
-															 p => true, false );
-				}
-				return _eliminareFotoCommand;
-			}
-		}
-
-		private RelayCommand _viewFotoFullScreenCommand;
-		public ICommand viewFotoFullScreenCommand {
-			get {
-				if( _viewFotoFullScreenCommand == null ) {
-					_viewFotoFullScreenCommand = new RelayCommand( param => viewFotoFullScreen(), p => true, false );
-				}
-				return _viewFotoFullScreenCommand;
 			}
 		}
 
@@ -690,32 +652,6 @@ namespace Digiphoto.Lumen.UI {
 					}
 				}else{
 					venditoreSrv.aggiungiStampe( listaSelez, creaParamStampaFoto( stampanteAbbinata ) );
-				}
-				// Spengo tutto
-				deselezionareTutto();
-			}
-		}
-
-		private void stampaRapida(object objStampanteAbbinata)
-		{
-			StampanteAbbinata stampanteAbbinata = (StampanteAbbinata)objStampanteAbbinata;
-
-			IList<Fotografia> listaSelez = creaListaFotoSelezionate();
-
-			using (IVenditoreSrv venditoreSpampaRapida = LumenApplication.Instance.creaServizio<IVenditoreSrv>())
-			{
-				venditoreSpampaRapida.creaNuovoCarrello();
-				venditoreSpampaRapida.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_RAPIDA;
-				venditoreSpampaRapida.aggiungiStampe(listaSelez, creaParamStampaFoto(stampanteAbbinata));
-
-				if (venditoreSpampaRapida.vendereCarrello())
-				{
-					// quando tutto va bene non diciamo niente. Segnaliamo solo gli errori.
-					// dialogProvider.ShowMessage("Carrello venduto Correttamente", "Avviso");
-				}
-				else
-				{
-					dialogProvider.ShowError("Stampa diretta non riuscita.", "Errore", null);
 				}
 				// Spengo tutto
 				deselezionareTutto();
@@ -934,101 +870,6 @@ namespace Digiphoto.Lumen.UI {
 			msg.immediata = true;
 			msg.fotosDaModificare.Insert( 0, foto );
 			LumenApplication.Instance.bus.Publish( msg );
-		}
-
-		void applicareMetadati() {
-
-			// Ricavo l'Evento dall'apposito componente di selezione.
-			// Tutti gli altri attributi sono bindati direttamente sulla struttura MetadatiFoto.
-			metadati.evento = selettoreEventoMetadato.eventoSelezionato;
-
-			fotoExplorerSrv.modificaMetadatiFotografie( creaListaFotoSelezionate(), metadati );
-
-			// Svuoto ora i metadati per prossime elaborazioni
-			metadati = new MetadatiFoto();
-			selettoreEventoMetadato.eventoSelezionato = null;
-			OnPropertyChanged( "metadati" );
-		}
-
-		void eliminareMetadati() {
-
-			bool procediPure = false;
-			dialogProvider.ShowConfirmation( "Sei sicuro di voler eliminare i metadati\ndelle " + fotografieCW.SelectedItems.Count + " fotografie selezionate?", "Eliminazione metadati",
-								  ( confermato ) => {
-									  procediPure = confermato;
-								  } );
-
-			if( !procediPure )
-				return;
-
-			fotoExplorerSrv.modificaMetadatiFotografie( creaListaFotoSelezionate(), new MetadatiFoto() );
-
-			// Svuoto ora i metadati
-			metadati = new MetadatiFoto();
-			selettoreEventoMetadato.eventoSelezionato = null;
-			dialogProvider.ShowMessage( "Eliminati i metadati delle " + fotografieCW.SelectedItems.Count + " fotografie selezionate!", "Operazione eseguita" );
-		}
-
-		/// <summary>
-		/// Eliminazione definitiva delle foto selezionate.
-		/// </summary>
-		/// <param name="param">Se param è una stringa e contiene il valore "SEL" allora elimino le foto selezionate.</param>
-		void eliminareFoto( object param ) {
-
-			IEnumerable<Fotografia> itemsToDelete = null;
-
-			if( param.Equals( "SEL" ) ) {
-
-				if( fotografieCW.SelectedItems.Count <= 0 )
-					return;
-
-				itemsToDelete = fotografieCW.SelectedItems;
-
-			} else {
-				// TODO eliminare una sola foto, quella su cui ho premuto il tasto destro.
-				//      per ora non me ne preoccupo ed esco.
-				return;
-			}
-
-			bool procediPure = false;
-			dialogProvider.ShowConfirmation( "Sei sicuro di voler eliminare definitivamente\nle " + fotografieCW.SelectedItems.Count + " fotografie selezionate?", "Eliminazione definitiva foto",
-								  ( confermato ) => {
-									  procediPure = confermato;
-								  } );
-
-			if( !procediPure )
-				return;
-
-			// chiamo il servizio che mi elimina fisicamente i files immagini, e le Fotografie dal db.
-			int quanti = 0;
-			using( IEliminaFotoVecchieSrv srv = LumenApplication.Instance.creaServizio<IEliminaFotoVecchieSrv>() ) {
-				quanti = srv.elimina( itemsToDelete );
-			}
-
-			// Poi visto che erano a video, elimino le fotografie dalla Gallery.	
-			// Devo però duplicare la collezione perché non posso iterare e rimuovere contemporaneamente dalla stessa.
-			if( quanti > 0 ) {
-				Fotografia [] listaClone = itemsToDelete.ToArray();
-				foreach( Fotografia fDacanc in listaClone )
-					fotografieCW.Remove( fDacanc );
-				deselezionareTutto();
-			} else
-				dialogProvider.ShowError( "Impossibile eliminare le foto indicate", "ERRORE", null );
-		}
-
-		private void viewFotoFullScreen() {
-
-			if( fotografieCW.SelectedItems.Count <= 0 )
-				return;
-
-			// TODO devo gestire le modifiche
-			string nomeFile = PathUtil.nomeCompletoFoto( fotografieCW.SelectedItems.First() );
-
-			PanAndZoomViewModel panZommViewModel = new PanAndZoomViewModel( nomeFile );
-			PanAndZoomWindow w = new Digiphoto.Lumen.UI.PanAndZoom.PanAndZoomWindow();
-			w.DataContext = panZommViewModel;
-			w.ShowDialog();
-
 		}
 
 		#endregion Metodi

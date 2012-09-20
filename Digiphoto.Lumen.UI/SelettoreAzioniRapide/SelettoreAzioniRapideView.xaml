@@ -1,0 +1,21 @@
+﻿<lumM:UserControlBase  x:Class="Digiphoto.Lumen.UI.SelettoreAzioniRapideView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
+             xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
+             mc:Ignorable="d"
+			 x:Name="Pluto"
+             d:DesignHeight="300" d:DesignWidth="300">
+
+	<UserControl.Resources>
+		<ResourceDictionary Source="SelettoreAzioniRapideResources.xaml" />
+	</UserControl.Resources>
+
+	<!--istanzio ed associo il mio rispettivo ViewModel -->
+    <!--UserControl.DataContext>
+        <lum:SelettoreAzioniRapideViewModel />
+    </UserControl.DataContext-->
+
+</lumM:UserControlBase >

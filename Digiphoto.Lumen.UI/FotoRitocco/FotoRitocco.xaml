@@ -19,7 +19,12 @@
     </lumM:UserControlBase.DataContext>
     
     <UserControl.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="FotoRitoccoResources.xaml" />
+				<ResourceDictionary Source="/SelettoreAzioniRapide/SelettoreAzioniRapideResources.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
     </UserControl.Resources>
 
 
@@ -109,6 +114,7 @@
 
         </Expander>
 
+        <lum:SelettoreAzioniRapideView Visibility="Collapsed" DataContext="{Binding Path=selettoreAzioniRapideViewModel}"/>
        
         <!-- nastro basso con tutte le foto che sono in attesa di modifica -->
         <ListBox x:Name="listBoxImmaginiDaModificare"  DockPanel.Dock="Bottom"
@@ -120,6 +126,7 @@
                  IsSynchronizedWithCurrentItem="True"
                  AllowDrop="True"
                  IsEnabled="{Binding Path=listBoxImmaginiDaModificareEnabled, Converter={StaticResource boolInverterConverter}}"
+				 ContextMenu="{DynamicResource azioniRapideMenu}"
                  ScrollViewer.HorizontalScrollBarVisibility="Auto" Drop="listBoxImmaginiDaModificare_Drop">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
