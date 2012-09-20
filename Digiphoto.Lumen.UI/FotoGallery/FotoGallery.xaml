@@ -10,6 +10,7 @@
              xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
              xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo"         
              mc:Ignorable="d" 
+			 x:Name="this"
              d:DesignHeight="600" d:DesignWidth="800" FontStretch="Condensed">
 
     <!-- Istanzio il controllore -->
@@ -22,6 +23,7 @@
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="/Resources/GlobalResourceDictionary.xaml" />
 				<ResourceDictionary Source="FotoGalleryResources.xaml" />
+				<ResourceDictionary Source="/SelettoreAzioniRapide/SelettoreAzioniRapideResources.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</UserControl.Resources>
@@ -57,32 +59,7 @@
 
         <Expander DockPanel.Dock="Top" Header="Metadati da imporre" IsExpanded="False" ExpandDirection="Down">
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                
-                <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0">
-                    <Label>Didascalia</Label>
-					<TextBox Text="{Binding Path=metadati.didascalia}" CharacterCasing="Upper" MinWidth="80" />
-                </StackPanel>
-
-                <GroupBox Header="Fasi del giorno" Grid.Row="0" Grid.Column="1">
-                    <ListBox ItemsSource="{Binding fasiDelGiorno}" 
-                         SelectedItem="{Binding Path=metadati.faseDelGiorno}" />
-                </GroupBox>
-
-                <lum:SelettoreEvento x:Name="selettoreEventoMetadato" Grid.Column="2" MaxHeight="200"
-                                     DataContext="{Binding selettoreEventoMetadato}" possoCreare="True"/>
-
-                <StackPanel Grid.Column="3" Orientation="Vertical">
-                    <Button Content="Elimina metadati" ToolTip="Elimina tutti i metadati dalle fotografie selezioanate" Command="{Binding eliminareMetadatiCommand}" Height="20" FontStretch="ExtraCondensed" />
-                    <Separator />
-                    <Button Content="Applica Metadati" ToolTip="Salva metadati fotografie selezionate" Command="{Binding applicareMetadatiCommand}" Height="40" />
-                </StackPanel>
-                
+				<lum:SelettoreMetadatiView x:Name="selettoreMetadati" MyItemsSource="{Binding ElementName=this, Path=DataContext.fotografieCW}" />
             </Grid>
         </Expander>
         
@@ -198,7 +175,7 @@
         </Expander>
 
 
-        
+		<lum:SelettoreAzioniRapideView Visibility="Collapsed" DataContext="{Binding Path=selettoreAzioniRapideViewModel}"/>
         
         <!-- Questa è la lista delle immagini -->
         <ListBox x:Name="LsImageGallery"  
@@ -208,6 +185,7 @@
                  ItemsSource="{Binding Path=fotografieCW}" 
                  ItemsPanel="{DynamicResource ImageGalleryItemsPanelTemplate}" 
                  ItemTemplate="{DynamicResource fotografiaDataTemplate}"
+				 ContextMenu="{DynamicResource azioniRapideMenu}"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled" PreviewMouseRightButtonDown="LsImageGallery_PreviewMouseRightButtonDown">
 
                 <ListBox.ItemContainerStyle>
@@ -215,21 +193,6 @@
                     <EventSetter Event="MouseDoubleClick" Handler="listBoxItemImageGallery_MouseDoubleClick" />
                     </Style>
                 </ListBox.ItemContainerStyle>
-			<ListBox.ContextMenu>
-				<ContextMenu >
-					<MenuItem Header="Stampa"
-							ItemsSource="{Binding stampantiAbbinate}" 
-							ItemTemplate="{StaticResource stampaRapidaMenu}" >
-					</MenuItem>
-					<MenuItem Header="Vedi a tutto schermo"
-                              Command="{Binding Path=viewFotoFullScreenCommand}" />
-					<MenuItem Header="Elimina" 
-                              Command="{Binding Path=eliminareFotoCommand}"
-                              CommandParameter="SEL" />
-                    
-				</ContextMenu>
-			</ListBox.ContextMenu>
-
 		</ListBox>
 
     </DockPanel>

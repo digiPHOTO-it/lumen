@@ -13,6 +13,9 @@ using log4net;
 using Digiphoto.Lumen.Core.Database;
 using System.Transactions;
 using Digiphoto.Lumen.Database;
+using System.Data.Objects;
+using System.Data;
+using Digiphoto.Lumen.src.Database;
 
 namespace Digiphoto.Lumen.Servizi.Explorer {
 
@@ -118,23 +121,49 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 		}
 
 
-		public void  modificaMetadatiFotografie( IEnumerable<Fotografia> fotografie, MetadatiFoto metadati ) {
-			
+		public bool  modificaMetadatiFotografie( IEnumerable<Fotografia> fotografie, MetadatiFoto metadati ) {
+			bool esito = false;
 			using (TransactionScope transaction = new TransactionScope()) {
+				try
+				{
+					// riattacco l'entità che non si sa mai
+					if (metadati.evento != null)
+					{
+						//UnitOfWorkScope.CurrentObjectContext.Eventi.Attach(metadati.evento);
+						Evento e = metadati.evento;
+						OrmUtil.forseAttacca<Evento>("Eventi", ref e);
+					}
 
-				// riattacco l'entità che non si sa mai
-				if( metadati.evento != null )
-					UnitOfWorkScope.CurrentObjectContext.Eventi.Attach( metadati.evento );
+					foreach (Fotografia fotografia in fotografie)
+					{
+						StringBuilder msg = new StringBuilder();
+						msg.AppendFormat("Modificati metadati: {0} da: didascalia:{1} giornata:{2} evento:{3} in didascalia:{4} giornata:{5} evento:{6}",
+							fotografia.numero + " " + fotografia.nomeFile,
+							fotografia.didascalia,
+							fotografia.faseDelGiornoString,
+							fotografia.evento,
+							metadati.didascalia,
+							metadati.faseDelGiorno,
+							metadati.evento
+							);
+						modificaMetadatiFotografie(fotografia, metadati);
 
-				foreach( Fotografia fotografia in fotografie ) {
-					modificaMetadatiFotografie( fotografia, metadati );
+						_giornale.Info(msg);
+					}
+
+					UnitOfWorkScope.CurrentObjectContext.SaveChanges();
+					_giornale.Debug("Modifica metadati salvataggio eseguito. Ora committo la transazione");
+
+					transaction.Complete();
+					_giornale.Info("Commit metadati andato a buon fine");
+
+					esito = true;
+				} catch( Exception eee ) {
+					esito = false;
+					_giornale.Error("Impossibile salvare il carrello", eee);
 				}
-
-				UnitOfWorkScope.CurrentObjectContext.SaveChanges();
-				transaction.Complete();
-				_giornale.Debug( "effettuata modifica dei metadati sulle foto" );
 			}
-
+			return esito;
 		}
 
 		private void modificaMetadatiFotografie( Fotografia foto, MetadatiFoto metadati ) {
@@ -150,7 +179,10 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 		private void modificaMetadatiFotografie( Fotografia foto, MetadatiFoto metadati, bool forzaNullo ) {
 
 			// L'entità è sicuramente staccata
-			UnitOfWorkScope.CurrentObjectContext.Fotografie.Attach( foto );
+			//UnitOfWorkScope.CurrentObjectContext.Fotografie.Attach( foto );
+
+			Fotografia f = foto;
+			OrmUtil.forseAttacca<Fotografia>("Fotografie", ref f);
 
 			//
 			if( !String.IsNullOrWhiteSpace( metadati.didascalia ) )
@@ -173,6 +205,8 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 				if( forzaNullo )
 					foto.evento = null;
 			}
+
+			UnitOfWorkScope.CurrentObjectContext.ObjectContext.ObjectStateManager.ChangeObjectState(f, EntityState.Modified);
 		}
 
 	}

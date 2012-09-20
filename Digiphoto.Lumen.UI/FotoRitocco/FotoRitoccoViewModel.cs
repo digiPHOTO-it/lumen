@@ -52,6 +52,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				IObservable<Messaggio> observable = LumenApplication.Instance.bus.Observe<Messaggio>();
 				observable.Subscribe( this );
 
+				selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel();
 
 				fotografieDaModificare = new ObservableCollection<Fotografia>();
 				fotografieDaModificareCW = new MultiSelectCollectionView<Fotografia>( fotografieDaModificare );
@@ -90,9 +91,22 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		public MultiSelectCollectionView<Fotografia> fotografieDaModificareCW {
-			get;
-			set;
+		private MultiSelectCollectionView<Fotografia> _fotografieDaModificareCW;
+		public MultiSelectCollectionView<Fotografia> fotografieDaModificareCW
+		{
+			get
+			{
+				return _fotografieDaModificareCW;
+			}
+			set
+			{
+				if (_fotografieDaModificareCW != value)
+				{
+					_fotografieDaModificareCW = value;
+					selettoreAzioniRapideViewModel.fotografieCW = value;
+					OnPropertyChanged("fotografieDaModificareCW");
+				}
+			}
 		}
 
 		public IFotoRitoccoSrv fotoRitoccoSrv {
@@ -375,6 +389,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			get {
 				return isGestioneMaschereAttiva && mascheraAttiva != null;
 			}
+		}
+
+		public SelettoreAzioniRapideViewModel selettoreAzioniRapideViewModel
+		{
+			get;
+			set;
 		}
 
 		#endregion Proprietà

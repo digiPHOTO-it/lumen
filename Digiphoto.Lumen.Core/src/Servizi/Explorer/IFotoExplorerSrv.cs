@@ -27,7 +27,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 		// Forse andrebbe messo nel servizio FotografiaEntityRepository, che però attualmente non esiste. 
 		// Quindi lo appoggio qui perché ora mi serve qui.
 		// Eventualmente servire anche nel fotoritocco, lo sposterò più avanti.
-		void modificaMetadatiFotografie( IEnumerable<Fotografia> fotografie, MetadatiFoto metadati );
+		bool modificaMetadatiFotografie( IEnumerable<Fotografia> fotografie, MetadatiFoto metadati );
 	}
 
 	public class MetadatiFoto {
