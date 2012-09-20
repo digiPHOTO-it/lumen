@@ -200,6 +200,7 @@
     <Compile Include="Converters\BoolBackgroundConverter.cs" />
     <Compile Include="Converters\CompNumFotoConverter.cs" />
     <Compile Include="Converters\BoolWindowStateConverter.cs" />
+    <Compile Include="Converters\FasiDelGiornoConverter.cs" />
     <Compile Include="Converters\SumConverter.cs" />
     <Compile Include="Converters\PercentualeConverterSlideY.cs" />
     <Compile Include="Converters\PercentualeConverterSlideX.cs" />
@@ -212,6 +213,9 @@
     <Compile Include="Adorners\PuncturedRect.cs" />
     <Compile Include="Dialogs\RangeGiorniDialog.xaml.cs">
       <DependentUpon>RangeGiorniDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Metadati\SelettoreMetadatiDialog.xaml.cs">
+      <DependentUpon>SelettoreMetadatiDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\StampaProviniDialog.xaml.cs">
       <DependentUpon>StampaProviniDialog.xaml</DependentUpon>
@@ -261,6 +265,14 @@
     <Compile Include="Reports\ReportHostWindow.xaml.cs">
       <DependentUpon>ReportHostWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SelettoreAzioniRapide\SelettoreAzioniRapideView.xaml.cs">
+      <DependentUpon>SelettoreAzioniRapideView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SelettoreAzioniRapide\SelettoreAzioniRapideViewModel.cs" />
+    <Compile Include="SelettoreMetadati\SelettoreMetadatiView.xaml.cs">
+      <DependentUpon>SelettoreMetadatiView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SelettoreMetadati\SelettoreMetadatiViewModel.cs" />
     <Compile Include="src\Util\AiutanteUI.cs" />
     <Compile Include="Pubblico\GestioneGeometria\WpfScreen.cs" />
     <Compile Include="TrayIcon\ShowTrayIcon.xaml.cs">
@@ -279,6 +291,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\RangeGiorniDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\Metadati\SelettoreMetadatiDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -377,6 +393,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="SelettoreAzioniRapide\SelettoreAzioniRapideResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SelettoreAzioniRapide\SelettoreAzioniRapideView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SelettoreFormatoCartaAbbinato\SelettoreFormatoCartaAbbinato.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -384,6 +408,14 @@
     <Page Include="SelettoreFormatoCartaAbbinato\SelettoreFormatoCartaAbbinatoResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SelettoreMetadati\SelettoreMetadatiResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SelettoreMetadati\SelettoreMetadatiView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SelettoreStampantiInstallate\SelettoreStampantiInstallateDictionary.xaml">
       <SubType>Designer</SubType>
