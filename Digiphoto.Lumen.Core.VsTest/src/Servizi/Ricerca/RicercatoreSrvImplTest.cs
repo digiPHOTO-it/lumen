@@ -73,6 +73,58 @@ namespace Digiphoto.Lumen.Core.VsTest {
 			}
 		}
 
+
+		[TestMethod]
+		public void ricercaPaginataTest() {
+
+			ParamCercaFoto param = new ParamCercaFoto();
+			param.giornataIniz = new DateTime( 2000, 1, 1 );
+			param.giornataFine = new DateTime( 2299, 12, 31 );
+
+			using( new UnitOfWorkScope() ) {
+
+				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+				IList<Fotografia> ris = _impl.cerca( param );
+
+				int totRecord = ris.Count;
+				const int max = 17;  // Ampiezza della pagina uso un numero primo
+
+				// Ora faccio dei cicli di paginazione da 5 alla volta
+				ParamCercaFoto param2 = param.ShallowCopy();
+				param2.paginazione = new Lumen.Util.Paginazione {
+					take = max
+				};
+
+				for( int pag = 1; pag < 29; pag++ ) {
+					param2.paginazione.skip = (pag - 1) * max;
+					IList<Fotografia> ris2 = _impl.cerca( param2 );
+
+					Assert.IsTrue( ris2.Count <= max );
+
+					// Ora controllo che le liste corrispondano.
+					for( int ii = 0; ii < ris2.Count; ii++ ) {
+						Fotografia fAttesa = ris.ElementAt( ((pag - 1) * max) + ii );
+						Fotografia fTrovata = ris2.ElementAt( ii );
+						Assert.AreEqual( fAttesa, fTrovata );
+					}
+				}
+				// Ora faccio un giro alla rovescio
+				for( int pag = 31; pag > 0; pag-- ) {
+					param2.paginazione.skip = (pag - 1) * param2.paginazione.take;
+					IList<Fotografia> ris2 = _impl.cerca( param2 );
+
+					// Ora controllo che le liste corrispondano.
+					for( int ii = 0; ii < ris2.Count; ii++ ) {
+						Fotografia fAttesa = ris.ElementAt( ((pag - 1) * max) + ii );
+						Fotografia fTrovata = ris2.ElementAt( ii );
+						Assert.AreEqual( fAttesa, fTrovata );
+					}
+				}
+			}
+		}
+
+
+
 		[TestCleanup]
 		public void Cleanup() {
 			_impl.Dispose();

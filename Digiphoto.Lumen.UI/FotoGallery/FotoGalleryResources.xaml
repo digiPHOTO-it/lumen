@@ -5,8 +5,10 @@
   
 
 	<lumC:ListVisibilityConverter x:Key="listVisibilityConverter" />
+	<BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
 
-    <!-- Stile della listbox che itera le immagini -->
+
+	<!-- Stile della listbox che itera le immagini -->
     <Style x:Key="LsImageGalleryStyle" TargetType="ListBox">
         <Setter Property="Control.Background">
             <Setter.Value>
