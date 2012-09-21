@@ -934,8 +934,6 @@ namespace Digiphoto.Lumen.UI {
 			LumenApplication.Instance.bus.Publish( msg );
 		}
 
-		}
-
 		/// <summary>
 		/// Vado avanti o indietro di una (o più) pagine.
 		/// </summary>
@@ -982,10 +980,12 @@ namespace Digiphoto.Lumen.UI {
 
 		public bool stoPaginando {
 			get {
-				return isGestitaPaginazione 
+				return isGestitaPaginazione
 					&& fotoExplorerSrv != null && fotoExplorerSrv.fotografie != null
 					&& fotoExplorerSrv.fotografie.Count >= Configurazione.UserConfigLumen.paginazioneRisultatiGallery;
 			}
+		}
+
 		#endregion Metodi
 		
 		#region MemBus
