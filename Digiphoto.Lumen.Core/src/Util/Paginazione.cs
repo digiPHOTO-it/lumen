@@ -16,6 +16,12 @@ namespace Digiphoto.Lumen.Util {
 			set;
 		}
 
+		public bool isEmpty {
+			get {
+				return skip == 0 && take == 0;
+			}
+		}
+
 		public override string ToString() {
 			StringBuilder sb = new StringBuilder( "--Paginazione--" );
 			sb.Append( "\r\nSkip: " + skip );
