@@ -1127,7 +1127,7 @@ namespace Digiphoto.Lumen.UI {
 			if( posso && delta < 0 ) {
 
 				// Voglio spostarmi indietro. Controllo di avere sufficienti pagine precedenti.
-				if( delta == -99 )  // Torno alla prima pagina
+				if( delta == -999 )  // Torno alla prima pagina
 					posso = (paginaAttualeRicerca > 1);
 				else
 					posso = (paginaAttualeRicerca + delta ) > 0;
