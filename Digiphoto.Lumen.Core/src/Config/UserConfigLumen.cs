@@ -247,6 +247,15 @@ namespace Digiphoto.Lumen.Config
 			set;
 		}
 
+		/// <summary>
+		/// Questo valore indica la dimensione della pagina dei risultati della ricerca
+		/// nel FotoExplorer (la gallery)
+		/// </summary>
+		public int paginazioneRisultatiGallery {
+			get;
+			set;
+		}
+
 		# region SlideShowParam
 
 		public short deviceEnum

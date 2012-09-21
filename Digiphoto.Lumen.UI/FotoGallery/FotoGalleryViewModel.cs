@@ -106,7 +106,7 @@ namespace Digiphoto.Lumen.UI {
 
 		public ParamCercaFoto paramCercaFoto {
 			get;
-			set;
+			private set;
 		}
 
 		IFotoExplorerSrv fotoExplorerSrv {
@@ -403,6 +403,33 @@ namespace Digiphoto.Lumen.UI {
 			private set;
 		}
 
+		public bool isGestitaPaginazione {
+			get {
+				return Configurazione.UserConfigLumen.paginazioneRisultatiGallery > 0;
+			}
+		}
+
+		public int totFotoPaginaAttuale {
+			get {
+				return paginaAttualeRicerca * Configurazione.UserConfigLumen.paginazioneRisultatiGallery;
+			}
+		}
+
+		short _paginaAttualeRicerca;
+		public short paginaAttualeRicerca {
+			get {
+				return _paginaAttualeRicerca;
+			}
+			private set {
+				if( _paginaAttualeRicerca != value ) {
+					_paginaAttualeRicerca = value;
+					OnPropertyChanged( "paginaAttualeRicerca" );
+					OnPropertyChanged( "totFotoPaginaAttuale" );
+					OnPropertyChanged( "stoPaginando" );
+				}
+			}
+		}
+
 		#endregion Proprietà
 
 
@@ -483,7 +510,7 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand eseguireRicercaCommand {
 			get {
 				if( _eseguireRicercaCommand == null ) {
-					_eseguireRicercaCommand = new RelayCommand( param => eseguireRicerca() );
+					_eseguireRicercaCommand = new RelayCommand( numPag => eseguireRicerca() );
 				}
 				return _eseguireRicercaCommand;
 			}
@@ -591,6 +618,18 @@ namespace Digiphoto.Lumen.UI {
 					_viewFotoFullScreenCommand = new RelayCommand( param => viewFotoFullScreen(), p => true, false );
 				}
 				return _viewFotoFullScreenCommand;
+			}
+		}
+
+		private RelayCommand _commandSpostarePaginazione;
+		public ICommand commandSpostarePaginazione {
+			get {
+				if( _commandSpostarePaginazione == null ) {
+					_commandSpostarePaginazione = new RelayCommand( delta => spostarePaginazione( Convert.ToInt16(delta) ),
+																	delta => possoSpostarePaginazione( Convert.ToInt16( delta ) ),
+																    false );
+				}
+				return _commandSpostarePaginazione;
 			}
 		}
 
@@ -821,6 +860,9 @@ namespace Digiphoto.Lumen.UI {
 			// Se non ho trovato nulla, allora avviso l'utente
 			if( fotografieCW.Count <= 0 )
 				dialogProvider.ShowMessage( "Nessuna fotografia trovata con questi filtri di ricerca", "AVVISO" );
+
+			OnPropertyChanged( "totFotoPaginaAttuale" );
+			OnPropertyChanged( "stoPaginando" );
 		}
 
 		private void bkgIdrata_DoWork( object sender, DoWorkEventArgs e ) {
@@ -844,6 +886,10 @@ namespace Digiphoto.Lumen.UI {
 			LumenApplication.Instance.bus.Publish( new RicercaModificataMessaggio( this ) );
 		}
 
+		/// <summary>
+		/// Sistemo i parametri e gestisco la paginazione
+		/// </summary>
+		/// <param name="numPagina">il numero di pagina</param>
 		private void completaParametriRicerca() {
 
 			paramCercaFoto.idratareImmagini = false;
@@ -859,6 +905,11 @@ namespace Digiphoto.Lumen.UI {
 				paramCercaFoto.eventi = new Evento [] { selettoreEventoFiltro.eventoSelezionato };
 			else
 				paramCercaFoto.eventi = null;
+
+			// Gestisco la paginazione
+			if( paginaAttualeRicerca > 0 && paramCercaFoto.paginazione != null ) {
+				paramCercaFoto.paginazione.skip = ((paginaAttualeRicerca - 1) * Configurazione.UserConfigLumen.paginazioneRisultatiGallery);
+			}
 
 		}
 
@@ -910,6 +961,16 @@ namespace Digiphoto.Lumen.UI {
 
 			selettoreEventoFiltro.eventoSelezionato = null;
 			selettoreFotografoViewModel.fotografoSelezionato = null;
+
+
+			// Se gestita la paginazione, istanzio apposita classe
+			if( Configurazione.UserConfigLumen.paginazioneRisultatiGallery > 0 ) {
+				paramCercaFoto.paginazione = new Paginazione {
+					take = Configurazione.UserConfigLumen.paginazioneRisultatiGallery
+				};
+			}
+
+			paginaAttualeRicerca = 1;
 		}
 
 		/// <summary>
@@ -1029,6 +1090,58 @@ namespace Digiphoto.Lumen.UI {
 			w.DataContext = panZommViewModel;
 			w.ShowDialog();
 
+		}
+
+		/// <summary>
+		/// Vado avanti o indietro di una (o più) pagine.
+		/// </summary>
+		/// <param name="delta"><value>+1 = una pagina avanti; -1 = una pagina indietro</value>
+		/// </param>
+		void spostarePaginazione( short deltaPag ) {
+
+			if( deltaPag == -999 )
+				paginaAttualeRicerca = 1;
+			else
+				paginaAttualeRicerca += deltaPag;
+			
+			// Non posso sformare il minimo
+			if( paginaAttualeRicerca < 1 )
+				paginaAttualeRicerca = 1;
+
+			eseguireRicerca();
+		}
+
+		bool possoSpostarePaginazione( short delta ) {
+
+			if( IsInDesignMode )
+				return true;
+
+			// Se gestisco la paginazione ed ho un risultato caricato.
+			bool posso = stoPaginando;
+
+			if( posso && delta > 0 ) {
+				// Voglio spostarmi avanti. Controllo di NON essere sull'ultimo risultato.
+				posso = (fotoExplorerSrv.fotografie.Count >= Configurazione.UserConfigLumen.paginazioneRisultatiGallery);
+			}
+
+			if( posso && delta < 0 ) {
+
+				// Voglio spostarmi indietro. Controllo di avere sufficienti pagine precedenti.
+				if( delta == -99 )  // Torno alla prima pagina
+					posso = (paginaAttualeRicerca > 1);
+				else
+					posso = (paginaAttualeRicerca + delta ) > 0;
+			}
+
+			return posso;
+		}
+
+		public bool stoPaginando {
+			get {
+				return isGestitaPaginazione 
+					&& fotoExplorerSrv != null && fotoExplorerSrv.fotografie != null
+					&& fotoExplorerSrv.fotografie.Count >= Configurazione.UserConfigLumen.paginazioneRisultatiGallery;
+			}
 		}
 
 		#endregion Metodi

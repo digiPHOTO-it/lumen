@@ -10,7 +10,7 @@
              xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
              xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo"         
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="800" FontStretch="Condensed">
+             d:DesignHeight="900" d:DesignWidth="1800" FontStretch="Condensed">
 
     <!-- Istanzio il controllore -->
     <lumM:UserControlBase.DataContext>
@@ -123,14 +123,28 @@
 
         <StatusBar DockPanel.Dock="Bottom" >
             <StatusBarItem>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="Selez: " />
-                    <Label Content="{Binding Path=fotografieCW.SelectedItems.Count}" ToolTip="Foto selezionate"/>
-                    <Label Content="/" />
-                    <Label Content="{Binding Path=fotografieCW.Count}" ToolTip="Tutte le foto visualizzate" />
-                </StackPanel>
+				<TextBlock Width="120">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="Selez: {0}/{1}">
+                                    <Binding Path="fotografieCW.SelectedItems.Count" />
+									<Binding Path="fotografieCW.Count" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+				</TextBlock>
             </StatusBarItem>
-            <StatusBarItem>
+
+			<StatusBarItem>
+				<TextBlock Width="100" Visibility="{Binding stoPaginando,Converter={StaticResource booleanToVisibilityConverter}}">
+	                <TextBlock.Text>
+		                <MultiBinding StringFormat="Pagina {0} [{1}]">
+							<Binding Path="paginaAttualeRicerca" />
+							<Binding Path="totFotoPaginaAttuale" />
+						</MultiBinding>
+					</TextBlock.Text>
+				</TextBlock>
+			</StatusBarItem>
+			
+			<StatusBarItem>
                 <Image Source="{Binding statusSlideShowImage}" Width="16" Height="16" ToolTip="Stato dello Slide Show" />
             </StatusBarItem>
         </StatusBar>
@@ -190,7 +204,11 @@
                 
                 <Button Name="azzeraParamRicercaButton" Content="Azzera param" ToolTip="Azzera i parametri di ricerca" Command="{Binding azzeraParamRicercaCommand}" />
                 <Button Name="eseguireRicercaButton" Content="Esegui Ricerca" Command="{Binding eseguireRicercaCommand}" />
-                <Button Name="caricareSlideShowAuto" Content="Load SS Auto" Command="{Binding caricareSlideShowCommand}" CommandParameter="Auto" />
+				<Button Content="|&lt;- Pag" ToolTip="Risultati prima pagina" Command="{Binding commandSpostarePaginazione}" CommandParameter="-999" />
+				<Button Content="&lt;- Pag" ToolTip="Risultati pagina precedente" Command="{Binding commandSpostarePaginazione}" CommandParameter="-1" />
+				<Button Content="Pag +&gt;" ToolTip="Risultati prossima pagina" Command="{Binding commandSpostarePaginazione}" CommandParameter="1" />
+				<Separator />
+				<Button Name="caricareSlideShowAuto" Content="Load SS Auto" Command="{Binding caricareSlideShowCommand}" CommandParameter="Auto" />
                 
             </StackPanel>
             
