@@ -672,9 +672,8 @@ namespace Digiphoto.Lumen.UI
 
 			if (fotografieCW.SelectedItems.Count <= 0)
 				return;
-
-			// TODO devo gestire le modifiche
-			string nomeFile = PathUtil.nomeCompletoFoto(fotografieCW.SelectedItems.First());
+			
+			string nomeFile = AiutanteFoto.idrataImmagineDaStampare( fotografieCW.SelectedItems.First() );
 
 			PanAndZoomViewModel panZommViewModel = new PanAndZoomViewModel(nomeFile);
 			PanAndZoomWindow w = new Digiphoto.Lumen.UI.PanAndZoom.PanAndZoomWindow();

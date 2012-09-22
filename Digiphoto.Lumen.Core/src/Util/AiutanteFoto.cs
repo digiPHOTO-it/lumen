@@ -107,7 +107,8 @@ namespace Digiphoto.Lumen.Util {
 		/// 
 		/// </summary>
 		/// <param name="foto"></param>
-		public static void idrataImmagineDaStampare( Fotografia foto ) {
+		/// <returns>il nome del file interessato su disco</returns>
+		public static string idrataImmagineDaStampare( Fotografia foto ) {
 
 			// Ho delle correzioni che non sono ancora state applicate. Lo faccio adesso.
 			if( foto.imgRisultante == null && foto.correzioniXml != null ) {
@@ -119,6 +120,8 @@ namespace Digiphoto.Lumen.Util {
 			IdrataTarget quale = foto.imgRisultante != null ? IdrataTarget.Risultante : IdrataTarget.Originale;
 
 			AiutanteFoto.idrataImmaginiFoto( foto, quale );
+
+			return PathUtil.nomeCompletoFile( foto, quale );
 		}
 
 		/// <summary>

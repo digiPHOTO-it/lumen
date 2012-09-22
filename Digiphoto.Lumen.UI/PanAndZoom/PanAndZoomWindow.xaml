@@ -10,7 +10,7 @@
     WindowState="Maximized"
     KeyUp="Window_KeyUp">
 
-	<local:PanAndZoomViewer x:Name="zoomViewer" MinimumZoom="0.4" MaximumZoom="50">
+	<local:PanAndZoomViewer x:Name="zoomViewer" MinimumZoom="0.002" MaximumZoom="5000">
 		<Canvas x:Name="LayoutRoot">
 			<Image Source="{Binding imageSource}" />
 		</Canvas>
