@@ -21,8 +21,9 @@
     <UserControl.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="FotoRitoccoResources.xaml" />
+				<ResourceDictionary Source="FotoRitoccoResources.xaml" />
 				<ResourceDictionary Source="/SelettoreAzioniRapide/SelettoreAzioniRapideResources.xaml" />
+				<ResourceDictionary Source="/Resources/GlobalResourceDictionary.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
     </UserControl.Resources>
@@ -128,13 +129,22 @@
                  IsEnabled="{Binding Path=listBoxImmaginiDaModificareEnabled, Converter={StaticResource boolInverterConverter}}"
 				 ContextMenu="{DynamicResource azioniRapideMenu}"
                  ScrollViewer.HorizontalScrollBarVisibility="Auto" Drop="listBoxImmaginiDaModificare_Drop">
+			
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
-                    <Setter Property="Background" Value="Red" />
-                    <Setter Property="BorderBrush" Value="Green" />
-                    <Setter Property="BorderThickness" Value="3" />
+
                     <!-- Questo evento serve per fare il drag della foto sulla cornice -->
                     <EventSetter Event="PreviewMouseDown" Handler="listBoxImmaginiDaModificare_PreviewMouseDown"/>
+
+					<Style.Resources>
+						<!--SelectedItem with focus -->
+						<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Yellow" />
+
+						<!--SelectedItem without focus-->
+						<!--  questo sembra non sortire effetti.
+						<SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Yellow" Opacity=".6"/>
+						-->
+					</Style.Resources>	
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>
