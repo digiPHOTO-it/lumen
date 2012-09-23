@@ -119,7 +119,7 @@ namespace Digiphoto.Lumen.Util {
 
 			IdrataTarget quale = foto.imgRisultante != null ? IdrataTarget.Risultante : IdrataTarget.Originale;
 
-			AiutanteFoto.idrataImmaginiFoto( foto, quale );
+			AiutanteFoto.idrataImmaginiFoto( foto, quale, true );
 
 			return PathUtil.nomeCompletoFile( foto, quale );
 		}

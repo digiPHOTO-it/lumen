@@ -1245,8 +1245,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 						foreach( Fotografia f in fotoDaModificareMsg.fotosDaModificare )
 							fotografieDaModificareCW.SelectedItems.Add( f );
 						fotografieDaModificareCW.Refresh();
-
-// DACANC:						forzaRefreshStato();
 					}
 				}
 				
