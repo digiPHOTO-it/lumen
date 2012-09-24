@@ -982,7 +982,7 @@ namespace Digiphoto.Lumen.UI {
 			get {
 				return isGestitaPaginazione
 					&& fotoExplorerSrv != null && fotoExplorerSrv.fotografie != null
-					&& fotoExplorerSrv.fotografie.Count >= Configurazione.UserConfigLumen.paginazioneRisultatiGallery;
+					&& (paginaAttualeRicerca > 1 || (fotoExplorerSrv.fotografie.Count >= Configurazione.UserConfigLumen.paginazioneRisultatiGallery) );
 			}
 		}
 

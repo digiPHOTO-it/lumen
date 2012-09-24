@@ -92,8 +92,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 
 				foreach (Fotografia fot in lavoroDiStampaProvini.fotografie)
 				{
-					IdrataTarget quale = fot.imgRisultante != null ? IdrataTarget.Risultante : IdrataTarget.Originale;
-					AiutanteFoto.idrataImmaginiFoto(fot, quale, true);
+					AiutanteFoto.idrataImmagineDaStampare( fot );
 				}
 
 				//Rinstanzio il stampatore che potrebbe essere di un tipo differente dal mio
