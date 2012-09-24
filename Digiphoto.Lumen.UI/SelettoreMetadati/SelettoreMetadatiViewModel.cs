@@ -9,6 +9,7 @@ using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
 using System.Windows.Input;
 using System.Windows;
+using Digiphoto.Lumen.Servizi.Explorer;
 
 namespace Digiphoto.Lumen.UI
 {
@@ -205,6 +206,14 @@ namespace Digiphoto.Lumen.UI
 			{
 				dialogProvider.ShowMessage("Metadati Modificati correttamente","AVVISO");
 			}
+			else
+			{
+				dialogProvider.ShowError("Errore modifica metadati", "ERRORE",null);
+			}
+
+			MetadatiMsg msg = new MetadatiMsg(this);
+			msg.fase = Fase.Completata;
+			LumenApplication.Instance.bus.Publish(msg);
 
 			// Svuoto ora i metadati per prossime elaborazioni
 			metadati = new MetadatiFoto();
@@ -233,6 +242,9 @@ namespace Digiphoto.Lumen.UI
 			metadati = new MetadatiFoto();
 			selettoreEventoMetadato.eventoSelezionato = null;
 			//dialogProvider.ShowMessage("Eliminati i metadati delle " + selettoreMetadatiView.FotografiaCWP.SelectedItems.Count + " fotografie selezionate!", "Operazione eseguita");
+			MetadatiMsg msg = new MetadatiMsg(this);
+			msg.fase = Fase.Completata;
+			LumenApplication.Instance.bus.Publish(msg);
 		}
 
 		private void controllaMetadati()
@@ -251,6 +263,8 @@ namespace Digiphoto.Lumen.UI
 				listGiornata.Add(fot.faseDelGiornoString);
 				if (fot.evento!=null)
 				{
+					//Serve a selezzionare l'evento dal menu rapido
+					selettoreEventoMetadato.eventoSelezionato = fot.evento;
 					listEvento.Add(fot.evento.descrizione);
 				}
 			}

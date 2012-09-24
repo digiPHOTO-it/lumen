@@ -14,13 +14,14 @@ using Digiphoto.Lumen.UI.Mvvm;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
 using Digiphoto.Lumen.Servizi.Explorer;
+using Digiphoto.Lumen.Applicazione;
 
 namespace Digiphoto.Lumen.UI.Dialogs
 {
 	/// <summary>
 	/// Interaction logic for SelettoreMetadatiDialog.xaml
 	/// </summary>
-	public partial class SelettoreMetadatiDialog : Window
+	public partial class SelettoreMetadatiDialog : Window, IObserver<MetadatiMsg>
 	{
 		public SelettoreMetadatiDialog(MultiSelectCollectionView<Fotografia> fotografieCW)
 		{
@@ -29,6 +30,9 @@ namespace Digiphoto.Lumen.UI.Dialogs
 			this.fotografieCW = fotografieCW;
 
 			this.DataContext = this;
+
+			IObservable<MetadatiMsg> observableMetadati = LumenApplication.Instance.bus.Observe<MetadatiMsg>();
+			observableMetadati.Subscribe(this);
 		}
 
 		#region Proprieta
@@ -37,6 +41,30 @@ namespace Digiphoto.Lumen.UI.Dialogs
 		{
 			get;
 			set;
+		}
+
+		#endregion
+		
+		#region MemBus
+
+		public void OnCompleted()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void OnError(Exception error)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void OnNext(MetadatiMsg msg)
+		{
+			if (msg.sender is SelettoreMetadatiViewModel)
+			{
+				msg.fase = Digiphoto.Lumen.Servizi.Explorer.Fase.Completata;
+				this.Hide();
+			}
+
 		}
 
 		#endregion

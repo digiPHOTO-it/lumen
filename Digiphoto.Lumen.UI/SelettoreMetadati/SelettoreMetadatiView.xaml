@@ -12,7 +12,12 @@
              d:DesignHeight="300" d:DesignWidth="912">
 
 	<UserControl.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/Resources/GlobalResourceDictionary.xaml" />
 		<ResourceDictionary Source="SelettoreMetadatiResources.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
 	</UserControl.Resources>
 
 	<!--lumM:UserControlBase.DataContext>
@@ -51,6 +56,9 @@
 							 possoCreare="True"/>
 
 		<StackPanel Grid.Column="3" Orientation="Vertical">
+			<Label Content="N° Foto Selezionate" />
+			<Label Content="{Binding ElementName=this, Path=MyItemsSource.SelectedItems.Count}" />
+			<Separator />
 			<Button Content="Elimina metadati" ToolTip="Elimina tutti i metadati dalle fotografie selezioanate" Command="{Binding eliminareMetadatiCommand}" Height="40" FontStretch="ExtraCondensed" />
 			<Separator />
 			<Button Content="Applica Metadati" ToolTip="Salva metadati fotografie selezionate" Command="{Binding applicareMetadatiCommand}" Height="40" />
