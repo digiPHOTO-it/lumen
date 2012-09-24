@@ -26,7 +26,7 @@ namespace Digiphoto.Lumen.UI
 {
 	public class CarrelloViewModel : ViewModelBase, IObserver<MasterizzaMsg>, IObserver<GestoreCarrelloMsg>, IObserver<StampatoMsg>
     {
-		private Digiphoto.Lumen.Servizi.Masterizzare.Fase StatoMasterizzazione = Fase.Attesa;
+		private Digiphoto.Lumen.Servizi.Masterizzare.Fase StatoMasterizzazione = Digiphoto.Lumen.Servizi.Masterizzare.Fase.Attesa;
 
 		private BackgroundWorker _bkgIdrata = null;
 
@@ -700,7 +700,7 @@ namespace Digiphoto.Lumen.UI
 		/// per la stampa: il formato carta e la stampante
 		private void rimasterizza()
 		{
-			faseOld = Fase.Attesa;
+			faseOld = Digiphoto.Lumen.Servizi.Masterizzare.Fase.Attesa;
 			venditoreSrv.rimasterizza();
         }
 
@@ -848,7 +848,7 @@ namespace Digiphoto.Lumen.UI
 		{
 			venditoreSrv.creaNuovoCarrello();
 			MasterizzazionePorgress = "";
-			StatoMasterizzazione = Fase.Attesa;
+			StatoMasterizzazione = Digiphoto.Lumen.Servizi.Masterizzare.Fase.Attesa;
 			OnPropertyChanged("StatusStatoMasterizzazioneImage");
 			updateGUI();
 		}
@@ -857,7 +857,7 @@ namespace Digiphoto.Lumen.UI
 		{
 			venditoreSrv.abbandonaCarrello();
 			MasterizzazionePorgress = "";
-			StatoMasterizzazione = Fase.Attesa;
+			StatoMasterizzazione = Digiphoto.Lumen.Servizi.Masterizzare.Fase.Attesa;
 			OnPropertyChanged("StatusStatoMasterizzazioneImage");
 			updateGUI();
 		}
@@ -1202,7 +1202,7 @@ namespace Digiphoto.Lumen.UI
 		}
 
 
-		private Digiphoto.Lumen.Servizi.Masterizzare.Fase faseOld = Fase.Attesa;
+		private Digiphoto.Lumen.Servizi.Masterizzare.Fase faseOld = Digiphoto.Lumen.Servizi.Masterizzare.Fase.Attesa;
 		public void OnNext(MasterizzaMsg msg)
 		{
 			
@@ -1230,7 +1230,7 @@ namespace Digiphoto.Lumen.UI
 				
 				if (msg.result.Equals("Error Media"))
 				{
-					StatoMasterizzazione = Fase.ErroreMedia;
+					StatoMasterizzazione = Digiphoto.Lumen.Servizi.Masterizzare.Fase.ErroreMedia;
 				}
 			}
 			OnPropertyChanged("StatusStatoMasterizzazioneImage");
