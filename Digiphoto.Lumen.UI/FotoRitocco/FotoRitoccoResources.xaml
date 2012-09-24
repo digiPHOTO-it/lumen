@@ -12,9 +12,10 @@
 		<Setter Property="Width" Value="100" />
 	</Style>
 	
+	
     <!-- Stile della listbox che itera le immagini -->
     <Style x:Key="listBoxImmaginiDaModificareStyle" TargetType="ListBox">
-
+<!--
         <Setter Property="IsSynchronizedWithCurrentItem" Value="True" />
 
         <Setter Property="ItemContainerStyle" Value="{DynamicResource ImmaginiDaModificareContainerStyle}" />
@@ -22,17 +23,13 @@
         <Setter Property="BorderBrush" Value="Blue" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="MinHeight" Value="60" />
-		
-    </Style>
+-->	
+
+	</Style>
 
     <!-- Style per ogni elemento della collection. Setto il colore selezionato  -->
     <Style x:Key="ImmaginiDaModificareContainerStyle" TargetType="ListBoxItem">
         <Style.Resources>
-            <!--SelectedItem with focus -->
-            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Yellow" />
-
-            <!--SelectedItem without focus-->
-            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Yellow"/>
         </Style.Resources>
     </Style>
 

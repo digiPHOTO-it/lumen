@@ -155,7 +155,7 @@ namespace Digiphoto.Lumen.UI.PanAndZoom {
 		/// <param name="toValue">Value to animate to.</param>
 		/// <returns>Double animation.</returns>
 		private static DoubleAnimation CreateZoomAnimation( double toValue ) {
-			var da = new DoubleAnimation( toValue, new Duration( TimeSpan.FromMilliseconds( 500 ) ) ) {
+			var da = new DoubleAnimation( toValue, new Duration( TimeSpan.FromMilliseconds( 40 ) ) ) {
 				AccelerationRatio = 0.1,
 				DecelerationRatio = 0.9,
 				FillBehavior = FillBehavior.HoldEnd
