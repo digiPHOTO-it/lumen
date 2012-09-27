@@ -136,7 +136,7 @@
 
                     <!-- Questo evento serve per fare il drag della foto sulla cornice -->
 					<EventSetter Event="PreviewMouseLeftButtonDown" Handler="listBoxImmaginiDaModificare_PreviewMouseLeftButtonDown"/>
-					<EventSetter Event="PreviewMouseMove" Handler="listBoxImmaginiDaModificare_PreviewMouseMove"/>
+					<EventSetter Event="MouseMove" Handler="listBoxImmaginiDaModificare_MouseMove"/>
 
 					<Style.Resources>
 						<!--SelectedItem with focus -->

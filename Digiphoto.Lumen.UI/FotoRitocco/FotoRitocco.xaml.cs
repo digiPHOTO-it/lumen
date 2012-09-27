@@ -268,7 +268,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		private void listBoxImmaginiDaModificare_PreviewMouseMove(object sender, MouseEventArgs e)
+		private void listBoxImmaginiDaModificare_MouseMove(object sender, MouseEventArgs e)
 		{
 			ListBoxItem container = sender as ListBoxItem;
 
