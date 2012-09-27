@@ -128,8 +128,9 @@
                  AllowDrop="True"
                  IsEnabled="{Binding Path=listBoxImmaginiDaModificareEnabled, Converter={StaticResource boolInverterConverter}}"
 				 ContextMenu="{DynamicResource azioniRapideMenu}"
-                 ScrollViewer.HorizontalScrollBarVisibility="Auto" Drop="listBoxImmaginiDaModificare_Drop">
-			
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto" Drop="listBoxImmaginiDaModificare_Drop"
+				 PreviewMouseRightButtonDown="listBoxImmaginiDaModificare_PreviewMouseRightButtonDown">
+			<!-- ^^^^^^^^^ Disabilito la selezione sul tasto destro così posso gestirlo per abilitare il Menu Rapido ^^^^^^^^^ -->
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
 
