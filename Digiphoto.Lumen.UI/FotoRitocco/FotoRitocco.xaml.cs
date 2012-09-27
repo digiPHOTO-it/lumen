@@ -254,11 +254,36 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			e.Handled = true;
 		}
 
-		private void listBoxImmaginiDaModificare_PreviewMouseDown( object sender, MouseButtonEventArgs e ) {
+		//Memorizzo il punto di ingresso
+		private Point startPoint;
+
+		private void listBoxImmaginiDaModificare_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+		{
 			ListBoxItem container = sender as ListBoxItem;
+
+			if (container != null)
+			{
+				// Store the mouse position
+				startPoint = e.GetPosition(null);
+			}
+		}
+
+		private void listBoxImmaginiDaModificare_PreviewMouseMove(object sender, MouseEventArgs e)
+		{
+			ListBoxItem container = sender as ListBoxItem;
+
 			if( container != null ) {
-				primoPianoCanvasMask( false );
-				DragDrop.DoDragDrop( container, container.DataContext, DragDropEffects.Copy );
+				// Get the current mouse position
+				Point mousePos = e.GetPosition(container);
+				Vector diff = startPoint - mousePos;
+ 
+				if (e.LeftButton == MouseButtonState.Pressed &&
+					(Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance ||
+					Math.Abs(diff.Y) > SystemParameters.MinimumVerticalDragDistance) )
+				{
+					primoPianoCanvasMask( false );
+					DragDrop.DoDragDrop( container, container.DataContext, DragDropEffects.Copy );
+				}
 			}
 		}
 
