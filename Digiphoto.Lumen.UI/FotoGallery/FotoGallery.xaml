@@ -210,6 +210,14 @@
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}">
                     <EventSetter Event="MouseDoubleClick" Handler="listBoxItemImageGallery_MouseDoubleClick" />
+
+						<Style.Resources>
+							<!--SelectedItem with focus -->
+							<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Yellow" />
+
+							<!--SelectedItem without focus-->
+							<SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Yellow"/>
+						</Style.Resources>
                     </Style>
                 </ListBox.ItemContainerStyle>
 		</ListBox>

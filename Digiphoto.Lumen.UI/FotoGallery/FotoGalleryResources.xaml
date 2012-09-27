@@ -28,21 +28,6 @@
     </Style>
     -->
 
-
-    <!-- Style per ogni elemento della collection. Setto il colore selezionato = giallo -->
-    <Style x:Key="ImageGalleryImageContainerStyle" TargetType="ListBoxItem">
-
-        <Style.Resources>
-            <!--SelectedItem with focus -->
-            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Yellow" />
-
-            <!--SelectedItem without focus-->
-            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Yellow" />
-        </Style.Resources>
-    </Style>
-
-
-
     <Style x:Key="textBoxNumFotogrammi" TargetType="TextBox">
         <Setter Property="MinWidth" Value="100" />
     </Style>
