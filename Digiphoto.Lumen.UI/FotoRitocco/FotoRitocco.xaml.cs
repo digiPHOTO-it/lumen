@@ -572,5 +572,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			}
 		}
+
+		private void listBoxImmaginiDaModificare_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+		{
+			// Questo mi evita di selezionare la foto quando clicco con il destro.
+			e.Handled = true;
+		}
+
 	}
 }
