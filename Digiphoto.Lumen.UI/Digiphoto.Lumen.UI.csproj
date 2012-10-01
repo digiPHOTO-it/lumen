@@ -148,6 +148,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Data.SQLite, Version=1.0.81.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86" Condition="'$(Platform)'=='x86'">
       <HintPath>..\packages\System.Data.SQLite.1.0.81.0\lib\net40\System.Data.SQLite.dll</HintPath>
     </Reference>
@@ -211,6 +212,11 @@
     <Compile Include="Converters\PercentualeConverter.cs" />
     <Compile Include="Adorners\CroppingAdorner.cs" />
     <Compile Include="Adorners\PuncturedRect.cs" />
+    <Compile Include="DataEntry\DataEntryViewModel.cs" />
+    <Compile Include="DataEntry\DEGiornata\DataEntryGiornataViewModel.cs" />
+    <Compile Include="DataEntry\DEGiornata\WindowGiornata.xaml.cs">
+      <DependentUpon>WindowGiornata.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\RangeGiorniDialog.xaml.cs">
       <DependentUpon>RangeGiorniDialog.xaml</DependentUpon>
     </Compile>
@@ -287,6 +293,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ComNumFoto\CompNumFotoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataEntry\DEGiornata\WindowGiornata.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -198,6 +198,7 @@
     <Compile Include="src\Imaging\ProiettoreArea.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="src\Servizi\EntityRepository\GiornateRepositorySrvImpl.cs" />
     <Compile Include="src\Servizi\EntityRepository\InfosFisseRepositorySrvImpl.cs" />
     <Compile Include="src\Servizi\Explorer\CarrelloExplorerSrvImpl.cs" />
     <Compile Include="src\Servizi\Explorer\ICarrelloExplorerSrv.cs" />

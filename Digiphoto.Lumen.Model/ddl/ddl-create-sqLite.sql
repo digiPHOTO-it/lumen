@@ -1,6 +1,6 @@
 
 -- --------------------------------------------------
--- Date Created: 06/28/2012 14:00:50
+-- Date Created: 09/28/2012 07:00:50
 -- compatible SQLite
 -- Generated from EDMX file: C:\Users\bluca\Documents\Visual Studio 2010\Projects\lumen\Digiphoto.Lumen.Model\LumenModel.edmx
 -- --------------------------------------------------
@@ -29,6 +29,8 @@
 	DROP TABLE if exists [RigheCarrelli];
     
 	DROP TABLE if exists [ConsumiCartaGiornalieri];
+
+	DROP TABLE if exists [Giornate];
 
 -- --------------------------------------------------
 -- Creating all tables
@@ -120,7 +122,7 @@ CREATE TABLE [ScarichiCards] (
 CREATE TABLE [FormatiCarta] (
     [id] uniqueidentifier PRIMARY KEY  NOT NULL ,
     [descrizione] nvarchar(50)   NOT NULL ,
-    [prezzo] decimal(18,0)   NOT NULL ,
+    [prezzo] decimal(6,2)   NOT NULL ,
     [attivo] bit   DEFAULT 'True' NOT NULL ,
     [ordinamento] smallint   NULL 
 );
@@ -144,7 +146,7 @@ CREATE TABLE [Carrelli] (
     [id] uniqueidentifier PRIMARY KEY  NOT NULL ,
     [giornata] datetime   NOT NULL ,
     [tempo] datetime   NOT NULL ,
-    [totaleAPagare] decimal(18,0)   NOT NULL ,
+    [totaleAPagare] decimal(6,2)   NOT NULL ,
     [intestazione] nvarchar(100)   NULL ,
     [venduto] bit   DEFAULT 'False' NOT NULL ,
     [note] nvarchar(2147483647)   NULL 
@@ -153,10 +155,10 @@ CREATE TABLE [Carrelli] (
 -- Creating table 'RigheCarrelli'
 CREATE TABLE [RigheCarrelli] (
     [id] uniqueidentifier PRIMARY KEY  NOT NULL ,
-    [prezzoLordoUnitario] decimal(18,0)   NOT NULL ,
+    [prezzoLordoUnitario] decimal(6,2)   NOT NULL ,
     [quantita] smallint   NOT NULL ,
-    [prezzoNettoTotale] decimal(18,0)   NOT NULL ,
-    [sconto] decimal(18,0)   NULL ,
+    [prezzoNettoTotale] decimal(6,2)   NOT NULL ,
+    [sconto] decimal(6,2)   NULL ,
     [descrizione] nvarchar(2147483647)   NOT NULL ,
     [totFogliStampati] smallint   NULL ,
     [idFotografia] uniqueidentifier   NULL ,
@@ -203,6 +205,19 @@ CREATE TABLE [ConsumiCartaGiornalieri] (
     		
 			);
 
+-- Creating table 'Giornate'
+CREATE TABLE [Giornate] (
+    [Id] datetime  PRIMARY KEY  NOT NULL ,
+    [orologio] datetime   NOT NULL ,
+    [incassoDichiarato] decimal(7,2)   NOT NULL ,
+    [note] nvarchar(2147483647)   NULL ,
+    [incassoPrevisto] decimal(7,2)   NOT NULL ,
+    [prgTaglierina1] nvarchar(20)   NULL ,
+    [prgTaglierina2] nvarchar(20)   NULL ,
+    [prgTaglierina3] nvarchar(20)   NULL ,
+    [totScarti] smallint   NULL ,
+    [firma] nvarchar(50)   NOT NULL 
+);
 
 -- --------------------------------------------------
 -- Script has ended

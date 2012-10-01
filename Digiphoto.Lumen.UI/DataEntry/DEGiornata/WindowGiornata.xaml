@@ -1,0 +1,102 @@
+﻿<Window x:Class="Digiphoto.Lumen.UI.DataEntry.DEGiornata.WindowGiornata"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:extToolkit="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit.Extended"
+        Title="Chiusura di Cassa" Height="561" Width="561">
+	
+	<Window.Resources>
+		<CollectionViewSource x:Key="giornataSource" />
+	</Window.Resources>
+	
+	<DockPanel LastChildFill="True">
+			
+		<ToolBar DockPanel.Dock="Top">
+			<Button Content="|&lt;-" ToolTip="Vai al Primo" Command="{Binding commandSpostamento}" CommandParameter="First" />
+			<Button Content="&lt;" ToolTip="Vai al precedente" Command="{Binding commandSpostamento}" CommandParameter="Previous"/>
+			<Button Content="&gt;" ToolTip="Vai al successivo" Command="{Binding commandSpostamento}" CommandParameter="Next"/>
+			<Button Content="-&gt;|" ToolTip="Vai all'ultimo" Command="{Binding commandSpostamento}" CommandParameter="Last"/>
+			<Separator />
+
+			<Button Content="View"  Command="{Binding commandCambiareStatus}" CommandParameter="View" />
+			<Button Content="Edit" Command="{Binding commandCambiareStatus}" CommandParameter="Edit" />
+			<Button Content="New" Command="{Binding commandCambiareStatus}" CommandParameter="New" Name="buttonNew" />
+			<Button Content="Delete" Command="{Binding commandCambiareStatus}" CommandParameter="Delete" />
+			<Separator />
+			<Button Content="Save"  Command="{Binding commandSalvare}" />
+
+		</ToolBar>
+
+		<!-- Questo è il last child che prende tutto lo spazio centrale -->
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="320"/>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+
+			<ScrollViewer Grid.Row="0" Grid.Column="0"  IsEnabled="{Binding canEditFields}">
+				
+				<Grid Name="gridEditor" DataContext="{Binding entitySource}"  >
+					<Rectangle Height="31" HorizontalAlignment="Left" Margin="158,8,0,0" Name="rectangle1" Stroke="Black" VerticalAlignment="Top" Width="245" />
+					<Label  Content="Giorno" Margin="169,11,0,0" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="52" Height="26" VerticalAlignment="Top" />
+					<DatePicker Height="25" HorizontalAlignment="Left" Margin="239,11,0,0"  VerticalAlignment="Top" Width="152"  SelectedDate="{Binding id,Mode=TwoWay}"  IsEnabled="{Binding Path=isKeyEditabile,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" IsTodayHighlighted="False" Name="datePickerGiorno" />
+					<TabControl Height="250" Margin="10,45,6,6">
+						<TabItem Header="Generale">
+							<Grid>
+								<TextBox Margin="317,31,19,32" Text="{Binding note}"  AcceptsReturn="True" Name="textBoxNote" />
+								<Label Content="Incasso dichiarato" Margin="8,23,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="110" HorizontalContentAlignment="Right" />
+								<TextBox Text="{Binding incassoDichiarato}" Margin="136,23,0,0" HorizontalContentAlignment="Right" Height="24" VerticalAlignment="Top" HorizontalAlignment="Left" Width="60" />
+
+								<Label Content="Incasso previsto" Margin="8,57,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="110" HorizontalContentAlignment="Right" />
+								<TextBox HorizontalContentAlignment="Right" Margin="136,57,0,0" Text="{Binding incassoPrevisto}" Height="24" VerticalAlignment="Top" HorizontalAlignment="Left" Width="60" IsReadOnly="True" />
+
+								<Label Content="Squadratura" Margin="8,93,0,0" HorizontalAlignment="Left" Width="110" Height="26" VerticalAlignment="Top" HorizontalContentAlignment="Right" />
+								<TextBox Name="textBoxSquadratura" Height="24" HorizontalContentAlignment="Right" IsReadOnly="True" Margin="136,93,0,0" Text="{Binding squadratura,Mode=OneWay}" VerticalAlignment="Top" HorizontalAlignment="Left" Width="60" />
+								<Label Content="Note" Height="29" HorizontalAlignment="Left" Margin="317,0,0,0" Name="label1" VerticalAlignment="Top" Width="58" />
+								<Label Content="Firma" Height="26" HorizontalAlignment="Left" Margin="8,126,0,0" Name="label2" VerticalAlignment="Top" Width="110" HorizontalContentAlignment="Right" />
+								<TextBox Height="24" Text="{Binding firma}" HorizontalAlignment="Left" Margin="136,128,0,0"  VerticalAlignment="Top" Width="164" />
+
+								<Label  Content="Orologio" Margin="8,162,0,0" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="110" Height="26" VerticalAlignment="Top" />
+								<TextBox Text="{Binding orologio,Mode=TwoWay}" Margin="136,162,0,0" HorizontalAlignment="Left" Width="164" VerticalAlignment="Top" IsReadOnly="True" Name="textBoxOrologio" />
+								<Label Content="Totale scarti" Height="26" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="8,190,0,0" VerticalAlignment="Top" Width="110" />
+								<TextBox HorizontalAlignment="Left" IsReadOnly="True" Margin="138,192,0,0" Text="{Binding totScarti}" VerticalAlignment="Top" Width="58" HorizontalContentAlignment="Right" />
+							</Grid>
+						</TabItem>
+						<TabItem Header="Taglierine" HorizontalAlignment="Left" Name="tabItem1" VerticalAlignment="Top">
+							<Grid>
+								<Label Content="Progressivo taglierina 2" Height="28" HorizontalAlignment="Left" Margin="35,101,0,0" Name="label5" VerticalAlignment="Top" />
+								<Label Content="Progressivo taglierina 3" Height="28" HorizontalAlignment="Left" Margin="35,145,0,0" Name="label6" VerticalAlignment="Top" />
+								<TextBox Height="23" HorizontalAlignment="Left" Margin="187,103,0,0" VerticalAlignment="Top" Width="162" Text="{Binding prgTaglierina2}" />
+								<TextBox Height="23" HorizontalAlignment="Left" Margin="187,147,0,0" VerticalAlignment="Top" Width="162" Text="{Binding prgTaglierina3}" />
+								<Label Content="Progressivo taglierina 1" Height="28" HorizontalAlignment="Left" Margin="35,55,0,0" Name="label3" VerticalAlignment="Top" />
+								<TextBox Height="23" HorizontalAlignment="Left" Margin="187,57,0,0" VerticalAlignment="Top" Width="162" Text="{Binding prgTaglierina1}" />
+							</Grid>
+						</TabItem>
+					</TabControl>
+				</Grid>
+			</ScrollViewer>
+
+			<GridSplitter ResizeDirection="Rows" Grid.Row="1" Grid.Column="0"
+						  Grid.ColumnSpan="10"
+						  Width="Auto" Height="6"
+						  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+						  Background="Green"/>
+
+			<DataGrid Name="gridLov" ItemsSource="{Binding collectionView}" Grid.Row="2" Grid.Column="0"
+					  AutoGenerateColumns="False" IsReadOnly="True" >
+				<DataGrid.Columns>
+					<DataGridTextColumn Binding="{Binding id}" Header="Giornata"  />
+					<DataGridTextColumn Binding="{Binding incassoDichiarato}" Header="Incasso" />
+					<DataGridTextColumn Binding="{Binding firma}" Header="firma" />
+					<DataGridTextColumn Binding="{Binding note}" Header="Note" />
+				</DataGrid.Columns>
+			</DataGrid>
+
+		</Grid>
+	</DockPanel>
+	
+
+</Window>

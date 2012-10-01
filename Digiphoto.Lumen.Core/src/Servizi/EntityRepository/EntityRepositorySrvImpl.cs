@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Core.Database;
-using System.Data.Objects.DataClasses;
-using System.Data.Objects;
 using log4net;
 using Digiphoto.Lumen.Database;
+using System.Data.Objects;
 
 namespace Digiphoto.Lumen.Servizi.EntityRepository {
 
@@ -51,6 +50,11 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 
 		public int saveChanges() {
 			return UnitOfWorkScope.CurrentObjectContext.SaveChanges();
+		}
+
+		public ObjectResult<TEntity> execute() {
+			ObjectSet<TEntity> objectSet = UnitOfWorkScope.CurrentObjectContext.ObjectContext.CreateObjectSet<TEntity>();
+			return objectSet.Execute( MergeOption.AppendOnly );
 		}
 	}
 }

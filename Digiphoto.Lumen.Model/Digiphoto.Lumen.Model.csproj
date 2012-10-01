@@ -144,6 +144,9 @@
     <Compile Include="Fotografo.cs">
       <DependentUpon>LumenModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Giornata.cs">
+      <DependentUpon>LumenModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="InfoFissa.cs">
       <DependentUpon>LumenModel.tt</DependentUpon>
     </Compile>
@@ -194,6 +197,7 @@
     </EntityDeploy>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="LumenModel.edmx.sql" />
     <None Include="App.Config">
       <SubType>Designer</SubType>
     </None>
@@ -205,6 +209,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>LumenModel.Context.cs</LastGenOutput>
     </None>
+    <None Include="LumenModel.edmx.sqlce" />
     <None Include="LumenModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>LumenModel.cs</LastGenOutput>

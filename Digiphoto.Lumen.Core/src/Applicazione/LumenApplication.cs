@@ -183,6 +183,8 @@ namespace Digiphoto.Lumen.Applicazione {
 
             creaAggiungiAvviaServizio<IEntityRepositorySrv<FormatoCarta>>();
 
+			creaAggiungiAvviaServizio<IEntityRepositorySrv<Giornata>>();
+
 			creaAggiungiAvviaServizio<IEliminaFotoVecchieSrv>();
 
 		}
