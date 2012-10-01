@@ -21,6 +21,9 @@ using Digiphoto.Lumen.UI.EliminaVecchiRullini;
 using Digiphoto.Lumen.Servizi.Reports.ConsumoCarta;
 using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Servizi.Stampare;
+using Digiphoto.Lumen.UI.DataEntry.DEGiornata;
+using Digiphoto.Lumen.UI.DataEntry;
+using Digiphoto.Lumen.Core.Database;
 namespace Digiphoto.Lumen.UI {
 
 	class MainWindowViewModel : ClosableWiewModel, IObserver<Messaggio> {
@@ -38,7 +41,9 @@ namespace Digiphoto.Lumen.UI {
 			observable.Subscribe( this );
         }
 
-        public SelettoreStampantiInstallateViewModel selettoreStampantiInstallateViewModel
+		#region Proprietà
+
+		public SelettoreStampantiInstallateViewModel selettoreStampantiInstallateViewModel
         {
             get;
             private set;
@@ -56,7 +61,9 @@ namespace Digiphoto.Lumen.UI {
             private set;
         }
 
+		#endregion Prorietà
 
+		#region Comandi
 		private RelayCommand _reportVenditeCommand;
 		public ICommand reportVenditeCommand {
 			get {
@@ -68,6 +75,46 @@ namespace Digiphoto.Lumen.UI {
 				return _reportVenditeCommand;
 			}
 		}
+
+		private RelayCommand _logCommand;
+		public ICommand LogCommand {
+			get {
+				if( _logCommand == null ) {
+					_logCommand = new RelayCommand( param => log(),
+															  param => true,
+															  false );
+				}
+				return _logCommand;
+			}
+		}
+
+		private RelayCommand _commandDataEntry;
+		public ICommand commandDataEntry {
+			get {
+				if( _commandDataEntry == null ) {
+					_commandDataEntry = new RelayCommand( param => dataEntry( param as string ),
+					                                      param => true,
+				                                          false );
+				}
+				return _commandDataEntry;
+			}
+		}
+
+		private RelayCommand _reportConsumoCartaCommand;
+		public ICommand reportConsumoCartaCommand {
+			get {
+				if( _reportConsumoCartaCommand == null ) {
+					_reportConsumoCartaCommand = new RelayCommand( param => reportConsumoCarta(),
+															  param => true,
+															  false );
+				}
+				return _reportConsumoCartaCommand;
+			}
+		}
+
+		#endregion Comandi
+
+		#region Metodi
 
 		private void reportVendite() {
 
@@ -121,21 +168,6 @@ namespace Digiphoto.Lumen.UI {
 			loggingShowWindows.Show();
 		}
 
-		private RelayCommand _logCommand;
-		public ICommand LogCommand
-		{
-			get
-			{
-				if (_logCommand == null)
-				{
-					_logCommand = new RelayCommand(param => log(),
-															  param => true,
-															  false);
-				}
-				return _logCommand;
-			}
-		}
-
 
 		private void reportConsumoCarta()
 		{
@@ -175,22 +207,24 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		private RelayCommand _reportConsumoCartaCommand;
-		public ICommand reportConsumoCartaCommand
-		{
-			get
-			{
-				if (_reportConsumoCartaCommand == null)
-				{
-					_reportConsumoCartaCommand = new RelayCommand(param => reportConsumoCarta(),
-															  param => true,
-															  false);
-				}
-				return _reportConsumoCartaCommand;
+		void dataEntry( string nomeEntita ) {
+
+
+			// TODO sostituire con una factory
+			if( nomeEntita == "Giornata" ) {
+
+				WindowGiornata window = new WindowGiornata();
+				window.ShowDialog();
 			}
+
+
+			
+
 		}
 
+		#endregion Metodi
 
+		#region Eventi
 		public void OnCompleted() {
 			// throw new NotImplementedException();
 		}
@@ -211,5 +245,7 @@ namespace Digiphoto.Lumen.UI {
 			}
 
 		}
+#endregion Eventi
+
 	}
 }

@@ -55,5 +55,6 @@ namespace Digiphoto.Lumen.Model
         public DbSet<Carrello> Carrelli { get; set; }
         public DbSet<RigaCarrello> RigheCarrelli { get; set; }
         public DbSet<ConsumoCartaGiornaliero> ConsumiCartaGiornalieri { get; set; }
+        public DbSet<Giornata> Giornate { get; set; }
     }
 }

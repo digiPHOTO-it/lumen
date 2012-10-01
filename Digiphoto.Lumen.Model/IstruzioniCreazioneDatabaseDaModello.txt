@@ -21,7 +21,7 @@
 
 6) Chiudere il designer e aprire il file edmx con l'editor xml
 
-7) Cercare le occorrenze di sql compact 3.5 e sostituirle con 4.0
+7) Non serve più: Cercare le occorrenze di sql compact 3.5 e sostituirle con 4.0
    Salvare
 
 8) Lanciando la build del progetto con F6, si noterà che ci sono ancora un paio di
@@ -34,3 +34,5 @@
 10) A mano dove si trovano i tag 
    <Association Name="FotografiaRiCaFotoStampata">
     mettere Multiplicity="0..1"
+
+11) Ricreare se serve il database vuoto. Lanciare creadbsqlite.bat

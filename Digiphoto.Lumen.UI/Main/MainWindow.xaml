@@ -66,6 +66,12 @@
 			</TabControl>
         </TabItem>
 
+		<TabItem Header="Tabelle">
+			<Grid>
+				<Button Content="Chiusura cassa giorno" Height="50" Width="150" Command="{Binding commandDataEntry}" CommandParameter="Giornata" />
+			</Grid>
+		</TabItem>
+		
         <TabItem Header="Utilità" ToolTip="Funzionalità varie" >
 			<TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Left" Name="tabUtilityPagine" >
 
