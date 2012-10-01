@@ -38,7 +38,8 @@
 					 Height="100"
 					 SelectionMode="Extended" 
 					 lumMS:MultiSelect.IsEnabled="True" 
-					 ItemsSource="{Binding ElementName=this, Path=MyItemsSource}">
+					 ItemsSource="{Binding ElementName=this, Path=MyItemsSource}"
+					 Visibility="Collapsed">
 			</ListBox>
 		</StackPanel>
 
