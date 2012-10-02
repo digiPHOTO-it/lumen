@@ -559,7 +559,8 @@ namespace Digiphoto.Lumen.UI
 				return;
 			}
 
-			if( richiediDoveMasterizzare() == false )
+
+			if (venditoreSrv.masterizzaSrv != null && richiediDoveMasterizzare() == false)
 				return;
 
 			_giornale.Debug( "Sono pronto per vendere il carrello. Tot a pagare = " + venditoreSrv.carrello.totaleAPagare );
@@ -658,6 +659,7 @@ namespace Digiphoto.Lumen.UI
 
 					venditoreSrv.masterizzaSrv.impostaDestinazione( TipoDestinazione.CARTELLA, chiavettaPath );
 					_giornale.Debug( "Masterizzo i files su : " + chiavettaPath );
+
 				}
 				#endregion cartella
 
@@ -668,8 +670,8 @@ namespace Digiphoto.Lumen.UI
 					return false;
 				}
 
-				_giornale.Debug( "Masterizzo i files su : " + Configurazione.UserConfigLumen.defaultChiavetta );
-				venditoreSrv.masterizzaSrv.impostaDestinazione( TipoDestinazione.CARTELLA, Configurazione.UserConfigLumen.defaultChiavetta );
+				_giornale.Debug("Masterizzo i files su : " + Configurazione.UserConfigLumen.defaultChiavetta);
+				venditoreSrv.masterizzaSrv.impostaDestinazione(TipoDestinazione.CARTELLA, Configurazione.UserConfigLumen.defaultChiavetta);
 			}
 
 			return true;
