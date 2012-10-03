@@ -673,7 +673,7 @@
               <Summary>Nome di chi certifica la chiusura</Summary>
               <LongDescription>Nome dell'operatore che certifica la chiusura di cassa e responsabile dell'incasso registrato.</LongDescription>
             </Documentation>
-          </Property>
+          <a:Display Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" /><pem:Validations xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" Enforcement="None"><pem:RegularExpression Pattern="[a-zA-Z]{3,}" ErrorMessage="Almeno tre lettere" Enforcement="Must" /><pem:Required ErrorMessage="Firma obbligatoria" Enforcement="Must" /></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" /></Property>
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>

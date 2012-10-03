@@ -12,6 +12,8 @@ using System.Threading;
 using Digiphoto.Lumen.Util;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Windows.Markup;
+using System.Globalization;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -37,6 +39,10 @@ namespace Digiphoto.Lumen.UI {
 
 			// Faccio partire il log
 			log4net.Config.XmlConfigurator.Configure();
+
+			// Senza di questa istruzione, gli StringFormat usati nei binding, usano sempre la cultura americana.
+			FrameworkElement.LanguageProperty.OverrideMetadata( typeof( FrameworkElement ), new FrameworkPropertyMetadata( XmlLanguage.GetLanguage( CultureInfo.CurrentCulture.IetfLanguageTag ) ) );
+
 
 			mutex = new Mutex(true, "Digiphoto.Lumen.UI");
 			if (mutex.WaitOne(0, false)) 
