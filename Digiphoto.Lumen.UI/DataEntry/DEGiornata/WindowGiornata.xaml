@@ -48,13 +48,13 @@
 							<Grid>
 								<TextBox Margin="317,31,19,32" Text="{Binding note}"  AcceptsReturn="True" Name="textBoxNote" />
 								<Label Content="Incasso dichiarato" Margin="8,23,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="110" HorizontalContentAlignment="Right" />
-								<TextBox Text="{Binding incassoDichiarato}" Margin="136,23,0,0" HorizontalContentAlignment="Right" Height="24" VerticalAlignment="Top" HorizontalAlignment="Left" Width="60" />
+								<TextBox Text="{Binding incassoDichiarato,StringFormat=C}" Margin="136,23,0,0" HorizontalContentAlignment="Right" Height="24" VerticalAlignment="Top" HorizontalAlignment="Left" Width="60" TextChanged="textBoxIncassoDichiarato_TextChanged" Name="textBoxIncassoDichiarato" />
 
 								<Label Content="Incasso previsto" Margin="8,57,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="110" HorizontalContentAlignment="Right" />
-								<TextBox HorizontalContentAlignment="Right" Margin="136,57,0,0" Text="{Binding incassoPrevisto}" Height="24" VerticalAlignment="Top" HorizontalAlignment="Left" Width="60" IsReadOnly="True" />
+								<TextBox HorizontalContentAlignment="Right" Margin="136,57,0,0" Text="{Binding incassoPrevisto,StringFormat=C, UpdateSourceTrigger=Explicit}" Height="24" VerticalAlignment="Top" HorizontalAlignment="Left" Width="60" IsReadOnly="True" />
 
 								<Label Content="Squadratura" Margin="8,93,0,0" HorizontalAlignment="Left" Width="110" Height="26" VerticalAlignment="Top" HorizontalContentAlignment="Right" />
-								<TextBox Name="textBoxSquadratura" Height="24" HorizontalContentAlignment="Right" IsReadOnly="True" Margin="136,93,0,0" Text="{Binding squadratura,Mode=OneWay}" VerticalAlignment="Top" HorizontalAlignment="Left" Width="60" />
+								<TextBox Name="textBoxSquadratura"  Height="24" HorizontalContentAlignment="Right" IsReadOnly="True" Margin="136,93,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="60" />
 								<Label Content="Note" Height="29" HorizontalAlignment="Left" Margin="317,0,0,0" Name="label1" VerticalAlignment="Top" Width="58" />
 								<Label Content="Firma" Height="26" HorizontalAlignment="Left" Margin="8,126,0,0" Name="label2" VerticalAlignment="Top" Width="110" HorizontalContentAlignment="Right" />
 								<TextBox Height="24" Text="{Binding firma}" HorizontalAlignment="Left" Margin="136,128,0,0"  VerticalAlignment="Top" Width="164" />
@@ -62,7 +62,7 @@
 								<Label  Content="Orologio" Margin="8,162,0,0" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="110" Height="26" VerticalAlignment="Top" />
 								<TextBox Text="{Binding orologio,Mode=TwoWay}" Margin="136,162,0,0" HorizontalAlignment="Left" Width="164" VerticalAlignment="Top" IsReadOnly="True" Name="textBoxOrologio" />
 								<Label Content="Totale scarti" Height="26" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="8,190,0,0" VerticalAlignment="Top" Width="110" />
-								<TextBox HorizontalAlignment="Left" IsReadOnly="True" Margin="138,192,0,0" Text="{Binding totScarti}" VerticalAlignment="Top" Width="58" HorizontalContentAlignment="Right" />
+								<TextBox HorizontalAlignment="Left"  Margin="138,192,0,0" Text="{Binding totScarti}" VerticalAlignment="Top" Width="58" HorizontalContentAlignment="Right" />
 							</Grid>
 						</TabItem>
 						<TabItem Header="Taglierine" HorizontalAlignment="Left" Name="tabItem1" VerticalAlignment="Top">

@@ -21,6 +21,7 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 
 		// Read by quert
 		IQueryable<T> Query( Expression<Func<T, bool>> filter );
+		IQueryable<T> Query();
 
 		/// <summary>
 		/// Update in realtà non fa nulla. Si limita a riattaccare 
@@ -47,7 +48,6 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 		/// <returns>Il numero di entità coinvolte</returns>
 		int saveChanges();
 
-		ObjectResult<T> execute();
 	}
 
 }

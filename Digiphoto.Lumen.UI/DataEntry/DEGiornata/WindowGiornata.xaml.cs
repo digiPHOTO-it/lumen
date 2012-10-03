@@ -11,6 +11,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Digiphoto.Lumen.UI.Mvvm;
+using Digiphoto.Lumen.Model;
+using System.Windows.Markup;
+using System.Globalization;
 
 namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 	/// <summary>
@@ -23,6 +26,8 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 		public WindowGiornata() {
 
 			InitializeComponent();
+
+
 
 			_viewModel = new DataEntryGiornataViewModel();
 			_viewModel.dialogProvider = this;
@@ -70,6 +75,51 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 			}
 		}
 
+		private void textBoxIncassoDichiarato_TextChanged( object sender, TextChangedEventArgs e ) {
+
+
+			Giornata giornata = (Giornata)_viewModel.collectionView.CurrentItem;
+			if( giornata == null ) {
+				textBoxSquadratura.Text = null;
+				return;
+			}
+
+			Decimal incassoDichiarato;
+
+			string appo = textBoxIncassoDichiarato.Text; // .Replace( '.', ',').Replace( "$", "" );
+			CultureInfo culture = CultureInfo.CurrentUICulture;
+			NumberStyles style;
+			style = NumberStyles.Number | NumberStyles.AllowCurrencySymbol;
+
+			if( Decimal.TryParse( appo, style, culture, out incassoDichiarato ) ) {
+
+				Decimal _squadratura = incassoDichiarato - giornata.incassoPrevisto;
+				textBoxSquadratura.Text = _squadratura.ToString( "C" );
+				textBoxSquadratura.Foreground = (_squadratura < 0) ? Brushes.Red : Brushes.Black;
+			} else {
+				textBoxSquadratura.Text = null;
+			}
+
+#if  QQQQ		
+		
+			Giornata giornata = null;
+			if( _viewModel.collectionView.IsEditingItem )
+				giornata = (Giornata)_viewModel.collectionView.CurrentEditItem;
+			else if( _viewModel.collectionView.IsAddingNew )
+				giornata = (Giornata)_viewModel.collectionView.CurrentAddItem;
+			else
+				giornata = (Giornata)_viewModel.collectionView.CurrentItem;
+
+			if( giornata == null || giornata.incassoDichiarato == null )
+				this.textBoxSquadratura.Text = null;
+			else {
+				Decimal squadratura = giornata.incassoPrevisto - giornata.incassoDichiarato;
+				this.textBoxSquadratura.Text = squadratura.ToString();
+			}
+			
+		
+#endif
+		}
 
 	}
 }

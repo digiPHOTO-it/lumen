@@ -37,7 +37,7 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 
 			entitySource = new CollectionViewSource();
 
-			entitySource.Source = entityRepositorySrv.execute();
+			entitySource.Source = passoCaricaDati();
 			
 			collectionView = (BindingListCollectionView)entitySource.View;
 
@@ -216,7 +216,7 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 
 					bool prosegui = false;
 
-					dialogProvider.ShowConfirmation( @"L'elemento verrà cancellato in modo definitivo.\nConfermi la cancellazione ?", "Cancellazione",
+					dialogProvider.ShowConfirmation( "L'elemento verrà cancellato in modo definitivo.\nConfermi la cancellazione ?", "Cancellazione",
 						( sino ) => {
 							prosegui = sino;
 						} );
@@ -224,6 +224,7 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 					if( prosegui ) {
 						collectionView.Remove( entita ); // rimuovo dalla collection
 						entityRepositorySrv.delete( entita );  // rimuovo dal database
+						entityRepositorySrv.saveChanges();
 						nuovoStatus = DataEntryStatus.View;
 					}
 					break;
@@ -310,12 +311,6 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 
 				cambiareStatus( DataEntryStatus.View );
 
-
-/*
-			} catch( DbEntityValidationException vlex ) {
-				_giornale.Debug( "Salvataggio entità " + entita, eee );
-				dialogProvider.ShowError( eee.Message, "ERRORE", null );
-*/ 
 			} catch( Exception eee ) {
 				_giornale.Error( "Salvataggio entità " + entita, eee );
 				dialogProvider.ShowError( eee.Message, "ERRORE", null );
@@ -332,8 +327,13 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 		protected virtual void passoPreparaAddNew( TEntity entita ) {
 			// A disposizione per override
 		}
+		
 		protected virtual void passoPrimaDiSalvare( TEntity entita ) {
 			// A disposizione per override
+		}
+
+		protected virtual object passoCaricaDati() {
+			return entityRepositorySrv.getAll();
 		}
 
 		#endregion Metodi
