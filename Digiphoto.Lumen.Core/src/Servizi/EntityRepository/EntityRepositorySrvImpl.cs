@@ -7,6 +7,7 @@ using Digiphoto.Lumen.Core.Database;
 using log4net;
 using Digiphoto.Lumen.Database;
 using System.Data.Objects;
+using System.Data.Entity.Validation;
 
 namespace Digiphoto.Lumen.Servizi.EntityRepository {
 
@@ -32,10 +33,20 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 			throw new NotImplementedException();
 		}
 
-		public virtual IQueryable<TEntity> Query( System.Linq.Expressions.Expression<Func<TEntity, bool>> filter ) {
-			// TODO da fare non so ancora bene come
-			throw new NotImplementedException();
+		public virtual IQueryable<TEntity> Query() {
+
+			ObjectSet<TEntity> objectSet = UnitOfWorkScope.CurrentObjectContext.ObjectContext.CreateObjectSet<TEntity>();
+			return objectSet.AsQueryable();
 		}
+
+		public virtual IQueryable<TEntity> Query( System.Linq.Expressions.Expression<Func<TEntity, bool>> filter ) {
+
+			ObjectSet<TEntity> objectSet = UnitOfWorkScope.CurrentObjectContext.ObjectContext.CreateObjectSet<TEntity>();
+			return objectSet.AsQueryable().Where( filter );
+		}
+		
+
+
 
 		public virtual void update( ref TEntity entita ) {
 
@@ -49,12 +60,35 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 		}
 
 		public int saveChanges() {
-			return UnitOfWorkScope.CurrentObjectContext.SaveChanges();
+
+			try {
+
+				return UnitOfWorkScope.CurrentObjectContext.SaveChanges();
+
+			} catch( DbEntityValidationException  ev ) {
+
+				_giornale.Debug( "Validazione fallita: ", ev );
+
+				StringBuilder msg = new StringBuilder();
+				foreach (DbEntityValidationResult res in ev.EntityValidationErrors ) {
+					if( ! res.IsValid ) {
+
+						foreach( DbValidationError erro in res.ValidationErrors ) {
+							_giornale.Debug( "property non valida: " + erro.PropertyName + ". Motivo=" + erro.ErrorMessage );
+							msg.Append( "Propietà non valida: " + erro.PropertyName + ". Motivo=" + erro.ErrorMessage + "\n" );
+						}
+					}
+				}
+
+				throw new Exception( msg.ToString(), ev );
+			}
 		}
 
+/*
 		public ObjectResult<TEntity> execute() {
 			ObjectSet<TEntity> objectSet = UnitOfWorkScope.CurrentObjectContext.ObjectContext.CreateObjectSet<TEntity>();
 			return objectSet.Execute( MergeOption.AppendOnly );
 		}
+ */
 	}
 }
