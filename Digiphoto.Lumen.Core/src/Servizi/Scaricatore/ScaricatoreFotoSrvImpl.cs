@@ -112,7 +112,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			// Rendo pubblico l'esito dello scarico in modo che la UI possa notificare l'utente di togliere 
 			// la flash card.
-			if( _paramScarica.nomeFileSingolo != null && _paramScarica.cartellaSorgente != null )
+			if( _paramScarica.nomeFileSingolo == null && _paramScarica.cartellaSorgente != null )
 				pubblicaMessaggio( scaricoFotoMsg );
 
 
