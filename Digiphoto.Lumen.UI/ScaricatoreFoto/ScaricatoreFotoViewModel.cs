@@ -281,6 +281,50 @@ namespace Digiphoto.Lumen.UI {
 				}
 			}
 
+			if (msg is ScaricoFotoMsg)
+			{
+				ScaricoFotoMsg msgScaricoFotoMsg = msg as ScaricoFotoMsg;
+				
+				if(msgScaricoFotoMsg.fase == Digiphoto.Lumen.Servizi.Scaricatore.Fase.FineScarico){
+
+					bool discoRemovibile = false;
+
+					DriveInfo driveInfo = new DriveInfo(msgScaricoFotoMsg.sorgente);
+					if (driveInfo.DriveType == DriveType.Removable)
+					{
+						discoRemovibile = true;
+					}
+
+					if (!msgScaricoFotoMsg.esitoScarico.riscontratiErrori)
+					{
+						StringBuilder msgScarico = new StringBuilder();
+						msgScarico.AppendFormat("Scaricate {0} foto.{1}", 
+							msgScaricoFotoMsg.esitoScarico.totFotoCopiateOk,
+							discoRemovibile ? " Si può estrarre la card." : null);
+					
+						trayIconProvider.showInfo( "AVVISO",msgScarico.ToString(), 5000);
+					}
+					else
+					{
+						StringBuilder msgError = new StringBuilder("Confermare scarico foto:\n").Append(msgScaricoFotoMsg.esitoScarico.totFotoCopiateOk);
+						msgError.Append("\nErrori  = ").Append(msgScaricoFotoMsg.esitoScarico.totFotoNonCopiate);
+						if (discoRemovibile)
+						{
+							msgError.Append("\nSi può estrarre la card.");
+						}
+
+						trayIconProvider.showError("ERRORE",msgError.ToString(), 5000);
+					}
+				}
+				else if (msgScaricoFotoMsg.fase == Digiphoto.Lumen.Servizi.Scaricatore.Fase.FineLavora)
+				{
+					StringBuilder msgProvinatura = new StringBuilder();
+					msgProvinatura.AppendFormat("Provinate {0} foto.", msgScaricoFotoMsg.esitoScarico.totFotoCopiateOk);
+					
+					trayIconProvider.showInfo("AVVISO",msgProvinatura.ToString(),5000);
+				}
+			}
+
 			// Questo messaggio me lo lancia il mio servizio quando ha acquisito i dati di una nuova chiavetta
 			if( msg.descrizione.Equals( "::OnLetturaFlashCardConfig" ) ) {
 

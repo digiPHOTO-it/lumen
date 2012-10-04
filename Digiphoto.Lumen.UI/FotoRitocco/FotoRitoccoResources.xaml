@@ -76,7 +76,7 @@
 					<Label Content="{Binding Path=etichetta}"        
                                Canvas.Right="2"
                                Canvas.Bottom="2"
-                               FontSize="{Binding Converter={StaticResource percentualeConverter},ElementName=imgCanvas,Path=ActualHeight,ConverterParameter=0.08}"
+                               FontSize="{Binding Converter={StaticResource percentualeConverter},ElementName=imgCanvas,Path=ActualHeight,ConverterParameter=8}"
                                Background="Orange" />
 				</Canvas>
 				
