@@ -74,32 +74,62 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 
 		public void showAbout(string title, string msg, int? sleep)
 		{
+			// Risolto il problema dello STAThread
+			App.Current.Dispatcher.BeginInvoke(
+				new Action(() =>
+				{
 			ShowTrayIcon trayIcon = new ShowTrayIcon();
 			trayIcon.showAbout(title, msg, sleep);
+		}
+			));
 		}
 
 		public void showAboutCloud(string title, string msg, int? sleep)
 		{
+			// Risolto il problema dello STAThread
+			App.Current.Dispatcher.BeginInvoke(
+				new Action(() =>
+				{
 			ShowTrayIcon trayIcon = new ShowTrayIcon();
 			trayIcon.showAboutCloud(title, msg, sleep);
+		}
+			));
 		}
 
 		public void showError(string title, string msg, int? sleep)
 		{
+			// Risolto il problema dello STAThread
+			App.Current.Dispatcher.BeginInvoke(
+				new Action(() =>
+				{
 			ShowTrayIcon trayIcon = new ShowTrayIcon();
 			trayIcon.showError(title, msg, sleep);
+		}
+			));
 		}
 
 		public void showInfo(string title, string msg, int? sleep)
 		{
+			// Risolto il problema dello STAThread
+			App.Current.Dispatcher.BeginInvoke(
+				new Action(() =>
+				{
 			ShowTrayIcon trayIcon = new ShowTrayIcon();
 			trayIcon.showInfo(title, msg, sleep);
+		}
+			));
 		}
 
 		public void showWarning(string title, string msg, int? sleep)
 		{
+			// Risolto il problema dello STAThread
+			App.Current.Dispatcher.BeginInvoke(
+				new Action(() =>
+				{
 			ShowTrayIcon trayIcon = new ShowTrayIcon();
 			trayIcon.showWarning(title, msg, sleep);
+				}
+			));
 		}
 
 		#endregion;
