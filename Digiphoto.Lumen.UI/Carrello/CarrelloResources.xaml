@@ -191,7 +191,7 @@
 					<Label Content="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=., Converter={StaticResource listItemIndexConverter}}"        
                                Canvas.Right="2"
                                Canvas.Bottom="2"
-                               FontSize="{Binding Converter={StaticResource percentualeConverter},ElementName=carrelloCanvas,Path=ActualHeight,ConverterParameter=0.2}"
+                               FontSize="{Binding Converter={StaticResource percentualeConverter},ElementName=carrelloCanvas,Path=ActualHeight,ConverterParameter=20}"
                                Background="Orange" />
 				</Canvas>
 			</Border>

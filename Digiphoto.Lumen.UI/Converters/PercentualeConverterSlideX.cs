@@ -11,11 +11,11 @@ namespace Digiphoto.Lumen.UI.Converters {
 	public class PercentualeConverterSlideX : IValueConverter {
 
 		public object Convert( object value, Type targetType, object parameter, CultureInfo culture ) {
-			return (System.Convert.ToDouble(value, culture) - Configurazione.UserConfigLumen.slideBoundsX) * System.Convert.ToDouble(parameter, culture);
+			return (System.Convert.ToDouble(value, culture) - Configurazione.UserConfigLumen.slideBoundsX) * (System.Convert.ToDouble(parameter, culture)/100);
 		}
 
 		public object ConvertBack( object value, Type targetType, object parameter,	CultureInfo culture ) {
-			return System.Convert.ToDouble(value, culture) / System.Convert.ToDouble(parameter, culture) + Configurazione.UserConfigLumen.slideBoundsX;
+			return System.Convert.ToDouble(value, culture) / (System.Convert.ToDouble(parameter, culture)/100) + Configurazione.UserConfigLumen.slideBoundsX;
 		}
 	}
 }
