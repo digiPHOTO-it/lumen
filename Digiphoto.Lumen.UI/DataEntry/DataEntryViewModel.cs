@@ -198,6 +198,7 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 					break;
 
 				case DataEntryStatus.Edit:
+					passoPreparaEdit( entita );
 					collectionView.EditItem( entita );
 					break;
 
@@ -320,7 +321,7 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 
 		public bool possoSalvare {
 			get {
-				return true || status == DataEntryStatus.New || status == DataEntryStatus.Edit;
+				return status == DataEntryStatus.New || status == DataEntryStatus.Edit;
 			}
 		}
 
@@ -334,6 +335,10 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 
 		protected virtual object passoCaricaDati() {
 			return entityRepositorySrv.getAll();
+		}
+
+		protected virtual void passoPreparaEdit( TEntity entita ) {
+			// A disposizione per override
 		}
 
 		#endregion Metodi
