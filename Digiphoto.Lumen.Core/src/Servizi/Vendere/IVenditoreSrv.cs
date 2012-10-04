@@ -65,5 +65,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		bool isStatoModifica {
 			get;
 		}
+
+		Decimal calcolaIncassoPrevisto( DateTime giornata );
+
 	}
 }

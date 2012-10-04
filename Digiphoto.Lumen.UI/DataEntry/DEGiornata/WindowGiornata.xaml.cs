@@ -33,7 +33,8 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 			_viewModel.dialogProvider = this;
 			this.DataContext = _viewModel;
 
-			textBoxSquadratura.DataContext = _viewModel;
+
+//			_viewModel.collectionView.CurrentChanged += new EventHandler( SelectedItemChanged );
 		}
 
 

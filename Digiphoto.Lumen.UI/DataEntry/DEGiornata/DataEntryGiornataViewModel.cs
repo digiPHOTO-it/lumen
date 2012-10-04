@@ -5,6 +5,8 @@ using System.Text;
 using System.Windows.Data;
 using Digiphoto.Lumen.Model;
 using System.Linq.Expressions;
+using Digiphoto.Lumen.Applicazione;
+using Digiphoto.Lumen.Servizi.Vendere;
 
 namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 
@@ -27,10 +29,19 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 		protected override void passoPreparaAddNew( Giornata giornata ) {
 			giornata.id = DateTime.Today;
 			giornata.orologio = DateTime.Now;
+
+			// Ricavo l'incasso previsto per la giornata
+			giornata.incassoPrevisto = calcolaIncassoPrevisto( giornata.id );
+		}
+
+		private Decimal calcolaIncassoPrevisto( DateTime giorno ) {
+			return LumenApplication.Instance.getServizioAvviato<IVenditoreSrv>().calcolaIncassoPrevisto( giorno );
 		}
 
 		protected override void passoPrimaDiSalvare( Giornata giornata ) {
-			// Qui si possono fare delle sistemazioni del caso.
+			// Ribadisco per possibile cambio
+			giornata.incassoPrevisto = calcolaIncassoPrevisto( giornata.id );
+			collectionView.Refresh();
 		}
 
 		protected override object passoCaricaDati() {
@@ -43,6 +54,10 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 			IQueryable<Giornata> q = entityRepositorySrv.Query();
 			return q.OrderByDescending( gg => gg.id );
 		}
-	}
 
+		protected override void passoPreparaEdit( Giornata giornata ) {
+			giornata.incassoPrevisto = calcolaIncassoPrevisto( giornata.id );
+			collectionView.Refresh();
+		}
+	}
 }

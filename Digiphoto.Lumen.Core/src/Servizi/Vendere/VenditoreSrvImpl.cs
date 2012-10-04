@@ -740,5 +740,18 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				return gestoreCarrello.isStatoModifica;
 			}
 		}
+
+		public decimal calcolaIncassoPrevisto( DateTime giornata ) {
+
+			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+
+			// Questa sintassi strana nella Sum, serve per gestire un caso rompiscatole. Se il set è vuoto, la somma torna null.
+			// vedere qui: http://adventuresinsoftware.com/blog/?p=478
+			decimal incasso = dbContext.Carrelli.Where( c => c.giornata == giornata && c.venduto == true ).Sum( p => (decimal ?)p.totaleAPagare) ?? 0;
+
+			_giornale.Debug( "Calcolato incasso previsto giornata= " + giornata + " incasso=" + incasso );
+
+			return incasso;
+		}
 	}
 }
