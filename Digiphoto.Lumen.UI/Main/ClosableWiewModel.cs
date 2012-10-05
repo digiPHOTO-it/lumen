@@ -55,9 +55,24 @@ namespace Digiphoto.Lumen.UI {
 
         protected virtual void OnRequestClose()
         {
+			bool spegni = false;
+
+#if (! DEBUG)
+			if( dialogProvider != null ) {
+				dialogProvider.ShowConfirmation( "Vuoi spegnere il computer", "Uscita",
+					( sino ) => {
+						if( spegni = sino )
+							return;
+					} );
+			}
+#endif
+
             EventHandler handler = this.RequestClose;
             if (handler != null)
                 handler(this, EventArgs.Empty);
+
+			if( spegni )
+				System.Diagnostics.Process.Start( "shutdown.exe", "-s -t 05" );
         }
 
         #endregion // RequestClose [event]
