@@ -4,7 +4,7 @@
 					xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                     xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo">
 
-    <lumC:ImmagineToImageSourceConverter x:Key="immagineToImageSourceConverter" />
+    <lumC:ImageSourceConverter x:Key="imageSourceConverter" />
 	<lumC:CollectionViewVisibilityConverter x:Key="collectionViewVisibilityConverter" />
 	<lumC:CollectionViewVisibilityMultiConverter x:Key="collectionViewVisibilityMultiConverter" />
 	<lumC:BoolInverterConverter x:Key="boolInverterConverter" />
@@ -97,7 +97,7 @@
 							Width="50">
 							<Image 
 								Name="icon"
-								Source="{Binding Path=fotografia.imgProvino,Converter={StaticResource immagineToImageSourceConverter}}"
+								Source="{Binding Path=fotografia.imgProvino,Converter={StaticResource imageSourceConverter}}"
 	             				Height="50"
 	             				Width="50"
 	             				VerticalAlignment="Center"
@@ -132,7 +132,7 @@
 							<Image
 								Width="50"
 								Height="50"
-								Source="{Binding Path=fotografia.imgProvino,Converter={StaticResource immagineToImageSourceConverter}}">
+								Source="{Binding Path=fotografia.imgProvino,Converter={StaticResource imageSourceConverter}}">
 								<Image.RenderTransform>
 									<ScaleTransform
 											x:Name="zoom"

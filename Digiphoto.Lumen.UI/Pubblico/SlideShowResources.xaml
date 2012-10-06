@@ -3,13 +3,16 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 
-    <lumC:ImmagineToImageSourceConverter x:Key="immagineToImageSourceConverter" />
+    <lumC:ImageSourceConverter x:Key="imageSourceConverter" />
     <lumC:PercentualeConverter x:Key="percentualeConverter" />
 	<lumC:BoolWindowStateConverter x:Key="boolWindowStateConverter" />
+	<lumC:BoolVisibilityConverter x:Key="boolVisibilityConverter" />
+	<lumC:BoolInverterConverter x:Key="boolInverterConverter" />
 
 
 
-    <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
+
+	<!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
     <DataTemplate x:Key="fotoShowDataTemplate" >
 
         <Border BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="8" Margin="0,0,2,2" >
@@ -17,12 +20,12 @@
             <Canvas x:Name="canvasUnaFotoShow">
 
                 <Canvas.Background>
-                    <ImageBrush ImageSource="{Binding Path=imgProvino,Converter={StaticResource immagineToImageSourceConverter}}" 
+                    <ImageBrush ImageSource="{Binding Path=imgProvino,Converter={StaticResource imageSourceConverter}}" 
                                 Stretch="Uniform" />
                 </Canvas.Background>
 
 <!--
-                Image Source="{Binding Path=imgProvino,Converter={StaticResource immagineToImageSourceConverter}}" 
+                Image Source="{Binding Path=imgProvino,Converter={StaticResource imageSourceConverter}}" 
 -->                      
                 
                 <!-- IL font con cui stampo il numero, ha grandezza proporzionale al canvas . Per ora uso 8% della grandezza del contenitore della foto -->

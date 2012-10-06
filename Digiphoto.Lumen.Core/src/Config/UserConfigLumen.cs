@@ -255,6 +255,32 @@ namespace Digiphoto.Lumen.Config
 			get;
 			set;
 		}
+		
+
+		string _cartellaPubblicita;
+		public string cartellaPubblicita {
+			get {
+				return _cartellaPubblicita;
+			}
+			set {
+				if( _cartellaPubblicita != value ) {
+					_cartellaPubblicita = value;
+					OnPropertyChanged( "cartellaPubblicita" );
+				}
+			}
+		}
+
+
+		/// <summary>
+		/// Questo numero indica ogni quante videate dello slide, occorre visualizzare 
+		/// uno spot pubblicitario.
+		/// Esempio: se imposto = 5 significa che ogni 5 schermate di s.s. ce ne sarà una 
+		/// intera di pubblicità.
+		/// </summary>
+		public int intervalliPubblicita {
+			get;
+			set;
+		}
 
 		# region SlideShowParam
 
