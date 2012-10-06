@@ -870,6 +870,8 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 					cfg.cartellaFoto = appo;
 				else if( quale.Equals( "db", StringComparison.CurrentCultureIgnoreCase ) )
 					cfg.cartellaDatabase = appo;
+				else if( quale.Equals( "spot", StringComparison.CurrentCultureIgnoreCase ) )
+					cfg.cartellaPubblicita = appo;
 				else
 					throw new ArgumentException( "quale cartella : non riconosciuto" );
 			}
@@ -1015,6 +1017,8 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 					
 					saveUserConfig();
 
+					inserisciEventualePubblicitaLumen();
+
 					string msg = "Configurazione utente salvata";
 					if( quanti > 0 )
 						msg += "\nConfigurazione PdV salvata";
@@ -1106,6 +1110,51 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             }
             
         }
+
+		/// <summary>
+		/// Se la cartella delle pubblicità non contiene neanche una immagine,
+		/// ne metto una io di default
+		/// </summary>
+		private void inserisciEventualePubblicitaLumen() {
+			
+			// Non gestisco la pubblicità
+			if( cfg.intervalliPubblicita <= 0 )
+				return;
+
+			// La cartella non esiste oppure non è scrivibile.
+			if( ! PathUtil.isCartellaScrivibile( cfg.cartellaPubblicita ) )
+				return;
+
+			// Se ci sono già dei files, non faccio nulla.
+			if( Directory.EnumerateFiles( cfg.cartellaPubblicita ).Count() > 0 )
+				return;
+
+			// Copio la mia foto di default
+			try {
+				const string nomeSpot = "Lumen-spot.jpg";
+				string nomeDest = Path.Combine( cfg.cartellaPubblicita, nomeSpot );
+				string nomeSrc = Path.Combine( "Images", nomeSpot );
+				File.Copy( nomeSrc, nomeDest );
+				_giornale.Debug( "Preparato spot pubblicitario di default" );
+		
+			} catch( Exception ee ) {
+				_giornale.Error( "Impossibile copiare spot pubblicitario di default: ", ee );
+				throw;
+			}
+		}
+
+		private void copyResource( string resourceName, string file ) {
+			using( Stream resource = GetType().Assembly
+											  .GetManifestResourceStream( resourceName ) ) {
+				if( resource == null ) {
+					throw new ArgumentException( "resourceName", "No such resource" );
+				}
+				using( Stream output = File.OpenWrite( file ) ) {
+					resource.CopyTo( output );
+				}
+			}
+		}
+
         #endregion
 
     }

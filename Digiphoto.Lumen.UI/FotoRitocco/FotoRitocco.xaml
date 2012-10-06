@@ -189,7 +189,7 @@
                     <DataTemplate>
                         <Border BorderBrush="Red">
                             <Image Name="imageModTemplate"
-                                LayoutTransform="{Binding Path=DataContext.trasformazioneCorrente, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  Source="{Binding Path=imgProvino,Converter={StaticResource immagineToImageSourceConverter}}"
+                                LayoutTransform="{Binding Path=DataContext.trasformazioneCorrente, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  Source="{Binding Path=imgProvino,Converter={StaticResource imageSourceConverter}}"
                                 Effect="{Binding Path=DataContext.effettoCorrente, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
                         </Border>
                     </DataTemplate>

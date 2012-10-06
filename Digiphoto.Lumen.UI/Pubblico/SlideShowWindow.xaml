@@ -31,10 +31,23 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <!-- Questo è l'iteratore della collezione di Slide -->
-    <ItemsControl ItemsSource="{Binding Path=slidesVisibili}" 
-                  ItemTemplate="{DynamicResource fotoShowDataTemplate}"
-                  ItemsPanel="{DynamicResource slideShowItemsPanelTemplate}">
+	<Grid>
 
-    </ItemsControl>
+		<!-- grid dello slide -->
+		<Grid Visibility="{Binding Path=slideShowInCorso,Converter={StaticResource boolVisibilityConverter}}">
+			
+			<!-- Questo è l'iteratore della collezione di Slide -->
+			<ItemsControl ItemsSource="{Binding Path=slidesVisibili}" 
+                  ItemTemplate="{DynamicResource fotoShowDataTemplate}"
+                  ItemsPanel="{DynamicResource slideShowItemsPanelTemplate}" />
+
+		</Grid>
+
+		<Grid Visibility="{Binding Path=pubblicitaInCorso,Converter={StaticResource boolVisibilityConverter}}">
+			<Label Width="200" Height="50" Background="red" Content="{Binding nomeFileSpotAttuale}"></Label>
+			<Image Source="{Binding Path=nomeFileSpotAttuale,Converter={StaticResource imageSourceConverter}}" />
+		</Grid>
+
+	</Grid>
+
 </Window>

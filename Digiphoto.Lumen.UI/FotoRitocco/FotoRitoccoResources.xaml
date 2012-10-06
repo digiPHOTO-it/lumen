@@ -3,7 +3,7 @@
                     xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <lumC:ImmagineToImageSourceConverter x:Key="immagineToImageSourceConverter" />
+    <lumC:ImageSourceConverter x:Key="imageSourceConverter" />
     <lumC:BoolInverterConverter x:Key="boolInverterConverter" />
 	<lumC:PercentualeConverter x:Key="percentualeConverter" />
     <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
@@ -45,7 +45,7 @@
 				<Canvas x:Name="imgCanvas" Width="100" Height="100">
 
 					<Canvas.Background>
-						<ImageBrush ImageSource="{Binding Path=imgProvino,Converter={StaticResource immagineToImageSourceConverter}}" 
+						<ImageBrush ImageSource="{Binding Path=imgProvino,Converter={StaticResource imageSourceConverter}}" 
 							x:Name="imageMod" 
 							Stretch="Uniform" />
 					</Canvas.Background>

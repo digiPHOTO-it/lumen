@@ -41,7 +41,7 @@
                 <Grid IsEnabled="{Binding Path=loginEffettuato}">
 
                         <Label Content="Database Connection String" Height="28" HorizontalAlignment="Left" Margin="11,61,0,0" Name="label4" VerticalAlignment="Top"  />
-                        <TextBox Height="44" TextWrapping="Wrap" Margin="11,95,15,0"  VerticalAlignment="Top" IsEnabled="False" Width="628" Text="{Binding Path=ConnectionString,Mode=OneWay}" />
+                        <TextBox Height="44" TextWrapping="Wrap" Margin="11,95,32,0"  VerticalAlignment="Top" IsEnabled="False" Width="723" Text="{Binding Path=ConnectionString,Mode=OneWay}" />
 
                         <ComboBox Height="23" HorizontalAlignment="Left" Margin="183,19,0,0" 
                                   Name="comboBoxMotoreDatabase" VerticalAlignment="Top" Width="206" 
@@ -59,12 +59,12 @@
                     <Label Content="Motore di database" Height="28" HorizontalAlignment="Left" Margin="11,19,0,0" Name="label10" VerticalAlignment="Top" Width="152"  />
 
                     <Label Content="DataDirectory" Height="27" HorizontalAlignment="Left" Margin="11,211,0,0" Name="label13" VerticalAlignment="Top" Width="102" />
-                    <TextBox Height="23" HorizontalAlignment="Right" Margin="0,211,165,0" Name="textBoxDataSource" VerticalAlignment="Top" Width="476" Text="{Binding Path=cfg.cartellaDatabase}" IsEnabled="{Binding Path=possoCambiareCartellaDb}" TabIndex="3" />
-                    <Button Content="..." Height="23" Margin="608,210,138,0" VerticalAlignment="Top" Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="db" IsEnabled="{Binding Path=possoCambiareCartellaDb}"/>
+                    <TextBox Height="23" Margin="127,211,165,0" Name="textBoxDataSource" VerticalAlignment="Top" Text="{Binding Path=cfg.cartellaDatabase}" IsEnabled="{Binding Path=possoCambiareCartellaDb}" TabIndex="3" />
+                    <Button Content="..." Height="23" Margin="0,210,138,0" VerticalAlignment="Top" Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="db" IsEnabled="{Binding Path=possoCambiareCartellaDb}" HorizontalAlignment="Right" Width="22" />
 					<Button Content="Prova la connessione" Height="25" HorizontalAlignment="Left" Margin="127,274,0,0"  VerticalAlignment="Top" Width="152" Command="{Binding Path=testConnectionCommand}" ToolTip="Prova la connessione al database" />
 					<Button Content="Crea nuovo Database" Height="25" HorizontalAlignment="Left" Margin="297,274,0,0"  VerticalAlignment="Top" Width="157" Command="{Binding Path=CreateDataBaseCommand}"/>
                     <Label Content="Nome Database" Height="28" HorizontalAlignment="Left" Margin="11,164,0,0" Name="label11" VerticalAlignment="Top" Width="102" />
-                    <TextBox IsEnabled="False" Height="23" HorizontalAlignment="Left" Margin="127,166,0,0"  VerticalAlignment="Top" Width="199" Text="{Binding Path=cfg.dbNomeDbPieno}"/>
+                    <TextBox IsEnabled="False" Height="23" Margin="128,166,441,0"  VerticalAlignment="Top" Text="{Binding Path=cfg.dbNomeDbPieno}" />
                     
                 </Grid>
                 </TabItem>
@@ -137,21 +137,21 @@
             <TabItem Header="4) Preferenze Utente" IsSelected="{Binding Path=isPassoPreferenzeUtente,Mode=OneWay}" IsEnabled="{Binding Path=isPassoPreferenzeUtente}">
                     <Grid>
                         <CheckBox Content="Svuota memory card dopo averla scaricata" Height="19" Name="svuotaCardCheckBox" Width="260" Margin="209,246,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" IsChecked="{Binding Path=cfg.eraseFotoMemoryCard,Mode=TwoWay}"/>
-                        <GroupBox Header="Masterizzare" Height="104" Margin="28,126,26,0"  VerticalAlignment="Top" HorizontalAlignment="Center" Width="599">
+                        <GroupBox Header="Masterizzare" Height="104" Margin="330,136,16,0"  VerticalAlignment="Top">
                             <Grid>
                                 <RadioButton  Content="Direttamente con" Height="23" HorizontalAlignment="Left" Margin="12,15,0,0" Name="masterizzaDirettoRadioButton" VerticalAlignment="Top" Width="116" IsChecked="{Binding Path=cfg.masterizzaDirettamente}"/>
                                 <RadioButton  Content="usa cartella" Height="23" HorizontalAlignment="Left" Margin="12,50,0,0" Name="masterizzaCartellaRadioButton" VerticalAlignment="Top" Width="115" IsChecked="{Binding Path=notMasterizzaDirettamente}"/>
                                 <ComboBox Height="23" HorizontalAlignment="Left" Margin="145,15,0,0" VerticalAlignment="Top" Width="248" 
                                           IsEnabled="{Binding ElementName=masterizzaDirettoRadioButton, Path=IsChecked}" ItemsSource="{Binding Path=listaMasterizzatori}"  SelectedItem="{Binding Path=cfg.defaultMasterizzatore}" />
-                                <TextBox Height="23" Margin="145,47,36,0" Name="cartellaMasterizzaTextBox" VerticalAlignment="Top"
+                                <TextBox Height="23" Margin="145,47,46,0" Name="cartellaMasterizzaTextBox" VerticalAlignment="Top"
                                          IsEnabled="{Binding ElementName=masterizzaCartellaRadioButton, Path=IsChecked}" Text="{Binding Path=cfg.defaultChiavetta}"  />
-                            <Button Content="..." Height="23" Margin="558,46,6,0" VerticalAlignment="Top" Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="burn" Width="22" />
+                            <Button Content="..." Height="23" Margin="0,47,18,0" VerticalAlignment="Top" Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="burn" HorizontalAlignment="Right" Width="22" />
                             
                             </Grid>
                         </GroupBox>
                     <CheckBox Content="Proietta area stampabile sulle diapositive" HorizontalAlignment="Left" Margin="209,271,0,0" Name="checkBox2" VerticalAlignment="Top" Width="207" IsChecked="{Binding Path=cfg.proiettaDiapo}"/>
-                        <Label Content="Modalità di vendita" HorizontalAlignment="Left" Margin="13,87,0,0" Name="label9" VerticalAlignment="Top" Width="113" />
-                    <ComboBox Name="comboBoxModalitaVendita"  HorizontalAlignment="Left" Margin="151,91,0,0" VerticalAlignment="Top" Width="148" ItemsSource="{Binding modoVenditaValues}" SelectedValue="{Binding Path=cfg.modoVendita}" />
+                        <Label Content="Modalità di vendita" HorizontalAlignment="Left" Margin="13,132,0,0" Name="label9" VerticalAlignment="Top" Width="113" />
+                    <ComboBox Name="comboBoxModalitaVendita"  HorizontalAlignment="Left" Margin="151,136,0,0" VerticalAlignment="Top" Width="148" ItemsSource="{Binding modoVenditaValues}" SelectedValue="{Binding Path=cfg.modoVendita}" />
                         
                     <GroupBox Header="Stampigli" HorizontalAlignment="Left" Margin="6,264,0,0"  VerticalAlignment="Top" Width="179" Height="98">	
                         <StackPanel Orientation="Vertical" Margin="5,5,0,0">                            
@@ -166,23 +166,28 @@
 							<CheckBox Content="Comprimi Numero Foto" IsChecked="{Binding cfg.compNumFoto}" />
 						</StackPanel>
 					</GroupBox>
-                    <Label Content="Fuori Standard" Height="28" HorizontalAlignment="Right" Margin="0,334,426,0" Name="label12" VerticalAlignment="Top" Width="133" />
+                    <Label Content="Fuori Standard" Height="28" HorizontalAlignment="Left" Margin="209,334,0,0" Name="label12" VerticalAlignment="Top" Width="133" />
 					<TextBox Height="23" HorizontalAlignment="Left" Margin="409,336,0,0" Text="{Binding Path=cfg.fuoriStandard}" ToolTip="Identificatvo per personalizzazioni fuori standard." Name="indFuroStandard" VerticalAlignment="Top" Width="75" />
 					<Label Content="Cartella Rullini" Height="25" HorizontalAlignment="Left" Margin="13,22,0,0" Name="label5" VerticalAlignment="Top" Width="121" />
-                    <TextBox Height="23" Margin="151,22,0,0" Text="{Binding Path=cfg.cartellaFoto}" VerticalAlignment="Top" HorizontalAlignment="Left" Width="562" />
+                    <TextBox Height="23" Margin="151,22,55,0" Text="{Binding Path=cfg.cartellaFoto}" VerticalAlignment="Top" />
                     <Label Content="Cartella Maschere" Height="25" HorizontalAlignment="Left" Margin="13,51,0,0" Name="label14" VerticalAlignment="Top" Width="121" />
-                    <TextBox Height="23" Margin="151,51,0,0" Text="{Binding Path=cfg.cartellaMaschere}" VerticalAlignment="Top" Width="562" HorizontalAlignment="Left" />
-                    <Button  Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="foto" Content="..." Height="Auto" Margin="730,21,0,0" ToolTip="Sfoglia cartelle" VerticalAlignment="Top" HorizontalAlignment="Left" Width="22" />
+                    <TextBox Height="23" Margin="151,51,55,0" Text="{Binding Path=cfg.cartellaMaschere}" VerticalAlignment="Top" />
+                    <Button  Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="foto" Content="..." Height="Auto" Margin="0,21,16,0" ToolTip="Sfoglia cartelle" VerticalAlignment="Top" HorizontalAlignment="Right" Width="22" />
                     <Label Content="Millisecondi intervallo SlideShow" HorizontalAlignment="Left" Margin="209,300,0,0" VerticalAlignment="Top" Width="193" />
                     <TextBox Height="23" HorizontalAlignment="Left" Margin="409,302,0,0" Text="{Binding Path=cfg.millisIntervalloSlideShow}" ToolTip="esempio 1500 = 1 secondo e mezzo" VerticalAlignment="Top" Width="75" />
-                    <Button Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="mask" Content="..." Margin="730,51,16,0"  ToolTip="Sfoglia cartelle" VerticalAlignment="Top" Width="22" />
+                    <Button Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="mask" Content="..." Margin="0,51,16,0"  ToolTip="Sfoglia cartelle" VerticalAlignment="Top" Width="22" HorizontalAlignment="Right" />
                     <Label Content="Programma esterno foto-ritocco" Height="26" HorizontalAlignment="Left" Margin="6,437,0,0" Name="label8" VerticalAlignment="Top" Width="192" />
-                    <TextBox Height="23" HorizontalAlignment="Left" Margin="209,440,0,0" Name="textBox1" VerticalAlignment="Top" Width="515"  Text="{Binding Path=cfg.editorImmagini}"/>
-                    <Button Content="..." Height="Auto" HorizontalAlignment="Left" Margin="730,439,0,0" Name="button1" VerticalAlignment="Top" Width="22" />
+                    <TextBox Height="23" Margin="209,440,44,0" Name="textBox1" VerticalAlignment="Top" Text="{Binding Path=cfg.editorImmagini}"/>
+                    <Button Content="..." Height="Auto" HorizontalAlignment="Right" Margin="0,439,16,0" Name="button1" VerticalAlignment="Top" Width="22" />
 					<TextBox Height="23" HorizontalAlignment="Left" Margin="410,372,0,0" Text="{Binding Path=cfg.numColoneProvini}" ToolTip="N.colonne Provini" VerticalAlignment="Top" Width="66" />
 					<Label Content="Numero colonne Provini" Height="28" HorizontalAlignment="Left" Margin="208,370,0,0" Name="colonneProvini" VerticalAlignment="Top" Width="155" />
 					<TextBox Height="23" HorizontalAlignment="Left" Margin="410,406,0,0" Text="{Binding Path=cfg.numRigheProvini}" ToolTip="N.colonne Provini" VerticalAlignment="Top" Width="66" />
 					<Label Content="Numero righe Provini" Height="28" HorizontalAlignment="Left" Margin="209,0,0,41" Name="rgheProvini" VerticalAlignment="Bottom" Width="155" />
+					<Label Content="Intervalli pubblicità" HorizontalAlignment="Left" Margin="513,302,0,0" VerticalAlignment="Top" Width="147" />
+					<TextBox Height="23" HorizontalAlignment="Left" Margin="630,303,0,0" Text="{Binding Path=cfg.intervalliPubblicita}" VerticalAlignment="Top" Width="54" ToolTip="Ogni quante pagine di Slide Show intervallare una pubblicità. Esempio = 5" />
+					<Label Content="Cartella Pubblicità" Height="25" HorizontalAlignment="Left" Margin="13,82,0,0" Name="label15" VerticalAlignment="Top" Width="121" />
+					<TextBox Height="23" Margin="151,82,55,0" Text="{Binding Path=cfg.cartellaPubblicita}" VerticalAlignment="Top" />
+					<Button Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="spot" Content="..." Margin="0,82,16,0" ToolTip="Sfoglia cartelle" VerticalAlignment="Top" Width="22" HorizontalAlignment="Right" />
 				</Grid>
                 </TabItem>
 
@@ -190,13 +195,13 @@
 
                 <Grid>
                     <Label Content="Nuova password" Height="27" Margin="88,74,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" />
-                    <PasswordBox Margin="325,74,276,0" Name="nuovaPasswordBox" Height="23" VerticalAlignment="Top" PasswordChar="*"
+                    <PasswordBox Margin="325,74,0,0" Name="nuovaPasswordBox" Height="23" VerticalAlignment="Top" PasswordChar="*"
                                 xamlHelpers:PasswordBoxAssistant.BindPassword="true"
-                                xamlHelpers:PasswordBoxAssistant.BoundPassword="{Binding Path=NuovaPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="167" />
+                                xamlHelpers:PasswordBoxAssistant.BoundPassword="{Binding Path=NuovaPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="167" HorizontalAlignment="Left" />
                     <Label Content="Conferma nuova password" Height="27" Margin="88,119,0,0" Name="label3" Width="174" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.ColumnSpan="2" />
-                    <PasswordBox Margin="325,119,276,0" Name="confermaNuovaPasswordBox" Height="23" VerticalAlignment="Top" PasswordChar="*"
+                    <PasswordBox Margin="325,119,0,0" Name="confermaNuovaPasswordBox" PasswordChar="*"
                                 xamlHelpers:PasswordBoxAssistant.BindPassword="true"
-                                xamlHelpers:PasswordBoxAssistant.BoundPassword="{Binding Path=NuovaPassword2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="167" />
+                                xamlHelpers:PasswordBoxAssistant.BoundPassword="{Binding Path=NuovaPassword2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="167" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" />
                     <Button Content="Conferma" Height="25" HorizontalAlignment="Left" Margin="234,178,0,0" VerticalAlignment="Top" Width="103" Command="{Binding Path=cambiaPasswordCommand}" />
 
                     <Button Content="Ricostruzione Database" Height="23" HorizontalAlignment="Left" Margin="237,295,0,0"  VerticalAlignment="Top" Width="160" Command="{Binding Path=commandRicostruireDb}" />

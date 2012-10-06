@@ -3,7 +3,7 @@
                     xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
                     >
 
-    <lumC:ImmagineToImageSourceConverter x:Key="immagineToImageSourceConverter" />
+    <lumC:ImageSourceConverter x:Key="imageSourceConverter" />
     <lumC:PercentualeConverter x:Key="percentualeConverter" />
 
     <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
@@ -16,7 +16,7 @@
                     Width="{Binding  Path=DataContext.dimensioneIconaFoto, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" >
 
                 <Canvas.Background>
-                    <ImageBrush ImageSource="{Binding Path=imgProvino,Converter={StaticResource immagineToImageSourceConverter}}" 
+                    <ImageBrush ImageSource="{Binding Path=imgProvino,Converter={StaticResource imageSourceConverter}}" 
                                 x:Name="imageFotografia"
                                 Stretch="Uniform" />
                 </Canvas.Background>

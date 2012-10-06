@@ -91,8 +91,8 @@
                     <Button Content="Load" Command="{Binding caricareSlideShowCommand}" CommandParameter="Manual" />
                     <ToggleButton Content="Start" Command="{Binding controllareSlideShowCommand}" CommandParameter="Start" />
                     <ToggleButton Content="Stop"  Command="{Binding controllareSlideShowCommand}" CommandParameter="Stop" />
-                    <extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. righe Slide-Show" Value="{Binding numRigheSlideShow}" />
-                    <extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. colonne Slide-Show" Value="{Binding numColonneSlideShow}" />
+					<extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. righe Slide-Show" Value="{Binding numRigheSlideShow}" IsEnabled="{Binding possoControllareSlideShow}" />
+					<extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. colonne Slide-Show" Value="{Binding numColonneSlideShow}" IsEnabled="{Binding possoControllareSlideShow}" />
                     <Separator />
                     <Button Content="Svuota" Command="{Binding controllareSlideShowCommand}" CommandParameter="Reset" />
                 </ToolBar>

@@ -171,6 +171,7 @@ namespace Digiphoto.Lumen.Config  {
 			string pp = Environment.GetFolderPath( Environment.SpecialFolder.CommonPictures );
 			userConfig.cartellaFoto = Path.Combine( pp, applicationName, "Foto" );
 			userConfig.cartellaMaschere = Path.Combine( pp, applicationName, "Maschere" );
+			userConfig.cartellaPubblicita = Path.Combine( pp, applicationName, "Pubblicita" );
 			
 			userConfig.estensioniGrafiche = ".jpg;.jpeg;.png;.tif;.tiff";
 			userConfig.editorImmagini = "MSPAINT.EXE";
@@ -181,6 +182,7 @@ namespace Digiphoto.Lumen.Config  {
 			userConfig.numRigheProvini = 6;
 			userConfig.numColoneProvini = 4;
 			userConfig.paginazioneRisultatiGallery = 500;
+			userConfig.intervalliPubblicita = 10;
 
 			// Geometria di default per lo slideShow
 			creaGeometriaSlideShowSDefault(userConfig);
@@ -343,6 +345,9 @@ namespace Digiphoto.Lumen.Config  {
 			if( !Directory.Exists( userConfig.cartellaFoto ) ) {
 				return( "Cartella foto inesistente: " + userConfig.cartellaFoto );
 			}
+
+			if( userConfig.cartellaPubblicita != null && Directory.Exists( userConfig.cartellaPubblicita ) == false )
+				return ("Cartella pubblicità inesistente: " + userConfig.cartellaPubblicita);
 
 			return null;
 		}

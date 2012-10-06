@@ -144,7 +144,7 @@ namespace Digiphoto.Lumen.UI {
 		{
 			get
 			{
-				return slideShowViewModel != null;
+				return slideShowViewModel != null && slideShowViewModel.slideShow != null;
 			}
 		}
 
@@ -357,7 +357,7 @@ namespace Digiphoto.Lumen.UI {
 
 		public short numColonneSlideShow {
 			get {
-				return (slideShowViewModel != null) ? slideShowViewModel.slideShow.colonne : (short)2;
+				return (slideShowViewModel != null && slideShowViewModel.slideShow != null) ? slideShowViewModel.slideShow.colonne : (short)2;
 			}
 			set {
 				if( slideShowViewModel != null )
@@ -863,6 +863,8 @@ namespace Digiphoto.Lumen.UI {
 			} else {
 				throw new ArgumentOutOfRangeException( "modo slide show" );
 			}
+
+			OnPropertyChanged( "possoControllareSlideShow" );
 		}
 
 		private void controllareSlideShow( string operaz ) {

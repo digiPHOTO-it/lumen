@@ -29,7 +29,14 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			dimensioneIconaFoto = double.NaN;
 
 			pSSG = GestSlideShowViewModel.pSSG;
+
+			_elencoSpots = caricaElencoSpot();
 		}
+
+		private int _contaIntervalliPubblicita = 0;
+		private List<string> _elencoSpots;
+		private int _contaSchermate = 0;
+		private int _indexSpotAttuale = 0;
 
 		#region Proprietà
 
@@ -134,6 +141,27 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			}
 		}
 
+		private bool _pubblicitaInCorso = false;
+		public bool pubblicitaInCorso {
+			get {
+				return _pubblicitaInCorso;
+			}
+			set {
+				if( _pubblicitaInCorso != value ) {
+					_pubblicitaInCorso = value;
+					OnPropertyChanged( "pubblicitaInCorso" );
+					OnPropertyChanged( "slideShowInCorso" );
+				}
+			}
+		}
+
+		public bool slideShowInCorso {
+			get {
+				return !pubblicitaInCorso;
+			}
+		}
+
+
 		#endregion   // Proprietà
 
 
@@ -230,8 +258,12 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			
 		private void orologio_Tick (object sender, EventArgs e) {
 
-			// carico la collezione delle slide visibili andando avanti di una pagina
 
+			if( eventualePubblicita() == true )
+				return;
+
+
+			// carico la collezione delle slide visibili andando avanti di una pagina
 			if( slidesVisibili == null )
 				slidesVisibili = new ObservableCollection<Fotografia>();
 			else
@@ -288,8 +320,72 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		}
 
+		List<string> caricaElencoSpot() {
+			
+			List<string> elenco = null;
+
+			try {
+
+				if( Configurazione.UserConfigLumen.intervalliPubblicita > 0 )
+					elenco = Directory.EnumerateFiles( Configurazione.UserConfigLumen.cartellaPubblicita ).ToList();
+
+			} catch (Exception ee )	{
+				_giornale.Warn( "Impossibile caricare spot pubblicitari", ee );
+			}
+
+			return elenco;
+		}
 
 
+
+
+		/// <summary>
+		/// Controllo se devo gestire la pubblicita.
+		/// Se si, allora devo controllare che ad ogni intervallo prefissato, devo far partire uno spot.
+		/// </summary>
+		/// <returns>true se ho fatto lo spot</returns>
+		private bool eventualePubblicita() {
+
+			bool visualizzato = false;
+			nomeFileSpotAttuale = null;
+
+			if( !devoGestirePubblicita )
+				return false;
+
+			if( ++_contaSchermate > Configurazione.UserConfigLumen.intervalliPubblicita ) {
+
+				pubblicitaInCorso = true;
+
+				if( _indexSpotAttuale >= _elencoSpots.Count )
+					_indexSpotAttuale = 0;
+
+				nomeFileSpotAttuale = _elencoSpots.ElementAt( _indexSpotAttuale++ );
+
+				_contaSchermate = 0;
+				visualizzato = true;
+			} else
+				pubblicitaInCorso = false;
+
+			return visualizzato;
+		}
+
+		string _nomeFileSpotAttuale;
+		public string nomeFileSpotAttuale {
+			get {
+				return _nomeFileSpotAttuale;
+			}
+			set {
+				if( _nomeFileSpotAttuale != value ) {
+					_nomeFileSpotAttuale = value;
+					OnPropertyChanged( "nomeFileSpotAttuale" );
+				}
+			}
+		}
+		public bool devoGestirePubblicita {
+			get {
+				return (Configurazione.UserConfigLumen.intervalliPubblicita > 0 && _elencoSpots != null && _elencoSpots.Count > 0);
+			}
+		}
 
 		public void OnCompleted() {
 		}
