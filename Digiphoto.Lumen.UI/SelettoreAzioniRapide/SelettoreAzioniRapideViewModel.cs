@@ -927,7 +927,6 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
-
 		private void gestisciFotoDaModificareMsg(FotoDaModificareMsg fotoDaModificareMsg)
 		{
 			// Ecco che sono arrivate delle nuove foto da modificare
@@ -946,7 +945,15 @@ namespace Digiphoto.Lumen.UI
 					{
 						fotografieCW.SelectedItems.Clear();
 						foreach (Fotografia f in fotoDaModificareMsg.fotosDaModificare)
+						{
+							//Controllo se ho ragiunto il limite massimo di foto modificabili
+							if (fotografieCW.SelectedItems.Count == Configurazione.UserConfigLumen.maxNumFotoMod)
+							{
+								_giornale.Debug("Raggiunto limite massimo di foto modificabili di " + Configurazione.UserConfigLumen.maxNumFotoMod+" fotografie");
+								break;
+							}
 							fotografieCW.SelectedItems.Add(f);
+						}
 						fotografieCW.Refresh();
 					}
 				}

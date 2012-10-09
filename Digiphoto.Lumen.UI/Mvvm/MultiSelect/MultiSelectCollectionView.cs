@@ -6,6 +6,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System;
 using System.Windows;
+using Digiphoto.Lumen.UI.Mvvm.Event;
 
 namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 
@@ -18,10 +19,24 @@ namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 		
 		public event SelectionChangedEventHandler SelectionChanged;
 
-		void IMultiSelectCollectionView.AddControl( Selector selector ) {
-			this.controls.Add( selector );
-			SetSelection( selector );
+		private int maxSelectedItem = 0;
+
+		void IMultiSelectCollectionView.AddControl(Selector selector, int maxSelectedItem) 
+		{
+			this.controls.Add(selector);
+			SetSelection(selector);
 			selector.SelectionChanged += control_SelectionChanged;
+
+			this.maxSelectedItem = maxSelectedItem;
+		}
+
+		void IMultiSelectCollectionView.AddControl( Selector selector ) 
+		{
+			this.controls.Add(selector);
+			SetSelection(selector);
+			selector.SelectionChanged += control_SelectionChanged;
+
+			this.maxSelectedItem = 0;
 		}
 
 		void IMultiSelectCollectionView.RemoveControl( Selector selector ) {
@@ -62,14 +77,45 @@ namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 
 				try {
 					foreach( T item in e.AddedItems ) {
-						if( !SelectedItems.Contains( item ) ) {
+						if (!SelectedItems.Contains(item) )
+						{
+							if (SelectedItems.Count >= maxSelectedItem &&
+								maxSelectedItem > 0)
+							{
+								Deselect(item);
+								
+								// Update the UI control.
+								foreach (Control control in controls)
+									SetSelection((Selector)control);
+
+								if (sender != null)
+								{
+									SelectionFailedEventArgs args = new SelectionFailedEventArgs(maxSelectedItem);
+
+									args.RoutedEvent = MultiSelect.SelectionFailedEvent;
+
+									if (sender is UIElement)
+									{
+										(sender as UIElement).RaiseEvent(args);
+									}
+									else if (sender is ContentElement)
+									{
+										(sender as ContentElement).RaiseEvent(args);
+									}
+								}
+
+							}
+							else
+							{
 							SelectedItems.Add( item );
 							changed = true;
+							}
 						}
 					}
 
 					foreach( T item in e.RemovedItems ) {
-						if( SelectedItems.Remove( item ) ) {
+						if (SelectedItems.Remove(item))
+						{
 							changed = true;
 						}
 					}
@@ -127,6 +173,27 @@ namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 
 		}
 
+		/*
+		 * Mi seleziona il numero Massimo di elementi partendo dai primi.
+		 */
+		public void SelectAllMax()
+		{
+			// Reload all the elements in the selected collection
+			SelectedItems.Clear();
+
+			foreach (T item in SourceCollection)
+			{
+				if (SelectedItems.Count == maxSelectedItem)
+				{
+					break;
+				}
+				SelectedItems.Add(item);
+			}
+
+			// Update the UI control.
+			foreach (Control control in controls)
+				SetSelection(control as Selector);
+		}
 
 		public void SelectAll() {
 

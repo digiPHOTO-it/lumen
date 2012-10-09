@@ -19,6 +19,9 @@ using System.IO;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Core.Database;
 using System.ComponentModel;
+using Digiphoto.Lumen.UI.Mvvm.Event;
+using Digiphoto.Lumen.Config;
+using System.Text;
 
 
 
@@ -577,6 +580,15 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		{
 			// Questo mi evita di selezionare la foto quando clicco con il destro.
 			e.Handled = true;
+		}
+
+
+		private void selectionFailed(object sender, SelectionFailedEventArgs e)
+		{
+			StringBuilder msg = new StringBuilder();
+			msg.AppendFormat("Non puoi selezionare più di {0} foto", e.maxNumSelected);
+
+			_viewModel.trayIconProvider.showInfo("AVVISO",msg.ToString(),1500);
 		}
 
 	}

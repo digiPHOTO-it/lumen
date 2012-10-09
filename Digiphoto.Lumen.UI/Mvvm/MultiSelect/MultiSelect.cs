@@ -3,22 +3,36 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using Digiphoto.Lumen.UI.Mvvm.Event;
+using System.Windows.Controls;
 
 namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 
-	public static class MultiSelect {
+	public partial class MultiSelect : UIElement
+	{
+
+		private static Dictionary<Selector, IMultiSelectCollectionView> collectionViews;
+
+		public static readonly DependencyProperty MaxNumSelectedItemProperty;
+
+		public static readonly DependencyProperty IsEnabledProperty;
+
+		static MultiSelect()
+		{
+			collectionViews = new Dictionary<Selector, IMultiSelectCollectionView>();
+			
+			MaxNumSelectedItemProperty = DependencyProperty.RegisterAttached("MaxNumSelectedItem", typeof(int), typeof(MultiSelect));
+
+			IsEnabledProperty = DependencyProperty.RegisterAttached( "IsEnabled", typeof( bool ), typeof( MultiSelect ),new UIPropertyMetadata( IsEnabledChanged ) );
+		}
 
 		public static bool GetIsEnabled( Selector target ) {
-			return (bool)target.GetValue( IsEnabledProperty );
+			return (bool)target.GetValue(MultiSelect.IsEnabledProperty);
 		}
 
 		public static void SetIsEnabled( Selector target, bool value ) {
-			target.SetValue( IsEnabledProperty, value );
+			target.SetValue(MultiSelect.IsEnabledProperty, value);
 		}
-
-		public static readonly DependencyProperty IsEnabledProperty =
-			DependencyProperty.RegisterAttached( "IsEnabled", typeof( bool ), typeof( MultiSelect ),
-				new UIPropertyMetadata( IsEnabledChanged ) );
 
 		static void IsEnabledChanged( object sender, DependencyPropertyChangedEventArgs e ) {
 			Selector selector = sender as Selector;
@@ -31,7 +45,7 @@ namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 
 				if( enabled ) {
 					if( collectionView != null )
-						collectionView.AddControl( selector );
+						collectionView.AddControl(selector, GetMaxNumSelectedItem(selector));
 					itemsSourceProperty.AddValueChanged( selector, ItemsSourceChanged );
 				} else {
 					if( collectionView != null )
@@ -47,7 +61,7 @@ namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 			if( GetIsEnabled( selector ) ) {
 				IMultiSelectCollectionView oldCollectionView;
 				IMultiSelectCollectionView newCollectionView = selector.ItemsSource as IMultiSelectCollectionView;
-				collectionViews.TryGetValue( selector, out oldCollectionView );
+				MultiSelect.collectionViews.TryGetValue(selector, out oldCollectionView);
 
 				if( oldCollectionView != null ) {
 					oldCollectionView.RemoveControl( selector );
@@ -55,13 +69,29 @@ namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 				}
 
 				if( newCollectionView != null ) {
-					newCollectionView.AddControl( selector );
-					collectionViews.Add( selector, newCollectionView );
+					newCollectionView.AddControl(selector, GetMaxNumSelectedItem(selector));
+					MultiSelect.collectionViews.Add(selector, newCollectionView);
 				}
 			}
 		}
 
-		static Dictionary<Selector, IMultiSelectCollectionView> collectionViews =
-			new Dictionary<Selector, IMultiSelectCollectionView>();
+		public static int GetMaxNumSelectedItem(Selector target)
+		{
+			return (int)target.GetValue(MultiSelect.MaxNumSelectedItemProperty);
+		}
+
+		public static void SetMaxNumSelectedItem(Selector target, int value)
+		{
+			target.SetValue(MultiSelect.MaxNumSelectedItemProperty, value);
+		}
+
+		public static readonly RoutedEvent SelectionFailedEvent = EventManager.RegisterRoutedEvent("SelectionFailed", RoutingStrategy.Bubble, typeof(SelectionFailedEventHandler), typeof(MultiSelect));
+
+		public event SelectionFailedEventHandler SelectionFailed
+		{
+			add { AddHandler(SelectionFailedEvent, value); }
+			remove { RemoveHandler(SelectionFailedEvent, value); }
+		}
+
 	}
 }

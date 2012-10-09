@@ -119,7 +119,10 @@
        
         <!-- nastro basso con tutte le foto che sono in attesa di modifica -->
         <ListBox x:Name="listBoxImmaginiDaModificare"  DockPanel.Dock="Bottom"
-                 SelectionMode="Multiple" lumMS:MultiSelect.IsEnabled="True" 
+                 SelectionMode="Multiple" 
+				 lumMS:MultiSelect.IsEnabled="True" 
+				 lumMS:MultiSelect.MaxNumSelectedItem="{Binding Path=cfg.maxNumFotoMod}"
+				 lumMS:MultiSelect.SelectionFailed="selectionFailed"
                  Style="{StaticResource listBoxImmaginiDaModificareStyle}"
                  ItemsSource="{Binding Path=fotografieDaModificareCW,Mode=TwoWay}" 
                  ItemsPanel="{DynamicResource immaginiDaModificareItemsPanelTemplate}" 
@@ -132,7 +135,8 @@
 				 PreviewMouseRightButtonDown="listBoxImmaginiDaModificare_PreviewMouseRightButtonDown">
 			<!-- ^^^^^^^^^ Disabilito la selezione sul tasto destro così posso gestirlo per abilitare il Menu Rapido ^^^^^^^^^ -->
             <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
+				
+				<Style TargetType="ListBoxItem">
 
                     <!-- Questo evento serve per fare il drag della foto sulla cornice -->
 					<EventSetter Event="PreviewMouseLeftButtonDown" Handler="listBoxImmaginiDaModificare_PreviewMouseLeftButtonDown"/>
@@ -144,10 +148,10 @@
 
 						<!--SelectedItem without focus-->
 						<SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Yellow" />
-					</Style.Resources>	
-                </Style>
-            </ListBox.ItemContainerStyle>
-        </ListBox>
+					</Style.Resources>
+				</Style>
+			</ListBox.ItemContainerStyle>
+		</ListBox>
 
    
 

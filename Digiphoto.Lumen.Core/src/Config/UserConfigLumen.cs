@@ -282,6 +282,15 @@ namespace Digiphoto.Lumen.Config
 			set;
 		}
 
+		/// <summary>
+		/// Questo valore indica il numero massimo di foto in modifica
+		/// </summary>
+		public int maxNumFotoMod
+		{
+			get;
+			set;
+		}
+
 		# region SlideShowParam
 
 		public short deviceEnum

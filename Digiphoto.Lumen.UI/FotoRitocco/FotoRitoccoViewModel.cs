@@ -62,6 +62,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				modalitaEdit = ModalitaEdit.DefaultFotoRitocco;
 			}
 
+			cfg = Configurazione.UserConfigLumen;
+
 			resetEffetti();
 		}
 
@@ -107,6 +109,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					OnPropertyChanged("fotografieDaModificareCW");
 				}
 			}
+		}
+
+		public UserConfigLumen cfg
+		{
+			get;
+			set;
 		}
 
 		public IFotoRitoccoSrv fotoRitoccoSrv {
@@ -1127,7 +1135,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		void riempireElencoInModifica() {
-			fotografieDaModificareCW.SelectAll();
+			fotografieDaModificareCW.SelectAllMax();
 			resetEffetti();
 		}
 
@@ -1227,7 +1235,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-
 		private void gestisciFotoDaModificareMsg( FotoDaModificareMsg fotoDaModificareMsg ) {
 
 			// Ecco che sono arrivate delle nuove foto da modificare
@@ -1243,7 +1250,17 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					if( modificheInCorso == false ) {
 						fotografieDaModificareCW.SelectedItems.Clear();
 						foreach( Fotografia f in fotoDaModificareMsg.fotosDaModificare )
+						{
+							// Verifico se ho raggiunto il numero massimo di foto da modificare
+							if (fotografieDaModificareCW.SelectedItems.Count > Configurazione.UserConfigLumen.maxNumFotoMod - 1)
+							{
+								_giornale.Debug("Raggiunto il limite massimo di foto " + Configurazione.UserConfigLumen.maxNumFotoMod +" foto modificabili Contemporaneamente");
+								dialogProvider.ShowMessage("Hai raggiunto il numero massimo di foto modificabili di "+Configurazione.UserConfigLumen.maxNumFotoMod+" foto\nLe foto in eccesso verranno aggiunte ma no selezionate","AVVISO");
+								break;
+							}
+
 							fotografieDaModificareCW.SelectedItems.Add( f );
+						}
 						fotografieDaModificareCW.Refresh();
 					}
 				}

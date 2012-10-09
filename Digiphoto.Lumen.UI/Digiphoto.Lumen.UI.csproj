@@ -248,6 +248,8 @@
       <DependentUpon>LoggingShowWindowl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Main\CambioPaginaMsg.cs" />
+    <Compile Include="Mvvm\Event\SelectionFailedEventArgs.cs" />
+    <Compile Include="Mvvm\Event\SelectionFailedEventHandler.cs" />
     <Compile Include="Mvvm\ITrayIconProvider.cs" />
     <Compile Include="Mvvm\IDialogProvider.cs" />
     <Compile Include="Mvvm\MultiSelect\IMultiSelectCollectionView.cs" />
