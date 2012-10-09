@@ -182,7 +182,8 @@ namespace Digiphoto.Lumen.Config  {
 			userConfig.numRigheProvini = 6;
 			userConfig.numColoneProvini = 4;
 			userConfig.paginazioneRisultatiGallery = 500;
-			userConfig.intervalliPubblicita = 10;
+
+			userConfig.maxNumFotoMod = 25;
 
 			// Geometria di default per lo slideShow
 			creaGeometriaSlideShowSDefault(userConfig);
