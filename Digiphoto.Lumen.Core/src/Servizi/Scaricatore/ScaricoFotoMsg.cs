@@ -14,7 +14,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 	public class ScaricoFotoMsg : Messaggio {
 
-		public ScaricoFotoMsg( string descrizione ) : base( descrizione ) {
+		public ScaricoFotoMsg( object sender, string descrizione ) : base( sender, descrizione ) {
 		}
 
 		/// <summary>

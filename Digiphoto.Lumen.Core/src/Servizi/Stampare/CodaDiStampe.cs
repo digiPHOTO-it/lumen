@@ -107,8 +107,8 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			lavoroDiStampa.stato = LavoroDiStampa.Stato.Completato;
 
 			StampatoMsg eventArgs = new StampatoMsg( lavoroDiStampa );
-			eventArgs.descrizione = "+StampaCompletata";
-
+			eventArgs.descrizione = lavoroDiStampa.ToString();
+			eventArgs.esito = lavoroDiStampa.esitostampa == EsitoStampa.Ok ? Esito.Ok : Esito.Errore;
 
 			if( stampaCompletataCallback != null )
 				stampaCompletataCallback.Invoke( this, eventArgs ); 

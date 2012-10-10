@@ -669,6 +669,8 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\information.ico" />
+    <EmbeddedResource Include="Resources\error.ico" />
     <Resource Include="About\AboutLogo.png">
       <SubType>Image</SubType>
     </Resource>
