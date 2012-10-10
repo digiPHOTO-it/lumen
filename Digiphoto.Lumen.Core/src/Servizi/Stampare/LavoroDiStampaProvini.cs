@@ -28,7 +28,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 		}
 
 		public override string ToString() {
-			return string.Format( "param={0}", param.ToString() );
+			return string.Format( "Job Stampa Provini " + param.numeroColonne + "x" + param.numeroRighe + ". (" + fotografie.Count + ")" );
 		}
 
 	}

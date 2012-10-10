@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Digiphoto.Lumen.UI.Properties {
+namespace Digiphoto.Lumen.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Digiphoto.Lumen.UI.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Digiphoto.Lumen.UI.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Digiphoto.Lumen.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -60,31 +60,48 @@ namespace Digiphoto.Lumen.UI.Properties {
             }
         }
         
-        internal static System.Drawing.Icon error {
+        /// <summary>
+        ///   Looks up a localized string similar to The buffer is empty..
+        /// </summary>
+        internal static string MessageBufferEmpty {
             get {
-                object obj = ResourceManager.GetObject("error", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
+                return ResourceManager.GetString("MessageBufferEmpty", resourceCulture);
             }
         }
         
-        internal static System.Drawing.Icon information {
+        /// <summary>
+        ///   Looks up a localized string similar to The buffer does not have sufficient capacity to put new items..
+        /// </summary>
+        internal static string MessageBufferOverflow {
             get {
-                object obj = ResourceManager.GetObject("information", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
+                return ResourceManager.GetString("MessageBufferOverflow", resourceCulture);
             }
         }
         
-        internal static System.Drawing.Icon Lumen_64x64 {
+        /// <summary>
+        ///   Looks up a localized string similar to The new capacity must be greater than or equal to the buffer size..
+        /// </summary>
+        internal static string MessageCapacityTooSmall {
             get {
-                object obj = ResourceManager.GetObject("Lumen_64x64", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
+                return ResourceManager.GetString("MessageCapacityTooSmall", resourceCulture);
             }
         }
         
-        internal static System.Drawing.Icon Stampante {
+        /// <summary>
+        ///   Looks up a localized string similar to The read count cannot be greater than the buffer size..
+        /// </summary>
+        internal static string MessageReadCountTooLarge {
             get {
-                object obj = ResourceManager.GetObject("Stampante", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
+                return ResourceManager.GetString("MessageReadCountTooLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The buffer capacity must be greater than or equal to zero..
+        /// </summary>
+        internal static string MessageZeroCapacity {
+            get {
+                return ResourceManager.GetString("MessageZeroCapacity", resourceCulture);
             }
         }
     }

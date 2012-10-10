@@ -24,11 +24,17 @@ using Digiphoto.Lumen.Servizi.Stampare;
 using Digiphoto.Lumen.UI.DataEntry.DEGiornata;
 using Digiphoto.Lumen.UI.DataEntry;
 using Digiphoto.Lumen.Core.Database;
+using Digiphoto.Lumen.UI.Main;
+using Digiphoto.Lumen.Core.Collections;
+
 namespace Digiphoto.Lumen.UI {
 
 	class MainWindowViewModel : ClosableWiewModel, IObserver<Messaggio> {
 
 		public MainWindowViewModel() {
+
+			// Tengo un massimo di elementi in memoria per evitare consumi eccessivi
+			informazioniUtente = new CircularBuffer<InformazioneUtente>( 50, true );
 
             selettoreStampantiInstallateViewModel = new SelettoreStampantiInstallateViewModel();
 
@@ -60,6 +66,22 @@ namespace Digiphoto.Lumen.UI {
             get;
             private set;
         }
+
+		/// <summary>
+		/// Ritorno la testa del buffer circolare
+		/// ossia l'ultimo elemento inserito.
+		/// </summary>
+		public InformazioneUtente ultimaInformazioneUtente {
+			get {
+				// La Peek non rimuove l'elemento dal buffer. Invece la Pop si.
+				return (informazioniUtente != null && informazioniUtente.Size > 0) ? informazioniUtente.elemCoda : null;
+			}
+		}
+
+		public CircularBuffer<InformazioneUtente> informazioniUtente {
+			get;
+			private set;
+		}
 
 		#endregion Prorietà
 
@@ -111,6 +133,21 @@ namespace Digiphoto.Lumen.UI {
 				return _reportConsumoCartaCommand;
 			}
 		}
+
+/* DACANC
+		private RelayCommand _commandHistoryInformazioniUtente;
+		public ICommand commandHistoryInformazioniUtente {
+			get {
+				if( _commandHistoryInformazioniUtente == null ) {
+					_commandHistoryInformazioniUtente = new RelayCommand( param => esguireHistoryInformazioniUtente(),
+															  param => true,
+															  false );
+				}
+				return _commandHistoryInformazioniUtente;
+			}
+		}
+*/	
+		
 
 		#endregion Comandi
 
@@ -218,9 +255,8 @@ namespace Digiphoto.Lumen.UI {
 			}
 
 
-			
-
 		}
+
 
 		#endregion Metodi
 
@@ -242,6 +278,14 @@ namespace Digiphoto.Lumen.UI {
 				if( sm.lavoroDiStampa.esitostampa == EsitoStampa.Errore ) {
 					dialogProvider.ShowError( sm.lavoroDiStampa.ToString(), "Lavoro di stampa fallito", null );
 				}
+			}
+
+			if( msg.showInStatusBar ) {
+				InformazioneUtente infoUser = new InformazioneUtente( msg.descrizione );
+				infoUser.esito = msg.esito;
+				informazioniUtente.Put( infoUser );
+				OnPropertyChanged( "ultimaInformazioneUtente" );
+				OnPropertyChanged( "informazioniUtente" );
 			}
 
 		}

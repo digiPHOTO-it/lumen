@@ -326,7 +326,7 @@ namespace Digiphoto.Lumen.UI {
 			}
 
 			// Questo messaggio me lo lancia il mio servizio quando ha acquisito i dati di una nuova chiavetta
-			if( msg.descrizione.Equals( "::OnLetturaFlashCardConfig" ) ) {
+			if( msg.senderTag != null && msg.senderTag.Equals( "::OnLetturaFlashCardConfig" ) ) {
 
 				// carico i dati dell'ultima chiavetta inserita
 				if( isScaricatoreIdle ) {

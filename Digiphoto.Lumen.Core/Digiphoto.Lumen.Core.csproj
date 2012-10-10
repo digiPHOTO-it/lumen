@@ -140,8 +140,14 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="src\Applicazione\StartupUtil.cs" />
     <Compile Include="src\Applicazione\Stato.cs" />
+    <Compile Include="src\Collections\CircularBuffer.cs" />
     <Compile Include="src\Config\Configurazione.cs" />
     <Compile Include="src\Config\ConfigurazioneMancanteException.cs" />
     <Compile Include="src\Config\ConfigurazioneNonValidaException.cs" />
@@ -163,6 +169,7 @@
     <Compile Include="src\Database\UnitOfWorkScope.cs" />
     <Compile Include="src\DatiDiEsempio\DataGen.cs" />
     <Compile Include="src\DatiDiEsempio\ParoleCasuali.cs" />
+    <Compile Include="src\Eventi\InformazioneUtente.cs" />
     <Compile Include="src\Eventi\Messaggio.cs" />
     <Compile Include="src\Imaging\Correzioni\BiancoNero.cs" />
     <Compile Include="src\Imaging\Correzioni\Correttore.cs">
@@ -325,6 +332,12 @@
       <Name>Digiphoto.Lumen.Model</Name>
       <Private>True</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

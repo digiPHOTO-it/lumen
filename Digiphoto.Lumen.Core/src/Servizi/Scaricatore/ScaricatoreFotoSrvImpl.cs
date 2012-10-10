@@ -100,13 +100,13 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 		private void elaboraFotoAcquisite( EsitoScarico esitoScarico ) {
 
-			ScaricoFotoMsg scaricoFotoMsg = new ScaricoFotoMsg( "Scaricate " + esitoScarico.totFotoCopiateOk + " foto" );
+			ScaricoFotoMsg scaricoFotoMsg = new ScaricoFotoMsg( this, "Scaricate " + esitoScarico.totFotoCopiateOk + " foto. Togliere la card" );
 			scaricoFotoMsg.esitoScarico = esitoScarico;
 			// Finito: genero un evento per notificare che l'utente può togliere la flash card.
 			scaricoFotoMsg.fase = Fase.FineScarico;
-			scaricoFotoMsg.descrizione = "Acquisizione foto terminata";
 			scaricoFotoMsg.sorgente =  _paramScarica.cartellaSorgente != null ? _paramScarica.cartellaSorgente : _paramScarica.nomeFileSingolo;
-			
+			scaricoFotoMsg.showInStatusBar = true;
+
 			// battezzo la flashcard al fotografo corrente
 			battezzaFlashCard( _paramScarica );
 
@@ -128,7 +128,8 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			// Rendo pubblico l'esito dell'elaborazione così che si può aggiornare la libreria.
 			scaricoFotoMsg.fase = Fase.FineLavora;
-			scaricoFotoMsg.descrizione = "Provinatura foto terminata";
+			scaricoFotoMsg.descrizione = "Provinatura foto terminata. Inserite " + elab.conta + " foto nel database";
+			scaricoFotoMsg.showInStatusBar = true;
 			pubblicaMessaggio( scaricoFotoMsg );
 
 			// Chiudo il worker che ha finito il suo lavoro
@@ -172,8 +173,9 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 					ultimaChiavettaInserita = creaParamScarica( vcm.nomeVolume );
 
 					if( ultimaChiavettaInserita.flashCardConfig != null ) {
-						Messaggio msg = new Messaggio( this );
-						msg.descrizione = "::OnLetturaFlashCardConfig";
+						Messaggio msg = new Messaggio( this, "E' stata inserita una memory-card" );
+						msg.senderTag = "::OnLetturaFlashCardConfig";
+						msg.showInStatusBar = true;
 						pubblicaMessaggio( msg );
 					}
 				} else
