@@ -18,6 +18,7 @@ namespace Digiphoto.Lumen.Eventi {
 			this.sender = sender;
 			timeStamp = DateTime.Now;
 			this.descrizione = "Messaggio";
+			this.esito = Esito.Ok;
 		}
 
 		public Messaggio( object sender, string descrizione ) : this( sender ) {
@@ -44,6 +45,11 @@ namespace Digiphoto.Lumen.Eventi {
 		public object sender {
 			get;
 			private set;
+		}
+
+		public bool showInStatusBar {
+			get;
+			set;
 		}
 
 		/** Questa informazione è a disposizione del programma chiamante.

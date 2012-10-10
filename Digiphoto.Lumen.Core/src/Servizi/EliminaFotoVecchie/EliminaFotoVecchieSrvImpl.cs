@@ -25,10 +25,6 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
         {
         }
 
-        ~EliminaFotoVecchieSrvImpl()
-        {
-
-        }
 
         /// <summary>
         /// Restituisce la lista dei path che soddisfano il criterio di eliminazione in base alla data
@@ -107,6 +103,8 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
                 objContext.SaveChanges();
 			}
             eliminaFotoVecchieMsg.fase = Fase.FineEliminazione;
+			eliminaFotoVecchieMsg.descrizione = "Eliminate " + quante + " foto dalla cartella " + pathCartella;
+			eliminaFotoVecchieMsg.showInStatusBar = true;
             pubblicaMessaggio(eliminaFotoVecchieMsg);
 			return quante;
         }

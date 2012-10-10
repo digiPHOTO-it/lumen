@@ -18,8 +18,24 @@
         </ResourceDictionary>
     </Window.Resources>
 
+	<DockPanel LastChildFill="True" >
 
-    <TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Top" Name="tabControlPagine" SelectedIndex="2">
+		<StatusBar DockPanel.Dock="Bottom">
+			<StackPanel Orientation="Horizontal">
+				<Image  Source="{Binding Path=ultimaInformazioneUtente.esito,Converter={StaticResource imageSourceConverter}}" Height="16" Width="16" />
+<!--
+				<Button Name="buttonHistoryOnOff" Click="buttonHistoryOnOff_Click">					
+-->				
+					<Label MinWidth="200"  Content="{Binding Path=ultimaInformazioneUtente.testo}"  />
+<!--
+				</Button>
+			
+				<ComboBox  MaxWidth="300" IsReadOnly="True" ItemsSource="{Binding informazioniUtente,Mode=OneWay}" DisplayMemberPath="testo" SelectedItem="{Binding Path=informazioniUtente.elemCoda,Mode=OneWay}" Name="comboBoxHistoryInfo" ToolTip="History messaggi" />
+-->
+			</StackPanel>
+		</StatusBar>
+
+		<TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Top" Name="tabControlPagine" SelectedIndex="2">
         
         <TabItem Header="Scarica" ToolTip="Scarica foto da memory-card o da altra cartella" MinHeight="30" >
             <!-- UserControl per scaricare le foto -->
@@ -137,4 +153,6 @@
         </TabItem>
 
     </TabControl>
+
+	</DockPanel>
 </Window>
