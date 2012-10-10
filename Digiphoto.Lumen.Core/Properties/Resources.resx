@@ -117,17 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="error" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\error.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="MessageBufferEmpty" xml:space="preserve">
+    <value>The buffer is empty.</value>
   </data>
-  <data name="information" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\information.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="MessageBufferOverflow" xml:space="preserve">
+    <value>The buffer does not have sufficient capacity to put new items.</value>
   </data>
-  <data name="Lumen_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Lumen-64x64.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="MessageCapacityTooSmall" xml:space="preserve">
+    <value>The new capacity must be greater than or equal to the buffer size.</value>
   </data>
-  <data name="Stampante" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Stampante.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="MessageReadCountTooLarge" xml:space="preserve">
+    <value>The read count cannot be greater than the buffer size.</value>
+  </data>
+  <data name="MessageZeroCapacity" xml:space="preserve">
+    <value>The buffer capacity must be greater than or equal to zero.</value>
   </data>
 </root>

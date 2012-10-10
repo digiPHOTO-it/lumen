@@ -97,7 +97,13 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 		public void caricaCarrello( Carrello c ) {
+			
 			gestoreCarrello.caricaCarrello( c.id );
+
+			pubblicaMessaggio( new Messaggio( this )  {
+				descrizione = "Caricato carrello dal database: " + c.intestazione,
+				showInStatusBar = true
+			} );
 		}
 
 		/** 
@@ -159,10 +165,25 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 					transaction.Complete();
 					_giornale.Info( "commit carrello a buon fine" );
+
 					esito = true;
+
+					pubblicaMessaggio( new Messaggio( this ) {
+						esito = Esito.Ok,
+						showInStatusBar = true,
+						descrizione = "Carrello salvato ok"
+					} );
+
 				} catch( Exception eee ) {
 					esito = false;
 					_giornale.Error( "Impossibile salvare il carrello", eee );
+
+					pubblicaMessaggio( new Messaggio( this ) {
+						esito = Esito.Errore,
+						showInStatusBar = true,
+						descrizione = "Errore nel salvataggio del carrello"
+					} );
+
 				}
 			}
 
@@ -192,6 +213,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				// Poi lancio la masterizzazione
 				eventualeMasterizzazione();
 			}
+
+
+			Messaggio info = new Messaggio( this, "Vendita completata. Totale a pagare: " + carrello.totaleAPagare );
+			info.showInStatusBar = true;
+			pubblicaMessaggio( info );
+
 			return esito;
 		}
 
