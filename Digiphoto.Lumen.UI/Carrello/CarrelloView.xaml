@@ -15,10 +15,6 @@
     
     <!-- Istanzio il controllore -->
 
-	<lumM:UserControlBase.DataContext>
-        <lum:CarrelloViewModel />
-    </lumM:UserControlBase.DataContext>
-
     <UserControl.Resources>
         <ResourceDictionary Source="CarrelloResources.xaml" />
     </UserControl.Resources>
