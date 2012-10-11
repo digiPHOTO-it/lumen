@@ -22,6 +22,8 @@ using System.ComponentModel;
 using Digiphoto.Lumen.UI.Mvvm.Event;
 using Digiphoto.Lumen.Config;
 using System.Text;
+using Digiphoto.Lumen.Eventi;
+using Digiphoto.Lumen.Applicazione;
 
 
 
@@ -588,7 +590,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			StringBuilder msg = new StringBuilder();
 			msg.AppendFormat("Non puoi selezionare più di {0} foto", e.maxNumSelected);
 
-			_viewModel.trayIconProvider.showInfo("AVVISO",msg.ToString(),1500);
+			_viewModel.trayIconProvider.showInfo("AVVISO", msg.ToString(), 1500);
 		}
 
 	}

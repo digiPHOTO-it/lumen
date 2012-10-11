@@ -10,6 +10,7 @@ using Digiphoto.Lumen.UI.Mvvm;
 using Digiphoto.Lumen.UI.TrayIcon;
 using Digiphoto.Lumen.UI.About;
 using System.Windows.Input;
+using Digiphoto.Lumen.Eventi;
 
 namespace Digiphoto.Lumen.UI {
 	/// <summary>
@@ -76,10 +77,20 @@ namespace Digiphoto.Lumen.UI {
 			var risultato = MessageBox.Show( message, title, MessageBoxButton.OK, MessageBoxImage.Error );
 			if( afterHideCallback != null )
 				afterHideCallback();
+
+			Messaggio msgStatusBar = new Messaggio(this);
+			msgStatusBar.descrizione = message;
+			msgStatusBar.showInStatusBar = true;
+			LumenApplication.Instance.bus.Publish(msgStatusBar);
 		}
 
 		public void ShowMessage( string message, string title ) {
 			MessageBox.Show( message, title, MessageBoxButton.OK, MessageBoxImage.Information );
+
+			Messaggio msgStatusBar = new Messaggio(this);
+			msgStatusBar.descrizione = message;
+			msgStatusBar.showInStatusBar = true;
+			LumenApplication.Instance.bus.Publish(msgStatusBar);
 		}
 
 
@@ -90,6 +101,11 @@ namespace Digiphoto.Lumen.UI {
 		public void ShowConfirmation( string message, string title, Action<bool> afterHideCallback ) {
 			var tastoPremuto = MessageBox.Show( message, title, MessageBoxButton.YesNo, MessageBoxImage.Question );
 			afterHideCallback( tastoPremuto == MessageBoxResult.Yes );
+
+			Messaggio msgStatusBar = new Messaggio(this);
+			msgStatusBar.descrizione = message;
+			msgStatusBar.showInStatusBar = true;
+			LumenApplication.Instance.bus.Publish(msgStatusBar);
 		}
 		
 		/// <summary>
@@ -100,6 +116,11 @@ namespace Digiphoto.Lumen.UI {
 		{
 			var tastoPremuto = MessageBox.Show(message, title, MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
 			afterHideCallback(tastoPremuto);
+
+			Messaggio msgStatusBar = new Messaggio(this);
+			msgStatusBar.descrizione = message;
+			msgStatusBar.showInStatusBar = true;
+			LumenApplication.Instance.bus.Publish(msgStatusBar);
 		}
 
 		#region TrayIcon
@@ -108,30 +129,55 @@ namespace Digiphoto.Lumen.UI {
 		{
 			ShowTrayIcon trayIcon = new ShowTrayIcon();
 			trayIcon.showAbout(title, msg, sleep);
+
+			Messaggio msgStatusBar = new Messaggio(this);
+			msgStatusBar.descrizione = msg;
+			msgStatusBar.showInStatusBar = true;
+			LumenApplication.Instance.bus.Publish(msgStatusBar);
 		}
 
 		public void showAboutCloud(string title, string msg, int? sleep)
 		{
 			ShowTrayIcon trayIcon = new ShowTrayIcon();
 			trayIcon.showAboutCloud(title, msg, sleep);
+
+			Messaggio msgStatusBar = new Messaggio(this);
+			msgStatusBar.descrizione = msg;
+			msgStatusBar.showInStatusBar = true;
+			LumenApplication.Instance.bus.Publish(msgStatusBar);
 		}
 
 		public void showError(string title, string msg, int? sleep)
 		{
 			ShowTrayIcon trayIcon = new ShowTrayIcon();
 			trayIcon.showError(title, msg, sleep);
+
+			Messaggio msgStatusBar = new Messaggio(this);
+			msgStatusBar.descrizione = msg;
+			msgStatusBar.showInStatusBar = true;
+			LumenApplication.Instance.bus.Publish(msgStatusBar);
 		}
 
 		public void showInfo(string title, string msg, int? sleep)
 		{
 			ShowTrayIcon trayIcon = new ShowTrayIcon();
 			trayIcon.showInfo(title, msg, sleep);
+
+			Messaggio msgStatusBar = new Messaggio(this);
+			msgStatusBar.descrizione = msg;
+			msgStatusBar.showInStatusBar = true;
+			LumenApplication.Instance.bus.Publish(msgStatusBar);
 		}
 
 		public void showWarning(string title, string msg, int? sleep)
 		{
 			ShowTrayIcon trayIcon = new ShowTrayIcon();
 			trayIcon.showWarning(title, msg, sleep);
+
+			Messaggio msgStatusBar = new Messaggio(this);
+			msgStatusBar.descrizione = msg;
+			msgStatusBar.showInStatusBar = true;
+			LumenApplication.Instance.bus.Publish(msgStatusBar);
 		}
 
 		#endregion;

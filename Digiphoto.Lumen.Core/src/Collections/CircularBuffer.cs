@@ -5,6 +5,7 @@ using System.Threading;
 using System.Diagnostics;
 using System.Collections.Specialized;
 using System.Windows.Threading;
+using System.ComponentModel;
 
 namespace Digiphoto.Lumen.Core.Collections {
 
@@ -14,7 +15,8 @@ namespace Digiphoto.Lumen.Core.Collections {
 	/// <see cref="http://circularbuffer.codeplex.com/SourceControl/BrowseLatest"/>
 	/// <typeparam name="T">Un oggetto qualsiasi da mettere nel buffer</typeparam>
 
-	public class CircularBuffer<T> : ICollection<T>, IEnumerable<T>, ICollection, IEnumerable {
+	public class CircularBuffer<T> : ICollection<T>, IEnumerable<T>, ICollection, IEnumerable, INotifyCollectionChanged, INotifyPropertyChanged
+	{
 
 		private int capacity;
 		private int size;
@@ -93,6 +95,7 @@ namespace Digiphoto.Lumen.Core.Collections {
 			size = 0;
 			head = 0;
 			tail = 0;
+			this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 		}
 
 		public int Put( T [] src ) {
@@ -108,9 +111,11 @@ namespace Digiphoto.Lumen.Core.Collections {
 				if( tail == capacity )
 					tail = 0;
 				buffer [tail] = src [srcIndex];
+
+				this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, src[srcIndex]));
 			}
 			size = Math.Min( size + count, capacity );
-			
+
 			return count;
 		}
 
@@ -124,6 +129,8 @@ namespace Digiphoto.Lumen.Core.Collections {
 
 			if( size < capacity )
 				size++;
+
+			this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
 
 			Debug.Assert( size <= capacity );
 		}
@@ -151,6 +158,8 @@ namespace Digiphoto.Lumen.Core.Collections {
 				if( head == capacity )
 					head = 0;
 				dst [dstIndex] = buffer [head];
+
+				this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, buffer[head]));
 			}
 			size -= realCount;
 			return realCount;
@@ -162,6 +171,7 @@ namespace Digiphoto.Lumen.Core.Collections {
 		/// <returns></returns>
 		public T elemCoda {
 			get {
+
 				return (size > 0 && tail > 0) ? buffer [tail - 1] : default(T);
 			}
 		}
@@ -185,6 +195,7 @@ namespace Digiphoto.Lumen.Core.Collections {
 			if( ++head == capacity )
 				head = 0;
 			size--;
+			this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
 			return item;
 		}
 
@@ -300,5 +311,40 @@ namespace Digiphoto.Lumen.Core.Collections {
 
 		#endregion
 
+		#region INotifyCollectionChanged
+
+		public virtual event NotifyCollectionChangedEventHandler CollectionChanged;
+
+		protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+		{
+			this.RaiseCollectionChanged(e);
+		}
+
+		protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
+		{
+			this.RaisePropertyChanged(e);
+		}
+
+		protected virtual event PropertyChangedEventHandler PropertyChanged;
+
+		private void RaiseCollectionChanged(NotifyCollectionChangedEventArgs e)
+		{
+			if (this.CollectionChanged != null)
+				this.CollectionChanged(this, e);
+		}
+
+		private void RaisePropertyChanged(PropertyChangedEventArgs e)
+		{
+			if (this.PropertyChanged != null)
+				this.PropertyChanged(this, e);
+		}
+
+		event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
+		{
+			add { this.PropertyChanged += value; }
+			remove { this.PropertyChanged -= value; }
+		}
+
+		#endregion
 	}
 }
