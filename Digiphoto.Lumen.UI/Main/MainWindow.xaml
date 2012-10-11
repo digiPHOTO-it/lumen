@@ -20,19 +20,27 @@
 
 	<DockPanel LastChildFill="True" >
 
-		<StatusBar DockPanel.Dock="Bottom">
-			<StackPanel Orientation="Horizontal">
-				<Image  Source="{Binding Path=ultimaInformazioneUtente.esito,Converter={StaticResource imageSourceConverter}}" Height="16" Width="16" />
-<!--
-				<Button Name="buttonHistoryOnOff" Click="buttonHistoryOnOff_Click">					
--->				
-					<Label MinWidth="200"  Content="{Binding Path=ultimaInformazioneUtente.testo}"  />
-<!--
-				</Button>
+		<StatusBar Name="statusBarMain" DockPanel.Dock="Bottom" ItemsPanel="{DynamicResource itemsPanelTemplateStatusBarMain}" >
+
+			<StatusBarItem Grid.Column="0">
+				<Image Source="{Binding Path=ultimaInformazioneUtente.esito,Converter={StaticResource imageSourceConverter}}" Height="16" Width="16" />
+			</StatusBarItem>
+			<StatusBarItem Grid.Column="1">
+				<Label Background="Orange"  Content="{Binding Path=ultimaInformazioneUtente.testo}" ToolTip="{Binding Path=ultimaInformazioneUtente.testo}" />
+			</StatusBarItem>
+
+			<StatusBarItem Grid.Column="2">
+				<TextBlock ToolTip="Stato carrello">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="Foto: {0} Pagare: {1}">
+                                    <Binding Path="carrelloViewModel.carrelloCorrente.sommatoriaQtaFotoDaStampare" />
+									<Binding Path="carrelloViewModel.carrelloCorrente.prezzoNettoTotale" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+				</TextBlock>
+
+			</StatusBarItem>
 			
-				<ComboBox  MaxWidth="300" IsReadOnly="True" ItemsSource="{Binding informazioniUtente,Mode=OneWay}" DisplayMemberPath="testo" SelectedItem="{Binding Path=informazioniUtente.elemCoda,Mode=OneWay}" Name="comboBoxHistoryInfo" ToolTip="History messaggi" />
--->
-			</StackPanel>
 		</StatusBar>
 
 		<TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Top" Name="tabControlPagine" SelectedIndex="2">
@@ -52,7 +60,7 @@
 
         
         <TabItem Header="Carrello" ToolTip="Vendere stampe e CD" >
-			<lum:CarrelloView/>
+			<lum:CarrelloView DataContext="{Binding Path=carrelloViewModel}" />
         </TabItem>
 
         <TabItem Header="Configurazione" ToolTip="Scarica foto da memory-card o da altra cartella" MinHeight="30" >
