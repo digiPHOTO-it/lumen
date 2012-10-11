@@ -45,6 +45,14 @@ namespace Digiphoto.Lumen.UI {
 			// Ascolto i messaggi
 			IObservable<Messaggio> observable = LumenApplication.Instance.bus.Observe<Messaggio>();
 			observable.Subscribe( this );
+			
+			Messaggio msgInit = new Messaggio(this);
+			msgInit.showInStatusBar = true;
+			msgInit.descrizione = "Nessun messaggio";
+			msgInit.esito = 0;
+
+			LumenApplication.Instance.bus.Publish(msgInit);
+			
         }
 
 		#region Proprietà
@@ -290,6 +298,7 @@ namespace Digiphoto.Lumen.UI {
 						informazioniUtente.Put(infoUser);
 					}
 				));
+
 
 				OnPropertyChanged( "ultimaInformazioneUtente" );
 				OnPropertyChanged( "informazioniUtente" );
