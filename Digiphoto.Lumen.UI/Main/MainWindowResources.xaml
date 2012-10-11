@@ -5,4 +5,18 @@
 
     <lumC:ImageSourceConverter x:Key="imageSourceConverter" />
 
+	<ItemsPanelTemplate x:Key="itemsPanelTemplateStatusBarMain">
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="20"/>
+				<ColumnDefinition Width="400"/>
+				<ColumnDefinition Width="120"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+		</Grid>
+	</ItemsPanelTemplate>
+
 </ResourceDictionary>
