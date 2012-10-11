@@ -28,8 +28,8 @@
 					<Label MinWidth="200"  Content="{Binding Path=ultimaInformazioneUtente.testo}"  />
 
 				</Button-->
-			
-				<ComboBox  MaxWidth="300" IsReadOnly="True" ItemsSource="{Binding informazioniUtente,Mode=OneWay}" DisplayMemberPath="testo" SelectedItem="{Binding Path=informazioniUtente.elemCoda,Mode=OneWay}" Name="comboBoxHistoryInfo" ToolTip="History messaggi" />
+
+                <ComboBox  MaxWidth="300" IsReadOnly="True" ItemsSource="{Binding informazioniUtente,Mode=OneWay}" DisplayMemberPath="testo" SelectedIndex="{Binding Path=informazioniUtente.Size,Mode=OneWay}" Name="comboBoxHistoryInfo" ToolTip="History messaggi" />
 
 			</StackPanel>
 		</StatusBar>
