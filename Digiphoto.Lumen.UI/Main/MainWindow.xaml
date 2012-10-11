@@ -23,15 +23,14 @@
 		<StatusBar DockPanel.Dock="Bottom">
 			<StackPanel Orientation="Horizontal">
 				<Image  Source="{Binding Path=ultimaInformazioneUtente.esito,Converter={StaticResource imageSourceConverter}}" Height="16" Width="16" />
-<!--
-				<Button Name="buttonHistoryOnOff" Click="buttonHistoryOnOff_Click">					
--->				
+
+				<!--Button Name="buttonHistoryOnOff" Click="buttonHistoryOnOff_Click">								
 					<Label MinWidth="200"  Content="{Binding Path=ultimaInformazioneUtente.testo}"  />
-<!--
-				</Button>
+
+				</Button-->
 			
 				<ComboBox  MaxWidth="300" IsReadOnly="True" ItemsSource="{Binding informazioniUtente,Mode=OneWay}" DisplayMemberPath="testo" SelectedItem="{Binding Path=informazioniUtente.elemCoda,Mode=OneWay}" Name="comboBoxHistoryInfo" ToolTip="History messaggi" />
--->
+
 			</StackPanel>
 		</StatusBar>
 

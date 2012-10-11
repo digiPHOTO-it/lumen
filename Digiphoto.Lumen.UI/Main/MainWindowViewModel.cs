@@ -283,7 +283,14 @@ namespace Digiphoto.Lumen.UI {
 			if( msg.showInStatusBar ) {
 				InformazioneUtente infoUser = new InformazioneUtente( msg.descrizione );
 				infoUser.esito = msg.esito;
-				informazioniUtente.Put( infoUser );
+
+				App.Current.Dispatcher.BeginInvoke(
+					new Action(() =>
+					{
+						informazioniUtente.Put(infoUser);
+					}
+				));
+
 				OnPropertyChanged( "ultimaInformazioneUtente" );
 				OnPropertyChanged( "informazioniUtente" );
 			}
