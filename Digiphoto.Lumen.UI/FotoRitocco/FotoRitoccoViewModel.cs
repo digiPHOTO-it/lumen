@@ -1252,11 +1252,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 						foreach( Fotografia f in fotoDaModificareMsg.fotosDaModificare )
 						{
 							// Verifico se ho raggiunto il numero massimo di foto da modificare
-							if (fotografieDaModificareCW.SelectedItems.Count > Configurazione.UserConfigLumen.maxNumFotoMod - 1)
-							{
-								_giornale.Debug("Raggiunto il limite massimo di foto " + Configurazione.UserConfigLumen.maxNumFotoMod +" foto modificabili Contemporaneamente");
-								dialogProvider.ShowMessage("Hai raggiunto il numero massimo di foto modificabili di "+Configurazione.UserConfigLumen.maxNumFotoMod+" foto\nLe foto in eccesso verranno aggiunte ma no selezionate","AVVISO");
-								break;
+							if( Configurazione.UserConfigLumen.maxNumFotoMod > 0 ) {
+								if( fotografieDaModificareCW.SelectedItems.Count > Configurazione.UserConfigLumen.maxNumFotoMod - 1 ) {
+									_giornale.Debug( "Raggiunto il limite massimo di foto " + Configurazione.UserConfigLumen.maxNumFotoMod + " foto modificabili Contemporaneamente" );
+									dialogProvider.ShowMessage( "Hai raggiunto il numero massimo di foto modificabili di " + Configurazione.UserConfigLumen.maxNumFotoMod + " foto\nLe foto in eccesso verranno aggiunte ma no selezionate", "AVVISO" );
+									break;
+								}
 							}
 
 							fotografieDaModificareCW.SelectedItems.Add( f );

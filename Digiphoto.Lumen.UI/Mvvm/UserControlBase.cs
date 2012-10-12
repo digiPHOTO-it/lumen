@@ -21,6 +21,10 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 			
 			base.EndInit();
 
+			associaDialogProvider();
+		}
+
+		protected void associaDialogProvider() {
 
 			// Siccome io sono la base di tutti gli user control...
 			// Siccome tutti gli user control devono fornire supporto per l'implementazione dei dialoghi
@@ -50,11 +54,6 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 
 		public void ShowMessage( string message, string title ) {
 			MessageBox.Show( message, title, MessageBoxButton.OK, MessageBoxImage.Information );
-
-			Messaggio msgStatusBar = new Messaggio(this);
-			msgStatusBar.descrizione = message;
-			msgStatusBar.showInStatusBar = true;
-			LumenApplication.Instance.bus.Publish(msgStatusBar);
 		}
 
 		
@@ -65,11 +64,6 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 		public void ShowConfirmation( string message, string title, Action<bool> afterHideCallback ) {
 			var tastoPremuto = MessageBox.Show( message, title, MessageBoxButton.YesNo, MessageBoxImage.Question );
 			afterHideCallback( tastoPremuto == MessageBoxResult.Yes );
-
-			Messaggio msgStatusBar = new Messaggio(this);
-			msgStatusBar.descrizione = message;
-			msgStatusBar.showInStatusBar = true;
-			LumenApplication.Instance.bus.Publish(msgStatusBar);
 		}
 
 		/// <summary>
@@ -80,11 +74,6 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 		{
 			var tastoPremuto = MessageBox.Show( message, title, MessageBoxButton.YesNoCancel, MessageBoxImage.Question );
 			afterHideCallback(tastoPremuto);
-
-			Messaggio msgStatusBar = new Messaggio(this);
-			msgStatusBar.descrizione = message;
-			msgStatusBar.showInStatusBar = true;
-			LumenApplication.Instance.bus.Publish(msgStatusBar);
 		}
 		
 		#region TrayIcon
@@ -133,11 +122,6 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 					trayIcon.showError(title, msg, sleep);
 				}
 			));
-
-			Messaggio msgStatusBar = new Messaggio(this);
-			msgStatusBar.descrizione = msg;
-			msgStatusBar.showInStatusBar = true;
-			LumenApplication.Instance.bus.Publish(msgStatusBar);
 		}
 
 		public void showInfo(string title, string msg, int? sleep)
@@ -150,11 +134,6 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 					trayIcon.showInfo(title, msg, sleep);
 				}
 			));
-
-			Messaggio msgStatusBar = new Messaggio(this);
-			msgStatusBar.descrizione = msg;
-			msgStatusBar.showInStatusBar = true;
-			LumenApplication.Instance.bus.Publish(msgStatusBar);
 		}
 
 		public void showWarning(string title, string msg, int? sleep)
@@ -167,11 +146,6 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 					trayIcon.showWarning(title, msg, sleep);
 				}
 			));
-
-			Messaggio msgStatusBar = new Messaggio(this);
-			msgStatusBar.descrizione = msg;
-			msgStatusBar.showInStatusBar = true;
-			LumenApplication.Instance.bus.Publish(msgStatusBar);
 		}
 
 		#endregion;

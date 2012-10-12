@@ -147,7 +147,7 @@
     </Compile>
     <Compile Include="src\Applicazione\StartupUtil.cs" />
     <Compile Include="src\Applicazione\Stato.cs" />
-    <Compile Include="src\Collections\CircularBuffer.cs" />
+    <Compile Include="src\Collections\RingBuffer.cs" />
     <Compile Include="src\Config\Configurazione.cs" />
     <Compile Include="src\Config\ConfigurazioneMancanteException.cs" />
     <Compile Include="src\Config\ConfigurazioneNonValidaException.cs" />

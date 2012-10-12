@@ -151,6 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Crc32.cs" />
+    <Compile Include="src\Core\Collections\RingBufferTest.cs" />
     <Compile Include="src\Servizi\Ricostruire\DbRebuilderSrvImplTest.cs" />
     <Compile Include="src\Mvvm\ObservableCollectionExTest.cs" />
     <Compile Include="SerializzaUtilTest.cs" />
