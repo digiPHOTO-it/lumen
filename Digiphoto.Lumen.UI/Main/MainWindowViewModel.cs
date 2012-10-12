@@ -34,7 +34,7 @@ namespace Digiphoto.Lumen.UI {
 		public MainWindowViewModel() {
 
 			// Tengo un massimo di elementi in memoria per evitare consumi eccessivi
-			informazioniUtente = new CircularBuffer<InformazioneUtente>( 50, true );
+			informazioniUtente = new RingBuffer<InformazioneUtente>( 30 );
 
             selettoreStampantiInstallateViewModel = new SelettoreStampantiInstallateViewModel();
 
@@ -77,9 +77,14 @@ namespace Digiphoto.Lumen.UI {
             private set;
         }
 
+		CarrelloViewModel _carrelloViewModel;
 		public CarrelloViewModel carrelloViewModel {
-			get;
-			private set;
+			get {
+				return _carrelloViewModel;
+			}
+			private set {
+				_carrelloViewModel = value;
+			}
 		}
 
 		/// <summary>
@@ -89,11 +94,11 @@ namespace Digiphoto.Lumen.UI {
 		public InformazioneUtente ultimaInformazioneUtente {
 			get {
 				// La Peek non rimuove l'elemento dal buffer. Invece la Pop si.
-				return (informazioniUtente != null && informazioniUtente.Size > 0) ? informazioniUtente.elemCoda : null;
+				return (informazioniUtente != null && informazioniUtente.IsEmpty == false) ? informazioniUtente.HeadElement : null;
 			}
 		}
 
-		public CircularBuffer<InformazioneUtente> informazioniUtente {
+		public RingBuffer<InformazioneUtente> informazioniUtente {
 			get;
 			private set;
 		}
@@ -302,12 +307,12 @@ namespace Digiphoto.Lumen.UI {
 				App.Current.Dispatcher.BeginInvoke(
 					new Action(() =>
 					{
-						informazioniUtente.Put(infoUser);
+						informazioniUtente.Write(infoUser);
+						OnPropertyChanged( "ultimaInformazioneUtente" );
+						OnPropertyChanged( "informazioniUtente" );
 					}
 				));
 
-
-				OnPropertyChanged( "ultimaInformazioneUtente" );
 			}
 
 		}

@@ -24,7 +24,13 @@ namespace Digiphoto.Lumen.UI
         public CarrelloView() 
         {
             InitializeComponent();
+
+			DataContextChanged += new DependencyPropertyChangedEventHandler(carrelloView_DataContextChanged);
         }
+
+		void carrelloView_DataContextChanged( object sender, DependencyPropertyChangedEventArgs e ) {
+			associaDialogProvider();
+		}
 
 		private CarrelloViewModel carrelloViewModel
 		{
