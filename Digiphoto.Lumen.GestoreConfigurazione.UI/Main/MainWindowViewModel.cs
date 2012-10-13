@@ -1004,6 +1004,10 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
         private void applica()
         {
+
+			creaEventualiCartelleMancanti();
+
+
 			string errore = Configurazione.getMotivoErrore( cfg );
 			int qquanti = ConfigurationManager.ConnectionStrings.Count;
 
@@ -1047,6 +1051,19 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 				}
 			}
         }
+
+		private void creaEventualiCartelleMancanti() {
+
+			// Provo a creare la cartella se non esiste
+			try {
+				if( !Directory.Exists( cfg.cartellaPubblicita ) ) {
+					Directory.CreateDirectory( cfg.cartellaPubblicita );
+					_giornale.Info( "Creata cartella pubblicità: " + cfg.cartellaPubblicita );
+				}
+			} catch( Exception ee ) {
+				_giornale.Error( "crea cartella pubblicita", ee );
+			}
+		}
 
 		private int saveInfoFisse() {
 
