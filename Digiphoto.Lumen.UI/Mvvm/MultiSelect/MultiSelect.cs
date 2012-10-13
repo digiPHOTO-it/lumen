@@ -15,7 +15,7 @@ namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 
 		public static readonly DependencyProperty MaxNumSelectedItemProperty;
 
-		public static readonly DependencyProperty IsEnabledProperty;
+		new public static readonly DependencyProperty IsEnabledProperty;
 
 		static MultiSelect()
 		{
@@ -34,7 +34,7 @@ namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 			target.SetValue(MultiSelect.IsEnabledProperty, value);
 		}
 
-		static void IsEnabledChanged( object sender, DependencyPropertyChangedEventArgs e ) {
+		new static void IsEnabledChanged( object sender, DependencyPropertyChangedEventArgs e ) {
 			Selector selector = sender as Selector;
 			bool enabled = (bool)e.NewValue;
 

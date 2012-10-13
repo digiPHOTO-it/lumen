@@ -26,6 +26,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			try {
 				_giornale.Debug( "carico immagine da disco : " + uriString );
 
+#if NONFUNZIONA
 				const char metodo = 'B';
 
 				if( metodo == 'A' ) {
@@ -39,11 +40,13 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 					this.bitmapSource = bitmapImage;
 
 				} else {
+#endif
 					// Soluzione B (carico diretto da stream di byte). In questo caso, però chi è che fa il dispose ?
 					MemoryStream data = new MemoryStream( File.ReadAllBytes( uriString ) );
 					this.bitmapSource = BitmapFrame.Create( data );
-				}
-
+#if NONFUNZIONA
+			}
+#endif
 				_giornale.Debug( "ok caricata. Ora freezzo" );
 
 				// Se non frizzo, non riesco a passare queste bitmap da un thread all'altro.

@@ -33,7 +33,6 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			_elencoSpots = caricaElencoSpot();
 		}
 
-		private int _contaIntervalliPubblicita = 0;
 		private List<string> _elencoSpots;
 		private int _contaSchermate = 0;
 		private int _indexSpotAttuale = 0;
