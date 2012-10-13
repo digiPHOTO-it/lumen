@@ -9,7 +9,6 @@ using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
 using System.Windows.Input;
 using System.Windows;
-using Digiphoto.Lumen.Servizi.Explorer;
 
 namespace Digiphoto.Lumen.UI
 {
