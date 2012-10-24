@@ -14,38 +14,29 @@
              d:DesignHeight="900" d:DesignWidth="1800" FontStretch="Condensed">
 
 
-    <!-- Istanzio il controllore -->
-    <lumM:UserControlBase.DataContext>
-        <lum:FotoGalleryViewModel />
-    </lumM:UserControlBase.DataContext>
-
 	<UserControl.Resources>
-		<ResourceDictionary>
-			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="/Resources/GlobalResourceDictionary.xaml" />
-				<ResourceDictionary Source="FotoGalleryResources.xaml" />
-				<ResourceDictionary Source="/SelettoreAzioniRapide/SelettoreAzioniRapideResources.xaml" />
-			</ResourceDictionary.MergedDictionaries>
-		</ResourceDictionary>
+		<ResourceDictionary Source="FotoGalleryResources.xaml" />
 	</UserControl.Resources>
 
     <DockPanel>
-        
-        <ToolBarTray DockPanel.Dock="Left" Orientation="Vertical">
-            
-            <ToolBar>
-                <Button Command="{Binding mandareInModificaCommand}" ToolTip="aggiunge alla lista delle foto da modificare" >
+
+		<ToolBarTray DockPanel.Dock="Left" Orientation="Vertical" >
+
+			<ToolBar>
+
+				<Button Command="{Binding mandareInModificaCommand}" ToolTip="aggiunge alla lista delle foto da modificare" Style="{StaticResource buttonBaseStyle}" >
                     <Image Source="/Digiphoto.Lumen.UI;component/Resources/PhotoEdit-48x48.png" />
                 </Button>
+				
                 <Separator />
-                
-                <Button Command="{Binding Path=aggiungereAlMasterizzatoreCommand}" ToolTip="Aggiungi al masterizzatore">
+
+				<Button Command="{Binding Path=aggiungereAlMasterizzatoreCommand}" ToolTip="Aggiungi al masterizzatore" Style="{StaticResource buttonBaseStyle}">
                     <Image Source="/Digiphoto.Lumen.UI;component/Resources/DvdBurn-48x48.png"  />
                 </Button>
             </ToolBar>
             
 			<ToolBar Name="stampaProvini" IsEnabled="{Binding Path=stampantiAbbinate, Converter={StaticResource listVisibilityConverter}}">
-                <Button Command="{Binding Path=stampareProviniCommand}" ToolTip="Stampa provini">
+				<Button Command="{Binding Path=stampareProviniCommand}" ToolTip="Stampa provini" Style="{StaticResource buttonBaseStyle}">
                     <Image Source="/Digiphoto.Lumen.UI;component/Resources/Provini-48x48.png"  />
                 </Button>            
             </ToolBar>
@@ -67,9 +58,10 @@
         
         <Expander DockPanel.Dock="Right" Header="View" IsExpanded="True" ExpandDirection="Left">
             
-            <ToolBarTray Background="White" Orientation="Vertical">
+            <ToolBarTray Name="toolBarTrayAzioniDx"  Orientation="Vertical">
                 
                 <ToolBar Band="1" BandIndex="1" >
+					<Label Content="Gallery" />
                     <RadioButton Content="*" Tag="1" Style="{StaticResource {x:Type ToggleButton}}" Width="32" Checked="radioButtonQuanteNeVedo_Checked" />
                     <RadioButton Content="**" Tag="2" Style="{StaticResource {x:Type ToggleButton}}" Width="32"  Checked="radioButtonQuanteNeVedo_Checked" />
                     <RadioButton Content="***" Tag="4" Style="{StaticResource {x:Type ToggleButton}}" Width="32"  Checked="radioButtonQuanteNeVedo_Checked" />
@@ -79,53 +71,25 @@
                             Value="{Binding Path=dimensioneIconaFoto,Mode=TwoWay}"
                             HorizontalAlignment="Center" />
                     <Separator />
-                    <Button Content="+Selez" Command="{Binding selezionareTuttoCommand}" CommandParameter="True" />
-                    <Button Content="-Deselez" Command="{Binding selezionareTuttoCommand}" CommandParameter="False" />
+					<Button Content="+Selez" Command="{Binding selezionareTuttoCommand}" CommandParameter="True" Style="{StaticResource buttonBaseStyle}" />
+					<Button Content="-Deselez" Command="{Binding selezionareTuttoCommand}" CommandParameter="False" Style="{StaticResource buttonBaseStyle}" />
                     <RadioButton Content="All"  Style="{StaticResource {x:Type ToggleButton}}"  Width="32" GroupName="vediSelezGrp" ToolTip="Vedi tutte le foto" Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="false" />
                     <RadioButton Content="Selez" Style="{StaticResource {x:Type ToggleButton}}"  Width="32" GroupName="vediSelezGrp" ToolTip="Vedi solo le foto selezionate" Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="true" />
-                   
-                   
+                                      
                 </ToolBar>
 
-                <ToolBar Band="2" BandIndex="2" Header="Pubblico">
-                    <Button Content="Load" Command="{Binding caricareSlideShowCommand}" CommandParameter="Manual" />
-                    <ToggleButton Content="Start" Command="{Binding controllareSlideShowCommand}" CommandParameter="Start" />
-                    <ToggleButton Content="Stop"  Command="{Binding controllareSlideShowCommand}" CommandParameter="Stop" />
+                <ToolBar Band="1" BandIndex="2" Header="Pubblico">
+					<Button Content="Load" Command="{Binding caricareSlideShowCommand}" CommandParameter="Manual" Style="{StaticResource buttonBaseStyle}" />
+					<ToggleButton Content="Start" Command="{Binding controllareSlideShowCommand}" CommandParameter="Start" Style="{StaticResource buttonBaseStyle}" />
+					<ToggleButton Content="Stop"  Command="{Binding controllareSlideShowCommand}" CommandParameter="Stop" Style="{StaticResource buttonBaseStyle}" />
 					<extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. righe Slide-Show" Value="{Binding numRigheSlideShow}" IsEnabled="{Binding possoControllareSlideShow}" />
 					<extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. colonne Slide-Show" Value="{Binding numColonneSlideShow}" IsEnabled="{Binding possoControllareSlideShow}" />
                     <Separator />
-                    <Button Content="Svuota" Command="{Binding controllareSlideShowCommand}" CommandParameter="Reset" />
+					<Button Content="Svuota" Command="{Binding controllareSlideShowCommand}" CommandParameter="Reset" Style="{StaticResource buttonBaseStyle}" />
                 </ToolBar>
             </ToolBarTray>
         </Expander>
 
-        <StatusBar DockPanel.Dock="Bottom" >
-            <StatusBarItem>
-				<TextBlock Width="120">
-                    <TextBlock.Text>
-                        <MultiBinding StringFormat="Selez: {0}/{1}">
-                                    <Binding Path="fotografieCW.SelectedItems.Count" />
-									<Binding Path="fotografieCW.Count" />
-                                </MultiBinding>
-                            </TextBlock.Text>
-				</TextBlock>
-            </StatusBarItem>
-
-			<StatusBarItem>
-				<TextBlock Width="100" Visibility="{Binding stoPaginando,Converter={StaticResource booleanToVisibilityConverter}}">
-	                <TextBlock.Text>
-		                <MultiBinding StringFormat="Pagina {0} [{1}]">
-							<Binding Path="paginaAttualeRicerca" />
-							<Binding Path="totFotoPaginaAttuale" />
-						</MultiBinding>
-					</TextBlock.Text>
-				</TextBlock>
-			</StatusBarItem>
-			
-			<StatusBarItem>
-                <Image Source="{Binding statusSlideShowImage}" Width="16" Height="16" ToolTip="Stato dello Slide Show" />
-            </StatusBarItem>
-        </StatusBar>
         
         <Expander Header="Ricerca foto nell'archivio" DockPanel.Dock="Bottom" IsExpanded="True" ExpandDirection="Up">
             
@@ -135,10 +99,7 @@
 
                     <StackPanel Orientation="Horizontal">
 
-                        <StackPanel Orientation="Vertical">
-                            <Label Content="Scegliere data inizio e fine"  ToolTip="Cliccare sulla prima data poi scorrere fino alla seconda senza lasciare"/>
-                            <Calendar SelectionMode="SingleRange" Name="calendario" SelectedDatesChanged="calendario_SelectedDatesChanged" />
-                        </StackPanel>
+                        <Calendar SelectionMode="SingleRange" Name="calendario" SelectedDatesChanged="calendario_SelectedDatesChanged" />
 
                         <StackPanel Orientation="Vertical">
                             <Button Content="Oggi" Name="oggiButton" Click="oggiButton_Click" />

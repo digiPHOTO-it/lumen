@@ -31,6 +31,7 @@ namespace Digiphoto.Lumen.UI {
 				_mainWindowViewModel.trayIconProvider = this;
 
 				carrelloView.DataContext = _mainWindowViewModel.carrelloViewModel;
+				fotoGallery.DataContext = _mainWindowViewModel.fotoGalleryViewModel;
 			}
 
 
@@ -62,9 +63,9 @@ namespace Digiphoto.Lumen.UI {
 		public void OnNext( CambioPaginaMsg cambioPaginaMsg ) {
 
 			if( cambioPaginaMsg.nuovaPag == "FotoRitoccoPag" )
-				tabControlPagine.SelectedItem = tabControlPagine.FindName( "tabItemAggiusta" );
+				tabControlProspettive.SelectedItem = tabControlProspettive.FindName( "tabItemAggiusta" );
 			else if( cambioPaginaMsg.nuovaPag == "GalleryPag" )
-				tabControlPagine.SelectedItem = tabControlPagine.FindName( "tabItemGallery" );
+				tabControlProspettive.SelectedItem = tabControlProspettive.FindName( "tabItemGallery" );
 
 		}
 

@@ -2,11 +2,15 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
                     >
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="ExpanderDictionary.xaml" />
+	</ResourceDictionary.MergedDictionaries>
 
-    <lumC:ImageSourceConverter x:Key="imageSourceConverter" />
+	<lumC:ImageSourceConverter x:Key="imageSourceConverter" />
     <lumC:PercentualeConverter x:Key="percentualeConverter" />
+	<BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
 
-    <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
+	<!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
     <DataTemplate x:Key="fotografiaDataTemplate" >
 
         <Border BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="8" Margin="0,0,2,2" >
@@ -67,5 +71,85 @@
             <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Orange" Opacity=".6"/>
         </Style.Resources>
     </Style>
-    
+
+	<Style x:Key="darkControlStyle" TargetType="{x:Type Control}">
+		<!--
+		<Setter Property="Background" Value="{DynamicResource darkGradientBackground}" />
+		-->
+		<Setter Property="Background" Value="#292929" />  <!-- grigio molto scuro s-->
+		<Setter Property="Foreground" Value="Cyan" />
+	</Style>
+
+	<Style TargetType="Panel">
+		<Setter Property="Background" Value="Orchid" />
+	</Style>
+
+	
+	<Style TargetType="{x:Type ListBox}">
+		<Setter Property="Background" Value="Gray" />
+	</Style>
+
+	<Style TargetType="{x:Type ButtonBase}" x:Key="buttonBaseStyle">
+<!--		
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush  StartPoint="0,0" EndPoint="0,1" >
+					<GradientStop Color= "LightBlue" Offset="0" />
+					<GradientStop Color= "SteelBlue" Offset="0.5" />
+					<GradientStop Color= "DarkBlue" Offset="0.9" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+-->
+	</Style>
+	
+
+	
+	<Style TargetType="{x:Type RadioButton}" x:Key="baseRadioButtonStyle">
+		<Setter Property="Foreground" Value="Cyan" />
+	</Style>
+
+	<Style x:Key="tabControlProspettiveStyle" TargetType="{x:Type TabControl}" BasedOn="{StaticResource darkControlStyle}">
+	</Style>
+
+	<Style TargetType="{x:Type ToolBarTray}">
+		<Setter Property="Background" Value="{DynamicResource darkGradientBackground}" />
+	</Style>
+	<Style TargetType="{x:Type ToolBar}">
+		<Setter Property="Background" Value="Gold" />
+	</Style>
+	
+	<LinearGradientBrush x:Key="darkGradientBackground" StartPoint="0,0" EndPoint="1,1" >
+		<GradientStop Color= "Black" Offset="0.4" />
+		<GradientStop Color= "DarkGray" Offset="1" />
+	</LinearGradientBrush>
+	
+	<LinearGradientBrush x:Key="BlackBG" EndPoint="0.5,1" StartPoint="0.5,0">
+		<GradientStop Color="#FF0F0F0F" />
+		<GradientStop Color="#FF000000" Offset="0.5"/>
+		<GradientStop Color="#FF747C8D" Offset="0.5"/>
+		<GradientStop Color="#FFE5E7FA" Offset="1"/>
+	</LinearGradientBrush>
+	
+	<Style TargetType="{x:Type Control}">
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+	
+	<Style TargetType="{x:Type GroupBox}">
+		<Setter Property="Foreground" Value="WhiteSmoke" />
+		<!--
+		<Setter Property="Padding" Value="2,4" />
+		-->
+	</Style>
+
+	<Style TargetType="{x:Type Label}">
+		<Setter Property="Foreground" Value="WhiteSmoke" />
+	</Style>
+
+	<Style x:Key="globalPanelGradientStyle" TargetType="Panel" BasedOn="{StaticResource {x:Type Panel}}">
+		<Setter Property="Background" Value="{StaticResource BlackBG}"  />
+	</Style>
+	
+
+
 </ResourceDictionary>

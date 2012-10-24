@@ -627,9 +627,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		private void grayScale( bool addRemove ) {
-			if( addRemove )
+			if( addRemove ) {
 				addCorrezione( new BiancoNero() );
-			else
+				sepia( false );  // rimuovo il sepia
+			} else
 				removeCorrezione( typeof( BiancoNero ) );
 		}
 
@@ -645,9 +646,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		private void sepia( bool addRemove ) {
-			if( addRemove )
+			if( addRemove ) {
 				addCorrezione( new Sepia() );
-			else
+				grayScale( false ); // rimuovo il bianco e nero
+			} else
 				removeCorrezione( typeof( Sepia ) );
 		}
 
@@ -733,6 +735,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			OnPropertyChanged( "possoRiempireElencoInModifica" );
 			OnPropertyChanged( "possoSvuotareElencoInModifica" );
+
+			OnPropertyChanged( "isGrayscaleChecked" );
+			OnPropertyChanged( "isSepiaChecked" );
 		}
 
 		
@@ -754,6 +759,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				}
 				effetti.Clear();
 			}
+
+			OnPropertyChanged( "isGrayscaleChecked" );
+			OnPropertyChanged( "isSepiaChecked" );
 
 
 			// anche le maschere

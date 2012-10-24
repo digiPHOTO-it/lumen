@@ -24,6 +24,12 @@ namespace Digiphoto.Lumen.UI {
 
 		public FotoGallery() {
 			InitializeComponent();
+
+			DataContextChanged += new DependencyPropertyChangedEventHandler(fotoGallery_DataContextChanged);
+        }
+
+		void fotoGallery_DataContextChanged( object sender, DependencyPropertyChangedEventArgs e ) {
+			associaDialogProvider();
 		}
 
 		#region Proprietà

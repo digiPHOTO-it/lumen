@@ -43,6 +43,7 @@ namespace Digiphoto.Lumen.UI {
             selettoreFormatoCartaAbbinatoViewModel = new SelettoreFormatoCartaAbbinatoViewModel();
 
 			carrelloViewModel = new CarrelloViewModel();
+			fotoGalleryViewModel = new FotoGalleryViewModel();
 
 			// Ascolto i messaggi
 			IObservable<Messaggio> observable = LumenApplication.Instance.bus.Observe<Messaggio>();
@@ -86,6 +87,17 @@ namespace Digiphoto.Lumen.UI {
 				_carrelloViewModel = value;
 			}
 		}
+
+		FotoGalleryViewModel _fotoGalleryViewModel;
+		public FotoGalleryViewModel fotoGalleryViewModel {
+			get {
+				return _fotoGalleryViewModel;
+			}
+			private set {
+				_fotoGalleryViewModel = value;
+			}
+		}
+
 
 		/// <summary>
 		/// Ritorno la testa del buffer circolare

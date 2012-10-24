@@ -13,53 +13,65 @@
         <lum:ScaricatoreFotoViewModel />
     </UserControl.DataContext>
     
-    
     <UserControl.Resources>
-        <ResourceDictionary Source="ScaricatoreFotoResources.xaml" />
-    </UserControl.Resources>
+		<ResourceDictionary Source="ScaricatoreFotoResources.xaml" />
+	</UserControl.Resources>
 
 
-    <extToolkit:BusyIndicator x:Name="scaricaBusyIndicator"
-        IsBusy="{Binding Path=isScaricamentoInCorso}">
-        
-        <StackPanel>
+	<extToolkit:BusyIndicator x:Name="scaricaBusyIndicator" IsBusy="{Binding Path=isScaricamentoInCorso}">
 
-            <StackPanel Orientation="Horizontal">
+		<StackPanel Orientation="Horizontal">
+					
+            <lum:SelettoreCartella x:Name="selettoreCartella1" DataContext="{Binding selettoreCartellaViewModel}"
+								   Style="{StaticResource selettoreCartellaStyle}" />
 
-                <lum:SelettoreCartella x:Name="selettoreCartella1" DataContext="{Binding selettoreCartellaViewModel}"/>
-
-                <lum:SelettoreFotografo x:Name="selettoreFotografo1" DataContext="{Binding selettoreFotografoViewModel}"
+            <lum:SelettoreFotografo x:Name="selettoreFotografo1" DataContext="{Binding selettoreFotografoViewModel}"
+									Style="{StaticResource selettoreFotografoStyle}"
                                     possoCreare="True" />
 
-                <lum:SelettoreEvento x:Name="selettoreEvento1" possoCreare="True"
-                                 DataContext="{Binding selettoreEventoViewModel}" />
+			<Grid Margin="10,0,10,0" >
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*" />
+					<RowDefinition />
+					<RowDefinition />
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
 
-                <GroupBox Header="Fasi del giorno">
-                    <ListBox Name="fasiGiornoListBox" 
-                    ItemsSource="{Binding fasiDelGiorno}" 
-                    SelectedItem="{Binding faseDelGiorno}" />
-                </GroupBox>
-            </StackPanel>
+				<GroupBox Header="Fasi del giorno" Grid.Row="0" Grid.Column="0" VerticalAlignment="Top" >
+					<ListBox Name="fasiGiornoListBox" Style="{StaticResource fasiGiornoListBoxStyle}"
+							 ItemsSource="{Binding fasiDelGiorno}" 
+							 SelectedItem="{Binding faseDelGiorno}"  />
+				</GroupBox>
 
-            <StackPanel Orientation="Horizontal">
-
-                <GroupBox>
-                    <StackPanel>
-                        <RadioButton Content="SPOSTA files" GroupName="copiaSpostaGrp" 
+				<GroupBox Header="Foto sorgenti" Grid.Row="1" Grid.Column="0" 
+						  VerticalAlignment="Center" HorizontalAlignment="Center">
+					<StackPanel>
+						<RadioButton Content="SPOSTA files" GroupName="copiaSpostaGrp" 
                                  Command="{Binding Path=setCopiaSpostaCommad}" 
                                  CommandParameter="true"
-                                 IsChecked="{Binding Path=eraseFotoMemoryCard}" />
-                        <RadioButton Content="COPIA files"  GroupName="copiaSpostaGrp" 
+                                 IsChecked="{Binding Path=eraseFotoMemoryCard}"
+							 Style="{StaticResource spostaCopiaRadioStyle}"
+							   />
+						<RadioButton Content="COPIA files"  GroupName="copiaSpostaGrp" 
                                  Command="{Binding Path=setCopiaSpostaCommad}" 
                                  CommandParameter="false"
-                                 IsChecked="{Binding Path=eraseFotoMemoryCard, Converter={StaticResource boolInverterConverter}}"/>
-                    </StackPanel>
-                </GroupBox>
+                                 IsChecked="{Binding Path=eraseFotoMemoryCard, Converter={StaticResource boolInverterConverter}}"
+							 Style="{StaticResource spostaCopiaRadioStyle}" />
+					</StackPanel>
+				</GroupBox>
 
-                <Button Name="scaricaButton" Content="go! SCARICA" Command="{Binding scaricareCommand}" />
-            </StackPanel>
-        </StackPanel>
+				<Button Name="scaricaButton" Content="go! SCARICA" Command="{Binding scaricareCommand}" Grid.Row="2" Grid.Column="0" />
 
-    </extToolkit:BusyIndicator>
+
+			</Grid>
+
+
+
+		</StackPanel>
+
+
+	</extToolkit:BusyIndicator>
 
 </lumM:UserControlBase>
