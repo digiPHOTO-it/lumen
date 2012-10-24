@@ -8,6 +8,7 @@
 		xmlns:lumCF="clr-namespace:Digiphoto.Lumen.UI.ComNumFoto"
 		xmlns:lumGS="clr-namespace:Digiphoto.Lumen.UI.Pubblico"
         Title="Lumen" WindowStyle="None" WindowState="Maximized"
+		Name="mainWindow" Style="{DynamicResource mainWindowStyle}"
         >
     <Window.Resources>
         <ResourceDictionary>
@@ -20,21 +21,18 @@
 
 	<DockPanel LastChildFill="True" >
 
-		<StatusBar Name="statusBarMain" DockPanel.Dock="Bottom" ItemsPanel="{DynamicResource itemsPanelTemplateStatusBarMain}" >
+		<StatusBar Name="statusBarMain" DockPanel.Dock="Bottom" ItemsPanel="{DynamicResource itemsPanelTemplateStatusBarMain}">
 
+			<!-- Informazioni Utente -->
 			<StatusBarItem Grid.Column="0">
-				<Image Source="{Binding Path=ultimaInformazioneUtente.esito,Converter={StaticResource imageSourceConverter}}" Height="16" Width="16" />
-			</StatusBarItem>
-<!--
-			<StatusBarItem Grid.Column="1">
-				<Label Background="Orange"  Content="{Binding Path=ultimaInformazioneUtente.testo}" ToolTip="{Binding Path=ultimaInformazioneUtente.testo}" />
-			</StatusBarItem>
--->			
-			<StatusBarItem Grid.Column="1">
-				<ComboBox  MaxWidth="400" IsReadOnly="True" ItemsSource="{Binding informazioniUtente,Mode=OneWay}" DisplayMemberPath="testo" SelectedValue="{Binding Path=ultimaInformazioneUtente,Mode=OneWay}" Name="comboBoxHistoryInfo" ToolTip="History messaggi" />
+				<StackPanel Orientation="Horizontal">
+					<Image Source="{Binding Path=ultimaInformazioneUtente.esito,Converter={StaticResource imageSourceConverter}}" Height="16" Width="16" />
+					<ComboBox  MaxWidth="400" IsReadOnly="True" ItemsSource="{Binding informazioniUtente,Mode=OneWay}" DisplayMemberPath="testo" SelectedValue="{Binding Path=ultimaInformazioneUtente,Mode=OneWay}" Name="comboBoxHistoryInfo" ToolTip="History messaggi" />
+				</StackPanel>
 			</StatusBarItem>
 
-			<StatusBarItem Grid.Column="2">
+			<!-- Carrello -->
+			<StatusBarItem Grid.Column="1">
 				<TextBlock ToolTip="Stato carrello">
                     <TextBlock.Text>
                         <MultiBinding StringFormat="Foto: {0} Pagare: {1}">
@@ -43,30 +41,65 @@
                                 </MultiBinding>
                             </TextBlock.Text>
 				</TextBlock>
-
 			</StatusBarItem>
 
+			<!-- Masterizzazione -->
+			<StatusBarItem Grid.Column="2">
+				<StackPanel Orientation="Horizontal">
+					<Image Source="{Binding Path=carrelloViewModel.StatusStatoMasterizzazioneImage}" Width="16" Height="16" ToolTip="Stato della Masterizzazione" />
+					<TextBlock Text="{Binding carrelloViewModel.MasterizzazionePorgress}" />
+				</StackPanel>
+			</StatusBarItem>
+
+			<StatusBarItem Grid.Column="3" Visibility="{Binding }">
+
+				<StackPanel Orientation="Horizontal">
+
+					<TextBlock ToolTip="Gallery selezione">
+						<TextBlock.Text>
+							<MultiBinding StringFormat="Selez: {0}/{1}">
+										<Binding Path="fotoGalleryViewModel.fotografieCW.SelectedItems.Count" />
+										<Binding Path="fotoGalleryViewModel.fotografieCW.Count" />
+							</MultiBinding>
+						</TextBlock.Text>
+					</TextBlock>
+
+					<TextBlock Visibility="{Binding Path=fotoGalleryViewModel.stoPaginando,Converter={StaticResource booleanToVisibilityConverter}}" ToolTip="Gallery paginazione" Margin="8,0,0,0">
+						<TextBlock.Text>
+							<MultiBinding StringFormat="Pagina {0} [{1}]">
+								<Binding Path="fotoGalleryViewModel.paginaAttualeRicerca" />
+								<Binding Path="fotoGalleryViewModel.totFotoPaginaAttuale" />
+							</MultiBinding>
+						</TextBlock.Text>
+					</TextBlock>
+
+					<Image Source="{Binding Path=fotoGalleryViewModel.statusSlideShowImage}" Width="16" Height="16" ToolTip="Stato dello Slide Show" Margin="4,0,0,0"/>
+
+				</StackPanel>
+			</StatusBarItem>
 
 		</StatusBar>
 
-		<TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Top" Name="tabControlPagine" SelectedIndex="2">
+		<TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Top" Name="tabControlProspettive" SelectedIndex="1" 
+					Style="{DynamicResource tabControlProspettiveStyle}"
+					ItemContainerStyle="{StaticResource tabItemProspettiveStyle}" >
         
         <TabItem Header="Scarica" ToolTip="Scarica foto da memory-card o da altra cartella" MinHeight="30" >
             <!-- UserControl per scaricare le foto -->
             <lum:ScaricatoreFoto />
         </TabItem>
 
-        <TabItem Name="tabItemAggiusta" Header="Aggiusta" ToolTip="Correggi, organizza e tagga foto" >
-            <lumFR:FotoRitocco x:Name="fotoRitoccoUserControl" />
+
+        <TabItem Name="tabItemGallery" Header="Gallery" ToolTip="Visualizzare foto" >
+            <lum:FotoGallery x:Name="fotoGallery" />
         </TabItem>
 
-        <TabItem Name="tabItemGallery" Header="Mostra" ToolTip="Visualizzare foto" >
-            <lum:FotoGallery />
-        </TabItem>
+		<TabItem Name="tabItemAggiusta" Header="Correggi" ToolTip="Correggi, organizza e tagga foto" >
+			<lumFR:FotoRitocco x:Name="fotoRitoccoUserControl" />
+		</TabItem>
 
-        
-        <TabItem Header="Carrello" ToolTip="Vendere stampe e CD" >
-				<lum:CarrelloView x:Name="carrelloView" />
+		<TabItem Header="Carrello" ToolTip="Vendere stampe e CD" >
+			<lum:CarrelloView x:Name="carrelloView" />
         </TabItem>
 
         <TabItem Header="Configurazione" ToolTip="Scarica foto da memory-card o da altra cartella" MinHeight="30" >

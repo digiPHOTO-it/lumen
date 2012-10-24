@@ -4,7 +4,12 @@
 					xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                     xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo">
 
-    <lumC:ImageSourceConverter x:Key="imageSourceConverter" />
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="/Resources/GlobalResourceDictionary.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+
+
+	<lumC:ImageSourceConverter x:Key="imageSourceConverter" />
 	<lumC:CollectionViewVisibilityConverter x:Key="collectionViewVisibilityConverter" />
 	<lumC:CollectionViewVisibilityMultiConverter x:Key="collectionViewVisibilityMultiConverter" />
 	<lumC:BoolInverterConverter x:Key="boolInverterConverter" />
@@ -16,20 +21,9 @@
 	<lumC:SumConverter x:Key="sumConverter" />
 
 	<!-- Stile della listbox che itera le RigheCarrello -->
-    <Style x:Key="ListCarrelloStyle" TargetType="ListBox">
-        <Setter Property="Control.Background">
-            <Setter.Value>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="#B2B6CAFF"/>
-                    <GradientStop Color="#E0E4F0FF" Offset="1"/>
-                </LinearGradientBrush>
-            </Setter.Value>
-        </Setter>
-
+    <Style x:Key="ListCarrelloStyle" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}" >
         <Setter Property="IsSynchronizedWithCurrentItem" Value="True" />
-
         <Setter Property="ItemContainerStyle" Value="{DynamicResource ImageCarrelloImageContainerStyle}" />
-        
     </Style>
 
     <!-- Stile della listbox che itera i Carrelli -->
@@ -263,4 +257,22 @@
         <WrapPanel Orientation="Vertical" />
     </ItemsPanelTemplate>
 
+	<Style x:Key="styleGridTestata" TargetType="Grid">
+		<Setter Property="Background" Value="LightGray" />
+		
+		<Style.Resources>
+			<Style TargetType="Label">
+				<Setter Property="MinWidth" Value="85" />
+				<Setter Property="HorizontalContentAlignment" Value="Right" />
+				<Setter Property="HorizontalAlignment" Value="Left" />
+				<Setter Property="VerticalAlignment" Value="Top" />
+			</Style>
+			<Style TargetType="TextBox">
+				<Setter Property="MinWidth" Value="100" />
+				<Setter Property="HorizontalAlignment" Value="Left" />
+				<Setter Property="VerticalAlignment" Value="Top" />
+			</Style>
+		</Style.Resources>
+	</Style>
+	
 </ResourceDictionary>

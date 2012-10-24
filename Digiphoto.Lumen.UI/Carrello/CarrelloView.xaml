@@ -91,51 +91,25 @@
 			</Expander>
 		</StackPanel>	
 		
-		<GroupBox Header="Testata Carrello" DockPanel.Dock="Top" IsEnabled="{Binding Path=carrelloCorrente.venduto,Converter={StaticResource boolInverterConverter}}">
-			<Grid Height="80">
-				<Grid.RowDefinitions>
-					<RowDefinition Height="*" />
-					<RowDefinition Height="*" />
-					<RowDefinition Height="*" />
-				</Grid.RowDefinitions>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
-				<Label Content="Prezzo Intero" Grid.Row="0" Grid.Column="0" />
-				<Label Content="€ " Grid.Row="0" Grid.Column="1" />
-				<Label Content="Intestazione" Grid.Row="0" Grid.Column="2" />
-				<TextBox Text="{Binding Path=carrelloCorrente.intestazione, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="0" Grid.Column="3" />
-				<Label Content="{Binding Path=PrezzoTotaleIntero}" Grid.Column="1" Margin="10,0,0,0" />
-				<Label Content="Totale A Pagare Euro:" Grid.Row="1" Grid.Column="0" />
-				<TextBox Text="{Binding Path=PrezzoTotaleForfettario, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" TextAlignment="Left" />
-				<Label Content="Sconto Applicato" Grid.Row="2" Grid.Column="0" />
-				<Label Content="{Binding Path=ScontoApplicato}" Grid.Row="2" Grid.Column="1"/>
-				<Label Content="Giornata" Grid.Row="1" Grid.Column="2" />
-				<Label Content="{Binding Path=carrelloCorrente.giornata}" Grid.Row="1" Grid.Column="3" />
-                <Label Content="id" Grid.Row="2" Grid.Column="2" />
-				<Label Content="{Binding Path=carrelloCorrente.id,Mode=OneWay}" Grid.Row="2" Grid.Column="3" />
-            </Grid>
+		<GroupBox Header="Testata Carrello corrente" DockPanel.Dock="Top" IsEnabled="{Binding Path=carrelloCorrente.venduto,Converter={StaticResource boolInverterConverter}}">
+			<Grid Style="{StaticResource styleGridTestata}">
+				<Label Content="Prezzo Intero" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="393,7,0,0" Width="122" />
+				<Label Content="Intestazione"  VerticalAlignment="Top" HorizontalAlignment="Left" Margin="6,38,0,0" />
+				<TextBox Text="{Binding Path=carrelloCorrente.intestazione, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="100,40,0,0" Width="268" />
+				<TextBox Text="{Binding Path=PrezzoTotaleIntero,Mode=OneWay,StringFormat=C}" Margin="526,9,0,0"  IsReadOnly="True" HorizontalContentAlignment="Right" />
+				<Label Content="Totale A Pagare" Margin="393,65,0,0" Width="122" />
+				<TextBox Text="{Binding Path=PrezzoTotaleForfettario,StringFormat=C, UpdateSourceTrigger=LostFocus, Mode=TwoWay}" TextAlignment="Right" Margin="526,65,0,0" FontSize="14" ToolTip="Prezzo effettivamente pagato"  />
+				<Label Content="Sconto Applicato" Margin="393,36,0,0"  VerticalAlignment="Top" HorizontalAlignment="Left" Width="122" />
+				<TextBox Text="{Binding Path=ScontoApplicato,Mode=OneWay}" Margin="526,38,0,0" IsReadOnly="True" HorizontalContentAlignment="Right" />
+				<Label Content="Giornata" Margin="6,7,0,0"  />
+				<TextBox Text="{Binding Path=carrelloCorrente.giornata,StringFormat=D,Mode=OneWay}" IsReadOnly="true"  Margin="100,9,0,0" Width="199" />
+                <Label Content="id" Margin="6,67,0,0" Width="85" />
+				<TextBox Text="{Binding Path=carrelloCorrente.id,Mode=OneWay}" Margin="100,69,0,0" Width="268" FontSize="11" IsReadOnly="True"/>
+			</Grid>
 		</GroupBox>
 
 
 		<DockPanel>
-
-			<StatusBar DockPanel.Dock="Bottom" >
-				<StatusBarItem>
-					<StackPanel Orientation="Horizontal">
-						<Label Content="Operazione in Corso: " />
-						<StatusBarItem>
-							<Image Source="{Binding StatusStatoMasterizzazioneImage}" Width="16" Height="16" ToolTip="Stato della Masterizzazione" />
-						</StatusBarItem>
-						<Label Content="Percentuale Completamento: "/>
-						<Label Content="{Binding Path=MasterizzazionePorgress}" ToolTip="Operazione In Corso"/>
-					</StackPanel>
-				</StatusBarItem>
-			</StatusBar>
-			
 			
 			<Expander Header="Carrelli Salvati" DockPanel.Dock="Bottom" IsExpanded="True" ExpandDirection="Up">
 				<Grid Margin="5">
@@ -227,7 +201,7 @@
 					ItemTemplate="{DynamicResource ImageMasterizzatoreDataTemplate}"
                     Margin="0,10">
                 </ListBox>
-            </Grid>
+			</Grid>
             
 			<!-- Questa è la lista delle immagini -->
 			<ListBox x:Name="listCarrello" 

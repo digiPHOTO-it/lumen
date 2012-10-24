@@ -44,7 +44,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			_viewModel.editorModeChangedEvent += cambiareModoEditor;
 
-			_viewModel.PropertyChanged += propertyCambiata;
+//			_viewModel.PropertyChanged += propertyCambiata;
 		}
 
 		private void sliderLuminosita_ValueChanged( object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e ) {
@@ -147,6 +147,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			_viewModel.attivareSelectorCommand.Execute( null );  // Qui vorrei spegnere
 		}
 
+
+/*
 		/// <summary>
 		/// Quando viene modificata una maschera, chiudo l'expander delle maschere
 		/// </summary>
@@ -158,12 +160,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					expanderMaschere.IsExpanded = false;
 			}
 		}
+*/
 
 		void cambiareModoEditor( object sender, EditorModeEventArgs args ) {
 
 			if( args.modalitaEdit == ModalitaEdit.GestioneMaschere ) {
 				primoPianoCanvasMask( false );
-				expanderMaschere.IsExpanded = false;  // chiudo l'expander per fare spazio
+//				expanderMaschere.IsExpanded = false;  // chiudo l'expander per fare spazio
 			} else {
 				primoPianoCanvasMask( true );
 

@@ -490,7 +490,7 @@ namespace Digiphoto.Lumen.UI
 				// Decido qual'è la giusta icona da caricare per mostrare lo stato dello slide show (Running, Pause, Empty)
 
 				// Non so perchè ma se metto il percorso senza il pack, non funziona. boh eppure sono nello stesso assembly.
-				string uriTemplate = @"pack://application:,,,/Digiphoto.Lumen.UI;component/Resources/##-16x16.png";
+				string uriTemplate = @"pack://application:,,,/Resources/##-16x16.png";
 
 				Uri uri = null;
 
@@ -518,7 +518,8 @@ namespace Digiphoto.Lumen.UI
 					trayIconProvider.showInfo("Avviso", "CopiaCompletata", 5000);
 				}
 
-				return new BitmapImage(uri);	
+				// TODO : questa bitmap viene creata un sacco di volte. Se metti un breakpoint qui, si ferma troppo spesso.
+				return new BitmapImage( uri );
 			}
 		}
 

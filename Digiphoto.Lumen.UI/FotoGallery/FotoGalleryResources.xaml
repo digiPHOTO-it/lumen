@@ -2,7 +2,12 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
                     xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo">
-  
+
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="/Resources/GlobalResourceDictionary.xaml" />
+		<ResourceDictionary Source="/SelettoreAzioniRapide/SelettoreAzioniRapideResources.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+
 
 	<lumC:ListVisibilityConverter x:Key="listVisibilityConverter" />
 	<BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
@@ -10,6 +15,7 @@
 
 	<!-- Stile della listbox che itera le immagini -->
     <Style x:Key="LsImageGalleryStyle" TargetType="ListBox">
+<!--		
         <Setter Property="Control.Background">
             <Setter.Value>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -18,8 +24,8 @@
                 </LinearGradientBrush>
             </Setter.Value>  
         </Setter>
-        
-        <Setter Property="ItemContainerStyle" Value="{DynamicResource ImageGalleryImageContainerStyle}" />
+-->
+		<Setter Property="ItemContainerStyle" Value="{DynamicResource ImageGalleryImageContainerStyle}" />
 
     </Style>
     <!--
@@ -62,4 +68,14 @@
             </StackPanel>
         </Button>
     </DataTemplate>
-</ResourceDictionary>
+
+	<Style x:Key="toolBarTrayAzioniSx" TargetType="{x:Type ToolBarTray}">
+		<Setter Property="Background" Value="Yellow" />
+		<Style.Resources>
+			<Style TargetType="{x:Type Button}" BasedOn="{StaticResource buttonBaseStyle}">
+				<Setter Property="Background" Value="Tomato" />
+			</Style>
+		</Style.Resources>
+	</Style>
+	
+</ResourceDictionary> 

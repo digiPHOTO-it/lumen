@@ -16,7 +16,7 @@
 
         <GroupBox Header="lista Fotografi">
             <ScrollViewer VerticalScrollBarVisibility="Auto">  
-                <ListBox Name="fotografiListBox" 
+                <ListBox Name="fotografiListBox" MinHeight="30" 
                          ItemsSource="{Binding Path=fotografi}" 
                          ItemTemplate="{StaticResource fotografiListBoxTemplate}"
                          SelectedItem="{Binding Path=fotografoSelezionato}" />
@@ -29,7 +29,9 @@
                   Visibility="{Binding possoCreare, 
                     ElementName=selFotografo, 
                     Converter={StaticResource BooleanToVisibilityConverter}}" >
-            <StackPanel>
+
+			
+            <StackPanel >
 
                 <Label Content="Cognome e Nome" />
                 <TextBox x:Name="newNomeFotografoTxt" 

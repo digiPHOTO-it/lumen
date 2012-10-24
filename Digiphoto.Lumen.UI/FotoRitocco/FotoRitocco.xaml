@@ -18,70 +18,59 @@
         <lumFR:FotoRitoccoViewModel />
     </lumM:UserControlBase.DataContext>
     
-    <UserControl.Resources>
-		<ResourceDictionary>
-			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="FotoRitoccoResources.xaml" />
-				<ResourceDictionary Source="/SelettoreAzioniRapide/SelettoreAzioniRapideResources.xaml" />
-				<ResourceDictionary Source="/Resources/GlobalResourceDictionary.xaml" />
-			</ResourceDictionary.MergedDictionaries>
-		</ResourceDictionary>
-    </UserControl.Resources>
-
+	<UserControl.Resources>
+		<ResourceDictionary Source="FotoRitoccoResources.xaml" />
+	</UserControl.Resources>
 
 
 	<DockPanel LastChildFill="True">
 
 
-		<StackPanel DockPanel.Dock="Right" Name="panelPulsantiera"> <!-- pulsantiera -->
+		<StackPanel DockPanel.Dock="Right" Name="panelLeveRitocco" Style="{StaticResource panelLeveRitoccoStyle}"> <!-- pulsantiera -->
 
 			<Label Content="Luminosità" />
-			<Slider Name="sliderLuminosita" ToolTip="Luminosità" Minimum="-1" Maximum="1" Value="0" ValueChanged="sliderLuminosita_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" />
+			<Slider Name="sliderLuminosita" ToolTip="Luminosità" Minimum="-1" Maximum="1" Value="0" ValueChanged="sliderLuminosita_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.2" SmallChange="0.05" />
 
 			<Label Content="Contrasto" />
-			<Slider Name="sliderContrasto" ToolTip="Contrasto" Minimum="0" Maximum="2" Value="1" ValueChanged="sliderContrasto_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" />
+			<Slider Name="sliderContrasto" ToolTip="Contrasto" Minimum="0" Maximum="2" Value="1" ValueChanged="sliderContrasto_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.2" SmallChange="0.05" />
 
 			<Label Content="Ruota" />
-			<Slider Name="sliderRuota" ToolTip="Ruota" Minimum="-180" Maximum="180" ValueChanged="sliderRuota_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" />
+			<Slider Name="sliderRuota" ToolTip="Ruota" Minimum="-180" Maximum="180" ValueChanged="sliderRuota_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="20" SmallChange="5" />
 
+			<UniformGrid Rows="2" Columns="3" Style="{StaticResource gridOneShotRitoccoStyle}">
+				<Button Content="-90°" Command="{Binding ruotareCommand}" CommandParameter="-90" />
+				<Button Content="+90°" Command="{Binding ruotareCommand}" CommandParameter="90" />
+				<Button Content="Flip" Command="{Binding flipCommand}" />
+				<ToggleButton Content="B/N" IsChecked="{Binding Path=isGrayscaleChecked,Mode=OneWay}"  Command="{Binding grayScaleCommand}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" Style="{StaticResource buttonBaseStyle}" />
+				<ToggleButton Content="Sepia" IsChecked="{Binding Path=isSepiaChecked,Mode=OneWay}" Command="{Binding sepiaCommand}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" Style="{StaticResource buttonBaseStyle}" />
+				<Button Name="buttonModificaConPrgEsterno" Content="Gimp" ToolTip="Modifica le foto con un programma esterno" Command="{Binding modificareConEditorEsternoCommand}" />
+			</UniformGrid>
 
-			<StackPanel Orientation="Horizontal">
-				<Button Content="-90°" Command="{Binding ruotareCommand}" CommandParameter="-90" Margin="2" />
-				<Button Content="+90°" Command="{Binding ruotareCommand}" CommandParameter="90" Margin="2"/>
-				<Button Content="Flip" Command="{Binding flipCommand}" Margin="2"/>
-			</StackPanel>
-			<StackPanel Orientation="Horizontal">
-				<ToggleButton Content="B/N" IsChecked="{Binding Path=isGrayscaleCheched}"  Command="{Binding grayScaleCommand}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" Margin="2"/>
-				<ToggleButton Content="Sepia" IsChecked="{Binding Path=isSepiaCheched}" Command="{Binding sepiaCommand}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" Margin="2"/>
-				<Button Name="buttonModificaConPrgEsterno" Content="Prg." ToolTip="Modifica le foto con un programma esterno" Command="{Binding modificareConEditorEsternoCommand}" />
-			</StackPanel>
-					
 			<Separator Height="10" />
 
 			<ToggleButton Content="Selector" Name="toggleSelector" IsChecked="{Binding Path=selectorAttivo,Mode=OneWay}" IsEnabled="{Binding Path=selectorEnabled,Mode=OneWay}"
 							Checked="toggleSelector_Checked" Unchecked="toggleSelector_Unchecked" />
 
 
-
 			<Button Content="Crop" Command="{Binding croppareCommand}"/>
 
-			<Separator Height="10" />			
+			<Separator Height="25" />
 
-			<Button Content="Torna Orig" ToolTip="Torna Originale" Command="{Binding tornareOriginaleCommand}" />
+			<Button Content="Torna Originale" Command="{Binding tornareOriginaleCommand}"  />
             
-            <Separator Height="20" />
+            <Separator Height="25" />
 
-            <Button Name="rifiutareCorrezioniButton" Content="Rifiuta" ToolTip="Annulla le correzioni applicate" Command="{Binding rifiutareCorrezioniCommand}"  />
-            <Button Name="salvareCorrezioniButton" Content="Applica" ToolTip="Applica le correzioni apportate" Command="{Binding salvareCorrezioniCommand}"  />
-            <Button Name="salvareMascheraButton" Content="Salva Msk" ToolTip="Salva la maschera" Click="salvareMascheraButton_Click" IsEnabled="{Binding possoSalvareMaschera}" />
-            <Separator />
-            <Button Content="+All" ToolTip="Mette tutte le foto in modifica" Command="{Binding commandRiempireElencoInModifica}" />
-            <Button Content="-All" ToolTip="Toglie tutte le foto dalla modifica" Command="{Binding commandSvuotareElencoInModifica}" />
-            <Button Content="Svuota lista" ToolTip="Svuota la lista delle foto in attesa di essere modificate" Command="{Binding svuotareListaDaModificareCommand}" />
-            
+			<Button Name="rifiutareCorrezioniButton" Content="Rifiuta" ToolTip="Annulla le correzioni applicate" Command="{Binding rifiutareCorrezioniCommand}" />
+			<Button Name="salvareCorrezioniButton" Content="Applica" ToolTip="Applica le correzioni apportate" Command="{Binding salvareCorrezioniCommand}" FontSize="20" />
+			<Button Name="salvareMascheraButton" Content="Salva Maschara" ToolTip="Salva una nuova foto con cornice" Click="salvareMascheraButton_Click" IsEnabled="{Binding possoSalvareMaschera}" />
+			<Separator Height="25" />
+			<Button Content="+All" ToolTip="Mette tutte le foto in modifica" Command="{Binding commandRiempireElencoInModifica}" />
+			<Button Content="-All" ToolTip="Toglie tutte le foto dalla modifica" Command="{Binding commandSvuotareElencoInModifica}" />
+			<Button Content="Svuota lista" ToolTip="Svuota la lista delle foto in attesa di essere modificate" Command="{Binding svuotareListaDaModificareCommand}"  />
+
 		</StackPanel>
 
-		<Expander DockPanel.Dock="Top"  Header="Maschere" ExpandDirection="Down" Name="expanderMaschere"> <!-- Maschere -->
+		<Expander DockPanel.Dock="Left"  Header="Maschere" ExpandDirection="Left" IsExpanded="False" Name="expanderMaschere"> <!-- Maschere -->
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Expanded">
                     <i:InvokeCommandAction Command="{Binding caricareMaschereCommand}" CommandParameter="T"/>
@@ -93,25 +82,30 @@
 
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 
-                <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Top">
-                    <RadioButton Content="Vert"  Style="{StaticResource {x:Type ToggleButton}}" GroupName="groupMaskOrient" Command="{Binding caricareMaschereCommand}" CommandParameter="V" ToolTip="Filtra solo maschere verticali" />
-                    <RadioButton Content="Horiz" Style="{StaticResource {x:Type ToggleButton}}" GroupName="groupMaskOrient" Command="{Binding caricareMaschereCommand}" CommandParameter="H" ToolTip="Filtra solo maschere orizzontali"/>
-                    <Button Content="..." ToolTip="Carica maschera da un'altra cartella" Command="{Binding commandBrowseForFileCornice}" />
+                <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical" Width="Auto" >
+					<StackPanel Orientation="Horizontal">
+						<RadioButton Content="Solo Verticali"  Style="{StaticResource {x:Type ToggleButton}}" GroupName="groupMaskOrient" Command="{Binding caricareMaschereCommand}" CommandParameter="V" ToolTip="Filtra solo maschere verticali" />
+						<RadioButton Content="Solo Orizzontali" Style="{StaticResource {x:Type ToggleButton}}" GroupName="groupMaskOrient" Command="{Binding caricareMaschereCommand}" CommandParameter="H" ToolTip="Filtra solo maschere orizzontali"/>
+					</StackPanel>
+                    <Button Content="Carica da disco ..." ToolTip="Carica maschera da un'altra cartella" Command="{Binding commandBrowseForFileCornice}" />
                 </StackPanel>
 
-                <ItemsControl Name="itemsContolMaschere" Grid.Row="0" Grid.Column="1"                               
-                              ItemsSource="{Binding maschereCW}" 
-                              ItemsPanel="{DynamicResource itemsPanelTemplateMaschere}" 
-                              ItemTemplate="{DynamicResource itemTemplateThumbMaschera}"
-                              />
-            </Grid>
+				<ScrollViewer Grid.Row="1" Grid.Column="0">	
+					<ItemsControl Name="itemsContolMaschere"                                
+								  ItemsSource="{Binding maschereCW}" 
+								  ItemsPanel="{DynamicResource itemsPanelTemplateMaschere}" 
+								  ItemTemplate="{DynamicResource itemTemplateThumbMaschera}"
+								  />
+				</ScrollViewer>
+				
+			</Grid>
 
         </Expander>
 
@@ -182,11 +176,12 @@
             <ItemsControl x:Name="itemsControlImmaginiInModifica"
                           Visibility="{Binding isGestioneMaschereDisattiva,Converter={StaticResource booleanToVisibilityConverter}}"
                           ItemsSource="{Binding ElementName=listBoxImmaginiDaModificare, Path=SelectedItems}" 
-                          Background="Tomato"
-                          VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" PreviewMouseDown="itemsControlImmaginiInModifica_PreviewMouseDown">
+                          VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" 
+						  PreviewMouseDown="itemsControlImmaginiInModifica_PreviewMouseDown">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <UniformGrid  Background="DarkCyan"  />
+						<!--Style="{StaticResource uniformGridModificaStyle}"-->
+                        <UniformGrid   />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
