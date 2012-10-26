@@ -63,22 +63,23 @@ namespace Digiphoto.Lumen.UI {
 		#endregion
 
 		private void oggiButton_Click( object sender, RoutedEventArgs e ) {
-			calendario.SelectedDates.Clear();
-			calendario.SelectedDates.AddRange( fotoGalleryViewModel.oggi, fotoGalleryViewModel.oggi );
+			datePickerRicercaIniz.SelectedDate = fotoGalleryViewModel.oggi;
+			datePickerRicercaFine.SelectedDate = fotoGalleryViewModel.oggi;
 		}
 
 		private void ieriButton_Click( object sender, RoutedEventArgs e ) {
-			calendario.SelectedDates.Clear();
 			TimeSpan unGiorno = new TimeSpan(1,0,0,0);
 			DateTime ieri = fotoGalleryViewModel.oggi.Subtract( unGiorno );
-			calendario.SelectedDates.AddRange( ieri, ieri );
+			datePickerRicercaIniz.SelectedDate = ieri;
+			datePickerRicercaFine.SelectedDate = ieri;
 		}
 
 		private void ieriOggiButton_Click( object sender, RoutedEventArgs e ) {
-			calendario.SelectedDates.Clear();
+
 			TimeSpan unGiorno = new TimeSpan( 1, 0, 0, 0 );
 			DateTime ieri = fotoGalleryViewModel.oggi.Subtract( unGiorno );
-			calendario.SelectedDates.AddRange( ieri, fotoGalleryViewModel.oggi );
+			datePickerRicercaIniz.SelectedDate = ieri;
+			datePickerRicercaFine.SelectedDate = fotoGalleryViewModel.oggi;
 		}
 
 		private void calendario_SelectedDatesChanged( object sender, SelectionChangedEventArgs e ) {
