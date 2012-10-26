@@ -70,7 +70,7 @@
 
 		</StackPanel>
 
-		<Expander DockPanel.Dock="Left"  Header="Maschere" ExpandDirection="Left" IsExpanded="False" Name="expanderMaschere"> <!-- Maschere -->
+		<Expander DockPanel.Dock="Left"  Header="Mask" ExpandDirection="Left" IsExpanded="False" Name="expanderMaschere"> <!-- Maschere -->
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Expanded">
                     <i:InvokeCommandAction Command="{Binding caricareMaschereCommand}" CommandParameter="T"/>
@@ -89,12 +89,12 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 
-                <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical" Width="Auto" >
+                <StackPanel Name="panelFiltraMask" Grid.Row="0" Grid.Column="0" Orientation="Vertical" Width="Auto" >
 					<StackPanel Orientation="Horizontal">
-						<RadioButton Content="Solo Verticali"  Style="{StaticResource {x:Type ToggleButton}}" GroupName="groupMaskOrient" Command="{Binding caricareMaschereCommand}" CommandParameter="V" ToolTip="Filtra solo maschere verticali" />
-						<RadioButton Content="Solo Orizzontali" Style="{StaticResource {x:Type ToggleButton}}" GroupName="groupMaskOrient" Command="{Binding caricareMaschereCommand}" CommandParameter="H" ToolTip="Filtra solo maschere orizzontali"/>
+						<RadioButton Content="Solo Verticali"  Style="{StaticResource radioFiltroMask}" GroupName="groupMaskOrient" Command="{Binding caricareMaschereCommand}" CommandParameter="V" ToolTip="Filtra solo maschere verticali" />
+						<RadioButton Content="Solo Orizzontali" Style="{StaticResource radioFiltroMask}" GroupName="groupMaskOrient" Command="{Binding caricareMaschereCommand}" CommandParameter="H" ToolTip="Filtra solo maschere orizzontali"/>
 					</StackPanel>
-                    <Button Content="Carica da disco ..." ToolTip="Carica maschera da un'altra cartella" Command="{Binding commandBrowseForFileCornice}" />
+                    <Button Content="Carica da disco ..." ToolTip="Carica maschera da un'altra cartella" Command="{Binding commandBrowseForFileCornice}" Margin="5" />
                 </StackPanel>
 
 				<ScrollViewer Grid.Row="1" Grid.Column="0">	

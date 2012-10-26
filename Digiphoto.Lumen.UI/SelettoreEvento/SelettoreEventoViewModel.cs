@@ -8,6 +8,7 @@ using Digiphoto.Lumen.Servizi.EntityRepository;
 using Digiphoto.Lumen.Core.DatiDiEsempio;
 using System.Windows.Input;
 using Digiphoto.Lumen.Database;
+using Digiphoto.Lumen.Eventi;
 
 namespace Digiphoto.Lumen.UI {
 	
@@ -84,13 +85,19 @@ namespace Digiphoto.Lumen.UI {
 			eventi.Add( nuovoEvento );
 
 			// Prima di azzerare l'oggetto, mi prendo il messaggio da visualizzare
-			string msg = "Creato nuovo evento: " + nuovoEvento.descrizione;
+			string testoMsg = "Creato nuovo evento: " + nuovoEvento.descrizione;
 	
 			// Svuoto per nuova creazione
 			istanziaNuovoEvento();
 
 			// Avviso l'utente
-			dialogProvider.ShowMessage( msg, "Successo" );
+			if( dialogProvider != null )
+				dialogProvider.ShowMessage( testoMsg, "Successo" );
+
+			// Invio un messaggio di conferma
+			Messaggio confermaMsg = new Messaggio( this, testoMsg );
+			confermaMsg.showInStatusBar = true;
+			LumenApplication.Instance.bus.Publish( confermaMsg );
 		}
 
 		private void istanziaNuovoEvento() {

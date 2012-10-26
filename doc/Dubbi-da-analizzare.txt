@@ -1,8 +1,3 @@
-Dove mettiamo la visualizzazione dell'immagine grande a piena risoluzione ?
-Non possiamo usare il visualizzatore di windows perché ha anche il pulsante di stampa.
-Trovare un altro attrezzo, oppure aprire una popup da programma. e gestire lo zoom e il pan.
-
-
 	
 
 Questa richiesta di Ciccio mi sembra peggio:
