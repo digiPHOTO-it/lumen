@@ -3,7 +3,9 @@
                     xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
                     >
 	<ResourceDictionary.MergedDictionaries>
+<!--		
 		<ResourceDictionary Source="ExpanderDictionary.xaml" />
+-->		
 	</ResourceDictionary.MergedDictionaries>
 
 	<lumC:ImageSourceConverter x:Key="imageSourceConverter" />

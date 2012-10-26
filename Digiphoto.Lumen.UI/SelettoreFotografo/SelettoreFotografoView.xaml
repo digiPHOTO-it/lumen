@@ -12,44 +12,65 @@
         <ResourceDictionary Source="SelettoreFotografoResources.xaml" />
     </UserControl.Resources>
 
-    <StackPanel>
+    <Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition />
+		</Grid.ColumnDefinitions>
 
-        <GroupBox Header="lista Fotografi">
+		<!--
+		ItemTemplate="{StaticResource fotografiListBoxTemplate}"
+		-->
+		<GroupBox Header="lista Fotografi"  Grid.Row="0" Grid.Column="0">
             <ScrollViewer VerticalScrollBarVisibility="Auto">  
                 <ListBox Name="fotografiListBox" MinHeight="30" 
                          ItemsSource="{Binding Path=fotografi}" 
-                         ItemTemplate="{StaticResource fotografiListBoxTemplate}"
+						 DisplayMemberPath="cognomeNome" 
                          SelectedItem="{Binding Path=fotografoSelezionato}" />
             </ScrollViewer>
         </GroupBox>
 
-        <Button Name="refreshButton" Content="Rileggi" Command="{Binding Path=rileggereFotografiCommand}" />
 
-        <Expander IsExpanded="False" Header="Crea nuovo fotografo" 
-                  Visibility="{Binding possoCreare, 
-                    ElementName=selFotografo, 
-                    Converter={StaticResource BooleanToVisibilityConverter}}" >
+		<Grid	Grid.Row="1" Grid.Column="0" 
+				Visibility="{Binding possoCreare,ElementName=selFotografo,Converter={StaticResource BooleanToVisibilityConverter}}">
 
+			<Grid.RowDefinitions>
+				<RowDefinition />
+				<RowDefinition  />
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
 			
-            <StackPanel >
-
-                <Label Content="Cognome e Nome" />
+			<StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0" >	
+				<Label Content="Cognome e Nome"  />
                 <TextBox x:Name="newNomeFotografoTxt" 
                          Text="{Binding  Path=idFotografoNew, UpdateSourceTrigger=PropertyChanged}"
                          Style="{StaticResource newNomeFotografoTxtStyle}" />
+			</StackPanel>
 
-                <Label Content="Iniziali" />
+			<StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" >
+				<Label Content="Iniziali" />
                 <TextBox x:Name="newInizialiFotografoTxt" 
                          Text="{Binding Path=nuovoFotografo.iniziali, UpdateSourceTrigger=PropertyChanged}"
-                         MaxLength="2"
+                         MaxLength="2" 
                          Style="{StaticResource newInizialiFotografoTxtStyle}"
                          />
 
-                <Button Name="creareNuovoButton" Content="Aggiungi" Command="{Binding Path=creareNuovoCommand}" />
-            </StackPanel>
-        </Expander>
+			<Button Name="creareNuovoButton" Command="{Binding Path=creareNuovoCommand}" ToolTip="Crea nuovo fotografo" Margin="40,0,0,0" Height="Auto" Width="Auto">
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/add-16x16.png" Height="16" />
+			</Button>
 
-    </StackPanel>
+				<Button Name="refreshEventiButton" ToolTip="Rileggi" Command="{Binding Path=refreshEventiCommand}" Height="Auto" Width="Auto">
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/refresh-16x16.png" Height="16" />
+			</Button>
+			</StackPanel>
+		</Grid>
+
+    </Grid>
 
 
 </lumM:UserControlBase>

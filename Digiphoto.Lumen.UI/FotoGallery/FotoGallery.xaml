@@ -91,23 +91,23 @@
         </Expander>
 
         
-        <Expander Header="Ricerca foto nell'archivio" DockPanel.Dock="Bottom" IsExpanded="True" ExpandDirection="Up">
+        <Expander Header="Ricerca foto nell'archivio" DockPanel.Dock="Bottom" IsExpanded="True" ExpandDirection="Up" >
             
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" MaxHeight="120">
                 
                 <GroupBox Header="Tempo">
 
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Vertical">
 
-                        <Calendar SelectionMode="SingleRange" Name="calendario" SelectedDatesChanged="calendario_SelectedDatesChanged" />
+						<DatePicker SelectedDate="{Binding Path=paramCercaFoto.giornataIniz,Mode=TwoWay}"  IsTodayHighlighted="true" Name="datePickerRicercaIniz" ToolTip="Data inizio periodo" Margin="1"/>
+						<DatePicker SelectedDate="{Binding Path=paramCercaFoto.giornataFine,Mode=TwoWay}"  IsTodayHighlighted="true" Name="datePickerRicercaFine" ToolTip="Data fine periodo" Margin="1"/>
 
-                        <StackPanel Orientation="Vertical">
-                            <Button Content="Oggi" Name="oggiButton" Click="oggiButton_Click" />
-							<Button Content="Ieri" Name="ieriButton" Click="ieriButton_Click" />
-							<Button Content="Ieri e Oggi" Name="ieriOggiButton" Click="ieriOggiButton_Click" />
-                        </StackPanel>
-                        
-                    </StackPanel>
+						<StackPanel Orientation="Horizontal" Margin="0,3,0,0" HorizontalAlignment="Center">
+							<Button Content="Oggi" Name="oggiButton" Click="oggiButton_Click" Margin="1" Padding="2,0,2,0" MinWidth="40" />
+							<Button Content="Ieri" Name="ieriButton" Click="ieriButton_Click" Margin="1" Padding="2,0,2,0" MinWidth="40" />
+							<Button Content="Ieri+Oggi" Name="ieriOggiButton" Click="ieriOggiButton_Click" Margin="1" Padding="2,0,2,0" />
+						</StackPanel>
+					</StackPanel>
                 </GroupBox>
 
 
@@ -115,44 +115,68 @@
                 
                 <!-- eventuale filtro per fotografo -->
                 <lum:SelettoreFotografo x:Name="selettoreFotografo5" possoCreare="False"
+										Margin="3,0,0,0"
                                         DataContext="{Binding selettoreFotografoViewModel}" />
 
                 <lum:SelettoreEvento x:Name="selettoreEvento5" possoCreare="False"
+									 Margin="3,0,0,0"
                                  DataContext="{Binding selettoreEventoFiltro}" />
 
-                <StackPanel Orientation="Vertical">
-					<CheckBox Name="checkBoxMattino" Content="Mattino" IsChecked="{Binding isMattinoChecked,Mode=TwoWay}"  Foreground="WhiteSmoke" />
-					<CheckBox Name="checkBoxPomeriggio" Content="Pomeriggio" IsChecked="{Binding isPomeriggioChecked,Mode=TwoWay}"  Foreground="WhiteSmoke" />
-					<CheckBox Name="checkBoxSera" Content="Sera" IsChecked="{Binding isSeraChecked,Mode=TwoWay}" Foreground="WhiteSmoke" />              
-                    
-                    <Separator />
-                    
-                    <Label Content="Didascalia" />
-					<TextBox Name="didascaliaTextBox" CharacterCasing="Upper" Text="{Binding Path=paramCercaFoto.didascalia,Mode=TwoWay}" />
+				<StackPanel Orientation="Vertical" Margin="3,0,3,0" VerticalAlignment="Center">
+                    <CheckBox Name="checkBoxMattino" Content="Mattino" IsChecked="{Binding isMattinoChecked,Mode=TwoWay}" Margin="2" />
+					<CheckBox Name="checkBoxPomeriggio" Content="Pomeriggio" IsChecked="{Binding isPomeriggioChecked,Mode=TwoWay}" Margin="2" />
+					<CheckBox Name="checkBoxSera" Content="Sera" IsChecked="{Binding isSeraChecked,Mode=TwoWay}" Margin="2" />              
+				</StackPanel>
+
+				<StackPanel Orientation="Vertical" Margin="3,0,3,0"  >
+
+					<Label Content="Didascalia" />
+					<TextBox Name="didascaliaTextBox" CharacterCasing="Upper" Text="{Binding Path=paramCercaFoto.didascalia,Mode=TwoWay}" MinWidth="80" />
 
                     <Separator />
                     
                     <Label>Numeri</Label>
 					<TextBox  Text="{Binding Path=stringaNumeriFotogrammi}" 
 							  Name="textBoxNumFotogrammi"
-							  CharacterCasing="Upper"
-							  ToolTip="Indicare i numeri separati da virgola ," />
+							  CharacterCasing="Upper" MinWidth="80"
+							  ToolTip="Indicare i numeri separati da virgola , oppure range con il meno -" />
                 </StackPanel>
-                
-        
-                
-                <Button Name="azzeraParamRicercaButton" Content="Azzera param" ToolTip="Azzera i parametri di ricerca" Command="{Binding azzeraParamRicercaCommand}" />
-                <Button Name="eseguireRicercaButton" Content="Esegui Ricerca" Command="{Binding eseguireRicercaCommand}" />
-				<Button Content="|&lt;- Pag" ToolTip="Risultati prima pagina" Command="{Binding commandSpostarePaginazione}" CommandParameter="-999" />
-				<Button Content="&lt;- Pag" ToolTip="Risultati pagina precedente" Command="{Binding commandSpostarePaginazione}" CommandParameter="-1" />
-				<Button Content="Pag +&gt;" ToolTip="Risultati prossima pagina" Command="{Binding commandSpostarePaginazione}" CommandParameter="1" />
-				<Separator />
+
+
+				<StackPanel Orientation="Vertical" Margin="3,0,3,0"  >
+
+					<StackPanel Orientation="Horizontal" Margin="2">
+						<Button Name="eseguireRicercaButton" Command="{Binding eseguireRicercaCommand}" >
+							<StackPanel Orientation="Horizontal">
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/start-search-24x24.png" Height="24" />
+								<Label Content="Esegui Ricerca" />
+							</StackPanel>
+						</Button>
+						<Button Name="azzeraParamRicercaButton" ToolTip="Azzera i parametri di ricerca" Command="{Binding azzeraParamRicercaCommand}" >
+							<StackPanel Orientation="Horizontal">
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/clear-filter-22x22.png" Height="22" />
+								<Label Content="Svuota filtri" />
+							</StackPanel>
+						</Button>
+
+
+
+					</StackPanel>
+					<StackPanel Orientation="Horizontal" Margin="2">
+						<Button Content="|&lt;- Pag" ToolTip="Risultati prima pagina" Command="{Binding commandSpostarePaginazione}" CommandParameter="-999" />
+						<Button Content="&lt;- Pag" ToolTip="Risultati pagina precedente" Command="{Binding commandSpostarePaginazione}" CommandParameter="-1" />
+						<Button Content="Pag +&gt;" ToolTip="Risultati prossima pagina" Command="{Binding commandSpostarePaginazione}" CommandParameter="1" />
+					</StackPanel>
+
+				</StackPanel>
+
+
 				<Button Name="caricareSlideShowAuto" Content="Load SS Auto" Command="{Binding caricareSlideShowCommand}" CommandParameter="Auto" />
-                
-            </StackPanel>
-            
-           
-        </Expander>
+
+			</StackPanel>
+
+
+		</Expander>
 
 
 		<lum:SelettoreAzioniRapideView Visibility="Collapsed" DataContext="{Binding Path=selettoreAzioniRapideViewModel}"/>
