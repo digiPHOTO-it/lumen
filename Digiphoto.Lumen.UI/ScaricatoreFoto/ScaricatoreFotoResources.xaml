@@ -23,8 +23,10 @@
  	</Style>
 
 	<!-- Derivo dallo stile anonimo che vale per tutte le ListBox -->
-	<Style x:Key="fasiGiornoListBoxStyle" TargetType="{x:Type ListBox}" BasedOn="{StaticResource {x:Type ListBox}}">
+	<Style x:Key="fasiGiornoListBoxStyle" TargetType="{x:Type ListBox}" >
 		<Setter Property="FontSize" Value="18" />
+		<Setter Property="Background" Value="Gray"  />
+		<Setter Property="Foreground" Value="WhiteSmoke" />
 	</Style>
 
 	<Style x:Key="selettoreCartellaStyle" TargetType="{x:Type lum:SelettoreCartella}" >

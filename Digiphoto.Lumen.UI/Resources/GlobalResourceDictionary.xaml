@@ -84,6 +84,7 @@
 	
 	<Style TargetType="{x:Type ListBox}">
 		<Setter Property="Background" Value="Gray" />
+		<Setter Property="Foreground" Value="WhiteSmoke" />
 	</Style>
 
 	<Style TargetType="{x:Type ButtonBase}" x:Key="buttonBaseStyle">
@@ -127,7 +128,12 @@
 		<GradientStop Color="#FF747C8D" Offset="0.5"/>
 		<GradientStop Color="#FFE5E7FA" Offset="1"/>
 	</LinearGradientBrush>
-	
+
+	<LinearGradientBrush x:Key="tabItemGradient" StartPoint="0,0" EndPoint="1,1" >
+		<GradientStop Color="#FF0F0F0F" Offset="0"/>
+		<GradientStop Color="#FF747C8D" Offset="1"/>
+	</LinearGradientBrush>
+
 	<Style TargetType="{x:Type Control}">
 		<Setter Property="FontSize" Value="12" />
 	</Style>

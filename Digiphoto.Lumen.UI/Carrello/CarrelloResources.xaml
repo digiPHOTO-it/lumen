@@ -28,14 +28,7 @@
 
     <!-- Stile della listbox che itera i Carrelli -->
     <Style x:Key="ListaCarrelliStyle" TargetType="ListBox">
-        <Setter Property="Control.Background">
-            <Setter.Value>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="#B2B6CAFF"/>
-                    <GradientStop Color="#E0E4F0FF" Offset="1"/>
-                </LinearGradientBrush>
-            </Setter.Value>
-        </Setter>
+		<Setter Property="Background" Value="LightGray" />
 
         <Setter Property="IsSynchronizedWithCurrentItem" Value="True" />
 
@@ -46,17 +39,17 @@
 	<Style x:Key="ImageCarrelloImageContainerStyle" TargetType="ListBoxItem">
 		<Style.Resources>
 			<!--SelectedItem with focus -->
-			<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Yellow" />
+			<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Blue" />
 
 			<!--SelectedItem without focus-->
-			<SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Yellow" />
+			<SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Blue" />
 		</Style.Resources>
 	</Style>
 
 	<!-- Style per ogni elemento della collection. Setto il colore selezionato = giallo -->
     <Style x:Key="ListaCarrelliImageContainerStyle" TargetType="ListBoxItem">
         <Style.Resources>
-            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Yellow"/>
+			<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Blue" Opacity=".6"/>
         </Style.Resources>
 		<!--
         <Setter Property="IsSelected" Value="{Binding Mode=TwoWay, Path=isSelezionata}"/>
@@ -76,7 +69,7 @@
 	</Storyboard>
 
     <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
-    <DataTemplate x:Key="ImageCarrelloDataTemplate" >
+	<DataTemplate x:Key="ImageCarrelloDataTemplate" >
 		<GroupBox x:Name="RigaCarrelloGroupBox" Header="Riga Carrello" Width="Auto" Margin="2,2,2,2" >
 			<Grid Width="Auto">
 				<Grid.RowDefinitions>
@@ -166,7 +159,7 @@
 		</GroupBox>
     </DataTemplate>
 
-    <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Carrello" -->
+	<!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Carrello" -->
     <DataTemplate x:Key="ListaCarrelliDataTemplate">
         <StackPanel Orientation="Vertical">
 			<Border BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="10" Margin="0,0,2,2" Background="{Binding Path=venduto, Converter={StaticResource boolBackgroundConverter}}">

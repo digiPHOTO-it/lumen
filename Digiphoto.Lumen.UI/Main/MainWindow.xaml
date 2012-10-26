@@ -102,8 +102,10 @@
 			<lum:CarrelloView x:Name="carrelloView" />
         </TabItem>
 
-        <TabItem Header="Configurazione" ToolTip="Scarica foto da memory-card o da altra cartella" MinHeight="30" >
-			<TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Left" Name="tabConfigPagine" >
+			<TabItem Header="Configurazione" ToolTip="Scarica foto da memory-card o da altra cartella" MinHeight="30" >
+			<TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Left" Name="tabConfigPagine"
+						Style="{DynamicResource tabControlProspettiveStyle}"
+						ItemContainerStyle="{StaticResource tabItemProspettiveStyle}">
 
 				<TabItem ToolTip="Consente di Gestire le entita">
 					<TabItem.Header>
@@ -136,7 +138,9 @@
 		</TabItem>
 		
         <TabItem Header="Utilità" ToolTip="Funzionalità varie" >
-			<TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Left" Name="tabUtilityPagine" >
+			<TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Left" Name="tabUtilityPagine" 
+						Style="{DynamicResource tabControlProspettiveStyle}"
+						ItemContainerStyle="{StaticResource tabItemProspettiveStyle}">
 
                 <TabItem ToolTip="Uscita" Height="Auto">
                     <TabItem.Header>
