@@ -673,6 +673,8 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\clear-filter-22x22.png" />
+    <Resource Include="Resources\start-search-24x24.png" />
     <Resource Include="Resources\refresh-16x16.png" />
     <EmbeddedResource Include="Resources\information.ico" />
     <EmbeddedResource Include="Resources\error.ico" />

@@ -90,7 +90,7 @@
         </TabItem>
 
 
-        <TabItem Name="tabItemGallery" Header="Gallery" ToolTip="Visualizzare foto" >
+        <TabItem Name="tabItemGallery" Header="Gallery" >
             <lum:FotoGallery x:Name="fotoGallery" />
         </TabItem>
 
