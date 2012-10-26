@@ -14,7 +14,9 @@
 
 
 	<!-- Stile della listbox che itera le immagini -->
-    <Style x:Key="LsImageGalleryStyle" TargetType="ListBox">
+    <Style x:Key="LsImageGalleryStyle" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
+		<Setter Property="Background" Value="#4c4c4c" />
+			 
 <!--		
         <Setter Property="Control.Background">
             <Setter.Value>

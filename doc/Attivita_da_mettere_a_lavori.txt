@@ -1,0 +1,2 @@
+Quando aggiungo un evento nel selettore eventi della gallery,
+dovreri rinfrescare l'altro selettore eventi che sta nei parametri di ricerca

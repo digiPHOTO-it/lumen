@@ -14,8 +14,16 @@
         <ResourceDictionary Source="SelettoreEventoResources.xaml" />
     </UserControl.Resources>
 
-    <StackPanel>
-        <GroupBox Header="Eventi">
+    <Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition />
+		</Grid.ColumnDefinitions>
+		
+        <GroupBox Header="Eventi" Grid.Row="0" Grid.Column="0">
             <ScrollViewer VerticalScrollBarVisibility="Auto" >
                 <ListBox Name="eventiListBox"  
                          ItemsSource="{Binding eventi}" 
@@ -25,24 +33,32 @@
             </ScrollViewer>
         </GroupBox>
 
-        <Button Name="refreshEventiButton" Content="Rileggi" Command="{Binding Path=refreshEventiCommand}"  />
 
-        <Expander IsExpanded="False" Header="Crea nuovo evento" 
-                  Visibility="{Binding possoCreare, 
-                    ElementName=selettoreEvento, 
-                    Converter={StaticResource BooleanToVisibilityConverter}}" >
-            <StackPanel>
+		<Grid Height="24"
+				Grid.Row="1" Grid.Column="0" 
+                Visibility="{Binding possoCreare,ElementName=selettoreEvento,Converter={StaticResource BooleanToVisibilityConverter}}" >
+			
+			<Grid.RowDefinitions>
+					<RowDefinition />
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" x:Name="columnTesto"/>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
 
-                <Label Content="Descrizione evento" />
-                <TextBox x:Name="newDescrizioneTextBox" 
-                         Text="{Binding  Path=nuovoEvento.descrizione, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                         Style="{StaticResource newDescrizioneTextBox}"
-                         />
+                <TextBox x:Name="newDescrizioneTextBox" Text="{Binding  Path=nuovoEvento.descrizione, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                         Style="{StaticResource newDescrizioneTextBox}" Grid.Row="0" Grid.Column="0"/>
 
-                <Button Name="creareNuovoEventoButton" Content="Aggiungi" Command="{Binding Path=creareNuovoEventoCommand}" />
-            </StackPanel>
-        </Expander>
+				<Button Name="creareNuovoEventoButton" Command="{Binding Path=creareNuovoEventoCommand}" ToolTip="Crea nuovo evento" Grid.Row="0" Grid.Column="1">
+					<Image Source="/Digiphoto.Lumen.UI;component/Resources/add-16x16.png" Width="16" />
+				</Button>
 
-    </StackPanel>
+				<Button Name="refreshEventiButton" ToolTip="Rileggi" Command="{Binding Path=refreshEventiCommand}" Grid.Row="0" Grid.Column="2">
+					<Image Source="/Digiphoto.Lumen.UI;component/Resources/refresh-16x16.png" Width="16" />
+				</Button>
+			</Grid>
+
+    </Grid>
             
 </lumM:UserControlBase>

@@ -13,7 +13,7 @@
 	<!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
     <DataTemplate x:Key="fotografiaDataTemplate" >
 
-        <Border BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="8" Margin="0,0,2,2" >
+		<Border BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="8" Margin="0,0,2,2" >
             
             <Canvas x:Name="fotoCanvas"
                     Height="{Binding  Path=DataContext.dimensioneIconaFoto, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
@@ -46,15 +46,12 @@
                     </Image.ToolTip>
                 </Image>
 
-
-                <!-- TODO mettere una immagine per le info aggiuntive in popup -->
-                
                 <!-- IL font con cui stampo il numero, ha grandezza proporzionale al canvas . Per ora uso 8% della grandezza del contenitore della foto -->
                 <Label Content="{Binding Path=etichetta}"        
                                Canvas.Right="2"
-                               Canvas.Bottom="2"
+                               Canvas.Top="2"
                                FontSize="{Binding Converter={StaticResource percentualeConverter},ElementName=fotoCanvas,Path=ActualHeight,ConverterParameter=8}"
-                               Background="Orange" />
+                               Background="Orange" Foreground="Black" />
             </Canvas>
 
         </Border>

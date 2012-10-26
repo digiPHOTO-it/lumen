@@ -150,6 +150,10 @@
 	<Style x:Key="toggleButtonOneShotStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource buttonBaseStyle}">
 		<Setter Property="Background" Value="Red" />
 	</Style>
-	
+
+	<Style x:Key="radioFiltroMask" TargetType="{x:Type RadioButton}" BasedOn="{StaticResource {x:Type ToggleButton}}">
+		<Setter Property="Margin" Value="5" />
+		<Setter Property="Height" Value="30" />
+ 	</Style>
 	
 </ResourceDictionary>
