@@ -204,7 +204,7 @@
 			</Grid>
             
 			<!-- Questa è la lista delle immagini -->
-			<ListBox x:Name="listCarrello" 
+			<ListBox x:Name="listCarrello"
 					 SelectionMode="Single" 
 					 Style="{StaticResource ListCarrelloStyle}"
 					 ItemsSource="{Binding Path=RiCaFotoStampataCv}"

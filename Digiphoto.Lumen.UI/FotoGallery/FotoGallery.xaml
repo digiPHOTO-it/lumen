@@ -103,8 +103,8 @@
 
                         <StackPanel Orientation="Vertical">
                             <Button Content="Oggi" Name="oggiButton" Click="oggiButton_Click" />
-                            <Button Content="Ieri" Name="ieriButton" Click="ieriButton_Click" />
-                            <Button Content="Ieri e Oggi" Name="ieriOggiButton" Click="ieriOggiButton_Click" />
+							<Button Content="Ieri" Name="ieriButton" Click="ieriButton_Click" />
+							<Button Content="Ieri e Oggi" Name="ieriOggiButton" Click="ieriOggiButton_Click" />
                         </StackPanel>
                         
                     </StackPanel>
@@ -121,9 +121,9 @@
                                  DataContext="{Binding selettoreEventoFiltro}" />
 
                 <StackPanel Orientation="Vertical">
-                    <CheckBox Name="checkBoxMattino" Content="Mattino" IsChecked="{Binding isMattinoChecked,Mode=TwoWay}"  />
-                    <CheckBox Name="checkBoxPomeriggio" Content="Pomeriggio" IsChecked="{Binding isPomeriggioChecked,Mode=TwoWay}"  />
-                    <CheckBox Name="checkBoxSera" Content="Sera" IsChecked="{Binding isSeraChecked,Mode=TwoWay}" />              
+					<CheckBox Name="checkBoxMattino" Content="Mattino" IsChecked="{Binding isMattinoChecked,Mode=TwoWay}"  Foreground="WhiteSmoke" />
+					<CheckBox Name="checkBoxPomeriggio" Content="Pomeriggio" IsChecked="{Binding isPomeriggioChecked,Mode=TwoWay}"  Foreground="WhiteSmoke" />
+					<CheckBox Name="checkBoxSera" Content="Sera" IsChecked="{Binding isSeraChecked,Mode=TwoWay}" Foreground="WhiteSmoke" />              
                     
                     <Separator />
                     
