@@ -44,7 +44,7 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 			ObjectSet<TEntity> objectSet = UnitOfWorkScope.CurrentObjectContext.ObjectContext.CreateObjectSet<TEntity>();
 			return objectSet.AsQueryable().Where( filter );
 		}
-		
+
 
 
 
@@ -61,34 +61,16 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 
 		public int saveChanges() {
 
-			try {
+			// Non fare try-catch. Se fallice deve saltare con eccezione.
+			return UnitOfWorkScope.CurrentObjectContext.SaveChanges();
 
-				return UnitOfWorkScope.CurrentObjectContext.SaveChanges();
+		}
 
-			} catch( DbEntityValidationException  ev ) {
-
-				_giornale.Debug( "Validazione fallita: ", ev );
-
-				StringBuilder msg = new StringBuilder();
-				foreach (DbEntityValidationResult res in ev.EntityValidationErrors ) {
-					if( ! res.IsValid ) {
-
-						foreach( DbValidationError erro in res.ValidationErrors ) {
-							_giornale.Debug( "property non valida: " + erro.PropertyName + ". Motivo=" + erro.ErrorMessage );
-							msg.Append( "Propietà non valida: " + erro.PropertyName + ". Motivo=" + erro.ErrorMessage + "\n" );
-						}
-					}
+		/*
+				public ObjectResult<TEntity> execute() {
+					ObjectSet<TEntity> objectSet = UnitOfWorkScope.CurrentObjectContext.ObjectContext.CreateObjectSet<TEntity>();
+					return objectSet.Execute( MergeOption.AppendOnly );
 				}
-
-				throw new Exception( msg.ToString(), ev );
-			}
-		}
-
-/*
-		public ObjectResult<TEntity> execute() {
-			ObjectSet<TEntity> objectSet = UnitOfWorkScope.CurrentObjectContext.ObjectContext.CreateObjectSet<TEntity>();
-			return objectSet.Execute( MergeOption.AppendOnly );
-		}
- */
+		 */
 	}
 }
