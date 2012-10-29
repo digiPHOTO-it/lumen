@@ -17,7 +17,7 @@
 		<Setter Property="FontSize" Value="18" />
 	</Style>
 
-	<Style x:Key="spostaCopiaRadioStyle" TargetType="{x:Type RadioButton}" BasedOn="{StaticResource baseRadioButtonStyle}">
+	<Style x:Key="spostaCopiaRadioStyle" TargetType="{x:Type RadioButton}" BasedOn="{StaticResource {x:Type RadioButton}}">
 		<Setter Property="FontSize" Value="18" />
 		<Setter Property="Margin" Value="10,0,0,0" />
  	</Style>

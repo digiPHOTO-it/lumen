@@ -62,6 +62,7 @@
 
     <!-- L'elemento selezionato della lista perde il colore quando non ha il fuoco. Con questo rimetto a posto -->
     <Style TargetType="ListBoxItem">
+		<Setter Property="Foreground" Value="DarkBlue" />
         <Style.Resources>
             <!--SelectedItem with focus -->
             <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Red" />
@@ -104,9 +105,8 @@
 	</Style>
 	
 
-	
-	<Style TargetType="{x:Type RadioButton}" x:Key="baseRadioButtonStyle">
-		<Setter Property="Foreground" Value="Cyan" />
+	<Style TargetType="{x:Type RadioButton}" >
+		<Setter Property="Foreground" Value="LightBlue" />
 	</Style>
 
 	<Style x:Key="tabControlProspettiveStyle" TargetType="{x:Type TabControl}" BasedOn="{StaticResource darkControlStyle}">
