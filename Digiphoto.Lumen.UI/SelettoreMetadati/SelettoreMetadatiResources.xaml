@@ -2,6 +2,40 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters">
 
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="/Resources/GlobalResourceDictionary.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+
 	<lumC:FasiDelGiornoConverter x:Key="fasiDelGiornoConverter" />
 
+	<Style x:Key="styleButtonDelTag" TargetType="Button">
+		<Setter Property="Height" Value="32" />
+		<Setter Property="FontStretch" Value="ExtraCondensed" />
+		<Setter Property="ToolTip" Value="Elimina tutti i metadati dalle fotografie selezioanate" />
+
+		<Setter Property="Content">
+			<Setter.Value>
+				<StackPanel Orientation="Horizontal" >
+					<Image Source="/Digiphoto.Lumen.UI;component/Resources/tag-remove-24x24.png" Height="24" />
+					<Label Content="Elimina metadati" Foreground="DarkBlue" />
+				</StackPanel>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	
+	<Style x:Key="styleButtonSaveTag" TargetType="Button">
+		<Setter Property="Margin" Value="0,10,0,0" />
+		<Setter Property="Height" Value="40" />
+		<Setter Property="ToolTip" Value="Salva metadati fotografie selezionate" />
+
+		<Setter Property="Content">
+			<Setter.Value>
+				<StackPanel Orientation="Horizontal" >
+					<Image Source="/Digiphoto.Lumen.UI;component/Resources/tag-save-24x24.png" Height="24" />
+					<Label Content="Applica metadati" Foreground="DarkBlue" />
+				</StackPanel>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	
 </ResourceDictionary>

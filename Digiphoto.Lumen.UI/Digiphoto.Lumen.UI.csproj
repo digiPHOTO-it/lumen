@@ -673,6 +673,24 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Carrello-qta-down-48x48.png" />
+    <Resource Include="Resources\Carrello-qta-up-48x48.png" />
+    <Resource Include="Resources\Carrello-delete-riga-48x48.png" />
+    <Resource Include="Resources\Carrello-remove-cd-48x48.png" />
+    <Resource Include="Resources\carrello-svuota-48x48.png" />
+    <Resource Include="Resources\dvd-32x32.png" />
+    <Resource Include="Resources\carrello-new-48x48.png" />
+    <Resource Include="Resources\carrello-vendi-48x48.png" />
+    <Resource Include="Resources\carrello-save-48x48.png" />
+    <Resource Include="Resources\foto-stampate-32x32.png" />
+    <Resource Include="Resources\tag-remove-24x24.png" />
+    <Resource Include="Resources\tag-save-24x24.png" />
+    <Resource Include="Resources\ssPause-32x32.png" />
+    <Resource Include="Resources\ssPlay-32x32.png" />
+    <Resource Include="Resources\move-first-page-24x24.png" />
+    <Resource Include="Resources\move-last-page-24x24.png" />
+    <Resource Include="Resources\move-next-page-24x24.png" />
+    <Resource Include="Resources\move-previous-page-24x24.png" />
     <Resource Include="Resources\clear-filter-22x22.png" />
     <Resource Include="Resources\start-search-24x24.png" />
     <Resource Include="Resources\refresh-16x16.png" />

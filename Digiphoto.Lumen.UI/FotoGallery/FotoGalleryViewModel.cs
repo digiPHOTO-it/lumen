@@ -32,6 +32,7 @@ using Digiphoto.Lumen.Model.Util;
 using System.Collections;
 using Digiphoto.Lumen.UI.Util;
 using System.Text.RegularExpressions;
+using System.Windows.Controls;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -134,10 +135,17 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		public bool possoCaricareSlideShow {
-			get {
-				return fotografieCW != null && fotografieCW.SelectedItems.Count > 0;
+		public bool possoCaricareSlideShow( string modoAutoManuale ) {
+
+			bool posso = false;
+			if( modoAutoManuale.Equals( "Manual", StringComparison.CurrentCultureIgnoreCase ) )
+				// Deve esserci almeno una foto selezionata
+				posso = fotografieCW != null && fotografieCW.SelectedItems.Count > 0;
+			else if( modoAutoManuale.Equals( "Auto", StringComparison.CurrentCultureIgnoreCase ) ) {
+				// Qui basta che ho eseguito una ricerca qualsiasi
+				posso = fotografieCW != null && fotografieCW.Count > 0;
 			}
+			return posso;
 		}
 
 		public bool possoControllareSlideShow
@@ -526,9 +534,9 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand caricareSlideShowCommand {
 			get {
 				if( _caricareSlideShowCommand == null ) {
-					_caricareSlideShowCommand = 
-						new RelayCommand( autoManual => caricareSlideShow( (string) autoManual ),
-										  autoManual => possoCaricareSlideShow );
+					_caricareSlideShowCommand =
+						new RelayCommand( autoManual => caricareSlideShow( (string)autoManual ),
+										  autoManual => possoCaricareSlideShow( (string)autoManual ) );
 				}
 				return _caricareSlideShowCommand;
 			}
@@ -539,7 +547,7 @@ namespace Digiphoto.Lumen.UI {
 			get {
 				if( _controllareSlideShowCommand == null ) {
 					_controllareSlideShowCommand = new RelayCommand( azione => controllareSlideShow( (string)azione ),
-																	azione => possoControllareSlideShow);
+					                                                 azione => possoControllareSlideShow);
 				}
 				return _controllareSlideShowCommand;
 			}
@@ -789,7 +797,8 @@ namespace Digiphoto.Lumen.UI {
 
 			// ricreo la collection-view e notifico che è cambiato il risultato. Le immagini verranno caricate poi
 			fotografieCW = new MultiSelectCollectionView<Fotografia>( fotoExplorerSrv.fotografie );
-			OnPropertyChanged( "fotografieCW" );
+			fotografieCW.SelectionChanged += fotografie_selezioneCambiata;
+//			OnPropertyChanged( "fotografieCW" );
 
 			// spengo tutte le selezioni eventualmente rimaste da prima
 			deselezionareTutto();
@@ -800,6 +809,10 @@ namespace Digiphoto.Lumen.UI {
 
 			OnPropertyChanged( "totFotoPaginaAttuale" );
 			OnPropertyChanged( "stoPaginando" );
+		}
+
+		void fotografie_selezioneCambiata( object sender, SelectionChangedEventArgs e ) {
+			OnPropertyChanged( "isAlmenoUnaSelezionata" );
 		}
 
 		private void bkgIdrata_DoWork( object sender, DoWorkEventArgs e ) {
