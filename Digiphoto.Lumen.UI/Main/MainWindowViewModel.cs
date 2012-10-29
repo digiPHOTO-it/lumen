@@ -26,6 +26,7 @@ using Digiphoto.Lumen.UI.DataEntry;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.UI.Main;
 using Digiphoto.Lumen.Core.Collections;
+using Digiphoto.Lumen.UI.DataEntry.DEFotografo;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -286,6 +287,13 @@ namespace Digiphoto.Lumen.UI {
 				window.ShowDialog();
 			}
 
+
+			// TODO sostituire con una factory
+			if (nomeEntita == "Fotografo")
+			{
+				WindowFotografo window = new WindowFotografo();
+				window.ShowDialog();
+			}
 
 		}
 

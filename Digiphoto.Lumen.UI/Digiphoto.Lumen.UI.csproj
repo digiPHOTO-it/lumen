@@ -213,6 +213,10 @@
     <Compile Include="Adorners\CroppingAdorner.cs" />
     <Compile Include="Adorners\PuncturedRect.cs" />
     <Compile Include="DataEntry\DataEntryViewModel.cs" />
+    <Compile Include="DataEntry\DEFotografo\DataEntryFotografoViewModel.cs" />
+    <Compile Include="DataEntry\DEFotografo\WindowFotografo.xaml.cs">
+      <DependentUpon>WindowFotografo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DataEntry\DEGiornata\DataEntryGiornataViewModel.cs" />
     <Compile Include="DataEntry\DEGiornata\WindowGiornata.xaml.cs">
       <DependentUpon>WindowGiornata.xaml</DependentUpon>
@@ -297,6 +301,10 @@
     <Page Include="ComNumFoto\CompNumFotoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataEntry\DEFotografo\WindowFotografo.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="DataEntry\DEGiornata\WindowGiornata.xaml">
       <SubType>Designer</SubType>
