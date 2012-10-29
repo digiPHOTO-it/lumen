@@ -133,7 +133,21 @@
 
 		<TabItem Header="Tabelle">
 			<Grid>
-				<Button Content="Chiusura cassa giorno" Height="50" Width="150" Command="{Binding commandDataEntry}" CommandParameter="Giornata" />
+					<Grid.RowDefinitions>
+						<RowDefinition Height="*" />
+						<RowDefinition Height="*" />
+						<RowDefinition Height="*" />
+						<RowDefinition Height="*" />
+						<RowDefinition Height="*" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<Button Grid.Row="2" Grid.Column="1" Content="Fotografo" Height="50" Width="150" Command="{Binding commandDataEntry}" CommandParameter="Fotografo" />
+					<Button Grid.Row="3" Grid.Column="1" Content="Chiusura cassa giorno" Height="50" Width="150" Command="{Binding commandDataEntry}" CommandParameter="Giornata" />
 			</Grid>
 		</TabItem>
 		
