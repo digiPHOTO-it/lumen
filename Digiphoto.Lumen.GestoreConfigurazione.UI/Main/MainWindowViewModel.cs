@@ -1027,7 +1027,21 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 					if( quanti > 0 )
 						msg += "\nConfigurazione PdV salvata";
 
-					dialogProvider.ShowMessage( msg, "OK" );
+					bool esciPure = false;
+
+					if (!Configurazione.isFuoriStandardCiccio)
+						dialogProvider.ShowMessage(msg, "OK");
+					else
+						dialogProvider.ShowConfirmation(msg + "\nConfermi chiusura del programma", "OK", (
+							confermato) =>
+						{
+							esciPure = confermato;
+						});
+
+					if (esciPure)
+					{
+						this.OnRequestClose();	
+					}
 
 				} catch( DbEntityValidationException dbeve ) {
 					
