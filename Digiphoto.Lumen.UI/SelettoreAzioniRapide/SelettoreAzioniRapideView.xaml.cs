@@ -24,6 +24,13 @@ namespace Digiphoto.Lumen.UI
 		public SelettoreAzioniRapideView()
 		{
 			InitializeComponent();
+
+			DataContextChanged += new DependencyPropertyChangedEventHandler(selettoreAzioniRapideView_DataContextChanged);
+		}
+
+		void selettoreAzioniRapideView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+		{
+			associaDialogProvider();
 		}
 	}
 }
