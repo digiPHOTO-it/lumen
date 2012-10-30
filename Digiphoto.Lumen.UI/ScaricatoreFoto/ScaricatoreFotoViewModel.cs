@@ -163,7 +163,7 @@ namespace Digiphoto.Lumen.UI {
 				if( _scaricareCommand == null ) {
 					_scaricareCommand = new RelayCommand( param => this.scaricare(),
 														param => this.possoScaricare,
-														true );
+														null );
 				}
 				return _scaricareCommand;
 			}
