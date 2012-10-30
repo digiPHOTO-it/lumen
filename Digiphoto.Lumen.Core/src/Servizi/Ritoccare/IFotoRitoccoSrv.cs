@@ -67,5 +67,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		/// </summary>
 		String [] caricaMiniatureMaschere();
 
+		void clonaFotografie(Fotografia[] fotografie);
+
 	}
 }

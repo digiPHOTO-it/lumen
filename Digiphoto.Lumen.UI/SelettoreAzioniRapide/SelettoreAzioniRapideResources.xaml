@@ -81,6 +81,10 @@
 				  Command="{Binding Path=viewFotoFullScreenCommand}" 
 				  DataContext="{Binding}"/>
 		
+		<MenuItem Header="Clona" 
+                        Command="{Binding Path=clonaFotografieCommand}"
+						DataContext="{Binding}"	/>
+
 		<MenuItem Header="Elimina" 
 				  Command="{Binding eliminareFotoCommand}"
 				  CommandParameter="SEL" 

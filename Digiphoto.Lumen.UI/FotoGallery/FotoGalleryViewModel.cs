@@ -32,12 +32,13 @@ using Digiphoto.Lumen.Model.Util;
 using System.Collections;
 using Digiphoto.Lumen.UI.Util;
 using System.Text.RegularExpressions;
+using Digiphoto.Lumen.Servizi.Ritoccare.Clona;
 
 namespace Digiphoto.Lumen.UI {
 
 
 
-	public class FotoGalleryViewModel : ViewModelBase, IObserver<GestoreCarrelloMsg>, IObserver<StampatoMsg>
+	public class FotoGalleryViewModel : ViewModelBase, IObserver<GestoreCarrelloMsg>, IObserver<StampatoMsg>, IObserver<ClonaFotoMsg>
 	{
 
 		private Boolean operazioniCarrelloBloccanti = false;
@@ -51,6 +52,9 @@ namespace Digiphoto.Lumen.UI {
 
 			IObservable<StampatoMsg> observableStampato = LumenApplication.Instance.bus.Observe<StampatoMsg>();
 			observableStampato.Subscribe(this);
+
+			IObservable<ClonaFotoMsg> observableClonaFoto = LumenApplication.Instance.bus.Observe<ClonaFotoMsg>();
+			observableClonaFoto.Subscribe(this);
 
 			metadati = new MetadatiFoto();
 
@@ -1022,6 +1026,11 @@ namespace Digiphoto.Lumen.UI {
 			{
 				dialogProvider.ShowError("Stampa non Eseguita Correttamente", "Errore", null);
 			}
+		}
+
+		public void OnNext(ClonaFotoMsg value)
+		{
+			this.eseguireRicerca();
 		}
 
 		#endregion

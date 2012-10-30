@@ -214,6 +214,9 @@
     <Compile Include="src\Servizi\Reports\ParamReports.cs" />
     <Compile Include="src\Servizi\Ricostruzione\IDbRebuilderSrv.cs" />
     <Compile Include="src\Servizi\Ricostruzione\DbRebuilderSrvImpl.cs" />
+    <Compile Include="src\Servizi\Ritoccare\Clona\ClonaImmaginiWorker.cs" />
+    <Compile Include="src\Servizi\Ritoccare\Clona\ClonaFotoMsg.cs" />
+    <Compile Include="src\Servizi\Ritoccare\Clona\EsitoClone.cs" />
     <Compile Include="src\Servizi\Stampare\IInformatore.cs" />
     <Compile Include="src\Servizi\Stampare\LavoroDiStampaFoto.cs" />
     <Compile Include="src\Servizi\Stampare\LavoroDiStampaProvini.cs" />
