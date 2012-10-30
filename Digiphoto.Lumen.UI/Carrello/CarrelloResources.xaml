@@ -254,13 +254,12 @@
 		
 		<Style.Resources>
 			<Style TargetType="Label">
-				<Setter Property="MinWidth" Value="85" />
 				<Setter Property="HorizontalContentAlignment" Value="Right" />
 				<Setter Property="HorizontalAlignment" Value="Left" />
 				<Setter Property="VerticalAlignment" Value="Top" />
 			</Style>
 			<Style TargetType="TextBox">
-				<Setter Property="MinWidth" Value="100" />
+				<Setter Property="MinWidth" Value="70" />
 				<Setter Property="HorizontalAlignment" Value="Left" />
 				<Setter Property="VerticalAlignment" Value="Top" />
 			</Style>
@@ -358,6 +357,41 @@
 		</Setter>
 	</Style>
 
+	<Style x:Key="styleCarrelliButtonDelete" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+		<Setter Property="ToolTip" Value="Elimina carrello selezionato" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-new-48x48.png" Width="32"/>
+			</Setter.Value>
+		</Setter>
+	</Style>
 
+	<Style x:Key="styleCarrelliButtonLoad" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+		<Setter Property="ToolTip" Value="Carica carrello selezionato" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-new-48x48.png" Width="32"/>
+			</Setter.Value>
+		</Setter>
+	</Style>
 
+	<Style x:Key="styleCarrelliButtonSearch" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+		<Setter Property="ToolTip" Value="Esegui ricerca carrelli" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-new-48x48.png" Width="32"/>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="styleCarrelliButtonClearFilter" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+		<Setter Property="ToolTip" Value="Pulisci filtro di ricerca carrelli" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-new-48x48.png" Width="32"/>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	
 </ResourceDictionary>
