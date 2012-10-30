@@ -42,24 +42,24 @@ namespace Digiphoto.Lumen.UI
 
 		private void oggiButton_Click(object sender, RoutedEventArgs e)
 		{
-			calendario.SelectedDates.Clear();
-			calendario.SelectedDates.AddRange(carrelloViewModel.oggi, carrelloViewModel.oggi);
+			datePickerRicercaIniz.SelectedDate = carrelloViewModel.oggi;
+			datePickerRicercaFine.SelectedDate = carrelloViewModel.oggi;
 		}
 
 		private void ieriButton_Click(object sender, RoutedEventArgs e)
 		{
-			calendario.SelectedDates.Clear();
-			TimeSpan unGiorno = new TimeSpan(1, 0, 0, 0);
-			DateTime ieri = carrelloViewModel.oggi.Subtract(unGiorno);
-			calendario.SelectedDates.AddRange(ieri, ieri);
+			TimeSpan unGiorno = new TimeSpan( 1, 0, 0, 0 );
+			DateTime ieri = carrelloViewModel.oggi.Subtract( unGiorno );
+			datePickerRicercaIniz.SelectedDate = ieri;
+			datePickerRicercaFine.SelectedDate = ieri;
 		}
 
 		private void ieriOggiButton_Click(object sender, RoutedEventArgs e)
 		{
-			calendario.SelectedDates.Clear();
-			TimeSpan unGiorno = new TimeSpan(1, 0, 0, 0);
-			DateTime ieri = carrelloViewModel.oggi.Subtract(unGiorno);
-			calendario.SelectedDates.AddRange(ieri, carrelloViewModel.oggi);
+			TimeSpan unGiorno = new TimeSpan( 1, 0, 0, 0 );
+			DateTime ieri = carrelloViewModel.oggi.Subtract( unGiorno );
+			datePickerRicercaIniz.SelectedDate = ieri;
+			datePickerRicercaFine.SelectedDate = carrelloViewModel.oggi;
 		}
 
 		private void calendario_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
