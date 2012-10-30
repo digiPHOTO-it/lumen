@@ -16,6 +16,7 @@ using Digiphoto.Lumen.Config;
 using System.Threading;
 using System.IO;
 using log4net;
+using Digiphoto.Lumen.Servizi.Ritoccare.Clona;
 
 namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
@@ -27,7 +28,18 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( FotoRitoccoSrvImpl ) );
 
+		ClonaImmaginiWorker _clonaImmaginiWorker;
+
 		public FotoRitoccoSrvImpl() {
+		}
+
+		~FotoRitoccoSrvImpl()
+		{
+			// avviso se il thread di copia è ancora attivo
+			if (_clonaImmaginiWorker != null && _clonaImmaginiWorker.disposed == false)
+			{
+				_giornale.Warn( "Il thread di clone fotografie è ancora attivo. Non è stata fatta la Join o la Abort.\nProababilmente il programma si inchioderà" );
+			}
 		}
 
 		// Aggiungo la correzione ma non scrivo il file su disco
@@ -242,6 +254,26 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		
 		}
 
+		public void clonaFotografie(Fotografia[] fotografie)
+		{
+			_clonaImmaginiWorker = new ClonaImmaginiWorker(fotografie, fineClone);
+
+			if (fotografie.Count()==1)
+				_clonaImmaginiWorker.Start();
+			else
+				_clonaImmaginiWorker.StartSingleThread();
+		}
+
+		private void fineClone(EsitoClone esitoScarico)
+		{
+
+			ClonaFotoMsg clonaFotoMsg = new ClonaFotoMsg(this, "Completato Clone di " + esitoScarico.totFotoClonateOk + " Foto");
+			clonaFotoMsg.fase = FaseClone.FineClone;
+
+			clonaFotoMsg.showInStatusBar = true;
+			pubblicaMessaggio(clonaFotoMsg);
+		
+		}
 
 		public string [] caricaMiniatureMaschere() {
 

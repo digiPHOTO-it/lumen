@@ -20,7 +20,26 @@ namespace Digiphoto.Lumen.Util {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( PathUtil) );
 		public static readonly string THUMB = ".Thumb";
-		private static readonly string MODIF = ".Modif";
+		public static readonly string MODIF = ".Modif";
+
+
+		/** Nel parametro si può passare sia il nome del file della foto, oppure il nome 
+		 * della cartella che contiene le foto
+		 * 
+		 * 2012-10-29.Gio\\EDOARDO.Fot
+		 */
+		public static string decidiCartellaFoto(FileInfo fileInfo)
+		{
+			if (Directory.Exists(fileInfo.FullName))
+				return Path.Combine(fileInfo.FullName,"");   // è una cartella
+			else
+				return Path.Combine(fileInfo.DirectoryName,"");   // è un file probabilmente quello della foto.
+		}
+
+		public static string decidiCartellaFoto(Fotografia foto)
+		{
+			return decidiCartellaFoto(fileInfoFoto(foto));
+		}
 
 		/** Nel parametro si può passare sia il nome del file della foto, oppure il nome 
 		 * della cartella che contiene le foto
@@ -46,6 +65,10 @@ namespace Digiphoto.Lumen.Util {
 				return Path.Combine( fileInfo.DirectoryName, MODIF );   // è un file probabilmente quello della foto.
 		}
 
+		public static string decidiCartellaRisultanti(Fotografia foto)
+		{
+			return decidiCartellaRisultanti(fileInfoFoto(foto));
+		}
 
 		public static FileInfo fileInfoFoto( Fotografia foto ) {
 			return new FileInfo( nomeCompletoFoto( foto ) );
@@ -98,7 +121,10 @@ namespace Digiphoto.Lumen.Util {
 			return Path.Combine( Configurazione.cartellaRepositoryFoto, foto.nomeFile );
 		}
 
-
+		public static string nomeRelativoFoto(Fotografia foto)
+		{
+			return nomeRelativoFoto(fileInfoFoto(foto));
+		}
 
 		public static string nomeRelativoFoto( FileInfo pathAssoluto ) {
 			int iniz = Configurazione.cartellaRepositoryFoto.Length;

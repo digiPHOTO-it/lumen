@@ -682,6 +682,27 @@ namespace Digiphoto.Lumen.UI
 
 		}
 
+		private void clonaFotografie()
+		{
+			if (fotografieCW.SelectedItems.Count <= 0)
+			{
+				return;
+			}
+			else if (fotografieCW.SelectedItems.Count > 1)
+			{
+				bool procediPure = false;
+				dialogProvider.ShowConfirmation( "Sei sicuro di voler clonare " + fotografieCW.SelectedItems.Count + " foto ?", "Conferma Clone Multiplo",
+								  ( confermato ) => {
+									  procediPure = confermato;
+								  } );
+
+			if( !procediPure )
+				return;
+			}
+			
+			fotoRitoccoSrv.clonaFotografie(fotografieCW.SelectedItems.ToArray<Fotografia>());
+		}
+
 		#endregion Metodi
 
 
@@ -768,7 +789,7 @@ namespace Digiphoto.Lumen.UI
 				if (_eliminareFotoCommand == null)
 				{
 					_eliminareFotoCommand = new RelayCommand(param => eliminareFoto(param),
-															 p => true, false);
+															 p => isAlmenoUnaSelezionata, false);
 				}
 				return _eliminareFotoCommand;
 			}
@@ -841,9 +862,22 @@ namespace Digiphoto.Lumen.UI
 			{
 				if (_viewFotoFullScreenCommand == null)
 				{
-					_viewFotoFullScreenCommand = new RelayCommand(param => viewFotoFullScreen(), p => true, false);
+					_viewFotoFullScreenCommand = new RelayCommand(param => viewFotoFullScreen(), p => isAlmenoUnaSelezionata, false);
 				}
 				return _viewFotoFullScreenCommand;
+			}
+		}
+
+		private RelayCommand _clonaFotografieCommand;
+		public ICommand clonaFotografieCommand
+		{
+			get
+			{
+				if (_clonaFotografieCommand == null)
+				{
+					_clonaFotografieCommand = new RelayCommand(param => clonaFotografie(), p => isAlmenoUnaSelezionata, null);
+				}
+				return _clonaFotografieCommand;
 			}
 		}
 
