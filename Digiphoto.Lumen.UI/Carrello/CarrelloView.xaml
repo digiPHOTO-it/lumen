@@ -11,121 +11,150 @@
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:extToolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="800">
-    
-    <!-- Istanzio il controllore -->
+             d:DesignHeight="600" d:DesignWidth="1400">
 
-    <UserControl.Resources>
-        <ResourceDictionary Source="CarrelloResources.xaml" />
-    </UserControl.Resources>
+	<UserControl.Resources>
+		<ResourceDictionary Source="CarrelloResources.xaml" />
+	</UserControl.Resources>
 
 	<DockPanel>
 
 		<ToolBarTray DockPanel.Dock="Left" Orientation="Vertical">
-            <ToolBar Name="stampaToolBar" >
-				<Button Command="{Binding vendereCommand}">
-					<Image Source="/Digiphoto.Lumen.UI;component/Resources/Cassa-48x48.png" Width="48"/>
-                </Button>
-            </ToolBar>      
-			<ToolBar Name="rimasterizzaToolBar" Visibility="{Binding Path=IsErroriMasterizzazione,Converter={StaticResource boolVisibilityConverter}}" >
-				<Button Command="{Binding rimasterizzaCommand}">
-					<Image Source="/Digiphoto.Lumen.UI;component/Resources/DvdBurn-48x48.png" Width="48"/>
-				</Button>
+			<ToolBar Band="1" BandIndex="1" Header="Carrello">
+				<Button Command="{Binding vendereCommand}" Style="{StaticResource styleCartVendi}" />
+
+				<Button Command="{Binding salvaCarrelloCommand}" Style="{StaticResource styleCartSalva}" />
+
+				<Button Command="{Binding creaNuovoCarrelloCommand}" Style="{StaticResource styleCartNuovo}"/>
+
+				<Button Command="{Binding svuotaCarrelloCommand}" Style="{StaticResource styleCartSvuotare}" />
+
+				<Button Command="{Binding rimasterizzaCommand}" Visibility="{Binding Path=IsErroriMasterizzazione,Converter={StaticResource boolVisibilityConverter}}" Style="{StaticResource styleCartRimasterizza}" />
+
 			</ToolBar>
-        </ToolBarTray>
+			<ToolBar Band="1" BandIndex="2" Header="Riga">
+				<Button Command="{Binding UpdateQuantitaCommand}" CommandParameter="+" Style="{StaticResource styleCartQtaUp}" />
+				<TextBox Text="{Binding Path=QuantitaRigaSelezionata,Mode=TwoWay}" IsEnabled="{Binding possoAggiornareQuantitaRiga}" TextAlignment="Center" FontSize="24" ToolTip="Quantità di riga"/>
+				<Button Command="{Binding UpdateQuantitaCommand}" CommandParameter="-" Style="{StaticResource styleCartQtaDown}" />
+				<Separator />
+				<Button Command="{Binding eliminaRigaCommand}" Style="{StaticResource styleCartDelRiga}" />
+			</ToolBar>
+		</ToolBarTray>
 
-		<StackPanel DockPanel.Dock="Right" Orientation="Vertical">
+		<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" IsEnabled="{Binding Path=carrelloCorrente.venduto,Converter={StaticResource boolInverterConverter}}" >
 
-			<Expander Header="View" IsExpanded="True" ExpandDirection="Left">
+			<GroupBox Header="Testata carrello">
+				<Grid Style="{StaticResource styleGridTestata}">
+					<Label Content="Prezzo Intero" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="507,7,0,0" Width="85" FontSize="12" />
+					<Label Content="Intestazione"  VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,38,0,0" Width="85" />
+					<TextBox Text="{Binding Path=carrelloCorrente.intestazione, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="92,40,0,0" Width="249" />
+					<TextBox Text="{Binding Path=PrezzoTotaleIntero,Mode=OneWay,StringFormat=C}" Margin="596,9,0,0"  IsReadOnly="True" HorizontalContentAlignment="Right" Width="70" Height="23" />
+					<Label Content="Tot. a Pagare" Margin="507,64,0,0" Width="85" FontSize="12" />
+					<TextBox Text="{Binding Path=PrezzoTotaleForfettario,StringFormat=C, UpdateSourceTrigger=LostFocus, Mode=TwoWay}" TextAlignment="Right" Margin="596,65,0,0" FontSize="14" ToolTip="Prezzo effettivamente pagato"  Background="Yellow" Width="70" />
+					<Label Content="Sconto" Margin="507,36,0,0"  VerticalAlignment="Top" HorizontalAlignment="Left" Width="85" FontSize="12"/>
+					<TextBox Text="{Binding Path=ScontoApplicato,Mode=OneWay}" Margin="596,38,0,0" IsReadOnly="True" HorizontalContentAlignment="Right" Width="70" />
+					<Label Content="Giornata" Margin="0,7,0,0" Width="85" />
+					<TextBox Text="{Binding Path=carrelloCorrente.giornata,StringFormat=D,Mode=OneWay}" IsReadOnly="true"  Margin="92,9,0,0" Width="192" />
+					<Label Content="id" Margin="0,67,0,0" Width="85" />
+					<TextBox Text="{Binding Path=carrelloCorrente.id,Mode=OneWay}" Margin="92,69,0,0" Width="249" FontSize="11" IsReadOnly="True"/>
+					<TextBox ToolTip="Note carrello"  Height="81" HorizontalAlignment="Left" Margin="350,9,0,0" Text="{Binding Path=carrelloCorrente.note}" VerticalAlignment="Top" Width="160" AcceptsReturn="True" />
+					<Label Content="Note" Height="28" HorizontalAlignment="Left" Margin="290,7,0,0" Name="label1" VerticalAlignment="Top" Width="51" />
+				</Grid>
+			</GroupBox>
 
-				<ToolBarTray Background="White" Orientation="Vertical">
+			<GroupBox Header="Cd/Dvd riepilogo" Margin="2,0,0,0">
 
-					<ToolBar Band="1" BandIndex="1" >
-						<Label Content="Operazioni sul Carrello " HorizontalContentAlignment="Center"/>
-						<!--<RadioButton Content="Aggiorna" Tag="600"  Style="{StaticResource {x:Type ToggleButton}}" Width="200" Name="updateRadioButton" Command="{Binding updateGUICommand}"/>-->
-						<RadioButton Content="Crea Nuovo Carrello" Tag="600"  Style="{StaticResource {x:Type ToggleButton}}" Width="200" Name="creaCarrelloRadioButton" Command="{Binding creaNuovoCarrelloCommand}"/>
-						<RadioButton Content="Elimina Carrello" Tag="240" Style="{StaticResource {x:Type ToggleButton}}" Width="200" Name="eliminaCarrelloadioButton" Command="{Binding eliminaCarrelloCommand}" />
-						<RadioButton Content="Salva Carrello" Tag="60" Style="{StaticResource {x:Type ToggleButton}}" Width="200" Name="salvaCarrelloRadioButton" Command="{Binding salvaCarrelloCommand}" />
-						<RadioButton Content="Svuota Carrello" Tag="60" Style="{StaticResource {x:Type ToggleButton}}" Width="200" Name="svuotaCarrelloRadioButton" Command="{Binding svuotaCarrelloCommand}" />
-						<Separator />
-							<Label Content="Operazioni di Riga" HorizontalContentAlignment="Center"/>
-						<Separator />
-						<RadioButton Content="Elimina Riga" Tag="240" Style="{StaticResource {x:Type ToggleButton}}" Width="200" GroupName="vediSelezGrp" ToolTip="Vedi tutte le foto"  CommandParameter="false" Command="{Binding eliminaRigaCommand}" />
-						<RadioButton Content="Elimina Dischetto" Tag="240" Style="{StaticResource {x:Type ToggleButton}}" Width="200" GroupName="vediSelezGrp" ToolTip="Vedi tutte le foto"  CommandParameter="false" Command="{Binding eliminaDischettoCommand}" />
-						<Separator />
-						<Label Content="Carica Carrelli" HorizontalContentAlignment="Center"/>
-						<Separator />
-						<RadioButton Content="Carica Carrello Selezionato" Tag="240" Style="{StaticResource {x:Type ToggleButton}}" Width="200" GroupName="vediSelezGrp" ToolTip="Vedi tutte le foto"  CommandParameter="false" Command="{Binding caricaCarrelloSelezionatoCommand}" />
-						<Separator />
-						<DockPanel Visibility="{Binding Path=carrelloCorrente.venduto, Converter={StaticResource boolVisibilityConverter}}">
-							<Separator />
-							<Separator DockPanel.Dock="Top" />
-							<Label DockPanel.Dock="Top" Content="VENDUTO" HorizontalContentAlignment="Center" FontSize="24" Background="Crimson" />
-						</DockPanel>
-						<DockPanel>
-							<DockPanel.Visibility>
-								<MultiBinding Converter="{StaticResource collectionViewVisibilityMultiConverter}">
-									<Binding Path="RiCaFotoStampataCv" />
-									<Binding Path="carrelloCorrente.venduto" />
-								</MultiBinding>
-							</DockPanel.Visibility>
-							<Label DockPanel.Dock="Top" Content="Quantita" HorizontalContentAlignment="Center"/>
-							<Separator DockPanel.Dock="Top" />
-							<TextBox DockPanel.Dock="Top" Text="{Binding Path=RiCaFotoStampataCv,Converter={StaticResource sumQuantitaConverter},Mode=OneWay}" IsReadOnly="True" Grid.Row="2" Grid.Column="3" TextAlignment="Center" FontSize="24" />
-						</DockPanel>
-						<DockPanel>
-							<DockPanel.Visibility>
-								<MultiBinding Converter="{StaticResource collectionViewVisibilityMultiConverter}">
-									<Binding Path="RiCaFotoStampataCv" />
-									<Binding Path="carrelloCorrente.venduto" />
-								</MultiBinding>
-							</DockPanel.Visibility>
-							<Label DockPanel.Dock="Top" Content="Quantita" HorizontalContentAlignment="Center"/>
-							<Separator DockPanel.Dock="Top" />
-							<RadioButton DockPanel.Dock="Top" Content="+" Tag="240" Style="{StaticResource {x:Type ToggleButton}}" Height="50"  Width="100" GroupName="vediSelezGrp" ToolTip="Aggiungi foto"  CommandParameter="+" Command="{Binding UpdateQuantitaCommand}" FontSize="24" />
-							<TextBox DockPanel.Dock="Top" Text="{Binding Path=QuantitaRigaSelezionata,Mode=TwoWay}" Grid.Row="2" Grid.Column="3" TextAlignment="Center" FontSize="24" />
-							<RadioButton DockPanel.Dock="Top" Content="-" Tag="240" Style="{StaticResource {x:Type ToggleButton}}"  Height="50"  Width="100" GroupName="vediSelezGrp" ToolTip="Elimina Foto"  CommandParameter="-" Command="{Binding UpdateQuantitaCommand}" FontSize="24" />
-						</DockPanel>
+				<Grid>
+
+					<Image Source="/Digiphoto.Lumen.UI;component/Resources/dvd-32x32.png" 
+							Height="32" Width="32" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="6,9,0,0" />
+
+					<TextBox Text="{Binding Path=ricaDiscoMasterizzato.quantita}" Width="18" Height="26" Margin="6,61,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" IsReadOnly="True" HorizontalContentAlignment="Right" />
+					<TextBox Text="{Binding Path=ricaDiscoMasterizzato.descrizione}" Height="26" Margin="29,61,3,0"  VerticalAlignment="Top" Width="187" HorizontalAlignment="Left" />
+					<Label Content="Prezzo" Margin="44,0,0,0" Height="30" Width="47" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="12" />
+					<Label Content="Σ Foto" Height="27" Margin="95,1,0,0" Width="45" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="12"/>
+					<Label Content="{Binding Path=contaFotoMasterizzate,Mode=OneWay}" Height="30" Margin="95,26,0,0" Width="44" VerticalAlignment="Top" HorizontalAlignment="Left" BorderThickness="1" BorderBrush="Gray" FontSize="14" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Right" />
+					<TextBox Text="{Binding Path=ricaDiscoMasterizzato.prezzoLordoUnitario,StringFormat=\{0:c0\}}" HorizontalContentAlignment="Center" Margin="44,26,0,0" Height="30" Width="47" HorizontalAlignment="Left" VerticalAlignment="Top" />
+
+					<Button  Command="{Binding eliminaDischettoCommand}" VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="175,18,0,0" Style="{StaticResource styleCartEliminaCd}" />
+
+				</Grid>
+
+
+			</GroupBox>
+
+			<GroupBox Header="Stampe riepilogo" Margin="2,0,0,0">
+
+				<Grid>
+					<Image Source="/Digiphoto.Lumen.UI;component/Resources/foto-stampate-32x32.png" 
+							Height="32" Width="32" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="6,9,0,0" />
+
+					<Label Content="Σ Qta" Height="27" Margin="6,49,0,0" Width="46" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="12"/>
+					<Label Content="{Binding Path=RiCaFotoStampataCv,Converter={StaticResource sumQuantitaConverter},Mode=OneWay}" Width="48" Height="40" Margin="58,36,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" BorderThickness="1" BorderBrush="Gray" FontSize="24" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Right" />
+				</Grid>
+			</GroupBox>
+			<Label Content="VENDUTO" VerticalContentAlignment="Center"  HorizontalContentAlignment="Center" FontSize="24" Background="Crimson" Height="50" Margin="2,0,0,0"
+				   Visibility="{Binding Path=carrelloCorrente.venduto, Converter={StaticResource boolVisibilityConverter}}"
+				   />
+		</StackPanel>
+
+		<Expander Header="Archivio carrelli" DockPanel.Dock="Bottom" IsExpanded="True" ExpandDirection="Up" MaxHeight="200">
+
+			<DockPanel LastChildFill="True">
+				<!-- Archivio carrelli salvati -->
+
+				<ToolBarTray Orientation="Vertical" DockPanel.Dock="Right" >
+					<ToolBar>
+						<Button Command="{Binding azzeraParamRicercaCommand}" Style="{StaticResource styleCarrelliButtonClearFilter}" />
+						<Button Command="{Binding eseguireRicercaCommand}" Style="{StaticResource styleCarrelliButtonSearch}" />
+
+						<Button Command="{Binding caricaCarrelloSelezionatoCommand}" Style="{StaticResource styleCarrelliButtonLoad}" />
+						<Button Command="{Binding eliminaCarrelloCommand}" Style="{StaticResource styleCarrelliButtonDelete}" />
+
 					</ToolBar>
 				</ToolBarTray>
-			</Expander>
-		</StackPanel>	
-		
-		<GroupBox Header="Testata Carrello corrente" DockPanel.Dock="Top" IsEnabled="{Binding Path=carrelloCorrente.venduto,Converter={StaticResource boolInverterConverter}}">
-			<Grid Style="{StaticResource styleGridTestata}">
-				<Label Content="Prezzo Intero" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="393,7,0,0" Width="122" />
-				<Label Content="Intestazione"  VerticalAlignment="Top" HorizontalAlignment="Left" Margin="6,38,0,0" />
-				<TextBox Text="{Binding Path=carrelloCorrente.intestazione, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="100,40,0,0" Width="268" />
-				<TextBox Text="{Binding Path=PrezzoTotaleIntero,Mode=OneWay,StringFormat=C}" Margin="526,9,0,0"  IsReadOnly="True" HorizontalContentAlignment="Right" />
-				<Label Content="Totale A Pagare" Margin="393,65,0,0" Width="122" />
-				<TextBox Text="{Binding Path=PrezzoTotaleForfettario,StringFormat=C, UpdateSourceTrigger=LostFocus, Mode=TwoWay}" TextAlignment="Right" Margin="526,65,0,0" FontSize="14" ToolTip="Prezzo effettivamente pagato"  />
-				<Label Content="Sconto Applicato" Margin="393,36,0,0"  VerticalAlignment="Top" HorizontalAlignment="Left" Width="122" />
-				<TextBox Text="{Binding Path=ScontoApplicato,Mode=OneWay}" Margin="526,38,0,0" IsReadOnly="True" HorizontalContentAlignment="Right" />
-				<Label Content="Giornata" Margin="6,7,0,0"  />
-				<TextBox Text="{Binding Path=carrelloCorrente.giornata,StringFormat=D,Mode=OneWay}" IsReadOnly="true"  Margin="100,9,0,0" Width="199" />
-                <Label Content="id" Margin="6,67,0,0" Width="85" />
-				<TextBox Text="{Binding Path=carrelloCorrente.id,Mode=OneWay}" Margin="100,69,0,0" Width="268" FontSize="11" IsReadOnly="True"/>
-			</Grid>
-		</GroupBox>
+
+				<GroupBox Header="Filtro ricerca" DockPanel.Dock="Right">
+ 
+					<StackPanel Orientation="Vertical">
+
+						<DatePicker SelectedDate="{Binding Path=paramCercaCarrello.giornataIniz,Mode=TwoWay}"  IsTodayHighlighted="true" Name="datePickerRicercaIniz" ToolTip="Data inizio periodo" Margin="1"/>
+						<DatePicker SelectedDate="{Binding Path=paramCercaCarrello.giornataFine,Mode=TwoWay}"  IsTodayHighlighted="true" Name="datePickerRicercaFine" ToolTip="Data fine periodo" Margin="1"/>
+
+						<StackPanel Orientation="Horizontal" Margin="0,3,0,0" HorizontalAlignment="Center">
+							<Button Content="Oggi" Name="oggiButton" Click="oggiButton_Click" Margin="1" Padding="2,0,2,0" MinWidth="40" />
+							<Button Content="Ieri" Name="ieriButton" Click="ieriButton_Click" Margin="1" Padding="2,0,2,0" MinWidth="40" />
+							<Button Content="Ieri+Oggi" Name="ieriOggiButton" Click="ieriOggiButton_Click" Margin="1" Padding="2,0,2,0" />
+						</StackPanel>
+
+						<Label Content="Ricerca Intestazione" ToolTip="Inserire l'intestazione su cui si desidera filtrare" FontSize="11"/>
+						<TextBox Text="{Binding Path=IntestazioneSearch}" FontSize="11" />
+						<CheckBox Name="checkBoxVenduto" Content="Venduto" IsChecked="{Binding Path=IsVendutoChecked,Mode=TwoWay}" Margin="0,2,0,0"/>
+
+					</StackPanel>
+				</GroupBox>
 
 
-		<DockPanel>
-			
-			<Expander Header="Carrelli Salvati" DockPanel.Dock="Bottom" IsExpanded="True" ExpandDirection="Up">
-				<Grid Margin="5">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="*" />
-						<RowDefinition Height="*" />
-					</Grid.RowDefinitions>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="Auto" />
-					</Grid.ColumnDefinitions>
-					
-					<ListBox 
-						Grid.Row="0"
-						Grid.ColumnSpan="2"
+				<GroupBox Header="Proprietà" DockPanel.Dock="Bottom">
+					<Grid Height="80">
+						<Label Content="Nome Carrello" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="121" Margin="5,6,0,0" />
+						<Label Content="{Binding Path=CarrelloSelezionato.intestazione}" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="234" Margin="131,6,0,0" BorderBrush="WhiteSmoke" BorderThickness="1" />
+						
+						<Label Content="Giornata" Height="32" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Margin="6,38,0,0" />
+						<Label Content="{Binding Path=CarrelloSelezionato.giornata,StringFormat=D}" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="234" Margin="131,38,0,0" BorderBrush="WhiteSmoke" BorderThickness="1" />
+						
+						<Label Content="Totale Foto Carrello" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="133" Margin="391,6,0,0" />
+						<Label Content="{Binding Path=CarrelloSelezionato.righeCarrello,Converter={StaticResource sumQuantitaConverter}}" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="74" Margin="530,6,0,0" BorderBrush="WhiteSmoke" BorderThickness="1" HorizontalContentAlignment="Right" />
+						
+						<Label Content="Prezzo" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="115" Margin="391,38,0,0" />
+						<Label Content="{Binding Path=CarrelloSelezionato.totaleAPagare,StringFormat=C}" Margin="530,38,0,0" Height="28" VerticalAlignment="Top" Width="74" HorizontalAlignment="Left" HorizontalContentAlignment="Right" BorderBrush="WhiteSmoke" BorderThickness="1" />
+						<CheckBox Content="Venduto" Height="28" HorizontalAlignment="Left" Margin="642,6,0,0" VerticalAlignment="Top" Width="116" IsChecked="{Binding Path=CarrelloSelezionato.venduto}" />
+						<TextBlock Height="60" HorizontalAlignment="Left" Margin="744,6,0,0" Name="textBlock1" Text="{Binding Path=CarrelloSelezionato.note}" VerticalAlignment="Top" Width="235" />
+					</Grid>
+				</GroupBox>
+
+				<!-- Questo è l'ultimo blocco che prenderà tutto lo spazio rimasto -->
+				<ListBox 
 						x:Name="listCarrelli" SelectionMode="Single"
 						Style="{StaticResource ListaCarrelliStyle}"
 						ItemsSource="{Binding Path=CarrelliSalvatiCv}" 
@@ -134,77 +163,18 @@
 						ItemTemplate="{DynamicResource ListaCarrelliDataTemplate}"
 						ScrollViewer.VerticalScrollBarVisibility="Disabled"
 						ScrollViewer.HorizontalScrollBarVisibility="Visible" Height="75">
-						<i:Interaction.Triggers>
-							<i:EventTrigger EventName="SelectionChanged">
-								<i:InvokeCommandAction Command="{Binding UpdateDatiCarrelloSelected}"/>
-							</i:EventTrigger>
-						</i:Interaction.Triggers>
-					</ListBox>
-					
-					<GroupBox 
-						Grid.Row="1"
-						Grid.ColumnSpan="2"
-						Header="Proprietà">
-						<Grid Height="54">
-							<Grid.RowDefinitions>
-								<RowDefinition Height="*" />
-								<RowDefinition Height="*" />
-							</Grid.RowDefinitions>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<!--Grid.ColumnSpan="2"-->
-							<Label Content="Nome Carrello" Grid.Row="0" Grid.Column="0" />
-							<Label Content="{Binding Path=CarrelloSelezionato.intestazione}" Grid.Row="1" Grid.Column="0" />
-							<Label Content="Giornata" Grid.Row="0" Grid.Column="1" />
-							<TextBlock Text="{Binding Path=CarrelloSelezionato.giornata}" Grid.Row="1" Grid.Column="1" />
-							<Label Content="Totale Foto Carrello" Grid.Row="0" Grid.Column="2" />
-							<Label Content="{Binding Path=CarrelloSelezionato.righeCarrello,Converter={StaticResource sumQuantitaConverter}}" Grid.Row="1" Grid.Column="2" />
-							<Label Content="Prezzo" Grid.Row="0" Grid.Column="3" />
-							<Label Content="{Binding Path=CarrelloSelezionato.totaleAPagare}" Grid.Row="1" Grid.Column="3" />
-						</Grid>
-					</GroupBox>
+					<i:Interaction.Triggers>
+						<i:EventTrigger EventName="SelectionChanged">
+							<i:InvokeCommandAction Command="{Binding UpdateDatiCarrelloSelected}"/>
+						</i:EventTrigger>
+					</i:Interaction.Triggers>
+				</ListBox>
 
-					<Expander Header="Search" Grid.RowSpan="2" Grid.Column="2" IsExpanded="True" ExpandDirection="Right">
-						<GroupBox Header="Tempo">
-							<StackPanel Orientation="Horizontal">
+			</DockPanel>
+		</Expander>
 
-								<StackPanel Orientation="Vertical">
-									<Label Content="Scegliere data inizio e fine"  ToolTip="Cliccare sulla prima data poi scorrere fino alla seconda senza lasciare"/>
-									<Calendar SelectionMode="SingleRange" Name="calendario" SelectedDatesChanged="calendario_SelectedDatesChanged" />
-									<Label Content="Ricerca Intestazione:" ToolTip="Inserire l'intestazione su cui si desidera filtrare"/>
-									<TextBox Text="{Binding Path=IntestazioneSearch}" />
-									<CheckBox Name="checkBoxVenduto" Content="Venduto" IsChecked="{Binding Path=IsVendutoChecked,Mode=TwoWay}" />
-								</StackPanel>
-
-								<StackPanel Orientation="Vertical">
-									<Button Content="Oggi" Name="oggiButton" Click="oggiButton_Click" />
-									<Button Content="Ieri" Name="ieriButton" Click="ieriButton_Click" />
-									<Button Content="Ieri e Oggi" Name="ieriOggiButton" Click="ieriOggiButton_Click" />
-									<Label Content="Altri param" />
-									<Button Name="azzeraParamRicercaButton" Content="Azzera param" ToolTip="Azzera i parametri di ricerca" Command="{Binding azzeraParamRicercaCommand}" />
-									<Button Name="eseguireRicercaButton" Content="Esegui Ricerca" Command="{Binding eseguireRicercaCommand}" />
-								</StackPanel>
-							</StackPanel>
-						</GroupBox>
-					</Expander>
-				</Grid>
-			</Expander>
-
-            <Grid DockPanel.Dock="Top" x:Name="listMasterizzate" Visibility="{Binding Path=RiCaDiscoMasterizzatoCv,Converter={StaticResource collectionViewVisibilityConverter}}">
-                <ListBox 
-                    ItemsSource="{Binding Path=RiCaDiscoMasterizzatoCv}" Name="dataGrid"
-                    ItemsPanel="{DynamicResource ImageMasterizzatoreItemsPanelTemplate}" 
-					ItemTemplate="{DynamicResource ImageMasterizzatoreDataTemplate}"
-                    Margin="0,10">
-                </ListBox>
-			</Grid>
-            
-			<!-- Questa è la lista delle immagini -->
-			<ListBox x:Name="listCarrello"
+		<!-- Questo è il dettaglio del carrello, cioè le righe delle foto stampate -->
+		<ListBox x:Name="listCarrello"
 					 SelectionMode="Single" 
 					 Style="{StaticResource ListCarrelloStyle}"
 					 ItemsSource="{Binding Path=RiCaFotoStampataCv}"
@@ -214,12 +184,12 @@
 					 ItemTemplate="{DynamicResource ImageCarrelloDataTemplate}"
 					 ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
 
-					<i:Interaction.Triggers>
-						<i:EventTrigger EventName="SelectionChanged">
-							<i:InvokeCommandAction Command="{Binding CalcolaTotali}"/>
-						</i:EventTrigger>
-					</i:Interaction.Triggers>
-			</ListBox>
-		</DockPanel>
+			<i:Interaction.Triggers>
+				<i:EventTrigger EventName="SelectionChanged">
+					<i:InvokeCommandAction Command="{Binding CalcolaTotali}"/>
+				</i:EventTrigger>
+			</i:Interaction.Triggers>
+		</ListBox>
+
 	</DockPanel>
 </lumM:UserControlBase>

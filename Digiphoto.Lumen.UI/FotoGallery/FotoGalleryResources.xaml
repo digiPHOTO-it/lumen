@@ -12,7 +12,7 @@
 	<lumC:ListVisibilityConverter x:Key="listVisibilityConverter" />
 	<BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
 
-
+	
 	<!-- Stile della listbox che itera le immagini -->
     <Style x:Key="LsImageGalleryStyle" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
 		<Setter Property="Background" Value="#4c4c4c" />
@@ -79,5 +79,108 @@
 			</Style>
 		</Style.Resources>
 	</Style>
+
+
+
+
+	<Style x:Key="buttonCercaStyle" TargetType="Button">
+		<Setter Property="Height" Value="44" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<StackPanel Orientation="Horizontal" >
+					<Image Source="/Digiphoto.Lumen.UI;component/Resources/start-search-24x24.png" Height="24" />
+					<Label Content="ESEGUI RICERCA" Foreground="DarkBlue" />
+				</StackPanel>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="buttonAzzeraParametriStyle" TargetType="Button">
+		<Setter Property="Content">
+			<Setter.Value>
+				<StackPanel Orientation="Horizontal">
+					<Image Source="/Digiphoto.Lumen.UI;component/Resources/clear-filter-22x22.png" Height="22" />
+					<Label Content="Svuota Filtri" Foreground="DarkBlue" />
+				</StackPanel>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="muoviPageStyle" TargetType="Button">
+		<Setter Property="Width" Value="40" />
+		<Setter Property="Height" Value="30" />
+		<Style.Triggers>
+			<Trigger Property="IsEnabled" Value="False">
+				<Setter Property="Opacity" Value="0.5" />
+			</Trigger>
+		</Style.Triggers>
+	</Style>
+
+	<Style x:Key="buttonMuoviFirstPageStyle" TargetType="Button" BasedOn="{StaticResource muoviPageStyle}">
+		<Setter Property="ToolTip" Value="Vai alla prima pagina di risultati" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/move-first-page-24x24.png" Height="24" />
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="buttonMuoviPreviousPageStyle" TargetType="Button" BasedOn="{StaticResource muoviPageStyle}">
+		<Setter Property="ToolTip" Value="Vai alla pagina precedente di risultati" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/move-previous-page-24x24.png" Height="24" />
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="buttonMuoviNextPageStyle" TargetType="Button" BasedOn="{StaticResource muoviPageStyle}">
+		<Setter Property="ToolTip" Value="Vai alla pagina precedente di risultati" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/move-next-page-24x24.png" Height="24" />
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="ssStartStyle" TargetType="Button">
+		<Setter Property="ToolTip" Value="Start Slide Show" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/ssPlay-32x32.png" Width="32" />
+			</Setter.Value>
+		</Setter>
+		<Style.Triggers>
+			<Trigger Property="IsEnabled" Value="False"> 
+				<Setter Property="Opacity" Value="0.4" />
+			</Trigger>
+		</Style.Triggers>
+	</Style>
 	
+	<Style x:Key="ssPauseStyle" TargetType="Button">
+		<Setter Property="ToolTip" Value="Pause Slide Show" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/ssPause-32x32.png" Width="32"/>
+			</Setter.Value>
+		</Setter>
+		<Style.Triggers>
+			<Trigger Property="IsEnabled" Value="False">
+				<Setter Property="Opacity" Value="0.4" />
+			</Trigger>
+		</Style.Triggers>
+	</Style>
+
+	<Style x:Key="styleSelettoreMetadati" TargetType="UserControl">
+		<Setter Property="MaxHeight" Value="140" />
+<!--  TODO Purtroppo non funziona. Non riconosce la property IsEnabled e non capisco perché		
+		<Style.Triggers>
+			<Trigger Property="IsEnabled" Value="False">
+				<Setter Property="Opacity" Value="0.4" />
+				<Setter Property="Background" Value="Orange" />
+			</Trigger>
+		</Style.Triggers>
+-->		
+	</Style>
+
 </ResourceDictionary> 

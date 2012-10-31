@@ -185,7 +185,7 @@
         </StackPanel>
     </DataTemplate>
 
-    <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
+    <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" 
     <DataTemplate x:Key="ImageMasterizzatoreDataTemplate" >
         <GroupBox Header="Riga Masterizzate" Width="Auto" Margin="2,2,2,2" >
             <Grid Width="Auto">
@@ -210,7 +210,6 @@
                         VerticalAlignment="Center"
                         HorizontalAlignment="Left"
                         >
-                        <!-- Come tooltip si possono visualizzare informazioni importanti riassuntive -->
                         <Image.ToolTip>
                             <Grid>
                                 <Label Content="{Binding Path=descrizione}" />
@@ -231,7 +230,8 @@
             </Grid>
         </GroupBox>
     </DataTemplate>
-
+-->
+	
     <!-- Template per il pannello che contiene tutti gli elementi della lista -->
     <ItemsPanelTemplate x:Key="ImageCarrelloItemsPanelTemplate">
         <!-- il wrappanel mi consente di sistemare al meglio le foto in funzione dello spazio disponibile ed andare a capo quando serve -->
@@ -244,28 +244,154 @@
         <WrapPanel Orientation="Horizontal" />
     </ItemsPanelTemplate>
 
-    <!-- Template per il pannello che contiene tutti gli elementi della lista -->
+    <!-- Template per il pannello che contiene tutti gli elementi della lista 
     <ItemsPanelTemplate x:Key="ImageMasterizzatoreItemsPanelTemplate">
-        <!-- il wrappanel mi consente di sistemare al meglio le foto in funzione dello spazio disponibile ed andare a capo quando serve -->
         <WrapPanel Orientation="Vertical" />
     </ItemsPanelTemplate>
-
+-->
 	<Style x:Key="styleGridTestata" TargetType="Grid">
 		<Setter Property="Background" Value="LightGray" />
 		
 		<Style.Resources>
 			<Style TargetType="Label">
-				<Setter Property="MinWidth" Value="85" />
 				<Setter Property="HorizontalContentAlignment" Value="Right" />
 				<Setter Property="HorizontalAlignment" Value="Left" />
 				<Setter Property="VerticalAlignment" Value="Top" />
 			</Style>
 			<Style TargetType="TextBox">
-				<Setter Property="MinWidth" Value="100" />
+				<Setter Property="MinWidth" Value="70" />
 				<Setter Property="HorizontalAlignment" Value="Left" />
 				<Setter Property="VerticalAlignment" Value="Top" />
 			</Style>
 		</Style.Resources>
 	</Style>
+
+
+	<Style x:Key="styleCartButtonGeneric" TargetType="Button">
+		<Style.Triggers>
+		<Trigger Property="IsEnabled" Value="False">
+			<Setter Property="Opacity" Value="0.2" />
+		</Trigger>
+		</Style.Triggers>
+	</Style>
+
+
+	<Style x:Key="styleCartVendi" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+		<Setter Property="ToolTip" Value="Vendere carrello" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-vendi-48x48.png" Width="48"/>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="styleCartSalva" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+		<Setter Property="ToolTip" Value="Salva il carrello nel database per essere lavorato più tardi" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-save-48x48.png" Width="48"/>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="styleCartRimasterizza" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+		<Setter Property="ToolTip" Value="Rimasterizza nuovamente causa eventuali errori" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/DvdBurn-48x48.png" Width="48"/>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="styleCartNuovo" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+		<Setter Property="ToolTip" Value="Crea nuovo carrrello vuoto" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-new-48x48.png" Width="48"/>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="styleCartSvuotare" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+		<Setter Property="ToolTip" Value="Svuota tutte le righe del carrello; mantiene la testata" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-svuota-48x48.png" Width="48"/>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="styleCartEliminaCd" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+		<Setter Property="ToolTip" Value="Rimuove il dischetto dal carrello" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-remove-cd-48x48.png" Width="32"/>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="styleCartDelRiga" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+		<Setter Property="ToolTip" Value="Elimina riga dal carrello" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-delete-riga-48x48.png" Width="32"/>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="styleCartQtaUp" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+		<Setter Property="ToolTip" Value="+ Incrementa quantità riga" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-qta-up-48x48.png" Width="32"/>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="styleCartQtaDown" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+		<Setter Property="ToolTip" Value="- Decrementa quantità riga" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-qta-down-48x48.png" Width="32"/>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="styleCarrelliButtonDelete" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+		<Setter Property="ToolTip" Value="Elimina carrello selezionato" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-new-48x48.png" Width="32"/>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="styleCarrelliButtonLoad" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+		<Setter Property="ToolTip" Value="Carica carrello selezionato" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-new-48x48.png" Width="32"/>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="styleCarrelliButtonSearch" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+		<Setter Property="ToolTip" Value="Esegui ricerca carrelli" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-new-48x48.png" Width="32"/>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="styleCarrelliButtonClearFilter" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+		<Setter Property="ToolTip" Value="Pulisci filtro di ricerca carrelli" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-new-48x48.png" Width="32"/>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
 	
 </ResourceDictionary>

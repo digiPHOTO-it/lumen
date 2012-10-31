@@ -174,6 +174,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 						descrizione = "Carrello salvato ok"
 					} );
 
+					abbandonaCarrello();
+
 				} catch( Exception eee ) {
 					esito = false;
 					_giornale.Error( "Impossibile salvare il carrello", eee );
@@ -224,7 +226,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 
 		public void removeRigaCarrello( RigaCarrello rigaCarrello ) {
+
 			carrello.righeCarrello.Remove( rigaCarrello );
+
+			// spengo tutto il servizio di masterizzazione.
+			if( masterizzaSrv != null ) {
+				masterizzaSrv.Dispose();
+				_masterizzaSrvImpl = null;
+			}
 		}
 
 		public void removeCarrello( Carrello carrello ) {

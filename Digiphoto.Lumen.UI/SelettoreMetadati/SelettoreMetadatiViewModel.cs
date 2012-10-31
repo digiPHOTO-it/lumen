@@ -15,10 +15,11 @@ namespace Digiphoto.Lumen.UI
 	public class SelettoreMetadatiViewModel : ViewModelBase
 	{
 
-		private SelettoreMetadatiView selettoreMetadatiView = null;
+		private SelettoreMetadati selettoreMetadatiView = null;
 
-		public SelettoreMetadatiViewModel(SelettoreMetadatiView selettoreMetadatiView):this()
+		public SelettoreMetadatiViewModel(SelettoreMetadati selettoreMetadatiView):this()
 		{
+			// TODO EDI questo è un errore che va contro tutti i pattern MVVM e MVC. Il Model non deve conoscere la view. Rivedere se necessario!
 			this.selettoreMetadatiView = selettoreMetadatiView;
 		}
 

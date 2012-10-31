@@ -25,17 +25,17 @@ namespace Digiphoto.Lumen.UI
 	/// <summary>
 	/// Interaction logic for SelettoreMetadatiView.xaml
 	/// </summary>
-	public partial class SelettoreMetadatiView : UserControlBase
+	public partial class SelettoreMetadati : UserControlBase
 	{
 
 		public static readonly DependencyProperty MyItemsSourceProperty;
 
 
-		static SelettoreMetadatiView()
+		static SelettoreMetadati()
         {
-			SelettoreMetadatiView.MyItemsSourceProperty = DependencyProperty.Register("MyItemsSource",
+			SelettoreMetadati.MyItemsSourceProperty = DependencyProperty.Register("MyItemsSource",
 																			typeof(IEnumerable), 
-																			typeof(SelettoreMetadatiView)
+																			typeof(SelettoreMetadati)
 																			);
         }
 
@@ -43,25 +43,24 @@ namespace Digiphoto.Lumen.UI
         {
             get
             {
-				return (IEnumerable)GetValue(SelettoreMetadatiView.MyItemsSourceProperty);
+				return (IEnumerable)GetValue(SelettoreMetadati.MyItemsSourceProperty);
             }
 
             set
             {
-				SetValue(SelettoreMetadatiView.MyItemsSourceProperty, value);
+				SetValue(SelettoreMetadati.MyItemsSourceProperty, value);
             }
         }
 
 		SelettoreMetadatiViewModel _model = null;
 
-		public SelettoreMetadatiView()
+		public SelettoreMetadati()
 		{
 			InitializeComponent();
 
 			_model = new SelettoreMetadatiViewModel(this);
 
 			this.DataContext = _model;
-
 		}
 
 	}

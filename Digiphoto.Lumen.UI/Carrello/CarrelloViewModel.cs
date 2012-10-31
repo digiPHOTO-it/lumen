@@ -83,9 +83,7 @@ namespace Digiphoto.Lumen.UI
 			{
 				RiCaFotoStampataCv = CollectionViewSource.GetDefaultView(carrelloCorrente.righeCarrello.OfType<RiCaFotoStampata>());
 			}
-			RiCaDiscoMasterizzatoCv = CollectionViewSource.GetDefaultView( carrelloCorrente.righeCarrello.OfType<RiCaDiscoMasterizzato>() );
 			OnPropertyChanged( "RiCaFotoStampataCv" );
-			OnPropertyChanged( "RiCaDiscoMasterizzatoCv" );
 		}
 
         #region Proprietà
@@ -106,10 +104,18 @@ namespace Digiphoto.Lumen.UI
 			private set;
 		}
 
-		public ICollectionView RiCaDiscoMasterizzatoCv
-		{
-			get;
-			private set;
+
+		/// <summary>
+		/// Siccome di riga disco masterizzato ne posso avere una sola, mi creo una property apposita.
+		/// </summary>
+		public RiCaDiscoMasterizzato ricaDiscoMasterizzato {
+			get {
+				if( carrelloCorrente == null )
+					return null;
+				else {
+					return carrelloCorrente.righeCarrello.OfType<RiCaDiscoMasterizzato>().SingleOrDefault();
+				}
+			}
 		}
 
 		public ICollectionView CarrelliSalvatiCv
@@ -149,6 +155,8 @@ namespace Digiphoto.Lumen.UI
 				{
 					_righeCarrelloCvSelectedIndex = value;
 					OnPropertyChanged("RigheCarrelloCvSelectedIndex");
+					OnPropertyChanged( "abilitaEliminaRigaFoto" );
+					OnPropertyChanged( "possoAggiornareQuantitaRiga" );
 				}
 			}
 		}
@@ -350,6 +358,28 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
+		/// <summary>
+		/// Conta quante foto sono state messe nel cd da masterizzare
+		/// </summary>
+		public int contaFotoMasterizzate {
+			get {
+				if( venditoreSrv != null && venditoreSrv.masterizzaSrv != null && venditoreSrv.masterizzaSrv.fotografie != null )
+					return venditoreSrv.masterizzaSrv.fotografie.Count;
+				else
+					return 0;
+			}
+		}
+
+		/// <summary>
+		/// Somma tutte le quantità di tutte le righe di tipo "FotoStampata"
+		/// </summary>
+		public int sommatoriaQtaStampe {
+			get {
+				return carrelloCorrente.righeCarrello.OfType<RiCaFotoStampata>().Sum( r => r.quantita );
+			}
+		}
+
+
 		#endregion
 
 		#region Controlli
@@ -368,7 +398,7 @@ namespace Digiphoto.Lumen.UI
 					posso = false;
 
 				// Verifico che i dati minimi siano stati indicati
-				if (posso && RiCaFotoStampataCv.IsEmpty && RiCaDiscoMasterizzatoCv.IsEmpty)
+				if (posso && RiCaFotoStampataCv.IsEmpty && contaFotoMasterizzate <= 0 )
 					posso = false;
 
 				// Ce un errore nella masterizzazione 
@@ -393,7 +423,7 @@ namespace Digiphoto.Lumen.UI
 					posso = false;
 
 				// Verifico che i dati minimi siano stati indicati
-				if (posso && RiCaDiscoMasterizzatoCv.IsEmpty)
+				if (posso && contaFotoMasterizzate == 0)
 					posso = false;
 
 				// Ce un errore nella masterizzazione 
@@ -401,6 +431,13 @@ namespace Digiphoto.Lumen.UI
 					posso = false;
 
 				return posso;
+			}
+		}
+
+		public bool possoAggiornareQuantitaRiga {
+			get {
+				// TODO da sistemare
+				return abilitaEliminaRigaFoto;
 			}
 		}
 
@@ -419,6 +456,9 @@ namespace Digiphoto.Lumen.UI
 
 				// Verifico che i dati minimi siano stati indicati
 				if (posso && RiCaFotoStampataCv.IsEmpty)
+					posso = false;
+
+				if( posso && RiCaFotoStampataCv.CurrentItem == null )
 					posso = false;
 
 				// Ce un errore nella masterizzazione 
@@ -538,6 +578,11 @@ namespace Digiphoto.Lumen.UI
 			OnPropertyChanged("CarrelliSalvatiCv");
 
 			OnPropertyChanged("PrezzoTotaleForfettario");
+			OnPropertyChanged( "ricaDiscoMasterizzato" );
+			OnPropertyChanged( "contaFotoMasterizzate" );
+			OnPropertyChanged( "sommatoriaQtaStampe" );
+			OnPropertyChanged( "abilitaEliminaRigaFoto" );
+			OnPropertyChanged( "possoAggiornareQuantitaRiga" );
 		}
 
         /// <summary>
@@ -727,7 +772,7 @@ namespace Digiphoto.Lumen.UI
 
 		private void salvaCarrello()
 		{
-			if(!RiCaDiscoMasterizzatoCv.IsEmpty){
+			if( contaFotoMasterizzate > 0 ) {
 				dialogProvider.ShowMessage("Il carrello contiene un Dischetto!!!\nSi ricorda che i dischetti non potranno più essere recuperati", "Avviso");
 			}
 
@@ -773,16 +818,18 @@ namespace Digiphoto.Lumen.UI
 
 		private void eliminaDischetto()
 		{
+			if( contaFotoMasterizzate <= 0 )
+				return;
 			if (chiediConfermaEliminazioneDischetto() == false)
 				return;
-			venditoreSrv.removeRigaCarrello(RiCaDiscoMasterizzatoCv.CurrentItem as RiCaDiscoMasterizzato);
+			venditoreSrv.removeRigaCarrello( ricaDiscoMasterizzato );
 			updateGUI();
 		}
 
 		private bool chiediConfermaEliminazioneDischetto()
 		{
 
-			StringBuilder msg = new StringBuilder("Confermare Eliminazione Dischetto:\n L'operazione è irreversibile");
+			StringBuilder msg = new StringBuilder("Questa operazione rimuove il dischetto dal carrello:\n L'operazione è irreversibile.\nConfermi");
 			bool procediPure = false;
 			dialogProvider.ShowConfirmation(msg.ToString(), "Richiesta conferma",
 				(confermato) =>
@@ -1148,7 +1195,7 @@ namespace Digiphoto.Lumen.UI
             {
 				if (_updateQuantitaCommand == null)
                 {
-					_updateQuantitaCommand = new RelayCommand(param => updateQuantitaCommand(param));
+					_updateQuantitaCommand = new RelayCommand(param => updateQuantitaCommand(param), p => possoAggiornareQuantitaRiga );
                 }
 				return _updateQuantitaCommand;
             }
