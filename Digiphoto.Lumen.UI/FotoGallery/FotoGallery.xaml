@@ -49,10 +49,12 @@
 
         </ToolBarTray>
 
-        <Expander DockPanel.Dock="Top" Header="Metadati da imporre" IsExpanded="False" ExpandDirection="Down">
-            <Grid>
-				<lum:SelettoreMetadatiView x:Name="selettoreMetadati" MyItemsSource="{Binding ElementName=this, Path=DataContext.fotografieCW}" />
-            </Grid>
+<!--
+
+-->
+			<Expander DockPanel.Dock="Top" Header="Metadati da imporre" IsExpanded="False" ExpandDirection="Down">
+			<lum:SelettoreMetadati x:Name="selettoreMetadati" MyItemsSource="{Binding ElementName=this, Path=DataContext.fotografieCW}"
+								   IsEnabled="{Binding Path=MyItemsSource.isAlmenoUnaSelezionata}" Style="{StaticResource styleSelettoreMetadati}" />
         </Expander>
         
         
@@ -79,13 +81,14 @@
                 </ToolBar>
 
                 <ToolBar Band="1" BandIndex="2" Header="Pubblico">
-					<Button Content="Load" Command="{Binding caricareSlideShowCommand}" CommandParameter="Manual" Style="{StaticResource buttonBaseStyle}" />
-					<ToggleButton Content="Start" Command="{Binding controllareSlideShowCommand}" CommandParameter="Start" Style="{StaticResource buttonBaseStyle}" />
-					<ToggleButton Content="Stop"  Command="{Binding controllareSlideShowCommand}" CommandParameter="Stop" Style="{StaticResource buttonBaseStyle}" />
+					<Button Content="+All" Command="{Binding caricareSlideShowCommand}" CommandParameter="Auto" ToolTip="Carica tutte le foto nello show" />
+					<Button Content="+Selez" Command="{Binding caricareSlideShowCommand}" CommandParameter="Manual" ToolTip="Carica solo le foto selezionate nello show" />
+					<Button Content="Svuota" Command="{Binding controllareSlideShowCommand}" CommandParameter="Reset"  />
+					<Separator />
+					<Button Command="{Binding controllareSlideShowCommand}" CommandParameter="Start" Style="{StaticResource ssStartStyle}" />
+					<Button Command="{Binding controllareSlideShowCommand}" CommandParameter="Stop"  Style="{StaticResource ssPauseStyle}" />
 					<extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. righe Slide-Show" Value="{Binding numRigheSlideShow}" IsEnabled="{Binding possoControllareSlideShow}" />
 					<extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. colonne Slide-Show" Value="{Binding numColonneSlideShow}" IsEnabled="{Binding possoControllareSlideShow}" />
-                    <Separator />
-					<Button Content="Svuota" Command="{Binding controllareSlideShowCommand}" CommandParameter="Reset" Style="{StaticResource buttonBaseStyle}" />
                 </ToolBar>
             </ToolBarTray>
         </Expander>
@@ -95,7 +98,7 @@
             
             <StackPanel Orientation="Horizontal" MaxHeight="120">
                 
-                <GroupBox Header="Tempo">
+                <GroupBox Header="Periodo">
 
                     <StackPanel Orientation="Vertical">
 
@@ -122,59 +125,44 @@
 									 Margin="3,0,0,0"
                                  DataContext="{Binding selettoreEventoFiltro}" />
 
-				<StackPanel Orientation="Vertical" Margin="3,0,3,0" VerticalAlignment="Center">
-                    <CheckBox Name="checkBoxMattino" Content="Mattino" IsChecked="{Binding isMattinoChecked,Mode=TwoWay}" Margin="2" />
-					<CheckBox Name="checkBoxPomeriggio" Content="Pomeriggio" IsChecked="{Binding isPomeriggioChecked,Mode=TwoWay}" Margin="2" />
-					<CheckBox Name="checkBoxSera" Content="Sera" IsChecked="{Binding isSeraChecked,Mode=TwoWay}" Margin="2" />              
-				</StackPanel>
+				<GroupBox Header="Fasi del giorno">
+					<StackPanel Orientation="Vertical" Margin="3,0,3,0" VerticalAlignment="Center">
+						<CheckBox Name="checkBoxMattino" Content="Mattino" IsChecked="{Binding isMattinoChecked,Mode=TwoWay}" Margin="2" />
+						<CheckBox Name="checkBoxPomeriggio" Content="Pomeriggio" IsChecked="{Binding isPomeriggioChecked,Mode=TwoWay}" Margin="2" />
+						<CheckBox Name="checkBoxSera" Content="Sera" IsChecked="{Binding isSeraChecked,Mode=TwoWay}" Margin="2" />
+					</StackPanel>
+				</GroupBox>
 
-				<StackPanel Orientation="Vertical" Margin="3,0,3,0"  >
+				<GroupBox Header="Metadati" Margin="3,0,3,0"  >
+					<StackPanel Orientation="Vertical" >
 
-					<Label Content="Didascalia" />
-					<TextBox Name="didascaliaTextBox" CharacterCasing="Upper" Text="{Binding Path=paramCercaFoto.didascalia,Mode=TwoWay}" MinWidth="80" />
+						<Label Content="Didascalia" FontSize="10" />
+						<TextBox Name="didascaliaTextBox" CharacterCasing="Upper" 
+								 Text="{Binding Path=paramCercaFoto.didascalia,Mode=TwoWay}" MinWidth="80" FontSize="11"/>
 
-                    <Separator />
-                    
-                    <Label>Numeri</Label>
-					<TextBox  Text="{Binding Path=stringaNumeriFotogrammi}" 
+						<Label Content="Numeri" FontSize="10" />
+						<TextBox  Text="{Binding Path=stringaNumeriFotogrammi}" 
 							  Name="textBoxNumFotogrammi"
-							  CharacterCasing="Upper" MinWidth="80"
+							  CharacterCasing="Upper" MinWidth="80" FontSize="11"
 							  ToolTip="Indicare i numeri separati da virgola , oppure range con il meno -" />
-                </StackPanel>
-
+					</StackPanel>
+				</GroupBox>
 
 				<StackPanel Orientation="Vertical" Margin="3,0,3,0"  >
 
+					<Button Name="eseguireRicercaButton" Command="{Binding eseguireRicercaCommand}" Style="{StaticResource buttonCercaStyle}" />
+
+					<Button Name="azzeraParamRicercaButton" ToolTip="Azzera i parametri di ricerca" Command="{Binding azzeraParamRicercaCommand}" Style="{StaticResource buttonAzzeraParametriStyle}" />
+
 					<StackPanel Orientation="Horizontal" Margin="2">
-						<Button Name="eseguireRicercaButton" Command="{Binding eseguireRicercaCommand}" >
-							<StackPanel Orientation="Horizontal">
-								<Image Source="/Digiphoto.Lumen.UI;component/Resources/start-search-24x24.png" Height="24" />
-								<Label Content="Esegui Ricerca" />
-							</StackPanel>
-						</Button>
-						<Button Name="azzeraParamRicercaButton" ToolTip="Azzera i parametri di ricerca" Command="{Binding azzeraParamRicercaCommand}" >
-							<StackPanel Orientation="Horizontal">
-								<Image Source="/Digiphoto.Lumen.UI;component/Resources/clear-filter-22x22.png" Height="22" />
-								<Label Content="Svuota filtri" />
-							</StackPanel>
-						</Button>
-
-
-
-					</StackPanel>
-					<StackPanel Orientation="Horizontal" Margin="2">
-						<Button Content="|&lt;- Pag" ToolTip="Risultati prima pagina" Command="{Binding commandSpostarePaginazione}" CommandParameter="-999" />
-						<Button Content="&lt;- Pag" ToolTip="Risultati pagina precedente" Command="{Binding commandSpostarePaginazione}" CommandParameter="-1" />
-						<Button Content="Pag +&gt;" ToolTip="Risultati prossima pagina" Command="{Binding commandSpostarePaginazione}" CommandParameter="1" />
+						<Button Command="{Binding commandSpostarePaginazione}" CommandParameter="-999" Style="{StaticResource buttonMuoviFirstPageStyle}" />
+						<Button Command="{Binding commandSpostarePaginazione}" CommandParameter="-1" Style="{StaticResource buttonMuoviPreviousPageStyle}" />
+						<Label Content="{Binding paginaAttualeRicerca}" Width="24" HorizontalContentAlignment="Center" />
+						<Button Command="{Binding commandSpostarePaginazione}" CommandParameter="1" Style="{StaticResource buttonMuoviNextPageStyle}" />
 					</StackPanel>
 
 				</StackPanel>
-
-
-				<Button Name="caricareSlideShowAuto" Content="Load SS Auto" Command="{Binding caricareSlideShowCommand}" CommandParameter="Auto" />
-
 			</StackPanel>
-
 
 		</Expander>
 
