@@ -21,7 +21,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 		Carrello carrelloCorrente { get; set; }
 
 		// Cerca i carrelli nell'archivio, vengono recuperati i soli carrelli non salvati.
-		void cercaCarrello( ParamCercaCarrello param );
+		void cercaCarrelli( ParamCercaCarrello param );
 
 	}
 }

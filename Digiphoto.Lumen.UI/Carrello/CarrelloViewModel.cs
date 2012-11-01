@@ -33,6 +33,8 @@ namespace Digiphoto.Lumen.UI
 
         public CarrelloViewModel()
         {
+			paramCercaCarrello = new ParamCercaCarrello();
+
             if (IsInDesignMode)
             {
             }
@@ -59,17 +61,33 @@ namespace Digiphoto.Lumen.UI
 					prezzoTotaleIntero += riCaFotoStampata.prezzoNettoTotale;
 				}
 
-				paramCercaCarrello = new ParamCercaCarrello();
-				carrelloExplorerSrv.cercaCarrello(paramCercaCarrello);
-				CarrelliSalvatiCv = CollectionViewSource.GetDefaultView(carrelloExplorerSrv.carrelli);
-				OnPropertyChanged("CarrelliSalvatiCv");
+				// Non voglio ricercare nulla fino a che l'utente non me lo chiede
+//				ricercaPoiCreaViewCarrelliSalvati();
 
 				PrezzoTotaleIntero = prezzoTotaleIntero;
 				ScontoApplicato = "0%";
 
 				IsErroriMasterizzazione = false;
+
+				// Creo il worker che mi serve per idratare le immagini delle righe del carrello
+				_bkgIdrata = new BackgroundWorker();
+				_bkgIdrata.WorkerReportsProgress = false;  // per ora non mi complico la vita
+				_bkgIdrata.WorkerSupportsCancellation = true; // per ora non mi complico la vita
+				_bkgIdrata.DoWork += new DoWorkEventHandler( bkgIdrata_DoWork );
 			}
 		}
+
+		/// <summary>
+		/// Eseguo la ricerca dei carrelli salvati e poi creo la collectionView che serve ad alimentare la lista che sta a video.
+		/// </summary>
+		private void ricercaPoiCreaViewCarrelliSalvati() {
+			carrelloExplorerSrv.cercaCarrelli(paramCercaCarrello);
+			CarrelliSalvatiCv = CollectionViewSource.GetDefaultView(carrelloExplorerSrv.carrelli);
+			OnPropertyChanged("CarrelliSalvatiCv");
+		}
+
+
+		
 
 		/// <summary>
 		/// Creo le viste sulle collezioni di righe che rappresentano il carrello.
@@ -77,13 +95,13 @@ namespace Digiphoto.Lumen.UI
 		private void rinfrescaViewRighe() {
 			if (IsErroriMasterizzazione)
 			{
-				RiCaFotoStampataCv = null;
+				RiCaFotoStampateCv = null;
 			}
 			else
 			{
-				RiCaFotoStampataCv = CollectionViewSource.GetDefaultView(carrelloCorrente.righeCarrello.OfType<RiCaFotoStampata>());
+				RiCaFotoStampateCv = CollectionViewSource.GetDefaultView(carrelloCorrente.righeCarrello.OfType<RiCaFotoStampata>());
 			}
-			OnPropertyChanged( "RiCaFotoStampataCv" );
+			OnPropertyChanged( "RiCaFotoStampateCv" );
 		}
 
         #region Proprietà
@@ -98,7 +116,7 @@ namespace Digiphoto.Lumen.UI
 		///  Uso questa particolare collectionView perché voglio tenere traccia nel ViewModel degli N-elementi selezionati.
 		///  Sottolineo N perché non c'è supporto nativo per questo. Vedere README.txt nel package di questa classe.
 		/// </summary>
-		public ICollectionView RiCaFotoStampataCv
+		public ICollectionView RiCaFotoStampateCv
 		{
 			get;
 			private set;
@@ -246,10 +264,18 @@ namespace Digiphoto.Lumen.UI
 
 		#endregion
 
+		private ParamCercaCarrello _paramCercaCarrello;
 		public ParamCercaCarrello paramCercaCarrello
 		{
-			get;
-			set;
+			get {
+				return _paramCercaCarrello;
+			}
+			set {
+				if( _paramCercaCarrello != value ) {
+					_paramCercaCarrello = value;
+					OnPropertyChanged( "paramCercaCarrello" );
+				}
+			}
 		}
 
 		bool _isErroriMasterizzazione;
@@ -398,7 +424,7 @@ namespace Digiphoto.Lumen.UI
 					posso = false;
 
 				// Verifico che i dati minimi siano stati indicati
-				if (posso && RiCaFotoStampataCv.IsEmpty && contaFotoMasterizzate <= 0 )
+				if (posso && RiCaFotoStampateCv.IsEmpty && contaFotoMasterizzate <= 0 )
 					posso = false;
 
 				// Ce un errore nella masterizzazione 
@@ -455,10 +481,10 @@ namespace Digiphoto.Lumen.UI
 					posso = false;
 
 				// Verifico che i dati minimi siano stati indicati
-				if (posso && RiCaFotoStampataCv.IsEmpty)
+				if (posso && RiCaFotoStampateCv.IsEmpty)
 					posso = false;
 
-				if( posso && RiCaFotoStampataCv.CurrentItem == null )
+				if( posso && RiCaFotoStampateCv.CurrentItem == null )
 					posso = false;
 
 				// Ce un errore nella masterizzazione 
@@ -485,7 +511,7 @@ namespace Digiphoto.Lumen.UI
 				// Verifico che i dati minimi siano stati indicati
 				// Elimino solo se il carrello è stato caricato in caso contrario è transiente e quindi
 				//posso fare svuota
-				if (posso && RiCaFotoStampataCv.IsEmpty )
+				if (posso && RiCaFotoStampateCv.IsEmpty )
 					posso = false;
 
 				// Elimino solo i carrelli Salvati
@@ -512,7 +538,7 @@ namespace Digiphoto.Lumen.UI
 				// Verifico che i dati minimi siano stati indicati
 				// Elimino solo se il carrello è stato caricato in caso contrario è transiente e quindi
 				//posso fare svuota
-				if( posso && CarrelliSalvatiCv.IsEmpty && !venditoreSrv.isStatoModifica )
+				if( posso && CarrelliSalvatiCv != null && CarrelliSalvatiCv.IsEmpty && !venditoreSrv.isStatoModifica )
 					posso = false;
 
 				// Ce un errore nella masterizzazione 
@@ -573,9 +599,8 @@ namespace Digiphoto.Lumen.UI
 			OnPropertyChanged( "carrelloCorrente" );
 			rinfrescaViewRighe();
 
-			carrelloExplorerSrv.cercaCarrello(paramCercaCarrello);
-			CarrelliSalvatiCv = CollectionViewSource.GetDefaultView(carrelloExplorerSrv.carrelli);
-			OnPropertyChanged("CarrelliSalvatiCv");
+// Questo mi sembra un pò esagerato. Riparte la query sul db!!! non possiamo metterla ad ogni aggiornamento delle property
+//			ricercaPoiCreaViewCarrelliSalvati();
 
 			OnPropertyChanged("PrezzoTotaleForfettario");
 			OnPropertyChanged( "ricaDiscoMasterizzato" );
@@ -584,6 +609,7 @@ namespace Digiphoto.Lumen.UI
 			OnPropertyChanged( "abilitaEliminaRigaFoto" );
 			OnPropertyChanged( "possoAggiornareQuantitaRiga" );
 		}
+
 
         /// <summary>
         /// Devo mandare in stampa le foto selezionate
@@ -803,15 +829,15 @@ namespace Digiphoto.Lumen.UI
 
 		private void eliminaRiga()
 		{
-			RiCaFotoStampata riCaFotoStampata = RiCaFotoStampataCv.CurrentItem as RiCaFotoStampata;
+			RiCaFotoStampata riCaFotoStampata = RiCaFotoStampateCv.CurrentItem as RiCaFotoStampata;
 			//Testo il cast se è riuscito allora la riga è di tipo RiCaFotoStampata altrimenti e di tipo RiCaDiscoMasterizzato
 			if (riCaFotoStampata != null)
 			{
-				venditoreSrv.removeRigaCarrello(RiCaFotoStampataCv.CurrentItem as RiCaFotoStampata);
+				venditoreSrv.removeRigaCarrello(RiCaFotoStampateCv.CurrentItem as RiCaFotoStampata);
 			}
 			else
 			{
-				venditoreSrv.removeRigaCarrello(RiCaFotoStampataCv.CurrentItem as RiCaDiscoMasterizzato);
+				venditoreSrv.removeRigaCarrello(RiCaFotoStampateCv.CurrentItem as RiCaDiscoMasterizzato);
 			}
 			updateGUI();
 		}
@@ -844,20 +870,20 @@ namespace Digiphoto.Lumen.UI
 		private void caricaCarrelloSelezionato()
 		{
 			GestoreCarrelloMsg msg = new GestoreCarrelloMsg(this);
-			msg.fase = Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.LoadCarrelloSalvato;
+			msg.fase = GestoreCarrelloMsg.Fase.LoadCarrelloSalvato;
 			LumenApplication.Instance.bus.Publish(msg);
 
-			venditoreSrv.caricaCarrello( (Digiphoto.Lumen.Model.Carrello)CarrelliSalvatiCv.CurrentItem );
+			venditoreSrv.caricaCarrello( (Carrello)CarrelliSalvatiCv.CurrentItem );
 
 			int index = CarrelliSalvatiCvSelectedIndex;
 			updateGUI();
-
 			CarrelliSalvatiCvSelectedIndex = index;
 
-			_bkgIdrata = new BackgroundWorker();
-			_bkgIdrata.WorkerReportsProgress = false;  // per ora non mi complico la vita
-			_bkgIdrata.WorkerSupportsCancellation = true; // per ora non mi complico la vita
-			_bkgIdrata.DoWork += new DoWorkEventHandler( bkgIdrata_DoWork );
+
+			// Eventualmente stoppo lavoro precedente.
+			if( _bkgIdrata.WorkerSupportsCancellation && _bkgIdrata.IsBusy )
+				_bkgIdrata.CancelAsync();
+
 			_bkgIdrata.RunWorkerAsync();
 			// Non mettere altro codice qui sotto. Questa deve essere l'ultima operazione di questo metodo
 		}
@@ -868,30 +894,32 @@ namespace Digiphoto.Lumen.UI
 			BackgroundWorker worker = sender as BackgroundWorker;
 
 
-			using(new UnitOfWorkScope()){
+			using( new UnitOfWorkScope() ) {
 
-				Digiphoto.Lumen.Model.Carrello c = carrelloCorrente;
-				OrmUtil.forseAttacca<Digiphoto.Lumen.Model.Carrello>( "Carrelli", ref c );
+				Carrello c = carrelloCorrente;
+				OrmUtil.forseAttacca<Carrello>( "Carrelli", ref c );
 
-
-				foreach (RigaCarrello ric in carrelloCorrente.righeCarrello)
-				{
-					if(ric is RiCaFotoStampata)
-					{
-						if ((worker.CancellationPending == true))
-						{
+				foreach( RigaCarrello ric in carrelloCorrente.righeCarrello ) {
+					if( ric is RiCaFotoStampata ) {
+						if( (worker.CancellationPending == true) ) {
 							e.Cancel = true;
 							break;
-						}
-						else
-						{
+						} else {
 							Fotografia foto = (ric as RiCaFotoStampata).fotografia;
 							if( foto != null )
-								AiutanteFoto.idrataImmaginiFoto(foto, IdrataTarget.Provino);
+								AiutanteFoto.idrataImmaginiFoto( foto, IdrataTarget.Provino );
 						}
 					}
 				}
 			}
+
+			// TODO
+			// Non capisco perché Ma non dovrebbe servire ricreare la view. dovrebbe bastare questo:
+			// OnPropertyChanged( "RiCaFotoStampateCv" );
+			// l'effetto che non funziona, è che non vedo caricare i provini delle immaginette del carrello.
+			// Sono costretto a ricreare tutta la collection-view. Mistero da sistemare.
+			rinfrescaViewRighe();
+			
 		}
 
 		private void creaNuovoCarrello()
@@ -923,10 +951,9 @@ namespace Digiphoto.Lumen.UI
 		}
 			 
 		private void azzeraParamRicerca()
-			{
+		{
 			paramCercaCarrello = new ParamCercaCarrello();
-			OnPropertyChanged("paramCercaCarrello");
-			}
+		}
 
 		/// <summary>
 		/// Chiamo il servizio che esegue la query sul database
@@ -934,26 +961,10 @@ namespace Digiphoto.Lumen.UI
 		private void eseguireRicerca()
 		{
 
-			// Se avevo un worker già attivo, allora provo a cancellarlo.
-			if (_bkgIdrata!=null && _bkgIdrata.WorkerSupportsCancellation == true && _bkgIdrata.IsBusy)
-				_bkgIdrata.CancelAsync();
-
-
 			completaParametriRicerca();
 
-			// Eseguo la ricerca nel database
-			carrelloExplorerSrv.cercaCarrello(paramCercaCarrello);
-
-
-			// Ora ci penso io ad idratare le immagini, perchè devo fare questa operazione nello stesso thread della UI
-			if (_bkgIdrata!=null && !_bkgIdrata.IsBusy)
-				_bkgIdrata.RunWorkerAsync();
-
-
-			// ricreo la collection-view e notifico che è cambiato il risultato. Le immagini verranno caricate poi
-			CarrelliSalvatiCv = CollectionViewSource.GetDefaultView(carrelloExplorerSrv.carrelli);
-			OnPropertyChanged("CarrelliSalvatiCv");
-
+			ricercaPoiCreaViewCarrelliSalvati();
+			
 			// Se non ho trovato nulla, allora avviso l'utente
 			if (CarrelliSalvatiCv.IsEmpty)
 				dialogProvider.ShowMessage("Nessun Carrello trovato con questi filtri di ricerca", "AVVISO");
@@ -993,7 +1004,7 @@ namespace Digiphoto.Lumen.UI
 		private void updateQuantitaCommand(object param)
 		{
 			String type = (string)param;
-			RiCaFotoStampata rica = RiCaFotoStampataCv.CurrentItem as RiCaFotoStampata;
+			RiCaFotoStampata rica = RiCaFotoStampateCv.CurrentItem as RiCaFotoStampata;
 
 			int index = RigheCarrelloCvSelectedIndex;
 			

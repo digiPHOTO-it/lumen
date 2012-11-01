@@ -681,6 +681,10 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Carrelli-delete-carrello-32x32.png" />
+    <Resource Include="Resources\Carrelli-load-carrello-32x32.png" />
+    <Resource Include="Resources\Carrello-filtra-carrelli-32x32.png" />
+    <Resource Include="Resources\Carrello-remove-filter-32x32.png" />
     <Resource Include="Resources\Carrello-qta-down-48x48.png" />
     <Resource Include="Resources\Carrello-qta-up-48x48.png" />
     <Resource Include="Resources\Carrello-delete-riga-48x48.png" />

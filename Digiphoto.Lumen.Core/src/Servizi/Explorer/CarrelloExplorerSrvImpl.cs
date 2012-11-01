@@ -37,12 +37,13 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 		}
 
 		/** Eseguo il caricamento dei carrelli richiesti */
-		public void cercaCarrello( ParamCercaCarrello param ) {
+		public void cercaCarrelli( ParamCercaCarrello param ) {
 
 			// Per prima cosa azzero il carrello corrente
 			this.carrelli = null;
 
 			using( IRicercatoreSrv ricercaSrv = LumenApplication.Instance.creaServizio<IRicercatoreSrv>() ) {
+				ricercaSrv.start();
 				carrelli = ricercaSrv.cerca( param );
 			}
 		}
