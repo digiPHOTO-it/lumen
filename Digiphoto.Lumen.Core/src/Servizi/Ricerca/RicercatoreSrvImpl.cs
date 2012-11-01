@@ -197,7 +197,8 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 		private IQueryable<Carrello> creaQueryEntita(ParamCercaCarrello param)
 		{
 			IQueryable<Carrello> query = from ff in this.objectContext.Carrelli.Include("righeCarrello")
-										   select ff;
+										 orderby ff.tempo descending
+										 select ff;
 
 			//Filtro solo i carrelli che non sono stati venduti
 			if (param.isVenduto != null)

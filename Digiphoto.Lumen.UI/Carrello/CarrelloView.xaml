@@ -29,6 +29,9 @@
 
 				<Button Command="{Binding svuotaCarrelloCommand}" Style="{StaticResource styleCartSvuotare}" />
 
+				<Button Command="{Binding eliminaCarrelloCommand}" Style="{StaticResource styleCarrelliButtonDelete}" />
+
+				<Separator Height="10"  Visibility="{Binding Path=IsErroriMasterizzazione,Converter={StaticResource boolVisibilityConverter}}"  />
 				<Button Command="{Binding rimasterizzaCommand}" Visibility="{Binding Path=IsErroriMasterizzazione,Converter={StaticResource boolVisibilityConverter}}" Style="{StaticResource styleCartRimasterizza}" />
 
 			</ToolBar>
@@ -90,7 +93,7 @@
 							Height="32" Width="32" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="6,9,0,0" />
 
 					<Label Content="Σ Qta" Height="27" Margin="6,49,0,0" Width="46" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="12"/>
-					<Label Content="{Binding Path=RiCaFotoStampataCv,Converter={StaticResource sumQuantitaConverter},Mode=OneWay}" Width="48" Height="40" Margin="58,36,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" BorderThickness="1" BorderBrush="Gray" FontSize="24" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Right" />
+					<Label Content="{Binding Path=RiCaFotoStampateCv,Converter={StaticResource sumQuantitaConverter},Mode=OneWay}" Width="48" Height="40" Margin="58,36,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" BorderThickness="1" BorderBrush="Gray" FontSize="24" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Right" />
 				</Grid>
 			</GroupBox>
 			<Label Content="VENDUTO" VerticalContentAlignment="Center"  HorizontalContentAlignment="Center" FontSize="24" Background="Crimson" Height="50" Margin="2,0,0,0"
@@ -105,11 +108,10 @@
 
 				<ToolBarTray Orientation="Vertical" DockPanel.Dock="Right" >
 					<ToolBar>
-						<Button Command="{Binding azzeraParamRicercaCommand}" Style="{StaticResource styleCarrelliButtonClearFilter}" />
 						<Button Command="{Binding eseguireRicercaCommand}" Style="{StaticResource styleCarrelliButtonSearch}" />
+						<Button Command="{Binding azzeraParamRicercaCommand}" Style="{StaticResource styleCarrelliButtonClearFilter}" />
 
 						<Button Command="{Binding caricaCarrelloSelezionatoCommand}" Style="{StaticResource styleCarrelliButtonLoad}" />
-						<Button Command="{Binding eliminaCarrelloCommand}" Style="{StaticResource styleCarrelliButtonDelete}" />
 
 					</ToolBar>
 				</ToolBarTray>
@@ -127,10 +129,11 @@
 							<Button Content="Ieri+Oggi" Name="ieriOggiButton" Click="ieriOggiButton_Click" Margin="1" Padding="2,0,2,0" />
 						</StackPanel>
 
+						<Separator Margin="0,1,0,0" />
 						<Label Content="Ricerca Intestazione" ToolTip="Inserire l'intestazione su cui si desidera filtrare" FontSize="11"/>
 						<TextBox Text="{Binding Path=IntestazioneSearch}" FontSize="11" />
-						<CheckBox Name="checkBoxVenduto" Content="Venduto" IsChecked="{Binding Path=IsVendutoChecked,Mode=TwoWay}" Margin="0,2,0,0"/>
-
+						<CheckBox Name="checkBoxVenduto" Content="Solo C. Venduti" IsChecked="{Binding Path=IsVendutoChecked,Mode=TwoWay}" Margin="0,2,0,0" HorizontalAlignment="Center" ToolTip="Filtra solo carrelli venduti. Di norma estrae solo quelli invenduti" />
+						
 					</StackPanel>
 				</GroupBox>
 
@@ -177,7 +180,7 @@
 		<ListBox x:Name="listCarrello"
 					 SelectionMode="Single" 
 					 Style="{StaticResource ListCarrelloStyle}"
-					 ItemsSource="{Binding Path=RiCaFotoStampataCv}"
+					 ItemsSource="{Binding Path=RiCaFotoStampateCv}"
 					 SelectedIndex="{Binding Path=RigheCarrelloCvSelectedIndex, Mode=TwoWay}"
 					 SelectedItem="{Binding Path=RigheCarrelloCvSelected}"
 					 ItemsPanel="{DynamicResource ImageCarrelloItemsPanelTemplate}" 

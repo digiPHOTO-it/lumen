@@ -361,7 +361,7 @@
 		<Setter Property="ToolTip" Value="Elimina carrello selezionato" />
 		<Setter Property="Content">
 			<Setter.Value>
-				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-new-48x48.png" Width="32"/>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrelli-delete-carrello-32x32.png" Width="32"/>
 			</Setter.Value>
 		</Setter>
 	</Style>
@@ -370,7 +370,7 @@
 		<Setter Property="ToolTip" Value="Carica carrello selezionato" />
 		<Setter Property="Content">
 			<Setter.Value>
-				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-new-48x48.png" Width="32"/>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrelli-load-carrello-32x32.png" Width="32"/>
 			</Setter.Value>
 		</Setter>
 	</Style>
@@ -379,7 +379,7 @@
 		<Setter Property="ToolTip" Value="Esegui ricerca carrelli" />
 		<Setter Property="Content">
 			<Setter.Value>
-				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-new-48x48.png" Width="32"/>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-filtra-carrelli-32x32.png" Width="32"/>
 			</Setter.Value>
 		</Setter>
 	</Style>
@@ -388,7 +388,7 @@
 		<Setter Property="ToolTip" Value="Pulisci filtro di ricerca carrelli" />
 		<Setter Property="Content">
 			<Setter.Value>
-				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-new-48x48.png" Width="32"/>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-remove-filter-32x32.png" Width="32"/>
 			</Setter.Value>
 		</Setter>
 	</Style>
