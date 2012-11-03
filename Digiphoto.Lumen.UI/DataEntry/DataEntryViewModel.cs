@@ -10,6 +10,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Runtime.CompilerServices;
 using Digiphoto.Lumen.Database;
+using Digiphoto.Lumen.Util;
 
 namespace Digiphoto.Lumen.UI.DataEntry {
 
@@ -21,7 +22,7 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 		Edit,   // sto editanto l'entità corrente 
 		Delete  // sto per cancellare l'entità corrente
 	};
-	
+
 	/// <summary>
 	/// Preso spunto da qui:
 	/// http://msdn.microsoft.com/en-us/vstudio/dd776540.aspx
@@ -38,7 +39,7 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 			entitySource = new CollectionViewSource();
 
 			entitySource.Source = passoCaricaDati();
-			
+
 			collectionView = (BindingListCollectionView)entitySource.View;
 
 			status = DataEntryStatus.View;
@@ -113,7 +114,7 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 			get {
 				if( _commandCambiareStatus == null ) {
 					_commandCambiareStatus = new RelayCommand( param => cambiareStatus( param as string ),
-															  param => possoCambiareStatus(param as string),
+															  param => possoCambiareStatus( param as string ),
 															  false );
 				}
 				return _commandCambiareStatus;
@@ -125,8 +126,8 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 			get {
 				if( _commandSalvare == null ) {
 					_commandSalvare = new RelayCommand( param => salvare(),
-					                                    param => possoSalvare,
-					                                    false );
+														param => possoSalvare,
+														false );
 				}
 				return _commandSalvare;
 			}
@@ -182,7 +183,7 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 
 		void cambiareStatus( DataEntryStatus nuovoStatus ) {
 
-			if( ! possoCambiareStatus( nuovoStatus ) )
+			if( !possoCambiareStatus( nuovoStatus ) )
 				throw new ArgumentException( "nuovo stato incompatibile: " + nuovoStatus );
 
 			TEntity entita = (TEntity)collectionView.CurrentItem;
@@ -299,7 +300,7 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 						// entityRepositorySrv.delete( entita );
 						break;
 
-				 	case DataEntryStatus.View:
+					case DataEntryStatus.View:
 						break;
 				}
 
@@ -314,7 +315,7 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 
 			} catch( Exception eee ) {
 				_giornale.Error( "Salvataggio entità " + entita, eee );
-				dialogProvider.ShowError( eee.Message, "ERRORE", null );
+				dialogProvider.ShowError( ErroriUtil.estraiMessage( eee ), "ERRORE", null );
 			}
 
 		}
@@ -328,7 +329,7 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 		protected virtual void passoPreparaAddNew( TEntity entita ) {
 			// A disposizione per override
 		}
-		
+
 		protected virtual void passoPrimaDiSalvare( TEntity entita ) {
 			// A disposizione per override
 		}
