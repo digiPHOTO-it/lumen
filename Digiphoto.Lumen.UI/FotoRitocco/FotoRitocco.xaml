@@ -152,7 +152,7 @@
         <!-- area di lavoro per modifiche -->
 		<Grid>
 			<!-- Questo è il canvas di copertura dove compare la cornice bucata -->
-			<Grid Name="canvasMskCopertura"
+			<Grid Name="canvasMskCopertura" IsHitTestVisible="False"
                             Visibility="{Binding isGestioneMaschereAttiva,Converter={StaticResource booleanToVisibilityConverter}}"
                             >
 				<Image Name="imageMask" 
@@ -161,10 +161,9 @@
 			</Grid>
 
 			<!-- Questo è il canvas di lavoro, dove consento il drag-n-drop delle foto -->
-                    <Canvas  Name="canvasMsk" Background="Transparent" AllowDrop="True" 
-                             MouseDown="canvasMsk_MouseDown" Drop="canvasMsk_Drop"
-                             Visibility="{Binding isGestioneMaschereAttiva,Converter={StaticResource booleanToVisibilityConverter}}"
-                             />
+			<Canvas  Name="canvasMsk" Background="Transparent" AllowDrop="True" 
+					 Drop="canvasMsk_Drop"
+					 Visibility="{Binding isGestioneMaschereAttiva,Converter={StaticResource booleanToVisibilityConverter}}" />
 
             <!--
                  *******     ^ sopra gestione maschere  (fotoritocco singolo)
