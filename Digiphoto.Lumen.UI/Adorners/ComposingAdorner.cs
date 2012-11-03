@@ -44,8 +44,8 @@ namespace Digiphoto.Lumen.UI.Adorners {
 			// ---
 			rotateHandle = new Thumb();
 			rotateHandle.Cursor = Cursors.Hand;
-			rotateHandle.Width = 10;
-			rotateHandle.Height = 10;
+			rotateHandle.Width = 20;
+			rotateHandle.Height = 20;
 			rotateHandle.Background = Brushes.Blue;
 
 			rotateHandle.DragDelta += new DragDeltaEventHandler( rotateHandle_DragDelta );
@@ -54,8 +54,10 @@ namespace Digiphoto.Lumen.UI.Adorners {
 			// ---
 			flipHandle = new Thumb();
 			flipHandle.Cursor = Cursors.Hand;
-			flipHandle.Width = 10;
-			flipHandle.Height = 10;
+			flipHandle.Width = 20;
+			flipHandle.Height = 20;
+			flipHandle.MinWidth = 20;
+			flipHandle.MinHeight = 20;
 			flipHandle.Background = Brushes.Orange;
 
 			flipHandle.PreviewMouseDown += new MouseButtonEventHandler( flipHandle_MouseDown );
@@ -63,9 +65,9 @@ namespace Digiphoto.Lumen.UI.Adorners {
 			// ---
 			moveHandle = new Thumb();
 			moveHandle.Cursor = Cursors.SizeAll;
-			moveHandle.Width = 15;
-			moveHandle.Height = 15;
-			moveHandle.Background = Brushes.Blue;
+			moveHandle.Width = 20;
+			moveHandle.Height = 20;
+			moveHandle.Background = Brushes.Magenta;
 
 			moveHandle.DragDelta += new DragDeltaEventHandler( moveHandle_DragDelta );
 			moveHandle.DragCompleted += new DragCompletedEventHandler( moveHandle_DragCompleted );
@@ -73,8 +75,10 @@ namespace Digiphoto.Lumen.UI.Adorners {
 			// ---
 			scaleHandle = new Thumb();
 			scaleHandle.Cursor = Cursors.SizeNS;
-			scaleHandle.Width = 10;
-			scaleHandle.Height = 10;
+			scaleHandle.Width = 20;
+			scaleHandle.Height = 20;
+			scaleHandle.MinWidth = 20;
+			scaleHandle.MinHeight = 20;
 			scaleHandle.Background = Brushes.Green;
 
 			scaleHandle.DragDelta += new DragDeltaEventHandler( scaleHandle_DragDelta );
@@ -84,6 +88,7 @@ namespace Digiphoto.Lumen.UI.Adorners {
 			outline = new Path();
 			outline.Stroke = Brushes.Blue;
 			outline.StrokeThickness = 1;
+
 
 			rotation = new RotateTransform();
 			translate = new TranslateTransform();
@@ -108,10 +113,14 @@ namespace Digiphoto.Lumen.UI.Adorners {
 
 			center = new Point( AdornedElement.RenderSize.Width / 2, AdornedElement.RenderSize.Height / 2 );
 
+			const double minSize = 15;
+			
 			//
 			Rect rotateHandleRect = new Rect( -AdornedElement.RenderSize.Width / 2, -AdornedElement.RenderSize.Height / 2, AdornedElement.RenderSize.Width, AdornedElement.RenderSize.Height );
 			rotateHandle.ToolTip = "Ruota";
 			rotateHandle.Arrange( rotateHandleRect );
+			if( rotateHandle.Width < minSize )
+				rotateHandle.Width = minSize;
 
 			//
 			Rect flipHandleRect = new Rect( AdornedElement.RenderSize.Width/2, AdornedElement.RenderSize.Height/2, AdornedElement.RenderSize.Width, AdornedElement.RenderSize.Height );

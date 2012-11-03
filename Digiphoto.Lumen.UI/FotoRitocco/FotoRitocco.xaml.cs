@@ -1,6 +1,7 @@
 ﻿using System;
 using Digiphoto.Lumen.UI.Mvvm;
 using System.Windows.Data;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Digiphoto.Lumen.Windows.Media.Effects;
@@ -180,37 +181,35 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			if( foto != null ) {
 				
 				// Devo creare una image con la foto grande (il provino non basta più).
-				Image image = new Image();
+				Image imageFotina = new Image();
 
 				IImmagine immagine = AiutanteFoto.idrataImmagineGrande( foto );
 
 				// per evitare che l'immagine sfori le dimensioni del video, la faccio sempre grande la metà della zona visibile.
 				if( immagine.orientamento == Orientamento.Orizzontale )
-					image.Width = imageMask.Width / 2;
+					imageFotina.Width = imageMask.Width / 2;
 				else
-					image.Height = imageMask.Height / 2;
+					imageFotina.Height = imageMask.Height / 2;
 
 				BitmapSource bmpSrc = ((ImmagineWic)immagine).bitmapSource;
 
-				image.BeginInit();
-				image.Source = bmpSrc;
-				image.EndInit();
+				imageFotina.BeginInit();
+				imageFotina.Source = bmpSrc;
+				imageFotina.EndInit();
 				
 				Point position = e.GetPosition( canvasMsk );
-				Canvas.SetLeft( image, position.X );
-				Canvas.SetTop( image, position.Y );
-				canvasMsk.Children.Add( image );
-				AddAdorner( image );
-				image.PreviewMouseDown += new MouseButtonEventHandler( image_PreviewMouseDown );
+				Canvas.SetLeft( imageFotina, position.X );
+				Canvas.SetTop( imageFotina, position.Y );
+				canvasMsk.Children.Add( imageFotina );
+				AddAdorner( imageFotina );
+				imageFotina.PreviewMouseDown += new MouseButtonEventHandler( imageFotina_PreviewMouseDown );
+				portaInPrimoPianoFotina( imageFotina );
 
 				primoPianoCanvasMask( true );
 			}
 		}
 
-		private void canvasMsk_MouseDown( object sender, System.Windows.Input.MouseButtonEventArgs e ) {
-			// rimuoviTutteLeManigliette();
-		}
-
+		
 		/// <summary>
 		/// Elimina tutti gli Adornes da tutte le immagini che sono state aggiunte
 		/// </summary>
@@ -244,7 +243,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			} else {
 				// Porto davanti il canvas che riceverà la fotina (per permettere il drop)
-				Canvas.SetZIndex( canvasMsk, 99 );
+				Canvas.SetZIndex( canvasMsk, 50 );
 				Grid.SetZIndex( canvasMskCopertura, 10 );
 			}
 		}
@@ -257,8 +256,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		void image_PreviewMouseDown( object sender, MouseButtonEventArgs e ) {
-			AddAdorner( (Image)sender );
+		void imageFotina_PreviewMouseDown( object sender, MouseButtonEventArgs e ) {
+			
+			if( e.ClickCount == 2 )
+				portaInPrimoPianoFotina( sender as UIElement );
+			else 
+				AddAdorner( (Image)sender );
+
 			e.Handled = true;
 		}
 
@@ -334,8 +338,19 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			c.VerticalAlignment = VerticalAlignment.Top;
 			
 
+			// Devo prendere tutte le f
+//			Array.Sort( canvasMsk.Children.CopyTo(
 
-			foreach( Visual visual in canvasMsk.Children ) {
+
+
+			SortedList<int,UIElement> listaOrdinata = new SortedList<int,UIElement>();
+			foreach( UIElement uiElement in canvasMsk.Children ) {
+				listaOrdinata.Add( Canvas.GetZIndex( uiElement ), uiElement );
+			}
+
+			var qq = listaOrdinata.OrderBy( f => f.Key ).Select( v => v.Value );
+
+			foreach( Visual visual in qq ) {
 
 				Image fotina = (Image)visual;
 
@@ -367,10 +382,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				fotona.Width = newRect.Width * factorX;
 				fotona.Height = newRect.Height * factorY;
 				fotona.Stretch = Stretch.Uniform;
+				
 
 				c.Children.Add( fotona );
 
 				double test = Canvas.GetLeft( fotona );
+				int appo = Canvas.GetZIndex( fotina );
+				Canvas.SetZIndex( fotona, appo );
 
 				// Imposto la posizione della foto all'interno del canvas della cornice.
 				Canvas.SetLeft( fotona, newRect.Left * factorX );
@@ -594,6 +612,27 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			msg.AppendFormat("Non puoi selezionare più di {0} foto", e.maxNumSelected);
 
 			_viewModel.trayIconProvider.showInfo("AVVISO", msg.ToString(), 1500);
+		}
+
+
+		/// <summary>
+		/// Gestisco la proprietà Zindex sulle fotine per stabilire l'ordine di sovrapposizione.
+		///  la foto più Front avrà un valore di 80 e le altre a scendere di uno.
+		/// </summary>
+		/// <param name="imageFotina"></param>
+		void portaInPrimoPianoFotina( UIElement imageFotina ) {
+
+			foreach( Visual visual in canvasMsk.Children ) {
+				if( visual is Image ) {
+					Image fotina = (Image)visual;
+					if( fotina == imageFotina )
+						Canvas.SetZIndex( fotina, 99 );
+					else {
+						int appo = Canvas.GetZIndex( fotina );
+						Canvas.SetZIndex( fotina, appo - 1 );
+					}
+				}
+			}
 		}
 
 	}
