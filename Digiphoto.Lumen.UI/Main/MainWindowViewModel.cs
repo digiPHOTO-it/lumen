@@ -37,12 +37,6 @@ namespace Digiphoto.Lumen.UI {
 			// Tengo un massimo di elementi in memoria per evitare consumi eccessivi
 			informazioniUtente = new RingBuffer<InformazioneUtente>( 30 );
 
-            selettoreStampantiInstallateViewModel = new SelettoreStampantiInstallateViewModel();
-
-            selettoreFormatoCartaViewModel = new SelettoreFormatoCartaViewModel();
-
-            selettoreFormatoCartaAbbinatoViewModel = new SelettoreFormatoCartaAbbinatoViewModel();
-
 			carrelloViewModel = new CarrelloViewModel();
 			fotoGalleryViewModel = new FotoGalleryViewModel();
 
@@ -60,24 +54,6 @@ namespace Digiphoto.Lumen.UI {
         }
 
 		#region Proprietà
-
-		public SelettoreStampantiInstallateViewModel selettoreStampantiInstallateViewModel
-        {
-            get;
-            private set;
-        }
-
-        public SelettoreFormatoCartaViewModel selettoreFormatoCartaViewModel
-        {
-            get;
-            private set;
-        }
-
-        public SelettoreFormatoCartaAbbinatoViewModel selettoreFormatoCartaAbbinatoViewModel
-        {
-            get;
-            private set;
-        }
 
 		CarrelloViewModel _carrelloViewModel;
 		public CarrelloViewModel carrelloViewModel {
