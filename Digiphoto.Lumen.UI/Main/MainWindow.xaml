@@ -107,20 +107,6 @@
 						Style="{DynamicResource tabControlProspettiveStyle}"
 						ItemContainerStyle="{StaticResource tabItemProspettiveStyle}">
 
-				<TabItem ToolTip="Consente di Gestire le entita">
-					<TabItem.Header>
-						<TextBlock Text="Gestione Entita" FontSize="14" />
-					</TabItem.Header>
-					<!-- UserControl per scaricare le foto -->
-					<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Height="405">
-						<StackPanel Orientation="Vertical" Height="405">
-							<lum:SelettoreFormatoCarta DataContext="{Binding Path=selettoreFormatoCartaViewModel}"/>
-							<lum:SelettoreStampanteInstallata DataContext="{Binding Path=selettoreStampantiInstallateViewModel}"/>
-						</StackPanel>
-						<lum:SelettoreFormatoCartaAbbinatoView DataContext="{Binding Path=selettoreFormatoCartaAbbinatoViewModel}"/>
-					</StackPanel>
-				</TabItem>							
-
 				<TabItem ToolTip="Gestione SlideShow">
 					<TabItem.Header>
 						<TextBlock Text="Gestione SlideShow" FontSize="14" />
