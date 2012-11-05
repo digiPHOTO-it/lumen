@@ -156,4 +156,8 @@
 		<Setter Property="Height" Value="30" />
  	</Style>
 	
+	<ContextMenu x:Key="contextMenuImageFotina">
+		<MenuItem Header="Bring to front" x:Name="menuItemBringToFront" />
+	</ContextMenu>
+	
 </ResourceDictionary>

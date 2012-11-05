@@ -8,6 +8,8 @@ using System.Windows.Media;
 using System.Windows;
 using System.Windows.Shapes;
 using System.Windows.Input;
+using System.Windows.Controls;
+using System.Runtime.Serialization;
 
 namespace Digiphoto.Lumen.UI.Adorners {
 
@@ -65,12 +67,15 @@ namespace Digiphoto.Lumen.UI.Adorners {
 			// ---
 			moveHandle = new Thumb();
 			moveHandle.Cursor = Cursors.SizeAll;
-			moveHandle.Width = 20;
-			moveHandle.Height = 20;
-			moveHandle.Background = Brushes.Magenta;
+			moveHandle.Width = double.NaN;  // grande quanto tutta la foto
+			moveHandle.Height = double.NaN; // grande quanto tutta la foto
+			moveHandle.Background = Brushes.Transparent;
+			moveHandle.Opacity = 0;
 
 			moveHandle.DragDelta += new DragDeltaEventHandler( moveHandle_DragDelta );
 			moveHandle.DragCompleted += new DragCompletedEventHandler( moveHandle_DragCompleted );
+//			moveHandle.PreviewMouseRightButtonDown += new MouseButtonEventHandler( moveHandle_PreviewMouseRightButtonDown );
+			moveHandle.MouseRightButtonDown += new MouseButtonEventHandler( moveHandle_PreviewMouseRightButtonDown );
 
 			// ---
 			scaleHandle = new Thumb();
@@ -184,6 +189,43 @@ namespace Digiphoto.Lumen.UI.Adorners {
 			translate.Y = deltaY;
 			outline.RenderTransform = translate;
 		}
+
+		/// <summary>
+		/// Quando premo il tasto destro sulla manigliona della move, devo fare aprire il menu contestuale che sta sulla Image (owner).
+		/// Ho dovuto fare un trucco. In pratica qui intercetto il tasto destro sulla minigliona, e quindi lo rilancio allo UIElement interessato.
+		/// Vedere qui:
+		/// 	http://stackoverflow.com/questions/2008399/programmatically-open-context-menu-using-ui-automation
+		/// </summary>
+		void moveHandle_PreviewMouseRightButtonDown( object sender, MouseButtonEventArgs e ) {
+
+			FrameworkElement owner = AdornedElement as FrameworkElement;
+
+			// Se l'elemento adornato non ha un menu contestuale, allora non faccio nulla.
+			if( owner.ContextMenu == null )
+				return;
+
+			//**********************
+			//Ouch!!! What a hack
+			//**********************
+
+			//ContextMenuEventArgs is a sealed class, with private constructors
+			//Instantiate it anyway ...
+			ContextMenuEventArgs cmea = (ContextMenuEventArgs)FormatterServices.GetUninitializedObject( typeof( ContextMenuEventArgs ) );
+			cmea.RoutedEvent = Image.ContextMenuOpeningEvent;
+			cmea.Source = owner;
+			
+			//This will fire any developer code that is bound to the OpenContextMenuEvent
+			owner.RaiseEvent( cmea );
+
+			//The context menu didn't open because this is a hack, so force it open
+			owner.ContextMenu.Placement = PlacementMode.Center;
+			owner.ContextMenu.PlacementTarget = (UIElement)owner;
+			owner.ContextMenu.IsOpen = true;
+		}
+
+
+
+
 
 		void flipHandle_MouseDown( object sender, MouseButtonEventArgs e ) {
 

@@ -58,7 +58,7 @@
 
 			<Button Content="Torna Originale" Command="{Binding tornareOriginaleCommand}"  />
             
-            <Separator Height="25" />
+			<Separator Height="25" />
 
 			<Button Name="rifiutareCorrezioniButton" Content="Rifiuta" ToolTip="Annulla le correzioni applicate" Command="{Binding rifiutareCorrezioniCommand}" />
 			<Button Name="salvareCorrezioniButton" Content="Applica" ToolTip="Applica le correzioni apportate" Command="{Binding salvareCorrezioniCommand}" FontSize="20" />

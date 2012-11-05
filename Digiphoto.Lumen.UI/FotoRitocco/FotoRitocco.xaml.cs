@@ -202,13 +202,56 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				Canvas.SetTop( imageFotina, position.Y );
 				canvasMsk.Children.Add( imageFotina );
 				AddAdorner( imageFotina );
+				
 				imageFotina.PreviewMouseDown += new MouseButtonEventHandler( imageFotina_PreviewMouseDown );
+
+				imageFotina.ContextMenu = (ContextMenu )this.Resources ["contextMenuImageFotina"];
+				foreach( MenuItem item in imageFotina.ContextMenu.Items ) {
+					if( item.Name == "menuItemBringToFront" ) {
+						item.Click += menuItemBringToFront_Click;
+					}
+					Console.Write( item );
+				}
 				portaInPrimoPianoFotina( imageFotina );
 
 				primoPianoCanvasMask( true );
 			}
 		}
 
+#if false
+		private System.Windows.Controls.ContextMenu creaContextMenuFotina() {
+
+			MenuItem m1, m2, m3, m4;
+
+			ContextMenu _contextMenu = new ContextMenu();
+
+			m1 = new MenuItem();
+
+			m1.Header = "File";
+
+			m2 = new MenuItem();
+
+			m2.Header = "Save";
+
+			m3 = new MenuItem();
+
+			m3.Header = "SaveAs";
+
+			m4 = new MenuItem();
+
+			m4.Header = "Recent Files";
+
+			_contextMenu.Items.Add( m1 );
+
+			_contextMenu.Items.Add( m2 );
+
+			_contextMenu.Items.Add( m3 );
+
+			_contextMenu.Items.Add( m4 );
+
+			return _contextMenu;
+		}
+#endif
 		
 		/// <summary>
 		/// Elimina tutti gli Adornes da tutte le immagini che sono state aggiunte
@@ -256,13 +299,22 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		private void menuItemBringToFront_Click( object sender, RoutedEventArgs e ) {
+
+			MenuItem menuItem = sender as MenuItem;
+
+			ContextMenu contextMenu = menuItem.Parent as ContextMenu;
+
+			Image imageTarget = contextMenu.PlacementTarget as Image;
+
+			if( imageTarget != null )
+				portaInPrimoPianoFotina( imageTarget );
+		}
+
+
 		void imageFotina_PreviewMouseDown( object sender, MouseButtonEventArgs e ) {
 			
-			if( e.ClickCount == 2 )
-				portaInPrimoPianoFotina( sender as UIElement );
-			else 
-				AddAdorner( (Image)sender );
-
+			AddAdorner( (Image)sender );
 			e.Handled = true;
 		}
 
@@ -633,6 +685,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					}
 				}
 			}
+		}
+
+		private void dacancMenuItem_Click( object sender, RoutedEventArgs e ) {
+
 		}
 
 	}
