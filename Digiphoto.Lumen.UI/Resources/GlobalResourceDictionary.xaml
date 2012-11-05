@@ -10,6 +10,7 @@
 
 	<lumC:ImageSourceConverter x:Key="imageSourceConverter" />
     <lumC:PercentualeConverter x:Key="percentualeConverter" />
+	<lumC:EnabledValidationMultiConverter x:Key="enabledValidationMultiConverter" />
 	<BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
 
 	<!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
@@ -155,6 +156,30 @@
 		<Setter Property="Background" Value="{StaticResource BlackBG}"  />
 	</Style>
 	
+	<!-- Errori di validazione -->
+	<Style TargetType="{x:Type TextBox}">
+		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="Margin" Value="0,2,40,2" />
+		<Setter Property="Validation.ErrorTemplate">
+			<Setter.Value>
+				<ControlTemplate>
+					<DockPanel LastChildFill="true">
+						<Border Background="Red" DockPanel.Dock="right" Margin="5,0,0,0" Width="20" Height="20" CornerRadius="10"
+                                    ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}">
+							<TextBlock Text="!" VerticalAlignment="center" HorizontalAlignment="center" FontWeight="Bold" Foreground="white">
+							</TextBlock>
+						</Border>
+						<AdornedElementPlaceholder Name="customAdorner" VerticalAlignment="Center" >
+							<Border BorderBrush="red" BorderThickness="1" />
+						</AdornedElementPlaceholder>
+					</DockPanel>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
 
+	<Style TargetType="{x:Type CheckBox}">
+		<Setter Property="Foreground" Value="WhiteSmoke" />
+	</Style>
 
 </ResourceDictionary>

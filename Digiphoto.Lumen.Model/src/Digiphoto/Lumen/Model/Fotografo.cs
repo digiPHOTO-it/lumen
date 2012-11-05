@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 
 namespace Digiphoto.Lumen.Model {
 
 	[MetadataType( typeof( Fotografo ) )]
-	public partial class Fotografo : IValidatableObject {
+	public partial class Fotografo : IValidatableObject, IDataErrorInfo
+
+	{
 
 		public IEnumerable<ValidationResult> Validate( ValidationContext validationContext ) {
 
@@ -25,6 +28,43 @@ namespace Digiphoto.Lumen.Model {
 
 			return errors;
 		}
+
+		//IDataErrorInfo - you can copy this code to each class
+
+       public string Error
+
+       {
+           get { return this[""]; }
+       }
+ 
+       public string this[string columnName]
+       {
+           get
+           {
+               string ret = null;
+               var data = this.Validate(new ValidationContext(this, null, null));
+               switch (columnName)
+               {
+                   case "":
+ 
+                       foreach (var item in data)
+                       {
+                           ret += item.ErrorMessage + Environment.NewLine;
+                       }
+                       break;
+                   default:
+                       foreach (var item in data)
+                       {
+                           if (item.MemberNames.Contains(columnName))
+                               ret += item.ErrorMessage + Environment.NewLine;
+                       }
+                       break;
+               }
+               return ret;
+           }
+
+       }
+
 
 	}
 }
