@@ -201,6 +201,7 @@
     <Compile Include="Converters\BoolBackgroundConverter.cs" />
     <Compile Include="Converters\CompNumFotoConverter.cs" />
     <Compile Include="Converters\BoolWindowStateConverter.cs" />
+    <Compile Include="Converters\EnabledValidationMultiConverter.cs" />
     <Compile Include="Converters\FasiDelGiornoConverter.cs" />
     <Compile Include="Converters\ImageSourceConverter.cs" />
     <Compile Include="Converters\SumConverter.cs" />
@@ -301,6 +302,10 @@
     <Page Include="ComNumFoto\CompNumFotoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataEntry\DEFotografo\DataEntryFotografoResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="DataEntry\DEFotografo\WindowFotografo.xaml">
       <Generator>MSBuild:Compile</Generator>
