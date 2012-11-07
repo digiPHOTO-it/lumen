@@ -8,10 +8,9 @@
 		<ResourceDictionary Source="/Resources/GlobalResourceDictionary.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
-
 	<lumC:BoolInverterConverter x:Key="boolInverterConverter" />
 
-	<Style x:Name="scaricaButton" TargetType="{x:Type Button}" BasedOn="{StaticResource buttonBaseStyle}">
+	<Style x:Key="styleButtonScarica" TargetType="{x:Type Button}" BasedOn="{StaticResource buttonBaseStyle}">
 		<Setter Property="Width" Value="160" />
 		<Setter Property="Height" Value="60" />
 		<Setter Property="FontSize" Value="18" />
@@ -22,7 +21,6 @@
 		<Setter Property="Margin" Value="10,0,0,0" />
  	</Style>
 
-	<!-- Derivo dallo stile anonimo che vale per tutte le ListBox -->
 	<Style x:Key="fasiGiornoListBoxStyle" TargetType="{x:Type ListBox}" >
 		<Setter Property="FontSize" Value="18" />
 		<Setter Property="Background" Value="Gray"  />

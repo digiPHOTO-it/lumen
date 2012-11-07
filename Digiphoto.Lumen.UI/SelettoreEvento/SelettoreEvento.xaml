@@ -34,28 +34,27 @@
         </GroupBox>
 
 
-		<Grid Height="24"
-				Grid.Row="1" Grid.Column="0" 
+		<Grid 	Grid.Row="1" Grid.Column="0" 
                 Visibility="{Binding possoCreare,ElementName=selettoreEvento,Converter={StaticResource BooleanToVisibilityConverter}}" >
 			
 			<Grid.RowDefinitions>
-					<RowDefinition />
+					<RowDefinition Height="24"/>
 				</Grid.RowDefinitions>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" x:Name="columnTesto"/>
-					<ColumnDefinition Width="Auto"/>
-					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
 
                 <TextBox x:Name="newDescrizioneTextBox" Text="{Binding  Path=nuovoEvento.descrizione, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                          Style="{StaticResource newDescrizioneTextBox}" Grid.Row="0" Grid.Column="0"/>
 
-				<Button Name="creareNuovoEventoButton" Command="{Binding Path=creareNuovoEventoCommand}" ToolTip="Crea nuovo evento" Grid.Row="0" Grid.Column="1">
-					<Image Source="/Digiphoto.Lumen.UI;component/Resources/add-16x16.png" Width="16" />
+				<Button Name="creareNuovoEventoButton" Command="{Binding Path=creareNuovoEventoCommand}" ToolTip="Crea nuovo evento" Grid.Row="0" Grid.Column="1" >
+					<Image Source="/Digiphoto.Lumen.UI;component/Resources/add-16x16.png" Width="16" Height="16" />
 				</Button>
 
 				<Button Name="refreshEventiButton" ToolTip="Rileggi" Command="{Binding Path=refreshEventiCommand}" Grid.Row="0" Grid.Column="2">
-					<Image Source="/Digiphoto.Lumen.UI;component/Resources/refresh-16x16.png" Width="16" />
+					<Image Source="/Digiphoto.Lumen.UI;component/Resources/refresh-16x16.png" Width="16" Height="16" />
 				</Button>
 			</Grid>
 

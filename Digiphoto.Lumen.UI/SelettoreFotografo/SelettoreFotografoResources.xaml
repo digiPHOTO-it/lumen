@@ -9,11 +9,13 @@
 
     <Style x:Key="newNomeFotografoTxtStyle" TargetType="{x:Type TextBox}">
         <Setter Property="CharacterCasing" Value="Upper" />
+		<Setter Property="MaxLength" Value="16" />
+		<Setter Property="ToolTip" Value="ID fotografo. Inserire codice univoco (es: cod.fiscale)" />
     </Style>
     
     <Style x:Key="newInizialiFotografoTxtStyle" TargetType="{x:Type TextBox}">
         <Setter Property="CharacterCasing" Value="Upper" />
-		<Setter Property="Width" Value="24" />
+		<Setter Property="Width" Value="40" />
 		<Setter Property="HorizontalAlignment" Value="Left" />
     </Style>
 	

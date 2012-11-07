@@ -24,7 +24,7 @@
 		<!--
 		ItemTemplate="{StaticResource fotografiListBoxTemplate}"
 		-->
-		<GroupBox Header="lista Fotografi"  Grid.Row="0" Grid.Column="0">
+		<GroupBox Header="Fotografi"  Grid.Row="0" Grid.Column="0">
             <ScrollViewer VerticalScrollBarVisibility="Auto">  
                 <ListBox Name="fotografiListBox" MinHeight="30" 
                          ItemsSource="{Binding Path=fotografi}" 
@@ -60,13 +60,13 @@
                          Style="{StaticResource newInizialiFotografoTxtStyle}"
                          />
 
-			<Button Name="creareNuovoButton" Command="{Binding Path=creareNuovoCommand}" ToolTip="Crea nuovo fotografo" Margin="40,0,0,0" Height="Auto" Width="Auto">
-				<Image Source="/Digiphoto.Lumen.UI;component/Resources/add-16x16.png" Height="16" />
-			</Button>
+				<Button Name="creareNuovoButton" Command="{Binding Path=creareNuovoCommand}" ToolTip="Crea nuovo fotografo" Margin="40,0,0,0">
+					<Image Source="/Digiphoto.Lumen.UI;component/Resources/add-16x16.png" Height="16" />
+				</Button>
 
-				<Button Name="refreshEventiButton" ToolTip="Rileggi" Command="{Binding Path=refreshEventiCommand}" Height="Auto" Width="Auto">
-				<Image Source="/Digiphoto.Lumen.UI;component/Resources/refresh-16x16.png" Height="16" />
-			</Button>
+				<Button Name="refreshEventiButton" ToolTip="Rileggi" Command="{Binding Path=refreshEventiCommand}">
+					<Image Source="/Digiphoto.Lumen.UI;component/Resources/refresh-16x16.png" Height="16" />
+				</Button>
 			</StackPanel>
 		</Grid>
 

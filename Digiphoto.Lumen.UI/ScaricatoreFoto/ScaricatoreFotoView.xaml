@@ -7,7 +7,7 @@
              xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
              xmlns:extToolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="800">
+             d:DesignHeight="400" d:DesignWidth="1200">
 
     <UserControl.DataContext>
         <lum:ScaricatoreFotoViewModel />
@@ -17,19 +17,33 @@
 		<ResourceDictionary Source="ScaricatoreFotoResources.xaml" />
 	</UserControl.Resources>
 
-
 	<extToolkit:BusyIndicator x:Name="scaricaBusyIndicator" IsBusy="{Binding Path=isScaricamentoInCorso}">
 
-		<StackPanel Orientation="Horizontal">
-					
-            <lum:SelettoreCartella x:Name="selettoreCartella1" DataContext="{Binding selettoreCartellaViewModel}"
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition  />
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition />
+				<ColumnDefinition />
+				<ColumnDefinition />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+
+			<lum:SelettoreCartella x:Name="selettoreCartella1" DataContext="{Binding selettoreCartellaViewModel}"
+								   Grid.Row="0" Grid.Column="0"
 								   Style="{StaticResource selettoreCartellaStyle}" />
 
             <lum:SelettoreFotografo x:Name="selettoreFotografo1" DataContext="{Binding selettoreFotografoViewModel}"
+									Grid.Row="0" Grid.Column="1"
 									Style="{StaticResource selettoreFotografoStyle}"
                                     possoCreare="True" />
 
-			<Grid Margin="10,0,10,0" >
+			<lum:SelettoreEvento x:Name="selettoreEvento1" DataContext="{Binding selettoreEventoViewModel}"					 
+								 Grid.Row="0" Grid.Column="2"
+								 possoCreare="True"  />
+
+			<Grid Margin="10,0,10,0" Grid.Row="0" Grid.Column="3" >
 				<Grid.RowDefinitions>
 					<RowDefinition Height="*" />
 					<RowDefinition />
@@ -62,15 +76,12 @@
 					</StackPanel>
 				</GroupBox>
 
-				<Button Name="scaricaButton" Content="go! SCARICA" Command="{Binding scaricareCommand}" Grid.Row="2" Grid.Column="0" />
+				<Button Style="{StaticResource styleButtonScarica}" Content="go! SCARICA" Command="{Binding scaricareCommand}" Grid.Row="2" Grid.Column="0" />
 
 
 			</Grid>
 
-
-
-		</StackPanel>
-
+		</Grid>
 
 	</extToolkit:BusyIndicator>
 
