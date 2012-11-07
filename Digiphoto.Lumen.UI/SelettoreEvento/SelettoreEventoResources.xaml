@@ -6,6 +6,7 @@
     <!-- il nuovo evento è tutto maiuscolo -->
     <Style x:Key="newDescrizioneTextBox" TargetType="{x:Type TextBox}">
         <Setter Property="CharacterCasing" Value="Upper" />
+		<Setter Property="ToolTip" Value="ID evento. Inserire una descrizione univoca" />
     </Style>
 
 
