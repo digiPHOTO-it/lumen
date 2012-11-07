@@ -48,6 +48,10 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 		/// <returns>Il numero di entità coinvolte</returns>
 		int saveChanges();
 
+		/// <summary>
+		/// Vince sempre lo store
+		/// </summary>
+		void refresh( T entita );
 	}
 
 }

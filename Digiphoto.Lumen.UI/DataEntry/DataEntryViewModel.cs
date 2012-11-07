@@ -215,20 +215,8 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 					break;
 
 				case DataEntryStatus.Delete:
-
-					bool prosegui = false;
-
-					dialogProvider.ShowConfirmation( "L'elemento verrà cancellato in modo definitivo.\nConfermi la cancellazione ?", "Cancellazione",
-						( sino ) => {
-							prosegui = sino;
-						} );
-
-					if( prosegui ) {
-						collectionView.Remove( entita ); // rimuovo dalla collection
-						entityRepositorySrv.delete( entita );  // rimuovo dal database
-						entityRepositorySrv.saveChanges();
-						nuovoStatus = DataEntryStatus.View;
-					}
+					cancella( entita );
+					nuovoStatus = DataEntryStatus.View;
 					break;
 			}
 
@@ -340,6 +328,32 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 
 		protected virtual void passoPreparaEdit( TEntity entita ) {
 			// A disposizione per override
+		}
+
+
+		void cancella( TEntity entita ) {
+
+			bool prosegui = false;
+
+			dialogProvider.ShowConfirmation( "L'elemento verrà cancellato in modo definitivo.\nConfermi la cancellazione ?", "Cancellazione",
+				( sino ) => {
+					prosegui = sino;
+				} );
+
+			if( prosegui ) {
+
+				try {
+					collectionView.Remove( entita ); // rimuovo dalla collection
+					entityRepositorySrv.delete( entita );  // rimuovo dal database
+					int quanti = entityRepositorySrv.saveChanges();
+					if( quanti != 1 )
+						dialogProvider.ShowError( "Cancellati " + quanti + " entità", "Attenzione", null );
+				} catch( Exception ee ) {
+					_giornale.Error( ErroriUtil.estraiMessage( ee ), ee );
+					dialogProvider.ShowError( ErroriUtil.estraiMessage( ee ), "Cancellazione fallita", null );
+					entityRepositorySrv.refresh( entita );  // Devo rileggere lo stato, altrimenti rimane unchanged e mi sampre errore
+				}
+			}
 		}
 
 		#endregion Metodi
