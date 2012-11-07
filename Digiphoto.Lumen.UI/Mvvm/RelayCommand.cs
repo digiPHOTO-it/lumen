@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Core.Database;
 using log4net;
+using Digiphoto.Lumen.Util;
 
 namespace Digiphoto.Lumen.UI.Mvvm {
 
@@ -80,7 +81,7 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 				if( _execute.Target is ViewModelBase ) {
 					ViewModelBase viewModel = _execute.Target as ViewModelBase;
 					if( viewModel.dialogProvider != null )
-						viewModel.dialogProvider.ShowError( ee.Message, "Errore imprevisto. Consultare il Log", null );
+						viewModel.dialogProvider.ShowError( ErroriUtil.estraiMessage(ee), "Errore imprevisto. Consultare il Log", null );
 				}
 
 				throw ee;

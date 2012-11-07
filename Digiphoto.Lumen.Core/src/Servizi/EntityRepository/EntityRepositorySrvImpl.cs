@@ -72,5 +72,9 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 					return objectSet.Execute( MergeOption.AppendOnly );
 				}
 		 */
+
+		public void refresh( TEntity entita ) {
+			UnitOfWorkScope.CurrentObjectContext.ObjectContext.Refresh( RefreshMode.StoreWins, entita );
+		}
 	}
 }
