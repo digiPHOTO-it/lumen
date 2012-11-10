@@ -187,7 +187,7 @@ CREATE TABLE [RigheCarrelli] (
 		,CONSTRAINT [FK_FotografiaRiCaFotoStampata]
     		FOREIGN KEY ([fotografia_id])
     		REFERENCES [Fotografie] ([id])					
-    		
+    		ON UPDATE NO ACTION ON DELETE SET NULL
 			);
 
 -- Creating table 'ConsumiCartaGiornalieri'
