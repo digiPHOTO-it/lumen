@@ -32,5 +32,13 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 			get;
 		}
 
+		int contaFotografieSenzaImmagini {
+			get;
+		}
+
+		int contaFotoEliminate {
+			get;
+		}
+
 	}
 }

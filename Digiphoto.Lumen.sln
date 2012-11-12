@@ -23,8 +23,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.Core.VsTest
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.Model", "Digiphoto.Lumen.Model\Digiphoto.Lumen.Model.csproj", "{83D8301E-7999-4179-962C-1BFA507F5396}"
 EndProject
-Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "VenditeModelling", "VenditeModelling\VenditeModelling.modelproj", "{4A23AB05-7446-4586-88E4-820EDD9FDF68}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.GestoreConfigurazione.UI", "Digiphoto.Lumen.GestoreConfigurazione.UI\Digiphoto.Lumen.GestoreConfigurazione.UI.csproj", "{731A5262-29DE-4F73-8F25-4AFA78089902}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.UI", "Digiphoto.Lumen.UI\Digiphoto.Lumen.UI.csproj", "{729E44CF-7A81-4CE1-8263-3F618D548678}"
@@ -66,10 +64,6 @@ Global
 		{83D8301E-7999-4179-962C-1BFA507F5396}.Release|x64.Build.0 = Release|x64
 		{83D8301E-7999-4179-962C-1BFA507F5396}.Release|x86.ActiveCfg = Release|x86
 		{83D8301E-7999-4179-962C-1BFA507F5396}.Release|x86.Build.0 = Release|x86
-		{4A23AB05-7446-4586-88E4-820EDD9FDF68}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{4A23AB05-7446-4586-88E4-820EDD9FDF68}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{4A23AB05-7446-4586-88E4-820EDD9FDF68}.Release|x64.ActiveCfg = Release|Any CPU
-		{4A23AB05-7446-4586-88E4-820EDD9FDF68}.Release|x86.ActiveCfg = Release|Any CPU
 		{731A5262-29DE-4F73-8F25-4AFA78089902}.Debug|x64.ActiveCfg = Debug|x86
 		{731A5262-29DE-4F73-8F25-4AFA78089902}.Debug|x64.Build.0 = Debug|x86
 		{731A5262-29DE-4F73-8F25-4AFA78089902}.Debug|x86.ActiveCfg = Debug|x86

@@ -303,11 +303,15 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 		private void ricostruireDb() {
 
+			bool procediPure = false;
+
 			dialogProvider.ShowConfirmation( "Questa operazione potrebbe durare parecchi minuti.\nSei sicuro di voler cominciare l'analisi?", "Fase 1 : analisi foto", 
 				(sino) => {
-					if( sino == false )
-						return;
+					procediPure = sino;
 				} );
+			if( !procediPure )
+				return;
+
 
 			IDbRebuilderSrv rebuilderSrv = LumenApplication.Instance.creaServizio<IDbRebuilderSrv>();
 
@@ -320,23 +324,28 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 					msg.Append( "\nFotografi mancanti = " + rebuilderSrv.contaFotografiMancanti );
 				if( rebuilderSrv.contaFotoMancanti > 0 )
 					msg.Append( "\nFotografie mancanti = " + rebuilderSrv.contaFotoMancanti );
+				if( rebuilderSrv.contaFotografieSenzaImmagini > 0 )
+					msg.Append( "\nFoto senza immagini = " + rebuilderSrv.contaFotografieSenzaImmagini );
 				msg.Append( "\n" );
 				msg.Append( "\nAvviando la ricostruzione verranno rigenerati" );
 				msg.Append( "\ni dati mancanti." );
 				msg.Append( "\n\nSei sicuro di voler proseguire nella ricostruzione?" );
 
+				procediPure = false;
 				dialogProvider.ShowConfirmation( msg.ToString(), "Analisi terminata",
 					(sino) => {
-						if( sino == false )
-							return;
+						procediPure = sino;
 					} );
+				if( !procediPure )
+					return;
 
 				rebuilderSrv.ricostruire();
 
 				msg.Clear();
 				msg.Append( "Sono state apportate le seguenti modifiche:" );
-				msg.Append( "\nAggiunti " + rebuilderSrv.contaFotografiAggiunti + " fotografi." );
-				msg.Append( "\nAggiunte " + rebuilderSrv.contaFotoAggiunte + " fotografie." );
+				msg.Append( "\nAggiunti  " + rebuilderSrv.contaFotografiAggiunti + " fotografi." );
+				msg.Append( "\nAggiunte  " + rebuilderSrv.contaFotoAggiunte + " fotografie." );
+				msg.Append( "\nEliminate " + rebuilderSrv.contaFotoEliminate + " fotografie." );
 				dialogProvider.ShowMessage( msg.ToString(), "Ricostruzione terminata" );
 
 			} else {

@@ -24,12 +24,22 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 		private bool analisiEffettuata = false;
 
 
-
 		public void analizzare() {
 
 			_giornale.Info( "Inizio analisi per rebuild del database" );
 
 			inizializzazioni();
+
+			analizzare1();
+			analizzare2();
+
+			analisiEffettuata = true;
+		}
+
+		/// <summary>
+		/// Parto dal filesystem e confronto con il db
+		/// </summary>
+		public void analizzare1() {
 
 			DirectoryInfo dirInfoRoot = new DirectoryInfo( Configurazione.UserConfigLumen.cartellaFoto );
 			string cosa = "*" + Configurazione.suffissoCartellaGiorni;
@@ -56,8 +66,6 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 					}
 				}
 			}
-
-			analisiEffettuata = true;
 		}
 
 		private void controllaFotoMancante( FileInfo fInfoFoto ) {
@@ -96,7 +104,17 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 			UnitOfWorkScope.CurrentObjectContext.Fotografi.Add( mancante );
 		}
 
+		/// <summary>
+		/// Parto dal db e confronto con il filesystem
+		/// </summary>
+		void analizzare2() {
+					
+			foreach( Fotografia foto in UnitOfWorkScope.CurrentObjectContext.Fotografie ) {
+				if( ! File.Exists( PathUtil.nomeCompletoOrig( foto ) ) )
+					fotografieSenzaImmagini.Add( foto );
+			}
 
+		}
 
 		private void inizializzazioni() {
 
@@ -105,6 +123,8 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 			idsFotografiMancanti = new List<string>();
 
 			fiFotosMancanti = new List<FileInfo>();
+
+			fotografieSenzaImmagini = new List<Fotografia>();
 		}
 
 
@@ -139,6 +159,20 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 			set;
 		}
 
+		/// <summary>
+		/// Queste fotografie non hanno neanche una immagine su disco
+		/// </summary>
+		List<Fotografia> fotografieSenzaImmagini {
+			get;
+			set;
+		}
+
+		public int contaFotografieSenzaImmagini {
+			get {
+				return fotografieSenzaImmagini.Count;
+			}
+		}
+
 		public int contaFotoMancanti {
 			get {
 				return fiFotosMancanti.Count;
@@ -150,6 +184,11 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 			private set;
 		}
 
+		public int contaFotoEliminate {
+			get;
+			private set;
+		}
+
 		public int contaFotografiAggiunti {
 			get;
 			private set;
@@ -157,7 +196,7 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 
 		public bool necessarioRicostruire {
 			get {
-				return contaFotoMancanti > 0 || contaFotografiMancanti > 0;
+				return contaFotoMancanti > 0 || contaFotografiMancanti > 0 || contaFotografieSenzaImmagini > 0;
 			}
 		}
 
@@ -184,6 +223,22 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 			contaFotoAggiunte = 0;
 			foreach( FileInfo fiFotoMancante in fiFotosMancanti )
 				creaFotografiaMancante( fiFotoMancante, ++conta + ultimoNumFoto );
+
+			// Elimino eventuali fotografie che non hanno più l'immagine jpg su disco
+			contaFotoEliminate = 0;
+			foreach( Fotografia f in fotografieSenzaImmagini ) {
+				UnitOfWorkScope.CurrentObjectContext.Fotografie.Remove( f );
+				++contaFotoEliminate;
+			}
+
+			// Salvo il contesto
+			int quanti = UnitOfWorkScope.CurrentObjectContext.SaveChanges();
+
+			// Piccolo controllo di paranoia
+			if( quanti != fotografieSenzaImmagini.Count ) {
+				_giornale.Warn( "Dovevo cancellare " + contaFotografieSenzaImmagini + " fotografie ma in test mi dice: " + quanti );
+			}
+
 		}
 
 		private void creaFotografiaMancante( FileInfo fiFotoMancante, int numFotogramma ) {
