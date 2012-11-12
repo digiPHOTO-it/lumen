@@ -174,8 +174,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 						descrizione = "Carrello salvato ok"
 					} );
 
-					abbandonaCarrello();
-
 				} catch( Exception eee ) {
 					esito = false;
 					_giornale.Error( "Impossibile salvare il carrello", eee );

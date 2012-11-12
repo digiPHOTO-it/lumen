@@ -23,6 +23,8 @@ namespace Digiphoto.Lumen.Core.VsTest
 		private SpoolStampeSrvImpl _impl;
 
 		private int _contaStampe = 0;
+		private int _contaErrate = 0;
+		private IObservable<StampatoMsg> _observable;
 
 		#region Additional test attributes
 		// 
@@ -66,8 +68,8 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 			using( new UnitOfWorkScope() ) {
 
-				IObservable<StampatoMsg> observable = app.bus.Observe<StampatoMsg>();
-				observable.Subscribe( this );
+				_observable = app.bus.Observe<StampatoMsg>();
+				_observable.Subscribe( this );
 
 				_impl = new SpoolStampeSrvImpl();
 				_impl.start();
@@ -119,12 +121,13 @@ namespace Digiphoto.Lumen.Core.VsTest
 				} while( _contaStampe < quanteDavvero * 2 );
 			}
 
-			
+			Assert.IsTrue( _contaErrate == 0 );
 		}
 
 		public void OnNext( StampatoMsg value ) {
-			Assert.IsTrue( value.lavoroDiStampa.esitostampa == EsitoStampa.Ok );
 			_contaStampe++;
+			if( value.lavoroDiStampa.esitostampa != EsitoStampa.Ok )
+				_contaErrate++;
 		}
 
 		public void OnCompleted() {

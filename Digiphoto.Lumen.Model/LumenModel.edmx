@@ -1,24 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
   <!-- EF Runtime content -->
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="Digiphoto.Lumen.Model.Store" Alias="Self" Provider="System.Data.SQLite" ProviderManifestToken="ISO8601" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator">
+    <Schema Namespace="Digiphoto.Lumen.Model.Store" Alias="Self" Provider="System.Data.SQLite" ProviderManifestToken="ISO8601" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
     <EntityContainer Name="DigiphotoLumenModelStoreContainer">
 
-        <EntitySet Name="Fotografi" EntityType="Digiphoto.Lumen.Model.Store.Fotografi" store:Type="Tables" Schema="dbo" />
-        <EntitySet Name="Fotografie" EntityType="Digiphoto.Lumen.Model.Store.Fotografie" store:Type="Tables" Schema="dbo" />
-        <EntitySet Name="Eventi" EntityType="Digiphoto.Lumen.Model.Store.Eventi" store:Type="Tables" Schema="dbo" />
-        <EntitySet Name="Albums" EntityType="Digiphoto.Lumen.Model.Store.Albums" store:Type="Tables" Schema="dbo" />
-        <EntitySet Name="RigheAlbum" EntityType="Digiphoto.Lumen.Model.Store.RigheAlbum" store:Type="Tables" Schema="dbo" />
-        <EntitySet Name="ScarichiCards" EntityType="Digiphoto.Lumen.Model.Store.ScarichiCards" store:Type="Tables" Schema="dbo" />
-        <EntitySet Name="FormatiCarta" EntityType="Digiphoto.Lumen.Model.Store.FormatiCarta" store:Type="Tables" Schema="dbo" />
-        <EntitySet Name="InfosFisse" EntityType="Digiphoto.Lumen.Model.Store.InfosFisse" store:Type="Tables" Schema="dbo" />
-        <EntitySet Name="Carrelli" EntityType="Digiphoto.Lumen.Model.Store.Carrelli" store:Type="Tables" Schema="dbo" />
-        <EntitySet Name="RigheCarrelli" EntityType="Digiphoto.Lumen.Model.Store.RigheCarrelli" store:Type="Tables" Schema="dbo" />
-        <EntitySet Name="ConsumiCartaGiornalieri" EntityType="Digiphoto.Lumen.Model.Store.ConsumiCartaGiornalieri" store:Type="Tables" Schema="dbo" />
-        <EntitySet Name="Giornate" EntityType="Digiphoto.Lumen.Model.Store.Giornate" store:Type="Tables" Schema="dbo" />
+        <EntitySet Name="Fotografi" EntityType="Digiphoto.Lumen.Model.Store.Fotografi" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+        <EntitySet Name="Fotografie" EntityType="Digiphoto.Lumen.Model.Store.Fotografie" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+        <EntitySet Name="Eventi" EntityType="Digiphoto.Lumen.Model.Store.Eventi" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+        <EntitySet Name="Albums" EntityType="Digiphoto.Lumen.Model.Store.Albums" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+        <EntitySet Name="RigheAlbum" EntityType="Digiphoto.Lumen.Model.Store.RigheAlbum" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+        <EntitySet Name="ScarichiCards" EntityType="Digiphoto.Lumen.Model.Store.ScarichiCards" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+        <EntitySet Name="FormatiCarta" EntityType="Digiphoto.Lumen.Model.Store.FormatiCarta" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+        <EntitySet Name="InfosFisse" EntityType="Digiphoto.Lumen.Model.Store.InfosFisse" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+        <EntitySet Name="Carrelli" EntityType="Digiphoto.Lumen.Model.Store.Carrelli" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+        <EntitySet Name="RigheCarrelli" EntityType="Digiphoto.Lumen.Model.Store.RigheCarrelli" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+        <EntitySet Name="ConsumiCartaGiornalieri" EntityType="Digiphoto.Lumen.Model.Store.ConsumiCartaGiornalieri" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+        <EntitySet Name="Giornate" EntityType="Digiphoto.Lumen.Model.Store.Giornate" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
         <AssociationSet Name="FotografoFotografia" Association="Digiphoto.Lumen.Model.Store.FotografoFotografia">
             <End Role="Fotografo" EntitySet="Fotografi" />
             <End Role="Fotografia" EntitySet="Fotografie" />
@@ -363,8 +363,8 @@
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="Digiphoto.Lumen.Model" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
-        <EntityContainer Name="LumenEntities" annotation:LazyLoadingEnabled="true">
+      <Schema Namespace="Digiphoto.Lumen.Model" Alias="Self" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="LumenEntities" annotation:LazyLoadingEnabled="true" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
           <EntitySet Name="Fotografi" EntityType="Digiphoto.Lumen.Model.Fotografo" />
           <EntitySet Name="Fotografie" EntityType="Digiphoto.Lumen.Model.Fotografia" />
           <AssociationSet Name="FotografoFotografia" Association="Digiphoto.Lumen.Model.FotografoFotografia">
@@ -426,34 +426,34 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Type="String" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" MaxLength="16" >
+          <Property Type="String" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" MaxLength="16" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
             <Documentation>
               <Summary>Identificatico univoco del fotografo in tutte le installazioni</Summary>
               <LongDescription>Utilizzare per esempio il codice fiscale</LongDescription>
             </Documentation>
-          <a:Display Order="0" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" /></Property>
-          <Property Type="String" Name="cognomeNome" Nullable="false" MaxLength="50" ><a:Display Order="1" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" /><pem:Validations xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" Enforcement="None"><pem:DataFieldLength MinimumLength="5" MaximumLength="50" ErrorMessage="Il nominativo deve essere almeno 4 caratteri" Enforcement="Must" /><pem:Required ErrorMessage="Cognome e Nome del fotografo obbligatorio" Enforcement="Must" /></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" /></Property>
+          <a:Display Order="0" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></Property>
+          <Property Type="String" Name="cognomeNome" Nullable="false" MaxLength="50"><a:Display Order="1" Visible="True" Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation"><pem:DataFieldLength MinimumLength="5" MaximumLength="50" ErrorMessage="Il nominativo deve essere almeno 4 caratteri" Enforcement="Must" /><pem:Required ErrorMessage="Cognome e Nome del fotografo obbligatorio" Enforcement="Must" /></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
           
-          <Property Name="iniziali" Nullable="false" MaxLength="2" Type="String" ><a:Display Order="2" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" /><pem:Validations xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" Enforcement="None"><pem:RegularExpression Pattern="^[A-Z]{1,2}$" ErrorMessage="Le iniziali del fotografo devono essere di una o due lettere maiuscole" Enforcement="Must" /><pem:Required ErrorMessage="Iniziali obbligatorie" Enforcement="Must" /><pem:Message ErrorMessage="Il fotografo non è valido" /></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" /></Property>
-          <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true" ><a:Display Order="4" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" /></Property>
+          <Property Name="iniziali" Nullable="false" MaxLength="2" Type="String"><a:Display Order="2" Visible="True" Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation"><pem:RegularExpression Pattern="^[A-Z]{1,2}$" ErrorMessage="Le iniziali del fotografo devono essere di una o due lettere maiuscole" Enforcement="Must" /><pem:Required ErrorMessage="Iniziali obbligatorie" Enforcement="Must" /><pem:Message ErrorMessage="Il fotografo non è valido" /></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
+          <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true"><a:Display Order="4" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
 
-          <Property Type="Boolean" Name="umano" Nullable="false" DefaultValue="true" >
+          <Property Type="Boolean" Name="umano" Nullable="false" DefaultValue="true">
           <Documentation>
               <Summary>Umano oppure Automatico (OnRide)</Summary>
             </Documentation>
-            <a:Display Order="3" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" />
+            <a:Display Order="3" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           </Property>
 
 
 
-          <Property Type="String" Name="note" Nullable="true" ><a:Display Order="5" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" /></Property>
-        <pem:Validations xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" Enforcement="Must" ></pem:Validations></EntityType>
+          <Property Type="String" Name="note" Nullable="true"><a:Display Order="5" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
+        <pem:Validations Enforcement="Must" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></EntityType>
         <EntityType Name="Fotografia">
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" ><a:Display Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" /><pem:Validations xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" Enforcement="None"></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" /></Property>
-          <Property Type="String" Name="nomeFile" Nullable="false" MaxLength="100" >
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation"><a:Display Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></Property>
+          <Property Type="String" Name="nomeFile" Nullable="false" MaxLength="100">
             <Documentation>
               <Summary>nome del file senza il percorso</Summary>
               <LongDescription>E' il nome originale del file cosi come generato dalla fotocamera</LongDescription>
@@ -477,8 +477,8 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" />
-          <Property Type="String" Name="descrizione" Nullable="false" MaxLength="50" ><a:Display Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" /><pem:Validations xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" Enforcement="None"><pem:Required ErrorMessage="Descrizione evento obbligatoria" Enforcement="Must" /><pem:DataFieldLength MinimumLength="2" MaximumLength="100" ErrorMessage="Descrizione evento deve essere almeno di 2 caratteri" Enforcement="Must" /></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" /></Property>
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+          <Property Type="String" Name="descrizione" Nullable="false" MaxLength="50"><a:Display Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation"><pem:Required ErrorMessage="Descrizione evento obbligatoria" Enforcement="Must" /><pem:DataFieldLength MinimumLength="2" MaximumLength="100" ErrorMessage="Descrizione evento deve essere almeno di 2 caratteri" Enforcement="Must" /></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
           <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true" />
           <Property Type="Int16" Name="ordinamento" Nullable="true" />
         </EntityType>
@@ -490,7 +490,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="String" Name="titolo" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="note" Nullable="false" />
           <Property Type="DateTime" Name="timestamp" Nullable="false" />
@@ -500,11 +500,11 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <NavigationProperty Name="fotografia" Relationship="Digiphoto.Lumen.Model.FotografiaRigaAlbum" FromRole="RigaAlbum" ToRole="Fotografia" />
         </EntityType>
         <Association Name="AlbumRigaAlbum">
-          <End Type="Digiphoto.Lumen.Model.Album" Role="Album" Multiplicity="1" >
+          <End Type="Digiphoto.Lumen.Model.Album" Role="Album" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
           <End Type="Digiphoto.Lumen.Model.RigaAlbum" Role="RigaAlbum" Multiplicity="*" />
@@ -517,7 +517,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="DateTime" Name="tempo" Nullable="false" />
           <Property Type="Int16" Name="totFoto" Nullable="false" />
           <NavigationProperty Name="fotografo" Relationship="Digiphoto.Lumen.Model.FotografoScaricoCard" FromRole="ScaricoCard" ToRole="Fotografo" />
@@ -527,14 +527,14 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="String" Name="descrizione" Nullable="false" MaxLength="50" />
           <Property Type="Decimal" Name="prezzo" Nullable="false" Precision="6" Scale="2" />
           <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true" />
           <Property Type="Int16" Name="ordinamento" Nullable="true" />
         </EntityType>
         <Association Name="FotografoScaricoCard">
-          <End Type="Digiphoto.Lumen.Model.Fotografo" Role="Fotografo" Multiplicity="1" >
+          <End Type="Digiphoto.Lumen.Model.Fotografo" Role="Fotografo" Multiplicity="1">
           </End>
           <End Type="Digiphoto.Lumen.Model.ScaricoCard" Role="ScaricoCard" Multiplicity="*" />
         </Association>
@@ -542,7 +542,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" Type="String" MaxLength="1" DefaultValue="K">
+          <Property Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" Type="String" MaxLength="1" DefaultValue="K" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
             <Documentation>
               <Summary>Informazioni fisse per tutti gli utenti</Summary>
               <LongDescription>Tabella a record unico. Tutti gli utenti vedono lo stessa unica riga</LongDescription>
@@ -563,7 +563,7 @@
               <LongDescription>Indica il numero di revisione della struttura del database. Il programma qando parte deve controllare di essere compatibile</LongDescription>
             </Documentation>
           </Property>
-          <Property Type="String" Name="modoNumerazFoto" Nullable="false" DefaultValue="M" MaxLength="1" >
+          <Property Type="String" Name="modoNumerazFoto" Nullable="false" DefaultValue="M" MaxLength="1">
             <Documentation>
               <Summary>Modo azzeramento sequenza fotogrammi</Summary>
               <LongDescription>Ogni foto che entra, viene numerata. Questo numeratore può essere azzerato in vari modi:
@@ -582,7 +582,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="DateTime" Name="giornata" Nullable="false" />
           <Property Type="DateTime" Name="tempo" Nullable="false" />
           <Property Type="Decimal" Name="totaleAPagare" Nullable="false" Precision="6" Scale="2" />
@@ -595,7 +595,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="Decimal" Name="prezzoLordoUnitario" Nullable="false" Precision="6" Scale="2" />
           <Property Type="Int16" Name="quantita" Nullable="false" />
           <Property Type="Decimal" Name="prezzoNettoTotale" Nullable="false" Precision="6" Scale="2" />
@@ -603,15 +603,15 @@
           <Property Type="String" Name="descrizione" Nullable="false" />
         </EntityType>
         <Association Name="CarrelloRigaCarrello">
-          <End Type="Digiphoto.Lumen.Model.Carrello" Role="Carrello" Multiplicity="1" >
+          <End Type="Digiphoto.Lumen.Model.Carrello" Role="Carrello" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
           <End Type="Digiphoto.Lumen.Model.RigaCarrello" Role="RigaCarrello" Multiplicity="*" />
         </Association>
-        <EntityType Name="RiCaDiscoMasterizzato" BaseType="Digiphoto.Lumen.Model.RigaCarrello" >
+        <EntityType Name="RiCaDiscoMasterizzato" BaseType="Digiphoto.Lumen.Model.RigaCarrello">
           <Property Type="Int16" Name="totFotoMasterizzate" Nullable="true" />
         </EntityType>
-        <EntityType Name="RiCaFotoStampata" BaseType="Digiphoto.Lumen.Model.RigaCarrello" >
+        <EntityType Name="RiCaFotoStampata" BaseType="Digiphoto.Lumen.Model.RigaCarrello">
           <Property Type="Int16" Name="totFogliStampati" Nullable="true" />
           <Property Type="Guid" Name="idFotografia" Nullable="true" />
           <NavigationProperty Name="formatoCarta" Relationship="Digiphoto.Lumen.Model.FormatoCartaRiCaFotoStampata" FromRole="RiCaFotoStampata" ToRole="FormatoCarta" />
@@ -627,7 +627,7 @@
           <End Type="Digiphoto.Lumen.Model.RiCaFotoStampata" Role="RiCaFotoStampata" Multiplicity="*" />
         </Association>
         <Association Name="FotografiaRigaAlbum">
-          <End Type="Digiphoto.Lumen.Model.Fotografia" Role="Fotografia" Multiplicity="1" >
+          <End Type="Digiphoto.Lumen.Model.Fotografia" Role="Fotografia" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
           <End Type="Digiphoto.Lumen.Model.RigaAlbum" Role="RigaAlbum" Multiplicity="*" />
@@ -640,7 +640,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="DateTime" Name="giornata" Nullable="false" />
           <Property Name="totFogli" Nullable="false" Type="Int16" />
           <Property Type="Int16" Name="diCuiProvini" Nullable="false" />
@@ -659,7 +659,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Type="DateTime" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Type="DateTime" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="DateTime" Name="orologio" Nullable="false" />
           <Property Type="Decimal" Name="incassoDichiarato" Nullable="false" Precision="7" Scale="2" />
           <Property Type="String" Name="note" Nullable="true" />
@@ -668,18 +668,18 @@
           <Property Type="String" Name="prgTaglierina2" Nullable="true" MaxLength="20" />
           <Property Type="String" Name="prgTaglierina3" Nullable="true" MaxLength="20" />
           <Property Type="Int16" Name="totScarti" Nullable="true" />
-          <Property Type="String" Name="firma" Nullable="false" MaxLength="50" >
+          <Property Type="String" Name="firma" Nullable="false" MaxLength="50">
             <Documentation>
               <Summary>Nome di chi certifica la chiusura</Summary>
               <LongDescription>Nome dell'operatore che certifica la chiusura di cassa e responsabile dell'incasso registrato.</LongDescription>
             </Documentation>
-          <a:Display Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" /><pem:Validations xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" Enforcement="None"><pem:RegularExpression Pattern="[a-zA-Z]{3,}" ErrorMessage="Almeno tre lettere" Enforcement="Must" /><pem:Required ErrorMessage="Firma obbligatoria" Enforcement="Must" /></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" /></Property>
+          <a:Display Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation"><pem:RegularExpression Pattern="[a-zA-Z]{3,}" ErrorMessage="Almeno tre lettere" Enforcement="Must" /><pem:Required ErrorMessage="Firma obbligatoria" Enforcement="Must" /></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
-    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
 	<EntityContainerMapping StorageEntityContainer="DigiphotoLumenModelStoreContainer" CdmEntityContainer="LumenEntities">
 		<EntitySetMapping Name="Fotografi">
 			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.Fotografo">
@@ -948,14 +948,14 @@
 </Mapping></edmx:Mappings>
   </edmx:Runtime>
   <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
-  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <edmx:Designer>
     <edmx:Connection>
-      <DesignerInfoPropertySet>
+      <DesignerInfoPropertySet xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
         <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
       </DesignerInfoPropertySet>
     </edmx:Connection>
     <edmx:Options>
-      <DesignerInfoPropertySet>
+      <DesignerInfoPropertySet xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="False" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
@@ -966,7 +966,7 @@
     </edmx:Options>
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram Name="ModelloEntita" ZoomLevel="60" >
+      <Diagram Name="ModelloEntita" ZoomLevel="60" xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografo" Width="2.375" PointX="12" PointY="6" Height="2.1725878906249996" />
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografia" Width="1.5" PointX="11.75" PointY="2.25" Height="3.1340950520833326" />
         <AssociationConnector Association="Digiphoto.Lumen.Model.FotografoFotografia">
@@ -1000,14 +1000,14 @@
           <ConnectorPoint PointX="21.375" PointY="5.0862939453125" />
         </AssociationConnector>
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RiCaDiscoMasterizzato" Width="1.5" PointX="22.875" PointY="7.875" Height="1.2110807291666665" />
-        <InheritanceConnector EntityType="Digiphoto.Lumen.Model.RiCaDiscoMasterizzato" ManuallyRouted="false" >
+        <InheritanceConnector EntityType="Digiphoto.Lumen.Model.RiCaDiscoMasterizzato" ManuallyRouted="false">
           <ConnectorPoint PointX="22.125" PointY="6.047587890625" />
           <ConnectorPoint PointX="22.125" PointY="6.422587890625" />
           <ConnectorPoint PointX="23.625" PointY="6.422587890625" />
           <ConnectorPoint PointX="23.625" PointY="7.875" />
         </InheritanceConnector>
         <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RiCaFotoStampata" Width="1.5" PointX="21.125" PointY="7.75" Height="1.7879850260416674" />
-        <InheritanceConnector EntityType="Digiphoto.Lumen.Model.RiCaFotoStampata" ManuallyRouted="false" >
+        <InheritanceConnector EntityType="Digiphoto.Lumen.Model.RiCaFotoStampata" ManuallyRouted="false">
           <ConnectorPoint PointX="22.125" PointY="6.047587890625" />
           <ConnectorPoint PointX="22.125" PointY="7.375" />
           <ConnectorPoint PointX="21.875" PointY="7.375" />

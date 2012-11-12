@@ -48,6 +48,11 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 				// Ricavo l'immagine da stampare
 				IImmagine immagineDaStampare = _lavoroDiStampa.fotografia.imgRisultante != null ? _lavoroDiStampa.fotografia.imgRisultante : _lavoroDiStampa.fotografia.imgOrig;
 
+				// Gestisco una eccezione specifica, in questo modo ho un messaggio chiaro di cosa è andato storto.
+				if( immagineDaStampare == null )
+					throw new System.IO.FileNotFoundException( "fotografia = " + _lavoroDiStampa.fotografia, _lavoroDiStampa.fotografia.nomeFile );
+
+
 // TODO BLUCA provo a duplicare l'immagine per evitare l'errore che è di proprietà del thread chiamante.
 				BitmapSource bmp = new WriteableBitmap( ((ImmagineWic)immagineDaStampare).bitmapSource );
 				bmp.Freeze();
