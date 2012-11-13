@@ -1,6 +1,7 @@
 ﻿<Window x:Class="Digiphoto.Lumen.UI.DataEntry.DEFotografo.WindowFotografo"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:lumDE="clr-namespace:Digiphoto.Lumen.UI.DataEntry"
 		xmlns:extToolkit="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit.Extended"
         Title="Chiusura di Cassa" Height="561" Width="650" 
 		Background="Black">
@@ -10,31 +11,19 @@
 	</Window.Resources>
 	
 	<DockPanel LastChildFill="True">
-			
-		<ToolBar DockPanel.Dock="Top">
-			<Button Content="|&lt;-" ToolTip="Vai al Primo" Command="{Binding commandSpostamento}" CommandParameter="First" />
-			<Button Content="&lt;" ToolTip="Vai al precedente" Command="{Binding commandSpostamento}" CommandParameter="Previous"/>
-			<Button Content="&gt;" ToolTip="Vai al successivo" Command="{Binding commandSpostamento}" CommandParameter="Next"/>
-			<Button Content="-&gt;|" ToolTip="Vai all'ultimo" Command="{Binding commandSpostamento}" CommandParameter="Last"/>
-			<Separator />
-
-			<Button Content="View"  Command="{Binding commandCambiareStatus}" CommandParameter="View" />
-			<Button Content="Edit" Command="{Binding commandCambiareStatus}" CommandParameter="Edit" />
-			<Button Content="New" Command="{Binding commandCambiareStatus}" CommandParameter="New" Name="buttonNew" />
-			<Button Content="Delete" Command="{Binding commandCambiareStatus}" CommandParameter="Delete" />
-			<Separator />
-			<Button Content="Save" Command="{Binding commandSalvare}" >
-				<Button.IsEnabled>
-					<MultiBinding Converter="{StaticResource enabledValidationMultiConverter}" >
-						<Binding ElementName="textBoxId" Path="(Validation.Errors)[0]" />
-						<Binding ElementName="textBoxNome" Path="(Validation.Errors)[0]" />
-						<Binding ElementName="textBoxCognome" Path="(Validation.Errors)[0]" />
-						<Binding ElementName="textBoxCognomeNome" Path="(Validation.Errors)[0]" />
-						<Binding ElementName="textBoxIniziali" Path="(Validation.Errors)[0]" />
-					</MultiBinding>
-				</Button.IsEnabled>
-			</Button>
-		</ToolBar>
+        <ToolBar DockPanel.Dock="Top">
+            <lumDE:ToolsBar >
+                <lumDE:ToolsBar.possoSalvare>
+                    <MultiBinding Converter="{StaticResource enabledValidationMultiConverter}" >
+                        <Binding ElementName="textBoxId" Path="(Validation.Errors)[0]" />
+                        <Binding ElementName="textBoxNome" Path="(Validation.Errors)[0]" />
+                        <Binding ElementName="textBoxCognome" Path="(Validation.Errors)[0]" />
+                        <Binding ElementName="textBoxCognomeNome" Path="(Validation.Errors)[0]" />
+                        <Binding ElementName="textBoxIniziali" Path="(Validation.Errors)[0]" />
+                    </MultiBinding>
+                </lumDE:ToolsBar.possoSalvare>
+            </lumDE:ToolsBar>
+        </ToolBar>
 
 		<!-- Questo è il last child che prende tutto lo spazio centrale -->
 		<Grid>
