@@ -1,0 +1,27 @@
+﻿<lumM:UserControlBase x:Class="Digiphoto.Lumen.UI.DataEntry.ToolsBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
+             xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
+             x:Name="this"
+             mc:Ignorable="d ">
+    
+    <ToolBar DockPanel.Dock="Top">
+        <Button Content="|&lt;-" ToolTip="Vai al Primo" Command="{Binding commandSpostamento}" CommandParameter="First" />
+        <Button Content="&lt;" ToolTip="Vai al precedente" Command="{Binding commandSpostamento}" CommandParameter="Previous"/>
+        <Button Content="&gt;" ToolTip="Vai al successivo" Command="{Binding commandSpostamento}" CommandParameter="Next"/>
+        <Button Content="-&gt;|" ToolTip="Vai all'ultimo" Command="{Binding commandSpostamento}" CommandParameter="Last"/>
+        <Separator />
+
+        <Button Content="View"  Command="{Binding commandCambiareStatus}" CommandParameter="View" />
+        <Button Content="Edit" Command="{Binding commandCambiareStatus}" CommandParameter="Edit" />
+        <Button Content="New" Command="{Binding commandCambiareStatus}" CommandParameter="New" Name="buttonNew" />
+        <Button Content="Delete" Command="{Binding commandCambiareStatus}" CommandParameter="Delete" />
+        <Separator />
+        <Button Content="Save" Command="{Binding commandSalvare}" IsEnabled="{Binding ElementName=this,Path=possoSalvare}" />
+    </ToolBar>
+
+
+</lumM:UserControlBase>
