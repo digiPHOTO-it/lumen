@@ -27,6 +27,7 @@ using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.UI.Main;
 using Digiphoto.Lumen.Core.Collections;
 using Digiphoto.Lumen.UI.DataEntry.DEFotografo;
+using Digiphoto.Lumen.UI.DataEntry.DEEvento;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -255,14 +256,12 @@ namespace Digiphoto.Lumen.UI {
 
 		void dataEntry( string nomeEntita ) {
 
-
 			// TODO sostituire con una factory
 			if( nomeEntita == "Giornata" ) {
 
 				WindowGiornata window = new WindowGiornata();
 				window.ShowDialog();
 			}
-
 
 			// TODO sostituire con una factory
 			if (nomeEntita == "Fotografo")
@@ -271,6 +270,12 @@ namespace Digiphoto.Lumen.UI {
 				window.ShowDialog();
 			}
 
+			// TODO sostituire con una factory
+			if (nomeEntita == "Evento")
+			{
+				WindowEvento window = new WindowEvento();
+				window.ShowDialog();
+			}
 		}
 
 

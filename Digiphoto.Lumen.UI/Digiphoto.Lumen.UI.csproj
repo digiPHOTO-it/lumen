@@ -219,7 +219,14 @@
     <Compile Include="Converters\PercentualeConverter.cs" />
     <Compile Include="Adorners\CroppingAdorner.cs" />
     <Compile Include="Adorners\PuncturedRect.cs" />
+    <Compile Include="DataEntry\ToolsBar.xaml.cs">
+      <DependentUpon>ToolsBar.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DataEntry\DataEntryViewModel.cs" />
+    <Compile Include="DataEntry\DEEvento\DataEntryEventoViewModel.cs" />
+    <Compile Include="DataEntry\DEEvento\WindowEvento.xaml.cs">
+      <DependentUpon>WindowEvento.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DataEntry\DEFotografo\DataEntryFotografoViewModel.cs" />
     <Compile Include="DataEntry\DEFotografo\WindowFotografo.xaml.cs">
       <DependentUpon>WindowFotografo.xaml</DependentUpon>
@@ -308,6 +315,18 @@
     <Page Include="ComNumFoto\CompNumFotoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataEntry\ToolsBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataEntry\DEEvento\DataEntryEventoResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="DataEntry\DEEvento\WindowEvento.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="DataEntry\DEFotografo\DataEntryFotografoResources.xaml">
       <Generator>MSBuild:Compile</Generator>
