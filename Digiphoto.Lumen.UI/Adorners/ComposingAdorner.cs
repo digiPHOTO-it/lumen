@@ -219,12 +219,23 @@ namespace Digiphoto.Lumen.UI.Adorners {
 		const double _ampiezza = 0.02;
 		private void moveHandle_PreviewMouseWheel( object sender, MouseWheelEventArgs args ) {
 
-			double incrementoScala = 1 + (args.Delta > 0 ? _ampiezza : _ampiezza * -1);
+			if( Keyboard.IsKeyDown( Key.LeftCtrl ) ) {
+				// rotazione
+				double angolo = (args.Delta > 0 ? 5 : -5);
+				rotation.Angle = angolo;
+				rotation.CenterX = center.X;
+				rotation.CenterY = center.Y;
+				outline.RenderTransform = rotation;
+				MoveNewTransformToAdornedElement( rotation );
 
-			scaleRotella.ScaleX = incrementoScala;
-			scaleRotella.ScaleY = incrementoScala;
-			outline.RenderTransform = scaleRotella;
-			MoveNewTransformToAdornedElement( scaleRotella );
+			} else {
+				// zoom (o scale)
+				double incrementoScala = 1 + (args.Delta > 0 ? _ampiezza : _ampiezza * -1);
+				scaleRotella.ScaleX = incrementoScala;
+				scaleRotella.ScaleY = incrementoScala;
+				outline.RenderTransform = scaleRotella;
+				MoveNewTransformToAdornedElement( scaleRotella );
+			}
 		}
 
 		void moveHandle_DragCompleted( object sender, DragCompletedEventArgs e ) {
