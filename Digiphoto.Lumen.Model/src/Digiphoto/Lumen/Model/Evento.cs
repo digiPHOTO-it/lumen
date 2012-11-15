@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using System;
+using System.ComponentModel;
+using System.Linq;
 
 namespace Digiphoto.Lumen.Model {
 
 	[MetadataType( typeof( Evento ) )]
-	public partial class Evento : IValidatableObject  {
-
-		
+	public partial class Evento : IValidatableObject, IDataErrorInfo
+	{
 		public IEnumerable<ValidationResult> Validate( ValidationContext validationContext ) {
 
 			List<ValidationResult> errors = new List<ValidationResult>();
@@ -38,6 +39,41 @@ namespace Digiphoto.Lumen.Model {
 			}
 
 			return sonoUguali;
+		}
+
+		//IDataErrorInfo - you can copy this code to each class
+
+		public string Error
+		{
+			get { return this[""]; }
+		}
+
+		public string this[string columnName]
+		{
+			get
+			{
+				string ret = null;
+				var data = this.Validate(new ValidationContext(this, null, null));
+				switch (columnName)
+				{
+					case "":
+
+						foreach (var item in data)
+						{
+							ret += item.ErrorMessage + Environment.NewLine;
+						}
+						break;
+					default:
+						foreach (var item in data)
+						{
+							if (item.MemberNames.Contains(columnName))
+								ret += item.ErrorMessage + Environment.NewLine;
+						}
+						break;
+				}
+				return ret;
+			}
+
 		}
 
 	}
