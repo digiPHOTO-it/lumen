@@ -10,6 +10,7 @@ using System.Windows.Shapes;
 using System.Windows.Input;
 using System.Windows.Controls;
 using System.Runtime.Serialization;
+using System.Windows.Data;
 
 namespace Digiphoto.Lumen.UI.Adorners {
 
@@ -33,7 +34,8 @@ namespace Digiphoto.Lumen.UI.Adorners {
 		Point center;
 		TranslateTransform translate;
 		RotateTransform rotation;
-		ScaleTransform scale;
+		ScaleTransform scaleManiglia;
+		ScaleTransform scaleRotella;
 		MatrixTransform flip;
 		TransformGroup transformGroup;
 		const int HANDLEMARGIN = 10;
@@ -74,8 +76,8 @@ namespace Digiphoto.Lumen.UI.Adorners {
 
 			moveHandle.DragDelta += new DragDeltaEventHandler( moveHandle_DragDelta );
 			moveHandle.DragCompleted += new DragCompletedEventHandler( moveHandle_DragCompleted );
-//			moveHandle.PreviewMouseRightButtonDown += new MouseButtonEventHandler( moveHandle_PreviewMouseRightButtonDown );
 			moveHandle.MouseRightButtonDown += new MouseButtonEventHandler( moveHandle_PreviewMouseRightButtonDown );
+			moveHandle.PreviewMouseWheel += moveHandle_PreviewMouseWheel;
 
 			// ---
 			scaleHandle = new Thumb();
@@ -91,13 +93,54 @@ namespace Digiphoto.Lumen.UI.Adorners {
 
 			// ---
 			outline = new Path();
+
+/*
+			Style style = new Style();
+			Setter s1 = new Setter( Path.StrokeProperty, Brushes.Green );
+			Setter s2 = new Setter( Shape.StrokeThicknessProperty, 2 );
+			style.Setters.Add( s1 );
+			outline.Style = style;
+
+			Style ss = (Style) Resources ["stylePippo"];
+			ss = (Style)FindResource( "stylePippo" );
+			if( ss != null )
+				outline.Style = ss;
+
+			ss = (Style) FindResource( "stylePippo" );
+*/
+			
 			outline.Stroke = Brushes.Blue;
 			outline.StrokeThickness = 1;
+			
+
+
+/*
+			DataTrigger dt = new DataTrigger();
+
+			dt.Value = "!SELEZ!";
+			Setter setter = new Setter( Path.StrokeProperty, Brushes.Yellow );
+			dt.Setters.Add( setter );
+
+
+			Binding tagBinding = new Binding( "Tag" );
+			tagBinding.Source = AdornedElement;
+			outline.SetBinding( Image.TagProperty, tagBinding );
+			dt.Binding = tagBinding;
+
+
+			Style style = new Style();
+			style.TargetType = outline.GetType();
+			style.Triggers.Add( dt );
+			outline.Style = style;
+*/
+
+			// ---
 
 
 			rotation = new RotateTransform();
 			translate = new TranslateTransform();
-			scale = new ScaleTransform();
+			scaleManiglia = new ScaleTransform();
+			scaleRotella = new ScaleTransform();
 			flip = new MatrixTransform();
 				
 			transformGroup = adornedElement.RenderTransform as TransformGroup;
@@ -111,8 +154,6 @@ namespace Digiphoto.Lumen.UI.Adorners {
 			visualChildren.Add( scaleHandle );
 			visualChildren.Add( flipHandle );
 		}
-
-
 
 		protected override Size ArrangeOverride( Size finalSize ) {
 
@@ -161,18 +202,29 @@ namespace Digiphoto.Lumen.UI.Adorners {
 		}
 
 		void scaleHandle_DragCompleted( object sender, DragCompletedEventArgs e ) {
-			MoveNewTransformToAdornedElement( scale );
+			MoveNewTransformToAdornedElement( scaleManiglia );
 		}
 
 		void scaleHandle_DragDelta( object sender, DragDeltaEventArgs e ) {
 			Point pos = Mouse.GetPosition( this );
 			double deltaY = center.Y - pos.Y;
 			double scaleRatio = deltaY / center.Y;
-			scale.ScaleX = scaleRatio;
-			scale.ScaleY = scaleRatio;
-			scale.CenterX = center.X;
-			scale.CenterY = center.Y;
-			outline.RenderTransform = scale;
+			scaleManiglia.ScaleX = scaleRatio;
+			scaleManiglia.ScaleY = scaleRatio;
+			scaleManiglia.CenterX = center.X;
+			scaleManiglia.CenterY = center.Y;
+			outline.RenderTransform = scaleManiglia;
+		}
+
+		const double _ampiezza = 0.02;
+		private void moveHandle_PreviewMouseWheel( object sender, MouseWheelEventArgs args ) {
+
+			double incrementoScala = 1 + (args.Delta > 0 ? _ampiezza : _ampiezza * -1);
+
+			scaleRotella.ScaleX = incrementoScala;
+			scaleRotella.ScaleY = incrementoScala;
+			outline.RenderTransform = scaleRotella;
+			MoveNewTransformToAdornedElement( scaleRotella );
 		}
 
 		void moveHandle_DragCompleted( object sender, DragCompletedEventArgs e ) {
@@ -222,10 +274,6 @@ namespace Digiphoto.Lumen.UI.Adorners {
 			owner.ContextMenu.PlacementTarget = (UIElement)owner;
 			owner.ContextMenu.IsOpen = true;
 		}
-
-
-
-
 
 		void flipHandle_MouseDown( object sender, MouseButtonEventArgs e ) {
 
@@ -307,14 +355,12 @@ namespace Digiphoto.Lumen.UI.Adorners {
 			outline.RenderTransform = rotation;
 		}
 
-
 		/// <summary>
 		/// Rotates to the same angle as outline.
 		/// </summary>
 		void rotateHandle_DragCompleted( object sender,	DragCompletedEventArgs e ) {
 			MoveNewTransformToAdornedElement( rotation );
 		}
-
 
 		private void MoveNewTransformToAdornedElement( Transform transform ) {
 			if( transform == null ) {

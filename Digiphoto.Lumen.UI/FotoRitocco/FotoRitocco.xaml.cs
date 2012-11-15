@@ -166,11 +166,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		void cambiareModoEditor( object sender, EditorModeEventArgs args ) {
 
 			if( args.modalitaEdit == ModalitaEdit.GestioneMaschere ) {
+
 				primoPianoCanvasMask( false );
-//				expanderMaschere.IsExpanded = false;  // chiudo l'expander per fare spazio
+				initGestioneMaschere();
+
 			} else {
 				primoPianoCanvasMask( true );
-
 				azzeraGestioneMaschere();
 			}
 		}
@@ -182,6 +183,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				
 				// Devo creare una image con la foto grande (il provino non basta più).
 				Image imageFotina = new Image();
+
+				// Metto un nome univoco al componente
+				imageFotina.Name = "imageFotina" + Guid.NewGuid().ToString().Replace( '-', '_' );
 
 				IImmagine immagine = AiutanteFoto.idrataImmagineGrande( foto );
 
@@ -202,7 +206,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				Canvas.SetTop( imageFotina, position.Y );
 				canvasMsk.Children.Add( imageFotina );
 				AddAdorner( imageFotina );
-				
+
 				imageFotina.PreviewMouseDown += new MouseButtonEventHandler( imageFotina_PreviewMouseDown );
 
 				imageFotina.ContextMenu = (ContextMenu )this.Resources ["contextMenuImageFotina"];
@@ -212,6 +216,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					}
 					Console.Write( item );
 				}
+
+				// -- 
+				selezionaFotina( imageFotina.Name );
+
 				portaInPrimoPianoFotina( imageFotina );
 
 				primoPianoCanvasMask( true );
@@ -616,6 +624,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			return rtb;
 		}
 
+		void initGestioneMaschere() {
+		}
+
 		/// <summary>
 		/// Quando rifiuto la maschera, devo togliere dal video eventuali componenti grafici rimasti in mezzo ai piedi.
 		/// </summary>
@@ -666,6 +677,43 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			_viewModel.trayIconProvider.showInfo("AVVISO", msg.ToString(), 1500);
 		}
 
+		/// <summary>
+		/// Dato il nome del componente, ricerco l'immaginetta e la rendo attiva.
+		/// </summary>
+		/// <param name="name"></param>
+		void selezionaFotina( string name ) {
+
+			foreach( UIElement child in canvasMsk.Children ) {
+				
+				if( child is Image ) {
+					
+					Image childImage = child as Image;
+					if( childImage.Name == name )
+						childImage.Tag = "!SELEZ!";  // occhio questo valore convenzionale è usato in un trigger di style.
+					else
+						childImage.Tag = null;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Mi dice quante fotine sono state buttate sulla maschera
+		/// </summary>
+		int quanteFotineSulTavolo {
+			get {
+				return canvasMsk.Children.OfType<Image>().Count();
+			}
+		}
+
+		/// <summary>
+		/// Ritorna l'immagine che rappresenta la fotina selezionata
+		/// </summary>
+		Image fotinaSelezionata {
+			get {
+				return canvasMsk.Children.OfType<Image>().SingleOrDefault( i => i.Tag.Equals( "!SELEZ!" ) );
+			}
+		}
+
 
 		/// <summary>
 		/// Gestisco la proprietà Zindex sulle fotine per stabilire l'ordine di sovrapposizione.
@@ -687,8 +735,14 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		private void dacancMenuItem_Click( object sender, RoutedEventArgs e ) {
 
+		/// <summary>
+		/// Questa è la property che mi dice quale fotina è quella selezionata (attiva).
+		/// La fotina attiva mi serve per esempio per zommarla con la rotella.
+		/// </summary>
+		public string nomeFotinaSelezionata {
+			get;
+			private set;
 		}
 
 	}
