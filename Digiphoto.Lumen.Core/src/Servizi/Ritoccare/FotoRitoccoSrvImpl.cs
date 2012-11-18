@@ -17,6 +17,7 @@ using System.Threading;
 using System.IO;
 using log4net;
 using Digiphoto.Lumen.Servizi.Ritoccare.Clona;
+using Digiphoto.Lumen.Database;
 
 namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
@@ -233,7 +234,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 			return modificate.ToArray();
 		}
 
-		public void acquisisciImmagineIncorniciata( string nomeFileImg ) {
+		public void acquisisciImmagineIncorniciataWithArtista( string nomeFileImg ) {
 
 			// Per fare entrare la nuova foto, uso lo stesso servizio che uso normalmente per scaricare le memory-card
 			using( IScaricatoreFotoSrv srv = LumenApplication.Instance.creaServizio<IScaricatoreFotoSrv>() ) {
@@ -250,8 +251,67 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 				// Non devo attendere il completamento, perché quando scarico la singola foto, tutto avviene nello stesso thread
 			}
+		}
 	
+		public void clonaImmagineIncorniciata(Fotografia fotoOrig, string nomeFileImg)
+		{
+			FileInfo fileInfoSrc = new FileInfo( fotoOrig.nomeFile );
+			string nomeOrig = fileInfoSrc.Name;
+			string nomeFotoClone = ClonaImmaginiWorker.getNomeFileClone(fotoOrig);
+			string nomeFileDest = Path.Combine(Config.Configurazione.cartellaRepositoryFoto, Path.GetDirectoryName(fotoOrig.nomeFile), nomeFotoClone);
 		
+			//Sposto la foto nella coartellaRepository e gli attribuisco il suo nome originale.
+			File.Move(nomeFileImg, nomeFileDest);
+
+			Fotografia fotoMsk = null;
+			using (new UnitOfWorkScope(false))
+			{
+				LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
+				try
+				{
+					fotoMsk = new Fotografia();
+					fotoMsk.id = Guid.NewGuid();
+					fotoMsk.dataOraAcquisizione = fotoOrig.dataOraAcquisizione;
+
+					Fotografo f = fotoOrig.fotografo;
+					OrmUtil.forseAttacca<Fotografo>("Fotografi", ref f);
+					fotoMsk.fotografo = f;
+
+					if (fotoOrig.evento != null)
+					{
+						Evento e = fotoOrig.evento;
+						OrmUtil.forseAttacca<Evento>("Eventi", ref e);
+						fotoMsk.evento = e;
+					}
+
+					fotoMsk.didascalia = fotoOrig.didascalia;
+					fotoMsk.numero = fotoOrig.numero;
+					fotoMsk.correzioniXml = fotoOrig.correzioniXml;
+
+					fotoMsk.faseDelGiorno = fotoOrig.faseDelGiorno;
+					fotoMsk.giornata = fotoOrig.giornata;
+
+					// il nome del file, lo memorizzo solamente relativo
+					// scarto la parte iniziale di tutto il path togliendo il nome della cartella di base delle foto.
+					// Questo perché le stesse foto le devono vedere altri computer della rete che
+					// vedono il percorso condiviso in maniera differente.
+					fotoMsk.nomeFile = Path.Combine(Path.GetDirectoryName(fotoOrig.nomeFile), nomeFotoClone);
+
+					objContext.Fotografie.Add(fotoMsk);
+
+					objContext.SaveChanges();
+				}
+
+				catch (Exception ee)
+				{
+					_giornale.Error("Non riesco ad inserire una foto clonata. Nel db non c'è ma nel filesystem si: " + fotoOrig.nomeFile, ee);
+				}
+
+				AiutanteFoto.creaProvinoFoto(nomeFileDest, fotoMsk);
+
+				// Libero la memoria occupata dalle immagini, altrimenti esplode.
+				AiutanteFoto.disposeImmagini(fotoMsk, IdrataTarget.Tutte);
+			}
 		}
 
 		public void clonaFotografie(Fotografia[] fotografie)

@@ -1043,7 +1043,10 @@ namespace Digiphoto.Lumen.UI {
 
 		public void OnNext(ClonaFotoMsg value)
 		{
-			this.eseguireRicerca();
+			if (value.fase == FaseClone.FineClone)
+			{
+				this.eseguireRicerca();
+			}
 		}
 
 		#endregion

@@ -59,7 +59,9 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		/// <param name="foto">la foto da modificare</param>
 		Fotografia [] modificaConProgrammaEsterno( Fotografia [] fotografie );
 
-		void acquisisciImmagineIncorniciata( string nomeFileImg );
+		void acquisisciImmagineIncorniciataWithArtista( string nomeFileImg );
+
+		void clonaImmagineIncorniciata(Fotografia fotoOrig, string nomeFileImg);
 
 		/// <summary>
 		/// Ritorno l'elenco delle miniature delle maschere.

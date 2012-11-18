@@ -1090,7 +1090,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 
 		// Devo creare una immagine modificata in base
-		internal void salvareImmagineIncorniciata( RenderTargetBitmap bitmapIncorniciata ) {
+		internal void salvareImmagineIncorniciataWithArtista( RenderTargetBitmap bitmapIncorniciata ) {
 
 			BitmapFrame frame = BitmapFrame.Create( bitmapIncorniciata );
 
@@ -1106,12 +1106,36 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 
 			// Ora che il file su disco, devo portarlo dentro il database ed acquisirlo come una normale fotografia.
-			fotoRitoccoSrv.acquisisciImmagineIncorniciata( tempFile );
+			fotoRitoccoSrv.acquisisciImmagineIncorniciataWithArtista( tempFile );
 
 			// spengo tutto
 			resetEffetti();
 		}
 
+		// Devo creare una immagine modificata in base
+		internal void salvareImmagineIncorniciata(Fotografia fotoOrig, RenderTargetBitmap bitmapIncorniciata)
+		{
+
+			BitmapFrame frame = BitmapFrame.Create(bitmapIncorniciata);
+
+			PngBitmapEncoder encoder = new PngBitmapEncoder();
+			encoder.Frames.Add(frame);
+
+			string tempFile = PathUtil.dammiTempFileConEstesione("png");
+
+			// ----- scrivo su disco
+			using (FileStream fs = new FileStream(tempFile, FileMode.Create))
+			{
+				encoder.Save(fs);
+				fs.Flush();
+			}
+
+			// Ora che il file su disco, devo portarlo dentro il database ed acquisirlo come una normale fotografia.
+			fotoRitoccoSrv.clonaImmagineIncorniciata(fotoOrig, tempFile);
+
+			// spengo tutto
+			resetEffetti();
+		}
 
 		void modificareConEditorEsterno() {
 

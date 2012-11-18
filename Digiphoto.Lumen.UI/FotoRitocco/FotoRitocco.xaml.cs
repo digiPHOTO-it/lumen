@@ -176,10 +176,15 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+
+		private Fotografia firstFotoInCanvas = null;
 		private void canvasMsk_Drop( object sender, DragEventArgs e ) {
 
 			Fotografia foto = e.Data.GetData( typeof( Fotografia ) ) as Fotografia;
 			if( foto != null ) {
+				//Mi serve sapere quale è la prima foto nel canvas la uso per il clone.
+				if (firstFotoInCanvas == null)
+					firstFotoInCanvas = foto;	
 				
 				// Devo creare una image con la foto grande (il provino non basta più).
 				Image imageFotina = new Image();
@@ -590,13 +595,15 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 				RenderTargetBitmap bitmapIncorniciata = componiBitmapDaMaschera( canvasDefinitivo );
 
-				_viewModel.salvareImmagineIncorniciata( bitmapIncorniciata );
+				_viewModel.salvareImmagineIncorniciata(firstFotoInCanvas ,bitmapIncorniciata );
 
 			} finally {
 				w.Close();
 			}
 
 			rimuoviTutteLeManigliette();
+
+			firstFotoInCanvas = null;
 		}
 
 
@@ -633,6 +640,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		void azzeraGestioneMaschere() {
 			// Elimino le foto che sono state droppate sul canvas
 			canvasMsk.Children.Clear();
+
+			//Riazzero la prima foto in maschera
+			firstFotoInCanvas = null;
 		}
 
 		private void listBoxImmaginiDaModificare_Drop( object sender, DragEventArgs e ) {

@@ -99,32 +99,6 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare.Clona {
 		}
 
 		/**
-		 * Mi ricalcolo il nuovo numero da qui partire
-		 */
-		private int maxCount(string path,string nomeFileOrigWithoutExtension)
-		{
-			string max = Directory.EnumerateFiles(path, nomeFileOrigWithoutExtension + "_CLONE_[*.*").Max();
-			if (max == null)
-				return 0;
-			string[] num = max.Split(new Char[]{'[', ']'});
-
-			return Int32.Parse(num[1]);
-		}
-
-		/**
-		 * Verfico se il file che sto clonando è a sua volta un clone
-		 */
-		private bool isClone(Fotografia foto)
-		{
-			bool clone = false;
-
-			if (!clone && foto.nomeFile.Contains("_CLONE"))
-				clone = true;
-
-			return clone;
-		}
-
-		/**
 		 * Se  va tutto bene ritorna true
 		 */
 		private bool clonaAsincronoUnFile( Fotografia foto) {
@@ -133,7 +107,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare.Clona {
 
 			//La foto è un clone, recupero il suo originale
 			if (isClone(foto))
-				fileInfoSrc = new FileInfo(foto.nomeFile.Remove(foto.nomeFile.IndexOf("_CLONE_"), foto.nomeFile.IndexOf(fileInfoSrc.Extension) - foto.nomeFile.IndexOf("_CLONE_")));
+				fileInfoSrc = getOriginalFileNameFromClone(foto);
 
 			//Directory File
 
@@ -149,16 +123,9 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare.Clona {
 			// "e (10)"
 			string nomeFileOrigWithoutExtension = Path.GetFileNameWithoutExtension(nomeFileOrig);
 
-			int count = maxCount(Path.Combine(Configurazione.cartellaRepositoryFoto, subDirFileOrig), nomeFileOrigWithoutExtension);
+			int count = getMaxCount(Path.Combine(Configurazione.cartellaRepositoryFoto, subDirFileOrig), nomeFileOrigWithoutExtension);
 
-			StringBuilder nomeFileCloneBuilder = new StringBuilder();
-			nomeFileCloneBuilder.Append(nomeFileOrigWithoutExtension);
-			nomeFileCloneBuilder.Append("_CLONE_[");
-			nomeFileCloneBuilder.Append((count + 1).ToString("000"));
-			nomeFileCloneBuilder.Append("]");
-			nomeFileCloneBuilder.Append(fileInfoSrc.Extension);
-
-			string nomeFileClone = nomeFileCloneBuilder.ToString();
+			string nomeFileClone = getNomeFileClone(nomeFileOrigWithoutExtension, count, fileInfoSrc);
 
 			// "C:\\Users\\edoardo.colantonio\\Desktop\\RULLINI\\2012-10-29.Gio\\EDOARDO.Fot"
 			string cartellaFoto = PathUtil.decidiCartellaFoto(foto);
@@ -294,6 +261,99 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare.Clona {
 
 			return foto;
 		}
+
+		#region Util;
+
+		/**
+		 * Verfico se il file che sto clonando è a sua volta un clone
+		 */
+		public static bool isClone(Fotografia foto)
+		{
+			bool clone = false;
+
+			if (!clone && foto.nomeFile.Contains("_CLONE"))
+				clone = true;
+
+			return clone;
+		}
+
+		public static FileInfo getOriginalFileNameFromClone(Fotografia foto)
+		{
+			FileInfo fileInfoSrc = new FileInfo(foto.nomeFile);
+			return new FileInfo(foto.nomeFile.Remove(foto.nomeFile.IndexOf("_CLONE_"), foto.nomeFile.IndexOf(fileInfoSrc.Extension) - foto.nomeFile.IndexOf("_CLONE_")));
+		}
+
+		public static int getMaxCount(Fotografia foto)
+		{
+			int count = 0;
+
+			// "2012-10-29.Gio\\EDOARDO.Fot"
+			string subDirFileOrig = Path.GetDirectoryName(foto.nomeFile);
+			// "2012-10-29.Gio\\EDOARDO.Fot\\.Thumb"
+			string subDirFileProvino = Path.Combine(subDirFileOrig, PathUtil.THUMB);
+			// "2012-10-29.Gio\EDOARDO.Fot\.Modif"
+			string subDirFileRisult = Path.Combine(subDirFileOrig, PathUtil.MODIF);
+
+			FileInfo fileInfoSrc = new FileInfo(foto.nomeFile);
+			// "e (10).jpg"
+			string nomeFileOrig = fileInfoSrc.Name;
+
+			// "e (10)"
+			string nomeFileOrigWithoutExtension = Path.GetFileNameWithoutExtension(nomeFileOrig);
+
+			count = getMaxCount(Path.Combine(Configurazione.cartellaRepositoryFoto, subDirFileOrig), nomeFileOrigWithoutExtension);
+
+			return count;
+		}
+
+		/**
+		 * Mi ricalcolo il nuovo numero da qui partire
+		 */
+		private static int getMaxCount(string path, string nomeFileOrigWithoutExtension)
+		{
+			string max = Directory.EnumerateFiles(path, nomeFileOrigWithoutExtension + "_CLONE_[*.*").Max();
+			if (max == null)
+				return 0;
+			string[] num = max.Split(new Char[] { '[', ']' });
+
+			return Int32.Parse(num[1]);
+		}
+
+		public static string getNomeFileClone(String nomeFileOrigWithoutExtension, int count, FileInfo fileInfoSrc)
+		{
+			StringBuilder nomeFileCloneBuilder = new StringBuilder();
+			nomeFileCloneBuilder.Append(nomeFileOrigWithoutExtension);
+			nomeFileCloneBuilder.Append("_CLONE_[");
+			nomeFileCloneBuilder.Append((count + 1).ToString("000"));
+			nomeFileCloneBuilder.Append("]");
+			nomeFileCloneBuilder.Append(fileInfoSrc.Extension);
+
+			return nomeFileCloneBuilder.ToString();
+		}
+
+		/// <summary>
+		/// Calcola il nome della foto clone con progressivo
+		/// </summary>
+		/// <param name="foto"></param>
+		/// <returns></returns>
+		public static string getNomeFileClone(Fotografia foto)
+		{
+			FileInfo fileInfoSrc = new FileInfo( foto.nomeFile );
+
+			//La foto è un clone, recupero il suo originale
+			if (isClone(foto))
+				fileInfoSrc = getOriginalFileNameFromClone(foto);
+
+			string nomeFileOrig = fileInfoSrc.Name;
+
+			string nomeFileOrigWithoutExtension = Path.GetFileNameWithoutExtension(nomeFileOrig);
+
+			int count = getMaxCount(foto);
+
+			return getNomeFileClone(nomeFileOrigWithoutExtension, count, fileInfoSrc);
+		}
+
+		#endregion Util
 
 	}
 
