@@ -183,8 +183,8 @@
 					 ItemsSource="{Binding Path=RiCaFotoStampateCv}"
 					 SelectedIndex="{Binding Path=RigheCarrelloCvSelectedIndex, Mode=TwoWay}"
 					 SelectedItem="{Binding Path=RigheCarrelloCvSelected}"
-					 ItemsPanel="{DynamicResource ImageCarrelloItemsPanelTemplate}" 
-					 ItemTemplate="{DynamicResource ImageCarrelloDataTemplate}"
+					 ItemsPanel="{DynamicResource righeCarrelloItemsPanelTemplate}" 
+					 ItemTemplate="{DynamicResource rigaCarrelloDataTemplate}"
 					 ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
 
 			<i:Interaction.Triggers>

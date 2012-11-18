@@ -12,5 +12,12 @@ namespace Digiphoto.Lumen.Model {
 			set;
 		}
 
+		/// <summary>
+		/// Stampa con i bordi bianchi.
+		/// </summary>
+		public bool bordiBianchi {
+			get;
+			set;
+		}
 	}
 }
