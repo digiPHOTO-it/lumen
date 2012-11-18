@@ -325,13 +325,15 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			r.prezzoLordoUnitario = param.formatoCarta.prezzo;
 			r.quantita = param.numCopie;
 			r.prezzoNettoTotale = r.prezzoLordoUnitario * r.quantita;
+			r.bordiBianchi = ! param.autoZoomNoBordiBianchi;
+
 			return r;
 		}
 
 		private ParamStampaFoto creaParamStampaFoto( RiCaFotoStampata riCaFotoStampata ) {
 			ParamStampaFoto param = new ParamStampaFoto();
 			param.autoRuota = true;
-			param.autoZoomNoBordiBianchi = true;
+			param.autoZoomNoBordiBianchi = ! riCaFotoStampata.bordiBianchi;
 			param.formatoCarta = riCaFotoStampata.formatoCarta;
 			param.numCopie = riCaFotoStampata.quantita;
 			param.nomeStampante = riCaFotoStampata.nomeStampante;  // Attributo transiente.

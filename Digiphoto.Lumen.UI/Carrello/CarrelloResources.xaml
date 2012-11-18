@@ -68,20 +68,47 @@
 		<DoubleAnimation Storyboard.TargetName="zoom"  Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.2" />
 	</Storyboard>
 
-    <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
-	<DataTemplate x:Key="ImageCarrelloDataTemplate" >
-		<GroupBox x:Name="RigaCarrelloGroupBox" Header="Riga Carrello" Width="Auto" Margin="2,2,2,2" >
-			<Grid Width="Auto">
-				<Grid.RowDefinitions>
-					<RowDefinition Height="*" />
-				</Grid.RowDefinitions>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
-				<Border Grid.Row="0" Grid.Column="0" BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="10" Margin="2,2,2,2">
-					<Canvas	Height="50"
-							Width="50">
+    <Style x:Key="styleLabelRigaCarrello" TargetType="Label" >
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    
+   <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
+	<DataTemplate x:Key="rigaCarrelloDataTemplate" >
+		<GroupBox x:Name="RigaCarrelloGroupBox" Width="Auto" Margin="2,2,2,2" >
+            <GroupBox.Header>
+                <TextBlock>
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="Riga {0} Carrello">
+                            <Binding Path="."
+                                     RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}"
+                                     Converter="{StaticResource listItemIndexConverter}" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+            </GroupBox.Header>
+
+            <Grid Width="Auto">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+
+                <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" 
+                        BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="4" Margin="2,2,2,2">
+					<Canvas	Height="50" Width="50">
 							<Image 
 								Name="icon"
 								Source="{Binding Path=fotografia.imgProvino,Converter={StaticResource imageSourceConverter}}"
@@ -130,34 +157,29 @@
 						</Popup>
 					</Canvas>
 				</Border>
-				<GroupBox Grid.Row="0" Grid.Column="1" Header="Attributi" Margin="4,4,4,4">
-					<Grid Width="Auto">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="*" />
-							<RowDefinition Height="*" />
-						</Grid.RowDefinitions>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-						</Grid.ColumnDefinitions>
-                        <Label Content="Formato Carta:" Grid.Row="0" Grid.Column="0" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <Label Content="{Binding Path=formatoCarta.descrizione}" Grid.Row="1" Grid.Column="0" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <Label Content="Numero Foto:" Grid.Row="0" Grid.Column="1" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-						<Label Content="{Binding Path=fotografia.numero}" Grid.Row="1" Grid.Column="1" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-						<Label Content="Quantità:" Grid.Row="0" Grid.Column="2" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-						<Label Content="{Binding Path=quantita}" Grid.Row="1" Grid.Column="2" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" />			
-						<Label Content="Prezzo Lordo Unitario:" Grid.Row="0" Grid.Column="3" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-						<Label Content="{Binding Path=prezzoLordoUnitario}" Grid.Row="1" Grid.Column="3" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-						<Label Content="Prezzo Netto Totale:" Grid.Row="0" Grid.Column="4" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-						<Label Content="{Binding Path=prezzoNettoTotale}" Grid.Row="1" Grid.Column="4" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-					</Grid>
-				</GroupBox>
+
+                <Label Content="Carta" Grid.Row="0" Grid.Column="1" Style="{StaticResource styleLabelRigaCarrello}" />
+                <Label Content="{Binding Path=formatoCarta.descrizione}" Grid.Row="1" Grid.Column="1" Style="{StaticResource styleLabelRigaCarrello}" />
+                <!-- -->
+                <Label Content="N° Foto" Grid.Row="0" Grid.Column="2" Style="{StaticResource styleLabelRigaCarrello}" />
+                <Label Content="{Binding Path=fotografia.numero}" Grid.Row="1" Grid.Column="2" Style="{StaticResource styleLabelRigaCarrello}" />
+                <!-- -->
+                <Label Content="Quantità" Grid.Row="0" Grid.Column="3" Style="{StaticResource styleLabelRigaCarrello}" />
+                <Label Content="{Binding Path=quantita}" Grid.Row="1" Grid.Column="3" Style="{StaticResource styleLabelRigaCarrello}" />
+                <!-- -->
+                <Label Content="Prezzo Lordo Unitario" Grid.Row="0" Grid.Column="4" Style="{StaticResource styleLabelRigaCarrello}" />
+                <Label Content="{Binding Path=prezzoLordoUnitario}" Grid.Row="1" Grid.Column="4" Style="{StaticResource styleLabelRigaCarrello}" />
+                <!-- -->
+                <Label Content="Prezzo Netto Totale" Grid.Row="0" Grid.Column="5" Style="{StaticResource styleLabelRigaCarrello}" />
+                <Label Content="{Binding Path=prezzoNettoTotale}" Grid.Row="1" Grid.Column="5" Style="{StaticResource styleLabelRigaCarrello}" />
+                <!-- -->
+                <Label Content="Bordi Bianchi" Grid.Row="0" Grid.Column="6" Style="{StaticResource styleLabelRigaCarrello}" />
+                <CheckBox  IsChecked="{Binding Path=bordiBianchi}" Grid.Row="1" Grid.Column="6" VerticalAlignment="Center" HorizontalAlignment="Center" ToolTip="Stampa con i bordi bianchi senza tagliare l'immagine" />
+                    
 			</Grid>
 		</GroupBox>
     </DataTemplate>
+
 
 	<!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Carrello" -->
     <DataTemplate x:Key="ListaCarrelliDataTemplate">
@@ -233,7 +255,7 @@
 -->
 	
     <!-- Template per il pannello che contiene tutti gli elementi della lista -->
-    <ItemsPanelTemplate x:Key="ImageCarrelloItemsPanelTemplate">
+    <ItemsPanelTemplate x:Key="righeCarrelloItemsPanelTemplate">
         <!-- il wrappanel mi consente di sistemare al meglio le foto in funzione dello spazio disponibile ed andare a capo quando serve -->
         <WrapPanel Orientation="Vertical" />
     </ItemsPanelTemplate>

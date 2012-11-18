@@ -28,15 +28,33 @@
 			</MenuItem.Icon>
 		</MenuItem>
 	</DataTemplate >
+    <DataTemplate x:Key="stampaRapidBordiBianchiaMenu">
+        <MenuItem Header="{Binding}"
+					Command="{Binding Path=DataContext.stampaRapidaBordiBianchiCommand, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}" 
+					CommandParameter="{Binding}">
+            <MenuItem.Icon>
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/Printer-48x48.png" />
+            </MenuItem.Icon>
+        </MenuItem>
+    </DataTemplate >
+    
+    <ContextMenu x:Key="azioniRapideMenu" x:Shared="true"  DataContext="{Binding Path=selettoreAzioniRapideViewModel}">
 
-	<ContextMenu x:Key="azioniRapideMenu" x:Shared="true"  DataContext="{Binding Path=selettoreAzioniRapideViewModel}">
-		<MenuItem Header="Stampa"
-				  ItemsSource="{Binding Path=stampantiAbbinate}"
-			      ItemTemplate="{StaticResource stampaRapidaMenu}"
-				  DataContext="{Binding}">
-		</MenuItem>
+        <MenuItem Header="Stampa immediata...">
+            
+            <MenuItem Header="a Formato Pieno"
+				      ItemsSource="{Binding Path=stampantiAbbinate}"
+			          ItemTemplate="{StaticResource stampaRapidaMenu}"
+				      DataContext="{Binding}">
+		    </MenuItem>
+            <MenuItem Header="con Bordi B ianchi"
+				      ItemsSource="{Binding Path=stampantiAbbinate}"
+			          ItemTemplate="{StaticResource stampaRapidBordiBianchiaMenu}"
+				      DataContext="{Binding}">
+            </MenuItem>
+        </MenuItem>
 
-		<MenuItem Header="Aggiungi al Carrello"
+        <MenuItem Header="Aggiungi al Carrello"
 				  ItemsSource="{Binding Path=stampantiAbbinate}" 
 				  ItemTemplate="{StaticResource pulsanteDiStampaTemplateContextMenu}"
 				  DataContext="{Binding}">

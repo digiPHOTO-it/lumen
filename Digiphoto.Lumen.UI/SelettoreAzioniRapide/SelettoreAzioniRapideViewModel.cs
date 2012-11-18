@@ -375,10 +375,8 @@ namespace Digiphoto.Lumen.UI
 		/// Nel parametro mi arriva l'oggetto StampanteAbbinata che mi da tutte le indicazioni
 		/// per la stampa: il formato carta e la stampante
 		/// </summary>
-		private void stampare(object objStampanteAbbinata)
+		private void stampare( StampanteAbbinata stampanteAbbinata )
 		{
-			StampanteAbbinata stampanteAbbinata = (StampanteAbbinata)objStampanteAbbinata;
-
 			IList<Fotografia> listaSelez = creaListaFotoSelezionate();
 
 			// Se ho selezionato più di una foto, e lavoro in stampa diretta, allora chiedo conferma
@@ -421,10 +419,8 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
-		private void stampaRapida(object objStampanteAbbinata)
+		private void stampaRapida( StampanteAbbinata stampanteAbbinata, bool autoZoomNoBordiBianchi )
 		{
-			StampanteAbbinata stampanteAbbinata = (StampanteAbbinata)objStampanteAbbinata;
-
 			IList<Fotografia> listaSelez = creaListaFotoSelezionate();
 
 			using (IVenditoreSrv venditoreSpampaRapida = LumenApplication.Instance.creaServizio<IVenditoreSrv>())
@@ -432,7 +428,7 @@ namespace Digiphoto.Lumen.UI
 
 				venditoreSpampaRapida.creaNuovoCarrello();
 				venditoreSpampaRapida.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_RAPIDA;
-				venditoreSpampaRapida.aggiungiStampe(listaSelez, creaParamStampaFoto(stampanteAbbinata));
+				venditoreSpampaRapida.aggiungiStampe( listaSelez, creaParamStampaFoto( stampanteAbbinata, autoZoomNoBordiBianchi) );
 
 				if (venditoreSpampaRapida.vendereCarrello())
 				{
@@ -454,13 +450,18 @@ namespace Digiphoto.Lumen.UI
 		/// </summary>
 		/// <param name="stampanteAbbinata"></param>
 		/// <returns></returns>
-		private ParamStampaFoto creaParamStampaFoto(StampanteAbbinata stampanteAbbinata)
+		private ParamStampaFoto creaParamStampaFoto( StampanteAbbinata stampanteAbbinata ) {
+			return creaParamStampaFoto( stampanteAbbinata, true );
+		}
+
+		private ParamStampaFoto creaParamStampaFoto(StampanteAbbinata stampanteAbbinata, bool autoZoomNoBordiBianchi )
 		{
 
 			ParamStampaFoto p = venditoreSrv.creaParamStampaFoto();
 
 			p.nomeStampante = stampanteAbbinata.StampanteInstallata.NomeStampante;
 			p.formatoCarta = stampanteAbbinata.FormatoCarta;
+			p.autoZoomNoBordiBianchi = autoZoomNoBordiBianchi;
 			// TODO per ora il nome della Porta a cui è collegata la stampante non lo uso. Non so cosa farci.
 
 			return p;
@@ -730,8 +731,8 @@ namespace Digiphoto.Lumen.UI
 			{
 				if (_stampareCommand == null)
 				{
-					_stampareCommand = new RelayCommand(param => stampare(param),
-						param => possoStampare, false);
+					_stampareCommand = new RelayCommand(param => stampare( param as StampanteAbbinata ),
+					                                    param => possoStampare, false);
 				}
 				return _stampareCommand;
 			}
@@ -744,13 +745,23 @@ namespace Digiphoto.Lumen.UI
 			{
 				if (_stampaRapidaCommand == null)
 				{
-					_stampaRapidaCommand = new RelayCommand(param => stampaRapida(param),
-															  param => this.possoStampare,
-															  false);
+					_stampaRapidaCommand = new RelayCommand(param => stampaRapida( (StampanteAbbinata)param, true ),
+					                                        param => this.possoStampare, false);
 				}
 				return _stampaRapidaCommand;
 			}
 		}
+		private RelayCommand _stampaRapidaBordiBianchiCommand;
+		public ICommand stampaRapidaBordiBianchiCommand {
+			get {
+				if( _stampaRapidaBordiBianchiCommand == null ) {
+					_stampaRapidaBordiBianchiCommand = new RelayCommand( param => stampaRapida( (StampanteAbbinata)param, false ),
+															  param => this.possoStampare, false );
+				}
+				return _stampaRapidaBordiBianchiCommand;
+			}
+		}
+
 
 		private RelayCommand _caricareSlideShowCommand;
 		public ICommand caricareSlideShowCommand
