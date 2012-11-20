@@ -168,14 +168,14 @@
 					</GroupBox>
                     <Label Content="Fuori Standard" Height="28" HorizontalAlignment="Left" Margin="209,334,0,0" Name="label12" VerticalAlignment="Top" Width="133" />
 					<TextBox Height="23" HorizontalAlignment="Left" Margin="409,336,0,0" Text="{Binding Path=cfg.fuoriStandard}" ToolTip="Identificatvo per personalizzazioni fuori standard." Name="indFuroStandard" VerticalAlignment="Top" Width="75" />
-					<Label Content="Cartella Rullini" Height="25" HorizontalAlignment="Left" Margin="13,22,0,0" Name="label5" VerticalAlignment="Top" Width="121" />
-                    <TextBox Height="23" Margin="151,22,55,0" Text="{Binding Path=cfg.cartellaFoto}" VerticalAlignment="Top" />
-                    <Label Content="Cartella Maschere" Height="25" HorizontalAlignment="Left" Margin="13,51,0,0" Name="label14" VerticalAlignment="Top" Width="121" />
-                    <TextBox Height="23" Margin="151,51,55,0" Text="{Binding Path=cfg.cartellaMaschere}" VerticalAlignment="Top" />
-                    <Button  Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="foto" Content="..." Height="Auto" Margin="0,21,16,0" ToolTip="Sfoglia cartelle" VerticalAlignment="Top" HorizontalAlignment="Right" Width="22" />
+					<Label Content="Cartella Rullini" Height="25" HorizontalAlignment="Left" Margin="13,12,0,0" Name="label5" VerticalAlignment="Top" Width="121" />
+                    <TextBox Height="23" Margin="151,12,55,0" Text="{Binding Path=cfg.cartellaFoto}" VerticalAlignment="Top" />
+                    <Label Content="Cartella Maschere" Height="25" HorizontalAlignment="Left" Margin="13,41,0,0" Name="label14" VerticalAlignment="Top" Width="121" />
+                    <TextBox Height="23" Margin="151,41,55,0" Text="{Binding Path=cfg.cartellaMaschere}" VerticalAlignment="Top" />
+                    <Button  Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="foto" Content="..." Height="Auto" Margin="0,11,16,0" ToolTip="Sfoglia cartelle" VerticalAlignment="Top" HorizontalAlignment="Right" Width="22" />
                     <Label Content="Millisecondi intervallo SlideShow" HorizontalAlignment="Left" Margin="209,300,0,0" VerticalAlignment="Top" Width="193" />
                     <TextBox Height="23" HorizontalAlignment="Left" Margin="409,302,0,0" Text="{Binding Path=cfg.millisIntervalloSlideShow}" ToolTip="esempio 1500 = 1 secondo e mezzo" VerticalAlignment="Top" Width="75" />
-                    <Button Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="mask" Content="..." Margin="0,51,16,0"  ToolTip="Sfoglia cartelle" VerticalAlignment="Top" Width="22" HorizontalAlignment="Right" />
+                    <Button Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="mask" Content="..." Margin="0,41,16,0"  ToolTip="Sfoglia cartelle" VerticalAlignment="Top" Width="22" HorizontalAlignment="Right" />
                     <Label Content="Programma esterno foto-ritocco" Height="26" HorizontalAlignment="Left" Margin="6,437,0,0" Name="label8" VerticalAlignment="Top" Width="192" />
                     <TextBox Height="23" Margin="209,440,44,0" Name="textBox1" VerticalAlignment="Top" Text="{Binding Path=cfg.editorImmagini}"/>
                     <Button Content="..." Height="Auto" HorizontalAlignment="Right" Margin="0,439,16,0" Name="button1" VerticalAlignment="Top" Width="22" />
@@ -185,10 +185,13 @@
 					<Label Content="Numero righe Provini" Height="28" HorizontalAlignment="Left" Margin="209,0,0,41" Name="rgheProvini" VerticalAlignment="Bottom" Width="155" />
 					<Label Content="Intervalli pubblicità" HorizontalAlignment="Left" Margin="513,302,0,0" VerticalAlignment="Top" Width="147" />
 					<TextBox Height="23" HorizontalAlignment="Left" Margin="630,303,0,0" Text="{Binding Path=cfg.intervalliPubblicita}" VerticalAlignment="Top" Width="54" ToolTip="Ogni quante pagine di Slide Show intervallare una pubblicità. Esempio = 5" />
-					<Label Content="Cartella Pubblicità" Height="25" HorizontalAlignment="Left" Margin="13,82,0,0" Name="label15" VerticalAlignment="Top" Width="121" />
-					<TextBox Height="23" Margin="151,82,55,0" Text="{Binding Path=cfg.cartellaPubblicita}" VerticalAlignment="Top" />
-					<Button Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="spot" Content="..." Margin="0,82,16,0" ToolTip="Sfoglia cartelle" VerticalAlignment="Top" Width="22" HorizontalAlignment="Right" />
-				</Grid>
+					<Label Content="Cartella Pubblicità" Height="25" HorizontalAlignment="Left" Margin="13,72,0,0" Name="label15" VerticalAlignment="Top" Width="121" />
+					<TextBox Height="23" Margin="151,72,55,0" Text="{Binding Path=cfg.cartellaPubblicita}" VerticalAlignment="Top" />
+					<Button Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="spot" Content="..." Margin="0,72,16,0" ToolTip="Sfoglia cartelle" VerticalAlignment="Top" Width="22" HorizontalAlignment="Right" />
+                    <Label Content="Cartella Crop" Height="25" HorizontalAlignment="Left" Margin="13,104,0,0" x:Name="label15_Copy" VerticalAlignment="Top" Width="121" />
+                    <TextBox Height="23" Margin="151,104,55,0" Text="{Binding cfg.cartellaMaschereCrop}" VerticalAlignment="Top" />
+                    <Button Command="{Binding scegliereCartellaCommand}" CommandParameter="crop" Content="..." Margin="0,104,16,0" ToolTip="Sfoglia cartelle" VerticalAlignment="Top" Width="22" HorizontalAlignment="Right" />
+                </Grid>
                 </TabItem>
 
             <TabItem Header="5) Riservato" IsSelected="{Binding Path=isPassoRiservato,Mode=OneWay}" IsEnabled="{Binding Path=isPassoRiservato,Mode=OneWay}">

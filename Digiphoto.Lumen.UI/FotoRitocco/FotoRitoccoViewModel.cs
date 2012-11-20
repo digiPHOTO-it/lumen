@@ -588,7 +588,18 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-
+		private RelayCommand _maschereCropCommand;
+		public ICommand maschereCropCommand
+		{
+			get
+			{
+				if (_maschereCropCommand == null)
+				{
+					_maschereCropCommand = new RelayCommand(p => maschereCrop((string)p));
+				}
+				return _maschereCropCommand;
+			}
+		}
 		
 	
 
@@ -1214,6 +1225,24 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					dialogProvider.ShowError( ee.Message, "Imposssibile caricare cornice", null );
 				}
 			}
+		}
+
+		private void maschereCrop(String nomeMskCrop)
+		{
+			string nomeMaschera = Path.Combine(Configurazione.UserConfigLumen.cartellaMaschereCrop, nomeMskCrop);
+
+			//			Uri uriMask = ((BitmapImage)p).UriSource;
+			BitmapImage msk = new BitmapImage(new Uri(nomeMaschera));
+			mascheraAttiva = msk;
+
+			svuotareElencoInModifica(false);
+
+			// cambio stato. Vado in modalità di editing maschere
+			modalitaEdit = ModalitaEdit.GestioneMaschere;
+
+
+			// Mi serve per accendere i pulsanti di rifiuta e salva
+			forseInizioModifiche();
 		}
 
 		#endregion Metodi
