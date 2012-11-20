@@ -270,6 +270,23 @@ namespace Digiphoto.Lumen.Config
 			}
 		}
 
+		string _cartellaMaschereCrop;
+		public string cartellaMaschereCrop
+		{
+			get
+			{
+				return _cartellaMaschereCrop;
+			}
+			set
+			{
+				if (_cartellaMaschereCrop != value)
+				{
+					_cartellaMaschereCrop = value;
+					OnPropertyChanged("cartellaMaschereCrop");
+				}
+			}
+		}
+
 
 		/// <summary>
 		/// Questo numero indica ogni quante videate dello slide, occorre visualizzare 

@@ -68,7 +68,24 @@
 			<Button Content="-All" ToolTip="Toglie tutte le foto dalla modifica" Command="{Binding commandSvuotareElencoInModifica}" />
 			<Button Content="Svuota lista" ToolTip="Svuota la lista delle foto in attesa di essere modificate" Command="{Binding svuotareListaDaModificareCommand}"  />
 
-		</StackPanel>
+            <Separator Height="25" />
+
+            <UniformGrid Rows="2" Columns="2" Style="{StaticResource gridOneShotRitoccoStyle}">
+                <Button Command="{Binding Path=maschereCropCommand}" CommandParameter="H_4_3.png" ToolTip="H_4_3" Style="{StaticResource buttonBaseStyle}">
+                    <Image Source="/Digiphoto.Lumen.UI;component/Resources/horizontal-32x32.png" Height="32" Width="32" />
+                </Button>
+                <Button Command="{Binding Path=maschereCropCommand}" CommandParameter="V_4_3.png" ToolTip="V_4_3" Style="{StaticResource buttonBaseStyle}">
+                    <Image Source="/Digiphoto.Lumen.UI;component/Resources/vertical-32x32.png" Height="32" Width="32" />
+                </Button>
+                <Button Command="{Binding Path=maschereCropCommand}" CommandParameter="H_3_2.png" ToolTip="H_3_2" Style="{StaticResource buttonBaseStyle}">
+                    <Image Source="/Digiphoto.Lumen.UI;component/Resources/horizontal-32x32.png" Height="32" Width="32" />
+                </Button>
+                <Button Command="{Binding Path=maschereCropCommand}" CommandParameter="V_3_2.png" ToolTip="V_3_2" Style="{StaticResource buttonBaseStyle}">
+                    <Image Source="/Digiphoto.Lumen.UI;component/Resources/vertical-32x32.png" Height="32" Width="32" />
+                </Button>
+            </UniformGrid>
+
+        </StackPanel>
 
 		<Expander DockPanel.Dock="Left"  Header="Mask" ExpandDirection="Left" IsExpanded="False" Name="expanderMaschere"> <!-- Maschere -->
             <i:Interaction.Triggers>
