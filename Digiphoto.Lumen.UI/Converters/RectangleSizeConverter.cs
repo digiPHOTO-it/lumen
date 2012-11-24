@@ -45,7 +45,11 @@ namespace Digiphoto.Lumen.UI.Converters {
 			string qualeDimens = pezzi [1];  // Può valere:  W, H, L, T
 
 			// Ricavo dal vettore dei parametri delle variabili con un nome più chiaro.
-			float ratioCarta = (float)(3f / 2f);       // TODO values [0];
+			float ratioCarta = (float) values [0];
+
+			if( ratioCarta == 0 ) // probabilmente non è indicata nemmeno una stampante
+				return 0d;
+
 			double imageW = (double)values [1];
 			double imageH = (double)values [2];
 			double imageActualW = (double)values [3];
