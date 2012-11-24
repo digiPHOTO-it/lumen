@@ -405,6 +405,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			set;
 		}
 
+		public float ratioAreaStampabile {
+			get {
+				return LumenApplication.Instance.getServizioAvviato<ISpoolStampeSrv>().ratioAreaStampabile;
+			}
+		}
+
 		#endregion Proprietà
 
 
