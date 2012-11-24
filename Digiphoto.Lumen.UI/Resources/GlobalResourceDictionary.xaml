@@ -24,7 +24,7 @@
         <Setter Property="Canvas.Left">
             <Setter.Value>
                 <MultiBinding Converter="{StaticResource rectangleSizeConverter}" ConverterParameter="a;L">
-                    <Binding Path="Width" ElementName="imageFotografia"/>
+                    <Binding Path="DataContext.ratioAreaStampabile" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" />
                     <Binding Path="Width" ElementName="imageFotografia"/>
                     <Binding Path="Height" ElementName="imageFotografia"/>
                     <Binding Path="ActualWidth" ElementName="imageFotografia"/>
@@ -36,7 +36,7 @@
         <Setter Property="Canvas.Top">
             <Setter.Value>
                 <MultiBinding Converter="{StaticResource rectangleSizeConverter}" ConverterParameter="a;T">
-                    <Binding Path="Width" ElementName="imageFotografia"/>
+                    <Binding Path="DataContext.ratioAreaStampabile" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" />
                     <Binding Path="Width" ElementName="imageFotografia"/>
                     <Binding Path="Height" ElementName="imageFotografia"/>
                     <Binding Path="ActualWidth" ElementName="imageFotografia"/>
@@ -48,7 +48,7 @@
         <Setter Property="Width">
             <Setter.Value>
                 <MultiBinding Converter="{StaticResource rectangleSizeConverter}" ConverterParameter="a;W">
-                    <Binding Path="Width" ElementName="imageFotografia"/>
+                    <Binding Path="DataContext.ratioAreaStampabile" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" />
                     <Binding Path="Width" ElementName="imageFotografia"/>
                     <Binding Path="Height" ElementName="imageFotografia"/>
                     <Binding Path="ActualWidth" ElementName="imageFotografia"/>
@@ -60,7 +60,7 @@
         <Setter Property="Height">
             <Setter.Value>
                 <MultiBinding Converter="{StaticResource rectangleSizeConverter}" ConverterParameter="a;H">
-                    <Binding Path="Width" ElementName="imageFotografia"/>
+                    <Binding Path="DataContext.ratioAreaStampabile" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" />
                     <Binding Path="Width" ElementName="imageFotografia"/>
                     <Binding Path="Height" ElementName="imageFotografia"/>
                     <Binding Path="ActualWidth" ElementName="imageFotografia"/>
@@ -79,7 +79,7 @@
         <Setter Property="Canvas.Left">
             <Setter.Value>
                 <MultiBinding Converter="{StaticResource rectangleSizeConverter}" ConverterParameter="b;L">
-                    <Binding Path="Width" ElementName="imageFotografia"/>
+                    <Binding Path="DataContext.ratioAreaStampabile" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" />
                     <Binding Path="Width" ElementName="imageFotografia"/>
                     <Binding Path="Height" ElementName="imageFotografia"/>
                     <Binding Path="ActualWidth" ElementName="imageFotografia"/>
@@ -91,7 +91,7 @@
         <Setter Property="Canvas.Top">
             <Setter.Value>
                 <MultiBinding Converter="{StaticResource rectangleSizeConverter}" ConverterParameter="b;T">
-                    <Binding Path="Width" ElementName="imageFotografia"/>
+                    <Binding Path="DataContext.ratioAreaStampabile" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" />
                     <Binding Path="Width" ElementName="imageFotografia"/>
                     <Binding Path="Height" ElementName="imageFotografia"/>
                     <Binding Path="ActualWidth" ElementName="imageFotografia"/>
@@ -103,7 +103,7 @@
         <Setter Property="Width">
             <Setter.Value>
                 <MultiBinding Converter="{StaticResource rectangleSizeConverter}" ConverterParameter="b;W">
-                    <Binding Path="Width" ElementName="imageFotografia"/>
+                    <Binding Path="DataContext.ratioAreaStampabile" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" />
                     <Binding Path="Width" ElementName="imageFotografia"/>
                     <Binding Path="Height" ElementName="imageFotografia"/>
                     <Binding Path="ActualWidth" ElementName="imageFotografia"/>
@@ -115,7 +115,7 @@
         <Setter Property="Height">
             <Setter.Value>
                 <MultiBinding Converter="{StaticResource rectangleSizeConverter}" ConverterParameter="b;H">
-                    <Binding Path="Width" ElementName="imageFotografia"/>
+                    <Binding Path="DataContext.ratioAreaStampabile" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" />
                     <Binding Path="Width" ElementName="imageFotografia"/>
                     <Binding Path="Height" ElementName="imageFotografia"/>
                     <Binding Path="ActualWidth" ElementName="imageFotografia"/>
@@ -135,17 +135,11 @@
                     Height="{Binding  Path=DataContext.dimensioneIconaFoto, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
                     Width="{Binding  Path=DataContext.dimensioneIconaFoto, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" >
 
-<!--
-                <Canvas.Background>
-                    <ImageBrush ImageSource="{Binding Path=imgProvino,Converter={StaticResource imageSourceConverter}}" 
-                                x:Name="imageFotografia"
-                                Stretch="Uniform" />
-                </Canvas.Background>
--->
+                <!-- Questa è l'immagine vera con la foto -->
                 <Image Source="{Binding Path=imgProvino,Converter={StaticResource imageSourceConverter}}" Stretch="Uniform"  
-    				x:Name="imageFotografia"
-    				Width="{Binding ActualWidth, ElementName=fotoCanvas}"
-    				Height="{Binding ActualHeight, ElementName=fotoCanvas}" />
+                       x:Name="imageFotografia"
+                       Width="{Binding ActualWidth, ElementName=fotoCanvas}"
+                       Height="{Binding ActualHeight, ElementName=fotoCanvas}" />
 
 
                 <!-- Questo è il rettangolo a) di copertura per taglio area stampabile -->
