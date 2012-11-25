@@ -821,8 +821,53 @@ namespace Digiphoto.Lumen.UI {
 			OnPropertyChanged( "stoPaginando" );
 		}
 
+		/// <summary>
+		/// Questa è la prima foto della selezione multipla
+		/// </summary>
+		public Fotografia fotoCorrente {
+			get {
+				return fotografieCW.CurrentItem as Fotografia;
+			}
+		}
+
+		/// <summary>
+		/// Questa è l'elemento corrente che punta alle foto selezionate.
+		/// Mi serve per spostarmi avanti e indietro.
+		/// Voglio scorrere attraverso le foto selezionate.
+		/// </summary>
+		public Fotografia fotoCorrenteSelezionataScorrimento {
+			get;
+			private set;
+		}
+
 		void fotografie_selezioneCambiata( object sender, SelectionChangedEventArgs e ) {
 			OnPropertyChanged( "isAlmenoUnaSelezionata" );
+		}
+
+		public void calcolaFotoCorrenteSelezionataScorrimento( int direzione ) {
+
+			int posiz = -1;
+			if( fotoCorrenteSelezionataScorrimento != null )
+				posiz = fotografieCW.SelectedItems.IndexOf( fotoCorrenteSelezionataScorrimento );
+
+			if( posiz < 0 )
+				posiz = fotografieCW.SelectedItems.IndexOf( fotoCorrente );
+			
+			
+			// Ho già un valore memorizzato. Vediamo se ho un elenco su cui iterare.
+			if( posiz >= 0 ) {
+				posiz += direzione;
+				if( posiz < 0 )
+					posiz = fotografieCW.SelectedItems.Count - 1;  // fondo
+				else if( posiz >= fotografieCW.SelectedItems.Count )
+					posiz = 0;
+			}
+
+			if( posiz >= 0 ) {
+				fotoCorrenteSelezionataScorrimento = fotografieCW.SelectedItems.ElementAt( posiz );
+			} else
+				fotoCorrenteSelezionataScorrimento = null;  // non ho rimediato nulla.
+
 		}
 
 		private void bkgIdrata_DoWork( object sender, DoWorkEventArgs e ) {
