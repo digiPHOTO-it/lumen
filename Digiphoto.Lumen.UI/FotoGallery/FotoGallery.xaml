@@ -77,7 +77,11 @@
 					<Button Content="-Deselez" Command="{Binding selezionareTuttoCommand}" CommandParameter="False" Style="{StaticResource buttonBaseStyle}" />
                     <RadioButton Content="All"  Style="{StaticResource {x:Type ToggleButton}}"  Width="32" GroupName="vediSelezGrp" ToolTip="Vedi tutte le foto" Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="false" />
                     <RadioButton Content="Selez" Style="{StaticResource {x:Type ToggleButton}}"  Width="32" GroupName="vediSelezGrp" ToolTip="Vedi solo le foto selezionate" Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="true" />
-                                      
+                    <Separator />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Content="&lt;" Click="buttonScorriFotoSelez_Click" Tag="-1" ToolTip="Posiziona sulla precendete foto selezionata" Padding="3" />
+                        <Button Content="&gt;" Click="buttonScorriFotoSelez_Click" Tag="+1" ToolTip="Posiziona sulla successiva foto selezionata" Padding="3" />
+                    </StackPanel>
                 </ToolBar>
 
                 <ToolBar Band="1" BandIndex="2" Header="Pubblico">

@@ -57,7 +57,9 @@ namespace Digiphoto.Lumen.UI {
 
 		/// modifico il valore dello slider
 		private void cambiaDimensioneImmagini( double newWidth ) {
+
 			dimensioneIconeSlider.Value = newWidth;
+
 		}
 
 		#endregion
@@ -117,6 +119,21 @@ namespace Digiphoto.Lumen.UI {
 		private void LsImageGallery_PreviewMouseRightButtonDown( object sender, MouseButtonEventArgs e ) {
 			// Questo mi evita di selezionare la foto quando clicco con il destro.
 			e.Handled = true;
+		}
+
+
+
+
+
+		private void buttonScorriFotoSelez_Click( object sender, RoutedEventArgs e ) {
+
+			int direzione = Int32.Parse( ((FrameworkElement)sender).Tag.ToString() );
+
+			fotoGalleryViewModel.calcolaFotoCorrenteSelezionataScorrimento( direzione );
+
+			if( fotoGalleryViewModel.fotoCorrenteSelezionataScorrimento != null )
+				LsImageGallery.ScrollIntoView( fotoGalleryViewModel.fotoCorrenteSelezionataScorrimento );
+
 		}
 
 	}
