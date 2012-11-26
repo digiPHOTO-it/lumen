@@ -1088,11 +1088,18 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		void attivareMaschera( object p ) {
 				
 			// Siccome la bitmap selezionata è solo una thumnail di 80 pixel, rileggo il file vero effettivo.
-			string nomeFile = Path.GetFileName( ((BitmapImage)p).UriSource.LocalPath );
-			string nomeMaschera = Path.Combine( Configurazione.UserConfigLumen.cartellaMaschere, nomeFile );
+			BitmapImage bi = (BitmapImage)p;
+			string nomeFile = Path.GetFileName( bi.UriSource.LocalPath );
+			Uri uriMaschera = null;
 
-//			Uri uriMask = ((BitmapImage)p).UriSource;
-			BitmapImage msk = new BitmapImage( new Uri(nomeMaschera) );
+			string nomeMaschera = Path.Combine( Configurazione.UserConfigLumen.cartellaMaschere, nomeFile );
+			// Le maschere quelle aggiunte al volo, non sono trattate come le altre che hanno una miniatura.
+			if( File.Exists( nomeMaschera ) )
+				uriMaschera = new Uri( nomeMaschera );
+			else
+				uriMaschera = bi.UriSource;
+
+			BitmapImage msk = new BitmapImage( uriMaschera );
 			mascheraAttiva = msk;
 
 			svuotareElencoInModifica( false );
