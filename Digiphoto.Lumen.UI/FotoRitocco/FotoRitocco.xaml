@@ -175,6 +175,10 @@
 				<Image Name="imageMask" 
                                Width="500" Height="500" 
                                Source="{Binding mascheraAttiva}" />
+                
+                <Rectangle Stroke="Red" StrokeThickness="1"
+                           Width="{Binding ElementName=imageMask,Path=ActualWidth}"
+                           Height="{Binding ElementName=imageMask,Path=ActualHeight}" />
 			</Grid>
 
 			<!-- Questo è il canvas di lavoro, dove consento il drag-n-drop delle foto -->
