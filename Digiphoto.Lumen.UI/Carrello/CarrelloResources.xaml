@@ -5,8 +5,8 @@
                     xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo">
 
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="/Resources/GlobalResourceDictionary.xaml" />
-	</ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Digiphoto.Lumen.UI;component/Resources/GlobalResourceDictionary.xaml" />
+    </ResourceDictionary.MergedDictionaries>
 
 
 	<lumC:ImageSourceConverter x:Key="imageSourceConverter" />

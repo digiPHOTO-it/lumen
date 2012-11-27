@@ -4,9 +4,9 @@
                     xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo">
 
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="/Resources/GlobalResourceDictionary.xaml" />
-		<ResourceDictionary Source="/SelettoreAzioniRapide/SelettoreAzioniRapideResources.xaml" />
-	</ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Digiphoto.Lumen.UI;component/Resources/GlobalResourceDictionary.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Digiphoto.Lumen.UI;component/SelettoreAzioniRapide/SelettoreAzioniRapideResources.xaml" />
+    </ResourceDictionary.MergedDictionaries>
 
 
 	<lumC:ListVisibilityConverter x:Key="listVisibilityConverter" />
