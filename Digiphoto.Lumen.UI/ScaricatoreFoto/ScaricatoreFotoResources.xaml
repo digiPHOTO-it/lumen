@@ -5,7 +5,7 @@
                     xmlns:lum="clr-namespace:Digiphoto.Lumen.UI">
 
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="/Resources/GlobalResourceDictionary.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Digiphoto.Lumen.UI;component/Resources/GlobalResourceDictionary.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 	<lumC:BoolInverterConverter x:Key="boolInverterConverter" />
