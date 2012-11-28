@@ -171,6 +171,7 @@ namespace Digiphoto.Lumen.Config  {
 			string pp = Environment.GetFolderPath( Environment.SpecialFolder.CommonPictures );
 			userConfig.cartellaFoto = Path.Combine( pp, applicationName, "Foto" );
 			userConfig.cartellaMaschere = Path.Combine( pp, applicationName, "Maschere" );
+			userConfig.cartellaMaschereCrop = Path.Combine( userConfig.cartellaMaschere, "Crop" );
 			userConfig.cartellaPubblicita = Path.Combine( pp, applicationName, "Pubblicita" );
 			
 			userConfig.estensioniGrafiche = ".jpg;.jpeg;.png;.tif;.tiff";

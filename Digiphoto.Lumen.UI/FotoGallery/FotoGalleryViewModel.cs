@@ -464,7 +464,8 @@ namespace Digiphoto.Lumen.UI {
 
 		public float ratioAreaStampabile {
 			get {
-				return LumenApplication.Instance.getServizioAvviato<ISpoolStampeSrv>().ratioAreaStampabile;
+				ISpoolStampeSrv srv = LumenApplication.Instance.getServizioAvviato<ISpoolStampeSrv>();
+				return srv == null ? 0f : srv.ratioAreaStampabile;
 			}
 		}
 
