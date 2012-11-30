@@ -412,6 +412,15 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		/// <summary>
+		/// Il controllo classico di crop, Ciccio non lo vuole. Lo tengo per lo standard.
+		/// </summary>
+		public bool isCropClassicoVisibile {
+			get {
+				return ! Configurazione.isFuoriStandardCiccio;
+			}
+		}
+
 		#endregion Proprietà
 
 

@@ -46,15 +46,18 @@
 				<Button Name="buttonModificaConPrgEsterno" Content="Gimp" ToolTip="Modifica le foto con un programma esterno" Command="{Binding modificareConEditorEsternoCommand}" />
 			</UniformGrid>
 
-			<Separator Height="10" />
 
-			<ToggleButton Content="Selector" Name="toggleSelector" IsChecked="{Binding Path=selectorAttivo,Mode=OneWay}" IsEnabled="{Binding Path=selectorEnabled,Mode=OneWay}"
-							Checked="toggleSelector_Checked" Unchecked="toggleSelector_Unchecked" />
+            <StackPanel Orientation="Horizontal" Visibility="{Binding isCropClassicoVisibile}"  Margin="0,10,0,0" HorizontalAlignment="Center">
+                
+			    <ToggleButton Content="Selector" Name="toggleSelector" IsChecked="{Binding Path=selectorAttivo,Mode=OneWay}" IsEnabled="{Binding Path=selectorEnabled,Mode=OneWay}"
+                              Width="100"
+                              ToolTip="Seleziona l'area di ritaglio"
+                              Checked="toggleSelector_Checked" Unchecked="toggleSelector_Unchecked" />
 
+			    <Button Content="Crop" Command="{Binding croppareCommand}"/>
+            </StackPanel>
 
-			<Button Content="Crop" Command="{Binding croppareCommand}"/>
-
-			<Separator Height="25" />
+            <Separator Height="25" />
 
 			<Button Content="Torna Originale" Command="{Binding tornareOriginaleCommand}"  />
             
