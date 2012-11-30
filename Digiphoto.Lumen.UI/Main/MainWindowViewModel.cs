@@ -28,6 +28,9 @@ using Digiphoto.Lumen.UI.Main;
 using Digiphoto.Lumen.Core.Collections;
 using Digiphoto.Lumen.UI.DataEntry.DEFotografo;
 using Digiphoto.Lumen.UI.DataEntry.DEEvento;
+using System.Windows;
+using Digiphoto.Lumen.UI.Pubblico;
+using System.Text;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -93,6 +96,12 @@ namespace Digiphoto.Lumen.UI {
 			private set;
 		}
 
+		public SlideShowViewModel slideShowViewModel {
+			get {
+				return ((App)Application.Current).slideShowViewModel;
+			}
+		}
+
 		#endregion Prorietà
 
 		#region Comandi
@@ -144,19 +153,18 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-/* DACANC
-		private RelayCommand _commandHistoryInformazioniUtente;
-		public ICommand commandHistoryInformazioniUtente {
+
+		private RelayCommand _commandRivelareNumFotoSlideShow;
+		public ICommand commandRivelareNumFotoSlideShow {
 			get {
-				if( _commandHistoryInformazioniUtente == null ) {
-					_commandHistoryInformazioniUtente = new RelayCommand( param => esguireHistoryInformazioniUtente(),
-															  param => true,
-															  false );
+				if( _commandRivelareNumFotoSlideShow == null ) {
+					_commandRivelareNumFotoSlideShow = new RelayCommand( param => rivelareNumFotoSlideShow(),
+															  param => true );
 				}
-				return _commandHistoryInformazioniUtente;
+				return _commandRivelareNumFotoSlideShow;
 			}
 		}
-*/	
+
 		
 
 		#endregion Comandi
@@ -278,6 +286,21 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		void rivelareNumFotoSlideShow() {
+
+			StringBuilder sb = new StringBuilder( "Stato: " );
+			if( slideShowViewModel.isRunning )
+				sb.Append( "RUNNING" );
+			else if( slideShowViewModel.isPaused )
+				sb.Append( "IN PAUSA" );
+			else if( slideShowViewModel.isEmpty )
+				sb.Append( "VUOTO" );
+
+			if( slideShowViewModel.numFotoCorrente != null )
+				sb.Append( "\nFoto: " + slideShowViewModel.numFotoCorrente );
+
+			dialogProvider.ShowMessage( sb.ToString(), "Stato Slide Show" );
+		}
 
 		#endregion Metodi
 

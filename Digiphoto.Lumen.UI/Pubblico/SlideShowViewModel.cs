@@ -24,6 +24,9 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		private DispatcherTimer _orologio;
 
+// 		public delegate void SlideShowCambiatoEventHandler( object sender, EventArgs args );
+ 
+
 		public SlideShowViewModel() {
 			// La dimensione delle foto deve essere calcolata in automatico in base alle dimensione del canvas che le contiene
 			dimensioneIconaFoto = double.NaN;
@@ -150,6 +153,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 					_pubblicitaInCorso = value;
 					OnPropertyChanged( "pubblicitaInCorso" );
 					OnPropertyChanged( "slideShowInCorso" );
+					OnPropertyChanged( "numFotoCorrente" );
 				}
 			}
 		}
@@ -160,6 +164,12 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			}
 		}
 
+
+		public string numFotoCorrente {
+			get {
+				return (slideShowInCorso && slidesVisibili.Count > 0) ? slidesVisibili [0].etichetta : null;
+			}
+		}
 
 		#endregion   // Proprietà
 
@@ -254,6 +264,8 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		#endregion
 
+
+		
 			
 		private void orologio_Tick (object sender, EventArgs e) {
 
@@ -286,6 +298,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			} while( conta < totSlidesPerPagina && conta < slideShow.slides.Count );
 
 			OnPropertyChanged( "slidesVisibili" );
+			OnPropertyChanged( "numFotoCorrente" );
 
 			// Le foto ritornate dal servizio di ricerca, non sono idratate. 
 			// Quindi le idrato un pò alla volta quando passano da qui
