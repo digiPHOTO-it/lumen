@@ -153,6 +153,15 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		/// <summary>
+		/// Ciccio non vuole modificare i radio button
+		/// </summary>
+		public bool possoModificareSpostaCopia {
+			get {
+				return ! Configurazione.isFuoriStandardCiccio;
+			}
+		}
+
 		#endregion
 
 		#region Comandi
