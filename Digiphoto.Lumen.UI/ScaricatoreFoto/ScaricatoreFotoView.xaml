@@ -60,8 +60,9 @@
 				</GroupBox>
 
 				<GroupBox Header="Foto sorgenti" Grid.Row="1" Grid.Column="0" 
-						  VerticalAlignment="Center" HorizontalAlignment="Center">
-					<StackPanel>
+						  VerticalAlignment="Center" HorizontalAlignment="Center" 
+                          IsEnabled="{Binding possoModificareSpostaCopia,Mode=OneTime}">
+                    <StackPanel>
 						<RadioButton Content="SPOSTA files" GroupName="copiaSpostaGrp" 
                                  Command="{Binding Path=setCopiaSpostaCommad}" 
                                  CommandParameter="true"
