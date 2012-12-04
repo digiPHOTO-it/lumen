@@ -89,6 +89,14 @@
 				</StackPanel>
 			</StatusBarItem>
 
+            <StatusBarItem Grid.Column="4">
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox MaxWidth="400" Width="80" ItemsSource="{Binding dischiRimovibili,Mode=OneWay}" Name="comboBoxDischiRemovibili" SelectedItem="{Binding ejectUsbItem,Mode=TwoWay}" ToolTip="Dischi Removibili" />
+                    <Button Name="creareNuovoButton" Command="{Binding Path=ejectUsbCommand}" ToolTip="Eject Usb" Margin="5,0,0,0">
+                        <Image Source="/Digiphoto.Lumen.UI;component/Resources/usbPendrive-16x16.png" Width="16" Height="16" />
+                    </Button>
+                </StackPanel>
+            </StatusBarItem>
 		</StatusBar>
 
 		<TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Top" Name="tabControlProspettive" SelectedIndex="1" 
