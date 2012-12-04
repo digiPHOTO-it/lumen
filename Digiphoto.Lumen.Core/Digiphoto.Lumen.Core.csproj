@@ -299,6 +299,7 @@
     <Compile Include="src\Threading\ThreadedQueueBase.cs" />
     <Compile Include="src\Threading\WorkerThreadBase.cs" />
     <Compile Include="src\Util\AiutanteFoto.cs" />
+    <Compile Include="src\Util\UsbEjectWithExe.cs" />
     <Compile Include="src\Util\ErroriUtil.cs" />
     <Compile Include="src\Util\FotoRangeUtil.cs" />
     <Compile Include="src\Util\Logging\Log.cs" />
@@ -347,6 +348,11 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\RemoveDrive.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
