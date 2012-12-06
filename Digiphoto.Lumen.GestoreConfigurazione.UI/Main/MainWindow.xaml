@@ -191,6 +191,7 @@
                     <Label Content="Cartella Crop" Height="25" HorizontalAlignment="Left" Margin="13,104,0,0" x:Name="label15_Copy" VerticalAlignment="Top" Width="121" />
                     <TextBox Height="23" Margin="151,104,55,0" Text="{Binding cfg.cartellaMaschereCrop}" VerticalAlignment="Top" />
                     <Button Command="{Binding scegliereCartellaCommand}" CommandParameter="crop" Content="..." Margin="0,104,16,0" ToolTip="Sfoglia cartelle" VerticalAlignment="Top" Width="22" HorizontalAlignment="Right" />
+                    <CheckBox Content="Auto rotazione durante scarico" HorizontalAlignment="Left" Height="19" Margin="500,246,0,0" VerticalAlignment="Top" Width="184" ToolTip="Ruota automaticamente le foto verticali" IsChecked="{Binding Path=cfg.autoRotazione,Mode=TwoWay}"/>
                 </Grid>
                 </TabItem>
 

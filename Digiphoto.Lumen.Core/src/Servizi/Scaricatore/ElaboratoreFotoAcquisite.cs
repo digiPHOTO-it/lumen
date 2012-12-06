@@ -15,6 +15,9 @@ using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Imaging;
 using System.Reflection;
 using Digiphoto.Lumen.Config;
+using ExifLib;
+using Digiphoto.Lumen.Imaging.Correzioni;
+using Digiphoto.Lumen.Servizi.Ritoccare;
 
 namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
@@ -143,7 +146,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 					// vedono il percorso condiviso in maniera differente.
 					foto.nomeFile = PathUtil.nomeRelativoFoto( fileInfo );
 
-					caricaMetadatiImmagine( foto );
+					caricaMetadatiImmagine( fileInfo.FullName, foto );
 
 					objContext.Fotografie.Add( foto );
 					
@@ -174,11 +177,34 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		 * cerco di caricare almeno la data di scatto, e qualche altro
 		 * dato interessante
 		 */
-		private void caricaMetadatiImmagine( Fotografia foto ) {
-			// TODO
-			// foto.dataOraScatto =   TODO prendere dai dati exif.
-			// throw new NotImplementedException();
+		private void caricaMetadatiImmagine( string nomeFile, Fotografia foto ) {
+
+			// Instantiate the reader
+			ExifReader reader = new ExifReader( nomeFile );
+
+			DateTime dateTime;
+			if( reader.GetTagValue<DateTime>( ExifTags.DateTime, out dateTime ) ) {
+				foto.dataOraScatto = dateTime;
+			}
+
+			// Gestisco eventuale auto rotazione
+			if( Configurazione.UserConfigLumen.autoRotazione ) {
+				ushort orientamento;
+				if( reader.GetTagValue<ushort>( ExifTags.Orientation, out orientamento ) ) {
+					if( orientamento == 6 ) {
+						fotoRitoccoSrv.addCorrezione( foto, new Ruota( 90f ), false );
+					} else if( orientamento == 8 ) {
+						fotoRitoccoSrv.addCorrezione( foto, new Ruota( -90f ), false );
+					}
+				}
+			}
 		}
-	
+
+		IFotoRitoccoSrv fotoRitoccoSrv {
+			get {
+				return LumenApplication.Instance.getServizioAvviato<IFotoRitoccoSrv>();
+			}
+		}
+
 	}
 }

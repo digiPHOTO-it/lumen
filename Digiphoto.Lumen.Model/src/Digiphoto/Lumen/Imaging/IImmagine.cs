@@ -6,7 +6,7 @@ using System.Text;
 namespace Digiphoto.Lumen.Imaging {
 
 	public enum Orientamento {
-		Verticale, Orizzontale
+		Orizzontale, Verticale
 	}
 
 	public interface IImmagine : IDisposable, ICloneable {
