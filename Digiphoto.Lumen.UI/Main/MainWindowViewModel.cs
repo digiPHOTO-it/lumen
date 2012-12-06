@@ -31,6 +31,8 @@ using Digiphoto.Lumen.UI.DataEntry.DEEvento;
 using System.Windows;
 using Digiphoto.Lumen.UI.Pubblico;
 using System.Text;
+using Digiphoto.Lumen.Servizi.VolumeCambiato;
+using System.IO;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -55,6 +57,20 @@ namespace Digiphoto.Lumen.UI {
 
 			LumenApplication.Instance.bus.Publish(msgInit);
 			
+			caricaElencoDischiRimovibili();
+        }
+
+		private void ejectUsb()
+		{
+			//Recupero solo la lettera...
+			char letter = ejectUsbItem.Name.ToCharArray()[0];
+
+			if(UsbEjectWithExe.usbEject(letter))
+				dialogProvider.ShowMessage("Chiavetta rimossa con successo", "Eject Usb");
+			else
+				dialogProvider.ShowMessage("Errore rimozione chiavetta","Eject Usb Errore");		
+
+			//caricaElencoDischiRimovibili();
         }
 
 		#region Proprietà
@@ -99,6 +115,42 @@ namespace Digiphoto.Lumen.UI {
 		public SlideShowViewModel slideShowViewModel {
 			get {
 				return ((App)Application.Current).slideShowViewModel;
+			}
+		}
+
+		public ObservableCollectionEx<DriveInfo> dischiRimovibili
+		{
+			get;
+			private set;
+		}
+
+		private DriveInfo _ejectUsbItem;
+		public DriveInfo ejectUsbItem
+		{
+			get
+			{
+				return _ejectUsbItem;
+			}
+			set
+			{
+				if (_ejectUsbItem != value)
+				{
+					_ejectUsbItem = value;
+					OnPropertyChanged("ejectUsbItem");
+				}
+			}
+		}
+
+		public bool possoEjectUsb
+		{
+			get
+			{
+				bool posso = true;
+
+				if (posso && ejectUsbItem == null)
+					posso = false;
+
+				return posso;
 			}
 		}
 
@@ -153,7 +205,6 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-
 		private RelayCommand _commandRivelareNumFotoSlideShow;
 		public ICommand commandRivelareNumFotoSlideShow {
 			get {
@@ -165,7 +216,19 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		
+		private RelayCommand _ejectUsbCommand;
+		public ICommand ejectUsbCommand
+		{
+			get {
+				if (_ejectUsbCommand == null)
+				{
+					_ejectUsbCommand = new RelayCommand(param => ejectUsb(),
+															  param => possoEjectUsb,
+															  false );
+				}
+				return _ejectUsbCommand;
+			}
+		}
 
 		#endregion Comandi
 
@@ -286,6 +349,42 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private void caricaElencoDischiRimovibili()
+		{
+			DriveInfo[] dischi;
+
+			if (IsInDesignMode)
+			{
+				dischi = creaDischiFinti();
+			}
+			else
+			{
+				dischi = LumenApplication.Instance.getServizioAvviato<IVolumeCambiatoSrv>().GetDrivesUsbAttivi();
+			}
+			dischiRimovibili = new ObservableCollectionEx<DriveInfo>(dischi);
+			if (dischi.Length > 0)
+				ejectUsbItem = dischi[dischi.Length-1];
+			OnPropertyChanged("dischiRimovibili");
+		}
+
+		private DriveInfo[] creaDischiFinti()
+		{
+			return new DriveInfo[0];
+
+			// non so perchè ma non funzionano.
+			/*
+			DriveInfo d1 = new DriveInfo( "C:" );
+			d1.VolumeLabel = "DISCO 1";
+			DriveInfo d2 = new DriveInfo( "C:" );
+			d1.VolumeLabel = "DISCO 2";
+			DriveInfo d3 = new DriveInfo( "C:" );
+			d1.VolumeLabel = "DISCO 3";
+
+			DriveInfo [] ret = new DriveInfo []  { d1, d2, d3 };
+			return ret;
+			 */ 
+		}
+
 		void rivelareNumFotoSlideShow() {
 
 			StringBuilder sb = new StringBuilder( "Stato: " );
@@ -337,6 +436,11 @@ namespace Digiphoto.Lumen.UI {
 					}
 				));
 
+			}
+
+			if (msg is VolumeCambiatoMsg)
+			{
+				caricaElencoDischiRimovibili();
 			}
 
 		}
