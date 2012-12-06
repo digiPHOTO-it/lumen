@@ -83,7 +83,9 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 			}
 
 			// ricalcolo il provino
-			IImmagine nuova = gestoreImmaginiSrv.applicaCorrezione( fotografia.imgProvino, correzioneNuova );
+			IImmagine nuova = null;
+			if( fotografia.imgProvino != null )
+				nuova = gestoreImmaginiSrv.applicaCorrezione( fotografia.imgProvino, correzioneNuova );
 
 			// Ora serializzo di nuovo in stringa tutte le correzioni
 			

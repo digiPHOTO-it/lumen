@@ -5,9 +5,16 @@ namespace Digiphoto.Lumen.Imaging.Correzioni {
 
 	public class Ruota : Correzione {
 
-		public float gradi;
-		public bool scartoAutomatico;
-		public string backgroudColor;
+		public float gradi { get; set; }
+		public bool scartoAutomatico { get; set; }
+		public string backgroudColor { get; set; }
+
+		public Ruota() : base() {
+		}
+
+		public Ruota( float gradi ) : base() {
+			this.gradi = gradi;
+		}
 
 		public override bool isSommabile( Correzione altra ) {
 

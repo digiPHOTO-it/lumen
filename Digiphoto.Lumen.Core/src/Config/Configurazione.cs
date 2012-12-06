@@ -185,6 +185,7 @@ namespace Digiphoto.Lumen.Config  {
 			userConfig.paginazioneRisultatiGallery = 500;
 
 			userConfig.maxNumFotoMod = 25;
+			userConfig.autoRotazione = true;
 
 			// Geometria di default per lo slideShow
 			creaGeometriaSlideShowSDefault(userConfig);

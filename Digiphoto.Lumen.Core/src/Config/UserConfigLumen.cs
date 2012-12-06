@@ -370,6 +370,15 @@ namespace Digiphoto.Lumen.Config
 			set;
 		}
 
+		/// <summary>
+		/// Se impostato a true, quando si scaricano le foto, se queste sono verticali,
+		/// viene introdotta una rotazione di +90° o -90°
+		/// </summary>
+		public bool autoRotazione {
+			get;
+			set;
+		}
+
 		# endregion
 
 	}
