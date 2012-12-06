@@ -73,6 +73,15 @@
 		</Setter>
 	</Style>
 
+    <DataTemplate x:Key="dischiRimovibiliTemplate">
 
+        <Border BorderBrush="Red" >
+            <StackPanel Margin="3" Orientation="Horizontal">
+                <Label Content="{Binding Name}" MinWidth="20" />
+                <Label Content="{Binding VolumeLabel}" />
+            </StackPanel>
+        </Border>
+
+    </DataTemplate>
 
 </ResourceDictionary>

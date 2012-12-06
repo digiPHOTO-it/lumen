@@ -104,5 +104,15 @@ namespace Digiphoto.Lumen.Properties {
                 return ResourceManager.GetString("MessageZeroCapacity", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] RemoveDrive {
+            get {
+                object obj = ResourceManager.GetObject("RemoveDrive", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }
