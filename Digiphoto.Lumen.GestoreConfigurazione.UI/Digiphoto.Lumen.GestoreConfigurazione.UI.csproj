@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Digiphoto.Lumen.GestoreConfigurazione.UI</RootNamespace>
     <AssemblyName>Digiphoto.Lumen.GestoreConfigurazione.UI</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -250,7 +250,7 @@
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
-	<Content Include="Crops\H_3_2.png">
+    <Content Include="Crops\H_3_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Crops\V_4_3.png">
