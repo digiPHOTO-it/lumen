@@ -615,6 +615,19 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+
+		private RelayCommand _commandVedereAncoraInfoImg;
+		public ICommand commandVedereAncoraInfoImg {
+			get {
+				if( _commandVedereAncoraInfoImg == null ) {
+					_commandVedereAncoraInfoImg = new RelayCommand( p => MessageBox.Show("TODO: info"),
+																	p => true );
+				}
+				return _commandVedereAncoraInfoImg;
+			}
+		}
+
+
 		#endregion
 
 
