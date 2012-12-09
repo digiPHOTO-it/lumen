@@ -259,8 +259,11 @@ namespace Digiphoto.Lumen.UI
 
 			foreach (Fotografia fot in fotografieCW)
 			{
-				listDidascalie.Add(fot.didascalia);
-				listGiornata.Add(fot.faseDelGiornoString);
+				if (fot.didascalia!=null)
+					listDidascalie.Add(fot.didascalia);
+
+				if (fot.faseDelGiornoString!=null)
+					listGiornata.Add(fot.faseDelGiornoString);
 				if (fot.evento!=null)
 				{
 					//Serve a selezzionare l'evento dal menu rapido
@@ -269,12 +272,12 @@ namespace Digiphoto.Lumen.UI
 				}
 			}
 
-			if (listDidascalie.Distinct().Count() != 1)
+			if (listDidascalie.Distinct().Count() > 1)
 			{
 				DidascaliaEnabled = false;
 			}
 
-			if (listGiornata.Distinct().Count() != 1)
+			if (listGiornata.Distinct().Count() > 1)
 			{
 				GiornataEnabled = false;
 			}
