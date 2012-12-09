@@ -125,6 +125,37 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
+		public IList<Fotografia> fotoSelezionate
+		{
+			get
+			{
+				if (singolaFotoWorks)
+				{
+					List<Fotografia> foto = new List<Fotografia>();
+					foto.Add(ultimaFotoSelezionata);
+					return foto.ToList();
+				}
+				else
+					return fotografieCW.SelectedItems.ToList();
+			}
+		}
+
+		private Fotografia _ultimaFotoSelezionata;
+		public Fotografia ultimaFotoSelezionata
+		{
+			get
+			{
+				return _ultimaFotoSelezionata;
+			}
+			set
+			{
+				if(_ultimaFotoSelezionata != value){
+					_ultimaFotoSelezionata = value;
+					OnPropertyChanged("ultimaFotoSelezionata");
+				}
+			}
+		}
+
 		#endregion Proprieta
 
 		#region Servizi
@@ -161,7 +192,7 @@ namespace Digiphoto.Lumen.UI
 		{
 			get
 			{
-				return fotografieCW != null && fotografieCW.SelectedItems != null && fotografieCW.SelectedItems.Count > 0;
+				return fotoSelezionate != null && fotoSelezionate.Count > 0;
 			}
 		}
 
@@ -169,7 +200,7 @@ namespace Digiphoto.Lumen.UI
 		{
 			get
 			{
-				return fotografieCW != null && fotografieCW.SelectedItems.Count > 0;
+				return isAlmenoUnaSelezionata;
 			}
 		}
 
@@ -339,14 +370,9 @@ namespace Digiphoto.Lumen.UI
 		/// <returns></returns>
 		public void aggiungereAlMasterizzatore()
 		{
-			IEnumerable<Fotografia> listaSelez = creaListaFotoSelezionate();
+			IEnumerable<Fotografia> listaSelez = fotoSelezionate;
 			venditoreSrv.aggiungiMasterizzate(listaSelez);
 			deselezionareTutto();
-		}
-
-		private IList<Fotografia> creaListaFotoSelezionate()
-		{
-			return fotografieCW.SelectedItems.ToList();
 		}
 
 		private void deselezionareTutto()
@@ -377,7 +403,7 @@ namespace Digiphoto.Lumen.UI
 		/// </summary>
 		private void stampare( StampanteAbbinata stampanteAbbinata )
 		{
-			IList<Fotografia> listaSelez = creaListaFotoSelezionate();
+			IList<Fotografia> listaSelez = fotoSelezionate;
 
 			// Se ho selezionato più di una foto, e lavoro in stampa diretta, allora chiedo conferma
 			bool procediPure = true;
@@ -415,20 +441,19 @@ namespace Digiphoto.Lumen.UI
 					venditoreSrv.aggiungiStampe(listaSelez, creaParamStampaFoto(stampanteAbbinata));
 				}
 				// Spengo tutto
-				deselezionareTutto();
+				if (!singolaFotoWorks)
+					deselezionareTutto();
 			}
 		}
 
 		private void stampaRapida( StampanteAbbinata stampanteAbbinata, bool autoZoomNoBordiBianchi )
 		{
-			IList<Fotografia> listaSelez = creaListaFotoSelezionate();
-
 			using (IVenditoreSrv venditoreSpampaRapida = LumenApplication.Instance.creaServizio<IVenditoreSrv>())
 			{
 
 				venditoreSpampaRapida.creaNuovoCarrello();
 				venditoreSpampaRapida.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_RAPIDA;
-				venditoreSpampaRapida.aggiungiStampe( listaSelez, creaParamStampaFoto( stampanteAbbinata, autoZoomNoBordiBianchi) );
+				venditoreSpampaRapida.aggiungiStampe( fotoSelezionate, creaParamStampaFoto( stampanteAbbinata, autoZoomNoBordiBianchi) );
 
 				if (venditoreSpampaRapida.vendereCarrello())
 				{
@@ -440,7 +465,8 @@ namespace Digiphoto.Lumen.UI
 					dialogProvider.ShowError("Stampa diretta non riuscita.", "Errore", null);
 				}
 				// Spengo tutto
-				deselezionareTutto();
+				if (!singolaFotoWorks)
+					deselezionareTutto();
 			}
 		}
 
@@ -467,7 +493,6 @@ namespace Digiphoto.Lumen.UI
 			return p;
 		}
 		
-
 		void modificaMetadati()
 		{
 			SelettoreMetadatiDialog s = new SelettoreMetadatiDialog(fotografieCW);
@@ -482,32 +507,25 @@ namespace Digiphoto.Lumen.UI
 			s.Close();
 
 			// Spengo tutto
-			deselezionareTutto();
+			if (!singolaFotoWorks)
+				deselezionareTutto();
 		}
 
 		/// <summary>
 		/// Eliminazione definitiva delle foto selezionate.
 		/// </summary>
 		/// <param name="param">Se param è una stringa e contiene il valore "SEL" allora elimino le foto selezionate.</param>
-		void eliminareFoto( object param ) {
+		void eliminareFoto() {
 
 			IEnumerable<Fotografia> itemsToDelete = null;
 
-			if( param.Equals( "SEL" ) ) {
-
-				if( fotografieCW.SelectedItems.Count <= 0 )
+			if (fotoSelezionate.Count <= 0)
 					return;
 
-				itemsToDelete = fotografieCW.SelectedItems;
-
-			} else {
-				// TODO eliminare una sola foto, quella su cui ho premuto il tasto destro.
-				//      per ora non me ne preoccupo ed esco.
-				return;
-			}
+			itemsToDelete = fotoSelezionate;
 
 			bool procediPure = false;
-			dialogProvider.ShowConfirmation( "Sei sicuro di voler eliminare definitivamente\nle " + fotografieCW.SelectedItems.Count + " fotografie selezionate?", "Eliminazione definitiva foto",
+			dialogProvider.ShowConfirmation("Sei sicuro di voler eliminare definitivamente\nle " + fotoSelezionate.Count + " fotografie selezionate?", "Eliminazione definitiva foto",
 								  ( confermato ) => {
 									  procediPure = confermato;
 								  } );
@@ -527,7 +545,8 @@ namespace Digiphoto.Lumen.UI
 				Fotografia [] listaClone = itemsToDelete.ToArray();
 				foreach( Fotografia fDacanc in listaClone )
 					fotografieCW.Remove( fDacanc );
-				deselezionareTutto();
+				if(!singolaFotoWorks)
+					deselezionareTutto();
 			} else
 				dialogProvider.ShowError( "Impossibile eliminare le foto indicate", "ERRORE", null );
 		}
@@ -542,7 +561,7 @@ namespace Digiphoto.Lumen.UI
 		private void tornareOriginale()
 		{
 			// per ogni foto elimino le correzioni e ricreo il provino partendo dall'originale.
-			foreach (Fotografia f in fotografieCW.SelectedItems)
+			foreach (Fotografia f in fotoSelezionate)
 				fotoRitoccoSrv.tornaOriginale(f);
 		}
 
@@ -553,7 +572,7 @@ namespace Digiphoto.Lumen.UI
 				isTuttoBloccato = true;
 
 				// Accodo le stampe da modificare
-				fotoRitoccoSrv.modificaConProgrammaEsterno(fotografieCW.SelectedItems.ToArray());
+				fotoRitoccoSrv.modificaConProgrammaEsterno(fotoSelezionate.ToArray());
 			}
 			finally
 			{
@@ -584,13 +603,13 @@ namespace Digiphoto.Lumen.UI
 
 			forseInizioModifiche();
 
-			foreach (Fotografia f in fotografieCW.SelectedItems)
+			foreach (Fotografia f in fotoSelezionate)
 				fotoRitoccoSrv.addCorrezione(f, correzione);
 		}
 
 		private void rifiutareCorrezioni()
 		{
-			foreach (Fotografia f in fotografieCW.SelectedItems)
+			foreach (Fotografia f in fotoSelezionate)
 				rifiutareCorrezioni(f, false);
 			modificheInCorso = false;
 		}
@@ -630,7 +649,7 @@ namespace Digiphoto.Lumen.UI
 				addCorrezione(rc);
 			}
 
-			foreach (Fotografia f in fotografieCW.SelectedItems)
+			foreach (Fotografia f in fotoSelezionate)
 				fotoRitoccoSrv.salvaCorrezioniTransienti(f);
 
 			// Ora che ho persistito, concludo "dicamo cosi" la transazione, faccio una specie di commit.
@@ -642,7 +661,7 @@ namespace Digiphoto.Lumen.UI
 			((App)Application.Current).forseApriWindowPubblica();
 
 			if (modo.Equals("Manual", StringComparison.CurrentCultureIgnoreCase))
-				slideShowViewModel.creaShow(creaListaFotoSelezionate());
+				slideShowViewModel.creaShow(fotoSelezionate);
 			else if (modo.Equals("Auto", StringComparison.CurrentCultureIgnoreCase))
 			{
 			}
@@ -659,7 +678,7 @@ namespace Digiphoto.Lumen.UI
 		{
 			// Pubblico un messaggio indicando che ci sono delle foto da modificare.
 			FotoDaModificareMsg msg = new FotoDaModificareMsg(this);
-			msg.fotosDaModificare.InsertRange(0, creaListaFotoSelezionate());
+			msg.fotosDaModificare.InsertRange(0, fotoSelezionate);
 
 			// Per semplificare le operazioni lavoro ancora in modalità immediata altrimenti ci sono troppi tasti da premere.
 			msg.immediata = true;
@@ -671,10 +690,10 @@ namespace Digiphoto.Lumen.UI
 		private void viewFotoFullScreen()
 		{
 
-			if (fotografieCW.SelectedItems.Count <= 0)
+			if (fotoSelezionate.Count <= 0)
 				return;
 			
-			string nomeFile = AiutanteFoto.idrataImmagineDaStampare( fotografieCW.SelectedItems.First() );
+			string nomeFile = AiutanteFoto.idrataImmagineDaStampare(fotoSelezionate.First());
 
 			PanAndZoomViewModel panZommViewModel = new PanAndZoomViewModel(nomeFile);
 			PanAndZoomWindow w = new Digiphoto.Lumen.UI.PanAndZoom.PanAndZoomWindow();
@@ -685,14 +704,14 @@ namespace Digiphoto.Lumen.UI
 
 		private void clonaFotografie()
 		{
-			if (fotografieCW.SelectedItems.Count <= 0)
+			if (fotoSelezionate.Count <= 0)
 			{
 				return;
 			}
-			else if (fotografieCW.SelectedItems.Count > 1)
+			else if (fotoSelezionate.Count > 1)
 			{
 				bool procediPure = false;
-				dialogProvider.ShowConfirmation( "Sei sicuro di voler clonare " + fotografieCW.SelectedItems.Count + " foto ?", "Conferma Clone Multiplo",
+				dialogProvider.ShowConfirmation("Sei sicuro di voler clonare " + fotoSelezionate.Count + " foto ?", "Conferma Clone Multiplo",
 								  ( confermato ) => {
 									  procediPure = confermato;
 								  } );
@@ -701,7 +720,18 @@ namespace Digiphoto.Lumen.UI
 				return;
 			}
 			
-			fotoRitoccoSrv.clonaFotografie(fotografieCW.SelectedItems.ToArray<Fotografia>());
+			fotoRitoccoSrv.clonaFotografie(fotoSelezionate.ToArray<Fotografia>());
+		}
+
+		private bool singolaFotoWorks = false;
+		private void setSingolaFotoWork(Object param)
+		{
+			if(param.ToString().Equals("SINGOLA"))
+			{
+				singolaFotoWorks = true;
+			}else if(param.ToString().Equals("MULTI")){
+				singolaFotoWorks = false;
+			}
 		}
 
 		#endregion Metodi
@@ -799,7 +829,7 @@ namespace Digiphoto.Lumen.UI
 			{
 				if (_eliminareFotoCommand == null)
 				{
-					_eliminareFotoCommand = new RelayCommand(param => eliminareFoto(param),
+					_eliminareFotoCommand = new RelayCommand(param => eliminareFoto(),
 															 p => isAlmenoUnaSelezionata, false);
 				}
 				return _eliminareFotoCommand;
@@ -889,6 +919,19 @@ namespace Digiphoto.Lumen.UI
 					_clonaFotografieCommand = new RelayCommand(param => clonaFotografie(), p => isAlmenoUnaSelezionata, null);
 				}
 				return _clonaFotografieCommand;
+			}
+		}
+
+		private RelayCommand _setSingolaFotoWorkCommand;
+		public ICommand setSingolaFotoWorkCommand
+		{
+			get
+			{
+				if (_setSingolaFotoWorkCommand == null)
+				{
+					_setSingolaFotoWorkCommand = new RelayCommand(param => setSingolaFotoWork(param), param => true, null);
+				}
+				return _setSingolaFotoWorkCommand;
 			}
 		}
 
@@ -992,7 +1035,7 @@ namespace Digiphoto.Lumen.UI
 						foreach (Fotografia f in fotoDaModificareMsg.fotosDaModificare)
 						{
 							//Controllo se ho ragiunto il limite massimo di foto modificabili
-							if (fotografieCW.SelectedItems.Count == Configurazione.UserConfigLumen.maxNumFotoMod)
+							if (fotoDaModificareMsg.fotosDaModificare.Count == Configurazione.UserConfigLumen.maxNumFotoMod)
 							{
 								_giornale.Debug("Raggiunto limite massimo di foto modificabili di " + Configurazione.UserConfigLumen.maxNumFotoMod+" fotografie");
 								break;
