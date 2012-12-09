@@ -116,14 +116,36 @@ namespace Digiphoto.Lumen.UI {
 			fotoGalleryViewModel.mandareInModificaImmediata( lbItem.Content as Fotografia );
 		}
 
-		private void LsImageGallery_PreviewMouseRightButtonDown( object sender, MouseButtonEventArgs e ) {
-			// Questo mi evita di selezionare la foto quando clicco con il destro.
+		private void LsImageGallery_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+		{
+			Fotografia foto = (Fotografia)SelectItemOnRightClick(e).Content;
+			((FotoGalleryViewModel)viewModelBase).selettoreAzioniRapideViewModel.ultimaFotoSelezionata = foto;
 			e.Handled = true;
 		}
 
+		private ListBoxItem SelectItemOnRightClick(System.Windows.Input.MouseButtonEventArgs e)
+		{
+			Point clickPoint = e.GetPosition(LsImageGallery);
+			object element = LsImageGallery.InputHitTest(clickPoint);
+			ListBoxItem clickedListBoxItem = null;
+			if (element != null)
+			{
+				clickedListBoxItem = GetVisualParent<ListBoxItem>(element);
+				if (clickedListBoxItem!=null)
+					LsImageGallery.SelectedItems.Add(clickedListBoxItem.Content);
+			}
+			return clickedListBoxItem;
+		}
 
-
-
+		public T GetVisualParent<T>(object childObject) where T : Visual
+		{
+			DependencyObject child = childObject as DependencyObject;
+			while ((child != null) && !(child is T))
+			{
+				child = VisualTreeHelper.GetParent(child);
+			}
+			return child as T;
+		}
 
 		private void buttonScorriFotoSelez_Click( object sender, RoutedEventArgs e ) {
 

@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
 					xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI">
 	
 	<!--
@@ -28,6 +29,7 @@
 			</MenuItem.Icon>
 		</MenuItem>
 	</DataTemplate >
+    
     <DataTemplate x:Key="stampaRapidBordiBianchiaMenu">
         <MenuItem Header="{Binding}"
 					Command="{Binding Path=DataContext.stampaRapidaBordiBianchiCommand, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}" 
@@ -38,7 +40,22 @@
         </MenuItem>
     </DataTemplate >
     
-    <ContextMenu x:Key="azioniRapideMenu" x:Shared="true"  DataContext="{Binding Path=selettoreAzioniRapideViewModel}">
+    <ContextMenu x:Key="azioniRapideMenu" 
+                 x:Shared="true" 
+                 DataContext="{Binding Path=selettoreAzioniRapideViewModel}">
+
+        <ContextMenu.ItemsSource>
+            <CompositeCollection>
+          
+                <MenuItem Header="Singola Foto" 
+                          DataContext="{Binding}">
+
+                          <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseMove">
+                                    <i:InvokeCommandAction Command="{Binding setSingolaFotoWorkCommand}" 
+                                                           CommandParameter="SINGOLA"/>
+                                </i:EventTrigger>
+                          </i:Interaction.Triggers>
 
         <MenuItem Header="Stampa immediata...">
             
@@ -105,9 +122,91 @@
 
 		<MenuItem Header="Elimina" 
 				  Command="{Binding eliminareFotoCommand}"
+				              DataContext="{Binding}"/>
+                    </MenuItem>
+
+                <MenuItem Header="Tutte le Selezionate"
+                          DataContext="{Binding}">
+                      
+                          <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseMove">
+                                    <i:InvokeCommandAction Command="{Binding setSingolaFotoWorkCommand}" 
+                                                           CommandParameter="MULTI"/>
+                                </i:EventTrigger>
+                          </i:Interaction.Triggers>
+
+                    <MenuItem Header="Stampa immediata..."  >
+
+                        <MenuItem Header="a Formato Pieno"
+				              ItemsSource="{Binding Path=stampantiAbbinate}"
+			                  ItemTemplate="{StaticResource stampaRapidaMenu}"
+				              DataContext="{Binding}">
+                        </MenuItem>
+
+                        <MenuItem Header="con Bordi B ianchi"
+				              ItemsSource="{Binding Path=stampantiAbbinate}"
+			                  ItemTemplate="{StaticResource stampaRapidBordiBianchiaMenu}"
+				              DataContext="{Binding}">
+                        </MenuItem>
+                    </MenuItem>
+
+                    <MenuItem Header="Aggiungi al Carrello"
+				              ItemsSource="{Binding Path=stampantiAbbinate}" 
+				              ItemTemplate="{StaticResource pulsanteDiStampaTemplateContextMenu}"
+				              DataContext="{Binding}">
+                    </MenuItem>
+
+                    <MenuItem Header="Aggiungi al CD" 
+                                Command="{Binding Path=aggiungereAlMasterizzatoreCommand}" 
+						        DataContext="{Binding}"/>
+
+                    <MenuItem Header="Torna All'originale" 
+                                Command="{Binding Path=tornareOriginaleCommand}"
+						        DataContext="{Binding}"	/>
+
+                    <MenuItem Header="Ruota" >
+                        <MenuItem Header="-90°"
+					          Command="{Binding Path=ruotareCommand}" 
+					          CommandParameter="-90"
+					          DataContext="{Binding}">
+                        </MenuItem>
+                        <MenuItem Header="+90°"
+					          Command="{Binding Path=ruotareCommand}" 
+					          CommandParameter="+90"
+					          DataContext="{Binding}">
+                        </MenuItem>
+                    </MenuItem>
+
+                    <MenuItem Header="Modifica Metadati" 
+				          Command="{Binding Path=modificaMetadatiCommand}"
 				  CommandParameter="SEL" 
 				  DataContext="{Binding}"/>
+
+                    <MenuItem Header="Modifica con Programma Esterno" 
+				          Command="{Binding Path=modificareConEditorEsternoCommand}"
+				          DataContext="{Binding}"/>
+
+                    <MenuItem Header="Aggiungi allo slide show" 
+				          Command="{Binding caricareSlideShowCommand}" 
+				          CommandParameter="Manual" 
+				          DataContext="{Binding}"/>
+
+                    <MenuItem Header="Vedi a tutto schermo"
+				          Command="{Binding Path=viewFotoFullScreenCommand}" 
+				          DataContext="{Binding}"/>
+
+                    <MenuItem Header="Clona" 
+                        Command="{Binding Path=clonaFotografieCommand}"
+						DataContext="{Binding}"	/>
+
+                    <MenuItem Header="Elimina" 
+				          Command="{Binding eliminareFotoCommand}"
+				          DataContext="{Binding}"/>
+                </MenuItem>
+
+            </CompositeCollection>
+        </ContextMenu.ItemsSource>
+        
 	</ContextMenu>
 
-	
 </ResourceDictionary>
