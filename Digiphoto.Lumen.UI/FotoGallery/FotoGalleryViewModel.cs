@@ -34,6 +34,7 @@ using Digiphoto.Lumen.UI.Util;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
 using Digiphoto.Lumen.Servizi.Ritoccare.Clona;
+using Digiphoto.Lumen.Eventi;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -1115,6 +1116,5 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		#endregion
-
 	}
 }

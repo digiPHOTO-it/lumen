@@ -11,12 +11,15 @@ using Digiphoto.Lumen.Database;
 using Digiphoto.Lumen.Eventi;
 
 namespace Digiphoto.Lumen.UI {
-	
-	public class SelettoreEventoViewModel : ViewModelBase {
+
+	public class SelettoreEventoViewModel : ViewModelBase, IObserver<EntityCambiataMsg> {
 
 		public SelettoreEventoViewModel() {
 
 			eventi = new ObservableCollection<Evento>();
+
+			IObservable<EntityCambiataMsg> observable = LumenApplication.Instance.bus.Observe<EntityCambiataMsg>();
+			observable.Subscribe( this );
 
 			refreshEventi();
 
@@ -58,6 +61,21 @@ namespace Digiphoto.Lumen.UI {
 
 		#region Metodi
 		private void refreshEventi() {
+			refreshEventi( false );
+		}
+
+		private void refreshEventi( object param ) {
+
+			// Decido se devo dare un avviso all'utente
+			Boolean avvisami = false;
+
+			if( param != null ) {
+				if( param is Boolean )
+					avvisami = (Boolean)param;
+				if( param is string )
+					Boolean.TryParse( param.ToString(), out avvisami );
+			}
+			// ---
 
 			IEnumerable<Evento> lista;
 			if( IsInDesignMode ) {
@@ -72,7 +90,7 @@ namespace Digiphoto.Lumen.UI {
 			foreach( Evento ev in lista )
 				eventi.Add( ev );
 
-			if( dialogProvider != null )
+			if( avvisami && dialogProvider != null )
 				dialogProvider.ShowMessage( "Ricaricati " + eventi.Count + " elementi", "Successo" );
 		}
 
@@ -80,9 +98,9 @@ namespace Digiphoto.Lumen.UI {
 
 			// Salvo nel database
 			eventiReporitorySrv.addNew( nuovoEvento );
-				
-			// Aggiungo alla collezione visuale (per non dover rifare la query)
-			eventi.Add( nuovoEvento );
+
+			eventiReporitorySrv.saveChanges();
+
 
 			// Prima di azzerare l'oggetto, mi prendo il messaggio da visualizzare
 			string testoMsg = "Creato nuovo evento: " + nuovoEvento.descrizione;
@@ -127,7 +145,7 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand refreshEventiCommand {
 			get {
 				if( _refreshEventiCommand == null ) {
-					_refreshEventiCommand = new RelayCommand( param => this.refreshEventi(), null, false );
+					_refreshEventiCommand = new RelayCommand( param => this.refreshEventi( param ), null, false );
 				}
 				return _refreshEventiCommand;
 			}
@@ -141,5 +159,17 @@ namespace Digiphoto.Lumen.UI {
 
 		#endregion
 
+
+		public void OnCompleted() {
+		}
+
+		public void OnError( Exception error ) {
+		}
+
+		public void OnNext( EntityCambiataMsg value ) {
+			// Qualcuno ha spataccato nella tabella degli eventi. Rileggo tutto
+			if( value.type == typeof( Evento ) )
+				refreshEventiCommand.Execute( false );
+		}
 	}
 }

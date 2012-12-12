@@ -33,7 +33,7 @@
                      Grid.Row="0" Grid.Column="0" />
             
 
-        <Button Name="refreshButton" Content="Rileggi" Command="{Binding Path=rileggereFormatiCartaCommand}" 
+        <Button Name="refreshButton" Content="Rileggi" Command="{Binding Path=rileggereFormatiCartaCommand}"  CommandParameter="True"
                 Grid.Row="1" Grid.Column="0" Width="100" Margin="0,4"/>
 
                 <Expander IsExpanded="False" Header="Crea nuovo formato carta" 

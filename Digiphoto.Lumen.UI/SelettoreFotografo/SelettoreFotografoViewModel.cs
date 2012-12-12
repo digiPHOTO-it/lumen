@@ -10,10 +10,11 @@ using Digiphoto.Lumen.Database;
 using System;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Util;
+using Digiphoto.Lumen.Eventi;
 
 namespace Digiphoto.Lumen.UI {
 
-	public class SelettoreFotografoViewModel : ViewModelBase {
+	public class SelettoreFotografoViewModel : ViewModelBase, IObserver<EntityCambiataMsg> {
 
 		public SelettoreFotografoViewModel() {
 
@@ -21,6 +22,9 @@ namespace Digiphoto.Lumen.UI {
 
 			// istanzio la lista vuota
 			fotografi = new ObservableCollection<Fotografo>();
+
+			IObservable<EntityCambiataMsg> observable = LumenApplication.Instance.bus.Observe<EntityCambiataMsg>();
+			observable.Subscribe( this );
 
 			rileggereFotografi();
 			istanziaNuovoFotografo();
@@ -76,7 +80,23 @@ namespace Digiphoto.Lumen.UI {
 		#endregion
 
 		#region Metodi
+
 		private void rileggereFotografi() {
+			rileggereFotografi( false );
+		}
+
+		private void rileggereFotografi( object param ) {
+
+			// Decido se devo dare un avviso all'utente
+			Boolean avvisami = false;
+
+			if( param != null ) {
+				if( param is Boolean )
+					avvisami = (Boolean)param;
+				if( param is string )
+					Boolean.TryParse( param.ToString(), out avvisami );
+			}
+			// ---
 
 			IEnumerable<Fotografo> listaF = null;
 			if( IsInDesignMode ) {
@@ -95,7 +115,7 @@ namespace Digiphoto.Lumen.UI {
 			foreach( Fotografo f in listaF )
 				fotografi.Add( f );
 
-			if( dialogProvider != null )
+			if( avvisami && dialogProvider != null )
 				dialogProvider.ShowMessage( "Riletti " + fotografi.Count + " fotografi", "Successo" );
 		}
 
@@ -160,7 +180,7 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand rileggereFotografiCommand {
 			get {
 				if( _rileggereFotografiCommand == null ) {
-					_rileggereFotografiCommand = new RelayCommand( param => this.rileggereFotografi(), null, false );
+					_rileggereFotografiCommand = new RelayCommand( param => this.rileggereFotografi( param ), null, false );
 				}
 				return _rileggereFotografiCommand;
 			}
@@ -176,5 +196,18 @@ namespace Digiphoto.Lumen.UI {
 		#endregion
 
 
+
+		public void OnCompleted() {
+		}
+
+		public void OnError( Exception error ) {
+		}
+
+		public void OnNext( EntityCambiataMsg value ) {
+
+			// Qualcuno ha spataccato nella tabella dei fotografi. Rileggo tutto
+			if( value.type == typeof( Fotografo ) )
+				rileggereFotografiCommand.Execute( false );
+		}
 	}
 }
