@@ -1008,6 +1008,8 @@ namespace Digiphoto.Lumen.UI {
 			msg.immediata = true;
 
 			LumenApplication.Instance.bus.Publish( msg );
+
+			deselezionareTutto();
 		
 		}
 
