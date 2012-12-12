@@ -8,6 +8,7 @@ using log4net;
 using Digiphoto.Lumen.Database;
 using System.Data.Objects;
 using System.Data.Entity.Validation;
+using Digiphoto.Lumen.Eventi;
 
 namespace Digiphoto.Lumen.Servizi.EntityRepository {
 
@@ -62,7 +63,16 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 		public int saveChanges() {
 
 			// Non fare try-catch. Se fallice deve saltare con eccezione.
-			return UnitOfWorkScope.CurrentObjectContext.SaveChanges();
+			int quanti =  UnitOfWorkScope.CurrentObjectContext.SaveChanges();
+
+			// Notifico tutta l'applicazione che è successo qualcosa
+			if( quanti > 0 ) {
+				EntityCambiataMsg ecm = new EntityCambiataMsg( this );
+				ecm.type = typeof( TEntity );
+				pubblicaMessaggio( ecm );
+			}
+
+			return quanti;
 
 		}
 
