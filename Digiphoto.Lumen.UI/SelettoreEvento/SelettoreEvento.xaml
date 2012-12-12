@@ -53,7 +53,7 @@
 					<Image Source="/Digiphoto.Lumen.UI;component/Resources/add-16x16.png" Width="16" Height="16" />
 				</Button>
 
-				<Button Name="refreshEventiButton" ToolTip="Rileggi" Command="{Binding Path=refreshEventiCommand}" Grid.Row="0" Grid.Column="2">
+				<Button Name="refreshEventiButton" ToolTip="Rileggi" Command="{Binding Path=refreshEventiCommand}" CommandParameter="True" Grid.Row="0" Grid.Column="2">
 					<Image Source="/Digiphoto.Lumen.UI;component/Resources/refresh-16x16.png" Width="16" Height="16" />
 				</Button>
 			</Grid>

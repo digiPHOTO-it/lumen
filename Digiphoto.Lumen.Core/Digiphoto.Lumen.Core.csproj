@@ -177,6 +177,7 @@
     <Compile Include="src\Database\UnitOfWorkScope.cs" />
     <Compile Include="src\DatiDiEsempio\DataGen.cs" />
     <Compile Include="src\DatiDiEsempio\ParoleCasuali.cs" />
+    <Compile Include="src\Eventi\EntityCambiataMsg.cs" />
     <Compile Include="src\Eventi\InformazioneUtente.cs" />
     <Compile Include="src\Eventi\Messaggio.cs" />
     <Compile Include="src\Imaging\Correzioni\BiancoNero.cs" />

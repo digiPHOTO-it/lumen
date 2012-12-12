@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Runtime.CompilerServices;
 using Digiphoto.Lumen.Database;
 using Digiphoto.Lumen.Util;
+using Digiphoto.Lumen.Eventi;
 
 namespace Digiphoto.Lumen.UI.DataEntry {
 
