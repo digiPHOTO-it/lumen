@@ -13,10 +13,11 @@ using System.Windows;
 using Digiphoto.Lumen.Core.Database;
 
 using Digiphoto.Lumen.Database;
+using Digiphoto.Lumen.Eventi;
 
 namespace Digiphoto.Lumen.UI
 {
-    public class SelettoreFormatoCartaViewModel : ViewModelBase
+    public class SelettoreFormatoCartaViewModel : ViewModelBase, IObserver<EntityCambiataMsg>
     {
 
 		public SelettoreFormatoCartaViewModel()
@@ -25,6 +26,9 @@ namespace Digiphoto.Lumen.UI
 
 			// istanzio la lista vuota
             formatiCarta = new ObservableCollection<FormatoCarta>();
+
+			IObservable<EntityCambiataMsg> observable = LumenApplication.Instance.bus.Observe<EntityCambiataMsg>();
+			observable.Subscribe( this );
 
 			rileggereFormatiCarta();
 			istanziaNuovoFormatoCarta();
@@ -82,6 +86,22 @@ namespace Digiphoto.Lumen.UI
 
 		#region Metodi
 		private void rileggereFormatiCarta() {
+			rileggereFormatiCarta( false );
+		}
+
+		private void rileggereFormatiCarta( object param ) {
+
+			// Decido se devo dare un avviso all'utente
+			Boolean avvisami = false;
+
+			if( param != null ) {
+				if( param is Boolean )
+					avvisami = (Boolean)param;
+				if( param is string )
+					Boolean.TryParse( param.ToString(), out avvisami );
+			}
+			// ---
+
 
 			IEnumerable<FormatoCarta> listaF = null;
 			if( IsInDesignMode ) {
@@ -101,7 +121,7 @@ namespace Digiphoto.Lumen.UI
                 formatiCarta.Add(f);
             }
 
-			if( dialogProvider != null )
+			if( avvisami && dialogProvider != null )
 				dialogProvider.ShowMessage( "Riletti " + formatiCarta.Count() + " formati carta", "Successo" );
 		}
 
@@ -152,7 +172,7 @@ namespace Digiphoto.Lumen.UI
 		public ICommand rileggereFormatiCartaCommand {
 			get {
 				if( _rileggereFormatiCartaCommand == null ) {
-					_rileggereFormatiCartaCommand = new RelayCommand( param => this.rileggereFormatiCarta(), null, false );
+					_rileggereFormatiCartaCommand = new RelayCommand( param => this.rileggereFormatiCarta( param ), null, false );
 				}
 				return _rileggereFormatiCartaCommand;
 			}
@@ -165,5 +185,22 @@ namespace Digiphoto.Lumen.UI
 		}
 
 		#endregion
-    }
+
+		#region Interfaccia IObserver
+
+		public void OnCompleted() {
+		}
+
+		public void OnError( Exception error ) {
+		}
+
+		public void OnNext( EntityCambiataMsg value ) {
+			
+			// Qualcuno ha spataccato nella tabella dei formati carta. Rileggo tutto
+			if( value.type == typeof( FormatoCarta ) )
+				rileggereFormatiCartaCommand.Execute( false );
+		}
+
+		#endregion Interfaccia IObserver
+	}
 }

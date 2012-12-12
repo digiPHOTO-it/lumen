@@ -64,7 +64,7 @@
 					<Image Source="/Digiphoto.Lumen.UI;component/Resources/add-16x16.png" Height="16" />
 				</Button>
 
-				<Button Name="refreshEventiButton" ToolTip="Rileggi" Command="{Binding Path=refreshEventiCommand}">
+                <Button Name="refreshFotografiButton" ToolTip="Rileggi" Command="{Binding Path=rileggereFotografiCommand}" CommandParameter="True">
 					<Image Source="/Digiphoto.Lumen.UI;component/Resources/refresh-16x16.png" Height="16" />
 				</Button>
 			</StackPanel>
