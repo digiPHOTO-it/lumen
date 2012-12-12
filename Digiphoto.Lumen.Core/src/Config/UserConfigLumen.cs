@@ -308,6 +308,15 @@ namespace Digiphoto.Lumen.Config
 			set;
 		}
 
+		/// <summary>
+		/// Questo valore indica la lunghezza della lista FIFO
+		/// </summary>
+		public int lungFIFOFotoMod
+		{
+			get;
+			set;
+		}
+
 		# region SlideShowParam
 
 		public short deviceEnum
