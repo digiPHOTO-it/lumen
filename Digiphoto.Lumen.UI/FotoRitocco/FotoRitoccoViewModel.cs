@@ -1329,7 +1329,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		private void gestisciNuovaFotoMsg( NuovaFotoMsg nuovaFotoMsg) {
 
-			if( AiutanteFoto.isMaschera( nuovaFotoMsg.foto ) ) {
+			if (nuovaFotoMsg.descrizione.Contains(Configurazione.ID_FOTOGRAFO_ARTISTA) || AiutanteFoto.isMaschera(nuovaFotoMsg.foto))
+			{
 				// E' stata memorizzata una nuova fotografia che in realtà è una cornice
 				addFotoDaModificare( nuovaFotoMsg.foto );
 
