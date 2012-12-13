@@ -313,6 +313,11 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 				// Libero la memoria occupata dalle immagini, altrimenti esplode.
 				AiutanteFoto.disposeImmagini(fotoMsk, IdrataTarget.Tutte);
+
+				// Notifico la lista delle foto da mandare in modifica
+				NuovaFotoMsg msg = new NuovaFotoMsg(this, fotoMsk);
+				msg.descrizione += Configurazione.ID_FOTOGRAFO_ARTISTA;
+				LumenApplication.Instance.bus.Publish(msg);
 			}
 		}
 
