@@ -6,5 +6,6 @@ namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 		void AddControl(Selector selector, int maxSelectedItem);
 		void AddControl( Selector selector);
 		void RemoveControl( Selector selector );
+		void RefreshSelectedItemWithMemory();
 	}
 }

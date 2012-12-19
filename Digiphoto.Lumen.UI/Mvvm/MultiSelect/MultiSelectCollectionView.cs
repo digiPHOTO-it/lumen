@@ -216,6 +216,36 @@ namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 		}
 
 		/// <summary>
+		///  Metodo che mi consente di effettuare il refresh della lista mantenendo le vecchie selezioni
+		/// </summary>
+		public void RefreshSelectedItemWithMemory()
+		{
+			// Update the UI control.
+			foreach (Control control in controls)
+			{
+				MultiSelector multiSelector = control as MultiSelector;
+				ListBox listBox = control as ListBox;
+
+				if (multiSelector != null)
+				{
+					foreach (T item in SelectedItems)
+					{
+						multiSelector.SelectedItems.Add(item);
+					}
+				}
+				else if (listBox != null)
+				{
+
+					foreach (T item in SelectedItems)
+					{
+						listBox.SelectedItems.Add(item);
+					}
+				}
+			}
+		}
+
+
+		/// <summary>
 		///  Per un motivo che non mi è chiaro,
 		///  quando attivo il filtro, il componente UI per esempio la ListBox, mi fa scatenare
 		///  un cambio di selezione, dove vengono rimossi alcuni elementi.
