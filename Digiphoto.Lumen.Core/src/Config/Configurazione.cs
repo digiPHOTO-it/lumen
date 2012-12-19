@@ -22,7 +22,7 @@ namespace Digiphoto.Lumen.Config  {
 
 
 		// Codice del fotografo usato per il fotoritocco
-		public static readonly string ID_FOTOGRAFO_ARTISTA = "_Photo_Retouch";
+		public static readonly string ID_FOTOGRAFO_ARTISTA = "Operator1";
 		public static readonly string companyName = "digiPHOTO.it";  // si potrebbero leggere dall'Assembly Info
 		public static readonly string applicationName = "Lumen";     // si potrebbero leggere dall'Assembly Info
 

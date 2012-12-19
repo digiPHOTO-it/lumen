@@ -1040,21 +1040,18 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 					if( quanti > 0 )
 						msg += "\nConfigurazione PdV salvata";
 
-					bool esciPure = false;
+					bool lanciaPrg = false;
 
-					if (!Configurazione.isFuoriStandardCiccio)
-						dialogProvider.ShowMessage(msg, "OK");
-					else
-						dialogProvider.ShowConfirmation(msg + "\nConfermi chiusura del programma", "OK", (
-							confermato) =>
-						{
-							esciPure = confermato;
-						});
-
-					if (esciPure)
+					dialogProvider.ShowConfirmation(msg + "\nLanciare applicazione Lumen ?", "Uscita", (
+						confermato) =>
 					{
-						this.OnRequestClose();	
-					}
+						lanciaPrg = confermato;
+					});
+
+					if( lanciaPrg )
+						System.Diagnostics.Process.Start( "Digiphoto.Lumen.UI.exe" );
+
+					this.OnRequestClose();	
 
 				} catch( DbEntityValidationException dbeve ) {
 					

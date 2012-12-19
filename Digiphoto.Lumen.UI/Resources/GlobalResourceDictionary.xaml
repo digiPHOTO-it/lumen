@@ -158,13 +158,14 @@
                     <Image.ToolTip>
                         <TextBlock >
                             <TextBlock.Text>
-                                <MultiBinding StringFormat="Num = {0}&#x0a;Gio =  {1:dd/MM/yy}&#x0a;Ope = {2}&#x0a;- - - - -&#x0a;Fas = {3}&#x0a;Did = {4}&#x0a;Eve = {5}">
+                                <MultiBinding StringFormat="Num = {0}&#x0a;Gio =  {1:dd/MM/yy}&#x0a;Ope = {2}&#x0a;- - - - -&#x0a;Fas = {3}&#x0a;Did = {4}&#x0a;Eve = {5}&#x0a;Time = {6}">
                                     <Binding Path="numero" />
                                     <Binding Path="giornata" />
                                     <Binding Path="fotografo.id" />
                                     <Binding Path="faseDelGiornoString" />
                                     <Binding Path="didascalia" />
                                     <Binding Path="evento.descrizione" FallbackValue="" />
+                                    <Binding Path="dataOraAcquisizione" />
                                 </MultiBinding>
                             </TextBlock.Text>
                             
