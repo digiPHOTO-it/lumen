@@ -112,9 +112,9 @@ namespace Digiphoto.Lumen.Applicazione {
 				artista.id = Configurazione.ID_FOTOGRAFO_ARTISTA;
 				artista.umano = false;
 				artista.attivo = true;
-				artista.cognomeNome = "Photo Retouch";
+				artista.cognomeNome = "Operator1";
 				artista.iniziali = "XY";
-				artista.note = "used for masks and frames";
+				artista.note = "default operator";
 				repo.addNew( artista );
 				repo.saveChanges();
 			}
