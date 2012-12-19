@@ -287,7 +287,6 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare.Clona {
 		{
 			int count = 0;
 
-			
 			// "2012-10-29.Gio\\EDOARDO.Fot"
 			string subDirFileOrig = Path.GetDirectoryName(foto.nomeFile);
 			// "2012-10-29.Gio\\EDOARDO.Fot\\.Thumb"
@@ -295,7 +294,11 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare.Clona {
 			// "2012-10-29.Gio\EDOARDO.Fot\.Modif"
 			string subDirFileRisult = Path.Combine(subDirFileOrig, PathUtil.MODIF);
 
-			FileInfo fileInfoSrc = isClone(foto) ? getOriginalFileNameFromClone(foto) : new FileInfo(foto.nomeFile);
+			FileInfo fileInfoSrc = new FileInfo(foto.nomeFile);
+
+			if (isClone(foto))
+				fileInfoSrc = getOriginalFileNameFromClone(foto);
+
 			// "e (10).jpg"
 			string nomeFileOrig = fileInfoSrc.Name;
 
@@ -308,7 +311,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare.Clona {
 		}
 
 		/**
-		 * Mi ricalcolo il nuovo numero da qui partire
+		 * Mi ricalcolo il nuovo numero da cui partire
 		 */
 		private static int getMaxCount(string path, string nomeFileOrigWithoutExtension)
 		{

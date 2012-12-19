@@ -995,7 +995,27 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		void addFotoDaModificare( Fotografia f ) {
 
 			if( this.fotografieDaModificare.Contains( f ) == false ) {
-				//				fotografieDaModificareCW.AddNewItem( f );
+				//fotografieDaModificareCW.AddNewItem( f );
+				if (fotografieDaModificare.Count >= Configurazione.UserConfigLumen.lungFIFOFotoMod)
+				{
+					_giornale.Debug("Ho raggiunto il massimo numero di foto da modificare di " + Configurazione.UserConfigLumen.lungFIFOFotoMod + " fotografie");
+
+					//Recupero l'ultima foto che non è tra quelle selezionate
+
+					var listaIds = from le in fotografieDaModificareCW.SelectedItems
+								   select le.id;
+
+					Fotografia isDelFoto = null;
+					isDelFoto = fotografieDaModificare.Where(ff => !listaIds.Contains(ff.id)).Last<Fotografia>();
+
+					if (isDelFoto == null)
+					{
+						_giornale.Debug("Non ho trovato nessuna foto da eliminare dalla coda");
+
+					}
+					this.fotografieDaModificare.Remove(isDelFoto);
+				}
+
 				this.fotografieDaModificare.Insert( 0, f );
 
 				AiutanteFoto.idrataImmaginiFoto( f, IdrataTarget.Provino );
@@ -1309,7 +1329,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		private void gestisciNuovaFotoMsg( NuovaFotoMsg nuovaFotoMsg) {
 
-			if( AiutanteFoto.isMaschera( nuovaFotoMsg.foto ) ) {
+			if (nuovaFotoMsg.descrizione.Contains(Configurazione.ID_FOTOGRAFO_ARTISTA) || AiutanteFoto.isMaschera(nuovaFotoMsg.foto))
+			{
 				// E' stata memorizzata una nuova fotografia che in realtà è una cornice
 				addFotoDaModificare( nuovaFotoMsg.foto );
 
@@ -1332,21 +1353,23 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				if( this.modalitaEdit == ModalitaEdit.DefaultFotoRitocco ) {
 					// ... e non ho nessuna altra modifica in corso ...
 					if( modificheInCorso == false ) {
-						fotografieDaModificareCW.SelectedItems.Clear();
+						//fotografieDaModificareCW.SelectedItems.Clear();
 						foreach( Fotografia f in fotoDaModificareMsg.fotosDaModificare )
 						{
 							// Verifico se ho raggiunto il numero massimo di foto da modificare
 							if( Configurazione.UserConfigLumen.maxNumFotoMod > 0 ) {
-								if( fotografieDaModificareCW.SelectedItems.Count > Configurazione.UserConfigLumen.maxNumFotoMod - 1 ) {
+								if (fotografieDaModificareCW.SelectedItems.Count >= Configurazione.UserConfigLumen.maxNumFotoMod)
+								{
 									_giornale.Debug( "Raggiunto il limite massimo di foto " + Configurazione.UserConfigLumen.maxNumFotoMod + " foto modificabili Contemporaneamente" );
 									dialogProvider.ShowMessage( "Hai raggiunto il numero massimo di foto modificabili di " + Configurazione.UserConfigLumen.maxNumFotoMod + " foto\nLe foto in eccesso verranno aggiunte ma no selezionate", "AVVISO" );
 									break;
 								}
-							}
+							 }
 
 							fotografieDaModificareCW.SelectedItems.Add( f );
 						}
-						fotografieDaModificareCW.Refresh();
+
+						fotografieDaModificareCW.RefreshSelectedItemWithMemory();
 					}
 				}
 				
@@ -1356,7 +1379,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				LumenApplication.Instance.bus.Publish( cambioPaginaMsg );
 			}
 		}
-
 
 		void onFotografieDaModificareSelectionChanged( object sender, SelectionChangedEventArgs e ) {
 			// Provoco la rilettura delle property che determinano lo stato dei pulsanti.
