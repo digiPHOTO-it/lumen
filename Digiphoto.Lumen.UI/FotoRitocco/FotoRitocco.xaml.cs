@@ -69,6 +69,31 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					bindaSliderRuota();
 		}
 
+		private void sliderDominanti_ValueChanged( object sender, RoutedPropertyChangedEventArgs<double> e ) {
+
+			if( _viewModel != null )
+				if( _viewModel.forseCambioEffettoCorrente( typeof( DominantiEffect ) ) )
+					bindaSlidersDominanti();
+		}
+
+		/// <summary>
+		/// Associo lo slider all'effetto corrente
+		/// </summary>
+		/// <param name="qualeRGB">Una stringa contenente : "R", "G", "B" </param>
+		private void bindaSlidersDominanti() {
+			bindaSliderDominanteRGB( sliderDominanteRed,   DominantiEffect.RedProperty );
+			bindaSliderDominanteRGB( sliderDominanteGreen, DominantiEffect.GreenProperty );
+			bindaSliderDominanteRGB( sliderDominanteBlue,  DominantiEffect.BlueProperty );
+		}
+
+		private void bindaSliderDominanteRGB( Slider sliderSorgente, DependencyProperty prop ) {
+			Binding binding = new Binding();
+			binding.Source = sliderSorgente;
+			binding.Mode = BindingMode.TwoWay;  // Mi serve bidirezionale perché posso resettare tutto dal ViewModel
+			binding.Path = new PropertyPath( Slider.ValueProperty );
+			BindingOperations.SetBinding( _viewModel.dominantiEffect, prop, binding );
+		}
+
 		private void bindaSliderRuota() {
 
 			// Bindings con i componenti per i parametri
@@ -754,6 +779,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			get;
 			private set;
 		}
+
 
 	}
 }

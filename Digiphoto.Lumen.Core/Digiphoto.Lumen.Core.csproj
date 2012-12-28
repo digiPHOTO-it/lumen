@@ -193,6 +193,7 @@
     <Compile Include="src\Imaging\Correzioni\Crop.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="src\Imaging\Correzioni\Dominante.cs" />
     <Compile Include="src\Imaging\Correzioni\Luce.cs" />
     <Compile Include="src\Imaging\Correzioni\Resize.cs" />
     <Compile Include="src\Imaging\Correzioni\Ruota.cs" />

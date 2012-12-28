@@ -249,6 +249,25 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		public DominantiEffect dominantiEffect {
+
+			get {
+				DominantiEffect ret = null;
+
+				if( effetti != null ) {
+
+					foreach( ShaderEffectBase effetto in effetti ) {
+						if( effetto is DominantiEffect ) {
+							ret = effetto as DominantiEffect;
+							break;
+						}
+					}
+				}
+
+				return ret;
+			}
+		}
+
 		public bool isSepiaChecked {
 			get {
 				return  effetti != null && effetti.Exists( e => e is SepiaEffect );
@@ -807,8 +826,14 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					luminosita = ((LuminositaContrastoEffect)effetto).Brightness,
 					contrasto = ((LuminositaContrastoEffect)effetto).Contrast
 				};
-
+			} else if( effetto is DominantiEffect ) {
+				ret = new Dominante {
+					rosso = ((DominantiEffect)effetto).Red,
+					verde = ((DominantiEffect)effetto).Green,
+					blu = ((DominantiEffect)effetto).Blue
+				};
 			}
+
 
 			return ret;
 		}
@@ -1006,14 +1031,18 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 								   select le.id;
 
 					Fotografia isDelFoto = null;
-					isDelFoto = fotografieDaModificare.Where(ff => !listaIds.Contains(ff.id)).Last<Fotografia>();
+//					if( listaIds.Count() > 0 ) {
+						var qq = fotografieDaModificare.Where( ff => !listaIds.Contains( ff.id ) );
+						if( qq != null && qq.Count() > 0 )
+							isDelFoto = qq.Last();
+//					}
 
 					if (isDelFoto == null)
 					{
 						_giornale.Debug("Non ho trovato nessuna foto da eliminare dalla coda");
 
-					}
-					this.fotografieDaModificare.Remove(isDelFoto);
+					} else
+						this.fotografieDaModificare.Remove(isDelFoto);
 				}
 
 				this.fotografieDaModificare.Insert( 0, f );
