@@ -46,7 +46,12 @@
 				<Button Name="buttonModificaConPrgEsterno" Content="Gimp" ToolTip="Modifica le foto con un programma esterno" Command="{Binding modificareConEditorEsternoCommand}" />
 			</UniformGrid>
 
-
+<StackPanel DockPanel.Dock="Right"  Style="{StaticResource panelLeveRitoccoStyle}">
+    <Slider Name="sliderDominanteRed"   ToolTip="Rosso" Minimum="-1" Maximum="1" Value="0" ValueChanged="sliderDominanti_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.2" SmallChange="0.05" />
+    <Slider Name="sliderDominanteGreen" ToolTip="Green" Minimum="-1" Maximum="1" Value="0" ValueChanged="sliderDominanti_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.2" SmallChange="0.05" />
+    <Slider Name="sliderDominanteBlue"  ToolTip="Blue"  Minimum="-1" Maximum="1" Value="0" ValueChanged="sliderDominanti_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.2" SmallChange="0.05" />
+</StackPanel>
+            
             <StackPanel Orientation="Horizontal" Visibility="{Binding isCropClassicoVisibile}"  Margin="0,10,0,0" HorizontalAlignment="Center">
                 
 			    <ToggleButton Content="Selector" Name="toggleSelector" IsChecked="{Binding Path=selectorAttivo,Mode=OneWay}" IsEnabled="{Binding Path=selectorEnabled,Mode=OneWay}"

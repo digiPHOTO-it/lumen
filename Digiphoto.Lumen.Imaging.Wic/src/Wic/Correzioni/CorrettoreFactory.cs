@@ -39,6 +39,8 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 					correttore = new LuminositaContrastoCorrettore();
 				} else if( tipoCorrezione == typeof( Crop ) ) {
 					correttore = new CropCorrettore();
+				} else if( tipoCorrezione == typeof( Dominante ) ) {
+					correttore = new DominantiCorrettore();
 				}
 
 				if( correttore == null )

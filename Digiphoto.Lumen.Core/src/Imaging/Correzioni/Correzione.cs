@@ -11,7 +11,8 @@ namespace Digiphoto.Lumen.Imaging.Correzioni {
 	[XmlInclude(typeof(Sepia))]
 	[XmlInclude(typeof(Specchio ) )]
 	[XmlInclude(typeof(Luce))]
-	[XmlInclude( typeof(Crop))]
+	[XmlInclude(typeof(Crop))]
+	[XmlInclude(typeof(Dominante))]
 	public abstract class Correzione {
 
 		public virtual bool isSommabile( Correzione altra ) {
