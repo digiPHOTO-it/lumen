@@ -159,5 +159,53 @@
 	<ContextMenu x:Key="contextMenuImageFotina">
 		<MenuItem Header="Bring to front" x:Name="menuItemBringToFront" />
 	</ContextMenu>
-	
+
+    <Style x:Key="styleSlidersDominanti" TargetType="{x:Type Slider}">
+        <Setter Property="TickFrequency" Value="0.1" />
+        <Setter Property="TickPlacement" Value="TopLeft" />
+    </Style>
+
+    <Style x:Key="styleSliderDominanteRed" TargetType="{x:Type Slider}" BasedOn="{StaticResource styleSlidersDominanti}">
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                    <GradientStop Offset="0" Color="Cyan"  />     
+                    <!--- Questi sono i centrali con trasparenza -->
+                    <GradientStop Offset="0.3" Color="DarkGray" />  <!-- WhiteSmoke Trasparenza CC -->
+                    <GradientStop Offset="0.5" Color="WhiteSmoke" />  <!-- White trasparenza CC -->
+                    <GradientStop Offset="0.7" Color="DarkGray" />  <!-- WhiteSmoke Trasparenza CC -->
+                    <GradientStop Offset="1" Color="Red" />
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="styleSliderDominanteGreen" TargetType="{x:Type Slider}" BasedOn="{StaticResource styleSlidersDominanti}">
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                    <GradientStop Offset="0" Color="Magenta"  />
+                    <GradientStop Offset="0.3" Color="DarkGray" />  <!-- WhiteSmoke Trasparenza CC -->
+                    <GradientStop Offset="0.5" Color="WhiteSmoke" />  <!-- White trasparenza CC -->
+                    <GradientStop Offset="0.7" Color="DarkGray" />  <!-- WhiteSmoke Trasparenza CC -->
+                    <GradientStop Offset="1" Color="Green" />
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="styleSliderDominanteBlue" TargetType="{x:Type Slider}" BasedOn="{StaticResource styleSlidersDominanti}">
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                    <GradientStop Offset="0" Color="Yellow"  />
+                    <GradientStop Offset="0.3" Color="DarkGray" />  <!-- WhiteSmoke Trasparenza CC -->
+                    <GradientStop Offset="0.5" Color="WhiteSmoke" />  <!-- White trasparenza CC -->
+                    <GradientStop Offset="0.7" Color="DarkGray" />  <!-- WhiteSmoke Trasparenza CC -->
+                    <GradientStop Offset="1" Color="Blue" />
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
 </ResourceDictionary>
