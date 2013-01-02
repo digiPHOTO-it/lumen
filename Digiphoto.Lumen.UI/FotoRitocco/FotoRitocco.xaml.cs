@@ -699,10 +699,35 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		private void listBoxImmaginiDaModificare_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
 		{
+			Fotografia foto = (Fotografia)SelectItemOnRightClick(e).Content;
+			((FotoRitoccoViewModel)viewModelBase).selettoreAzioniRapideViewModel.ultimaFotoSelezionata = foto;
 			// Questo mi evita di selezionare la foto quando clicco con il destro.
 			e.Handled = true;
 		}
 
+		private ListBoxItem SelectItemOnRightClick(System.Windows.Input.MouseButtonEventArgs e)
+		{
+			Point clickPoint = e.GetPosition(listBoxImmaginiDaModificare);
+			object element = listBoxImmaginiDaModificare.InputHitTest(clickPoint);
+			ListBoxItem clickedListBoxItem = null;
+			if (element != null)
+			{
+				clickedListBoxItem = GetVisualParent<ListBoxItem>(element);
+				if (clickedListBoxItem != null)
+					listBoxImmaginiDaModificare.SelectedItems.Add(clickedListBoxItem.Content);
+			}
+			return clickedListBoxItem;
+		}
+
+		public T GetVisualParent<T>(object childObject) where T : Visual
+		{
+			DependencyObject child = childObject as DependencyObject;
+			while ((child != null) && !(child is T))
+			{
+				child = VisualTreeHelper.GetParent(child);
+			}
+			return child as T;
+		}
 
 		private void selectionFailed(object sender, SelectionFailedEventArgs e)
 		{
