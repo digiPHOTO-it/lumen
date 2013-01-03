@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "digiPHOTO.it" )]
 [assembly: AssemblyProduct( "Digiphoto.Lumen.Core.VsTest" )]
-[assembly: AssemblyCopyright( "Copyright © digiPHOTO.it 2011" )]
+[assembly: AssemblyCopyright( "Copyright © digiPHOTO.it 2013" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion( "0.12.0.0" )]
-[assembly: AssemblyFileVersion( "0.12.0.0" )]
+[assembly: AssemblyVersion( "0.13.0.0" )]
+[assembly: AssemblyFileVersion( "0.13.0.0" )]
