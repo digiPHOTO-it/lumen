@@ -7,11 +7,11 @@ using System.Resources;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle( "Lumen Core" )]
-[assembly: AssemblyDescription( "Lumen core (entity model)" )]
+[assembly: AssemblyDescription( "Lumen core classes and services" )]
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "digiPHOTO.it" )]
 [assembly: AssemblyProduct( "Lumen.Core" )]
-[assembly: AssemblyCopyright( "Copyright © digiPHOTO.it 2012" )]
+[assembly: AssemblyCopyright( "Copyright © digiPHOTO.it 2013" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
@@ -33,8 +33,8 @@ using System.Resources;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion( "0.12.0.0" )]
-[assembly: AssemblyFileVersion( "0.12.0.0" )]
+[assembly: AssemblyVersion( "0.13.0.0" )]
+[assembly: AssemblyFileVersion( "0.13.0.0" )]
 [assembly: NeutralResourcesLanguageAttribute( "it" )]
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Digiphoto.Lumen.Core.VsTest")]
