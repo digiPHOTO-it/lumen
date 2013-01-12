@@ -110,9 +110,9 @@ namespace Digiphoto.Lumen.Applicazione {
 			if( artista == null ) {
 				artista = new Fotografo();
 				artista.id = Configurazione.ID_FOTOGRAFO_ARTISTA;
-				artista.umano = false;
+				artista.umano = true;
 				artista.attivo = true;
-				artista.cognomeNome = "Operator1";
+				artista.cognomeNome = artista.id;
 				artista.iniziali = "XY";
 				artista.note = "default operator";
 				repo.addNew( artista );

@@ -49,6 +49,8 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             loadUserConfig();
 
 			passo = PassoWiz.Login;
+
+			this.abilitoShutdown = false;  // NON permetto all'utente di scegliere se spegnere il computer.
         }
 
 		private IDictionary<string, string> _modiAzzeramentoNumeroFoto;

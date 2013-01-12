@@ -58,6 +58,8 @@ namespace Digiphoto.Lumen.UI {
 			LumenApplication.Instance.bus.Publish(msgInit);
 			
 			caricaElencoDischiRimovibili();
+
+			this.abilitoShutdown = true;  // permetto all'utente di scegliere se spegnere il computer.
         }
 
 		private void ejectUsb()
