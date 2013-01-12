@@ -179,24 +179,30 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		 */
 		private void caricaMetadatiImmagine( string nomeFile, Fotografia foto ) {
 
-			// Instantiate the reader
-			ExifReader reader = new ExifReader( nomeFile );
+			try {
 
-			DateTime dateTime;
-			if( reader.GetTagValue<DateTime>( ExifTags.DateTime, out dateTime ) ) {
-				foto.dataOraScatto = dateTime;
-			}
+				// Instantiate the reader
+				ExifReader reader = new ExifReader( nomeFile );
 
-			// Gestisco eventuale auto rotazione
-			if( Configurazione.UserConfigLumen.autoRotazione ) {
-				ushort orientamento;
-				if( reader.GetTagValue<ushort>( ExifTags.Orientation, out orientamento ) ) {
-					if( orientamento == 6 ) {
-						fotoRitoccoSrv.addCorrezione( foto, new Ruota( 90f ), false );
-					} else if( orientamento == 8 ) {
-						fotoRitoccoSrv.addCorrezione( foto, new Ruota( -90f ), false );
+				DateTime dateTime;
+				if( reader.GetTagValue<DateTime>( ExifTags.DateTime, out dateTime ) ) {
+					foto.dataOraScatto = dateTime;
+				}
+
+				// Gestisco eventuale auto rotazione
+				if( Configurazione.UserConfigLumen.autoRotazione ) {
+					ushort orientamento;
+					if( reader.GetTagValue<ushort>( ExifTags.Orientation, out orientamento ) ) {
+						if( orientamento == 6 ) {
+							fotoRitoccoSrv.addCorrezione( foto, new Ruota( 90f ), false );
+						} else if( orientamento == 8 ) {
+							fotoRitoccoSrv.addCorrezione( foto, new Ruota( -90f ), false );
+						}
 					}
 				}
+
+			} catch( Exception ) {
+				// Pazienza se non ho informazioni exif vado avanti ugualmente.
 			}
 		}
 

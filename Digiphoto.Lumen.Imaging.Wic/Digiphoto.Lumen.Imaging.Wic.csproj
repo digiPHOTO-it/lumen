@@ -106,6 +106,7 @@
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Digiphoto.Lumen.Core\lib\log4net.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -162,7 +163,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Windows\Media\Effects\Dominanti\DominantiEffect.ps" />
+    <Resource Include="src\Windows\Media\Effects\Dominanti\DominantiEffect.ps" />
     <None Include="src\Windows\Media\Effects\Grayscale\GrayscaleEffect.fx" />
     <Resource Include="src\Windows\Media\Effects\Grayscale\GrayscaleEffect.ps" />
     <None Include="src\Windows\Media\Effects\LuminositaContrasto\LuminositaContrastoEffect.fx" />

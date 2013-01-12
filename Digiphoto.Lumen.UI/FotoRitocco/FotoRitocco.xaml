@@ -28,16 +28,30 @@
 
 		<StackPanel DockPanel.Dock="Right" Name="panelLeveRitocco" Style="{StaticResource panelLeveRitoccoStyle}"> <!-- pulsantiera -->
 
-			<Label Content="Luminosità" />
-            <Slider Name="sliderLuminosita" Minimum="-1" Maximum="1" Value="0" ValueChanged="sliderLuminosita_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.2" SmallChange="0.05" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="0.1" TickPlacement="TopLeft" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+            
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/brightness-16x16.png" Grid.Row="0" Grid.Column="0" ToolTip="Luminosità"/>
+                <Slider Name="sliderLuminosita" Minimum="-1" Maximum="1" Value="0" ValueChanged="sliderLuminosita_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.2" SmallChange="0.05" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="0.1" TickPlacement="TopLeft" Grid.Row="0" Grid.Column="1" />
 
-			<Label Content="Contrasto" />
-            <Slider Name="sliderContrasto" Minimum="0" Maximum="2" Value="1" ValueChanged="sliderContrasto_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.2" SmallChange="0.05" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="0.1" TickPlacement="TopLeft" />
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/contrast-16x16.png" Grid.Row="1" Grid.Column="0" ToolTip="Contrasto" />
+                <Slider Name="sliderContrasto" Minimum="0" Maximum="2" Value="1" ValueChanged="sliderContrasto_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.2" SmallChange="0.05" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="0.1" TickPlacement="TopLeft" Grid.Row="1" Grid.Column="1" />
 
-			<Label Content="Ruota" />
-            <Slider Name="sliderRuota" Minimum="-180" Maximum="180" ValueChanged="sliderRuota_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="20" SmallChange="5" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="45" TickPlacement="TopLeft" />
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/rotate-16x16.png" Grid.Row="2" Grid.Column="0" ToolTip="Ruota" />
+                <Slider Name="sliderRuota" Minimum="-180" Maximum="180" ValueChanged="sliderRuota_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="20" SmallChange="5" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="45" TickPlacement="TopLeft" Grid.Row="2" Grid.Column="1"/>
+        </Grid>
 
-			<UniformGrid Rows="2" Columns="3" Style="{StaticResource gridOneShotRitoccoStyle}">
+
+
+        <UniformGrid Rows="2" Columns="3" Style="{StaticResource gridOneShotRitoccoStyle}">
 				<Button Content="-90°" Command="{Binding ruotareCommand}" CommandParameter="-90" />
 				<Button Content="+90°" Command="{Binding ruotareCommand}" CommandParameter="90" />
 				<Button Content="Flip" Command="{Binding flipCommand}" />
@@ -53,8 +67,8 @@
                     <Slider Name="sliderDominanteBlue"  Minimum="-0.5" Maximum="0.5" Value="0" ValueChanged="sliderDominanti_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.08" SmallChange="0.02" Style="{StaticResource styleSliderDominanteBlue}"  ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" />
                 </StackPanel>
             </GroupBox>
-            
-            <StackPanel Orientation="Horizontal" Visibility="{Binding isCropClassicoVisibile}"  Margin="0,10,0,0" HorizontalAlignment="Center">
+
+            <StackPanel Orientation="Horizontal" Visibility="{Binding isCropClassicoVisibile,Converter={StaticResource booleanToVisibilityConverter}}"  Margin="0,10,0,0" HorizontalAlignment="Center">
                 
 			    <ToggleButton Content="Selector" Name="toggleSelector" IsChecked="{Binding Path=selectorAttivo,Mode=OneWay}" IsEnabled="{Binding Path=selectorEnabled,Mode=OneWay}"
                               Width="100"
@@ -72,7 +86,7 @@
 
 			<Button Name="rifiutareCorrezioniButton" Content="Rifiuta" ToolTip="Annulla le correzioni applicate" Command="{Binding rifiutareCorrezioniCommand}" />
 			<Button Name="salvareCorrezioniButton" Content="Applica" ToolTip="Applica le correzioni apportate" Command="{Binding salvareCorrezioniCommand}" FontSize="20" />
-			<Button Name="salvareMascheraButton" Content="Salva Maschara" ToolTip="Salva una nuova foto con cornice" Click="salvareMascheraButton_Click" IsEnabled="{Binding possoSalvareMaschera}" />
+			<Button Name="salvareMascheraButton" Content="Salva Maschera" ToolTip="Salva una nuova foto con cornice" Click="salvareMascheraButton_Click" IsEnabled="{Binding possoSalvareMaschera}" />
 			<Separator Height="25" />
 			<Button Content="+All" ToolTip="Mette tutte le foto in modifica" Command="{Binding commandRiempireElencoInModifica}" />
 			<Button Content="-All" ToolTip="Toglie tutte le foto dalla modifica" Command="{Binding commandSvuotareElencoInModifica}" />
