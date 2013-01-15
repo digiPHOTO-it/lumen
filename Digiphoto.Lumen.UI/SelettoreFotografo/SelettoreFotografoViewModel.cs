@@ -128,8 +128,9 @@ namespace Digiphoto.Lumen.UI {
 
 				fotografiReporitorySrv.saveChanges();
 
+				// Non c'è più bisogno perché mi rinfresco sulla ui tramite un messaggio
 				// Aggiungo alla collezione visuale (per non dover rifare la query)
-				fotografi.Add( nuovoFotografo );
+				//	fotografi.Add( nuovoFotografo );
 
 				// Svuoto per nuova creazione
 				istanziaNuovoFotografo();

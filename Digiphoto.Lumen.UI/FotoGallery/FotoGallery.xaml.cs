@@ -131,8 +131,12 @@ namespace Digiphoto.Lumen.UI {
 			if (element != null)
 			{
 				clickedListBoxItem = GetVisualParent<ListBoxItem>(element);
-				if (clickedListBoxItem!=null)
-					LsImageGallery.SelectedItems.Add(clickedListBoxItem.Content);
+				if( clickedListBoxItem != null ) 
+				{
+					Fotografia f = (Fotografia)clickedListBoxItem.Content;
+					if( !fotoGalleryViewModel.fotografieCW.SelectedItems.Contains( f ) )
+						fotoGalleryViewModel.fotografieCW.SelectedItems.Add( f );
+				}
 			}
 			return clickedListBoxItem;
 		}

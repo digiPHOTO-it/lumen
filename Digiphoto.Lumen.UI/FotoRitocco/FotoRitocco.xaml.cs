@@ -699,23 +699,30 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		private void listBoxImmaginiDaModificare_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
 		{
-			Fotografia foto = (Fotografia)SelectItemOnRightClick(e).Content;
-			((FotoRitoccoViewModel)viewModelBase).selettoreAzioniRapideViewModel.ultimaFotoSelezionata = foto;
-			// Questo mi evita di selezionare la foto quando clicco con il destro.
-			e.Handled = true;
+			ListBoxItem listBoxItem = SelectItemOnRightClick( e );
+			if( listBoxItem != null ) {
+				((FotoRitoccoViewModel)viewModelBase).selettoreAzioniRapideViewModel.ultimaFotoSelezionata = (Fotografia)listBoxItem.Content;
+				// Questo mi evita di selezionare la foto quando clicco con il destro.
+				e.Handled = true;
+			}
 		}
 
 		private ListBoxItem SelectItemOnRightClick(System.Windows.Input.MouseButtonEventArgs e)
 		{
-			Point clickPoint = e.GetPosition(listBoxImmaginiDaModificare);
+			Point clickPoint = e.GetPosition( listBoxImmaginiDaModificare );
 			object element = listBoxImmaginiDaModificare.InputHitTest(clickPoint);
 			ListBoxItem clickedListBoxItem = null;
-			if (element != null)
+			if( element != null )
 			{
-				clickedListBoxItem = GetVisualParent<ListBoxItem>(element);
-				if (clickedListBoxItem != null)
-					listBoxImmaginiDaModificare.SelectedItems.Add(clickedListBoxItem.Content);
+				clickedListBoxItem = GetVisualParent<ListBoxItem>( element );
+				if( clickedListBoxItem != null ) 
+				{					
+					Fotografia f = (Fotografia)clickedListBoxItem.Content;
+					if( ! _viewModel.fotografieDaModificareCW.SelectedItems.Contains( f ) )
+						_viewModel.fotografieDaModificareCW.SelectedItems.Add( f );
+				}
 			}
+
 			return clickedListBoxItem;
 		}
 
