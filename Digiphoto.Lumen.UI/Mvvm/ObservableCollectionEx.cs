@@ -8,6 +8,10 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 
 	public class ObservableCollectionEx<T> : ObservableCollection<T> {
 
+		public ObservableCollectionEx()
+			: base() {
+		}
+
 		public ObservableCollectionEx( IEnumerable<T> collection )
 			: base( collection ) {
 		}
