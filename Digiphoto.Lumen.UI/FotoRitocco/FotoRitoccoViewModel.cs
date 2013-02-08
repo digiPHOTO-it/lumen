@@ -54,7 +54,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 				selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel();
 
-				fotografieDaModificare = new ObservableCollection<Fotografia>();
+				fotografieDaModificare = new ObservableCollectionEx<Fotografia>();
 				fotografieDaModificareCW = new MultiSelectCollectionView<Fotografia>( fotografieDaModificare );
 
 				fotografieDaModificareCW.SelectionChanged += onFotografieDaModificareSelectionChanged;
@@ -1370,12 +1370,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		private void gestisciFotoDaModificareMsg( FotoDaModificareMsg fotoDaModificareMsg ) {
-
+			MessageBox.Show( "STOP1" );
 			// Ecco che sono arrivate delle nuove foto da modificare
 			// Devo aggiungerle alla lista delle foto in attesa di modifica.
 			foreach( Fotografia f in fotoDaModificareMsg.fotosDaModificare )
 				addFotoDaModificare( f );
-
+			MessageBox.Show( "STOP2" );
 			// Se richiesta la modifica immediata...
 			if( fotoDaModificareMsg.immediata ) {
 				// ... e sono in modalità di fotoritocco
@@ -1394,18 +1394,20 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 									break;
 								}
 							 }
-
 							fotografieDaModificareCW.SelectedItems.Add( f );
 						}
 
+						// ERROR32
 						fotografieDaModificareCW.RefreshSelectedItemWithMemory();
 					}
 				}
-				
+
+				MessageBox.Show( "STOP13" );
 				// Pubblico un messaggio di richiesta cambio pagina. Voglio andare sulla pagina del fotoritocco
 				CambioPaginaMsg cambioPaginaMsg = new CambioPaginaMsg( this );
 				cambioPaginaMsg.nuovaPag = "FotoRitoccoPag";
 				LumenApplication.Instance.bus.Publish( cambioPaginaMsg );
+				MessageBox.Show( "STOP14" );
 			}
 		}
 

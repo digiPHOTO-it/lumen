@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:lumDE="clr-namespace:Digiphoto.Lumen.UI.DataEntry"
 		xmlns:extToolkit="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit.Extended"
-        Title="Chiusura di Cassa" Height="561" Width="650" 
+        Title="Fotografo" Height="561" Width="650" 
 		Background="Black">
 	
 	<Window.Resources>

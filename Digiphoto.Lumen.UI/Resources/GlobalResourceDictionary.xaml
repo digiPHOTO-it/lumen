@@ -312,5 +312,12 @@
 		<Setter Property="Foreground" Value="WhiteSmoke" />
 	</Style>
 
-    
+
+    <SolidColorBrush x:Key="GroupBoxBorderBrush" Color="Green"/>
+    <Style TargetType="Expander">
+        <Setter Property="Foreground" Value="LightGreen" />
+        <Setter Property="BorderBrush" Value="{StaticResource GroupBoxBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
 </ResourceDictionary>
