@@ -59,7 +59,9 @@ namespace Digiphoto.Lumen.UI {
 			
 			caricaElencoDischiRimovibili();
 
-			this.abilitoShutdown = true;  // permetto all'utente di scegliere se spegnere il computer.
+			#if(!DEBUG)
+				this.abilitoShutdown = true;  // permetto all'utente di scegliere se spegnere il computer.
+			#endif
         }
 
 		private void ejectUsb()
