@@ -18,25 +18,25 @@
 
 	<DockPanel>
 		<GroupBox Header="Comandi" DockPanel.Dock="Top">
-			<Grid Height="158" Width="550">
-				<Button Content="Salva" Height="23" HorizontalAlignment="Left" Margin="35,17,0,0" Name="buttonSalva" Command="{Binding Path=salvaCommand}" VerticalAlignment="Top" Width="75" />
-				<Button Content="Ripristina" Height="23" HorizontalAlignment="Left" Margin="35,60,0,0" Name="buttonRipristina" Command="{Binding Path=ripristinaCommand}" VerticalAlignment="Top" Width="75" />
-				<Button Content="Reset" Height="23" HorizontalAlignment="Left" Margin="35,103,0,0" Name="buttonReset" Command="{Binding Path=resetCommand}" VerticalAlignment="Top" Width="75" />
+			<Grid Height="60" Width="245">
+				<Button Content="Salva" Height="23" HorizontalAlignment="Left" Margin="0,17,0,0" Name="buttonSalva" Command="{Binding Path=salvaCommand}" VerticalAlignment="Top" Width="75" />
+				<Button Content="Ripristina" Height="23" HorizontalAlignment="Left" Margin="85,17,0,0" Name="buttonRipristina" Command="{Binding Path=ripristinaCommand}" VerticalAlignment="Top" Width="75" />
+				<Button Content="Reset" Height="23" HorizontalAlignment="Left" Margin="170,17,0,0" Name="buttonReset" Command="{Binding Path=resetCommand}" VerticalAlignment="Top" Width="75" />
 			</Grid>
 		</GroupBox>
 		<GroupBox Header="Posizione sul Monitor" DockPanel.Dock="Bottom">
 			<Grid DockPanel.Dock="Bottom">
 				<Canvas Name="monitor" 
-						VerticalAlignment="Bottom"
-						HorizontalAlignment="Left" Margin="6,6,0,0" Opacity="1" Background="Blue" Loaded="Monitor_Loaded" MouseMove="Monitor_MouseMove" MouseLeave="Monitor_MouseLeave" MouseLeftButtonDown="Monitor_MouseLeftButtonDown"
-						Height="{Binding Converter={StaticResource percentualeConverter},Path=cfg.screenHeight,ConverterParameter=50}" 
-						Width="{Binding Converter={StaticResource percentualeConverter},Path=cfg.screenWidth,ConverterParameter=50}">
+						VerticalAlignment="Center"
+						HorizontalAlignment="Center" Margin="6,6,0,0" Opacity="1" Background="Blue" Loaded="Monitor_Loaded" MouseMove="Monitor_MouseMove" MouseLeave="Monitor_MouseLeave" MouseLeftButtonDown="Monitor_MouseLeftButtonDown"
+						Height="{Binding Converter={StaticResource percentualeConverter},Path=cfg.screenHeight,ConverterParameter=25}" 
+						Width="{Binding Converter={StaticResource percentualeConverter},Path=cfg.screenWidth,ConverterParameter=25}">
 									
 						<Border Name="slideShowIcon" BorderBrush="Silver" BorderThickness="1" Background="Black" 
-								Canvas.Top="{Binding Converter={StaticResource percentualeConverterSlideY},Path=pSSG.slideTop,ConverterParameter=50,Mode=TwoWay}" 
-								Canvas.Left="{Binding Converter={StaticResource percentualeConverterSlideX},Path=pSSG.slideLeft,ConverterParameter=50,Mode=TwoWay}" 
-								Height="{Binding Converter={StaticResource percentualeConverter},Path=pSSG.slideHeight,ConverterParameter=50,Mode=TwoWay}" 
-								Width="{Binding Converter={StaticResource percentualeConverter},Path=pSSG.slideWidth,ConverterParameter=50,Mode=TwoWay}"/>
+								Canvas.Top="{Binding Converter={StaticResource percentualeConverterSlideY},Path=pSSG.slideTop,ConverterParameter=25,Mode=TwoWay}" 
+								Canvas.Left="{Binding Converter={StaticResource percentualeConverterSlideX},Path=pSSG.slideLeft,ConverterParameter=25,Mode=TwoWay}" 
+								Height="{Binding Converter={StaticResource percentualeConverter},Path=pSSG.slideHeight,ConverterParameter=25,Mode=TwoWay}" 
+								Width="{Binding Converter={StaticResource percentualeConverter},Path=pSSG.slideWidth,ConverterParameter=25,Mode=TwoWay}"/>
 				</Canvas>
 				<TextBox Height="23" HorizontalAlignment="Left" Margin="97,24,0,0" Name="textBox1" VerticalAlignment="Top" Width="120" Text="{Binding Path= pSSG.deviceEnum,Mode=TwoWay}" IsEnabled="False"/>
 				<Label Content="Monitor" Height="28" HorizontalAlignment="Left" Margin="14,24,0,0" Name="label1" VerticalAlignment="Top" Width="69" />
