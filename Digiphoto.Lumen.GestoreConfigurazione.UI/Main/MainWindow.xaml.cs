@@ -47,6 +47,8 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI {
             DataContext = _mainWindowViewModel;
 			_mainWindowViewModel.dialogProvider = this;
 			_mainWindowViewModel.trayIconProvider = this;
+
+			licenseEditor1.DataContext = _mainWindowViewModel.licenseEditorViewModel;
 		}
 
 		/// <summary>

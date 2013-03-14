@@ -120,6 +120,9 @@
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="SKGL">
+      <HintPath>..\Digiphoto.Lumen.Core\lib\SKGL.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -159,6 +162,7 @@
   <ItemGroup>
     <Compile Include="Crc32.cs" />
     <Compile Include="src\Core\Collections\RingBufferTest.cs" />
+    <Compile Include="src\Licenza\LicenzaTest.cs" />
     <Compile Include="src\Servizi\Ricostruire\DbRebuilderSrvImplTest.cs" />
     <Compile Include="src\Mvvm\ObservableCollectionExTest.cs" />
     <Compile Include="SerializzaUtilTest.cs" />
