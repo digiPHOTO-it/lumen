@@ -19,7 +19,7 @@ namespace Digiphoto.Lumen.Licensing {
 			// we only check if run time...
 			if (context.UsageMode == LicenseUsageMode.Runtime) {
 				
-				string strLic = LicenseUtil.getCurrentLicenseKey();
+				string strLic = LicenseUtil.readCurrentLicenseKey();
 
 				if( strLic != null ) {
 					// Trovato il codice di licenza. Ora provo a creare/generare una License vera e propria

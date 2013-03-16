@@ -16,4 +16,31 @@
         <Setter Property="BorderThickness" Value="1" />
     </Style>
 
+    <Style x:Key="textBoxCodLicenzaStyle" TargetType="TextBox" >
+        <Setter Property="Background" Value="#FFBBFFA7" />
+        <Setter Property="ToolTip" Value="Inserire il codice comprensivo dei trattini di separazione" />
+    </Style>
+
+    <Style x:Key="textBoxMachineCodeStyle" TargetType="TextBox" >
+        <Setter Property="Background" Value="#FFFFE1A9" />
+        <Setter Property="ToolTip" Value="Comunicare questo numero al fornitore del software." />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    
+
+    <Style x:Key="labelMsgLicenzaStyle" TargetType="{x:Type Label}" BasedOn="{StaticResource labelDatiLicenzaStyle}" >
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding isLicenzaValida}" Value="True">
+                <Setter Property="BorderBrush" Value="Green" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding isLicenzaValida}" Value="False">
+                <Setter Property="BorderBrush" Value="Red" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    
+    
 </ResourceDictionary>

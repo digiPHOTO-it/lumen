@@ -13,26 +13,27 @@
     
     <Grid>
         <Label Content="Hardware Id" Margin="10,13,243,261" />
-        <TextBox Text="{Binding machineCode}" IsReadOnly="True" Margin="121,16,0,0" HorizontalAlignment="Left" Width="76" Height="23" VerticalAlignment="Top"  />
+        <TextBox Text="{Binding machineCode,Mode=OneTime}" IsReadOnly="True" Margin="121,16,0,0" HorizontalAlignment="Left" Width="76" Height="23" VerticalAlignment="Top" Style="{StaticResource textBoxMachineCodeStyle}" />
         
         <Label Content="Cod. Licenza" HorizontalAlignment="Left" Margin="10,46,0,0" VerticalAlignment="Top"/>
-        <TextBox Name="textBoxCodLicenza" HorizontalAlignment="Left" Height="23" Margin="121,52,0,0" TextWrapping="Wrap" Text="{Binding codiceLicenza}" VerticalAlignment="Top" Width="219" Background="Cyan" />
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="121,52,0,0" Text="{Binding codiceLicenza}" VerticalAlignment="Top" Width="219" Style="{StaticResource textBoxCodLicenzaStyle}" />
 
-        <Button Content="Convalida" HorizontalAlignment="Left" Margin="121,97,0,0" VerticalAlignment="Top" Width="94" Height="29" Command="{Binding validareLicenzaCommand}" CommandParameter="{Binding Path=textBoxCodLicenza.Text, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"/>
+        <Button Content="Convalida" HorizontalAlignment="Left" Margin="121,97,0,0" VerticalAlignment="Top" Width="94" Height="29" Command="{Binding validareLicenzaCommand}" />
 
         <Rectangle Fill="#FFF4F4F5" Height="94" Margin="10,136,0,0" Stroke="Black" VerticalAlignment="Top" HorizontalAlignment="Left" Width="331"/>
 
-            <Label Content="Data scadenza" Height="28" HorizontalAlignment="Left" VerticalAlignment="Top" Width="111" Margin="24,150,0,0"/>
-            <Label HorizontalAlignment="Left" Height="28" Margin="235,150,0,0" VerticalAlignment="Top" Width="85" Content="{Binding dataScadenzaLic}" Style="{StaticResource labelDatiLicenzaStyle}" />
+        <Label Content="Data scadenza" Height="28" HorizontalAlignment="Left" VerticalAlignment="Top" Width="111" Margin="24,150,0,0"/>
+        <Label HorizontalAlignment="Left" Height="28" Margin="235,150,0,0" VerticalAlignment="Top" Width="85" Content="{Binding dataScadenzaLic}" Style="{StaticResource labelDatiLicenzaStyle}" />
 
-            <Label Content="Giorni mancanti" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" Width="111" Margin="24,192,0,0"/>
+        <Label Content="Giorni mancanti" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" Width="111" Margin="24,192,0,0"/>
         <Label HorizontalAlignment="Left" Height="28" Margin="235,192,0,0" VerticalAlignment="Top" Width="50" Content="{Binding giorniRimastiLic}" Style="{StaticResource labelDatiLicenzaStyle}" />
 
-        <Label  Height="55" VerticalAlignment="Top" Margin="10,245,10,0" Style="{StaticResource labelDatiLicenzaStyle}" >
+        <Label  Height="55" VerticalAlignment="Top" Margin="10,245,10,0" Style="{StaticResource labelMsgLicenzaStyle}"  >
             <Label.Content>
                 <AccessText TextWrapping="Wrap" Text="{Binding msgValidazioneLic}" />
             </Label.Content>
         </Label>
+
 
     </Grid>
 </lumM:UserControlBase>

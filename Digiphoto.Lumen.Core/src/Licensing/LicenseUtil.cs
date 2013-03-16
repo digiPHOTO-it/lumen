@@ -108,25 +108,40 @@ namespace Digiphoto.Lumen.Licensing {
 		/// <returns></returns>
 		public static bool validaCodiceLicenza( string codiceLicenza ) {
 
-			bool isValida = false;
+			bool valida = false;
 
 			if( codiceLicenza != null ) {
 
 				try {
 					RegistryLicense license = new RegistryLicense( codiceLicenza );
 
-					isValida = (license.IsExpired == false && license.IsOnRightMachine);
-
+					valida = isValida( license );
+ 
 				} catch( Exception ) {
 				}
 			}
-			return isValida;
+			return valida;
 		}
 
 		private static string SUBKEY_REG = "Software\\digiPHOTO.it\\Lumen\\Registration";
 		private static string VAL_KEY = "LicenseKey";
 
-		public static String getCurrentLicenseKey() {
+
+		/// <summary>
+		/// Legge nel registry la chiave corrente, e istanzia la relativa classe.
+		/// </summary>
+		/// <returns></returns>
+		public static RegistryLicense createCurrentLicense() {
+
+			RegistryLicense license = null;
+			try {
+				license = new RegistryLicense( readCurrentLicenseKey() );
+			} catch( Exception ) {
+			}
+			return license;
+		}
+
+		public static String readCurrentLicenseKey() {
 
 			string strLic = null;
 
@@ -150,6 +165,10 @@ namespace Digiphoto.Lumen.Licensing {
 				else
 					licenseKey.SetValue( VAL_KEY, key );
 			}
+		}
+
+		public static bool isValida( RegistryLicense license ) {
+			return (license != null && license.IsExpired == false && license.IsOnRightMachine);
 		}
 
 	}
