@@ -20,7 +20,9 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI.Licenze {
 			machineCode = LicenseUtil.getMachineCode();
 
 			// Carico il codice di licenza (eventuale) dal registry
-			codiceLicenza = LicenseUtil.getCurrentLicenseKey();
+			codiceLicenza = LicenseUtil.readCurrentLicenseKey();
+
+			validareLicenza( codiceLicenza, false );
 		}
 
 		#region Fields
@@ -86,7 +88,8 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI.Licenze {
 			return true;
 		}
 
-		private void validareLicenza( string codLicenza ) {
+
+		private void validareLicenza( string codLicenza, bool emettiAvviso ) {
 
 			try {
 
@@ -102,10 +105,11 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI.Licenze {
 			OnPropertyChanged( "giorniRimastiLic" );
 			OnPropertyChanged( "dataScadenzaLic" );
 
-			if( isLicenzaValida )
-				dialogProvider.ShowMessage( msgValidazioneLic, "OK" );
-			else
-				dialogProvider.ShowError( msgValidazioneLic, "VALIDAZIONE FALLITA", null );
+			if( emettiAvviso )
+				if( isLicenzaValida )
+					dialogProvider.ShowMessage( msgValidazioneLic, "OK" );
+				else
+					dialogProvider.ShowError( msgValidazioneLic, "VALIDAZIONE FALLITA", null );
 		}
 
 		#endregion Metodi
@@ -116,7 +120,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI.Licenze {
 		public ICommand validareLicenzaCommand {
 			get {
 				if( _validareLicenzaCommand == null ) {
-					_validareLicenzaCommand = new RelayCommand( codLic => this.validareLicenza( (string)codiceLicenza ),
+					_validareLicenzaCommand = new RelayCommand( codLic => this.validareLicenza( (string)codiceLicenza, true ),
 				                                                codLic => this.possoValdareLicenza( (string)codiceLicenza ) );
 				}
 				return _validareLicenzaCommand;

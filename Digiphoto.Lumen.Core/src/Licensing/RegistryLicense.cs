@@ -17,6 +17,7 @@ namespace Digiphoto.Lumen.Licensing {
 				throw new NullReferenceException( "The licensed type reference may not be null." );
 
 			_validate = new SKGL.Validate();
+			_validate.secretPhase = "C0t3ch1n0";
 			_validate.Key = licenceKey;
 
 			if( ! _validate.IsValid )

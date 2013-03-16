@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Markup;
 using System.Globalization;
+using System.ComponentModel;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -65,6 +66,16 @@ namespace Digiphoto.Lumen.UI {
 						// Se la configurazione è mancante, allora rimando all'apposita gestione
 						LumenApplication.Instance.avvia();
 
+						// Controllo la licenza
+						if( !LumenApplication.Instance.haveValidLicense ) {
+							// Metto due message box perché la prima non si ferma !
+							MessageBox.Show( "Errore nella licenza", "ATTENZIONE" );
+							MessageBox.Show( "Non è stata rilevata una licenza valida per l'uso del programma.\nContattare il fornitore del software " + Configurazione.applicationName + "\nper ottenere regolare licenza,\noppure una versione demo gratuita", "Licenza non valida", MessageBoxButton.OK, MessageBoxImage.Error );
+							Environment.Exit( 7 );
+						}
+
+						avvisoScadenzaLicenza( 2 );
+
 					} catch( ConfigurazioneMancanteException em ) {
 
 						_giornale.Warn( "Configurazione mancante. Occorre prima creare la configurazione", em );
@@ -87,7 +98,7 @@ namespace Digiphoto.Lumen.UI {
 
 						// Metto due message box perché la prima non si ferma !
 						MessageBox.Show( ee.Message, "ATTENZIONE" );
-						MessageBox.Show( "Impossibile avviare l'applicazione!\nErrore bloccante!\nVedere il log", "ERRORE non previsto", MessageBoxButton.OK, MessageBoxImage.Error );
+						MessageBox.Show( "Impossibile avviare l'applicazione " + Configurazione.applicationName + " !\nErrore bloccante!\nVedere il log", "ERRORE non previsto", MessageBoxButton.OK, MessageBoxImage.Error );
 						Environment.Exit( 9 );
 					}
 
@@ -115,7 +126,7 @@ namespace Digiphoto.Lumen.UI {
 			{
 				// Metto due message box perché la prima non si ferma !
 				MessageBox.Show( "ATTENZIONE" );
-				MessageBox.Show( "L'applicazione è già in esecuzione" );
+				MessageBox.Show( "L'applicazione " + Configurazione.applicationName + " è già in esecuzione" );
 				Environment.Exit(3);
 			}
 			
@@ -134,7 +145,9 @@ namespace Digiphoto.Lumen.UI {
 				_mainWindow.Close();
 				_mainWindow = null;
 			}
-			
+
+			avvisoScadenzaLicenza( 1 );
+
 			LumenApplication.Instance.ferma();
 			
 			base.OnExit( e );
@@ -168,5 +181,11 @@ namespace Digiphoto.Lumen.UI {
 			_slideShowWindow = null;
 		}
 
+		private void avvisoScadenzaLicenza( int quanti ) {
+
+			if( LumenApplication.Instance.numGiorniScadenzaLicenza <= 30 )
+				for( int ii = 1; ii <= quanti; ii++ )
+					MessageBox.Show( "ATTENZIONE !\n\nMancano " + LumenApplication.Instance.numGiorniScadenzaLicenza + " giorni allo scadere della licenza.\nContattare il fornitore del software per rinnovare il contratto.", Configurazione.applicationName , MessageBoxButton.OK, MessageBoxImage.Exclamation );
+		}
 	}
 }

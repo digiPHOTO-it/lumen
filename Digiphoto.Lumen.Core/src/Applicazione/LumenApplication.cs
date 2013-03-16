@@ -19,6 +19,7 @@ using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Servizi.Scaricatore;
 using Digiphoto.Lumen.Servizi.Ritoccare;
 using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
+using Digiphoto.Lumen.Licensing;
 
 namespace Digiphoto.Lumen.Applicazione {
 
@@ -41,6 +42,8 @@ namespace Digiphoto.Lumen.Applicazione {
 			get;
 			private set;
 		}
+
+		private RegistryLicense registryLicense;
 
 		#endregion
 
@@ -95,6 +98,8 @@ namespace Digiphoto.Lumen.Applicazione {
 
 			}
 
+			caricaDatiLicenza();
+
 			avviata = true;
 
 			_bus.Publish( "primo" );
@@ -128,7 +133,7 @@ namespace Digiphoto.Lumen.Applicazione {
 			stato.isSlideShowRunning = false;
 		}
 
-		/**\
+		/**
 		 * Faccio un controllo che tutto sia a posto e che il programma possa partire
 		 */
 		private void avviaConfigurazione( bool autoSistema ) {
@@ -216,6 +221,9 @@ namespace Digiphoto.Lumen.Applicazione {
 
 			_serviziAvviati.Clear();
 
+			if( registryLicense != null )
+				registryLicense.Dispose();
+
 			avviata = false;
 		}
 
@@ -246,5 +254,25 @@ namespace Digiphoto.Lumen.Applicazione {
 			}
 		}
 
+		void caricaDatiLicenza() {
+			registryLicense = LicenseUtil.createCurrentLicense();
+
+			if( haveValidLicense )
+				_giornale.Info( "Caricata licenza ed è valida" );
+			else
+				_giornale.Warn( "Licenza non valida" );
+		}
+
+		public bool haveValidLicense {
+			get {
+				return LicenseUtil.isValida( registryLicense );
+			}
+		}
+
+		public int numGiorniScadenzaLicenza {
+			get {
+				return registryLicense != null ? registryLicense.DaysLeft : 0;
+			}
+		}
 	}
 }
