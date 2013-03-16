@@ -130,6 +130,9 @@
     <Reference Include="MemBus">
       <HintPath>lib\MemBus.dll</HintPath>
     </Reference>
+    <Reference Include="SKGL">
+      <HintPath>lib\SKGL.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
@@ -215,6 +218,8 @@
     <Compile Include="src\Imaging\ProiettoreArea.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="src\Licensing\RegistryLicense.cs" />
+    <Compile Include="src\Licensing\RegistryLicenseProvider.cs" />
     <Compile Include="src\Servizi\EntityRepository\GiornateRepositorySrvImpl.cs" />
     <Compile Include="src\Servizi\EntityRepository\InfosFisseRepositorySrvImpl.cs" />
     <Compile Include="src\Servizi\Explorer\CarrelloExplorerSrvImpl.cs" />
@@ -304,6 +309,7 @@
     <Compile Include="src\Threading\ThreadedQueueBase.cs" />
     <Compile Include="src\Threading\WorkerThreadBase.cs" />
     <Compile Include="src\Util\AiutanteFoto.cs" />
+    <Compile Include="src\Licensing\LicenseUtil.cs" />
     <Compile Include="src\Util\UsbEjectWithExe.cs" />
     <Compile Include="src\Util\ErroriUtil.cs" />
     <Compile Include="src\Util\FotoRangeUtil.cs" />

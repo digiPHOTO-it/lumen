@@ -7,6 +7,7 @@
         xmlns:xamlHelpers="clr-namespace:TestingPasswordBox.XamlHelpers"
         xmlns:extToolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
         xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters;assembly=Digiphoto.Lumen.UI"
+        xmlns:lumL="clr-namespace:Digiphoto.Lumen.GestoreConfigurazione.UI.Licenze"
         FocusManager.FocusedElement="{Binding ElementName=PasswordBox}"
         Title="Lumen Gestore Configurazione" Height="540" Width="790" WindowState="Normal" WindowStartupLocation="CenterScreen" Icon="/Digiphoto.Lumen.GestoreConfigurazione.UI;component/Images/Configuration-48x48.ico">
     
@@ -217,6 +218,11 @@
                     <Separator Height="19" HorizontalAlignment="Left" Margin="88,227,0,0" Name="separator1" VerticalAlignment="Top" Width="404" />
                 </Grid>
             </TabItem>
+
+            <TabItem Header="6) Licenza" IsSelected="{Binding Path=isPassoLicenza,Mode=OneWay}" IsEnabled="{Binding Path=isPassoLicenza}">
+                <lumL:LicenseEditor x:Name="licenseEditor1" />
+            </TabItem>
+            
         </TabControl>
 
     </DockPanel>
