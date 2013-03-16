@@ -1,0 +1,46 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+    <Style x:Key="ControlBaseStyle" TargetType="{x:Type Control}">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="BorderBrush" Value="Azure" />
+    </Style>
+
+    <Style TargetType="{x:Type Label}" BasedOn="{StaticResource ControlBaseStyle}"/>
+    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource ControlBaseStyle}"/>
+
+
+    <Style x:Key="labelDatiLicenzaStyle" TargetType="{x:Type Label}" BasedOn="{StaticResource ControlBaseStyle}" >
+        <Setter Property="BorderBrush" Value="DarkBlue" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <Style x:Key="textBoxCodLicenzaStyle" TargetType="TextBox" >
+        <Setter Property="Background" Value="#FFBBFFA7" />
+        <Setter Property="ToolTip" Value="Inserire il codice comprensivo dei trattini di separazione" />
+    </Style>
+
+    <Style x:Key="textBoxMachineCodeStyle" TargetType="TextBox" >
+        <Setter Property="Background" Value="#FFFFE1A9" />
+        <Setter Property="ToolTip" Value="Comunicare questo numero al fornitore del software." />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    
+
+    <Style x:Key="labelMsgLicenzaStyle" TargetType="{x:Type Label}" BasedOn="{StaticResource labelDatiLicenzaStyle}" >
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding isLicenzaValida}" Value="True">
+                <Setter Property="BorderBrush" Value="Green" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding isLicenzaValida}" Value="False">
+                <Setter Property="BorderBrush" Value="Red" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    
+    
+</ResourceDictionary>

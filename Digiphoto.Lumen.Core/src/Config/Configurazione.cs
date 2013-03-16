@@ -21,10 +21,12 @@ namespace Digiphoto.Lumen.Config  {
 		bool _autoSistemazione;
 
 
-		// Codice del fotografo usato per il fotoritocco
+		// Codice del fotografo creato per default
 		public static readonly string ID_FOTOGRAFO_ARTISTA = "Operator1";
 		public static readonly string companyName = "digiPHOTO.it";  // si potrebbero leggere dall'Assembly Info
 		public static readonly string applicationName = "Lumen";     // si potrebbero leggere dall'Assembly Info
+		public static readonly string pathBaseRegLumen = "Software\\" + Configurazione.companyName + "\\" + Configurazione.applicationName;
+
 
 		DbUtil _dbUtil;
 
@@ -370,5 +372,6 @@ namespace Digiphoto.Lumen.Config  {
 			get;
 			internal set;
 		}
+
 	}
 }

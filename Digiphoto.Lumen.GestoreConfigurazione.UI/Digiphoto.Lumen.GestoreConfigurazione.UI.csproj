@@ -167,9 +167,21 @@
     <Compile Include="About\AboutBox.xaml.cs">
       <DependentUpon>AboutBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Licenze\LicenseEditorView.xaml.cs">
+      <DependentUpon>LicenseEditorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Licenze\LicenseEditorViewModel.cs" />
     <Compile Include="Util\Md5.cs" />
     <Compile Include="XamlHelpers\PasswordBoxAssistant.cs" />
     <Page Include="About\AboutBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Licenze\LicenseEditorResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Licenze\LicenseEditorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -250,16 +262,16 @@
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Crops\H_3_2.png">
+    <Content Include="Images\Crops\H_3_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Crops\V_4_3.png">
+    <Content Include="Images\Crops\V_4_3.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Crops\H_4_3.png">
+    <Content Include="Images\Crops\H_4_3.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Crops\V_3_2.png">
+    <Content Include="Images\Crops\V_3_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\Lumen-spot.jpg">

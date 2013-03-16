@@ -21,6 +21,8 @@ using log4net;
 using System.Data.Entity.Validation;
 using System.Text;
 using Digiphoto.Lumen.Servizi.Ricostruzione;
+using Digiphoto.Lumen.GestoreConfigurazione.UI.Licenze;
+using Digiphoto.Lumen.Licensing;
 
 namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 {
@@ -32,7 +34,8 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 		PuntoVendita = 2,
 		CartaEStampanti = 3,
 		PreferenzeUtente = 4,
-		Riservato = 5
+		Riservato = 5,
+		Licenza = 6
 	}
 
     public class MainWindowViewModel : ClosableWiewModel
@@ -48,10 +51,17 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
             loadUserConfig();
 
+			licenseEditorViewModel = new LicenseEditorViewModel();
+
 			passo = PassoWiz.Login;
 
 			this.abilitoShutdown = false;  // NON permetto all'utente di scegliere se spegnere il computer.
         }
+
+		public LicenseEditorViewModel licenseEditorViewModel {
+			get;
+			private set;
+		}
 
 		private IDictionary<string, string> _modiAzzeramentoNumeroFoto;
 		public IDictionary<string,string> modiAzzeramentoNumeroFoto {
@@ -146,6 +156,11 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             salvaConfigDB();
         }
 
+		void saveRegistry() {
+			_giornale.Debug( "Salvo nel registry: cod licenza = " + licenseEditorViewModel.codiceLicenza );
+			LicenseUtil.writeCurrentLicenseKey( licenseEditorViewModel.codiceLicenza );
+		}
+
 		// TODO rivedere. non so se serve piu
         private void salvaConfigDB()
         {
@@ -178,11 +193,20 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 				if( _passo != value ) {
 					_passo = value;
 					OnPropertyChanged( "passo" );
+
+					foreach( string name in Enum.GetNames( typeof(PassoWiz) ) ) {
+						if( name == "Login" )
+							continue;  // TODO far diventare il login come passo 1. poi togliere.
+
+						OnPropertyChanged( "isPasso" + name );
+					}
+/*
 					OnPropertyChanged( "isPassoMotoreDb" );
 					OnPropertyChanged( "isPassoPuntoVendita" );
 					OnPropertyChanged( "isPassoCartaEStampanti" );
 					OnPropertyChanged( "isPassoPreferenzeUtente" );
 					OnPropertyChanged( "isPassoRiservato" );
+ */
 					OnPropertyChanged( "possoStepAvanti" );
 					OnPropertyChanged( "possoStepIndietro" );
 					OnPropertyChanged( "possoApplicare" );
@@ -220,6 +244,12 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
+		public bool isPassoLicenza {
+			get {
+				return passo == PassoWiz.Licenza;
+			}
+		}
+
 		public bool possoStepIndietro {
 			get {
 				return loginEffettuato && passo > PassoWiz.MotoreDb;
@@ -229,7 +259,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 		public bool possoStepAvanti {
 			get {
 				return loginEffettuato
-					&& passo < PassoWiz.Riservato
+					&& passo < PassoWiz.Licenza
 					&& File.Exists( Path.Combine( cfg.cartellaDatabase, cfg.dbNomeDbPieno ) );
 			}
 		}
@@ -1033,6 +1063,9 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 					int quanti = saveInfoFisse();
 					
 					saveUserConfig();
+
+					saveRegistry();
+
 
 					inserisciEventualePubblicitaLumen();
 
