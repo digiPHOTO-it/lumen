@@ -33,6 +33,7 @@ namespace Digiphoto.Lumen.UI.Mvvm
 
         protected ViewModelBase()
         {
+			_giornale.Debug( "Costruzione ViewModel : " + this.GetType() );
         }
 
         #endregion // Constructor

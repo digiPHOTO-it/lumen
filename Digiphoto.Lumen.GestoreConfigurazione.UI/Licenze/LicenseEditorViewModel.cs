@@ -17,10 +17,13 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI.Licenze {
 		public LicenseEditorViewModel() {
 
 			// Calcolo e setto il numero di serie hardware
+			_giornale.Debug( "calcolo Machine Code" );
 			machineCode = LicenseUtil.getMachineCode();
+			_giornale.Info( "Machine Code = " + machineCode );
 
 			// Carico il codice di licenza (eventuale) dal registry
 			codiceLicenza = LicenseUtil.readCurrentLicenseKey();
+			_giornale.Info( "caricato cod. licenza = " + codiceLicenza );
 
 			validareLicenza( codiceLicenza, false );
 		}
