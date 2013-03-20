@@ -4,12 +4,14 @@ using System.Linq;
 using System.Management;
 using System.Text;
 using Digiphoto.Lumen.Config;
+using log4net;
 using Microsoft.Win32;
 
 namespace Digiphoto.Lumen.Licensing {
 
 	public static class LicenseUtil {
 
+		private static readonly ILog _giornale = LogManager.GetLogger( typeof( LicenseUtil ) );
 
 		/// <summary>
 		/// Calcola un numero da 5 cifre che rappresenta un hash
@@ -22,7 +24,14 @@ namespace Digiphoto.Lumen.Licensing {
 		/// Una stringa da 5 caratteri che per ora contiene solo numeri
 		/// (in pratica sarebbe un long)
 		/// </returns>
+
+	
 		public static string getMachineCode() {
+			SKGL.SerialKeyConfiguration skc = new SKGL.SerialKeyConfiguration();
+			return skc.MachineCode.ToString();
+		}
+
+		public static string getMachineCodeDACANC() {
 			/* 
 			 * Copyright (C) 2012 Artem Los, All rights reserved.
 			 * 
@@ -46,25 +55,31 @@ namespace Digiphoto.Lumen.Licensing {
 			 * Any questions, please contact me at
 			 *  * artem@artemlos.net
 			 */
+			_giornale.Debug( "gmc step1" );
 			ManagementObjectSearcher searcher = new ManagementObjectSearcher( "select * from Win32_Processor" );
 			string collectedInfo = ""; // here we will put the informa
 
+			_giornale.Debug( "gmc step2" );
 			foreach( ManagementObject share in searcher.Get() ) {
 				// first of all, the processorid
 				collectedInfo += share.GetPropertyValue( "ProcessorId" ).ToString();
 			}
 
+			_giornale.Debug( "gmc step3" );
 			searcher.Query = new ObjectQuery( "select * from Win32_BIOS" );
 			foreach( ManagementObject share in searcher.Get() ) {
 				//then, the serial number of BIOS
 				collectedInfo += share.GetPropertyValue( "SerialNumber" ).ToString();
 			}
 
+			_giornale.Debug( "gmc step4" );
 			searcher.Query = new ObjectQuery( "select * from Win32_BaseBoard" );
 			foreach( ManagementObject share in searcher.Get() ) {
 				//finally, the serial number of motherboard
 				collectedInfo += share.GetPropertyValue( "SerialNumber" ).ToString();
 			}
+
+			_giornale.Debug( "gmc step5" );
 			return GetStableHash( collectedInfo ).ToString();
 		}
 
@@ -171,5 +186,80 @@ namespace Digiphoto.Lumen.Licensing {
 			return (license != null && license.IsExpired == false && license.IsOnRightMachine);
 		}
 
+
+		/// <summary>
+		/// Read the serial number from the hard disk that keep the bootable partition (boot disk)
+		/// </summary>
+		/// <returns>
+		/// If succedes, returns the string rappresenting the Serial Number.
+		/// null if it fails.
+		/// </returns>
+		static string getHddSerialNumber() {
+
+			// --- Win32 Disk Partition
+			ManagementScope scope = new ManagementScope( @"\root\cimv2" );
+			ObjectQuery query = new ObjectQuery( "select * from Win32_DiskPartition WHERE BootPartition=True" );
+			ManagementObjectSearcher searcher = new ManagementObjectSearcher( scope, query );
+			ManagementObjectCollection partitions = searcher.Get();
+
+			uint diskIndex = 999;
+			foreach( ManagementObject partition in partitions ) {
+
+#if QQDEBUG
+				Console.WriteLine( "****************************" );
+				foreach( var qq in partition.Properties ) {
+					Console.WriteLine( qq.Name + " = " + qq.Value );
+				}
+#endif
+				diskIndex = (uint)partition ["Index"];
+				break;
+			}
+
+			// I haven't found the bootable partition. Fail.
+			if( diskIndex == 999 )
+				return null;
+
+
+			// --- Win32 Disk Drive
+			searcher = new ManagementObjectSearcher( "SELECT * FROM Win32_DiskDrive where Index = " + diskIndex );
+
+			string deviceName = null;
+			foreach( ManagementObject wmi_HD in searcher.Get() ) {
+#if QQDEBUG
+				Console.WriteLine( "---------------------------------" );
+				foreach( var qq in wmi_HD.Properties ) {
+					Console.WriteLine( qq.Name + " = " + qq.Value );
+				}
+#endif
+
+				deviceName = (string)wmi_HD ["Name"];
+				break;
+
+			}
+
+			// I haven't found the disk drive. Fail
+			if( String.IsNullOrWhiteSpace( deviceName ) )
+				return null;
+
+			if( deviceName.StartsWith( @"\\.\" ) ) {
+				deviceName = deviceName.Replace( @"\\.\", "%" );
+			}
+
+			// --- Physical Media
+			searcher = new ManagementObjectSearcher( "SELECT * FROM Win32_PhysicalMedia WHERE Tag like '" + deviceName + "'" );
+
+			string serial = null;
+			foreach( ManagementObject wmi_HD in searcher.Get() ) {
+#if QQDEBUG
+				Console.WriteLine( "!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
+				foreach( var qq in wmi_HD.Properties ) {
+					Console.WriteLine( qq.Name + " = " + qq.Value );
+				}
+#endif
+				serial = (string)wmi_HD ["SerialNumber"];
+			}
+
+			return serial;
+		}
 	}
 }
