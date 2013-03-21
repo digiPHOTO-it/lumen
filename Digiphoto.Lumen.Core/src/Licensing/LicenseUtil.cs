@@ -171,14 +171,17 @@ namespace Digiphoto.Lumen.Licensing {
 
 		public static void writeCurrentLicenseKey( string key ) {
 
-			RegistryKey licenseKey = Registry.LocalMachine.OpenSubKey( SUBKEY_REG, true );
+			RegistryKey licenseKey = Registry.LocalMachine.CreateSubKey( SUBKEY_REG, RegistryKeyPermissionCheck.ReadWriteSubTree );
 
 			if( licenseKey != null ) {
 
-				if( String.IsNullOrWhiteSpace( key ) )
+				if( String.IsNullOrWhiteSpace( key ) ) {
 					licenseKey.DeleteValue( VAL_KEY, false );
-				else
+				} else {
 					licenseKey.SetValue( VAL_KEY, key );
+				}
+
+				licenseKey.Close();
 			}
 		}
 
