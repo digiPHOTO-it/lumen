@@ -1252,15 +1252,17 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			// Copio le mie foto di default
 			try
 			{
-				DirectoryInfo info = new DirectoryInfo("Crops");
+				DirectoryInfo info = new DirectoryInfo( ".\\Images\\Crops");
 
-				FileInfo[] file = info.GetFiles();
+				FileInfo[] filesInfo = info.GetFiles();
 
 				DirectoryInfo[] directory = info.GetDirectories();
 
-				foreach (FileInfo var in file)
+				foreach (FileInfo fileInfo in filesInfo)
 				{
-					var.CopyTo(Path.Combine(cfg.cartellaMaschereCrop,var.Name));
+					string dest = Path.Combine(cfg.cartellaMaschereCrop,fileInfo.Name);
+					if( ! File.Exists(dest) )
+						fileInfo.CopyTo(dest,false);
 				}
 
 				_giornale.Debug("Preparato maschere per il crop di default");
@@ -1269,7 +1271,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			catch (Exception ee)
 			{
 				_giornale.Error("Impossibile copiare maschere di crop di default: ", ee);
-				throw;
+				throw ee;
 			}
 		}
 
