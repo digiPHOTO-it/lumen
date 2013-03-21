@@ -176,7 +176,7 @@ namespace Digiphoto.Lumen.Licensing {
 			if( licenseKey != null ) {
 
 				if( String.IsNullOrWhiteSpace( key ) )
-					licenseKey.DeleteValue( VAL_KEY );
+					licenseKey.DeleteValue( VAL_KEY, false );
 				else
 					licenseKey.SetValue( VAL_KEY, key );
 			}
