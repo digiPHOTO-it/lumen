@@ -344,8 +344,6 @@ namespace Digiphoto.Lumen.UI {
 					}
 				}
 			}
-
-			Console.Write( "stop" );
 		}
 		#endregion
 
