@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Lumen"
-#define MyAppVersion "0.10"
+#define MyAppVersion "0.16"
 #define MyAppPublisher "digiPHOTO.it"
 #define MyAppURL "http://www.digiphoto.it/Lumen"
 #define MyAppExeName "Digiphoto.Lumen.UI.exe"
@@ -52,6 +52,8 @@ Source: "..\Digiphoto.Lumen.Core\{#dirPlat}\Digiphoto.Lumen.Core.dll"; DestDir: 
 Source: "..\Digiphoto.Lumen.Core\{#dirPlat}\Digiphoto.Lumen.Core.dll.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.Core\{#dirPlat}\log4net.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.Core\{#dirPlat}\MemBus.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.Core\{#dirPlat}\ExifLib.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.Core\{#dirPlat}\skgl.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.Core\{#dirPlat}\Resources\RemoveDrive.exe"; DestDir: "{app}\Resources"; Flags: ignoreversion
 ; --- Imaging ---                                                            
 Source: "..\Digiphoto.Lumen.Imaging.Wic\{#dirPlat}\Digiphoto.Lumen.Imaging.Wic.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -65,7 +67,8 @@ Source: "..\Digiphoto.Lumen.UI\{#dirPlat}\Reports\*"; DestDir: "{app}\Reports"; 
 ; --- Configuratore ---
 Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\Digiphoto.Lumen.GestoreConfigurazione.UI.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\Digiphoto.Lumen.GestoreConfigurazione.UI.exe.config"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\Images\Lumen-spot.jpg"; DestDir: "{app}\Images"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\Images\*"; DestDir: "{app}\Images"; Flags: ignoreversion 
+
 
 ; --- Driver sql x86 ---
 ; Source: "..\packages\System.Data.SQLite.1.0.81.0\lib\net40\System.Data.SQLite.dll"; DestDir: "{app}";  Check: "not IsWin64"; Flags: ignoreversion
