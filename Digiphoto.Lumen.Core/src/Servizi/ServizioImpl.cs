@@ -20,7 +20,6 @@ namespace Digiphoto.Lumen.Servizi {
 		private bool _disposing;
 
 		public ServizioImpl() {
-			Console.Write( "STOP" );
 		}
 
 		public bool isRunning {

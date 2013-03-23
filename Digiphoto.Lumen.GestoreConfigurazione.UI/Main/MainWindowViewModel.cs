@@ -925,18 +925,14 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			_giornale.Debug( "Devo provare a connettermi al db" );
 
             salvaConfigDB();
-			_giornale.Debug( "stop1" );
 
 			impostaConnectionStringFittizzia();
-			_giornale.Debug( "stop2" );
 
 			DbUtil dbUtil = new DbUtil( cfg );
-			_giornale.Debug( "stop3" );
 
 			string msgErrore;
             if (dbUtil.verificaSeDatabaseUtilizzabile( out msgErrore ))
             {
-				_giornale.Debug( "stop4" );
 				dialogProvider.ShowMessage( "OK\nConnessione al database riuscita", "Test Connection" );
 				_giornale.Info( "Connessione al db riuscita. Tutto ok" );
             }
