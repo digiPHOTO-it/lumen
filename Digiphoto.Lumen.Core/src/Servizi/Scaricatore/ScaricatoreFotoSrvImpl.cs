@@ -95,6 +95,13 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 				_copiaImmaginiWorker.StartSingleThread();
 
 			statoScarica = StatoScarica.Scaricamento;
+
+			ScaricoFotoMsg scaricoFotoMsg = new ScaricoFotoMsg(this, "Inizio Scarico Foto");
+			scaricoFotoMsg.esitoScarico = new EsitoScarico();
+			scaricoFotoMsg.fase = FaseScaricoFoto.InizioScarico;
+			scaricoFotoMsg.sorgente = _paramScarica.cartellaSorgente != null ? _paramScarica.cartellaSorgente : _paramScarica.nomeFileSingolo;
+			scaricoFotoMsg.showInStatusBar = true;
+			pubblicaMessaggio(scaricoFotoMsg);
 		}
 
 
@@ -103,7 +110,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			ScaricoFotoMsg scaricoFotoMsg = new ScaricoFotoMsg( this, "Scaricate " + esitoScarico.totFotoCopiateOk + " foto. Togliere la card" );
 			scaricoFotoMsg.esitoScarico = esitoScarico;
 			// Finito: genero un evento per notificare che l'utente può togliere la flash card.
-			scaricoFotoMsg.fase = Fase.FineScarico;
+			scaricoFotoMsg.fase = FaseScaricoFoto.FineScarico;
 			scaricoFotoMsg.sorgente =  _paramScarica.cartellaSorgente != null ? _paramScarica.cartellaSorgente : _paramScarica.nomeFileSingolo;
 			scaricoFotoMsg.showInStatusBar = true;
 
@@ -127,7 +134,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			statoScarica = StatoScarica.Idle;
 
 			// Rendo pubblico l'esito dell'elaborazione così che si può aggiornare la libreria.
-			scaricoFotoMsg.fase = Fase.FineLavora;
+			scaricoFotoMsg.fase = FaseScaricoFoto.FineLavora;
 			scaricoFotoMsg.descrizione = "Provinatura foto terminata. Inserite " + elab.conta + " foto nel database";
 			scaricoFotoMsg.showInStatusBar = true;
 			pubblicaMessaggio( scaricoFotoMsg );

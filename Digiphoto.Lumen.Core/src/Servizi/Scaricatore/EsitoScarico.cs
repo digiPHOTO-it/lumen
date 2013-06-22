@@ -22,6 +22,44 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			set;
 		}
 
+		/// <summary>
+		/// Indica il numero di foto totali scaricate dalla memory card / HD.
+		/// E' un progressivo che viene incrementato di 20 unita per volta
+		/// </summary>
+		public int totFotoScaricateProg
+		{
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Indica il numero di foto totali scaricate dalla memory card / HD.
+		/// </summary>
+		public int totFotoScaricate
+		{
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Indica il numero di foto provinate.
+		/// E' un progressivo che viene incrementato di 20 unita per volta
+		/// </summary>
+		public int totFotoProvinateProg
+		{
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Indica il numero di foto provinate.
+		/// </summary>
+		public int totFotoProvinate
+		{
+			get;
+			set;
+		}
+
 		public int totFotoCopiateOk {
 			get;
 			set;

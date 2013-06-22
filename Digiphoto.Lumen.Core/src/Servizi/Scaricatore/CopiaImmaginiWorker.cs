@@ -63,43 +63,69 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			
 
 
-				string nomeDirDest = calcolaCartellaDestinazione();
+			string nomeDirDest = calcolaCartellaDestinazione();
 
-				// Creo la cartella che conterrà le foto
-				Directory.CreateDirectory( nomeDirDest );
+			// Creo la cartella che conterrà le foto
+			Directory.CreateDirectory( nomeDirDest );
 
-				// Creo la cartella che conterrà i provini
-				PathUtil.creaCartellaProvini( new FileInfo( nomeDirDest ) );
+			// Creo la cartella che conterrà i provini
+			PathUtil.creaCartellaProvini( new FileInfo( nomeDirDest ) );
 
-				_esitoScarico = new EsitoScarico();
+			_esitoScarico = new EsitoScarico();
+
+			ScaricoFotoMsg scaricoFotoMsg = new ScaricoFotoMsg(this, "Notifica progresso");
+			scaricoFotoMsg.fase = FaseScaricoFoto.Scaricamento;
+			scaricoFotoMsg.esitoScarico = _esitoScarico;
+			scaricoFotoMsg.sorgente = _paramScarica.cartellaSorgente != null ? _paramScarica.cartellaSorgente : _paramScarica.nomeFileSingolo;
+			scaricoFotoMsg.showInStatusBar = false;
 
 
-				if( _paramScarica.nomeFileSingolo != null ) {
+			if( _paramScarica.nomeFileSingolo != null ) {
 
-					// Lavoro un solo file che mi è stato indicato. Serve per creare una maschera quando lavoro con le cornici.
-					if( scaricaAsincronoUnFile( _paramScarica.nomeFileSingolo, nomeDirDest ) )
-						++conta;
-
-				} else {
-
-					// Faccio giri diversi per i vari formati grafici che sono indicati nella configurazione (jpg, tif)
-					string [] estensioni = Configurazione.UserConfigLumen.estensioniGrafiche.Split( ';' );
-					foreach( string estensione in estensioni ) {
-
-						string [] files = Directory.GetFiles( _paramScarica.cartellaSorgente, searchPattern: "*" + estensione, searchOption: SearchOption.AllDirectories );
-
-						// trasferisco tutti i files elencati
-						foreach( string nomeFileSrc in files ) {
-							if( scaricaAsincronoUnFile( nomeFileSrc, nomeDirDest ) )
-								++conta;
-						}
-
+				// Lavoro un solo file che mi è stato indicato. Serve per creare una maschera quando lavoro con le cornici.
+				if (scaricaAsincronoUnFile(_paramScarica.nomeFileSingolo, nomeDirDest))
+				{
+					++conta;
+					if (conta % 20 == 0)
+					{
+						scaricoFotoMsg.esitoScarico.totFotoScaricateProg = conta;
+						LumenApplication.Instance.bus.Publish(scaricoFotoMsg);
 					}
 				}
 
-				// Nel log scrivo anche il tempo che ci ho messo a scaricare le foto. Mi servirà per profilare
-				TimeSpan tempoImpiegato = DateTime.Now.Subtract( oraInizio );
-				_giornale.Info( "Terminato trasferimento di " + conta + " foto. Tempo impiegato = " + tempoImpiegato );
+			} else {
+
+				// Faccio giri diversi per i vari formati grafici che sono indicati nella configurazione (jpg, tif)
+				string [] estensioni = Configurazione.UserConfigLumen.estensioniGrafiche.Split( ';' );
+				foreach( string estensione in estensioni ) {
+
+					string [] files = Directory.GetFiles( _paramScarica.cartellaSorgente, searchPattern: "*" + estensione, searchOption: SearchOption.AllDirectories );
+
+					// trasferisco tutti i files elencati
+					foreach( string nomeFileSrc in files ) {
+						if (scaricaAsincronoUnFile(nomeFileSrc, nomeDirDest))
+						{
+							++conta;
+							if (conta % 20 == 0)
+							{
+								scaricoFotoMsg.esitoScarico.totFotoScaricateProg = conta;
+								LumenApplication.Instance.bus.Publish(scaricoFotoMsg);
+							}
+						}
+					}
+				}
+			}
+
+			if (conta != 0)
+			{
+				scaricoFotoMsg.esitoScarico.totFotoScaricate = conta;
+				scaricoFotoMsg.esitoScarico.totFotoScaricateProg = conta;
+				LumenApplication.Instance.bus.Publish(scaricoFotoMsg);
+			}
+
+			// Nel log scrivo anche il tempo che ci ho messo a scaricare le foto. Mi servirà per profilare
+			TimeSpan tempoImpiegato = DateTime.Now.Subtract( oraInizio );
+			_giornale.Info( "Terminato trasferimento di " + conta + " foto. Tempo impiegato = " + tempoImpiegato );
 
 
 			// Deve essere già aperto
