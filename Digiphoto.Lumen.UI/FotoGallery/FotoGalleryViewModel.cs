@@ -716,7 +716,7 @@ namespace Digiphoto.Lumen.UI {
 						venditoreStampaDiretta.aggiungiStampe(listaSelez, creaParamStampaFoto(stampanteAbbinata));
 						if (venditoreStampaDiretta.vendereCarrello())
 						{
-							dialogProvider.ShowMessage("Carrello venduto Correttamente", "Avviso");
+							this.trayIconProvider.showInfo( "Vendita ok", "Incassare " + venditoreStampaDiretta.carrello.totaleAPagare + " euro", 3000 );
 						}
 						else
 						{

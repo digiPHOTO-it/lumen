@@ -135,9 +135,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public void creaNuovoCarrello() {
 
-			if( modoVendita != ModoVendita.Carrello )
-				throw new InvalidOperationException( "La modalità di vendita non è impostata su 'Carrello'" );
-
 			// abbandonaCarrello();   // se ce n'era uno già apero, lo rimuovo
 
 			gestoreCarrello.creaNuovo();

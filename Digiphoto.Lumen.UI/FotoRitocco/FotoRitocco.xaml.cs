@@ -597,6 +597,14 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		private void salvareMascheraButton_Click( object sender, RoutedEventArgs e ) {
 
+
+			// Questo controllo purtroppo non posso farlo a monte. 
+			// Sarebbe meglio evitare di accendere il pulsante, ma non riesco a farlo facilmente perché la property "firstFotoInCanvas" non è nel ViewModel ma è qui.
+			if( firstFotoInCanvas == null ) {
+				this.ShowError( "Trascinare almeno una foto nella cornice\nprima di salvare", "Errore", null );
+				return;
+			}
+
 			Canvas canvasDefinitivo = trasformaCanvasDefinitivo();
 
 			// salvaCanvasSuFile( canvasDefinitivo, @"c:\temp\definitivo.jpg" );
