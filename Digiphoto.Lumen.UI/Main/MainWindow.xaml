@@ -89,7 +89,18 @@
 				</StackPanel>
 			</StatusBarItem>
 
-            <StatusBarItem Grid.Column="4">
+            <!-- Scaricamento e Provinatura -->
+            <StatusBarItem Grid.Column="4" Visibility="{Binding Path=numFotoFaseVisibility,Converter={StaticResource booleanToVisibilityConverter}}">
+                <StackPanel Orientation="Horizontal">
+                    <!--Image Source="{Binding Path=fotoGalleryViewModel.statusSlideShowImage}" Width="16" Height="16" >
+                    </Image-->
+                    <ProgressBar Name="progressBar" IsIndeterminate="True" Background="White" Foreground="Blue" Width="100" MaxWidth="100" Height="16"/>
+                    <TextBlock ToolTip="Stato scaricamento" Text="{Binding numFotoFase}" Width="80" Margin="15,0"></TextBlock>
+                </StackPanel>
+            </StatusBarItem>
+
+            <!-- Eject Usb -->
+            <StatusBarItem Grid.Column="5">
                 <StackPanel Orientation="Horizontal">
                     <ComboBox MaxWidth="400" Width="80" ItemsSource="{Binding dischiRimovibili,Mode=OneWay}" Name="comboBoxDischiRemovibili" SelectedItem="{Binding ejectUsbItem,Mode=TwoWay}" ToolTip="Dischi Removibili" />
                     <Button Name="creareNuovoButton" Command="{Binding Path=ejectUsbCommand}" ToolTip="Eject Usb" Margin="5,0,0,0">
@@ -97,7 +108,8 @@
                     </Button>
                 </StackPanel>
             </StatusBarItem>
-		</StatusBar>
+
+        </StatusBar>
 
 		<TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Top" Name="tabControlProspettive" SelectedIndex="1" 
 					Style="{DynamicResource tabControlProspettiveStyle}"

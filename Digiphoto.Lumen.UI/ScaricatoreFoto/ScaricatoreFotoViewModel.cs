@@ -294,7 +294,7 @@ namespace Digiphoto.Lumen.UI {
 			{
 				ScaricoFotoMsg msgScaricoFotoMsg = msg as ScaricoFotoMsg;
 				
-				if(msgScaricoFotoMsg.fase == Digiphoto.Lumen.Servizi.Scaricatore.Fase.FineScarico){
+				if(msgScaricoFotoMsg.fase == FaseScaricoFoto.FineScarico){
 
 					bool discoRemovibile = false;
 
@@ -325,7 +325,7 @@ namespace Digiphoto.Lumen.UI {
 						trayIconProvider.showError("ERRORE",msgError.ToString(), 5000);
 					}
 				}
-				else if (msgScaricoFotoMsg.fase == Digiphoto.Lumen.Servizi.Scaricatore.Fase.FineLavora)
+				else if (msgScaricoFotoMsg.fase == FaseScaricoFoto.FineLavora)
 				{
 					StringBuilder msgProvinatura = new StringBuilder();
 					msgProvinatura.AppendFormat("Provinate {0} foto.", msgScaricoFotoMsg.esitoScarico.totFotoCopiateOk);

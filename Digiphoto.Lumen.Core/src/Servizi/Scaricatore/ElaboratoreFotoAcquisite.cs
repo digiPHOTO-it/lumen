@@ -65,6 +65,14 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			int ultimoNumFoto = NumeratoreFotogrammi.incrementaNumeratoreFoto( _listaFiles.Count );
 			int conta = 0;
 
+			ScaricoFotoMsg scaricoFotoMsg = new ScaricoFotoMsg(this, "Notifica progresso");
+			scaricoFotoMsg.fase = FaseScaricoFoto.Provinatura;
+			scaricoFotoMsg.esitoScarico = new EsitoScarico();
+			scaricoFotoMsg.esitoScarico.totFotoScaricate = _listaFiles.Count;
+			scaricoFotoMsg.sorgente = _paramScarica.cartellaSorgente != null ? _paramScarica.cartellaSorgente : _paramScarica.nomeFileSingolo;
+			scaricoFotoMsg.showInStatusBar = false;
+
+
 			foreach( FileInfo fileInfo in _listaFiles ) {
 
 				Fotografia foto = aggiungiFoto( fileInfo, ++conta + ultimoNumFoto );
@@ -84,6 +92,20 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 					NuovaFotoMsg msg = new NuovaFotoMsg( this, foto );
 					LumenApplication.Instance.bus.Publish( msg );
 				}
+
+				if (conta % 20 == 0)
+				{
+					scaricoFotoMsg.esitoScarico.totFotoProvinateProg = conta;
+					LumenApplication.Instance.bus.Publish(scaricoFotoMsg);
+				}
+
+			}
+
+			if (conta != 0)
+			{
+				scaricoFotoMsg.esitoScarico.totFotoProvinateProg = conta;
+				scaricoFotoMsg.esitoScarico.totFotoProvinate = conta;
+				LumenApplication.Instance.bus.Publish(scaricoFotoMsg);
 			}
 
 			_giornale.Info( "Terminato di lavorare " + _listaFiles.Count + " foto appena acqusite" );

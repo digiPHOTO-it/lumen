@@ -255,10 +255,10 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Scaricatore {
 //			Assert.IsTrue( msg.totFotoCopiateOk == QUANTI_FILES );
 
 			// ok è arrivato il messaggio.
-			if( msg.fase == Fase.FineScarico )
+			if( msg.fase == FaseScaricoFoto.FineScarico )
 				_puoiTogliereLaFlashCard = true;
 
-			if( msg.fase == Fase.FineLavora ) {
+			if( msg.fase == FaseScaricoFoto.FineLavora ) {
 				_puoiTogliereLaFlashCard = true;
 				_elaborazioneTerminata = true;
 			}

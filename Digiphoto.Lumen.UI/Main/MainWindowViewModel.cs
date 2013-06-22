@@ -33,6 +33,7 @@ using Digiphoto.Lumen.UI.Pubblico;
 using System.Text;
 using Digiphoto.Lumen.Servizi.VolumeCambiato;
 using System.IO;
+using Digiphoto.Lumen.Servizi.Scaricatore;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -112,6 +113,18 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		public RingBuffer<InformazioneUtente> informazioniUtente {
+			get;
+			private set;
+		}
+
+		public String numFotoFase
+		{
+			get;
+			private set;
+		}
+
+		public Boolean numFotoFaseVisibility
+		{
 			get;
 			private set;
 		}
@@ -425,6 +438,25 @@ namespace Digiphoto.Lumen.UI {
 				if( sm.lavoroDiStampa.esitostampa == EsitoStampa.Errore ) {
 					dialogProvider.ShowError( sm.lavoroDiStampa.ToString(), "Lavoro di stampa fallito", null );
 				}
+			}
+
+			if (msg is ScaricoFotoMsg)
+			{
+				ScaricoFotoMsg sm = (ScaricoFotoMsg)msg;
+				if(sm.fase == FaseScaricoFoto.InizioScarico){
+					numFotoFaseVisibility = true;
+					numFotoFase = String.Format("Fase: 0/0");
+				}else if(sm.fase == FaseScaricoFoto.Scaricamento){
+					numFotoFase = String.Format("Fase: 0/{0}", sm.esitoScarico.totFotoScaricateProg);
+				}
+				else if (sm.fase == Digiphoto.Lumen.Servizi.Scaricatore.FaseScaricoFoto.Provinatura)
+				{
+					numFotoFase = String.Format("Fase: {0}/{1}", sm.esitoScarico.totFotoProvinateProg, sm.esitoScarico.totFotoScaricate); 
+				}else if(sm.fase == FaseScaricoFoto.FineLavora){
+					numFotoFaseVisibility = false;
+				}
+				OnPropertyChanged("numFotoFaseVisibility");
+				OnPropertyChanged("numFotoFase");
 			}
 
 			if( msg.showInStatusBar ) {
