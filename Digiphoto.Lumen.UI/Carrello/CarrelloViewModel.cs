@@ -627,7 +627,7 @@ namespace Digiphoto.Lumen.UI
 			}
 
 			if(PrezzoTotaleForfettario==0){
-				dialogProvider.ShowMessage("Si sta cercando di effetuare una vendita a prezzo uguale a 0", "Errore");
+				dialogProvider.ShowMessage("Si sta cercando di effetuare una vendita con prezzo = 0", "Errore");
 				return;
 			}
 
@@ -707,27 +707,11 @@ namespace Digiphoto.Lumen.UI
 
 				#region cartella
 				if( !procediPure ) {
-					string chiavettaPath = Configurazione.UserConfigLumen.defaultChiavetta;
-					if( !Configurazione.isFuoriStandardCiccio ) {
-						System.Windows.Forms.FolderBrowserDialog fBD = new System.Windows.Forms.FolderBrowserDialog();
-						//fBD.RootFolder = Environment.SpecialFolder.Desktop;
-						fBD.SelectedPath = Configurazione.UserConfigLumen.defaultChiavetta;
-						DialogResult result = fBD.ShowDialog();
 
-						if( result == DialogResult.OK ) {
-							chiavettaPath = fBD.SelectedPath;
-						}
-					} else {
-						string path = PathUtil.scegliCartella();
-						if( path != null ) {
-							chiavettaPath = path;
-						}
-					}
-
-					if( ! testCartellaMasterizza( chiavettaPath ) ) {
-						dialogProvider.ShowError( "path = " + chiavettaPath, "Cartella non scrivibile", null );
+					string chiavettaPath = scegliCartellaDoveMasterizzare();
+					if( chiavettaPath == null ) {
 						return false;
-					}
+						}
 
 					venditoreSrv.masterizzaSrv.impostaDestinazione( TipoDestinazione.CARTELLA, chiavettaPath );
 					_giornale.Debug( "Masterizzo i files su : " + chiavettaPath );
@@ -736,18 +720,51 @@ namespace Digiphoto.Lumen.UI
 				#endregion cartella
 
 			} else {
+
+				string chiavettaPath = Configurazione.UserConfigLumen.defaultChiavetta;
+
 				// cartella
-				if( !testCartellaMasterizza( Configurazione.UserConfigLumen.defaultChiavetta ) ) {
-					dialogProvider.ShowError( "path = " + Configurazione.UserConfigLumen.defaultChiavetta, "Cartella non scrivibile", null );
-					return false;
+				if( !testCartellaMasterizza( chiavettaPath ) ) {
+					chiavettaPath = scegliCartellaDoveMasterizzare();
+					if( chiavettaPath == null ) {
+						return false;
+					}
 				}
 
-				_giornale.Debug("Masterizzo i files su : " + Configurazione.UserConfigLumen.defaultChiavetta);
-				venditoreSrv.masterizzaSrv.impostaDestinazione(TipoDestinazione.CARTELLA, Configurazione.UserConfigLumen.defaultChiavetta);
+				_giornale.Debug("Masterizzo i files su : " + chiavettaPath );
+				venditoreSrv.masterizzaSrv.impostaDestinazione(TipoDestinazione.CARTELLA, chiavettaPath );
 			}
 
 			return true;
 		}
+
+
+		String scegliCartellaDoveMasterizzare() {
+
+			string chiavettaPath = Configurazione.UserConfigLumen.defaultChiavetta;
+
+			if( !Configurazione.isFuoriStandardCiccio ) {
+				System.Windows.Forms.FolderBrowserDialog fBD = new System.Windows.Forms.FolderBrowserDialog();
+				fBD.Description = "Scegliere la cartella dove masterizzare le foto";
+				//fBD.RootFolder = Environment.SpecialFolder.Desktop;
+				fBD.SelectedPath = Configurazione.UserConfigLumen.defaultChiavetta;
+				DialogResult result = fBD.ShowDialog();
+
+				chiavettaPath = result == DialogResult.OK ? fBD.SelectedPath : null;
+
+			} else {
+				chiavettaPath = PathUtil.scegliCartella();
+			}
+
+
+			if( !testCartellaMasterizza( chiavettaPath ) ) {
+				if( chiavettaPath != null )  // se ho scelto qualcosa e non va bene, allora segnalo l'errore.
+					dialogProvider.ShowError( "Percorso di masterizzazione non valido!\n" + chiavettaPath, "Cartella non valilda", null );
+				return null;
+			}
+			return chiavettaPath;
+		}
+
 
 		/// <summary>
 		/// Controllo che la cartella indicata sia valida, esiste ed è scrivibile.
