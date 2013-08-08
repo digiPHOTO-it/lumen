@@ -56,12 +56,13 @@ namespace Digiphoto.Lumen.UI {
 
 			if( param == "+" )
 				++quanteRigheVedo;
-			else if( param == "-" )
-				--quanteRigheVedo;
-			else
+			else if( param == "-" ) {
+				if( quanteRigheVedo > 1 )
+					--quanteRigheVedo;
+			}  else
 				quanteRigheVedo = Convert.ToInt16( param );
 
-			LsImageGallery.Focus();
+			LsImageGallery.Focus();   // mi consente di usare il tasto pg/up pg/down.
 		}
 
 
