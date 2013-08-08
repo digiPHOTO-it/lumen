@@ -857,6 +857,7 @@ namespace Digiphoto.Lumen.UI {
 
 			OnPropertyChanged( "totFotoPaginaAttuale" );
 			OnPropertyChanged( "stoPaginando" );
+
 		}
 
 		/// <summary>
@@ -1095,6 +1096,7 @@ namespace Digiphoto.Lumen.UI {
 					&& (paginaAttualeRicerca > 1 || (fotoExplorerSrv.fotografie.Count >= Configurazione.UserConfigLumen.paginazioneRisultatiGallery) );
 			}
 		}
+
 
 		#endregion Metodi
 		

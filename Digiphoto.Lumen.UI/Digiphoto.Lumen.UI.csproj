@@ -591,6 +591,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportConsumoCarta.rdlc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -718,6 +719,8 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\pagedown-48x48.png" />
+    <Resource Include="Resources\pageup-48x48.png" />
     <Resource Include="Resources\rotate-16x16.png" />
     <Resource Include="Resources\contrast-16x16.png" />
     <Resource Include="Resources\brightness-16x16.png" />
