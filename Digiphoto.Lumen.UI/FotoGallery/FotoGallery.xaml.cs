@@ -15,21 +15,30 @@ using Digiphoto.Lumen.Servizi.Stampare;
 using Digiphoto.Lumen.UI.Mvvm;
 using Digiphoto.Lumen.UI.ScreenCapture;
 using Digiphoto.Lumen.Model;
+using Digiphoto.Lumen.UI.Util;
 
 namespace Digiphoto.Lumen.UI {
 	/// <summary>
 	/// Interaction logic for FotoGallery.xaml
 	/// </summary>
 	public partial class FotoGallery : UserControlBase {
-
+		
 		public FotoGallery() {
 			InitializeComponent();
 
 			DataContextChanged += new DependencyPropertyChangedEventHandler(fotoGallery_DataContextChanged);
+
         }
 
+/*
+		void fotoGalleryViewModel_riposizionaFocusEvent( object sender, EventArgs args ) {
+			this.LsImageGallery.Focus();
+		}
+*/
 		void fotoGallery_DataContextChanged( object sender, DependencyPropertyChangedEventArgs e ) {
 			associaDialogProvider();
+
+//			fotoGalleryViewModel.riposizionaFocusEvent += new FotoGalleryViewModel.RiposizionaFocusEventHandler( fotoGalleryViewModel_riposizionaFocusEvent );
 		}
 
 		#region Proprietà
@@ -40,29 +49,21 @@ namespace Digiphoto.Lumen.UI {
 		}
 		#endregion
 
-		#region ToggleButton per dimensione lato immagine
 
-		private void radioButtonQuanteNeVedo_Checked( object sender, RoutedEventArgs e ) {
-			
-			int quanteRighe = Convert.ToInt16( ((Control)sender).Tag );
-			if( quanteRighe > 0 ) {
-				double dimensione = (LsImageGallery.ActualHeight / quanteRighe) - 6;
-				cambiaDimensioneImmagini( dimensione );
-			}
+		private void buttonQuanteNeVedo_Click( object sender, RoutedEventArgs e ) {
+
+			String param = (String)((Control)sender).Tag;
+
+			if( param == "+" )
+				++quanteRigheVedo;
+			else if( param == "-" )
+				--quanteRigheVedo;
+			else
+				quanteRigheVedo = Convert.ToInt16( param );
+
+			LsImageGallery.Focus();
 		}
 
-		#endregion
-
-		#region Metodi
-
-		/// modifico il valore dello slider
-		private void cambiaDimensioneImmagini( double newWidth ) {
-
-			dimensioneIconeSlider.Value = newWidth;
-
-		}
-
-		#endregion
 
 		private void oggiButton_Click( object sender, RoutedEventArgs e ) {
 			datePickerRicercaIniz.SelectedDate = fotoGalleryViewModel.oggi;
@@ -161,6 +162,36 @@ namespace Digiphoto.Lumen.UI {
 				LsImageGallery.ScrollIntoView( fotoGalleryViewModel.fotoCorrenteSelezionataScorrimento );
 
 		}
+
+
+		private short _quanteRigheVedo;
+		public short quanteRigheVedo {
+			get {
+				return _quanteRigheVedo;
+			}
+			set {
+				if( _quanteRigheVedo != value ) {
+
+					_quanteRigheVedo = value;
+
+					double dimensione = (LsImageGallery.ActualHeight / _quanteRigheVedo) - 6;
+					fotoGalleryViewModel.dimensioneIconaFoto = dimensione;
+				}
+			}
+		}
+
+
+		private void buttonPageUp_Click( object sender, RoutedEventArgs e ) {
+			ScrollViewer myScrollviewer = AiutanteUI.FindVisualChild<ScrollViewer>( LsImageGallery );
+			myScrollviewer.PageUp();
+			LsImageGallery.Focus();
+		}
+		private void buttonPageDown_Click( object sender, RoutedEventArgs e ) {
+			ScrollViewer myScrollviewer = AiutanteUI.FindVisualChild<ScrollViewer>( LsImageGallery );
+			myScrollviewer.PageDown();
+			LsImageGallery.Focus();
+		}
+
 
 	}
 }
