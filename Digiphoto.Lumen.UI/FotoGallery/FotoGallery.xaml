@@ -63,7 +63,19 @@
             <ToolBarTray Name="toolBarTrayAzioniDx"  Orientation="Vertical">
                 
                 <ToolBar Band="1" BandIndex="1" >
-					<Label Content="Gallery" />
+                    <Button Content="^" ToolTip="Page UP" Style="{StaticResource buttonBaseStyle}" />
+                    <Button Content="v" ToolTip="Page DOWN" Style="{StaticResource buttonBaseStyle}" />
+                    <Separator />
+                    <Button Content="+Selez" Command="{Binding selezionareTuttoCommand}" CommandParameter="True" Style="{StaticResource buttonBaseStyle}" />
+                    <!-- <Button Content="-Deselez" Command="{Binding selezionareTuttoCommand}" CommandParameter="False" Style="{StaticResource buttonBaseStyle}" /> -->
+                    <CheckBox Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" >
+                        <TextBlock TextWrapping="NoWrap">Slz</TextBlock>
+                    </CheckBox>
+                    <Separator />
+                </ToolBar>
+
+                <ToolBar Band="2" BandIndex="2" >
+
                     <RadioButton Content="*" Tag="1" Style="{StaticResource {x:Type ToggleButton}}" Width="32" Checked="radioButtonQuanteNeVedo_Checked" />
                     <RadioButton Content="**" Tag="2" Style="{StaticResource {x:Type ToggleButton}}" Width="32"  Checked="radioButtonQuanteNeVedo_Checked" />
                     <RadioButton Content="***" Tag="4" Style="{StaticResource {x:Type ToggleButton}}" Width="32"  Checked="radioButtonQuanteNeVedo_Checked" />
@@ -73,18 +85,13 @@
                             Value="{Binding Path=dimensioneIconaFoto,Mode=TwoWay}"
                             HorizontalAlignment="Center" />
                     <Separator />
-					<Button Content="+Selez" Command="{Binding selezionareTuttoCommand}" CommandParameter="True" Style="{StaticResource buttonBaseStyle}" />
-					<Button Content="-Deselez" Command="{Binding selezionareTuttoCommand}" CommandParameter="False" Style="{StaticResource buttonBaseStyle}" />
-                    <RadioButton Content="All"  Style="{StaticResource {x:Type ToggleButton}}"  Width="32" GroupName="vediSelezGrp" ToolTip="Vedi tutte le foto" Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="false" />
-                    <RadioButton Content="Selez" Style="{StaticResource {x:Type ToggleButton}}"  Width="32" GroupName="vediSelezGrp" ToolTip="Vedi solo le foto selezionate" Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="true" />
-                    <Separator />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Button Content="&lt;" Click="buttonScorriFotoSelez_Click" Tag="-1" ToolTip="Posiziona sulla precendete foto selezionata" Padding="3" />
                         <Button Content="&gt;" Click="buttonScorriFotoSelez_Click" Tag="+1" ToolTip="Posiziona sulla successiva foto selezionata" Padding="3" />
                     </StackPanel>
                 </ToolBar>
 
-                <ToolBar Band="1" BandIndex="2" Header="Pubblico">
+                <ToolBar Band="2" BandIndex="2" Header="Pubblico">
 					<Button Content="+All" Command="{Binding caricareSlideShowCommand}" CommandParameter="Auto" ToolTip="Carica tutte le foto nello show" />
 					<Button Content="+Selez" Command="{Binding caricareSlideShowCommand}" CommandParameter="Manual" ToolTip="Carica solo le foto selezionate nello show" />
 					<Button Content="Svuota" Command="{Binding controllareSlideShowCommand}" CommandParameter="Reset"  />
