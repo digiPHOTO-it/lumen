@@ -140,6 +140,12 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		public bool isAlmenoUnaFoto {
+			get {
+				return fotografieCW != null && fotografieCW.Count > 0;
+			}
+		}
+
 		public bool possoCaricareSlideShow( string modoAutoManuale ) {
 
 			bool posso = false;
@@ -148,7 +154,7 @@ namespace Digiphoto.Lumen.UI {
 				posso = fotografieCW != null && fotografieCW.SelectedItems.Count > 0;
 			else if( modoAutoManuale.Equals( "Auto", StringComparison.CurrentCultureIgnoreCase ) ) {
 				// Qui basta che ho eseguito una ricerca qualsiasi
-				posso = fotografieCW != null && fotografieCW.Count > 0;
+				posso = isAlmenoUnaFoto;
 			}
 			return posso;
 		}
@@ -218,7 +224,9 @@ namespace Digiphoto.Lumen.UI {
 				return isAlmenoUnaSelezionata;
 			}
 		}
+
 		
+
 		private IVenditoreSrv venditoreSrv {
 			get {
 				return (IVenditoreSrv) LumenApplication.Instance.getServizioAvviato<IVenditoreSrv>();
@@ -526,10 +534,25 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand filtrareSelezionateCommand {
 			get {
 				if( _filtrareSelezionateCommand == null ) {
-					_filtrareSelezionateCommand = new RelayCommand( param => filtrareSelezionate( Convert.ToBoolean(param) ) );
+					_filtrareSelezionateCommand = new RelayCommand( param => filtrareSelezionate( Convert.ToBoolean(param) ),
+																	param => possoFiltrareSelezionate( Convert.ToBoolean( param ) ) );
 				}
 				return _filtrareSelezionateCommand;
 			}
+		}
+
+		private bool possoFiltrareSelezionate( bool soloSelez ) {
+
+			if( isAlmenoUnaFoto == false )
+				return false;
+
+			if( soloSelez == false ) // attulamente il pulsante NON è premuto. Quindi sto vedento tutte le foto. Devo dire se posso premere per filtrare solo le selezionate
+				if( isAlmenoUnaSelezionata == false )
+					return false;
+
+			// if( soloSelez == true ) // Attualmente il pulsante E' premuto. Quindi sto vedendo solo le selezionate. Devo dire se posso premere per vedere tutto.
+
+			return true;
 		}
 
 		private RelayCommand _eseguireRicercaCommand;
