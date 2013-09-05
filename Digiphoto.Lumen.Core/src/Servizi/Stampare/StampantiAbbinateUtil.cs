@@ -5,10 +5,15 @@ using System.Text;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Applicazione;
+using Digiphoto.Lumen.Config;
+using Digiphoto.Lumen.Eventi;
+using log4net;
 
 namespace Digiphoto.Lumen.Servizi.Stampare {
 
 	public static class StampantiAbbinateUtil {
+
+		private static readonly ILog _giornale = LogManager.GetLogger(typeof(StampantiAbbinateUtil));
 
 		public static StampantiAbbinateCollection deserializza( String strStampantiAbbinate ) {
 			return new StampantiAbbinateCollection( deserializzaList( strStampantiAbbinate ) );
@@ -25,6 +30,9 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			String [] righe = strStampantiAbbinate.Split( sepC, StringSplitOptions.RemoveEmptyEntries );
 
 			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+
+			List<String> stampantiNonTrovate = new List<String>();
+
 			for( int i = 0; i < righe.Length; i++ ) {
 
 				string [] campi = righe [i].Split( ';' );
@@ -37,14 +45,28 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 				if( formatoCarta != null ) {					
 					IStampantiInstallateSrv stampantiInstallateSrv = LumenApplication.Instance.getServizioAvviato<IStampantiInstallateSrv>();
 					StampanteInstallata stampanteInstallata = stampantiInstallateSrv.getStampanteInstallataByString( stampante );
-
-
-					list.Add( create(stampanteInstallata, formatoCarta) );
-
-
+					if (stampanteInstallata != null)
+						list.Add(create(stampanteInstallata, formatoCarta));
+					else
+						stampantiNonTrovate.Add(stampante);
 				}
 			}
 
+			if (stampantiNonTrovate.Count > 0)
+			{
+				Messaggio msg = new Messaggio(typeof(StampantiAbbinateUtil));
+				String stampanti = "";
+				foreach (String stampante in stampantiNonTrovate)
+					stampanti+=stampante+"\n";
+				if (stampantiNonTrovate.Count==1)
+					msg.descrizione = "La stampante " + stampanti  + " non è stata trovata";
+				else
+					msg.descrizione = "Le stampanti " + stampanti + " non sono state trovate";
+				msg.showInStatusBar = true;
+				pubblicaMessaggio(msg);
+			}
+				
+			
 			// Ordino la lista per il valore di ordinamento impostato nel database nel formato carta.
 
 			list.Sort( StampanteAbbinata.CompareByImportanza );
@@ -84,6 +106,18 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 				ratio = informatore.rapporto;
 			}
 			return ratio;
+		}
+
+		private static void pubblicaMessaggio(Messaggio messaggio)
+		{
+			try
+			{
+				LumenApplication.Instance.bus.Publish(messaggio);
+			}
+			catch (Exception ee)
+			{
+				_giornale.Error("Impossibile pubblicare messaggio " + messaggio.descrizione, ee);
+			}
 		}
 				
 	}
