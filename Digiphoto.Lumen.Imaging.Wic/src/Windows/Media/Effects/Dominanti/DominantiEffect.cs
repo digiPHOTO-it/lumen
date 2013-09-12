@@ -32,17 +32,6 @@ namespace Digiphoto.Lumen.Windows.Media.Effects {
 			this.UpdateShaderValue(BlueProperty);
 		}
 
-
-		public override void reset() {
-			base.reset();
-
-			// Forse si potrebbe fare tutto tramite reflection nella classe padre... boh vedremo.
-			Red   = (double)RedProperty.GetMetadata( this.DependencyObjectType ).DefaultValue;
-			Green = (double)GreenProperty.GetMetadata( this.DependencyObjectType ).DefaultValue;
-			Blue  = (double)BlueProperty.GetMetadata( this.DependencyObjectType ).DefaultValue;
-		}
-
-
 		public Brush Input {
 			get {
 				return ((Brush)(this.GetValue(InputProperty)));

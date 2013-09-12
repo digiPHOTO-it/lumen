@@ -75,6 +75,10 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 					calcW = (long)(calcH * immagine.rapporto);
 				}
 			}
-		}	
+		}
+
+		public override Type getTypeOfCorrezione() {
+			return typeof( Resize );
+		}
 	}
 }

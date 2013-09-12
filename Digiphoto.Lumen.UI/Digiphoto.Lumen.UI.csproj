@@ -210,6 +210,7 @@
     <Compile Include="Converters\EnabledValidationMultiConverter.cs" />
     <Compile Include="Converters\FasiDelGiornoConverter.cs" />
     <Compile Include="Converters\ImageSourceConverter.cs" />
+    <Compile Include="Converters\NumericToBooleanConverter.cs" />
     <Compile Include="Converters\RectangleSizeConverter.cs" />
     <Compile Include="Converters\SumConverter.cs" />
     <Compile Include="Converters\PercentualeConverterSlideY.cs" />
@@ -263,6 +264,7 @@
       <DependentUpon>FotoRitocco.xaml</DependentUpon>
     </Compile>
     <Compile Include="FotoRitocco\FotoRitoccoViewModel.cs" />
+    <Compile Include="FotoRitocco\RitoccoPuntualeMsg.cs" />
     <Compile Include="Logging\LoggingShowWindowl.xaml.cs">
       <DependentUpon>LoggingShowWindowl.xaml</DependentUpon>
     </Compile>

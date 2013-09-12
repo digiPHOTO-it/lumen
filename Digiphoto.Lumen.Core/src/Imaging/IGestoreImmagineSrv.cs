@@ -31,5 +31,8 @@ namespace Digiphoto.Lumen.Imaging {
 		IImmagine applicaCorrezioni( IImmagine immaginePartenza, IEnumerable<Correzione> correzioni );
 
 		IImmagine applicaCorrezione( IImmagine immaginePartenza, Correzione correzione );
+
+		Correttore getCorrettore( Correzione correzione );
+		Correttore getCorrettore( Type tipo );
 	}
 }

@@ -1,6 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                     xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
+                    
+xmlns:eff="clr-namespace:Digiphoto.Lumen.Windows.Media.Effects;assembly=Digiphoto.Lumen.Imaging.Wic"
+                    
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 
@@ -147,11 +150,42 @@
 		</Style.Resources>		
 	</Style>
 
-	<Style x:Key="toggleButtonOneShotStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource buttonBaseStyle}">
-		<Setter Property="Background" Value="Red" />
-	</Style>
+<!--
+    <ControlTemplate TargetType="ToggleButton" x:Key="yesNoToggleTemplate">
+        
+        <Border CornerRadius="3" Background="{TemplateBinding Background}">
+            <ContentPresenter Margin="3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsChecked" Value="False">
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                            <GradientStop Color="#FFF3F3F3" Offset="1"/>
+                            <GradientStop Color="LawnGreen" Offset="0.307"/>
+                        </LinearGradientBrush>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                            <GradientStop Color="#FFF3F3F3" Offset="1"/>
+                            <GradientStop Color="Red" Offset="0.307"/>
+                        </LinearGradientBrush>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </ControlTemplate.Triggers>
 
-	<Style x:Key="radioFiltroMask" TargetType="{x:Type RadioButton}" BasedOn="{StaticResource {x:Type ToggleButton}}">
+    </ControlTemplate>
+-->
+
+
+
+
+    <Style x:Key="radioFiltroMask" TargetType="{x:Type RadioButton}" BasedOn="{StaticResource {x:Type ToggleButton}}">
 		<Setter Property="Margin" Value="5" />
 		<Setter Property="Height" Value="30" />
  	</Style>
@@ -207,5 +241,49 @@
         </Setter>
     </Style>
 
+    <!-- Questo è il template per visualizzare le tante foto in modifica durante il fotoritocco -->
 
+    <!--                   
+        LayoutTransform="{Binding Path=DataContext.trasformazioneCorrente, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  
+    -->
+    <DataTemplate x:Key="dataTemplateFotoInModificaMassivo">
+        <Border BorderBrush="Red">
+            <Image Name="imageModTemplate"
+                   Effect="{Binding Path=DataContext.effettoCorrente, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
+                   Source="{Binding Path=imgProvino,Converter={StaticResource imageSourceConverter}}" />
+        </Border>
+    </DataTemplate>
+
+    <!-- Questo è il template per visualizzare UNA sola foto in modifica durante il fotoritocco -->
+    <!--
+        LayoutTransform="{Binding Path=DataContext.trasformazioneCorrente, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  
+    -->
+    <DataTemplate x:Key="dataTemplateFotoInModificaPuntuale">
+
+        <Border Effect="{Binding Path=DataContext.effetto3, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"   >
+            <Border Effect="{Binding Path=DataContext.effetto2, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"   >
+                <Border Effect="{Binding Path=DataContext.effetto1, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"   >
+
+                    <Border LayoutTransform="{Binding Path=DataContext.trasformazione2, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  >
+                        <Border LayoutTransform="{Binding Path=DataContext.trasformazione1, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  >
+
+                            <Border BorderBrush="Red">
+
+                                <Image Name="imageModTemplate"
+                                   Source="{Binding Path=imgOrig,Converter={StaticResource imageSourceConverter}}" />
+                            
+                            </Border><!-- tras2 -->
+                        </Border><!-- tras1 -->
+
+                    </Border><!-- eff3 -->
+                </Border><!-- eff2 -->
+            </Border><!-- eff1 -->
+
+        </Border>
+
+
+
+    </DataTemplate>
+
+    
 </ResourceDictionary>
