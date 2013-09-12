@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Media.Effects;
+using Digiphoto.Lumen.Imaging.Wic.Util;
 
 namespace Digiphoto.Lumen.Windows.Media.Effects {
 
@@ -28,8 +30,27 @@ namespace Digiphoto.Lumen.Windows.Media.Effects {
 			return new PixelShader() { UriSource = uriRisorsa };
 		}
 
+		public void resetToDefaultValue() {
+			resetToDefaultValue( null );
+		}
 
-		public virtual void reset() {
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="propertyName"></param>
+		public void resetToDefaultValue( String propertyName ) {
+
+			IList<DependencyProperty> props = WpfUtil.GetDependencyProperties( this );
+
+			foreach( DependencyProperty dp in props ) {
+
+				if( propertyName != null && propertyName != dp.Name )
+					continue;
+
+				object defaultValue = dp.DefaultMetadata.DefaultValue;
+				this.SetCurrentValue( dp, defaultValue );
+			}
 		}
 
 

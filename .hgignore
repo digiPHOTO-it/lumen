@@ -8,3 +8,4 @@ TestResults/**
 *.orig
 packages
 doc/Verbale_riunione_1.pdf
+*.psess

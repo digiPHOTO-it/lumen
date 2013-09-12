@@ -320,4 +320,31 @@
         <Setter Property="BorderThickness" Value="1" />
     </Style>
 
+
+    <!-- I pulsanti ad incastro, quando sono pigiati, voglio cambiare colore per renderli più evidenti-->
+    <ControlTemplate TargetType="ToggleButton" x:Key="mioToggleButtonTemplate">
+        <Border CornerRadius="3" Background="{TemplateBinding Background}">
+            <ContentPresenter Margin="3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="BorderBrush" Value="Red" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                            <GradientStop Color="#FFF3F3F3" Offset="1"/>
+                            <GradientStop Color="YellowGreen" Offset="0.307"/>
+                        </LinearGradientBrush>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </ControlTemplate.Triggers>
+
+    </ControlTemplate>
+
+    <Style x:Key="mioToggleButtonStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource buttonBaseStyle}">
+        <Setter Property="Template" Value="{StaticResource mioToggleButtonTemplate}" />
+    </Style>
+
 </ResourceDictionary>

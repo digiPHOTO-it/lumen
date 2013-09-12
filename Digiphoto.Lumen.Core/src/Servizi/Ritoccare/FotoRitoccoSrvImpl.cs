@@ -18,6 +18,7 @@ using System.IO;
 using log4net;
 using Digiphoto.Lumen.Servizi.Ritoccare.Clona;
 using Digiphoto.Lumen.Database;
+using System.Collections;
 
 namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
@@ -84,16 +85,20 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 			// ricalcolo il provino
 			IImmagine nuova = null;
-			if( fotografia.imgProvino != null )
+
+
+			if( correzioneNuova is Gimp )
+				nuova = gestoreImmaginiSrv.creaProvino( fotografia.imgRisultante );
+			else if( fotografia.imgProvino != null )
 				nuova = gestoreImmaginiSrv.applicaCorrezione( fotografia.imgProvino, correzioneNuova );
 
 			// Ora serializzo di nuovo in stringa tutte le correzioni
-			
 			fotografia.correzioniXml = SerializzaUtil.objectToString( correzioni );
 			fotografia.imgProvino = nuova;
 
 			if( salvare ) {
 				// Salvo nel db la modifica
+
 				objContext.SaveChanges();
 
 				gestoreImmaginiSrv.save( fotografia.imgProvino, PathUtil.nomeCompletoProvino( fotografia ) );
@@ -200,7 +205,10 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 			objContext.SaveChanges();
 
 			IGestoreImmagineSrv gis = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
-			gis.save( fotografia.imgProvino, PathUtil.nomeCompletoProvino( fotografia ) );
+			if( fotografia.imgProvino != null )
+				gis.save( fotografia.imgProvino, PathUtil.nomeCompletoProvino( fotografia ) );
+			else
+				AiutanteFoto.creaProvinoFoto( fotografia );
 		}
 
 
@@ -220,17 +228,14 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 			lanciatore.lancia();
 
 			List<Fotografia> modificate = lanciatore.applicaImmaginiModificate();
+			Gimp correzioneGimp = new Gimp();
 
 			foreach( Fotografia foto in modificate ) {
 
 				// Ora idrato l'immagine risultante
 				AiutanteFoto.idrataImmaginiFoto( foto, IdrataTarget.Risultante );
 
-				// Per forza di cose, devo ricreare il provino partendo dalla risultante
-				IGestoreImmagineSrv gis = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
-				foto.imgProvino = gis.creaProvino( foto.imgRisultante );
-
-				gis.save( foto.imgProvino, PathUtil.nomeCompletoProvino( foto ) );
+				addCorrezione( foto, correzioneGimp, false );
 			}
 
 			return modificate.ToArray();
@@ -398,5 +403,65 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 			return esiste;
 		}
+
+
+		/// <summary>
+		/// Prendo le correzioni xml di una foto, 
+		/// e le converto nei rispettivi "Effetti" e/o "Trasformazioni"
+		/// </summary>
+		/// <typeparam name="T">Può essere un ShaderEffect oppure un Transform</typeparam>
+		/// <param name="fotografia"></param>
+		/// <returns>
+		/// Se ho delle correzioni, allora ritorno La lista degli oggetti trasformati. <br/>
+		/// Se invece non ho correzioni, allora ritorno null.
+		/// </returns>
+		public IList<T> converteCorrezioni<T>( Fotografia fotografia ) {
+
+			if( fotografia.correzioniXml == null )
+				return null;
+
+			CorrezioniList correzioni = SerializzaUtil.stringToObject<CorrezioniList>( fotografia.correzioniXml );
+			if( correzioni == null )
+				return null;
+
+			// ok ho qualcosa da fare. Istanzio la lista da ritornare
+			IList<T> convertiti = new List<T>();
+
+			foreach( Correzione correzione in correzioni ) {
+
+				Correttore correttore = gestoreImmaginiSrv.getCorrettore( correzione );
+				if( correttore.CanConvertTo( typeof( T ) ) )
+					convertiti.Add( (T)correttore.ConvertTo( correzione, typeof( T ) ) );
+				else
+					_giornale.Error( "Impossibile convertire " + typeof( T ) + " in una correzione" );
+			}
+
+			return convertiti;
+		}
+
+
+
+		public CorrezioniList converteInCorrezioni( IEnumerable<Object> effettiTrasformazioni ) {
+
+			if( effettiTrasformazioni == null )
+				return null;
+
+			CorrezioniList correzioni = new CorrezioniList();
+
+
+			foreach( var effettoTrasformazione in effettiTrasformazioni ) {
+
+				Correttore correttore = gestoreImmaginiSrv.getCorrettore( effettoTrasformazione.GetType() );
+
+				if( correttore.CanConvertFrom( effettoTrasformazione.GetType() ) )
+					correzioni.Add( (Correzione)correttore.ConvertFrom( effettoTrasformazione ) );
+			}
+
+			return correzioni;
+		}
+
+
+
+
 	}
 }

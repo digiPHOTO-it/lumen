@@ -21,14 +21,6 @@ namespace Digiphoto.Lumen.Windows.Media.Effects {
 			this.UpdateShaderValue( ContrastProperty );
 		}
 
-		public override void reset() {
-			base.reset();
-
-			// Forse si potrebbe fare tutto tramite reflection nella classe padre... boh vedremo.
-			Brightness = (double)BrightnessProperty.GetMetadata( this.DependencyObjectType ).DefaultValue;
-			Contrast = (double) ContrastProperty.GetMetadata( this.DependencyObjectType ).DefaultValue;
-		}
-
 		public Brush Input {
 			get {
 				return ((Brush)(this.GetValue( InputProperty )));

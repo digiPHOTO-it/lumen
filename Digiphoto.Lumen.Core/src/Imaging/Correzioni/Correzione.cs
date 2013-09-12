@@ -13,6 +13,7 @@ namespace Digiphoto.Lumen.Imaging.Correzioni {
 	[XmlInclude(typeof(Luce))]
 	[XmlInclude(typeof(Crop))]
 	[XmlInclude(typeof(Dominante))]
+	[XmlInclude( typeof( Gimp ) )]
 	public abstract class Correzione {
 
 		public virtual bool isSommabile( Correzione altra ) {

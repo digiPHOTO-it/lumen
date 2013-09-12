@@ -84,7 +84,10 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 						viewModel.dialogProvider.ShowError( ErroriUtil.estraiMessage(ee), "Errore imprevisto. Consultare il Log", null );
 				}
 
-				throw ee;
+				// per ora non voglio far spaccare il programma altrimenti perdo il lavoro in corso.
+				// anche se concettualmente sarebbe più corretto rilanciare l'errore.
+				// L'unico problema è che non c'è modo di fare un try-catch di un Command.
+				// throw ee;
 			}
 		}
 

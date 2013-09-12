@@ -46,5 +46,9 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 
 			return Geometrie.proporziona( croppingRect, rectImgSorg, rectImgDest );
 		}
+
+		public override Type getTypeOfCorrezione() {
+			return typeof( Crop );
+		}
 	}
 }

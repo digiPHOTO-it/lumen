@@ -11,7 +11,7 @@
              xmlns:extToolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
              mc:Ignorable="d" 
              x:Name="fotoRitoccoUserControl"
-             d:DesignHeight="480" d:DesignWidth="640">
+             d:DesignHeight="600" d:DesignWidth="800">
 
     <!-- Istanzio il controllore -->
     <lumM:UserControlBase.DataContext>
@@ -31,36 +31,55 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
+<!--                    
                     <RowDefinition />
+-->                    
                 </Grid.RowDefinitions>
-            
-                <Image Source="/Digiphoto.Lumen.UI;component/Resources/brightness-16x16.png" Grid.Row="0" Grid.Column="0" ToolTip="Luminosità"/>
-                <Slider Name="sliderLuminosita" Minimum="-1" Maximum="1" Value="0" ValueChanged="sliderLuminosita_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.2" SmallChange="0.05" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="0.1" TickPlacement="TopLeft" Grid.Row="0" Grid.Column="1" />
 
-                <Image Source="/Digiphoto.Lumen.UI;component/Resources/contrast-16x16.png" Grid.Row="1" Grid.Column="0" ToolTip="Contrasto" />
-                <Slider Name="sliderContrasto" Minimum="0" Maximum="2" Value="1" ValueChanged="sliderContrasto_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.2" SmallChange="0.05" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="0.1" TickPlacement="TopLeft" Grid.Row="1" Grid.Column="1" />
+                <!--
+                Converter={StaticResource numericToBooleanConverter},ConverterParameter={Binding ElementName=sliderLuminosita,Path=Value}
+                -->
+                <CheckBox Name="ckechBoxAbilitaLuminosita"  Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Command="{Binding resettareValoreEffettoCommand}" CommandParameter="Brightness" IsChecked="{Binding Path=isLuminositaChecked,Mode=OneWay}" />
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/brightness-16x16.png" Grid.Row="0" Grid.Column="1" ToolTip="Luminosità"/>
+                <Slider Name="sliderLuminosita" Minimum="-1" Maximum="1" Value="0" ValueChanged="sliderLuminosita_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.2" SmallChange="0.05" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="0.1" TickPlacement="TopLeft" Grid.Row="0" Grid.Column="2" />
 
+                <CheckBox Name="ckechBoxAbilitaContrasto"  Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Command="{Binding resettareValoreEffettoCommand}" CommandParameter="Contrast" />
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/contrast-16x16.png" Grid.Row="1" Grid.Column="1" ToolTip="Contrasto" />
+                <Slider Name="sliderContrasto" Minimum="0" Maximum="2" Value="1" ValueChanged="sliderContrasto_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.2" SmallChange="0.05" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="0.1" TickPlacement="TopLeft" Grid.Row="1" Grid.Column="2" />
+
+                <!--
                 <Image Source="/Digiphoto.Lumen.UI;component/Resources/rotate-16x16.png" Grid.Row="2" Grid.Column="0" ToolTip="Ruota" />
                 <Slider Name="sliderRuota" Minimum="-180" Maximum="180" ValueChanged="sliderRuota_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="20" SmallChange="5" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="45" TickPlacement="TopLeft" Grid.Row="2" Grid.Column="1"/>
+                -->
         </Grid>
 
 
 
         <UniformGrid Rows="2" Columns="3" Style="{StaticResource gridOneShotRitoccoStyle}">
-				<Button Content="-90°" Command="{Binding ruotareCommand}" CommandParameter="-90" />
-				<Button Content="+90°" Command="{Binding ruotareCommand}" CommandParameter="90" />
-				<Button Content="Flip" Command="{Binding flipCommand}" />
-				<ToggleButton Content="B/N" IsChecked="{Binding Path=isGrayscaleChecked,Mode=OneWay}"  Command="{Binding grayScaleCommand}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" Style="{StaticResource buttonBaseStyle}" />
-				<ToggleButton Content="Sepia" IsChecked="{Binding Path=isSepiaChecked,Mode=OneWay}" Command="{Binding sepiaCommand}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" Style="{StaticResource buttonBaseStyle}" />
-				<Button Name="buttonModificaConPrgEsterno" Content="Gimp" ToolTip="Modifica le foto con un programma esterno" Command="{Binding modificareConEditorEsternoCommand}" />
+                <ToggleButton Content="-90°"  Command="{Binding ruotareCommand}"   IsChecked="{Binding Path=isRotateMeno90Checked,Mode=OneWay}" Style="{StaticResource mioToggleButtonStyle}" CommandParameter="-90" />
+                <ToggleButton Content="+90°"  Command="{Binding ruotareCommand}"   IsChecked="{Binding Path=isRotatePiu90Checked,Mode=OneWay}"  Style="{StaticResource mioToggleButtonStyle}" CommandParameter="90" />
+                <ToggleButton Content="Flip"  Command="{Binding flipCommand}"      IsChecked="{Binding Path=isFlipChecked,Mode=OneWay}"         Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" />
+                <ToggleButton Content="B/N"   Command="{Binding grayScaleCommand}" IsChecked="{Binding Path=isGrayscaleChecked,Mode=OneWay}"    Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" />
+                <ToggleButton Content="Sepia" Command="{Binding sepiaCommand}"     IsChecked="{Binding Path=isSepiaChecked,Mode=OneWay}"        Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" />
+            
+                <Button Name="buttonModificaConPrgEsterno" Content="Gimp" ToolTip="Modifica le foto con un programma esterno" Command="{Binding modificareConEditorEsternoCommand}" />
 			</UniformGrid>
 
-            <GroupBox Header="Dominanti" DockPanel.Dock="Right">
+            <GroupBox DockPanel.Dock="Right">
+                
+                <GroupBox.Header>
+                    <StackPanel Orientation="Horizontal" Margin="3,0,0,0">
+                        <CheckBox VerticalAlignment="Center"  Command="{Binding resettareValoreEffettoCommand}" CommandParameter="Red;Green;Blue" />
+                        <Label Content="Dominanti" />
+                    </StackPanel>
+                </GroupBox.Header>
+                
                 <StackPanel>
                     <Slider Name="sliderDominanteRed"   Minimum="-0.5" Maximum="0.5" Value="0" ValueChanged="sliderDominanti_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.08" SmallChange="0.02" Style="{StaticResource styleSliderDominanteRed}"   ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" />
                     <Slider Name="sliderDominanteGreen" Minimum="-0.5" Maximum="0.5" Value="0" ValueChanged="sliderDominanti_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.08" SmallChange="0.02" Style="{StaticResource styleSliderDominanteGreen}" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" />
@@ -151,13 +170,19 @@
         </Expander>
 
         <lum:SelettoreAzioniRapideView Visibility="Collapsed" DataContext="{Binding Path=selettoreAzioniRapideViewModel}"/>
-       
+
+
+        <!--
+        lumMS:MultiSelect.SelectionFailed="selectionFailed"
+				  
+				        
+        -->
+
         <!-- nastro basso con tutte le foto che sono in attesa di modifica -->
         <ListBox x:Name="listBoxImmaginiDaModificare"  DockPanel.Dock="Bottom"
-                 SelectionMode="Multiple" 
-				 lumMS:MultiSelect.IsEnabled="True" 
-				 lumMS:MultiSelect.MaxNumSelectedItem="{Binding Path=cfg.maxNumFotoMod}"
-				 lumMS:MultiSelect.SelectionFailed="selectionFailed"
+                 SelectionMode="Multiple"
+                 lumMS:MultiSelect.IsEnabled="True"
+                 lumMS:MultiSelect.MaxNumSelectedItem="{Binding Path=cfg.maxNumFotoMod}"
                  Style="{StaticResource listBoxImmaginiDaModificareStyle}"
                  ItemsSource="{Binding Path=fotografieDaModificareCW,Mode=TwoWay}" 
                  ItemsPanel="{DynamicResource immaginiDaModificareItemsPanelTemplate}" 
@@ -211,9 +236,9 @@
 					 Visibility="{Binding isGestioneMaschereAttiva,Converter={StaticResource booleanToVisibilityConverter}}" />
 
             <!--
-                 *******     ^ sopra gestione maschere  (fotoritocco singolo)
+                 *******     ^ sopra gestione maschere  (una maschera alla volta ma con più foto)
                  *********************************************************************
-                 *******     V sotto gestione fotoritocco massivo
+                 *******     V sotto gestione fotoritocco puntuale
             -->
             
             
@@ -221,22 +246,14 @@
                           Visibility="{Binding isGestioneMaschereDisattiva,Converter={StaticResource booleanToVisibilityConverter}}"
                           ItemsSource="{Binding ElementName=listBoxImmaginiDaModificare, Path=SelectedItems}" 
                           VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" 
-						  PreviewMouseDown="itemsControlImmaginiInModifica_PreviewMouseDown">
+						  PreviewMouseDown="itemsControlImmaginiInModifica_PreviewMouseDown"
+                          ItemTemplate="{StaticResource dataTemplateFotoInModificaPuntuale}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
 						<!--Style="{StaticResource uniformGridModificaStyle}"-->
                         <UniformGrid   />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border BorderBrush="Red">
-                            <Image Name="imageModTemplate"
-                                LayoutTransform="{Binding Path=DataContext.trasformazioneCorrente, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  Source="{Binding Path=imgProvino,Converter={StaticResource imageSourceConverter}}"
-                                Effect="{Binding Path=DataContext.effettoCorrente, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
             </ItemsControl>
 		</Grid>
 

@@ -7,6 +7,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using Digiphoto.Lumen.Windows.Media.Effects;
+using System.ComponentModel;
+using System.Globalization;
 
 namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 
@@ -28,26 +30,34 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 			return new ImmagineWic( modificata );
 		}
 
-		public IImmagine applicaOld( IImmagine immagineSorgente, Correzione correzione ) {
+		public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType ) {
 
-			FormatConvertedBitmap newFormatedBitmapSource = new FormatConvertedBitmap();
-
-			// BitmapSource objects like FormatConvertedBitmap can only have their properties
-			// changed within a BeginInit/EndInit block.
-			newFormatedBitmapSource.BeginInit();
-
-			// Use the BitmapSource object defined above as the source for this new 
-			// BitmapSource (chain the BitmapSource objects together).
-			ImmagineWic imgWic = (ImmagineWic)immagineSorgente;
-			newFormatedBitmapSource.Source = imgWic.bitmapSource;
-
-			// Set the new format to Gray32Float (grayscale).
-			newFormatedBitmapSource.DestinationFormat = PixelFormats.Gray32Float;
-			newFormatedBitmapSource.EndInit();
-
-			ImmagineWic corretta = new ImmagineWic( newFormatedBitmapSource );
-			return corretta;
+			return sourceType == typeof( GrayscaleEffect );
 		}
 
+		public override object ConvertFrom( ITypeDescriptorContext context, CultureInfo culture, object value ) {
+
+			if( value is GrayscaleEffect )
+				return new BiancoNero();
+			else
+				return base.ConvertFrom( value );
+		}
+
+		public override bool CanConvertTo( ITypeDescriptorContext context, Type destinationType ) {
+
+			return destinationType.IsAssignableFrom( typeof( GrayscaleEffect ) );
+		}
+
+		public override object ConvertTo( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object objCorrezione, Type destinationType ) {
+			
+			if( objCorrezione is BiancoNero )
+				return new GrayscaleEffect();
+			else
+				throw new NotSupportedException( "Impossibile convertire tipo=" + objCorrezione.GetType() + " valore=" + objCorrezione );
+		}
+
+		public override Type getTypeOfCorrezione() {
+			return typeof( BiancoNero );
+		}
 	}
 }

@@ -93,6 +93,7 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
+/*
 		private Transform _trasformazioneCorrente;
 		public Transform trasformazioneCorrente
 		{
@@ -111,6 +112,7 @@ namespace Digiphoto.Lumen.UI
 				}
 			}
 		}
+*/
 
 		private ObservableCollection<Fotografia> _fotografieDaModificare;
 		public ObservableCollection<Fotografia> fotografieDaModificare
@@ -323,7 +325,7 @@ namespace Digiphoto.Lumen.UI
 			get
 			{
 				return isAlmenoUnaSelezionata &&
-					   modalitaEdit == ModalitaEdit.DefaultFotoRitocco &&
+					   modalitaEdit == ModalitaEdit.FotoRitoccoPuntuale &&
 					   (!modificheInCorso);
 			}
 		}
@@ -641,6 +643,7 @@ namespace Digiphoto.Lumen.UI
 
 		private void salvareCorrezioni()
 		{
+/*
 			// Purtoppo anche la trasformazione di rotazione, è gestita a parte.
 			if (trasformazioneCorrente is RotateTransform)
 			{
@@ -648,7 +651,7 @@ namespace Digiphoto.Lumen.UI
 				rc.gradi = (float)((RotateTransform)trasformazioneCorrente).Angle;
 				addCorrezione(rc);
 			}
-
+*/
 			foreach (Fotografia f in fotoSelezionate)
 				fotoRitoccoSrv.salvaCorrezioniTransienti(f);
 
@@ -1026,7 +1029,7 @@ namespace Digiphoto.Lumen.UI
 			if (fotoDaModificareMsg.immediata)
 			{
 				// ... e sono in modalità di fotoritocco
-				if (this.modalitaEdit == ModalitaEdit.DefaultFotoRitocco)
+				if (this.modalitaEdit == ModalitaEdit.FotoRitoccoPuntuale)
 				{
 					// ... e non ho nessuna altra modifica in corso ...
 					if (modificheInCorso == false)

@@ -25,6 +25,7 @@ using Digiphoto.Lumen.Config;
 using System.Text;
 using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Applicazione;
+using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
 
 
 
@@ -33,7 +34,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 	/// <summary>
 	/// Interaction logic for FotoRitocco.xaml
 	/// </summary>
-	public partial class FotoRitocco : UserControlBase {
+	public partial class FotoRitocco : UserControlBase, IObserver<RitoccoPuntualeMsg> {
 
 		FotoRitoccoViewModel _viewModel;
 
@@ -44,6 +45,11 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			_viewModel = (FotoRitoccoViewModel) this.DataContext;
 
 			_viewModel.editorModeChangedEvent += cambiareModoEditor;
+
+
+			// Mi sottoscrivo per ascoltare i messaggi di fotoritocco puntuale per ribindare i controlli.
+			IObservable<RitoccoPuntualeMsg> observable = LumenApplication.Instance.bus.Observe<RitoccoPuntualeMsg>();
+			observable.Subscribe( this );
 
 //			_viewModel.PropertyChanged += propertyCambiata;
 		}
@@ -62,12 +68,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					bindaSliderLuminositaContrasto();
 		}
 
+/*
 		private void sliderRuota_ValueChanged( object sender, RoutedPropertyChangedEventArgs<double> e ) {
-
 			if( _viewModel != null )
 				if( _viewModel.forseCambioTrasformazioneCorrente( typeof( RotateTransform ) ) )
 					bindaSliderRuota();
 		}
+*/
 
 		private void sliderDominanti_ValueChanged( object sender, RoutedPropertyChangedEventArgs<double> e ) {
 
@@ -76,14 +83,32 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					bindaSlidersDominanti();
 		}
 
+		private void bindaSlidersDominanti() {
+			bindaSlidersDominanti( false );
+		}
+
 		/// <summary>
 		/// Associo lo slider all'effetto corrente
 		/// </summary>
 		/// <param name="qualeRGB">Una stringa contenente : "R", "G", "B" </param>
-		private void bindaSlidersDominanti() {
+		private void bindaSlidersDominanti( bool mantieniValori ) {
+
+			if( mantieniValori && _viewModel.dominantiEffect == null )
+				return;
+
+			double salvaValoreR = _viewModel.dominantiEffect.Red;
+			double salvaValoreG = _viewModel.dominantiEffect.Green;
+			double salvaValoreB = _viewModel.dominantiEffect.Blue;
+
 			bindaSliderDominanteRGB( sliderDominanteRed,   DominantiEffect.RedProperty );
 			bindaSliderDominanteRGB( sliderDominanteGreen, DominantiEffect.GreenProperty );
 			bindaSliderDominanteRGB( sliderDominanteBlue,  DominantiEffect.BlueProperty );
+
+			if( mantieniValori ) {
+				_viewModel.dominantiEffect.Red = salvaValoreR;
+				_viewModel.dominantiEffect.Green = salvaValoreG;
+				_viewModel.dominantiEffect.Blue = salvaValoreB;
+			}
 		}
 
 		private void bindaSliderDominanteRGB( Slider sliderSorgente, DependencyProperty prop ) {
@@ -95,13 +120,14 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		private void bindaSliderRuota() {
-
+/*
 			// Bindings con i componenti per i parametri
 			Binding binding = new Binding();
 			binding.Source = sliderRuota;
 			binding.Mode = BindingMode.TwoWay;  // Mi serve bidirezionale perché posso resettare tutto dal ViewModel
 			binding.Path = new PropertyPath( Slider.ValueProperty );
 			BindingOperations.SetBinding( _viewModel.trasformazioneCorrente, RotateTransform.AngleProperty, binding );
+ */
 		}
 
 		/// <summary>
@@ -112,26 +138,52 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			bindaSliderContrasto();
 		}
 
-		/// <summary>
-		/// Creo il binding tra la property dell'effetto e lo slider che lo muove
-		/// </summary>
 		private void bindaSliderContrasto() {
-			Binding contrBinding = new Binding();
-			contrBinding.Source = sliderContrasto;
-			contrBinding.Mode = BindingMode.TwoWay;  // Mi serve bidirezionale perché posso resettare tutto dal ViewModel
-			contrBinding.Path = new PropertyPath( Slider.ValueProperty );
-			BindingOperations.SetBinding( _viewModel.luminositaContrastoEffect, LuminositaContrastoEffect.ContrastProperty, contrBinding );
+			bindaSliderContrasto( false );
 		}
 
 		/// <summary>
 		/// Creo il binding tra la property dell'effetto e lo slider che lo muove
 		/// </summary>
+		private void bindaSliderContrasto( bool mantieniValore ) {
+
+			if( mantieniValore && _viewModel.luminositaContrastoEffect == null )
+				return;
+
+			double salvaValore = _viewModel.luminositaContrastoEffect.Contrast;
+
+			Binding contrBinding = new Binding();
+			contrBinding.Source = sliderContrasto;
+			contrBinding.Mode = BindingMode.TwoWay;  // Mi serve bidirezionale perché posso resettare tutto dal ViewModel
+			contrBinding.Path = new PropertyPath( Slider.ValueProperty );
+			BindingOperations.SetBinding( _viewModel.luminositaContrastoEffect, LuminositaContrastoEffect.ContrastProperty, contrBinding );
+
+			if( mantieniValore )
+				_viewModel.luminositaContrastoEffect.Contrast = salvaValore;
+		}
+
 		private void bindaSliderLuminosita() {
+			bindaSliderLuminosita( false );
+		}
+
+		/// <summary>
+		/// Creo il binding tra la property dell'effetto e lo slider che lo muove
+		/// </summary>
+		private void bindaSliderLuminosita( bool mantieniValore ) {
+
+			if( _viewModel.luminositaContrastoEffect == null )
+				return;
+
+			double salvaValore = _viewModel.luminositaContrastoEffect.Brightness;
+
 			Binding lumBinding = new Binding();
-			lumBinding.Mode = BindingMode.TwoWay;  // Mi serve bidirezionale perché posso resettare tutto dal ViewModel
+			lumBinding.Mode = BindingMode.TwoWay; // .TwoWay;  // Mi serve bidirezionale perché posso resettare tutto dal ViewModel
 			lumBinding.Source = sliderLuminosita;
 			lumBinding.Path = new PropertyPath( Slider.ValueProperty );
 			BindingOperations.SetBinding( _viewModel.luminositaContrastoEffect, LuminositaContrastoEffect.BrightnessProperty, lumBinding );
+
+			if( mantieniValore )
+				_viewModel.luminositaContrastoEffect.Brightness = salvaValore;
 		}
 
 		/// <summary>
@@ -190,14 +242,34 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		void cambiareModoEditor( object sender, EditorModeEventArgs args ) {
 
-			if( args.modalitaEdit == ModalitaEdit.GestioneMaschere ) {
 
-				primoPianoCanvasMask( false );
-				initGestioneMaschere();
+			switch( args.modalitaEdit ) {
+				
+				case ModalitaEdit.GestioneMaschere:
 
-			} else {
-				primoPianoCanvasMask( true );
-				azzeraGestioneMaschere();
+					primoPianoCanvasMask( false );
+					initGestioneMaschere();
+					break;
+
+				case ModalitaEdit.FotoRitoccoPuntuale:
+
+					listBoxImmaginiDaModificare.SetValue( MultiSelect.IsEnabledProperty, true );
+					listBoxImmaginiDaModificare.SetValue( MultiSelect.MaxNumSelectedItemProperty, 3 );
+//					listBoxImmaginiDaModificare.SetValue( MultiSelect.SelectionFailedEvent, selectionFailed );
+
+// lumMS:MultiSelect.IsEnabled="True" 
+// lumMS:MultiSelect.MaxNumSelectedItem="{Binding Path=cfg.maxNumFotoMod}"
+// lumMS:MultiSelect.SelectionFailed="selectionFailed"
+
+					primoPianoCanvasMask( true );
+					azzeraGestioneMaschere();
+					break;
+
+				case ModalitaEdit.FotoRitoccoMassivo:
+					// TODO
+					;
+					break;
+
 			}
 		}
 
@@ -818,6 +890,35 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		public string nomeFotinaSelezionata {
 			get;
 			private set;
+		}
+
+
+
+		public void OnCompleted() {
+		}
+
+		public void OnError( Exception error ) {
+		}
+
+		public void OnNext( RitoccoPuntualeMsg rpMsg ) {
+
+			bool puntuale = (Boolean)rpMsg.senderTag;
+			cambioDataTemplatePuntualeMassivo( puntuale );
+
+			bindaSliderLuminosita( true );
+			bindaSliderContrasto( true );
+
+			bindaSlidersDominanti( true );
+		}
+
+		void cambioDataTemplatePuntualeMassivo( bool puntuale ) {
+
+			// Siccome devo trattare una sola foto alla volta
+			// e siccome in questo caso devo riapplicare tutti gli effetti all'originale, 
+			// allora cambio il datatemplate.
+			// Normalmente visualizzo il imgProvino. Se sono in modalità puntuale prendo l'immagine originale.
+			DataTemplate dt = (DataTemplate)FindResource( 1==1 || puntuale ? "dataTemplateFotoInModificaPuntuale" : "dataTemplateFotoInModificaMassivo" );
+			this.itemsControlImmaginiInModifica.ItemTemplate = dt;
 		}
 
 

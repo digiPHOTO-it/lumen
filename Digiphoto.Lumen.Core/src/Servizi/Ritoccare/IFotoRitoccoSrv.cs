@@ -3,6 +3,7 @@ using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Imaging.Correzioni;
 using Digiphoto.Lumen.Util;
 using System;
+using System.Collections;
 
 namespace Digiphoto.Lumen.Servizi.Ritoccare {
 	
@@ -70,6 +71,26 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		String [] caricaMiniatureMaschere();
 
 		void clonaFotografie(Fotografia[] fotografie);
+
+		/// <returns></returns>
+
+
+		/// <summary>
+		///  Utilizzando il Correttore opportuno, converte la Correzione nella sua implementazione concreta.
+		///  Il Correttore è anche un TypeConverter.
+		/// </summary>
+		/// <typeparam name="T">Puo essere ShaderEffect (o derivate) oppure Transform</typeparam>
+		/// <param name="fotografia"></param>
+		/// <returns>una lista di oggetti del tipo desiderato.</returns>
+		IList<T> converteCorrezioni<T>( Fotografia fotografia );
+
+		/// <summary>
+		/// Utilizzando il correttore opportuno, converto un oggetto che può essere
+		/// di tipo ShaderEffect oppure Transform -> in una Correzione.
+		/// </summary>
+		/// <param name="effettiTrasf"></param>
+		/// <returns>Una lista di Correzioni</returns>
+		CorrezioniList converteInCorrezioni( IEnumerable<Object> effettiTrasf );
 
 	}
 }

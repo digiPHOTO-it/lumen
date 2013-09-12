@@ -3,6 +3,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System;
 using System.Windows;
+using System.ComponentModel;
+using System.Globalization;
 
 namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 
@@ -127,6 +129,38 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 			return rtb;
 		}
 
+		public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType ) {
 
+			return sourceType == typeof( RotateTransform );
+		}
+
+		public override object ConvertFrom( ITypeDescriptorContext context, CultureInfo culture, object value ) {
+
+			if( value is RotateTransform )
+				return new Ruota {
+					 gradi = (float)((RotateTransform)value).Angle
+				};
+			else
+				throw new NotSupportedException( "Impossibile convertire tipo=" + value.GetType() + " valore=" + value );
+		}
+
+		public override bool CanConvertTo( ITypeDescriptorContext context, Type destinationType ) {
+
+			return destinationType.IsAssignableFrom( typeof( RotateTransform ) );
+		}
+
+		public override object ConvertTo( ITypeDescriptorContext context, CultureInfo culture, object objCorrezione, Type destinationType ) {
+
+			if( objCorrezione is Ruota )
+				return new RotateTransform {
+					Angle = ((Ruota)objCorrezione).gradi
+				};
+			else
+				throw new NotSupportedException( "Impossibile convertire tipo=" + objCorrezione.GetType() + " valore=" + objCorrezione );
+		}
+
+		public override Type getTypeOfCorrezione() {
+			return typeof( Ruota );
+		}
 	}
 }

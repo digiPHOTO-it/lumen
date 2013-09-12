@@ -18,6 +18,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		private ICorrettoreFactory _correttoreFactory;
 		private Resize _correzioneProvino;
 
+
 		public GestoreImmagineSrvImpl() {
 
 
@@ -97,9 +98,18 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 
 		public IImmagine applicaCorrezione( IImmagine immaginePartenza, Correzione correzione ) {
-			Correttore correttore = _correttoreFactory.creaCorrettore( correzione.GetType() );
+			Correttore correttore = getCorrettore( correzione );
 			_giornale.Debug( "applico correzione: " + correttore );
 			return correttore.applica( immaginePartenza, correzione );
+		}
+
+		public Correttore getCorrettore( Correzione correzione ) {
+			// Se non ce l'ho in cache, allora lo creo.
+			return getCorrettore( correzione.GetType() );
+		}
+
+		public Correttore getCorrettore( Type tipo ) {
+			return _correttoreFactory.creaCorrettore( tipo );
 		}
 
 	}

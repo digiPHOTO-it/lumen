@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Imaging.Correzioni;
 using Digiphoto.Lumen.Servizi.Ritoccare;
+using Digiphoto.Lumen.Windows.Media.Effects;
 
 namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 
@@ -39,8 +40,16 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 					correttore = new LuminositaContrastoCorrettore();
 				} else if( tipoCorrezione == typeof( Crop ) ) {
 					correttore = new CropCorrettore();
+				} else if( tipoCorrezione == typeof( Gimp ) ) {
+					correttore = new GimpCorrettore();
 				} else if( tipoCorrezione == typeof( Dominante ) ) {
 					correttore = new DominantiCorrettore();
+				}
+
+				// Faccio un ultimo tentativo
+				if( correttore == null && !typeof( Correzione ).IsAssignableFrom( tipoCorrezione ) ) {
+					Type tipo2correz = dimmiQualeCorrezioneCorrispondente( tipoCorrezione );
+					correttore = creaCorrettore( tipo2correz );
 				}
 
 				if( correttore == null )
@@ -56,5 +65,32 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 		public Correttore creaCorrettore<T>() where T : Correzione {
 			throw new NotImplementedException();
 		}
+
+
+		private Type dimmiQualeCorrezioneCorrispondente( Type obj ) {
+
+			if( obj == typeof(SepiaEffect) )
+				return typeof(Sepia);
+
+			if( obj == typeof(LuminositaContrastoEffect) )
+				return typeof(Luce);
+
+			if( obj == typeof(GrayscaleEffect) )
+				return typeof(BiancoNero);
+
+			if( obj == typeof(DominantiEffect) )
+				return typeof(Dominante);
+
+			if( obj == typeof( System.Windows.Media.ScaleTransform ) )
+				return typeof( Specchio);
+
+			if( obj == typeof( System.Windows.Media.RotateTransform ) )
+				return typeof( Ruota );
+
+			System.Diagnostics.Debugger.Break();
+
+			return null;
+		}
+
 	}
 }

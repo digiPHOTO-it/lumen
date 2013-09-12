@@ -1,18 +1,14 @@
 ﻿using System.Linq;
 using Digiphoto.Lumen.UI.Mvvm;
-using System.ComponentModel;
 using System.Windows.Data;
-using Digiphoto.Lumen.Imaging;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Servizi.Ritoccare;
 using System.Windows.Input;
 using System.Collections.Generic;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Imaging.Correzioni;
-using Digiphoto.Lumen.Servizi.Explorer;
 using Digiphoto.Lumen.Util;
 using System;
-using Digiphoto.Lumen.Core;
 using System.Windows.Media.Effects;
 using Digiphoto.Lumen.Windows.Media.Effects;
 using System.Windows.Media;
@@ -28,7 +24,6 @@ using Digiphoto.Lumen.UI.Main;
 using System.Collections.ObjectModel;
 using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Servizi.Scaricatore;
-using System.Windows.Threading;
 using System.Text;
 using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
 using Digiphoto.Lumen.Servizi.Stampare;
@@ -59,12 +54,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 				fotografieDaModificareCW.SelectionChanged += onFotografieDaModificareSelectionChanged;
 
-				modalitaEdit = ModalitaEdit.DefaultFotoRitocco;
+				modalitaEdit = ModalitaEdit.FotoRitoccoPuntuale;
 			}
 
 			cfg = Configurazione.UserConfigLumen;
 
-			resetEffetti();
+			resetEffettiAndTrasformazioni();
 		}
 
 		#region Fields
@@ -87,6 +82,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				if( _trasformazioneCorrente != value ) {
 					_trasformazioneCorrente = value;
 					OnPropertyChanged( "trasformazioneCorrente" );
+
+					OnPropertyChanged( "trasformazione1" );
+					OnPropertyChanged( "trasformazione2" );
 
 					forseInizioModifiche();
 				}	
@@ -178,13 +176,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		public bool possoRiempireElencoInModifica {
 			get {
-				return modificheInCorso == false && esistonoFotoInAttesaDiModifica;
+				return esistonoFotoInAttesaDiModifica /* && modificheInCorso == false */;
 			}
 		}
 
 		public bool possoSvuotareElencoInModifica {
 			get {
-				return modificheInCorso == false && isAlmenoUnaFotoSelezionata;
+				return isAlmenoUnaFotoSelezionata /* && modificheInCorso == false */;
 			}
 		}
 
@@ -211,6 +209,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			set;
 		}
 
+		public List<Transform> trasformazioni {
+			get;
+			set;
+		}
+
+
 		private ShaderEffect _effettoCorrente;
 		public ShaderEffect effettoCorrente {
 			get {
@@ -221,8 +225,39 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					_effettoCorrente = value;
 					OnPropertyChanged( "effettoCorrente" );
 
+					OnPropertyChanged( "effetto1" );
+					OnPropertyChanged( "effetto2" );
+					OnPropertyChanged( "effetto3" );
+
 					forseInizioModifiche();
 				}
+			}
+		}
+
+		public ShaderEffect effetto1 {
+			get {
+				return effetti != null && effetti.Count > 0 ? effetti [0] : null;
+			}
+		}
+		public ShaderEffect effetto2 {
+			get {
+				return effetti != null && effetti.Count > 1 ? effetti [1] : null;
+			}
+		}
+		public ShaderEffect effetto3 {
+			get {
+				return effetti != null && effetti.Count > 2 ? effetti [2] : null;
+			}
+		}
+
+		public Transform trasformazione1 {
+			get {
+				return trasformazioni != null && trasformazioni.Count > 0 ? trasformazioni[0] : null;
+			}
+		}
+		public Transform trasformazione2 {
+			get {
+				return trasformazioni != null && trasformazioni.Count > 1 ? trasformazioni[1] : null;
 			}
 		}
 
@@ -233,17 +268,11 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		public LuminositaContrastoEffect luminositaContrastoEffect {
 
 			get {
+
 				LuminositaContrastoEffect ret = null;
 
-				if( effetti != null ) {
-
-					foreach( ShaderEffectBase effetto in effetti ) {
-						if( effetto is LuminositaContrastoEffect ) {
-							ret = effetto as LuminositaContrastoEffect;
-							break;
-						}
-					}
-				}
+				if( effetti != null )
+					ret = effetti.FirstOrDefault( effetto => effetto is LuminositaContrastoEffect ) as LuminositaContrastoEffect;
 
 				return ret;
 			}
@@ -270,13 +299,43 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		public bool isSepiaChecked {
 			get {
-				return  effetti != null && effetti.Exists( e => e is SepiaEffect );
+				return  (effetti != null && effetti.Exists( e => e is SepiaEffect ));
+			}
+		}
+
+		public bool isFlipChecked {
+			get {
+				return (trasformazioni != null && trasformazioni.Exists( e => e is ScaleTransform ));
+			}
+		}
+
+		public bool isRotatePiu90Checked {
+			get {
+				return (trasformazioni != null && trasformazioni.Exists( t => t is RotateTransform && ((RotateTransform)t).Angle == 90.0d ));
+			}
+		}
+
+		public bool isRotateMeno90Checked {
+			get {
+				return (trasformazioni != null && trasformazioni.Exists( t => t is RotateTransform && ((RotateTransform)t).Angle == -90.0d ));
+			}
+		}
+
+		public bool isLuminositaChecked {
+			get {
+				return (effetti != null && effetti.Exists( e => e is LuminositaContrastoEffect && ((LuminositaContrastoEffect)e).Brightness != 0 ));
+			}
+		}
+
+		public bool isContrastoChecked {
+			get {
+				return (effetti != null && effetti.Exists( e => e is LuminositaContrastoEffect && ((LuminositaContrastoEffect)e).Contrast != 1 ));
 			}
 		}
 
 		public bool isGrayscaleChecked {
 			get {
-				return effetti != null && effetti.Exists( e => e is GrayscaleEffect );
+				return (effetti != null && effetti.Exists( e => e is GrayscaleEffect ));
 			}
 		}
 
@@ -367,7 +426,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		public bool possoModificareConEditorEsterno {
 			get {
 				return String.IsNullOrEmpty( Configurazione.UserConfigLumen.editorImmagini ) == false &&
-					   modalitaEdit == ModalitaEdit.DefaultFotoRitocco &&
+					   modalitaEdit == ModalitaEdit.FotoRitoccoPuntuale &&
 					   (!modificheInCorso) &&
 					   isAlmenoUnaFotoSelezionata;
 			}
@@ -398,9 +457,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		bool possoSvuotareListaDaModificare {
+		public bool possoSvuotareListaDaModificare {
 			get {
-				return modificheInCorso == false && esistonoFotoInAttesaDiModifica;
+				return esistonoFotoInAttesaDiModifica /* && modificheInCorso == false */;
 			}
 		}
 
@@ -439,6 +498,16 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				return ! Configurazione.isFuoriStandardCiccio;
 			}
 		}
+
+/*
+		/// <summary>
+		/// Questa è la collezione puntuale delle correzioni della singola foto selezionata per il fotoritocco puntuale.
+		/// </summary>
+		private CorrezioniList correzioniPuntuali {
+			get;
+			set;
+		}
+*/
 
 		#endregion Proprietà
 
@@ -496,8 +565,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		public ICommand flipCommand {
 			get {
 				if( _flipCommand == null ) {
-					_flipCommand = new RelayCommand( p => this.flip(),
-													 p => this.possoApplicareCorrezione );
+					_flipCommand = new RelayCommand( param => this.flip( (bool)param ),
+													 param => this.possoApplicareCorrezione );
 				}
 				return _flipCommand;
 			}
@@ -635,7 +704,16 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				return _maschereCropCommand;
 			}
 		}
-		
+
+		private RelayCommand _resettareValoreEffettoCommand;
+		public ICommand resettareValoreEffettoCommand {
+			get {
+				if( _resettareValoreEffettoCommand == null ) {
+					_resettareValoreEffettoCommand = new RelayCommand( propName => resettareValoreEffetto( (string)propName ) );
+				}
+				return _resettareValoreEffettoCommand;
+			}
+		}
 	
 
 		#endregion Comandi
@@ -662,42 +740,94 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// </summary>
 		private void addCorrezione( Correzione correzione ) {
 			
-			forseInizioModifiche();
-
 			foreach( Fotografia f in fotografieDaModificareCW.SelectedItems )
 				fotoRitoccoSrv.addCorrezione( f, correzione );
 		}
 
 		private void ruotare( int pGradi ) {
-			addCorrezione( new Ruota() { gradi = pGradi } );
+
+			if( pGradi != 0 ) {
+				forseCambioTrasformazioneCorrente( typeof(RotateTransform) );
+
+				// Gestisco lo spegnimento
+				if( ((RotateTransform)trasformazioneCorrente).Angle == pGradi )
+					removeTrasformazione( typeof( RotateTransform ) );
+				else
+					((RotateTransform)trasformazioneCorrente).Angle = pGradi;
+			} else
+				removeTrasformazione( typeof(RotateTransform) );
+
+			forseInizioModifiche();
+
+			OnPropertyChanged( "isRotatePiu90Checked" );
+			OnPropertyChanged( "isRotateMeno90Checked" );
 		}
 
 		private void grayScale( bool addRemove ) {
+
 			if( addRemove ) {
-				addCorrezione( new BiancoNero() );
-				sepia( false );  // rimuovo il sepia
+				sepia( false );  // Eventualmente prima spengo la sepia se esiste
+				forseCambioEffettoCorrente( typeof( GrayscaleEffect ) );
 			} else
-				removeCorrezione( typeof( BiancoNero ) );
+				removeEffetto( typeof( GrayscaleEffect ) );
+
+			OnPropertyChanged( "isGrayscaleChecked" );
 		}
 
 		private void tornareOriginale() {
 
 			_giornale.Debug( "Richiesto tornaoriginale" );
 			// elimino tutti gli effetti creati
-			resetEffetti();
+			resetEffettiAndTrasformazioni();
 			
 			// per ogni foto elimino le correzioni e ricreo il provino partendo dall'originale.
 			foreach( Fotografia f in fotografieDaModificareCW.SelectedItems )
-				fotoRitoccoSrv.tornaOriginale( f );			
+				fotoRitoccoSrv.tornaOriginale( f );
+
+			forzaRefreshStato();
 		}
 
 		private void sepia( bool addRemove ) {
+
 			if( addRemove ) {
-				addCorrezione( new Sepia() );
-				grayScale( false ); // rimuovo il bianco e nero
-			} else
-				removeCorrezione( typeof( Sepia ) );
+				grayScale( false );
+				forseCambioEffettoCorrente( typeof( SepiaEffect ) );
+			}  else
+				removeEffetto( typeof( SepiaEffect ) );
+
+			forseInizioModifiche();
+
+			OnPropertyChanged( "isSepiaChecked" );
 		}
+
+		private void removeEffetto( Type effettoType ) {
+
+			if( effettoCorrente != null && effettoCorrente.GetType() == effettoType )
+				effettoCorrente = null;
+
+			effetti.RemoveAll( e => e.GetType() == effettoType );
+			forzaRefreshStato();
+		}
+
+
+		void resettareValoreEffetto( string propertiesName ) {
+
+			ShaderEffectBase effetto = null;
+
+			string [] propertiesNameArray = propertiesName.Split( ';' );
+
+			foreach( var propertyName in propertiesNameArray ) {
+		 
+				if( propertyName == "Brightness" || propertyName == "Contrast" )
+					effetto = effetti.FirstOrDefault( t => t is LuminositaContrastoEffect );
+				else if( propertyName == "Red" || propertyName == "Green" || propertyName == "Blue" )
+					effetto = effetti.FirstOrDefault( t => t is DominantiEffect );
+
+				if( effetto != null )
+					effetto.resetToDefaultValue( propertyName );
+			}
+		}
+
 
 		private void removeCorrezione( Type type ) {
 						
@@ -707,39 +837,86 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				fotoRitoccoSrv.removeCorrezione( f, type );
 		}
 
-		private void flip() {
-			addCorrezione( new Specchio() );
+		private void flip( bool crea ) {
+
+			if( crea ) {
+				forseCambioTrasformazioneCorrente( typeof( ScaleTransform ) );
+				((ScaleTransform)trasformazioneCorrente).ScaleX = -1;
+			} else {
+				removeTrasformazione( typeof( ScaleTransform ) );	
+			}
+
+			forseInizioModifiche();
+
+			OnPropertyChanged( "isFlipChecked" );
 		}
+
+		void removeTrasformazione( Type typeTrasformazione ) {
+
+			if( trasformazioneCorrente != null && trasformazioneCorrente.GetType() == typeTrasformazione )
+				trasformazioneCorrente = null;
+
+			trasformazioni.RemoveAll( e => e.GetType() == typeTrasformazione );
+			forzaRefreshStato();
+		}
+
+
 
 		private void salvareCorrezioni() {
 
-			
-			// Purtoppo gli shader effects sono gestiti a parte
-			// Vado ad aggiungerli solo al momento di applicare per davvero
-			foreach( ShaderEffectBase effetto in effetti )
-				addCorrezione( convertiInCorrezione( effetto ) );
 
-			// Purtoppo anche la trasformazione di rotazione, è gestita a parte.
-			if( trasformazioneCorrente is RotateTransform ) {
-				Ruota rc = new Ruota();
-				rc.gradi = (float) ((RotateTransform)trasformazioneCorrente).Angle;
-				addCorrezione( rc );
+			bool puntuale =  (modalitaEdit == ModalitaEdit.FotoRitoccoPuntuale && fotografieDaModificareCW.SelectedItems.Count == 1); 
+			
+			if( puntuale ) {
+
+				// SSS Sto lavorando con il fotoritocco puntuale. Devo "perdere" tutte le correzioni in modo che non si sommino.
+				fotografieDaModificareCW.SelectedItems [0].correzioniXml = null;
+
+				fotografieDaModificareCW.SelectedItems [0].imgProvino.Dispose();
+				fotografieDaModificareCW.SelectedItems [0].imgProvino = null;
 			}
 
-			// Ormai che li ho acquisiti, li svuoto
-			resetEffetti();
 
-			foreach( Fotografia f in fotografieDaModificareCW.SelectedItems )
+
+			// Vado ad aggiungerli solo al momento di applicare per davvero
+			// Prima tratto gli effetti
+			CorrezioniList lista1 = fotoRitoccoSrv.converteInCorrezioni( effetti.AsEnumerable<Object>() );
+			foreach( Correzione correz in lista1 )
+				addCorrezione( correz );
+
+			// Poi tratto le trasformazioni
+			CorrezioniList lista2 = fotoRitoccoSrv.converteInCorrezioni( trasformazioni );
+			foreach( Correzione correz in lista2 )
+				addCorrezione( correz );
+
+
+			// Ormai che li ho acquisiti, li svuoto
+			resetEffettiAndTrasformazioni();
+
+			foreach( Fotografia f in fotografieDaModificareCW.SelectedItems ) {
 				fotoRitoccoSrv.salvaCorrezioniTransienti( f );
+			}
+
 
 			// Ora che ho persistito, concludo "dicamo cosi" la transazione, faccio una specie di commit.
 			modificheInCorso = false;
 		}
 
 		private void rifiutareCorrezioni() {
-			resetEffetti();
+
+			// resetEffetti();
+
+			// Se ho una sola foto, allora i controlli devono riposizionarsi al giusto valore. 
+			// Questo succede solo quando riseleziono la singola foto per la prima volta.
+			// Per far si che questo accada, spengo l'unica foto, così l'utente è obbligato a riselezionarla.
+			// TODO per ora cosi. Poi sarebbe bello che funzionasse in modo naturale, senza questa forzatura.
+//			bool toglila = (fotografieDaModificareCW.SelectedItems.Count == 1);
+
 			foreach( Fotografia f in fotografieDaModificareCW.SelectedItems )
 				rifiutareCorrezioni( f, false );
+
+			riposizionaControlliFotoritoccoPuntuale();
+
 			modificheInCorso = false;
 		}
 
@@ -749,14 +926,17 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// <param name="daTogliere"></param>
 		internal void rifiutareCorrezioni( Fotografia daTogliere, bool toglila ) {
 
-			fotoRitoccoSrv.undoCorrezioniTransienti( daTogliere );
+			resetEffettiAndTrasformazioni();
+
+
+//			fotoRitoccoSrv.undoCorrezioniTransienti( daTogliere );
 			if( toglila ) {
 				// La spengo
 				fotografieDaModificareCW.Deselect( daTogliere );
 
 				// Se non mi rimane piu nulla, azzero tutti gli effetti.
 				if( fotografieDaModificareCW.SelectedItems.Count <= 0 )
-					resetEffetti();
+					resetEffettiAndTrasformazioni();
 				else {
 					forzaRefreshStato();  // In teoria dovrebbe farlo già il Deselect. ma non funziona. da controllare.
 				}
@@ -778,21 +958,39 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			OnPropertyChanged( "possoApplicareCorrezione" );
 			OnPropertyChanged( "possoSalvareCorrezioni" );
 			OnPropertyChanged( "possoRifiutareCorrezioni" );
+			OnPropertyChanged( "possoModificareConEditorEsterno" );
 
 			OnPropertyChanged( "possoRiempireElencoInModifica" );
 			OnPropertyChanged( "possoSvuotareElencoInModifica" );
+			OnPropertyChanged( "possoSvuotareListaDaModificare" );
 
 			OnPropertyChanged( "isGrayscaleChecked" );
 			OnPropertyChanged( "isSepiaChecked" );
+			OnPropertyChanged( "isRotatePiu90Checked" );
+			OnPropertyChanged( "isRotateMeno90Checked" );
+			OnPropertyChanged( "isFlipChecked" );
+			
+			OnPropertyChanged( "isLuminositaChecked" );
+			OnPropertyChanged( "isContrastoChecked" );
+
+			OnPropertyChanged( "effetto1" );
+			OnPropertyChanged( "effetto2" );
+			OnPropertyChanged( "effetto3" );
+			OnPropertyChanged( "dominantiEffect" );
+			OnPropertyChanged( "effettoCorrente" );
+
+			OnPropertyChanged( "trasformazione1" );
+			OnPropertyChanged( "trasformazione2" );
+			OnPropertyChanged( "trasformazioneCorrente" );
 		}
 
-		
-		void resetEffetti() {
 
-			_giornale.Debug( "Reset effetti" );
-			effettoCorrente = null;
-			trasformazioneCorrente = null;
-			attivareSelector( null );  // Spegno eventuale selettore
+
+		/// <summary>
+		/// Elimino tutti gli effetti e le trasformazioni che sono attivi.
+		/// Gli effetti possono essere transienti o caricati da delle correzioni persistenti.
+		/// </summary>
+		void resetEffettiAndTrasformazioni() {
 
 			if( effetti == null ) {
 				// Creo gli effetti vuoti
@@ -800,51 +998,44 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			} else {
 				// Questo serve anche per rimettere gli slider nella posiziona di default
 				foreach( ShaderEffectBase effetto in effetti ) {
-					effetto.reset();
+					effetto.resetToDefaultValue();
 					BindingOperations.ClearAllBindings( effetto );
 				}
 				effetti.Clear();
 			}
 
-			OnPropertyChanged( "isGrayscaleChecked" );
-			OnPropertyChanged( "isSepiaChecked" );
-
-
-			// anche le maschere
-			mascheraAttiva = null;
-
-			// Spengo maschere
-			modalitaEdit = ModalitaEdit.DefaultFotoRitocco;
-		}
-
-		private Correzione convertiInCorrezione( ShaderEffectBase effetto ) {
-
-			Correzione ret = null;
-
-			if( effetto is LuminositaContrastoEffect ) {
-				ret = new Luce {
-					luminosita = ((LuminositaContrastoEffect)effetto).Brightness,
-					contrasto = ((LuminositaContrastoEffect)effetto).Contrast
-				};
-			} else if( effetto is DominantiEffect ) {
-				ret = new Dominante {
-					rosso = ((DominantiEffect)effetto).Red,
-					verde = ((DominantiEffect)effetto).Green,
-					blu = ((DominantiEffect)effetto).Blue
-				};
+			if( trasformazioni == null ) {
+				trasformazioni = new List<Transform>();
+			} else {
+				trasformazioni.Clear();					
 			}
 
+			// Spengo le proprietà che indicano elementi correnti.
+			effettoCorrente = null;
+			trasformazioneCorrente = null;
+			attivareSelector( null );  // Spegno eventuale selettore
+			mascheraAttiva = null;
 
-			return ret;
+
+			modalitaEdit = ModalitaEdit.FotoRitoccoPuntuale;
 		}
+
 
 		public bool forseCambioTrasformazioneCorrente( Type type ) {
 
 			bool creatoNuovo = false;
 
 			// Controllo se la trasformazione corrente è già quello attuale non faccio niente.
-			if( trasformazioneCorrente == null || trasformazioneCorrente.GetType() != type ) {
-				trasformazioneCorrente = (Transform) Activator.CreateInstance( type );
+			if( trasformazioneCorrente != null && trasformazioneCorrente.GetType() == type )
+				return false;
+
+			trasformazioneCorrente = trasformazioni.FirstOrDefault( t => t.GetType() == type );
+
+			// Se non l'ho trovata, allora la creo
+			if( trasformazioneCorrente == null ) {
+				Transform nuovo = (Transform)Activator.CreateInstance( type );
+				trasformazioni.Add( nuovo );
+				trasformazioneCorrente = nuovo;
 				creatoNuovo = true;
 			}
 
@@ -864,17 +1055,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			if( effettoCorrente != null && effettoCorrente.GetType() == type )
 				return false;
 
-			// Se l'effetto indicato è già in lista non faccio niente, altrimenti lo creo
-			bool trovato = false;
-			foreach( ShaderEffectBase effetto in effetti ) {
-				if( effetto.GetType() == type ) {
-					trovato = true;
-					effettoCorrente = effetto;
-					break;
-				}
-			}
+			effettoCorrente = effetti.FirstOrDefault( e => e.GetType() == type );
 
-			if( !trovato ) {
+			// Se l'effetto indicato è già in lista non faccio niente, altrimenti lo creo
+			if( effettoCorrente == null ) {
 				ShaderEffectBase nuovo = (ShaderEffectBase)Activator.CreateInstance( type );
 				effetti.Add( nuovo );
 				effettoCorrente = nuovo;
@@ -883,8 +1067,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			return creatoNuovo;
 		}
-
-
 
 
 		/// <summary>
@@ -929,9 +1111,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			_felCur = fel;
 
 			SetClipColorGrey();
-
 		}
-
 
 		/// <summary>
 		/// Prendo la prima stampante dalla lista di quelle abbinate.
@@ -1094,26 +1274,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			return msk;
 		}
 
-		/*
-		List<FileInfo> caricaMaschere() {
-
-			List<FileInfo> filesInfoMaschere = new List<FileInfo>();
-
-			// Faccio giri diversi per i vari formati grafici che sono indicati nella configurazione (jpg, tif)
-			foreach( string estensione in Configurazione.estensioniGraficheAmmesse ) {
-
-				string [] files = Directory.GetFiles( Configurazione.cartellaMaschere, searchPattern: estensione, searchOption: SearchOption.AllDirectories );
-
-				// trasferisco tutti i files elencati
-				foreach( string nomeFileSrc in files )
-					filesInfoMaschere.Add( new FileInfo(nomeFileSrc) );
-			}
-
-			return filesInfoMaschere;
-		}
-		*/
-
-
 		/// <summary>
 		///  verso:   H = solo orizzontali
 		///           V = solo verticali
@@ -1192,7 +1352,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			fotoRitoccoSrv.acquisisciImmagineIncorniciataWithArtista( tempFile );
 
 			// spengo tutto
-			resetEffetti();
+			resetEffettiAndTrasformazioni();
 		}
 
 		// Devo creare una immagine modificata in base
@@ -1217,7 +1377,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			fotoRitoccoSrv.clonaImmagineIncorniciata(fotoOrig, tempFile);
 
 			// spengo tutto
-			resetEffetti();
+			resetEffettiAndTrasformazioni();
 		}
 
 		void modificareConEditorEsterno() {
@@ -1240,7 +1400,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				AiutanteFoto.disposeImmagini( foto, IdrataTarget.Originale );
 
 			fotografieDaModificare.Clear();
-			resetEffetti();
+			resetEffettiAndTrasformazioni();
 
 			// Pubblico un messaggio di richiesta cambio pagina. Voglio tornare sulla gallery
 			CambioPaginaMsg cambioPaginaMsg = new CambioPaginaMsg( this );
@@ -1251,7 +1411,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		void riempireElencoInModifica() {
 			fotografieDaModificareCW.SelectAllMax();
-			resetEffetti();
+			resetEffettiAndTrasformazioni();
 		}
 
 		void svuotareElencoInModifica() {
@@ -1261,7 +1421,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		void svuotareElencoInModifica( bool ancheResetEffetti ) {
 			fotografieDaModificareCW.DeselectAll();
 			if( ancheResetEffetti )
-				resetEffetti();
+				resetEffettiAndTrasformazioni();
 		}
 
 		private void browseForFileCornice() {
@@ -1316,6 +1476,52 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			// Mi serve per accendere i pulsanti di rifiuta e salva
 			forseInizioModifiche();
 		}
+
+		private void riposizionaControlliFotoritoccoPuntuale() {
+
+			bool puntuale = true;
+
+			// Lavoro solo se ho una sola singola foto selezionata
+			if( puntuale && fotografieDaModificareCW.SelectedItems.Count != 1 ) {
+				puntuale = false;
+			}
+
+/*
+			// Lavoro solo se ho qualche correzione. Se la foto non è stata ritoccata, allora non devo fare nulla.
+			if( puntuale && fotografieDaModificareCW.SelectedItems [0].correzioniXml == null) {
+				puntuale = false;
+			}
+*/
+
+			// resetto tutti gli effetti e trasformazioni precedenti per resettare i controlli ui.
+			resetEffettiAndTrasformazioni();
+
+			if( puntuale ) {
+
+				// Quando lavoro puntualmente su di una foto, ho bisogno dell'immagine originale (TODO sarebbe più veloce avere un provino originale)
+				AiutanteFoto.idrataImmaginiFoto( fotografieDaModificareCW.SelectedItems[0], IdrataTarget.Originale );
+
+				if( fotografieDaModificareCW.SelectedItems[0].correzioniXml != null ) {
+
+					// carico Effetti precedenti
+					IList<ShaderEffectBase> carEffetti = fotoRitoccoSrv.converteCorrezioni<ShaderEffectBase>( fotografieDaModificareCW.SelectedItems[0] );
+					effetti.AddRange( carEffetti );
+
+					// carico Trasformazioni precedenti
+					IList<Transform> carTrasformazioni = fotoRitoccoSrv.converteCorrezioni<Transform>( fotografieDaModificareCW.SelectedItems[0] );
+					trasformazioni.AddRange( carTrasformazioni );
+				}
+
+			} 
+
+			// Pubblico un messaggio per indicare che ci sono degli effetti cambiati.
+			// Tramite questo messaggio, la UI può re-bindare i controlli interessati
+			RitoccoPuntualeMsg ritoccoPuntualeMsg = new RitoccoPuntualeMsg( this );
+			ritoccoPuntualeMsg.senderTag = puntuale;
+			LumenApplication.Instance.bus.Publish( ritoccoPuntualeMsg );
+		}
+
+
 
 		#endregion Metodi
 
@@ -1379,7 +1585,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			// Se richiesta la modifica immediata...
 			if( fotoDaModificareMsg.immediata ) {
 				// ... e sono in modalità di fotoritocco
-				if( this.modalitaEdit == ModalitaEdit.DefaultFotoRitocco ) {
+				if( this.modalitaEdit == ModalitaEdit.FotoRitoccoPuntuale ) {
 					// ... e non ho nessuna altra modifica in corso ...
 					if( modificheInCorso == false ) {
 						//fotografieDaModificareCW.SelectedItems.Clear();
@@ -1407,9 +1613,16 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				cambioPaginaMsg.nuovaPag = "FotoRitoccoPag";
 				LumenApplication.Instance.bus.Publish( cambioPaginaMsg );
 			}
+
+			forzaRefreshStato();
 		}
 
 		void onFotografieDaModificareSelectionChanged( object sender, SelectionChangedEventArgs e ) {
+
+			// Riposiziono i controlli in modo da velocizzare il tutto.
+			riposizionaControlliFotoritoccoPuntuale();
+			
+
 			// Provoco la rilettura delle property che determinano lo stato dei pulsanti.
 			forzaRefreshStato();
 		}
