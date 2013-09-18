@@ -917,7 +917,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			// e siccome in questo caso devo riapplicare tutti gli effetti all'originale, 
 			// allora cambio il datatemplate.
 			// Normalmente visualizzo il imgProvino. Se sono in modalità puntuale prendo l'immagine originale.
-			DataTemplate dt = (DataTemplate)FindResource( 1==1 || puntuale ? "dataTemplateFotoInModificaPuntuale" : "dataTemplateFotoInModificaMassivo" );
+			DataTemplate dt = (DataTemplate)FindResource( puntuale ? "dataTemplateFotoInModificaPuntuale" : "dataTemplateFotoInModificaMassivo" );
 			this.itemsControlImmaginiInModifica.ItemTemplate = dt;
 		}
 

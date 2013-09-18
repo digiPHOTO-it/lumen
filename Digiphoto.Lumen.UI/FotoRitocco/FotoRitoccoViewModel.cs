@@ -250,6 +250,38 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		/// <summary>
+		/// Larghezza del contenitore (può essere dato dalla cornice, oppure dal ratio della foto stessa)
+		/// </summary>
+		private double _frpContenitoreW;
+		public double frpContenitoreW {
+			get {
+				return _frpContenitoreW;
+			}
+			set {
+				if( value != _frpContenitoreW ) {
+					_frpContenitoreW = value;
+					OnPropertyChanged( "frpContenitoreW" );
+				}
+			}
+		}
+
+		/// <summary>
+		/// Larghezza del contenitore (può essere dato dalla cornice, oppure dal ratio della foto stessa)
+		/// </summary>
+		private double _frpContenitoreH;
+		public double frpContenitoreH {
+			get {
+				return _frpContenitoreH;
+			}
+			set {
+				if( value != _frpContenitoreH ) {
+					_frpContenitoreH = value;
+					OnPropertyChanged( "frpContenitoreH" );
+				}
+			}
+		}
+
 		public Transform trasformazione1 {
 			get {
 				return trasformazioni != null && trasformazioni.Count > 0 ? trasformazioni[0] : null;
@@ -389,11 +421,19 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				return _mascheraAttiva;
 			}
 			set {
+
 				if( _mascheraAttiva != value ) {
 					_mascheraAttiva = value;
 					OnPropertyChanged( "mascheraAttiva" );
 					OnPropertyChanged( "possoSalvareMaschera" );
 				}
+
+
+				// Ricalcolo le dimensioni dell'area contenitore
+				if( mascheraAttiva == null )
+					frpCalcolaDimensioniContenitore( 0f );
+				else
+					frpCalcolaDimensioniContenitore( (float) (mascheraAttiva.Width / mascheraAttiva.Height) );
 			}
 		}
 
@@ -1007,6 +1047,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			if( trasformazioni == null ) {
 				trasformazioni = new List<Transform>();
 			} else {
+				// Purtroppo le trasformazioni non hanno un valore di default per gli attributi. Devo per forza rinfrescare.
 				trasformazioni.Clear();					
 			}
 
@@ -1015,7 +1056,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			trasformazioneCorrente = null;
 			attivareSelector( null );  // Spegno eventuale selettore
 			mascheraAttiva = null;
-
 
 			modalitaEdit = ModalitaEdit.FotoRitoccoPuntuale;
 		}
@@ -1321,10 +1361,16 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			BitmapImage msk = new BitmapImage( uriMaschera );
 			mascheraAttiva = msk;
 
-			svuotareElencoInModifica( false );
 
-			// cambio stato. Vado in modalità di editing maschere
-			modalitaEdit = ModalitaEdit.GestioneMaschere;
+			if( fotografieDaModificareCW.SelectedItems.Count == 0 ) {
+
+				svuotareElencoInModifica( false );
+
+				// cambio stato. Vado in modalità di editing maschere
+				modalitaEdit = ModalitaEdit.GestioneMaschere;
+			} else {
+			//	System.Diagnostics.Debugger.Break();
+			}
 
 
 			// Mi serve per accendere i pulsanti di rifiuta e salva
@@ -1519,8 +1565,28 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			RitoccoPuntualeMsg ritoccoPuntualeMsg = new RitoccoPuntualeMsg( this );
 			ritoccoPuntualeMsg.senderTag = puntuale;
 			LumenApplication.Instance.bus.Publish( ritoccoPuntualeMsg );
+
+
+
+			if( puntuale ) {
+				frpCalcolaDimensioniContenitore( fotografieDaModificareCW.SelectedItems[0].imgOrig.rapporto );
+			} else {
+				frpCalcolaDimensioniContenitore( 0f );
+			}
 		}
 
+		private void frpCalcolaDimensioniContenitore( float ratio ) {
+
+			if( modalitaEdit == ModalitaEdit.FotoRitoccoPuntuale && ratio != 0f ) {
+				// Ora determino la grandezza del contenitore della foto.
+				// Tengo fissa l'altezza perché non ho molto spazio libero. La larghezza posso giocarmela.
+				frpContenitoreH = 400;
+				frpContenitoreW = frpContenitoreH * ratio;
+			} else {
+				frpContenitoreH = 0;
+				frpContenitoreW = 0;
+			}
+		}
 
 
 		#endregion Metodi

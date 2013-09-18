@@ -1,11 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                     xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
-                    
-xmlns:eff="clr-namespace:Digiphoto.Lumen.Windows.Media.Effects;assembly=Digiphoto.Lumen.Imaging.Wic"
-                    
+                    xmlns:eff="clr-namespace:Digiphoto.Lumen.Windows.Media.Effects;assembly=Digiphoto.Lumen.Imaging.Wic"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-
 
 	<ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Digiphoto.Lumen.UI;component/Resources/GlobalResourceDictionary.xaml" />
@@ -150,37 +147,6 @@ xmlns:eff="clr-namespace:Digiphoto.Lumen.Windows.Media.Effects;assembly=Digiphot
 		</Style.Resources>		
 	</Style>
 
-<!--
-    <ControlTemplate TargetType="ToggleButton" x:Key="yesNoToggleTemplate">
-        
-        <Border CornerRadius="3" Background="{TemplateBinding Background}">
-            <ContentPresenter Margin="3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        </Border>
-        <ControlTemplate.Triggers>
-            <Trigger Property="IsChecked" Value="False">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                            <GradientStop Color="#FFF3F3F3" Offset="1"/>
-                            <GradientStop Color="LawnGreen" Offset="0.307"/>
-                        </LinearGradientBrush>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
-            <Trigger Property="IsChecked" Value="True">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                            <GradientStop Color="#FFF3F3F3" Offset="1"/>
-                            <GradientStop Color="Red" Offset="0.307"/>
-                        </LinearGradientBrush>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
-        </ControlTemplate.Triggers>
-
-    </ControlTemplate>
--->
 
 
 
@@ -260,27 +226,129 @@ xmlns:eff="clr-namespace:Digiphoto.Lumen.Windows.Media.Effects;assembly=Digiphot
     -->
     <DataTemplate x:Key="dataTemplateFotoInModificaPuntuale">
 
-        <Border Effect="{Binding Path=DataContext.effetto3, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"   >
-            <Border Effect="{Binding Path=DataContext.effetto2, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"   >
-                <Border Effect="{Binding Path=DataContext.effetto1, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"   >
+        <DockPanel LastChildFill="True">
 
-                    <Border LayoutTransform="{Binding Path=DataContext.trasformazione2, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  >
-                        <Border LayoutTransform="{Binding Path=DataContext.trasformazione1, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  >
+            <Slider Name="sliderSpostaY" DockPanel.Dock="Right" 
+                    Orientation="Vertical" Minimum="-100" Maximum="100" RenderTransformOrigin="0.5,0.5" 
+                    Canvas.ZIndex="99" Margin="4" >
+                <Slider.RenderTransform>
+                    <RotateTransform Angle="-180"/><!-- metto lo slider in verticale -->
+                </Slider.RenderTransform>
+            </Slider>
 
-                            <Border BorderBrush="Red">
+            <Slider Name="sliderSpostaX"  DockPanel.Dock="Bottom"  
+                    Minimum="-200" Maximum="200" Canvas.ZIndex="99"  Margin="4" />
+
+            <!-- slider superiori di rotazione e zoom -->
+            <Grid DockPanel.Dock="Top" Canvas.ZIndex="99">
+                
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <!-- -->
+                <Label Content="Ruota" Grid.Row="0" Grid.Column="0" Canvas.ZIndex="99" />
+                <Slider Name="sliderRuota"  
+                        Grid.Row="0" Grid.Column="1" 
+                        Minimum="-60" Maximum="60" Canvas.ZIndex="99" />
+                
+                <!-- --> 
+                <Label Content="Zoom" Grid.Row="1" Grid.Column="0" Canvas.ZIndex="99" />
+                <Slider Name="sliderZoom"  
+                        Grid.Row="1" Grid.Column="1" 
+                        Minimum="0.5" Value="1" Maximum="5" />
+            </Grid>
+
+
+            <!-- Questa è la zona centrale per la maschera e l'immagine -->
+            <Grid ClipToBounds="True">
+            
+                <!-- 
+                  Questo bordo è quello di riferimento : o contiene la maschera, oppure è vuoto ma con il ratio = a quello della foto originale. 
+                  Tutti gli offset verranno riparametrati a questa area.
+                -->
+                <Border BorderBrush="Red" BorderThickness="1" 
+                        Name="borderCornice"
+                        HorizontalAlignment="Center" VerticalAlignment="Center" 
+                        Height="{Binding Path=DataContext.frpContenitoreH, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
+                        Width="{Binding Path=DataContext.frpContenitoreW, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"                         
+                        Canvas.ZIndex="60" >
+
+                    <Image Name="imageCornice" IsHitTestVisible="False"
+                           Source="{Binding Path=DataContext.mascheraAttiva, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+
+                </Border>
+
+                <!-- TODO creare un border interno per delineare l'area stampabile. Questo bordo ha ratio fisso, definito come costante -->
+
+                <!-- Visto che la classe EffectGroup è deprecata, per creare una composizione, utilizzo 3 Border innestati -->
+                <Border Effect="{Binding Path=DataContext.effetto3, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  BorderThickness="0" >
+                    <Border Effect="{Binding Path=DataContext.effetto2, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" BorderThickness="0" >
+                        <Border Effect="{Binding Path=DataContext.effetto1, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" BorderThickness="0" >
+
+                            <Border BorderThickness="0" 
+                                Name="borderImage1" 
+                                HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                Height="{Binding Path=DataContext.frpContenitoreH, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
+                                Width="{Binding Path=DataContext.frpContenitoreW, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
+                                Canvas.ZIndex="50">
+                                <Border.RenderTransform>
+                                    <TransformGroup>
+                                        <TranslateTransform x:Name="tt"  X="{Binding ElementName=sliderSpostaX,Path=Value}" 
+                                                            Y="{Binding ElementName=sliderSpostaY,Path=Value}"  />
+                                        <ScaleTransform ScaleX="{Binding ElementName=sliderZoom,Path=Value}"
+                                                    ScaleY="{Binding ElementName=sliderZoom,Path=Value}" 
+                                                    CenterX="300" CenterY="200" />
+                                        <RotateTransform CenterX="300" CenterY="200" Angle="{Binding ElementName=sliderRuota,Path=Value}" />
+                                    </TransformGroup>
+                                </Border.RenderTransform>
+
+
 
                                 <Image Name="imageModTemplate"
-                                   Source="{Binding Path=imgOrig,Converter={StaticResource imageSourceConverter}}" />
+                                    Source="{Binding Path=imgOrig,Converter={StaticResource imageSourceConverter}}" />
+
+
+                            </Border>
+
+                        </Border>
+                    </Border>
+                </Border>
+
+
+
+
+
+                    <!--
+                <Border Effect="{Binding Path=DataContext.effetto3, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"   >
+                <Border Effect="{Binding Path=DataContext.effetto2, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"   >
+                    <Border Effect="{Binding Path=DataContext.effetto1, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"   >
+
+                        <Border LayoutTransform="{Binding Path=DataContext.trasformazione2, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  >
+                            <Border LayoutTransform="{Binding Path=DataContext.trasformazione1, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  >
+
+                                <Border BorderBrush="Red">
+
+                                    <Image Name="imageModTemplate"
+                                       Source="{Binding Path=imgOrig,Converter={StaticResource imageSourceConverter}}" />
                             
-                            </Border><!-- tras2 -->
-                        </Border><!-- tras1 -->
+                                </Border>
+                            </Border>
 
-                    </Border><!-- eff3 -->
-                </Border><!-- eff2 -->
-            </Border><!-- eff1 -->
+                        </Border>
+                    </Border>
+                </Border>
 
-        </Border>
+            </Border>
+    -->
 
+        </Grid>
+    </DockPanel>
 
 
     </DataTemplate>
