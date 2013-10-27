@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Model;
+using Digiphoto.Lumen.Servizi.Ritoccare;
 
 namespace Digiphoto.Lumen.Imaging.Correzioni {
 
@@ -12,12 +13,5 @@ namespace Digiphoto.Lumen.Imaging.Correzioni {
 
 		public abstract IImmagine applica( IImmagine immagineSorgente, Correzione correzione );
 
-		public abstract Type getTypeOfCorrezione();
-
-/*
-		public Type getTypeOfCorrezione() {
-			return typeof( TCORREZIONE );
-		}
-*/
 	}
 }

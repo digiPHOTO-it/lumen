@@ -184,6 +184,7 @@
     <Compile Include="src\Eventi\InformazioneUtente.cs" />
     <Compile Include="src\Eventi\Messaggio.cs" />
     <Compile Include="src\Imaging\Correzioni\BiancoNero.cs" />
+    <Compile Include="src\Imaging\Correzioni\Maschera.cs" />
     <Compile Include="src\Imaging\Correzioni\Correttore.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -204,10 +205,12 @@
     <Compile Include="src\Imaging\Correzioni\Ruota.cs" />
     <Compile Include="src\Imaging\Correzioni\Sepia.cs" />
     <Compile Include="src\Imaging\Correzioni\Specchio.cs" />
+    <Compile Include="src\Imaging\Correzioni\Trasla.cs" />
+    <Compile Include="src\Imaging\Correzioni\Zoom.cs" />
     <Compile Include="src\Imaging\Geometrie.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="src\Imaging\IGestoreImmagineSrv.cs">
+    <Compile Include="src\Servizi\Io\IGestoreImmagineSrv.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="src\Imaging\ImagingFactory.cs">
@@ -245,7 +248,6 @@
     <Compile Include="src\Servizi\Ricerca\ParamCercaCarrello.cs" />
     <Compile Include="src\Servizi\Ritoccare\FotoDaModificareMsg.cs" />
     <Compile Include="src\Servizi\Ritoccare\FotoModificateMsg.cs" />
-    <Compile Include="src\Servizi\Ritoccare\FotoRitoccoSrvImpl.cs" />
     <Compile Include="src\Servizi\Ritoccare\ICorrettoreFactory.cs" />
     <Compile Include="src\Servizi\Ritoccare\IFotoRitoccoSrv.cs" />
     <Compile Include="src\Servizi\CambioStatoMsg.cs" />

@@ -11,6 +11,8 @@ using log4net;
 using System.IO;
 using Digiphoto.Lumen.Config;
 using System.Diagnostics;
+using Digiphoto.Lumen.Servizi.Io;
+using Digiphoto.Lumen.Servizi.Ritoccare;
 
 namespace Digiphoto.Lumen.Util {
 	
@@ -189,6 +191,7 @@ namespace Digiphoto.Lumen.Util {
 			Debug.Assert( quale == IdrataTarget.Provino || quale == IdrataTarget.Risultante );
 
 			IGestoreImmagineSrv gis = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
+			IFotoRitoccoSrv fr = LumenApplication.Instance.getServizioAvviato<IFotoRitoccoSrv>();
 
 			// Carico l'immagine grande originale (solo la prima volta)
 			if( foto.imgOrig == null ) {
@@ -212,8 +215,7 @@ namespace Digiphoto.Lumen.Util {
 			// applico eventuali correzioni
 			if( foto.correzioniXml != null ) {
 				CorrezioniList correzioni = SerializzaUtil.stringToObject<CorrezioniList>( foto.correzioniXml );
-				_giornale.Debug( "Su questa foto esistono correzioni. Le applico" );
-				immagineDestinazione = gis.applicaCorrezioni( immagineDestinazione, correzioni );
+				immagineDestinazione = fr.applicaCorrezioni( immagineDestinazione, correzioni, IdrataTarget.Provino );
 			}
 
 			// Salvo su disco l'immagine risultante

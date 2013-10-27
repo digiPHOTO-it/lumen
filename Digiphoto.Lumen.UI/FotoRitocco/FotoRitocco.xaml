@@ -8,6 +8,7 @@
              xmlns:lumFR="clr-namespace:Digiphoto.Lumen.UI.FotoRitocco"
              xmlns:lumMS="clr-namespace:Digiphoto.Lumen.UI.Mvvm.MultiSelect"
              xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
+             xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
              xmlns:extToolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
              mc:Ignorable="d" 
              x:Name="fotoRitoccoUserControl"
@@ -20,13 +21,14 @@
     
 	<UserControl.Resources>
 		<ResourceDictionary Source="FotoRitoccoResources.xaml" />
-	</UserControl.Resources>
+    </UserControl.Resources>
 
 
-	<DockPanel LastChildFill="True">
+    <DockPanel LastChildFill="True" >
 
 
-		<StackPanel DockPanel.Dock="Right" Name="panelLeveRitocco" Style="{StaticResource panelLeveRitoccoStyle}"> <!-- pulsantiera -->
+        <!-- pulsantiera e levette dx -->
+		<StackPanel DockPanel.Dock="Right" Name="panelLeveRitocco" Style="{StaticResource panelLeveRitoccoStyle}"> 
 
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -37,27 +39,76 @@
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
-<!--                    
                     <RowDefinition />
--->                    
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
 
-                <!--
-                Converter={StaticResource numericToBooleanConverter},ConverterParameter={Binding ElementName=sliderLuminosita,Path=Value}
-                -->
                 <CheckBox Name="ckechBoxAbilitaLuminosita"  Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Command="{Binding resettareValoreEffettoCommand}" CommandParameter="Brightness" IsChecked="{Binding Path=isLuminositaChecked,Mode=OneWay}" />
                 <Image Source="/Digiphoto.Lumen.UI;component/Resources/brightness-16x16.png" Grid.Row="0" Grid.Column="1" ToolTip="Luminosità"/>
-                <Slider Name="sliderLuminosita" Minimum="-1" Maximum="1" Value="0" ValueChanged="sliderLuminosita_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.2" SmallChange="0.05" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="0.1" TickPlacement="TopLeft" Grid.Row="0" Grid.Column="2" />
+                <Slider Name="sliderLuminosita" Minimum="-0.6" Maximum="0.6" Value="0" ValueChanged="sliderLuminosita_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.2" SmallChange="0.05" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="0.1" TickPlacement="TopLeft" Grid.Row="0" Grid.Column="2" />
 
                 <CheckBox Name="ckechBoxAbilitaContrasto"  Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Command="{Binding resettareValoreEffettoCommand}" CommandParameter="Contrast" />
                 <Image Source="/Digiphoto.Lumen.UI;component/Resources/contrast-16x16.png" Grid.Row="1" Grid.Column="1" ToolTip="Contrasto" />
-                <Slider Name="sliderContrasto" Minimum="0" Maximum="2" Value="1" ValueChanged="sliderContrasto_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.2" SmallChange="0.05" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="0.1" TickPlacement="TopLeft" Grid.Row="1" Grid.Column="2" />
+                <Slider Name="sliderContrasto" Minimum="0.5" Maximum="1.5" Value="1" ValueChanged="sliderContrasto_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.2" SmallChange="0.05" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="0.1" TickPlacement="TopLeft" Grid.Row="1" Grid.Column="2" />
 
-                <!--
-                <Image Source="/Digiphoto.Lumen.UI;component/Resources/rotate-16x16.png" Grid.Row="2" Grid.Column="0" ToolTip="Ruota" />
-                <Slider Name="sliderRuota" Minimum="-180" Maximum="180" ValueChanged="sliderRuota_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="20" SmallChange="5" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="45" TickPlacement="TopLeft" Grid.Row="2" Grid.Column="1"/>
-                -->
-        </Grid>
+                <CheckBox Name="ckechBoxAbilitaRotate"  Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Command="{Binding ruotareCommand}" CommandParameter="0"/>
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/rotate-16x16.png" Grid.Row="2" Grid.Column="1" ToolTip="Ruota" />
+                <Slider Name="sliderRuota" Minimum="-90" Maximum="90" ValueChanged="sliderRuota_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" Grid.Row="2" Grid.Column="2"/>
+
+
+                <CheckBox Name="ckechBoxAbilitaZoom"  Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Command="{Binding zoomareCommand}" CommandParameter="1" />
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/rotate-16x16.png" Grid.Row="3" Grid.Column="1" ToolTip="Zoom" />
+                <Slider Name="sliderZoom"
+                        Minimum="0.5" Maximum="5" Value="1"
+                        SmallChange="0.02"
+                        ValueChanged="sliderZoom_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" 
+                        ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" 
+                        TickPlacement="TopLeft" Grid.Row="3" Grid.Column="2" />
+
+                <Button Grid.Row="4" Grid.Column="0" Command="{Binding traslareCommand}" CommandParameter="0" 
+                        Content="!" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                <Slider Name="sliderTraslaX" 
+                        Value="0" 
+                        ValueChanged="sliderTrasla_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" 
+                        ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" 
+                        Grid.Row="4" Grid.Column="2" >
+                    <Slider.Minimum>
+                        <MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="-1 * (y + ((x-1) * (y/2)))">
+                            <Binding ElementName="sliderZoom" Path="Value" /><!-- x -->
+                            <Binding ElementName="borderImage1" Path="Width" /><!-- y -->
+                        </MultiBinding>
+                    </Slider.Minimum>
+                    <Slider.Maximum>
+                        <MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="1 * (y + ((x-1) * (y/2)))">
+                            <Binding ElementName="sliderZoom" Path="Value" /><!-- x -->
+                            <Binding ElementName="borderImage1" Path="Width" /><!-- y -->
+                        </MultiBinding>
+                    </Slider.Maximum>
+                </Slider>
+
+                <Slider Name="sliderTraslaY" 
+                        Value="0" 
+                        ValueChanged="sliderTrasla_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" 
+                        ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" 
+                        Grid.Row="5" Grid.Column="2" >
+                    <Slider.Minimum>
+                        <MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="-1 * (y + ((x-1) * (y/2)))">
+                            <Binding ElementName="sliderZoom" Path="Value" /><!-- x -->
+                            <Binding ElementName="borderImage1" Path="Height" /><!-- y -->
+                        </MultiBinding>
+                    </Slider.Minimum>
+                    <Slider.Maximum>
+                        <MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="1 * (y + ((x-1) * (y/2)))">
+                            <Binding ElementName="sliderZoom" Path="Value" /><!-- x -->
+                            <Binding ElementName="borderImage1" Path="Height" /><!-- y -->
+                        </MultiBinding>
+                    </Slider.Maximum>
+                </Slider>
+
+
+            </Grid>
 
 
 
@@ -104,7 +155,7 @@
 			<Separator Height="25" />
 
 			<Button Name="rifiutareCorrezioniButton" Content="Rifiuta" ToolTip="Annulla le correzioni applicate" Command="{Binding rifiutareCorrezioniCommand}" />
-			<Button Name="salvareCorrezioniButton" Content="Applica" ToolTip="Applica le correzioni apportate" Command="{Binding salvareCorrezioniCommand}" FontSize="20" />
+			<Button x:Name="applicareCorrezioniButton" Content="Applica" ToolTip="Applica le correzioni apportate" Command="{Binding applicareCorrezioniCommand}" FontSize="20" />
 			<Button Name="salvareMascheraButton" Content="Salva Maschera" ToolTip="Salva una nuova foto con cornice" Click="salvareMascheraButton_Click" IsEnabled="{Binding possoSalvareMaschera}" />
 			<Separator Height="25" />
 			<Button Content="+All" ToolTip="Mette tutte le foto in modifica" Command="{Binding commandRiempireElencoInModifica}" />
@@ -130,6 +181,7 @@
 
         </StackPanel>
 
+        <!-- elenco maschere sx -->
 		<Expander DockPanel.Dock="Left"  Header="Mask" ExpandDirection="Left" IsExpanded="False" Name="expanderMaschere"> <!-- Maschere -->
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Expanded">
@@ -171,13 +223,6 @@
 
         <lum:SelettoreAzioniRapideView Visibility="Collapsed" DataContext="{Binding Path=selettoreAzioniRapideViewModel}"/>
 
-
-        <!--
-        lumMS:MultiSelect.SelectionFailed="selectionFailed"
-				  
-				        
-        -->
-
         <!-- nastro basso con tutte le foto che sono in attesa di modifica -->
         <ListBox x:Name="listBoxImmaginiDaModificare"  DockPanel.Dock="Bottom"
                  SelectionMode="Multiple"
@@ -217,9 +262,65 @@
 
         <!-- area di lavoro per modifiche -->
 		<Grid>
-			<!-- Questo è il canvas di copertura dove compare la cornice bucata -->
-			<Grid Name="canvasMskCopertura" IsHitTestVisible="False"
-                            Visibility="{Binding isGestioneMaschereAttiva,Converter={StaticResource booleanToVisibilityConverter}}"
+            
+            <!-- Questa è la grid per il fotoritocco puntuale -->
+            <Grid Name="gridRitoccoPuntuale" ClipToBounds="True"
+                  Visibility="{Binding isModalitaEditFotoRitoccoPuntuale,Converter={StaticResource booleanToVisibilityConverter}}"
+                  Canvas.ZIndex="80"
+                  >
+
+                <!-- 
+                  Questo bordo è quello di riferimento : o contiene la maschera, oppure è vuoto ma con il ratio = a quello della foto originale. 
+                  Tutti gli offset verranno riparametrati a questa area. Le dimensioni W,H sono importanti e di riferimento.
+                -->
+
+                <Border BorderBrush="Yellow" BorderThickness="2" 
+                        Name="borderCornice"
+                        HorizontalAlignment="Center" VerticalAlignment="Center" 
+                        Height="{Binding Path=frpContenitoreH}" 
+                        Width="{Binding Path=frpContenitoreW}"  
+                        Canvas.ZIndex="80" >
+
+                    <Image Name="imageCornice" 
+                           Source="{Binding Path=mascheraAttiva}" />
+
+                </Border>
+
+                <!-- TODO creare un border interno per delineare l'area stampabile. Questo bordo ha ratio fisso, definito come costante -->
+
+                <!-- Visto che la classe EffectGroup è deprecata, per creare una composizione, utilizzo 3 Border innestati -->
+                <Border Effect="{Binding Path=effetto3}"  BorderThickness="0" >
+                    <Border Effect="{Binding Path=effetto2}" BorderThickness="0" >
+                        <Border Effect="{Binding Path=effetto1}" BorderThickness="0" >
+
+                            <Border BorderThickness="1" 
+                                Name="borderImage1" 
+                                HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                Height="{Binding Path=frpContenitoreH}" 
+                                Width="{Binding Path=frpContenitoreW}" 
+                                Canvas.ZIndex="99"
+                            >
+                                <Border.Background>
+                                    <ImageBrush  ImageSource="/Digiphoto.Lumen.UI;component/Resources/quadretti.png" TileMode="Tile" ViewportUnits="Absolute" Viewport="0,0,16,16" />
+                                </Border.Background>
+
+                                <!-- invece il TranformationGroup (trasformazioni) è valido -->
+                                <Image Name="imagePuntuale" Source="{Binding Path=fotografiaInModificaPuntuale.imgOrig,Converter={StaticResource imageSourceConverter}}" 
+                                       MouseWheel="imagePuntuale_MouseWheel" 
+                                       MouseDown="imagePuntuale_MouseDown" MouseMove="imagePuntuale_MouseMove" MouseUp="imagePuntuale_MouseUp" 
+                                       RenderTransform="{Binding Path=trasformazioni}" 
+                                       RenderTransformOrigin="0.5,0.5"
+                                       />                                    
+                            </Border>
+                        </Border>
+                    </Border>
+                </Border>
+            </Grid>
+
+            <!-- Questo è il canvas di copertura dove compare la cornice bucata -->
+			<Grid Name="canvasMskCopertura" 
+                  Canvas.ZIndex="20"
+                            Visibility="{Binding isModalitaEditGestioneMaschere,Converter={StaticResource booleanToVisibilityConverter}}"
                             >
 				<Image Name="imageMask" 
                                Width="500" Height="500" 
@@ -232,22 +333,24 @@
 
 			<!-- Questo è il canvas di lavoro, dove consento il drag-n-drop delle foto -->
 			<Canvas  Name="canvasMsk" Background="Transparent" AllowDrop="True" 
+                     Canvas.ZIndex="30"
 					 Drop="canvasMsk_Drop"
-					 Visibility="{Binding isGestioneMaschereAttiva,Converter={StaticResource booleanToVisibilityConverter}}" />
+					 Visibility="{Binding isModalitaEditGestioneMaschere,Converter={StaticResource booleanToVisibilityConverter}}" />
 
             <!--
                  *******     ^ sopra gestione maschere  (una maschera alla volta ma con più foto)
                  *********************************************************************
-                 *******     V sotto gestione fotoritocco puntuale
+                 *******     V sotto gestione fotoritocco massivo
             -->
             
             
             <ItemsControl x:Name="itemsControlImmaginiInModifica"
-                          Visibility="{Binding isGestioneMaschereDisattiva,Converter={StaticResource booleanToVisibilityConverter}}"
+                          Visibility="{Binding isModalitaEditFotoRitoccoMassivo,Converter={StaticResource booleanToVisibilityConverter}}"
                           ItemsSource="{Binding ElementName=listBoxImmaginiDaModificare, Path=SelectedItems}" 
                           VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" 
 						  PreviewMouseDown="itemsControlImmaginiInModifica_PreviewMouseDown"
-                          ItemTemplate="{StaticResource dataTemplateFotoInModificaPuntuale}">
+                          Canvas.ZIndex="35"
+                          ItemTemplate="{StaticResource dataTemplateFotoInModificaMassivo}" Margin="-149,63,149,-63">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
 						<!--Style="{StaticResource uniformGridModificaStyle}"-->

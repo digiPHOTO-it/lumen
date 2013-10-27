@@ -5,8 +5,9 @@ using System.Text;
 using Digiphoto.Lumen.Servizi;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Imaging.Correzioni;
+using Digiphoto.Lumen.Imaging;
 
-namespace Digiphoto.Lumen.Imaging {
+namespace Digiphoto.Lumen.Servizi.Io {
 
 	/**
 	 * Questo servizio non contiene intelligenza o stato.
@@ -27,12 +28,15 @@ namespace Digiphoto.Lumen.Imaging {
 		/** Salva l'immagine indicata sul filesystem */
 		void save( IImmagine immagine, string fileName );
 
-		/** Applico tutte i ritocchi grafici indicati nel preciso ordine */
-		IImmagine applicaCorrezioni( IImmagine immaginePartenza, IEnumerable<Correzione> correzioni );
-
-		IImmagine applicaCorrezione( IImmagine immaginePartenza, Correzione correzione );
-
 		Correttore getCorrettore( Correzione correzione );
-		Correttore getCorrettore( Type tipo );
+		Correttore getCorrettore( TipoCorrezione tipoCorrezione );
+
+		/// <summary>
+		/// Quando correggo le foto, non scrivo subito sul db le modifiche apportate.
+		/// Questo perché voglio essere sempre in grado di annullare.
+		/// Con questo metodo, rendo persistenti le correzioniXml che ancora sono transienti.
+		/// </summary>
+		void salvaCorrezioniTransienti( Fotografia fotografia );
+
 	}
 }

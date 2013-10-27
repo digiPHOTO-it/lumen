@@ -16,7 +16,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 	/// Questa classe mi serve per lanciare un editor esterno tipo GIMP
 	/// per modificare le foto.
 	/// </summary>
-	internal class LanciatoreEditor {
+	public class LanciatoreEditor {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof(LanciatoreEditor) );
 
@@ -172,7 +172,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		/// <summary>
 		/// Cerco di capire quali file sono stati modificati ed aggiorno le relative Fotografie
 		/// </summary>
-		internal List<Fotografia> applicaImmaginiModificate() {
+		public List<Fotografia> applicaImmaginiModificate() {
 
 			List<Fotografia>modificate = new List<Fotografia>();
 

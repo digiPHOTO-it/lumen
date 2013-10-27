@@ -10,10 +10,11 @@
 	</ResourceDictionary.MergedDictionaries>
 
 
-	<lumC:ImageSourceConverter x:Key="imageSourceConverter" />
-    <lumC:BoolInverterConverter x:Key="boolInverterConverter" />
-	<lumC:PercentualeConverter x:Key="percentualeConverter" />
-    <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
+	<lumC:ImageSourceConverter      x:Key="imageSourceConverter" />
+    <lumC:BoolInverterConverter     x:Key="boolInverterConverter" />
+	<lumC:PercentualeConverter      x:Key="percentualeConverter" />
+    <lumC:MathConverter             x:Key="mathConverter" />
+    <BooleanToVisibilityConverter   x:Key="booleanToVisibilityConverter"/>
 
     <!-- Stile della listbox che itera le immagini -->
     <Style x:Key="listBoxImmaginiDaModificareStyle" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
@@ -224,22 +225,22 @@
     <!--
         LayoutTransform="{Binding Path=DataContext.trasformazioneCorrente, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  
     -->
-    <DataTemplate x:Key="dataTemplateFotoInModificaPuntuale">
+    <DataTemplate x:Key="QQQdataTemplateFotoInModificaPuntuale" x:Name="pollo">
 
+<!--        
         <DockPanel LastChildFill="True">
-
-            <Slider Name="sliderSpostaY" DockPanel.Dock="Right" 
+         <Slider Name="sliderSpostaY" DockPanel.Dock="Right" 
                     Orientation="Vertical" Minimum="-100" Maximum="100" RenderTransformOrigin="0.5,0.5" 
                     Canvas.ZIndex="99" Margin="4" >
                 <Slider.RenderTransform>
-                    <RotateTransform Angle="-180"/><!-- metto lo slider in verticale -->
+                    <RotateTransform Angle="-180"/>
                 </Slider.RenderTransform>
             </Slider>
 
             <Slider Name="sliderSpostaX"  DockPanel.Dock="Bottom"  
                     Minimum="-200" Maximum="200" Canvas.ZIndex="99"  Margin="4" />
 
-            <!-- slider superiori di rotazione e zoom -->
+    
             <Grid DockPanel.Dock="Top" Canvas.ZIndex="99">
                 
                 <Grid.ColumnDefinitions>
@@ -251,19 +252,11 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
-                <!-- -->
                 <Label Content="Ruota" Grid.Row="0" Grid.Column="0" Canvas.ZIndex="99" />
-                <Slider Name="sliderRuota"  
-                        Grid.Row="0" Grid.Column="1" 
-                        Minimum="-60" Maximum="60" Canvas.ZIndex="99" />
                 
-                <!-- --> 
                 <Label Content="Zoom" Grid.Row="1" Grid.Column="0" Canvas.ZIndex="99" />
-                <Slider Name="sliderZoom"  
-                        Grid.Row="1" Grid.Column="1" 
-                        Minimum="0.5" Value="1" Maximum="5" />
             </Grid>
-
+-->
 
             <!-- Questa è la zona centrale per la maschera e l'immagine -->
             <Grid ClipToBounds="True">
@@ -276,10 +269,10 @@
                         Name="borderCornice"
                         HorizontalAlignment="Center" VerticalAlignment="Center" 
                         Height="{Binding Path=DataContext.frpContenitoreH, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
-                        Width="{Binding Path=DataContext.frpContenitoreW, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"                         
+                        Width="{Binding Path=DataContext.frpContenitoreW, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  
                         Canvas.ZIndex="60" >
 
-                    <Image Name="imageCornice" IsHitTestVisible="False"
+                    <Image Name="imageCornice" 
                            Source="{Binding Path=DataContext.mascheraAttiva, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
 
                 </Border>
@@ -296,7 +289,11 @@
                                 HorizontalAlignment="Center" VerticalAlignment="Center" 
                                 Height="{Binding Path=DataContext.frpContenitoreH, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
                                 Width="{Binding Path=DataContext.frpContenitoreW, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
-                                Canvas.ZIndex="50">
+                                RenderTransform="{Binding Path=DataContext.trasformazioni, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
+                                RenderTransformOrigin="0.5,0.5"
+                                Canvas.ZIndex="50"
+                            >
+<!--                                
                                 <Border.RenderTransform>
                                     <TransformGroup>
                                         <TranslateTransform x:Name="tt"  X="{Binding ElementName=sliderSpostaX,Path=Value}" 
@@ -307,7 +304,7 @@
                                         <RotateTransform CenterX="300" CenterY="200" Angle="{Binding ElementName=sliderRuota,Path=Value}" />
                                     </TransformGroup>
                                 </Border.RenderTransform>
-
+-->
 
 
                                 <Image Name="imageModTemplate"
@@ -329,8 +326,8 @@
                 <Border Effect="{Binding Path=DataContext.effetto2, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"   >
                     <Border Effect="{Binding Path=DataContext.effetto1, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"   >
 
-                        <Border LayoutTransform="{Binding Path=DataContext.trasformazione2, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  >
-                            <Border LayoutTransform="{Binding Path=DataContext.trasformazione1, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  >
+                        <Border LayoutTransform="{Binding Path=DataContext.trasformazioneRotate, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  >
+                            <Border LayoutTransform="{Binding Path=DataContext.trasformazioneFlip, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  >
 
                                 <Border BorderBrush="Red">
 
@@ -348,8 +345,9 @@
     -->
 
         </Grid>
+<!--        
     </DockPanel>
-
+-->
 
     </DataTemplate>
 

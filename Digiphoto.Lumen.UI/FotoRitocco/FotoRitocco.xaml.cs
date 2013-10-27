@@ -68,13 +68,14 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					bindaSliderLuminositaContrasto();
 		}
 
-/*
+
 		private void sliderRuota_ValueChanged( object sender, RoutedPropertyChangedEventArgs<double> e ) {
+
 			if( _viewModel != null )
-				if( _viewModel.forseCambioTrasformazioneCorrente( typeof( RotateTransform ) ) )
+				if( _viewModel.forseCambioTrasformazioneCorrente( FotoRitoccoViewModel.TFXPOS_ROTATE ) )
 					bindaSliderRuota();
 		}
-*/
+
 
 		private void sliderDominanti_ValueChanged( object sender, RoutedPropertyChangedEventArgs<double> e ) {
 
@@ -82,6 +83,21 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				if( _viewModel.forseCambioEffettoCorrente( typeof( DominantiEffect ) ) )
 					bindaSlidersDominanti();
 		}
+
+		private void sliderZoom_ValueChanged( object sender, RoutedPropertyChangedEventArgs<double> e ) {
+
+			if( _viewModel != null )
+				if( _viewModel.forseCambioTrasformazioneCorrente( FotoRitoccoViewModel.TFXPOS_ZOOM ) )
+					bindaSliderZoom();
+		}
+
+		private void sliderTrasla_ValueChanged( object sender, RoutedPropertyChangedEventArgs<double> e ) {
+			if( _viewModel != null )
+				if( _viewModel.forseCambioTrasformazioneCorrente( FotoRitoccoViewModel.TFXPOS_TRANSLATE ) ) {
+					bindaSliderTrasla();
+				}
+		}
+
 
 		private void bindaSlidersDominanti() {
 			bindaSlidersDominanti( false );
@@ -93,8 +109,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// <param name="qualeRGB">Una stringa contenente : "R", "G", "B" </param>
 		private void bindaSlidersDominanti( bool mantieniValori ) {
 
-			if( mantieniValori && _viewModel.dominantiEffect == null )
+			if( mantieniValori && _viewModel.dominantiEffect == null ) {
+				sliderDominanteRed.Value = 0;
+				sliderDominanteGreen.Value = 0;
+				sliderDominanteBlue.Value = 0;
 				return;
+			}
 
 			double salvaValoreR = _viewModel.dominantiEffect.Red;
 			double salvaValoreG = _viewModel.dominantiEffect.Green;
@@ -120,14 +140,89 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		private void bindaSliderRuota() {
-/*
-			// Bindings con i componenti per i parametri
+			bindaSliderRuota( false );
+		}
+		
+		private void bindaSliderRuota( bool mantieniValore ) {
+
+			if( FotoRitoccoViewModel.isTrasformazioneNulla( _viewModel.trasformazioneRotate ) ) {
+				sliderRuota.Value = 0;  // per sicurezza riporto lo slider nella sua posizione neutra
+				return;
+			}
+
+			double salvaValore = ((RotateTransform)_viewModel.trasformazioneRotate).Angle;
+
 			Binding binding = new Binding();
 			binding.Source = sliderRuota;
 			binding.Mode = BindingMode.TwoWay;  // Mi serve bidirezionale perché posso resettare tutto dal ViewModel
 			binding.Path = new PropertyPath( Slider.ValueProperty );
-			BindingOperations.SetBinding( _viewModel.trasformazioneCorrente, RotateTransform.AngleProperty, binding );
- */
+			BindingOperations.SetBinding( _viewModel.trasformazioneRotate, RotateTransform.AngleProperty, binding );
+
+			if( mantieniValore ) {
+				((RotateTransform)_viewModel.trasformazioneRotate).Angle = salvaValore;
+			}
+		}
+
+		private void bindaSliderZoom() {
+			bindaSliderZoom( false );
+		}
+
+		private void bindaSliderZoom( bool mantieniValore ) {
+
+			if( FotoRitoccoViewModel.isTrasformazioneNulla( _viewModel.trasformazioneZoom ) ) {
+				sliderZoom.Value = 1;
+				return;
+			}
+
+			double scaleX = ((ScaleTransform)_viewModel.trasformazioneZoom).ScaleX;
+			double scaleY = ((ScaleTransform)_viewModel.trasformazioneZoom).ScaleY;
+
+			Binding binding = new Binding();
+			binding.Source = sliderZoom;
+			binding.Mode = BindingMode.TwoWay;  // Mi serve bidirezionale perché posso resettare tutto dal ViewModel
+			binding.Path = new PropertyPath( Slider.ValueProperty );
+			BindingOperations.SetBinding( _viewModel.trasformazioneZoom, ScaleTransform.ScaleXProperty, binding );
+			BindingOperations.SetBinding( _viewModel.trasformazioneZoom, ScaleTransform.ScaleYProperty, binding );
+
+			if( mantieniValore ) {
+				((ScaleTransform)_viewModel.trasformazioneZoom).ScaleX = scaleX;
+				((ScaleTransform)_viewModel.trasformazioneZoom).ScaleY = scaleY;
+			}
+		}
+
+		private void bindaSliderTrasla() {
+			bindaSliderTrasla( false );
+		}
+
+		private void bindaSliderTrasla( bool mantieniValore ) {
+		
+			if( FotoRitoccoViewModel.isTrasformazioneNulla( _viewModel.trasformazioneTranslate ) ) {
+				sliderTraslaX.Value = 0;
+				sliderTraslaY.Value = 0;
+				return;
+			}
+
+			double salvaX = ((TranslateTransform)_viewModel.trasformazioneTranslate).X;
+			double salvaY = ((TranslateTransform)_viewModel.trasformazioneTranslate).Y;
+
+			Binding bindingSx = new Binding();
+			bindingSx.Source = sliderTraslaX;
+			bindingSx.Mode = BindingMode.TwoWay;  // Mi serve bidirezionale perché posso resettare tutto dal ViewModel
+			bindingSx.Path = new PropertyPath( Slider.ValueProperty );
+			BindingOperations.SetBinding( _viewModel.trasformazioneTranslate, TranslateTransform.XProperty, bindingSx );
+
+			Binding bindingSy = new Binding();
+			bindingSy.Source = sliderTraslaY;
+			bindingSy.Mode = BindingMode.TwoWay;  // Mi serve bidirezionale perché posso resettare tutto dal ViewModel
+			bindingSy.Path = new PropertyPath( Slider.ValueProperty );
+			BindingOperations.SetBinding( _viewModel.trasformazioneTranslate, TranslateTransform.YProperty, bindingSy );
+
+			// Setto anche le dimensioni di riferimento dell'area di modifica. Mi serviranno per riproporzionare sui provini o sulle risultanti
+
+			if( mantieniValore ) {
+				((TranslateTransform)_viewModel.trasformazioneTranslate).X = salvaX;
+				((TranslateTransform)_viewModel.trasformazioneTranslate).Y = salvaY;
+			}
 		}
 
 		/// <summary>
@@ -147,8 +242,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// </summary>
 		private void bindaSliderContrasto( bool mantieniValore ) {
 
-			if( mantieniValore && _viewModel.luminositaContrastoEffect == null )
+			if( mantieniValore && _viewModel.luminositaContrastoEffect == null ) {
+				sliderContrasto.Value = 1;
 				return;
+			}
 
 			double salvaValore = _viewModel.luminositaContrastoEffect.Contrast;
 
@@ -171,8 +268,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// </summary>
 		private void bindaSliderLuminosita( bool mantieniValore ) {
 
-			if( _viewModel.luminositaContrastoEffect == null )
+			if( _viewModel.luminositaContrastoEffect == null ) {
+				sliderLuminosita.Value = 0;
 				return;
+			}
 
 			double salvaValore = _viewModel.luminositaContrastoEffect.Brightness;
 
@@ -387,10 +486,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// </summary>
 		/// <param name="avanti"></param>
 		void primoPianoCanvasMask( bool avanti ) {
+
+			return;
+
 			if( avanti ) {
 
 				// Porto davanti il canvas con la maschera in modo che si sovrapponga alla foto (tanto ha il buco trasparente)
-				Grid.SetZIndex( canvasMskCopertura, 99 );
+				Grid.SetZIndex( canvasMskCopertura, 90 );
 				Canvas.SetZIndex( canvasMsk, 10 );
 
 
@@ -399,6 +501,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				Canvas.SetZIndex( canvasMsk, 50 );
 				Grid.SetZIndex( canvasMskCopertura, 10 );
 			}
+
+			Grid.SetZIndex( gridRitoccoPuntuale, 2 );
+
 		}
 
 		private void AddAdorner( UIElement element ) {
@@ -499,12 +604,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			c.HorizontalAlignment = HorizontalAlignment.Left;
 			c.VerticalAlignment = VerticalAlignment.Top;
 			
-
-			// Devo prendere tutte le f
-//			Array.Sort( canvasMsk.Children.CopyTo(
-
-
-
 			SortedList<int,UIElement> listaOrdinata = new SortedList<int,UIElement>();
 			foreach( UIElement uiElement in canvasMsk.Children ) {
 				listaOrdinata.Add( Canvas.GetZIndex( uiElement ), uiElement );
@@ -905,13 +1004,20 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			bool puntuale = (Boolean)rpMsg.senderTag;
 			cambioDataTemplatePuntualeMassivo( puntuale );
 
+			// Questi sono effetti
 			bindaSliderLuminosita( true );
 			bindaSliderContrasto( true );
-
 			bindaSlidersDominanti( true );
+
+			// Queste sono trasformazioni
+			bindaSliderRuota( true );
+			bindaSliderZoom( true );
+			bindaSliderTrasla( true );
 		}
 
 		void cambioDataTemplatePuntualeMassivo( bool puntuale ) {
+			
+			return;
 
 			// Siccome devo trattare una sola foto alla volta
 			// e siccome in questo caso devo riapplicare tutti gli effetti all'originale, 
@@ -919,6 +1025,67 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			// Normalmente visualizzo il imgProvino. Se sono in modalità puntuale prendo l'immagine originale.
 			DataTemplate dt = (DataTemplate)FindResource( puntuale ? "dataTemplateFotoInModificaPuntuale" : "dataTemplateFotoInModificaMassivo" );
 			this.itemsControlImmaginiInModifica.ItemTemplate = dt;
+		}
+
+		private void imagePuntuale_MouseWheel( object sender, MouseWheelEventArgs e ) {
+			if( Keyboard.IsKeyDown( Key.LeftCtrl ) ) {
+				// Rotazione
+				double angolo = e.Delta > 0 ? sliderRuota.SmallChange : sliderRuota.SmallChange * (-1);
+				sliderRuota.Value += angolo;
+			} else {
+				// Zoom
+				double zoom = e.Delta > 0 ? sliderZoom.SmallChange : sliderZoom.SmallChange * (-1);
+				sliderZoom.Value += zoom;
+			}
+		}
+
+		// Serve per gestire il drag della foto
+		private Point mouseClick;
+		double posizioneX;
+		double posizioneY;
+		private void imagePuntuale_MouseDown( object sender, MouseButtonEventArgs e ) {
+
+			mouseClick = e.GetPosition( null );
+
+			// Questo mi permette di istanziare la trasformazione di traslazione
+			sliderTrasla_ValueChanged( sender, null );
+
+			double offsetX = 0;
+			double offsetY = 0;
+			// paranoia: dovrebbe sempre esistere. Però...
+			TranslateTransform tt = (TranslateTransform) _viewModel.trasformazioneTranslate;
+			if( tt != null ) {
+				offsetX = tt.X;
+				offsetY = tt.Y;
+			}
+
+			posizioneX = mouseClick.X - offsetX;
+			posizioneY = mouseClick.Y - offsetY;
+
+			((Image)sender).CaptureMouse();
+		}
+
+		private void imagePuntuale_MouseMove( object sender, MouseEventArgs e ) {
+			if( ((Image)sender).IsMouseCaptured ) {
+
+				Point mouseCurrent = e.GetPosition( null );
+
+				double left = mouseCurrent.X - posizioneX;
+				double top = mouseCurrent.Y - posizioneY;
+
+				TransformGroup qq = imagePuntuale.RenderTransform as TransformGroup;
+
+				if( qq != null ) {
+					//	TranslateTransform tt = (TranslateTransform)qq.Children.First( c => c is TranslateTransform );
+					sliderTraslaX.Value = left;
+					sliderTraslaY.Value = top;
+				} else
+					System.Diagnostics.Debugger.Break(); // Strano che sia nullo. Come mai ?
+			}
+		}
+
+		private void imagePuntuale_MouseUp( object sender, MouseButtonEventArgs e ) {
+			((Image)sender).ReleaseMouseCapture();
 		}
 
 

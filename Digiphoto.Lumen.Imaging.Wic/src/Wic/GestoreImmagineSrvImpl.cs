@@ -1,12 +1,16 @@
-﻿using System;
-using Digiphoto.Lumen.Servizi;
+﻿using Digiphoto.Lumen.Servizi;
 using Digiphoto.Lumen.Imaging.Correzioni;
 using Digiphoto.Lumen.Servizi.Ritoccare;
 using Digiphoto.Lumen.Config;
 using System.IO;
-using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using log4net;
+using System.Windows.Media.Effects;
+using Digiphoto.Lumen.Windows.Media.Effects;
+using Digiphoto.Lumen.Servizi.Io;
+using Digiphoto.Lumen.Model;
+using Digiphoto.Lumen.Core.Database;
+using System.Data;
 
 namespace Digiphoto.Lumen.Imaging.Wic {
 
@@ -18,12 +22,10 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		private ICorrettoreFactory _correttoreFactory;
 		private Resize _correzioneProvino;
 
-
 		public GestoreImmagineSrvImpl() {
 
-
 			// Questa è la definizione per provinare.
-			_correzioneProvino = new Resize() { 
+			_correzioneProvino = new Resize {
 				latoMax = Configurazione.infoFissa.pixelProvino
 			};
 
@@ -42,15 +44,6 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 			return new ImmagineWic( nomeFile );
 
-
-/*
-			// Per essere più veloce, uso un BitmapFrame (almeno ci provo)
-			byte [] bytes = File.ReadAllBytes( nomeFile );
-			Stream stream = new MemoryStream( bytes );
-			BitmapFrame bitmapFrame = WicUtil.ReadBitmapFrame( stream );
-
-			return new ImmagineWic( bitmapFrame );
- */
 		}
 
 		public IImmagine creaProvino( IImmagine immagineGrande, long sizeLatoMax ) {
@@ -73,7 +66,8 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 				BitmapSource bmSource = ((ImmagineWic)immagine).bitmapSource;
 
 				JpegBitmapEncoder encoder = new JpegBitmapEncoder();
-			
+
+				// TODO distinguere se è un provino oppure una foto grande. Se grande usare 100%   Se provino basta 80% per essere più leggero.
 				encoder.QualityLevel = 80;
 				_giornale.Debug( "Uso quality Level = " + encoder.QualityLevel );
 
@@ -83,34 +77,31 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 				fileStream.Close();
 				_giornale.Debug( "Ok salvataggio file immagine completato" );
 			}
-			
-		}
-
-		public IImmagine applicaCorrezioni( IImmagine immaginePartenza, IEnumerable<Correzione> correzioni ) {
-			
-			IImmagine modificata = immaginePartenza;
-
-			foreach( Correzione correzione in correzioni )
-				modificata = applicaCorrezione( modificata, correzione );
-
-			return modificata;
-		}
-
-
-		public IImmagine applicaCorrezione( IImmagine immaginePartenza, Correzione correzione ) {
-			Correttore correttore = getCorrettore( correzione );
-			_giornale.Debug( "applico correzione: " + correttore );
-			return correttore.applica( immaginePartenza, correzione );
 		}
 
 		public Correttore getCorrettore( Correzione correzione ) {
 			// Se non ce l'ho in cache, allora lo creo.
-			return getCorrettore( correzione.GetType() );
+			return _correttoreFactory.creaCorrettore( correzione.GetType() );
 		}
 
-		public Correttore getCorrettore( Type tipo ) {
-			return _correttoreFactory.creaCorrettore( tipo );
+		public Correttore getCorrettore( TipoCorrezione tipoCorrezione ) {
+			return _correttoreFactory.creaCorrettore( tipoCorrezione );
 		}
 
+		public Correttore getCorrettore( object oo ) {
+			if( oo is ShaderEffect )
+				return getCorrettore( EffectsUtil.tipoCorrezioneCorrispondente( oo as ShaderEffect ) );
+			else
+				return null;
+		}
+
+		public void salvaCorrezioniTransienti( Fotografia fotografia ) {
+
+			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
+
+			objContext.Fotografie.Attach( fotografia );
+			objContext.ObjectContext.ObjectStateManager.ChangeObjectState( fotografia, EntityState.Modified );
+			objContext.SaveChanges();
+		}
 	}
 }

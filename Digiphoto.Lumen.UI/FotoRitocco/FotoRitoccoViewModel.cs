@@ -27,6 +27,7 @@ using Digiphoto.Lumen.Servizi.Scaricatore;
 using System.Text;
 using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
 using Digiphoto.Lumen.Servizi.Stampare;
+using Digiphoto.Lumen.Servizi.Io;
 
 namespace Digiphoto.Lumen.UI.FotoRitocco {
 
@@ -35,6 +36,16 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		public delegate void EditorModeChangedEventHandler( object sender, EditorModeEventArgs args );
 		public event EditorModeChangedEventHandler editorModeChangedEvent;
+
+		
+		/// <summary>
+		/// Rappresenta l'ordine puntuale delle trasformazioni nella lista
+		/// </summary>
+		/// 
+		public const int TFXPOS_FLIP      = 0;
+		public const int TFXPOS_ROTATE    = 1;
+		public const int TFXPOS_ZOOM      = 2;
+		public const int TFXPOS_TRANSLATE = 3;
 
 		
 		public FotoRitoccoViewModel() {
@@ -48,13 +59,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				observable.Subscribe( this );
 
 				selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel();
-
+	
 				fotografieDaModificare = new ObservableCollectionEx<Fotografia>();
 				fotografieDaModificareCW = new MultiSelectCollectionView<Fotografia>( fotografieDaModificare );
 
 				fotografieDaModificareCW.SelectionChanged += onFotografieDaModificareSelectionChanged;
 
-				modalitaEdit = ModalitaEdit.FotoRitoccoPuntuale;
+				// modalitaEdit = ModalitaEdit.FotoRitoccoMassivo;
 			}
 
 			cfg = Configurazione.UserConfigLumen;
@@ -65,8 +76,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		#region Fields
 
 		private CroppingAdorner _croppingAdorner;
-		FrameworkElement _felCur = null;
-		Brush _brOriginal;
+		private FrameworkElement _felCur = null;
+		private Brush _brOriginal;
+		static SkewTransform tfxNulla = new SkewTransform();
 
 		#endregion
 
@@ -83,8 +95,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					_trasformazioneCorrente = value;
 					OnPropertyChanged( "trasformazioneCorrente" );
 
-					OnPropertyChanged( "trasformazione1" );
-					OnPropertyChanged( "trasformazione2" );
+					OnPropertyChanged( "trasformazioneFlip" );
+					OnPropertyChanged( "trasformazioneRotate" );
 
 					forseInizioModifiche();
 				}	
@@ -134,6 +146,21 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		/// <summary>
+		///  Se sono in modalità di fotoritocco puntuale, allora ritono la prima (e l'unica)
+		///  fotografia che sta in lista.
+		/// </summary>
+		public Fotografia fotografiaInModificaPuntuale {
+
+			get {
+				if( isModalitaEditFotoRitoccoPuntuale && contaSelez == 1 )
+					return fotografieDaModificareCW.SelectedItems[0];
+				else
+					return null;
+			}
+		}
+
+
+		/// <summary>
 		/// Le foto selezionate sono in fase di modifica
 		/// </summary>
 		private bool _modificheInCorso;
@@ -149,22 +176,22 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		public bool possoSalvareCorrezioni {
+		public bool possoApplicareCorrezioni {
 			get {
-				return isGestioneMaschereDisattiva && modificheInCorso == true && isAlmenoUnaFotoSelezionata;
+				return modificheInCorso == true && isAlmenoUnaFotoSelezionata;
 			}
 		}
 
 		public bool possoRifiutareCorrezioni {
 			get {
 
-				return modalitaEdit == ModalitaEdit.GestioneMaschere || possoSalvareCorrezioni;
+				return isModalitaEditGestioneMaschere || possoApplicareCorrezioni;
 			}
 		}
 
 		public bool possoApplicareCorrezione {
 			get {
-				return isGestioneMaschereDisattiva && isAlmenoUnaFotoSelezionata;
+				return isAlmenoUnaFotoSelezionata;
 			}
 		}
 
@@ -209,11 +236,14 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			set;
 		}
 
-		public List<Transform> trasformazioni {
+		/// <summary>
+		/// Le trasformazioni sono posizionali.
+		/// L'ordine è dato dalle define: TFX_xxx
+		/// </summary>
+		public TransformGroup trasformazioni {
 			get;
 			set;
 		}
-
 
 		private ShaderEffect _effettoCorrente;
 		public ShaderEffect effettoCorrente {
@@ -282,21 +312,31 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		public Transform trasformazione1 {
+
+		public Transform trasformazioneFlip {
 			get {
-				return trasformazioni != null && trasformazioni.Count > 0 ? trasformazioni[0] : null;
-			}
-		}
-		public Transform trasformazione2 {
-			get {
-				return trasformazioni != null && trasformazioni.Count > 1 ? trasformazioni[1] : null;
+				return trasformazioni != null && trasformazioni.Children.Count > TFXPOS_FLIP && trasformazioni.Children[TFXPOS_FLIP] != null ? trasformazioni.Children[TFXPOS_FLIP] : null;
 			}
 		}
 
+		public Transform trasformazioneRotate {
+			get {
+				return trasformazioni != null && trasformazioni.Children.Count > TFXPOS_ROTATE && trasformazioni.Children[TFXPOS_ROTATE] is RotateTransform ? trasformazioni.Children[TFXPOS_ROTATE] : null;
+			}
+		}
 
-		/// <summary>
-		///  Cerco se esiste lo specifico effetto nella lista di tutti gli effetti
-		/// </summary>
+		public Transform trasformazioneZoom {
+			get {
+				return trasformazioni != null && trasformazioni.Children.Count > TFXPOS_ZOOM && trasformazioni.Children[TFXPOS_ZOOM] is ScaleTransform ? trasformazioni.Children[TFXPOS_ZOOM] : null;
+			}
+		}
+
+		public Transform trasformazioneTranslate {
+			get {
+				return trasformazioni != null && trasformazioni.Children.Count > TFXPOS_TRANSLATE && trasformazioni.Children[TFXPOS_TRANSLATE] is TranslateTransform ? trasformazioni.Children[TFXPOS_TRANSLATE] : null;
+			}
+		}
+
 		public LuminositaContrastoEffect luminositaContrastoEffect {
 
 			get {
@@ -309,7 +349,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				return ret;
 			}
 		}
-
 		public DominantiEffect dominantiEffect {
 
 			get {
@@ -337,19 +376,25 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		public bool isFlipChecked {
 			get {
-				return (trasformazioni != null && trasformazioni.Exists( e => e is ScaleTransform ));
+				return (trasformazioni != null && trasformazioni.Children.Count > TFXPOS_FLIP && trasformazioni.Children[TFXPOS_FLIP] is ScaleTransform );
 			}
 		}
 
 		public bool isRotatePiu90Checked {
 			get {
-				return (trasformazioni != null && trasformazioni.Exists( t => t is RotateTransform && ((RotateTransform)t).Angle == 90.0d ));
+				bool esiste = false;
+				if( trasformazioni != null && trasformazioni.Children.Count > TFXPOS_ROTATE && trasformazioni.Children[TFXPOS_ROTATE] is RotateTransform )
+					esiste = ((RotateTransform)trasformazioni.Children[TFXPOS_ROTATE]).Angle == 90.0d;
+				return esiste;
 			}
 		}
 
 		public bool isRotateMeno90Checked {
 			get {
-				return (trasformazioni != null && trasformazioni.Exists( t => t is RotateTransform && ((RotateTransform)t).Angle == -90.0d ));
+				bool esiste = false;
+				if( trasformazioni != null && trasformazioni.Children.Count > TFXPOS_ROTATE && trasformazioni.Children[TFXPOS_ROTATE] is RotateTransform )
+					esiste = ((RotateTransform)trasformazioni.Children[TFXPOS_ROTATE]).Angle == -90.0d;
+				return esiste;
 			}
 		}
 
@@ -379,7 +424,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		public bool selectorEnabled {
 			get {
-				return (isGestioneMaschereDisattiva && contaSelez == 1);
+				return ( contaSelez == 1);
 			}
 		}
 		
@@ -403,17 +448,24 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			get;
 		}
 
-		public bool isGestioneMaschereDisattiva {
+		public bool isModalitaEditFotoRitoccoMassivo {
 			get {
-				return !isGestioneMaschereAttiva;
+				return modalitaEdit == ModalitaEdit.FotoRitoccoMassivo;
 			}
 		}
 
-		public bool isGestioneMaschereAttiva {
+		public bool isModalitaEditGestioneMaschere {
 			get {
 				return modalitaEdit == ModalitaEdit.GestioneMaschere;
 			}
 		}
+
+		public bool isModalitaEditFotoRitoccoPuntuale {
+			get {
+				return modalitaEdit == ModalitaEdit.FotoRitoccoPuntuale;
+			}
+		}
+
 
 		BitmapImage _mascheraAttiva;
 		public BitmapImage mascheraAttiva {
@@ -447,9 +499,11 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					_modalitaEdit = value;
 
 					OnPropertyChanged( "modalitaEdit" );
-					OnPropertyChanged( "isGestioneMaschereAttiva" );
-					OnPropertyChanged( "isGestioneMaschereDisattiva" );
+					OnPropertyChanged( "isModalitaEditGestioneMaschere" );
+					OnPropertyChanged( "isModalitaEditFotoRitoccoPuntuale" );
+					OnPropertyChanged( "isModalitaEditFotoRitoccoMassivo" );
 					OnPropertyChanged( "possoSalvareMaschera" );
+					OnPropertyChanged( "fotografiaInModificaPuntuale" );
 					forzaRefreshStato();
 					
 					onEditorModeChanged( new EditorModeEventArgs( modalitaEdit ) );
@@ -513,7 +567,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		public bool possoSalvareMaschera {
 			get {
-				return isGestioneMaschereAttiva && mascheraAttiva != null;
+				return isModalitaEditGestioneMaschere && mascheraAttiva != null;
 			}
 		}
 
@@ -548,6 +602,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			set;
 		}
 */
+
+		public IGestoreImmagineSrv gestoreImmaginiSrv {
+			get {
+				return LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
+			}
+		}
 
 		#endregion Proprietà
 
@@ -612,15 +672,40 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		private RelayCommand _salvareCorrezioniCommand;
-		public ICommand salvareCorrezioniCommand {
+		private RelayCommand _zoomareCommand;
+		public ICommand zoomareCommand {
 			get {
-				if( _salvareCorrezioniCommand == null ) {
-					_salvareCorrezioniCommand = new RelayCommand( param => salvareCorrezioni(),
-													  param => this.possoSalvareCorrezioni,
+				if( _zoomareCommand == null ) {
+					_zoomareCommand = new RelayCommand( sFactor => this.zoomare( Convert.ToDouble(sFactor) ),
+														sFactor => this.possoApplicareCorrezione,
+														true );
+				}
+				return _zoomareCommand;
+			}
+		}
+
+		private RelayCommand _traslareCommand;
+		public ICommand traslareCommand {
+			get {
+				if( _traslareCommand == null ) {
+					_traslareCommand = new RelayCommand( sFactor => this.traslare( Convert.ToDouble( sFactor ) ),
+														 sFactor => Convert.ToDouble(sFactor) == 0 ? true : possoApplicareCorrezione,
+					                                     true );
+				}
+				return _traslareCommand;
+			}
+		}
+
+
+		private RelayCommand _applicareCorrezioniCommand;
+		public ICommand applicareCorrezioniCommand {
+			get {
+				if( _applicareCorrezioniCommand == null ) {
+					_applicareCorrezioniCommand = new RelayCommand( param => applicareCorrezioni(),
+													  param => this.possoApplicareCorrezioni,
 													  true );
 				}
-				return _salvareCorrezioniCommand;
+				return _applicareCorrezioniCommand;
 			}
 		}
 
@@ -779,28 +864,55 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// Aggiungo la correzione a tutte le foto selezionate
 		/// </summary>
 		private void addCorrezione( Correzione correzione ) {
-			
+
+
+			// Sul correzione di traslazione, devo riportare due proprietà di front-end
+			// Mi serviranno per riproporzionare durante la provinatura, oppure la risultante.
+			if( correzione is Trasla && modalitaEdit == ModalitaEdit.FotoRitoccoPuntuale ) {
+				((Trasla)correzione).rifW = frpContenitoreW;
+				((Trasla)correzione).rifH = frpContenitoreH;
+			}
+
 			foreach( Fotografia f in fotografieDaModificareCW.SelectedItems )
 				fotoRitoccoSrv.addCorrezione( f, correzione );
 		}
 
 		private void ruotare( int pGradi ) {
 
-			if( pGradi != 0 ) {
-				forseCambioTrasformazioneCorrente( typeof(RotateTransform) );
+			bool elimina = false;
 
-				// Gestisco lo spegnimento
-				if( ((RotateTransform)trasformazioneCorrente).Angle == pGradi )
-					removeTrasformazione( typeof( RotateTransform ) );
-				else
-					((RotateTransform)trasformazioneCorrente).Angle = pGradi;
-			} else
-				removeTrasformazione( typeof(RotateTransform) );
+			forseCambioTrasformazioneCorrente( TFXPOS_ROTATE );
+
+			// Gestisco lo spegnimento
+			if( ((RotateTransform)trasformazioneCorrente).Angle == pGradi )
+				elimina = true;
+			else
+				((RotateTransform)trasformazioneCorrente).Angle = pGradi;
 
 			forseInizioModifiche();
 
 			OnPropertyChanged( "isRotatePiu90Checked" );
 			OnPropertyChanged( "isRotateMeno90Checked" );
+			OnPropertyChanged( "trasformazioneRotate" );
+
+			// Infine (dopo aver provocato l'aggiornamento dei controlli) eventualmente elimino la trasformazione
+			if( pGradi == 0 )
+				elimina = true;
+
+			if( elimina )
+				removeTrasformazione( TFXPOS_ROTATE );
+		}
+
+		private void zoomare( double factor ) {
+			forseCambioTrasformazioneCorrente( TFXPOS_ZOOM );
+			((ScaleTransform)trasformazioneZoom).ScaleX = factor;
+			((ScaleTransform)trasformazioneZoom).ScaleY = factor;
+		}
+
+		private void traslare( double value ) {
+			forseCambioTrasformazioneCorrente( TFXPOS_TRANSLATE );
+			((TranslateTransform)trasformazioneTranslate).X = value;
+			((TranslateTransform)trasformazioneTranslate).Y = value;
 		}
 
 		private void grayScale( bool addRemove ) {
@@ -880,10 +992,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		private void flip( bool crea ) {
 
 			if( crea ) {
-				forseCambioTrasformazioneCorrente( typeof( ScaleTransform ) );
+				forseCambioTrasformazioneCorrente( TFXPOS_FLIP );
 				((ScaleTransform)trasformazioneCorrente).ScaleX = -1;
 			} else {
-				removeTrasformazione( typeof( ScaleTransform ) );	
+				removeTrasformazione( TFXPOS_FLIP );	
 			}
 
 			forseInizioModifiche();
@@ -891,18 +1003,22 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			OnPropertyChanged( "isFlipChecked" );
 		}
 
-		void removeTrasformazione( Type typeTrasformazione ) {
 
-			if( trasformazioneCorrente != null && trasformazioneCorrente.GetType() == typeTrasformazione )
+		private void removeTrasformazione( int tfxPosiz ) {
+
+			Transform quale = trasformazioni.Children[tfxPosiz];
+
+			if( trasformazioneCorrente != null && trasformazioneCorrente.Equals( quale ) )
 				trasformazioneCorrente = null;
 
-			trasformazioni.RemoveAll( e => e.GetType() == typeTrasformazione );
+			trasformazioni.Children[tfxPosiz] = tfxNulla;
+
 			forzaRefreshStato();
 		}
 
 
 
-		private void salvareCorrezioni() {
+		private void applicareCorrezioni() {
 
 
 			bool puntuale =  (modalitaEdit == ModalitaEdit.FotoRitoccoPuntuale && fotografieDaModificareCW.SelectedItems.Count == 1); 
@@ -920,21 +1036,27 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			// Vado ad aggiungerli solo al momento di applicare per davvero
 			// Prima tratto gli effetti
+
 			CorrezioniList lista1 = fotoRitoccoSrv.converteInCorrezioni( effetti.AsEnumerable<Object>() );
 			foreach( Correzione correz in lista1 )
 				addCorrezione( correz );
 
-			// Poi tratto le trasformazioni
-			CorrezioniList lista2 = fotoRitoccoSrv.converteInCorrezioni( trasformazioni );
-			foreach( Correzione correz in lista2 )
-				addCorrezione( correz );
-
+			// Poi tratto le trasformazioni : occhio sono posizionali
+			addCorrezione( TipoCorrezione.Specchio, trasformazioni.Children[TFXPOS_FLIP]      );
+			addCorrezione( TipoCorrezione.Ruota,    trasformazioni.Children[TFXPOS_ROTATE]    );
+			addCorrezione( TipoCorrezione.Zoom,     trasformazioni.Children[TFXPOS_ZOOM]      );
+			addCorrezione( TipoCorrezione.Trasla,   trasformazioni.Children[TFXPOS_TRANSLATE] );
 
 			// Ormai che li ho acquisiti, li svuoto
 			resetEffettiAndTrasformazioni();
 
 			foreach( Fotografia f in fotografieDaModificareCW.SelectedItems ) {
-				fotoRitoccoSrv.salvaCorrezioniTransienti( f );
+
+				gestoreImmaginiSrv.salvaCorrezioniTransienti( f );
+
+				if( puntuale ) {
+					AiutanteFoto.creaProvinoFoto( f );
+				}
 			}
 
 
@@ -942,9 +1064,16 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			modificheInCorso = false;
 		}
 
-		private void rifiutareCorrezioni() {
+		void addCorrezione( TipoCorrezione qualeTipo, Transform trasformazione ) {
 
-			// resetEffetti();
+			if( ! isTrasformazioneNulla(trasformazione) ) {
+				Correzione ccc = fotoRitoccoSrv.converteInCorrezione( qualeTipo, trasformazione );
+				if( ccc != null )
+					addCorrezione( ccc );
+			}
+		}
+
+		private void rifiutareCorrezioni() {
 
 			// Se ho una sola foto, allora i controlli devono riposizionarsi al giusto valore. 
 			// Questo succede solo quando riseleziono la singola foto per la prima volta.
@@ -957,6 +1086,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			riposizionaControlliFotoritoccoPuntuale();
 
+			forzaRefreshStato();
+
 			modificheInCorso = false;
 		}
 
@@ -966,7 +1097,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// <param name="daTogliere"></param>
 		internal void rifiutareCorrezioni( Fotografia daTogliere, bool toglila ) {
 
-			resetEffettiAndTrasformazioni();
+			// resetEffettiAndTrasformazioni();
 
 
 //			fotoRitoccoSrv.undoCorrezioniTransienti( daTogliere );
@@ -996,7 +1127,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			
 			OnPropertyChanged( "possoTornareOriginale" );
 			OnPropertyChanged( "possoApplicareCorrezione" );
-			OnPropertyChanged( "possoSalvareCorrezioni" );
+			OnPropertyChanged( "possoApplicareCorrezioni" );
 			OnPropertyChanged( "possoRifiutareCorrezioni" );
 			OnPropertyChanged( "possoModificareConEditorEsterno" );
 
@@ -1019,12 +1150,16 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			OnPropertyChanged( "dominantiEffect" );
 			OnPropertyChanged( "effettoCorrente" );
 
-			OnPropertyChanged( "trasformazione1" );
-			OnPropertyChanged( "trasformazione2" );
+			OnPropertyChanged( "trasformazioneFlip" );
+			OnPropertyChanged( "trasformazioneRotate" );
+			OnPropertyChanged( "trasformazioneZoom" );
+			OnPropertyChanged( "trasformazioneTranslate" );
 			OnPropertyChanged( "trasformazioneCorrente" );
 		}
 
-
+		public static bool isTrasformazioneNulla( Transform t ) {
+			return (t == null || tfxNulla.Equals(t) );
+		}
 
 		/// <summary>
 		/// Elimino tutti gli effetti e le trasformazioni che sono attivi.
@@ -1045,11 +1180,20 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 
 			if( trasformazioni == null ) {
-				trasformazioni = new List<Transform>();
+				trasformazioni = new TransformGroup();
 			} else {
-				// Purtroppo le trasformazioni non hanno un valore di default per gli attributi. Devo per forza rinfrescare.
-				trasformazioni.Clear();					
+				// Rimuovo tutti i bindings
+				foreach( Transform t in trasformazioni.Children )
+					if( isTrasformazioneNulla(t) == false )
+						BindingOperations.ClearAllBindings( t );
+				// poi pulisco
+				trasformazioni.Children.Clear();
 			}
+
+			trasformazioni.Children.Add( tfxNulla );
+			trasformazioni.Children.Add( tfxNulla );
+			trasformazioni.Children.Add( tfxNulla );
+			trasformazioni.Children.Add( tfxNulla );
 
 			// Spengo le proprietà che indicano elementi correnti.
 			effettoCorrente = null;
@@ -1057,31 +1201,48 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			attivareSelector( null );  // Spegno eventuale selettore
 			mascheraAttiva = null;
 
-			modalitaEdit = ModalitaEdit.FotoRitoccoPuntuale;
+			modalitaEdit = ModalitaEdit.FotoRitoccoMassivo;
 		}
 
 
-		public bool forseCambioTrasformazioneCorrente( Type type ) {
+		public bool forseCambioTrasformazioneCorrente( int quale ) {
 
 			bool creatoNuovo = false;
 
 			// Controllo se la trasformazione corrente è già quello attuale non faccio niente.
-			if( trasformazioneCorrente != null && trasformazioneCorrente.GetType() == type )
-				return false;
+			if( trasformazioneCorrente == null || !trasformazioneCorrente.Equals( trasformazioni.Children[quale] ) ) {
 
-			trasformazioneCorrente = trasformazioni.FirstOrDefault( t => t.GetType() == type );
+				// Se non l'ho trovata, allora la creo
+				if( isTrasformazioneNulla(trasformazioni.Children[quale] ) ) {
+					trasformazioni.Children[quale] = creaTrasformazione( quale );
+					creatoNuovo = true;
+				}
 
-			// Se non l'ho trovata, allora la creo
-			if( trasformazioneCorrente == null ) {
-				Transform nuovo = (Transform)Activator.CreateInstance( type );
-				trasformazioni.Add( nuovo );
-				trasformazioneCorrente = nuovo;
-				creatoNuovo = true;
+				trasformazioneCorrente = trasformazioni.Children[quale];
 			}
 
 			return creatoNuovo;
 		}
+		
+		private Transform creaTrasformazione( int quale ) {
 
+			Transform tx;
+
+			if( quale == TFXPOS_FLIP )
+				tx = new ScaleTransform();
+			else if( quale == TFXPOS_ZOOM )
+				tx = new ScaleTransform();
+			else if( quale == TFXPOS_ROTATE )
+				tx = new RotateTransform();
+			else if( quale == TFXPOS_TRANSLATE )
+				tx = new TranslateTransform();
+			else
+				throw new NotSupportedException( "indice di trasformazione non supportato: " + quale );	
+
+			return tx;
+		}	
+
+		
 		/// <summary>
 		///  Imposto un eventuale nuovo effetto.
 		/// </summary>
@@ -1532,15 +1693,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				puntuale = false;
 			}
 
-/*
-			// Lavoro solo se ho qualche correzione. Se la foto non è stata ritoccata, allora non devo fare nulla.
-			if( puntuale && fotografieDaModificareCW.SelectedItems [0].correzioniXml == null) {
-				puntuale = false;
-			}
-*/
-
 			// resetto tutti gli effetti e trasformazioni precedenti per resettare i controlli ui.
 			resetEffettiAndTrasformazioni();
+
+			modalitaEdit = (puntuale ? ModalitaEdit.FotoRitoccoPuntuale : ModalitaEdit.FotoRitoccoMassivo);
 
 			if( puntuale ) {
 
@@ -1555,7 +1711,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 					// carico Trasformazioni precedenti
 					IList<Transform> carTrasformazioni = fotoRitoccoSrv.converteCorrezioni<Transform>( fotografieDaModificareCW.SelectedItems[0] );
-					trasformazioni.AddRange( carTrasformazioni );
+					caricaTrasformazioni( carTrasformazioni );
 				}
 
 			} 
@@ -1567,12 +1723,55 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			LumenApplication.Instance.bus.Publish( ritoccoPuntualeMsg );
 
 
-
 			if( puntuale ) {
 				frpCalcolaDimensioniContenitore( fotografieDaModificareCW.SelectedItems[0].imgOrig.rapporto );
 			} else {
 				frpCalcolaDimensioniContenitore( 0f );
 			}
+		}
+
+		
+
+		/// <summary>
+		///  Le trasformazioni devono essere nella posizione giusta
+		/// </summary>
+		/// <param name="carTrasformazioni"></param>
+		private void caricaTrasformazioni( IList<Transform> carTrasformazioni ) {
+
+			// Prima istanzio le trasformazioni vuote...
+
+			// Attenzione l'ordine è importante: deve rispettare il posizionamento dato dalle costanti rispettive.
+			trasformazioni.Children = new TransformCollection( 4 );
+			trasformazioni.Children.Add( tfxNulla );   // TFXPOS_FLIP
+			trasformazioni.Children.Add( tfxNulla );   // TFXPOS_ROTATE
+			trasformazioni.Children.Add( tfxNulla );   // TFXPOS_ZOOM
+			trasformazioni.Children.Add( tfxNulla );   // TFXPOS_TRANSLATE
+
+			// ... poi sovrascrivo con le eventuali trasformazioni reali.
+			foreach( Transform t in carTrasformazioni ) {
+				int pos = getPosTrasf( t );
+				trasformazioni.Children[pos] = t;
+			}
+		}
+
+
+		private int getPosTrasf( Transform t ) {
+
+			int ret;
+
+			if( t is ScaleTransform ) {
+				if( ((ScaleTransform)t).ScaleX == -1 )
+					ret = TFXPOS_FLIP;
+				else
+					ret = TFXPOS_ZOOM;
+			} else if( t is RotateTransform )
+				ret = TFXPOS_ROTATE;
+			else if( t is TranslateTransform )
+				ret = TFXPOS_TRANSLATE;
+			else
+				throw new NotSupportedException( "tipo = " + t.GetType() );
+
+			return ret;
 		}
 
 		private void frpCalcolaDimensioniContenitore( float ratio ) {
@@ -1698,4 +1897,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 
 	}
+
+
 }

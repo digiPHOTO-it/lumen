@@ -210,6 +210,7 @@
     <Compile Include="Converters\EnabledValidationMultiConverter.cs" />
     <Compile Include="Converters\FasiDelGiornoConverter.cs" />
     <Compile Include="Converters\ImageSourceConverter.cs" />
+    <Compile Include="Converters\MathConverter.cs" />
     <Compile Include="Converters\NumericToBooleanConverter.cs" />
     <Compile Include="Converters\RectangleSizeConverter.cs" />
     <Compile Include="Converters\SumConverter.cs" />
@@ -721,6 +722,7 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\quadretti.png" />
     <Resource Include="Resources\pagedown-48x48.png" />
     <Resource Include="Resources\pageup-48x48.png" />
     <Resource Include="Resources\rotate-16x16.png" />

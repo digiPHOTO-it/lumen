@@ -103,10 +103,16 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Digiphoto.Lumen.Core\lib\log4net.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="MemBus">
+      <HintPath>..\Digiphoto.Lumen.Core\lib\MemBus.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -130,12 +136,15 @@
     <Compile Include="src\Wic\Correzioni\DominantiCorrettore.cs" />
     <Compile Include="src\Wic\Correzioni\CorrettoreFactory.cs" />
     <Compile Include="src\Wic\Correzioni\CropCorrettore.cs" />
+    <Compile Include="src\Wic\FotoRitoccoSrvImpl.cs" />
     <Compile Include="src\Wic\Correzioni\GimpCorrettore.cs" />
     <Compile Include="src\Wic\Correzioni\LuminositaContrastoCorrettore.cs" />
     <Compile Include="src\Wic\Correzioni\ResizeCorrettore.cs" />
     <Compile Include="src\Wic\Correzioni\RuotaCorrettore.cs" />
     <Compile Include="src\Wic\Correzioni\SepiaCorrettore.cs" />
     <Compile Include="src\Wic\Correzioni\SpecchioCorrettore.cs" />
+    <Compile Include="src\Wic\Correzioni\TraslaCorrettore.cs" />
+    <Compile Include="src\Wic\Correzioni\ZoomCorrettore.cs" />
     <Compile Include="src\Wic\GestoreImmagineSrvImpl.cs" />
     <Compile Include="src\Wic\ImmagineWic.cs" />
     <Compile Include="src\Wic\Stampe\EsecutoreStampaProvini.cs" />
@@ -165,6 +174,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="src\Windows\Media\Effects\Dominanti\DominantiEffect.ps" />
+    <None Include="App.config" />
     <None Include="src\Windows\Media\Effects\Grayscale\GrayscaleEffect.fx" />
     <Resource Include="src\Windows\Media\Effects\Grayscale\GrayscaleEffect.ps" />
     <None Include="src\Windows\Media\Effects\LuminositaContrasto\LuminositaContrastoEffect.fx" />

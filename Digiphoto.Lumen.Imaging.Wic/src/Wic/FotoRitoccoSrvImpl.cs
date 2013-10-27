@@ -19,8 +19,17 @@ using log4net;
 using Digiphoto.Lumen.Servizi.Ritoccare.Clona;
 using Digiphoto.Lumen.Database;
 using System.Collections;
+using Digiphoto.Lumen.Servizi.Ritoccare;
+using System.Windows.Media.Imaging;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows;
+using Digiphoto.Lumen.Eventi;
+using Digiphoto.Lumen.Windows.Media.Effects;
+using System.Windows.Media.Effects;
+using Digiphoto.Lumen.Servizi.Io;
 
-namespace Digiphoto.Lumen.Servizi.Ritoccare {
+namespace Digiphoto.Lumen.Imaging.Wic {
 
 	/// <summary>
 	/// Lavora sempre sulla "Fotografia" e non sulla IImmagine.
@@ -30,7 +39,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( FotoRitoccoSrvImpl ) );
 
-		ClonaImmaginiWorker _clonaImmaginiWorker;
+		private ClonaImmaginiWorker _clonaImmaginiWorker;
 
 		public FotoRitoccoSrvImpl() {
 		}
@@ -44,12 +53,16 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 			}
 		}
 
-		// Aggiungo la correzione ma non scrivo il file su disco
 		public void addCorrezione( Fotografia fotografia, Correzione correzione ) {
 			addCorrezione( fotografia, correzione, false );
 		}
 
-		// ok ho deciso che la correzione viene accettata
+		/// <summary>
+		/// Aggiungo una correzione a quelle già eventualmente presenti sulla foto.
+		/// Se la correzione esiste già, gestisco eventuale somma, oppure rimozione in caso che sia inutile (ininfluente)
+		/// </summary>
+		/// <param name="fotografia">la foto</param>
+		/// <param name="correzione">la correzione da aggiungere</param>
 		public void addCorrezione( Fotografia fotografia, Correzione correzioneNuova, bool salvare ) {
 
 			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
@@ -64,7 +77,6 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 			// Alcune correzioni, non devono andare sempre in aggiunta, ma possono sommarsi l'un l'altra.
 			// Per esempio la rotazione. Se ruoto 90° poi altri 90, l'effetto finale è quello di avere una sola da 180°
-			// TODO : gestire il caso che la somma è INEFFICACE (per esempio +90 e -90 fa 0 che non serve a niente)
 			Correzione daSost = null;
 			Correzione vecchia = null;
 			foreach( Correzione c in correzioni ) {
@@ -77,12 +89,20 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 			if( daSost != null ) {
 				// Sostituisco la correzione con quella ricalcolata
-				correzioni.sostituire( vecchia, daSost );
+				if( daSost.isInutile )
+					correzioni.Remove( vecchia );
+				else
+					correzioni.sostituire( vecchia, daSost );
 			} else {
-				// Aggiungo in fondo
-				correzioni.Add( correzioneNuova );
+				// Aggiungo in fondo (se la correzione è inutile, allora non aggiungo nulla)
+				if( ! correzioneNuova.isInutile )
+					correzioni.Add( correzioneNuova );
 			}
 
+
+
+// TODO:ELIMINATO questo metodo non dovrebbe toccare i jpeg su disco, ma soltanto aggiornare la collezione di Correzione sulla foto.
+#if ELIMINATO
 			// ricalcolo il provino
 			IImmagine nuova = null;
 
@@ -91,17 +111,22 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 				nuova = gestoreImmaginiSrv.creaProvino( fotografia.imgRisultante );
 			else if( fotografia.imgProvino != null )
 				nuova = gestoreImmaginiSrv.applicaCorrezione( fotografia.imgProvino, correzioneNuova );
-
+#endif
 			// Ora serializzo di nuovo in stringa tutte le correzioni
 			fotografia.correzioniXml = SerializzaUtil.objectToString( correzioni );
+#if ELIMINATO
 			fotografia.imgProvino = nuova;
+#endif
 
 			if( salvare ) {
 				// Salvo nel db la modifica
 
 				objContext.SaveChanges();
 
+				// TODO:ELIMINATO questo metodo non dovrebbe toccare i jpeg su disco, ma soltanto aggiornare la collezione di Correzione sulla foto.
+#if ELIMINATO
 				gestoreImmaginiSrv.save( fotografia.imgProvino, PathUtil.nomeCompletoProvino( fotografia ) );
+#endif
 			}
 		}
 
@@ -135,12 +160,6 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 			AiutanteFoto.creaProvinoFoto( foto );
 		}
-
-
-		public void applicaCorrezioniTutte( Fotografia fotografia ) {
-			throw new NotImplementedException();
-		}
-
 
 		private IGestoreImmagineSrv gestoreImmaginiSrv {
 			get {
@@ -196,20 +215,13 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		}
 
 
-		public void salvaCorrezioniTransienti( Fotografia fotografia ) {
-
-			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
-			
-			objContext.Fotografie.Attach( fotografia );
-			objContext.ObjectContext.ObjectStateManager.ChangeObjectState( fotografia, EntityState.Modified );
-			objContext.SaveChanges();
-
-			IGestoreImmagineSrv gis = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
-			if( fotografia.imgProvino != null )
-				gis.save( fotografia.imgProvino, PathUtil.nomeCompletoProvino( fotografia ) );
+		public Correttore getCorrettore( object oo ) {
+			if( oo is ShaderEffect )
+				return gestoreImmaginiSrv.getCorrettore( EffectsUtil.tipoCorrezioneCorrispondente( oo as ShaderEffect ) );
 			else
-				AiutanteFoto.creaProvinoFoto( fotografia );
+				return null;
 		}
+
 
 
 		public void modificaMetadati( Fotografia foto ) {
@@ -440,18 +452,37 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		}
 
 
+		public Correzione converteInCorrezione( TipoCorrezione tipoDest, Object trasformazione ) {
 
-		public CorrezioniList converteInCorrezioni( IEnumerable<Object> effettiTrasformazioni ) {
+			Correzione correzione = null;
 
-			if( effettiTrasformazioni == null )
+			if( trasformazione != null ) {
+
+				Correttore correttore = gestoreImmaginiSrv.getCorrettore( tipoDest );
+				if( correttore != null ) {
+
+					if( correttore.CanConvertFrom( trasformazione.GetType() ) )
+						correzione = (Correzione)correttore.ConvertFrom( trasformazione );
+				}
+			}
+
+			return correzione;
+		}
+
+
+
+		public CorrezioniList converteInCorrezioni( IEnumerable<Object> effetti ) {
+
+			if( effetti == null )
 				return null;
 
 			CorrezioniList correzioni = new CorrezioniList();
 
+			foreach( var effettoTrasformazione in effetti ) {
 
-			foreach( var effettoTrasformazione in effettiTrasformazioni ) {
-
-				Correttore correttore = gestoreImmaginiSrv.getCorrettore( effettoTrasformazione.GetType() );
+				Correttore correttore = this.getCorrettore( effettoTrasformazione );
+				if( correttore == null )
+					continue;
 
 				if( correttore.CanConvertFrom( effettoTrasformazione.GetType() ) )
 					correzioni.Add( (Correzione)correttore.ConvertFrom( effettoTrasformazione ) );
@@ -460,8 +491,235 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 			return correzioni;
 		}
 
+		
+		/// <summary>
+		/// Prendo la foto pulita e applico tutte le correzioni.
+		/// Serve per il fotoritocco puntuale.
+		/// Faccio tutto in un unico colpo per essere più efficiente.
+		/// </summary>
+		/// <param name="fotografia"></param>
+		/// <param name="cosaRicalcolo"></param>
+
+		public IImmagine applicaCorrezioni( IImmagine partenza, CorrezioniList correzioni, IdrataTarget cosaRicalcolo ) {
+
+			IImmagine modificata = partenza;
+
+			// Ci sono alcune correzioni che sono più "complicate" e non posso trattarle in modo singolo,
+			// ma devo gestire nell'insieme in modo efficiente.
+			// In questo caso devo cambiare strategia.
+			bool complicato = false;
+			if( correzioni.SingleOrDefault( c => c is Maschera ) != null ||
+				correzioni.SingleOrDefault( c => c is Ruota && ((Ruota)c).isAngoloRetto == false ) != null ||
+				correzioni.SingleOrDefault( c => c is Trasla ) != null )
+				complicato = true;
+
+			if( complicato ) {
+				modificata = rigeneraImmagineConCorrezioniComplicate( partenza, correzioni, cosaRicalcolo );
+
+			} else {
+				// le correzioni sono tutte applicabili singolarmente. Non necessito di ricalcolo
+				foreach( Correzione correzione in correzioni )
+					modificata = applicaCorrezione( modificata, correzione );
+			}
+
+			return modificata;
+		}
+
+		public IImmagine applicaCorrezione( IImmagine immaginePartenza, Correzione correzione ) {
+			Correttore correttore = gestoreImmaginiSrv.getCorrettore( correzione );
+			_giornale.Debug( "applico correzione: " + correttore );
+			return correttore.applica( immaginePartenza, correzione );
+		}
 
 
+		/// <summary>
+		///  Devo gestire le correzioni complicate
+		/// </summary>
+		/// <param name="immaginePartenza"></param>
+		/// <param name="correzioni"></param>
+		/// <returns></returns>
+		private IImmagine rigeneraImmagineConCorrezioniComplicate( IImmagine immaginePartenza, CorrezioniList correzioni, IdrataTarget qualeTarget ) {
+
+			double wwDest = 0, hhDest = 0;
+
+			// copio l'immagine di partenza
+			BitmapSource bmpFoto = null;
+	 
+
+			// ::: Per prima cosa calcolo la dimensione che deve avere l'immagine di uscita (il canvas)
+			//     Verifico quindi se c'è una maschera. In tal caso comanda lei
+			BitmapSource bmpMaschera = null;
+			Maschera maschera = (Maschera)correzioni.FirstOrDefault( c => c is Maschera );
+			ImmagineWic immagineMaschera;
+			if( maschera != null ) {
+
+				immagineMaschera = new ImmagineWic( maschera.nome );
+				// bmpMaschera = caricaBitmapMaschera( maschera.nome );
+				bmpMaschera = immagineMaschera.bitmapSource;
+				if( bmpMaschera == null ) {
+					// Strano: non trovo la maschera. Magari è stata rimossa da disco
+					String msgerr = "Maschera non trovata : " + maschera.nome;
+					_giornale.Error( msgerr );
+					Messaggio msg = new Messaggio( this, msgerr );
+					msg.showInStatusBar = true;
+					msg.esito = Esito.Errore;
+					pubblicaMessaggio( msg );
+				} else {
+					// Carico la maschera per avere le dimensioni reali definitive
+					if( qualeTarget == IdrataTarget.Provino ) {
+						IImmagine imgMascheraPiccola = gestoreImmaginiSrv.creaProvino( immagineMaschera );
+						bmpFoto = ((ImmagineWic)imgMascheraPiccola).bitmapSource;
+					}
+
+					wwDest = bmpMaschera.PixelWidth;
+					hhDest = bmpMaschera.PixelHeight;
+				}
+			}
+
+			if( bmpMaschera == null ) {
+				bmpFoto = new WriteableBitmap( ((ImmagineWic)immaginePartenza).bitmapSource );
+				wwDest = bmpFoto.PixelWidth;
+				hhDest = bmpFoto.PixelHeight;
+			}
+
+
+			// ::: Il canvas
+			Canvas canvas = new Canvas();
+			canvas.Background = new SolidColorBrush( Colors.Transparent );
+			canvas.Width = wwDest;
+			canvas.Height = hhDest;
+			canvas.HorizontalAlignment = HorizontalAlignment.Left;
+			canvas.VerticalAlignment = VerticalAlignment.Top;
+
+
+
+
+			// ::: Gestisco le correzioni
+			TransformGroup traGroup = new TransformGroup();
+			foreach( Correzione correzione in correzioni ) {
+				
+				Correttore correttore = gestoreImmaginiSrv.getCorrettore( correzione );
+
+
+				if( correttore.CanConvertTo( typeof( Transform ) ) ) {
+					// ::: Trasformazioni
+					Transform trasformazione = (Transform)correttore.ConvertTo( correzione, typeof( Transform ) );
+
+					// La trasformazione di spostamento, (Trasla) fa una eccezione perché dipende dalla grandezza del target.
+					// Devo sistemarla al volo
+					if( trasformazione is TranslateTransform ) {
+						TranslateTransform tt = (TranslateTransform)trasformazione;
+						// TODO riproporzionare
+						TranslateTransform tt2 = new TranslateTransform();
+						// Devo riproporzionare X e Y alla dimensione giusta finale.
+						//   posx:300=x:finalW       ->    x = posx * finalW / 300
+						tt2.X = ((TranslateTransform)tt).X * canvas.Width  / ((Trasla)correzione).rifW;
+						tt2.Y = ((TranslateTransform)tt).Y * canvas.Height / ((Trasla)correzione).rifH;
+						traGroup.Children.Add( tt2 );
+					} else
+						traGroup.Children.Add( trasformazione );
+
+				} else if( correttore.CanConvertTo( typeof(ShaderEffectBase) ) ) {
+					
+					// ::: Effetti
+					ImmagineWic appo = new ImmagineWic( bmpFoto );
+					appo = (ImmagineWic)applicaCorrezione( appo, correzione );
+					bmpFoto = appo.bitmapSource;
+				}
+
+
+
+
+			}
+
+			// ::: La foto
+
+			Image fotona = new Image();
+			fotona.BeginInit();
+			fotona.Source = bmpFoto; // bmpFoto;
+			fotona.Stretch = Stretch.Uniform;
+			fotona.VerticalAlignment = VerticalAlignment.Center;
+			fotona.VerticalAlignment = VerticalAlignment.Center;
+			fotona.Width = canvas.Width;
+			fotona.Height = canvas.Height;
+			fotona.EndInit();
+
+			// Assegno tutte le trasformazioni
+			fotona.RenderTransform = traGroup;
+			fotona.RenderTransformOrigin = new Point( 0.5, 0.5 );  // centrate
+
+
+			// ::: Effetti - TODO
+			foreach( Correzione correzione in correzioni ) {
+				Correttore correttore = gestoreImmaginiSrv.getCorrettore( correzione );
+				if( correttore.CanConvertTo( typeof( ShaderEffectBase) ) ) {
+
+				}
+			}
+
+
+			canvas.Children.Add( fotona );
+
+			// ::: La Maschera - per concludere, aggiungo anche la maschera che deve ricoprire tutto.
+			if( bmpMaschera != null ) {
+				Image imageMaschera = new Image();
+				imageMaschera.BeginInit();
+				imageMaschera.Stretch = Stretch.Uniform;
+				imageMaschera.HorizontalAlignment = HorizontalAlignment.Center;
+				imageMaschera.VerticalAlignment = VerticalAlignment.Center;
+				imageMaschera.Source = bmpMaschera;
+				imageMaschera.Width = canvas.Width;
+				imageMaschera.Height = canvas.Height;
+				imageMaschera.EndInit();
+				canvas.Children.Add( imageMaschera );
+			}
+
+			// Non ho capito perchè, ma se NON assegno questo canvas ad una finestra, 
+			// allora quando lo andrò a salvare su disco, l'immagine apparirà tutta nera.
+			// In questo modo forzo l'immagine ad essere rivisualizzata e quindi il salvataggio funziona
+			Window w = new Window();
+			IImmagine immagineMod = null;
+			try {
+
+				w.Content = canvas;
+				bool voglioDebuggare = false;
+				if( !voglioDebuggare ) {
+					w.Visibility = Visibility.Hidden;
+					w.Show();
+				} else {
+					// per debug si può anche visualizzare il risultato
+					w.Visibility = Visibility.Visible;
+					w.ShowDialog();
+				}
+
+				// Creo la bitmap di ritorno
+				RenderTargetBitmap rtb = new RenderTargetBitmap( (int)canvas.Width, (int)canvas.Height, 96d, 96d, PixelFormats.Pbgra32 );
+				rtb.Render( canvas );
+				if( rtb.CanFreeze )
+					rtb.Freeze();
+
+				immagineMod = new ImmagineWic( rtb );
+
+			} finally {
+				w.Close();
+			}
+
+			return immagineMod;
+
+		}
+
+
+		private BitmapImage caricaBitmapMaschera( String nomeFile ) {
+
+			BitmapImage bmpMaschera = null;
+
+			string nomeMaschera = Path.Combine( Configurazione.UserConfigLumen.cartellaMaschere, nomeFile );
+			if( File.Exists( nomeMaschera ) ) {
+				Uri uriMaschera = new Uri( nomeMaschera );
+				BitmapImage msk = new BitmapImage( uriMaschera );
+			}
+			return bmpMaschera;
+		}
 
 	}
 }

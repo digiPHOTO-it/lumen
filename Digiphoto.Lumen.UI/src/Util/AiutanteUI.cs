@@ -21,18 +21,54 @@ namespace Digiphoto.Lumen.UI.Util {
 		/// Questo è della microsoft:
 		/// http://msdn.microsoft.com/en-us/library/bb613579.aspx
 		/// </summary>
-		public static childItem FindVisualChild<childItem>( DependencyObject obj ) where childItem : DependencyObject {
+		public static CHILDTYPE FindVisualChild<CHILDTYPE>( DependencyObject obj ) where CHILDTYPE : DependencyObject {
+			return FindVisualChild<CHILDTYPE>( obj, null );
+		}
 
-			for( int i = 0; i < VisualTreeHelper.GetChildrenCount( obj ); i++ ) {
-				DependencyObject child = VisualTreeHelper.GetChild( obj, i );
-				if( child != null && child is childItem )
-					return (childItem)child;
-				else {
-					childItem childOfChild = FindVisualChild<childItem>( child );
-					if( childOfChild != null )
-						return childOfChild;
-				}
+		public static CHILDTYPE FindVisualChild<CHILDTYPE>( DependencyObject depObj, string childName ) where CHILDTYPE : DependencyObject {
+
+			// Confirm obj is valid. 
+			if( depObj == null )
+				return null;
+
+			// success case
+			if( depObj is CHILDTYPE ) {
+				// Se il nome richiesto è indicato, allora lo testo. Altrimenti, siccome il tipo coincide, l'ho già trovato.
+				if( childName == null || ((FrameworkElement)depObj).Name == childName )
+					return depObj as CHILDTYPE;
 			}
+
+			for( int i = 0; i < VisualTreeHelper.GetChildrenCount( depObj ); i++ ) {
+				DependencyObject child = VisualTreeHelper.GetChild( depObj, i );
+
+				//DFS Depth-First Search (Ricorsione)
+				CHILDTYPE obj = FindVisualChild<CHILDTYPE>( child, childName );
+
+				if( obj != null )
+					return obj;
+			}
+
+			return null;
+		}
+
+		public static CHILDTYPE FindFirstChild<CHILDTYPE>( FrameworkElement element ) where CHILDTYPE : FrameworkElement {
+			int childrenCount = VisualTreeHelper.GetChildrenCount( element );
+			var children = new FrameworkElement[childrenCount];
+
+			for( int i = 0; i < childrenCount; i++ ) {
+				var child = VisualTreeHelper.GetChild( element, i ) as FrameworkElement;
+				children[i] = child;
+				if( child is CHILDTYPE )
+					return (CHILDTYPE)child;
+			}
+
+			for( int i = 0; i < childrenCount; i++ )
+				if( children[i] != null ) {
+					var subChild = FindFirstChild<CHILDTYPE>( children[i] );
+					if( subChild != null )
+						return subChild;
+				}
+
 			return null;
 		}
 
