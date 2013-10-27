@@ -15,8 +15,5 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 			return immagineSorgente;
 		}
 
-		public override Type getTypeOfCorrezione() {
-			return typeof( Gimp );
-		}
 	}
 }

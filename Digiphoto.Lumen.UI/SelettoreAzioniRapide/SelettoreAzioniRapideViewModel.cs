@@ -26,6 +26,7 @@ using Digiphoto.Lumen.UI.Main;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Digiphoto.Lumen.UI.PanAndZoom;
+using Digiphoto.Lumen.Servizi.Io;
 
 namespace Digiphoto.Lumen.UI
 {
@@ -186,6 +187,12 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
+		public IGestoreImmagineSrv gestoreImmaginiSrv {
+			get {
+				return LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
+			}
+		}
+
 		#endregion Servizi
 
 		#region Controlli
@@ -256,7 +263,7 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
-		public bool possoSalvareCorrezioni
+		public bool possoApplicareCorrezioni
 		{
 			get
 			{
@@ -288,7 +295,7 @@ namespace Digiphoto.Lumen.UI
 		{
 			get
 			{
-				return possoSalvareCorrezioni;
+				return possoApplicareCorrezioni;
 			}
 		}
 
@@ -653,7 +660,7 @@ namespace Digiphoto.Lumen.UI
 			}
 */
 			foreach (Fotografia f in fotoSelezionate)
-				fotoRitoccoSrv.salvaCorrezioniTransienti(f);
+				gestoreImmaginiSrv.salvaCorrezioniTransienti(f);
 
 			// Ora che ho persistito, concludo "dicamo cosi" la transazione, faccio una specie di commit.
 			modificheInCorso = false;

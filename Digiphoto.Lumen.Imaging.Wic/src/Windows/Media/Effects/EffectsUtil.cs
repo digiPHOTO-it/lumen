@@ -8,6 +8,7 @@ using System.Windows.Media.Imaging;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
+using Digiphoto.Lumen.Imaging.Correzioni;
 
 namespace Digiphoto.Lumen.Windows.Media.Effects {
 
@@ -94,6 +95,25 @@ namespace Digiphoto.Lumen.Windows.Media.Effects {
 			element.Measure( new Size( width, height ) );
 			element.Arrange( new Rect( 0, 0, width, height ) );
 			element.UpdateLayout();
+		}
+
+
+		public static TipoCorrezione tipoCorrezioneCorrispondente( ShaderEffect oo ) {
+
+			TipoCorrezione tipoCorrezione;
+
+			if( oo is GrayscaleEffect )
+				tipoCorrezione = TipoCorrezione.BiancoNero;
+			else if( oo is DominantiEffect )
+				tipoCorrezione = TipoCorrezione.Dominante;
+			else if( oo is LuminositaContrastoEffect )
+				tipoCorrezione = TipoCorrezione.Luce;
+			else if( oo is SepiaEffect )
+				tipoCorrezione = TipoCorrezione.Sepia;
+			else
+				throw new NotSupportedException( "Effetto non riconosciuto: " + oo );
+
+			return tipoCorrezione;
 		}
 
 	}

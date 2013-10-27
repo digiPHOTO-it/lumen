@@ -20,6 +20,7 @@ using Digiphoto.Lumen.Servizi.Scaricatore;
 using Digiphoto.Lumen.Servizi.Ritoccare;
 using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
 using Digiphoto.Lumen.Licensing;
+using Digiphoto.Lumen.Servizi.Io;
 
 namespace Digiphoto.Lumen.Applicazione {
 

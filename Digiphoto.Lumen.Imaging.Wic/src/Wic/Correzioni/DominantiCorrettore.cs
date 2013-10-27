@@ -67,8 +67,5 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 				throw new NotSupportedException( "Impossibile convertire tipo=" + objCorrezione.GetType() + " valore=" + objCorrezione );
 		}
 
-		public override Type getTypeOfCorrezione() {
-			return typeof( Dominante );
-		}
 	}
 }

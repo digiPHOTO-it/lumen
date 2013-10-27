@@ -8,6 +8,7 @@ using Digiphoto.Lumen.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Globalization;
 using System.ComponentModel;
+using Digiphoto.Lumen.Servizi.Ritoccare;
 
 namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 	
@@ -27,10 +28,6 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 			BitmapSource modificata = EffectsUtil.RenderImageWithEffectsToBitmap( iw.bitmapSource, _effetti );
 
 			return new ImmagineWic( modificata );
-		}
-
-		public override Type getTypeOfCorrezione() {
-			return typeof( Sepia );
 		}
 
 		public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType ) {

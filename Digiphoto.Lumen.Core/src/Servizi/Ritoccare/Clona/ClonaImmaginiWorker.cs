@@ -16,11 +16,11 @@ using Digiphoto.Lumen.Imaging;
 
 namespace Digiphoto.Lumen.Servizi.Ritoccare.Clona {
 
-	internal class ClonaImmaginiWorker : WorkerThreadBase
+	public class ClonaImmaginiWorker : WorkerThreadBase
 	{
 		private static readonly ILog _giornale = LogManager.GetLogger(typeof(ClonaImmaginiWorker));
 
-		internal delegate void ElaboraImmaginiAcquisiteCallback( EsitoClone esitoClone );
+		public delegate void ElaboraImmaginiAcquisiteCallback( EsitoClone esitoClone );
 
 		Fotografia[] fotografie;
 
@@ -42,7 +42,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare.Clona {
 		 * Mi dice se ho completato la copia
 		 * torna TRUE anche se la copia è stata stoppata
 		 */
-		internal bool disposed {
+		public bool disposed {
 			get {
 				return base.Disposed;
 			}

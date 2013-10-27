@@ -4,6 +4,7 @@ using Digiphoto.Lumen.Imaging.Correzioni;
 using Digiphoto.Lumen.Util;
 using System;
 using System.Collections;
+using Digiphoto.Lumen.Imaging;
 
 namespace Digiphoto.Lumen.Servizi.Ritoccare {
 	
@@ -13,23 +14,22 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 	public interface IFotoRitoccoSrv : IServizio {
 
-
 		/// <summary>
 		/// Aggiunge una correzione a quelle esistenti sulla foto.
-		/// Fatto questo, riapplica tutto.
+		/// Ma senza riapplicarle
 		/// </summary>
 		/// <param name="fotografia"></param>
 		/// <param name="correzione"></param>
 		void addCorrezione( Fotografia fotografia, Correzione correzione, bool salvare );
 		void addCorrezione( Fotografia fotografia, Correzione correzione );
 
-		void removeCorrezione( Fotografia fotografia, Type quale );
 
-		/// <summary>
-		/// Partendo dall'immagine iniziale, ricrea il provino applicando tutte le correzioni
-		/// </summary>
-		/// <param name="fotografia"></param>
-		void applicaCorrezioniTutte( Fotografia fotografia );
+		/** Applico tutte i ritocchi grafici indicati nel preciso ordine */
+		IImmagine applicaCorrezione( IImmagine immaginePartenza, Correzione correzione );
+
+		IImmagine applicaCorrezioni( IImmagine fotografia, CorrezioniList correzioni, IdrataTarget cosaRicalcolo );
+
+		void removeCorrezione( Fotografia fotografia, Type quale );
 
 		void tornaOriginale( Fotografia fotografia, bool salvare );
 		void tornaOriginale( Fotografia fotografia );
@@ -42,13 +42,6 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		/// l'immagine del provino
 		/// </summary>
 		void undoCorrezioniTransienti( Fotografia fotografia );
-
-		/// <summary>
-		/// Quando correggo le foto, non scrivo subito sul db le modifiche apportate.
-		/// Questo perché voglio essere sempre in grado di annullare.
-		/// Con questo metodo, rendo persistenti le correzioniXml che ancora sono transienti.
-		/// </summary>
-		void salvaCorrezioniTransienti( Fotografia fotografia );
 
 		void modificaMetadati( Fotografia foto );
 
@@ -92,5 +85,10 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		/// <returns>Una lista di Correzioni</returns>
 		CorrezioniList converteInCorrezioni( IEnumerable<Object> effettiTrasf );
 
+		Correzione converteInCorrezione( TipoCorrezione tipoDest, Object effettoOrTrasformazione );
+
+
+		// TODO : forse si può eliminare ???
+		Correttore getCorrettore( object obj );
 	}
 }

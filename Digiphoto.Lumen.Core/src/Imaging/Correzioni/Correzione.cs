@@ -3,9 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
+using Digiphoto.Lumen.Servizi.Ritoccare;
 
 namespace Digiphoto.Lumen.Imaging.Correzioni {
-	
+
+	public enum TipoCorrezione {
+		BiancoNero = 1,
+		Sepia = 2,
+		Dominante = 3,
+		Luce = 4,
+		Gimp = 5,
+		Ruota = 6,
+		Specchio = 7,
+		Zoom = 8,
+		Ridimensiona = 9,
+		Trasla = 10
+	};
+
 	[XmlInclude(typeof(Ruota))]
 	[XmlInclude(typeof(BiancoNero))]
 	[XmlInclude(typeof(Sepia))]
@@ -13,7 +27,9 @@ namespace Digiphoto.Lumen.Imaging.Correzioni {
 	[XmlInclude(typeof(Luce))]
 	[XmlInclude(typeof(Crop))]
 	[XmlInclude(typeof(Dominante))]
-	[XmlInclude( typeof( Gimp ) )]
+	[XmlInclude(typeof(Gimp))]
+	[XmlInclude(typeof(Zoom))]
+	[XmlInclude(typeof(Trasla))]
 	public abstract class Correzione {
 
 		public virtual bool isSommabile( Correzione altra ) {
@@ -29,5 +45,6 @@ namespace Digiphoto.Lumen.Imaging.Correzioni {
 				return false;
 			}
 		}
+
 	}
 }

@@ -5,6 +5,7 @@ using System;
 using System.Windows;
 using System.ComponentModel;
 using System.Globalization;
+using System.Windows.Controls;
 
 namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 
@@ -23,9 +24,98 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 			if( ruotaCorrezione.isAngoloRetto )
 				newBmp = rotazioneSemplice( bmpsource, ruotaCorrezione.gradi );
 			else
-				newBmp = rotazioneComplessa( bmpsource, ruotaCorrezione.gradi );
+				newBmp = rotazioneSulPosto( bmpsource, ruotaCorrezione.gradi );
+//				newBmp = rotazioneComplessa( bmpsource, ruotaCorrezione.gradi );
 
 			return new ImmagineWic( newBmp );
+		}
+
+		/// <summary>
+		/// Questa rotazione produce una immagine grande quando richiesto dalle dimensioni indicate
+		/// In pratica esegue una rotazione con fulcro centrale, e senza allargare il canvas.
+		/// </summary>
+		/// <param name="bmpSorgente"></param>
+		/// <param name="gradi"></param>
+		/// <returns></returns>
+		private BitmapSource rotazioneSulPosto( BitmapSource bmpSorgente, double gradi ) {
+			return rotazioneSulPosto( bmpSorgente, gradi, bmpSorgente.Width, bmpSorgente.Height );
+		}
+
+		private BitmapSource rotazioneSulPosto( BitmapSource bmpSorgente, double gradi , double newW, double newH ) {
+
+
+			RotateTransform rtx = new RotateTransform( gradi );
+			rtx.CenterX = newW / 2;
+			rtx.CenterY = newH / 2;
+
+/*
+			Canvas c = new Canvas();
+			c.Background = new SolidColorBrush( Colors.Orange );
+			c.Width = newW;
+			c.Height = newH;
+			c.HorizontalAlignment = HorizontalAlignment.Left;
+			c.VerticalAlignment = VerticalAlignment.Top;
+
+			WriteableBitmap wb = new WriteableBitmap( bmpSorgente );
+
+			Image fotona = new Image();
+			fotona.HorizontalAlignment = HorizontalAlignment.Left;
+			fotona.VerticalAlignment = VerticalAlignment.Top;
+			fotona.BeginInit();
+			fotona.Source = wb;
+			fotona.EndInit();
+
+
+			c.Children.Add( fotona );
+
+			// Imposto la posizione della foto all'interno del canvas della cornice.
+//			Canvas.SetLeft( fotona, newRect.Left * factorX );
+//			Canvas.SetTop( fotona, newRect.Top * factorY );
+			Canvas.SetLeft( fotona, 20 );
+			Canvas.SetTop( fotona, 20 );
+*/
+
+
+			// Target Rect for the resize operation
+			Rect rect = new Rect( 0, 0, newW, newH );
+			// Rect newRect = Geometrie.proporziona( rectFotina, rectFondo, sizeMaschera );
+
+
+			// Create a DrawingVisual/Context to render with
+			DrawingVisual drawingVisual = new DrawingVisual();
+			
+			using( DrawingContext drawingContext = drawingVisual.RenderOpen() ) {
+
+				drawingContext.DrawRectangle( new SolidColorBrush( Colors.White ),  new Pen( Brushes.White, 0 ), rect );
+
+				drawingVisual.Transform = rtx;
+				drawingContext.DrawImage( bmpSorgente, rect );
+			}
+
+
+/*
+			DrawingVisual s = new DrawingVisual();
+			s.Children.Add
+			RectangleGeometry rg = new RectangleGeometry(new Rect(0, 0, newW, newH));
+			GeometryDrawing rgd = new GeometryDrawing(Brushes.Yellow, null, rg);
+			DrawingGroup dg = new DrawingGroup();
+			dg.Children.Add(rgd);
+			using( DrawingContext dc = s.RenderOpen() ) {
+			   dc.DrawDrawing(dg);
+			}
+
+			rgd.Brush = Brushes.Magenta;
+			rg.Transform = new RotateTransform(42);
+			dg.Children.Remove( rgd );
+*/
+
+
+			
+			// Use RenderTargetBitmap to resize the original image with Default DPI values as 96
+			RenderTargetBitmap resizedImage = new RenderTargetBitmap( (int)rect.Width, (int)rect.Height, 96, 96,PixelFormats.Default);
+			resizedImage.Render( drawingVisual );
+			// Return the resized image
+			return resizedImage;
 		}
 
 
@@ -159,8 +249,5 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 				throw new NotSupportedException( "Impossibile convertire tipo=" + objCorrezione.GetType() + " valore=" + objCorrezione );
 		}
 
-		public override Type getTypeOfCorrezione() {
-			return typeof( Ruota );
-		}
 	}
 }

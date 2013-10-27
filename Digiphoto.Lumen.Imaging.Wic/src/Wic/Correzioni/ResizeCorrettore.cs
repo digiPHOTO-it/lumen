@@ -77,8 +77,5 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 			}
 		}
 
-		public override Type getTypeOfCorrezione() {
-			return typeof( Resize );
-		}
 	}
 }
