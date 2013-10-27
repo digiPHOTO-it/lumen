@@ -23,6 +23,7 @@ using System.Text;
 using Digiphoto.Lumen.Servizi.Ricostruzione;
 using Digiphoto.Lumen.GestoreConfigurazione.UI.Licenze;
 using Digiphoto.Lumen.Licensing;
+using Digiphoto.Lumen.Eventi;
 
 namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 {
@@ -38,7 +39,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 		Licenza = 6
 	}
 
-    public class MainWindowViewModel : ClosableWiewModel
+	public class MainWindowViewModel : ClosableWiewModel, IObserver<Messaggio>
     {
 
         public MainWindowViewModel()
@@ -56,6 +57,10 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			passo = PassoWiz.Login;
 
 			this.abilitoShutdown = false;  // NON permetto all'utente di scegliere se spegnere il computer.
+
+			// Ascolto i messaggi
+			IObservable<Messaggio> observable = LumenApplication.Instance.bus.Observe<Messaggio>();
+			observable.Subscribe(this);
         }
 
 		public LicenseEditorViewModel licenseEditorViewModel {
@@ -1285,5 +1290,23 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
         #endregion
 
-    }
+
+		#region Eventi
+		public void OnCompleted()
+		{
+			// throw new NotImplementedException();
+		}
+
+		public void OnError(Exception error)
+		{
+			// throw new NotImplementedException();
+		}
+
+		public void OnNext(Messaggio msg)
+		{
+			if(msg.showInStatusBar)
+				dialogProvider.ShowError(msg.descrizione, "Configurazione", null);
+		}
+		#endregion Eventi
+	}
 }
