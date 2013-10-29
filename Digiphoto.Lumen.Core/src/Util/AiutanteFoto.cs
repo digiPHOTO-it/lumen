@@ -205,6 +205,13 @@ namespace Digiphoto.Lumen.Util {
 				// Scale per ridimensionare
 				immagineDestinazione = gis.creaProvino( foto.imgOrig );   // creo una immagine più piccola
 				PathUtil.creaCartellaProvini( foto );
+				
+				// Siccome sto ri-creando il provino, significa che qualcosa è cambiato, quindi una eventuale risultante non è più valida.
+				foto.imgRisultante = null;  // Sto ricreando il provino, quindi la risultante non è più valida.
+				string nomeFileRis = PathUtil.nomeCompletoFile( foto, IdrataTarget.Risultante );
+				if( File.Exists(nomeFileRis) )
+					File.Delete( nomeFileRis );
+
 			} else if( quale == IdrataTarget.Risultante ) {
 				immagineDestinazione = (IImmagine) foto.imgOrig.Clone();  // creo un duplicato
 				PathUtil.creaCartellaRisultanti( foto );   // se non esiste la cartelle delle modificate, la creo al volo
@@ -218,7 +225,7 @@ namespace Digiphoto.Lumen.Util {
 				immagineDestinazione = fr.applicaCorrezioni( immagineDestinazione, correzioni, IdrataTarget.Provino );
 			}
 
-			// Salvo su disco l'immagine risultante
+			// Salvo su disco l'immagine di destinazione
 			string nomeFileDest = PathUtil.nomeCompletoFile( foto, quale );
 			gis.save( immagineDestinazione, nomeFileDest );
 
