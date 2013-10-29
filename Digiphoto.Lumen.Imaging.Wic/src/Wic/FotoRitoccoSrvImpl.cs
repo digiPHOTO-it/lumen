@@ -596,6 +596,8 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 			// ::: Gestisco le correzioni
 			TransformGroup traGroup = new TransformGroup();
+			IList<ShaderEffect> effetti = null;
+
 			foreach( Correzione correzione in correzioni ) {
 				
 				Correttore correttore = gestoreImmaginiSrv.getCorrettore( correzione );
@@ -621,16 +623,19 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 				} else if( correttore.CanConvertTo( typeof(ShaderEffectBase) ) ) {
 					
-					// ::: Effetti
-					ImmagineWic appo = new ImmagineWic( bmpFoto );
-					appo = (ImmagineWic)applicaCorrezione( appo, correzione );
-					bmpFoto = appo.bitmapSource;
+					// ::: Effetti li sommo poi li faccio tutti in una volta per essere più veloce
+					if( effetti == null )
+						effetti = new List<ShaderEffect>();
+					effetti.Add( (ShaderEffect)correttore.ConvertTo( correzione, typeof(ShaderEffectBase ) ) );
 				}
-
-
-
-
 			}
+
+
+			if( effetti != null && effetti.Count > 0 )
+				bmpFoto = EffectsUtil.RenderImageWithEffectsToBitmap( bmpFoto, effetti );
+
+
+
 
 			// ::: La foto
 

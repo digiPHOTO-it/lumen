@@ -1155,6 +1155,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			OnPropertyChanged( "trasformazioneZoom" );
 			OnPropertyChanged( "trasformazioneTranslate" );
 			OnPropertyChanged( "trasformazioneCorrente" );
+
+			OnPropertyChanged( "fotografiaInModificaPuntuale" );
 		}
 
 		public static bool isTrasformazioneNulla( Transform t ) {
@@ -1202,6 +1204,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			mascheraAttiva = null;
 
 			modalitaEdit = ModalitaEdit.FotoRitoccoMassivo;
+			modificheInCorso = false;
 		}
 
 
@@ -1716,11 +1719,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			} 
 
-			// Pubblico un messaggio per indicare che ci sono degli effetti cambiati.
-			// Tramite questo messaggio, la UI può re-bindare i controlli interessati
-			RitoccoPuntualeMsg ritoccoPuntualeMsg = new RitoccoPuntualeMsg( this );
-			ritoccoPuntualeMsg.senderTag = puntuale;
-			LumenApplication.Instance.bus.Publish( ritoccoPuntualeMsg );
 
 
 			if( puntuale ) {
@@ -1728,6 +1726,14 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			} else {
 				frpCalcolaDimensioniContenitore( 0f );
 			}
+
+			// Pubblico un messaggio per indicare che ci sono degli effetti cambiati.
+			// Tramite questo messaggio, la UI può re-bindare i controlli interessati
+			RitoccoPuntualeMsg ritoccoPuntualeMsg = new RitoccoPuntualeMsg( this );
+			ritoccoPuntualeMsg.senderTag = puntuale;
+			LumenApplication.Instance.bus.Publish( ritoccoPuntualeMsg );
+
+
 		}
 
 		
@@ -1841,7 +1847,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		private void gestisciFotoDaModificareMsg( FotoDaModificareMsg fotoDaModificareMsg ) {
-			
+
+			bool refresh = false;
+
 			// Ecco che sono arrivate delle nuove foto da modificare
 			// Devo aggiungerle alla lista delle foto in attesa di modifica.
 			foreach( Fotografia f in fotoDaModificareMsg.fotosDaModificare )
@@ -1850,7 +1858,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			// Se richiesta la modifica immediata...
 			if( fotoDaModificareMsg.immediata ) {
 				// ... e sono in modalità di fotoritocco
-				if( this.modalitaEdit == ModalitaEdit.FotoRitoccoPuntuale ) {
+				if( this.modalitaEdit == ModalitaEdit.FotoRitoccoPuntuale || this.modalitaEdit == ModalitaEdit.FotoRitoccoMassivo ) {
 					// ... e non ho nessuna altra modifica in corso ...
 					if( modificheInCorso == false ) {
 						//fotografieDaModificareCW.SelectedItems.Clear();
@@ -1866,10 +1874,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 								}
 							 }
 							fotografieDaModificareCW.SelectedItems.Add( f );
+							refresh = true;
 						}
-
-						// ERROR32
-						fotografieDaModificareCW.RefreshSelectedItemWithMemory();
 					}
 				}
 
@@ -1877,6 +1883,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				CambioPaginaMsg cambioPaginaMsg = new CambioPaginaMsg( this );
 				cambioPaginaMsg.nuovaPag = "FotoRitoccoPag";
 				LumenApplication.Instance.bus.Publish( cambioPaginaMsg );
+
+				if( refresh ) {
+					// ERROR32
+					// Questo mi serve per provocare l'evento di SelectionChanged
+					fotografieDaModificareCW.RefreshSelectedItemWithMemory();
+				}
+
 			}
 
 			forzaRefreshStato();
