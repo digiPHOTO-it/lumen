@@ -416,6 +416,14 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			return esiste;
 		}
 
+		public IList<T> converteCorrezioni<T>( Fotografia fotografia ) {
+
+			if( fotografia.correzioniXml == null )
+				return null;
+
+			CorrezioniList correzioni = SerializzaUtil.stringToObject<CorrezioniList>( fotografia.correzioniXml );
+			return converteCorrezioni<T>( correzioni );
+		}
 
 		/// <summary>
 		/// Prendo le correzioni xml di una foto, 
@@ -427,12 +435,8 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		/// Se ho delle correzioni, allora ritorno La lista degli oggetti trasformati. <br/>
 		/// Se invece non ho correzioni, allora ritorno null.
 		/// </returns>
-		public IList<T> converteCorrezioni<T>( Fotografia fotografia ) {
+		public IList<T> converteCorrezioni<T>( CorrezioniList correzioni ) {
 
-			if( fotografia.correzioniXml == null )
-				return null;
-
-			CorrezioniList correzioni = SerializzaUtil.stringToObject<CorrezioniList>( fotografia.correzioniXml );
 			if( correzioni == null )
 				return null;
 
@@ -542,42 +546,27 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 			double wwDest = 0, hhDest = 0;
 
-			// copio l'immagine di partenza
-			BitmapSource bmpFoto = null;
-	 
+			BitmapSource bmpFoto = null;		// Questa è la foto
+			BitmapSource bmpMaschera = null;	// Questa è la maschera (eventuale)
+
+
+			bmpFoto = ((ImmagineWic)immaginePartenza).bitmapSource;
 
 			// ::: Per prima cosa calcolo la dimensione che deve avere l'immagine di uscita (il canvas)
 			//     Verifico quindi se c'è una maschera. In tal caso comanda lei
-			BitmapSource bmpMaschera = null;
 			Maschera maschera = (Maschera)correzioni.FirstOrDefault( c => c is Maschera );
-			ImmagineWic immagineMaschera;
 			if( maschera != null ) {
 
-				immagineMaschera = new ImmagineWic( maschera.nome );
-				// bmpMaschera = caricaBitmapMaschera( maschera.nome );
+				ImmagineWic immagineMaschera = new ImmagineWic( Path.Combine( Configurazione.UserConfigLumen.cartellaMaschere, maschera.nome ) );
 				bmpMaschera = immagineMaschera.bitmapSource;
-				if( bmpMaschera == null ) {
-					// Strano: non trovo la maschera. Magari è stata rimossa da disco
-					String msgerr = "Maschera non trovata : " + maschera.nome;
-					_giornale.Error( msgerr );
-					Messaggio msg = new Messaggio( this, msgerr );
-					msg.showInStatusBar = true;
-					msg.esito = Esito.Errore;
-					pubblicaMessaggio( msg );
-				} else {
-					// Carico la maschera per avere le dimensioni reali definitive
-					if( qualeTarget == IdrataTarget.Provino ) {
-						IImmagine imgMascheraPiccola = gestoreImmaginiSrv.creaProvino( immagineMaschera );
-						bmpFoto = ((ImmagineWic)imgMascheraPiccola).bitmapSource;
-					}
-
-					wwDest = bmpMaschera.PixelWidth;
-					hhDest = bmpMaschera.PixelHeight;
+				// Carico la maschera per avere le dimensioni reali definitive
+				if( qualeTarget == IdrataTarget.Provino ) {
+					IImmagine imgMascheraPiccola = gestoreImmaginiSrv.creaProvino( immagineMaschera );
+					bmpMaschera = ((ImmagineWic)imgMascheraPiccola).bitmapSource;
 				}
-			}
-
-			if( bmpMaschera == null ) {
-				bmpFoto = new WriteableBitmap( ((ImmagineWic)immaginePartenza).bitmapSource );
+				wwDest = bmpMaschera.PixelWidth;
+				hhDest = bmpMaschera.PixelHeight;
+			} else {
 				wwDest = bmpFoto.PixelWidth;
 				hhDest = bmpFoto.PixelHeight;
 			}
@@ -643,38 +632,31 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			fotona.BeginInit();
 			fotona.Source = bmpFoto; // bmpFoto;
 			fotona.Stretch = Stretch.Uniform;
+			fotona.HorizontalAlignment = HorizontalAlignment.Center;
 			fotona.VerticalAlignment = VerticalAlignment.Center;
-			fotona.VerticalAlignment = VerticalAlignment.Center;
-			fotona.Width = canvas.Width;
-			fotona.Height = canvas.Height;
+			fotona.Width = wwDest;
+			fotona.Height = hhDest;
 			fotona.EndInit();
 
 			// Assegno tutte le trasformazioni
-			fotona.RenderTransform = traGroup;
-			fotona.RenderTransformOrigin = new Point( 0.5, 0.5 );  // centrate
-
-
-			// ::: Effetti - TODO
-			foreach( Correzione correzione in correzioni ) {
-				Correttore correttore = gestoreImmaginiSrv.getCorrettore( correzione );
-				if( correttore.CanConvertTo( typeof( ShaderEffectBase) ) ) {
-
-				}
+			if( traGroup != null && traGroup.Children.Count > 0 ) {
+				fotona.RenderTransform = traGroup;
+				fotona.RenderTransformOrigin = new Point( 0.5, 0.5 );  // centrate
 			}
-
 
 			canvas.Children.Add( fotona );
 
 			// ::: La Maschera - per concludere, aggiungo anche la maschera che deve ricoprire tutto.
+			Image imageMaschera;
 			if( bmpMaschera != null ) {
-				Image imageMaschera = new Image();
+				imageMaschera = new Image();
 				imageMaschera.BeginInit();
 				imageMaschera.Stretch = Stretch.Uniform;
-				imageMaschera.HorizontalAlignment = HorizontalAlignment.Center;
-				imageMaschera.VerticalAlignment = VerticalAlignment.Center;
+				imageMaschera.HorizontalAlignment = HorizontalAlignment.Left;
+				imageMaschera.VerticalAlignment = VerticalAlignment.Top;
 				imageMaschera.Source = bmpMaschera;
-				imageMaschera.Width = canvas.Width;
-				imageMaschera.Height = canvas.Height;
+				imageMaschera.Width = wwDest;
+				imageMaschera.Height = hhDest;
 				imageMaschera.EndInit();
 				canvas.Children.Add( imageMaschera );
 			}
@@ -714,17 +696,31 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		}
 
 
-		private BitmapImage caricaBitmapMaschera( String nomeFile ) {
+		private BitmapImage caricaBitmapMaschera2( String nomeFile ) {
 
 			BitmapImage bmpMaschera = null;
 
 			string nomeMaschera = Path.Combine( Configurazione.UserConfigLumen.cartellaMaschere, nomeFile );
 			if( File.Exists( nomeMaschera ) ) {
 				Uri uriMaschera = new Uri( nomeMaschera );
-				BitmapImage msk = new BitmapImage( uriMaschera );
+				bmpMaschera = new BitmapImage( uriMaschera );
+
 			}
 			return bmpMaschera;
 		}
 
+
+		private BitmapSource caricaBitmapMaschera( String nomeFile ) {
+
+			BitmapSource bmpMaschera = null;
+
+			string nomeMaschera = Path.Combine( Configurazione.UserConfigLumen.cartellaMaschere, nomeFile );
+			if( File.Exists( nomeMaschera ) ) {
+				MemoryStream data = new MemoryStream( File.ReadAllBytes( nomeMaschera ) );
+				bmpMaschera = BitmapFrame.Create( data );
+				bmpMaschera.Freeze();
+			}
+			return bmpMaschera;
+		}
 	}
 }

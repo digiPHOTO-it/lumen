@@ -222,7 +222,7 @@ namespace Digiphoto.Lumen.Util {
 			// applico eventuali correzioni
 			if( foto.correzioniXml != null ) {
 				CorrezioniList correzioni = SerializzaUtil.stringToObject<CorrezioniList>( foto.correzioniXml );
-				immagineDestinazione = fr.applicaCorrezioni( immagineDestinazione, correzioni, IdrataTarget.Provino );
+				immagineDestinazione = fr.applicaCorrezioni( immagineDestinazione, correzioni, quale );
 			}
 
 			// Salvo su disco l'immagine di destinazione

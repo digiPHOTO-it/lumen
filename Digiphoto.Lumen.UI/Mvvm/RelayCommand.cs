@@ -81,7 +81,7 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 				if( _execute.Target is ViewModelBase ) {
 					ViewModelBase viewModel = _execute.Target as ViewModelBase;
 					if( viewModel.dialogProvider != null )
-						viewModel.dialogProvider.ShowError( ErroriUtil.estraiMessage(ee), "Errore imprevisto. Consultare il Log", null );
+						viewModel.dialogProvider.ShowError( ee.GetType().Name + "\n" + ErroriUtil.estraiMessage(ee), "Errore imprevisto. Consultare il Log", null );
 				}
 
 				// per ora non voglio far spaccare il programma altrimenti perdo il lavoro in corso.

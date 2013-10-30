@@ -62,6 +62,8 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 					correttore = new ZoomCorrettore();
 				else if( tipo == typeof( Trasla ) )
 					correttore = new TraslaCorrettore();
+				else if( tipo == typeof( Maschera ) )
+					correttore = new MascheraCorrettore();
 
 				if( correttore != null ) {
 					_cache.Add( tipo, correttore );  // Metto in cache
