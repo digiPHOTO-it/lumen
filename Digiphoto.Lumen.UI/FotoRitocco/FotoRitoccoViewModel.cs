@@ -479,13 +479,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					OnPropertyChanged( "mascheraAttiva" );
 					OnPropertyChanged( "possoSalvareMaschera" );
 				}
-
-
-				// Ricalcolo le dimensioni dell'area contenitore
-				if( mascheraAttiva == null )
-					frpCalcolaDimensioniContenitore( 0f );
-				else
-					frpCalcolaDimensioniContenitore( (float) (mascheraAttiva.Width / mascheraAttiva.Height) );
 			}
 		}
 
@@ -1030,8 +1023,18 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 				fotografieDaModificareCW.SelectedItems [0].imgProvino.Dispose();
 				fotografieDaModificareCW.SelectedItems [0].imgProvino = null;
-			}
 
+				// Nel fotoritocco puntuale, la maschera viene gestita come una correzione
+				if( mascheraAttiva != null ) {
+					string nomeFile = Path.GetFileName( mascheraAttiva.UriSource.LocalPath );
+					Maschera maschera = new Maschera {
+						nome = nomeFile,
+						width = mascheraAttiva.PixelWidth,
+						height = mascheraAttiva.PixelHeight
+					};
+					addCorrezione( maschera );
+				}
+			}
 
 
 			// Vado ad aggiungerli solo al momento di applicare per davvero
@@ -1040,6 +1043,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			CorrezioniList lista1 = fotoRitoccoSrv.converteInCorrezioni( effetti.AsEnumerable<Object>() );
 			foreach( Correzione correz in lista1 )
 				addCorrezione( correz );
+
 
 			// Poi tratto le trasformazioni : occhio sono posizionali
 			addCorrezione( TipoCorrezione.Specchio, trasformazioni.Children[TFXPOS_FLIP]      );
@@ -1509,11 +1513,23 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		void attivareMaschera( object p ) {
-				
-			// Siccome la bitmap selezionata è solo una thumnail di 80 pixel, rileggo il file vero effettivo.
-			BitmapImage bi = (BitmapImage)p;
-			string nomeFile = Path.GetFileName( bi.UriSource.LocalPath );
+
+			string nomeFile = null;
 			Uri uriMaschera = null;
+			BitmapImage bi = null;
+
+			if( p is Maschera ) {
+				if( p == null ) {
+					mascheraAttiva = null;
+				} else {
+					nomeFile = ((Maschera)p).nome;
+				}
+			} else {
+				// Siccome la bitmap selezionata è solo una thumnail di 80 pixel, rileggo il file vero effettivo.
+				bi = (BitmapImage)p;
+				nomeFile = Path.GetFileName( bi.UriSource.LocalPath );
+			}
+	
 
 			string nomeMaschera = Path.Combine( Configurazione.UserConfigLumen.cartellaMaschere, nomeFile );
 			// Le maschere quelle aggiunte al volo, non sono trattate come le altre che hanno una miniatura.
@@ -1526,16 +1542,21 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			mascheraAttiva = msk;
 
 
-			if( fotografieDaModificareCW.SelectedItems.Count == 0 ) {
-
-				svuotareElencoInModifica( false );
-
-				// cambio stato. Vado in modalità di editing maschere
-				modalitaEdit = ModalitaEdit.GestioneMaschere;
+			if( modalitaEdit == ModalitaEdit.FotoRitoccoPuntuale ) {
+				// Devo modificare le dimensioni del contenitore.
+				frpCalcolaDimensioniContenitore( (float)(msk.Width / msk.Height) );
 			} else {
-			//	System.Diagnostics.Debugger.Break();
-			}
 
+				if( fotografieDaModificareCW.SelectedItems.Count == 0 ) {
+
+					svuotareElencoInModifica( false );
+
+					// cambio stato. Vado in modalità di editing maschere
+					modalitaEdit = ModalitaEdit.GestioneMaschere;
+				} else {
+					//	System.Diagnostics.Debugger.Break();
+				}
+			}
 
 			// Mi serve per accendere i pulsanti di rifiuta e salva
 			forseInizioModifiche();
@@ -1701,6 +1722,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			modalitaEdit = (puntuale ? ModalitaEdit.FotoRitoccoPuntuale : ModalitaEdit.FotoRitoccoMassivo);
 
+			Correzione maschera = null;
 			if( puntuale ) {
 
 				// Quando lavoro puntualmente su di una foto, ho bisogno dell'immagine originale (TODO sarebbe più veloce avere un provino originale)
@@ -1708,21 +1730,29 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 				if( fotografieDaModificareCW.SelectedItems[0].correzioniXml != null ) {
 
+					CorrezioniList correzioni = SerializzaUtil.stringToObject<CorrezioniList>( fotografieDaModificareCW.SelectedItems[0].correzioniXml );
+
 					// carico Effetti precedenti
-					IList<ShaderEffectBase> carEffetti = fotoRitoccoSrv.converteCorrezioni<ShaderEffectBase>( fotografieDaModificareCW.SelectedItems[0] );
+					IList<ShaderEffectBase> carEffetti = fotoRitoccoSrv.converteCorrezioni<ShaderEffectBase>( correzioni );
 					effetti.AddRange( carEffetti );
 
 					// carico Trasformazioni precedenti
-					IList<Transform> carTrasformazioni = fotoRitoccoSrv.converteCorrezioni<Transform>( fotografieDaModificareCW.SelectedItems[0] );
+					IList<Transform> carTrasformazioni = fotoRitoccoSrv.converteCorrezioni<Transform>( correzioni );
 					caricaTrasformazioni( carTrasformazioni );
-				}
+
+					// La maschea devo gestirla in modo separato. Purtroppo devo riparserizzare l'xml
+					maschera = correzioni.FirstOrDefault( c => c is Maschera );
+					if( maschera != null )
+						attivareMaschera( maschera );   // Questa chiamata già ridimensiona il contenitore giallo.
+				} 
 
 			} 
 
 
 
 			if( puntuale ) {
-				frpCalcolaDimensioniContenitore( fotografieDaModificareCW.SelectedItems[0].imgOrig.rapporto );
+				if( maschera == null )
+					frpCalcolaDimensioniContenitore( fotografieDaModificareCW.SelectedItems[0].imgOrig.rapporto );
 			} else {
 				frpCalcolaDimensioniContenitore( 0f );
 			}
@@ -1759,7 +1789,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				trasformazioni.Children[pos] = t;
 			}
 		}
-
 
 		private int getPosTrasf( Transform t ) {
 

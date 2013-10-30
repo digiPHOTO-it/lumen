@@ -37,7 +37,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 			BitmapSource bitmapSource = ((ImmagineWic)immagineSorgente).bitmapSource; 
 
 			BitmapFrame bitmapFrame = Resize( bitmapSource, calcW, calcH, DPI_PROVINO );
-			_giornale.Debug( "effettuato resize" );
+			// _giornale.Debug( "effettuato resize" );
 			return new ImmagineWic( bitmapFrame );
 		}
 
@@ -65,15 +65,17 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 			calcH = 0L;
 
 			if( immagine.orientamento == Orientamento.Orizzontale ) {
-				if( immagine.ww > latoMax ) {
+				if( immagine.ww > latoMax )
 					calcW = latoMax;
-					calcH = (long)(calcW / immagine.rapporto);
-				}
+				else
+					calcW = immagine.ww;
+				calcH = (long)(calcW / immagine.rapporto);
 			} else {
-				if( immagine.hh > latoMax ) {
+				if( immagine.hh > latoMax )
 					calcH = latoMax;
-					calcW = (long)(calcH * immagine.rapporto);
-				}
+				else
+					calcH = immagine.hh;
+				calcW = (long)(calcH * immagine.rapporto);
 			}
 		}
 

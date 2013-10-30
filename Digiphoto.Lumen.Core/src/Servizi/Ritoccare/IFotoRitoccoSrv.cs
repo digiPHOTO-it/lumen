@@ -76,6 +76,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		/// <param name="fotografia"></param>
 		/// <returns>una lista di oggetti del tipo desiderato.</returns>
 		IList<T> converteCorrezioni<T>( Fotografia fotografia );
+		IList<T> converteCorrezioni<T>( CorrezioniList correzioni );
 
 		/// <summary>
 		/// Utilizzando il correttore opportuno, converto un oggetto che può essere
