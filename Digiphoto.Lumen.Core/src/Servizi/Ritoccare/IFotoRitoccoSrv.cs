@@ -52,6 +52,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		/// </summary>
 		/// <param name="foto">la foto da modificare</param>
 		Fotografia [] modificaConProgrammaEsterno( Fotografia [] fotografie );
+		Fotografia modificaConProgrammaEsterno( Fotografia fotografia );
 
 		void acquisisciImmagineIncorniciataWithArtista( string nomeFileImg );
 
@@ -61,7 +62,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		/// Ritorno l'elenco delle miniature delle maschere.
 		/// Se le miniature non esistono, allora le creo.
 		/// </summary>
-		String [] caricaMiniatureMaschere();
+		String [] caricaMiniatureMaschere( FiltroMask filtro );
 
 		void clonaFotografie(Fotografia[] fotografie);
 
@@ -91,5 +92,16 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 		// TODO : forse si può eliminare ???
 		Correttore getCorrettore( object obj );
+
+
+		String getCartellaMaschera( FiltroMask filtro );
+
 	}
+
+
+	public enum FiltroMask {
+		MskSingole,
+		MskMultiple
+	}
+
 }

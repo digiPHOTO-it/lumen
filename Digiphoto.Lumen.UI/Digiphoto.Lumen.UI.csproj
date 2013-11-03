@@ -638,6 +638,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Printer-48x48.png" />
+    <Resource Include="Resources\zoom-16x16.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Mvvm\MultiSelect\README.txt" />
@@ -722,6 +723,7 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\move-16x16.png" />
     <Resource Include="Resources\quadretti.png" />
     <Resource Include="Resources\pagedown-48x48.png" />
     <Resource Include="Resources\pageup-48x48.png" />

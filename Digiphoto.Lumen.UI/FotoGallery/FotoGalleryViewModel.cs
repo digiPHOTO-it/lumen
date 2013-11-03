@@ -724,7 +724,7 @@ namespace Digiphoto.Lumen.UI {
 			int quante = listaSelez.Count;
 			if (quante >= 1 && Configurazione.UserConfigLumen.modoVendita == ModoVendita.StampaDiretta)
 			{
-				dialogProvider.ShowConfirmation( "Confermi la stampa di " + quante + " foto ?", "Richiesta conferma",
+				dialogProvider.ShowConfirmation( "Confermi la stampa  di " + quante + " foto ?", "Stampa immediata",
 				  (confermato) => {
 					  procediPure = confermato;
 				  } );

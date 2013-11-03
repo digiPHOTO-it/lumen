@@ -47,7 +47,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			_viewModel.editorModeChangedEvent += cambiareModoEditor;
 
 
-			// Mi sottoscrivo per ascoltare i messaggi di fotoritocco puntuale per ribindare i controlli.
+			// Mi sottoscrivo per ascoltare i messaggi di fotoritocco per ribindare i controlli.
 			IObservable<RitoccoPuntualeMsg> observable = LumenApplication.Instance.bus.Observe<RitoccoPuntualeMsg>();
 			observable.Subscribe( this );
 
@@ -285,62 +285,51 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				_viewModel.luminositaContrastoEffect.Brightness = salvaValore;
 		}
 
-		/// <summary>
-		/// A discapito del nome, questa rappresenta l'unica immagine selezionata,
-		/// su cui ho attivato un Selettore Adorner.
-		/// </summary>
-		public Image imageToCrop {
 
-			get {
+/* RRR
 
-				if( itemsControlImmaginiInModifica == null || itemsControlImmaginiInModifica.Items.Count != 1 ) 
-					return null;
+				/// <summary>
+				/// A discapito del nome, questa rappresenta l'unica immagine selezionata,
+				/// su cui ho attivato un Selettore Adorner.
+				/// </summary>
+				public Image imageToCrop {
 
-				// Veder spiegazione qui:
-				// http://msdn.microsoft.com/en-us/library/bb613579.aspx
+					get {
 
-				// Prendo il primo (e l'unico elemento)
-				object myElement = itemsControlImmaginiInModifica.Items.GetItemAt( 0 );
+						if( itemsControlImmaginiInModifica == null || itemsControlImmaginiInModifica.Items.Count != 1 ) 
+							return null;
 
-				ContentPresenter contentPresenter = (ContentPresenter)itemsControlImmaginiInModifica.ItemContainerGenerator.ContainerFromItem( myElement );
-				if( contentPresenter == null )
-					return null;
+						// Veder spiegazione qui:
+						// http://msdn.microsoft.com/en-us/library/bb613579.aspx
 
-				// Finding image from the DataTemplate that is set on that ContentPresenter
-				DataTemplate myDataTemplate = contentPresenter.ContentTemplate;
-				return (Image)myDataTemplate.FindName( "imageModTemplate", contentPresenter );
-			}
-		}
+						// Prendo il primo (e l'unico elemento)
+						object myElement = itemsControlImmaginiInModifica.Items.GetItemAt( 0 );
 
-		private void toggleSelector_Checked( object sender, RoutedEventArgs e ) {
+						ContentPresenter contentPresenter = (ContentPresenter)itemsControlImmaginiInModifica.ItemContainerGenerator.ContainerFromItem( myElement );
+						if( contentPresenter == null )
+							return null;
 
-			if( _viewModel.attivareSelectorCommand.CanExecute( null ) )
-				_viewModel.attivareSelectorCommand.Execute( imageToCrop );
-			else
-				toggleSelector.IsChecked = false;  // Rifiuto
-		}
+						// Finding image from the DataTemplate that is set on that ContentPresenter
+						DataTemplate myDataTemplate = contentPresenter.ContentTemplate;
+						return (Image)myDataTemplate.FindName( "imageModTemplate", contentPresenter );
+					}
+				}
 
-		private void toggleSelector_Unchecked( object sender, RoutedEventArgs e ) {
-			_viewModel.attivareSelectorCommand.Execute( null );  // Qui vorrei spegnere
-		}
+				private void toggleSelector_Checked( object sender, RoutedEventArgs e ) {
 
+					if( _viewModel.attivareSelectorCommand.CanExecute( null ) )
+						_viewModel.attivareSelectorCommand.Execute( imageToCrop );
+					else
+						toggleSelector.IsChecked = false;  // Rifiuto
+				}
 
-/*
-		/// <summary>
-		/// Quando viene modificata una maschera, chiudo l'expander delle maschere
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="pcea"></param>
-		void propertyCambiata( object sender, PropertyChangedEventArgs pcea ) {
-			if( pcea.PropertyName == "mascheraAttiva" ) {
-				if( _viewModel.mascheraAttiva != null )
-					expanderMaschere.IsExpanded = false;
-			}
-		}
-*/
+				private void toggleSelector_Unchecked( object sender, RoutedEventArgs e ) {
+					_viewModel.attivareSelectorCommand.Execute( null );  // Qui vorrei spegnere
+				}
+		*/
+
 
 		void cambiareModoEditor( object sender, EditorModeEventArgs args ) {
-
 
 			switch( args.modalitaEdit ) {
 				
@@ -350,25 +339,14 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					initGestioneMaschere();
 					break;
 
-				case ModalitaEdit.FotoRitoccoPuntuale:
+				case ModalitaEdit.FotoRitocco:
 
 					listBoxImmaginiDaModificare.SetValue( MultiSelect.IsEnabledProperty, true );
 					listBoxImmaginiDaModificare.SetValue( MultiSelect.MaxNumSelectedItemProperty, 3 );
-//					listBoxImmaginiDaModificare.SetValue( MultiSelect.SelectionFailedEvent, selectionFailed );
-
-// lumMS:MultiSelect.IsEnabled="True" 
-// lumMS:MultiSelect.MaxNumSelectedItem="{Binding Path=cfg.maxNumFotoMod}"
-// lumMS:MultiSelect.SelectionFailed="selectionFailed"
 
 					primoPianoCanvasMask( true );
 					azzeraGestioneMaschere();
 					break;
-
-				case ModalitaEdit.FotoRitoccoMassivo:
-					// TODO
-					;
-					break;
-
 			}
 		}
 
@@ -487,8 +465,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// <param name="avanti"></param>
 		void primoPianoCanvasMask( bool avanti ) {
 
-			return;
-
 			if( avanti ) {
 
 				// Porto davanti il canvas con la maschera in modo che si sovrapponga alla foto (tanto ha il buco trasparente)
@@ -502,7 +478,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				Grid.SetZIndex( canvasMskCopertura, 10 );
 			}
 
-			Grid.SetZIndex( gridRitoccoPuntuale, 2 );
+			Grid.SetZIndex( gridRitocco, 2 );
 
 		}
 
@@ -545,6 +521,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				// Store the mouse position
 				startPoint = e.GetPosition(null);
 			}
+
 		}
 
 		private void listBoxImmaginiDaModificare_MouseMove(object sender, MouseEventArgs e)
@@ -566,6 +543,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+/* RRR
 		/// <summary>
 		/// Questo mi serve per togliere dalla modifica una foto.
 		/// </summary>
@@ -577,6 +555,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 
 		}
+*/
 
 		/// <summary>
 		/// siccome a video devo lavorare con un canvas più piccolo che contenga la foto in modo 
@@ -876,18 +855,25 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+
 		private void listBoxImmaginiDaModificare_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
 		{
+/* YYY  TODO
 			ListBoxItem listBoxItem = SelectItemOnRightClick( e );
 			if( listBoxItem != null ) {
 				((FotoRitoccoViewModel)viewModelBase).selettoreAzioniRapideViewModel.ultimaFotoSelezionata = (Fotografia)listBoxItem.Content;
 				// Questo mi evita di selezionare la foto quando clicco con il destro.
 				e.Handled = true;
 			}
+ */
 		}
 
+		// TODO : Ma serve ?? non mi ricordo perché l'avevamo fatto !!!!
+/* YYY
 		private ListBoxItem SelectItemOnRightClick(System.Windows.Input.MouseButtonEventArgs e)
 		{
+
+
 			Point clickPoint = e.GetPosition( listBoxImmaginiDaModificare );
 			object element = listBoxImmaginiDaModificare.InputHitTest(clickPoint);
 			ListBoxItem clickedListBoxItem = null;
@@ -904,7 +890,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			return clickedListBoxItem;
 		}
-
+ */ 
 		public T GetVisualParent<T>(object childObject) where T : Visual
 		{
 			DependencyObject child = childObject as DependencyObject;
@@ -979,6 +965,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					}
 				}
 			}
+
+
 		}
 
 
@@ -1001,8 +989,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		public void OnNext( RitoccoPuntualeMsg rpMsg ) {
 
-			bool puntuale = (Boolean)rpMsg.senderTag;
-			cambioDataTemplatePuntualeMassivo( puntuale );
+			// TODO : ma serve ????
 
 			// Questi sono effetti
 			bindaSliderLuminosita( true );
@@ -1015,19 +1002,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			bindaSliderTrasla( true );
 		}
 
-		void cambioDataTemplatePuntualeMassivo( bool puntuale ) {
-			
-			return;
-
-			// Siccome devo trattare una sola foto alla volta
-			// e siccome in questo caso devo riapplicare tutti gli effetti all'originale, 
-			// allora cambio il datatemplate.
-			// Normalmente visualizzo il imgProvino. Se sono in modalità puntuale prendo l'immagine originale.
-			DataTemplate dt = (DataTemplate)FindResource( puntuale ? "dataTemplateFotoInModificaPuntuale" : "dataTemplateFotoInModificaMassivo" );
-			this.itemsControlImmaginiInModifica.ItemTemplate = dt;
-		}
-
-		private void imagePuntuale_MouseWheel( object sender, MouseWheelEventArgs e ) {
+		private void imageRitoccata_MouseWheel( object sender, MouseWheelEventArgs e ) {
 			if( Keyboard.IsKeyDown( Key.LeftCtrl ) ) {
 				// Rotazione
 				double angolo = e.Delta > 0 ? sliderRuota.SmallChange : sliderRuota.SmallChange * (-1);
@@ -1043,7 +1018,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		private Point mouseClick;
 		double posizioneX;
 		double posizioneY;
-		private void imagePuntuale_MouseDown( object sender, MouseButtonEventArgs e ) {
+		private void imageRitoccata_MouseDown( object sender, MouseButtonEventArgs e ) {
 
 			mouseClick = e.GetPosition( null );
 
@@ -1065,7 +1040,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			((Image)sender).CaptureMouse();
 		}
 
-		private void imagePuntuale_MouseMove( object sender, MouseEventArgs e ) {
+		private void imageRitoccata_MouseMove( object sender, MouseEventArgs e ) {
 			if( ((Image)sender).IsMouseCaptured ) {
 
 				Point mouseCurrent = e.GetPosition( null );
@@ -1073,7 +1048,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				double left = mouseCurrent.X - posizioneX;
 				double top = mouseCurrent.Y - posizioneY;
 
-				TransformGroup qq = imagePuntuale.RenderTransform as TransformGroup;
+				TransformGroup qq = imageRitoccata.RenderTransform as TransformGroup;
 
 				if( qq != null ) {
 					//	TranslateTransform tt = (TranslateTransform)qq.Children.First( c => c is TranslateTransform );
@@ -1084,10 +1059,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		private void imagePuntuale_MouseUp( object sender, MouseButtonEventArgs e ) {
+		private void imageRitoccata_MouseUp( object sender, MouseButtonEventArgs e ) {
 			((Image)sender).ReleaseMouseCapture();
 		}
-
 
 	}
 }
