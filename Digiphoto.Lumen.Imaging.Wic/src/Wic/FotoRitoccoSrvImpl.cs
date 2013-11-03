@@ -253,6 +253,13 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			return modificate.ToArray();
 		}
 
+		public Fotografia modificaConProgrammaEsterno( Fotografia fotografia ) {
+			Fotografia [] ffin = { fotografia };
+			Fotografia[] ffout = modificaConProgrammaEsterno( ffin );
+			return ffout[0];
+		}
+
+
 		public void acquisisciImmagineIncorniciataWithArtista( string nomeFileImg ) {
 
 			// Per fare entrare la nuova foto, uso lo stesso servizio che uso normalmente per scaricare le memory-card
@@ -359,11 +366,11 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		
 		}
 
-		public string [] caricaMiniatureMaschere() {
+		public string [] caricaMiniatureMaschere( FiltroMask filtro ) {
 
 			List<string> nomiFileMiniature = new List<string>();
 
-			string dirMaschere = Configurazione.UserConfigLumen.cartellaMaschere;
+			string dirMaschere = getCartellaMaschera( filtro );
 			if( ! Directory.Exists(dirMaschere) )
 				return null;
 
@@ -377,8 +384,8 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			foreach( string estensione in Configurazione.estensioniGraficheAmmesse ) {
 
 				// Questa è la lista dei files di dimensioni grandi.
-				string [] nomiFilesMaschere = Directory.GetFiles( Configurazione.UserConfigLumen.cartellaMaschere, searchPattern: "*" + estensione, searchOption: SearchOption.TopDirectoryOnly );
-
+				string[] nomiFilesMaschere = Directory.GetFiles( dirMaschere, searchPattern: "*" + estensione, searchOption: SearchOption.TopDirectoryOnly );
+				
 				// Adesso controllo che per ogni file grande, esista la sua miniatura.
 				foreach( string nomeFileMaschera in nomiFilesMaschere ) {
 
@@ -498,7 +505,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		
 		/// <summary>
 		/// Prendo la foto pulita e applico tutte le correzioni.
-		/// Serve per il fotoritocco puntuale.
+		/// Serve per il fotoritocco.
 		/// Faccio tutto in un unico colpo per essere più efficiente.
 		/// </summary>
 		/// <param name="fotografia"></param>
@@ -557,7 +564,9 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			Maschera maschera = (Maschera)correzioni.FirstOrDefault( c => c is Maschera );
 			if( maschera != null ) {
 
-				ImmagineWic immagineMaschera = new ImmagineWic( Path.Combine( Configurazione.UserConfigLumen.cartellaMaschere, maschera.nome ) );
+
+
+				ImmagineWic immagineMaschera = new ImmagineWic( Path.Combine( getCartellaMaschera(FiltroMask.MskSingole), maschera.nome ) );
 				bmpMaschera = immagineMaschera.bitmapSource;
 				// Carico la maschera per avere le dimensioni reali definitive
 				if( qualeTarget == IdrataTarget.Provino ) {
@@ -574,7 +583,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 			// ::: Il canvas
 			Canvas canvas = new Canvas();
-			canvas.Background = new SolidColorBrush( Colors.Transparent );
+			canvas.Background = new SolidColorBrush( Colors.White );
 			canvas.Width = wwDest;
 			canvas.Height = hhDest;
 			canvas.HorizontalAlignment = HorizontalAlignment.Left;
@@ -721,6 +730,13 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 				bmpMaschera.Freeze();
 			}
 			return bmpMaschera;
+		}
+
+
+		public string getCartellaMaschera( FiltroMask filtro ) {
+
+			string sub = filtro == FiltroMask.MskMultiple ? "Multiple" : "Singole";
+			return Path.Combine( Configurazione.UserConfigLumen.cartellaMaschere, sub );
 		}
 	}
 }

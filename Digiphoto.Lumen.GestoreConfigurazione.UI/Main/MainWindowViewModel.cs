@@ -918,8 +918,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 					cfg.cartellaDatabase = appo;
 				else if( quale.Equals( "spot", StringComparison.CurrentCultureIgnoreCase ) )
 					cfg.cartellaPubblicita = appo;
-				else if (quale.Equals("crop", StringComparison.CurrentCultureIgnoreCase))
-					cfg.cartellaMaschereCrop = appo;
 				else
 					throw new ArgumentException( "quale cartella : non riconosciuto" );
 			}
@@ -1070,7 +1068,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 					inserisciEventualePubblicitaLumen();
 
-					inserisciEventualiMaschereCropLumen();
 
 					string msg = "Configurazione utente salvata";
 					if( quanti > 0 )
@@ -1122,20 +1119,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 				}
 			} catch( Exception ee ) {
 				_giornale.Error( "crea cartella pubblicita", ee );
-			}
-
-			// Provo a creare la cartella se non esiste
-			try
-			{
-				if (!Directory.Exists(cfg.cartellaMaschereCrop))
-				{
-					Directory.CreateDirectory(cfg.cartellaMaschereCrop);
-					_giornale.Info("Creata cartella maschere crop: " + cfg.cartellaMaschereCrop);
-				}
-			}
-			catch (Exception ee)
-			{
-				_giornale.Error("crea cartella maschere crop", ee);
 			}
 
 		}
@@ -1232,47 +1215,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			} catch( Exception ee ) {
 				_giornale.Error( "Impossibile copiare spot pubblicitario di default: ", ee );
 				throw;
-			}
-		}
-
-		/// <summary>
-		/// Se la cartella delle pubblicità non contiene neanche una immagine,
-		/// ne metto una io di default
-		/// </summary>
-		private void inserisciEventualiMaschereCropLumen()
-		{
-
-			// La cartella non esiste oppure non è scrivibile.
-			if (!PathUtil.isCartellaScrivibile(cfg.cartellaMaschereCrop))
-				return;
-
-			// Se ci sono già dei files, non faccio nulla.
-			if (Directory.EnumerateFiles(cfg.cartellaMaschereCrop).Count() > 0)
-				return;
-
-			// Copio le mie foto di default
-			try
-			{
-				DirectoryInfo info = new DirectoryInfo( ".\\Images\\Crops");
-
-				FileInfo[] filesInfo = info.GetFiles();
-
-				DirectoryInfo[] directory = info.GetDirectories();
-
-				foreach (FileInfo fileInfo in filesInfo)
-				{
-					string dest = Path.Combine(cfg.cartellaMaschereCrop,fileInfo.Name);
-					if( ! File.Exists(dest) )
-						fileInfo.CopyTo(dest,false);
-				}
-
-				_giornale.Debug("Preparato maschere per il crop di default");
-
-			}
-			catch (Exception ee)
-			{
-				_giornale.Error("Impossibile copiare maschere di crop di default: ", ee);
-				throw ee;
 			}
 		}
 

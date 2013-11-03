@@ -332,7 +332,7 @@ namespace Digiphoto.Lumen.UI
 			get
 			{
 				return isAlmenoUnaSelezionata &&
-					   modalitaEdit == ModalitaEdit.FotoRitoccoPuntuale &&
+					   modalitaEdit == ModalitaEdit.FotoRitocco &&
 					   (!modificheInCorso);
 			}
 		}
@@ -1036,7 +1036,7 @@ namespace Digiphoto.Lumen.UI
 			if (fotoDaModificareMsg.immediata)
 			{
 				// ... e sono in modalità di fotoritocco
-				if (this.modalitaEdit == ModalitaEdit.FotoRitoccoPuntuale)
+				if (this.modalitaEdit == ModalitaEdit.FotoRitocco)
 				{
 					// ... e non ho nessuna altra modifica in corso ...
 					if (modificheInCorso == false)

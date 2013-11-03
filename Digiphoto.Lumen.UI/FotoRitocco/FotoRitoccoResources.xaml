@@ -45,7 +45,7 @@
             <Border BorderBrush="WhiteSmoke" BorderThickness="1" 
                     CornerRadius="10" Margin="0,0,2,2" >
 
-				<Canvas x:Name="imgCanvas" Width="100" Height="100">
+				<Canvas x:Name="imgCanvas" Width="140" Height="140">
 
 					<Canvas.Background>
 						<ImageBrush ImageSource="{Binding Path=imgProvino,Converter={StaticResource imageSourceConverter}}" 
@@ -92,7 +92,7 @@
     <!-- Template per il pannello che contiene tutti gli elementi della lista -->
     <ItemsPanelTemplate x:Key="immaginiDaModificareItemsPanelTemplate">
         <!-- il wrappanel mi consente di sistemare al meglio le foto in funzione dello spazio disponibile ed andare a capo quando serve -->
-        <WrapPanel Orientation="Horizontal" />
+        <UniformGrid Columns="2"  />
     </ItemsPanelTemplate>
 
     
@@ -101,10 +101,7 @@
     -->
     
     <ItemsPanelTemplate x:Key="itemsPanelTemplateMaschere">
-		<UniformGrid  Columns="3" Height="Auto" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
-		<!--
-		ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible"
-		-->
+		<UniformGrid  Columns="3" Height="Auto" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
 	</ItemsPanelTemplate>
 
     <DataTemplate x:Key="itemTemplateThumbMaschera">
@@ -219,136 +216,6 @@
                    Effect="{Binding Path=DataContext.effettoCorrente, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
                    Source="{Binding Path=imgProvino,Converter={StaticResource imageSourceConverter}}" />
         </Border>
-    </DataTemplate>
-
-    <!-- Questo è il template per visualizzare UNA sola foto in modifica durante il fotoritocco -->
-    <!--
-        LayoutTransform="{Binding Path=DataContext.trasformazioneCorrente, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  
-    -->
-    <DataTemplate x:Key="QQQdataTemplateFotoInModificaPuntuale" x:Name="pollo">
-
-<!--        
-        <DockPanel LastChildFill="True">
-         <Slider Name="sliderSpostaY" DockPanel.Dock="Right" 
-                    Orientation="Vertical" Minimum="-100" Maximum="100" RenderTransformOrigin="0.5,0.5" 
-                    Canvas.ZIndex="99" Margin="4" >
-                <Slider.RenderTransform>
-                    <RotateTransform Angle="-180"/>
-                </Slider.RenderTransform>
-            </Slider>
-
-            <Slider Name="sliderSpostaX"  DockPanel.Dock="Bottom"  
-                    Minimum="-200" Maximum="200" Canvas.ZIndex="99"  Margin="4" />
-
-    
-            <Grid DockPanel.Dock="Top" Canvas.ZIndex="99">
-                
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-
-                <Label Content="Ruota" Grid.Row="0" Grid.Column="0" Canvas.ZIndex="99" />
-                
-                <Label Content="Zoom" Grid.Row="1" Grid.Column="0" Canvas.ZIndex="99" />
-            </Grid>
--->
-
-            <!-- Questa è la zona centrale per la maschera e l'immagine -->
-            <Grid ClipToBounds="True">
-            
-                <!-- 
-                  Questo bordo è quello di riferimento : o contiene la maschera, oppure è vuoto ma con il ratio = a quello della foto originale. 
-                  Tutti gli offset verranno riparametrati a questa area.
-                -->
-                <Border BorderBrush="Red" BorderThickness="1" 
-                        Name="borderCornice"
-                        HorizontalAlignment="Center" VerticalAlignment="Center" 
-                        Height="{Binding Path=DataContext.frpContenitoreH, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
-                        Width="{Binding Path=DataContext.frpContenitoreW, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  
-                        Canvas.ZIndex="60" >
-
-                    <Image Name="imageCornice" 
-                           Source="{Binding Path=DataContext.mascheraAttiva, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
-
-                </Border>
-
-                <!-- TODO creare un border interno per delineare l'area stampabile. Questo bordo ha ratio fisso, definito come costante -->
-
-                <!-- Visto che la classe EffectGroup è deprecata, per creare una composizione, utilizzo 3 Border innestati -->
-                <Border Effect="{Binding Path=DataContext.effetto3, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  BorderThickness="0" >
-                    <Border Effect="{Binding Path=DataContext.effetto2, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" BorderThickness="0" >
-                        <Border Effect="{Binding Path=DataContext.effetto1, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" BorderThickness="0" >
-
-                            <Border BorderThickness="0" 
-                                Name="borderImage1" 
-                                HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                Height="{Binding Path=DataContext.frpContenitoreH, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
-                                Width="{Binding Path=DataContext.frpContenitoreW, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
-                                RenderTransform="{Binding Path=DataContext.trasformazioni, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
-                                RenderTransformOrigin="0.5,0.5"
-                                Canvas.ZIndex="50"
-                            >
-<!--                                
-                                <Border.RenderTransform>
-                                    <TransformGroup>
-                                        <TranslateTransform x:Name="tt"  X="{Binding ElementName=sliderSpostaX,Path=Value}" 
-                                                            Y="{Binding ElementName=sliderSpostaY,Path=Value}"  />
-                                        <ScaleTransform ScaleX="{Binding ElementName=sliderZoom,Path=Value}"
-                                                    ScaleY="{Binding ElementName=sliderZoom,Path=Value}" 
-                                                    CenterX="300" CenterY="200" />
-                                        <RotateTransform CenterX="300" CenterY="200" Angle="{Binding ElementName=sliderRuota,Path=Value}" />
-                                    </TransformGroup>
-                                </Border.RenderTransform>
--->
-
-
-                                <Image Name="imageModTemplate"
-                                    Source="{Binding Path=imgOrig,Converter={StaticResource imageSourceConverter}}" />
-
-
-                            </Border>
-
-                        </Border>
-                    </Border>
-                </Border>
-
-
-
-
-
-                    <!--
-                <Border Effect="{Binding Path=DataContext.effetto3, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"   >
-                <Border Effect="{Binding Path=DataContext.effetto2, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"   >
-                    <Border Effect="{Binding Path=DataContext.effetto1, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"   >
-
-                        <Border LayoutTransform="{Binding Path=DataContext.trasformazioneRotate, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  >
-                            <Border LayoutTransform="{Binding Path=DataContext.trasformazioneFlip, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  >
-
-                                <Border BorderBrush="Red">
-
-                                    <Image Name="imageModTemplate"
-                                       Source="{Binding Path=imgOrig,Converter={StaticResource imageSourceConverter}}" />
-                            
-                                </Border>
-                            </Border>
-
-                        </Border>
-                    </Border>
-                </Border>
-
-            </Border>
-    -->
-
-        </Grid>
-<!--        
-    </DockPanel>
--->
-
     </DataTemplate>
 
     

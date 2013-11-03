@@ -6,9 +6,8 @@ using System.Text;
 namespace Digiphoto.Lumen.UI.FotoRitocco {
 	
 	public enum ModalitaEdit {
-		FotoRitoccoPuntuale,
-		GestioneMaschere,
-		FotoRitoccoMassivo  // TODO da fare
+		FotoRitocco,
+		GestioneMaschere
 	}
 
 	public class EditorModeEventArgs : EventArgs {

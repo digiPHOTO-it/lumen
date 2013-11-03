@@ -193,10 +193,7 @@
 					<Label Content="Cartella Pubblicità" Height="25" HorizontalAlignment="Left" Margin="13,72,0,0" Name="label15" VerticalAlignment="Top" Width="121" />
 					<TextBox Height="23" Margin="151,72,55,0" Text="{Binding Path=cfg.cartellaPubblicita}" VerticalAlignment="Top" />
 					<Button Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="spot" Content="..." Margin="0,72,16,0" ToolTip="Sfoglia cartelle" VerticalAlignment="Top" Width="22" HorizontalAlignment="Right" />
-                    <Label Content="Cartella Crop" Height="25" HorizontalAlignment="Left" Margin="13,104,0,0" x:Name="label15_Copy" VerticalAlignment="Top" Width="121" />
-                    <TextBox Height="23" Margin="151,104,55,0" Text="{Binding cfg.cartellaMaschereCrop}" VerticalAlignment="Top" />
-                    <Button Command="{Binding scegliereCartellaCommand}" CommandParameter="crop" Content="..." Margin="0,104,16,0" ToolTip="Sfoglia cartelle" VerticalAlignment="Top" Width="22" HorizontalAlignment="Right" />
-                    
+
                 </Grid>
                 </TabItem>
 
