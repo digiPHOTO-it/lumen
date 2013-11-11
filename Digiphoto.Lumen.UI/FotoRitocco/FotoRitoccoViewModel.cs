@@ -38,16 +38,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		public event EditorModeChangedEventHandler editorModeChangedEvent;
 
 		
-		/// <summary>
-		/// Rappresenta l'ordine puntuale delle trasformazioni nella lista
-		/// </summary>
-		/// 
-		public const int TFXPOS_FLIP      = 0;
-		public const int TFXPOS_ROTATE    = 1;
-		public const int TFXPOS_ZOOM      = 2;
-		public const int TFXPOS_TRANSLATE = 3;
-
-		
 		public FotoRitoccoViewModel() {
 
 			if( IsInDesignMode ) {
@@ -59,35 +49,43 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				observable.Subscribe( this );
 
 				selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel();
-	
+
 				fotografieDaModificare = new ObservableCollectionEx<Fotografia>();
 				fotografieDaModificareCW = new ListCollectionView( fotografieDaModificare );
-
-//				fotografieDaModificareCW.SelectionChanged += onFotografieDaModificareSelectionChanged;
-
+// TODO ?				selettoreAzioniRapideViewModel.fotografieCW = fotografieDaModificareCW;
+				fotografieDaModificareCW.Filter += fdmViewFilter;
 
 				// Carico le maschere e mi setto in modalità fotoritocco
 				this.modalitaEdit = ModalitaEdit.FotoRitocco;
 				caricareMaschere( "S" );
+
+				cfg = Configurazione.UserConfigLumen;
+
+	
+				// Resetto collezion ed effetti
+				svuotareListaDaModificare();
+
 			}
 
-			cfg = Configurazione.UserConfigLumen;
-
-			resetEffettiAndTrasformazioni();
 		}
 
-		#region Fields
+#region Fields
 
+		/// <summary>
+		/// Rappresenta l'ordine puntuale delle trasformazioni nella lista
+		/// </summary>
+		/// 
+		public const int TFXPOS_FLIP = 0;
+		public const int TFXPOS_ROTATE = 1;
+		public const int TFXPOS_ZOOM = 2;
+		public const int TFXPOS_TRANSLATE = 3;
 
-// RRR		private CroppingAdorner _croppingAdorner;
-// RRR		private FrameworkElement _felCur = null;
-// RRR		private Brush _brOriginal;
 		static SkewTransform tfxNulla = new SkewTransform();
 
-		#endregion
+#endregion Fields
 
 
-		#region Proprietà
+#region Proprietà
 
 		private Transform _trasformazioneCorrente;
 		public Transform trasformazioneCorrente {
@@ -107,28 +105,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-
-
-		
-/*
-		private ObservableCollection<Fotografia> _fotografieDaModificareCW;
-		public ObservableCollection<Fotografia> fotografieDaModificareCW
-		{
-			get
-			{
-				return _fotografieDaModificareCW;
-			}
-			set
-			{
-				if (_fotografieDaModificareCW != value)
-				{
-					_fotografieDaModificareCW = value;
-					selettoreAzioniRapideViewModel.fotografieCW = value;
-					OnPropertyChanged("fotografieDaModificareCW");
-				}
-			}
-		}
-*/
 		public UserConfigLumen cfg
 		{
 			get;
@@ -140,8 +116,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				return LumenApplication.Instance.getServizioAvviato<IFotoRitoccoSrv>();
 			}
 		}
-
-
 
 		/// <summary>
 		///  Se sono in modalità di fotoritocco, allora ritono la foto in esame
@@ -205,21 +179,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				return isAlmenoUnaFotoSelezionata;
 			}
 		}
-
-/*
-		public bool possoRiempireElencoInModifica {
-			get {
-				return esistonoFotoInAttesaDiModifica; // && modificheInCorso == false
-			}
-		}
-
-		public bool possoSvuotareElencoInModifica {
-			get {
-				return isAlmenoUnaFotoSelezionata 
-			}
-		}
-
-*/
 
 		public bool isAlmenoUnaFotoSelezionata { 
 			get {
@@ -430,14 +389,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-/* RRR
-		public bool selectorChecked {
-			get {
-				return _croppingAdorner != null && esistonoFotoInAttesaDiModifica;
-			}
-		}
-*/
-
 		public ListCollectionView fotografieDaModificareCW {
 			get;
 			private set;
@@ -520,11 +471,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		// gestione paginazione lista foto da modificare
 		public int fdmPaginaCorrente {
 			get;
-			set;
+			private set;
 		}
 
-		public int fdmFotoPerPagina = 2*6;
-
+		public const int fdmFotoPerPagina = 2*5;
 
 		private int _fdmTotPagine;
 		public int fdmTotPagine { 
@@ -532,7 +482,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				return _fdmTotPagine;
 			}
 			
-			set { 
+			private set { 
 				if( _fdmTotPagine != value ) {
 					_fdmTotPagine = value;
 					OnPropertyChanged( "fdmTotPagine" );
@@ -628,10 +578,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		#endregion Proprietà
+#endregion Proprietà
 
 
-		#region Comandi
+#region Comandi
 
 		private RelayCommand _grayScaleCommand;
 		public ICommand grayScaleCommand {
@@ -740,40 +690,15 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-/* RRR
-		private RelayCommand _attivareSelectorCommand;
-		public ICommand attivareSelectorCommand {
-			get {
-				if( _attivareSelectorCommand == null ) {
-					_attivareSelectorCommand = new RelayCommand( param => this.attivareSelector( (FrameworkElement)param ),
-																 param => selectorEnabled );
-				}
-				return _attivareSelectorCommand;
-			}
-		}
-
-		private RelayCommand _cropoareCommand;
-		public ICommand croppareCommand {
-			get {
-				if( _cropoareCommand == null ) {
-					_cropoareCommand = new RelayCommand( p => this.croppare(), p => possoCroppare );
-				}
-				return _cropoareCommand;
-			}
-		}
-*/
 		private RelayCommand _cambiareModalitaEditorCommand;
 		public ICommand cambiareModalitaEditorCommand {
 			get {
 				if( _cambiareModalitaEditorCommand == null ) {
-					_cambiareModalitaEditorCommand = new RelayCommand( param => cambiareModalitaEdit( (string)param ),
-																   p => true );
+					_cambiareModalitaEditorCommand = new RelayCommand( param => cambiareModalitaEdit( (string)param ), p => true );
 				}
 				return _cambiareModalitaEditorCommand;
 			}
 		}
-
-
 
 		private RelayCommand _caricareMaschereCommand;
 		public ICommand caricareMaschereCommand {
@@ -818,29 +743,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-/* RRR
-		private RelayCommand _commandRiempireElencoInModifica;
-		public ICommand commandRiempireElencoInModifica {
-			get {
-				if( _commandRiempireElencoInModifica == null ) {
-					_commandRiempireElencoInModifica = new RelayCommand( p => riempireElencoInModifica(),
-																		 p => possoRiempireElencoInModifica );
-				}
-				return _commandRiempireElencoInModifica;
-			}
-		}
-
-		private RelayCommand _commandSvuotareElencoInModifica;
-		public ICommand commandSvuotareElencoInModifica {
-			get {
-				if( _commandSvuotareElencoInModifica == null ) {
-					_commandSvuotareElencoInModifica = new RelayCommand( p => svuotareElencoInModifica(),
-																		 p => possoSvuotareElencoInModifica );
-				}
-				return _commandSvuotareElencoInModifica;
-			}
-		}
-*/		
 		private RelayCommand _commandBrowseForFileCornice;
 		public ICommand commandBrowseForFileCornice {
 			get {
@@ -860,14 +762,24 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				return _resettareValoreEffettoCommand;
 			}
 		}
-	
 
-		#endregion Comandi
+		private RelayCommand _fdmPaginareCommand;
+		public ICommand fdmPaginareCommand {
+			get {
+				if( _fdmPaginareCommand == null ) {
+					_fdmPaginareCommand = new RelayCommand( paramSposta => fdmPaginare( (string)paramSposta ),
+															paramSposta => fdmPossoPaginare( (string)paramSposta ) );
+				}
+				return _fdmPaginareCommand;
+			}
+		}
+
+#endregion Comandi
 
 		// ******************************************************************************************************
 		// ******************************************************************************************************
 
-		#region Metodi
+#region Metodi
 
 		/// <summary>
 		/// La prima volta che inizio a toccare una foto,
@@ -1071,12 +983,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			// Ormai che li ho acquisiti, li svuoto
 			resetEffettiAndTrasformazioni();
 
-// RRR			foreach( Fotografia f in fotografieDaModificareCW.SelectedItems ) {
+			gestoreImmaginiSrv.salvaCorrezioniTransienti( fotografiaInModifica );
 
-				gestoreImmaginiSrv.salvaCorrezioniTransienti( fotografiaInModifica );
-
-				AiutanteFoto.creaProvinoFoto( fotografiaInModifica );
-// RRRs			}
+			AiutanteFoto.creaProvinoFoto( fotografiaInModifica );
 
 			// Ora che ho persistito, concludo "dicamo cosi" la transazione, faccio una specie di commit.
 			modificheInCorso = false;
@@ -1112,19 +1021,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// <param name="daTogliere"></param>
 		internal void rifiutareCorrezioni( Fotografia daTogliere, bool toglila ) {
 
-			// resetEffettiAndTrasformazioni();
-
-//			fotoRitoccoSrv.undoCorrezioniTransienti( daTogliere );
 			if( toglila ) {
-				// La spengo
-// RRR				fotografieDaModificareCW.Deselect( daTogliere );
-
-				// Se non mi rimane piu nulla, azzero tutti gli effetti.
-// RRR				if( fotografieDaModificareCW.SelectedItems.Count <= 0 )
-					resetEffettiAndTrasformazioni();
-// RRR				else {
-// RRR					forzaRefreshStato();  // In teoria dovrebbe farlo già il Deselect. ma non funziona. da controllare.
-// RRR				}
+				resetEffettiAndTrasformazioni();
 			}
 
 			modificheInCorso = false;
@@ -1136,18 +1034,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// </summary>
 		public void forzaRefreshStato() {
 			
-			// TODO queste due proprietà non sarebbero da gestire qui nel viewmodel, ma nella ui.
-// RRR			OnPropertyChanged( "selectorChecked" );
-// RRR			OnPropertyChanged( "selectorEnabled" );
-			
 			OnPropertyChanged( "possoTornareOriginale" );
 			OnPropertyChanged( "possoApplicareCorrezione" );
 			OnPropertyChanged( "possoApplicareCorrezioni" );
 			OnPropertyChanged( "possoRifiutareCorrezioni" );
 			OnPropertyChanged( "possoModificareConEditorEsterno" );
 
-// RRR			OnPropertyChanged( "possoRiempireElencoInModifica" );
-// RRR			OnPropertyChanged( "possoSvuotareElencoInModifica" );
 			OnPropertyChanged( "possoSvuotareListaDaModificare" );
 
 			OnPropertyChanged( "isGrayscaleChecked" );
@@ -1215,7 +1107,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			// Spengo le proprietà che indicano elementi correnti.
 			effettoCorrente = null;
 			trasformazioneCorrente = null;
-// RRR			attivareSelector( null );  // Spegno eventuale selettore
 			mascheraAttiva = null;
 
 			modalitaEdit = ModalitaEdit.FotoRitocco;
@@ -1287,137 +1178,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			return creatoNuovo;
 		}
 
-/* RRR
-		/// <summary>
-		/// Attivo il selettore sulla immagine corrente
-		/// </summary>
-		/// TODO questo metodo non dovrebbe stare qui ma nel form. Però forse mi serviva per
-		private void attivareSelector( FrameworkElement imageToCrop ) {
-
-			if( imageToCrop != null ) {
-				AddCropToElement( imageToCrop );
-				_brOriginal = _croppingAdorner.Fill;
-				RefreshCropImage();
-			} else {
-				RemoveCropFromCur();
-			}
-
-// RRR			OnPropertyChanged( "selectorChecked" );
-// RRR			OnPropertyChanged( "selectorEnabled" );
-		}
-*/
-
-/* RRR
-		private void AddCropToElement( FrameworkElement fel ) {
-			if( _felCur != null ) {
-				RemoveCropFromCur();
-			}
-			Rect rcInterior = new Rect(
-				fel.ActualWidth * 0.2,
-				fel.ActualHeight * 0.2,
-				fel.ActualWidth * 0.6,
-				fel.ActualHeight * 0.6 );
-			AdornerLayer aly = AdornerLayer.GetAdornerLayer( fel );
-
-			_croppingAdorner = new CroppingAdorner( fel, rcInterior );
-
-
-			_croppingAdorner.AspectRatio = determinaRatioAreaStampa();
-			_croppingAdorner.MantainAspectRatio = (_croppingAdorner.AspectRatio >= 0);
-
-			aly.Add( _croppingAdorner );
-			// Questa è una anteprima che non mi serve
-			// imgCrop.Source = _croppingAdorner.BpsCrop();
-			_croppingAdorner.CropChanged += CropChanged;
-			_felCur = fel;
-
-			SetClipColorGrey();
-		}
-
-		/// <summary>
-		/// Prendo la prima stampante dalla lista di quelle abbinate.
-		/// </summary>
-		/// <returns></returns>
-		private float determinaRatioAreaStampa() {
-
-			ISpoolStampeSrv srv = LumenApplication.Instance.getServizioAvviato<ISpoolStampeSrv>();
-			return srv.ratioAreaStampabile;
-		}
-
-
-		private void SetClipColorGrey() {
-			if( _croppingAdorner != null ) {
-				Color clr = Colors.Black;
-				clr.A = 140;
-				_croppingAdorner.Fill = new SolidColorBrush( clr );
-			}
-		}
-
-		private void RefreshCropImage() {
-			if( _croppingAdorner != null ) {
-				Rect rc = _croppingAdorner.ClippingRectangle;
-
-				string testo = string.Format(
-					"Clipping Rectangle: ({0:N1}, {1:N1}, {2:N1}, {3:N1})",
-					rc.Left,
-					rc.Top,
-					rc.Right,
-					rc.Bottom );
-
-				// Questa è una anteprima che non mi serve
-				// imgCrop.Source = _clp.BpsCrop();
-			}
-		}
-
-		private void CropChanged( Object sender, RoutedEventArgs rea ) {
-			RefreshCropImage();
-		}
-
-		private void RemoveCropFromCur() {
-
-			// Ho remmato le istruzioni di sicurezza.
-			// bisogna evitare che si arrivi qu
-
-
-			if( _felCur != null ) {
-				AdornerLayer aly = AdornerLayer.GetAdornerLayer( _felCur );
-				if( aly != null )
-					aly.Remove( _croppingAdorner );
-			}
-
-			// Spengo tutto
-			if( _croppingAdorner != null )
-				_croppingAdorner.CropChanged -= CropChanged;
-			_croppingAdorner = null;
-			_felCur = null;
-			_brOriginal = null;
-		}
-
-
-		void croppare() {
-
-			Crop cropCorrezione = new Crop();
-			// Questo è il rettangolo da tagliare
-			cropCorrezione.x = (int) _croppingAdorner.ClippingRectangle.X;
-			cropCorrezione.y = (int) _croppingAdorner.ClippingRectangle.Y;
-			cropCorrezione.w = (int) _croppingAdorner.ClippingRectangle.Width;
-			cropCorrezione.h = (int) _croppingAdorner.ClippingRectangle.Height;
-
-			// Queste sono le dimensioni dell'immagine di riferimento per la geometria di cui sopra.
-			cropCorrezione.imgWidth = (int) _croppingAdorner.ActualWidth;
-			cropCorrezione.imgHeight = (int) _croppingAdorner.ActualHeight;
-
-			addCorrezione( cropCorrezione );
-
-// RRR			attivareSelector( null );  // Spengo il selector tanto ormai ho tagliato
-		}
-
-		bool possoCroppare {
-			get {
-				return selectorChecked;
-			}
-		}
-*/
 		void addFotoDaModificare( Fotografia f ) {
 
 			// Se la foto è già in lista non faccio nulla.
@@ -1428,37 +1188,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			// TODO: Se la pagina corrente (paginazione) è piena, allora non faccio niente.
 			// Se invece ho del posto libero (perchè sono in fondo, allora la aggiungo.
-
-// 			fotografieDaModificareCW.AddNewItem( f );
-
-/*
-				if (fotografieDaModificare.Count >= Configurazione.UserConfigLumen.lungFIFOFotoMod)
-				{
-					_giornale.Debug("Ho raggiunto il massimo numero di foto da modificare di " + Configurazione.UserConfigLumen.lungFIFOFotoMod + " fotografie");
-
-					//Recupero l'ultima foto che non è tra quelle selezionate
-
-					var listaIds = from le in fotografieDaModificareCW.SelectedItems
-								   select le.id;
-
-					Fotografia isDelFoto = null;
-//					if( listaIds.Count() > 0 ) {
-						var qq = fotografieDaModificare.Where( ff => !listaIds.Contains( ff.id ) );
-						if( qq != null && qq.Count() > 0 )
-							isDelFoto = qq.Last();
-//					}
-
-					if (isDelFoto == null)
-					{
-						_giornale.Debug("Non ho trovato nessuna foto da eliminare dalla coda");
-
-					} else
-						this.fotografieDaModificare.Remove(isDelFoto);
-				}
-*/
-
-
-//				this.fotografieDaModificare.Insert( 0, f );
 
 
 			// Ricalcolo il totale pagine per la paginazione
@@ -1599,22 +1328,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			BitmapImage msk = new BitmapImage( uriMaschera );
 			mascheraAttiva = msk;
 
-
-
 			if( modalitaEdit == ModalitaEdit.FotoRitocco ) {
 				// Devo modificare le dimensioni del contenitore.
 				frpCalcolaDimensioniContenitore( (float)(msk.Width / msk.Height) );
-			} else {
-
-				if( fotografiaInModifica == null ) {
-
-// RRR					svuotareElencoInModifica( false );
-
-					// cambio stato. Vado in modalità di editing maschere
-// RRR					modalitaEdit = ModalitaEdit.GestioneMaschere;
-				} else {
-					//	System.Diagnostics.Debugger.Break();
-				}
 			}
 
 			// Mi serve per accendere i pulsanti di rifiuta e salva
@@ -1691,6 +1407,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			fotografiaInModifica = null;
 
 			fotografieDaModificare.Clear();
+			fdmPaginaCorrente = 1;
 			resetEffettiAndTrasformazioni();
 
 			// Pubblico un messaggio di richiesta cambio pagina. Voglio tornare sulla gallery
@@ -1700,22 +1417,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		}
 
-/* RRR
-		void riempireElencoInModifica() {
-			fotografieDaModificareCW.SelectAllMax();
-			resetEffettiAndTrasformazioni();
-		}
-
-		void svuotareElencoInModifica() {
-			svuotareElencoInModifica( true );
-		}
-
-		void svuotareElencoInModifica( bool ancheResetEffetti ) {
-			fotografieDaModificareCW.DeselectAll();
-			if( ancheResetEffetti )
-				resetEffettiAndTrasformazioni();
-		}
-*/
 		private void browseForFileCornice() {
 
 			Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
@@ -1765,10 +1466,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			// resetto tutti gli effetti e trasformazioni precedenti per resettare i controlli ui.
 			resetEffettiAndTrasformazioni();
 
-//	RRR		bool isFotoVerticale = false;
 			Correzione maschera = null;
 
-			// Quando lavoro puntualmente su di una foto, ho bisogno dell'immagine originale (TODO sarebbe più veloce avere un provino originale)
+			// Quando lavoro puntualmente su di una foto, ho bisogno dell'immagine originale 
+			// (TODO sarebbe più veloce avere un provino originale)
 			AiutanteFoto.idrataImmaginiFoto( fotografiaInModifica, IdrataTarget.Originale );
 
 			if( fotografiaInModifica.correzioniXml != null ) {
@@ -1790,15 +1491,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 				// cerco di capire se la foto è verticale, per rigirare il contenitore
 				Ruota rrr = (Ruota)correzioni.FirstOrDefault( c => c is Ruota );
-//	RRR			isFotoVerticale = (rrr != null && Math.Abs( rrr.gradi ) == 90);
 			} 
 
 
 
 			if( maschera == null ) {
 				float ratio = fotografiaInModifica.imgOrig.rapporto;
-//	RRR			if( isFotoVerticale )
-//	RRR				ratio = 1 / ratio;
 				frpCalcolaDimensioniContenitore( ratio );
 			}
 
@@ -1868,13 +1566,68 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		/// <summary>
+		/// Sposto la paginazione della lista delle foto in attesa di modifica
+		/// </summary>
+		/// <param name="direzione">
+		/// F = First
+		/// P = Previous
+		/// N = Next
+		/// L = Last
+		/// </param>
+		void fdmPaginare( string direzione ) {
+			if( direzione == "F" ) { // First
+				fdmPaginaCorrente = 1;
+			} else if( direzione == "P" ) { // Previous
+				if( fdmPaginaCorrente > 1 )
+					--fdmPaginaCorrente;
+			} else if( direzione == "N" ) { // Next
+				if( fdmPaginaCorrente < fdmTotPagine )
+					++fdmPaginaCorrente;
+			} else if( direzione == "L" ) { // Last
+				fdmPaginaCorrente = fdmTotPagine;
+			}
+			fotografieDaModificareCW.Refresh();
+			OnPropertyChanged( "fdmPaginaCorrente" );
+		}
 
-		#endregion Metodi
+		public bool fdmPossoPaginare( string direzione ) {
+
+			// Se non ci sono (abbastanza) foto, non si pagina.
+			if( fotografieDaModificare == null || fotografieDaModificare.Count < fdmFotoPerPagina )
+				return false;
+
+			if( direzione == "F" ) { // First
+				return (fdmPaginaCorrente > 1);
+			} else if( direzione == "P" ) { // Previous
+				return (fdmPaginaCorrente > 1);
+			} else if( direzione == "N" ) { // Next
+				return (fdmPaginaCorrente < fdmTotPagine);
+			} else if( direzione == "L" ) { // Last
+				return( fdmPaginaCorrente < fdmTotPagine);
+			}
+
+			return true;
+		}
+
+		bool fdmViewFilter( object foto ) {
+
+			int index = fotografieDaModificare.IndexOf( (Fotografia)foto );
+			int currentPageIndex = fdmPaginaCorrente - 1;
+			if( index >= fdmFotoPerPagina * currentPageIndex && index < fdmFotoPerPagina * (currentPageIndex + 1) ) {
+				return true;
+			} else {
+				return false;
+			}
+		} 
+
+
+#endregion Metodi
 
 		// **********************************************************************************************
 		// **********************************************************************************************
 
-		#region Gestori Eventi
+#region Gestori Eventi
 
 		protected void onEditorModeChanged( EditorModeEventArgs e ) {
 			if( editorModeChangedEvent != null )
@@ -1950,9 +1703,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				LumenApplication.Instance.bus.Publish( cambioPaginaMsg );
 
 				if( refresh ) {
-					// ERROR32
-					// Questo mi serve per provocare l'evento di SelectionChanged
-// RRR					fotografieDaModificareCW.RefreshSelectedItemWithMemory();
+					// TODO verificare se necessario rinfrescare il Filter
 				}
 			}
 
@@ -1978,11 +1729,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			forzaRefreshStato();
 		}
 
-		#endregion Gestori Eventi
-
-
+#endregion Gestori Eventi
 
 	}
-
-
 }

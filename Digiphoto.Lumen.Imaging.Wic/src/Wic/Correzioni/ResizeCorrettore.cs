@@ -34,9 +34,25 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 			Resize resizeCorrezione = (Resize)correzione;
 			ResizeCorrettore.calcolaEsattaWeH( immagineSorgente, resizeCorrezione.latoMax, out calcW, out calcH );
 
-			BitmapSource bitmapSource = ((ImmagineWic)immagineSorgente).bitmapSource; 
+			BitmapSource bitmapSource = ((ImmagineWic)immagineSorgente).bitmapSource;
 
-			BitmapFrame bitmapFrame = Resize( bitmapSource, calcW, calcH, DPI_PROVINO );
+
+			/* I dpi sono una indicazione per la stampa. 
+			 * Non impattano sui dati dell'immagine.
+			 * Non impattano sulla dimensione dell'immagine.
+			 * Non impattano sulla qualità dell'immagine.
+			 * In pratica è solo un "consiglio" per la stampa.
+			 * 
+			 * Siccome credo che le stampanti termiche/sublimazione se ne fregano di questo parametro (per ovvi motivi)
+			 * allora me ne sbatto.
+			 * Occorrebbe fare una prova con una laser o con una InkJet per vedere se il risultato stampato cambia.
+			 
+			int quantiDpi;
+			quantiDpi = (int) Math.Max( bitmapSource.DpiX, bitmapSource.DpiY );
+			quantiDpi = (int) Math.Max( quantiDpi, DPI_PROVINO );
+			*/
+
+			BitmapSource bitmapFrame = Resize( bitmapSource, calcW, calcH, DPI_PROVINO );
 			// _giornale.Debug( "effettuato resize" );
 			return new ImmagineWic( bitmapFrame );
 		}
@@ -47,11 +63,12 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 		/// Strano ma se non tengo conto dei dpi, anche se dico di fare il resize ad una certa larghezza, 
 		/// mi crea una bitmap piu grande
 		/// </summary>
-		private static BitmapFrame Resize( BitmapSource bitmapSource, long ww, long hh, int dpi ) {
+		private static BitmapSource Resize( BitmapSource bitmapSource, long ww, long hh, int dpi ) {
 			double newW = ww / bitmapSource.Width * dpi / bitmapSource.DpiX;
 			double newH = hh / bitmapSource.Height * dpi / bitmapSource.DpiY;
 			var target = new TransformedBitmap( bitmapSource, new ScaleTransform( newW, newH, 0, 0 ) );
-			return BitmapFrame.Create( target );
+			// return BitmapFrame.Create( target );
+			return target;
 		}
 
 		/// <summary>

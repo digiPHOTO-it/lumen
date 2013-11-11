@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Digiphoto.Lumen.UI.Mvvm;
 using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
 using Digiphoto.Lumen.Model;
@@ -16,15 +15,10 @@ using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.UI.Dialogs;
 using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
 using Digiphoto.Lumen.Imaging.Correzioni;
-using System.Windows.Media;
 using Digiphoto.Lumen.Util;
 using System.Windows;
 using Digiphoto.Lumen.UI.Pubblico;
-using Digiphoto.Lumen.Servizi.Scaricatore;
-using Digiphoto.Lumen.Eventi;
-using Digiphoto.Lumen.UI.Main;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using Digiphoto.Lumen.UI.PanAndZoom;
 using Digiphoto.Lumen.Servizi.Io;
 
@@ -307,36 +301,6 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
-		ModalitaEdit _modalitaEdit;
-		public ModalitaEdit modalitaEdit
-		{
-			get
-			{
-				return _modalitaEdit;
-			}
-			set
-			{
-				if (_modalitaEdit != value)
-				{
-					_modalitaEdit = value;
-					OnPropertyChanged("modalitaEdit");
-					OnPropertyChanged("isGestioneMaschereAttiva");
-					OnPropertyChanged("isGestioneMaschereDisattiva");
-					onEditorModeChanged(new EditorModeEventArgs(modalitaEdit));
-				}
-			}
-		}
-
-		public bool possoModificareConEditorEsterno
-		{
-			get
-			{
-				return isAlmenoUnaSelezionata &&
-					   modalitaEdit == ModalitaEdit.FotoRitocco &&
-					   (!modificheInCorso);
-			}
-		}
-
 		#endregion Controlli
 
 
@@ -350,27 +314,6 @@ namespace Digiphoto.Lumen.UI
 		{
 			string ss = Configurazione.UserConfigLumen.stampantiAbbinate;
 			this.stampantiAbbinate = StampantiAbbinateUtil.deserializza(ss);
-		}
-
-		private void filtrareSelezionate(bool attivareFiltro)
-		{
-
-			// Alcune collezioni non sono filtrabili, per esempio la IEnumerable
-			if (fotografieCW.CanFilter == false)
-				return;
-
-			if (attivareFiltro)
-			{
-				// Creo un oggetto Predicate al volo.
-				fotografieCW.Filter = obj =>
-				{
-					return fotografieCW.SelectedItems.Contains(obj);
-				};
-			}
-			else
-			{
-				fotografieCW.Filter = null;
-			}
 		}
 
 		/// <summary>
@@ -562,9 +505,17 @@ namespace Digiphoto.Lumen.UI
 
 		private void ruotare(int pGradi)
 		{
-			addCorrezione(new Ruota() { gradi = pGradi });
+			Ruota ruota = new Ruota( pGradi );
 
-			salvareCorrezioni();
+			if( ruota.isAngoloRetto ) {
+				foreach( Fotografia f in fotoSelezionate )
+					fotoRitoccoSrv.autoRuotaSuOriginale( f, ruota );
+			} else {
+
+				addCorrezione( ruota );
+
+				salvareCorrezioni();
+			}
 		}
 
 		private void tornareOriginale()
@@ -572,21 +523,6 @@ namespace Digiphoto.Lumen.UI
 			// per ogni foto elimino le correzioni e ricreo il provino partendo dall'originale.
 			foreach (Fotografia f in fotoSelezionate)
 				fotoRitoccoSrv.tornaOriginale(f);
-		}
-
-		void modificareConEditorEsterno()
-		{
-			try
-			{
-				isTuttoBloccato = true;
-
-				// Accodo le stampe da modificare
-				fotoRitoccoSrv.modificaConProgrammaEsterno(fotoSelezionate.ToArray());
-			}
-			finally
-			{
-				isTuttoBloccato = false;
-			}
 		}
 
 
@@ -877,20 +813,6 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
-		private RelayCommand _modificareConEditorEsternoCommand;
-		public ICommand modificareConEditorEsternoCommand
-		{
-			get
-			{
-				if (_modificareConEditorEsternoCommand == null)
-				{
-					_modificareConEditorEsternoCommand = new RelayCommand(p => modificareConEditorEsterno(),
-																		   p => possoModificareConEditorEsterno);
-				}
-				return _modificareConEditorEsternoCommand;
-			}
-		}
-
 		private RelayCommand _modificaMetadatiCommand;
 		public ICommand modificaMetadatiCommand
 		{
@@ -973,94 +895,12 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
-		public void OnNext(StampatoMsg value)
-		{
-			if (value.lavoroDiStampa.esitostampa == EsitoStampa.Errore)
-			{
-				dialogProvider.ShowError("Stampa non Eseguita Correttamente", "Errore", null);
-			}
-		}
-
 		#region Gestori Eventi
 
 		protected void onEditorModeChanged(EditorModeEventArgs e)
 		{
 			if (editorModeChangedEvent != null)
 				editorModeChangedEvent(this, e);
-		}
-
-		public void OnNext(Messaggio msg)
-		{
-			if (msg is FotoDaModificareMsg)
-				gestisciFotoDaModificareMsg(msg as FotoDaModificareMsg);
-
-			if (msg is NuovaFotoMsg)
-				gestisciNuovaFotoMsg(msg as NuovaFotoMsg);
-
-			if (msg is EliminateFotoMsg)
-				gestisciFotoEliminate(msg as EliminateFotoMsg);
-
-		}
-
-		// Sono state eliminate delle foto. Se per caso le avevo in modifica, le devo togliere
-		private void gestisciFotoEliminate(EliminateFotoMsg eliminateFotoMsg)
-		{
-			foreach (Fotografia ff in eliminateFotoMsg.listaFotoEliminate)
-			{
-				rifiutareCorrezioni(ff, true);
-				fotografieDaModificare.Remove(ff);
-			}
-		}
-
-		private void gestisciNuovaFotoMsg(NuovaFotoMsg nuovaFotoMsg)
-		{
-			if (AiutanteFoto.isMaschera(nuovaFotoMsg.foto))
-			{
-				// E' stata memorizzata una nuova fotografia che in realtà è una cornice
-				addFotoDaModificare(nuovaFotoMsg.foto);
-
-				// Visto che l'immagine del provino viene caricata in un altro thread, qui non sono in grado di visualizzarla. La devo rileggere per forza.
-				// Questo mi consente di visualizzare il provino come primo elemento 
-				AiutanteFoto.idrataImmaginiFoto(nuovaFotoMsg.foto, IdrataTarget.Provino, true);
-			}
-		}
-
-		private void gestisciFotoDaModificareMsg(FotoDaModificareMsg fotoDaModificareMsg)
-		{
-			// Ecco che sono arrivate delle nuove foto da modificare
-			// Devo aggiungerle alla lista delle foto in attesa di modifica.
-			foreach (Fotografia f in fotoDaModificareMsg.fotosDaModificare)
-				addFotoDaModificare(f);
-
-			// Se richiesta la modifica immediata...
-			if (fotoDaModificareMsg.immediata)
-			{
-				// ... e sono in modalità di fotoritocco
-				if (this.modalitaEdit == ModalitaEdit.FotoRitocco)
-				{
-					// ... e non ho nessuna altra modifica in corso ...
-					if (modificheInCorso == false)
-					{
-						fotografieCW.SelectedItems.Clear();
-						foreach (Fotografia f in fotoDaModificareMsg.fotosDaModificare)
-						{
-							//Controllo se ho ragiunto il limite massimo di foto modificabili
-							if (fotoDaModificareMsg.fotosDaModificare.Count == Configurazione.UserConfigLumen.maxNumFotoMod)
-							{
-								_giornale.Debug("Raggiunto limite massimo di foto modificabili di " + Configurazione.UserConfigLumen.maxNumFotoMod+" fotografie");
-								break;
-							}
-							fotografieCW.SelectedItems.Add(f);
-						}
-						fotografieCW.Refresh();
-					}
-				}
-
-				// Pubblico un messaggio di richiesta cambio pagina. Voglio andare sulla pagina del fotoritocco
-				CambioPaginaMsg cambioPaginaMsg = new CambioPaginaMsg(this);
-				cambioPaginaMsg.nuovaPag = "FotoRitoccoPag";
-				LumenApplication.Instance.bus.Publish(cambioPaginaMsg);
-			}
 		}
 
 		#endregion Gestori Eventi

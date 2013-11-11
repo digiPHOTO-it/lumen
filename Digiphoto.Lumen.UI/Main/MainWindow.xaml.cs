@@ -11,6 +11,7 @@ using Digiphoto.Lumen.UI.TrayIcon;
 using Digiphoto.Lumen.UI.About;
 using System.Windows.Input;
 using Digiphoto.Lumen.Eventi;
+using System.Windows.Controls;
 
 namespace Digiphoto.Lumen.UI {
 	/// <summary>
@@ -63,9 +64,17 @@ namespace Digiphoto.Lumen.UI {
 
 		public void OnNext( CambioPaginaMsg cambioPaginaMsg ) {
 
-			if( cambioPaginaMsg.nuovaPag == "FotoRitoccoPag" )
+			if( cambioPaginaMsg.nuovaPag == "FotoRitoccoPag" ) {
 				tabControlProspettive.SelectedItem = tabControlProspettive.FindName( "tabItemAggiusta" );
-			else if( cambioPaginaMsg.nuovaPag == "GalleryPag" )
+
+				// Provo a dare il fuoco al mio usercontrol ma nel thread della GUI
+				App.Current.Dispatcher.BeginInvoke(
+					new Action( () => {
+						fotoRitoccoUserControl.Focus();
+					}
+				) );
+
+			} else if( cambioPaginaMsg.nuovaPag == "GalleryPag" )
 				tabControlProspettive.SelectedItem = tabControlProspettive.FindName( "tabItemGallery" );
 
 		}

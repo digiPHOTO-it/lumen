@@ -28,7 +28,7 @@
 				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Printer-48x48.png" />
 			</MenuItem.Icon>
 		</MenuItem>
-	</DataTemplate >
+	</DataTemplate>
     
     <DataTemplate x:Key="stampaRapidBordiBianchiaMenu">
         <MenuItem Header="{Binding}"
@@ -38,7 +38,7 @@
                 <Image Source="/Digiphoto.Lumen.UI;component/Resources/Printer-48x48.png" />
             </MenuItem.Icon>
         </MenuItem>
-    </DataTemplate >
+    </DataTemplate>
     
     <ContextMenu x:Key="azioniRapideMenu" 
                  x:Shared="true" 
@@ -57,7 +57,7 @@
                                 </i:EventTrigger>
                           </i:Interaction.Triggers>
                     
-                <MenuItem Header="Torna All'originale" 
+                <MenuItem Header="Torna originale" 
                         Command="{Binding Path=tornareOriginaleCommand}"
 						DataContext="{Binding}"	/>
 
@@ -70,7 +70,7 @@
 			          ItemTemplate="{StaticResource stampaRapidaMenu}"
 				      DataContext="{Binding}">
 		    </MenuItem>
-            <MenuItem Header="con Bordi B ianchi"
+            <MenuItem Header="con Bordi Bianchi"
 				      ItemsSource="{Binding Path=stampantiAbbinate}"
 			          ItemTemplate="{StaticResource stampaRapidBordiBianchiaMenu}"
 				      DataContext="{Binding}">
@@ -105,10 +105,6 @@
 				  CommandParameter="SEL" 
 				  DataContext="{Binding}"/>
 
-		<MenuItem Header="Modifica con Programma Esterno" 
-				  Command="{Binding Path=modificareConEditorEsternoCommand}"
-				  DataContext="{Binding}"/>
-
 		<MenuItem Header="Aggiungi allo slide show" 
 				  Command="{Binding caricareSlideShowCommand}" 
 				  CommandParameter="Manual" 
@@ -137,7 +133,7 @@
                                 </i:EventTrigger>
                           </i:Interaction.Triggers>
 
-                    <MenuItem Header="Torna All'originale" 
+                    <MenuItem Header="Torna originale" 
                                 Command="{Binding Path=tornareOriginaleCommand}"
 						        DataContext="{Binding}"	/>
 
@@ -185,10 +181,6 @@
 				          Command="{Binding Path=modificaMetadatiCommand}"
 				  CommandParameter="SEL" 
 				  DataContext="{Binding}"/>
-
-                    <MenuItem Header="Modifica con Programma Esterno" 
-				          Command="{Binding Path=modificareConEditorEsternoCommand}"
-				          DataContext="{Binding}"/>
 
                     <MenuItem Header="Aggiungi allo slide show" 
 				          Command="{Binding caricareSlideShowCommand}" 
