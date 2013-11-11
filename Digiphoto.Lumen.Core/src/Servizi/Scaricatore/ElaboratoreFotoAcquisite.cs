@@ -215,10 +215,16 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 				if( Configurazione.UserConfigLumen.autoRotazione ) {
 					ushort orientamento;
 					if( reader.GetTagValue<ushort>( ExifTags.Orientation, out orientamento ) ) {
+
+						Ruota ruota = null;
 						if( orientamento == 6 ) {
-							fotoRitoccoSrv.addCorrezione( foto, new Ruota( 90f ), false );
+							ruota = new Ruota( 90f );
 						} else if( orientamento == 8 ) {
-							fotoRitoccoSrv.addCorrezione( foto, new Ruota( -90f ), false );
+							ruota = new Ruota( -90f );
+						}
+
+						if( ruota != null ) {
+							fotoRitoccoSrv.autoRuotaSuOriginale( foto, ruota );
 						}
 					}
 				}

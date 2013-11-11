@@ -11,7 +11,8 @@
              xmlns:extToolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
              mc:Ignorable="d" 
              x:Name="fotoRitoccoUserControl"
-             d:DesignHeight="600" d:DesignWidth="800">
+             d:DesignHeight="600" d:DesignWidth="800" 
+             Focusable="True" PreviewKeyDown="onFotoRitoccoUserControl_KeyDown" >
 
     <!-- Istanzio il controllore -->
     <lumM:UserControlBase.DataContext>
@@ -149,9 +150,9 @@
             
 			<Separator Height="25" />
 
-			<Button Name="rifiutareCorrezioniButton" Content="Rifiuta" ToolTip="Annulla le correzioni applicate" Command="{Binding rifiutareCorrezioniCommand}" />
-			<Button x:Name="applicareCorrezioniButton" Content="Applica" ToolTip="Applica le correzioni apportate" Command="{Binding applicareCorrezioniCommand}" FontSize="20" />
-			<Button Name="salvareMascheraButton" Content="Salva Maschera" ToolTip="Salva una nuova foto con cornice" Click="salvareMascheraButton_Click" IsEnabled="{Binding possoSalvareMaschera}" />
+            <Button Name="rifiutareCorrezioniButton" Content="Rifiuta" ToolTip="Annulla le correzioni (tasto rapido = ESC)" Command="{Binding rifiutareCorrezioniCommand}" />
+			<Button x:Name="applicareCorrezioniButton" Content="Applica" ToolTip="Applica le correzioni (tasto rapido = SPAZIO)" Command="{Binding applicareCorrezioniCommand}" FontSize="20" />
+            <Button Name="salvareMascheraButton" Content="Salva Maschera" ToolTip="Salva una nuova foto con cornice (tasto rapido = SPAZIO)" Click="salvareMascheraButton_Click" IsEnabled="{Binding possoSalvareMaschera}" />
 			<Separator Height="25" />
 <!-- RRR
             <Button Content="+All" ToolTip="Mette tutte le foto in modifica" Command="{Binding commandRiempireElencoInModifica}" />
@@ -189,44 +190,67 @@
 
         <lum:SelettoreAzioniRapideView Visibility="Collapsed" DataContext="{Binding Path=selettoreAzioniRapideViewModel}"/>
 
-        <!-- nastro basso con tutte le foto che sono in attesa di modifica -->
-        <ListBox x:Name="listBoxImmaginiDaModificare"  DockPanel.Dock="Right"
-                 SelectionMode="Single"
-                 SelectedValue="{Binding fotografiaInModifica,Mode=TwoWay}"
-                 Style="{StaticResource listBoxImmaginiDaModificareStyle}"
-                 ItemsSource="{Binding Path=fotografieDaModificareCW}" 
-                 ItemsPanel="{DynamicResource immaginiDaModificareItemsPanelTemplate}" 
-                 ItemTemplate="{DynamicResource immaginiDaModificareDataTemplate}"
-                 IsSynchronizedWithCurrentItem="True"
-                 AllowDrop="True"
-                 IsEnabled="{Binding Path=listBoxImmaginiDaModificareEnabled, Converter={StaticResource boolInverterConverter}}"
-				 ContextMenu="{DynamicResource azioniRapideMenu}"
-                 ScrollViewer.HorizontalScrollBarVisibility="Auto" Drop="listBoxImmaginiDaModificare_Drop"
-				 >
-			<!-- ^^^^^^^^^ Disabilito la selezione sul tasto destro così posso gestirlo per abilitare il Menu Rapido ^^^^^^^^^ -->
-            <ListBox.ItemContainerStyle>
+        <!-- Pannello con la lista foto in attesa di modifica e pulsanti per paginazione risultati -->
+        <DockPanel DockPanel.Dock="Right" LastChildFill="True">
+            
+            <!-- Pulsantiera per paginazione -->
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Center">
+                <Button Content="|&lt;&lt;" Width="30" Command="{Binding fdmPaginareCommand}" CommandParameter="F"  />
+                <Button Content="&lt;" Width="30" Command="{Binding fdmPaginareCommand}" CommandParameter="P"  />
+                <Label Content="Pag" />
+                <Label>
+                    <Binding Path="fdmPaginaCorrente" /><!-- StringFormat="{}{0:000}" -->
+                </Label>                    
+                <Label Content="/" />
+                <Label>
+                    <Binding Path="fdmTotPagine" /><!-- StringFormat="{}{0:000}" -->
+                </Label>
+
+                <Button Content="&gt;" Width="30" Command="{Binding fdmPaginareCommand}" CommandParameter="N" />
+                <Button Content="&gt;&gt;|" Width="30" Command="{Binding fdmPaginareCommand}" CommandParameter="L" />
+            </StackPanel>
+            
+            
+            <!-- nastro dx con tutte le foto che sono in attesa di modifica -->
+            <ListBox x:Name="listBoxImmaginiDaModificare"  
+                     SelectionMode="Single"
+                     SelectedValue="{Binding fotografiaInModifica,Mode=TwoWay}"
+                     Style="{StaticResource listBoxImmaginiDaModificareStyle}"
+                     ItemsSource="{Binding Path=fotografieDaModificareCW}" 
+                     ItemsPanel="{DynamicResource immaginiDaModificareItemsPanelTemplate}" 
+                     ItemTemplate="{DynamicResource immaginiDaModificareDataTemplate}"
+                     IsSynchronizedWithCurrentItem="True"
+                     AllowDrop="True"
+                     MinWidth="140"
+                     IsEnabled="{Binding Path=listBoxImmaginiDaModificareEnabled, Converter={StaticResource boolInverterConverter}}"
+				     ContextMenu="{DynamicResource azioniRapideMenu}"
+                     ScrollViewer.HorizontalScrollBarVisibility="Auto" Drop="listBoxImmaginiDaModificare_Drop"
+                     PreviewMouseRightButtonDown="listBoxImmaginiDaModificare_PreviewMouseRightButtonDown">
+			    <!-- ^^^^^^^^^ Disabilito la selezione sul tasto destro così posso gestirlo per abilitare il Menu Rapido ^^^^^^^^^ -->
+                <ListBox.ItemContainerStyle>
 				
-				<Style TargetType="ListBoxItem">
+				    <Style TargetType="ListBoxItem">
 
-                    <!-- Questo evento serve per fare il drag della foto sulla cornice -->
-					<EventSetter Event="PreviewMouseLeftButtonDown" Handler="listBoxImmaginiDaModificare_PreviewMouseLeftButtonDown"/>
-					<EventSetter Event="MouseMove" Handler="listBoxImmaginiDaModificare_MouseMove"/>
+                        <!-- Questo evento serve per fare il drag della foto sulla cornice -->
+					    <EventSetter Event="PreviewMouseLeftButtonDown" Handler="listBoxImmaginiDaModificare_PreviewMouseLeftButtonDown"/>
+					    <EventSetter Event="MouseMove" Handler="listBoxImmaginiDaModificare_MouseMove"/>
 
-					<Style.Resources>
-						<!--SelectedItem with focus -->
-						<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Yellow" />
+					    <Style.Resources>
+						    <!--SelectedItem with focus -->
+						    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Yellow" />
 
-						<!--SelectedItem without focus-->
-						<SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Yellow" />
-					</Style.Resources>
-				</Style>
-			</ListBox.ItemContainerStyle>
-		</ListBox>
+						    <!--SelectedItem without focus-->
+						    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Yellow" />
+					    </Style.Resources>
+				    </Style>
+			    </ListBox.ItemContainerStyle>
+		    </ListBox>
+        </DockPanel>
 
-   
+
 
         <!-- area di lavoro per modifiche -->
-        <TabControl Background="Transparent" Name="tabControlRitoccoComposizione" >
+        <TabControl Background="Transparent" Name="tabControlRitoccoComposizione"  >
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectionChanged" >
                     <i:InvokeCommandAction Command="{Binding cambiareModalitaEditorCommand}"  CommandParameter="{Binding ElementName=tabControlRitoccoComposizione,Path=SelectedItem.Tag}" />
@@ -234,69 +258,72 @@
             </i:Interaction.Triggers>
 
 
-            <TabItem Header="Ritocco" Tag="R">
+            <TabItem x:Name="tabItemRitocco" Header="Ritocco"  Tag="R">
+                     
+                     
                 <!-- Questa è la grid per il fotoritocco -->
                 <Grid x:Name="gridRitocco" ClipToBounds="True"
-                  Visibility="{Binding isModalitaEditFotoRitocco,Converter={StaticResource booleanToVisibilityConverter}}"
-                  Canvas.ZIndex="80"
-                  >
+                      Visibility="{Binding isModalitaEditFotoRitocco,Converter={StaticResource booleanToVisibilityConverter}}"
+                      Canvas.ZIndex="50">
 
-                <!-- 
-                  Questo bordo è quello di riferimento : o contiene la maschera, oppure è vuoto ma con il ratio = a quello della foto originale. 
-                  Tutti gli offset verranno riparametrati a questa area. Le dimensioni W,H sono importanti e di riferimento.
-                -->
+                    <!-- 
+                      Questo bordo è quello di riferimento : o contiene la maschera, oppure è vuoto ma con il ratio = a quello della foto originale. 
+                      Tutti gli offset verranno riparametrati a questa area. Le dimensioni W,H sono importanti e di riferimento.
+                    -->
 
-                <Border BorderBrush="Yellow" BorderThickness="2" 
-                        Name="borderCornice"
-                        HorizontalAlignment="Center" VerticalAlignment="Center" 
-                        Height="{Binding Path=frpContenitoreH}" 
-                        Width="{Binding Path=frpContenitoreW}"  
-                        Canvas.ZIndex="80" >
+                    <Border BorderBrush="Yellow" BorderThickness="2" 
+                            Name="borderCornice"
+                            HorizontalAlignment="Center" VerticalAlignment="Center" 
+                            Height="{Binding Path=frpContenitoreH}" 
+                            Width="{Binding Path=frpContenitoreW}" 
+                            Canvas.ZIndex="50">
 
-                    <Image x:Name="imageMaschera" 
-                           IsHitTestVisible="False"
-                           Source="{Binding Path=mascheraAttiva}" />
+                        <Image x:Name="imageMaschera" 
+                               IsHitTestVisible="False"
+                               Source="{Binding Path=mascheraAttiva}" />
 
-                </Border>
+                    </Border>
 
-                <!-- TODO creare un border interno per delineare l'area stampabile. Questo bordo ha ratio fisso, definito come costante -->
+                    <!-- TODO creare un border interno per delineare l'area stampabile. Questo bordo ha ratio fisso, definito come costante -->
 
-                <!-- Visto che la classe EffectGroup è deprecata, per creare una composizione, utilizzo 3 Border innestati -->
-                <Border Effect="{Binding Path=effetto3}"  BorderThickness="0" >
-                    <Border Effect="{Binding Path=effetto2}" BorderThickness="0" >
-                        <Border Effect="{Binding Path=effetto1}" BorderThickness="0" >
+                    <!-- Visto che la classe EffectGroup è deprecata, per creare una composizione, utilizzo 3 Border innestati -->
+                    <Border Effect="{Binding Path=effetto3}"  BorderThickness="0" >
+                        <Border Effect="{Binding Path=effetto2}" BorderThickness="0" >
+                            <Border Effect="{Binding Path=effetto1}" BorderThickness="0" >
 
-                            <Border BorderThickness="1" 
-                                Name="borderImage1" 
-                                HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                Height="{Binding Path=frpContenitoreH}" 
-                                Width="{Binding Path=frpContenitoreW}" 
-                                Canvas.ZIndex="99"
-                            >
-                                <Border.Background>
-                                    <ImageBrush  ImageSource="/Digiphoto.Lumen.UI;component/Resources/quadretti.png" TileMode="Tile" ViewportUnits="Absolute" Viewport="0,0,16,16" />
-                                </Border.Background>
+                                <Border BorderThickness="1" 
+                                    Name="borderImage1" 
+                                    HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                    Height="{Binding Path=frpContenitoreH}" 
+                                    Width="{Binding Path=frpContenitoreW}" 
+                                    Canvas.ZIndex="99"
+                                >
+                                    <Border.Background>
+                                        <ImageBrush  ImageSource="/Digiphoto.Lumen.UI;component/Resources/quadretti.png" TileMode="Tile" ViewportUnits="Absolute" Viewport="0,0,16,16" />
+                                    </Border.Background>
 
-                                <!-- invece il TranformationGroup (trasformazioni) è valido -->
-                                <Image Name="imageRitoccata" Source="{Binding Path=fotografiaInModifica.imgOrig,Converter={StaticResource imageSourceConverter}}" 
-                                       MouseWheel="imageRitoccata_MouseWheel" 
-                                       MouseDown="imageRitoccata_MouseDown" MouseMove="imageRitoccata_MouseMove" MouseUp="imageRitoccata_MouseUp" 
-                                       RenderTransform="{Binding Path=trasformazioni}" 
-                                       RenderTransformOrigin="0.5,0.5"
-                                       />                                    
+                                    <!-- invece il TranformationGroup (trasformazioni) è valido -->
+                                    <Image Name="imageRitoccata" Source="{Binding Path=fotografiaInModifica.imgOrig,Converter={StaticResource imageSourceConverter}}" 
+                                           MouseWheel="imageRitoccata_MouseWheel" 
+                                           MouseDown="imageRitoccata_MouseDown" MouseMove="imageRitoccata_MouseMove" MouseUp="imageRitoccata_MouseUp" 
+                                           RenderTransform="{Binding Path=trasformazioni}" 
+                                           RenderTransformOrigin="0.5,0.5"
+                                           />                                    
+                                </Border>
                             </Border>
                         </Border>
                     </Border>
-                </Border>
-            </Grid>
-            </TabItem >
+                </Grid>
+            </TabItem  > 
 
-            <TabItem Header="Composizione" Tag="M">
+            <TabItem x:Name="tabItemComposizione" Header="Composizione" Tag="M">
 
                 <Grid>
 
-                    <Label Content="Selezionare una maschera per iniziare la composizione"   Margin="20,20,20,20" 
+                    <Label Content="Selezionare una maschera per iniziare la composizione..."   Margin="20,20,20,20" 
                            Visibility="{Binding isMascheraInattiva,Converter={StaticResource booleanToVisibilityConverter}}" />
+                    <Label Content="Trascinare una o più foto dentro la maschera..."   Margin="20,20,20,20" 
+                           Visibility="{Binding isMascheraAttiva,Converter={StaticResource booleanToVisibilityConverter}}" />
 
                     <!-- Questo è il canvas di copertura dove compare la cornice bucata -->
 			        <Grid Name="canvasMskCopertura" >

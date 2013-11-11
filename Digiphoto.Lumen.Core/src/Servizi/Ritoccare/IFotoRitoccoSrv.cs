@@ -89,13 +89,20 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 		Correzione converteInCorrezione( TipoCorrezione tipoDest, Object effettoOrTrasformazione );
 
-
 		// TODO : forse si può eliminare ???
 		Correttore getCorrettore( object obj );
 
-
 		String getCartellaMaschera( FiltroMask filtro );
 
+		/// <summary>
+		/// Partendo dall'immagine originale, esegue una rotazione di un angolo retto e
+		/// poi riscrive l'immagine originale.
+		/// Avevamo posulato di non modificare mai l'immagine originale, ma questa è una comodità
+		/// non indifferente (sia per il programmatore che per l'utente finale).
+		/// </summary>
+		/// <param name="fotografia"></param>
+		/// <param name="ruota"></param>
+		void autoRuotaSuOriginale( Fotografia fotografia, Ruota ruota );
 	}
 
 

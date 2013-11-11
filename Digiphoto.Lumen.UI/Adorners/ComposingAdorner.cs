@@ -94,46 +94,37 @@ namespace Digiphoto.Lumen.UI.Adorners {
 			// ---
 			outline = new Path();
 
-/*
+
+/* esempio
 			Style style = new Style();
 			Setter s1 = new Setter( Path.StrokeProperty, Brushes.Green );
-			Setter s2 = new Setter( Shape.StrokeThicknessProperty, 2 );
 			style.Setters.Add( s1 );
 			outline.Style = style;
-
-			Style ss = (Style) Resources ["stylePippo"];
-			ss = (Style)FindResource( "stylePippo" );
-			if( ss != null )
-				outline.Style = ss;
-
-			ss = (Style) FindResource( "stylePippo" );
 */
 			
 			outline.Stroke = Brushes.Blue;
 			outline.StrokeThickness = 1;
-			
 
 
-/*
+/*  TODO : non funziona. Sistemare
 			DataTrigger dt = new DataTrigger();
-
-			dt.Value = "!SELEZ!";
-			Setter setter = new Setter( Path.StrokeProperty, Brushes.Yellow );
-			dt.Setters.Add( setter );
 
 
 			Binding tagBinding = new Binding( "Tag" );
-			tagBinding.Source = AdornedElement;
-			outline.SetBinding( Image.TagProperty, tagBinding );
+			tagBinding.Source = adornedElement;
+//			outline.SetBinding( Image.TagProperty, tagBinding );
+
+			dt.Value = "!SELEZ!";
 			dt.Binding = tagBinding;
 
+			Setter setter = new Setter( Path.StrokeProperty, Brushes.Yellow );
+			dt.Setters.Add( setter );
 
-			Style style = new Style();
-			style.TargetType = outline.GetType();
+			// Creo lo stile per 
+			Style style = new Style( outline.GetType() );
 			style.Triggers.Add( dt );
 			outline.Style = style;
 */
-
 			// ---
 
 

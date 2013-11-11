@@ -738,5 +738,43 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			string sub = filtro == FiltroMask.MskMultiple ? "Multiple" : "Singole";
 			return Path.Combine( Configurazione.UserConfigLumen.cartellaMaschere, sub );
 		}
+
+		/// <summary>
+		/// Faccio qualche controllo preventivo.
+		/// </summary>
+		/// <param name="fotografia"></param>
+		/// <param name="ruota"></param>
+		public void autoRuotaSuOriginale( Fotografia fotografia, Ruota ruota ) {
+
+			if( fotografia.correzioniXml != null )
+				throw new LumenException( "Sulla foto " + fotografia.numero + " esistono correzioni.\nImpossibile ruotare sull'originale.\nRimuovere prima le correzioni (torna originale)" );
+
+			if( ! ruota.isAngoloRetto )
+				throw new ArgumentException( "La rotazione sull'originale funziona solo con angoli retti" );
+
+			string nomeFileOrig = PathUtil.nomeCompletoOrig( fotografia );
+			string estensione = Path.GetExtension( nomeFileOrig );
+
+			if( fotografia.imgOrig == null )
+				AiutanteFoto.idrataImmaginiFoto( fotografia, IdrataTarget.Originale );
+
+			IImmagine imgRuotata = applicaCorrezione( fotografia.imgOrig, ruota );
+
+			AiutanteFoto.disposeImmagini( fotografia, IdrataTarget.Tutte );
+
+			string nomeFileBackup = Path.ChangeExtension( nomeFileOrig, "BACKUP" + estensione );
+			if( !File.Exists( nomeFileBackup ) ) {
+				// Salvo per sicurezza il file originale
+				File.Move( nomeFileOrig, nomeFileBackup );
+			}
+
+			fotografia.imgOrig = imgRuotata;
+			gestoreImmaginiSrv.save( imgRuotata, nomeFileOrig );
+
+			AiutanteFoto.creaProvinoFoto( fotografia );
+
+			// Libero memoria. Lascio solo il provino
+			AiutanteFoto.disposeImmagini( fotografia, IdrataTarget.Originale );
+		}
 	}
 }

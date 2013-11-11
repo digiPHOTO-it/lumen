@@ -128,16 +128,9 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 		private BitmapSource rotazioneSemplice( BitmapSource bmpSorgente, double gradi ) {
 
 			// Create the TransformedBitmap to use as the Image source.
-			TransformedBitmap tb = new TransformedBitmap();
-
-			// Properties must be set between BeginInit and EndInit calls.
-			tb.BeginInit();
-
-			tb.Source = bmpSorgente;
 			RotateTransform transform = new RotateTransform( gradi );
-			tb.Transform = transform;
 
-			tb.EndInit();
+			TransformedBitmap tb = new TransformedBitmap( bmpSorgente, transform );
 
 			return tb;
 		}

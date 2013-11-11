@@ -65,10 +65,14 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 				BitmapSource bmSource = ((ImmagineWic)immagine).bitmapSource;
 
+				// TODO : gestire encoder giusto in base alla estensione del file.
 				JpegBitmapEncoder encoder = new JpegBitmapEncoder();
 
-				// TODO distinguere se è un provino oppure una foto grande. Se grande usare 100%   Se provino basta 80% per essere più leggero.
-				encoder.QualityLevel = 80;
+				if( immagine.ww == Configurazione.infoFissa.pixelProvino || immagine.hh == Configurazione.infoFissa.pixelProvino )
+					encoder.QualityLevel = 80;
+				else
+					encoder.QualityLevel = 99;
+
 				_giornale.Debug( "Uso quality Level = " + encoder.QualityLevel );
 
 				encoder.Frames.Add( BitmapFrame.Create( bmSource ) );

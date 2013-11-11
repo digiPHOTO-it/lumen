@@ -26,6 +26,8 @@ using System.Text;
 using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
+using Digiphoto.Lumen.UI.Main;
+using System.Windows.Threading;
 
 
 
@@ -52,6 +54,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			observable.Subscribe( this );
 
 //			_viewModel.PropertyChanged += propertyCambiata;
+
+//			this.KeyDown += new KeyEventHandler( onFotoRitoccoUserControl_KeyDown );			
+
 		}
 
 		private void sliderLuminosita_ValueChanged( object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e ) {
@@ -386,18 +391,17 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				canvasMsk.Children.Add( imageFotina );
 				AddAdorner( imageFotina );
 
+/* TODO : verificare se serve. Ho messo un breakpoint nell'event handler e non viene mai chiamato
 				imageFotina.PreviewMouseDown += new MouseButtonEventHandler( imageFotina_PreviewMouseDown );
 
+*/
 				imageFotina.ContextMenu = (ContextMenu )this.Resources ["contextMenuImageFotina"];
 				foreach( MenuItem item in imageFotina.ContextMenu.Items ) {
 					if( item.Name == "menuItemBringToFront" ) {
 						item.Click += menuItemBringToFront_Click;
 					}
-					Console.Write( item );
+					// Console.Write( item );
 				}
-
-				// -- 
-				selezionaFotina( imageFotina.Name );
 
 				portaInPrimoPianoFotina( imageFotina );
 
@@ -506,6 +510,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		void imageFotina_PreviewMouseDown( object sender, MouseButtonEventArgs e ) {
 			
 			AddAdorner( (Image)sender );
+
+			portaInPrimoPianoFotina( (Image)sender );
+
 			e.Handled = true;
 		}
 
@@ -858,22 +865,17 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		private void listBoxImmaginiDaModificare_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
 		{
-/* YYY  TODO
+
 			ListBoxItem listBoxItem = SelectItemOnRightClick( e );
 			if( listBoxItem != null ) {
 				((FotoRitoccoViewModel)viewModelBase).selettoreAzioniRapideViewModel.ultimaFotoSelezionata = (Fotografia)listBoxItem.Content;
 				// Questo mi evita di selezionare la foto quando clicco con il destro.
 				e.Handled = true;
 			}
- */
 		}
 
-		// TODO : Ma serve ?? non mi ricordo perché l'avevamo fatto !!!!
-/* YYY
 		private ListBoxItem SelectItemOnRightClick(System.Windows.Input.MouseButtonEventArgs e)
 		{
-
-
 			Point clickPoint = e.GetPosition( listBoxImmaginiDaModificare );
 			object element = listBoxImmaginiDaModificare.InputHitTest(clickPoint);
 			ListBoxItem clickedListBoxItem = null;
@@ -882,15 +884,17 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				clickedListBoxItem = GetVisualParent<ListBoxItem>( element );
 				if( clickedListBoxItem != null ) 
 				{					
+/*
 					Fotografia f = (Fotografia)clickedListBoxItem.Content;
 					if( ! _viewModel.fotografieDaModificareCW.SelectedItems.Contains( f ) )
 						_viewModel.fotografieDaModificareCW.SelectedItems.Add( f );
+ */
 				}
 			}
 
 			return clickedListBoxItem;
 		}
- */ 
+
 		public T GetVisualParent<T>(object childObject) where T : Visual
 		{
 			DependencyObject child = childObject as DependencyObject;
@@ -952,13 +956,15 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		///  la foto più Front avrà un valore di 80 e le altre a scendere di uno.
 		/// </summary>
 		/// <param name="imageFotina"></param>
-		void portaInPrimoPianoFotina( UIElement imageFotina ) {
+		void portaInPrimoPianoFotina( Image imageFotina ) {
+
+			selezionaFotina( imageFotina.Name );
 
 			foreach( Visual visual in canvasMsk.Children ) {
 				if( visual is Image ) {
 					Image fotina = (Image)visual;
 					if( fotina == imageFotina )
-						Canvas.SetZIndex( fotina, 99 );
+						Canvas.SetZIndex( fotina, 90 );
 					else {
 						int appo = Canvas.GetZIndex( fotina );
 						Canvas.SetZIndex( fotina, appo - 1 );
@@ -1000,6 +1006,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			bindaSliderRuota( true );
 			bindaSliderZoom( true );
 			bindaSliderTrasla( true );
+
+			// Provo a dare il fuoco al mio usercontrol ma nel thread della GUI
+			Action focusAction = () => fotoRitoccoUserControl.Focus();
+			this.Dispatcher.BeginInvoke( focusAction, DispatcherPriority.ApplicationIdle );
+
+
 		}
 
 		private void imageRitoccata_MouseWheel( object sender, MouseWheelEventArgs e ) {
@@ -1061,6 +1073,37 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		private void imageRitoccata_MouseUp( object sender, MouseButtonEventArgs e ) {
 			((Image)sender).ReleaseMouseCapture();
+		}
+
+		/// <summary>
+		/// Gestisco il tasto 
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void onFotoRitoccoUserControl_KeyDown( object sender, KeyEventArgs e ) {
+
+			if( e.Key == Key.Space ) {
+
+				// Console.Beep( 440, 300 );  // Segnale per sapere che ha preso il tasto.
+
+				if( _viewModel.modalitaEdit == ModalitaEdit.GestioneMaschere && _viewModel.possoSalvareMaschera ) {
+					salvareMascheraButton_Click( null, null );
+				}
+
+				if( _viewModel.modalitaEdit == ModalitaEdit.FotoRitocco && _viewModel.applicareCorrezioniCommand.CanExecute( null ) ) {
+					_viewModel.applicareCorrezioniCommand.Execute( null );
+				}
+			}
+
+			if( e.Key == Key.Escape ) {
+
+				if( _viewModel.modalitaEdit == ModalitaEdit.FotoRitocco && _viewModel.rifiutareCorrezioniCommand.CanExecute( null ) ) {
+					_viewModel.rifiutareCorrezioniCommand.Execute( null );
+				}
+				
+			}
+
+
 		}
 
 	}

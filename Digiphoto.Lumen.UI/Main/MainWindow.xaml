@@ -126,7 +126,7 @@
         </TabItem>
 
 		<TabItem Name="tabItemAggiusta" Header="Correggi" ToolTip="Correggi, organizza e tagga foto" >
-			<lumFR:FotoRitocco x:Name="fotoRitoccoUserControl" />
+			<lumFR:FotoRitocco x:Name="fotoRitoccoUserControl" Focusable="True" />
 		</TabItem>
 
 		<TabItem Header="Carrello" ToolTip="Vendere stampe e CD" >
