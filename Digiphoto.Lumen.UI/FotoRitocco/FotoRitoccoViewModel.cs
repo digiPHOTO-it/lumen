@@ -65,6 +65,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				// Resetto collezion ed effetti
 				svuotareListaDaModificare();
 
+				salvataggioAutomatico = true;  // Per ora lo decido a tavolino. Un domani potrebbe diventare un parametro della configurazione
 			}
 
 		}
@@ -82,6 +83,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		static SkewTransform tfxNulla = new SkewTransform();
 
+		bool _faseRipristinoFoto = false;
+
 #endregion Fields
 
 
@@ -94,13 +97,19 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 			set {
 				if( _trasformazioneCorrente != value ) {
+
 					_trasformazioneCorrente = value;
 					OnPropertyChanged( "trasformazioneCorrente" );
-
+					
+					// notifico anche le singole trasformazioni tutte : TODO dovrei segnalare solo quella precedente cambiata e quella corrente
 					OnPropertyChanged( "trasformazioneFlip" );
 					OnPropertyChanged( "trasformazioneRotate" );
+					OnPropertyChanged( "trasformazioneTranslate" );
+					OnPropertyChanged( "trasformazioneZoom" );
 
-					forseInizioModifiche();
+					// Se non è nulla la trasformazione che mi stanno settando, allora dichiaro che sto iniziando le modifiche alla foto.
+					if( ! isTrasformazioneNulla(_trasformazioneCorrente) )
+						forseInizioModifiche();
 				}	
 			}
 		}
@@ -129,6 +138,11 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			set {
 				if( _fotografiaInModifica != value ) {
+
+					// Se la foto precedente aveva delle modifiche in sospeso, allora le salvo
+					eventualeSalvataggioAutomatico();
+
+
 					_fotografiaInModifica = value;
 					OnPropertyChanged( "fotografiaInModifica" );
 
@@ -150,7 +164,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			private set {
 				if( _modificheInCorso != value ) {
 					_modificheInCorso = value;
-					OnPropertyChanged( "modificheInCorso" );
+					 OnPropertyChanged( "modificheInCorso" );
 				}
 			}
 		}
@@ -204,6 +218,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		public bool possoSfogliarePerFileCornice {
+			get {
+				return modalitaEdit == ModalitaEdit.GestioneMaschere;
+			}
+		}
+
 		public List<ShaderEffectBase> effetti {
 			get;
 			set;
@@ -232,7 +252,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					OnPropertyChanged( "effetto2" );
 					OnPropertyChanged( "effetto3" );
 
-					forseInizioModifiche();
+					if( _effettoCorrente != null )
+						forseInizioModifiche();
 				}
 			}
 		}
@@ -578,6 +599,14 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		/// <summary>
+		/// Quando passo da una foto ad un altra, salvo automaticamente eventuali modifiche effettuate
+		/// </summary>
+		public bool salvataggioAutomatico {
+			get;
+			set;
+		}
+
 #endregion Proprietà
 
 
@@ -743,13 +772,14 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		private RelayCommand _commandBrowseForFileCornice;
-		public ICommand commandBrowseForFileCornice {
+		private RelayCommand _commandSfogliarePerFileCornice;
+		public ICommand commandSfogliarePerFileCornice {
 			get {
-				if( _commandBrowseForFileCornice == null ) {
-					_commandBrowseForFileCornice = new RelayCommand( p => browseForFileCornice() );
+				if( _commandSfogliarePerFileCornice == null ) {
+					_commandSfogliarePerFileCornice = new RelayCommand( p => sfogliarePerFileCornice(),
+																		p => possoSfogliarePerFileCornice );
 				}
-				return _commandBrowseForFileCornice;
+				return _commandSfogliarePerFileCornice;
 			}
 		}
 
@@ -787,10 +817,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// Mi serve per gestire eventuale rollback
 		/// </summary>
 		private void forseInizioModifiche() {
-			if( !modificheInCorso ) {
-				// devo fare qualcosa al primo cambio di stato ?
-			}
-			modificheInCorso = true;
+
+			if( ! _faseRipristinoFoto ) 
+				modificheInCorso = true;
 		}
 
 		/// <summary>
@@ -981,7 +1010,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			addCorrezione( TipoCorrezione.Trasla,   trasformazioni.Children[TFXPOS_TRANSLATE] );
 
 			// Ormai che li ho acquisiti, li svuoto
-			resetEffettiAndTrasformazioni();
+//			resetEffettiAndTrasformazioni();
 
 			gestoreImmaginiSrv.salvaCorrezioniTransienti( fotografiaInModifica );
 
@@ -1006,13 +1035,22 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// </summary>
 		private void rifiutareCorrezioni() {
 
-			rifiutareCorrezioni( fotografiaInModifica, false );
+			try {
+				// Evito di far scattare il trigger di modifiche in corso
+				_faseRipristinoFoto = true;
 
-			riposizionaControlliFotoritocco();
+				rifiutareCorrezioni( fotografiaInModifica, false );
 
-			forzaRefreshStato();
+				riposizionaControlliFotoritocco();
 
-			modificheInCorso = false;
+				forzaRefreshStato();
+
+				modificheInCorso = false;
+
+			} finally {
+				_faseRipristinoFoto = false;
+			}
+
 		}
 
 		/// <summary>
@@ -1297,6 +1335,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			String nomeFile = null;
 			String subFolder = null;
 			Uri uriMaschera = null;
+			string nomeMaschera = null;
 			BitmapImage bi = null;
 
 			if( p is Maschera ) {
@@ -1307,16 +1346,23 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				}
 
 				subFolder = fotoRitoccoSrv.getCartellaMaschera( modalitaEdit == ModalitaEdit.FotoRitocco ? FiltroMask.MskSingole : FiltroMask.MskMultiple );
+				nomeMaschera = Path.Combine( subFolder, nomeFile );
 
 			} else {
-				// Siccome la bitmap selezionata è solo una thumnail di 80 pixel, rileggo il file vero effettivo.
 				bi = (BitmapImage)p;
 				nomeFile = Path.GetFileName( bi.UriSource.LocalPath );
 
-				subFolder = fotoRitoccoSrv.getCartellaMaschera( modalitaEdit == ModalitaEdit.FotoRitocco ? FiltroMask.MskSingole : FiltroMask.MskMultiple );
+				if( bi.UriSource.LocalPath.Contains( PathUtil.THUMB ) ) {
+					// Siccome la bitmap selezionata è solo una thumnail di 80 pixel, rileggo il file vero effettivo.
+					subFolder = fotoRitoccoSrv.getCartellaMaschera( modalitaEdit == ModalitaEdit.FotoRitocco ? FiltroMask.MskSingole : FiltroMask.MskMultiple );
+					nomeMaschera = Path.Combine( subFolder, nomeFile );
+				} else {
+					// Questa è una maschera con il path completo selezionato da disco.
+					nomeMaschera = Path.GetFullPath( bi.UriSource.LocalPath );
+				}
+
 			}
 	
-			string nomeMaschera = Path.Combine( subFolder, nomeFile );
 			// Le maschere quelle aggiunte al volo, non sono trattate come le altre che hanno una miniatura.
 			if( File.Exists( nomeMaschera ) )
 				uriMaschera = new Uri( nomeMaschera );
@@ -1334,7 +1380,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 
 			// Mi serve per accendere i pulsanti di rifiuta e salva
-			forseInizioModifiche();
+//			forseInizioModifiche();
 		}
 
 
@@ -1417,7 +1463,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		}
 
-		private void browseForFileCornice() {
+		private void sfogliarePerFileCornice() {
 
 			Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
 
@@ -1444,7 +1490,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				try {
 					// Carico la immagine e la aggiungo alla lista che sta a video
 					BitmapImage bmp = loadMascheraDaDisco( dlg.FileName );
-					maschereSingole.Add( bmp );
+					maschereMultiple.Add( bmp );
 				} catch( Exception ee ) {
 					_giornale.Warn( "Errore in caricamento maschera : " + dlg.FileName, ee );
 					dialogProvider.ShowError( ee.Message, "Imposssibile caricare cornice", null );
@@ -1453,6 +1499,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		private void riposizionaControlliFotoritocco() {
+
+
 
 			if( modalitaEdit == ModalitaEdit.GestioneMaschere ) {
 //				frpCalcolaDimensioniContenitore( 0f );
@@ -1463,48 +1511,61 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			if( fotografiaInModifica == null )
 				return;
 
-			// resetto tutti gli effetti e trasformazioni precedenti per resettare i controlli ui.
-			resetEffettiAndTrasformazioni();
 
-			Correzione maschera = null;
+			try {
+				_faseRipristinoFoto = true;
+			
 
-			// Quando lavoro puntualmente su di una foto, ho bisogno dell'immagine originale 
-			// (TODO sarebbe più veloce avere un provino originale)
-			AiutanteFoto.idrataImmaginiFoto( fotografiaInModifica, IdrataTarget.Originale );
+				// resetto tutti gli effetti e trasformazioni precedenti per resettare i controlli ui.
+				resetEffettiAndTrasformazioni();
 
-			if( fotografiaInModifica.correzioniXml != null ) {
+				Correzione maschera = null;
 
-				CorrezioniList correzioni = SerializzaUtil.stringToObject<CorrezioniList>( fotografiaInModifica.correzioniXml );
+				// Quando lavoro puntualmente su di una foto, ho bisogno dell'immagine originale 
+				// (TODO sarebbe più veloce avere un provino originale)
+				AiutanteFoto.idrataImmaginiFoto( fotografiaInModifica, IdrataTarget.Originale );
 
-				// carico Effetti precedenti
-				IList<ShaderEffectBase> carEffetti = fotoRitoccoSrv.converteCorrezioni<ShaderEffectBase>( correzioni );
-				effetti.AddRange( carEffetti );
+				if( fotografiaInModifica.correzioniXml != null ) {
 
-				// carico Trasformazioni precedenti
-				IList<Transform> carTrasformazioni = fotoRitoccoSrv.converteCorrezioni<Transform>( correzioni );
-				caricaTrasformazioni( carTrasformazioni );
+					CorrezioniList correzioni = SerializzaUtil.stringToObject<CorrezioniList>( fotografiaInModifica.correzioniXml );
 
-				// La maschea devo gestirla in modo separato. Purtroppo devo riparserizzare l'xml
-				maschera = correzioni.FirstOrDefault( c => c is Maschera );
-				if( maschera != null )
-					attivareMaschera( maschera );   // Questa chiamata già ridimensiona il contenitore giallo.
+					// carico Effetti precedenti
+					IList<ShaderEffectBase> carEffetti = fotoRitoccoSrv.converteCorrezioni<ShaderEffectBase>( correzioni );
+					effetti.AddRange( carEffetti );
 
-				// cerco di capire se la foto è verticale, per rigirare il contenitore
-				Ruota rrr = (Ruota)correzioni.FirstOrDefault( c => c is Ruota );
-			} 
+					// carico Trasformazioni precedenti
+					IList<Transform> carTrasformazioni = fotoRitoccoSrv.converteCorrezioni<Transform>( correzioni );
+					caricaTrasformazioni( carTrasformazioni );
+
+					// La maschea devo gestirla in modo separato. Purtroppo devo riparserizzare l'xml
+					maschera = correzioni.FirstOrDefault( c => c is Maschera );
+					if( maschera != null )
+						attivareMaschera( maschera );   // Questa chiamata già ridimensiona il contenitore giallo.
+
+					// cerco di capire se la foto è verticale, per rigirare il contenitore
+					Ruota rrr = (Ruota)correzioni.FirstOrDefault( c => c is Ruota );
+				} 
 
 
 
-			if( maschera == null ) {
-				float ratio = fotografiaInModifica.imgOrig.rapporto;
-				frpCalcolaDimensioniContenitore( ratio );
+				if( maschera == null ) {
+					float ratio = fotografiaInModifica.imgOrig.rapporto;
+					frpCalcolaDimensioniContenitore( ratio );
+				}
+
+
+			
+
+				// Pubblico un messaggio per indicare che ci sono degli effetti cambiati.
+				// Tramite questo messaggio, la UI può re-bindare i controlli interessati
+				RitoccoPuntualeMsg ritoccoPuntualeMsg = new RitoccoPuntualeMsg( this );
+	//			ritoccoPuntualeMsg.senderTag = puntuale;
+				LumenApplication.Instance.bus.Publish( ritoccoPuntualeMsg );
+
+			} finally {
+				_faseRipristinoFoto = false;
 			}
 
-			// Pubblico un messaggio per indicare che ci sono degli effetti cambiati.
-			// Tramite questo messaggio, la UI può re-bindare i controlli interessati
-			RitoccoPuntualeMsg ritoccoPuntualeMsg = new RitoccoPuntualeMsg( this );
-//			ritoccoPuntualeMsg.senderTag = puntuale;
-			LumenApplication.Instance.bus.Publish( ritoccoPuntualeMsg );
 		}
 
 		
@@ -1619,7 +1680,41 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			} else {
 				return false;
 			}
-		} 
+		}
+
+
+		/// <summary>
+		/// Quando viene selezionata una nuova fotografia,
+		/// se la fotografia corrente ha subito modifiche
+		/// la salvo automaticamente
+		/// </summary>
+		void eventualeSalvataggioAutomatico() {
+
+			if( !salvataggioAutomatico )
+				return;
+
+			// Non usare il getter della property, ma direttamnte il field.
+			if( _fotografiaInModifica == null )
+				return;
+
+			if( modificheInCorso == false )
+				return;
+
+			if( modalitaEdit == ModalitaEdit.FotoRitocco && applicareCorrezioniCommand.CanExecute( null ) ) {
+				applicareCorrezioniCommand.Execute( null );
+			}
+		}
+
+		/// <summary>
+		/// Quando salvo una foto con il tasto rapido SPAZIO,
+		/// voglio anche spostarmi sulla foto successiva.
+		/// </summary>
+		public void selezionaProssimaFoto() {
+
+			bool esito = fotografieDaModificareCW.MoveCurrentToNext();
+			if( esito == false )
+				fotografieDaModificareCW.MoveCurrentToFirst();
+		}
 
 
 #endregion Metodi

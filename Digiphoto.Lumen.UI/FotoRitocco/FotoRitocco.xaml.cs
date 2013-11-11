@@ -1007,11 +1007,11 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			bindaSliderZoom( true );
 			bindaSliderTrasla( true );
 
-			// Provo a dare il fuoco al mio usercontrol ma nel thread della GUI
+			// Devo dare il fuoco allo UserControl del fotoritocco, altrimenti non mi sente l'evento KeyDown per salvare le correzioni.
 			Action focusAction = () => fotoRitoccoUserControl.Focus();
 			this.Dispatcher.BeginInvoke( focusAction, DispatcherPriority.ApplicationIdle );
 
-
+			
 		}
 
 		private void imageRitoccata_MouseWheel( object sender, MouseWheelEventArgs e ) {
@@ -1090,8 +1090,11 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					salvareMascheraButton_Click( null, null );
 				}
 
-				if( _viewModel.modalitaEdit == ModalitaEdit.FotoRitocco && _viewModel.applicareCorrezioniCommand.CanExecute( null ) ) {
-					_viewModel.applicareCorrezioniCommand.Execute( null );
+				
+				if( _viewModel.modalitaEdit == ModalitaEdit.FotoRitocco ) {
+					if( _viewModel.applicareCorrezioniCommand.CanExecute( null ) )
+						_viewModel.applicareCorrezioniCommand.Execute( null );
+					_viewModel.selezionaProssimaFoto();
 				}
 			}
 

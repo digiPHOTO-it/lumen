@@ -173,8 +173,8 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                
-                <Button Grid.Row="0" Grid.Column="0" Content="Carica da disco ..." ToolTip="Carica maschera da un'altra cartella" Command="{Binding commandBrowseForFileCornice}" Margin="5" />
+
+                <Button Grid.Row="0" Grid.Column="0" Content="Carica da disco ..." ToolTip="Carica maschera da un'altra cartella" Command="{Binding commandSfogliarePerFileCornice}" Margin="5" />
 
 			    <ScrollViewer Grid.Row="1" Grid.Column="0">	
 				    <ItemsControl Name="itemsContolMaschere"                                
