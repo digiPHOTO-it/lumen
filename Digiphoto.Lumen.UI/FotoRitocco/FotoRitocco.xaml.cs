@@ -57,6 +57,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 //			this.KeyDown += new KeyEventHandler( onFotoRitoccoUserControl_KeyDown );			
 
+			// Fino a che non renderizzo i controlli per davvero, non so quanto sia l'area di fotoritozzo. Per ora quindi mi setto un valore verosimile e funzionante.
+			_viewModel.frpContenitoreMaxW = 500;
+			_viewModel.frpContenitoreMaxH = 500;
+
 		}
 
 		private void sliderLuminosita_ValueChanged( object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e ) {
@@ -289,49 +293,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			if( mantieniValore )
 				_viewModel.luminositaContrastoEffect.Brightness = salvaValore;
 		}
-
-
-/* RRR
-
-				/// <summary>
-				/// A discapito del nome, questa rappresenta l'unica immagine selezionata,
-				/// su cui ho attivato un Selettore Adorner.
-				/// </summary>
-				public Image imageToCrop {
-
-					get {
-
-						if( itemsControlImmaginiInModifica == null || itemsControlImmaginiInModifica.Items.Count != 1 ) 
-							return null;
-
-						// Veder spiegazione qui:
-						// http://msdn.microsoft.com/en-us/library/bb613579.aspx
-
-						// Prendo il primo (e l'unico elemento)
-						object myElement = itemsControlImmaginiInModifica.Items.GetItemAt( 0 );
-
-						ContentPresenter contentPresenter = (ContentPresenter)itemsControlImmaginiInModifica.ItemContainerGenerator.ContainerFromItem( myElement );
-						if( contentPresenter == null )
-							return null;
-
-						// Finding image from the DataTemplate that is set on that ContentPresenter
-						DataTemplate myDataTemplate = contentPresenter.ContentTemplate;
-						return (Image)myDataTemplate.FindName( "imageModTemplate", contentPresenter );
-					}
-				}
-
-				private void toggleSelector_Checked( object sender, RoutedEventArgs e ) {
-
-					if( _viewModel.attivareSelectorCommand.CanExecute( null ) )
-						_viewModel.attivareSelectorCommand.Execute( imageToCrop );
-					else
-						toggleSelector.IsChecked = false;  // Rifiuto
-				}
-
-				private void toggleSelector_Unchecked( object sender, RoutedEventArgs e ) {
-					_viewModel.attivareSelectorCommand.Execute( null );  // Qui vorrei spegnere
-				}
-		*/
 
 
 		void cambiareModoEditor( object sender, EditorModeEventArgs args ) {
@@ -995,7 +956,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		public void OnNext( RitoccoPuntualeMsg rpMsg ) {
 
-			// TODO : ma serve ????
 
 			// Questi sono effetti
 			bindaSliderLuminosita( true );
@@ -1107,6 +1067,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 
 
+		}
+
+
+		private void gridRitocco_SizeChanged(object sender, SizeChangedEventArgs e) {	
+			_viewModel.frpContenitoreMaxW = gridRitocco.ActualWidth;
+			_viewModel.frpContenitoreMaxH = gridRitocco.ActualHeight;
 		}
 
 	}

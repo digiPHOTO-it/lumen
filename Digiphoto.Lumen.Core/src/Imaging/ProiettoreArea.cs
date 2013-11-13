@@ -246,11 +246,16 @@ namespace Digiphoto.Lumen.Imaging {
 			return new Size( size.Height, size.Width );
 		}
 
+
+		public static Size max( Size size1, Size size2 ) {
+			return sizeCompare( size1, size2 ) > 0 ? size1 : size2;
+		}
+
 		/**
 		 * Ritorna un intero minore, uguale, maggiore di zero
 		 * rispettivamente se l'area1 è più grande della 2
 		 */
-		private static int sizeCompare( Size s1, Size s2 ) {
+		public static int sizeCompare( Size s1, Size s2 ) {
 			
 			if( s2.IsEmpty && !s1.IsEmpty )
 				return 1;

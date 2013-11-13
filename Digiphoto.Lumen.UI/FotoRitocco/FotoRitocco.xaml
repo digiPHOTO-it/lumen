@@ -264,7 +264,7 @@
                 <!-- Questa è la grid per il fotoritocco -->
                 <Grid x:Name="gridRitocco" ClipToBounds="True"
                       Visibility="{Binding isModalitaEditFotoRitocco,Converter={StaticResource booleanToVisibilityConverter}}"
-                      Canvas.ZIndex="50">
+                      Canvas.ZIndex="50" SizeChanged="gridRitocco_SizeChanged">
 
                     <!-- 
                       Questo bordo è quello di riferimento : o contiene la maschera, oppure è vuoto ma con il ratio = a quello della foto originale. 
