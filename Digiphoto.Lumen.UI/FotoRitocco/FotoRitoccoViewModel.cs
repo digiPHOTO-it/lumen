@@ -28,6 +28,7 @@ using System.Text;
 using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
 using Digiphoto.Lumen.Servizi.Stampare;
 using Digiphoto.Lumen.Servizi.Io;
+using Digiphoto.Lumen.Imaging;
 
 namespace Digiphoto.Lumen.UI.FotoRitocco {
 
@@ -305,6 +306,19 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				}
 			}
 		}
+
+		// Questa informazione mi viene dalla GUI.
+		public double frpContenitoreMaxW {
+			private get;
+			set;
+		}
+
+		// Questa informazione mi viene dalla GUI.
+		public double frpContenitoreMaxH {
+			private get;
+			set;
+		}
+
 
 
 		public Transform trasformazioneFlip {
@@ -1617,10 +1631,35 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		private void frpCalcolaDimensioniContenitore( float ratio ) {
 
 			if( modalitaEdit == ModalitaEdit.FotoRitocco && ratio != 0f ) {
-				// Ora determino la grandezza del contenitore della foto.
-				// Tengo fissa l'altezza perché non ho molto spazio libero. La larghezza posso giocarmela.
-				frpContenitoreH = 400;
-				frpContenitoreW = frpContenitoreH * ratio;
+			
+				const int MARG = 20;
+				Size ris;
+				Size s1 = new Size();
+				Size s2 = new Size();
+
+				// La GUI mi ha detto qual'è la dimensione massima del contenitore della foto in modifica (cioè  il massimo del rettangolo giallo)
+				s1.Width = frpContenitoreMaxW - MARG;
+				s1.Height = s1.Width / ratio;
+				if( s1.Height > frpContenitoreMaxH )
+					s1 = Size.Empty;
+
+				s2.Height = frpContenitoreMaxH - MARG;
+				s2.Width = s2.Height * ratio;
+				if( s2.Width > frpContenitoreMaxW )
+					s2 = Size.Empty;
+
+				// Ora scelgo il risultato migliore.
+				if( Size.Empty.Equals( s1 ) )
+					ris = s2;
+				else if( Size.Empty.Equals( s2 ) )
+					ris = s1;
+				else {
+					// Scelgo l'area più grande
+					ris = ProiettoreArea.max( s1, s2 );
+				}
+				
+				frpContenitoreW = ris.Width;
+				frpContenitoreH = ris.Height;
 			} else {
 				frpContenitoreH = 0;
 				frpContenitoreW = 0;

@@ -32,6 +32,7 @@ namespace Digiphoto.Lumen.UI.Adorners {
 		Path outline;
 		VisualCollection visualChildren;
 		Point center;
+		Point posizInizioMove;
 		TranslateTransform translate;
 		RotateTransform rotation;
 		ScaleTransform scaleManiglia;
@@ -75,6 +76,7 @@ namespace Digiphoto.Lumen.UI.Adorners {
 			moveHandle.Opacity = 0;
 
 			moveHandle.DragDelta += new DragDeltaEventHandler( moveHandle_DragDelta );
+			moveHandle.DragStarted += new DragStartedEventHandler( moveHandle_DragStarted );
 			moveHandle.DragCompleted += new DragCompletedEventHandler( moveHandle_DragCompleted );
 			moveHandle.MouseRightButtonDown += new MouseButtonEventHandler( moveHandle_PreviewMouseRightButtonDown );
 			moveHandle.PreviewMouseWheel += moveHandle_PreviewMouseWheel;
@@ -229,15 +231,25 @@ namespace Digiphoto.Lumen.UI.Adorners {
 			}
 		}
 
+
+
+		void moveHandle_DragStarted( object sender, DragStartedEventArgs e ) {
+			posizInizioMove = Mouse.GetPosition( this );			
+		}
+
 		void moveHandle_DragCompleted( object sender, DragCompletedEventArgs e ) {
-			MoveNewTransformToAdornedElement( translate );
+
+			if( e.VerticalChange == 0 && e.HorizontalChange == 0 ) {
+				// Non ho spostato per niente. Ho solo cliccato sulla foto ma non la ho spostata.
+			} else
+				MoveNewTransformToAdornedElement( translate );
 		}
 
 		void moveHandle_DragDelta( object sender, DragDeltaEventArgs e ) {
 			Point pos = Mouse.GetPosition( this );
 
-			double deltaX = pos.X - center.X;
-			double deltaY = pos.Y - center.Y;
+			double deltaX = pos.X - posizInizioMove.X;
+			double deltaY = pos.Y - posizInizioMove.Y;
 
 			translate.X = deltaX;
 			translate.Y = deltaY;
