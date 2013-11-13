@@ -361,6 +361,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					if( item.Name == "menuItemBringToFront" ) {
 						item.Click += menuItemBringToFront_Click;
 					}
+					if( item.Name == "menuItemRemoveFromComposition" ) {
+						item.Click += menuItemRemoveFromComposition_Click;
+					}
+
 					// Console.Write( item );
 				}
 
@@ -467,7 +471,21 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				portaInPrimoPianoFotina( imageTarget );
 		}
 
+		private void menuItemRemoveFromComposition_Click( object sender, RoutedEventArgs e ) {
 
+			MenuItem menuItem = sender as MenuItem;
+
+			ContextMenu contextMenu = menuItem.Parent as ContextMenu;
+
+			Image imageTarget = contextMenu.PlacementTarget as Image;
+
+			if( imageTarget != null ) {
+				canvasMsk.Children.Remove( imageTarget );
+			}
+
+		}
+
+/* TODO : verificare se serve. Ho messo un breakpoint nell'event handler e non viene mai chiamato
 		void imageFotina_PreviewMouseDown( object sender, MouseButtonEventArgs e ) {
 			
 			AddAdorner( (Image)sender );
@@ -476,6 +494,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			e.Handled = true;
 		}
+*/
 
 		//Memorizzo il punto di ingresso
 		private Point startPoint;
@@ -510,20 +529,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				}
 			}
 		}
-
-/* RRR
-		/// <summary>
-		/// Questo mi serve per togliere dalla modifica una foto.
-		/// </summary>
-		private void itemsControlImmaginiInModifica_PreviewMouseDown( object sender, MouseButtonEventArgs e ) {
-
-			if( e.OriginalSource is Image ) {
-				Image image = e.OriginalSource as Image;
-				DragDrop.DoDragDrop( image, image.DataContext, DragDropEffects.Move );
-			}
-
-		}
-*/
 
 		/// <summary>
 		/// siccome a video devo lavorare con un canvas più piccolo che contenga la foto in modo 

@@ -156,7 +156,8 @@
 	
 	<ContextMenu x:Key="contextMenuImageFotina">
 		<MenuItem Header="Porta in primo piano" x:Name="menuItemBringToFront" />
-	</ContextMenu>
+        <MenuItem Header="Rimuovi da questa composizione" x:Name="menuItemRemoveFromComposition" />
+    </ContextMenu>
 
     <Style x:Key="styleSlidersDominanti" TargetType="{x:Type Slider}">
         <Setter Property="TickFrequency" Value="0.1" />
