@@ -9,6 +9,7 @@ using System.Data.Entity;
 using Digiphoto.Lumen.Util;
 using System.IO;
 using Digiphoto.Lumen.Config;
+using Digiphoto.Lumen.Imaging.Wic;
 
 namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Ritoccare {
 
