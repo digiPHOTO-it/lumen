@@ -352,10 +352,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				canvasMsk.Children.Add( imageFotina );
 				AddAdorner( imageFotina );
 
-/* TODO : verificare se serve. Ho messo un breakpoint nell'event handler e non viene mai chiamato
-				imageFotina.PreviewMouseDown += new MouseButtonEventHandler( imageFotina_PreviewMouseDown );
 
-*/
 				imageFotina.ContextMenu = (ContextMenu )this.Resources ["contextMenuImageFotina"];
 				foreach( MenuItem item in imageFotina.ContextMenu.Items ) {
 					if( item.Name == "menuItemBringToFront" ) {
@@ -373,41 +370,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				primoPianoCanvasMask( true );
 			}
 		}
-
-#if false
-		private System.Windows.Controls.ContextMenu creaContextMenuFotina() {
-
-			MenuItem m1, m2, m3, m4;
-
-			ContextMenu _contextMenu = new ContextMenu();
-
-			m1 = new MenuItem();
-
-			m1.Header = "File";
-
-			m2 = new MenuItem();
-
-			m2.Header = "Save";
-
-			m3 = new MenuItem();
-
-			m3.Header = "SaveAs";
-
-			m4 = new MenuItem();
-
-			m4.Header = "Recent Files";
-
-			_contextMenu.Items.Add( m1 );
-
-			_contextMenu.Items.Add( m2 );
-
-			_contextMenu.Items.Add( m3 );
-
-			_contextMenu.Items.Add( m4 );
-
-			return _contextMenu;
-		}
-#endif
 		
 		/// <summary>
 		/// Elimina tutti gli Adornes da tutte le immagini che sono state aggiunte
@@ -484,17 +446,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 
 		}
-
-/* TODO : verificare se serve. Ho messo un breakpoint nell'event handler e non viene mai chiamato
-		void imageFotina_PreviewMouseDown( object sender, MouseButtonEventArgs e ) {
-			
-			AddAdorner( (Image)sender );
-
-			portaInPrimoPianoFotina( (Image)sender );
-
-			e.Handled = true;
-		}
-*/
 
 		//Memorizzo il punto di ingresso
 		private Point startPoint;
@@ -912,7 +863,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// </summary>
 		Image fotinaSelezionata {
 			get {
-				return canvasMsk.Children.OfType<Image>().SingleOrDefault( i => i.Tag.Equals( "!SELEZ!" ) );
+				return canvasMsk.Children.OfType<Image>().SingleOrDefault( i => "!SELEZ!".Equals(i.Tag) );
 			}
 		}
 
@@ -1047,15 +998,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// <param name="e"></param>
 		private void onFotoRitoccoUserControl_KeyDown( object sender, KeyEventArgs e ) {
 
+			// Applicare le correzioni con il tasto SPAZIO
 			if( e.Key == Key.Space ) {
-
-				// Console.Beep( 440, 300 );  // Segnale per sapere che ha preso il tasto.
 
 				if( _viewModel.modalitaEdit == ModalitaEdit.GestioneMaschere && _viewModel.possoSalvareMaschera ) {
 					salvareMascheraButton_Click( null, null );
 				}
 
-				
 				if( _viewModel.modalitaEdit == ModalitaEdit.FotoRitocco ) {
 					if( _viewModel.applicareCorrezioniCommand.CanExecute( null ) )
 						_viewModel.applicareCorrezioniCommand.Execute( null );
@@ -1063,12 +1012,32 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				}
 			}
 
-			if( e.Key == Key.Escape ) {
+			// Spostamento della immaginetta con le freccette durante la composizione maschere.
+			if( e.Key == Key.Down || e.Key == Key.Up || e.Key == Key.Left || e.Key == Key.Right ) {
+				if( _viewModel.modalitaEdit == ModalitaEdit.GestioneMaschere && fotinaSelezionata != null ) {
+					// Sposto la fotina selezionata
+					ComposingAdorner ado = (ComposingAdorner)AdornerLayer.GetAdornerLayer( fotinaSelezionata ).GetAdorners( fotinaSelezionata ).ElementAt(0);
+					double deltaX = 0;
+					double deltaY = 0;
+					const int passo = 1;
+					if( e.Key == Key.Left )
+						deltaX = -passo;
+					if( e.Key == Key.Right )
+						deltaX = passo;
+					if( e.Key == Key.Up )
+						deltaY = -passo;
+					if( e.Key == Key.Down )
+						deltaY = passo;
+					ado.sposta( deltaX, deltaY );
+					e.Handled = true;
+				}
+			}
 
+			// Rifiutare le correzioni transienti con il tasto ESCAPE
+			if( e.Key == Key.Escape ) {
 				if( _viewModel.modalitaEdit == ModalitaEdit.FotoRitocco && _viewModel.rifiutareCorrezioniCommand.CanExecute( null ) ) {
 					_viewModel.rifiutareCorrezioniCommand.Execute( null );
 				}
-				
 			}
 
 
