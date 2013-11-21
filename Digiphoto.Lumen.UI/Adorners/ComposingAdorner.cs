@@ -234,7 +234,7 @@ namespace Digiphoto.Lumen.UI.Adorners {
 
 
 		void moveHandle_DragStarted( object sender, DragStartedEventArgs e ) {
-			posizInizioMove = Mouse.GetPosition( this );			
+			posizInizioMove = Mouse.GetPosition( this );
 		}
 
 		void moveHandle_DragCompleted( object sender, DragCompletedEventArgs e ) {
@@ -387,6 +387,15 @@ namespace Digiphoto.Lumen.UI.Adorners {
 
 			outline.RenderTransform = Transform.Identity;
 			this.InvalidateArrange();
+		}
+
+
+		public void sposta( double deltaX, double deltaY ) {
+						
+			translate.X = deltaX;
+			translate.Y = deltaY;
+			outline.RenderTransform = translate;
+			MoveNewTransformToAdornedElement( translate );
 		}
 	}
 }
