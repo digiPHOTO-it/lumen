@@ -1,0 +1,95 @@
+﻿<lumM:UserControlBase x:Class="Digiphoto.Lumen.UI.SelettoreScaricoCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
+             xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
+             x:Name="selettoreScaricoCard"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="200">
+    
+    <!-- includo il dizionario puntuale e quello globale -->
+	<UserControl.Resources>
+		<ResourceDictionary Source="SelettoreScaricoCardResources.xaml" />
+	</UserControl.Resources>
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition />
+		</Grid.ColumnDefinitions>
+		
+		<GroupBox Header="Scarichi Cards" Grid.Row="0" Grid.Column="0">
+			<ScrollViewer VerticalScrollBarVisibility="Auto" >
+				<ListBox Grid.IsSharedSizeScope="True"
+				         ItemsSource="{Binding scarichiCards}" 
+				         SelectedItem="{Binding scaricoCardSelezionato}" >
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<Grid ShowGridLines="True">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition SharedSizeGroup="Column1" />
+									<ColumnDefinition SharedSizeGroup="Column2" />
+									<ColumnDefinition SharedSizeGroup="Column3" />
+								</Grid.ColumnDefinitions>
+								<TextBlock Grid.Column="0" Margin="2,0,6,0" Text="{Binding tempo}"  />
+								<TextBlock Grid.Column="1" Margin="6,0,6,0" Text="{Binding totFoto}" TextAlignment="Right" />
+								<TextBlock Grid.Column="2" Margin="6,0,2,0" Text="{Binding fotografo.iniziali}" ToolTip="{Binding fotografo.cognomeNome}" />
+							</Grid>
+
+						</DataTemplate>
+
+					</ListBox.ItemTemplate>
+
+<!--
+					<ListView.View>
+						<GridView>
+							<GridView.Columns>
+								<GridViewColumn Header="Tempo" DisplayMemberBinding="{Binding Path=tempo}" />
+								<GridViewColumn Header="N°foto">
+									<GridViewColumn.CellTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding totFoto}" TextAlignment="Right" />
+										</DataTemplate>
+									</GridViewColumn.CellTemplate>
+								</GridViewColumn>
+								<GridViewColumn Header="Fotografo" DisplayMemberBinding="{Binding Path=fotografo.cognomeNome}" />
+							</GridView.Columns>
+						</GridView>
+					</ListView.View>
+-->					
+				</ListBox>					
+			</ScrollViewer>
+		</GroupBox>
+
+
+		<Grid Grid.Row="1" Grid.Column="0">
+			
+			<Grid.RowDefinitions>
+				<RowDefinition Height="24"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" x:Name="columnTesto"/>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+
+<!--            
+                <TextBox x:Name="newDescrizioneTextBox" Text="{Binding  Path=nuovoEvento.descrizione, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                         Style="{StaticResource newDescrizioneTextBox}" Grid.Row="0" Grid.Column="0"/>
+
+                <Button Name="creareNuovoEventoButton" Command="{Binding Path=creareNuovoEventoCommand}" ToolTip="Crea nuovo evento" Grid.Row="0" Grid.Column="1" >
+                    <Image Source="/Digiphoto.Lumen.UI;component/Resources/add-16x16.png" Width="16" Height="16" />
+                </Button>
+-->
+
+			<Button Name="refreshScarichiCardsButton" ToolTip="Rileggi" Command="{Binding Path=refreshScarichiCardsCommand}" CommandParameter="True" Grid.Row="0" Grid.Column="2">
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/refresh-16x16.png" Width="16" Height="16" />
+			</Button>
+		</Grid>
+	</Grid>        
+</lumM:UserControlBase>
