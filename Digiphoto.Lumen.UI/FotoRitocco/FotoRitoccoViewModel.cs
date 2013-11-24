@@ -1393,32 +1393,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				frpCalcolaDimensioniContenitore( (float)(msk.Width / msk.Height) );
 			}
 
-			// Mi serve per accendere i pulsanti di rifiuta e salva
-//			forseInizioModifiche();
-		}
-
-
-		// Devo creare una immagine modificata in base
-		internal void salvareImmagineIncorniciataWithArtista( RenderTargetBitmap bitmapIncorniciata ) {
-
-			BitmapFrame frame = BitmapFrame.Create( bitmapIncorniciata );
-
-			PngBitmapEncoder encoder = new PngBitmapEncoder();
-			encoder.Frames.Add( frame );
-
-			string tempFile = PathUtil.dammiTempFileConEstesione( "png" );
-
-			// ----- scrivo su disco
-			using( FileStream fs = new FileStream( tempFile, FileMode.Create ) ) {
-				encoder.Save( fs );
-				fs.Flush();
-			}
-
-			// Ora che il file su disco, devo portarlo dentro il database ed acquisirlo come una normale fotografia.
-			fotoRitoccoSrv.acquisisciImmagineIncorniciataWithArtista( tempFile );
-
-			// spengo tutto
-			resetEffettiAndTrasformazioni();
 		}
 
 		// Devo creare una immagine modificata in base
@@ -1797,7 +1771,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		private void gestisciNuovaFotoMsg( NuovaFotoMsg nuovaFotoMsg) {
 
-			if (nuovaFotoMsg.descrizione.Contains(Configurazione.ID_FOTOGRAFO_ARTISTA) || AiutanteFoto.isMaschera(nuovaFotoMsg.foto))
+//			if( AiutanteFoto.isMaschera(nuovaFotoMsg.foto) )
+			if( 1==1 )
 			{
 				// E' stata memorizzata una nuova fotografia che in realtà è una cornice
 				addFotoDaModificare( nuovaFotoMsg.foto );

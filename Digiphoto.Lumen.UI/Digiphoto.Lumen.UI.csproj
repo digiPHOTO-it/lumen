@@ -303,6 +303,10 @@
       <DependentUpon>SelettoreMetadatiView.xaml</DependentUpon>
     </Compile>
     <Compile Include="SelettoreMetadati\SelettoreMetadatiViewModel.cs" />
+    <Compile Include="SelettoreScaricoCard\SelettoreScaricoCardViewModel.cs" />
+    <Compile Include="SelettoreScaricoCard\SelettoreScaricoCard.xaml.cs">
+      <DependentUpon>SelettoreScaricoCard.xaml</DependentUpon>
+    </Compile>
     <Compile Include="src\Util\AiutanteUI.cs" />
     <Compile Include="Pubblico\GestioneGeometria\WpfScreen.cs" />
     <Compile Include="TrayIcon\ShowTrayIcon.xaml.cs">
@@ -474,6 +478,14 @@
     <Page Include="SelettoreMetadati\SelettoreMetadatiView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SelettoreScaricoCard\SelettoreScaricoCardResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SelettoreScaricoCard\SelettoreScaricoCard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="SelettoreStampantiInstallate\SelettoreStampantiInstallateDictionary.xaml">
       <SubType>Designer</SubType>

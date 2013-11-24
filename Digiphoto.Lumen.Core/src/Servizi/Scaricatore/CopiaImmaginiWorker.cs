@@ -56,7 +56,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		protected override void Work() {
 
 			int conta = 0;
-			DateTime oraInizio = DateTime.Now;
+			
 
 
 			_giornale.Debug( "Inizio a trasferire le foto da " + _paramScarica.cartellaSorgente );
@@ -124,7 +124,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			}
 
 			// Nel log scrivo anche il tempo che ci ho messo a scaricare le foto. Mi servirà per profilare
-			TimeSpan tempoImpiegato = DateTime.Now.Subtract( oraInizio );
+			TimeSpan tempoImpiegato = DateTime.Now.Subtract( _esitoScarico.tempo );
 			_giornale.Info( "Terminato trasferimento di " + conta + " foto. Tempo impiegato = " + tempoImpiegato );
 
 

@@ -210,6 +210,7 @@
     <Compile Include="src\Imaging\Geometrie.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="src\Servizi\EntityRepository\ScarichiCardsRepositorySrvImpl.cs" />
     <Compile Include="src\Servizi\Io\IGestoreImmagineSrv.cs">
       <SubType>Code</SubType>
     </Compile>

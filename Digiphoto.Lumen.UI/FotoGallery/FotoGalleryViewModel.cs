@@ -61,7 +61,8 @@ namespace Digiphoto.Lumen.UI {
 			metadati = new MetadatiFoto();
 
 			// Istanzio i ViewModel dei componenti di cui io sono composto
-			selettoreEventoFiltro = new SelettoreEventoViewModel();
+			selettoreEventoViewModel = new SelettoreEventoViewModel();
+			selettoreScaricoCardViewModel = new SelettoreScaricoCardViewModel();
 			selettoreEventoMetadato = new SelettoreEventoViewModel();
 			selettoreFotografoViewModel = new SelettoreFotografoViewModel();
 			selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel();
@@ -242,7 +243,12 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		public SelettoreEventoViewModel selettoreEventoFiltro {
+		public SelettoreEventoViewModel selettoreEventoViewModel {
+			get;
+			private set;
+		}
+
+		public SelettoreScaricoCardViewModel selettoreScaricoCardViewModel {
 			get;
 			private set;
 		}
@@ -945,10 +951,16 @@ namespace Digiphoto.Lumen.UI {
 				paramCercaFoto.fotografi = null;
 
 			// Aggiungo eventuale parametro l'evento
-			if( selettoreEventoFiltro.eventoSelezionato != null )
-				paramCercaFoto.eventi = new Evento [] { selettoreEventoFiltro.eventoSelezionato };
+			if( selettoreEventoViewModel.eventoSelezionato != null )
+				paramCercaFoto.eventi = new Evento [] { selettoreEventoViewModel.eventoSelezionato };
 			else
 				paramCercaFoto.eventi = null;
+
+			// Aggiungo eventuale parametro lo scarico card.
+			if( selettoreScaricoCardViewModel.scaricoCardSelezionato != null )
+				paramCercaFoto.scaricoCard = selettoreScaricoCardViewModel.scaricoCardSelezionato;
+			else
+				paramCercaFoto.scaricoCard = null;
 
 			// Gestisco la paginazione
 			if( paginaAttualeRicerca > 0 && paramCercaFoto.paginazione != null ) {
@@ -1005,7 +1017,8 @@ namespace Digiphoto.Lumen.UI {
 			OnPropertyChanged( "isSeraChecked" );
 
 
-			selettoreEventoFiltro.eventoSelezionato = null;
+			selettoreEventoViewModel.eventoSelezionato = null;
+			selettoreScaricoCardViewModel.scaricoCardSelezionato = null;
 			selettoreFotografoViewModel.fotografoSelezionato = null;
 
 

@@ -28,6 +28,9 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 		// Quindi lo appoggio qui perché ora mi serve qui.
 		// Eventualmente servire anche nel fotoritocco, lo sposterò più avanti.
 		bool modificaMetadatiFotografie( IEnumerable<Fotografia> fotografie, MetadatiFoto metadati );
+
+		IEnumerable<ScaricoCard> loadUltimiScarichiCards();
+
 	}
 
 	public class MetadatiFoto {

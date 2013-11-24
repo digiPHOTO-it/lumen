@@ -10,6 +10,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 		public EsitoScarico() {
 			fotoDaLavorare = new List<FileInfo>();
+			tempo = DateTime.Now;
 		}
 
 		public IList<FileInfo> fotoDaLavorare {
@@ -75,6 +76,15 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			set;
 		}
 
-
+		/// <summary>
+		/// Questo è il tempo di inizio dello scarico.
+		/// Questo valore verrà anche copiato e persistito sulla entità "Fotografia"
+		/// in modo da creare un legame tra lo scarico e tutte le sue foto.
+		/// </summary>
+		public DateTime tempo {
+			get;
+			set;
+		}
+		
 	}
 }

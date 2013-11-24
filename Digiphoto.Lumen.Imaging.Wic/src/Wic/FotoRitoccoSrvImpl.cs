@@ -259,7 +259,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			return ffout[0];
 		}
 
-
+/*
 		public void acquisisciImmagineIncorniciataWithArtista( string nomeFileImg ) {
 
 			// Per fare entrare la nuova foto, uso lo stesso servizio che uso normalmente per scaricare le memory-card
@@ -278,7 +278,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 				// Non devo attendere il completamento, perché quando scarico la singola foto, tutto avviene nello stesso thread
 			}
 		}
-	
+*/	
 		public void clonaImmagineIncorniciata(Fotografia fotoOrig, string nomeFileImg)
 		{
 			FileInfo fileInfoSrc = new FileInfo( fotoOrig.nomeFile );
@@ -340,7 +340,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 				// Notifico la lista delle foto da mandare in modifica
 				NuovaFotoMsg msg = new NuovaFotoMsg(this, fotoMsk);
-				msg.descrizione += Configurazione.ID_FOTOGRAFO_ARTISTA;
+//				msg.descrizione += Configurazione.ID_FOTOGRAFO_ARTISTA;
 				LumenApplication.Instance.bus.Publish(msg);
 			}
 		}

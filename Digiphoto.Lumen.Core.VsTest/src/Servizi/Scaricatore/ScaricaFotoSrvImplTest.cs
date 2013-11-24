@@ -55,7 +55,7 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Scaricatore {
 				_mario = Utilita.ottieniFotografoMario( dbContext );
 
 				// Se hai fatto bene la configurazione, il fotografo artista deve sempre esistere
-				_artista = dbContext.Fotografi.Single( f => f.id == Configurazione.ID_FOTOGRAFO_ARTISTA );
+				_artista = dbContext.Fotografi.Single( f => f.id == Configurazione.ID_FOTOGRAFO_DEFAULT );
 
 					// cerco l'evento con la descrizione
 				_ballo = (from e in dbContext.Eventi
@@ -192,7 +192,7 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Scaricatore {
 					ParamScarica param = new ParamScarica();
 					param.cartellaSorgente = cartella;
 					param.flashCardConfig = new Config.FlashCardConfig {
-						idFotografo = Configurazione.ID_FOTOGRAFO_ARTISTA
+						idFotografo = Configurazione.ID_FOTOGRAFO_DEFAULT
 					};
 
 					srv.scarica( param );
@@ -218,7 +218,7 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Scaricatore {
 				ParamScarica param = new ParamScarica();
 				param.cartellaSorgente = cartella;
 				param.flashCardConfig = new Config.FlashCardConfig {
-					idFotografo = Configurazione.ID_FOTOGRAFO_ARTISTA
+					idFotografo = Configurazione.ID_FOTOGRAFO_DEFAULT
 				};
 
 				_rimaniQui = true;

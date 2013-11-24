@@ -112,10 +112,10 @@ namespace Digiphoto.Lumen.Applicazione {
 
 			// Devo creare un fotografo pre-stabilito per assegnare le foto modificate con GIMP
 			IEntityRepositorySrv<Fotografo> repo = LumenApplication.Instance.getServizioAvviato<IEntityRepositorySrv<Fotografo>>();
-			Fotografo artista = repo.getById( Configurazione.ID_FOTOGRAFO_ARTISTA );
+			Fotografo artista = repo.getById( Configurazione.ID_FOTOGRAFO_DEFAULT );
 			if( artista == null ) {
 				artista = new Fotografo();
-				artista.id = Configurazione.ID_FOTOGRAFO_ARTISTA;
+				artista.id = Configurazione.ID_FOTOGRAFO_DEFAULT;
 				artista.umano = true;
 				artista.attivo = true;
 				artista.cognomeNome = artista.id;
@@ -186,6 +186,8 @@ namespace Digiphoto.Lumen.Applicazione {
 			creaAggiungiAvviaServizio<IEntityRepositorySrv<Fotografo>>();
 
 			creaAggiungiAvviaServizio<IEntityRepositorySrv<Evento>>();
+
+			creaAggiungiAvviaServizio<IEntityRepositorySrv<ScaricoCard>>();
 
             creaAggiungiAvviaServizio<IEntityRepositorySrv<FormatoCarta>>();
 

@@ -145,7 +145,7 @@
 
                 <lum:SelettoreEvento x:Name="selettoreEvento5" possoCreare="False"
 									 Margin="3,0,0,0"
-                                 DataContext="{Binding selettoreEventoFiltro}" />
+                                 DataContext="{Binding selettoreEventoViewModel}" />
 
 				<GroupBox Header="Fasi del giorno">
 					<StackPanel Orientation="Vertical" Margin="3,0,3,0" VerticalAlignment="Center">
@@ -169,6 +169,10 @@
 							  ToolTip="Indicare i numeri separati da virgola , oppure range con il meno -" />
 					</StackPanel>
 				</GroupBox>
+
+				<lum:SelettoreScaricoCard x:Name="selettoreScaricoCard1" 
+				                          Margin="3,0,0,0"
+				                          DataContext="{Binding selettoreScaricoCardViewModel}" />
 
 				<StackPanel Orientation="Vertical" Margin="3,0,3,0"  >
 
