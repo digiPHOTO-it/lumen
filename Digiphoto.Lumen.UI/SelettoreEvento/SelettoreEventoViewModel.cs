@@ -16,7 +16,7 @@ namespace Digiphoto.Lumen.UI {
 
 		public SelettoreEventoViewModel() {
 
-			eventi = new ObservableCollection<Evento>();
+			eventi = new ObservableCollectionEx<Evento>();
 
 			IObservable<EntityCambiataMsg> observable = LumenApplication.Instance.bus.Observe<EntityCambiataMsg>();
 			observable.Subscribe( this );

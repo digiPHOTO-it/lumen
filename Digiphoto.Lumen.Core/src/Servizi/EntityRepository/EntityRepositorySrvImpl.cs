@@ -48,7 +48,6 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 
 
 
-
 		public virtual void update( ref TEntity entita ) {
 
 			OrmUtil.forseAttacca<TEntity>( ref entita );

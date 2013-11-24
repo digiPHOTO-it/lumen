@@ -140,6 +140,12 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 				query = query.Where( ff => listaIds.Contains( ff.evento.id ) );
 			}
 
+
+			// ----- Filtro scarico card
+			if( param.scaricoCard != null ) {
+				query = query.Where( ff => ff.dataOraAcquisizione == param.scaricoCard.tempo );
+			}
+
 			// ----- Filtro fotografo
 			if( param.fotografi != null ) {
 				// Siccome ancora linq non supporta confronto con entità, devo estrarre gli id

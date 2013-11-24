@@ -54,7 +54,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		Fotografia [] modificaConProgrammaEsterno( Fotografia [] fotografie );
 		Fotografia modificaConProgrammaEsterno( Fotografia fotografia );
 
-		void acquisisciImmagineIncorniciataWithArtista( string nomeFileImg );
+//		void acquisisciImmagineIncorniciataWithArtista( string nomeFileImg );
 
 		void clonaImmagineIncorniciata(Fotografia fotoOrig, string nomeFileImg);
 

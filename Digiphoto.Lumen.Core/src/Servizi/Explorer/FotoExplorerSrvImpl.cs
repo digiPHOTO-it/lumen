@@ -210,5 +210,12 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			UnitOfWorkScope.CurrentObjectContext.ObjectContext.ObjectStateManager.ChangeObjectState(f, EntityState.Modified);
 		}
 
+		public IEnumerable<ScaricoCard> loadUltimiScarichiCards() {
+
+			DateTime giornoLim = DateTime.Today.AddDays( -2 );
+			return UnitOfWorkScope.CurrentObjectContext.ScarichiCards.Include( "fotografo" ).Where( sc => sc.giornata >= giornoLim ).OrderByDescending( sc => sc.tempo );
+		}
+
+
 	}
 }

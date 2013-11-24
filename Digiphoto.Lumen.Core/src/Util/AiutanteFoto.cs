@@ -252,14 +252,6 @@ namespace Digiphoto.Lumen.Util {
 			return File.Exists( fileName );
 		}
 
-		/// <summary>
-		/// Mi dice se la foto in esame è una maschera generata tramite fotoritocco.
-		/// </summary>
-		/// <param name="f"></param>
-		/// <returns>true = è una maschera</returns>
-		/// <returns>false = è una foto normale</returns>
-		public static bool isMaschera( Fotografia f ) {
-			return f.fotografo != null && Configurazione.ID_FOTOGRAFO_ARTISTA.Equals( f.fotografo.id );
-		}
+
 	}
 }

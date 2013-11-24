@@ -127,7 +127,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			ElaboratoreFotoAcquisite elab = new ElaboratoreFotoAcquisite( esitoScarico.fotoDaLavorare, _paramScarica );
 			statoScarica = StatoScarica.Provinatura;
-			elab.elabora();
+			elab.elabora( esitoScarico.tempo );
 
 			_giornale.Debug( "Elaborazione terminata. Inserite " + elab.conta + " foto nel database" );
 
@@ -226,25 +226,22 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			bool riuscito = false;
 
-			// Se il fotografo è l'ARTiSTA, non battezzo nulla.
-			if( param.flashCardConfig.idFotografo != Configurazione.ID_FOTOGRAFO_ARTISTA ) {
 
-				// Eseguo il controllo soltanto se il disco è rimovibile
-				DriveInfo driveInfo = new DriveInfo( param.cartellaSorgente );
-				if( driveInfo.DriveType == DriveType.Removable ) {
+			// Eseguo il controllo soltanto se il disco è rimovibile
+			DriveInfo driveInfo = new DriveInfo( param.cartellaSorgente );
+			if( driveInfo.DriveType == DriveType.Removable ) {
 
-					try {
+				try {
 
-						string nomeFileConfig = Path.Combine( param.cartellaSorgente, FlashCardConfig.NOMEFILECONFIG );
+					string nomeFileConfig = Path.Combine( param.cartellaSorgente, FlashCardConfig.NOMEFILECONFIG );
 
-						FlashCardConfig.serialize( nomeFileConfig, param.flashCardConfig );
+					FlashCardConfig.serialize( nomeFileConfig, param.flashCardConfig );
 
-						riuscito = true;
+					riuscito = true;
 
-					} catch( Exception ee ) {
-						// pazienza. Non è grave.
-						_giornale.Debug( "Non sono riuscito a battezzare la flash card", ee );
-					}
+				} catch( Exception ee ) {
+					// pazienza. Non è grave.
+					_giornale.Debug( "Non sono riuscito a battezzare la flash card", ee );
 				}
 			}
 

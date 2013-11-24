@@ -18,6 +18,7 @@ using Digiphoto.Lumen.Config;
 using ExifLib;
 using Digiphoto.Lumen.Imaging.Correzioni;
 using Digiphoto.Lumen.Servizi.Ritoccare;
+using Digiphoto.Lumen.Servizi.EntityRepository;
 
 namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
@@ -48,7 +49,12 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
         }
 
 
-		public void elabora() {
+		/// <summary>
+		/// Il parametro passato "tempoScarico" deve essere ribaltato su tutte le foto, perché 
+		/// serve a creare una relazione implicita 1-n tra lo ScaricoCard e Fotografia
+		/// </summary>
+		/// <param name="tempoScarico"></param>
+		public void elabora( DateTime tempoScarico ) {
 
 			// carico il fotografo che rimane uguale per tutta questa sessione di elaborazione
 			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
@@ -75,7 +81,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			foreach( FileInfo fileInfo in _listaFiles ) {
 
-				Fotografia foto = aggiungiFoto( fileInfo, ++conta + ultimoNumFoto );
+				Fotografia foto = aggiungiFoto( fileInfo, ++conta + ultimoNumFoto, tempoScarico );
 
 				AiutanteFoto.creaProvinoFoto( fileInfo.FullName, foto );
 
@@ -110,28 +116,23 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			_giornale.Info( "Terminato di lavorare " + _listaFiles.Count + " foto appena acqusite" );
 
-			incrementaTotaleFotoScaricate();
+			incrementaTotaleFotoScaricate( tempoScarico );
 		}
 
 		/** Quando ho finito di scaricar le foto, aggiorno il totale in apposita tabella */
-		private void incrementaTotaleFotoScaricate() {
+		private void incrementaTotaleFotoScaricate( DateTime tempoScarico ) {
 
-			// Se il fotografo è quello fasullo, non scrivo niente.
-			if( this._fotografo.id == Digiphoto.Lumen.Config.Configurazione.ID_FOTOGRAFO_ARTISTA )
-				return;
-
-			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
 			ScaricoCard scaricoCard = new ScaricoCard();
 			scaricoCard.id = Guid.NewGuid();
 			scaricoCard.totFoto = (short)numeroFotoAcquisite();
 
 			scaricoCard.fotografo = this._fotografo;
-			scaricoCard.tempo = DateTime.Now;
+			scaricoCard.tempo = tempoScarico;  // Deve essere uguale al tempo indicato sulla fotografia	
 			scaricoCard.giornata = LumenApplication.Instance.stato.giornataLavorativa;
 
-			objContext.ScarichiCards.Add( scaricoCard );
-
-			objContext.SaveChanges();
+			IEntityRepositorySrv<ScaricoCard> erep = LumenApplication.Instance.getServizioAvviato<IEntityRepositorySrv<ScaricoCard>>();
+			erep.addNew( scaricoCard );
+			erep.saveChanges();
 		}
 
 
@@ -140,7 +141,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		 * dato il nome del file della immagine, creo l'oggetto Fotografia e lo aggiungo al suo contenitore
 		 * (in pratica faccio una insert nel database).
 		 */
-		private Fotografia aggiungiFoto( FileInfo fileInfo, int numFotogramma ) {
+		private Fotografia aggiungiFoto( FileInfo fileInfo, int numFotogramma, DateTime tempoScarico ) {
 
 			// Ad ogni foto persisto.
 			// Se per esempio ho 500 foto da salvare, non posso permettermi che se una salta, perdo anche le altre 499 !
@@ -154,7 +155,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 					foto = new Fotografia();
 					foto.id = Guid.NewGuid();
-					foto.dataOraAcquisizione = fileInfo.CreationTime;
+					foto.dataOraAcquisizione = tempoScarico;
 					foto.fotografo = _fotografo;
 					foto.evento = _evento;
 					foto.didascalia = _paramScarica.flashCardConfig.didascalia;
