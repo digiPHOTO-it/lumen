@@ -122,9 +122,16 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		public void OnNext( EntityCambiataMsg value ) {
+
 			// Qualcuno ha spataccato nella tabella degli ScarichiCards. Rileggo tutto
 			if( value.type == typeof( ScaricoCard ) ) {
-				refreshScarichiCardsCommand.Execute( false );
+
+				App.Current.Dispatcher.BeginInvoke(
+					new Action( () => {
+						refreshScarichiCardsCommand.Execute( false );
+					}
+				) );
+
 			}
 		}
 	}
