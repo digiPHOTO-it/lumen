@@ -509,7 +509,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			private set;
 		}
 
-		public const int fdmFotoPerPagina = 2*5;
+		public const int fdmFotoPerPagina = 2*4;
 
 		private int _fdmTotPagine;
 		public int fdmTotPagine { 

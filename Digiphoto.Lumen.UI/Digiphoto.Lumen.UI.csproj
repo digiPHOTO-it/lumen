@@ -211,7 +211,9 @@
     <Compile Include="Converters\FasiDelGiornoConverter.cs" />
     <Compile Include="Converters\ImageSourceConverter.cs" />
     <Compile Include="Converters\MathConverter.cs" />
-    <Compile Include="Converters\NumericToBooleanConverter.cs" />
+    <Compile Include="Converters\ProgressToVisibilityConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Converters\RectangleSizeConverter.cs" />
     <Compile Include="Converters\SumConverter.cs" />
     <Compile Include="Converters\PercentualeConverterSlideY.cs" />

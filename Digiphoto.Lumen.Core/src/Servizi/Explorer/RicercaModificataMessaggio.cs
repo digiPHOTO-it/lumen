@@ -8,6 +8,11 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 	
 	public class RicercaModificataMessaggio : Messaggio {
 
+		public bool abortito {
+			get;
+			set;
+		}
+
 		public RicercaModificataMessaggio( object sender ) : base( sender ) {
 		}
 	}

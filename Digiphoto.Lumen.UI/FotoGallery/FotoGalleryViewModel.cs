@@ -82,10 +82,11 @@ namespace Digiphoto.Lumen.UI {
 				_bkgIdrata.WorkerReportsProgress = false;  // per ora non mi complico la vita
 				_bkgIdrata.WorkerSupportsCancellation = true; // per ora non mi complico la vita
 				_bkgIdrata.DoWork += new DoWorkEventHandler( bkgIdrata_DoWork );
-
+				_bkgIdrata.RunWorkerCompleted += new RunWorkerCompletedEventHandler( bkgIdrata_RunWorkerCompleted );
+				_bkgIdrata.ProgressChanged += new ProgressChangedEventHandler( bkgIdrata_ProgressChanged );
+				_bkgIdrata.WorkerReportsProgress = true;
 			}
 		}
-
 
 		/// <summary>
 		/// Carico tutti i formati carta che sono abbinati alle stampanti installate
@@ -484,6 +485,19 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		int _idrataProgress;
+		public int idrataProgress {
+			get {
+				return _idrataProgress;
+			}
+			private set {
+				if( _idrataProgress != value ) {
+					_idrataProgress = value;
+					OnPropertyChanged( "idrataProgress" );
+				}
+			}
+		}
+
 		#endregion Proprietà
 
 
@@ -834,9 +848,16 @@ namespace Digiphoto.Lumen.UI {
 		private void eseguireRicerca() {
 
 			// Se avevo un worker già attivo, allora provo a cancellarlo.
-			if( _bkgIdrata.WorkerSupportsCancellation == true && _bkgIdrata.IsBusy )
+			if( _bkgIdrata.WorkerSupportsCancellation == true && _bkgIdrata.IsBusy ) {
+				_giornale.Debug( "idratatore impegnato. Lo stoppo" );
 				_bkgIdrata.CancelAsync();
-				
+				return;
+			}
+
+			idrataProgress = 0;
+
+			// while( _bkgIdrata.IsBusy )
+			//	System.Threading.Thread.Sleep( 2000 );
 
 			completaParametriRicerca();
 
@@ -916,10 +937,15 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		private void bkgIdrata_DoWork( object sender, DoWorkEventArgs e ) {
-			
+
+			_giornale.Debug( "Inizio a idratare le foto in background" );
+
 			BackgroundWorker worker = sender as BackgroundWorker;
 
 			int tot = fotoExplorerSrv.fotografie.Count;
+			int percPrec = 0;
+			worker.ReportProgress( percPrec );
+
 
 			for( int ii = 0; (ii < tot); ii++ ) {
 				if( (worker.CancellationPending == true) ) {
@@ -928,13 +954,36 @@ namespace Digiphoto.Lumen.UI {
 				} else {
 
 					// Perform a time consuming operation and report progress.
-					AiutanteFoto.idrataImmaginiFoto( fotoExplorerSrv.fotografie[ii], IdrataTarget.Provino );
-					// worker.ReportProgress( 123 );
+					AiutanteFoto.idrataImmaginiFoto( fotoExplorerSrv.fotografie[ii], IdrataTarget.Provino );						
+	
+					// Aggiorno la percentuale di progressi di idratazione. Esiste una ProgressBar che si abilita all'uopo.
+					int perc = (ii + 1) * 100 / tot;
+					if( percPrec != perc ) {
+						worker.ReportProgress( perc );
+						percPrec = perc;
+					}
 				}
 			}
 
-			LumenApplication.Instance.bus.Publish( new RicercaModificataMessaggio( this ) );
+			// Se sono arrivato in fondo, comunico il progresso massimo giusto per sicurezza.
+			if( ! e.Cancel )
+				worker.ReportProgress( 100 );
+
 		}
+
+		void bkgIdrata_RunWorkerCompleted( object sender, RunWorkerCompletedEventArgs e ) {
+
+			_giornale.Debug( "Terminato di idratare le foto in background: abortito = " + e.Cancelled );
+
+			RicercaModificataMessaggio msg = new RicercaModificataMessaggio( this );
+			msg.abortito = e.Cancelled;
+			LumenApplication.Instance.bus.Publish( msg );
+		}
+
+		void bkgIdrata_ProgressChanged( object sender, ProgressChangedEventArgs e ) {
+			idrataProgress = e.ProgressPercentage;
+		}
+
 
 		/// <summary>
 		/// Sistemo i parametri e gestisco la paginazione
