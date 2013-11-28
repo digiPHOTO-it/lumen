@@ -2,9 +2,9 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:log="clr-namespace:Digiphoto.Lumen.UI.Logging"
-        Title="LoggingShowWindows" Height="479" Width="719"
+        Title="LoggingShowWindows" Height="510" Width="810"
 		Topmost="True">
-    <Grid Height="450">
+    <Grid>
 		<log:NotificationView/>
 	</Grid>
 </Window>
