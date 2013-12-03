@@ -25,7 +25,7 @@
                 <Image Name="image" Source="{Binding Path=imageSourceProvino}" />
             <Label Content="{Binding Path=idFoto}" Height="24" 
                HorizontalAlignment="Right" 
-               VerticalAlignment="Bottom"
+               VerticalAlignment="Top"
                Name="idFotolabel" Style="{StaticResource idFotoLabelStyle}"  />
             </Grid>
 

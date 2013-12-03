@@ -211,7 +211,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 				textNumero.Foreground = coloreFg;
 				textNumero.Background = coloreBg;
 				FixedPage.SetTop( textNumero, 1 );
-				FixedPage.SetLeft( textNumero, 1 );
+				FixedPage.SetRight( textNumero, 1 );
 				page1.Children.Add( textNumero );
 			}
 
