@@ -322,19 +322,6 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 				c.Children.Add(textMacchiaProvini);
 			}
 
-			// Numero della foto
-			if( true )
-			{
-				TextBlock textNumero = new TextBlock();
-				textNumero.Text = foto.etichetta;
-				textNumero.FontSize = sizeLatoH / 10; // 30pt text
-				textNumero.Foreground = new SolidColorBrush(Colors.Black); ;
-				textNumero.Background = new SolidColorBrush(Colors.Orange); ;
-				textNumero.SetValue(Canvas.TopProperty, (Double)(sizeLatoH * (y)) - 2 * textNumero.FontSize + testataH);
-				textNumero.SetValue(Canvas.LeftProperty, (Double)(sizeLatoW * (x - 1)) + riquadroW - MeasureString(textNumero).Width);
-				c.Children.Add(textNumero);
-			}
-
 			// Giornata
 			if( true ) 
 			{
@@ -343,9 +330,22 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 				textGiorno.FontSize = sizeLatoH / 30; // 30pt text
 				textGiorno.Foreground = coloreFg;
 				textGiorno.Background = coloreBg;
-				textGiorno.SetValue(Canvas.TopProperty, (Double)(sizeLatoH * (y - 1)) + testataH);
+				textGiorno.SetValue(Canvas.TopProperty, (Double)(sizeLatoH * (y)) - 2 * textGiorno.FontSize + testataH);
 				textGiorno.SetValue(Canvas.LeftProperty, (Double)(sizeLatoW * (x - 1)) + riquadroW - MeasureString(textGiorno).Width);
 				c.Children.Add(textGiorno);
+			}
+
+			// Numero della foto
+			if( true ) 
+			{
+				TextBlock textNumero = new TextBlock();
+				textNumero.Text = foto.etichetta;
+				textNumero.FontSize = sizeLatoH / 10; // 30pt text
+				textNumero.Foreground = new SolidColorBrush(Colors.Black);
+				textNumero.Background = new SolidColorBrush(Colors.Orange);
+				textNumero.SetValue(Canvas.TopProperty, (Double)(sizeLatoH * (y - 1)) + testataH);
+				textNumero.SetValue(Canvas.LeftProperty, (Double)(sizeLatoW * (x - 1)) + riquadroW - MeasureString(textNumero).Width);
+				c.Children.Add(textNumero);
 			}
 
 			// Operatore
