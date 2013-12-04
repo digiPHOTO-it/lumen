@@ -16,6 +16,7 @@ using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Servizi.EntityRepository;
 using System.IO;
 using log4net;
+using System.Windows;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -69,9 +70,20 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private FaseDelGiorno? _faseDelGiorno;
 		public FaseDelGiorno? faseDelGiorno {
-			get;
-			set;
+			get
+			{
+				return _faseDelGiorno;
+			}
+			set
+			{
+				if (value != _faseDelGiorno)
+				{
+					_faseDelGiorno = value;
+					OnPropertyChanged("faseDelGiorno");
+				}
+			}
 		}
 
 		public Fotografo fotografo {
@@ -192,10 +204,15 @@ namespace Digiphoto.Lumen.UI {
 
 		#region Metodi
 		private void scaricare() {
+			// Verifico fase del giorno
+			if (controllaFaseDelGiorno() == false)
+				return;
 
 			// Per sicurezza domando se va tutto bene.
 			if( chiediConfermaScarico() == false )
 				return;
+
+			
 
 			ParamScarica paramScarica = new ParamScarica();
 
@@ -217,7 +234,33 @@ namespace Digiphoto.Lumen.UI {
 			scaricatoreFotoSrv.scarica( paramScarica );
 		}
 
-		private bool chiediConfermaScarico() {
+		private bool controllaFaseDelGiorno()
+		{
+			if (faseDelGiorno != null)
+				return true;
+
+			FaseDelGiorno faseDelGiornoCorrente = FaseDelGiornoUtil.getFaseDelGiorno(DateTime.Now);
+
+			StringBuilder msg = new StringBuilder("Attenzione : non hai assegnato nessuna fase del giorno");
+			msg.AppendFormat(".\nVuoi assegnare automaticamente la fase {0} a tutte le foto che si stanno per scaricare?", faseDelGiornoCorrente.ToString().ToUpper());
+
+			MessageBoxResult procediPure = MessageBoxResult.Cancel;
+			dialogProvider.ShowConfirmationAnnulla( msg.ToString(), "Richiesta conferma",
+				( confermato ) => {
+					procediPure = confermato;
+
+				} );
+
+			if (procediPure == MessageBoxResult.Yes)
+				faseDelGiorno = faseDelGiornoCorrente;
+
+			return (procediPure == MessageBoxResult.Yes) || 
+				(procediPure == MessageBoxResult.No);
+		}
+
+
+		private bool chiediConfermaScarico()
+		{
 
 			StringBuilder msg = new StringBuilder( "Confermare scarico foto:\n" );
 			msg.Append( "\nCartella  = " ).Append( selettoreCartellaViewModel.cartellaSelezionata );
@@ -229,7 +272,8 @@ namespace Digiphoto.Lumen.UI {
 
 			bool procediPure = false;
 			dialogProvider.ShowConfirmation( msg.ToString(), "Richiesta conferma",
-				( confermato ) => {
+				(confermato) =>
+				{
 					procediPure = confermato;
 				} );
 
