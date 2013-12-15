@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="c0fc141ad77b4ef695f3c8e7ac1031af" Name="Diagram1" ZoomLevel="105" >
+        <EntityTypeShape EntityType="LumenModel.InfoFissa" Width="1.5" PointX="0.5" PointY="0.75" />
+        <EntityTypeShape EntityType="LumenModel.Evento" Width="1.5" PointX="6.125" PointY="2.625" />
+        <EntityTypeShape EntityType="LumenModel.Fotografia" Width="1.5" PointX="8.625" PointY="2.25" />
+        <AssociationConnector Association="LumenModel.EventoFotografia" />
+        <EntityTypeShape EntityType="LumenModel.Fotografo" Width="1.5" PointX="6.125" PointY="4.625" />
+        <AssociationConnector Association="LumenModel.FotografoFotografia" />
+        <EntityTypeShape EntityType="LumenModel.Giornata" Width="1.5" PointX="0.5" PointY="4" />
+        <EntityTypeShape EntityType="LumenModel.ScaricoCard" Width="1.5" PointX="6.125" PointY="7.375" />
+        <AssociationConnector Association="LumenModel.FotografoScaricoCard" />
+        <EntityTypeShape EntityType="LumenModel.FormatoCarta" Width="1.5" PointX="9.75" PointY="6.875" />
+        <EntityTypeShape EntityType="LumenModel.ConsumoCartaGiornaliero" Width="1.5" PointX="12.5" PointY="7.25" />
+        <AssociationConnector Association="LumenModel.FormatoCartaConsumoCartaGiornaliero" />
+        <EntityTypeShape EntityType="LumenModel.Carrello" Width="1.5" PointX="20" PointY="1.125" />
+        <EntityTypeShape EntityType="LumenModel.RigaCarrello" Width="1.5" PointX="17.125" PointY="1.5" />
+        <AssociationConnector Association="LumenModel.CarrelloRigaCarrello" />
+        <AssociationConnector Association="LumenModel.FotografoRigaCarrello" />
+        <AssociationConnector Association="LumenModel.FotografiaRigaCarrello" />
+        <AssociationConnector Association="LumenModel.FormatoCartaRigaCarrello" />
+        <EntityTypeShape EntityType="LumenModel.IncassoFotografo" Width="1.5" PointX="22.625" PointY="1.875" />
+        <AssociationConnector Association="LumenModel.CarrelloIncassoFotografo" />
+        <AssociationConnector Association="LumenModel.FotografoIncassoFotografo" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

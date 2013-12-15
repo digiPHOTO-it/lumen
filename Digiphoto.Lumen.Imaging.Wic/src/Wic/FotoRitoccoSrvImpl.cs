@@ -323,6 +323,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 					// vedono il percorso condiviso in maniera differente.
 					fotoMsk.nomeFile = Path.Combine(Path.GetDirectoryName(fotoOrig.nomeFile), nomeFotoClone);
 
+					
 					objContext.Fotografie.Add(fotoMsk);
 
 					objContext.SaveChanges();

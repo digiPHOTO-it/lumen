@@ -129,6 +129,7 @@ namespace Digiphoto.Lumen.UI
 
 			// Salvo nel database
 			formatoCartaReporitorySrv.addNew( nuovoFormatoCarta );
+			formatoCartaReporitorySrv.saveChanges();
 
 			// Aggiungo alla collezione visuale (per non dover rifare la query)
 			formatiCarta.Add( nuovoFormatoCarta );

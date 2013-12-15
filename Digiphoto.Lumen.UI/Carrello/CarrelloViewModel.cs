@@ -56,10 +56,8 @@ namespace Digiphoto.Lumen.UI
 					carrelloCorrente.giornata = LumenApplication.Instance.stato.giornataLavorativa;
 
 				
-				decimal prezzoTotaleIntero = 0;
-				foreach(RiCaFotoStampata riCaFotoStampata in venditoreSrv.carrello.righeCarrello){
-					prezzoTotaleIntero += riCaFotoStampata.prezzoNettoTotale;
-				}
+				decimal prezzoTotaleIntero = venditoreSrv.carrello.righeCarrello.Sum( r => r.prezzoNettoTotale );
+
 
 				// Non voglio ricercare nulla fino a che l'utente non me lo chiede
 //				ricercaPoiCreaViewCarrelliSalvati();
@@ -99,7 +97,7 @@ namespace Digiphoto.Lumen.UI
 			}
 			else
 			{
-				RiCaFotoStampateCv = CollectionViewSource.GetDefaultView(carrelloCorrente.righeCarrello.OfType<RiCaFotoStampata>());
+				RiCaFotoStampateCv = CollectionViewSource.GetDefaultView(carrelloCorrente.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_STAMPA ));
 			}
 			OnPropertyChanged( "RiCaFotoStampateCv" );
 		}
@@ -120,20 +118,6 @@ namespace Digiphoto.Lumen.UI
 		{
 			get;
 			private set;
-		}
-
-
-		/// <summary>
-		/// Siccome di riga disco masterizzato ne posso avere una sola, mi creo una property apposita.
-		/// </summary>
-		public RiCaDiscoMasterizzato ricaDiscoMasterizzato {
-			get {
-				if( carrelloCorrente == null )
-					return null;
-				else {
-					return carrelloCorrente.righeCarrello.OfType<RiCaDiscoMasterizzato>().SingleOrDefault();
-				}
-			}
 		}
 
 		public ICollectionView CarrelliSalvatiCv
@@ -401,7 +385,7 @@ namespace Digiphoto.Lumen.UI
 		/// </summary>
 		public int sommatoriaQtaStampe {
 			get {
-				return carrelloCorrente.righeCarrello.OfType<RiCaFotoStampata>().Sum( r => r.quantita );
+				return carrelloCorrente.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_STAMPA ).Sum( r => r.quantita );
 			}
 		}
 
@@ -603,7 +587,7 @@ namespace Digiphoto.Lumen.UI
 //			ricercaPoiCreaViewCarrelliSalvati();
 
 			OnPropertyChanged("PrezzoTotaleForfettario");
-			OnPropertyChanged( "ricaDiscoMasterizzato" );
+			
 			OnPropertyChanged( "contaFotoMasterizzate" );
 			OnPropertyChanged( "sommatoriaQtaStampe" );
 			OnPropertyChanged( "abilitaEliminaRigaFoto" );
@@ -651,15 +635,12 @@ namespace Digiphoto.Lumen.UI
 
 					foreach( RigaCarrello r in carrelloCorrente.righeCarrello ) {
 
-						if (r is RiCaFotoStampata)
-						{
-							RiCaFotoStampata rfs = (RiCaFotoStampata)r;
-							totoleFotoStampate += (short)rfs.quantita;
+						if (r.discriminator == Carrello.TIPORIGA_STAMPA) {
+							totoleFotoStampate += (short)r.quantita;
 						}
 
-						if( r is RiCaDiscoMasterizzato ) {
-							RiCaDiscoMasterizzato rdm = (RiCaDiscoMasterizzato)r;
-							totaleFotoMasterizzate = (short)rdm.totFotoMasterizzate;
+						if( r.discriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
+							totoleFotoStampate += (short)r.quantita;  // Deve essere sempre 1.
 						}
 					}
 
@@ -801,13 +782,11 @@ namespace Digiphoto.Lumen.UI
 			foreach (RigaCarrello rigaCarrello in carrelloCorrente.righeCarrello)
 			{
 				//Verifico che la riga sia di tipo RiCaFotoStampata
-				RiCaFotoStampata riCaFotoStampata = rigaCarrello as RiCaFotoStampata;
-				if (rigaCarrello != null && riCaFotoStampata!=null)
+				if (rigaCarrello.discriminator == Carrello.TIPORIGA_STAMPA)
 				{
-					riCaFotoStampata.prezzoNettoTotale = riCaFotoStampata.quantita * riCaFotoStampata.prezzoLordoUnitario;
-					prezzoTotaleIntero += riCaFotoStampata.prezzoNettoTotale;
+					rigaCarrello.prezzoNettoTotale = rigaCarrello.quantita * rigaCarrello.prezzoLordoUnitario;
+					prezzoTotaleIntero += rigaCarrello.prezzoNettoTotale;
 				}
-				
 			}
 			PrezzoTotaleIntero = prezzoTotaleIntero;
 			PrezzoTotaleForfettario = prezzoTotaleIntero;
@@ -846,16 +825,7 @@ namespace Digiphoto.Lumen.UI
 
 		private void eliminaRiga()
 		{
-			RiCaFotoStampata riCaFotoStampata = RiCaFotoStampateCv.CurrentItem as RiCaFotoStampata;
-			//Testo il cast se è riuscito allora la riga è di tipo RiCaFotoStampata altrimenti e di tipo RiCaDiscoMasterizzato
-			if (riCaFotoStampata != null)
-			{
-				venditoreSrv.removeRigaCarrello(RiCaFotoStampateCv.CurrentItem as RiCaFotoStampata);
-			}
-			else
-			{
-				venditoreSrv.removeRigaCarrello(RiCaFotoStampateCv.CurrentItem as RiCaDiscoMasterizzato);
-			}
+			venditoreSrv.removeRigaCarrello( RiCaFotoStampateCv.CurrentItem as RigaCarrello );
 			updateGUI();
 		}
 
@@ -865,7 +835,7 @@ namespace Digiphoto.Lumen.UI
 				return;
 			if (chiediConfermaEliminazioneDischetto() == false)
 				return;
-			venditoreSrv.removeRigaCarrello( ricaDiscoMasterizzato );
+			venditoreSrv.removeRigheCarrello( Carrello.TIPORIGA_MASTERIZZATA );
 			updateGUI();
 		}
 
@@ -917,12 +887,12 @@ namespace Digiphoto.Lumen.UI
 				OrmUtil.forseAttacca<Carrello>( "Carrelli", ref c );
 
 				foreach( RigaCarrello ric in carrelloCorrente.righeCarrello ) {
-					if( ric is RiCaFotoStampata ) {
+					if( ric.discriminator == Carrello.TIPORIGA_STAMPA ) {
 						if( (worker.CancellationPending == true) ) {
 							e.Cancel = true;
 							break;
 						} else {
-							Fotografia foto = (ric as RiCaFotoStampata).fotografia;
+							Fotografia foto = ric.fotografia;
 							if( foto != null )
 								AiutanteFoto.idrataImmaginiFoto( foto, IdrataTarget.Provino );
 						}
@@ -1021,7 +991,7 @@ namespace Digiphoto.Lumen.UI
 		private void updateQuantitaCommand(object param)
 		{
 			String type = (string)param;
-			RiCaFotoStampata rica = RiCaFotoStampateCv.CurrentItem as RiCaFotoStampata;
+			RigaCarrello rica = RiCaFotoStampateCv.CurrentItem as RigaCarrello;
 
 			int index = RigheCarrelloCvSelectedIndex;
 			

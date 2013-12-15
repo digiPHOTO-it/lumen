@@ -44,9 +44,9 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 		private ParamScarica _paramScarica;
 
-		
 
-//		List<Fotografo> _fotografiAttivi;
+
+		//		List<Fotografo> _fotografiAttivi;
 		public IEnumerable<Fotografo> fotografiAttivi {
 			get {
 				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
@@ -86,7 +86,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			seNonPossoScaricareSpaccati();
 
 			_copiaImmaginiWorker = new CopiaImmaginiWorker( paramScarica, elaboraFotoAcquisite );
-			
+
 			// Lancio il worker che scarica ed elabora le foto.
 			bool usaThreadSeparato = String.IsNullOrEmpty( paramScarica.nomeFileSingolo );
 			if( usaThreadSeparato )
@@ -96,12 +96,12 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			statoScarica = StatoScarica.Scaricamento;
 
-			ScaricoFotoMsg scaricoFotoMsg = new ScaricoFotoMsg(this, "Inizio Scarico Foto");
+			ScaricoFotoMsg scaricoFotoMsg = new ScaricoFotoMsg( this, "Inizio Scarico Foto" );
 			scaricoFotoMsg.esitoScarico = new EsitoScarico();
 			scaricoFotoMsg.fase = FaseScaricoFoto.InizioScarico;
 			scaricoFotoMsg.sorgente = _paramScarica.cartellaSorgente != null ? _paramScarica.cartellaSorgente : _paramScarica.nomeFileSingolo;
 			scaricoFotoMsg.showInStatusBar = true;
-			pubblicaMessaggio(scaricoFotoMsg);
+			pubblicaMessaggio( scaricoFotoMsg );
 		}
 
 
@@ -111,7 +111,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			scaricoFotoMsg.esitoScarico = esitoScarico;
 			// Finito: genero un evento per notificare che l'utente può togliere la flash card.
 			scaricoFotoMsg.fase = FaseScaricoFoto.FineScarico;
-			scaricoFotoMsg.sorgente =  _paramScarica.cartellaSorgente != null ? _paramScarica.cartellaSorgente : _paramScarica.nomeFileSingolo;
+			scaricoFotoMsg.sorgente = _paramScarica.cartellaSorgente != null ? _paramScarica.cartellaSorgente : _paramScarica.nomeFileSingolo;
 			scaricoFotoMsg.showInStatusBar = true;
 
 			// battezzo la flashcard al fotografo corrente
@@ -141,7 +141,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			// Chiudo il worker che ha finito il suo lavoro
 			// _copiaImmaginiWorker.Stop();
-			
+
 		}
 
 
@@ -226,6 +226,8 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			bool riuscito = false;
 
+			if( param.cartellaSorgente == null )
+				return riuscito;
 
 			// Eseguo il controllo soltanto se il disco è rimovibile
 			DriveInfo driveInfo = new DriveInfo( param.cartellaSorgente );
@@ -278,7 +280,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 					// Notifico tutti
 					CambioStatoMsg msg = new CambioStatoMsg( this );
-					msg.nuovoStato = (int) _statoScarica;
+					msg.nuovoStato = (int)_statoScarica;
 					msg.descrizione = this.GetType().Name + ": nuovo statoScarica -> " + _statoScarica.ToString();
 					pubblicaMessaggio( msg );
 				}

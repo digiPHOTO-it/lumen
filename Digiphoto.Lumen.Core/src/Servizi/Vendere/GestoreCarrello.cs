@@ -86,7 +86,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		public void caricaCarrello( Guid idCarrello)
 		{
 			this.carrello = UnitOfWorkScope.CurrentObjectContext.Carrelli.Include( "righeCarrello" ).Single( r => r.id == idCarrello );
-			Digiphoto.Lumen.Database.OrmUtil.vediEntitaInCache( UnitOfWorkScope.CurrentObjectContext, typeof( Carrello ) );
+
+	//		Digiphoto.Lumen.Database.OrmUtil.vediEntitaInCache( UnitOfWorkScope, typeof( Carrello ) );
 			isStatoModifica = true;
 		}
 
@@ -113,7 +114,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			return errore;
 		}
 
-		public void aggiungiRiga( RiCaFotoStampata riga ) {
+		public void aggiungiRiga( RigaCarrello riga ) {
 			if (!rigaIsInCarrello(_carrello, riga))
 			{
 				// Prima di aggiungere la riga al carrello, provo a riattaccarlo. Non si sa mai.
@@ -156,16 +157,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 				foreach(RigaCarrello rigaCarrello in carrello.righeCarrello){
 					rigaCarrello.id = Guid.NewGuid();
-					if (rigaCarrello is RiCaFotoStampata)
-					{
-						RiCaFotoStampata rica = rigaCarrello as RiCaFotoStampata;
-						Fotografia f = rica.fotografia;
-						OrmUtil.forseAttacca<Fotografia>( "Fotografie", ref f );
-						FormatoCarta fc = rica.formatoCarta;
-						OrmUtil.forseAttacca<FormatoCarta>( "FormatiCarta", ref fc );
-						Fotografo fo = rica.fotografo;
-						OrmUtil.forseAttacca<Fotografo>( "Fotografi", ref fo );
-					}
+					Fotografia f = rigaCarrello.fotografia;
+					OrmUtil.forseAttacca<Fotografia>( "Fotografie", ref f );
+					FormatoCarta fc = rigaCarrello.formatoCarta;
+					OrmUtil.forseAttacca<FormatoCarta>( "FormatiCarta", ref fc );
+					Fotografo fo = rigaCarrello.fotografo;
+					OrmUtil.forseAttacca<Fotografo>( "Fotografi", ref fo );
 				}
 
 				dbContext.Carrelli.Add( carrello );
@@ -174,7 +171,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				// Sono in variazione. Riattacco il carrello e tutti i grafi interni
 				Digiphoto.Lumen.Database.OrmUtil.forseAttacca<Carrello>( "Carrelli", ref _carrello );
 
-
+				
 				dbContext.ObjectContext.ObjectStateManager.ChangeObjectState( carrello, EntityState.Modified );
 
 				foreach( RigaCarrello rc in carrello.righeCarrello ) {
@@ -211,7 +208,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				throw new InvalidOperationException( msg );
 			}
 
-			// non so perché ma se salvo un carrello di 3 righe mi dice che sono stati modificati 6 record
+			// non so perché ma se salvo un carrello di 1 riga mi dice che sono stati modificati 6 record
 			if( quanti == carrello.righeCarrello.Count || quanti == carrello.righeCarrello.Count * 2 ) {
 				// ok
 			} else {
@@ -223,18 +220,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			_giornale.Info( msg2 );
 		}
 
-		private bool rigaIsInCarrello(Carrello carrello, RiCaFotoStampata riga)
+		private static bool rigaIsInCarrello(Carrello carrello, RigaCarrello riga)
 		{
-			bool isInCarrello = false;
-			foreach(RigaCarrello r in carrello.righeCarrello){
-				if(r is RiCaFotoStampata){
-					RiCaFotoStampata rica = r as RiCaFotoStampata;
-					if(rica.idFotografia == riga.idFotografia){
-						isInCarrello = true;
-					}
-				}
-			}
-			return isInCarrello;
+			return carrello.righeCarrello.Any( r => r.fotografia.id == riga.fotografia.id );
 		}
 
 		/// <summary>
@@ -252,8 +240,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 
 
-			// :: loop su tutte le righe
 			decimal totaleAPagare = 0;
+
+			if( carrello.prezzoDischetto != null )
+				totaleAPagare += (decimal)carrello.prezzoDischetto;
+
+			carrello.totMasterizzate = 0;
+
+			// :: loop su tutte le righe
 			foreach( RigaCarrello r in carrello.righeCarrello ) {
 
 				// ricalcolo il valore della riga
@@ -264,9 +258,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 				// Se ho venduto il carrello, valorizzo i fogli stampati con la quantità
 				if( carrello.venduto ) {
-					if( r is RiCaFotoStampata ) {
-						RiCaFotoStampata rfs = r as RiCaFotoStampata;
-						rfs.totFogliStampati = rfs.quantita;
+					if( r.discriminator == Carrello.TIPORIGA_STAMPA ) {
+						r.totFogliStampati = r.quantita;
+					}
+					if( r.discriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
+						carrello.totMasterizzate += r.quantita; // Sarà sempre = 1 per forza;
 					}
 				}
 			}
@@ -279,9 +275,16 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		 */
 		public static decimal calcValoreRiga( RigaCarrello riga ) {
 
-			decimal _localSconto = riga.sconto != null ? (decimal)riga.sconto : 0;
+			decimal valore = 0;
 
-			decimal valore = riga.quantita * (riga.prezzoLordoUnitario - _localSconto);
+			// Le righe masterizzate non le conteggio. Sono a valore 0
+			if( riga.discriminator == Carrello.TIPORIGA_STAMPA ) {
+
+				decimal _localSconto = riga.sconto != null ? (decimal)riga.sconto : 0;
+
+				valore = riga.quantita * (riga.prezzoLordoUnitario - _localSconto);
+			}
+
 			return valore;
 		}
 
@@ -343,16 +346,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 						r.quantita = 0;
 
-						if( r is RiCaFotoStampata ) {
-							RiCaFotoStampata rcfs = (RiCaFotoStampata)r;
-							r.descrizione = marca + "Storno " + rcfs.totFogliStampati + " fogli";
-							rcfs.totFogliStampati = 0;
+						if( r.discriminator == Carrello.TIPORIGA_STAMPA ) {
+							r.descrizione = marca + "Storno " + r.totFogliStampati + " fogli";
+							r.totFogliStampati = 0;
 						}
 
-						if( r is RiCaDiscoMasterizzato ) {
-							RiCaDiscoMasterizzato rcdm = (RiCaDiscoMasterizzato)r;
-							r.descrizione = marca + "Storno " + rcdm.totFotoMasterizzate + " foto masterizzate";
-							rcdm.totFotoMasterizzate = 0;
+						if( r.discriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
+							r.descrizione = marca + "Storno foto masterizzate";
+							r.quantita = 0;
 						}
 
 						// Abbasso il totale del carrello. Se per qualche motivo vado sotto zero, livello a zero.
@@ -398,29 +399,15 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				// Devo individuare qual'è la riga da modificare
 				foreach( RigaCarrello r in carrello.righeCarrello ) {
 
-					short qtaPrec = r.quantita;
-					decimal totRigaPrec = r.prezzoNettoTotale;
+					if( r.discriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
+						// Se non ho masterizzato nulla, azzero il totale riga e poi abbasso il totale documento
+						r.descrizione = marca + "Storno foto masterizzate";
+						r.quantita = 0;
 
-					if( r is RiCaDiscoMasterizzato ) {
-						RiCaDiscoMasterizzato rcdm = (RiCaDiscoMasterizzato)r;
-						r.descrizione = marca + "Storno " + rcdm.totFotoMasterizzate + " foto masterizzate";
-						rcdm.totFotoMasterizzate -= totFotoErrate;
-						if( rcdm.totFotoMasterizzate <= 0 ) {
-							rcdm.totFotoMasterizzate = 0;
-							
-							// Se non ho masterizzato nulla, azzero il totale riga e poi abbasso il totale documento
-							r.quantita = 0;
-
-							carrello.totaleAPagare -= totRigaPrec;
-							if( carrello.totaleAPagare < 0 )
-								carrello.totaleAPagare = 0;
-
-							completaAttributiMancanti();
-						}
-						dbContext.SaveChanges();
-						break;
+						completaAttributiMancanti();
 					}
 				}
+				dbContext.SaveChanges();
 			}
 		}
 	}

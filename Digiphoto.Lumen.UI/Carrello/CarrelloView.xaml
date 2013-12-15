@@ -71,15 +71,12 @@
 
 					<Image Source="/Digiphoto.Lumen.UI;component/Resources/dvd-32x32.png" 
 							Height="32" Width="32" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="6,9,0,0" />
-
-					<TextBox Text="{Binding Path=ricaDiscoMasterizzato.quantita}" Width="18" Height="26" Margin="6,61,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" IsReadOnly="True" HorizontalContentAlignment="Right" />
-					<TextBox Text="{Binding Path=ricaDiscoMasterizzato.descrizione}" Height="26" Margin="29,61,3,0"  VerticalAlignment="Top" Width="187" HorizontalAlignment="Left" />
 					<Label Content="Prezzo" Margin="44,0,0,0" Height="30" Width="47" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="12" />
 					<Label Content="Σ Foto" Height="27" Margin="95,1,0,0" Width="45" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="12"/>
 					<Label Content="{Binding Path=contaFotoMasterizzate,Mode=OneWay}" Height="30" Margin="95,26,0,0" Width="44" VerticalAlignment="Top" HorizontalAlignment="Left" BorderThickness="1" BorderBrush="Gray" FontSize="14" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Right" />
-					<TextBox Text="{Binding Path=ricaDiscoMasterizzato.prezzoLordoUnitario,StringFormat=\{0:c0\}}" HorizontalContentAlignment="Center" Margin="44,26,0,0" Height="30" Width="47" HorizontalAlignment="Left" VerticalAlignment="Top" />
+					<TextBox Text="{Binding Path=carrelloCorrente.prezzoDischetto,StringFormat=\{0:c0\}}" HorizontalContentAlignment="Center" Margin="44,26,0,0" Height="30" Width="47" HorizontalAlignment="Left" VerticalAlignment="Top" />
 
-					<Button  Command="{Binding eliminaDischettoCommand}" VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="175,18,0,0" Style="{StaticResource styleCartEliminaCd}" />
+					<Button  Command="{Binding eliminaDischettoCommand}" VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="175,18,0,0" Style="{StaticResource styleCartEliminaCd}" ToolTip="Rimuove tutte le foto da masterizzate dal carrello" />
 
 				</Grid>
 

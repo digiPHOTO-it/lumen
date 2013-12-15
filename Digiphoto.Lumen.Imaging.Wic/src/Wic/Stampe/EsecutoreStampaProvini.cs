@@ -222,11 +222,11 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 			double x = 1;
 			double y = 1;
 
-			foreach (Fotografia foto in fotos)
-		{
+			foreach (Fotografia foto in fotos) 
+			{
 				//Devo cambiare Riga
 				if ((double)(sizeLatoW * (x)) >= (double)c.Width )
-		{
+				{
 					x = 1;
 					y++;
 				}
@@ -249,16 +249,17 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 
 			Image img = new Image();
 
-			BitmapSource bmp1 = ((ImmagineWic)fotina).bitmapSource;
-
 			img.Width = sizeLatoW - margin;
 			img.Height = sizeLatoH - margin;
 
 			img.HorizontalAlignment = HorizontalAlignment.Center;
 			img.VerticalAlignment = VerticalAlignment.Center;
-			img.BeginInit();
-			img.Source = bmp1;
-			img.EndInit();
+			if( fotina != null ) {  // Non dovrebbe mai succedere
+				img.BeginInit();
+				BitmapSource bmp1 = ((ImmagineWic)fotina).bitmapSource;
+				img.Source = bmp1;
+				img.EndInit();
+			}
 			img.Stretch = Stretch.Uniform;
 			img.StretchDirection = StretchDirection.Both;
 

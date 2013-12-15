@@ -7,36 +7,22 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-
 namespace Digiphoto.Lumen.Model
 {
-    [DataContract(IsReference = true)]
+    using System;
+    using System.Collections.Generic;
+    
     public partial class Giornata
     {
-        [DataMember]
         public System.DateTime id { get; set; }
-        [DataMember]
         public System.DateTime orologio { get; set; }
-        [DataMember]
         public decimal incassoDichiarato { get; set; }
-        [DataMember]
         public string note { get; set; }
-        [DataMember]
         public decimal incassoPrevisto { get; set; }
-        [DataMember]
         public string prgTaglierina1 { get; set; }
-        [DataMember]
         public string prgTaglierina2 { get; set; }
-        [DataMember]
         public string prgTaglierina3 { get; set; }
-        [DataMember]
         public Nullable<short> totScarti { get; set; }
-        [DataMember]
         public string firma { get; set; }
     }
-    
 }
