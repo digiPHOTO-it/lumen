@@ -7,41 +7,32 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-
 namespace Digiphoto.Lumen.Model
 {
-    [DataContract(IsReference = true)]
-    [KnownType(typeof(Fotografo))]
-    [KnownType(typeof(Evento))]
+    using System;
+    using System.Collections.Generic;
+    
     public partial class Fotografia
     {
-        [DataMember]
+        public Fotografia()
+        {
+            this.contaStampata = 0;
+            this.contaMasterizzata = 0;
+        }
+    
         public System.Guid id { get; set; }
-        [DataMember]
         public string nomeFile { get; set; }
-        [DataMember]
         public Nullable<System.DateTime> dataOraScatto { get; set; }
-        [DataMember]
         public string didascalia { get; set; }
-        [DataMember]
         public System.DateTime dataOraAcquisizione { get; set; }
-        [DataMember]
         public int numero { get; set; }
-        [DataMember]
         public Nullable<short> faseDelGiorno { get; set; }
-        [DataMember]
         public System.DateTime giornata { get; set; }
-        [DataMember]
         public string correzioniXml { get; set; }
+        public short contaStampata { get; set; }
+        public short contaMasterizzata { get; set; }
     
-        [DataMember]
-        public virtual Fotografo fotografo { get; set; }
-        [DataMember]
         public virtual Evento evento { get; set; }
+        public virtual Fotografo fotografo { get; set; }
     }
-    
 }

@@ -180,7 +180,7 @@ namespace Digiphoto.Lumen.Core.VsTest
 				_impl.vendereCarrello();
 
 				Assert.IsTrue(_impl.carrello.venduto);
-				Assert.IsTrue(_impl.carrello.totaleAPagare == 15);
+				Assert.IsTrue(_impl.carrello.totaleAPagare > 0);
 			}
 
 			Console.WriteLine("FINITO");
@@ -249,7 +249,7 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 
 				var porc = from c in dbContext.Carrelli.Include( "righeCarrello" )
-						   from r in c.righeCarrello.OfType<RiCaFotoStampata>()
+						   from r in c.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_STAMPA )
 						   select new { c, r }
 						   ;
 
@@ -291,18 +291,15 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 					foreach( RigaCarrello rc in carrello.righeCarrello ) {
 
-						if( rc is RiCaFotoStampata ) {
-							RiCaFotoStampata rfs = (RiCaFotoStampata)rc;
-
+						if( rc.discriminator == Carrello.TIPORIGA_STAMPA ) {
 						}
 
-						if( rc is RiCaDiscoMasterizzato ) {
-
+						if( rc.discriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
 						}
 
 					}
 
-					var qq = carrello.righeCarrello.OfType<RiCaFotoStampata>()
+					var qq = carrello.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_STAMPA )
 							 .GroupBy( t => t.formatoCarta.descrizione )
 							 .Select( r => new {
 								 ff = r.Key,

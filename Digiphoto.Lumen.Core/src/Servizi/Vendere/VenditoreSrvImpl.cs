@@ -173,7 +173,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 				} catch( Exception eee ) {
 					esito = false;
-					_giornale.Error( "Impossibile salvare il carrello", eee );
+					string msg = ErroriUtil.estraiMessage(eee);
+					_giornale.Error( msg, eee );
 
 					pubblicaMessaggio( new Messaggio( this ) {
 						esito = Esito.Errore,
@@ -231,6 +232,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
+		public void removeRigheCarrello( string discriminator ) {
+			IEnumerable<RigaCarrello> listaDacanc = carrello.righeCarrello.Where( r => r.discriminator == discriminator );
+			foreach( RigaCarrello dacanc in listaDacanc ) {
+				carrello.righeCarrello.Remove( dacanc );
+			}
+		}
+
+
 		public void removeCarrello( Carrello carrello ) {
 			OrmUtil.forseAttacca<Carrello>( "Carrelli", ref carrello );
 			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
@@ -247,17 +256,16 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		private void aggiornaTotFotoMasterizzate() {
 			// Sistemo il numero eventuale di foto masterizzate
 			if( _masterizzaSrvImpl != null ) {
-				foreach( RigaCarrello r in gestoreCarrello.carrello.righeCarrello ) {
-					if( r is RiCaDiscoMasterizzato ) {
-						RiCaDiscoMasterizzato rdm = (RiCaDiscoMasterizzato)r;
-						rdm.totFotoMasterizzate = (short)_masterizzaSrvImpl.fotografie.Count;
 
-						// Sto attento a non sovrascrivere con una informazione vuota.
-//						if( _masterizzaSrvImpl.prezzoForfaittario != null )
-							rdm.prezzoLordoUnitario = _masterizzaSrvImpl.prezzoForfaittario;
+// TODO sistemare
+//	rdm.prezzoLordoUnitario = _masterizzaSrvImpl.prezzoForfaittario;
+
+				foreach( RigaCarrello r in gestoreCarrello.carrello.righeCarrello ) {
+					if( r.discriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
 						break;
 					}
 				}
+				carrello.totMasterizzate = (short)_masterizzaSrvImpl.fotografie.Count;
 			}
 		}
 
@@ -274,25 +282,23 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			int conta = 0;
 			foreach( RigaCarrello riga in carrello.righeCarrello ) {
 
-				if( riga is RiCaFotoStampata ) {
-
-					RiCaFotoStampata riCaFotoStampata = (RiCaFotoStampata)riga;
+				if( riga.discriminator == Carrello.TIPORIGA_STAMPA ) {
 
 					// Siccome il nome della stampante è un attributo transiente,
 					// eventualmente lo assegno. Potrebbe essere null, quando carico un carrello dal db.
-					if( riCaFotoStampata.nomeStampante == null ) {
-						StampanteAbbinata sa = _stampantiAbbinate.FirstOrDefault<StampanteAbbinata>( s => s.FormatoCarta.Equals( riCaFotoStampata.formatoCarta ) );
+					if( riga.nomeStampante == null ) {
+						StampanteAbbinata sa = _stampantiAbbinate.FirstOrDefault<StampanteAbbinata>( s => s.FormatoCarta.Equals( riga.formatoCarta ) );
 						if( sa != null )
-							riCaFotoStampata.nomeStampante = sa.StampanteInstallata.NomeStampante;
+							riga.nomeStampante = sa.StampanteInstallata.NomeStampante;
 						else
-							_giornale.Warn( "Non riesco a stabilire la stampante di questa carta: " + riCaFotoStampata.formatoCarta.descrizione + "(id=" + riCaFotoStampata.formatoCarta.id + ")" );
+							_giornale.Warn( "Non riesco a stabilire la stampante di questa carta: " + riga.formatoCarta.descrizione + "(id=" + riga.formatoCarta.id + ")" );
 					}
 
 					++conta;
 
 					// Creo nuovamente i parametri di stampa perché potrebbero essere cambiati nell GUI
-					ParamStampaFoto paramStampaFoto = creaParamStampaFoto( riCaFotoStampata );
-					spoolStampeSrv.accodaStampaFoto( riCaFotoStampata.fotografia, paramStampaFoto );
+					ParamStampaFoto paramStampaFoto = creaParamStampaFoto( riga );
+					spoolStampeSrv.accodaStampaFoto( riga.fotografia, paramStampaFoto );
 				}
 			}
 		}
@@ -300,9 +306,13 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/**
 		 * Crea una nuova riga carrello da stampare in base ai parametri di stampa richiesti
 		 */
-		private RiCaFotoStampata creaRiCaFotoStampata( Fotografia fotografia, ParamStampaFoto param ) {
+		private RigaCarrello creaRiCaFotoStampata( Fotografia fotografia, ParamStampaFoto param ) {
 
-			RiCaFotoStampata r = new RiCaFotoStampata();
+			RigaCarrello r = new RigaCarrello() {
+				discriminator = Carrello.TIPORIGA_STAMPA
+			};
+
+			r.id = Guid.Empty;  // Lascio intenzionalmente vuoto. Lo valorizzo alla fine prima di salvare
 
 			// Riattacco un pò di roba altrimenti si incacchia
 			OrmUtil.forseAttacca<Fotografia>( "Fotografie", ref fotografia );
@@ -312,7 +322,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			OrmUtil.forseAttacca<Fotografo>( "Fotografi", ref fo );
 
 			r.fotografia = fotografia;
-			r.idFotografia = fotografia.id;
 			r.fotografo = fotografia.fotografo;
 			r.formatoCarta = param.formatoCarta;
 			r.nomeStampante = param.nomeStampante;   // Questo è un attributo transiente mi serve solo a runtime.
@@ -327,10 +336,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			return r;
 		}
 
-		private ParamStampaFoto creaParamStampaFoto( RiCaFotoStampata riCaFotoStampata ) {
+		private ParamStampaFoto creaParamStampaFoto( RigaCarrello riCaFotoStampata ) {
 			ParamStampaFoto param = new ParamStampaFoto();
 			param.autoRuota = true;
-			param.autoZoomNoBordiBianchi = ! riCaFotoStampata.bordiBianchi;
+			param.autoZoomNoBordiBianchi = ! (bool) riCaFotoStampata.bordiBianchi;
 			param.formatoCarta = riCaFotoStampata.formatoCarta;
 			param.numCopie = riCaFotoStampata.quantita;
 			param.nomeStampante = riCaFotoStampata.nomeStampante;  // Attributo transiente.
@@ -555,7 +564,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 	
 			}
 			// Aggiungo le foto al carrello
-			carrello.righeCarrello.Add(creaRiCaDiscoMasterizzato());
+			carrello.righeCarrello.Add(creaRigaFotoMasterizzata());
 
 			// Aggiungo le foto alla lista
 			_masterizzaSrvImpl.addFotografie( fotografie );
@@ -565,12 +574,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 
 		// creo anche una riga nel carrello (UNA SOLA)
-		private RiCaDiscoMasterizzato creaRiCaDiscoMasterizzato() {
+		private RigaCarrello creaRigaFotoMasterizzata() {
 
-			RiCaDiscoMasterizzato r = new RiCaDiscoMasterizzato();
-			r.id = Guid.NewGuid();
+			RigaCarrello r = new RigaCarrello {
+				discriminator = Carrello.TIPORIGA_MASTERIZZATA
+			};
+			r.id = Guid.Empty;  // Lascio intenzionalmente vuoto. Lo valorizzo alla fine prima di salvare
 			r.quantita = 1;
-			r.descrizione = "Masterizzato Dischetto";
+			r.descrizione = "Foto masterizzata";
 			return r;
 		}
 
@@ -647,7 +658,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			// Qui ho necessità di fare una join tra il carrello e le righe di tipo FotoScattata
 			var querya = from cc in UnitOfWorkScope.CurrentObjectContext.Carrelli.Include( "righeCarrello" )
-						 from rr in cc.righeCarrello.OfType<RiCaFotoStampata>()
+						 from rr in cc.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_STAMPA )
 						 where cc.giornata >= p.dataIniz && cc.giornata <= p.dataFine
 						       && cc.venduto == true
 						 select new {
@@ -694,7 +705,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			// Estraggo le righe carrello di tipo disco masterizzato
 			var queryc = from cc in UnitOfWorkScope.CurrentObjectContext.Carrelli.Include( "righeCarrello" )
-						 from rr in cc.righeCarrello.OfType<RiCaDiscoMasterizzato>()
+						 from rr in cc.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_MASTERIZZATA )
 						 where cc.giornata >= p.dataIniz && cc.giornata <= p.dataFine
 						       && cc.venduto == true
 						 select new {
@@ -786,5 +797,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			return incasso;
 		}
+
+
 	}
 }

@@ -4,658 +4,465 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="Digiphoto.Lumen.Model.Store" Alias="Self" Provider="System.Data.SQLite" ProviderManifestToken="ISO8601" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
-    <EntityContainer Name="DigiphotoLumenModelStoreContainer">
-
-        <EntitySet Name="Fotografi" EntityType="Digiphoto.Lumen.Model.Store.Fotografi" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-        <EntitySet Name="Fotografie" EntityType="Digiphoto.Lumen.Model.Store.Fotografie" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-        <EntitySet Name="Eventi" EntityType="Digiphoto.Lumen.Model.Store.Eventi" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-        <EntitySet Name="Albums" EntityType="Digiphoto.Lumen.Model.Store.Albums" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-        <EntitySet Name="RigheAlbum" EntityType="Digiphoto.Lumen.Model.Store.RigheAlbum" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-        <EntitySet Name="ScarichiCards" EntityType="Digiphoto.Lumen.Model.Store.ScarichiCards" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-        <EntitySet Name="FormatiCarta" EntityType="Digiphoto.Lumen.Model.Store.FormatiCarta" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-        <EntitySet Name="InfosFisse" EntityType="Digiphoto.Lumen.Model.Store.InfosFisse" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-        <EntitySet Name="Carrelli" EntityType="Digiphoto.Lumen.Model.Store.Carrelli" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-        <EntitySet Name="RigheCarrelli" EntityType="Digiphoto.Lumen.Model.Store.RigheCarrelli" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-        <EntitySet Name="ConsumiCartaGiornalieri" EntityType="Digiphoto.Lumen.Model.Store.ConsumiCartaGiornalieri" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-        <EntitySet Name="Giornate" EntityType="Digiphoto.Lumen.Model.Store.Giornate" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-        <AssociationSet Name="FotografoFotografia" Association="Digiphoto.Lumen.Model.Store.FotografoFotografia">
-            <End Role="Fotografo" EntitySet="Fotografi" />
-            <End Role="Fotografia" EntitySet="Fotografie" />
-        </AssociationSet>
-        <AssociationSet Name="EventoFotografia" Association="Digiphoto.Lumen.Model.Store.EventoFotografia">
-            <End Role="Evento" EntitySet="Eventi" />
-            <End Role="Fotografia" EntitySet="Fotografie" />
-        </AssociationSet>
-        <AssociationSet Name="AlbumRigaAlbum" Association="Digiphoto.Lumen.Model.Store.AlbumRigaAlbum">
-            <End Role="Album" EntitySet="Albums" />
-            <End Role="RigaAlbum" EntitySet="RigheAlbum" />
-        </AssociationSet>
-        <AssociationSet Name="FotografoScaricoCard" Association="Digiphoto.Lumen.Model.Store.FotografoScaricoCard">
-            <End Role="Fotografo" EntitySet="Fotografi" />
-            <End Role="ScaricoCard" EntitySet="ScarichiCards" />
-        </AssociationSet>
-        <AssociationSet Name="CarrelloRigaCarrello" Association="Digiphoto.Lumen.Model.Store.CarrelloRigaCarrello">
-            <End Role="Carrello" EntitySet="Carrelli" />
-            <End Role="RigaCarrello" EntitySet="RigheCarrelli" />
-        </AssociationSet>
-        <AssociationSet Name="FormatoCartaRiCaFotoStampata" Association="Digiphoto.Lumen.Model.Store.FormatoCartaRiCaFotoStampata">
-            <End Role="FormatoCarta" EntitySet="FormatiCarta" />
-            <End Role="RiCaFotoStampata" EntitySet="RigheCarrelli" />
-        </AssociationSet>
-        <AssociationSet Name="FotografoRiCaFotoStampata" Association="Digiphoto.Lumen.Model.Store.FotografoRiCaFotoStampata">
-            <End Role="Fotografo" EntitySet="Fotografi" />
-            <End Role="RiCaFotoStampata" EntitySet="RigheCarrelli" />
-        </AssociationSet>
-        <AssociationSet Name="FotografiaRigaAlbum" Association="Digiphoto.Lumen.Model.Store.FotografiaRigaAlbum">
-            <End Role="Fotografia" EntitySet="Fotografie" />
-            <End Role="RigaAlbum" EntitySet="RigheAlbum" />
-        </AssociationSet>
-        <AssociationSet Name="FotografiaRiCaFotoStampata" Association="Digiphoto.Lumen.Model.Store.FotografiaRiCaFotoStampata">
-            <End Role="Fotografia" EntitySet="Fotografie" />
-            <End Role="RiCaFotoStampata" EntitySet="RigheCarrelli" />
-        </AssociationSet>
-        <AssociationSet Name="FormatoCartaConsumoCartaGiornaliero" Association="Digiphoto.Lumen.Model.Store.FormatoCartaConsumoCartaGiornaliero">
-            <End Role="FormatoCarta" EntitySet="FormatiCarta" />
-            <End Role="ConsumoCartaGiornaliero" EntitySet="ConsumiCartaGiornalieri" />
-        </AssociationSet>
-
-    </EntityContainer>
-
-    <EntityType Name="Fotografi">
-        <Key>
-            <PropertyRef Name="id" />
-        </Key>
-		<Property Name="id" Type="nvarchar" Nullable="false" MaxLength="16" />
-		<Property Name="cognomeNome" Type="nvarchar" Nullable="false" MaxLength="50" />
-		<Property Name="iniziali" Type="nvarchar" Nullable="false" MaxLength="2" />
-		<Property Name="attivo" Type="bit" Nullable="false" DefaultValue="true" />
-		<Property Name="umano" Type="bit" Nullable="false" DefaultValue="true" />
-		<Property Name="note" Type="nvarchar" Nullable="true" />
-    </EntityType>
-    <EntityType Name="Fotografie">
-        <Key>
-            <PropertyRef Name="id" />
-        </Key>
-		<Property Name="id" Type="uniqueidentifier" Nullable="false" />
-		<Property Name="nomeFile" Type="nvarchar" Nullable="false" MaxLength="100" />
-		<Property Name="dataOraScatto" Type="datetime" Nullable="true" />
-		<Property Name="didascalia" Type="nvarchar" Nullable="true" />
-		<Property Name="dataOraAcquisizione" Type="datetime" Nullable="false" />
-		<Property Name="numero" Type="int" Nullable="false" />
-		<Property Name="faseDelGiorno" Type="smallint" Nullable="true" />
-		<Property Name="giornata" Type="datetime" Nullable="false" />
-		<Property Name="correzioniXml" Type="nvarchar" Nullable="true" />
-		<Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="false" />
-		<Property Name="evento_id" Type="uniqueidentifier" Nullable="true" />
-    </EntityType>
-    <EntityType Name="Eventi">
-        <Key>
-            <PropertyRef Name="id" />
-        </Key>
-		<Property Name="id" Type="uniqueidentifier" Nullable="false" />
-		<Property Name="descrizione" Type="nvarchar" Nullable="false" MaxLength="50" />
-		<Property Name="attivo" Type="bit" Nullable="false" DefaultValue="true" />
-		<Property Name="ordinamento" Type="smallint" Nullable="true" />
-    </EntityType>
-    <EntityType Name="Albums">
-        <Key>
-            <PropertyRef Name="id" />
-        </Key>
-		<Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-		<Property Name="titolo" Type="nvarchar" Nullable="false" MaxLength="50" />
-		<Property Name="note" Type="nvarchar" Nullable="false" />
-		<Property Name="timestamp" Type="datetime" Nullable="false" />
-    </EntityType>
-    <EntityType Name="RigheAlbum">
-        <Key>
-            <PropertyRef Name="id" />
-        </Key>
-		<Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-		<Property Name="AlbumRigaAlbum_RigaAlbum_id" Type="int" Nullable="false" />
-		<Property Name="fotografia_id" Type="uniqueidentifier" Nullable="false" />
-    </EntityType>
-    <EntityType Name="ScarichiCards">
-        <Key>
-            <PropertyRef Name="id" />
-        </Key>
-		<Property Name="id" Type="uniqueidentifier" Nullable="false" />
-		<Property Name="tempo" Type="datetime" Nullable="false" />
-		<Property Name="totFoto" Type="smallint" Nullable="false" />
-		<Property Name="giornata" Type="datetime" Nullable="false" />
-		<Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="false" />
-    </EntityType>
-    <EntityType Name="FormatiCarta">
-        <Key>
-            <PropertyRef Name="id" />
-        </Key>
-		<Property Name="id" Type="uniqueidentifier" Nullable="false" />
-		<Property Name="descrizione" Type="nvarchar" Nullable="false" MaxLength="50" />
-		<Property Name="prezzo" Type="decimal" Nullable="false" Precision="6" Scale="2" />
-		<Property Name="attivo" Type="bit" Nullable="false" DefaultValue="true" />
-		<Property Name="ordinamento" Type="smallint" Nullable="true" />
-    </EntityType>
-    <EntityType Name="InfosFisse">
-        <Key>
-            <PropertyRef Name="id" />
-        </Key>
-		<Property Name="id" Type="nvarchar" Nullable="false" DefaultValue="K" MaxLength="1" />
-		<Property Name="ultimoNumFotogramma" Type="int" Nullable="false" />
-		<Property Name="dataUltimoScarico" Type="datetime" Nullable="true" />
-		<Property Name="versioneDbCompatibile" Type="nvarchar" Nullable="false" DefaultValue="1.0" MaxLength="10" />
-		<Property Name="modoNumerazFoto" Type="nvarchar" Nullable="false" DefaultValue="M" MaxLength="1" />
-		<Property Name="pixelProvino" Type="smallint" Nullable="false" />
-		<Property Name="idPuntoVendita" Type="nvarchar" Nullable="true" MaxLength="5" />
-		<Property Name="descrizPuntoVendita" Type="nvarchar" Nullable="true" MaxLength="50" />
-		<Property Name="numGiorniEliminaFoto" Type="smallint" Nullable="false" />
-		<Property Name="varie" Type="nvarchar" Nullable="true" MaxLength="Max" />
-    </EntityType>
-    <EntityType Name="Carrelli">
-        <Key>
-            <PropertyRef Name="id" />
-        </Key>
-		<Property Name="id" Type="uniqueidentifier" Nullable="false" />
-		<Property Name="giornata" Type="datetime" Nullable="false" />
-		<Property Name="tempo" Type="datetime" Nullable="false" />
-		<Property Name="totaleAPagare" Type="decimal" Nullable="false" Precision="6" Scale="2" />
-		<Property Name="intestazione" Type="nvarchar" Nullable="true" MaxLength="100" />
-		<Property Name="venduto" Type="bit" Nullable="false" DefaultValue="false" />
-		<Property Name="note" Type="nvarchar" Nullable="true" />
-    </EntityType>
-    <EntityType Name="RigheCarrelli">
-        <Key>
-            <PropertyRef Name="id" />
-        </Key>
-		<Property Name="id" Type="uniqueidentifier" Nullable="false" />
-		<Property Name="prezzoLordoUnitario" Type="decimal" Nullable="false" Precision="6" Scale="2" />
-		<Property Name="quantita" Type="smallint" Nullable="false" />
-		<Property Name="prezzoNettoTotale" Type="decimal" Nullable="false" Precision="6" Scale="2" />
-		<Property Name="sconto" Type="decimal" Nullable="true" Precision="6" Scale="2" />
-		<Property Name="descrizione" Type="nvarchar" Nullable="false" />
-		<Property Name="totFogliStampati" Type="smallint" Nullable="true" />
-		<Property Name="idFotografia" Type="uniqueidentifier" Nullable="true" />
-		<Property Name="totFotoMasterizzate" Type="smallint" Nullable="true" />
-        <Property Name="__Disc__" Type="nvarchar" MaxLength="Max" Nullable="false" />
-		<Property Name="CarrelloRigaCarrello_RigaCarrello_id" Type="uniqueidentifier" Nullable="false" />
-		<Property Name="formatoCarta_id" Type="uniqueidentifier" Nullable="true" />
-		<Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="true" />
-		<Property Name="fotografia_id" Type="uniqueidentifier" Nullable="true" />
-    </EntityType>
-    <EntityType Name="ConsumiCartaGiornalieri">
-        <Key>
-            <PropertyRef Name="id" />
-        </Key>
-		<Property Name="id" Type="uniqueidentifier" Nullable="false" />
-		<Property Name="giornata" Type="datetime" Nullable="false" />
-		<Property Name="totFogli" Type="smallint" Nullable="false" />
-		<Property Name="diCuiProvini" Type="smallint" Nullable="false" />
-		<Property Name="diCuiFoto" Type="smallint" Nullable="false" />
-		<Property Name="formatoCarta_id" Type="uniqueidentifier" Nullable="false" />
-    </EntityType>
-    <EntityType Name="Giornate">
-        <Key>
-            <PropertyRef Name="id" />
-        </Key>
-		<Property Name="id" Type="datetime" Nullable="false" />
-		<Property Name="orologio" Type="datetime" Nullable="false" />
-		<Property Name="incassoDichiarato" Type="decimal" Nullable="false" Precision="7" Scale="2" />
-		<Property Name="note" Type="nvarchar" Nullable="true" />
-		<Property Name="incassoPrevisto" Type="decimal" Nullable="false" Precision="7" Scale="2" />
-		<Property Name="prgTaglierina1" Type="nvarchar" Nullable="true" MaxLength="20" />
-		<Property Name="prgTaglierina2" Type="nvarchar" Nullable="true" MaxLength="20" />
-		<Property Name="prgTaglierina3" Type="nvarchar" Nullable="true" MaxLength="20" />
-		<Property Name="totScarti" Type="smallint" Nullable="true" />
-		<Property Name="firma" Type="nvarchar" Nullable="false" />
-    </EntityType>
-	<Association Name="FotografoFotografia">
-		<End Role="Fotografo" Type="Digiphoto.Lumen.Model.Store.Fotografi" Multiplicity="1">
-		</End>				
-		<End Role="Fotografia" Type="Digiphoto.Lumen.Model.Store.Fotografie" Multiplicity="*">
-		</End>				
-		<ReferentialConstraint>
-			<Principal Role="Fotografo">
-				<PropertyRef Name="id" />
-			</Principal>
-			<Dependent Role="Fotografia">
-				<PropertyRef Name="fotografo_id" />
-			
-			</Dependent>
-		</ReferentialConstraint>
-	</Association>
-	<Association Name="EventoFotografia">
-		<End Role="Evento" Type="Digiphoto.Lumen.Model.Store.Eventi" Multiplicity="0..1">
-		</End>				
-		<End Role="Fotografia" Type="Digiphoto.Lumen.Model.Store.Fotografie" Multiplicity="*">
-		</End>				
-		<ReferentialConstraint>
-			<Principal Role="Evento">
-				<PropertyRef Name="id" />
-			</Principal>
-			<Dependent Role="Fotografia">
-				<PropertyRef Name="evento_id" />
-			
-			</Dependent>
-		</ReferentialConstraint>
-	</Association>
-	<Association Name="AlbumRigaAlbum">
-		<End Role="Album" Type="Digiphoto.Lumen.Model.Store.Albums" Multiplicity="1">
-			<OnDelete Action="Cascade" />
-		</End>				
-		<End Role="RigaAlbum" Type="Digiphoto.Lumen.Model.Store.RigheAlbum" Multiplicity="*">
-		</End>				
-		<ReferentialConstraint>
-			<Principal Role="Album">
-				<PropertyRef Name="id" />
-			</Principal>
-			<Dependent Role="RigaAlbum">
-				<PropertyRef Name="AlbumRigaAlbum_RigaAlbum_id" />
-			
-			</Dependent>
-		</ReferentialConstraint>
-	</Association>
-	<Association Name="FotografoScaricoCard">
-		<End Role="Fotografo" Type="Digiphoto.Lumen.Model.Store.Fotografi" Multiplicity="1">
-		</End>				
-		<End Role="ScaricoCard" Type="Digiphoto.Lumen.Model.Store.ScarichiCards" Multiplicity="*">
-		</End>				
-		<ReferentialConstraint>
-			<Principal Role="Fotografo">
-				<PropertyRef Name="id" />
-			</Principal>
-			<Dependent Role="ScaricoCard">
-				<PropertyRef Name="fotografo_id" />
-			
-			</Dependent>
-		</ReferentialConstraint>
-	</Association>
-	<Association Name="CarrelloRigaCarrello">
-		<End Role="Carrello" Type="Digiphoto.Lumen.Model.Store.Carrelli" Multiplicity="1">
-			<OnDelete Action="Cascade" />
-		</End>				
-		<End Role="RigaCarrello" Type="Digiphoto.Lumen.Model.Store.RigheCarrelli" Multiplicity="*">
-		</End>				
-		<ReferentialConstraint>
-			<Principal Role="Carrello">
-				<PropertyRef Name="id" />
-			</Principal>
-			<Dependent Role="RigaCarrello">
-				<PropertyRef Name="CarrelloRigaCarrello_RigaCarrello_id" />
-			
-			</Dependent>
-		</ReferentialConstraint>
-	</Association>
-	<Association Name="FormatoCartaRiCaFotoStampata">
-		<End Role="FormatoCarta" Type="Digiphoto.Lumen.Model.Store.FormatiCarta" Multiplicity="0..1">
-		</End>				
-		<End Role="RiCaFotoStampata" Type="Digiphoto.Lumen.Model.Store.RigheCarrelli" Multiplicity="*">
-		</End>				
-		<ReferentialConstraint>
-			<Principal Role="FormatoCarta">
-				<PropertyRef Name="id" />
-			</Principal>
-			<Dependent Role="RiCaFotoStampata">
-				<PropertyRef Name="formatoCarta_id" />
-			
-			</Dependent>
-		</ReferentialConstraint>
-	</Association>
-	<Association Name="FotografoRiCaFotoStampata">
-		<End Role="Fotografo" Type="Digiphoto.Lumen.Model.Store.Fotografi" Multiplicity="0..1">
-		</End>				
-		<End Role="RiCaFotoStampata" Type="Digiphoto.Lumen.Model.Store.RigheCarrelli" Multiplicity="*">
-		</End>				
-		<ReferentialConstraint>
-			<Principal Role="Fotografo">
-				<PropertyRef Name="id" />
-			</Principal>
-			<Dependent Role="RiCaFotoStampata">
-				<PropertyRef Name="fotografo_id" />
-			
-			</Dependent>
-		</ReferentialConstraint>
-	</Association>
-	<Association Name="FotografiaRigaAlbum">
-		<End Role="Fotografia" Type="Digiphoto.Lumen.Model.Store.Fotografie" Multiplicity="1">
-			<OnDelete Action="Cascade" />
-		</End>				
-		<End Role="RigaAlbum" Type="Digiphoto.Lumen.Model.Store.RigheAlbum" Multiplicity="*">
-		</End>				
-		<ReferentialConstraint>
-			<Principal Role="Fotografia">
-				<PropertyRef Name="id" />
-			</Principal>
-			<Dependent Role="RigaAlbum">
-				<PropertyRef Name="fotografia_id" />
-			
-			</Dependent>
-		</ReferentialConstraint>
-	</Association>
-	<Association Name="FotografiaRiCaFotoStampata">
-		<End Role="Fotografia" Type="Digiphoto.Lumen.Model.Store.Fotografie" Multiplicity="0..1">
-		</End>				
-		<End Role="RiCaFotoStampata" Type="Digiphoto.Lumen.Model.Store.RigheCarrelli" Multiplicity="*">
-		</End>				
-		<ReferentialConstraint>
-			<Principal Role="Fotografia">
-				<PropertyRef Name="id" />
-			</Principal>
-			<Dependent Role="RiCaFotoStampata">
-				<PropertyRef Name="fotografia_id" />
-			
-			</Dependent>
-		</ReferentialConstraint>
-	</Association>
-	<Association Name="FormatoCartaConsumoCartaGiornaliero">
-		<End Role="FormatoCarta" Type="Digiphoto.Lumen.Model.Store.FormatiCarta" Multiplicity="1">
-		</End>				
-		<End Role="ConsumoCartaGiornaliero" Type="Digiphoto.Lumen.Model.Store.ConsumiCartaGiornalieri" Multiplicity="*">
-		</End>				
-		<ReferentialConstraint>
-			<Principal Role="FormatoCarta">
-				<PropertyRef Name="id" />
-			</Principal>
-			<Dependent Role="ConsumoCartaGiornaliero">
-				<PropertyRef Name="formatoCarta_id" />
-			
-			</Dependent>
-		</ReferentialConstraint>
-	</Association>
+    <Schema Namespace="LumenModel.Store" Alias="Self" Provider="System.Data.SQLite" ProviderManifestToken="ISO8601" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+  <EntityContainer Name="LumenModelStoreContainer">
+    <EntitySet Name="InfosFisse" EntityType="LumenModel.Store.InfosFisse" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Eventi" EntityType="LumenModel.Store.Eventi" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Fotografie" EntityType="LumenModel.Store.Fotografie" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Fotografi" EntityType="LumenModel.Store.Fotografi" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Giornate" EntityType="LumenModel.Store.Giornate" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ScarichiCards" EntityType="LumenModel.Store.ScarichiCards" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="FormatiCarta" EntityType="LumenModel.Store.FormatiCarta" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ConsumiCartaGiornalieri" EntityType="LumenModel.Store.ConsumiCartaGiornalieri" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Carrelli" EntityType="LumenModel.Store.Carrelli" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="RigheCarrelli" EntityType="LumenModel.Store.RigheCarrelli" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="IncassiFotografi" EntityType="LumenModel.Store.IncassiFotografi" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="EventoFotografia" Association="LumenModel.Store.EventoFotografia">
+      <End Role="Evento" EntitySet="Eventi" />
+      <End Role="Fotografia" EntitySet="Fotografie" />
+    </AssociationSet>
+    <AssociationSet Name="FotografoFotografia" Association="LumenModel.Store.FotografoFotografia">
+      <End Role="Fotografo" EntitySet="Fotografi" />
+      <End Role="Fotografia" EntitySet="Fotografie" />
+    </AssociationSet>
+    <AssociationSet Name="FotografoScaricoCard" Association="LumenModel.Store.FotografoScaricoCard">
+      <End Role="Fotografo" EntitySet="Fotografi" />
+      <End Role="ScaricoCard" EntitySet="ScarichiCards" />
+    </AssociationSet>
+    <AssociationSet Name="FormatoCartaConsumoCartaGiornaliero" Association="LumenModel.Store.FormatoCartaConsumoCartaGiornaliero">
+      <End Role="FormatoCarta" EntitySet="FormatiCarta" />
+      <End Role="ConsumoCartaGiornaliero" EntitySet="ConsumiCartaGiornalieri" />
+    </AssociationSet>
+    <AssociationSet Name="CarrelloRigaCarrello" Association="LumenModel.Store.CarrelloRigaCarrello">
+      <End Role="Carrello" EntitySet="Carrelli" />
+      <End Role="RigaCarrello" EntitySet="RigheCarrelli" />
+    </AssociationSet>
+    <AssociationSet Name="FotografoRigaCarrello" Association="LumenModel.Store.FotografoRigaCarrello">
+      <End Role="Fotografo" EntitySet="Fotografi" />
+      <End Role="RigaCarrello" EntitySet="RigheCarrelli" />
+    </AssociationSet>
+    <AssociationSet Name="FotografiaRigaCarrello" Association="LumenModel.Store.FotografiaRigaCarrello">
+      <End Role="Fotografia" EntitySet="Fotografie" />
+      <End Role="RigaCarrello" EntitySet="RigheCarrelli" />
+    </AssociationSet>
+    <AssociationSet Name="FormatoCartaRigaCarrello" Association="LumenModel.Store.FormatoCartaRigaCarrello">
+      <End Role="FormatoCarta" EntitySet="FormatiCarta" />
+      <End Role="RigaCarrello" EntitySet="RigheCarrelli" />
+    </AssociationSet>
+    <AssociationSet Name="CarrelloIncassoFotografo" Association="LumenModel.Store.CarrelloIncassoFotografo">
+      <End Role="Carrello" EntitySet="Carrelli" />
+      <End Role="IncassoFotografo" EntitySet="IncassiFotografi" />
+    </AssociationSet>
+    <AssociationSet Name="FotografoIncassoFotografo" Association="LumenModel.Store.FotografoIncassoFotografo">
+      <End Role="Fotografo" EntitySet="Fotografi" />
+      <End Role="IncassoFotografo" EntitySet="IncassiFotografi" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="InfosFisse">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="nvarchar" Nullable="false" DefaultValue="K" MaxLength="1" />
+    <Property Name="ultimoNumFotogramma" Type="int" Nullable="false" />
+    <Property Name="dataUltimoScarico" Type="datetime" Nullable="true" />
+    <Property Name="versioneDbCompatibile" Type="nvarchar" Nullable="false" DefaultValue="1.0" MaxLength="10" />
+    <Property Name="modoNumerazFoto" Type="nvarchar" Nullable="false" DefaultValue="M" MaxLength="1" />
+    <Property Name="pixelProvino" Type="smallint" Nullable="false" />
+    <Property Name="idPuntoVendita" Type="nvarchar" Nullable="true" MaxLength="5" />
+    <Property Name="descrizPuntoVendita" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="numGiorniEliminaFoto" Type="smallint" Nullable="false" />
+    <Property Name="varie" Type="nvarchar" Nullable="true" MaxLength="200" />
+  </EntityType>
+  <EntityType Name="Eventi">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="descrizione" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="attivo" Type="bit" Nullable="false" DefaultValue="true" />
+    <Property Name="ordinamento" Type="smallint" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Fotografie">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="nomeFile" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="dataOraScatto" Type="datetime" Nullable="true" />
+    <Property Name="didascalia" Type="nvarchar" Nullable="true" MaxLength="99" />
+    <Property Name="dataOraAcquisizione" Type="datetime" Nullable="false" />
+    <Property Name="numero" Type="int" Nullable="false" />
+    <Property Name="faseDelGiorno" Type="smallint" Nullable="true" />
+    <Property Name="giornata" Type="datetime" Nullable="false" />
+    <Property Name="correzioniXml" Type="nvarchar" Nullable="true" />
+    <Property Name="contaStampata" Type="smallint" Nullable="false" DefaultValue="0" />
+    <Property Name="contaMasterizzata" Type="smallint" Nullable="false" DefaultValue="0" />
+    <Property Name="evento_id" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Fotografi">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="nvarchar" Nullable="false" MaxLength="16" />
+    <Property Name="cognomeNome" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="iniziali" Type="nvarchar" Nullable="false" MaxLength="2" />
+    <Property Name="attivo" Type="bit" Nullable="false" DefaultValue="true" />
+    <Property Name="umano" Type="bit" Nullable="false" DefaultValue="true" />
+    <Property Name="note" Type="nvarchar" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Giornate">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="datetime" Nullable="false" />
+    <Property Name="orologio" Type="datetime" Nullable="false" />
+    <Property Name="incassoDichiarato" Type="decimal" Nullable="false" Precision="7" Scale="2" />
+    <Property Name="note" Type="nvarchar" Nullable="true" />
+    <Property Name="incassoPrevisto" Type="decimal" Nullable="false" Precision="7" Scale="2" />
+    <Property Name="prgTaglierina1" Type="nvarchar" Nullable="true" MaxLength="20" />
+    <Property Name="prgTaglierina2" Type="nvarchar" Nullable="true" MaxLength="20" />
+    <Property Name="prgTaglierina3" Type="nvarchar" Nullable="true" MaxLength="20" />
+    <Property Name="totScarti" Type="smallint" Nullable="true" />
+    <Property Name="firma" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="ScarichiCards">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="tempo" Type="datetime" Nullable="false" />
+    <Property Name="totFoto" Type="smallint" Nullable="false" />
+    <Property Name="giornata" Type="datetime" Nullable="false" />
+    <Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="false" />
+  </EntityType>
+  <EntityType Name="FormatiCarta">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="descrizione" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="prezzo" Type="decimal" Nullable="false" Precision="6" Scale="2" />
+    <Property Name="attivo" Type="bit" Nullable="false" DefaultValue="true" />
+    <Property Name="ordinamento" Type="smallint" Nullable="true" />
+  </EntityType>
+  <EntityType Name="ConsumiCartaGiornalieri">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="giornata" Type="datetime" Nullable="false" />
+    <Property Name="totFogli" Type="smallint" Nullable="false" />
+    <Property Name="diCuiProvini" Type="smallint" Nullable="false" />
+    <Property Name="diCuiFoto" Type="smallint" Nullable="false" />
+    <Property Name="formatoCarta_id" Type="uniqueidentifier" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Carrelli">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="giornata" Type="datetime" Nullable="false" />
+    <Property Name="tempo" Type="datetime" Nullable="false" />
+    <Property Name="totaleAPagare" Type="decimal" Nullable="false" Precision="6" Scale="2" />
+    <Property Name="intestazione" Type="nvarchar" Nullable="true" MaxLength="100" />
+    <Property Name="venduto" Type="bit" Nullable="false" DefaultValue="false" />
+    <Property Name="note" Type="nvarchar" Nullable="true" />
+    <Property Name="totMasterizzate" Type="smallint" Nullable="false" DefaultValue="0" />
+    <Property Name="prezzoDischetto" Type="decimal" Nullable="true" Precision="6" Scale="2" />
+  </EntityType>
+  <EntityType Name="RigheCarrelli">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="prezzoLordoUnitario" Type="decimal" Nullable="false" Precision="6" Scale="2" />
+    <Property Name="quantita" Type="smallint" Nullable="false" />
+    <Property Name="prezzoNettoTotale" Type="decimal" Nullable="false" Precision="6" Scale="2" />
+    <Property Name="sconto" Type="decimal" Nullable="true" Precision="6" Scale="2" />
+    <Property Name="descrizione" Type="nvarchar" Nullable="false" MaxLength="99" />
+    <Property Name="discriminator" Type="nvarchar" Nullable="false" MaxLength="1" />
+    <Property Name="totFogliStampati" Type="smallint" Nullable="true" />
+    <Property Name="nomeStampante" Type="nvarchar" Nullable="true" MaxLength="255" />
+    <Property Name="bordiBianchi" Type="bit" Nullable="true" />
+    <Property Name="CarrelloRigaCarrello_RigaCarrello_id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="true" />
+    <Property Name="fotografia_id" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="formatoCarta_id" Type="uniqueidentifier" Nullable="true" />
+  </EntityType>
+  <EntityType Name="IncassiFotografi">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="incasso" Type="decimal" Nullable="false" Precision="6" Scale="2" />
+    <Property Name="incassoStampe" Type="decimal" Nullable="false" Precision="6" Scale="2" />
+    <Property Name="incassoMasterizzate" Type="decimal" Nullable="false" Precision="6" Scale="2" />
+    <Property Name="contaStampe" Type="smallint" Nullable="true" />
+    <Property Name="contaMasterizzate" Type="smallint" Nullable="false" />
+    <Property Name="provvigioni" Type="decimal" Nullable="true" Precision="6" Scale="2" />
+    <Property Name="carrello_id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="false" />
+  </EntityType>
+  <Association Name="EventoFotografia">
+    <End Role="Evento" Type="LumenModel.Store.Eventi" Multiplicity="0..1" />
+    <End Role="Fotografia" Type="LumenModel.Store.Fotografie" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Evento">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Fotografia">
+        <PropertyRef Name="evento_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FotografoFotografia">
+    <End Role="Fotografo" Type="LumenModel.Store.Fotografi" Multiplicity="1" />
+    <End Role="Fotografia" Type="LumenModel.Store.Fotografie" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Fotografo">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Fotografia">
+        <PropertyRef Name="fotografo_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FotografoScaricoCard">
+    <End Role="Fotografo" Type="LumenModel.Store.Fotografi" Multiplicity="1" />
+    <End Role="ScaricoCard" Type="LumenModel.Store.ScarichiCards" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Fotografo">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="ScaricoCard">
+        <PropertyRef Name="fotografo_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FormatoCartaConsumoCartaGiornaliero">
+    <End Role="FormatoCarta" Type="LumenModel.Store.FormatiCarta" Multiplicity="1" />
+    <End Role="ConsumoCartaGiornaliero" Type="LumenModel.Store.ConsumiCartaGiornalieri" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="FormatoCarta">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="ConsumoCartaGiornaliero">
+        <PropertyRef Name="formatoCarta_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="CarrelloRigaCarrello">
+    <End Role="Carrello" Type="LumenModel.Store.Carrelli" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="RigaCarrello" Type="LumenModel.Store.RigheCarrelli" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Carrello">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="RigaCarrello">
+        <PropertyRef Name="CarrelloRigaCarrello_RigaCarrello_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FotografoRigaCarrello">
+    <End Role="Fotografo" Type="LumenModel.Store.Fotografi" Multiplicity="0..1" />
+    <End Role="RigaCarrello" Type="LumenModel.Store.RigheCarrelli" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Fotografo">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="RigaCarrello">
+        <PropertyRef Name="fotografo_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FotografiaRigaCarrello">
+    <End Role="Fotografia" Type="LumenModel.Store.Fotografie" Multiplicity="0..1" />
+    <End Role="RigaCarrello" Type="LumenModel.Store.RigheCarrelli" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Fotografia">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="RigaCarrello">
+        <PropertyRef Name="fotografia_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FormatoCartaRigaCarrello">
+    <End Role="FormatoCarta" Type="LumenModel.Store.FormatiCarta" Multiplicity="0..1" />
+    <End Role="RigaCarrello" Type="LumenModel.Store.RigheCarrelli" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="FormatoCarta">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="RigaCarrello">
+        <PropertyRef Name="formatoCarta_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="CarrelloIncassoFotografo">
+    <End Role="Carrello" Type="LumenModel.Store.Carrelli" Multiplicity="1" />
+    <End Role="IncassoFotografo" Type="LumenModel.Store.IncassiFotografi" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Carrello">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="IncassoFotografo">
+        <PropertyRef Name="carrello_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FotografoIncassoFotografo">
+    <End Role="Fotografo" Type="LumenModel.Store.Fotografi" Multiplicity="1" />
+    <End Role="IncassoFotografo" Type="LumenModel.Store.IncassiFotografi" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Fotografo">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="IncassoFotografo">
+        <PropertyRef Name="fotografo_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="Digiphoto.Lumen.Model" Alias="Self" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
-        <EntityContainer Name="LumenEntities" annotation:LazyLoadingEnabled="true" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
-          <EntitySet Name="Fotografi" EntityType="Digiphoto.Lumen.Model.Fotografo" />
-          <EntitySet Name="Fotografie" EntityType="Digiphoto.Lumen.Model.Fotografia" />
-          <AssociationSet Name="FotografoFotografia" Association="Digiphoto.Lumen.Model.FotografoFotografia">
-            <End Role="Fotografo" EntitySet="Fotografi" />
-            <End Role="Fotografia" EntitySet="Fotografie" />
-          </AssociationSet>
-          <EntitySet Name="Eventi" EntityType="Digiphoto.Lumen.Model.Evento" />
-          <AssociationSet Name="EventoFotografia" Association="Digiphoto.Lumen.Model.EventoFotografia">
+      <Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="LumenModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" >
+        <EntityContainer Name="LumenEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="InfosFisse" EntityType="LumenModel.InfoFissa" />
+          <EntitySet Name="Eventi" EntityType="LumenModel.Evento" />
+          <EntitySet Name="Fotografie" EntityType="LumenModel.Fotografia" />
+          <AssociationSet Name="EventoFotografia" Association="LumenModel.EventoFotografia">
             <End Role="Evento" EntitySet="Eventi" />
             <End Role="Fotografia" EntitySet="Fotografie" />
           </AssociationSet>
-          <EntitySet Name="Albums" EntityType="Digiphoto.Lumen.Model.Album" />
-          <EntitySet Name="RigheAlbum" EntityType="Digiphoto.Lumen.Model.RigaAlbum" />
-          <AssociationSet Name="AlbumRigaAlbum" Association="Digiphoto.Lumen.Model.AlbumRigaAlbum">
-            <End Role="Album" EntitySet="Albums" />
-            <End Role="RigaAlbum" EntitySet="RigheAlbum" />
+          <EntitySet Name="Fotografi" EntityType="LumenModel.Fotografo" />
+          <AssociationSet Name="FotografoFotografia" Association="LumenModel.FotografoFotografia">
+            <End Role="Fotografo" EntitySet="Fotografi" />
+            <End Role="Fotografia" EntitySet="Fotografie" />
           </AssociationSet>
-          <EntitySet Name="ScarichiCards" EntityType="Digiphoto.Lumen.Model.ScaricoCard" />
-          <EntitySet Name="FormatiCarta" EntityType="Digiphoto.Lumen.Model.FormatoCarta" />
-          <AssociationSet Name="FotografoScaricoCard" Association="Digiphoto.Lumen.Model.FotografoScaricoCard">
+          <EntitySet Name="Giornate" EntityType="LumenModel.Giornata" />
+          <EntitySet Name="ScarichiCards" EntityType="LumenModel.ScaricoCard" />
+          <AssociationSet Name="FotografoScaricoCard" Association="LumenModel.FotografoScaricoCard">
             <End Role="Fotografo" EntitySet="Fotografi" />
             <End Role="ScaricoCard" EntitySet="ScarichiCards" />
           </AssociationSet>
-          <EntitySet Name="InfosFisse" EntityType="Digiphoto.Lumen.Model.InfoFissa" />
-          <EntitySet Name="Carrelli" EntityType="Digiphoto.Lumen.Model.Carrello" />
-          <EntitySet Name="RigheCarrelli" EntityType="Digiphoto.Lumen.Model.RigaCarrello" />
-          <AssociationSet Name="CarrelloRigaCarrello" Association="Digiphoto.Lumen.Model.CarrelloRigaCarrello">
-            <End Role="Carrello" EntitySet="Carrelli" />
-            <End Role="RigaCarrello" EntitySet="RigheCarrelli" />
-          </AssociationSet>
-          <AssociationSet Name="FormatoCartaRiCaFotoStampata" Association="Digiphoto.Lumen.Model.FormatoCartaRiCaFotoStampata">
-            <End EntitySet="FormatiCarta" Role="FormatoCarta" />
-            <End EntitySet="RigheCarrelli" Role="RiCaFotoStampata" />
-          </AssociationSet>
-          <AssociationSet Name="FotografoRiCaFotoStampata" Association="Digiphoto.Lumen.Model.FotografoRiCaFotoStampata">
-            <End Role="Fotografo" EntitySet="Fotografi" />
-            <End Role="RiCaFotoStampata" EntitySet="RigheCarrelli" />
-          </AssociationSet>
-          <AssociationSet Name="FotografiaRigaAlbum" Association="Digiphoto.Lumen.Model.FotografiaRigaAlbum">
-            <End Role="Fotografia" EntitySet="Fotografie" />
-            <End Role="RigaAlbum" EntitySet="RigheAlbum" />
-          </AssociationSet>
-          <AssociationSet Name="FotografiaRiCaFotoStampata" Association="Digiphoto.Lumen.Model.FotografiaRiCaFotoStampata">
-            <End Role="Fotografia" EntitySet="Fotografie" />
-            <End Role="RiCaFotoStampata" EntitySet="RigheCarrelli" />
-          </AssociationSet>
-          <EntitySet Name="ConsumiCartaGiornalieri" EntityType="Digiphoto.Lumen.Model.ConsumoCartaGiornaliero" />
-          <AssociationSet Name="FormatoCartaConsumoCartaGiornaliero" Association="Digiphoto.Lumen.Model.FormatoCartaConsumoCartaGiornaliero">
+          <EntitySet Name="FormatiCarta" EntityType="LumenModel.FormatoCarta" />
+          <EntitySet Name="ConsumiCartaGiornalieri" EntityType="LumenModel.ConsumoCartaGiornaliero" />
+          <AssociationSet Name="FormatoCartaConsumoCartaGiornaliero" Association="LumenModel.FormatoCartaConsumoCartaGiornaliero">
             <End Role="FormatoCarta" EntitySet="FormatiCarta" />
             <End Role="ConsumoCartaGiornaliero" EntitySet="ConsumiCartaGiornalieri" />
           </AssociationSet>
-          <EntitySet Name="Giornate" EntityType="Digiphoto.Lumen.Model.Giornata" />
+          <EntitySet Name="Carrelli" EntityType="LumenModel.Carrello" />
+          <EntitySet Name="RigheCarrelli" EntityType="LumenModel.RigaCarrello" />
+          <AssociationSet Name="CarrelloRigaCarrello" Association="LumenModel.CarrelloRigaCarrello">
+            <End Role="Carrello" EntitySet="Carrelli" />
+            <End Role="RigaCarrello" EntitySet="RigheCarrelli" />
+          </AssociationSet>
+          <AssociationSet Name="FotografoRigaCarrello" Association="LumenModel.FotografoRigaCarrello">
+            <End Role="Fotografo" EntitySet="Fotografi" />
+            <End Role="RigaCarrello" EntitySet="RigheCarrelli" />
+          </AssociationSet>
+          <AssociationSet Name="FotografiaRigaCarrello" Association="LumenModel.FotografiaRigaCarrello">
+            <End Role="Fotografia" EntitySet="Fotografie" />
+            <End Role="RigaCarrello" EntitySet="RigheCarrelli" />
+          </AssociationSet>
+          <AssociationSet Name="FormatoCartaRigaCarrello" Association="LumenModel.FormatoCartaRigaCarrello">
+            <End Role="FormatoCarta" EntitySet="FormatiCarta" />
+            <End Role="RigaCarrello" EntitySet="RigheCarrelli" />
+          </AssociationSet>
+          <EntitySet Name="IncassiFotografi" EntityType="LumenModel.IncassoFotografo" />
+          <AssociationSet Name="CarrelloIncassoFotografo" Association="LumenModel.CarrelloIncassoFotografo">
+            <End Role="Carrello" EntitySet="Carrelli" />
+            <End Role="IncassoFotografo" EntitySet="IncassiFotografi" />
+          </AssociationSet>
+          <AssociationSet Name="FotografoIncassoFotografo" Association="LumenModel.FotografoIncassoFotografo">
+            <End Role="Fotografo" EntitySet="Fotografi" />
+            <End Role="IncassoFotografo" EntitySet="IncassiFotografi" />
+          </AssociationSet>
           </EntityContainer>
-        <EntityType Name="Fotografo">
-          <Documentation>
-            <Summary>Operatori scattini e fotografi</Summary>
-            <LongDescription>Anagrafica dei fotografi che producono foto</LongDescription>
-          </Documentation>
+        <EntityType Name="InfoFissa">
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Type="String" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" MaxLength="16" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
-            <Documentation>
-              <Summary>Identificatico univoco del fotografo in tutte le installazioni</Summary>
-              <LongDescription>Utilizzare per esempio il codice fiscale</LongDescription>
-            </Documentation>
-          <a:Display Order="0" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></Property>
-          <Property Type="String" Name="cognomeNome" Nullable="false" MaxLength="50"><a:Display Order="1" Visible="True" Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation"><pem:DataFieldLength MinimumLength="5" MaximumLength="50" ErrorMessage="Il nominativo deve essere almeno 4 caratteri" Enforcement="Must" /><pem:Required ErrorMessage="Cognome e Nome del fotografo obbligatorio" Enforcement="Must" /></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
-          
-          <Property Name="iniziali" Nullable="false" MaxLength="2" Type="String"><a:Display Order="2" Visible="True" Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation"><pem:RegularExpression Pattern="^[A-Z]{1,2}$" ErrorMessage="Le iniziali del fotografo devono essere di una o due lettere maiuscole" Enforcement="Must" /><pem:Required ErrorMessage="Iniziali obbligatorie" Enforcement="Must" /><pem:Message ErrorMessage="Il fotografo non è valido" /></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
-          <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true"><a:Display Order="4" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
-
-          <Property Type="Boolean" Name="umano" Nullable="false" DefaultValue="true">
-          <Documentation>
-              <Summary>Umano oppure Automatico (OnRide)</Summary>
-            </Documentation>
-            <a:Display Order="3" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          </Property>
-
-
-
-          <Property Type="String" Name="note" Nullable="true"><a:Display Order="5" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
-        <pem:Validations Enforcement="Must" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></EntityType>
-        <EntityType Name="Fotografia">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation"><a:Display Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></Property>
-          <Property Type="String" Name="nomeFile" Nullable="false" MaxLength="100">
-            <Documentation>
-              <Summary>nome del file senza il percorso</Summary>
-              <LongDescription>E' il nome originale del file cosi come generato dalla fotocamera</LongDescription>
-            </Documentation>
-          </Property>
-          <Property Type="DateTime" Name="dataOraScatto" Nullable="true" />
-          <Property Type="String" Name="didascalia" Nullable="true" />
-          <NavigationProperty Name="fotografo" Relationship="Digiphoto.Lumen.Model.FotografoFotografia" FromRole="Fotografia" ToRole="Fotografo" />
-          <NavigationProperty Name="evento" Relationship="Digiphoto.Lumen.Model.EventoFotografia" FromRole="Fotografia" ToRole="Evento" />
-          <Property Type="DateTime" Name="dataOraAcquisizione" Nullable="false" />
-          <Property Type="Int32" Name="numero" Nullable="false" />
-          <Property Type="Int16" Name="faseDelGiorno" Nullable="true" />
-          <Property Type="DateTime" Name="giornata" Nullable="false" />
-          <Property Type="String" Name="correzioniXml" Nullable="true" />
+          <Property Type="String" Name="id" Nullable="false" DefaultValue="K" MaxLength="1" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+          <Property Type="Int32" Name="ultimoNumFotogramma" Nullable="false" />
+          <Property Type="DateTime" Name="dataUltimoScarico" Nullable="true" />
+          <Property Type="String" Name="versioneDbCompatibile" Nullable="false" DefaultValue="1.0" MaxLength="10" />
+          <Property Type="String" Name="modoNumerazFoto" Nullable="false" DefaultValue="M" MaxLength="1" />
+          <Property Type="Int16" Name="pixelProvino" Nullable="false" />
+          <Property Type="String" Name="idPuntoVendita" Nullable="true" MaxLength="5" />
+          <Property Type="String" Name="descrizPuntoVendita" Nullable="true" MaxLength="50" />
+          <Property Type="Int16" Name="numGiorniEliminaFoto" Nullable="false" />
+          <Property Type="String" Name="varie" Nullable="true" MaxLength="200" />
         </EntityType>
-        <Association Name="FotografoFotografia">
-          <End Type="Digiphoto.Lumen.Model.Fotografo" Role="Fotografo" Multiplicity="1" />
-          <End Type="Digiphoto.Lumen.Model.Fotografia" Role="Fotografia" Multiplicity="*" />
-        </Association>
         <EntityType Name="Evento">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          <Property Type="String" Name="descrizione" Nullable="false" MaxLength="50"><a:Display Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation"><pem:Required ErrorMessage="Descrizione evento obbligatoria" Enforcement="Must" /><pem:DataFieldLength MinimumLength="2" MaximumLength="100" ErrorMessage="Descrizione evento deve essere almeno di 2 caratteri" Enforcement="Must" /></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
+          <Property Type="String" Name="descrizione" Nullable="false" MaxLength="50"><a:Display Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
+  <pem:Required ErrorMessage="Descrizione evento obbligatoria" Enforcement="Must" />
+  <pem:DataFieldLength MinimumLength="2" MaximumLength="100" ErrorMessage="Descrizione evento deve essere almeno di 2 caratteri" Enforcement="Must" />
+</pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
           <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true" />
           <Property Type="Int16" Name="ordinamento" Nullable="true" />
+        </EntityType>
+        <EntityType Name="Fotografia">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation"><a:Display Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></Property>
+          <Property Type="String" Name="nomeFile" Nullable="false" MaxLength="100" />
+          <Property Type="DateTime" Name="dataOraScatto" Nullable="true" />
+          <Property Type="String" Name="didascalia" Nullable="true" MaxLength="99" />
+          <Property Type="DateTime" Name="dataOraAcquisizione" Nullable="false" />
+          <Property Type="Int32" Name="numero" Nullable="false" />
+          <Property Type="Int16" Name="faseDelGiorno" Nullable="true" />
+          <Property Type="DateTime" Name="giornata" Nullable="false" />
+          <Property Type="String" Name="correzioniXml" Nullable="true" />
+          <NavigationProperty Name="evento" Relationship="LumenModel.EventoFotografia" FromRole="Fotografia" ToRole="Evento" />
+          <Property Type="Int16" Name="contaStampata" Nullable="false" DefaultValue="0" >
+            <Documentation>
+              <LongDescription>Totalizzatore di quante volte questa foto è stata stampata (a prescindere dal formato)</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Type="Int16" Name="contaMasterizzata" Nullable="false" DefaultValue="0" >
+            <Documentation>
+              <LongDescription>Conta quante volte questa foto è stata masterizzata</LongDescription>
+            </Documentation>
+          </Property>
+          <NavigationProperty Name="fotografo" Relationship="LumenModel.FotografoFotografia" FromRole="Fotografia" ToRole="Fotografo" />
         </EntityType>
         <Association Name="EventoFotografia">
-          <End Type="Digiphoto.Lumen.Model.Evento" Role="Evento" Multiplicity="0..1" />
-          <End Type="Digiphoto.Lumen.Model.Fotografia" Role="Fotografia" Multiplicity="*" />
+          <End Type="LumenModel.Evento" Role="Evento" Multiplicity="0..1" />
+          <End Type="LumenModel.Fotografia" Role="Fotografia" Multiplicity="*" />
         </Association>
-        <EntityType Name="Album">
+        <EntityType Name="Fotografo">
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          <Property Type="String" Name="titolo" Nullable="false" MaxLength="50" />
-          <Property Type="String" Name="note" Nullable="false" />
-          <Property Type="DateTime" Name="timestamp" Nullable="false" />
-          <NavigationProperty Name="righeAlbum" Relationship="Digiphoto.Lumen.Model.AlbumRigaAlbum" FromRole="Album" ToRole="RigaAlbum" />
-        </EntityType>
-        <EntityType Name="RigaAlbum">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          <NavigationProperty Name="fotografia" Relationship="Digiphoto.Lumen.Model.FotografiaRigaAlbum" FromRole="RigaAlbum" ToRole="Fotografia" />
-        </EntityType>
-        <Association Name="AlbumRigaAlbum">
-          <End Type="Digiphoto.Lumen.Model.Album" Role="Album" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="Digiphoto.Lumen.Model.RigaAlbum" Role="RigaAlbum" Multiplicity="*" />
-        </Association>
-        <EntityType Name="ScaricoCard">
-          <Documentation>
-            <Summary>Foto Scattate</Summary>
-            <LongDescription>Questa entità rappresenta l'azione di scaricare una memory card nel computer. In pratica sono le foto che un fotografo ha scattato in un periodo</LongDescription>
-          </Documentation>
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          <Property Type="DateTime" Name="tempo" Nullable="false" />
-          <Property Type="Int16" Name="totFoto" Nullable="false" />
-          <NavigationProperty Name="fotografo" Relationship="Digiphoto.Lumen.Model.FotografoScaricoCard" FromRole="ScaricoCard" ToRole="Fotografo" />
-          <Property Type="DateTime" Name="giornata" Nullable="false" />
-        </EntityType>
-        <EntityType Name="FormatoCarta">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          <Property Type="String" Name="descrizione" Nullable="false" MaxLength="50" />
-          <Property Type="Decimal" Name="prezzo" Nullable="false" Precision="6" Scale="2" />
-          <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true" />
-          <Property Type="Int16" Name="ordinamento" Nullable="true" />
-        </EntityType>
-        <Association Name="FotografoScaricoCard">
-          <End Type="Digiphoto.Lumen.Model.Fotografo" Role="Fotografo" Multiplicity="1">
-          </End>
-          <End Type="Digiphoto.Lumen.Model.ScaricoCard" Role="ScaricoCard" Multiplicity="*" />
-        </Association>
-        <EntityType Name="InfoFissa">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" Type="String" MaxLength="1" DefaultValue="K" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
-            <Documentation>
-              <Summary>Informazioni fisse per tutti gli utenti</Summary>
-              <LongDescription>Tabella a record unico. Tutti gli utenti vedono lo stessa unica riga</LongDescription>
-            </Documentation>
-          </Property>
-          <Property Name="ultimoNumFotogramma" Nullable="false" Type="Int32">
-            <Documentation>
-              <LongDescription>A tutti gli effetti la usiamo come una sequence</LongDescription>
-            </Documentation>
-          </Property>
-          <Property Name="dataUltimoScarico" Nullable="true" Type="DateTime">
-            <Documentation>
-              <LongDescription>Data senza ora dell'ultima volta in cui ho incrementato il numeratore delle foto (sequenza)</LongDescription>
-            </Documentation>
-          </Property>
-          <Property Name="versioneDbCompatibile" Nullable="false" DefaultValue="1.0" MaxLength="10" Type="String">
-            <Documentation>
-              <LongDescription>Indica il numero di revisione della struttura del database. Il programma qando parte deve controllare di essere compatibile</LongDescription>
-            </Documentation>
-          </Property>
-          <Property Type="String" Name="modoNumerazFoto" Nullable="false" DefaultValue="M" MaxLength="1">
-            <Documentation>
-              <Summary>Modo azzeramento sequenza fotogrammi</Summary>
-              <LongDescription>Ogni foto che entra, viene numerata. Questo numeratore può essere azzerato in vari modi:
- G = ogni giorno
- S = ogni settimana
- M = mai</LongDescription>
-            </Documentation>
-          </Property>
-          <Property Type="Int16" Name="pixelProvino" Nullable="false" />
-          <Property Type="String" Name="idPuntoVendita" Nullable="true" MaxLength="5" />
-          <Property Type="String" Name="descrizPuntoVendita" Nullable="true" MaxLength="50" />
-          <Property Type="Int16" Name="numGiorniEliminaFoto" Nullable="false" />
-          <Property Type="String" Name="varie" Nullable="true" MaxLength="Max" />
-        </EntityType>
-        <EntityType Name="Carrello">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          <Property Type="DateTime" Name="giornata" Nullable="false" />
-          <Property Type="DateTime" Name="tempo" Nullable="false" />
-          <Property Type="Decimal" Name="totaleAPagare" Nullable="false" Precision="6" Scale="2" />
-          <NavigationProperty Name="righeCarrello" Relationship="Digiphoto.Lumen.Model.CarrelloRigaCarrello" FromRole="Carrello" ToRole="RigaCarrello" />
-          <Property Type="String" Name="intestazione" Nullable="true" MaxLength="100" />
-          <Property Type="Boolean" Name="venduto" Nullable="false" DefaultValue="false" />
-          <Property Type="String" Name="note" Nullable="true" />
-        </EntityType>
-        <EntityType Name="RigaCarrello" Abstract="false">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          <Property Type="Decimal" Name="prezzoLordoUnitario" Nullable="false" Precision="6" Scale="2" />
-          <Property Type="Int16" Name="quantita" Nullable="false" />
-          <Property Type="Decimal" Name="prezzoNettoTotale" Nullable="false" Precision="6" Scale="2" />
-          <Property Type="Decimal" Name="sconto" Nullable="true" Precision="6" Scale="2" />
-          <Property Type="String" Name="descrizione" Nullable="false" />
-        </EntityType>
-        <Association Name="CarrelloRigaCarrello">
-          <End Type="Digiphoto.Lumen.Model.Carrello" Role="Carrello" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="Digiphoto.Lumen.Model.RigaCarrello" Role="RigaCarrello" Multiplicity="*" />
-        </Association>
-        <EntityType Name="RiCaDiscoMasterizzato" BaseType="Digiphoto.Lumen.Model.RigaCarrello">
-          <Property Type="Int16" Name="totFotoMasterizzate" Nullable="true" />
-        </EntityType>
-        <EntityType Name="RiCaFotoStampata" BaseType="Digiphoto.Lumen.Model.RigaCarrello">
-          <Property Type="Int16" Name="totFogliStampati" Nullable="true" />
-          <Property Type="Guid" Name="idFotografia" Nullable="true" />
-          <NavigationProperty Name="formatoCarta" Relationship="Digiphoto.Lumen.Model.FormatoCartaRiCaFotoStampata" FromRole="RiCaFotoStampata" ToRole="FormatoCarta" />
-          <NavigationProperty Name="fotografo" Relationship="Digiphoto.Lumen.Model.FotografoRiCaFotoStampata" FromRole="RiCaFotoStampata" ToRole="Fotografo" />
-          <NavigationProperty Name="fotografia" Relationship="Digiphoto.Lumen.Model.FotografiaRiCaFotoStampata" FromRole="RiCaFotoStampata" ToRole="Fotografia" />
-        </EntityType>
-        <Association Name="FormatoCartaRiCaFotoStampata">
-          <End Type="Digiphoto.Lumen.Model.FormatoCarta" Multiplicity="0..1" Role="FormatoCarta" />
-          <End Type="Digiphoto.Lumen.Model.RiCaFotoStampata" Multiplicity="*" Role="RiCaFotoStampata" />
-        </Association>
-        <Association Name="FotografoRiCaFotoStampata">
-          <End Type="Digiphoto.Lumen.Model.Fotografo" Role="Fotografo" Multiplicity="0..1" />
-          <End Type="Digiphoto.Lumen.Model.RiCaFotoStampata" Role="RiCaFotoStampata" Multiplicity="*" />
-        </Association>
-        <Association Name="FotografiaRigaAlbum">
-          <End Type="Digiphoto.Lumen.Model.Fotografia" Role="Fotografia" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="Digiphoto.Lumen.Model.RigaAlbum" Role="RigaAlbum" Multiplicity="*" />
-        </Association>
-        <Association Name="FotografiaRiCaFotoStampata">
-          <End Type="Digiphoto.Lumen.Model.Fotografia" Role="Fotografia" Multiplicity="0..1" />
-          <End Type="Digiphoto.Lumen.Model.RiCaFotoStampata" Role="RiCaFotoStampata" Multiplicity="*" />
-        </Association>
-        <EntityType Name="ConsumoCartaGiornaliero">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          <Property Type="DateTime" Name="giornata" Nullable="false" />
-          <Property Name="totFogli" Nullable="false" Type="Int16" />
-          <Property Type="Int16" Name="diCuiProvini" Nullable="false" />
-          <Property Type="Int16" Name="diCuiFoto" Nullable="false" />
-          <NavigationProperty Name="formatoCarta" Relationship="Digiphoto.Lumen.Model.FormatoCartaConsumoCartaGiornaliero" FromRole="ConsumoCartaGiornaliero" ToRole="FormatoCarta" />
-        </EntityType>
-        <Association Name="FormatoCartaConsumoCartaGiornaliero">
-          <End Type="Digiphoto.Lumen.Model.FormatoCarta" Role="FormatoCarta" Multiplicity="1" />
-          <End Type="Digiphoto.Lumen.Model.ConsumoCartaGiornaliero" Role="ConsumoCartaGiornaliero" Multiplicity="*" />
+          <Property Type="String" Name="id" Nullable="false" MaxLength="16" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation"><a:Display Order="0" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></Property>
+          <Property Type="String" Name="cognomeNome" Nullable="false" MaxLength="50"><a:Display Order="1" Visible="True" Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
+  <pem:DataFieldLength MinimumLength="5" MaximumLength="50" ErrorMessage="Il nominativo deve essere almeno 4 caratteri" Enforcement="Must" />
+  <pem:Required ErrorMessage="Cognome e Nome del fotografo obbligatorio" Enforcement="Must" />
+</pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
+          <Property Type="String" Name="iniziali" Nullable="false" MaxLength="2"><a:Display Order="2" Visible="True" Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
+  <pem:RegularExpression Pattern="^[A-Z]{1,2}$" ErrorMessage="Le iniziali del fotografo devono essere di una o due lettere maiuscole" Enforcement="Must" />
+  <pem:Required ErrorMessage="Iniziali obbligatorie" Enforcement="Must" />
+  <pem:Message ErrorMessage="Il fotografo non è valido" />
+</pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
+          <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true"><a:Display Order="4" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
+          <Property Type="Boolean" Name="umano" Nullable="false" DefaultValue="true"><a:Display Order="3" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
+          <Property Type="String" Name="note" Nullable="true"><a:Display Order="5" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
+        <pem:Validations Enforcement="Must" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></EntityType>
+        <Association Name="FotografoFotografia">
+          <End Type="LumenModel.Fotografo" Role="Fotografo" Multiplicity="1" />
+          <End Type="LumenModel.Fotografia" Role="Fotografia" Multiplicity="*" />
         </Association>
         <EntityType Name="Giornata">
-          <Documentation>
-            <Summary>Chiusura di Cassa</Summary>
-            <LongDescription>Giornata Lavorativa. Mi indica quanto è stato incassato realmente in quel giorno</LongDescription>
-          </Documentation>
           <Key>
             <PropertyRef Name="id" />
           </Key>
@@ -668,377 +475,381 @@
           <Property Type="String" Name="prgTaglierina2" Nullable="true" MaxLength="20" />
           <Property Type="String" Name="prgTaglierina3" Nullable="true" MaxLength="20" />
           <Property Type="Int16" Name="totScarti" Nullable="true" />
-          <Property Type="String" Name="firma" Nullable="false" MaxLength="50">
-            <Documentation>
-              <Summary>Nome di chi certifica la chiusura</Summary>
-              <LongDescription>Nome dell'operatore che certifica la chiusura di cassa e responsabile dell'incasso registrato.</LongDescription>
-            </Documentation>
-          <a:Display Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation"><pem:RegularExpression Pattern="[a-zA-Z]{3,}" ErrorMessage="Almeno tre lettere" Enforcement="Must" /><pem:Required ErrorMessage="Firma obbligatoria" Enforcement="Must" /></pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
+          <Property Type="String" Name="firma" Nullable="false" MaxLength="50"><a:Display Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
+  <pem:RegularExpression Pattern="[a-zA-Z]{3,}" ErrorMessage="Almeno tre lettere" Enforcement="Must" />
+  <pem:Required ErrorMessage="Firma obbligatoria" Enforcement="Must" />
+</pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
         </EntityType>
-      </Schema>
+        <EntityType Name="ScaricoCard">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+          <Property Type="DateTime" Name="tempo" Nullable="false" />
+          <Property Type="Int16" Name="totFoto" Nullable="false" />
+          <Property Type="DateTime" Name="giornata" Nullable="false" />
+          <NavigationProperty Name="fotografo" Relationship="LumenModel.FotografoScaricoCard" FromRole="ScaricoCard" ToRole="Fotografo" />
+        </EntityType>
+        <Association Name="FotografoScaricoCard">
+          <End Type="LumenModel.Fotografo" Role="Fotografo" Multiplicity="1" />
+          <End Type="LumenModel.ScaricoCard" Role="ScaricoCard" Multiplicity="*" />
+        </Association>
+        <EntityType Name="FormatoCarta">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+          <Property Type="String" Name="descrizione" Nullable="false" MaxLength="50" />
+          <Property Type="Decimal" Name="prezzo" Nullable="false" Precision="6" Scale="2" />
+          <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true" />
+          <Property Type="Int16" Name="ordinamento" Nullable="true" />
+        </EntityType>
+        <EntityType Name="ConsumoCartaGiornaliero">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+          <Property Type="DateTime" Name="giornata" Nullable="false" />
+          <Property Type="Int16" Name="totFogli" Nullable="false" />
+          <Property Type="Int16" Name="diCuiProvini" Nullable="false" />
+          <Property Type="Int16" Name="diCuiFoto" Nullable="false" />
+          <NavigationProperty Name="formatoCarta" Relationship="LumenModel.FormatoCartaConsumoCartaGiornaliero" FromRole="ConsumoCartaGiornaliero" ToRole="FormatoCarta" />
+        </EntityType>
+        <Association Name="FormatoCartaConsumoCartaGiornaliero">
+          <End Type="LumenModel.FormatoCarta" Role="FormatoCarta" Multiplicity="1" />
+          <End Type="LumenModel.ConsumoCartaGiornaliero" Role="ConsumoCartaGiornaliero" Multiplicity="*" />
+        </Association>
+        <EntityType Name="Carrello">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+          <Property Type="DateTime" Name="giornata" Nullable="false" />
+          <Property Type="DateTime" Name="tempo" Nullable="false" />
+          <Property Type="Decimal" Name="totaleAPagare" Nullable="false" Precision="6" Scale="2" />
+          <Property Type="String" Name="intestazione" Nullable="true" MaxLength="100" />
+          <Property Type="Boolean" Name="venduto" Nullable="false" DefaultValue="false" />
+          <Property Type="String" Name="note" Nullable="true" />
+          <Property Type="Int16" Name="totMasterizzate" Nullable="false" DefaultValue="0" />
+          <NavigationProperty Name="righeCarrello" Relationship="LumenModel.CarrelloRigaCarrello" FromRole="Carrello" ToRole="RigaCarrello" />
+          <NavigationProperty Name="incassiFotografi" Relationship="LumenModel.CarrelloIncassoFotografo" FromRole="Carrello" ToRole="IncassoFotografo" />
+          <Property Type="Decimal" Name="prezzoDischetto" Nullable="true" Precision="6" Scale="2" />
+        </EntityType>
+        <EntityType Name="RigaCarrello">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+          <Property Type="Decimal" Name="prezzoLordoUnitario" Nullable="false" Precision="6" Scale="2" />
+          <Property Type="Int16" Name="quantita" Nullable="false" />
+          <Property Type="Decimal" Name="prezzoNettoTotale" Nullable="false" Precision="6" Scale="2" />
+          <Property Type="Decimal" Name="sconto" Nullable="true" Precision="6" Scale="2" />
+          <Property Name="descrizione" Nullable="false" Type="String" MaxLength="99" />
+          <NavigationProperty Name="fotografo" Relationship="LumenModel.FotografoRigaCarrello" FromRole="RigaCarrello" ToRole="Fotografo" />
+          <NavigationProperty Name="fotografia" Relationship="LumenModel.FotografiaRigaCarrello" FromRole="RigaCarrello" ToRole="Fotografia" />
+          <NavigationProperty Name="formatoCarta" Relationship="LumenModel.FormatoCartaRigaCarrello" FromRole="RigaCarrello" ToRole="FormatoCarta" />
+          <Property Type="String" Name="discriminator" Nullable="false" MaxLength="1" />
+          <Property Type="Int16" Name="totFogliStampati" Nullable="true" />
+          <Property Type="String" Name="nomeStampante" Nullable="true" FixedLength="false" MaxLength="255" />
+          <Property Type="Boolean" Name="bordiBianchi" Nullable="true" />
+        </EntityType>
+        <Association Name="CarrelloRigaCarrello">
+          <End Type="LumenModel.Carrello" Role="Carrello" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="LumenModel.RigaCarrello" Role="RigaCarrello" Multiplicity="*" />
+        </Association>
+        <Association Name="FotografoRigaCarrello">
+          <End Type="LumenModel.Fotografo" Role="Fotografo" Multiplicity="0..1" />
+          <End Type="LumenModel.RigaCarrello" Role="RigaCarrello" Multiplicity="*" />
+        </Association>
+        <Association Name="FotografiaRigaCarrello">
+          <End Type="LumenModel.Fotografia" Role="Fotografia" Multiplicity="0..1" />
+          <End Type="LumenModel.RigaCarrello" Role="RigaCarrello" Multiplicity="*" />
+        </Association>
+        <Association Name="FormatoCartaRigaCarrello">
+          <End Type="LumenModel.FormatoCarta" Role="FormatoCarta" Multiplicity="0..1" />
+          <End Type="LumenModel.RigaCarrello" Role="RigaCarrello" Multiplicity="*" />
+        </Association>
+        <EntityType Name="IncassoFotografo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Guid" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <NavigationProperty Name="carrello" Relationship="LumenModel.CarrelloIncassoFotografo" FromRole="IncassoFotografo" ToRole="Carrello" />
+          <NavigationProperty Name="fotografo" Relationship="LumenModel.FotografoIncassoFotografo" FromRole="IncassoFotografo" ToRole="Fotografo" />
+          <Property Type="Decimal" Name="incasso" Nullable="false" Precision="6" Scale="2" />
+          <Property Type="Decimal" Name="incassoStampe" Nullable="false" Precision="6" Scale="2" />
+          <Property Type="Decimal" Name="incassoMasterizzate" Nullable="false" Precision="6" Scale="2" />
+          <Property Type="Int16" Name="contaStampe" Nullable="true" />
+          <Property Type="Int16" Name="contaMasterizzate" Nullable="false" />
+          <Property Type="Decimal" Name="provvigioni" Nullable="true" Precision="6" Scale="2" />
+        </EntityType>
+        <Association Name="CarrelloIncassoFotografo">
+          <End Type="LumenModel.Carrello" Role="Carrello" Multiplicity="1" />
+          <End Type="LumenModel.IncassoFotografo" Role="IncassoFotografo" Multiplicity="*" />
+        </Association>
+        <Association Name="FotografoIncassoFotografo">
+          <End Type="LumenModel.Fotografo" Role="Fotografo" Multiplicity="1" />
+          <End Type="LumenModel.IncassoFotografo" Role="IncassoFotografo" Multiplicity="*" />
+        </Association>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
     <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
-	<EntityContainerMapping StorageEntityContainer="DigiphotoLumenModelStoreContainer" CdmEntityContainer="LumenEntities">
-		<EntitySetMapping Name="Fotografi">
-			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.Fotografo">
-				<MappingFragment StoreEntitySet="Fotografi">
-					<ScalarProperty Name="id" ColumnName="id" />
-					<ScalarProperty Name="cognomeNome" ColumnName="cognomeNome" />
-					<ScalarProperty Name="iniziali" ColumnName="iniziali" />
-					<ScalarProperty Name="attivo" ColumnName="attivo" />
-					<ScalarProperty Name="umano" ColumnName="umano" />
-					<ScalarProperty Name="note" ColumnName="note" />
-				</MappingFragment>
-			</EntityTypeMapping>
-		</EntitySetMapping>
-		<EntitySetMapping Name="Fotografie">
-			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.Fotografia">
-				<MappingFragment StoreEntitySet="Fotografie">
-					<ScalarProperty Name="id" ColumnName="id" />
-					<ScalarProperty Name="nomeFile" ColumnName="nomeFile" />
-					<ScalarProperty Name="dataOraScatto" ColumnName="dataOraScatto" />
-					<ScalarProperty Name="didascalia" ColumnName="didascalia" />
-					<ScalarProperty Name="dataOraAcquisizione" ColumnName="dataOraAcquisizione" />
-					<ScalarProperty Name="numero" ColumnName="numero" />
-					<ScalarProperty Name="faseDelGiorno" ColumnName="faseDelGiorno" />
-					<ScalarProperty Name="giornata" ColumnName="giornata" />
-					<ScalarProperty Name="correzioniXml" ColumnName="correzioniXml" />
-				</MappingFragment>
-			</EntityTypeMapping>
-		</EntitySetMapping>
-		<EntitySetMapping Name="Eventi">
-			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.Evento">
-				<MappingFragment StoreEntitySet="Eventi">
-					<ScalarProperty Name="id" ColumnName="id" />
-					<ScalarProperty Name="descrizione" ColumnName="descrizione" />
-					<ScalarProperty Name="attivo" ColumnName="attivo" />
-					<ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
-				</MappingFragment>
-			</EntityTypeMapping>
-		</EntitySetMapping>
-		<EntitySetMapping Name="Albums">
-			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.Album">
-				<MappingFragment StoreEntitySet="Albums">
-					<ScalarProperty Name="id" ColumnName="id" />
-					<ScalarProperty Name="titolo" ColumnName="titolo" />
-					<ScalarProperty Name="note" ColumnName="note" />
-					<ScalarProperty Name="timestamp" ColumnName="timestamp" />
-				</MappingFragment>
-			</EntityTypeMapping>
-		</EntitySetMapping>
-		<EntitySetMapping Name="RigheAlbum">
-			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.RigaAlbum">
-				<MappingFragment StoreEntitySet="RigheAlbum">
-					<ScalarProperty Name="id" ColumnName="id" />
-				</MappingFragment>
-			</EntityTypeMapping>
-		</EntitySetMapping>
-		<EntitySetMapping Name="ScarichiCards">
-			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.ScaricoCard">
-				<MappingFragment StoreEntitySet="ScarichiCards">
-					<ScalarProperty Name="id" ColumnName="id" />
-					<ScalarProperty Name="tempo" ColumnName="tempo" />
-					<ScalarProperty Name="totFoto" ColumnName="totFoto" />
-					<ScalarProperty Name="giornata" ColumnName="giornata" />
-				</MappingFragment>
-			</EntityTypeMapping>
-		</EntitySetMapping>
-		<EntitySetMapping Name="FormatiCarta">
-			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.FormatoCarta">
-				<MappingFragment StoreEntitySet="FormatiCarta">
-					<ScalarProperty Name="id" ColumnName="id" />
-					<ScalarProperty Name="descrizione" ColumnName="descrizione" />
-					<ScalarProperty Name="prezzo" ColumnName="prezzo" />
-					<ScalarProperty Name="attivo" ColumnName="attivo" />
-					<ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
-				</MappingFragment>
-			</EntityTypeMapping>
-		</EntitySetMapping>
-		<EntitySetMapping Name="InfosFisse">
-			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.InfoFissa">
-				<MappingFragment StoreEntitySet="InfosFisse">
-					<ScalarProperty Name="id" ColumnName="id" />
-					<ScalarProperty Name="ultimoNumFotogramma" ColumnName="ultimoNumFotogramma" />
-					<ScalarProperty Name="dataUltimoScarico" ColumnName="dataUltimoScarico" />
-					<ScalarProperty Name="versioneDbCompatibile" ColumnName="versioneDbCompatibile" />
-					<ScalarProperty Name="modoNumerazFoto" ColumnName="modoNumerazFoto" />
-					<ScalarProperty Name="pixelProvino" ColumnName="pixelProvino" />
-					<ScalarProperty Name="idPuntoVendita" ColumnName="idPuntoVendita" />
-					<ScalarProperty Name="descrizPuntoVendita" ColumnName="descrizPuntoVendita" />
-					<ScalarProperty Name="numGiorniEliminaFoto" ColumnName="numGiorniEliminaFoto" />
-					<ScalarProperty Name="varie" ColumnName="varie" />
-				</MappingFragment>
-			</EntityTypeMapping>
-		</EntitySetMapping>
-		<EntitySetMapping Name="Carrelli">
-			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.Carrello">
-				<MappingFragment StoreEntitySet="Carrelli">
-					<ScalarProperty Name="id" ColumnName="id" />
-					<ScalarProperty Name="giornata" ColumnName="giornata" />
-					<ScalarProperty Name="tempo" ColumnName="tempo" />
-					<ScalarProperty Name="totaleAPagare" ColumnName="totaleAPagare" />
-					<ScalarProperty Name="intestazione" ColumnName="intestazione" />
-					<ScalarProperty Name="venduto" ColumnName="venduto" />
-					<ScalarProperty Name="note" ColumnName="note" />
-				</MappingFragment>
-			</EntityTypeMapping>
-		</EntitySetMapping>
-		<EntitySetMapping Name="RigheCarrelli">
-			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.RigaCarrello">
-				<MappingFragment StoreEntitySet="RigheCarrelli">
-					<ScalarProperty Name="id" ColumnName="id" />
-					<ScalarProperty Name="prezzoLordoUnitario" ColumnName="prezzoLordoUnitario" />
-					<ScalarProperty Name="quantita" ColumnName="quantita" />
-					<ScalarProperty Name="prezzoNettoTotale" ColumnName="prezzoNettoTotale" />
-					<ScalarProperty Name="sconto" ColumnName="sconto" />
-					<ScalarProperty Name="descrizione" ColumnName="descrizione" />
-                    <Condition ColumnName="__Disc__" Value="RigaCarrello" />
-				</MappingFragment>
-			</EntityTypeMapping>
-			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.RiCaFotoStampata">
-				<MappingFragment StoreEntitySet="RigheCarrelli">
-					<ScalarProperty Name="id" ColumnName="id" />
-					<ScalarProperty Name="prezzoLordoUnitario" ColumnName="prezzoLordoUnitario" />
-					<ScalarProperty Name="quantita" ColumnName="quantita" />
-					<ScalarProperty Name="prezzoNettoTotale" ColumnName="prezzoNettoTotale" />
-					<ScalarProperty Name="sconto" ColumnName="sconto" />
-					<ScalarProperty Name="descrizione" ColumnName="descrizione" />
-					<ScalarProperty Name="totFogliStampati" ColumnName="totFogliStampati" />
-					<ScalarProperty Name="idFotografia" ColumnName="idFotografia" />
-                    <Condition ColumnName="__Disc__" Value="RiCaFotoStampata" />
-				</MappingFragment>
-			</EntityTypeMapping>
-			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.RiCaDiscoMasterizzato">
-				<MappingFragment StoreEntitySet="RigheCarrelli">
-					<ScalarProperty Name="id" ColumnName="id" />
-					<ScalarProperty Name="prezzoLordoUnitario" ColumnName="prezzoLordoUnitario" />
-					<ScalarProperty Name="quantita" ColumnName="quantita" />
-					<ScalarProperty Name="prezzoNettoTotale" ColumnName="prezzoNettoTotale" />
-					<ScalarProperty Name="sconto" ColumnName="sconto" />
-					<ScalarProperty Name="descrizione" ColumnName="descrizione" />
-					<ScalarProperty Name="totFotoMasterizzate" ColumnName="totFotoMasterizzate" />
-                    <Condition ColumnName="__Disc__" Value="RiCaDiscoMasterizzato" />
-				</MappingFragment>
-			</EntityTypeMapping>
-		</EntitySetMapping>
-		<EntitySetMapping Name="ConsumiCartaGiornalieri">
-			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.ConsumoCartaGiornaliero">
-				<MappingFragment StoreEntitySet="ConsumiCartaGiornalieri">
-					<ScalarProperty Name="id" ColumnName="id" />
-					<ScalarProperty Name="giornata" ColumnName="giornata" />
-					<ScalarProperty Name="totFogli" ColumnName="totFogli" />
-					<ScalarProperty Name="diCuiProvini" ColumnName="diCuiProvini" />
-					<ScalarProperty Name="diCuiFoto" ColumnName="diCuiFoto" />
-				</MappingFragment>
-			</EntityTypeMapping>
-		</EntitySetMapping>
-		<EntitySetMapping Name="Giornate">
-			<EntityTypeMapping TypeName="Digiphoto.Lumen.Model.Giornata">
-				<MappingFragment StoreEntitySet="Giornate">
-					<ScalarProperty Name="id" ColumnName="id" />
-					<ScalarProperty Name="orologio" ColumnName="orologio" />
-					<ScalarProperty Name="incassoDichiarato" ColumnName="incassoDichiarato" />
-					<ScalarProperty Name="note" ColumnName="note" />
-					<ScalarProperty Name="incassoPrevisto" ColumnName="incassoPrevisto" />
-					<ScalarProperty Name="prgTaglierina1" ColumnName="prgTaglierina1" />
-					<ScalarProperty Name="prgTaglierina2" ColumnName="prgTaglierina2" />
-					<ScalarProperty Name="prgTaglierina3" ColumnName="prgTaglierina3" />
-					<ScalarProperty Name="totScarti" ColumnName="totScarti" />
-					<ScalarProperty Name="firma" ColumnName="firma" />
-				</MappingFragment>
-			</EntityTypeMapping>
-		</EntitySetMapping>
-		<AssociationSetMapping Name="FotografoFotografia" TypeName="Digiphoto.Lumen.Model.FotografoFotografia" StoreEntitySet="Fotografie">
-			<EndProperty Name="Fotografo">
-				<ScalarProperty Name="id" ColumnName="fotografo_id" />
-			</EndProperty>
-			<EndProperty Name="Fotografia">
-				<ScalarProperty Name="id" ColumnName="id" />
-			</EndProperty>
-		</AssociationSetMapping>
-
-		<AssociationSetMapping Name="EventoFotografia" TypeName="Digiphoto.Lumen.Model.EventoFotografia" StoreEntitySet="Fotografie">
-			<EndProperty Name="Evento">
-				<ScalarProperty Name="id" ColumnName="evento_id" />
-			</EndProperty>
-			<EndProperty Name="Fotografia">
-				<ScalarProperty Name="id" ColumnName="id" />
-			</EndProperty>
-			<Condition ColumnName="evento_id" IsNull="false" />
-		</AssociationSetMapping>
-
-		<AssociationSetMapping Name="AlbumRigaAlbum" TypeName="Digiphoto.Lumen.Model.AlbumRigaAlbum" StoreEntitySet="RigheAlbum">
-			<EndProperty Name="Album">
-				<ScalarProperty Name="id" ColumnName="AlbumRigaAlbum_RigaAlbum_id" />
-			</EndProperty>
-			<EndProperty Name="RigaAlbum">
-				<ScalarProperty Name="id" ColumnName="id" />
-			</EndProperty>
-		</AssociationSetMapping>
-
-		<AssociationSetMapping Name="FotografoScaricoCard" TypeName="Digiphoto.Lumen.Model.FotografoScaricoCard" StoreEntitySet="ScarichiCards">
-			<EndProperty Name="Fotografo">
-				<ScalarProperty Name="id" ColumnName="fotografo_id" />
-			</EndProperty>
-			<EndProperty Name="ScaricoCard">
-				<ScalarProperty Name="id" ColumnName="id" />
-			</EndProperty>
-		</AssociationSetMapping>
-
-		<AssociationSetMapping Name="CarrelloRigaCarrello" TypeName="Digiphoto.Lumen.Model.CarrelloRigaCarrello" StoreEntitySet="RigheCarrelli">
-			<EndProperty Name="Carrello">
-				<ScalarProperty Name="id" ColumnName="CarrelloRigaCarrello_RigaCarrello_id" />
-			</EndProperty>
-			<EndProperty Name="RigaCarrello">
-				<ScalarProperty Name="id" ColumnName="id" />
-			</EndProperty>
-		</AssociationSetMapping>
-
-		<AssociationSetMapping Name="FormatoCartaRiCaFotoStampata" TypeName="Digiphoto.Lumen.Model.FormatoCartaRiCaFotoStampata" StoreEntitySet="RigheCarrelli">
-			<EndProperty Name="FormatoCarta">
-				<ScalarProperty Name="id" ColumnName="formatoCarta_id" />
-			</EndProperty>
-			<EndProperty Name="RiCaFotoStampata">
-				<ScalarProperty Name="id" ColumnName="id" />
-			</EndProperty>
-			<Condition ColumnName="formatoCarta_id" IsNull="false" />
-		</AssociationSetMapping>
-
-		<AssociationSetMapping Name="FotografoRiCaFotoStampata" TypeName="Digiphoto.Lumen.Model.FotografoRiCaFotoStampata" StoreEntitySet="RigheCarrelli">
-			<EndProperty Name="Fotografo">
-				<ScalarProperty Name="id" ColumnName="fotografo_id" />
-			</EndProperty>
-			<EndProperty Name="RiCaFotoStampata">
-				<ScalarProperty Name="id" ColumnName="id" />
-			</EndProperty>
-			<Condition ColumnName="fotografo_id" IsNull="false" />
-		</AssociationSetMapping>
-
-		<AssociationSetMapping Name="FotografiaRigaAlbum" TypeName="Digiphoto.Lumen.Model.FotografiaRigaAlbum" StoreEntitySet="RigheAlbum">
-			<EndProperty Name="Fotografia">
-				<ScalarProperty Name="id" ColumnName="fotografia_id" />
-			</EndProperty>
-			<EndProperty Name="RigaAlbum">
-				<ScalarProperty Name="id" ColumnName="id" />
-			</EndProperty>
-		</AssociationSetMapping>
-
-		<AssociationSetMapping Name="FotografiaRiCaFotoStampata" TypeName="Digiphoto.Lumen.Model.FotografiaRiCaFotoStampata" StoreEntitySet="RigheCarrelli">
-			<EndProperty Name="Fotografia">
-				<ScalarProperty Name="id" ColumnName="fotografia_id" />
-			</EndProperty>
-			<EndProperty Name="RiCaFotoStampata">
-				<ScalarProperty Name="id" ColumnName="id" />
-			</EndProperty>
-			<Condition ColumnName="fotografia_id" IsNull="false" />
-		</AssociationSetMapping>
-
-		<AssociationSetMapping Name="FormatoCartaConsumoCartaGiornaliero" TypeName="Digiphoto.Lumen.Model.FormatoCartaConsumoCartaGiornaliero" StoreEntitySet="ConsumiCartaGiornalieri">
-			<EndProperty Name="FormatoCarta">
-				<ScalarProperty Name="id" ColumnName="formatoCarta_id" />
-			</EndProperty>
-			<EndProperty Name="ConsumoCartaGiornaliero">
-				<ScalarProperty Name="id" ColumnName="id" />
-			</EndProperty>
-		</AssociationSetMapping>
-
-	</EntityContainerMapping>
+  <EntityContainerMapping StorageEntityContainer="LumenModelStoreContainer" CdmEntityContainer="LumenEntities">
+    <EntitySetMapping Name="InfosFisse">
+      <EntityTypeMapping TypeName="IsTypeOf(LumenModel.InfoFissa)">
+        <MappingFragment StoreEntitySet="InfosFisse">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="ultimoNumFotogramma" ColumnName="ultimoNumFotogramma" />
+          <ScalarProperty Name="dataUltimoScarico" ColumnName="dataUltimoScarico" />
+          <ScalarProperty Name="versioneDbCompatibile" ColumnName="versioneDbCompatibile" />
+          <ScalarProperty Name="modoNumerazFoto" ColumnName="modoNumerazFoto" />
+          <ScalarProperty Name="pixelProvino" ColumnName="pixelProvino" />
+          <ScalarProperty Name="idPuntoVendita" ColumnName="idPuntoVendita" />
+          <ScalarProperty Name="descrizPuntoVendita" ColumnName="descrizPuntoVendita" />
+          <ScalarProperty Name="numGiorniEliminaFoto" ColumnName="numGiorniEliminaFoto" />
+          <ScalarProperty Name="varie" ColumnName="varie" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Eventi">
+      <EntityTypeMapping TypeName="IsTypeOf(LumenModel.Evento)">
+        <MappingFragment StoreEntitySet="Eventi">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="descrizione" ColumnName="descrizione" />
+          <ScalarProperty Name="attivo" ColumnName="attivo" />
+          <ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Fotografie">
+      <EntityTypeMapping TypeName="IsTypeOf(LumenModel.Fotografia)">
+        <MappingFragment StoreEntitySet="Fotografie">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="nomeFile" ColumnName="nomeFile" />
+          <ScalarProperty Name="dataOraScatto" ColumnName="dataOraScatto" />
+          <ScalarProperty Name="didascalia" ColumnName="didascalia" />
+          <ScalarProperty Name="dataOraAcquisizione" ColumnName="dataOraAcquisizione" />
+          <ScalarProperty Name="numero" ColumnName="numero" />
+          <ScalarProperty Name="faseDelGiorno" ColumnName="faseDelGiorno" />
+          <ScalarProperty Name="giornata" ColumnName="giornata" />
+          <ScalarProperty Name="correzioniXml" ColumnName="correzioniXml" />
+          <ScalarProperty Name="contaStampata" ColumnName="contaStampata" />
+          <ScalarProperty Name="contaMasterizzata" ColumnName="contaMasterizzata" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Fotografi">
+      <EntityTypeMapping TypeName="IsTypeOf(LumenModel.Fotografo)">
+        <MappingFragment StoreEntitySet="Fotografi">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="cognomeNome" ColumnName="cognomeNome" />
+          <ScalarProperty Name="iniziali" ColumnName="iniziali" />
+          <ScalarProperty Name="attivo" ColumnName="attivo" />
+          <ScalarProperty Name="umano" ColumnName="umano" />
+          <ScalarProperty Name="note" ColumnName="note" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Giornate">
+      <EntityTypeMapping TypeName="IsTypeOf(LumenModel.Giornata)">
+        <MappingFragment StoreEntitySet="Giornate">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="orologio" ColumnName="orologio" />
+          <ScalarProperty Name="incassoDichiarato" ColumnName="incassoDichiarato" />
+          <ScalarProperty Name="note" ColumnName="note" />
+          <ScalarProperty Name="incassoPrevisto" ColumnName="incassoPrevisto" />
+          <ScalarProperty Name="prgTaglierina1" ColumnName="prgTaglierina1" />
+          <ScalarProperty Name="prgTaglierina2" ColumnName="prgTaglierina2" />
+          <ScalarProperty Name="prgTaglierina3" ColumnName="prgTaglierina3" />
+          <ScalarProperty Name="totScarti" ColumnName="totScarti" />
+          <ScalarProperty Name="firma" ColumnName="firma" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ScarichiCards">
+      <EntityTypeMapping TypeName="IsTypeOf(LumenModel.ScaricoCard)">
+        <MappingFragment StoreEntitySet="ScarichiCards">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="tempo" ColumnName="tempo" />
+          <ScalarProperty Name="totFoto" ColumnName="totFoto" />
+          <ScalarProperty Name="giornata" ColumnName="giornata" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="FormatiCarta">
+      <EntityTypeMapping TypeName="IsTypeOf(LumenModel.FormatoCarta)">
+        <MappingFragment StoreEntitySet="FormatiCarta">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="descrizione" ColumnName="descrizione" />
+          <ScalarProperty Name="prezzo" ColumnName="prezzo" />
+          <ScalarProperty Name="attivo" ColumnName="attivo" />
+          <ScalarProperty Name="ordinamento" ColumnName="ordinamento" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ConsumiCartaGiornalieri">
+      <EntityTypeMapping TypeName="IsTypeOf(LumenModel.ConsumoCartaGiornaliero)">
+        <MappingFragment StoreEntitySet="ConsumiCartaGiornalieri">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="giornata" ColumnName="giornata" />
+          <ScalarProperty Name="totFogli" ColumnName="totFogli" />
+          <ScalarProperty Name="diCuiProvini" ColumnName="diCuiProvini" />
+          <ScalarProperty Name="diCuiFoto" ColumnName="diCuiFoto" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Carrelli">
+      <EntityTypeMapping TypeName="IsTypeOf(LumenModel.Carrello)">
+        <MappingFragment StoreEntitySet="Carrelli">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="giornata" ColumnName="giornata" />
+          <ScalarProperty Name="tempo" ColumnName="tempo" />
+          <ScalarProperty Name="totaleAPagare" ColumnName="totaleAPagare" />
+          <ScalarProperty Name="intestazione" ColumnName="intestazione" />
+          <ScalarProperty Name="venduto" ColumnName="venduto" />
+          <ScalarProperty Name="note" ColumnName="note" />
+          <ScalarProperty Name="totMasterizzate" ColumnName="totMasterizzate" />
+          <ScalarProperty Name="prezzoDischetto" ColumnName="prezzoDischetto" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RigheCarrelli">
+      <EntityTypeMapping TypeName="IsTypeOf(LumenModel.RigaCarrello)">
+        <MappingFragment StoreEntitySet="RigheCarrelli">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="prezzoLordoUnitario" ColumnName="prezzoLordoUnitario" />
+          <ScalarProperty Name="quantita" ColumnName="quantita" />
+          <ScalarProperty Name="prezzoNettoTotale" ColumnName="prezzoNettoTotale" />
+          <ScalarProperty Name="sconto" ColumnName="sconto" />
+          <ScalarProperty Name="descrizione" ColumnName="descrizione" />
+          <ScalarProperty Name="discriminator" ColumnName="discriminator" />
+          <ScalarProperty Name="totFogliStampati" ColumnName="totFogliStampati" />
+          <ScalarProperty Name="nomeStampante" ColumnName="nomeStampante" />
+          <ScalarProperty Name="bordiBianchi" ColumnName="bordiBianchi" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="IncassiFotografi">
+      <EntityTypeMapping TypeName="IsTypeOf(LumenModel.IncassoFotografo)">
+        <MappingFragment StoreEntitySet="IncassiFotografi">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="incasso" ColumnName="incasso" />
+          <ScalarProperty Name="incassoStampe" ColumnName="incassoStampe" />
+          <ScalarProperty Name="incassoMasterizzate" ColumnName="incassoMasterizzate" />
+          <ScalarProperty Name="contaStampe" ColumnName="contaStampe" />
+          <ScalarProperty Name="contaMasterizzate" ColumnName="contaMasterizzate" />
+          <ScalarProperty Name="provvigioni" ColumnName="provvigioni" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="EventoFotografia" TypeName="LumenModel.EventoFotografia" StoreEntitySet="Fotografie">
+      <EndProperty Name="Evento">
+        <ScalarProperty Name="id" ColumnName="evento_id" />
+      </EndProperty>
+      <EndProperty Name="Fotografia">
+        <ScalarProperty Name="id" ColumnName="id" />
+      </EndProperty>
+      <Condition ColumnName="evento_id" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="FotografoFotografia" TypeName="LumenModel.FotografoFotografia" StoreEntitySet="Fotografie">
+      <EndProperty Name="Fotografo">
+        <ScalarProperty Name="id" ColumnName="fotografo_id" />
+      </EndProperty>
+      <EndProperty Name="Fotografia">
+        <ScalarProperty Name="id" ColumnName="id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="FotografoScaricoCard" TypeName="LumenModel.FotografoScaricoCard" StoreEntitySet="ScarichiCards">
+      <EndProperty Name="Fotografo">
+        <ScalarProperty Name="id" ColumnName="fotografo_id" />
+      </EndProperty>
+      <EndProperty Name="ScaricoCard">
+        <ScalarProperty Name="id" ColumnName="id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="FormatoCartaConsumoCartaGiornaliero" TypeName="LumenModel.FormatoCartaConsumoCartaGiornaliero" StoreEntitySet="ConsumiCartaGiornalieri">
+      <EndProperty Name="FormatoCarta">
+        <ScalarProperty Name="id" ColumnName="formatoCarta_id" />
+      </EndProperty>
+      <EndProperty Name="ConsumoCartaGiornaliero">
+        <ScalarProperty Name="id" ColumnName="id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="CarrelloRigaCarrello" TypeName="LumenModel.CarrelloRigaCarrello" StoreEntitySet="RigheCarrelli">
+      <EndProperty Name="Carrello">
+        <ScalarProperty Name="id" ColumnName="CarrelloRigaCarrello_RigaCarrello_id" />
+      </EndProperty>
+      <EndProperty Name="RigaCarrello">
+        <ScalarProperty Name="id" ColumnName="id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="FotografoRigaCarrello" TypeName="LumenModel.FotografoRigaCarrello" StoreEntitySet="RigheCarrelli">
+      <EndProperty Name="Fotografo">
+        <ScalarProperty Name="id" ColumnName="fotografo_id" />
+      </EndProperty>
+      <EndProperty Name="RigaCarrello">
+        <ScalarProperty Name="id" ColumnName="id" />
+      </EndProperty>
+      <Condition ColumnName="fotografo_id" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="FotografiaRigaCarrello" TypeName="LumenModel.FotografiaRigaCarrello" StoreEntitySet="RigheCarrelli">
+      <EndProperty Name="Fotografia">
+        <ScalarProperty Name="id" ColumnName="fotografia_id" />
+      </EndProperty>
+      <EndProperty Name="RigaCarrello">
+        <ScalarProperty Name="id" ColumnName="id" />
+      </EndProperty>
+      <Condition ColumnName="fotografia_id" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="FormatoCartaRigaCarrello" TypeName="LumenModel.FormatoCartaRigaCarrello" StoreEntitySet="RigheCarrelli">
+      <EndProperty Name="FormatoCarta">
+        <ScalarProperty Name="id" ColumnName="formatoCarta_id" />
+      </EndProperty>
+      <EndProperty Name="RigaCarrello">
+        <ScalarProperty Name="id" ColumnName="id" />
+      </EndProperty>
+      <Condition ColumnName="formatoCarta_id" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="CarrelloIncassoFotografo" TypeName="LumenModel.CarrelloIncassoFotografo" StoreEntitySet="IncassiFotografi">
+      <EndProperty Name="Carrello">
+        <ScalarProperty Name="id" ColumnName="carrello_id" />
+      </EndProperty>
+      <EndProperty Name="IncassoFotografo">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="FotografoIncassoFotografo" TypeName="LumenModel.FotografoIncassoFotografo" StoreEntitySet="IncassiFotografi">
+      <EndProperty Name="Fotografo">
+        <ScalarProperty Name="id" ColumnName="fotografo_id" />
+      </EndProperty>
+      <EndProperty Name="IncassoFotografo">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+  </EntityContainerMapping>
 </Mapping></edmx:Mappings>
   </edmx:Runtime>
   <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
-  <edmx:Designer>
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
     <edmx:Connection>
-      <DesignerInfoPropertySet xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+      <DesignerInfoPropertySet>
         <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
       </DesignerInfoPropertySet>
     </edmx:Connection>
     <edmx:Options>
-      <DesignerInfoPropertySet xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+      <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="False" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
         <DesignerProperty Name="DDLGenerationTemplate" Value="$(VSEFTools)\DBGen\SSDLToSQLite3.tt" />
-        <DesignerProperty Name="DatabaseGenerationWorkflow" Value="$(VSEFTools)\DBGen\Generate T-SQL Via T4 (TPH).xaml" />
-        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
       </DesignerInfoPropertySet>
     </edmx:Options>
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram Name="ModelloEntita" ZoomLevel="60" xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografo" Width="2.375" PointX="12" PointY="6" Height="2.1725878906249996" />
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografia" Width="1.5" PointX="11.75" PointY="2.25" Height="3.1340950520833326" />
-        <AssociationConnector Association="Digiphoto.Lumen.Model.FotografoFotografia">
-          <ConnectorPoint PointX="12.625" PointY="6" />
-          <ConnectorPoint PointX="12.625" PointY="5.3840950520833326" />
-        </AssociationConnector>
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Evento" Width="1.5" PointX="9.25" PointY="0.875" Height="1.787985026041667" />
-        <AssociationConnector Association="Digiphoto.Lumen.Model.EventoFotografia">
-          <ConnectorPoint PointX="10.75" PointY="2.4564925130208337" />
-          <ConnectorPoint PointX="11.75" PointY="2.4564925130208337" />
-        </AssociationConnector>
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Album" Width="1.5" PointX="16.75" PointY="1.125" Height="1.9802864583333339" />
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RigaAlbum" Width="1.5" PointX="14.25" PointY="3.5" Height="1.4033821614583339" />
-        <AssociationConnector Association="Digiphoto.Lumen.Model.AlbumRigaAlbum">
-          <ConnectorPoint PointX="16.75" PointY="2.1151432291666667" />
-          <ConnectorPoint PointX="15" PointY="2.1151432291666667" />
-          <ConnectorPoint PointX="15" PointY="3.5" />
-        </AssociationConnector>
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.ScaricoCard" Width="1.75" PointX="10" PointY="9.5" Height="1.7879850260416665" />
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.FormatoCarta" Width="1.5" PointX="18.25" PointY="8.75" Height="1.9802864583333335" />
-        <AssociationConnector Association="Digiphoto.Lumen.Model.FotografoScaricoCard">
-          <ConnectorPoint PointX="12.34375" PointY="8.172587890625" />
-          <ConnectorPoint PointX="12.34375" PointY="10.03125" />
-          <ConnectorPoint PointX="11.75" PointY="10.03125" />
-        </AssociationConnector>
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.InfoFissa" PointX="3.75" PointY="0.875" Width="2.75" Height="2.9417936197916665" />
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Carrello" Width="1.5" PointX="18.875" PointY="4.125" Height="2.5571907552083317" />
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RigaCarrello" Width="1.5" PointX="21.375" PointY="3.875" Height="2.1725878906249996" />
-        <AssociationConnector Association="Digiphoto.Lumen.Model.CarrelloRigaCarrello">
-          <ConnectorPoint PointX="20.375" PointY="5.0862939453125" />
-          <ConnectorPoint PointX="21.375" PointY="5.0862939453125" />
-        </AssociationConnector>
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RiCaDiscoMasterizzato" Width="1.5" PointX="22.875" PointY="7.875" Height="1.2110807291666665" />
-        <InheritanceConnector EntityType="Digiphoto.Lumen.Model.RiCaDiscoMasterizzato" ManuallyRouted="false">
-          <ConnectorPoint PointX="22.125" PointY="6.047587890625" />
-          <ConnectorPoint PointX="22.125" PointY="6.422587890625" />
-          <ConnectorPoint PointX="23.625" PointY="6.422587890625" />
-          <ConnectorPoint PointX="23.625" PointY="7.875" />
-        </InheritanceConnector>
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RiCaFotoStampata" Width="1.5" PointX="21.125" PointY="7.75" Height="1.7879850260416674" />
-        <InheritanceConnector EntityType="Digiphoto.Lumen.Model.RiCaFotoStampata" ManuallyRouted="false">
-          <ConnectorPoint PointX="22.125" PointY="6.047587890625" />
-          <ConnectorPoint PointX="22.125" PointY="7.375" />
-          <ConnectorPoint PointX="21.875" PointY="7.375" />
-          <ConnectorPoint PointX="21.875" PointY="7.75" />
-        </InheritanceConnector>
-        <AssociationConnector Association="Digiphoto.Lumen.Model.FormatoCartaRiCaFotoStampata">
-          <ConnectorPoint PointX="19.75" PointY="9.2401432291666659" />
-          <ConnectorPoint PointX="21.125" PointY="9.2401432291666659" />
-        </AssociationConnector>
-        <AssociationConnector Association="Digiphoto.Lumen.Model.FotografoRiCaFotoStampata" ManuallyRouted="false">
-          <ConnectorPoint PointX="14.375" PointY="7.9612939453125" />
-          <ConnectorPoint PointX="21.125" PointY="7.9612939453125" />
-        </AssociationConnector>
-        <AssociationConnector Association="Digiphoto.Lumen.Model.FotografiaRigaAlbum">
-          <ConnectorPoint PointX="13.25" PointY="4.2016910807291667" />
-          <ConnectorPoint PointX="14.25" PointY="4.2016910807291667" />
-        </AssociationConnector>
-        <AssociationConnector Association="Digiphoto.Lumen.Model.FotografiaRiCaFotoStampata">
-          <ConnectorPoint PointX="11.875" PointY="5.3840950520833326" />
-          <ConnectorPoint PointX="11.875" PointY="8.4612939453125" />
-          <ConnectorPoint PointX="12.260416666666666" PointY="8.4612939453125" />
-          <ConnectorPoint PointX="12.427083333333334" PointY="8.4612939453125" />
-          <ConnectorPoint PointX="21.125" PointY="8.4612939453125" />
-        </AssociationConnector>
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.ConsumoCartaGiornaliero" Width="2" PointX="15" PointY="9.5" Height="2.1725878906249996" />
-        <AssociationConnector Association="Digiphoto.Lumen.Model.FormatoCartaConsumoCartaGiornaliero">
-          <ConnectorPoint PointX="18.25" PointY="10.115143229166666" />
-          <ConnectorPoint PointX="17" PointY="10.115143229166666" />
-        </AssociationConnector>
-        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Giornata" Width="1.5" PointX="7.875" PointY="3.5" Height="2.9417936197916656" />
-        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

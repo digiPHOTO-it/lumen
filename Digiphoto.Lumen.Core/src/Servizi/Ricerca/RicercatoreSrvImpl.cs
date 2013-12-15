@@ -60,20 +60,17 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 				{
 					System.Diagnostics.Trace.WriteLine("\n\t" + r.GetType().Name + " " + r.id + " " + r.descrizione);
 
-					if (r is RiCaFotoStampata)
-					{
+					System.Diagnostics.Trace.WriteLine( "\t\tFotografo     = " + r.fotografo );
+					System.Diagnostics.Trace.WriteLine( "\t\tFotografia    = " + r.fotografia );
+					if( r.fotografia != null )
+						System.Diagnostics.Trace.WriteLine( "\t\tDataOra = " + r.fotografia.dataOraAcquisizione );
 
-						RiCaFotoStampata rfs = r as RiCaFotoStampata;
-						System.Diagnostics.Trace.WriteLine("\t\tFotografo     = " + rfs.fotografo);
-						System.Diagnostics.Trace.WriteLine("\t\tFormato Carta = " + rfs.formatoCarta);
-						System.Diagnostics.Trace.WriteLine("\t\tFotografia    = " + rfs.fotografia);
-						if (rfs.fotografia != null)
-							System.Diagnostics.Trace.WriteLine("\t\tDataOra = " + rfs.fotografia.dataOraAcquisizione);
-					}
-					if (r is RiCaDiscoMasterizzato)
+					if (r.discriminator == Carrello.TIPORIGA_STAMPA )
 					{
-						RiCaDiscoMasterizzato rdm = r as RiCaDiscoMasterizzato;
-						System.Diagnostics.Trace.WriteLine("\t\tTot. foto masterizzate = " + rdm.totFotoMasterizzate);
+						System.Diagnostics.Trace.WriteLine("\t\tFormato Carta = " + r.formatoCarta);
+					}
+					if( r.discriminator == Carrello.TIPORIGA_MASTERIZZATA )
+					{
 					}
 				}
 			}
@@ -221,7 +218,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 				var listaIds = from le in param.fotografi
 							   select le.id;
 
-				query = query.Where(ff => listaIds.Equals(ff.righeCarrello.OfType<RiCaFotoStampata>().First<RiCaFotoStampata>().fotografo));
+				query = query.Where(ff => listaIds.Equals(ff.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_STAMPA ).First<RigaCarrello>().fotografo));
 			}
 
 			// ----- fasi del giorno (la Enum non prevede il Contains. Devo trasformarla in una array di interi
@@ -230,7 +227,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 				IEnumerable<short> fasiInt = from p in param.fasiDelGiorno
 											 select Convert.ToInt16(p);
 
-				query = query.Where(ff => fasiInt.Equals(ff.righeCarrello.OfType<RiCaFotoStampata>().First<RiCaFotoStampata>().fotografia.faseDelGiorno));
+				query = query.Where(ff => fasiInt.Equals(ff.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_STAMPA ).First<RigaCarrello>().fotografia.faseDelGiorno));
 			}
 
 			// ----- Intestazione 

@@ -84,9 +84,9 @@ namespace Digiphoto.Lumen.Core.Database {
 
 			/* Create a new ObjectContext instance: uso il proxy */
 			if( String.IsNullOrEmpty(connectionString ) )
-				_objectContext = new LumenEntities( true );
+				_objectContext = new LumenEntities();
 			else
-				_objectContext = new LumenEntities( connectionString, true );
+				_objectContext = new LumenEntities( connectionString );
 
 			_isDisposed = false;
 			Thread.BeginThreadAffinity();

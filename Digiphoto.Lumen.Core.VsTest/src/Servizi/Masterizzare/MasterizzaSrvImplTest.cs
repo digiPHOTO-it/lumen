@@ -28,15 +28,6 @@ namespace Digiphoto.Lumen.Core.VsTest
 
             _impl.start();
 
-            using (LumenEntities dbContext = new LumenEntities())
-            {
-                Album album = new Album();
-                album.id = 1;
-                album.titolo = "Test Masterizzazione";
-                album.note = "Note Test Masterizzazione";
-                album.timestamp = DateTime.Now;
-                dbContext.Albums.Add(album);
-            }
             Console.WriteLine("FINE");
 		}
         public void TestMasterizzaMasterizzatore()
@@ -88,32 +79,6 @@ namespace Digiphoto.Lumen.Core.VsTest
 				Assert.IsTrue(true);
 			}
 		}
-        public void TestMasterizzaAggiungiAlbum()
-        {
-            using (LumenEntities dbContext = new LumenEntities())
-            {
-                foreach (Album album in dbContext.Albums.ToList<Album>())
-                {
-                    _impl.addAlbum(album);
-                }
-            }
-            string strPathDesktop = Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
-            _impl.impostaDestinazione(TipoDestinazione.CARTELLA, strPathDesktop + @"\Chiavetta");
-			BurnerSrvImpl burnerSrvImpl = new BurnerSrvImpl();
-			if (burnerSrvImpl.testMedia())
-			{
-				_impl.masterizza();
-
-				while (!_elaborazioneTerminata)
-				{
-					Thread.Sleep(100);
-				}
-
-				Assert.IsTrue(_elaborazioneTerminata);
-			}else{
-				Assert.IsTrue(true);
-			}
-        }
 
         [TestCleanup]
         public void Cleanup()

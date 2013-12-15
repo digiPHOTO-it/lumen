@@ -25,7 +25,7 @@ namespace Digiphoto.Lumen.UI.Converters {
 
 					ICollectionView cV = (ICollectionView)value;
 
-					foreach (RiCaFotoStampata riga in cV)
+					foreach (RigaCarrello riga in cV)
 					{
 						quantitaTotale += riga.quantita;
 					};
@@ -43,8 +43,7 @@ namespace Digiphoto.Lumen.UI.Converters {
 
 					foreach (RigaCarrello riga in cV)
 					{
-						if(riga is RiCaFotoStampata){
-							RiCaFotoStampata rica = riga as RiCaFotoStampata;
+						if(riga.discriminator == Carrello.TIPORIGA_STAMPA ){
 							quantitaTotale += riga.quantita;
 						}
 					};

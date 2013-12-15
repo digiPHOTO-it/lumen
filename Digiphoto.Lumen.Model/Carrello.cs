@@ -7,40 +7,32 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-
 namespace Digiphoto.Lumen.Model
 {
-    [DataContract(IsReference = true)]
-    [KnownType(typeof(RigaCarrello))]
+    using System;
+    using System.Collections.Generic;
+    
     public partial class Carrello
     {
         public Carrello()
         {
             this.venduto = false;
+            this.totMasterizzate = 0;
             this.righeCarrello = new HashSet<RigaCarrello>();
+            this.incassiFotografi = new HashSet<IncassoFotografo>();
         }
     
-        [DataMember]
         public System.Guid id { get; set; }
-        [DataMember]
         public System.DateTime giornata { get; set; }
-        [DataMember]
         public System.DateTime tempo { get; set; }
-        [DataMember]
         public decimal totaleAPagare { get; set; }
-        [DataMember]
         public string intestazione { get; set; }
-        [DataMember]
         public bool venduto { get; set; }
-        [DataMember]
         public string note { get; set; }
+        public short totMasterizzate { get; set; }
+        public Nullable<decimal> prezzoDischetto { get; set; }
     
-        [DataMember]
         public virtual ICollection<RigaCarrello> righeCarrello { get; set; }
+        public virtual ICollection<IncassoFotografo> incassiFotografi { get; set; }
     }
-    
 }

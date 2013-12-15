@@ -56,7 +56,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Ritoccare {
 		public void clonaFotoTest()
 		{
 			// Carico 3 foto da clonare
-			using (LumenEntities dbContext = new LumenEntities(true))
+			using (LumenEntities dbContext = new LumenEntities())
 			{
 				Fotografia[] fotos = dbContext.Fotografie.Take(3).ToArray<Fotografia>();
 
@@ -84,9 +84,9 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Ritoccare {
 					// Verifico il salvataggio sul db
 					int count = dbContext.Fotografie.Where(f=> f.numero == foto.numero).Count<Fotografia>();
 
-					Assert.IsTrue(count > 2 && countFile >0 && countProvino > 0 && countProvino > 0);
+					Assert.IsTrue(count >= 2 && countFile >0 && countProvino > 0 && countProvino > 0);
 				}
-
+				dbContext.SaveChanges();
 			}
 		}
 	}

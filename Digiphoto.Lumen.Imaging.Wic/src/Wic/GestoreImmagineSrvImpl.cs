@@ -99,6 +99,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 				return null;
 		}
 
+		// TODO spostare in un servizio. Questo progetto non dovrebbe usare entity framework
 		public void salvaCorrezioniTransienti( Fotografia fotografia ) {
 
 			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
