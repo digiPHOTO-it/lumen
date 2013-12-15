@@ -18,11 +18,10 @@ namespace Digiphoto.Lumen.Model
         public decimal incasso { get; set; }
         public decimal incassoStampe { get; set; }
         public decimal incassoMasterizzate { get; set; }
-        public Nullable<short> contaStampe { get; set; }
+        public short contaStampe { get; set; }
         public short contaMasterizzate { get; set; }
         public Nullable<decimal> provvigioni { get; set; }
     
-        public virtual Carrello carrello { get; set; }
         public virtual Fotografo fotografo { get; set; }
     }
 }
