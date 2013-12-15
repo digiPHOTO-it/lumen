@@ -20,9 +20,6 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare {
 	 */
 	public interface IMasterizzaSrv : IServizio {
 
-		/** Aggiunge l'intero album alla lista */
-		void addAlbum( Album album );
-
 		/** L'utente deve scegliere dove copiare le foto.
 		 * Se il tipo è CARTELLA, allora la destinazione è il nome della cartella.
 		 * Se il tipo è MASTERIZZATORE allora la destinazione indica il 

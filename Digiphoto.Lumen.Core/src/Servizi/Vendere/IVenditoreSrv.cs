@@ -53,6 +53,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		void removeRigaCarrello(RigaCarrello rigaCarrello);
 
+		/// <summary>
+		/// Elimina dal carrello tutte le righe di un certo tipo
+		/// </summary>
+		/// <param name="discriminator">S=Stampe ; M=Masterizzate</param>
+		void removeRigheCarrello( string discriminator );
+
 		void removeCarrello(Carrello carrello);
 
 		/** Lavoro con un carrello alla volta. Esiste un solo carrello "corrente". */

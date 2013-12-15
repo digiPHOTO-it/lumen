@@ -118,12 +118,6 @@ namespace Digiphoto.Lumen.Core.VsTest
              Assert.IsTrue(giorno.Equals("2011-10-31"));
 		 }
 
-         [TestMethod()]
-         public void TestEliminaAlbumNonReferenziati()
-		 {
-             _impl.eliminaAlbumNonReferenziati();
-             Assert.IsTrue(true);
-		 }
 
          [TestCleanup]
          public void Cleanup()
@@ -158,6 +152,7 @@ namespace Digiphoto.Lumen.Core.VsTest
              System.Diagnostics.Trace.WriteLine("[Numero Cartelle da Eliminare]: " + count);
              return count;
          }
+
 
 		 [TestMethod]
 		 public void eliminaUnaFotoTest() {

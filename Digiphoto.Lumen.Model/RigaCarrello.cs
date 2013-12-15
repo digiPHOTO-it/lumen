@@ -7,30 +7,26 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-
 namespace Digiphoto.Lumen.Model
 {
-    [DataContract(IsReference = true)]
-    [KnownType(typeof(RiCaFotoStampata))]
-    [KnownType(typeof(RiCaDiscoMasterizzato))]
+    using System;
+    using System.Collections.Generic;
+    
     public partial class RigaCarrello
     {
-        [DataMember]
         public System.Guid id { get; set; }
-        [DataMember]
         public decimal prezzoLordoUnitario { get; set; }
-        [DataMember]
         public short quantita { get; set; }
-        [DataMember]
         public decimal prezzoNettoTotale { get; set; }
-        [DataMember]
         public Nullable<decimal> sconto { get; set; }
-        [DataMember]
         public string descrizione { get; set; }
-    }
+        public string discriminator { get; set; }
+        public Nullable<short> totFogliStampati { get; set; }
+        public string nomeStampante { get; set; }
+        public Nullable<bool> bordiBianchi { get; set; }
     
+        public virtual Fotografo fotografo { get; set; }
+        public virtual Fotografia fotografia { get; set; }
+        public virtual FormatoCarta formatoCarta { get; set; }
+    }
 }

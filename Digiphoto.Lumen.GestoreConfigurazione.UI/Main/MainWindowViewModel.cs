@@ -542,7 +542,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
         }
 
         /// <summary>
-        /// Tutti i formatiCarta da visualizzare
+        /// Tutti i masterizzatori da visualizzare
         /// </summary>
         public ObservableCollection<String> listaMasterizzatori
         {

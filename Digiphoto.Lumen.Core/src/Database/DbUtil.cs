@@ -88,7 +88,7 @@ namespace Digiphoto.Lumen.Core.Database {
 
 					conn.Open();
 
-					string sql = "select count(*) from fotografi";
+					string sql = "select count(*) from Fotografi";
 					using( DbCommand comm = conn.CreateCommand() ) {
 						comm.CommandText = sql;
 						using( DbDataReader rdr = comm.ExecuteReader() ) {

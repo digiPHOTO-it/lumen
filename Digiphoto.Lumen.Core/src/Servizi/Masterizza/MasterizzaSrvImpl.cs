@@ -346,20 +346,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 
         #region AggiuntaFile
 
-        /// <summary>
-        /// Consente di aggiungere un intero album alla lista delle foto da copiare
-        /// </summary>
-        ///  <param name="album"></param>
-        public void addAlbum(Model.Album album)
-        {
-            using (LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext)
-            {
-                foreach (RigaAlbum alb in objContext.RigheAlbum.Where(r => r.id == album.id))
-                {
-                    _fotografie.Add(alb.fotografia);
-                }
-            }
-        }
+  
 
 		public void addFotografia( Fotografia foto ) {
 			if( !fotografie.Contains( foto ) )
