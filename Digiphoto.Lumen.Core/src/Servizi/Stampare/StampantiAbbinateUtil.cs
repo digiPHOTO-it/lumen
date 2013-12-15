@@ -15,6 +15,10 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 
 		private static readonly ILog _giornale = LogManager.GetLogger(typeof(StampantiAbbinateUtil));
 
+		private const String CHAR_SEP_COLONNE = ";";
+		private const String CHAR_SEP_RIGHE = "}";
+
+
 		public static StampantiAbbinateCollection deserializza( String strStampantiAbbinate ) {
 			return new StampantiAbbinateCollection( deserializzaList( strStampantiAbbinate ) );
 		}
@@ -26,8 +30,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 				return list;
 			}
 
-			char [] sepC = new char [] { '#' };
-			String [] righe = strStampantiAbbinate.Split( sepC, StringSplitOptions.RemoveEmptyEntries );
+			String [] righe = strStampantiAbbinate.Split( CHAR_SEP_RIGHE.ToCharArray(), StringSplitOptions.RemoveEmptyEntries );
 
 			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
 
@@ -35,7 +38,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 
 			for( int i = 0; i < righe.Length; i++ ) {
 
-				string [] campi = righe [i].Split( ';' );
+				string [] campi = righe [i].Split( CHAR_SEP_COLONNE.ToCharArray() );
 
 				Guid idFormatoCarta = new Guid( campi[0] );
 				String stampante = campi[1];
@@ -90,9 +93,9 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			StringBuilder stampantiAbbinateString = new StringBuilder();
 			foreach( StampanteAbbinata stampanteAbbinata in collection ) {
 				stampantiAbbinateString.Append( stampanteAbbinata.FormatoCarta.id );
-				stampantiAbbinateString.Append( ";" );
+				stampantiAbbinateString.Append( CHAR_SEP_COLONNE );
 				stampantiAbbinateString.Append( stampanteAbbinata.StampanteInstallata.NomeStampante );
-				stampantiAbbinateString.Append( "#" );
+				stampantiAbbinateString.Append( CHAR_SEP_RIGHE );
 			}
 
 			return stampantiAbbinateString.ToString();

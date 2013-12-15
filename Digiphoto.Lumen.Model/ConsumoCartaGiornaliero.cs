@@ -7,30 +7,19 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-
 namespace Digiphoto.Lumen.Model
 {
-    [DataContract(IsReference = true)]
-    [KnownType(typeof(FormatoCarta))]
+    using System;
+    using System.Collections.Generic;
+    
     public partial class ConsumoCartaGiornaliero
     {
-        [DataMember]
         public System.Guid id { get; set; }
-        [DataMember]
         public System.DateTime giornata { get; set; }
-        [DataMember]
         public short totFogli { get; set; }
-        [DataMember]
         public short diCuiProvini { get; set; }
-        [DataMember]
         public short diCuiFoto { get; set; }
     
-        [DataMember]
         public virtual FormatoCarta formatoCarta { get; set; }
     }
-    
 }

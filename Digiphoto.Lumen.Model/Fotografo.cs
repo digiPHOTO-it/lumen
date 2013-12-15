@@ -7,14 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-
 namespace Digiphoto.Lumen.Model
 {
-    [DataContract(IsReference = true)]
+    using System;
+    using System.Collections.Generic;
+    
     public partial class Fotografo
     {
         public Fotografo()
@@ -23,18 +20,11 @@ namespace Digiphoto.Lumen.Model
             this.umano = true;
         }
     
-        [DataMember]
         public string id { get; set; }
-        [DataMember]
         public string cognomeNome { get; set; }
-        [DataMember]
         public string iniziali { get; set; }
-        [DataMember]
         public bool attivo { get; set; }
-        [DataMember]
         public bool umano { get; set; }
-        [DataMember]
         public string note { get; set; }
     }
-    
 }

@@ -13,6 +13,9 @@ using System.Diagnostics;
 using System.Transactions;
 using System.Data.Objects;
 using Digiphoto.Lumen.Config;
+using Digiphoto.Lumen.Database;
+using System.Data.Entity.Validation;
+using Digiphoto.Lumen.Util;
 
 namespace Digiphoto.Lumen.Core.VsTest {
 
@@ -49,8 +52,6 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 			using( LumenEntities dbContext = new LumenEntities() ) {
 
-				ObjectContext oc = dbContext.ObjectContext;
-				
 				var carrelli = dbContext.Carrelli.Include( "righeCarrello" ).Where( cc => cc.righeCarrello.Count > 1 ).Take( 5 );
 
 				foreach( Carrello c in carrelli ) {
@@ -60,20 +61,17 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 						Debug.WriteLine( "\n\t" + r.GetType().Name + " "  + r.id + " " + r.descrizione  );
 
-						if( r is RiCaFotoStampata ) {
-							
-							RiCaFotoStampata rfs = r as RiCaFotoStampata;
-							Debug.WriteLine( "\t\tFotografo     = " + rfs.fotografo );
-							Debug.WriteLine( "\t\tFormato Carta = " + rfs.formatoCarta );
-							Debug.WriteLine( "\t\tFotografia    = " + rfs.fotografia );
-							if( rfs.fotografia != null )
-								Debug.WriteLine( "\t\tDataOra = " + rfs.fotografia.dataOraAcquisizione );
-						}
-						if( r is RiCaDiscoMasterizzato ) {
-							RiCaDiscoMasterizzato rdm = r as RiCaDiscoMasterizzato;
-							Debug.WriteLine( "\t\tTot. foto masterizzate = " + rdm.totFotoMasterizzate );
-						}
+						Debug.WriteLine( "\t\tFotografo     = " + r.fotografo );
+						Debug.WriteLine( "\t\tFotografia    = " + r.fotografia );
+						if( r.fotografia != null )
+							Debug.WriteLine( "\t\tDataOra = " + r.fotografia.dataOraAcquisizione );
 
+						if( r.discriminator == Carrello.TIPORIGA_STAMPA ) {
+							Debug.WriteLine( "\t\tFormato Carta = " + r.formatoCarta );
+						}
+						if( r.discriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
+							Debug.WriteLine( "\t\tTot. foto masterizzate = " + c.totMasterizzate );
+						}
 					}
 				}
 
@@ -98,19 +96,20 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 				// ---
 
-				RiCaDiscoMasterizzato r1 = new RiCaDiscoMasterizzato();
+				RigaCarrello r1 = new RigaCarrello();
+				r1.discriminator = Carrello.TIPORIGA_MASTERIZZATA;
 				r1.id = Guid.NewGuid();
 				r1.prezzoLordoUnitario = new Decimal( 20 );
 				r1.quantita = 2;
 				r1.prezzoNettoTotale = Decimal.Multiply( r1.prezzoLordoUnitario, r1.quantita );
-				r1.descrizione = "RiCaDiscoMasterizzato";
-				r1.totFotoMasterizzate = 85;
+				r1.descrizione = "Foto masterizzata";
 				c1.righeCarrello.Add( r1 );
 				_contaMasterizzate++;
 
 				// ---
 
-				RiCaFotoStampata r2 = new RiCaFotoStampata();
+				RigaCarrello r2 = new RigaCarrello();
+				r2.discriminator = Carrello.TIPORIGA_STAMPA;
 				r2.id = Guid.NewGuid();
 				r2.prezzoLordoUnitario = new Decimal( 5 );
 				r2.quantita = 3;
@@ -125,10 +124,8 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				// ---
 
 	
-				
-
-
-				RiCaFotoStampata r3 = new RiCaFotoStampata();
+				RigaCarrello r3 = new RigaCarrello();
+				r3.discriminator = Carrello.TIPORIGA_STAMPA;
 				r3.id = Guid.NewGuid();
 				r3.prezzoLordoUnitario = new Decimal( 5 );
 				r3.quantita = 2;
@@ -144,7 +141,17 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				
 				dbContext.Carrelli.Add( c1 );
 
-				dbContext.SaveChanges();
+
+				try {
+					dbContext.SaveChanges();
+
+				} catch( Exception ee) {
+
+					String msg = ErroriUtil.estraiMessage( ee );
+					Console.WriteLine( msg );
+
+					throw ee;
+				}
 
 
 			}
@@ -182,7 +189,8 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				dbContext.Fotografi.Attach( fotografo );
 				dbContext.Fotografie.Attach( fotografia );
 
-				RiCaFotoStampata rr = new RiCaFotoStampata();
+				RigaCarrello rr = new RigaCarrello();
+				rr.discriminator = Carrello.TIPORIGA_STAMPA;
 				rr.formatoCarta =  formato;
 				rr.fotografo = fotografo;
 				rr.fotografia = fotografia;
@@ -200,8 +208,8 @@ namespace Digiphoto.Lumen.Core.VsTest {
 		private void queryPolimorfica() {
 
 			using( LumenEntities dbContext = new LumenEntities() ) {
-				foreach( RiCaFotoStampata riCaFotoStampata in 
-					dbContext.RigheCarrelli.Include( "fotografo" ).Include( "fotografia" ).OfType<RiCaFotoStampata>() ) {
+				foreach( RigaCarrello riCaFotoStampata in 
+					dbContext.RigheCarrelli.Include( "fotografo" ).Include( "fotografia" ).Where( r => r.discriminator == Carrello.TIPORIGA_STAMPA ) ) {
 					Trace.WriteLine ( "Riga Carrello foto stampata: " + riCaFotoStampata.fotografo.id + " totFoto=" + riCaFotoStampata.totFogliStampati );
 				}
 			}
@@ -216,7 +224,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				IQueryable<RigaCarrello> esito =
 					from c in dbContext.Carrelli.Include( "righeCarrelli" )
 					from r in c.righeCarrello
-					where (c.id == _carrelloInserito.id && r is RiCaFotoStampata)
+					where (c.id == _carrelloInserito.id && r.discriminator == Carrello.TIPORIGA_STAMPA )
 					select r;
 
 
@@ -224,7 +232,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 				// le righe inserite nell'ultimo carrello sono 3 ma soltanto 2 sono di tipo foto stampata
 				Assert.IsTrue( esito.Count() == _contaStampate );
-				foreach( RiCaFotoStampata riga in esito ) {
+				foreach( RigaCarrello riga in esito ) {
 					// Trace.WriteLine( "Riga Carrello foto stampata: " + riCaFotoStampata.fotografo.id + " totFoto=" + riCaFotoStampata.totFogliStampati );
 					Trace.WriteLine( "Riga Carrello " + riga.ToString() );
 				}
@@ -246,7 +254,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				// get a collection of only Righe Stampate.
 				
 				string esqlQuery = @"SELECT VALUE fs 
-				                   FROM  OFTYPE(LumenEntities.RigheCarrelli, Digiphoto.Lumen.Model.RiCaFotoStampata) AS fs";
+				                   FROM  LumenEntities.RigheCarrelli AS fs";
 
 				using( EntityCommand cmd = new EntityCommand( esqlQuery, conn ) ) {
 					// Execute the command.
@@ -296,7 +304,8 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 			using( LumenEntities dbContext = new LumenEntities() ) {
 
-				RiCaFotoStampata r1 = new RiCaFotoStampata();
+				RigaCarrello r1 = new RigaCarrello();
+				r1.discriminator = Carrello.TIPORIGA_STAMPA;
 				r1.id = Guid.NewGuid();
 				r1.prezzoLordoUnitario = new Decimal( 5 );
 				r1.quantita = 3;
@@ -316,7 +325,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 			using( LumenEntities dbContext = new LumenEntities() ) {
 				
-				RiCaFotoStampata r1 = (RiCaFotoStampata) c3.righeCarrello.ElementAt( 0 );
+				RigaCarrello r1 = c3.righeCarrello.ElementAt( 0 );
 
 				// Riattacco le associazioni altrimeti si spacca (sembra)
 				dbContext.FormatiCarta.Attach( r1.formatoCarta );
@@ -324,7 +333,19 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				dbContext.Fotografie.Attach( r1.fotografia );
 
 				dbContext.Carrelli.Add( c3 );
-				dbContext.SaveChanges();
+
+				try {
+					dbContext.SaveChanges();
+
+	
+				} catch( DbEntityValidationException ee) {
+
+					string msg = ErroriUtil.estraiMessage( ee );
+					Console.WriteLine( msg );
+
+					throw;
+				}
+
 			}
 		}
 
@@ -357,7 +378,8 @@ namespace Digiphoto.Lumen.Core.VsTest {
 			using( LumenEntities dbContext = new LumenEntities() ) {
 
 				// Creo la riga con gli attributi scalari
-				RiCaFotoStampata r1 = new RiCaFotoStampata {
+				RigaCarrello r1 = new RigaCarrello {
+					discriminator = Carrello.TIPORIGA_STAMPA,
 					id = Guid.NewGuid(),
 					prezzoLordoUnitario = 5,
 					quantita = 3,
@@ -380,7 +402,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 			using( LumenEntities dbContext = new LumenEntities() ) {
 
-				RiCaFotoStampata r1 = (RiCaFotoStampata)c3.righeCarrello.ElementAt( 0 );
+				RigaCarrello r1 = c3.righeCarrello.ElementAt( 0 );
 
 				dbContext.Fotografie.Attach( r1.fotografia );
 				dbContext.FormatiCarta.Attach( r1.formatoCarta );
@@ -421,13 +443,13 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 			using( LumenEntities dbContext = new LumenEntities() ) {
 
-				carrelloCorrente = dbContext.Carrelli.Attach( carrelloCorrente );
+				dbContext.ObjectContext.AttachTo( "Carrelli", carrelloCorrente );
 				ObjectStateEntry s1 = dbContext.ObjectContext.ObjectStateManager.GetObjectStateEntry( carrelloCorrente );
 
-				formato = dbContext.FormatiCarta.Attach( formato );
+				dbContext.ObjectContext.AttachTo( "FormatiCarta", formato );
 				ObjectStateEntry s2 = dbContext.ObjectContext.ObjectStateManager.GetObjectStateEntry( formato );
 
-				fotografia = dbContext.Fotografie.Attach( fotografia );
+				dbContext.ObjectContext.AttachTo( "Fotografie", fotografia );
 				ObjectStateEntry s3 = dbContext.ObjectContext.ObjectStateManager.GetObjectStateEntry( fotografia );
 
 
@@ -436,14 +458,15 @@ namespace Digiphoto.Lumen.Core.VsTest {
  				if( fotografo.id.Equals( fotografia.fotografo.id ) )
 					fotografo = fotografia.fotografo;
 				else
-					fotografo = dbContext.Fotografi.Attach( fotografo );
+					dbContext.ObjectContext.AttachTo( "Fotografi", fotografo );
 				ObjectStateEntry s4 = dbContext.ObjectContext.ObjectStateManager.GetObjectStateEntry( fotografo );
 				// ======= Occhio qui !!!! poi ti spiego =====
 
 
 
-				RiCaFotoStampata riga = dbContext.ObjectContext.CreateObject<RiCaFotoStampata>();
+				RigaCarrello riga = dbContext.ObjectContext.CreateObject<RigaCarrello>();
 				riga.id = Guid.NewGuid();
+				riga.discriminator = Carrello.TIPORIGA_STAMPA;
 				riga.prezzoLordoUnitario = new Decimal( 5 );
 				riga.quantita = 3;
 				riga.prezzoNettoTotale = Decimal.Multiply( riga.prezzoLordoUnitario, riga.quantita );

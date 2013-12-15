@@ -72,14 +72,13 @@ namespace Digiphoto.Lumen.Applicazione {
 		// TODO questa dovrebbe essere internal usata solo dalla configurazione
 		public void avvia( bool autoSistema, string connectionString ) {
 
-/*
- * Purtoppo non posso mettere questo controllo perché gli Test-Case si inciampano qui.
- * Sembra che i vari test case siano eseguiti in più thread dello stesso processo.
- * 
+		/*
+		 * Purtoppo non posso mettere questo controllo perché gli Test-Case si inciampano qui.
+		 * Sembra che i vari test case siano eseguiti in più thread dello stesso processo.
+		 * 
 			if( avviata == true )
 				throw new InvalidOperationException( "L'applicazione Lumen è già stata avviata" );
-
-*/
+		*/
 			// Configuro il logger
 			log4net.Config.XmlConfigurator.Configure();
 			

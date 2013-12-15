@@ -7,14 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-
 namespace Digiphoto.Lumen.Model
 {
-    [DataContract(IsReference = true)]
+    using System;
+    using System.Collections.Generic;
+    
     public partial class FormatoCarta
     {
         public FormatoCarta()
@@ -22,16 +19,10 @@ namespace Digiphoto.Lumen.Model
             this.attivo = true;
         }
     
-        [DataMember]
         public System.Guid id { get; set; }
-        [DataMember]
         public string descrizione { get; set; }
-        [DataMember]
         public decimal prezzo { get; set; }
-        [DataMember]
         public bool attivo { get; set; }
-        [DataMember]
         public Nullable<short> ordinamento { get; set; }
     }
-    
 }

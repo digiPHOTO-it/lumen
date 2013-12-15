@@ -6,7 +6,7 @@
 -- Generated from EDMX file: C:\Users\bluca\Documents\Visual Studio 2010\Projects\lumen\Digiphoto.Lumen.Model\LumenModel.edmx
 -- --------------------------------------------------
 
--- --------------------------------------------------
+-- --------------------------------------------------x\
 -- Creating all tables
 -- --------------------------------------------------
 

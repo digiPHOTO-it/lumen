@@ -96,11 +96,11 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
 			}
             using (new UnitOfWorkScope())
 			{
-                LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
-                quante = objContext.ObjectContext.ExecuteStoreCommand("DELETE FROM Fotografie WHERE fotografo_id = {0} AND DATEPART(yyyy, dataOraAcquisizione) = {1} AND DATEPART(mm, dataOraAcquisizione) = {2} AND DATEPART(dd, dataOraAcquisizione)= {3}", fotografoID, dataRiferimento.Year, dataRiferimento.Month, dataRiferimento.Day);
+                LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+                quante = dbContext.ObjectContext.ExecuteStoreCommand("DELETE FROM Fotografie WHERE fotografo_id = {0} AND DATEPART(yyyy, dataOraAcquisizione) = {1} AND DATEPART(mm, dataOraAcquisizione) = {2} AND DATEPART(dd, dataOraAcquisizione)= {3}", fotografoID, dataRiferimento.Year, dataRiferimento.Month, dataRiferimento.Day);
                 // Elimino tutti gli album rimasti senza foto
-                objContext.ObjectContext.ExecuteStoreCommand("DELETE FROM Albums WHERE (id NOT IN(SELECT DISTINCT AlbumRigaAlbum_RigaAlbum_id FROM RigheAlbum))");
-                objContext.SaveChanges();
+                dbContext.ObjectContext.ExecuteStoreCommand("DELETE FROM Albums WHERE (id NOT IN(SELECT DISTINCT AlbumRigaAlbum_RigaAlbum_id FROM RigheAlbum))");
+                dbContext.SaveChanges();
 			}
             eliminaFotoVecchieMsg.fase = Fase.FineEliminazione;
 			eliminaFotoVecchieMsg.descrizione = "Eliminate " + quante + " foto dalla cartella " + pathCartella;
@@ -134,12 +134,12 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
 
 				// Poi dal database
 
-				var appo = lumenEntities.Fotografie.Remove( ff2 );
+				lumenEntities.Fotografie.Remove( ff2 );
 				++conta;
 			}
 
 	
-			int test3 = lumenEntities.ObjectContext.SaveChanges();
+			int test3 = lumenEntities.SaveChanges();
 
 
 			_giornale.Info( "Eliminazione foto completata. Tot = " + conta );
@@ -177,22 +177,6 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
 				}
 			}
 		}
-
-        /// <summary>
-        /// Consente di eliminare tutti gli album rimasti senza foto
-        /// </summary>
-        public void eliminaAlbumNonReferenziati()
-        {
-            EliminaFotoVecchieMsg eliminaFotoVecchieMsg = new EliminaFotoVecchieMsg( this );
-            using (new UnitOfWorkScope())
-            {
-                LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
-                objContext.ObjectContext.ExecuteStoreCommand("DELETE FROM Albums WHERE (id NOT IN(SELECT DISTINCT AlbumRigaAlbum_RigaAlbum_id FROM RigheAlbum))");
-                objContext.SaveChanges();
-                eliminaFotoVecchieMsg.fase = Fase.FineEliminazioneAlbumNonReferenziati;
-                pubblicaMessaggio(eliminaFotoVecchieMsg);
-            }
-        }
 
         /// <summary>
         /// Restituisce il fotografo a cui appartengono le foto memorizzate nel path

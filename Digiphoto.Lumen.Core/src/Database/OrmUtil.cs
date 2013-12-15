@@ -24,6 +24,7 @@ namespace Digiphoto.Lumen.Database {
 			return forseAttacca( ctx, entitySetName, ref entity );
 		}
 
+		// Questo è un extension mathod.
 		public static bool forseAttacca<T>( this ObjectContext context, string entitySetName, ref T entity ) {
 
 			ObjectStateEntry entry;
@@ -67,6 +68,7 @@ namespace Digiphoto.Lumen.Database {
 			if( cachedEnt != null )
 				ctx.Entry( cachedEnt.Entity ).State = EntityState.Detached;
 		}
+
 
 		public static void vediEntitaInCache( DbContext ctx, Type t ) {
 

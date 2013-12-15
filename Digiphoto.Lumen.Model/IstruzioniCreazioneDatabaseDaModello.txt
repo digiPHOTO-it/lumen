@@ -1,38 +1,47 @@
-﻿Purtoppo ci sono diversi errori e problemi nei tool di microzozz.
+﻿Istruzioni per il modello EDMX
+
+Esistono 3 approcci diversi: 
+	1. Model-First 
+	2. Database-First
+	3. Code-First
+Qui ho deciso di utilizzare il primo (Si parte dal modello).
+
+Nel modello occorre attivare il dbContext generation:
+(vedere pagina ufficiale: http://msdn.microsoft.com/en-us/data/jj613116.aspx )
+Questo dovrebbe essere già installato con visual studio.
+Il questo modo il mio contesto (LumenEntities) deriverà da DbContext e non da ObjectContext che è un pò troppo semplificato.
+
+Occorre aver installato il driver di SqLite per visual studio
+http://system.data.sqlite.org/downloads/1.0.89.0/sqlite-netFx45-setup-bundle-x86-2012-1.0.84.0.exe
+Durante il setup occorre mettere la spunta sui componenti per Visual Studio.
+
+
+Occorre copiare il file :
+lumen\Digiphoto.Lumen.Model\ddl\SSDLToSQLite3.tt 
+nella cartella:
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\Extensions\Microsoft\Entity Framework Tools\DBGen
+(
+ occhio che questo file è stato patchato perché quello che si trova su internet è errato e non 
+ genera le primary keys.
+ Se non ci credi leggi qui:
+ http://stackoverflow.com/questions/4272550/generate-sql-for-sqlite-database-from-entity-framework-model
+)
+Riavviare Visual Studio.
+
+Aprire il modello edmx e nelle proprietà mettere "DDL Generation template" = SSDLToSQLite3.tt
+
+
 
 1) Aprire il modello LumenModel.edmx con il disegnatore.
-
-2) Nella entità RicaFotoStampate, ci sono due associazioni:
-   * con il FormatoCarta
-   * con la Fotografia
-
-   Queste due associazioni devono essere 0..1 a *
-   Però se mettiamo in questo modo a causa di un baco del designer, il file edmx diventa
-   errato e non si riesce a compilare.
-   Se non ci credi leggi qui:
-   http://social.msdn.microsoft.com/Forums/en-US/adodotnetentityframework/thread/c1e1d43a-a09f-4692-9372-3133f04d3eeb/
-
-3) Mettere le associazioni di cui al punto 2 in modo corretto (0..1)
 
 4) Con il tasto destro creare il database dal modello
    Questa operazione crea lo script sql di creazione del database in modo corretto.
 
-5) Ora mettere le associazioni in modo errato (1)
-
-6) Chiudere il designer e aprire il file edmx con l'editor xml
-
-7) Non serve più: Cercare le occorrenze di sql compact 3.5 e sostituirle con 4.0
-   Salvare
+5) Attenzione: lo script va corretto a mano:
+   occorre mettere ON DELETE SET NULL sulla relazione RigaCarrello <--> Fotografia
 
 8) Lanciando la build del progetto con F6, si noterà che ci sono ancora un paio di
    bachi del designer da sistemare.
    Infatti alcune entità vengono puntate su tabelle inesistenti.
-
-9) Nelle due entità derivate (TPH) RiCaFotoStampata e RiCaDiscoMasterizzato
-   puntarle sulla tabelle RigheCarrelli e non RigheCarrelli_RiCaxxxxxxxxxxx
-
-10) A mano dove si trovano i tag 
-   <Association Name="FotografiaRiCaFotoStampata">
-    mettere Multiplicity="0..1"
 
 11) Ricreare se serve il database vuoto. Lanciare creadbsqlite.bat

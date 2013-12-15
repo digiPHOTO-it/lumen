@@ -12,13 +12,17 @@ namespace Digiphoto.Lumen.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class ScaricoCard
+    public partial class IncassoFotografo
     {
-        public System.Guid id { get; set; }
-        public System.DateTime tempo { get; set; }
-        public short totFoto { get; set; }
-        public System.DateTime giornata { get; set; }
+        public System.Guid Id { get; set; }
+        public decimal incasso { get; set; }
+        public decimal incassoStampe { get; set; }
+        public decimal incassoMasterizzate { get; set; }
+        public Nullable<short> contaStampe { get; set; }
+        public short contaMasterizzate { get; set; }
+        public Nullable<decimal> provvigioni { get; set; }
     
+        public virtual Carrello carrello { get; set; }
         public virtual Fotografo fotografo { get; set; }
     }
 }
