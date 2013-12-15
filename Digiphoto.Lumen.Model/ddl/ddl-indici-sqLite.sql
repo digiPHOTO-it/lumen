@@ -41,6 +41,9 @@
 
 	create unique index [cggcarta_idx] on ConsumiCartaGiornalieri (giornata,formatoCarta_id);
 
+	-- Descrizione INCASSIFOTOGRAFI_IDX2
+	CREATE UNIQUE INDEX "incassifotografi_idx2" on incassifotografi ([CarrelloIncassoFotografo_IncassoFotografo_id] ASC, fotografo_id ASC);
+
 -- --------------------------------------------------
 -- Script has ended
 -- --------------------------------------------------

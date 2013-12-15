@@ -201,7 +201,7 @@
     <Property Name="contaStampe" Type="smallint" Nullable="true" />
     <Property Name="contaMasterizzate" Type="smallint" Nullable="false" />
     <Property Name="provvigioni" Type="decimal" Nullable="true" Precision="6" Scale="2" />
-    <Property Name="carrello_id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="CarrelloIncassoFotografo_IncassoFotografo_id" Type="uniqueidentifier" Nullable="false" />
     <Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="false" />
   </EntityType>
   <Association Name="EventoFotografia">
@@ -310,7 +310,7 @@
         <PropertyRef Name="id" />
       </Principal>
       <Dependent Role="IncassoFotografo">
-        <PropertyRef Name="carrello_id" />
+        <PropertyRef Name="CarrelloIncassoFotografo_IncassoFotografo_id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -576,12 +576,11 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Type="Guid" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="None" />
-          <NavigationProperty Name="carrello" Relationship="LumenModel.CarrelloIncassoFotografo" FromRole="IncassoFotografo" ToRole="Carrello" />
           <NavigationProperty Name="fotografo" Relationship="LumenModel.FotografoIncassoFotografo" FromRole="IncassoFotografo" ToRole="Fotografo" />
           <Property Type="Decimal" Name="incasso" Nullable="false" Precision="6" Scale="2" />
           <Property Type="Decimal" Name="incassoStampe" Nullable="false" Precision="6" Scale="2" />
           <Property Type="Decimal" Name="incassoMasterizzate" Nullable="false" Precision="6" Scale="2" />
-          <Property Type="Int16" Name="contaStampe" Nullable="true" />
+          <Property Type="Int16" Name="contaStampe" Nullable="false" />
           <Property Type="Int16" Name="contaMasterizzate" Nullable="false" />
           <Property Type="Decimal" Name="provvigioni" Nullable="true" Precision="6" Scale="2" />
         </EntityType>
@@ -816,7 +815,7 @@
     </AssociationSetMapping>
     <AssociationSetMapping Name="CarrelloIncassoFotografo" TypeName="LumenModel.CarrelloIncassoFotografo" StoreEntitySet="IncassiFotografi">
       <EndProperty Name="Carrello">
-        <ScalarProperty Name="id" ColumnName="carrello_id" />
+        <ScalarProperty Name="id" ColumnName="CarrelloIncassoFotografo_IncassoFotografo_id" />
       </EndProperty>
       <EndProperty Name="IncassoFotografo">
         <ScalarProperty Name="Id" ColumnName="Id" />

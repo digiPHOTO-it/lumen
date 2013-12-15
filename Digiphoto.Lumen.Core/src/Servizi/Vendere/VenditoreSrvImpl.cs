@@ -154,7 +154,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			using( TransactionScope transaction = new TransactionScope() ) {
 
 				try {
-					aggiornaTotFotoMasterizzate();
+					// aggiornaTotFotoMasterizzate();
 
 					// Poi salvo il carrello
 					gestoreCarrello.salva();
@@ -253,7 +253,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		// Riporto anche il prezzo del cd sulla riga.
 		// </summary>
 		//
-		private void aggiornaTotFotoMasterizzate() {
+		private void DACANC_aggiornaTotFotoMasterizzate() {
 			// Sistemo il numero eventuale di foto masterizzate
 			if( _masterizzaSrvImpl != null ) {
 
@@ -563,8 +563,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				_masterizzaSrvImpl = (MasterizzaSrvImpl)LumenApplication.Instance.creaServizio<IMasterizzaSrv>();
 	
 			}
-			// Aggiungo le foto al carrello
-			carrello.righeCarrello.Add(creaRigaFotoMasterizzata());
+
+			foreach( Fotografia foto in fotografie ) {
+
+				// Aggiungo le foto al carrello
+				carrello.righeCarrello.Add( creaRigaFotoMasterizzata( foto ) );
+			}
 
 			// Aggiungo le foto alla lista
 			_masterizzaSrvImpl.addFotografie( fotografie );
@@ -574,7 +578,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 
 		// creo anche una riga nel carrello (UNA SOLA)
-		private RigaCarrello creaRigaFotoMasterizzata() {
+		private RigaCarrello creaRigaFotoMasterizzata( Fotografia fotografia ) {
 
 			RigaCarrello r = new RigaCarrello {
 				discriminator = Carrello.TIPORIGA_MASTERIZZATA
@@ -582,6 +586,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			r.id = Guid.Empty;  // Lascio intenzionalmente vuoto. Lo valorizzo alla fine prima di salvare
 			r.quantita = 1;
 			r.descrizione = "Foto masterizzata";
+			r.fotografia = fotografia;
+			r.fotografo = fotografia.fotografo;
 			return r;
 		}
 

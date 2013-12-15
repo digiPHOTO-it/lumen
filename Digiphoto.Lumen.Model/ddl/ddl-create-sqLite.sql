@@ -1,6 +1,6 @@
 
 -- --------------------------------------------------
--- Date Created: 12/14/2013 19:20:01
+-- Date Created: 12/15/2013 13:16:16
 -- compatible SQLite
 -- Generated from EDMX file: C:\Users\bluca\Documents\Visual Studio 2012\Projects\lumen\Digiphoto.Lumen.Model\LumenModel.edmx
 -- --------------------------------------------------
@@ -198,7 +198,7 @@ CREATE TABLE [RigheCarrelli] (
 		,CONSTRAINT [FK_FotografiaRigaCarrello]
     		FOREIGN KEY ([fotografia_id])
     		REFERENCES [Fotografie] ([id])					
-    		
+    		ON DELETE SET NULL
 						
 		,CONSTRAINT [FK_FormatoCartaRigaCarrello]
     		FOREIGN KEY ([formatoCarta_id])
@@ -212,15 +212,15 @@ CREATE TABLE [IncassiFotografi] (
     [incasso] decimal(6,2)   NOT NULL ,
     [incassoStampe] decimal(6,2)   NOT NULL ,
     [incassoMasterizzate] decimal(6,2)   NOT NULL ,
-    [contaStampe] smallint   NULL ,
+    [contaStampe] smallint  NOT NULL ,
     [contaMasterizzate] smallint   NOT NULL ,
     [provvigioni] decimal(6,2)   NULL ,
-    [carrello_id] uniqueidentifier   NOT NULL ,
+    [CarrelloIncassoFotografo_IncassoFotografo_id] uniqueidentifier   NOT NULL ,
     [fotografo_id] nvarchar(16)   NOT NULL 
  , PRIMARY KEY ([Id])	
 					
 		,CONSTRAINT [FK_CarrelloIncassoFotografo]
-    		FOREIGN KEY ([carrello_id])
+    		FOREIGN KEY ([CarrelloIncassoFotografo_IncassoFotografo_id])
     		REFERENCES [Carrelli] ([id])					
     		
 						

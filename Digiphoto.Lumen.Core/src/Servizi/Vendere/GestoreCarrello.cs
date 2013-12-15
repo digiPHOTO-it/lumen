@@ -159,8 +159,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					rigaCarrello.id = Guid.NewGuid();
 					Fotografia f = rigaCarrello.fotografia;
 					OrmUtil.forseAttacca<Fotografia>( "Fotografie", ref f );
-					FormatoCarta fc = rigaCarrello.formatoCarta;
-					OrmUtil.forseAttacca<FormatoCarta>( "FormatiCarta", ref fc );
+					if( rigaCarrello.discriminator == Carrello.TIPORIGA_STAMPA ) {
+						FormatoCarta fc = rigaCarrello.formatoCarta;
+						OrmUtil.forseAttacca<FormatoCarta>( "FormatiCarta", ref fc );
+					}
 					Fotografo fo = rigaCarrello.fotografo;
 					OrmUtil.forseAttacca<Fotografo>( "Fotografi", ref fo );
 				}
@@ -208,21 +210,13 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				throw new InvalidOperationException( msg );
 			}
 
-			// non so perché ma se salvo un carrello di 1 riga mi dice che sono stati modificati 6 record
-			if( quanti == carrello.righeCarrello.Count || quanti == carrello.righeCarrello.Count * 2 ) {
-				// ok
-			} else {
-				string msg = "carrello id = " + carrello.id + " righe= " + carrello.righeCarrello.Count + " salvate=" + quanti;
-				_giornale.Warn( msg );
-			}
-
 			string msg2 = "Registrato carrello id = " + carrello.id + " totale a pagare = " + carrello.totaleAPagare + " con " + carrello.righeCarrello.Count + " righe";
 			_giornale.Info( msg2 );
 		}
 
 		private static bool rigaIsInCarrello(Carrello carrello, RigaCarrello riga)
 		{
-			return carrello.righeCarrello.Any( r => r.fotografia.id == riga.fotografia.id );
+			return carrello.righeCarrello.Any( r => r.fotografia.id == riga.fotografia.id && r.discriminator == riga.discriminator );
 		}
 
 		/// <summary>
@@ -239,6 +233,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				carrello.tempo = DateTime.Now;
 			}
 
+			// Gestico lo spaccato degli incassi per singolo fotografo
+			if( carrello.incassiFotografi == null )
+				carrello.incassiFotografi = new List<IncassoFotografo>();
+			else {
+				carrello.incassiFotografi.Clear();
+			}
 
 			decimal totaleAPagare = 0;
 
@@ -265,9 +265,39 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 						carrello.totMasterizzate += r.quantita; // Sarà sempre = 1 per forza;
 					}
 				}
-			}
 
+				// Ora valorizzo lo spaccato provvigioni
+				IncassoFotografo inca = carrello.incassiFotografi.SingleOrDefault( ii => ii.fotografo.id.Equals( r.fotografo.id ) );
+				if( inca == null ) {
+					inca = new IncassoFotografo();
+					inca.Id = Guid.NewGuid();
+					inca.fotografo = r.fotografo;
+					carrello.incassiFotografi.Add( inca );
+				}
+
+				if( r.discriminator == Carrello.TIPORIGA_STAMPA ) {
+					inca.incasso += r.prezzoNettoTotale;
+					inca.incassoStampe += r.prezzoNettoTotale;
+					inca.contaStampe += r.quantita;
+				} else if( r.discriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
+					// Il prezzo di queste righe è zero. Calcolo tutto alla fine sul totale
+					inca.contaMasterizzate += r.quantita;  // fisso = 1
+					carrello.totMasterizzate += r.quantita;
+				}
+				
+			}
+			
 			carrello.totaleAPagare = totaleAPagare;
+
+
+			// Devo sistemare l'incaso del dischetto diviso per quante foto sono state masterizzate per ogni fotografo
+			if( carrello.prezzoDischetto != null ) {
+				foreach( IncassoFotografo ii in carrello.incassiFotografi ) {
+					decimal mioIncasso = ii.contaMasterizzate * (decimal)carrello.prezzoDischetto / carrello.totMasterizzate;
+					ii.incasso += mioIncasso;
+					ii.incassoMasterizzate = Math.Round( mioIncasso, 2 );
+				}
+			}
 		}
 
 		/** 

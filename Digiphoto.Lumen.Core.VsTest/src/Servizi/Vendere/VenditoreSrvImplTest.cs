@@ -15,6 +15,7 @@ using Digiphoto.Lumen.Servizi.Reports;
 using System.Diagnostics;
 using Digiphoto.Lumen.Database;
 using Digiphoto.Lumen.Config;
+using System.Transactions;
 
 namespace Digiphoto.Lumen.Core.VsTest
 {
@@ -31,24 +32,24 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 		int contaStampate = 0;
 
-
 		#region ButtaSu
-		[ClassInitialize()]
-		public static void MyClassInitialize( TestContext testContext ) {
 
+		//Use ClassInitialize to run code before running the first test in the class
+		[ClassInitialize()]
+		public static void classInitialize( TestContext testContext ) {
+			LumenApplication.Instance.avvia();
 		}
 
 		[ClassCleanup()]
-		public static void MyClassCleanUp() {
-
+		public static void classCleanup() {
+			LumenApplication.Instance.ferma();
 		}
-
 
 		IDisposable ascoltami;
 
 		[TestInitialize()]
 		public void MyTestInitialize() {
-			LumenApplication.Instance.avvia();
+
 			this._impl = (VenditoreSrvImpl)LumenApplication.Instance.getServizioAvviato<IVenditoreSrv>();
 
 			IObservable<Messaggio> observable = LumenApplication.Instance.bus.Observe<Messaggio>();
@@ -316,7 +317,78 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 		}
 
+		[TestMethod]
+		public void spaccatoIncassiFotografiTest() {
 
+			using( new UnitOfWorkScope() ) {
+
+				FormatoCarta formatoCarta = UnitOfWorkScope.CurrentObjectContext.FormatiCarta.First();
+
+				ParamStampaFoto paramStampa = new ParamStampaFoto {
+					nomeStampante = "doPDF v7",
+					formatoCarta = formatoCarta,
+				};
+
+
+
+				_impl.creaNuovoCarrello();
+
+				_impl.carrello.prezzoDischetto = (decimal)27.9;
+
+				// Carico 3 fotografi tra quelli che hanno delle foto
+				var idFotografi = UnitOfWorkScope.CurrentObjectContext.Fotografie.Select( f => f.fotografo ).Distinct().Take( 3 );
+				Fotografo [] arrayF = idFotografi.ToArray();
+				if( idFotografi.Count() != 3 )
+					return;
+
+				string par1 = arrayF[0].id;
+				var fotos1 = UnitOfWorkScope.CurrentObjectContext.Fotografie.Where( f => f.fotografo.id == par1 ).Take( 2 ).ToList();
+				string par2 = arrayF[1].id;
+				var fotos2 = UnitOfWorkScope.CurrentObjectContext.Fotografie.Where( f => f.fotografo.id == par2 ).Take( 3 ).ToList();
+				string par3 = arrayF[2].id;
+				var fotos3 = UnitOfWorkScope.CurrentObjectContext.Fotografie.Where( f => f.fotografo.id == par3 ).Take( 4 ).ToList();
+
+				paramStampa.numCopie = 1;
+				_impl.aggiungiStampe( fotos1, paramStampa );
+
+				paramStampa.numCopie = 2;
+				_impl.aggiungiStampe( fotos2, paramStampa );
+
+				paramStampa.numCopie = 3;
+				_impl.aggiungiStampe( fotos3, paramStampa );
+
+				_impl.aggiungiMasterizzate( fotos1 );
+				_impl.aggiungiMasterizzate( fotos2 );
+				_impl.aggiungiMasterizzate( fotos3 );
+
+				bool esito = _impl.salvaCarrello();
+				Assert.IsTrue( esito );
+
+				Carrello cc = _impl.carrello;
+
+
+				decimal soldi1 = (fotos1.Count() * 1 * formatoCarta.prezzo);
+				decimal soldi2 = (fotos2.Count() * 2 * formatoCarta.prezzo);
+				decimal soldi3 = (fotos3.Count() * 3 * formatoCarta.prezzo);
+				decimal soldi = soldi1 + soldi2 + soldi3 + (decimal)27.9;
+
+				// Ora faccio un pò di verifiche
+				Assert.IsTrue( cc.totaleAPagare == soldi );
+
+
+				// Il totale da pagare, deve essere la somma degli incassi dei fotografi
+				decimal somma = cc.incassiFotografi.Sum( ii => ii.incasso );
+				Assert.IsTrue( cc.totaleAPagare == somma );
+
+				// La somma dei ...DI CUI.. deve essere uguale al totale
+				decimal ima = cc.incassiFotografi.Sum( ii => ii.incassoMasterizzate );
+				decimal ist = cc.incassiFotografi.Sum( ii => ii.incassoStampe );
+				Assert.IsTrue( ima + ist == somma );
+
+				Assert.IsTrue( ima == cc.prezzoDischetto );
+
+			}
+		}
 
 	}
 }
