@@ -345,7 +345,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 				textNumero.Foreground = new SolidColorBrush(Colors.Black);
 				textNumero.Background = new SolidColorBrush(Colors.Orange);
 				textNumero.SetValue(Canvas.TopProperty, (Double)(sizeLatoH * (y - 1)) + testataH);
-				textNumero.SetValue(Canvas.LeftProperty, (Double)(sizeLatoW * (x - 1)) + riquadroW - MeasureString(textNumero).Width);
+				textNumero.SetValue(Canvas.LeftProperty, (Double)(sizeLatoW * (x - 1)) + riquadroW - MeasureString(textNumero).Width - 10);
 				c.Children.Add(textNumero);
 			}
 
