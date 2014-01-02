@@ -7,7 +7,7 @@ using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Core.Database;
 using System.Linq;
 using System.Transactions;
-using System.Data.Objects;
+using System.Data.Entity.Core.Objects;
 using Digiphoto.Lumen.Model;
 using System.Reflection;
 using Digiphoto.Lumen.Servizi.Ricerca;
@@ -83,7 +83,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 			using( new UnitOfWorkScope() ) {
 
-				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 				IList<Fotografia> ris = _impl.cerca( param );
 
 				int totRecord = ris.Count;

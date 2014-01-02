@@ -40,17 +40,12 @@ namespace Digiphoto.Lumen.UI {
 
 
 
-	public class FotoGalleryViewModel : ViewModelBase, IObserver<GestoreCarrelloMsg>, IObserver<StampatoMsg>, IObserver<ClonaFotoMsg>
+	public class FotoGalleryViewModel : ViewModelBase, IObserver<StampatoMsg>, IObserver<ClonaFotoMsg>
 	{
-
-		private Boolean operazioniCarrelloBloccanti = false;
 
 		private BackgroundWorker _bkgIdrata;
 
 		public FotoGalleryViewModel() {
-
-			IObservable<GestoreCarrelloMsg> observableCarrello = LumenApplication.Instance.bus.Observe<GestoreCarrelloMsg>();
-			observableCarrello.Subscribe(this);
 
 			IObservable<StampatoMsg> observableStampato = LumenApplication.Instance.bus.Observe<StampatoMsg>();
 			observableStampato.Subscribe(this);
@@ -172,18 +167,18 @@ namespace Digiphoto.Lumen.UI {
 		public bool possoAggiungereAlMasterizzatore {
 			get {
 
-				if (IsInDesignMode)
-					return true;
-
 				bool posso = true;
 
-				if (posso && !isAlmenoUnaSelezionata)
-					posso = false;
+				if( !IsInDesignMode ) {
 
-				// Verifico che non abbia fatto nel carrello operazioni di 
-				// stampa con errore o abbia caricato un carrello salvato
-				if (posso && operazioniCarrelloBloccanti)
-					posso = false;
+					if( posso && !isAlmenoUnaSelezionata )
+						posso = false;
+
+					// Verifico che non abbia fatto nel carrello operazioni di 
+					// stampa con errore o abbia caricato un carrello salvato
+					if( posso && !venditoreSrv.possoAggiungereMasterizzate )
+						posso = false;
+				}
 
 				return posso;
 			}
@@ -191,18 +186,18 @@ namespace Digiphoto.Lumen.UI {
 
 		public bool possoStampare {
 			get {
-				if (IsInDesignMode)
-				return true;
-
 				bool posso = true;
 
-				if (posso && !isAlmenoUnaSelezionata)
-					posso = false;
+				if( !IsInDesignMode ) {
 
-				// Verifico che non abbia fatto nel carrello operazioni di 
-				// stampa con errore o abbia caricato un carrello salvato
-				if (posso && operazioniCarrelloBloccanti)
-					posso = false;
+					if( posso && !isAlmenoUnaSelezionata )
+						posso = false;
+
+					// Verifico che non abbia fatto nel carrello operazioni di 
+					// stampa con errore o abbia caricato un carrello salvato
+					if( posso && !venditoreSrv.possoAggiungereStampe )
+						posso = false;
+				}
 
 				return posso;
 			}
@@ -520,7 +515,7 @@ namespace Digiphoto.Lumen.UI {
 				if( _aggiungereAlMasterizzatoreCommand == null ) {
 					_aggiungereAlMasterizzatoreCommand = new RelayCommand( param => aggiungereAlMasterizzatore()
 				                                                           ,param => possoAggiungereAlMasterizzatore 
-																		   );
+																		   , false );
 				}
 				return _aggiungereAlMasterizzatoreCommand;
 			}
@@ -579,7 +574,7 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand eseguireRicercaCommand {
 			get {
 				if( _eseguireRicercaCommand == null ) {
-					_eseguireRicercaCommand = new RelayCommand( numPag => eseguireRicerca() );
+					_eseguireRicercaCommand = new RelayCommand( numPag => eseguireRicerca(), p => true, false );
 				}
 				return _eseguireRicercaCommand;
 			}
@@ -702,7 +697,7 @@ namespace Digiphoto.Lumen.UI {
 		public void aggiungereAlMasterizzatore() {
 
 			IEnumerable<Fotografia> listaSelez = creaListaFotoSelezionate();
-			venditoreSrv.aggiungiMasterizzate( listaSelez );
+			venditoreSrv.aggiungereMasterizzate( listaSelez );
 			deselezionareTutto();
 		}
 
@@ -756,7 +751,7 @@ namespace Digiphoto.Lumen.UI {
 					{
 						venditoreStampaDiretta.creaNuovoCarrello();
 						venditoreStampaDiretta.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_RAPIDA;
-						venditoreStampaDiretta.aggiungiStampe(listaSelez, creaParamStampaFoto(stampanteAbbinata));
+						venditoreStampaDiretta.aggiungereStampe(listaSelez, creaParamStampaFoto(stampanteAbbinata));
 						if (venditoreStampaDiretta.vendereCarrello())
 						{
 							this.trayIconProvider.showInfo( "Vendita ok", "Incassare " + venditoreStampaDiretta.carrello.totaleAPagare + " euro", 3000 );
@@ -767,7 +762,7 @@ namespace Digiphoto.Lumen.UI {
 						}
 					}
 				}else{
-					venditoreSrv.aggiungiStampe( listaSelez, creaParamStampaFoto( stampanteAbbinata ) );
+					venditoreSrv.aggiungereStampe( listaSelez, creaParamStampaFoto( stampanteAbbinata ) );
 				}
 				// Spengo tutto
 				deselezionareTutto();
@@ -795,7 +790,7 @@ namespace Digiphoto.Lumen.UI {
 				IEnumerable<Fotografia> sortedEnum = listaSelez.OrderBy(f => f.dataOraAcquisizione).OrderBy(f => f.numero);
 				listaSelez = sortedEnum.ToList();
 				
-				venditoreSrv.aggiungiStampe(listaSelez, creaParamStampaProvini(d.paramStampaProvini));
+				venditoreSrv.aggiungereStampe(listaSelez, creaParamStampaProvini(d.paramStampaProvini));
 			}
 
 			d.Close();
@@ -1174,20 +1169,6 @@ namespace Digiphoto.Lumen.UI {
 			throw new NotImplementedException();
 		}
 		
-		public void OnNext(GestoreCarrelloMsg msg)
-		{
-			if (msg.fase == Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.ErroreMasterizzazione ||
-				msg.fase == Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.LoadCarrelloSalvato)
-			{
-				operazioniCarrelloBloccanti = true;
-			}
-
-			if (msg.fase == Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.CreatoNuovoCarrello)
-			{
-				operazioniCarrelloBloccanti = false;
-			}
-		}
-
 		public void OnNext(StampatoMsg value)
 		{
 			if (value.lavoroDiStampa.esitostampa == EsitoStampa.Errore)

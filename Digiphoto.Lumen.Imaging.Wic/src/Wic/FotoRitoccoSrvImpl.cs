@@ -28,6 +28,7 @@ using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Windows.Media.Effects;
 using System.Windows.Media.Effects;
 using Digiphoto.Lumen.Servizi.Io;
+using Digiphoto.Lumen.Servizi.EntityRepository;
 
 namespace Digiphoto.Lumen.Imaging.Wic {
 
@@ -65,7 +66,6 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		/// <param name="correzione">la correzione da aggiungere</param>
 		public void addCorrezione( Fotografia fotografia, Correzione correzioneNuova, bool salvare ) {
 
-			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
 			CorrezioniList correzioni;
 
 			// Deserializzo la stringa con le eventuali correzioni attuali
@@ -99,34 +99,11 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 					correzioni.Add( correzioneNuova );
 			}
 
-
-
-// TODO:ELIMINATO questo metodo non dovrebbe toccare i jpeg su disco, ma soltanto aggiornare la collezione di Correzione sulla foto.
-#if ELIMINATO
-			// ricalcolo il provino
-			IImmagine nuova = null;
-
-
-			if( correzioneNuova is Gimp )
-				nuova = gestoreImmaginiSrv.creaProvino( fotografia.imgRisultante );
-			else if( fotografia.imgProvino != null )
-				nuova = gestoreImmaginiSrv.applicaCorrezione( fotografia.imgProvino, correzioneNuova );
-#endif
 			// Ora serializzo di nuovo in stringa tutte le correzioni
 			fotografia.correzioniXml = SerializzaUtil.objectToString( correzioni );
-#if ELIMINATO
-			fotografia.imgProvino = nuova;
-#endif
 
 			if( salvare ) {
-				// Salvo nel db la modifica
-
-				objContext.SaveChanges();
-
-				// TODO:ELIMINATO questo metodo non dovrebbe toccare i jpeg su disco, ma soltanto aggiornare la collezione di Correzione sulla foto.
-#if ELIMINATO
-				gestoreImmaginiSrv.save( fotografia.imgProvino, PathUtil.nomeCompletoProvino( fotografia ) );
-#endif
+				fotografieRepositorySrv.saveChanges();  // Persisto nel db le modifiche
 			}
 		}
 
@@ -166,6 +143,12 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 				return (IGestoreImmagineSrv) LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
 			}
 		}
+		
+		private IEntityRepositorySrv<Fotografia> fotografieRepositorySrv {
+			get {
+				return (IEntityRepositorySrv<Fotografia>)LumenApplication.Instance.getServizioAvviato<IEntityRepositorySrv<Fotografia>>();
+			}
+		}
 
 		/// <summary>
 		/// Elimina tutte le Correzioni da una foto e quindi ricrea il provino
@@ -178,8 +161,6 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		/// Elimina tutte le Correzioni da una foto e quindi ricrea il provino
 		/// </summary>
 		public void tornaOriginale( Fotografia fotografia, bool salvare ) {
-
-			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
 
 			fotografia.correzioniXml = null;
 			
@@ -194,7 +175,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			AiutanteFoto.creaProvinoFoto( fotografia );
 
 			if( salvare )
-				objContext.SaveChanges();
+				fotografieRepositorySrv.saveChanges();  // Persisto nel db le modifiche
 		}
 
 
@@ -205,10 +186,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		/// <param name="fotografia"></param>
 		public void undoCorrezioniTransienti( Fotografia fotografia ) {
 
-			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
-
-			objectContext.Fotografie.Attach( fotografia );
-			objContext.ObjectContext.Refresh( RefreshMode.StoreWins, fotografia );
+			fotografieRepositorySrv.refresh( fotografia );
 
 			fotografia.imgProvino = null;  // Questo forza la rilettura del provino da disco
 			AiutanteFoto.idrataImmaginiFoto( fotografia, IdrataTarget.Provino );
@@ -292,7 +270,6 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			Fotografia fotoMsk = null;
 			using (new UnitOfWorkScope(false))
 			{
-				LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
 				try
 				{
 					fotoMsk = new Fotografia();
@@ -323,10 +300,8 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 					// vedono il percorso condiviso in maniera differente.
 					fotoMsk.nomeFile = Path.Combine(Path.GetDirectoryName(fotoOrig.nomeFile), nomeFotoClone);
 
-					
-					objContext.Fotografie.Add(fotoMsk);
-
-					objContext.SaveChanges();
+					fotografieRepositorySrv.addNew( fotoMsk );
+					fotografieRepositorySrv.saveChanges();
 				}
 
 				catch (Exception ee)

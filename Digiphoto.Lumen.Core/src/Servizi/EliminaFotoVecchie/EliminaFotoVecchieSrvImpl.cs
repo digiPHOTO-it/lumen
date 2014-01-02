@@ -88,6 +88,9 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
             }
 			String dirDataPath = Path.GetDirectoryName(pathCartella);
             Directory.Delete(pathCartella, true);
+			
+			_giornale.Info( "Eliminata cartella vecchia: " + pathCartella );
+
             // Controlle se la cartella e rimasta vuota e nel caso la elimino
 			DirectoryInfo dir = new DirectoryInfo(dirDataPath);
 			if (dir.GetDirectories().Length == 0 && dir.GetFiles().Length == 0)
@@ -96,12 +99,11 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
 			}
             using (new UnitOfWorkScope())
 			{
-                LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
-                quante = dbContext.ObjectContext.ExecuteStoreCommand("DELETE FROM Fotografie WHERE fotografo_id = {0} AND DATEPART(yyyy, dataOraAcquisizione) = {1} AND DATEPART(mm, dataOraAcquisizione) = {2} AND DATEPART(dd, dataOraAcquisizione)= {3}", fotografoID, dataRiferimento.Year, dataRiferimento.Month, dataRiferimento.Day);
-                // Elimino tutti gli album rimasti senza foto
-                dbContext.ObjectContext.ExecuteStoreCommand("DELETE FROM Albums WHERE (id NOT IN(SELECT DISTINCT AlbumRigaAlbum_RigaAlbum_id FROM RigheAlbum))");
-                dbContext.SaveChanges();
+                var objContext = UnitOfWorkScope.currentObjectContext;
+                quante = objContext.ExecuteStoreCommand("DELETE FROM Fotografie WHERE fotografo_id = {0} AND giornata = {1}", fotografoID, dataRiferimento );
+                objContext.SaveChanges();
 			}
+			_giornale.Info( "Eliminate " + quante + " foto dal db. Fotografo= " + fotografoID + " Giornata=" + dataRiferimento );
             eliminaFotoVecchieMsg.fase = Fase.FineEliminazione;
 			eliminaFotoVecchieMsg.descrizione = "Eliminate " + quante + " foto dalla cartella " + pathCartella;
 			eliminaFotoVecchieMsg.showInStatusBar = true;
@@ -118,7 +120,7 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
 			int conta = 0;
 			_giornale.Info( "E' stata richiesta la distruzione di " + fotosDaCanc.Count() + " fotografie. Iniizo eliminazione" );
 
-			LumenEntities lumenEntities = UnitOfWorkScope.CurrentObjectContext;
+			LumenEntities lumenEntities = UnitOfWorkScope.currentDbContext;
 
 			foreach( Fotografia ff in fotosDaCanc ) {
 
@@ -186,7 +188,7 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
 		{
             //EliminaFotoVecchieMsg eliminaFotoVecchieMsg = new EliminaFotoVecchieMsg();
             String fotografoID= PathUtil.fotografoIDFromPath(path);
-            LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
+            LumenEntities objContext = UnitOfWorkScope.currentDbContext;
             return objContext.Fotografi.SingleOrDefault(f => f.id == fotografoID);
 		}
     }

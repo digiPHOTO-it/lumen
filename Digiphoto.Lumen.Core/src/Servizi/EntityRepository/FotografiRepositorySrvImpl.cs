@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Core.Database;
-using System.Data.Objects;
+using  System.Data.Entity.Core.Objects;
 
 namespace Digiphoto.Lumen.Servizi.EntityRepository {
 
@@ -15,7 +15,7 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 
 		public override Fotografo getById( object oid ) {
 			string id = (string)oid;
-			return UnitOfWorkScope.CurrentObjectContext.Fotografi.SingleOrDefault( f => f.id == id );
+			return UnitOfWorkScope.currentDbContext.Fotografi.SingleOrDefault( f => f.id == id );
 		}
 	}
 }

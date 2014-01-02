@@ -15,7 +15,7 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository
 
 		public override FormatoCarta getById( object oid ) {
 			Guid id = (Guid)oid;
-			return UnitOfWorkScope.CurrentObjectContext.FormatiCarta.SingleOrDefault( f => f.id == id );
+			return UnitOfWorkScope.currentDbContext.FormatiCarta.SingleOrDefault( f => f.id == id );
 		}
     }
 }

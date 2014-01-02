@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Model;
-using System.Data.Objects.DataClasses;
+using  System.Data.Entity.Core.Objects.DataClasses;
 using log4net;
 using System.Transactions;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Applicazione;
-using System.Data.Objects;
+using  System.Data.Entity.Core.Objects;
 using System.Data;
 using System.Data.Entity.Infrastructure;
 using System.Windows.Forms;
@@ -16,21 +16,44 @@ using System.Data.Common;
 using Digiphoto.Lumen.Database;
 using Digiphoto.Lumen.src.Database;
 using Digiphoto.Lumen.Config;
+using System.ComponentModel;
+using System.Data.Entity;
+using Digiphoto.Lumen.Util;
+using System.Data.Entity.Core;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
-	
-	internal class GestoreCarrello : IDisposable {
+
+	internal class GestoreCarrello : IDisposable, INotifyPropertyChanged {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( GestoreCarrello ) );
 
-#region Propietà
+		#region Costruttore
+		protected internal GestoreCarrello() {
+			// Provo a lavorare con un mio contesto separato dagli altri, per vedere se risolvo i problemi di attacca/stacca
+			creaMioDbContext();
+		}
+
+		~GestoreCarrello() {
+			if( mioDbContext != null ) {
+				// Qui non dovrebbe mai capitare.
+				_giornale.Warn( "Nel distruttore di GestoreCarrello, in context è ancora vivo. Come mai ?" );
+			}
+		}
+		#endregion Costruttore
+
+
+
+		#region Propietà
 		private Carrello _carrello;
 		public Carrello carrello {
 			get {
 				return _carrello;
 			}
 			private set {
-				_carrello = value;
+				if( _carrello != value ) {
+					_carrello = value;
+					OnPropertyChanged( "carrello" );
+				}
 			}
 		}
 
@@ -45,7 +68,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public bool isPossibileSalvare {
 			get {
-				return  isCarrelloValido;
+				return isCarrelloValido;
 			}
 		}
 
@@ -61,33 +84,122 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
-#endregion
+		/// <summary>
+		/// Ritorno una percenuale di sconto intera calcolata in base al prezzo del carrello calcolato automaticamente, 
+		/// confrontato con il totaleAPagare impostato eventualmente dall'utente.
+		/// Esempio: se il carrello costa 100 euro e il totale a pagare è 80, allora ho fatto uno sconto del 20%
+		/// </summary>
+		public short? scontoApplicato {
+			get {
+				if( carrello.totaleAPagare == 0 )
+					return null;
+
+				decimal x = (100 * carrello.totaleAPagare) / prezzoNettoTotale;
+				return (short)(100 - x);
+			}
+		}
+
+		/// <summary>
+		/// Mi dice quante foto da masterizzare ci sono nel carrello 
+		/// </summary>
+		public int sommatoriaFotoDaMasterizzare {
+			get {
+				return carrello.righeCarrello.Count( r => r.discriminator == Carrello.TIPORIGA_MASTERIZZATA );
+			}
+		}
+
+		/// <summary>
+		/// Mi dice quante foto da stampare ci sono nel carrello 
+		/// </summary>
+		public int sommatoriaQtaFotoDaStampare {
+			get {
+				return carrello.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_STAMPA ).Sum( rfs => rfs.quantita );
+			}
+		}
+
+		/// <summary>
+		/// Questo è il totale aritmetico del carrello. E' dato dalla somma di tutte le righe con stampe + il prezzo globale del dischetto (se esiste)
+		/// </summary>
+		public Decimal prezzoNettoTotale {
+
+			get {
+				return carrello.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_STAMPA ).Sum( r => r.prezzoNettoTotale ) + (carrello.prezzoDischetto != null ? (decimal)carrello.prezzoDischetto : (decimal)0);
+			}
+		}
+
+		/// <summary>
+		/// Per evitare i problemi di attacca/stacca e duplicati ID in sessione,
+		/// provo a tenermi un mio context solo per la gestione del carrello.
+		/// Questo context non viene chiuso mai, quindi gli oggetti dovrebbero non staccarsi mai 
+		/// evitando i problemi noti.
+		/// </summary>
+		private LumenEntities _mioDbContext;
+		private LumenEntities mioDbContext {
+			get {
+				return _mioDbContext;
+			}
+			set {
+				_mioDbContext = value;
+			}
+		}
+
+		private ObjectContext mioObjContext {
+			get {
+				return mioDbContext == null ? null : ((IObjectContextAdapter)mioDbContext).ObjectContext;
+			}
+		}
+
+		#endregion Proprietà
 
 
-		protected internal GestoreCarrello() {
+		#region Metodi
+		private void creaMioDbContext() {
+			
+			// Rilascio eventuale context precedente
+			if( mioDbContext != null ) {
+				mioDbContext.Dispose();
+				mioDbContext = null;
+			}
+
+			mioDbContext = new LumenEntities();
 		}
 
 		public void creaNuovo() {
+
+			creaMioDbContext();
+
 			carrello = new Carrello();
 			carrello.righeCarrello = new EntityCollection<RigaCarrello>();
 			//Metto un'intestazione automatica per distinguere il carrello autogenerato dagli altri
 			// scarrello.intestazione = "Auto";
 			isStatoModifica = false;
-
-			GestoreCarrelloMsg msg = new GestoreCarrelloMsg(this);
-			msg.fase = Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.CreatoNuovoCarrello;
-			LumenApplication.Instance.bus.Publish(msg);
 		}
 
 		/// <summary>
 		/// Carico da disco un carrello esistente
 		/// </summary>
 		/// <param name="idCarrello"></param>
-		public void caricaCarrello( Guid idCarrello)
+		public void caricaCarrello( Guid idCarrello )
 		{
-			this.carrello = UnitOfWorkScope.CurrentObjectContext.Carrelli.Include( "righeCarrello" ).Single( r => r.id == idCarrello );
+			creaMioDbContext();
+			this.carrello = mioDbContext.Carrelli.Single( r => r.id == idCarrello );
 
-	//		Digiphoto.Lumen.Database.OrmUtil.vediEntitaInCache( UnitOfWorkScope, typeof( Carrello ) );
+			// Questo mi serve per caricare le associazioni, fisto che sto schifo di EF non è in grado di farlo da solo.
+			mioObjContext.LoadProperty( this.carrello, c => c.righeCarrello );
+			mioObjContext.LoadProperty( this.carrello, c => c.incassiFotografi );
+			foreach( IncassoFotografo ff in carrello.incassiFotografi ) {
+				mioObjContext.LoadProperty( ff, c => c.fotografo );
+			}
+			foreach( RigaCarrello rr in carrello.righeCarrello ) {
+				mioObjContext.LoadProperty( rr, r => r.fotografia );
+				if( rr.formatoCarta != null )
+					mioObjContext.LoadProperty( rr, r => r.formatoCarta );
+			}
+
+			// Se il prezzo del carrello non è stato cambiato a mano, lo azzero in questo modo se lo risalverò, mi verrà aggiornato il totale nuovamente.
+			if( prezzoNettoTotale == carrello.totaleAPagare )
+				carrello.totaleAPagare = 0;
+
 			isStatoModifica = true;
 		}
 
@@ -108,23 +220,44 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				errore = "Giornata vuota";
 			else if( carrello.tempo == DateTime.MinValue )
 				errore = "tempo non indicato";
-			else {
+			else if( carrello.prezzoDischetto == null && sommatoriaFotoDaMasterizzare > 0 ) {
+				errore = "manca il prezzo del dischetto";
 			}
 
 			return errore;
 		}
 
+		public void removeRiga( RigaCarrello rigaDacanc ) {
+				
+			// Rimuovo l'elemento dalla collezione. Essendo una relazione identificante, EF si preoccua di rimuovere anche da disco la riga.
+			bool test = carrello.righeCarrello.Remove( rigaDacanc );
+			if( !test ) {
+				_giornale.Error( "Si è cercato di cancellare una riga dal carrello che non esiste. Probabilmente la riga era già stata eliminata dal carrello in precedenza" );
+				throw new LumenException( "La riga non è presente nel carrello" );
+			}
+
+		}
+
 		public void aggiungiRiga( RigaCarrello riga ) {
-			if (!rigaIsInCarrello(_carrello, riga))
-			{
-				// Prima di aggiungere la riga al carrello, provo a riattaccarlo. Non si sa mai.
-				if( isStatoModifica )
-				{
-					Digiphoto.Lumen.Database.OrmUtil.forseAttacca<Carrello>( "Carrelli", ref _carrello );	
-				}
+
+			if (!isStessaFotoInCarrello(_carrello, riga)) {
+
+				// Rileggo le associazioni in questo modo gli oggetti vengono riattaccati al context corrente.
+				riga.fotografia = mioDbContext.Fotografie.Single( r => r.id == riga.fotografia.id );
+				riga.fotografo = mioDbContext.Fotografi.Single( f => f.id == riga.fotografo.id );
+				if( riga.formatoCarta != null )
+					riga.formatoCarta = mioDbContext.FormatiCarta.Single( c => c.id == riga.formatoCarta.id );
+
+				// Non so perché ma per gestire le associazioni identificanti, (e quindi il cascade dal master al child) occorre sfruttare un attributo con l'ID del padre.
+				// Se non ci credi leggi qui:
+				// http://jamesheppinstall.wordpress.com/2013/06/08/managing-parent-and-child-collection-relationships-in-entity-framework-what-is-an-identifying-relationship-anyway/
+				riga.carrello = this.carrello;
+				riga.carrello_id = this.carrello.id;
+
 				carrello.righeCarrello.Add( riga );
-			}else
-			{
+
+			} else {
+				// TODO non è molto mvvm. Da migliorare.
 				MessageBox.Show("La fotografia è già stata caricata nel carrello\nModificare la quantita","Avviso");
 			}	
 		}
@@ -133,6 +266,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			throw new NotImplementedException();
 		}
 
+
 		/**
 		 * Salvo il carrello corrente (se era transiente, viene valorizzata la Guid della chiave primaria
 		 * Se qualcosa va storto viene sollevata una eccezione.
@@ -140,73 +274,43 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		public void salva() {
 
 			// Sistemo un pò di campi ma NON quelli di chiave primaria!
-			completaAttributiMancanti();
-			
+			completaAttributiMancanti( true );
+
 			if( ! isPossibileSalvare )
 				throw new InvalidOperationException( "Impossibile salvare carrello : " + msgValidaCarrello() );
 
-			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
-
-
-			// Loop per tutte le righe
-
-
-
-			if( isCarrelloTransient ) {
+			// Sistemo tutti gli attributi di chiave transienti
+			if( carrello.id == Guid.Empty )
 				carrello.id = Guid.NewGuid();
 
-				foreach(RigaCarrello rigaCarrello in carrello.righeCarrello){
+			foreach(RigaCarrello rigaCarrello in carrello.righeCarrello){
+				if( rigaCarrello.id == Guid.Empty )
 					rigaCarrello.id = Guid.NewGuid();
-					Fotografia f = rigaCarrello.fotografia;
-					OrmUtil.forseAttacca<Fotografia>( "Fotografie", ref f );
-					if( rigaCarrello.discriminator == Carrello.TIPORIGA_STAMPA ) {
-						FormatoCarta fc = rigaCarrello.formatoCarta;
-						OrmUtil.forseAttacca<FormatoCarta>( "FormatiCarta", ref fc );
-					}
-					Fotografo fo = rigaCarrello.fotografo;
-					OrmUtil.forseAttacca<Fotografo>( "Fotografi", ref fo );
-				}
-
-				dbContext.Carrelli.Add( carrello );
-			} else {
-
-				// Sono in variazione. Riattacco il carrello e tutti i grafi interni
-				Digiphoto.Lumen.Database.OrmUtil.forseAttacca<Carrello>( "Carrelli", ref _carrello );
-
-				
-				dbContext.ObjectContext.ObjectStateManager.ChangeObjectState( carrello, EntityState.Modified );
-
-				foreach( RigaCarrello rc in carrello.righeCarrello ) {
-
-					// Devo capire quali righe sono in modifica e quali sono state aggiunte
-					ObjectStateEntry entry;
-					bool esiste = dbContext.ObjectContext.ObjectStateManager.TryGetObjectStateEntry( rc, out entry );
-
-					if( Guid.Empty.Equals( rc.id ) ) {
-						// E' una riga nuova
-						rc.id = Guid.NewGuid();
-						if( esiste && entry.State != EntityState.Added )
-							dbContext.ObjectContext.ObjectStateManager.ChangeObjectState( rc, EntityState.Added );
-					} else {
-						// la riga esiste. Forzo la modifica
-						if( esiste && entry.State != EntityState.Modified )
-							dbContext.ObjectContext.ObjectStateManager.ChangeObjectState( rc, EntityState.Modified );
-					}
-				}
+				if( rigaCarrello.carrello_id == Guid.Empty )
+					rigaCarrello.carrello_id = carrello.id;
 			}
 
-			string appo = CustomExtensions.ToTraceString( dbContext.ObjectContext );
-			_giornale.Debug( appo );
+			foreach( IncassoFotografo incassoFotografo in carrello.incassiFotografi ) {
+				if( incassoFotografo.id == Guid.Empty )
+					incassoFotografo.id = Guid.NewGuid();
+				if( incassoFotografo.carrello_id == Guid.Empty )
+					incassoFotografo.carrello_id = carrello.id;
+			}
 
+			// Se il carrello è nuovo, lo aggiungo al set.
+			if( isStatoModifica == false )
+				mioDbContext.Carrelli.Add( carrello );
 
-			// Ora sistemo 
+			// Ora sistemo il totale a pagare. Lo valorizzo soltanto se è vuoto. 
+			// Se l'utente ha valorizzato a mano il totale a pagare, lo lascio invariato.
+			if( carrello.totaleAPagare <= 0 )
+				carrello.totaleAPagare = prezzoNettoTotale;
 
-
-			int quanti = dbContext.SaveChanges();
+			int quanti = mioDbContext.SaveChanges();
 
 			if( quanti <= 0 ) {
-				string msg = "salvato carrello ma nessun record aggiornato. Possibile problema di EntityFramework";
-				_giornale.Warn( msg );
+				string msg = "Il carrello non è stato aggiornato. Nessun record salvato";
+				_giornale.Error( msg );
 				throw new InvalidOperationException( msg );
 			}
 
@@ -214,15 +318,29 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			_giornale.Info( msg2 );
 		}
 
-		private static bool rigaIsInCarrello(Carrello carrello, RigaCarrello riga)
+		/// <summary>
+		/// Mi dice se la stessa foto è già nel carrello con lo stesso discriminator
+		/// </summary>
+		private static bool isStessaFotoInCarrello( Carrello carrello, RigaCarrello riga )
 		{
-			return carrello.righeCarrello.Any( r => r.fotografia.id == riga.fotografia.id && r.discriminator == riga.discriminator );
+			foreach( RigaCarrello r in carrello.righeCarrello ) {
+				if( r.fotografia.id == riga.fotografia.id && r.discriminator == riga.discriminator )
+					return true;
+			}
+			return false;
 		}
 
 		/// <summary>
-		/// Sistemo qualcosa ma NON le chiavi primarie
+		/// Questo metodo pubblico per poter ricalcolare il totale durante la gestione del carrello.
 		/// </summary>
-		private void completaAttributiMancanti() {
+		public void ricalcolaDocumento() {
+			completaAttributiMancanti( false );
+		}
+		public void ricalcolaDocumento( bool ancheProvvigioni ) {
+			completaAttributiMancanti( ancheProvvigioni );
+		}
+
+		private void completaAttributiMancanti( bool ancheProvvigioni ) {
 
 			if( isCarrelloTransient ) {
 
@@ -233,17 +351,22 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				carrello.tempo = DateTime.Now;
 			}
 
-			// Gestico lo spaccato degli incassi per singolo fotografo
-			if( carrello.incassiFotografi == null )
-				carrello.incassiFotografi = new List<IncassoFotografo>();
-			else {
-				carrello.incassiFotografi.Clear();
+			if( ancheProvvigioni ) {
+				// Gestico lo spaccato degli incassi per singolo fotografo
+				if( carrello.incassiFotografi == null )
+					carrello.incassiFotografi = new EntityCollection<IncassoFotografo>();
+				else {
+					// Svuoto per il ricalcolo
+					foreach( IncassoFotografo inf in carrello.incassiFotografi ) {
+						inf.incasso = 0;
+						inf.incassoStampe = 0;
+						inf.incassoMasterizzate = 0;
+						inf.contaStampe = 0;
+						inf.contaMasterizzate = 0;
+						inf.provvigioni = null;
+					}
+				}
 			}
-
-			decimal totaleAPagare = 0;
-
-			if( carrello.prezzoDischetto != null )
-				totaleAPagare += (decimal)carrello.prezzoDischetto;
 
 			carrello.totMasterizzate = 0;
 
@@ -252,9 +375,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 				// ricalcolo il valore della riga
 				r.prezzoNettoTotale = calcValoreRiga( r );
-
-				// totalizzo il totale a pagare.
-				totaleAPagare += r.prezzoNettoTotale;
 
 				// Se ho venduto il carrello, valorizzo i fogli stampati con la quantità
 				if( carrello.venduto ) {
@@ -266,36 +386,60 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					}
 				}
 
-				// Ora valorizzo lo spaccato provvigioni
-				IncassoFotografo inca = carrello.incassiFotografi.SingleOrDefault( ii => ii.fotografo.id.Equals( r.fotografo.id ) );
-				if( inca == null ) {
-					inca = new IncassoFotografo();
-					inca.Id = Guid.NewGuid();
-					inca.fotografo = r.fotografo;
-					carrello.incassiFotografi.Add( inca );
+				if( ancheProvvigioni ) {
+					// Ora valorizzo lo spaccato provvigioni
+					IncassoFotografo inca = carrello.incassiFotografi.SingleOrDefault( ii => ii.fotografo.id.Equals( r.fotografo.id ) );
+					if( inca == null ) {
+						inca = new IncassoFotografo();
+						inca.id = Guid.Empty;  // lo lascio volutamente vuoto. Lo valorizzero soltanto un attimo prima di persisterlo.
+						inca.carrello = carrello;
+						inca.fotografo = r.fotografo;
+						carrello.incassiFotografi.Add( inca );
+					}
+
+
+					if( r.discriminator == Carrello.TIPORIGA_STAMPA ) {
+						inca.incasso += r.prezzoNettoTotale;
+						inca.incassoStampe += r.prezzoNettoTotale;
+						inca.contaStampe += r.quantita;
+					} else if( r.discriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
+						// Il prezzo di queste righe è zero. Calcolo tutto alla fine sul totale
+						inca.contaMasterizzate += r.quantita;  // fisso = 1
+					}
 				}
 
-				if( r.discriminator == Carrello.TIPORIGA_STAMPA ) {
-					inca.incasso += r.prezzoNettoTotale;
-					inca.incassoStampe += r.prezzoNettoTotale;
-					inca.contaStampe += r.quantita;
-				} else if( r.discriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
-					// Il prezzo di queste righe è zero. Calcolo tutto alla fine sul totale
-					inca.contaMasterizzate += r.quantita;  // fisso = 1
+				if( r.discriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
 					carrello.totMasterizzate += r.quantita;
 				}
-				
 			}
-			
-			carrello.totaleAPagare = totaleAPagare;
+
+			if( ancheProvvigioni ) {
+
+				// Elimino le provvigioni di eventuali fotografi che prima erano nel carrello ed ora non ci sono più.
+				// Occhio questa espressione seguente, funziona solo grazie ad una estensione di Linq che è in questa classe: MyIEnumerableExtensions
+				// Di natura, il compilatore mi darebbe errore (senza l'estensione)
+				IEnumerable<Fotografo> fotografiBuoni = carrello.righeCarrello.Select( r => r.fotografo ).Distinct( f => f.id );
+				//
+				bool riprova;
+				do {
+					riprova = false;
+					foreach( IncassoFotografo ii in carrello.incassiFotografi ) {
+						if( !fotografiBuoni.Contains( ii.fotografo ) ) {
+							carrello.incassiFotografi.Remove( ii );
+							riprova = true;
+							break;
+						}
+					}
+				} while( riprova );
 
 
-			// Devo sistemare l'incaso del dischetto diviso per quante foto sono state masterizzate per ogni fotografo
-			if( carrello.prezzoDischetto != null ) {
-				foreach( IncassoFotografo ii in carrello.incassiFotografi ) {
-					decimal mioIncasso = ii.contaMasterizzate * (decimal)carrello.prezzoDischetto / carrello.totMasterizzate;
-					ii.incasso += mioIncasso;
-					ii.incassoMasterizzate = Math.Round( mioIncasso, 2 );
+				// Devo sistemare l'incasso del dischetto diviso per quante foto sono state masterizzate per ogni fotografo
+				if( carrello.prezzoDischetto != null && carrello.totMasterizzate > 0 ) {
+					foreach( IncassoFotografo ii in carrello.incassiFotografi ) {
+						decimal mioIncasso = ii.contaMasterizzate * (decimal)carrello.prezzoDischetto / carrello.totMasterizzate;
+						ii.incasso += mioIncasso;
+						ii.incassoMasterizzate = Math.Round( mioIncasso, 2 );
+					}
 				}
 			}
 		}
@@ -323,21 +467,13 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			// Se il carrello è stato modificato nel db o aggiunto al db ma non ancora committato, allora devo "tornare indietro"
 			if( carrello != null && isCarrelloTransient == false ) {
 
-				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+				OrmUtil.rinuncioAlleModifiche( carrello, mioDbContext );
 
-				// Se il carrello non è stato salvato, allora torno indietro.
-				if (carrello is IEntityWithKey)
-				{
-					ObjectStateEntry stateEntry = dbContext.ObjectContext.ObjectStateManager.GetObjectStateEntry( ((IEntityWithKey)carrello).EntityKey );
-
-					if( stateEntry.State == EntityState.Modified )
-						dbContext.ObjectContext.Refresh( RefreshMode.StoreWins, carrello );
-
-					if( stateEntry.State == EntityState.Added )
-						dbContext.Carrelli.Remove( carrello );
-				}
 				carrello = null;
 			}
+			// Distruggo anche il contesto. In questo modo riparto pulito per il prossimo carrello.
+			this.mioDbContext.Dispose();
+			this.mioDbContext = null;
 		}
 
 		/**
@@ -353,7 +489,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			
 			using( new UnitOfWorkScope( true ) ) {
 
-				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 
 				var query = from c in dbContext.Carrelli.Include( "righeCarrello" )
 							where c.righeCarrello.Any( r => r.id == idRigaCarrello )
@@ -386,13 +522,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 							r.quantita = 0;
 						}
 
-						// Abbasso il totale del carrello. Se per qualche motivo vado sotto zero, livello a zero.
-						carrello.totaleAPagare -= totRigaPrec;
-						if( carrello.totaleAPagare < 0 )
-							carrello.totaleAPagare = 0;
-
-
-						completaAttributiMancanti();
+						completaAttributiMancanti( false );
 						break;
 					}
 				}
@@ -412,7 +542,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			using( new UnitOfWorkScope( true ) ) {
 
-				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 
 				var query = from c in dbContext.Carrelli.Include( "righeCarrello" )
 							where c.id == idCarrello
@@ -433,12 +563,38 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 						// Se non ho masterizzato nulla, azzero il totale riga e poi abbasso il totale documento
 						r.descrizione = marca + "Storno foto masterizzate";
 						r.quantita = 0;
-
-						completaAttributiMancanti();
 					}
 				}
+				completaAttributiMancanti( true );
 				dbContext.SaveChanges();
 			}
 		}
+
+		#endregion Metodi
+
+		#region INotifyPropertyChanged Members
+
+		/// <summary>
+		/// Raised when a property on this object has a new value.
+		/// </summary>
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		/// <summary>
+		/// Raises this object's PropertyChanged event.
+		/// </summary>
+		/// <param name="propertyName">The property that has a new value.</param>
+		protected virtual void OnPropertyChanged( string propertyName ) {
+			
+			PropertyChangedEventHandler handler = this.PropertyChanged;
+			if( handler != null ) {
+				var e = new PropertyChangedEventArgs( propertyName );
+				handler( this, e );
+			}
+		}
+
+		#endregion // INotifyPropertyChanged Members
+
 	}
+
+
 }

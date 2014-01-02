@@ -6,20 +6,30 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Servizi.Scaricatore;
 using Digiphoto.Lumen.Model;
-using System.Data.EntityClient;
+using System.Data.Entity.Core.EntityClient;
 using System.Data.Common;
 using System.Data;
 using System.Diagnostics;
 using System.Transactions;
-using System.Data.Objects;
+using System.Data.Entity.Core.Objects;
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Database;
 using System.Data.Entity.Validation;
 using Digiphoto.Lumen.Util;
+using System.Data.Entity.Core.Objects.DataClasses;
+using System.Data.Entity.Infrastructure;
+using Digiphoto.Lumen.Core.Database;
+using Digiphoto.Lumen.Servizi.Vendere;
+using System.Data.Entity;
+using Digiphoto.Lumen.Servizi.Explorer;
+using Digiphoto.Lumen.Servizi.Ricerca;
+using Digiphoto.Lumen.Servizi.Stampare;
+using System.ComponentModel;
 
 namespace Digiphoto.Lumen.Core.VsTest {
 
 	
+
 	[TestClass]
 	public class CarrelloTest {
 
@@ -27,12 +37,12 @@ namespace Digiphoto.Lumen.Core.VsTest {
 		int _contaMasterizzate = 0;
 		Carrello _carrelloInserito = null;
 
+
 		//Use ClassInitialize to run code before running the first test in the class
 		[ClassInitialize()]
 		public static void CarrelloTestInitialize( TestContext testContext ) {
 			LumenApplication.Instance.avvia();
 		}
-
 
 		[ClassCleanup()]
 		public static void classeCleanup() {
@@ -79,8 +89,6 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 		}
 
-
-
 		[TestMethod]
 		public void carrelloTest() {
 
@@ -91,7 +99,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				c1.giornata = DateTime.Today;
 				c1.tempo = DateTime.Now;
 				c1.totaleAPagare = 123m;
-				c1.righeCarrello = new System.Data.Objects.DataClasses.EntityCollection<RigaCarrello>();
+				c1.righeCarrello = new EntityCollection<RigaCarrello>();
 				_carrelloInserito = c1;
 
 				// ---
@@ -271,8 +279,6 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 		}
 
-
-
 		[TestMethod]
 		public void simulaUiStaccando() {
 
@@ -281,7 +287,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 			using( LumenEntities dbContext = new LumenEntities() ) {
 
 				c3 = new Carrello { id=Guid.NewGuid(), giornata=DateTime.Today, tempo=DateTime.Now, totaleAPagare = 123m };
-				c3.righeCarrello = new System.Data.Objects.DataClasses.EntityCollection<RigaCarrello>();
+				c3.righeCarrello = new EntityCollection<RigaCarrello>();
 			}
 
 			// ----------
@@ -355,7 +361,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 		public void carrelloConPezziStaccati() {
 
 			Carrello c3 = new Carrello { id = Guid.NewGuid(), giornata = DateTime.Today, tempo = DateTime.Now, totaleAPagare = 123m	};
-			c3.righeCarrello = new System.Data.Objects.DataClasses.EntityCollection<RigaCarrello>();
+			c3.righeCarrello = new EntityCollection<RigaCarrello>();
 
 			// ----------
 			FormatoCarta formato;
@@ -443,14 +449,15 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 			using( LumenEntities dbContext = new LumenEntities() ) {
 
-				dbContext.ObjectContext.AttachTo( "Carrelli", carrelloCorrente );
-				ObjectStateEntry s1 = dbContext.ObjectContext.ObjectStateManager.GetObjectStateEntry( carrelloCorrente );
+				var objectContext = ((IObjectContextAdapter)dbContext).ObjectContext;
+				objectContext.AttachTo( "Carrelli", carrelloCorrente );
+				ObjectStateEntry s1 = objectContext.ObjectStateManager.GetObjectStateEntry( carrelloCorrente );
 
-				dbContext.ObjectContext.AttachTo( "FormatiCarta", formato );
-				ObjectStateEntry s2 = dbContext.ObjectContext.ObjectStateManager.GetObjectStateEntry( formato );
+				objectContext.AttachTo( "FormatiCarta", formato );
+				ObjectStateEntry s2 = objectContext.ObjectStateManager.GetObjectStateEntry( formato );
 
-				dbContext.ObjectContext.AttachTo( "Fotografie", fotografia );
-				ObjectStateEntry s3 = dbContext.ObjectContext.ObjectStateManager.GetObjectStateEntry( fotografia );
+				objectContext.AttachTo( "Fotografie", fotografia );
+				ObjectStateEntry s3 = objectContext.ObjectStateManager.GetObjectStateEntry( fotografia );
 
 
 
@@ -458,13 +465,13 @@ namespace Digiphoto.Lumen.Core.VsTest {
  				if( fotografo.id.Equals( fotografia.fotografo.id ) )
 					fotografo = fotografia.fotografo;
 				else
-					dbContext.ObjectContext.AttachTo( "Fotografi", fotografo );
-				ObjectStateEntry s4 = dbContext.ObjectContext.ObjectStateManager.GetObjectStateEntry( fotografo );
+					objectContext.AttachTo( "Fotografi", fotografo );
+				ObjectStateEntry s4 = objectContext.ObjectStateManager.GetObjectStateEntry( fotografo );
 				// ======= Occhio qui !!!! poi ti spiego =====
 
 
 
-				RigaCarrello riga = dbContext.ObjectContext.CreateObject<RigaCarrello>();
+				RigaCarrello riga = objectContext.CreateObject<RigaCarrello>();
 				riga.id = Guid.NewGuid();
 				riga.discriminator = Carrello.TIPORIGA_STAMPA;
 				riga.prezzoLordoUnitario = new Decimal( 5 );
@@ -477,7 +484,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				riga.fotografia = fotografia;
 
 				carrelloCorrente.righeCarrello.Add( riga );
-				s1 = dbContext.ObjectContext.ObjectStateManager.GetObjectStateEntry( carrelloCorrente );
+				s1 = objectContext.ObjectStateManager.GetObjectStateEntry( carrelloCorrente );
 
 				int quanti = dbContext.SaveChanges();
 			}
@@ -487,6 +494,181 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				var testCarrello2 = dbContext.Carrelli.Include( "righeCarrello" ).Where( c => c.id == carrelloCorrente.id ).Single();
 				Assert.IsTrue( countRigheCarrello + 1 == testCarrello2.righeCarrello.Count );
 			}
+		}
+
+
+
+		[TestMethod]
+		public void simulaUiStaccando2() {
+
+			Carrello carrello;
+			ObjectStateEntry stato;
+
+
+			using( LumenEntities dbContext = new LumenEntities() ) {
+
+				ObjectContext objContext = ((IObjectContextAdapter)dbContext).ObjectContext;
+				carrello = dbContext.Carrelli.FirstOrDefault( c => c.venduto == false );
+
+				bool trovato = objContext.ObjectStateManager.TryGetObjectStateEntry( carrello, out stato );
+				Assert.IsTrue( trovato );
+				Assert.AreEqual( stato.State, EntityState.Unchanged );
+			}
+
+			using( LumenEntities dbContext = new LumenEntities() ) {
+				ObjectContext objContext = ((IObjectContextAdapter)dbContext).ObjectContext;
+				bool isDetached = dbContext.Entry( carrello ).State == EntityState.Detached;
+				Assert.IsTrue( isDetached );
+
+				// Modifico l'oggetto da staccato
+				Random rnd = new Random();
+				int randomNumber = rnd.Next( 0, 9 );
+				carrello.note = carrello.note + randomNumber.ToString();
+			}
+
+			using( LumenEntities dbContext = new LumenEntities() ) {
+				ObjectContext objContext = ((IObjectContextAdapter)dbContext).ObjectContext;
+				bool isDetached = dbContext.Entry( carrello ).State == EntityState.Detached;
+				Assert.IsTrue( isDetached );
+				var poldo = dbContext.Carrelli.Attach( carrello );
+				isDetached = dbContext.Entry( carrello ).State == EntityState.Detached;
+				Assert.IsFalse( isDetached );
+
+				// Qui non ci devono essere modifiche, perché prima ho modificato l'oggetto quando era staccato.
+				int quanti = dbContext.SaveChanges();
+				Assert.IsTrue( quanti == 0 );
+			}
+
+
+			// -- Ora provo a modificare l'oggetto da attaccato.
+			using( LumenEntities dbContext = new LumenEntities() ) {
+				ObjectContext objContext = ((IObjectContextAdapter)dbContext).ObjectContext;
+				bool isDetached = dbContext.Entry( carrello ).State == EntityState.Detached;
+				Assert.IsTrue( isDetached );
+				var poldo = dbContext.Carrelli.Attach( carrello );
+				isDetached = dbContext.Entry( carrello ).State == EntityState.Detached;
+				Assert.IsFalse( isDetached );
+
+				// Modifico l'oggetto da attaccato
+				Random rnd = new Random();
+				int randomNumber = rnd.Next( 0, 9 );
+				carrello.note = carrello.note + randomNumber.ToString();
+
+				var tt = dbContext.Entry( carrello );
+				Assert.AreEqual( tt.State, EntityState.Modified );
+			}
+
+
+			using( LumenEntities dbContext = new LumenEntities() ) {
+				ObjectContext objContext = ((IObjectContextAdapter)dbContext).ObjectContext;
+
+				// Provo a salvare l'oggetto staccato e mi deve dare errore.
+				int quantiQ = dbContext.SaveChanges();
+				Assert.IsTrue( quantiQ == 0 );
+
+				// Ora forzo lo stato della entità a modificato
+
+				var poldo = dbContext.Carrelli.Attach( carrello );
+				var test2 = dbContext.Entry( carrello );
+				Assert.AreEqual( test2.State, EntityState.Unchanged );
+
+				objContext.DetectChanges();
+				var test3 = dbContext.Entry( carrello );
+				Assert.AreEqual( test3.State, EntityState.Unchanged );
+
+				test3.State = EntityState.Modified;
+				int quanti = dbContext.SaveChanges();
+				Assert.IsTrue( quanti > 0 );
+			}
+		}
+
+		[TestMethod]
+		public void simulaUiStaccando3() {
+
+			Carrello carrello;
+			String notePrec;
+			String numAggiunto;
+			IVenditoreSrv venditoreSrv ;
+
+			using( new UnitOfWorkScope() ) {
+				var context = UnitOfWorkScope.currentDbContext;
+				carrello = context.Carrelli.Include( "righeCarrello" ).Where( c => c.righeCarrello.Count > 0 &&  c.righeCarrello.Count < 3 && c.venduto == false ).FirstOrDefault();
+			}
+
+			using( new UnitOfWorkScope() ) {
+				var context = UnitOfWorkScope.currentDbContext;
+				venditoreSrv = LumenApplication.Instance.getServizioAvviato<IVenditoreSrv>();
+				venditoreSrv.caricaCarrello( carrello );
+				// Salvo le note precedenti.
+				notePrec = venditoreSrv.carrello.note;
+				if( notePrec == null )
+					notePrec = String.Empty;
+			}
+
+			bool aggiungiUnaRiga = true;
+
+			List<Fotografia> fotos = new List<Fotografia>();
+			ParamStampaFoto par = null;
+			if( aggiungiUnaRiga ) {
+				using( new UnitOfWorkScope() ) {
+
+					// Cerco una fotografia a caso
+					IFotoExplorerSrv fotoExplorerSrv = LumenApplication.Instance.getServizioAvviato<IFotoExplorerSrv>();
+					fotoExplorerSrv.cercaFoto( new ParamCercaFoto {
+						paginazione = new Paginazione {
+							take = 1
+						}
+					} );
+
+					var dbContext = UnitOfWorkScope.currentDbContext;
+					par = new ParamStampaFoto {
+						formatoCarta = dbContext.FormatiCarta.First(),
+						nomeStampante = "qqq"
+					};
+
+					fotos = fotoExplorerSrv.fotografie;
+				}
+			}
+
+			using( new UnitOfWorkScope() ) {
+				// Modifico l'oggetto da staccato
+				Random rnd = new Random();
+				int randomNumber = rnd.Next( 0, 9 );
+				numAggiunto = randomNumber.ToString();
+
+				venditoreSrv.carrello.note = venditoreSrv.carrello.note + numAggiunto;
+
+				if( aggiungiUnaRiga ) {
+					venditoreSrv.aggiungereStampe( fotos, par );
+				}
+			}
+
+			using( new UnitOfWorkScope() ) {
+				var context = UnitOfWorkScope.currentDbContext;
+				bool esito = venditoreSrv.salvaCarrello();
+				Assert.IsTrue( esito );
+			}
+
+			using( new UnitOfWorkScope() ) {
+
+				var context = UnitOfWorkScope.currentDbContext;
+				Carrello carrello2 = context.Carrelli.Where( c => c.id == carrello.id ).Single();
+				Assert.AreEqual( carrello2.note, notePrec + numAggiunto );
+			}
+
+		}
+
+		[TestMethod]
+		public void rigaCarrelloNotificaPropertyChanged() {
+			// Se succede questa eccezione significa che è stato salvato il modello EDMX e quindi 
+			// ha rigenerato la classe RigaCarrello.
+			// Purtoppo questa classe l'ho dovuta personalizzare a mano.
+			// Deve implementare INotifyPropertyChanged e le 2 property
+			//  1) quantita
+			//  2) prezzoNettoTotale
+			//  devono rilanciare l'evento di property modificata.
+			// Occorre quindi sistemare a mano il sorgente (magari riprendendolo dal vcs)
+			Assert.IsTrue( typeof( INotifyPropertyChanged ).IsAssignableFrom( typeof(RigaCarrello) ) );
 		}
 	}
 }

@@ -17,9 +17,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		ModoVendita modoVendita { get; set; }
 
-		IMasterizzaSrv masterizzaSrv {
-			get;
-		}
 
 		/** In base alla configurazione e ad altre variabili di lavoro, creo i parametri di stampa di default */
 		ParamStampaFoto creaParamStampaFoto();
@@ -27,9 +24,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		ParamStampaProvini creaParamStampaProvini();
 
 		/** Foto da vendere come stampe */
-		void aggiungiStampe( IEnumerable<Fotografia> fotografie, ParamStampa param );
+		void aggiungereStampe( IEnumerable<Fotografia> fotografie, ParamStampa param );
 
-		void aggiungiMasterizzate( IEnumerable<Fotografia> fotografie );
+		void removeDatiDischetto();
+		void setDatiDischetto( TipoDestinazione tipoDest, String nomeCartella );
+		void setDatiDischetto( TipoDestinazione tipoDest, String nomeCartella, decimal? prezzoDischetto );
+		void aggiungereMasterizzate( IEnumerable<Fotografia> fotografie );
 
 		/** 
 		 * Prepara un nuovo carrello vuoto (da riempire).
@@ -72,7 +72,46 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			get;
 		}
 
+		short? scontoApplicato {
+			get;
+		}
+
+		bool isPossibileSalvareCarrello {
+			get;
+		}
+
+		int sommatoriaFotoDaMasterizzare {
+			get;
+		}
+
+		int sommatoriaQtaFotoDaStampare {
+			get;
+		}
+
+		Decimal prezzoNettoTotale {
+			get;
+		}
+
+		string msgValidaCarrello {
+			get;
+		}
+
+		bool possoAggiungereStampe {
+			get;
+		}
+
+		bool possoAggiungereMasterizzate {
+			get;
+		}
+
 		Decimal calcolaIncassoPrevisto( DateTime giornata );
+
+		/// <summary>
+		/// Aggiorno i totali (senza le provvigioni)
+		/// </summary>
+		void ricalcolaTotaleCarrello();
+
+		void ricalcolaProvvigioni();
 
 	}
 }

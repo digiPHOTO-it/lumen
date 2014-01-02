@@ -10,6 +10,7 @@ using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Servizi.Vendere;
 using Digiphoto.Lumen.Eventi;
 using System.Threading;
+using System.Data.Entity.Infrastructure;
 
 namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 {
@@ -55,11 +56,11 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 				p.numeroRighe = 5;
 				p.macchiaProvini = false;
 
-				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 				List<Fotografia> fotos = (from f in dbContext.Fotografie.Include("fotografo")
 										  select f).Take(QUANTE).ToList();
 
-				_impl.aggiungiStampe(fotos,p);
+				_impl.aggiungereStampe(fotos,p);
 
 				List<Fotografia> fotos2 = (from f in dbContext.Fotografie.Include("fotografo")
 										   select f).Take(2 * QUANTE + 1).ToList();
@@ -72,7 +73,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 
 				fotos2.RemoveRange(0, QUANTE + 1);
 
-				_impl.aggiungiStampe(fotos2, p1);
+				_impl.aggiungereStampe(fotos2, p1);
 			}
 
 			while (!_elaborazioneTerminata)
@@ -89,7 +90,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 			using (new UnitOfWorkScope(false))
 			{
 
-				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 				List<Fotografia> fotos = (from f in dbContext.Fotografie.Include("fotografo")
 										  select f).Take(QUANTE).ToList();
 
@@ -99,7 +100,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 				p.numeroRighe = 5;
 				p.macchiaProvini = false;
 
-				_impl.aggiungiStampe(fotos, p);
+				_impl.aggiungereStampe(fotos, p);
 
 				//Carico una stampa Foto
 				ParamStampaFoto p2 = ricavaParamStampaFoto();
@@ -123,7 +124,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 				
 				fotos2.RemoveRange(0, QUANTE+1);
 
-				_impl.aggiungiStampe(fotos2, p3);
+				_impl.aggiungereStampe(fotos2, p3);
 				/*
 				//*****************************
 				//*****************************
@@ -174,7 +175,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 				p.numeroRighe = 4;
 				p.macchiaProvini = true;
 
-				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 				List<Fotografia> fotos = (from f in dbContext.Fotografie.Include("fotografo")
 										  select f).Take(QUANTE).ToList();
 
@@ -194,7 +195,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 			// Vediamo se esiste il formato
 			// TODO : creare un nuovo attributo che identifica il formato carta come chiave naturale (per esempio A4 oppure 6x8)
 
-			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+			LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 
 			FormatoCarta formato = Utilita.ottieniFormatoCarta(dbContext, "A5");
 			formato.prezzo = 5;
@@ -205,7 +206,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 			p.numeroRighe = 6;
 
 			// Qui non si deve spaccare
-			Digiphoto.Lumen.Database.OrmUtil.forseAttacca<FormatoCarta>(dbContext.ObjectContext, "LumenEntities.FormatiCarta", ref formato);
+			Digiphoto.Lumen.Database.OrmUtil.forseAttacca<FormatoCarta>( ref formato );
 
 			return p;
 		}
@@ -218,7 +219,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 			// Vediamo se esiste il formato
 			// TODO : creare un nuovo attributo che identifica il formato carta come chiave naturale (per esempio A4 oppure 6x8)
 
-			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+			LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 
 			FormatoCarta formato = Utilita.ottieniFormatoCarta(dbContext, "A5");
 			formato.prezzo = 5;
@@ -226,7 +227,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 			p.nomeStampante = "doPDF v7";
 
 			// Qui non si deve spaccare
-			Digiphoto.Lumen.Database.OrmUtil.forseAttacca<FormatoCarta>(dbContext.ObjectContext, "LumenEntities.FormatiCarta", ref formato);
+			Digiphoto.Lumen.Database.OrmUtil.forseAttacca<FormatoCarta>( ref formato);
 
 			return p;
 		}

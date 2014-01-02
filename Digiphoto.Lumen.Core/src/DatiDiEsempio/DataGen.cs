@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Model;
-using System.Data.Objects.DataClasses;
+using  System.Data.Entity.Core.Objects.DataClasses;
 using Digiphoto.Lumen.Servizi.Stampare;
 
 

@@ -13,7 +13,7 @@ using log4net;
 using Digiphoto.Lumen.Core.Database;
 using System.Transactions;
 using Digiphoto.Lumen.Database;
-using System.Data.Objects;
+using System.Data.Entity.Core.Objects;
 using System.Data;
 using Digiphoto.Lumen.src.Database;
 using MemBus;
@@ -152,7 +152,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 						_giornale.Info(msg);
 					}
 
-					UnitOfWorkScope.CurrentObjectContext.SaveChanges();
+					UnitOfWorkScope.currentDbContext.SaveChanges();
 					_giornale.Debug("Modifica metadati salvataggio eseguito. Ora committo la transazione");
 
 					transaction.Complete();
@@ -207,13 +207,13 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 					foto.evento = null;
 			}
 
-			UnitOfWorkScope.CurrentObjectContext.ObjectContext.ObjectStateManager.ChangeObjectState(f, EntityState.Modified);
+			OrmUtil.cambiaStatoModificato( f );
 		}
 
 		public IEnumerable<ScaricoCard> loadUltimiScarichiCards() {
 
 			DateTime giornoLim = DateTime.Today.AddDays( -6 );
-			return UnitOfWorkScope.CurrentObjectContext.ScarichiCards.Include( "fotografo" ).Where( sc => sc.giornata >= giornoLim ).OrderByDescending( sc => sc.tempo );
+			return UnitOfWorkScope.currentDbContext.ScarichiCards.Include( "fotografo" ).Where( sc => sc.giornata >= giornoLim ).OrderByDescending( sc => sc.tempo );
 		}
 
 

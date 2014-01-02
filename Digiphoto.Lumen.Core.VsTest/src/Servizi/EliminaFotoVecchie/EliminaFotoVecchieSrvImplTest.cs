@@ -12,10 +12,11 @@ using System.Transactions;
 using System.Diagnostics;
 using Digiphoto.Lumen.Properties;
 using Digiphoto.Lumen.Util;
-using System.Data.Objects;
+using System.Data.Entity.Core.Objects;
 using System.Data.Common;
 using Digiphoto.Lumen.Core.VsTest.Servizi.Scaricatore;
 using Digiphoto.Lumen.Config;
+using System.Data.Entity.Infrastructure;
 
 namespace Digiphoto.Lumen.Core.VsTest
 {
@@ -136,7 +137,7 @@ namespace Digiphoto.Lumen.Core.VsTest
                  DateTime dataIntervallo = DateTime.Now.AddDays(-giorni);
 
                  string queryString = @"SELECT COUNT(Fot.giornata) AS NumeroFoto, Fot.giornata FROM LumenEntities.Fotografie AS Fot GROUP BY Fot.giornata HAVING (Fot.giornata <= @data)";
-                 ObjectQuery<DbDataRecord> contactQuery = new ObjectQuery<DbDataRecord>(queryString, dbContext.ObjectContext);
+                 ObjectQuery<DbDataRecord> contactQuery = new ObjectQuery<DbDataRecord>(queryString, ((IObjectContextAdapter)dbContext).ObjectContext);
 
                  contactQuery.Parameters.Add(new ObjectParameter("data", DateTime.Now.AddDays(-giorni)));
 
@@ -159,7 +160,7 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 			 using( new UnitOfWorkScope() ) {
 
-				 LumenEntities entities = UnitOfWorkScope.CurrentObjectContext;
+				 LumenEntities entities = UnitOfWorkScope.currentDbContext;
 
 				 IEnumerable<Fotografia> listaDacanc = entities.Fotografie.Take( 1 );
 
@@ -171,7 +172,7 @@ namespace Digiphoto.Lumen.Core.VsTest
 					 Object [] parametri = new Object [] { fDacanc.id };
 
 					 Assert.IsTrue( File.Exists( nomeFileOrig ) );
-					 ObjectResult<int> test1 = entities.ObjectContext.ExecuteStoreQuery<int>( @"select count(*) from Fotografie where id = {0}", parametri );
+					 ObjectResult<int> test1 = ((IObjectContextAdapter)entities).ObjectContext.ExecuteStoreQuery<int>( @"select count(*) from Fotografie where id = {0}", parametri );
 					 Assert.IsTrue( test1.ElementAt( 0 ) == 1 );
 
 					 using( IEliminaFotoVecchieSrv srv = LumenApplication.Instance.creaServizio<IEliminaFotoVecchieSrv>() ) {
@@ -182,7 +183,7 @@ namespace Digiphoto.Lumen.Core.VsTest
 					 }
 
 					 Assert.IsFalse( File.Exists( nomeFileOrig ) );
-					 ObjectResult<int> test2 = entities.ObjectContext.ExecuteStoreQuery<int>( @"select count(*) from Fotografie where id = {0}", parametri );
+					 ObjectResult<int> test2 = ((IObjectContextAdapter)entities).ObjectContext.ExecuteStoreQuery<int>( @"select count(*) from Fotografie where id = {0}", parametri );
 					 Assert.IsTrue( test2.ElementAt( 0 ) == 0 );
 
 					 //
