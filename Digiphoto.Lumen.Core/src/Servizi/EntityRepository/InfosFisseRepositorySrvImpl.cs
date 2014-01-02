@@ -13,7 +13,7 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 		}
 
 		public override InfoFissa getById( object id ) {
-			return UnitOfWorkScope.CurrentObjectContext.InfosFisse.FirstOrDefault();
+			return UnitOfWorkScope.currentDbContext.InfosFisse.FirstOrDefault();
 		}
 
 	}

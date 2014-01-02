@@ -14,7 +14,7 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 
 		public override Giornata getById( object oid ) {
 			DateTime giorno = (DateTime)oid;
-			return UnitOfWorkScope.CurrentObjectContext.Giornate.SingleOrDefault( g => g.id.Equals( giorno ) );
+			return UnitOfWorkScope.currentDbContext.Giornate.SingleOrDefault( g => g.id.Equals( giorno ) );
 		}
 	}
 }

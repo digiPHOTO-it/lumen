@@ -12,23 +12,18 @@ namespace Digiphoto.Lumen.Model
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
-    using System.Data.Objects;
     
     public partial class LumenEntities : DbContext
     {
+
         public LumenEntities()
             : base("name=LumenEntities")
         {
         }
-    
-    	public LumenEntities(string connectionString)
-          : base(connectionString ) { }
-    
-    
-    	public ObjectContext ObjectContext
-        {
-          get { return ((IObjectContextAdapter)this).ObjectContext; }
-        }
+
+		public LumenEntities( string nameOrConnectionString )
+			: base( nameOrConnectionString ) {
+		}
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

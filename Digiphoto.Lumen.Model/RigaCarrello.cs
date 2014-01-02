@@ -11,22 +11,77 @@ namespace Digiphoto.Lumen.Model
 {
     using System;
     using System.Collections.Generic;
-    
-    public partial class RigaCarrello
+	using System.ComponentModel;
+
+	// Personalizzazione fuori standard.
+	// Per evitare dei refresh continui alle CollectionView delle RigheCarrello,
+	// ho deciso di notificare i PropertyChange sui due valori che servono durante la vendita.
+	public partial class RigaCarrello : INotifyPropertyChanged
     {
         public System.Guid id { get; set; }
         public decimal prezzoLordoUnitario { get; set; }
-        public short quantita { get; set; }
-        public decimal prezzoNettoTotale { get; set; }
+        
+		private short _quantita;
+		public short quantita {
+			get {
+				return _quantita;
+			}
+
+			set {
+				if( _quantita != value ) {
+					_quantita = value;
+					OnPropertyChanged( "quantita" );
+				}
+			}
+		}
+
+		private decimal _prezzoNettoTotale;
+		public decimal prezzoNettoTotale {
+			get {
+				return _prezzoNettoTotale;
+			}
+			set {
+				if( _prezzoNettoTotale != value ) {
+					_prezzoNettoTotale = value;
+					OnPropertyChanged( "prezzoNettoTotale" );
+				}
+			}
+		}
+
         public Nullable<decimal> sconto { get; set; }
         public string descrizione { get; set; }
         public string discriminator { get; set; }
         public Nullable<short> totFogliStampati { get; set; }
         public string nomeStampante { get; set; }
         public Nullable<bool> bordiBianchi { get; set; }
+		public System.Guid carrello_id { get; set; }
     
         public virtual Fotografo fotografo { get; set; }
         public virtual Fotografia fotografia { get; set; }
         public virtual FormatoCarta formatoCarta { get; set; }
+        public virtual Carrello carrello { get; set; }
+
+		#region INotifyPropertyChanged Members
+
+		/// <summary>
+		/// Raised when a property on this object has a new value.
+		/// </summary>
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		/// <summary>
+		/// Raises this object's PropertyChanged event.
+		/// </summary>
+		/// <param name="propertyName">The property that has a new value.</param>
+		protected virtual void OnPropertyChanged( string propertyName ) {
+
+			PropertyChangedEventHandler handler = this.PropertyChanged;
+			if( handler != null ) {
+				var e = new PropertyChangedEventArgs( propertyName );
+				handler( this, e );
+			}
+		}
+
+		#endregion // INotifyPropertyChanged Members
+
     }
 }

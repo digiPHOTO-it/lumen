@@ -7,6 +7,8 @@ using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Config;
 using log4net;
 using Digiphoto.Lumen.Util;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure;
 
 namespace Digiphoto.Lumen.Core.Database {
 
@@ -22,7 +24,7 @@ namespace Digiphoto.Lumen.Core.Database {
 		[ThreadStatic]
 		private static UnitOfWorkScope _currentScope;
 		
-		private LumenEntities _objectContext;
+		private LumenEntities _dbContext;
 		private bool _isDisposed, _saveAllChangesAtEndOfScope;
 		/// <summary>
 		/// Gets or sets a boolean value that indicates whether to automatically save 
@@ -40,9 +42,15 @@ namespace Digiphoto.Lumen.Core.Database {
 		/// Returns a reference to the Lumen Object Context that is created 
 		/// for the current scope. If no scope currently exists, null is returned.
 		/// </summary>
-		public static LumenEntities CurrentObjectContext {
+		public static LumenEntities currentDbContext {
 			get {
-				return _currentScope != null ? _currentScope._objectContext : null;
+				return _currentScope != null ? _currentScope._dbContext : null;
+			}
+		}
+
+		public static ObjectContext currentObjectContext {
+			get {
+				return _currentScope == null ? null : ((IObjectContextAdapter)UnitOfWorkScope.currentDbContext).ObjectContext;
 			}
 		}
 
@@ -51,7 +59,7 @@ namespace Digiphoto.Lumen.Core.Database {
 		/// </summary>
 		public static bool hasCurrent {
 			get {
-				return CurrentObjectContext != null;
+				return currentDbContext != null;
 			}
 		}
 
@@ -83,10 +91,14 @@ namespace Digiphoto.Lumen.Core.Database {
 
 
 			/* Create a new ObjectContext instance: uso il proxy */
-			if( String.IsNullOrEmpty(connectionString ) )
-				_objectContext = new LumenEntities();
-			else
-				_objectContext = new LumenEntities( connectionString );
+			if( String.IsNullOrEmpty( connectionString ) )
+				_dbContext = new LumenEntities();
+			else {
+				_dbContext = new LumenEntities( connectionString );
+			}
+
+//			_dbContext.Configuration.ProxyCreationEnabled = false;
+
 
 			_isDisposed = false;
 			Thread.BeginThreadAffinity();
@@ -110,7 +122,7 @@ namespace Digiphoto.Lumen.Core.Database {
 					try {
 						// Qui ci potrebbero essere delle eccezioni
 
-						_objectContext.SaveChanges();
+						_dbContext.SaveChanges();
 
 					} catch( Exception ee ) {
 
@@ -123,10 +135,16 @@ namespace Digiphoto.Lumen.Core.Database {
 						// Però non sono in grado di gestirla. Quindi l'unica cosa che posso fare è loggarla ed avvisare l'utente.
 					}
 				}
-				
+
 				/* Dispose the scoped ObjectContext instance: */
-				_objectContext.Dispose();
+				_dbContext.Dispose();
+				_dbContext = null;
+
 				_isDisposed = true;
+
+			} else {
+				// Come mai casco qui ?? Impossibile !
+				System.Diagnostics.Debugger.Break();
 			}
 		}
 	}

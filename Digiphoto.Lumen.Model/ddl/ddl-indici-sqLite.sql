@@ -21,6 +21,8 @@
 
 	DROP INDEX if exists [fnumerof_idx];
 
+	DROP INDEX if exists [cggcarta_idx];
+
 -- --------------------------------------------------
 -- Creating all indexes
 -- --------------------------------------------------
@@ -31,18 +33,12 @@
 
 	create index [rfsfotografo_idx] on RigheCarrelli (fotografo_id);
 
-	create index [fggfase_idx] on Fotografie (giornata, faseDelGiorno);
-	
+	create index [fggfase_idx]    on Fotografie (giornata, faseDelGiorno);
 	create index [ffotografo_idx] on Fotografie (fotografo_id);
-
-	create index [fevento_idx] on Fotografie (evento_id);
-
-	create index [fnumerof_idx] on Fotografie (numero);
+	create index [fevento_idx]    on Fotografie (evento_id);
+	create index [fnumerof_idx]   on Fotografie (numero);
 
 	create unique index [cggcarta_idx] on ConsumiCartaGiornalieri (giornata,formatoCarta_id);
-
-	-- Descrizione INCASSIFOTOGRAFI_IDX2
-	CREATE UNIQUE INDEX "incassifotografi_idx2" on incassifotografi ([CarrelloIncassoFotografo_IncassoFotografo_id] ASC, fotografo_id ASC);
 
 -- --------------------------------------------------
 -- Script has ended

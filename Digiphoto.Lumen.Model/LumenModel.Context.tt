@@ -43,13 +43,12 @@ namespace <#=code.EscapeNamespace(codeNamespace)#>
 using System;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
-using System.Data.Objects;
 <#
 if (container.FunctionImports.Any())
 {
 #>
-using System.Data.Objects;
-using System.Data.Objects.DataClasses;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Core.Objects.DataClasses;
 using System.Linq;
 <#
 }
@@ -68,15 +67,6 @@ if (!loader.IsLazyLoadingEnabled(container))
 <#
 }
 #>
-    }
-
-	public <#=code.Escape(container)#>(string connectionString)
-      : base(connectionString ) { }
-
-
-	public ObjectContext ObjectContext
-    {
-      get { return ((IObjectContextAdapter)this).ObjectContext; }
     }
 
     protected override void OnModelCreating(DbModelBuilder modelBuilder)

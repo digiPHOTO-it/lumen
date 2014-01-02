@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Model;
-using System.Data.Objects.DataClasses;
+using  System.Data.Entity.Core.Objects.DataClasses;
 using Digiphoto.Lumen.Core.Database;
 using log4net;
 using Digiphoto.Lumen.Applicazione;
@@ -17,7 +17,7 @@ using System.Windows.Forms;
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Servizi.Reports;
 using System.Data.Entity;
-using System.Data.Objects;
+using  System.Data.Entity.Core.Objects;
 using System.Data.Common;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
@@ -60,6 +60,55 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			set;
 		}
 
+		public short? scontoApplicato {
+			get {
+				return gestoreCarrello.scontoApplicato;
+			}
+		}
+
+
+		public bool isPossibileSalvareCarrello {
+			get {
+				return gestoreCarrello.isPossibileSalvare;
+			}
+		}
+
+		public int sommatoriaFotoDaMasterizzare {
+			get {
+				return gestoreCarrello.sommatoriaFotoDaMasterizzare;
+			}
+		}
+
+		public int sommatoriaQtaFotoDaStampare {
+			get {
+				return gestoreCarrello.sommatoriaQtaFotoDaStampare;
+			}
+		}
+
+		public Decimal prezzoNettoTotale {
+			get {
+				return gestoreCarrello.prezzoNettoTotale;
+			}
+		}
+
+		public string msgValidaCarrello {
+			get {
+				return gestoreCarrello.msgValidaCarrello();
+			}
+		}
+
+		public bool possoAggiungereStampe {
+			get {
+				return (carrello != null && carrello.venduto == false);
+			}
+		}
+
+		public bool possoAggiungereMasterizzate {
+			get {
+				return (carrello != null && carrello.venduto == false);
+			}
+		}
+
 		#endregion
 
 		#region Fields
@@ -76,21 +125,28 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			modoVendita = Configurazione.UserConfigLumen.modoVendita;
 
 			contaMessaggiInCoda = 0;
-
 		}
 
 		public override void start() {
 
 			base.start();
 
-			gestoreCarrello.creaNuovo();
+			creaNuovoCarrello();
 
 			// TODO sostituire con la lista che è dentro il servizio spoolsrv
 			_stampantiAbbinate = StampantiAbbinateUtil.deserializza( Configurazione.UserConfigLumen.stampantiAbbinate );
 
 		}
 
-		void updateCarrello() {
+		public void ricalcolaProvvigioni() {
+			gestoreCarrello.ricalcolaDocumento( true );
+		}
+
+		public void ricalcolaTotaleCarrello() {
+
+			// Sistemo i prezzi e i totali documento
+			gestoreCarrello.ricalcolaDocumento( false );
+
 			GestoreCarrelloMsg msg = new GestoreCarrelloMsg( this );
 			msg.fase = Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.UpdateCarrello;
 			LumenApplication.Instance.bus.Publish( msg );
@@ -100,16 +156,20 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			
 			gestoreCarrello.caricaCarrello( c.id );
 
-			pubblicaMessaggio( new Messaggio( this )  {
-				descrizione = "Caricato carrello dal database: " + c.intestazione,
-				showInStatusBar = true
-			} );
+			GestoreCarrelloMsg msg = new GestoreCarrelloMsg( this );
+			msg.descrizione = "Caricato carrello dal database: " + c.intestazione;
+			msg.showInStatusBar = true;
+			msg.fase = Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.LoadCarrelloSalvato;
+			LumenApplication.Instance.bus.Publish( msg );
 		}
 
 		/** 
 		 * Per ogni foto indicata, creo una nuova riga di carrello
 		 */
-		public void aggiungiStampe( IEnumerable<Fotografia> fotografie, Stampare.ParamStampa param ) {
+		public void aggiungereStampe( IEnumerable<Fotografia> fotografie, Stampare.ParamStampa param ) {
+
+			if( ! possoAggiungereStampe )
+				throw new InvalidOperationException( "Impossibile aggiungere stampe a questo carrello" );
 
 			if (param is ParamStampaFoto)
 			{
@@ -121,7 +181,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					gestoreCarrello.aggiungiRiga(creaRiCaFotoStampata(foto, param as ParamStampaFoto));
 				}
 				// Notifico al carrello l'evento
-				updateCarrello();
+				ricalcolaTotaleCarrello();
 			}
 			else if(param is ParamStampaProvini)
 			{
@@ -135,9 +195,17 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public void creaNuovoCarrello() {
 
-			// abbandonaCarrello();   // se ce n'era uno già apero, lo rimuovo
+			if( gestoreCarrello != null ) {
+				gestoreCarrello.Dispose();
+				gestoreCarrello = null;
+			}
 
+			gestoreCarrello = new GestoreCarrello();
 			gestoreCarrello.creaNuovo();
+
+			GestoreCarrelloMsg msg = new GestoreCarrelloMsg( this );
+			msg.fase = Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.CreatoNuovoCarrello;
+			LumenApplication.Instance.bus.Publish( msg );
 		}
 
 		public bool salvaCarrello() {
@@ -223,50 +291,23 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public void removeRigaCarrello( RigaCarrello rigaCarrello ) {
 
-			carrello.righeCarrello.Remove( rigaCarrello );
-
-			// spengo tutto il servizio di masterizzazione.
-			if( masterizzaSrv != null ) {
-				masterizzaSrv.Dispose();
-				_masterizzaSrvImpl = null;
-			}
+			gestoreCarrello.removeRiga( rigaCarrello );
+			ricalcolaTotaleCarrello();
 		}
 
 		public void removeRigheCarrello( string discriminator ) {
 			IEnumerable<RigaCarrello> listaDacanc = carrello.righeCarrello.Where( r => r.discriminator == discriminator );
 			foreach( RigaCarrello dacanc in listaDacanc ) {
-				carrello.righeCarrello.Remove( dacanc );
+				gestoreCarrello.removeRiga( dacanc );
 			}
+			ricalcolaTotaleCarrello();
 		}
 
 
 		public void removeCarrello( Carrello carrello ) {
 			OrmUtil.forseAttacca<Carrello>( "Carrelli", ref carrello );
-			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+			LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 			dbContext.Carrelli.Remove( carrello );
-		}
-
-		//
-		// <summary>
-		// conto quante foto sono pronte per essere masterizzate e le scrivo nella riga 
-		// del carrello.
-		// Riporto anche il prezzo del cd sulla riga.
-		// </summary>
-		//
-		private void DACANC_aggiornaTotFotoMasterizzate() {
-			// Sistemo il numero eventuale di foto masterizzate
-			if( _masterizzaSrvImpl != null ) {
-
-// TODO sistemare
-//	rdm.prezzoLordoUnitario = _masterizzaSrvImpl.prezzoForfaittario;
-
-				foreach( RigaCarrello r in gestoreCarrello.carrello.righeCarrello ) {
-					if( r.discriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
-						break;
-					}
-				}
-				carrello.totMasterizzate = (short)_masterizzaSrvImpl.fotografie.Count;
-			}
 		}
 
 		private void eventualeStampa(Carrello carrello) {
@@ -275,7 +316,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			if( carrello == null || carrello.righeCarrello.Count == 0 )
 				return;
 
-			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+			LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 
 			
 
@@ -476,7 +517,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				{
 					using (new UnitOfWorkScope(true))
 					{
-						LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+						LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 						
 						DateTime giornata = DateTime.Today;
 						FormatoCarta formatoCarta = lavoroDiStampaProvini.param.formatoCarta;
@@ -533,8 +574,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			if( gestoreCarrello != null )
 				gestoreCarrello.Dispose();
 
-			gestoreCarrello = new GestoreCarrello();
-			gestoreCarrello.creaNuovo();
+			creaNuovoCarrello();
 
 			if( _masterizzaSrvImpl != null ) {
 				_masterizzaSrvImpl.Dispose();
@@ -545,16 +585,22 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/**
 		 * Questo servizio mi tengo io la implementazione perché voglio chiamare io il metodo masterizza.
 		 * E non voglio che venga chiamato da fuori.
+		 * Il CarrelloViewModel, ora non deve più appoggiarsi direttamente al servizio di masterizzazione.
+		 * Ci penso io (VenditoreSrvImpl).
+		 * Lasciare private la property.
 		 */
 		private MasterizzaSrvImpl _masterizzaSrvImpl;
-		public IMasterizzaSrv masterizzaSrv {
+		private IMasterizzaSrv masterizzaSrv {
 			get {
 				return _masterizzaSrvImpl;
 			}
 		}
 
 
-		public void aggiungiMasterizzate( IEnumerable<Fotografia> fotografie ) {
+		public void aggiungereMasterizzate( IEnumerable<Fotografia> fotografie ) {
+
+			if( ! possoAggiungereMasterizzate )
+				throw new InvalidOperationException( "Impossibile aggiungere foto da masterizzare a questo carrello" );
 
 			// Istanzio il servizio di masterizzazione, ma io uso la Impl.
 			if( _masterizzaSrvImpl == null ) {
@@ -567,13 +613,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			foreach( Fotografia foto in fotografie ) {
 
 				// Aggiungo le foto al carrello
-				carrello.righeCarrello.Add( creaRigaFotoMasterizzata( foto ) );
+				gestoreCarrello.aggiungiRiga( creaRigaFotoMasterizzata( foto ) );
+
 			}
 
 			// Aggiungo le foto alla lista
-			_masterizzaSrvImpl.addFotografie( fotografie );
+// TODO da fare alla fine			_masterizzaSrvImpl.addFotografie( fotografie );
 			// Notifico al carrello l'evento
-			updateCarrello();
+			ricalcolaTotaleCarrello();
 		}
 
 
@@ -583,11 +630,19 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			RigaCarrello r = new RigaCarrello {
 				discriminator = Carrello.TIPORIGA_MASTERIZZATA
 			};
+
 			r.id = Guid.Empty;  // Lascio intenzionalmente vuoto. Lo valorizzo alla fine prima di salvare
 			r.quantita = 1;
 			r.descrizione = "Foto masterizzata";
+			
+			// Riattacco un pò di roba altrimenti si incacchia
+			OrmUtil.forseAttacca<Fotografia>( ref fotografia );
+			Fotografo fo = fotografia.fotografo;
+			OrmUtil.forseAttacca<Fotografo>( ref fo );
+
 			r.fotografia = fotografia;
-			r.fotografo = fotografia.fotografo;
+			r.fotografo = fo;
+
 			return r;
 		}
 
@@ -642,7 +697,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			// Siccome ho dei valori con il tempo, testo < del giorno dopo.
 			DateTime giornoDopo = p.dataFine.AddDays( 1 );
 
-			var queryh = from ff in UnitOfWorkScope.CurrentObjectContext.ScarichiCards
+			var queryh = from ff in UnitOfWorkScope.currentDbContext.ScarichiCards
 						 where ff.giornata >= p.dataIniz && ff.giornata <= p.dataFine
 						 group ff by ff.giornata into grp
 						 select new RigaReportVendite {
@@ -663,7 +718,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		void creaReportVenditeStep1( ref Dictionary<DateTime, RigaReportVendite> reportVendite, ParamRangeGiorni p ) {
 
 			// Qui ho necessità di fare una join tra il carrello e le righe di tipo FotoScattata
-			var querya = from cc in UnitOfWorkScope.CurrentObjectContext.Carrelli.Include( "righeCarrello" )
+			var querya = from cc in UnitOfWorkScope.currentDbContext.Carrelli.Include( "righeCarrello" )
 						 from rr in cc.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_STAMPA )
 						 where cc.giornata >= p.dataIniz && cc.giornata <= p.dataFine
 						       && cc.venduto == true
@@ -710,7 +765,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		void creaReportVenditeStep2( ref Dictionary<DateTime, RigaReportVendite> reportVendite, ParamRangeGiorni p ) {
 
 			// Estraggo le righe carrello di tipo disco masterizzato
-			var queryc = from cc in UnitOfWorkScope.CurrentObjectContext.Carrelli.Include( "righeCarrello" )
+			var queryc = from cc in UnitOfWorkScope.currentDbContext.Carrelli.Include( "righeCarrello" )
 						 from rr in cc.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_MASTERIZZATA )
 						 where cc.giornata >= p.dataIniz && cc.giornata <= p.dataFine
 						       && cc.venduto == true
@@ -752,7 +807,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// </summary>
 		void creaReportVenditeStep3( ref Dictionary<DateTime, RigaReportVendite> reportVendite, ParamRangeGiorni p ) {
 
-			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+			LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 
 			//
 			var querye = from cc in dbContext.Carrelli
@@ -793,7 +848,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public decimal calcolaIncassoPrevisto( DateTime giornata ) {
 
-			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+			LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 
 			// Questa sintassi strana nella Sum, serve per gestire un caso rompiscatole. Se il set è vuoto, la somma torna null.
 			// vedere qui: http://adventuresinsoftware.com/blog/?p=478
@@ -805,5 +860,27 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 
+		/// <summary>
+		/// Elimina tutte le righe da masterizzare e azzera tutti i dati del masterizzatore.
+		/// </summary>
+		public void removeDatiDischetto() {
+			this.removeRigheCarrello( Carrello.TIPORIGA_MASTERIZZATA );
+			setDatiDischetto( TipoDestinazione.NULLA, null, null );
+		}
+
+		public void setDatiDischetto( TipoDestinazione tipoDest, string nomeCartella ) {
+			this._masterizzaSrvImpl.impostaDestinazione( tipoDest, nomeCartella );
+		}
+
+		public void setDatiDischetto( TipoDestinazione tipoDest, string nomeCartella, decimal? prezzoDischetto ) {
+
+			setDatiDischetto( tipoDest, nomeCartella );
+
+			// Notifico al carrello l'evento
+			if( this.carrello.prezzoDischetto != prezzoDischetto ) {
+				this.carrello.prezzoDischetto = prezzoDischetto;
+				ricalcolaTotaleCarrello();
+			}
+		}
 	}
 }

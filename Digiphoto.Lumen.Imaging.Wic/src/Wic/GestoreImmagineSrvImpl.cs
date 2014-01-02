@@ -11,6 +11,8 @@ using Digiphoto.Lumen.Servizi.Io;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Core.Database;
 using System.Data;
+using Digiphoto.Lumen.Servizi.EntityRepository;
+using Digiphoto.Lumen.Applicazione;
 
 namespace Digiphoto.Lumen.Imaging.Wic {
 
@@ -99,14 +101,16 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 				return null;
 		}
 
-		// TODO spostare in un servizio. Questo progetto non dovrebbe usare entity framework
+		private IEntityRepositorySrv<Fotografia> fotografieRepository {
+			get {
+				return (IEntityRepositorySrv<Fotografia>)LumenApplication.Instance.getServizioAvviato<IEntityRepositorySrv<Fotografia>>();
+			}
+		}
+
 		public void salvaCorrezioniTransienti( Fotografia fotografia ) {
 
-			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
-
-			objContext.Fotografie.Attach( fotografia );
-			objContext.ObjectContext.ObjectStateManager.ChangeObjectState( fotografia, EntityState.Modified );
-			objContext.SaveChanges();
+			fotografieRepository.update( ref fotografia, true );
+			fotografieRepository.saveChanges();
 		}
 	}
 }

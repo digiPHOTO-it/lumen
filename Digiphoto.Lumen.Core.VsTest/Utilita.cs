@@ -4,7 +4,10 @@ using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Model;
 using System.Data;
-using System.Data.Objects;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Core;
 
 namespace Digiphoto.Lumen.Core.VsTest {
 	
@@ -35,7 +38,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 			EntityKey key = new EntityKey( "LumenEntities.Fotografi", "id", idMario );
 			Fotografo mario;
 			Object entity;
-			bool trovato = dbContext.ObjectContext.TryGetObjectByKey( key, out entity );
+			bool trovato = ((IObjectContextAdapter)dbContext).ObjectContext.TryGetObjectByKey( key, out entity );
 
 			if( !trovato ) {
 				mario = new Fotografo();
@@ -77,7 +80,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 			FormatoCarta fc;
 
 			// Provo a vedere se esiste nelle entita appena aggiunte
-			fc = dbContext.ObjectContext.ObjectStateManager.GetObjectStateEntries( System.Data.EntityState.Added )
+			fc = ((IObjectContextAdapter)dbContext).ObjectContext.ObjectStateManager.GetObjectStateEntries( EntityState.Added )
 								   .Where( e => !e.IsRelationship )
 								   .Select( e => e.Entity )
 								   .OfType<FormatoCarta>()

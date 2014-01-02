@@ -6,12 +6,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Model;
-using System.Data.EntityClient;
+using System.Data.Entity.Core.EntityClient;
 using System.Data.Common;
 using System.Data;
-using System.Data.Objects;
+using System.Data.Entity.Core.Objects;
 using System.Linq.Expressions;
 using System.Data.Linq;
+using System.Data.Entity.Infrastructure;
+using System.Configuration;
 
 namespace Digiphoto.Lumen.Core.VsTest.Util {
 
@@ -23,6 +25,21 @@ namespace Digiphoto.Lumen.Core.VsTest.Util {
 		public static void MyClassInitialize( TestContext testContext ) {
 			LumenApplication.Instance.avvia();
 		}
+
+		[TestMethod]
+		public void connessioneDbTramiteEntityConnection() {
+			EntityConnection ec = getConnection();
+		}
+
+		private static EntityConnection getConnection() {
+			EntityConnectionStringBuilder entityBuilder = new EntityConnectionStringBuilder();
+			entityBuilder.ProviderConnectionString = ConfigurationManager.ConnectionStrings["LumenEntities"].ConnectionString;
+			entityBuilder.Provider = "System.Data.SQLite";
+			entityBuilder.Metadata = @"res://*/LumenModel.csdl|res://*/LumenModel.ssdl|res://*/LumenMode.msl";
+
+			return new EntityConnection( entityBuilder.ToString() );
+		}
+
 
 		[TestMethod]
 		public void TestQuery1() {
@@ -75,7 +92,7 @@ namespace Digiphoto.Lumen.Core.VsTest.Util {
 
 			using( LumenEntities dbContext = new LumenEntities() ) {
 				
-				dbContext.ObjectContext.Connection.Open();
+				((IObjectContextAdapter)dbContext).ObjectContext.Connection.Open();
 
 				// ----- Ora provo in eSql
 				string esql = @"SELECT VALUE f
@@ -83,7 +100,7 @@ namespace Digiphoto.Lumen.Core.VsTest.Util {
                               as f
                               WHERE f.numero < @quanti";
 
-				DbCommand comando = dbContext.ObjectContext.Connection.CreateCommand();
+				DbCommand comando = ((IObjectContextAdapter)dbContext).ObjectContext.Connection.CreateCommand();
 				comando.CommandText = esql;
 				EntityParameter pquanti = new EntityParameter( "quanti", DbType.Int16 );
 				pquanti.Value = 3;
@@ -106,7 +123,7 @@ namespace Digiphoto.Lumen.Core.VsTest.Util {
                               as f
                               WHERE f.numero in {" + listaNum + "}";
 
-				ObjectQuery<Fotografia> query2 = new ObjectQuery<Fotografia>( esql2, dbContext.ObjectContext, MergeOption.NoTracking );
+				ObjectQuery<Fotografia> query2 = new ObjectQuery<Fotografia>( esql2, ((IObjectContextAdapter)dbContext).ObjectContext, MergeOption.NoTracking );
 				foreach( Fotografia f in query2 ) {
 					Console.WriteLine( f.nomeFile );
 				}
@@ -126,7 +143,7 @@ namespace Digiphoto.Lumen.Core.VsTest.Util {
                               FROM LumenEntities.Fotografie as f
                               WHERE f.evento = @evento";
 
-				ObjectQuery<Fotografia> query = new ObjectQuery<Fotografia>( esql, dbContext.ObjectContext );
+				ObjectQuery<Fotografia> query = new ObjectQuery<Fotografia>( esql, ((IObjectContextAdapter)dbContext).ObjectContext );
 				try {
 					query.Parameters.Add( new ObjectParameter( "evento", evento ) );
 

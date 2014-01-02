@@ -97,7 +97,7 @@ namespace Digiphoto.Lumen.Core.VsTest
 				param.autoRuota = true;
 				param.nomeStampante = "doPDF v7";
 
-				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 				var fotos = (from f in dbContext.Fotografie.Include( "fotografo" ) select f).Take( QUANTE );
 				int quanteDavvero = 0;
 				foreach( Fotografia foto in fotos ) {

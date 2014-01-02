@@ -154,7 +154,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
         private void copiaCartellaDestinazioneAsincrono()
         {
             // Pattern Unit-of-work
-            using (LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext)
+            using (LumenEntities objContext = UnitOfWorkScope.currentDbContext)
             {
                 System.Diagnostics.Trace.WriteLine("INIZIO COPIA SU CARTELLA");
                 MasterizzaMsg inizioCopiaMsg = new MasterizzaMsg( this );
@@ -231,7 +231,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
         private void backgroundWorkerCopia_DoWork(object sender, DoWorkEventArgs e)
         {
             // Pattern Unit-of-work
-            using (LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext)
+            using (LumenEntities objContext = UnitOfWorkScope.currentDbContext)
             {
                 System.Diagnostics.Trace.WriteLine("INIZIO COPIA SU CARTELLA");
                 MasterizzaMsg inizioCopiaMsg = new MasterizzaMsg( this );
