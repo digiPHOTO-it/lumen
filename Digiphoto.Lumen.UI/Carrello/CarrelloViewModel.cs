@@ -96,10 +96,20 @@ namespace Digiphoto.Lumen.UI
 			}
 			else
 			{
-				// RiCaFotoStampateCv = CollectionViewSource.GetDefaultView(carrelloCorrente.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_STAMPA ));
+				// Creo la CollectionView delle rige stampate
 				RiCaFotoStampateCv = new ListCollectionView( carrelloCorrente.righeCarrello.ToList() );
+				RiCaFotoStampateCv.Filter = f => {
+					return ((RigaCarrello)f).discriminator == Carrello.TIPORIGA_STAMPA;
+				};
+
+				// Creo la CollectionView delle rige masterizzate
+				RiCaFotoMasterizzateCv = new ListCollectionView( carrelloCorrente.righeCarrello.ToList() );
+				RiCaFotoMasterizzateCv.Filter = f => {
+					return ((RigaCarrello)f).discriminator == Carrello.TIPORIGA_MASTERIZZATA;
+				};
 			}
 			OnPropertyChanged( "RiCaFotoStampateCv" );
+			OnPropertyChanged( "RiCaFotoMasterizzateCv" );
 		}
 
         #region Proprietà
@@ -128,23 +138,48 @@ namespace Digiphoto.Lumen.UI
 			private set;
 		}
 
+		public ListCollectionView RiCaFotoMasterizzateCv {
+			get;
+			private set;
+		}
+
 		public ICollectionView CarrelliSalvatiCv
 		{
 			get;
 			private set;
 		}
 
-		public RigaCarrello _rigaCarrelloSelezionata;
-		public RigaCarrello rigaCarrelloSelezionata
+		/// <summary>
+		/// Questa è la la riga corrente della lista di sinistra (foto stampate)
+		/// </summary>
+		public RigaCarrello _rigaCarrelloStampataSelezionata;
+		public RigaCarrello rigaCarrelloStampataSelezionata
 		{
 			get {
-				return _rigaCarrelloSelezionata;
+				return _rigaCarrelloStampataSelezionata;
 			}
 
 			set {
-				if( _rigaCarrelloSelezionata != value ) {
-					_rigaCarrelloSelezionata = value;
-					OnPropertyChanged( "rigaCarrelloSelezionata" );
+				if( _rigaCarrelloStampataSelezionata != value ) {
+					_rigaCarrelloStampataSelezionata = value;
+					OnPropertyChanged( "rigaCarrelloStampataSelezionata" );
+				}
+			}
+		}
+
+		/// <summary>
+		/// Questa è la la riga corrente della lista di destra (foto masterizzate)
+		/// </summary>
+		public RigaCarrello _rigaCarrelloMasterizzataSelezionata;
+		public RigaCarrello rigaCarrelloMasterizzataSelezionata {
+			get {
+				return _rigaCarrelloMasterizzataSelezionata;
+			}
+
+			set {
+				if( _rigaCarrelloMasterizzataSelezionata != value ) {
+					_rigaCarrelloMasterizzataSelezionata = value;
+					OnPropertyChanged( "rigaCarrelloMasterizzataSelezionata" );
 				}
 			}
 		}
@@ -290,8 +325,8 @@ namespace Digiphoto.Lumen.UI
 		{
 			get
 			{
-				if( rigaCarrelloSelezionata != null )
-					return rigaCarrelloSelezionata.quantita;
+				if( rigaCarrelloStampataSelezionata != null )
+					return rigaCarrelloStampataSelezionata.quantita;
 				else
 					return null;
 			}
@@ -368,7 +403,7 @@ namespace Digiphoto.Lumen.UI
 			if( ! abilitaEliminaRigaFoto )
 				return false;
 
-			if( rigaCarrelloSelezionata.quantita + delta > 0 )
+			if( rigaCarrelloStampataSelezionata.quantita + delta > 0 )
 				return true;
 			else
 				return false;
@@ -397,7 +432,7 @@ namespace Digiphoto.Lumen.UI
 				if (posso && RiCaFotoStampateCv.IsEmpty)
 					posso = false;
 
-				if( posso && rigaCarrelloSelezionata == null )
+				if( posso && rigaCarrelloStampataSelezionata == null )
 					posso = false;
 
 				// Ce un errore nella masterizzazione 
@@ -729,7 +764,7 @@ namespace Digiphoto.Lumen.UI
 		private void eliminaRiga()
 		{
 			// this.RiCaFotoStampateCv.Remove( rigaCarrelloSelezionata );
-			venditoreSrv.removeRigaCarrello( rigaCarrelloSelezionata );
+			venditoreSrv.removeRigaCarrello( rigaCarrelloStampataSelezionata );
 		}
 
 		private void eliminaDischetto()
@@ -874,10 +909,10 @@ namespace Digiphoto.Lumen.UI
 
 		private void aggiornareQuantitaRiga( short delta )
 		{
-			if( rigaCarrelloSelezionata.quantita + delta < 1 )
-				rigaCarrelloSelezionata.quantita = 1;
+			if( rigaCarrelloStampataSelezionata.quantita + delta < 1 )
+				rigaCarrelloStampataSelezionata.quantita = 1;
 			else
-				rigaCarrelloSelezionata.quantita += delta;
+				rigaCarrelloStampataSelezionata.quantita += delta;
 
 			calcolaTotali();
 		}
