@@ -187,7 +187,6 @@
     <Compile Include="src\Eventi\EntityCambiataMsg.cs" />
     <Compile Include="src\Eventi\InformazioneUtente.cs" />
     <Compile Include="src\Eventi\Messaggio.cs" />
-    <Compile Include="src\Eventi\NotifyPropertyChangedProxy.cs" />
     <Compile Include="src\Imaging\Correzioni\BiancoNero.cs" />
     <Compile Include="src\Imaging\Correzioni\Maschera.cs" />
     <Compile Include="src\Imaging\Correzioni\Correttore.cs">
