@@ -9,6 +9,7 @@ using Digiphoto.Lumen.Model;
 namespace Digiphoto.Lumen.Servizi.Masterizzare {
 
 	public enum TipoDestinazione {
+		NULLA,
 		MASTERIZZATORE,
 		CARTELLA
 	}

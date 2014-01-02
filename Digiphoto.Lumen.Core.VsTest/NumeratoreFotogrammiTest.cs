@@ -7,7 +7,7 @@ using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Core.Database;
 using System.Linq;
 using System.Transactions;
-using System.Data.Objects;
+using System.Data.Entity.Core.Objects;
 using Digiphoto.Lumen.Model;
 using System.Reflection;
 

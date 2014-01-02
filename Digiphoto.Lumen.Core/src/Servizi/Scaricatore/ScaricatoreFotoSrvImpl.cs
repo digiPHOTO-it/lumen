@@ -11,7 +11,7 @@ using System.Threading;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Model;
-using System.Data.Objects;
+using  System.Data.Entity.Core.Objects;
 using System.Linq;
 
 namespace Digiphoto.Lumen.Servizi.Scaricatore {
@@ -49,7 +49,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		//		List<Fotografo> _fotografiAttivi;
 		public IEnumerable<Fotografo> fotografiAttivi {
 			get {
-				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 				var fotografi = dbContext.Fotografi.Where( f => f.attivo == true ).OrderBy( f => f.iniziali );
 				return fotografi;
 			}

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Configuration;
-using System.Data.EntityClient;
+
 using System.IO;
 using log4net;
 using System.Reflection;
@@ -15,6 +15,7 @@ using Digiphoto.Lumen.Config;
 using System.Windows.Forms;
 using System.Data.Common;
 using System.Security.AccessControl;
+using System.Data.Entity.Core.EntityClient;
 
 namespace Digiphoto.Lumen.Core.Database {
 
@@ -204,7 +205,7 @@ namespace Digiphoto.Lumen.Core.Database {
 
 		public Fotografo loadFotografoById( string idFotografo ) {
 
-			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+			LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 			return dbContext.Fotografi.SingleOrDefault<Fotografo>( ff => ff.id == idFotografo );
 		}
 

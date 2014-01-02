@@ -143,8 +143,8 @@ namespace Digiphoto.Lumen.Servizi {
 		/// </summary>
 		protected LumenEntities objectContext {
 			get {
-				if( UnitOfWorkScope.CurrentObjectContext != null )
-					return UnitOfWorkScope.CurrentObjectContext;
+				if( UnitOfWorkScope.hasCurrent )
+					return UnitOfWorkScope.currentDbContext;
 				else {
 					if( _objectContext == null )
 						_objectContext = new LumenEntities();

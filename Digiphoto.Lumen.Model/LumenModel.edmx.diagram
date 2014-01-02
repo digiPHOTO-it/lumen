@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="c0fc141ad77b4ef695f3c8e7ac1031af" Name="Diagram1" ZoomLevel="91" >
+      <Diagram DiagramId="c0fc141ad77b4ef695f3c8e7ac1031af" Name="Diagram1" ZoomLevel="64" >
         <EntityTypeShape EntityType="LumenModel.InfoFissa" Width="1.5" PointX="0.5" PointY="0.75" />
         <EntityTypeShape EntityType="LumenModel.Evento" Width="1.5" PointX="6.125" PointY="2.625" />
         <EntityTypeShape EntityType="LumenModel.Fotografia" Width="1.5" PointX="8.625" PointY="2.25" />
@@ -19,13 +19,13 @@
         <AssociationConnector Association="LumenModel.FormatoCartaConsumoCartaGiornaliero" />
         <EntityTypeShape EntityType="LumenModel.Carrello" Width="1.5" PointX="20" PointY="1.125" />
         <EntityTypeShape EntityType="LumenModel.RigaCarrello" Width="1.5" PointX="17.125" PointY="1.5" />
-        <AssociationConnector Association="LumenModel.CarrelloRigaCarrello" />
         <AssociationConnector Association="LumenModel.FotografoRigaCarrello" />
         <AssociationConnector Association="LumenModel.FotografiaRigaCarrello" />
         <AssociationConnector Association="LumenModel.FormatoCartaRigaCarrello" />
         <EntityTypeShape EntityType="LumenModel.IncassoFotografo" Width="1.5" PointX="22.625" PointY="1.875" />
-        <AssociationConnector Association="LumenModel.CarrelloIncassoFotografo" />
         <AssociationConnector Association="LumenModel.FotografoIncassoFotografo" />
+        <AssociationConnector Association="LumenModel.CarrelloRigaCarrello" />
+        <AssociationConnector Association="LumenModel.CarrelloIncassoFotografo" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

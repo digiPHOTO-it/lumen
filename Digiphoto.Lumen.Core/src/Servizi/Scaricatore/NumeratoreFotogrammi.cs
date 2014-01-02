@@ -21,7 +21,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 		internal static int incrementaNumeratoreFoto( int quante ) {
 	
-			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
+			LumenEntities objContext = UnitOfWorkScope.currentDbContext;
 			InfoFissa infoFissa = objContext.InfosFisse.Single<InfoFissa>( f => f.id == "K" );
 			
 			int ultimoNum = infoFissa.ultimoNumFotogramma;

@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
   <!-- EF Runtime content -->
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="LumenModel.Store" Alias="Self" Provider="System.Data.SQLite" ProviderManifestToken="ISO8601" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+    <Schema Namespace="LumenModel.Store" Alias="Self" Provider="System.Data.SQLite" ProviderManifestToken="ISO8601" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
   <EntityContainer Name="LumenModelStoreContainer">
-    <EntitySet Name="InfosFisse" EntityType="LumenModel.Store.InfosFisse" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="Eventi" EntityType="LumenModel.Store.Eventi" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="Fotografie" EntityType="LumenModel.Store.Fotografie" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="Fotografi" EntityType="LumenModel.Store.Fotografi" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="Giornate" EntityType="LumenModel.Store.Giornate" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="ScarichiCards" EntityType="LumenModel.Store.ScarichiCards" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="FormatiCarta" EntityType="LumenModel.Store.FormatiCarta" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="ConsumiCartaGiornalieri" EntityType="LumenModel.Store.ConsumiCartaGiornalieri" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="Carrelli" EntityType="LumenModel.Store.Carrelli" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="RigheCarrelli" EntityType="LumenModel.Store.RigheCarrelli" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="IncassiFotografi" EntityType="LumenModel.Store.IncassiFotografi" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="InfosFisse" EntityType="LumenModel.Store.InfosFisse" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+    <EntitySet Name="Eventi" EntityType="LumenModel.Store.Eventi" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+    <EntitySet Name="Fotografie" EntityType="LumenModel.Store.Fotografie" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+    <EntitySet Name="Fotografi" EntityType="LumenModel.Store.Fotografi" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+    <EntitySet Name="Giornate" EntityType="LumenModel.Store.Giornate" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+    <EntitySet Name="ScarichiCards" EntityType="LumenModel.Store.ScarichiCards" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+    <EntitySet Name="FormatiCarta" EntityType="LumenModel.Store.FormatiCarta" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+    <EntitySet Name="ConsumiCartaGiornalieri" EntityType="LumenModel.Store.ConsumiCartaGiornalieri" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+    <EntitySet Name="Carrelli" EntityType="LumenModel.Store.Carrelli" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+    <EntitySet Name="RigheCarrelli" EntityType="LumenModel.Store.RigheCarrelli" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+    <EntitySet Name="IncassiFotografi" EntityType="LumenModel.Store.IncassiFotografi" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
     <AssociationSet Name="EventoFotografia" Association="LumenModel.Store.EventoFotografia">
       <End Role="Evento" EntitySet="Eventi" />
       <End Role="Fotografia" EntitySet="Fotografie" />
@@ -174,6 +174,7 @@
   <EntityType Name="RigheCarrelli">
     <Key>
       <PropertyRef Name="id" />
+      <PropertyRef Name="carrello_id" />
     </Key>
     <Property Name="id" Type="uniqueidentifier" Nullable="false" />
     <Property Name="prezzoLordoUnitario" Type="decimal" Nullable="false" Precision="6" Scale="2" />
@@ -185,7 +186,7 @@
     <Property Name="totFogliStampati" Type="smallint" Nullable="true" />
     <Property Name="nomeStampante" Type="nvarchar" Nullable="true" MaxLength="255" />
     <Property Name="bordiBianchi" Type="bit" Nullable="true" />
-    <Property Name="CarrelloRigaCarrello_RigaCarrello_id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="carrello_id" Type="uniqueidentifier" Nullable="false" />
     <Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="true" />
     <Property Name="fotografia_id" Type="uniqueidentifier" Nullable="true" />
     <Property Name="formatoCarta_id" Type="uniqueidentifier" Nullable="true" />
@@ -193,6 +194,7 @@
   <EntityType Name="IncassiFotografi">
     <Key>
       <PropertyRef Name="Id" />
+      <PropertyRef Name="carrello_id" />
     </Key>
     <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
     <Property Name="incasso" Type="decimal" Nullable="false" Precision="6" Scale="2" />
@@ -201,7 +203,7 @@
     <Property Name="contaStampe" Type="smallint" Nullable="true" />
     <Property Name="contaMasterizzate" Type="smallint" Nullable="false" />
     <Property Name="provvigioni" Type="decimal" Nullable="true" Precision="6" Scale="2" />
-    <Property Name="CarrelloIncassoFotografo_IncassoFotografo_id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="carrello_id" Type="uniqueidentifier" Nullable="false" />
     <Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="false" />
   </EntityType>
   <Association Name="EventoFotografia">
@@ -262,7 +264,7 @@
         <PropertyRef Name="id" />
       </Principal>
       <Dependent Role="RigaCarrello">
-        <PropertyRef Name="CarrelloRigaCarrello_RigaCarrello_id" />
+        <PropertyRef Name="carrello_id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -310,7 +312,7 @@
         <PropertyRef Name="id" />
       </Principal>
       <Dependent Role="IncassoFotografo">
-        <PropertyRef Name="CarrelloIncassoFotografo_IncassoFotografo_id" />
+        <PropertyRef Name="carrello_id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -329,8 +331,8 @@
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="LumenModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" >
-        <EntityContainer Name="LumenEntities" annotation:LazyLoadingEnabled="true">
+      <Schema Namespace="LumenModel" Alias="Self" xmlns="http://schemas.microsoft.com/ado/2009/11/edm" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
+        <EntityContainer Name="LumenEntities" annotation:LazyLoadingEnabled="true" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
           <EntitySet Name="InfosFisse" EntityType="LumenModel.InfoFissa" />
           <EntitySet Name="Eventi" EntityType="LumenModel.Evento" />
           <EntitySet Name="Fotografie" EntityType="LumenModel.Fotografia" />
@@ -357,10 +359,6 @@
           </AssociationSet>
           <EntitySet Name="Carrelli" EntityType="LumenModel.Carrello" />
           <EntitySet Name="RigheCarrelli" EntityType="LumenModel.RigaCarrello" />
-          <AssociationSet Name="CarrelloRigaCarrello" Association="LumenModel.CarrelloRigaCarrello">
-            <End Role="Carrello" EntitySet="Carrelli" />
-            <End Role="RigaCarrello" EntitySet="RigheCarrelli" />
-          </AssociationSet>
           <AssociationSet Name="FotografoRigaCarrello" Association="LumenModel.FotografoRigaCarrello">
             <End Role="Fotografo" EntitySet="Fotografi" />
             <End Role="RigaCarrello" EntitySet="RigheCarrelli" />
@@ -374,12 +372,16 @@
             <End Role="RigaCarrello" EntitySet="RigheCarrelli" />
           </AssociationSet>
           <EntitySet Name="IncassiFotografi" EntityType="LumenModel.IncassoFotografo" />
-          <AssociationSet Name="CarrelloIncassoFotografo" Association="LumenModel.CarrelloIncassoFotografo">
-            <End Role="Carrello" EntitySet="Carrelli" />
-            <End Role="IncassoFotografo" EntitySet="IncassiFotografi" />
-          </AssociationSet>
           <AssociationSet Name="FotografoIncassoFotografo" Association="LumenModel.FotografoIncassoFotografo">
             <End Role="Fotografo" EntitySet="Fotografi" />
+            <End Role="IncassoFotografo" EntitySet="IncassiFotografi" />
+          </AssociationSet>
+          <AssociationSet Name="CarrelloRigaCarrello" Association="LumenModel.CarrelloRigaCarrello">
+            <End Role="Carrello" EntitySet="Carrelli" />
+            <End Role="RigaCarrello" EntitySet="RigheCarrelli" />
+          </AssociationSet>
+          <AssociationSet Name="CarrelloIncassoFotografo" Association="LumenModel.CarrelloIncassoFotografo">
+            <End Role="Carrello" EntitySet="Carrelli" />
             <End Role="IncassoFotografo" EntitySet="IncassiFotografi" />
           </AssociationSet>
           </EntityContainer>
@@ -403,10 +405,10 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          <Property Type="String" Name="descrizione" Nullable="false" MaxLength="50"><a:Display Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
+          <Property Type="String" Name="descrizione" Nullable="false" MaxLength="50"><a:Display Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator">
   <pem:Required ErrorMessage="Descrizione evento obbligatoria" Enforcement="Must" />
   <pem:DataFieldLength MinimumLength="2" MaximumLength="100" ErrorMessage="Descrizione evento deve essere almeno di 2 caratteri" Enforcement="Must" />
-</pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
+</pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></Property>
           <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true" />
           <Property Type="Int16" Name="ordinamento" Nullable="true" />
         </EntityType>
@@ -414,7 +416,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation"><a:Display Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></Property>
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation"><a:Display Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></Property>
           <Property Type="String" Name="nomeFile" Nullable="false" MaxLength="100" />
           <Property Type="DateTime" Name="dataOraScatto" Nullable="true" />
           <Property Type="String" Name="didascalia" Nullable="true" MaxLength="99" />
@@ -424,12 +426,12 @@
           <Property Type="DateTime" Name="giornata" Nullable="false" />
           <Property Type="String" Name="correzioniXml" Nullable="true" />
           <NavigationProperty Name="evento" Relationship="LumenModel.EventoFotografia" FromRole="Fotografia" ToRole="Evento" />
-          <Property Type="Int16" Name="contaStampata" Nullable="false" DefaultValue="0" >
+          <Property Type="Int16" Name="contaStampata" Nullable="false" DefaultValue="0">
             <Documentation>
               <LongDescription>Totalizzatore di quante volte questa foto è stata stampata (a prescindere dal formato)</LongDescription>
             </Documentation>
           </Property>
-          <Property Type="Int16" Name="contaMasterizzata" Nullable="false" DefaultValue="0" >
+          <Property Type="Int16" Name="contaMasterizzata" Nullable="false" DefaultValue="0">
             <Documentation>
               <LongDescription>Conta quante volte questa foto è stata masterizzata</LongDescription>
             </Documentation>
@@ -444,20 +446,20 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Type="String" Name="id" Nullable="false" MaxLength="16" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation"><a:Display Order="0" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></Property>
-          <Property Type="String" Name="cognomeNome" Nullable="false" MaxLength="50"><a:Display Order="1" Visible="True" Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
+          <Property Type="String" Name="id" Nullable="false" MaxLength="16" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation"><a:Display Order="0" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></Property>
+          <Property Type="String" Name="cognomeNome" Nullable="false" MaxLength="50"><a:Display Order="1" Visible="True" Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator">
   <pem:DataFieldLength MinimumLength="5" MaximumLength="50" ErrorMessage="Il nominativo deve essere almeno 4 caratteri" Enforcement="Must" />
   <pem:Required ErrorMessage="Cognome e Nome del fotografo obbligatorio" Enforcement="Must" />
-</pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
-          <Property Type="String" Name="iniziali" Nullable="false" MaxLength="2"><a:Display Order="2" Visible="True" Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
+</pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></Property>
+          <Property Type="String" Name="iniziali" Nullable="false" MaxLength="2"><a:Display Order="2" Visible="True" Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator">
   <pem:RegularExpression Pattern="^[A-Z]{1,2}$" ErrorMessage="Le iniziali del fotografo devono essere di una o due lettere maiuscole" Enforcement="Must" />
   <pem:Required ErrorMessage="Iniziali obbligatorie" Enforcement="Must" />
   <pem:Message ErrorMessage="Il fotografo non è valido" />
-</pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
-          <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true"><a:Display Order="4" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
-          <Property Type="Boolean" Name="umano" Nullable="false" DefaultValue="true"><a:Display Order="3" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
-          <Property Type="String" Name="note" Nullable="true"><a:Display Order="5" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
-        <pem:Validations Enforcement="Must" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></EntityType>
+</pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></Property>
+          <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true"><a:Display Order="4" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></Property>
+          <Property Type="Boolean" Name="umano" Nullable="false" DefaultValue="true"><a:Display Order="3" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></Property>
+          <Property Type="String" Name="note" Nullable="true"><a:Display Order="5" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></Property>
+        <pem:Validations Enforcement="Must" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></EntityType>
         <Association Name="FotografoFotografia">
           <End Type="LumenModel.Fotografo" Role="Fotografo" Multiplicity="1" />
           <End Type="LumenModel.Fotografia" Role="Fotografia" Multiplicity="*" />
@@ -475,10 +477,10 @@
           <Property Type="String" Name="prgTaglierina2" Nullable="true" MaxLength="20" />
           <Property Type="String" Name="prgTaglierina3" Nullable="true" MaxLength="20" />
           <Property Type="Int16" Name="totScarti" Nullable="true" />
-          <Property Type="String" Name="firma" Nullable="false" MaxLength="50"><a:Display Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
+          <Property Type="String" Name="firma" Nullable="false" MaxLength="50"><a:Display Name="" GroupName="" Description="" Prompt="" Sortable="True" Editable="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /><pem:Validations Enforcement="None" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator">
   <pem:RegularExpression Pattern="[a-zA-Z]{3,}" ErrorMessage="Almeno tre lettere" Enforcement="Must" />
   <pem:Required ErrorMessage="Firma obbligatoria" Enforcement="Must" />
-</pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" /></Property>
+</pem:Validations><pem:UIHints xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></Property>
         </EntityType>
         <EntityType Name="ScaricoCard">
           <Key>
@@ -531,13 +533,14 @@
           <Property Type="Boolean" Name="venduto" Nullable="false" DefaultValue="false" />
           <Property Type="String" Name="note" Nullable="true" />
           <Property Type="Int16" Name="totMasterizzate" Nullable="false" DefaultValue="0" />
+          <Property Type="Decimal" Name="prezzoDischetto" Nullable="true" Precision="6" Scale="2" />
           <NavigationProperty Name="righeCarrello" Relationship="LumenModel.CarrelloRigaCarrello" FromRole="Carrello" ToRole="RigaCarrello" />
           <NavigationProperty Name="incassiFotografi" Relationship="LumenModel.CarrelloIncassoFotografo" FromRole="Carrello" ToRole="IncassoFotografo" />
-          <Property Type="Decimal" Name="prezzoDischetto" Nullable="true" Precision="6" Scale="2" />
         </EntityType>
         <EntityType Name="RigaCarrello">
           <Key>
             <PropertyRef Name="id" />
+            <PropertyRef Name="carrello_id" />
           </Key>
           <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="Decimal" Name="prezzoLordoUnitario" Nullable="false" Precision="6" Scale="2" />
@@ -552,13 +555,9 @@
           <Property Type="Int16" Name="totFogliStampati" Nullable="true" />
           <Property Type="String" Name="nomeStampante" Nullable="true" FixedLength="false" MaxLength="255" />
           <Property Type="Boolean" Name="bordiBianchi" Nullable="true" />
+          <NavigationProperty Name="carrello" Relationship="LumenModel.CarrelloRigaCarrello" FromRole="RigaCarrello" ToRole="Carrello" />
+          <Property Name="carrello_id" Type="Guid" Nullable="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
         </EntityType>
-        <Association Name="CarrelloRigaCarrello">
-          <End Type="LumenModel.Carrello" Role="Carrello" Multiplicity="1" >
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="LumenModel.RigaCarrello" Role="RigaCarrello" Multiplicity="*" />
-        </Association>
         <Association Name="FotografoRigaCarrello">
           <End Type="LumenModel.Fotografo" Role="Fotografo" Multiplicity="0..1" />
           <End Type="LumenModel.RigaCarrello" Role="RigaCarrello" Multiplicity="*" />
@@ -573,9 +572,10 @@
         </Association>
         <EntityType Name="IncassoFotografo">
           <Key>
-            <PropertyRef Name="Id" />
+            <PropertyRef Name="id" />
+            <PropertyRef Name="carrello_id" />
           </Key>
-          <Property Type="Guid" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <NavigationProperty Name="fotografo" Relationship="LumenModel.FotografoIncassoFotografo" FromRole="IncassoFotografo" ToRole="Fotografo" />
           <Property Type="Decimal" Name="incasso" Nullable="false" Precision="6" Scale="2" />
           <Property Type="Decimal" Name="incassoStampe" Nullable="false" Precision="6" Scale="2" />
@@ -583,20 +583,42 @@
           <Property Type="Int16" Name="contaStampe" Nullable="false" />
           <Property Type="Int16" Name="contaMasterizzate" Nullable="false" />
           <Property Type="Decimal" Name="provvigioni" Nullable="true" Precision="6" Scale="2" />
+          <NavigationProperty Name="carrello" Relationship="LumenModel.CarrelloIncassoFotografo" FromRole="IncassoFotografo" ToRole="Carrello" />
+          <Property Name="carrello_id" Type="Guid" Nullable="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
         </EntityType>
-        <Association Name="CarrelloIncassoFotografo">
-          <End Type="LumenModel.Carrello" Role="Carrello" Multiplicity="1" />
-          <End Type="LumenModel.IncassoFotografo" Role="IncassoFotografo" Multiplicity="*" />
-        </Association>
         <Association Name="FotografoIncassoFotografo">
           <End Type="LumenModel.Fotografo" Role="Fotografo" Multiplicity="1" />
           <End Type="LumenModel.IncassoFotografo" Role="IncassoFotografo" Multiplicity="*" />
+        </Association>
+        <Association Name="CarrelloRigaCarrello">
+          <End Type="LumenModel.Carrello" Role="Carrello" Multiplicity="1" />
+          <End Type="LumenModel.RigaCarrello" Role="RigaCarrello" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Carrello">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="RigaCarrello">
+              <PropertyRef Name="carrello_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="CarrelloIncassoFotografo">
+          <End Type="LumenModel.Carrello" Role="Carrello" Multiplicity="1" />
+          <End Type="LumenModel.IncassoFotografo" Role="IncassoFotografo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Carrello">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="IncassoFotografo">
+              <PropertyRef Name="carrello_id" />
+            </Dependent>
+          </ReferentialConstraint>
         </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
-    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
   <EntityContainerMapping StorageEntityContainer="LumenModelStoreContainer" CdmEntityContainer="LumenEntities">
     <EntitySetMapping Name="InfosFisse">
       <EntityTypeMapping TypeName="IsTypeOf(LumenModel.InfoFissa)">
@@ -719,7 +741,8 @@
     <EntitySetMapping Name="RigheCarrelli">
       <EntityTypeMapping TypeName="IsTypeOf(LumenModel.RigaCarrello)">
         <MappingFragment StoreEntitySet="RigheCarrelli">
-          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="carrello_id" ColumnName="carrello_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="prezzoLordoUnitario" ColumnName="prezzoLordoUnitario" />
           <ScalarProperty Name="quantita" ColumnName="quantita" />
           <ScalarProperty Name="prezzoNettoTotale" ColumnName="prezzoNettoTotale" />
@@ -735,7 +758,8 @@
     <EntitySetMapping Name="IncassiFotografi">
       <EntityTypeMapping TypeName="IsTypeOf(LumenModel.IncassoFotografo)">
         <MappingFragment StoreEntitySet="IncassiFotografi">
-          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="carrello_id" ColumnName="carrello_id" />
+                <ScalarProperty Name="id" ColumnName="Id" />
           <ScalarProperty Name="incasso" ColumnName="incasso" />
           <ScalarProperty Name="incassoStampe" ColumnName="incassoStampe" />
           <ScalarProperty Name="incassoMasterizzate" ColumnName="incassoMasterizzate" />
@@ -778,74 +802,65 @@
         <ScalarProperty Name="id" ColumnName="id" />
       </EndProperty>
     </AssociationSetMapping>
-    <AssociationSetMapping Name="CarrelloRigaCarrello" TypeName="LumenModel.CarrelloRigaCarrello" StoreEntitySet="RigheCarrelli">
-      <EndProperty Name="Carrello">
-        <ScalarProperty Name="id" ColumnName="CarrelloRigaCarrello_RigaCarrello_id" />
-      </EndProperty>
-      <EndProperty Name="RigaCarrello">
-        <ScalarProperty Name="id" ColumnName="id" />
-      </EndProperty>
-    </AssociationSetMapping>
     <AssociationSetMapping Name="FotografoRigaCarrello" TypeName="LumenModel.FotografoRigaCarrello" StoreEntitySet="RigheCarrelli">
       <EndProperty Name="Fotografo">
         <ScalarProperty Name="id" ColumnName="fotografo_id" />
       </EndProperty>
       <EndProperty Name="RigaCarrello">
-        <ScalarProperty Name="id" ColumnName="id" />
+        <ScalarProperty Name="carrello_id" ColumnName="carrello_id" />
+              <ScalarProperty Name="id" ColumnName="id" />
       </EndProperty>
-      <Condition ColumnName="fotografo_id" IsNull="false" />
+            <Condition ColumnName="fotografo_id" IsNull="false" />
+            <Condition ColumnName="carrello_id" IsNull="false" />
     </AssociationSetMapping>
     <AssociationSetMapping Name="FotografiaRigaCarrello" TypeName="LumenModel.FotografiaRigaCarrello" StoreEntitySet="RigheCarrelli">
       <EndProperty Name="Fotografia">
         <ScalarProperty Name="id" ColumnName="fotografia_id" />
       </EndProperty>
       <EndProperty Name="RigaCarrello">
-        <ScalarProperty Name="id" ColumnName="id" />
+        <ScalarProperty Name="carrello_id" ColumnName="carrello_id" />
+              <ScalarProperty Name="id" ColumnName="id" />
       </EndProperty>
-      <Condition ColumnName="fotografia_id" IsNull="false" />
+            <Condition ColumnName="fotografia_id" IsNull="false" />
+            <Condition ColumnName="carrello_id" IsNull="false" />
     </AssociationSetMapping>
     <AssociationSetMapping Name="FormatoCartaRigaCarrello" TypeName="LumenModel.FormatoCartaRigaCarrello" StoreEntitySet="RigheCarrelli">
       <EndProperty Name="FormatoCarta">
         <ScalarProperty Name="id" ColumnName="formatoCarta_id" />
       </EndProperty>
       <EndProperty Name="RigaCarrello">
-        <ScalarProperty Name="id" ColumnName="id" />
+        <ScalarProperty Name="carrello_id" ColumnName="carrello_id" />
+              <ScalarProperty Name="id" ColumnName="id" />
       </EndProperty>
-      <Condition ColumnName="formatoCarta_id" IsNull="false" />
-    </AssociationSetMapping>
-    <AssociationSetMapping Name="CarrelloIncassoFotografo" TypeName="LumenModel.CarrelloIncassoFotografo" StoreEntitySet="IncassiFotografi">
-      <EndProperty Name="Carrello">
-        <ScalarProperty Name="id" ColumnName="CarrelloIncassoFotografo_IncassoFotografo_id" />
-      </EndProperty>
-      <EndProperty Name="IncassoFotografo">
-        <ScalarProperty Name="Id" ColumnName="Id" />
-      </EndProperty>
+            <Condition ColumnName="formatoCarta_id" IsNull="false" />
+            <Condition ColumnName="carrello_id" IsNull="false" />
     </AssociationSetMapping>
     <AssociationSetMapping Name="FotografoIncassoFotografo" TypeName="LumenModel.FotografoIncassoFotografo" StoreEntitySet="IncassiFotografi">
       <EndProperty Name="Fotografo">
         <ScalarProperty Name="id" ColumnName="fotografo_id" />
       </EndProperty>
       <EndProperty Name="IncassoFotografo">
-        <ScalarProperty Name="Id" ColumnName="Id" />
+        <ScalarProperty Name="carrello_id" ColumnName="carrello_id" />
+              <ScalarProperty Name="id" ColumnName="Id" />
       </EndProperty>
     </AssociationSetMapping>
   </EntityContainerMapping>
 </Mapping></edmx:Mappings>
   </edmx:Runtime>
   <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
-  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <edmx:Designer>
     <edmx:Connection>
-      <DesignerInfoPropertySet>
-        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
-      </DesignerInfoPropertySet>
+      <edmx:DesignerInfoPropertySet>
+        <edmx:DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </edmx:DesignerInfoPropertySet>
     </edmx:Connection>
     <edmx:Options>
-      <DesignerInfoPropertySet>
-        <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="False" />
-        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
-        <DesignerProperty Name="DDLGenerationTemplate" Value="$(VSEFTools)\DBGen\SSDLToSQLite3.tt" />
-      </DesignerInfoPropertySet>
+      <edmx:DesignerInfoPropertySet>
+        <edmx:DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <edmx:DesignerProperty Name="EnablePluralization" Value="False" />
+        <edmx:DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <edmx:DesignerProperty Name="DDLGenerationTemplate" Value="$(VSEFTools)\DBGen\SSDLToSQLite3.tt" />
+      </edmx:DesignerInfoPropertySet>
     </edmx:Options>
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq.Expressions;
 using System.Linq;
-using System.Data.Objects;
+using  System.Data.Entity.Core.Objects;
 
 namespace Digiphoto.Lumen.Servizi.EntityRepository {
 
@@ -30,6 +30,7 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 		/// </summary>
 		/// <param name="entita">L'entità da riattaccare</param>
 		void update( ref T entita );
+		void update( ref T entita, bool forzaDaModificare );
 
 		/// <summary>
 		/// Delete in realtà non fa nulla.

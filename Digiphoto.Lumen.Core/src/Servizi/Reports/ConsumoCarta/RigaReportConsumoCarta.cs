@@ -17,7 +17,7 @@ namespace Digiphoto.Lumen.Servizi.Reports.ConsumoCarta
 
 		public static List<RigaReportConsumoCarta> righe(ParamRangeGiorni paramRangeGiorni)
 		{
-			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+			LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 
 			IEnumerable<ConsumoCartaGiornaliero> righeConsumoCarta = dbContext.ConsumiCartaGiornalieri.Where(cC => cC.giornata >= paramRangeGiorni.dataIniz && cC.giornata <= paramRangeGiorni.dataFine);
 			
