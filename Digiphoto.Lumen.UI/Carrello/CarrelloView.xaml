@@ -37,13 +37,14 @@
 			</ToolBar>
 			<ToolBar Band="1" BandIndex="2" Header="Riga">
 				<Button Command="{Binding UpdateQuantitaCommand}" CommandParameter="+1" Style="{StaticResource styleCartQtaUp}" />
-				<TextBox Text="{Binding Path=rigaCarrelloSelezionata.quantita,Mode=TwoWay}" IsEnabled="{Binding possoAggiornareQuantitaRiga}" TextAlignment="Center" FontSize="24" ToolTip="Quantità di riga" MinWidth="24"/>
+				<TextBox Text="{Binding Path=rigaCarrelloStampataSelezionata.quantita,Mode=TwoWay}" IsEnabled="{Binding possoAggiornareQuantitaRiga}" TextAlignment="Center" FontSize="24" ToolTip="Quantità di riga" MinWidth="24"/>
 				<Button Command="{Binding UpdateQuantitaCommand}" CommandParameter="-1" Style="{StaticResource styleCartQtaDown}" />
 				<Separator />
 				<Button Command="{Binding eliminaRigaCommand}" Style="{StaticResource styleCartDelRiga}" />
 			</ToolBar>
 		</ToolBarTray>
 
+		<!-- Fascia alta del carrello con dati di testata e riassunto stampe/CD -->
 		<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" >
 
 			<GroupBox Header="Testata carrello" IsEnabled="{Binding Path=carrelloCorrente.venduto,Converter={StaticResource boolInverterConverter}}">
@@ -99,10 +100,6 @@
 
 			<StackPanel Margin="4">
 
-				<Label Content="VENDUTO" VerticalContentAlignment="Center"  HorizontalContentAlignment="Center" FontSize="20" Background="Crimson" Height="50" Margin="2,0,0,0"
-					   Visibility="{Binding Path=carrelloCorrente.venduto, Converter={StaticResource boolVisibilityConverter}}" 
-					   />
-
 				<Popup IsOpen="{Binding IsChecked, ElementName=buttonVediProvvigioni}" x:Name="Popup" StaysOpen="False" >
 					<Border BorderBrush="DarkBlue" BorderThickness="2" CornerRadius="5" >
 						<lum:IncassiFotografiView x:Name="incassiFotografiView"  />
@@ -112,6 +109,10 @@
 							  Command="{Binding visualizzareIncassiFotografiCommand}" 
 							  IsHitTestVisible="{Binding IsOpen, Converter={StaticResource boolInverterConverter}, ElementName=Popup, Mode=OneWay}" 
 							  />
+				
+				<Label Content="VENDUTO" VerticalContentAlignment="Center"  HorizontalContentAlignment="Center" FontSize="20" Background="Crimson" Height="50" Margin="2,0,0,0"
+					   Visibility="{Binding Path=carrelloCorrente.venduto, Converter={StaticResource boolVisibilityConverter}}" 
+					   />
 			</StackPanel>
 
 		</StackPanel>
@@ -186,16 +187,37 @@
 			</DockPanel>
 		</Expander>
 
-		<!-- Questo è il dettaglio del carrello, cioè le righe delle foto stampate -->
-		<ListBox x:Name="listCarrello"
+		<Grid Name="dettagliGrid">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition />
+			</Grid.RowDefinitions>
+		
+		
+		<!-- Questo è il dettaglio delle righe con le stampe -->
+		<ListBox x:Name="listCarrello" Grid.Row="0" Grid.Column="0"
 					 SelectionMode="Single" 
 					 Style="{StaticResource ListCarrelloStyle}"
 					 ItemsSource="{Binding Path=RiCaFotoStampateCv}"
 					IsSynchronizedWithCurrentItem="True"
-					 SelectedItem="{Binding rigaCarrelloSelezionata, Mode=TwoWay}"
+					 SelectedItem="{Binding rigaCarrelloStampataSelezionata, Mode=TwoWay}"
 					 ItemsPanel="{DynamicResource righeCarrelloItemsPanelTemplate}" 
 					 ItemTemplate="{DynamicResource rigaCarrelloDataTemplate}"
 					 ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
 
+			<ListBox x:Name="listCarrelloMasterizzate" Grid.Row="0" Grid.Column="1"
+					 SelectionMode="Single" 
+					 Style="{StaticResource ListCarrelloStyle}"
+					 ItemsSource="{Binding Path=RiCaFotoMasterizzateCv}"
+					IsSynchronizedWithCurrentItem="True"
+					 SelectedItem="{Binding rigaCarrelloMasterizzataSelezionata, Mode=TwoWay}"
+					 ItemsPanel="{DynamicResource righeCarrelloItemsPanelTemplate}" 
+					 ItemTemplate="{DynamicResource rigaCarrelloDataTemplate}"
+					 ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+
+		</Grid>
 	</DockPanel>
 </lumM:UserControlBase>

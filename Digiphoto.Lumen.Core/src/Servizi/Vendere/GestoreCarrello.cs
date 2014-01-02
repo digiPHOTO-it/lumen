@@ -240,6 +240,15 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public void aggiungiRiga( RigaCarrello riga ) {
 
+			if( riga.fotografia == null )
+				throw new ArgumentNullException( "nella RigaCarrello è obbligatoria la Fotografia" );
+			if( riga.fotografo == null )
+				throw new ArgumentNullException( "nella RigaCarrello è obbligatorio il Fotografo" );
+			if( riga.discriminator == Carrello.TIPORIGA_STAMPA )
+				if( riga.formatoCarta == null )
+					throw new ArgumentNullException( "nella RigaCarrello da stampare è obbligatorio il FormatoCarta" );
+
+
 			if (!isStessaFotoInCarrello(_carrello, riga)) {
 
 				// Rileggo le associazioni in questo modo gli oggetti vengono riattaccati al context corrente.
@@ -249,6 +258,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					riga.formatoCarta = mioDbContext.FormatiCarta.Single( c => c.id == riga.formatoCarta.id );
 
 				// Non so perché ma per gestire le associazioni identificanti, (e quindi il cascade dal master al child) occorre sfruttare un attributo con l'ID del padre.
+				// In pratica la FK del figlio deve essere parte della PK (del figlio) quindi una chiave composta (che brutto).
 				// Se non ci credi leggi qui:
 				// http://jamesheppinstall.wordpress.com/2013/06/08/managing-parent-and-child-collection-relationships-in-entity-framework-what-is-an-identifying-relationship-anyway/
 				riga.carrello = this.carrello;
