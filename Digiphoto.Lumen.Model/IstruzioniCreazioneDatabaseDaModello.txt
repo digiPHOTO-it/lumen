@@ -6,13 +6,31 @@ Esistono 3 approcci diversi:
 	3. Code-First
 Qui ho deciso di utilizzare il primo (Si parte dal modello).
 
+
+Ora usiamo Entity Framework 6.
+
+Per poter generare le classi dal modello, ci vuole un Template di tipo dbContext Generator.
+Questo template è presente nel pacchetto "entity framework 6 tool"
+Questo tool è già installato su Visual Studio 2013, mentre per il 2012 occorre scaricarlo 
+da qui: http://www.microsoft.com/en-us/download/details.aspx?id=40762
+
+
 Nel modello occorre attivare il dbContext generation:
 (vedere pagina ufficiale: http://msdn.microsoft.com/en-us/data/jj613116.aspx )
 Questo dovrebbe essere già installato con visual studio.
 Il questo modo il mio contesto (LumenEntities) deriverà da DbContext e non da ObjectContext che è un pò troppo semplificato.
 
-Occorre aver installato il driver di SqLite per visual studio
-http://system.data.sqlite.org/downloads/1.0.89.0/sqlite-netFx45-setup-bundle-x86-2012-1.0.84.0.exe
+
+Occorre aver installato il driver di SqLite per visual studio.
+Qui c'è un problema: 
+Siccome con EF6 ancora non funziona,
+è necessario utilizzare un progetto fuori standard:
+http://brice-lambson.blogspot.it/2013/06/systemdatasqlite-on-entity-framework-6.html
+ per installae il fuori standard andare nella console di nuget ed eseguire:
+ Install-Package System.Data.SQLite.Linq -Pre -Source    https://www.myget.org/F/bricelam/
+(Quello standard invece è questo:
+  http://system.data.sqlite.org/downloads/1.0.89.0/sqlite-netFx45-setup-bundle-x86-2012-1.0.84.0.exe
+)
 Durante il setup occorre mettere la spunta sui componenti per Visual Studio.
 
 

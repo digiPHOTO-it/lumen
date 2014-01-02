@@ -6,7 +6,7 @@ using System.IO;
 using System.Transactions;
 using log4net;
 using Digiphoto.Lumen.Core.Database;
-using System.Data.Objects;
+using  System.Data.Entity.Core.Objects;
 using Digiphoto.Lumen.Database;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Eventi;
@@ -57,7 +57,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		public void elabora( DateTime tempoScarico ) {
 
 			// carico il fotografo che rimane uguale per tutta questa sessione di elaborazione
-			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
+			LumenEntities objContext = UnitOfWorkScope.currentDbContext;
 			_fotografo = objContext.Fotografi.Single<Fotografo>( ff => ff.id == _paramScarica.flashCardConfig.idFotografo );
 
 
@@ -150,7 +150,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			using (TransactionScope transaction = new TransactionScope()) {
 
-				LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
+				LumenEntities objContext = UnitOfWorkScope.currentDbContext;
 				try {
 
 					foto = new Fotografia();
@@ -186,11 +186,12 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 					_giornale.Error( "Non riesco ad inserire una foto. Nel db non c'è ma nel filesystem si: " + fileInfo, ee );
 				}
 
-
+/*
 				// TODO forse non serve neanche. Credo che venga salvato tutto ugualmente.
 				// TODO provare a togliere.
 				if( success )
 					objContext.ObjectContext.AcceptAllChanges();
+ */
 			}
 
 			return foto;

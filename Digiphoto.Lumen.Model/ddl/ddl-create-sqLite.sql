@@ -1,6 +1,6 @@
 
 -- --------------------------------------------------
--- Date Created: 12/15/2013 13:16:16
+-- Date Created: 12/16/2013 07:38:19
 -- compatible SQLite
 -- Generated from EDMX file: C:\Users\bluca\Documents\Visual Studio 2012\Projects\lumen\Digiphoto.Lumen.Model\LumenModel.edmx
 -- --------------------------------------------------
@@ -179,14 +179,14 @@ CREATE TABLE [RigheCarrelli] (
     [totFogliStampati] smallint   NULL ,
     [nomeStampante] nvarchar(255)   NULL ,
     [bordiBianchi] bit   NULL ,
-    [CarrelloRigaCarrello_RigaCarrello_id] uniqueidentifier   NOT NULL ,
+    [carrello_id] uniqueidentifier   NOT NULL ,
     [fotografo_id] nvarchar(16)   NULL ,
     [fotografia_id] uniqueidentifier   NULL ,
     [formatoCarta_id] uniqueidentifier   NULL 
  , PRIMARY KEY ([id])	
 					
 		,CONSTRAINT [FK_CarrelloRigaCarrello]
-    		FOREIGN KEY ([CarrelloRigaCarrello_RigaCarrello_id])
+    		FOREIGN KEY ([carrello_id])
     		REFERENCES [Carrelli] ([id])					
     		ON DELETE CASCADE
 						
@@ -197,8 +197,9 @@ CREATE TABLE [RigheCarrelli] (
 						
 		,CONSTRAINT [FK_FotografiaRigaCarrello]
     		FOREIGN KEY ([fotografia_id])
-    		REFERENCES [Fotografie] ([id])					
-    		ON DELETE SET NULL
+    		REFERENCES [Fotografie] ([id])	
+			ON DELETE SET NULL				
+    		
 						
 		,CONSTRAINT [FK_FormatoCartaRigaCarrello]
     		FOREIGN KEY ([formatoCarta_id])
@@ -208,21 +209,21 @@ CREATE TABLE [RigheCarrelli] (
 
 -- Creating table 'IncassiFotografi'
 CREATE TABLE [IncassiFotografi] (
-    [Id] uniqueidentifier   NOT NULL ,
+    [id] uniqueidentifier   NOT NULL ,
     [incasso] decimal(6,2)   NOT NULL ,
     [incassoStampe] decimal(6,2)   NOT NULL ,
     [incassoMasterizzate] decimal(6,2)   NOT NULL ,
-    [contaStampe] smallint  NOT NULL ,
+    [contaStampe] smallint   NOT NULL ,
     [contaMasterizzate] smallint   NOT NULL ,
     [provvigioni] decimal(6,2)   NULL ,
-    [CarrelloIncassoFotografo_IncassoFotografo_id] uniqueidentifier   NOT NULL ,
+    [carrello_id] uniqueidentifier   NOT NULL ,
     [fotografo_id] nvarchar(16)   NOT NULL 
- , PRIMARY KEY ([Id])	
+ , PRIMARY KEY ([id])	
 					
 		,CONSTRAINT [FK_CarrelloIncassoFotografo]
-    		FOREIGN KEY ([CarrelloIncassoFotografo_IncassoFotografo_id])
+    		FOREIGN KEY ([carrello_id])
     		REFERENCES [Carrelli] ([id])					
-    		
+    		ON DELETE CASCADE
 						
 		,CONSTRAINT [FK_FotografoIncassoFotografo]
     		FOREIGN KEY ([fotografo_id])

@@ -14,14 +14,16 @@ namespace Digiphoto.Lumen.Model
     
     public partial class IncassoFotografo
     {
-        public System.Guid Id { get; set; }
+        public System.Guid id { get; set; }
         public decimal incasso { get; set; }
         public decimal incassoStampe { get; set; }
         public decimal incassoMasterizzate { get; set; }
         public short contaStampe { get; set; }
         public short contaMasterizzate { get; set; }
         public Nullable<decimal> provvigioni { get; set; }
+        public System.Guid carrello_id { get; set; }
     
         public virtual Fotografo fotografo { get; set; }
+        public virtual Carrello carrello { get; set; }
     }
 }

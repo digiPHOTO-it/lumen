@@ -323,7 +323,7 @@ namespace Digiphoto.Lumen.UI
 		public void aggiungereAlMasterizzatore()
 		{
 			IEnumerable<Fotografia> listaSelez = fotoSelezionate;
-			venditoreSrv.aggiungiMasterizzate(listaSelez);
+			venditoreSrv.aggiungereMasterizzate(listaSelez);
 			deselezionareTutto();
 		}
 
@@ -377,7 +377,7 @@ namespace Digiphoto.Lumen.UI
 					{
 						venditoreStampaDiretta.creaNuovoCarrello();
 						venditoreStampaDiretta.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_RAPIDA;
-						venditoreStampaDiretta.aggiungiStampe(listaSelez, creaParamStampaFoto(stampanteAbbinata));
+						venditoreStampaDiretta.aggiungereStampe(listaSelez, creaParamStampaFoto(stampanteAbbinata));
 						if (venditoreStampaDiretta.vendereCarrello())
 						{
 							dialogProvider.ShowMessage("Carrello venduto Correttamente", "Avviso");
@@ -390,7 +390,7 @@ namespace Digiphoto.Lumen.UI
 				}
 				else
 				{
-					venditoreSrv.aggiungiStampe(listaSelez, creaParamStampaFoto(stampanteAbbinata));
+					venditoreSrv.aggiungereStampe(listaSelez, creaParamStampaFoto(stampanteAbbinata));
 				}
 				// Spengo tutto
 				if (!singolaFotoWorks)
@@ -405,7 +405,7 @@ namespace Digiphoto.Lumen.UI
 
 				venditoreSpampaRapida.creaNuovoCarrello();
 				venditoreSpampaRapida.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_RAPIDA;
-				venditoreSpampaRapida.aggiungiStampe( fotoSelezionate, creaParamStampaFoto( stampanteAbbinata, autoZoomNoBordiBianchi) );
+				venditoreSpampaRapida.aggiungereStampe( fotoSelezionate, creaParamStampaFoto( stampanteAbbinata, autoZoomNoBordiBianchi) );
 
 				if (venditoreSpampaRapida.vendereCarrello())
 				{
@@ -694,7 +694,7 @@ namespace Digiphoto.Lumen.UI
 				{
 					_aggiungereAlMasterizzatoreCommand = new RelayCommand(param => aggiungereAlMasterizzatore()
 																		   , param => possoAggiungereAlMasterizzatore
-																		   );
+																		   , false );
 				}
 				return _aggiungereAlMasterizzatoreCommand;
 			}

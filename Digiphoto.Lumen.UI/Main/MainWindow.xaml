@@ -37,8 +37,8 @@
 				<TextBlock ToolTip="Stato carrello">
                     <TextBlock.Text>
                         <MultiBinding StringFormat="Foto: {0} Pagare: {1}">
-                                    <Binding Path="carrelloViewModel.carrelloCorrente.sommatoriaQtaFotoDaStampare" />
-									<Binding Path="carrelloViewModel.carrelloCorrente.prezzoNettoTotale" />
+                                    <Binding Path="carrelloViewModel.sommatoriaQtaFotoDaStampare" />
+									<Binding Path="carrelloViewModel.prezzoNettoTotale" />
                                 </MultiBinding>
                             </TextBlock.Text>
 				</TextBlock>
@@ -114,26 +114,42 @@
 		<TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Top" Name="tabControlProspettive" SelectedIndex="1" 
 					Style="{DynamicResource tabControlProspettiveStyle}"
 					ItemContainerStyle="{StaticResource tabItemProspettiveStyle}" >
-        
-        <TabItem Header="Scarica" ToolTip="Scarica foto da memory-card o da altra cartella" MinHeight="30" >
+
+			<TabItem MinHeight="30">
+				<TabItem.Header>
+					<TextBlock Text="Scarica" ToolTip="Scarica foto da memory-card o da altra cartella" />
+				</TabItem.Header>
+
             <!-- UserControl per scaricare le foto -->
             <lum:ScaricatoreFoto />
         </TabItem>
 
 
-        <TabItem Name="tabItemGallery" Header="Gallery" >
+			<TabItem Name="tabItemGallery">
+				<TabItem.Header>
+					<TextBlock Text="Gallery" ToolTip="Esplora archivio foto" />
+				</TabItem.Header>
             <lum:FotoGallery x:Name="fotoGallery" />
         </TabItem>
 
-		<TabItem Name="tabItemAggiusta" Header="Correggi" ToolTip="Correggi, organizza e tagga foto" >
+		<TabItem Name="tabItemAggiusta">
+			<TabItem.Header>
+				<TextBlock Text="Correggi" ToolTip="Ritocca, correggi e incornicia" />
+			</TabItem.Header>
 			<lumFR:FotoRitocco x:Name="fotoRitoccoUserControl" Focusable="True" />
 		</TabItem>
 
-		<TabItem Header="Carrello" ToolTip="Vendere stampe e CD" >
+		<TabItem>
+			<TabItem.Header>
+				<TextBlock Text="Carrello" ToolTip="Vendere stampe e CD" />
+			</TabItem.Header>
 			<lum:CarrelloView x:Name="carrelloView" />
         </TabItem>
 
-			<TabItem Header="Configurazione" ToolTip="Scarica foto da memory-card o da altra cartella" MinHeight="30" >
+		<TabItem>
+			<TabItem.Header>
+				<TextBlock Text="Preferenze" ToolTip="Impostazioni operative" />
+			</TabItem.Header> 
 			<TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Left" Name="tabConfigPagine"
 						Style="{DynamicResource tabControlProspettiveStyle}"
 						ItemContainerStyle="{StaticResource tabItemProspettiveStyle}">
@@ -148,7 +164,11 @@
 			</TabControl>
         </TabItem>
 
-		<TabItem Header="Tabelle">
+		<TabItem>
+			<TabItem.Header>
+				<TextBlock Text="Tabelle" ToolTip="Archivi della base dati" />
+			</TabItem.Header>
+
 			<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="*" />
@@ -168,9 +188,13 @@
                     <Button Grid.Row="3" Grid.Column="1" Content="Chiusura cassa giorno" Height="50" Width="150" Command="{Binding commandDataEntry}" CommandParameter="Giornata" />
 			</Grid>
 		</TabItem>
-		
-        <TabItem Header="Utilità" ToolTip="Funzionalità varie" >
-			<TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Left" Name="tabUtilityPagine" 
+
+		<TabItem>
+			<TabItem.Header>
+				<TextBlock Text="Utilità" ToolTip="Report e funzionalità varie" />
+			</TabItem.Header>
+			
+				<TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Left" Name="tabUtilityPagine" 
 						Style="{DynamicResource tabControlProspettiveStyle}"
 						ItemContainerStyle="{StaticResource tabItemProspettiveStyle}">
 

@@ -32,7 +32,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 
 			String [] righe = strStampantiAbbinate.Split( CHAR_SEP_RIGHE.ToCharArray(), StringSplitOptions.RemoveEmptyEntries );
 
-			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+			LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 
 			List<String> stampantiNonTrovate = new List<String>();
 

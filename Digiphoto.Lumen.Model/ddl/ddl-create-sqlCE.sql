@@ -122,7 +122,7 @@ CREATE TABLE [RigheCarrelli] (
     [idFotografia] uniqueidentifier  NULL,
     [totFotoMasterizzate] smallint  NULL,
     [__Disc__] nvarchar(4000)  NOT NULL,
-    [CarrelloRigaCarrello_RigaCarrello_id] uniqueidentifier  NOT NULL,
+    [carrello_id] uniqueidentifier  NOT NULL,
     [formatoCarta_id] uniqueidentifier  NULL,
     [fotografo_id] nvarchar(16)  NULL,
     [fotografia_id] uniqueidentifier  NULL
@@ -278,10 +278,10 @@ GO
 CREATE INDEX [IX_FK_FotografoScaricoCard] ON [ScarichiCards] ([fotografo_id]);
 GO
 
--- Creating foreign key on [CarrelloRigaCarrello_RigaCarrello_id] in table 'RigheCarrelli'
+-- Creating foreign key on [carrello_id] in table 'RigheCarrelli'
 ALTER TABLE [RigheCarrelli]
 ADD CONSTRAINT [FK_CarrelloRigaCarrello]
-    FOREIGN KEY ([CarrelloRigaCarrello_RigaCarrello_id])
+    FOREIGN KEY ([carrello_id])
     REFERENCES [Carrelli]
         ([id])
     ON DELETE CASCADE ON UPDATE NO ACTION;
@@ -293,7 +293,7 @@ GO
 -- Creating non-clustered index for FOREIGN KEY 'FK_CarrelloRigaCarrello'
 CREATE INDEX [IX_FK_CarrelloRigaCarrello]
 ON [RigheCarrelli]
-    ([CarrelloRigaCarrello_RigaCarrello_id]);
+    ([carrello_id]);
 GO
 
 -- Creating foreign key on [formatoCarta_id] in table 'RigheCarrelli'

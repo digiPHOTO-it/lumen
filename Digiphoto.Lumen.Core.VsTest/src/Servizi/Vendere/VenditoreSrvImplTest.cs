@@ -5,7 +5,7 @@ using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Servizi.Stampare;
-using System.Data.Objects;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Collections.Generic;
 using Digiphoto.Lumen.Core.Database;
@@ -16,6 +16,7 @@ using System.Diagnostics;
 using Digiphoto.Lumen.Database;
 using Digiphoto.Lumen.Config;
 using System.Transactions;
+using System.Data.Entity.Infrastructure;
 
 namespace Digiphoto.Lumen.Core.VsTest
 {
@@ -115,7 +116,7 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 				ParamStampaFoto p = ricavaParamStampa();
 
-				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 				List<Fotografia> fotos = (from f in dbContext.Fotografie.Include( "fotografo" )
 										  select f).Take( QUANTE ).ToList();
 
@@ -123,11 +124,10 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 					contaStampate = 0;
 
-					_impl.aggiungiStampe( fotos, p );
+					_impl.aggiungereStampe( fotos, p );
 
-					_impl.aggiungiMasterizzate( fotos );
-					_impl.masterizzaSrv.impostaDestinazione( TipoDestinazione.CARTELLA, Path.GetTempPath() );
-					_impl.masterizzaSrv.prezzoForfaittario = 7;
+					_impl.aggiungereMasterizzate( fotos );
+					_impl.setDatiDischetto( TipoDestinazione.CARTELLA, Path.GetTempPath(), 7m );
 
 					Assert.IsFalse( _impl.carrello.venduto );
 
@@ -170,13 +170,13 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 				ParamStampaFoto p = ricavaParamStampa();
 
-				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 				List<Fotografia> fotos = (from f in dbContext.Fotografie.Include("fotografo")
 										  select f).Take(QUANTE).ToList();
 
 				contaStampate = 0;
 
-				_impl.aggiungiStampe(fotos, p);
+				_impl.aggiungereStampe(fotos, p);
 
 				_impl.vendereCarrello();
 
@@ -194,14 +194,14 @@ namespace Digiphoto.Lumen.Core.VsTest
 			// Vediamo se esiste il formato
 			// TODO : creare un nuovo attributo che identifica il formato carta come chiave naturale (per esempio A4 oppure 6x8)
 
-			LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+			LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 
 			FormatoCarta formato = Utilita.ottieniFormatoCarta( dbContext, "A5" );
 			formato.prezzo = 5;
 			p.formatoCarta = formato;
 
 			// Qui non si deve spaccare
-			Digiphoto.Lumen.Database.OrmUtil.forseAttacca<FormatoCarta>( dbContext.ObjectContext, "LumenEntities.FormatiCarta", ref formato );
+			Digiphoto.Lumen.Database.OrmUtil.forseAttacca<FormatoCarta>( ref formato );
 
 			return p;
 		}
@@ -233,7 +233,7 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 		bool venditaCompletata {
 			get {
-				return this._impl.masterizzaSrv.isCompletato;
+				return this._impl.carrello.venduto;
 				// return contaStampate == QUANTE && this._impl.masterizzaSrv.isCompletato;
 			}
 		}
@@ -244,7 +244,7 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 			using( new UnitOfWorkScope() ) {
 			
-				LumenEntities dbContext = UnitOfWorkScope.CurrentObjectContext;
+				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 				DateTime dataIniz = new DateTime( 2012, 04, 01 );
 				DateTime dataFine = new DateTime( 2012, 04, 30 );
 
@@ -322,7 +322,7 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 			using( new UnitOfWorkScope() ) {
 
-				FormatoCarta formatoCarta = UnitOfWorkScope.CurrentObjectContext.FormatiCarta.First();
+				FormatoCarta formatoCarta = UnitOfWorkScope.currentDbContext.FormatiCarta.First();
 
 				ParamStampaFoto paramStampa = new ParamStampaFoto {
 					nomeStampante = "doPDF v7",
@@ -336,30 +336,30 @@ namespace Digiphoto.Lumen.Core.VsTest
 				_impl.carrello.prezzoDischetto = (decimal)27.9;
 
 				// Carico 3 fotografi tra quelli che hanno delle foto
-				var idFotografi = UnitOfWorkScope.CurrentObjectContext.Fotografie.Select( f => f.fotografo ).Distinct().Take( 3 );
+				var idFotografi = UnitOfWorkScope.currentDbContext.Fotografie.Select( f => f.fotografo ).Distinct().Take( 3 );
 				Fotografo [] arrayF = idFotografi.ToArray();
 				if( idFotografi.Count() != 3 )
 					return;
 
 				string par1 = arrayF[0].id;
-				var fotos1 = UnitOfWorkScope.CurrentObjectContext.Fotografie.Where( f => f.fotografo.id == par1 ).Take( 2 ).ToList();
+				var fotos1 = UnitOfWorkScope.currentDbContext.Fotografie.Where( f => f.fotografo.id == par1 ).Take( 2 ).ToList();
 				string par2 = arrayF[1].id;
-				var fotos2 = UnitOfWorkScope.CurrentObjectContext.Fotografie.Where( f => f.fotografo.id == par2 ).Take( 3 ).ToList();
+				var fotos2 = UnitOfWorkScope.currentDbContext.Fotografie.Where( f => f.fotografo.id == par2 ).Take( 3 ).ToList();
 				string par3 = arrayF[2].id;
-				var fotos3 = UnitOfWorkScope.CurrentObjectContext.Fotografie.Where( f => f.fotografo.id == par3 ).Take( 4 ).ToList();
+				var fotos3 = UnitOfWorkScope.currentDbContext.Fotografie.Where( f => f.fotografo.id == par3 ).Take( 4 ).ToList();
 
 				paramStampa.numCopie = 1;
-				_impl.aggiungiStampe( fotos1, paramStampa );
+				_impl.aggiungereStampe( fotos1, paramStampa );
 
 				paramStampa.numCopie = 2;
-				_impl.aggiungiStampe( fotos2, paramStampa );
+				_impl.aggiungereStampe( fotos2, paramStampa );
 
 				paramStampa.numCopie = 3;
-				_impl.aggiungiStampe( fotos3, paramStampa );
+				_impl.aggiungereStampe( fotos3, paramStampa );
 
-				_impl.aggiungiMasterizzate( fotos1 );
-				_impl.aggiungiMasterizzate( fotos2 );
-				_impl.aggiungiMasterizzate( fotos3 );
+				_impl.aggiungereMasterizzate( fotos1 );
+				_impl.aggiungereMasterizzate( fotos2 );
+				_impl.aggiungereMasterizzate( fotos3 );
 
 				bool esito = _impl.salvaCarrello();
 				Assert.IsTrue( esito );

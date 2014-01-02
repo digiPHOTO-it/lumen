@@ -209,7 +209,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare.Clona {
 			// Se per esempio ho 500 foto da salvare, non posso permettermi che se una salta, perdo anche le altre 499 !
 			Fotografia fotoClone = null;
 
-			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
+			LumenEntities objContext = UnitOfWorkScope.currentDbContext;
 			try
 			{
 				fotoClone = new Fotografia();

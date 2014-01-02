@@ -73,7 +73,7 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 			// Se non c'è già nel database, allora la aggiungo all'elenco
 			string nomeRel = PathUtil.nomeRelativoFoto( fInfoFoto );
 
-			if( ! UnitOfWorkScope.CurrentObjectContext.Fotografie.Any( f => f.nomeFile == nomeRel ) ) {
+			if( ! UnitOfWorkScope.currentDbContext.Fotografie.Any( f => f.nomeFile == nomeRel ) ) {
 				fiFotosMancanti.Add( fInfoFoto );
 			}
 		}
@@ -87,7 +87,7 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 				return;
 
 			// Ok è già nel db
-			if( UnitOfWorkScope.CurrentObjectContext.Fotografi.SingleOrDefault( f => f.id == idFotografo ) != null )
+			if( UnitOfWorkScope.currentDbContext.Fotografi.SingleOrDefault( f => f.id == idFotografo ) != null )
 				return;
 
 			idsFotografiMancanti.Add( idFotografo );
@@ -101,7 +101,7 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 			mancante.umano = true;
 			mancante.attivo = true;
 			mancante.note = "Generato automaticamente da DbRebuilder";
-			UnitOfWorkScope.CurrentObjectContext.Fotografi.Add( mancante );
+			UnitOfWorkScope.currentDbContext.Fotografi.Add( mancante );
 		}
 
 		/// <summary>
@@ -109,7 +109,7 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 		/// </summary>
 		void analizzare2() {
 					
-			foreach( Fotografia foto in UnitOfWorkScope.CurrentObjectContext.Fotografie ) {
+			foreach( Fotografia foto in UnitOfWorkScope.currentDbContext.Fotografie ) {
 				if( ! File.Exists( PathUtil.nomeCompletoOrig( foto ) ) )
 					fotografieSenzaImmagini.Add( foto );
 			}
@@ -214,7 +214,7 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 			foreach( string idFotografoMancante in idsFotografiMancanti ) {
 				creaFotografoMancante( idFotografoMancante );
 			}
-			int test = UnitOfWorkScope.CurrentObjectContext.SaveChanges();
+			int test = UnitOfWorkScope.currentDbContext.SaveChanges();
 
 			int ultimoNumFoto = NumeratoreFotogrammi.incrementaNumeratoreFoto( fiFotosMancanti.Count );
 			int conta = 0;
@@ -227,12 +227,12 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 			// Elimino eventuali fotografie che non hanno più l'immagine jpg su disco
 			contaFotoEliminate = 0;
 			foreach( Fotografia f in fotografieSenzaImmagini ) {
-				UnitOfWorkScope.CurrentObjectContext.Fotografie.Remove( f );
+				UnitOfWorkScope.currentDbContext.Fotografie.Remove( f );
 				++contaFotoEliminate;
 			}
 
 			// Salvo il contesto
-			int quanti = UnitOfWorkScope.CurrentObjectContext.SaveChanges();
+			int quanti = UnitOfWorkScope.currentDbContext.SaveChanges();
 
 			// Piccolo controllo di paranoia
 			if( quanti != fotografieSenzaImmagini.Count ) {
@@ -255,7 +255,7 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 					foto.dataOraAcquisizione = fiFotoMancante.CreationTime;
 					foto.giornata = Convert.ToDateTime( PathUtil.giornoFromPath( fiFotoMancante.FullName ) );
 					string idFotografo = PathUtil.fotografoIDFromPath( fiFotoMancante.FullName );
-					foto.fotografo = UnitOfWorkScope.CurrentObjectContext.Fotografi.SingleOrDefault( f => f.id == idFotografo );
+					foto.fotografo = UnitOfWorkScope.currentDbContext.Fotografi.SingleOrDefault( f => f.id == idFotografo );
 					foto.numero = numFotogramma;
 
 					// il nome del file, lo memorizzo solamente relativo
@@ -266,9 +266,9 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 
 					// caricaMetadatiImmagine( foto );
 
-					UnitOfWorkScope.CurrentObjectContext.Fotografie.Add( foto );
+					UnitOfWorkScope.currentDbContext.Fotografie.Add( foto );
 
-					int test = UnitOfWorkScope.CurrentObjectContext.SaveChanges();
+					int test = UnitOfWorkScope.currentDbContext.SaveChanges();
 
 					// Mark the transaction as complete.
 					success = true;

@@ -30,6 +30,8 @@ namespace Digiphoto.Lumen.UI
 
 		void carrelloView_DataContextChanged( object sender, DependencyPropertyChangedEventArgs e ) {
 			associaDialogProvider();
+
+			this.incassiFotografiView.DataContext = carrelloViewModel.incassiFotografiViewModel;
 		}
 
 		private CarrelloViewModel carrelloViewModel
@@ -88,5 +90,6 @@ namespace Digiphoto.Lumen.UI
 		{
 			return aa > bb ? aa : bb;
 		}
+
     }
 }

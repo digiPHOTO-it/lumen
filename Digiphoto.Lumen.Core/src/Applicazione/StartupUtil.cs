@@ -46,7 +46,7 @@ namespace Digiphoto.Lumen.Applicazione {
 		// Se non esistono le informazioni fisse, allora le creo di default
 		internal static InfoFissa forseCreaInfoFisse() {
 
-			LumenEntities objContext = UnitOfWorkScope.CurrentObjectContext;
+			LumenEntities objContext = UnitOfWorkScope.currentDbContext;
 			InfoFissa infoFissa = objContext.InfosFisse.SingleOrDefault( f => f.id == "K" );
        
 			if( infoFissa == null ) {

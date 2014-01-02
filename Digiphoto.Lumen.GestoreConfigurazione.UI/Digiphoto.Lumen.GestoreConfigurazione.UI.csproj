@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Digiphoto.Lumen.GestoreConfigurazione.UI</RootNamespace>
     <AssemblyName>Digiphoto.Lumen.GestoreConfigurazione.UI</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -122,8 +122,12 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework">
-      <HintPath>..\packages\EntityFramework.5.0.0\lib\net40\EntityFramework.dll</HintPath>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.0.2\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.0.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
       <HintPath>..\Digiphoto.Lumen.Core\lib\log4net.dll</HintPath>
@@ -135,9 +139,6 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.Entity">
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -282,10 +283,13 @@
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <PropertyGroup>
     <PostBuildEvent>if $(PlatformName) == x64 (
-   copy "$(SolutionDir)packages\System.Data.SQLite.x64.1.0.81.0\lib\net40\System.Data.SQLite*.dll"  "$(TargetDir)" /y
+   copy "$(SolutionDir)packages\System.Data.SQLite.x86.1.0.90.0\lib\net45\System.Data.SQLite.dll"  "$(TargetDir)" /y
 ) else (
-   copy "$(SolutionDir)packages\System.Data.SQLite.1.0.81.0\lib\net40\System.Data.SQLite*.dll"  "$(TargetDir)" /y
-)</PostBuildEvent>
+   copy "$(SolutionDir)packages\System.Data.SQLite.x86.1.0.90.0\lib\net45\System.Data.SQLite.dll"  "$(TargetDir)" /y
+)
+
+copy "$(SolutionDir)packages\System.Data.SQLite.Linq.1.0.90.0\lib\net45\System.Data.SQLite.Linq.dll"  "$(TargetDir)" /y
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

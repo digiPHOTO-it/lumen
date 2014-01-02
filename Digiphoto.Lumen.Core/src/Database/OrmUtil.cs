@@ -2,52 +2,75 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Data.Objects;
-using System.Data.Objects.DataClasses;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Core.Objects.DataClasses;
 using System.Data;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using Digiphoto.Lumen.Core.Database;
 using System.Linq.Expressions;
+using System.Data.Entity.Infrastructure;
+using Digiphoto.Lumen.Model;
 
 namespace Digiphoto.Lumen.Database {
 
 	public static class OrmUtil {
 
 		public static bool forseAttacca<TEntity>( ref TEntity entity ) where TEntity : class {
-			ObjectSet<TEntity> objectSet = UnitOfWorkScope.CurrentObjectContext.ObjectContext.CreateObjectSet<TEntity>();
-			return forseAttacca( objectSet.EntitySet.Name, ref entity );
-		}
 
-		public static bool forseAttacca<T>( string entitySetName, ref T entity ) {
-			ObjectContext ctx = UnitOfWorkScope.CurrentObjectContext.ObjectContext;
-			return forseAttacca( ctx, entitySetName, ref entity );
-		}
-
-		// Questo è un extension mathod.
-		public static bool forseAttacca<T>( this ObjectContext context, string entitySetName, ref T entity ) {
-
+			DbContext dbContext = UnitOfWorkScope.currentDbContext;
+			ObjectContext objContext = UnitOfWorkScope.currentObjectContext;
 			ObjectStateEntry entry;
-			
+
+
 			// Track whether we need to perform an attach
 			bool attach = false;
-			bool trovato = context.ObjectStateManager.TryGetObjectStateEntry( entity, out entry );
-			
+			bool trovato = objContext.ObjectStateManager.TryGetObjectStateEntry( entity, out entry );
+
+//			DbEntityEntry dbEE = dbContext.Entry( entity );
+//			if( dbEE.State == EntityState.Detached ) {
+
 			if( trovato ) {
 				// Re-attach if necessary
 				attach = entry.State == EntityState.Detached;
 				// Get the discovered entity to the ref
-				entity = (T)entry.Entity;
+				entity = (TEntity)entry.Entity;
 			} else {
-				// Attach for the first time
-				attach = true;
+				DbEntityEntry dbEE = dbContext.Entry( entity );
+				if( dbEE.State == EntityState.Detached ) {
+					// Attach for the first time
+					attach = true;
+				}
 			}
 
-			if( attach )		
-				context.AttachTo( entitySetName, entity );
+			if( attach ) {
+				DbSet dbSet = dbContext.Set<TEntity>();
+				entity = (TEntity) dbSet.Attach( entity );
+			}
 
 			return attach;
 		}
+
+		[Obsolete]
+		public static bool forseAttacca<TEntity>( string entitySetName, ref TEntity entity ) where TEntity : class {
+			return forseAttacca<TEntity>( ref entity );
+		}
+
+		public static EntityState getEntityState( object entita ) {
+	
+			DbContext dbContext = UnitOfWorkScope.currentDbContext;
+			ObjectStateEntry state;
+			bool esito = UnitOfWorkScope.currentObjectContext.ObjectStateManager.TryGetObjectStateEntry( entita, out state );
+
+
+			DbEntityEntry dbEE = dbContext.Entry( entita );
+			return dbEE.State;
+		}
+
+		public static bool isStatoStaccato( Object entita ) {
+			return getEntityState( entita ) == EntityState.Detached;
+		}
+
 
 		public static void Evict( DbContext ctx, Type t, string primaryKeyName, object id ) {
 
@@ -158,6 +181,44 @@ namespace Digiphoto.Lumen.Database {
 			return Expression.Lambda<Func<TElement, bool>>( body, p );
 		}
 
+		/// <summary>
+		/// Forza lo stato di modificato di questa entità, sul contesto.
+		/// In tal modo verrà persistito quando verrà chiamato il metodo di saveChanges()
+		/// </summary>
+		/// <param name="entita"></param>
+		public static void cambiaStatoModificato( Object entita ) {
+			cambiaStato( entita, EntityState.Modified );
+		}
 
+		public static void cambiaStato( Object entita, EntityState newState ) {
+			var objContext = UnitOfWorkScope.currentObjectContext;
+			ObjectStateEntry ris = objContext.ObjectStateManager.ChangeObjectState( entita, newState );
+		}
+
+		/// <summary>
+		/// Rimetto a posto una certa entità che ancora non è stata salvata.
+		/// Se è stata inserita per la prima volta nel suo Set, allora la elimino dal Set.
+		/// Se esisteva ed è stata modificata, invece, la rileggo dal database.
+		/// </summary>
+		/// <param name="entita"></param>
+		public static void rinuncioAlleModifiche( Object entita ) {
+			rinuncioAlleModifiche( entita, UnitOfWorkScope.currentDbContext );
+		}
+
+		public static void rinuncioAlleModifiche( Object entita, LumenEntities dbContext ) {
+
+			ObjectContext objContext = ((IObjectContextAdapter)dbContext).ObjectContext;
+
+			// Se l'enitita non è stata salvata, allora torno indietro.
+			if( entita is IEntityWithKey ) {
+				ObjectStateEntry stateEntry = objContext.ObjectStateManager.GetObjectStateEntry( ((IEntityWithKey)entita).EntityKey );
+
+				if( stateEntry.State == EntityState.Modified )
+					objContext.Refresh( RefreshMode.StoreWins, entita );
+
+				if( stateEntry.State == EntityState.Added )
+					dbContext.Set( entita.GetType() ).Remove( entita );
+			}
+		}
 	}
 }
