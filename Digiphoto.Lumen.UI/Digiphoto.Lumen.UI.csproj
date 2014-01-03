@@ -798,7 +798,7 @@
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <PropertyGroup>
     <PostBuildEvent>if $(PlatformName) == x64 (
-   copy "$(SolutionDir)packages\System.Data.SQLite.x86.1.0.90.0\lib\net45\System.Data.SQLite.dll"  "$(TargetDir)" /y
+   copy "$(SolutionDir)packages\System.Data.SQLite.x64.1.0.90.0\lib\net45\System.Data.SQLite.dll"  "$(TargetDir)" /y
 ) else (
    copy "$(SolutionDir)packages\System.Data.SQLite.x86.1.0.90.0\lib\net45\System.Data.SQLite.dll"  "$(TargetDir)" /y
 )

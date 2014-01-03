@@ -151,7 +151,8 @@ namespace Digiphoto.Lumen.Licensing {
 			RegistryLicense license = null;
 			try {
 				license = new RegistryLicense( readCurrentLicenseKey() );
-			} catch( Exception ) {
+			} catch( Exception ee ) {
+				_giornale.Error( "Errore in lettura licenza dal registry", ee );
 			}
 			return license;
 		}

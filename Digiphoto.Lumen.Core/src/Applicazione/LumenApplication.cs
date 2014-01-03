@@ -194,6 +194,7 @@ namespace Digiphoto.Lumen.Applicazione {
 
 			creaAggiungiAvviaServizio<IEliminaFotoVecchieSrv>();
 
+			creaAggiungiAvviaServizio<IEntityRepositorySrv<Fotografia>>();
 		}
 
 		public T creaServizio<T>() where T : IServizio {

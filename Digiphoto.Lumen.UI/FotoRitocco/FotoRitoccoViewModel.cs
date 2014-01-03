@@ -1650,6 +1650,17 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// L = Last
 		/// </param>
 		void fdmPaginare( string direzione ) {
+
+			int iniz = (fdmPaginaCorrente-1) * fdmFotoPerPagina;
+			int fine = fdmPaginaCorrente * fdmFotoPerPagina;
+			if( fine > fotografieDaModificare.Count )
+				fine = fotografieDaModificare.Count;
+
+			for( int pos=iniz; pos<fine; pos++ ) {
+				AiutanteFoto.disposeImmagini( fotografieDaModificare[pos], IdrataTarget.Originale );
+				AiutanteFoto.disposeImmagini( fotografieDaModificare[pos], IdrataTarget.Risultante );
+			}
+
 			if( direzione == "F" ) { // First
 				fdmPaginaCorrente = 1;
 			} else if( direzione == "P" ) { // Previous
@@ -1725,8 +1736,22 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		public void selezionaProssimaFoto() {
 
 			bool esito = fotografieDaModificareCW.MoveCurrentToNext();
-			if( esito == false )
-				fotografieDaModificareCW.MoveCurrentToFirst();
+			if( esito == false ) {
+				// Quando arrivo sull'ultima foto a video, se posso vado alla pagina seguente
+
+				if( fdmPaginareCommand.CanExecute("N") ) {
+									
+					int pagPrec = fdmPaginaCorrente;
+
+					fdmPaginareCommand.Execute( "N" );
+
+					if( pagPrec != fdmPaginaCorrente ) {
+						fotografieDaModificareCW.MoveCurrentToFirst();
+					}
+				}
+				// Prima invece mi spostavo sulla prima foto della pagina attuale
+				// fotografieDaModificareCW.MoveCurrentToFirst();
+			}
 		}
 
 
