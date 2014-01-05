@@ -83,6 +83,19 @@ namespace Digiphoto.Lumen.Config
 			}
 		}
 
+		private string _cartellaLoghi;
+		public string cartellaLoghi {
+			get {
+				return _cartellaLoghi;
+			}
+			set {
+				if( _cartellaLoghi != value ) {
+					_cartellaLoghi = value;
+					OnPropertyChanged( "cartellaLoghi" );
+				}
+			}
+		}
+
 		public string stampantiAbbinate {
 			get;
 			set;
@@ -190,6 +203,21 @@ namespace Digiphoto.Lumen.Config
 			set;
 		}
 
+		/// <summary>
+		/// Il nome del file di default per i loghi.
+		/// </summary>
+		public string logoNomeFile {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// La percentuale di copertura della foto originale da parte del logo.
+		/// </summary>
+		public short logoPercentualeCopertura {
+			get;
+			set;
+		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
 

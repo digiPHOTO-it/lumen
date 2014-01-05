@@ -23,6 +23,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		void addCorrezione( Fotografia fotografia, Correzione correzione, bool salvare );
 		void addCorrezione( Fotografia fotografia, Correzione correzione );
 
+		void addLogoDefault( Fotografia fotografia, String posiz );
 
 		/** Applico tutte i ritocchi grafici indicati nel preciso ordine */
 		IImmagine applicaCorrezione( IImmagine immaginePartenza, Correzione correzione );

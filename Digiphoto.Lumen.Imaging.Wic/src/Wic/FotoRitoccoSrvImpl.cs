@@ -29,6 +29,7 @@ using Digiphoto.Lumen.Windows.Media.Effects;
 using System.Windows.Media.Effects;
 using Digiphoto.Lumen.Servizi.Io;
 using Digiphoto.Lumen.Servizi.EntityRepository;
+using Digiphoto.Lumen.Imaging.Wic.Correzioni;
 
 namespace Digiphoto.Lumen.Imaging.Wic {
 
@@ -751,6 +752,24 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 			// Libero memoria. Lascio solo il provino
 			AiutanteFoto.disposeImmagini( fotografia, IdrataTarget.Originale );
+		}
+
+
+		/// <summary>
+		/// Aggiunge la correzione di tipo Logo alla fotografia indicata, utilizzando le impostazioni prese dalla configurazione.
+		/// </summary>
+		/// <param name="fotografia">la foto in esame</param>
+		/// <param name="posiz">La stringa corrispondere alla enumerazione della posizione del logo</param>
+		public void addLogoDefault( Fotografia fotografia, string posiz ) {
+
+			Logo logoDefault = LogoCorrettore.creaLogoDefault();
+
+			logoDefault.posiz = (Logo.PosizLogo) Enum.Parse( typeof(Logo.PosizLogo), posiz );
+
+			addCorrezione( fotografia, logoDefault, true );
+
+			// Ricalcolo il provino giusto per poterlo visualizzare
+			AiutanteFoto.creaProvinoFoto( fotografia );
 		}
 	}
 }
