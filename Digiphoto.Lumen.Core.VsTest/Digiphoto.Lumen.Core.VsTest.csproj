@@ -159,6 +159,7 @@
   <ItemGroup>
     <Compile Include="Crc32.cs" />
     <Compile Include="src\Core\Collections\RingBufferTest.cs" />
+    <Compile Include="src\Imaging\CorrezioniTest.cs" />
     <Compile Include="src\Licenza\LicenzaTest.cs" />
     <Compile Include="src\Model\crudTest.cs" />
     <Compile Include="src\Servizi\Ricostruire\DbRebuilderSrvImplTest.cs" />

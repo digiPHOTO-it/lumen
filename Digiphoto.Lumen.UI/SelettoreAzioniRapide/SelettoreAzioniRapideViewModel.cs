@@ -518,6 +518,19 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
+		/// <summary>
+		/// Aggiunge il logo di default alla foto
+		/// </summary>
+		/// <param name="posiz"></param>
+		private void aggiungereLogo( String posiz ) {
+
+			foreach( Fotografia f in fotoSelezionate ) {
+
+				// forseInizioModifiche();
+				fotoRitoccoSrv.addLogoDefault( f, posiz );
+			}
+		}
+
 		private void tornareOriginale()
 		{
 			// per ogni foto elimino le correzioni e ricreo il provino partendo dall'originale.
@@ -796,7 +809,22 @@ namespace Digiphoto.Lumen.UI
 				return _ruotareCommand;
 			}
 		}
+		
 
+		private RelayCommand _aggiungereLogoCommand;
+		public ICommand aggiungereLogoCommand
+		{
+			get
+			{
+				if (_aggiungereLogoCommand == null)
+				{
+					_aggiungereLogoCommand = new RelayCommand( posiz => this.aggiungereLogo( posiz.ToString() ),
+						                                       posiz => this.possoApplicareCorrezione,
+														       false );
+				}
+				return _aggiungereLogoCommand;
+			}
+		}
 
 		private RelayCommand _tornareOriginaleCommand;
 		public ICommand tornareOriginaleCommand

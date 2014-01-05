@@ -173,6 +173,7 @@ namespace Digiphoto.Lumen.Config  {
 			string pp = Environment.GetFolderPath( Environment.SpecialFolder.CommonPictures );
 			userConfig.cartellaFoto = Path.Combine( pp, applicationName, "Foto" );
 			userConfig.cartellaMaschere = Path.Combine( pp, applicationName, "Maschere" );
+			userConfig.cartellaLoghi = Path.Combine( pp, applicationName, "Loghi" );
 			userConfig.cartellaPubblicita = Path.Combine( pp, applicationName, "Pubblicita" );
 			
 			userConfig.estensioniGrafiche = ".jpg;.jpeg;.png;.tif;.tiff";
@@ -188,6 +189,10 @@ namespace Digiphoto.Lumen.Config  {
 			userConfig.maxNumFotoMod = 25;
 			userConfig.lungFIFOFotoMod = 50;
 			userConfig.autoRotazione = true;
+
+			// Questo è il logo di esempio che verrà distribuito nel pacchetto di installazione.
+			userConfig.logoNomeFile = "digiPHOTO-logo.png";
+			userConfig.logoPercentualeCopertura = 15;
 
 			// Geometria di default per lo slideShow
 			creaGeometriaSlideShowSDefault(userConfig);

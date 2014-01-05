@@ -100,6 +100,25 @@
 			</MenuItem>
 		</MenuItem>
 
+		<MenuItem Header="Aggiungi Logo...">
+			<MenuItem Header="Nord-Est"
+						Command="{Binding Path=aggiungereLogoCommand}"
+						CommandParameter="NordEst"
+						DataContext="{Binding}" />
+			<MenuItem Header="Sud-Est"
+						Command="{Binding Path=aggiungereLogoCommand}"
+						CommandParameter="SudEst"
+						DataContext="{Binding}" />
+			<MenuItem Header="Sud-Ovest"
+						Command="{Binding Path=aggiungereLogoCommand}"
+						CommandParameter="SudOvest"
+						DataContext="{Binding}" />
+			<MenuItem Header="Nord-Ovest"
+						Command="{Binding Path=aggiungereLogoCommand}"
+						CommandParameter="NordOvest"
+						DataContext="{Binding}" />
+		</MenuItem>
+
 		<MenuItem Header="Modifica Metadati" 
 				  Command="{Binding Path=modificaMetadatiCommand}"
 				  CommandParameter="SEL" 
@@ -177,7 +196,26 @@
                         </MenuItem>
                     </MenuItem>
 
-                    <MenuItem Header="Modifica Metadati" 
+					<MenuItem Header="Aggiungi Logo...">
+						<MenuItem Header="Nord-Est"
+								  Command="{Binding Path=aggiungereLogoCommand}"
+								  CommandParameter="NordEst"
+								  DataContext="{Binding}" />
+						<MenuItem Header="Sud-Est"
+								  Command="{Binding Path=aggiungereLogoCommand}"
+								  CommandParameter="SudEst"
+								  DataContext="{Binding}" />
+						<MenuItem Header="Sud-Ovest"
+								  Command="{Binding Path=aggiungereLogoCommand}"
+								  CommandParameter="SudOvest"
+								  DataContext="{Binding}" />
+						<MenuItem Header="Nord-Ovest"
+								  Command="{Binding Path=aggiungereLogoCommand}"
+								  CommandParameter="NordOvest"
+								  DataContext="{Binding}" />
+					</MenuItem>
+
+					<MenuItem Header="Modifica Metadati" 
 				          Command="{Binding Path=modificaMetadatiCommand}"
 				  CommandParameter="SEL" 
 				  DataContext="{Binding}"/>

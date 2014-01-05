@@ -133,6 +133,7 @@
     <Compile Include="src\Wic\Correzioni\DominantiCorrettore.cs" />
     <Compile Include="src\Wic\Correzioni\CorrettoreFactory.cs" />
     <Compile Include="src\Wic\Correzioni\CropCorrettore.cs" />
+    <Compile Include="src\Wic\Correzioni\LogoCorrettore.cs" />
     <Compile Include="src\Wic\Correzioni\MascheraCorrettore.cs" />
     <Compile Include="src\Wic\FotoRitoccoSrvImpl.cs" />
     <Compile Include="src\Wic\Correzioni\GimpCorrettore.cs" />

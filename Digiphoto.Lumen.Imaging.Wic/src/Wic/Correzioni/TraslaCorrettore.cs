@@ -14,6 +14,13 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 
 		public override IImmagine applica( IImmagine immagineSorgente, Correzione correzione ) {
 
+			throw new NotImplementedException( "occorre un container per traslare" );
+
+			// TODO da capire.
+			// Concettualmente non ha senso traslare una immagine su se stessa.
+			// Occorre avere un riferimento, un contenitore esterno su cui agire.
+			// Una immagine con appiccicata una traslazione ha senso, ma l'immagine risultante da sola che senso ha ?
+#if CONCETTUALMENTE_NON_VALIDO
 			ImmagineWic imgSorgente = (ImmagineWic)immagineSorgente;
 			BitmapSource bitmapSource = imgSorgente.bitmapSource;
 
@@ -24,7 +31,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 
 			ImmagineWic modificata = new ImmagineWic( tb );
 			return modificata;
-
+#endif
 		}
 
 		public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType ) {
