@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Imaging.Correzioni;
+using Digiphoto.Lumen.Util;
 
 
 namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
@@ -23,14 +24,15 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 			Logo logoCorrezione = (Logo)correzione;
 
 			// Questo è il nome del file completo su disco della immagine del logo
-			string nomeCompletoLogo = Path.Combine( Configurazione.UserConfigLumen.cartellaLoghi, logoCorrezione.nomeFileLogo );
+			string nomeCompletoLogo = PathUtil.nomeCompletoLogo( logoCorrezione );
 			if( ! File.Exists( nomeCompletoLogo ) ) {
 				throw new FileNotFoundException( nomeCompletoLogo );
 			}
 
-			// Costruisco l'immagine di overlay da sovrapporre facendomi dare dalla classe derivata il nome completo del file di immagine.
+			// Costruisco l'immagine di overlay
 			ImmagineWic imgLogo = new ImmagineWic( nomeCompletoLogo );
 
+			// Ricavo la bitmap sorgente
 			BitmapSource bmpSorgente = ((ImmagineWic)immagineSorgente).bitmapSource;
 
 			// -- inizio ad applicare le trasformazioni al logo
@@ -59,39 +61,32 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 			BitmapSource bitmapSourceLogoModificato = ((ImmagineWic)immagineLogoModificato).bitmapSource;
 
 			//
-			// :: posizione
+			// :: traslazione
 			//
 
 			// Queste sono le coordinate su cui disegnare il logo
-			Rect posiz = Rect.Empty;
+			Rect posiz = calcolaCoordinateLogo( bmpSorgente.PixelWidth, bmpSorgente.PixelHeight, immagineLogoModificato.ww, immagineLogoModificato.hh, logoCorrezione );
 
-			// La traslazione devo gestirla in modo indiretto.
-			// Infatti questa ha 
-			// Chiamando il suo correttore non funziona. Ed è anche ovvio. Come faccio a traslare una immagine su se stessa ? Ci vuole un contenitore di riferimento.
-			if( isLogoPosizionatoManualmente( logoCorrezione ) ) {
-				// Posizionamento manuale. Devo riproporzionare le coordinate alla immagine di destinazione
-			} else {
-				// Posizionamento automatico. Calcolo io la posizione in base all'angolo specificato
-				posiz = calcolaCoordinateLogoAutomatiche( bmpSorgente.PixelWidth, bmpSorgente.PixelHeight, bitmapSourceLogoModificato.PixelWidth, bitmapSourceLogoModificato.PixelHeight, logoCorrezione );
-			}
-
-
-			// Adesso ho entrambe le immagini. Le sovrappongo.
+			// Creo due immagini disegnabili con i rettangoli delle immagini interessate
+				// 1. Tutta la foto di sfondo
 			Rect rectSotto = new Rect( 0, 0, bmpSorgente.PixelWidth, bmpSorgente.PixelHeight );
 			ImageDrawing drawingSotto = new ImageDrawing( bmpSorgente, rectSotto );
 
+				// 2. Il riquando ricalcolato del logo
 			Rect rectSopra = new Rect( posiz.Left, posiz.Top, posiz.Width, posiz.Height );
 			ImageDrawing drawingSopra = new ImageDrawing( bitmapSourceLogoModificato, rectSopra );
 
+			// Adesso ho entrambe le immagini. Le sovrappongo usando un gruppo.
 			DrawingGroup myDrawingGroup = new DrawingGroup();
 			myDrawingGroup.Children.Add( drawingSotto );
 			myDrawingGroup.Children.Add( drawingSopra );
+			// Disegno il gruppo in una nuova immagine.
 			Image myImage = new Image();
 			myImage.Source = new DrawingImage( myDrawingGroup );
 
 			int w = (int)rectSotto.Width;
 			int h = (int)rectSotto.Height;
-
+			// Renderizzo l'immagine finita, in una bitmap in modo da poterla ritornare.
 			RenderTargetBitmap rtb = new RenderTargetBitmap( w, h, 96d, 96d, PixelFormats.Default );
 
 			DrawingVisual dv = new DrawingVisual();
@@ -113,8 +108,26 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 			return logo.traslazione != null;
 		}
 
+		public static Rect calcolaCoordinateLogo( int wi, int hi, int wl, int hl, Logo logoCorrezione ) {
 
-		private Rect calcolaCoordinateLogoAutomatiche( int wi, int hi, int wl, int hl, Logo logoCorrezione ) {
+			Rect posiz = Rect.Empty;
+
+			// La traslazione devo gestirla in modo indiretto.
+			// Infatti questa ha 
+			// Chiamando il suo correttore non funziona. Ed è anche ovvio. Come faccio a traslare una immagine su se stessa ? Ci vuole un contenitore di riferimento.
+			if( isLogoPosizionatoManualmente( logoCorrezione ) ) {
+				// Posizionamento manuale. Devo riproporzionare le coordinate alla immagine di destinazione
+				// TODO occorre valorizzare opportunamente "posiz".
+			} else {
+				// Posizionamento automatico. Calcolo io la posizione in base all'angolo specificato
+				posiz = calcolaCoordinateLogoAutomatiche( wi, hi, wl, hl, logoCorrezione );
+			}
+
+			return posiz;
+		}
+
+
+		public static Rect calcolaCoordinateLogoAutomatiche( int wi, int hi, int wl, int hl, Logo logoCorrezione ) {
 
 			// calcolo un margine del 5% da lasciare a sinistra/destra - alto/basso
 			int percMargine, pixMargineW, pixMargineH;

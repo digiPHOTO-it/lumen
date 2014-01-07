@@ -29,6 +29,7 @@ using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
 using Digiphoto.Lumen.Servizi.Stampare;
 using Digiphoto.Lumen.Servizi.Io;
 using Digiphoto.Lumen.Imaging;
+using Digiphoto.Lumen.Imaging.Wic.Correzioni;
 
 namespace Digiphoto.Lumen.UI.FotoRitocco {
 
@@ -172,7 +173,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		public bool possoApplicareCorrezioni {
 			get {
-				return modalitaEdit == ModalitaEdit.FotoRitocco && modificheInCorso == true && isAlmenoUnaFotoSelezionata;
+				return possoModificareLaFoto && modificheInCorso == true;
+			}
+		}
+
+		public bool possoModificareLaFoto {
+			get {
+				return modalitaEdit == ModalitaEdit.FotoRitocco && isAlmenoUnaFotoSelezionata;
 			}
 		}
 
@@ -342,6 +349,23 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		public Transform trasformazioneTranslate {
 			get {
 				return trasformazioni != null && trasformazioni.Children.Count > TFXPOS_TRANSLATE && trasformazioni.Children[TFXPOS_TRANSLATE] is TranslateTransform ? trasformazioni.Children[TFXPOS_TRANSLATE] : null;
+			}
+		}
+
+		/// <summary>
+		/// Al momento gestisco un solo logo. In futuro potrei gestirne anche più di uno, 
+		/// oppure delle ImgOverlay in genere.
+		/// </summary>
+		private Logo _logo;
+		public Logo logo {
+			get {
+				return _logo;
+			}
+			set {
+				if( _logo != value ) {
+					_logo = value;
+					OnPropertyChanged( "logo" );
+				}
 			}
 		}
 
@@ -818,6 +842,17 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		private RelayCommand _aggiungereLogoCommand;
+		public ICommand  aggiungereLogoCommand {
+			get {
+				if( _aggiungereLogoCommand == null ) {
+					_aggiungereLogoCommand = new RelayCommand( p => aggiungereLogo(),
+															   p => possoModificareLaFoto );
+				}
+				return _aggiungereLogoCommand;
+			}
+		}
+
 #endregion Comandi
 
 		// ******************************************************************************************************
@@ -1008,6 +1043,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				addCorrezione( maschera );
 			}
 
+			if( logo != null ) {
+				addCorrezione( logo );
+			}
 
 			// Vado ad aggiungerli solo al momento di applicare per davvero
 			// Prima tratto gli effetti
@@ -1055,11 +1093,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 				rifiutareCorrezioni( fotografiaInModifica, false );
 
-				riposizionaControlliFotoritocco();
+				riposizionaControlliFotoritocco();  //  **  1  **
 
-				forzaRefreshStato();
+				forzaRefreshStato();  //  **  2  **
 
 				modificheInCorso = false;
+
+				pubblicaMessaggioEffettiCambiati();  //  **  3 **
 
 			} finally {
 				_faseRipristinoFoto = false;
@@ -1155,6 +1195,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			trasformazioni.Children.Add( tfxNulla );
 			trasformazioni.Children.Add( tfxNulla );
 			trasformazioni.Children.Add( tfxNulla );
+
+			logo = null;
 
 			// Spengo le proprietà che indicano elementi correnti.
 			effettoCorrente = null;
@@ -1488,8 +1530,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		private void riposizionaControlliFotoritocco() {
 
-
-
 			if( modalitaEdit == ModalitaEdit.GestioneMaschere ) {
 //				frpCalcolaDimensioniContenitore( 0f );
 				return;
@@ -1525,10 +1565,20 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					IList<Transform> carTrasformazioni = fotoRitoccoSrv.converteCorrezioni<Transform>( correzioni );
 					caricaTrasformazioni( carTrasformazioni );
 
-					// La maschea devo gestirla in modo separato. Purtroppo devo riparserizzare l'xml
-					maschera = correzioni.FirstOrDefault( c => c is Maschera );
-					if( maschera != null )
-						attivareMaschera( maschera );   // Questa chiamata già ridimensiona il contenitore giallo.
+					
+					// La maschera e il logo devo gestirli in modo separato.
+					foreach( Correzione c in correzioni ) {
+
+						if( c is Maschera ) {
+							maschera = c;
+							attivareMaschera( maschera );   // Questa chiamata già ridimensiona il contenitore giallo.
+						}
+
+						if( c is Logo ) {
+							logo = (Logo)c;  // Per ora ne gestisco solo uno.
+						}
+
+					}
 
 					// cerco di capire se la foto è verticale, per rigirare il contenitore
 					Ruota rrr = (Ruota)correzioni.FirstOrDefault( c => c is Ruota );
@@ -1541,21 +1591,19 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					frpCalcolaDimensioniContenitore( ratio );
 				}
 
-
-			
-
-				// Pubblico un messaggio per indicare che ci sono degli effetti cambiati.
-				// Tramite questo messaggio, la UI può re-bindare i controlli interessati
-				RitoccoPuntualeMsg ritoccoPuntualeMsg = new RitoccoPuntualeMsg( this );
-	//			ritoccoPuntualeMsg.senderTag = puntuale;
-				LumenApplication.Instance.bus.Publish( ritoccoPuntualeMsg );
-
 			} finally {
 				_faseRipristinoFoto = false;
 			}
 
 		}
 
+		void pubblicaMessaggioEffettiCambiati() {
+			// Pubblico un messaggio per indicare che ci sono degli effetti cambiati.
+			// Tramite questo messaggio, la UI può re-bindare i controlli interessati
+			RitoccoPuntualeMsg ritoccoPuntualeMsg = new RitoccoPuntualeMsg( this );
+			//			ritoccoPuntualeMsg.senderTag = puntuale;
+			LumenApplication.Instance.bus.Publish( ritoccoPuntualeMsg );
+		}
 		
 
 		/// <summary>
@@ -1754,6 +1802,34 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		/// <summary>
+		/// Questo metodo esegue un ciclo sui loghi : passa da niente e poi cicla tutta la enumeration Logo.PosizLogo
+		/// </summary>
+		void aggiungereLogo() {
+
+			if( logo == null ) {
+				logo = LogoCorrettore.creaLogoDefault();
+				logo.posiz = Logo.PosizLogo.SudEst;
+			} else {
+
+				// Devo provocare il property change perché la UI si aggiorni. Clono quindi il logo per riassegnarlo.
+				Logo clone = (Logo)this.logo.Clone();
+
+				if( logo.posiz == Logo.PosizLogo.SudEst ) {
+					clone.posiz = Logo.PosizLogo.SudOvest;
+				} else if( logo.posiz == Logo.PosizLogo.SudOvest ) {
+					clone.posiz = Logo.PosizLogo.NordOvest;
+				} else if( logo.posiz == Logo.PosizLogo.NordOvest ) {
+					clone.posiz = Logo.PosizLogo.NordEst;
+				} else if( logo.posiz == Logo.PosizLogo.NordEst )
+					clone = null;
+
+				logo = clone; // Provoca il propertychanged
+			}
+
+			forseInizioModifiche();
+		}
+
 
 #endregion Metodi
 
@@ -1845,13 +1921,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		/// <summary>
-		/// Quando cambia la fotografia in modifica
+		/// Quando cambia la fotografia in modifica.
 		/// </summary>
 		void onFotografiaInModificaChanged() {
 
 			// Riposiziono i controlli in modo da velocizzare il tutto.
-			riposizionaControlliFotoritocco();
-
+			riposizionaControlliFotoritocco();  // ** 1 **
 
 			// Se ho spento la fotografia, allora spengo anche una eventuale maschera
 			if( fotografiaInModifica == null && modalitaEdit == ModalitaEdit.FotoRitocco ) {
@@ -1860,7 +1935,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 
 			// Provoco la rilettura delle property che determinano lo stato dei pulsanti.
-			forzaRefreshStato();
+			forzaRefreshStato();  //  ** 2 **
+
+			pubblicaMessaggioEffettiCambiati();  //  **  3 **
 		}
 
 #endregion Gestori Eventi

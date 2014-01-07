@@ -206,9 +206,17 @@ namespace Digiphoto.Lumen.Config
 		/// <summary>
 		/// Il nome del file di default per i loghi.
 		/// </summary>
+		string _logoNomeFile;
 		public string logoNomeFile {
-			get;
-			set;
+			get {
+				return _logoNomeFile;
+			}
+			set {
+				if( _logoNomeFile != value ) {
+					_logoNomeFile = value;
+					OnPropertyChanged( "logoNomeFile" );
+				}
+			}
 		}
 
 		/// <summary>

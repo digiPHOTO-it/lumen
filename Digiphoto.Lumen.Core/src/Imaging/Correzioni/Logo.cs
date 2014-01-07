@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Digiphoto.Lumen.Imaging.Correzioni {
 	
-	public class Logo : ImgOverlay {
+	public class Logo : ImgOverlay, ICloneable {
 
 		public enum PosizLogo {
 			NordEst,
@@ -38,9 +38,27 @@ namespace Digiphoto.Lumen.Imaging.Correzioni {
 			get;
 			set;
 		}
-		
+
+		public override bool isSommabile( Correzione altra ) {
+			return (altra is Logo);
+		}
+
+		public override Correzione somma( Correzione altra ) {
+			return altra;
+		}
 
 
+		public object Clone() {
+			Logo clone = new Logo {
+				nomeFileLogo = this.nomeFileLogo,
+				pcCopri = this.pcCopri,
+				posiz = this.posiz,
+				rotazione = this.rotazione,
+				traslazione = this.traslazione,
+				zoom = this.zoom
+			};
+			return clone;
+		}
 	}
 
 }

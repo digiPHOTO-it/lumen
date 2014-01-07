@@ -72,5 +72,34 @@ namespace Digiphoto.Lumen.UI.Util {
 			return null;
 		}
 
+		public static string scegliFileImmagineDialog( string cartellaIniziale ) {
+
+			string filter = "PNG Files (*.png)|*.png|JPEG Files (*.jpeg)|*.jpeg|JPG Files (*.jpg)|*.jpg|GIF Files (*.gif)|*.gif";
+			return scegliFileDialog( cartellaIniziale, ".png", filter );
+		}
+
+		public static string scegliFileDialog( string cartellaIniziale, string defaultExt, string filter ) {
+
+			string filename = null;
+
+			Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+			if( ! String.IsNullOrEmpty( cartellaIniziale ) )
+				dlg.InitialDirectory = cartellaIniziale;
+
+			// Set filter for file extension and default file extension 
+			if( defaultExt != null )
+				dlg.DefaultExt = defaultExt;
+
+			if( filter != null )
+				dlg.Filter = filter;
+
+			// Get the selected file name and display in a TextBox 
+			if( dlg.ShowDialog() == true )
+				filename = dlg.FileName;
+
+			return filename;
+		}
+
+
 	}
 }

@@ -527,7 +527,7 @@ namespace Digiphoto.Lumen.UI
 			foreach( Fotografia f in fotoSelezionate ) {
 
 				// forseInizioModifiche();
-				fotoRitoccoSrv.addLogoDefault( f, posiz );
+				fotoRitoccoSrv.addLogoDefault( f, posiz, true );
 			}
 		}
 

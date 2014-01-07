@@ -760,16 +760,46 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		/// </summary>
 		/// <param name="fotografia">la foto in esame</param>
 		/// <param name="posiz">La stringa corrispondere alla enumerazione della posizione del logo</param>
-		public void addLogoDefault( Fotografia fotografia, string posiz ) {
+		public Logo addLogoDefault( Fotografia fotografia, string posiz, bool salvare ) {
 
 			Logo logoDefault = LogoCorrettore.creaLogoDefault();
 
-			logoDefault.posiz = (Logo.PosizLogo) Enum.Parse( typeof(Logo.PosizLogo), posiz );
+			if( posiz == null )
+				logoDefault.posiz = Logo.PosizLogo.SudEst;
+			else
+				logoDefault.posiz = (Logo.PosizLogo)Enum.Parse( typeof( Logo.PosizLogo ), posiz );
 
-			addCorrezione( fotografia, logoDefault, true );
+			addLogo( fotografia, logoDefault, salvare );
+
+			return logoDefault;
+		}
+
+		public void addLogo( Fotografia fotografia, Logo logo, bool salvare ) {
+
+			if( logo == null ) {
+				
+				// Rimuovo il logo dalle correzioni
+				// Deserializzo la stringa con le eventuali correzioni attuali
+				if( fotografia.correzioniXml != null ) {
+					CorrezioniList correzioni = SerializzaUtil.stringToObject<CorrezioniList>( fotografia.correzioniXml );
+					foreach( Correzione c in correzioni ) {
+						if( c is Logo ) {
+							correzioni.Remove( c );
+							break;
+						}
+					}
+					// Ora serializzo di nuovo
+					fotografia.correzioniXml = SerializzaUtil.objectToString( correzioni );
+				}
+
+			} else {
+				// Siccome ho reso il logo sommabile, questa operazione in realtà non aggiunge ma sostituisce.
+				addCorrezione( fotografia, logo, salvare );
+			}
 
 			// Ricalcolo il provino giusto per poterlo visualizzare
 			AiutanteFoto.creaProvinoFoto( fotografia );
 		}
+
 	}
 }

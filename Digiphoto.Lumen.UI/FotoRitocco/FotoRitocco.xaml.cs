@@ -28,6 +28,7 @@ using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
 using Digiphoto.Lumen.UI.Main;
 using System.Windows.Threading;
+using Digiphoto.Lumen.Imaging.Wic.Correzioni;
 
 
 
@@ -48,6 +49,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			_viewModel.editorModeChangedEvent += cambiareModoEditor;
 
+			_viewModel.PropertyChanged += _viewModel_PropertyChanged;
+
 
 			// Mi sottoscrivo per ascoltare i messaggi di fotoritocco per ribindare i controlli.
 			IObservable<RitoccoPuntualeMsg> observable = LumenApplication.Instance.bus.Observe<RitoccoPuntualeMsg>();
@@ -62,6 +65,14 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			_viewModel.frpContenitoreMaxH = 500;
 
 		}
+
+		void _viewModel_PropertyChanged( object sender, PropertyChangedEventArgs e ) {
+			if( e.PropertyName == "logo" ) {
+				// cambiato il logo.
+				this.Dispatcher.BeginInvoke( creaImmaginettaLogoAction );
+			}
+		}
+
 
 		private void sliderLuminosita_ValueChanged( object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e ) {
 
@@ -362,12 +373,11 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 						item.Click += menuItemRemoveFromComposition_Click;
 					}
 
-					// Console.Write( item );
 				}
 
 				portaInPrimoPianoFotina( imageFotina );
 
-				primoPianoCanvasMask( true );
+ 				primoPianoCanvasMask( true );
 			}
 		}
 		
@@ -910,8 +920,16 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		public void OnError( Exception error ) {
 		}
 
-		public void OnNext( RitoccoPuntualeMsg rpMsg ) {
+		Action _creaImmaginettaLogoAction;
+		Action creaImmaginettaLogoAction {
+			get {
+				if( _creaImmaginettaLogoAction == null )
+					_creaImmaginettaLogoAction = new Action( creaImmaginettaLogo );
+				return _creaImmaginettaLogoAction;
+			}
+		}
 
+		public void OnNext( RitoccoPuntualeMsg rpMsg ) {
 
 			// Questi sono effetti
 			bindaSliderLuminosita( true );
@@ -923,11 +941,90 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			bindaSliderZoom( true );
 			bindaSliderTrasla( true );
 
+			// ---
+
+			// Crea immaginetta logo : devo farlo dopo che la UI si è ridisegnata per avere le dimensioni corrette della foto nel suo contenitore.
+			// Se lo faccio subito, non ho a disposizione le dimensioni reali (ActualW e ActualH).
+//			this.Dispatcher.BeginInvoke( creaImmaginettaLogoAction );
+
 			// Devo dare il fuoco allo UserControl del fotoritocco, altrimenti non mi sente l'evento KeyDown per salvare le correzioni.
 			Action focusAction = () => fotoRitoccoUserControl.Focus();
 			this.Dispatcher.BeginInvoke( focusAction, DispatcherPriority.ApplicationIdle );
+		}
 
-			
+		void creaImmaginettaLogo() {
+
+			// Rimuovo eventuale elemento precedente
+			var prec = AiutanteUI.FindVisualChild<Image>( gridRitocco, "imageLogino" );
+			if( prec != null )
+				gridRitocco.Children.Remove( prec );
+
+
+			if( _viewModel.logo == null )
+				return;
+
+			Image imageLogino = new Image();
+
+
+			// Metto un nome univoco al componente
+			imageLogino.Name = "imageLogino";
+
+			String nomeFileLogo = PathUtil.nomeCompletoLogo( _viewModel.logo );
+
+			BitmapImage bmpLogo = new BitmapImage( new Uri(nomeFileLogo) );
+
+			imageLogino.BeginInit();
+			imageLogino.Source = bmpLogo;
+			imageLogino.EndInit();
+
+//			imageLogino.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+//			imageLogino.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+
+			Thickness margin = calcolaCoordinateLogo( (int)bmpLogo.Width, (int)bmpLogo.Height, ref imageLogino );
+			imageLogino.Margin = margin;
+
+			Canvas.SetZIndex( imageLogino, 90 );
+			gridRitocco.Children.Add( imageLogino );
+			// AddAdorner( imageLogino );
+
+
+			imageLogino.ContextMenu = (ContextMenu)this.Resources["contextMenuImageFotina"];
+			foreach( MenuItem item in imageLogino.ContextMenu.Items ) {
+				if( item.Name == "menuItemBringToFront" ) {
+					item.Click += menuItemBringToFront_Click;
+				}
+				if( item.Name == "menuItemRemoveFromComposition" ) {
+					item.Click += menuItemRemoveFromComposition_Click;
+				}
+			}
+
+			// portaInPrimoPianoFotina( imageLogino );
+
+		}
+
+		private Thickness calcolaCoordinateLogo( int wl, int hl, ref Image imageLogino ) {
+
+			Thickness margin = new Thickness();
+
+			if( LogoCorrettore.isLogoPosizionatoManualmente( _viewModel.logo ) ) {
+				// TODO
+			} else {
+
+				Point relativeLocation = imageRitoccata.TranslatePoint( new Point( 0, 0 ), gridRitocco );
+
+				Rect r = LogoCorrettore.calcolaCoordinateLogoAutomatiche( (int)imageRitoccata.ActualWidth, (int)imageRitoccata.ActualHeight, wl, hl, _viewModel.logo );
+
+				imageLogino.Width = r.Width;
+				imageLogino.Height = r.Height;
+
+				margin.Left = r.Left + relativeLocation.X;
+				margin.Top = r.Top + relativeLocation.Y;
+
+				margin.Right = gridRitocco.ActualWidth - relativeLocation.X - r.Left - r.Width;
+				margin.Bottom = gridRitocco.ActualHeight - relativeLocation.Y - r.Top - r.Height;
+			}
+
+			return margin;
 		}
 
 		private void imageRitoccata_MouseWheel( object sender, MouseWheelEventArgs e ) {
@@ -1047,6 +1144,11 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		private void gridRitocco_SizeChanged(object sender, SizeChangedEventArgs e) {	
 			_viewModel.frpContenitoreMaxW = gridRitocco.ActualWidth;
 			_viewModel.frpContenitoreMaxH = gridRitocco.ActualHeight;
+		}
+
+
+		private void dacanc_Click_1( object sender, RoutedEventArgs e ) {
+			var www = imageRitoccata.ActualWidth;
 		}
 
 	}
