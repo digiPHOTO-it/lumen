@@ -24,6 +24,7 @@ using Digiphoto.Lumen.Servizi.Ricostruzione;
 using Digiphoto.Lumen.GestoreConfigurazione.UI.Licenze;
 using Digiphoto.Lumen.Licensing;
 using Digiphoto.Lumen.Eventi;
+using Digiphoto.Lumen.UI.Util;
 
 namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 {
@@ -391,6 +392,21 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 		}
 
+
+		void scegliereFile( string quale ) {
+
+			if( quale == "logo" ) {
+				string nomeFileLogo = AiutanteUI.scegliFileImmagineDialog( cfg.cartellaLoghi );
+				if( nomeFileLogo == null )
+					cfg.logoNomeFile = null;
+				else {
+					FileInfo f = new FileInfo( nomeFileLogo );
+					cfg.logoNomeFile = f.Name;  // Senza path !
+				}
+			}
+
+		}
+
 		bool possoLogin {
 			get {
 				 bool posso = loginEffettuato == false;
@@ -663,6 +679,15 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
+		private RelayCommand _scegliereFileCommand;
+		public ICommand scegliereFileCommand {
+			get {
+				if( _scegliereFileCommand == null ) {
+					_scegliereFileCommand = new RelayCommand( quale => scegliereFile( quale.ToString() ) );
+				}
+				return _scegliereFileCommand;
+			}
+		}
 
         private RelayCommand _cambiareMotoreDataBaseCommand;
         public ICommand cambiareMotoreDataBaseCommand
@@ -918,6 +943,8 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 					cfg.cartellaDatabase = appo;
 				else if( quale.Equals( "spot", StringComparison.CurrentCultureIgnoreCase ) )
 					cfg.cartellaPubblicita = appo;
+				else if( quale.Equals( "loghi", StringComparison.CurrentCultureIgnoreCase ) )
+					cfg.cartellaLoghi = appo;
 				else
 					throw new ArgumentException( "quale cartella : non riconosciuto" );
 			}

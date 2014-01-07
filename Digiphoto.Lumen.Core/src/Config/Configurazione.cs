@@ -359,6 +359,15 @@ namespace Digiphoto.Lumen.Config  {
 			if( userConfig.cartellaPubblicita != null && Directory.Exists( userConfig.cartellaPubblicita ) == false )
 				return ("Cartella pubblicità inesistente: " + userConfig.cartellaPubblicita);
 
+			if( userConfig.cartellaLoghi != null && Directory.Exists( userConfig.cartellaLoghi ) == false )
+				return ("Cartella loghi inesistente: " + userConfig.cartellaLoghi );
+
+			if( userConfig.cartellaLoghi != null ) {
+				string nomeLogo = Path.Combine( userConfig.cartellaLoghi, userConfig.logoNomeFile );
+				if( ! File.Exists(nomeLogo) )
+					return  "File logo inesistente" + nomeLogo;
+			}
+
 			return null;
 		}
 

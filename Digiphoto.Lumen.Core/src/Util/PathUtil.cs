@@ -9,6 +9,7 @@ using Digiphoto.Lumen.Applicazione;
 using System.Security.AccessControl;
 using Digiphoto.Lumen.Config;
 using System.Windows.Forms;
+using Digiphoto.Lumen.Imaging.Correzioni;
 
 namespace Digiphoto.Lumen.Util {
 
@@ -289,5 +290,11 @@ namespace Digiphoto.Lumen.Util {
 		public static void AddFileSecurity( string fileName, FileSystemRights rights, AccessControlType controlType ) {
 			AddFileSecurity( fileName, Environment.UserName, rights, controlType );
 		}
+
+		public static String nomeCompletoLogo( Logo logo ) {
+			return Path.Combine( Configurazione.UserConfigLumen.cartellaLoghi, logo.nomeFileLogo );
+		}
+
+
 	}
 }
