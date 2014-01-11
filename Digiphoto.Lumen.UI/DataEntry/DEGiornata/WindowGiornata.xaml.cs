@@ -21,20 +21,33 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 	/// </summary>
 	public partial class WindowGiornata :  Window, IDialogProvider {
 
-		private DataEntryGiornataViewModel _viewModel;
+		private DataEntryGiornataViewModel _degViewModel;
 
 		public WindowGiornata() {
 
 			InitializeComponent();
 
+			_degViewModel = new DataEntryGiornataViewModel();
+			_degViewModel.dialogProvider = this;
+			this.DataContext = _degViewModel;
+
+			_degViewModel.PropertyChanged += _degViewModel_PropertyChanged;
+
+//			this.incassiFotografiView.DataContext = _degViewModel.incassiFotografiViewModel;
+		}
 
 
-			_viewModel = new DataEntryGiornataViewModel();
-			_viewModel.dialogProvider = this;
-			this.DataContext = _viewModel;
-
-
-//			_viewModel.collectionView.CurrentChanged += new EventHandler( SelectedItemChanged );
+		/// <summary>
+		/// Quando viene modificato il viewmodel delle provvigioni, lo ri-setto come datacontext del mio componente grafico.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void _degViewModel_PropertyChanged( object sender, System.ComponentModel.PropertyChangedEventArgs e ) {
+			
+			if( e.PropertyName == "incassiFotografiViewModel" ) {
+				this.incassiFotografiView.DataContext = _degViewModel.incassiFotografiViewModel;
+				valorizzaSquadratura();
+			}
 		}
 
 
@@ -78,8 +91,12 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 
 		private void textBoxIncassoDichiarato_TextChanged( object sender, TextChangedEventArgs e ) {
 
+			valorizzaSquadratura();
+		}
 
-			Giornata giornata = (Giornata)_viewModel.collectionView.CurrentItem;
+		void valorizzaSquadratura() {
+
+			Giornata giornata = (Giornata)_degViewModel.entitaCorrente;
 			if( giornata == null ) {
 				textBoxSquadratura.Text = null;
 				return;
@@ -96,31 +113,12 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 
 				Decimal _squadratura = incassoDichiarato - giornata.incassoPrevisto;
 				textBoxSquadratura.Text = _squadratura.ToString( "C" );
-				textBoxSquadratura.Foreground = (_squadratura < 0) ? Brushes.Red : Brushes.Black;
+				// textBoxSquadratura.Foreground = (_squadratura < 0) ? Brushes.Red : (_squadratura > 0) ? Brushes.Green : Brushes.Black;
+				textBoxSquadratura.Foreground = (_squadratura < 0) ? Brushes.Yellow : (_squadratura > 0) ? Brushes.WhiteSmoke : Brushes.Black;
+				textBoxSquadratura.Background = (_squadratura < 0) ? Brushes.OrangeRed : (_squadratura > 0) ? Brushes.Green : textBoxFirma.Background;
 			} else {
 				textBoxSquadratura.Text = null;
 			}
-
-#if  QQQQ		
-		
-			Giornata giornata = null;
-			if( _viewModel.collectionView.IsEditingItem )
-				giornata = (Giornata)_viewModel.collectionView.CurrentEditItem;
-			else if( _viewModel.collectionView.IsAddingNew )
-				giornata = (Giornata)_viewModel.collectionView.CurrentAddItem;
-			else
-				giornata = (Giornata)_viewModel.collectionView.CurrentItem;
-
-			if( giornata == null || giornata.incassoDichiarato == null )
-				this.textBoxSquadratura.Text = null;
-			else {
-				Decimal squadratura = giornata.incassoPrevisto - giornata.incassoDichiarato;
-				this.textBoxSquadratura.Text = squadratura.ToString();
-			}
-			
-		
-#endif
 		}
-
 	}
 }

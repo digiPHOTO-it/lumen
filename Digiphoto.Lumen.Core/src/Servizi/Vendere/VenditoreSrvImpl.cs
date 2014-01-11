@@ -859,6 +859,34 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			return incasso;
 		}
 
+		public IList<IncassoFotografo> calcolaIncassiFotografiPrevisti( DateTime giornata ) {
+
+			LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
+
+			List<IncassoFotografo> incassiFotografiDelGiorno = new List<IncassoFotografo>();
+
+			var incassi = dbContext.IncassiFotografi.Where( i => i.carrello.giornata == giornata && i.carrello.venduto == true );
+
+			foreach( IncassoFotografo incaLoop in incassi ) {
+
+				IncassoFotografo incaPrec = incassiFotografiDelGiorno.SingleOrDefault( ii => ii.fotografo.id == incaLoop.fotografo.id );
+				if( incaPrec == null ) {
+					incaPrec = new IncassoFotografo();
+					incaPrec.fotografo = incaLoop.fotografo;
+					incassiFotografiDelGiorno.Add( incaPrec );
+				}
+
+				// Sommo i valori
+				incaPrec.contaMasterizzate += incaLoop.contaMasterizzate;
+				incaPrec.contaStampe += incaLoop.contaStampe;
+				incaPrec.incasso += incaLoop.incasso;
+				incaPrec.incassoMasterizzate += incaLoop.incassoMasterizzate;
+				incaPrec.incassoStampe += incaLoop.incassoStampe;
+			}
+
+			return incassiFotografiDelGiorno;
+		}
+
 
 		/// <summary>
 		/// Elimina tutte le righe da masterizzare e azzera tutti i dati del masterizzatore.

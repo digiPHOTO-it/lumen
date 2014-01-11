@@ -1148,6 +1148,16 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 				_giornale.Error( "crea cartella pubblicita", ee );
 			}
 
+			// Provo a creare la cartella se non esiste
+			try {
+				if( !Directory.Exists( cfg.cartellaLoghi ) ) {
+					Directory.CreateDirectory( cfg.cartellaLoghi );
+					_giornale.Info( "Creata cartella loghi: " + cfg.cartellaLoghi );
+				}
+			} catch( Exception ee ) {
+				_giornale.Error( "crea cartella loghi", ee );
+			}
+
 		}
 
 		private int saveInfoFisse() {
