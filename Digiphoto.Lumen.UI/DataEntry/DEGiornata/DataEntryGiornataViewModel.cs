@@ -7,12 +7,30 @@ using Digiphoto.Lumen.Model;
 using System.Linq.Expressions;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Servizi.Vendere;
+using Digiphoto.Lumen.UI.IncassiFotografi;
+using Digiphoto.Lumen.UI.Mvvm;
+using System.Windows.Input;
 
 namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 
 	public class DataEntryGiornataViewModel : DataEntryViewModel<Giornata> {
 
-/*
+		#region Proprietà
+
+		public IncassiFotografiViewModel incassiFotografiViewModel {
+			get;
+			private set;
+		}
+
+		private IVenditoreSrv venditoreSrv {
+			get {
+				return LumenApplication.Instance.getServizioAvviato<IVenditoreSrv>();
+			}
+		}
+
+		#endregion Proprietà
+
+		/*
 		public Nullable<Decimal> squadratura {
 			get {
 
@@ -27,15 +45,29 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 		}
 */
 		protected override void passoPreparaAddNew( Giornata giornata ) {
+			
 			giornata.id = DateTime.Today;
 			giornata.orologio = DateTime.Now;
 
+			ricalcolareGiornata( giornata );
+		}
+
+		/// <summary>
+		/// Eseguo i ricalcoli per la giornata indicata. Valorizzo l'incasso previsto sul bean
+		/// </summary>
+		/// <param name="giornata"></param>
+		private void ricalcolareGiornata( Giornata giornata ) {
+
 			// Ricavo l'incasso previsto per la giornata
-			giornata.incassoPrevisto = calcolaIncassoPrevisto( giornata.id );
+			// NO: lo faccio sempre : Solo in inserimento ricalcolo l'incasso previsto
+			if( 1==1 || this.status == DataEntryStatus.New )
+				giornata.incassoPrevisto = calcolaIncassoPrevisto( giornata.id );
+
+			calcolaIncassiFotografiGiorno( giornata.id );
 		}
 
 		private Decimal calcolaIncassoPrevisto( DateTime giorno ) {
-			return LumenApplication.Instance.getServizioAvviato<IVenditoreSrv>().calcolaIncassoPrevisto( giorno );
+			return venditoreSrv.calcolaIncassoPrevisto( giorno );
 		}
 
 		protected override void passoPrimaDiSalvare( Giornata giornata ) {
@@ -56,8 +88,45 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 		}
 
 		protected override void passoPreparaEdit( Giornata giornata ) {
-			giornata.incassoPrevisto = calcolaIncassoPrevisto( giornata.id );
+			ricalcolareGiornata( giornata );
 			collectionView.Refresh();
 		}
+
+
+		private void calcolaIncassiFotografiGiorno( DateTime giorno ) {
+
+			IList<IncassoFotografo> incassiFotografiGiorno = venditoreSrv.calcolaIncassiFotografiPrevisti( giorno );
+			incassiFotografiViewModel = new IncassiFotografiViewModel( "Provvigioni fotografi del giorno " + giorno.ToString("d"), incassiFotografiGiorno );
+			OnPropertyChanged( "incassiFotografiViewModel" );
+		}
+
+		void ricalcolareGiorno( DateTime? giorno ) {
+
+			if( giorno == null ) {
+				incassiFotografiViewModel = null;
+				return;
+			}
+
+			// Questo capita quando rinuncio all'inserimento di un record
+			if( entitaCorrente == null )
+				return;
+
+			entitaCorrente.id = (DateTime)giorno;
+			ricalcolareGiornata( entitaCorrente );
+		}
+
+		private RelayCommand _ricalcolareGiornoCommand;
+		public ICommand ricalcolareGiornoCommand {
+			get {
+				if( _ricalcolareGiornoCommand == null ) {
+					_ricalcolareGiornoCommand = new RelayCommand( param => ricalcolareGiorno( (DateTime?)param ),
+						                                          param => true,
+															      false );
+				}
+				return _ricalcolareGiornoCommand;
+			}
+		}
+
+
 	}
 }

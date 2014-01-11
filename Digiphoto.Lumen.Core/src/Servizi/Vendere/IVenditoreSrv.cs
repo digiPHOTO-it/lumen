@@ -106,6 +106,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		Decimal calcolaIncassoPrevisto( DateTime giornata );
 
+		IList<IncassoFotografo> calcolaIncassiFotografiPrevisti( DateTime giornata );
+
 		/// <summary>
 		/// Aggiorno i totali (senza le provvigioni)
 		/// </summary>

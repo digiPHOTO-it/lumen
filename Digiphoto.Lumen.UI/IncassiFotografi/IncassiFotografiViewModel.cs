@@ -27,6 +27,10 @@ namespace Digiphoto.Lumen.UI.IncassiFotografi {
 			this.titolo = titolo;
 		}
 
+		public IncassiFotografiViewModel( String titolo, ICollection<IncassoFotografo> incassi ) : this(titolo) {
+			this.replace( incassi );
+		}
+
 		public void clear() {
 			this.incassiFotografi.Clear();
 		}

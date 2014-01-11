@@ -13,11 +13,11 @@
 	</UserControl.Resources>
 	
 
-	<DockPanel LastChildFill="True">
+	<DockPanel>
 
 		<Label DockPanel.Dock="Top" Content="{Binding Path= titolo}"  Style="{StaticResource styleTitolo}" />
 
-		<Grid  Margin="2,6,6,6">
+		<Grid>
 
 			<StackPanel Orientation="Horizontal">
 
@@ -31,8 +31,9 @@
 
 
 				<!-- Griglia con i campi di dettaglio -->
-				<Grid Margin="10,0,0,0" Visibility="{Binding ElementName=listBoxIncassiFotografi,Path=Count}">
+				<Grid Visibility="{Binding ElementName=listBoxIncassiFotografi,Path=Count}" >
 					<Grid.ColumnDefinitions>
+						<ColumnDefinition />
 						<ColumnDefinition />
 						<ColumnDefinition />
 						<ColumnDefinition />
@@ -46,19 +47,19 @@
 					</Grid.RowDefinitions>
 
 					<Label Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" Content="STAMPE" />
-					<Label Grid.Row="0" Grid.Column="2"	HorizontalAlignment="Center" Content="MASTERIZZATE" />
+					<Label Grid.Row="0" Grid.Column="2"	HorizontalAlignment="Center" Content="MASTERIZZATE" FontSize="11"/>
+					<Label Grid.Row="0" Grid.Column="3"	HorizontalAlignment="Center" Content="TOT" />
 					<Label Grid.Row="1" Grid.Column="0"	Content="Incasso" />
 					<Label Grid.Row="2" Grid.Column="0"	Content="Quantità" />
 					<Label Grid.Row="4" Grid.Column="0"	Content="Fotografo" />
 
 					<TextBox Grid.Row="1" Grid.Column="1" IsReadOnly="True" Text="{Binding ElementName=listBoxIncassiFotografi,Path=SelectedItem.incassoStampe}"  />
 					<TextBox Grid.Row="1" Grid.Column="2" IsReadOnly="True" Text="{Binding ElementName=listBoxIncassiFotografi,Path=SelectedItem.incassoMasterizzate}" />
+					<TextBox Grid.Row="1" Grid.Column="3" IsReadOnly="True" Text="{Binding ElementName=listBoxIncassiFotografi,Path=SelectedItem.incasso}"  />
 					<TextBox Grid.Row="2" Grid.Column="1" IsReadOnly="True" Text="{Binding ElementName=listBoxIncassiFotografi,Path=SelectedItem.contaStampe}"  />
 					<TextBox Grid.Row="2" Grid.Column="2" IsReadOnly="True" Text="{Binding ElementName=listBoxIncassiFotografi,Path=SelectedItem.contaMasterizzate}" />
-
-					<Separator Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"  />
-
-					<Label Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Content="{Binding ElementName=listBoxIncassiFotografi,Path=SelectedItem.fotografo.cognomeNome}" HorizontalContentAlignment="Center" Background="LightGreen" Foreground="Brown"  />
+					<Separator Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" />
+					<Label Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" Content="{Binding ElementName=listBoxIncassiFotografi,Path=SelectedItem.fotografo.cognomeNome}" HorizontalContentAlignment="Center" Background="LightGreen" Foreground="Brown"  />
 
 				</Grid>
 			</StackPanel>

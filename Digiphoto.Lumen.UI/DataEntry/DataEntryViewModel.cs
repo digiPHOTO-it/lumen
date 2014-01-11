@@ -48,6 +48,13 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 
 		#region Proprietà
 
+		public TEntity entitaCorrente {
+			get {
+				return collectionView == null ? null : (TEntity)collectionView.CurrentItem;
+			}
+		}
+
+
 		protected IEntityRepositorySrv<TEntity> entityRepositorySrv {
 			get;
 			private set;
@@ -187,8 +194,6 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 			if( !possoCambiareStatus( nuovoStatus ) )
 				throw new ArgumentException( "nuovo stato incompatibile: " + nuovoStatus );
 
-			TEntity entita = (TEntity)collectionView.CurrentItem;
-
 			// Eseguo!
 			switch( nuovoStatus ) {
 
@@ -200,8 +205,8 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 					break;
 
 				case DataEntryStatus.Edit:
-					passoPreparaEdit( entita );
-					collectionView.EditItem( entita );
+					passoPreparaEdit( entitaCorrente );
+					collectionView.EditItem( entitaCorrente );
 					break;
 
 				case DataEntryStatus.New:
@@ -216,7 +221,7 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 					break;
 
 				case DataEntryStatus.Delete:
-					cancella( entita );
+					cancella( entitaCorrente );
 					nuovoStatus = DataEntryStatus.View;
 					break;
 			}

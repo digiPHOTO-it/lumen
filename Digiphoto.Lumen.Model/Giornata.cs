@@ -11,18 +11,54 @@ namespace Digiphoto.Lumen.Model
 {
     using System;
     using System.Collections.Generic;
-    
-    public partial class Giornata
+	using System.ComponentModel;
+
+	public partial class Giornata : INotifyPropertyChanged
     {
         public System.DateTime id { get; set; }
         public System.DateTime orologio { get; set; }
         public decimal incassoDichiarato { get; set; }
         public string note { get; set; }
-        public decimal incassoPrevisto { get; set; }
+
+		private decimal _incassoPrevisto;
+		public decimal incassoPrevisto {
+			get {
+				return _incassoPrevisto;
+			}
+			set {
+				if( _incassoPrevisto != value ) {
+					_incassoPrevisto = value;
+					OnPropertyChanged( "incassoPrevisto" );
+				}
+			}
+		}
+
         public string prgTaglierina1 { get; set; }
         public string prgTaglierina2 { get; set; }
         public string prgTaglierina3 { get; set; }
         public Nullable<short> totScarti { get; set; }
         public string firma { get; set; }
+
+		#region INotifyPropertyChanged Members
+
+		/// <summary>
+		/// Raised when a property on this object has a new value.
+		/// </summary>
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		/// <summary>
+		/// Raises this object's PropertyChanged event.
+		/// </summary>
+		/// <param name="propertyName">The property that has a new value.</param>
+		protected virtual void OnPropertyChanged( string propertyName ) {
+
+			PropertyChangedEventHandler handler = this.PropertyChanged;
+			if( handler != null ) {
+				var e = new PropertyChangedEventArgs( propertyName );
+				handler( this, e );
+			}
+		}
+
+		#endregion // INotifyPropertyChanged Members
     }
 }
