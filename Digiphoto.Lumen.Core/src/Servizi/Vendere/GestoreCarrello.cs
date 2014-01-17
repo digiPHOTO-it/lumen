@@ -91,10 +91,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// </summary>
 		public short? scontoApplicato {
 			get {
-				if( carrello.totaleAPagare == 0 )
+				if (carrello.totaleAPagare == 0 || 
+					carrello.totaleAPagare == null)
 					return null;
 
-				decimal x = (100 * carrello.totaleAPagare) / prezzoNettoTotale;
+				decimal x = (100 * (decimal)carrello.totaleAPagare) / prezzoNettoTotale;
 				return (short)(100 - x);
 			}
 		}

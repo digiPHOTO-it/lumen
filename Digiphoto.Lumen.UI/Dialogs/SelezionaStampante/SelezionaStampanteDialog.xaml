@@ -1,0 +1,25 @@
+﻿<Window x:Class="Digiphoto.Lumen.UI.Dialogs.SelezionaStampante.SelezionaStampanteDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
+        Title="SelezionaStampanteDialog" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+		d:DesignHeight="180" d:DesignWidth="504" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
+
+	<Window.Resources>
+		<ResourceDictionary Source="SelezionaStampanteDialogResources.xaml" />
+	</Window.Resources>
+
+	<DockPanel>
+
+        <GroupBox DockPanel.Dock="Bottom" Header="Formato Carta" Height="170" >
+			<ListBox
+				ItemsSource="{Binding stampantiAbbinate}" 
+				ItemsPanel="{DynamicResource listaPulsantiDiStampaItemsPanelTemplate}" 
+                ItemTemplate="{StaticResource pulsanteDiStampaTemplate}"
+				ScrollViewer.VerticalScrollBarVisibility="Disabled"
+				ScrollViewer.HorizontalScrollBarVisibility="Visible" Margin="0,0,0,8" >
+			</ListBox>
+		</GroupBox>
+
+	</DockPanel>
+</Window>

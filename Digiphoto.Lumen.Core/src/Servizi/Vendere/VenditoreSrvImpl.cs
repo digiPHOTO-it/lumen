@@ -277,7 +277,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				eventualeStampa(carrello);
 
 				// Poi lancio la masterizzazione
-				eventualeMasterizzazione();
+				eventualeMasterizzazione(carrello);
 			}
 
 
@@ -297,7 +297,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public void removeRigheCarrello( string discriminator ) {
 			IEnumerable<RigaCarrello> listaDacanc = carrello.righeCarrello.Where( r => r.discriminator == discriminator );
-			foreach( RigaCarrello dacanc in listaDacanc ) {
+			foreach (RigaCarrello dacanc in listaDacanc.ToArray())
+			{
 				gestoreCarrello.removeRiga( dacanc );
 			}
 			ricalcolaTotaleCarrello();
@@ -308,6 +309,25 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			OrmUtil.forseAttacca<Carrello>( "Carrelli", ref carrello );
 			LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 			dbContext.Carrelli.Remove( carrello );
+		}
+
+		public void spostaRigaCarrello(RigaCarrello rigaCarrello)
+		{
+			gestoreCarrello.removeRiga(rigaCarrello);
+			if(Carrello.TIPORIGA_STAMPA.Equals(rigaCarrello.discriminator)){
+				rigaCarrello.discriminator = Carrello.TIPORIGA_MASTERIZZATA;
+				rigaCarrello.quantita = 1;
+			}
+			else if (Carrello.TIPORIGA_MASTERIZZATA.Equals(rigaCarrello.discriminator))
+			{
+				rigaCarrello.discriminator = Carrello.TIPORIGA_STAMPA;
+			}
+			else
+			{
+				_giornale.Warn("Errorre è stata spostat una riga senza dicriminator");
+			}
+			gestoreCarrello.aggiungiRiga(rigaCarrello);
+			ricalcolaTotaleCarrello();
 		}
 
 		private void eventualeStampa(Carrello carrello) {
@@ -398,13 +418,26 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		 * Siccome il carrello in questione viene chiuso prima che termini la masterizzazione,
 		 * tramite il suo id, è possibile andare a sistemare eventuali problemi.
 		 */
-		private void eventualeMasterizzazione() {
-
+		private void eventualeMasterizzazione(Carrello carrello)
+		{
 			if( masterizzaSrv == null )
 				return;
 
-			if( masterizzaSrv.fotografie.Count <= 0 )
+			// Se non ho righe nel carrello da stampare, allora esco.
+			if (carrello == null || carrello.righeCarrello.Count == 0)
 				return;
+
+			IEnumerable<RigaCarrello> listaDaMast = carrello.righeCarrello.Where(r => r.discriminator == Carrello.TIPORIGA_MASTERIZZATA);
+			IList<Fotografia> fotoDaMast = new List<Fotografia>();
+			foreach(RigaCarrello riga in listaDaMast){
+				fotoDaMast.Add(riga.fotografia);
+			}
+
+			//if( masterizzaSrv.fotografie.Count <= 0 )
+			//	return;
+
+			masterizzaSrv.addFotografie(fotoDaMast);
+
 
 			_masterizzaSrvImpl.start();
 			_masterizzaSrvImpl.masterizza( carrello.id );

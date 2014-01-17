@@ -22,6 +22,7 @@ using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Database;
 using System.IO;
 using Digiphoto.Lumen.UI.IncassiFotografi;
+using Digiphoto.Lumen.UI.Dialogs.SelezionaStampante;
 
 namespace Digiphoto.Lumen.UI
 {
@@ -122,9 +123,22 @@ namespace Digiphoto.Lumen.UI
 		/// <summary>
 		/// E' il carrello su cui sto aggiungendo le foto
 		/// </summary>
+		private Digiphoto.Lumen.Model.Carrello _carrelloCorrente;
 		public Digiphoto.Lumen.Model.Carrello carrelloCorrente {
 			get {
+				_carrelloCorrente = venditoreSrv.carrello;
+				_carrelloCorrente.PropertyChanged += _carrelloCorrente_PropertyChanged;
 				return venditoreSrv.carrello;
+			}
+		}
+
+		void _carrelloCorrente_PropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == "prezzoDischetto" ||
+				e.PropertyName == "totaleAPagare")
+			{
+				OnPropertyChanged("prezzoNettoTotale");
+				OnPropertyChanged("ScontoApplicato");
 			}
 		}
 
@@ -409,6 +423,20 @@ namespace Digiphoto.Lumen.UI
 				return false;
 		}
 
+		public bool possoSpostareFotoRiga(string discriminator)
+		{
+			if (Carrello.TIPORIGA_MASTERIZZATA.Equals(discriminator))
+				//Se voglio spostare le foto nelle masterizzate devo avere qualcosa nelle stampate
+				return RiCaFotoStampateCv.Count > 0;
+
+			if (Carrello.TIPORIGA_STAMPA.Equals(discriminator))
+				//Se voglio spostare le foto nelle stampate devo avere qualcosa nelle masterizzate
+				return RiCaFotoMasterizzateCv.Count > 0;
+
+			else
+				return false;
+		}
+
 		public bool possoVisualizzareIncassiFotografi {
 			get {
 				return carrelloCorrente != null && carrelloCorrente.righeCarrello.Any();
@@ -545,6 +573,9 @@ namespace Digiphoto.Lumen.UI
 		/// pilotato dal VenditoreSrv. (Risponde al messaggio onNext(GestoreCarrelloMsg) 
 		/// </summary>
 		private void updateGUI() {
+			if(!_bkgIdrata.IsBusy)
+				_bkgIdrata.RunWorkerAsync();
+
 			OnPropertyChanged( "carrelloCorrente" );
 			OnPropertyChanged( "prezzoNettoTotale" );
 			OnPropertyChanged( "ScontoApplicato" );
@@ -799,7 +830,8 @@ namespace Digiphoto.Lumen.UI
 
 			venditoreSrv.caricaCarrello( CarrelloSalvatoSelezionato );
 
-			_bkgIdrata.RunWorkerAsync();
+			if (!_bkgIdrata.IsBusy)
+				_bkgIdrata.RunWorkerAsync();
 			// Non mettere altro codice qui sotto. Questa deve essere l'ultima operazione di questo metodo
 		}
 
@@ -915,6 +947,28 @@ namespace Digiphoto.Lumen.UI
 				rigaCarrelloStampataSelezionata.quantita += delta;
 
 			calcolaTotali();
+		}
+
+		private void spostaFotoRiga(string discriminator)
+		{
+			if (Carrello.TIPORIGA_MASTERIZZATA.Equals(discriminator))
+				venditoreSrv.spostaRigaCarrello(rigaCarrelloStampataSelezionata);
+
+			if (Carrello.TIPORIGA_STAMPA.Equals(discriminator))
+			{
+				SelezionaStampanteDialog d = new SelezionaStampanteDialog();
+				bool? esito = d.ShowDialog();
+
+				if (esito == true)
+				{
+					//associo il nuovo formato carta alla riga
+					rigaCarrelloMasterizzataSelezionata.formatoCarta = d.formatoCarta;
+					venditoreSrv.spostaRigaCarrello(rigaCarrelloMasterizzataSelezionata);
+					rinfrescaViewRighe();
+				}
+
+				d.Close();
+			}
 		}
 
 		private void visualizzareIncassiFotografi() {
@@ -1078,6 +1132,20 @@ namespace Digiphoto.Lumen.UI
             }
         }
 
+		private RelayCommand _spostaFotoRigaCommand;
+		public ICommand SpostaFotoRigaCommand
+		{
+			get
+			{
+				if (_spostaFotoRigaCommand == null)
+				{
+					_spostaFotoRigaCommand = new RelayCommand(param => spostaFotoRiga((String)param),
+															   param => possoSpostareFotoRiga((String)param), false);
+				}
+				return _spostaFotoRigaCommand;
+			}
+		}
+
 		private RelayCommand _caricareCarrelloSelezionatoCommand;
 		public ICommand caricareCarrelloSelezionatoCommand
 		{
@@ -1172,13 +1240,15 @@ namespace Digiphoto.Lumen.UI
 
 			// Qui cambiano soltanto gli attributi con il totale del carrello
 			if(msg.fase== Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.UpdateCarrello){
+				ricreaCV = true;
 			}
 
-			if( carrelloCorrente.righeCarrello.Count() != RiCaFotoStampateCv.Count )
+			if( carrelloCorrente.righeCarrello.Count() != (RiCaFotoStampateCv.Count + RiCaFotoMasterizzateCv.Count)  )
 				ricreaCV = true;
 
 			if( msg.fase == Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.LoadCarrelloSalvato ||
-				msg.fase == Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.CreatoNuovoCarrello ) {
+				msg.fase == Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.CreatoNuovoCarrello )
+			{
 				// Qui devo ricreare la collection view delle righe
 				ricreaCV = true;
 			}
