@@ -185,8 +185,11 @@
 
 					<Grid>
 
-						<GroupBox Header="Stampigli" HorizontalAlignment="Left" Margin="307,84,0,0"  VerticalAlignment="Top" Width="121" Height="98">
-							<StackPanel Orientation="Vertical" Margin="5,5,0,0">
+						<GroupBox HorizontalAlignment="Left" Margin="280,70,0,0"  VerticalAlignment="Top" >
+							<GroupBox.Header>
+								<Label Content="Stampigli" />
+							</GroupBox.Header>
+							<StackPanel Orientation="Vertical" Margin="5,0,0,0">
 								<CheckBox Content="Operatore" IsChecked="{Binding cfg.stampiglioOperatore}" />
 								<CheckBox Content="Giornata" IsChecked="{Binding cfg.stampiglioGiornata}" />
 								<CheckBox Content="N° foto" IsChecked="{Binding cfg.stampiglioNumFoto}" />
@@ -194,31 +197,36 @@
 							</StackPanel>
 						</GroupBox>
 
-						<GroupBox Header="Fotografie" HorizontalAlignment="Left" Margin="16,71,0,0"  VerticalAlignment="Top">
-							<StackPanel Orientation="Vertical" Margin="5,5,0,0">
+						<GroupBox HorizontalAlignment="Left" Margin="16,70,0,0"  VerticalAlignment="Top" >
+							<GroupBox.Header>
+								<Label Content="Fotografie" />
+							</GroupBox.Header>
+							<StackPanel Orientation="Vertical" Margin="5,0,0,0">
 								<CheckBox Content="Comprimi Numero Foto" IsChecked="{Binding cfg.compNumFoto}" />
 								<CheckBox Content="Auto rotazione durante scarico" HorizontalAlignment="Left" Width="184" ToolTip="Ruota automaticamente le foto verticali" IsChecked="{Binding Path=cfg.autoRotazione,Mode=TwoWay}"/>
 								<CheckBox Content="Svuota memory card dopo averla scaricata" Name="svuotaCardCheckBox" IsChecked="{Binding Path=cfg.eraseFotoMemoryCard,Mode=TwoWay}"/>
 								<CheckBox Content="Proietta area stampabile sulle diapositive" HorizontalAlignment="Left" Name="checkBox2" IsChecked="{Binding Path=cfg.proiettaDiapo}"/>
 							</StackPanel>
 						</GroupBox>
-						<Label Content="Fuori Standard" Height="28" HorizontalAlignment="Left" Margin="16,302,0,0" Name="label12" VerticalAlignment="Top" Width="124" />
-						<TextBox Height="23" HorizontalAlignment="Left" Margin="194,307,0,0" Text="{Binding Path=cfg.fuoriStandard}" ToolTip="Identificatvo per personalizzazioni fuori standard." Name="indFuroStandard" VerticalAlignment="Top" Width="75" />
 						<Label Content="Cartella Rullini" Height="25" HorizontalAlignment="Left" Margin="13,12,0,0" Name="label5" VerticalAlignment="Top" Width="121" />
 						<TextBox Height="23" Margin="151,12,55,0" Text="{Binding Path=cfg.cartellaFoto}" VerticalAlignment="Top" />
 						<Label Content="Cartella Maschere" Height="25" HorizontalAlignment="Left" Margin="13,41,0,0" Name="label14" VerticalAlignment="Top" Width="121" />
-						<TextBox Height="23" Margin="151,41,55,0" Text="{Binding Path=cfg.cartellaMaschere}" VerticalAlignment="Top" />
+						<TextBox Margin="151,41,55,0" Text="{Binding Path=cfg.cartellaMaschere}" VerticalAlignment="Top" />
 						<Button  Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="foto" Content="..." Height="Auto" Margin="0,11,16,0" ToolTip="Sfoglia cartelle" VerticalAlignment="Top" HorizontalAlignment="Right" Width="22" />
-						<Label Content="Millis intervallo SlideShow" HorizontalAlignment="Left" Margin="16,194,0,0" VerticalAlignment="Top" Width="193" />
-						<TextBox Height="23" HorizontalAlignment="Left" Margin="194,194,0,0" Text="{Binding Path=cfg.millisIntervalloSlideShow}" ToolTip="esempio 1500 = 1 secondo e mezzo" VerticalAlignment="Top" Width="60" />
+						<Label Content="Millis intervallo SlideShow" HorizontalAlignment="Left" Margin="16,194,0,0" VerticalAlignment="Top" Width="164" />
+						<TextBox  HorizontalAlignment="Left" Margin="194,198,0,0" Text="{Binding Path=cfg.millisIntervalloSlideShow}" ToolTip="esempio 1500 = 1 secondo e mezzo" VerticalAlignment="Top" Width="40" />
 						<Button Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="mask" Content="..." Margin="0,41,16,0"  ToolTip="Sfoglia cartelle" VerticalAlignment="Top" Width="22" HorizontalAlignment="Right" />
 						<Label Content="Programma esterno foto-ritocco" Height="26" HorizontalAlignment="Left" Margin="6,387,0,0" Name="label8" VerticalAlignment="Top" Width="192" />
-						<TextBox Height="23" Margin="209,387,44,0" Name="textBox1" VerticalAlignment="Top" Text="{Binding Path=cfg.editorImmagini}"/>
+						<TextBox Margin="209,387,44,0" Name="textBox1" VerticalAlignment="Top" Text="{Binding Path=cfg.editorImmagini}"/>
 						<Button Content="..." Height="Auto" HorizontalAlignment="Right" Margin="0,387,16,0" Name="button1" VerticalAlignment="Top" Width="22" />
-						<TextBox Height="23" HorizontalAlignment="Left" Margin="194,269,0,0" Text="{Binding Path=cfg.numColoneProvini}" ToolTip="N.colonne Provini" VerticalAlignment="Top" Width="40" />
-						<Label Content="N° colonne Provini" Height="28" HorizontalAlignment="Left" Margin="16,269,0,0" Name="colonneProvini" VerticalAlignment="Top" Width="155" />
-						<TextBox Height="23" HorizontalAlignment="Left" Margin="194,230,0,0" Text="{Binding Path=cfg.numRigheProvini}" ToolTip="N.colonne Provini" VerticalAlignment="Top" Width="40" />
-						<Label Content="N° righe Provini" Height="28" HorizontalAlignment="Left" Margin="16,0,0,155" Name="rgheProvini" VerticalAlignment="Bottom" Width="155" />
+						<TextBox HorizontalAlignment="Left" Margin="194,249,0,0" Text="{Binding Path=cfg.numColoneProvini}" ToolTip="N.colonne Provini" VerticalAlignment="Top" Width="40" />
+						<Label Content="N° colonne Provini" HorizontalAlignment="Left" Margin="16,246,0,0" Name="colonneProvini" VerticalAlignment="Top" Width="164" />
+						<TextBox HorizontalAlignment="Left" Margin="194,223,0,0" Text="{Binding Path=cfg.numRigheProvini}" ToolTip="N.colonne Provini" VerticalAlignment="Top" Width="40" />
+						<Label Content="N° righe Provini" HorizontalAlignment="Left" Margin="16,0,0,167" Name="rgheProvini" VerticalAlignment="Bottom" Width="164" />
+						<Label Content="Fuori Standard" HorizontalAlignment="Left" Margin="16,272,0,0" Name="label12" VerticalAlignment="Top" Width="164" />
+						<TextBox HorizontalAlignment="Left" Margin="194,275,0,0" Text="{Binding Path=cfg.fuoriStandard}" ToolTip="" VerticalAlignment="Top" Width="75" />
+						<Label Content="Paginazione risultati gallery" HorizontalAlignment="Left" Margin="16,298,0,0" VerticalAlignment="Top" Width="164" />
+						<TextBox HorizontalAlignment="Left" Margin="194,302,0,0" Text="{Binding Path=cfg.paginazioneRisultatiGallery}" ToolTip="Il num. massimo di risultati per pagina nella gallery" VerticalAlignment="Top" Width="40" />
 
 					</Grid>
 				</StackPanel>
