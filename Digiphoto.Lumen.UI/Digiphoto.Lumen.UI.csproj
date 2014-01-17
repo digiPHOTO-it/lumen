@@ -161,6 +161,14 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite, Version=1.0.90.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\System.Data.SQLite.x86.1.0.90.0\lib\net45\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.Linq, Version=2.0.90.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.90.0\lib\net45\System.Data.SQLite.Linq.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
@@ -246,6 +254,10 @@
     <Compile Include="Dialogs\Metadati\SelettoreMetadatiDialog.xaml.cs">
       <DependentUpon>SelettoreMetadatiDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\SelezionaStampante\SelezionaStampanteDialog.xaml.cs">
+      <DependentUpon>SelezionaStampanteDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SelezionaStampante\SelezionaStampanteDialogViewModel.cs" />
     <Compile Include="Dialogs\StampaProviniDialog.xaml.cs">
       <DependentUpon>StampaProviniDialog.xaml</DependentUpon>
     </Compile>
@@ -361,6 +373,14 @@
     <Page Include="Dialogs\Metadati\SelettoreMetadatiDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\SelezionaStampante\SelezionaStampanteDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SelezionaStampante\SelezionaStampanteDialogResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Dialogs\StampaProviniDialog.xaml">
       <SubType>Designer</SubType>
@@ -686,6 +706,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Carrello-48x48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Carrello-right-48x48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Carrello-left-48x48.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\ssBurn-16x16.png" />
