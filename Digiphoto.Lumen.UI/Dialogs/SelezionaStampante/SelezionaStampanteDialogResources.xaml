@@ -1,0 +1,29 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+	<!--
+      ** I pulsanti di stampa, siccome sono tutti uguali,
+      ** devo distinguerli con una scritta.
+      ** Quindi creo un pulsante che ha una didascalia sotto.
+    -->
+	<DataTemplate x:Key="pulsanteDiStampaTemplate">
+		<StackPanel Orientation="Horizontal" >
+		<Button ToolTip="{Binding}" 
+                Command="{Binding Path=DataContext.stampareCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
+                CommandParameter="{Binding}">
+			<StackPanel Orientation="Vertical" >
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Printer-48x48.png" Width="48" />
+				<Label Content="{Binding FormatoCarta.descrizione}" Width="48" HorizontalAlignment="Center" />
+			</StackPanel>
+		</Button>
+		</StackPanel>
+	</DataTemplate>
+
+	<!-- Template per il pannello che contiene tutti gli elementi della lista -->
+	<ItemsPanelTemplate x:Key="listaPulsantiDiStampaItemsPanelTemplate">
+		<!-- il wrappanel mi consente di sistemare al meglio le foto in funzione dello spazio disponibile ed andare a capo quando serve -->
+		<WrapPanel Orientation="Horizontal" />
+	</ItemsPanelTemplate>
+
+</ResourceDictionary>

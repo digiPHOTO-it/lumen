@@ -53,8 +53,8 @@
 					<Label Content="Intestazione"  VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,38,0,0" Width="85" />
 					<TextBox Text="{Binding Path=carrelloCorrente.intestazione, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="92,40,0,0" Width="249" />
 					<TextBox Text="{Binding Path=prezzoNettoTotale,Mode=OneWay,StringFormat=C}" Margin="596,9,0,0"  IsReadOnly="True" HorizontalContentAlignment="Right" Width="70" Height="23" />
-					<Label Content="Tot. a Pagare" Margin="507,64,0,0" Width="85" FontSize="12" />
-					<TextBox Text="{Binding Path=carrelloCorrente.totaleAPagare,StringFormat=C, UpdateSourceTrigger=LostFocus, Mode=TwoWay}" TextAlignment="Right" Margin="596,65,0,0" FontSize="14" ToolTip="Prezzo effettivamente pagato"  Background="Yellow" Width="70" />
+					<Label Content="Forfettario" Margin="507,64,0,0" Width="85" FontSize="12" />
+                    <TextBox Text="{Binding Path=carrelloCorrente.totaleAPagare,StringFormat=C,TargetNullValue='', UpdateSourceTrigger=LostFocus, Mode=TwoWay}" TextAlignment="Right" Margin="596,65,0,0" FontSize="14" ToolTip="Prezzo effettivamente pagato"  Background="Yellow" Width="70" />
 					<Label Content="Sconto" Margin="507,36,0,0"  VerticalAlignment="Top" HorizontalAlignment="Left" Width="85" FontSize="12"/>
 					<TextBox Text="{Binding Path=ScontoApplicato,Mode=OneWay}" Margin="596,38,0,0" IsReadOnly="True" HorizontalContentAlignment="Right" Width="70" />
 					<Label Content="Giornata" Margin="0,7,0,0" Width="85" />
@@ -122,7 +122,7 @@
 			<DockPanel LastChildFill="True">
 				<!-- Archivio carrelli salvati -->
 
-				<ToolBarTray Orientation="Vertical" DockPanel.Dock="Right" >
+				<ToolBarTray Orientation="Vertical" DockPanel.Dock="left" >
 					<ToolBar>
 						<Button Command="{Binding eseguireRicercaCommand}" Style="{StaticResource styleCarrelliButtonSearch}" />
 						<Button Command="{Binding azzeraParamRicercaCommand}" Style="{StaticResource styleCarrelliButtonClearFilter}" />
@@ -132,7 +132,7 @@
 					</ToolBar>
 				</ToolBarTray>
 
-				<GroupBox Header="Filtro ricerca" DockPanel.Dock="Right">
+				<GroupBox Header="Filtro ricerca" DockPanel.Dock="left">
 
 					<StackPanel Orientation="Vertical">
 
@@ -189,7 +189,8 @@
 
 		<Grid Name="dettagliGrid">
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition Width="32"/>
 				<ColumnDefinition />
 			</Grid.ColumnDefinitions>
 			<Grid.RowDefinitions>
@@ -208,7 +209,10 @@
 					 ItemTemplate="{DynamicResource rigaCarrelloDataTemplate}"
 					 ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
 
-			<ListBox x:Name="listCarrelloMasterizzate" Grid.Row="0" Grid.Column="1"
+            <Button Grid.Row="0" Grid.Column="1" Command="{Binding SpostaFotoRigaCommand}" CommandParameter="M" Style="{StaticResource styleSpostaM}" Height="32" Width="32" Margin="0,100,0,152" />
+            <Button Grid.Row="0" Grid.Column="1" Command="{Binding SpostaFotoRigaCommand}" CommandParameter="S" Style="{StaticResource styleSpostaS}" Height="32" Width="32" Margin="0,137,0,115" />
+
+            <ListBox x:Name="listCarrelloMasterizzate" Grid.Row="0" Grid.Column="2"
 					 SelectionMode="Single" 
 					 Style="{StaticResource ListCarrelloStyle}"
 					 ItemsSource="{Binding Path=RiCaFotoMasterizzateCv}"

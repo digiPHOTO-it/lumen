@@ -370,16 +370,34 @@
 		</Setter>
 	</Style>
 
-	<Style x:Key="styleCartQtaDown" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
-		<Setter Property="ToolTip" Value="- Decrementa quantità riga" />
-		<Setter Property="Content">
-			<Setter.Value>
-				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-qta-down-48x48.png" Width="32"/>
-			</Setter.Value>
-		</Setter>
-	</Style>
+    <Style x:Key="styleCartQtaDown" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+        <Setter Property="ToolTip" Value="- Decrementa quantità riga" />
+        <Setter Property="Content">
+            <Setter.Value>
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-qta-down-48x48.png" Width="32"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
-	<Style x:Key="styleCarrelliButtonDelete" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+    <Style x:Key="styleSpostaM" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+        <Setter Property="ToolTip" Value="Sposta la riga selezionata nella lista delle foto da masterizzare" />
+        <Setter Property="Content">
+            <Setter.Value>
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-right-48x48.png" Width="32"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="styleSpostaS" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+        <Setter Property="ToolTip" Value="Sposta la riga selezionata nella lista delle foto da stampare" />
+        <Setter Property="Content">
+            <Setter.Value>
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-left-48x48.png" Width="32"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="styleCarrelliButtonDelete" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
 		<Setter Property="ToolTip" Value="Elimina carrello selezionato" />
 		<Setter Property="Content">
 			<Setter.Value>

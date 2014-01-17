@@ -53,6 +53,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		void removeRigaCarrello(RigaCarrello rigaCarrello);
 
+		void spostaRigaCarrello(RigaCarrello rigaCarrello);
+
 		/// <summary>
 		/// Elimina dal carrello tutte le righe di un certo tipo
 		/// </summary>
