@@ -314,7 +314,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			// Ora sistemo il totale a pagare. Lo valorizzo soltanto se è vuoto. 
 			// Se l'utente ha valorizzato a mano il totale a pagare, lo lascio invariato.
-			if( carrello.totaleAPagare <= 0 )
+			if( carrello.totaleAPagare == null ||
+				carrello.totaleAPagare <= 0 )
 				carrello.totaleAPagare = prezzoNettoTotale;
 
 			int quanti = mioDbContext.SaveChanges();
