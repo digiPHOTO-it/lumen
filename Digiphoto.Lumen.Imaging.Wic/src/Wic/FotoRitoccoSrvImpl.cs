@@ -180,8 +180,13 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 			AiutanteFoto.creaProvinoFoto( fotografia );
 
-			if( salvare )
+			if( salvare ) {
 				fotografieRepositorySrv.saveChanges();  // Persisto nel db le modifiche
+				
+				// Devo informate tutti che questa foto è cambiata
+				FotoModificateMsg msg = new FotoModificateMsg( this, fotografia );
+				pubblicaMessaggio( msg );
+			}
 		}
 
 

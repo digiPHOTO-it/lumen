@@ -949,5 +949,18 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				ricalcolaTotaleCarrello();
 			}
 		}
+
+
+		public void rimpiazzaFotoInRiga( RigaCarrello riga, Fotografia fMod ) {
+
+			// Rilascio eventuali immagini precedenti
+			AiutanteFoto.disposeImmagini( riga.fotografia, IdrataTarget.Tutte );
+
+			// Rileggo da disco la fotografia
+			gestoreCarrello.rimpiazzaFotoInRiga( fMod.id );
+
+			// idrato il provino per visualizzarlo
+			AiutanteFoto.idrataImmaginiFoto( riga.fotografia, IdrataTarget.Provino );
+		}
 	}
 }

@@ -22,7 +22,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 			this.fotos = new List<Fotografia>();
 		}
 
-		List<Fotografia> fotos {
+		public List<Fotografia> fotos {
 			get;
 			set;
 		}
