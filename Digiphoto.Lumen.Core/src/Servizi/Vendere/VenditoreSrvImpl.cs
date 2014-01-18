@@ -212,6 +212,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			GestoreCarrelloMsg msg = new GestoreCarrelloMsg( this );
 			msg.fase = Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.CreatoNuovoCarrello;
 			LumenApplication.Instance.bus.Publish( msg );
+			
+			if (_masterizzaSrvImpl != null)
+			{
+				_masterizzaSrvImpl.Dispose();
+				_masterizzaSrvImpl = null;
+			}
 		}
 
 		public bool salvaCarrello() {
@@ -426,9 +432,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		 */
 		private void eventualeMasterizzazione(Carrello carrello)
 		{
-			if( masterizzaSrv == null )
-				return;
-
 			// Se non ho righe nel carrello da stampare, allora esco.
 			if (carrello == null || carrello.righeCarrello.Count == 0)
 				return;
@@ -439,8 +442,16 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				fotoDaMast.Add(riga.fotografia);
 			}
 
-			//if( masterizzaSrv.fotografie.Count <= 0 )
-			//	return;
+			if( fotoDaMast.Count <= 0 )
+				return;
+
+			// Istanzio il servizio di masterizzazione, ma io uso la Impl.
+			if (_masterizzaSrvImpl == null)
+			{
+				// Siccome non voglio che si chiami il metodo masterizza da fuori, faccio una forzatura.
+				// Uso io direttamente la impl internamente.
+				_masterizzaSrvImpl = (MasterizzaSrvImpl)LumenApplication.Instance.creaServizio<IMasterizzaSrv>();
+			}
 
 			masterizzaSrv.addFotografie(fotoDaMast);
 
@@ -614,11 +625,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				gestoreCarrello.Dispose();
 
 			creaNuovoCarrello();
-
-			if( _masterizzaSrvImpl != null ) {
-				_masterizzaSrvImpl.Dispose();
-				_masterizzaSrvImpl = null;
-			}
 		}
 
 		/**
@@ -932,6 +938,13 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// </summary>
 		public void removeDatiDischetto() {
 			this.removeRigheCarrello( Carrello.TIPORIGA_MASTERIZZATA );
+			// Istanzio il servizio di masterizzazione, ma io uso la Impl.
+			if (_masterizzaSrvImpl == null)
+			{
+				// Siccome non voglio che si chiami il metodo masterizza da fuori, faccio una forzatura.
+				// Uso io direttamente la impl internamente.
+				_masterizzaSrvImpl = (MasterizzaSrvImpl)LumenApplication.Instance.creaServizio<IMasterizzaSrv>();
+			}
 			setDatiDischetto( TipoDestinazione.NULLA, null, null );
 		}
 
