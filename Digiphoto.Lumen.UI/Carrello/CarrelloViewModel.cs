@@ -23,10 +23,11 @@ using Digiphoto.Lumen.Database;
 using System.IO;
 using Digiphoto.Lumen.UI.IncassiFotografi;
 using Digiphoto.Lumen.UI.Dialogs.SelezionaStampante;
+using Digiphoto.Lumen.Servizi.Ritoccare;
 
 namespace Digiphoto.Lumen.UI
 {
-	public class CarrelloViewModel : ViewModelBase, IObserver<MasterizzaMsg>, IObserver<GestoreCarrelloMsg>, IObserver<StampatoMsg>
+	public class CarrelloViewModel : ViewModelBase, IObserver<MasterizzaMsg>, IObserver<GestoreCarrelloMsg>, IObserver<StampatoMsg>, IObserver<FotoModificateMsg>
     {
 		private Digiphoto.Lumen.Servizi.Masterizzare.Fase StatoMasterizzazione = Digiphoto.Lumen.Servizi.Masterizzare.Fase.Attesa;
 
@@ -50,6 +51,9 @@ namespace Digiphoto.Lumen.UI
 
 				IObservable<StampatoMsg> observableStampato = LumenApplication.Instance.bus.Observe<StampatoMsg>();
 				observableStampato.Subscribe(this);
+
+				IObservable<FotoModificateMsg> observableModificate = LumenApplication.Instance.bus.Observe<FotoModificateMsg>();
+				observableModificate.Subscribe( this );
 
 				// Creo due view diverse per le righe del carrello
 				rinfrescaViewRighe();
@@ -1315,6 +1319,32 @@ namespace Digiphoto.Lumen.UI
 			{
 				dialogProvider.ShowError("Stampa non Eseguita Correttamente", "Errore", null);
 			}
+		}
+
+		// E' stata modificata una o più foto
+		public void OnNext( FotoModificateMsg msg ) {
+			
+			Digiphoto.Lumen.Servizi.EntityRepository.IEntityRepositorySrv<Fotografia> er = LumenApplication.Instance.getServizioAvviato<Digiphoto.Lumen.Servizi.EntityRepository.IEntityRepositorySrv<Fotografia>>();
+
+			// Devo controllare se nel carrello sono presenti delle foto che hanno subito delle modifiche.
+			// In tal caso devo aggiornarmi
+			foreach( Fotografia fMod in msg.fotos ) {
+
+				// Faccio il controllo con l'id numerico perché l'equals non mi da sicurezze
+				RigaCarrello riga = carrelloCorrente.righeCarrello.SingleOrDefault( r => r.fotografia.id == fMod.id );
+				if( riga != null ) {
+
+					// rimpiazzo la fotografia dentro la riga carrello. Lo faccio nel thread della UI altrimenti non mi si rinfresca il carrello.
+
+					App.Current.Dispatcher.BeginInvoke(
+						new Action( () => {
+							venditoreSrv.rimpiazzaFotoInRiga( riga, fMod );
+						}
+					) );
+
+				}
+			}
+
 		}
 
 		#endregion

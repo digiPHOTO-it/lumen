@@ -285,6 +285,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		public void salva() {
 
 			// Sistemo un pò di campi ma NON quelli di chiave primaria!
+			
 			completaAttributiMancanti( true );
 
 			if( ! isPossibileSalvare )
@@ -607,6 +608,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		#endregion // INotifyPropertyChanged Members
 
+
+		internal void rimpiazzaFotoInRiga( Guid idFotoDaRefresh ) {
+
+			RigaCarrello riga = carrello.righeCarrello.Where( r => r.fotografia.id == idFotoDaRefresh ).SingleOrDefault();
+			if( riga != null ) {
+				((IObjectContextAdapter)mioDbContext).ObjectContext.Refresh( RefreshMode.StoreWins, riga.fotografia );
+			}
+		}
 	}
 
 

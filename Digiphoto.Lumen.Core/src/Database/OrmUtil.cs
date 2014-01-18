@@ -208,17 +208,12 @@ namespace Digiphoto.Lumen.Database {
 		public static void rinuncioAlleModifiche( Object entita, LumenEntities dbContext ) {
 
 			ObjectContext objContext = ((IObjectContextAdapter)dbContext).ObjectContext;
+			
+			if( dbContext.Entry( entita ).State == EntityState.Modified )
+				objContext.Refresh( RefreshMode.StoreWins, entita );
 
-			// Se l'enitita non è stata salvata, allora torno indietro.
-			if( entita is IEntityWithKey ) {
-				ObjectStateEntry stateEntry = objContext.ObjectStateManager.GetObjectStateEntry( ((IEntityWithKey)entita).EntityKey );
-
-				if( stateEntry.State == EntityState.Modified )
-					objContext.Refresh( RefreshMode.StoreWins, entita );
-
-				if( stateEntry.State == EntityState.Added )
-					dbContext.Set( entita.GetType() ).Remove( entita );
-			}
+			if( dbContext.Entry( entita ).State == EntityState.Added )
+				dbContext.Set( entita.GetType() ).Remove( entita );
 		}
 	}
 }

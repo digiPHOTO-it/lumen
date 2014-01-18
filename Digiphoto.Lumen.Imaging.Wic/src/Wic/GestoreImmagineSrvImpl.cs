@@ -111,6 +111,10 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 			fotografieRepository.update( ref fotografia, true );
 			fotografieRepository.saveChanges();
+
+			// Devo informate tutti che questa foto è cambiata
+			FotoModificateMsg msg = new FotoModificateMsg( this, fotografia );
+			pubblicaMessaggio( msg );
 		}
 	}
 }
