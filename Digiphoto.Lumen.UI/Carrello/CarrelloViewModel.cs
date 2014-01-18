@@ -427,11 +427,11 @@ namespace Digiphoto.Lumen.UI
 		{
 			if (Carrello.TIPORIGA_MASTERIZZATA.Equals(discriminator))
 				//Se voglio spostare le foto nelle masterizzate devo avere qualcosa nelle stampate
-				return RiCaFotoStampateCv.Count > 0;
+				return RiCaFotoStampateCv != null && RiCaFotoStampateCv.CurrentItem != null;
 
 			if (Carrello.TIPORIGA_STAMPA.Equals(discriminator))
 				//Se voglio spostare le foto nelle stampate devo avere qualcosa nelle masterizzate
-				return RiCaFotoMasterizzateCv.Count > 0;
+				return RiCaFotoMasterizzateCv != null && RiCaFotoMasterizzateCv.CurrentItem != null;
 
 			else
 				return false;
@@ -594,11 +594,24 @@ namespace Digiphoto.Lumen.UI
         {
 			_giornale.Debug( "Mi preparo a vendere questo carrello" );
 
-			
+
+			if( !venditoreSrv.isPossibileSalvareCarrello ) {
+				string msg = venditoreSrv.msgValidaCarrello;
+				if( msg == null )
+					msg = "Il carrello non è validato.";
+				dialogProvider.ShowError( msg, "Impossibile salvare il carrello", null );
+				return;
+			}
+		
 			if (richiediDoveMasterizzare() == false)
 				return;
 
+
+
 			_giornale.Debug( "Sono pronto per vendere il carrello. Tot a pagare = " + venditoreSrv.carrello.totaleAPagare );
+
+
+
 
 			if(venditoreSrv.vendereCarrello())
 			{
@@ -768,8 +781,8 @@ namespace Digiphoto.Lumen.UI
 			if( ! venditoreSrv.isPossibileSalvareCarrello ) {
 				string msg = venditoreSrv.msgValidaCarrello;
 				if( msg == null )
-					msg = "Il carrello non è validato. Impossibile salvare.";
-				dialogProvider.ShowError( msg, "Errore", null );
+					msg = "Il carrello non è validato.";
+				dialogProvider.ShowError( msg, "Impossibile salvare il carrello", null );
 				return;
 			}
 
@@ -788,6 +801,15 @@ namespace Digiphoto.Lumen.UI
 
 		private void eliminaCarrello()
 		{
+			bool procediPure = false;
+
+			dialogProvider.ShowConfirmation( "Confermi la cancellazione del carrello:\n " + CarrelloSalvatoSelezionato.intestazione,
+				                             "Cancellazione carrello",	(confermato) =>	{
+												 procediPure = confermato;
+											 });
+			if( !procediPure )
+				return;
+
 			venditoreSrv.removeCarrello( CarrelloSalvatoSelezionato );
 			creaNuovoCarrello();
 		}

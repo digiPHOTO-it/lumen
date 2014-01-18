@@ -14,12 +14,21 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 	/// </summary>
 	public class FotoModificateMsg : Messaggio {
 
-		public FotoModificateMsg( object sender ) : base( sender ) {
+		public FotoModificateMsg( object sender, Fotografia f ) : this( sender ) {
+			add( f );
 		}
 
-		List<Fotografia> foto {
+		public FotoModificateMsg( object sender ) : base( sender ) {
+			this.fotos = new List<Fotografia>();
+		}
+
+		List<Fotografia> fotos {
 			get;
 			set;
+		}
+
+		public void add( Fotografia f ) {
+			fotos.Add( f );
 		}
 	}
 
