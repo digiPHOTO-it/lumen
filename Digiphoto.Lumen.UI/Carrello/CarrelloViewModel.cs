@@ -585,6 +585,28 @@ namespace Digiphoto.Lumen.UI
 		}
 
 
+		private bool verificaChiediConfermaSalvataggioTotaleAPagareZero()
+		{
+			bool procediPure = true;
+			//Se ho un totale a pagare diverso da zero ritorno true e non chiedo conferma
+			//altrimenti chiedo se voglio prosegiure
+			if (venditoreSrv.carrello.totaleAPagare != 0)
+				return procediPure;
+
+			if (venditoreSrv.carrello.totaleAPagare == 0 && prezzoNettoTotale > 0)
+			{
+				procediPure = false;
+				StringBuilder msg = new StringBuilder("Attenzione: stai per regalare il carrello.\nConfermi?");
+				dialogProvider.ShowConfirmation(msg.ToString(), "Richiesta conferma",
+					(confermato) =>
+					{
+						procediPure = confermato;
+					});
+			}
+
+			return procediPure;
+		}
+
         /// <summary>
         /// Devo mandare in stampa le foto selezionate
         /// Nel parametro mi arriva l'oggetto StampanteAbbinata che mi da tutte le indicazioni
@@ -594,6 +616,9 @@ namespace Digiphoto.Lumen.UI
         {
 			_giornale.Debug( "Mi preparo a vendere questo carrello" );
 
+			//Verifico se ho un prezzo totaleAPagare(Forfettario) uguale a ZERO in caso notifico l'operatore che sta per regalare il carrello
+			if (verificaChiediConfermaSalvataggioTotaleAPagareZero() == false)
+				return;
 			
 			if (richiediDoveMasterizzare() == false)
 				return;
@@ -765,6 +790,10 @@ namespace Digiphoto.Lumen.UI
 
 		private void salvaCarrello()
 		{
+			//Verifico se ho un prezzo totaleAPagare(Forfettario) uguale a ZERO in caso notifico l'operatore che sta per regalare il carrello
+			if (verificaChiediConfermaSalvataggioTotaleAPagareZero() == false)
+				return;
+
 			if( ! venditoreSrv.isPossibileSalvareCarrello ) {
 				string msg = venditoreSrv.msgValidaCarrello;
 				if( msg == null )

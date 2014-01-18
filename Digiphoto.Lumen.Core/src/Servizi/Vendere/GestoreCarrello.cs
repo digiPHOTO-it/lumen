@@ -199,7 +199,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			// Se il prezzo del carrello non è stato cambiato a mano, lo azzero in questo modo se lo risalverò, mi verrà aggiornato il totale nuovamente.
 			if( prezzoNettoTotale == carrello.totaleAPagare )
-				carrello.totaleAPagare = 0;
+				carrello.totaleAPagare = null;
 
 			isStatoModifica = true;
 		}
@@ -314,8 +314,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			// Ora sistemo il totale a pagare. Lo valorizzo soltanto se è vuoto. 
 			// Se l'utente ha valorizzato a mano il totale a pagare, lo lascio invariato.
-			if( carrello.totaleAPagare == null ||
-				carrello.totaleAPagare <= 0 )
+			if( carrello.totaleAPagare == null)
+				//Prima non avevo la gestione dei valori nulli.
+				//carrello.totaleAPagare <= 0 )
 				carrello.totaleAPagare = prezzoNettoTotale;
 
 			int quanti = mioDbContext.SaveChanges();
