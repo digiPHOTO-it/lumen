@@ -104,7 +104,12 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			fotografia.correzioniXml = SerializzaUtil.objectToString( correzioni );
 
 			if( salvare ) {
+				
 				fotografieRepositorySrv.saveChanges();  // Persisto nel db le modifiche
+
+				// Devo informate tutti che questa foto è cambiata
+				FotoModificateMsg msg = new FotoModificateMsg( this, fotografia );
+				pubblicaMessaggio( msg );
 			}
 		}
 

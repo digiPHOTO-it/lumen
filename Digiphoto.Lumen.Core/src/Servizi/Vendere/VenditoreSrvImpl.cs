@@ -73,6 +73,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
+		public bool isPossibileVendereCarrello {
+			get {
+				return gestoreCarrello.isPossibileSalvare;
+			}
+		}
+
 		public int sommatoriaFotoDaMasterizzare {
 			get {
 				return gestoreCarrello.sommatoriaFotoDaMasterizzare;
