@@ -414,7 +414,7 @@ namespace Digiphoto.Lumen.UI
 
 		public bool possoAggiornareQuantitaRiga( short delta ) {
 
-			if( ! abilitaEliminaRigaFoto )
+			if( ! abilitaEliminaRigaFoto(Carrello.TIPORIGA_STAMPA) )
 				return false;
 
 			if( rigaCarrelloStampataSelezionata.quantita + delta > 0 )
@@ -443,32 +443,39 @@ namespace Digiphoto.Lumen.UI
 			} 
 		}
 
-		public bool abilitaEliminaRigaFoto
+		public bool abilitaEliminaRigaFoto(String discriminator)
 		{
-			get
-			{
-				if (IsInDesignMode)
-					return true;
+			if (IsInDesignMode)
+				return true;
 
-				bool posso = true;
+			bool posso = true;
 
-				//Verifico che il carrello non sia stato venduto
-				if (posso && carrelloCorrente.venduto)
-					posso = false;
+			//Verifico che il carrello non sia stato venduto
+			if (posso && carrelloCorrente.venduto)
+				posso = false;
 
+			if(posso && discriminator == Carrello.TIPORIGA_STAMPA){
 				// Verifico che i dati minimi siano stati indicati
 				if (posso && RiCaFotoStampateCv.IsEmpty)
 					posso = false;
 
-				if( posso && rigaCarrelloStampataSelezionata == null )
+				if (posso && rigaCarrelloStampataSelezionata == null)
 					posso = false;
-
-				// Ce un errore nella masterizzazione 
-				if (posso && IsErroriMasterizzazione)
-					posso = false;
-
-				return posso;
 			}
+
+			if(posso && discriminator == Carrello.TIPORIGA_MASTERIZZATA){
+				if (posso && RiCaFotoMasterizzateCv.IsEmpty)
+					posso = false;
+				
+				if (posso && rigaCarrelloMasterizzataSelezionata == null)
+					posso = false;
+			}
+
+			// Ce un errore nella masterizzazione 
+			if (posso && IsErroriMasterizzazione)
+				posso = false;
+
+			return posso;
 		}
 
 		public bool abilitaEliminaCarrello
@@ -844,10 +851,12 @@ namespace Digiphoto.Lumen.UI
 			creaNuovoCarrello();
 		}
 
-		private void eliminaRiga()
+		private void eliminaRiga(String discriminator)
 		{
-			// this.RiCaFotoStampateCv.Remove( rigaCarrelloSelezionata );
-			venditoreSrv.removeRigaCarrello( rigaCarrelloStampataSelezionata );
+			if(discriminator == Carrello.TIPORIGA_STAMPA)
+				venditoreSrv.removeRigaCarrello(rigaCarrelloStampataSelezionata);
+			else if (discriminator == Carrello.TIPORIGA_MASTERIZZATA)
+				venditoreSrv.removeRigaCarrello(rigaCarrelloMasterizzataSelezionata);
 		}
 
 		private void eliminaDischetto()
@@ -1111,7 +1120,7 @@ namespace Digiphoto.Lumen.UI
 			{
 				if (_eliminaRigaCommand == null)
 				{
-					_eliminaRigaCommand = new RelayCommand(param => eliminaRiga(), param => abilitaEliminaRigaFoto, true);
+					_eliminaRigaCommand = new RelayCommand(param => eliminaRiga((String)param), param => abilitaEliminaRigaFoto((String)param), true);
 				}
 				return _eliminaRigaCommand;
 			}

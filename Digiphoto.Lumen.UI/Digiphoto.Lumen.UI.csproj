@@ -792,6 +792,7 @@
     <Resource Include="Resources\Carrello-qta-up-48x48.png" />
     <Resource Include="Resources\Carrello-delete-riga-48x48.png" />
     <Resource Include="Resources\Carrello-remove-cd-48x48.png" />
+	<Resource Include="Resources\Carrello-remove-riga-cd-48x48.png" />
     <Resource Include="Resources\carrello-svuota-48x48.png" />
     <Resource Include="Resources\dvd-32x32.png" />
     <Resource Include="Resources\carrello-new-48x48.png" />
