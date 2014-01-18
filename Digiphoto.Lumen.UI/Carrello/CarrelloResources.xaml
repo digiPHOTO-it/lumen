@@ -343,17 +343,26 @@
 		</Setter>
 	</Style>
 
-	<Style x:Key="styleCartEliminaCd" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
-		<Setter Property="ToolTip" Value="Rimuove il dischetto dal carrello" />
+    <Style x:Key="styleCartEliminaCd" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+        <Setter Property="ToolTip" Value="Rimuove il dischetto dal carrello" />
+        <Setter Property="Content">
+            <Setter.Value>
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-remove-cd-48x48.png" Width="32"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="styleCartDelRigaMasterizzate" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+		<Setter Property="ToolTip" Value="Elimina riga masterizzate dal carrello" />
 		<Setter Property="Content">
 			<Setter.Value>
-				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-remove-cd-48x48.png" Width="32"/>
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-remove-riga-cd-48x48.png" Width="32"/>
 			</Setter.Value>
 		</Setter>
 	</Style>
 
-	<Style x:Key="styleCartDelRiga" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
-		<Setter Property="ToolTip" Value="Elimina riga dal carrello" />
+	<Style x:Key="styleCartDelRigaStampate" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+		<Setter Property="ToolTip" Value="Elimina riga stampate dal carrello" />
 		<Setter Property="Content">
 			<Setter.Value>
 				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-delete-riga-48x48.png" Width="32"/>
