@@ -644,7 +644,7 @@ namespace Digiphoto.Lumen.UI
 						}
 
 						if( r.discriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
-							totoleFotoStampate += (short)r.quantita;  // Deve essere sempre 1.
+							totaleFotoMasterizzate += (short)r.quantita;  // Deve essere sempre 1.
 						}
 					}
 
