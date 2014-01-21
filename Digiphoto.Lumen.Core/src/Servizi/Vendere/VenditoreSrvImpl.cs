@@ -332,6 +332,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 			else if (Carrello.TIPORIGA_MASTERIZZATA.Equals(rigaCarrello.discriminator))
 			{
+				//Quando sposto la riga setto di default i bordi bianchi a false
+				rigaCarrello.bordiBianchi = false;
 				rigaCarrello.discriminator = Carrello.TIPORIGA_STAMPA;
 			}
 			else
