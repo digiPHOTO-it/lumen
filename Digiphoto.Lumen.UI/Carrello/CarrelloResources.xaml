@@ -69,6 +69,7 @@
 	</Storyboard>
 
     <Style x:Key="styleLabelRigaCarrello" TargetType="Label" >
+        <Setter Property="Width" Value="Auto" />
         <Setter Property="FontSize" Value="15" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="HorizontalAlignment" Value="Center" />
@@ -96,13 +97,14 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
 
@@ -164,19 +166,22 @@
                 <Label Content="N° Foto" Grid.Row="0" Grid.Column="2" Style="{StaticResource styleLabelRigaCarrello}" />
                 <Label Content="{Binding Path=fotografia.numero}" Grid.Row="1" Grid.Column="2" Style="{StaticResource styleLabelRigaCarrello}" />
                 <!-- -->
-                <Label Content="Quantità" Grid.Row="0" Grid.Column="3" Style="{StaticResource styleLabelRigaCarrello}" />
+                <Label Content="Q.ta" Grid.Row="0" Grid.Column="3" Style="{StaticResource styleLabelRigaCarrello}" />
                 <Label Content="{Binding Path=quantita}" Grid.Row="1" Grid.Column="3" Style="{StaticResource styleLabelRigaCarrello}" />
                 <!-- -->
-                <Label Content="Prezzo Lordo Unitario" Grid.Row="0" Grid.Column="4" Style="{StaticResource styleLabelRigaCarrello}" />
+                <Label Content="Prezzo Foto" Grid.Row="0" Grid.Column="4" Style="{StaticResource styleLabelRigaCarrello}" />
                 <Label Content="{Binding Path=prezzoLordoUnitario}" Grid.Row="1" Grid.Column="4" Style="{StaticResource styleLabelRigaCarrello}" />
                 <!-- -->
-                <Label Content="Prezzo Netto Totale" Grid.Row="0" Grid.Column="5" Style="{StaticResource styleLabelRigaCarrello}" />
-                <Label Content="{Binding Path=prezzoNettoTotale}" Grid.Row="1" Grid.Column="5" Style="{StaticResource styleLabelRigaCarrello}" />
+                <Label Content="Prezzo Totale" Grid.Row="0" Grid.Column="5" Style="{StaticResource styleLabelRigaCarrello}" />
+                <Label Content="{Binding Path=prezzoNettoTotale}" Grid.Row="1" Grid.Column="5" Style="{StaticResource styleLabelRigaCarrello}" ToolTip="E' il prezzo Foto moltiplicato per la quantita"/>
                 <!-- -->
                 <Label Content="Bordi Bianchi" Grid.Row="0" Grid.Column="6" Style="{StaticResource styleLabelRigaCarrello}" />
                 <CheckBox  IsChecked="{Binding Path=bordiBianchi}" Grid.Row="1" Grid.Column="6" VerticalAlignment="Center" HorizontalAlignment="Center" ToolTip="Stampa con i bordi bianchi senza tagliare l'immagine" />
-                    
-			</Grid>
+                <!-- -->
+                <Label Content="Iniziali Fotografo" Grid.Row="0" Grid.Column="7" Style="{StaticResource styleLabelRigaCarrello}" />
+                <Label Content="{Binding Path=fotografo.iniziali}" Grid.Row="1" Grid.Column="7" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{StaticResource styleLabelRigaCarrello}" ToolTip="{Binding Path=fotografo.cognomeNome}" />
+
+            </Grid>
 		</GroupBox>
     </DataTemplate>
 
