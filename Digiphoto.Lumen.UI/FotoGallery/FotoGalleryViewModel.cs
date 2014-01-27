@@ -42,7 +42,6 @@ namespace Digiphoto.Lumen.UI {
 
 	public class FotoGalleryViewModel : ViewModelBase, IObserver<StampatoMsg>, IObserver<ClonaFotoMsg>
 	{
-
 		private BackgroundWorker _bkgIdrata;
 
 		public FotoGalleryViewModel() {

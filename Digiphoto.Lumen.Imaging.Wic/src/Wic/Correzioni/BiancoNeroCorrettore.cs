@@ -14,18 +14,18 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 
 	internal class BiancoNeroCorrettore : Correttore {
 
-		private ShaderEffect [] _effetti;
 
 		public BiancoNeroCorrettore() {
-			// Purtroppo devo creare un array con un solo elemento. TODO migliorare
-			_effetti = new ShaderEffect []  { new GrayscaleEffect() };
 		}
 
 		public override IImmagine applica( IImmagine immagineSorgente, Correzione correzione ) {
 
+			// Non spostare da qui questo vettore. Deve essere istanziato ogni volta, altrimenti romper il cavolo con i thread diversi
+			ShaderEffect [] localEffetcs  = new ShaderEffect[] { new GrayscaleEffect() };
+
 			ImmagineWic iw = (ImmagineWic)immagineSorgente;
 
-			BitmapSource modificata = EffectsUtil.RenderImageWithEffectsToBitmap( iw.bitmapSource, _effetti );
+			BitmapSource modificata = EffectsUtil.RenderImageWithEffectsToBitmap( iw.bitmapSource, localEffetcs );
 
 			return new ImmagineWic( modificata );
 		}

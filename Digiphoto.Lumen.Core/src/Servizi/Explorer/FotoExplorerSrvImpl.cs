@@ -51,13 +51,13 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			}
 		}
 
-		
-
-
 		/** Eseguo il caricamento delle foto richieste */
 		public void cercaFoto( ParamCercaFoto param ) {
 
-			// Per prima cosa azzero la gallery corrente
+			// Per prima cosa azzero la gallery corrente e rilascio la memoria eventualmente utilizzata dalle foto
+			if( fotografie != null )
+				foreach( Fotografia f in fotografie )
+					AiutanteFoto.disposeImmagini( f, IdrataTarget.Tutte );
 			fotografie = null;
 
 			using( IRicercatoreSrv ricercaSrv = LumenApplication.Instance.creaServizio<IRicercatoreSrv>() ) {

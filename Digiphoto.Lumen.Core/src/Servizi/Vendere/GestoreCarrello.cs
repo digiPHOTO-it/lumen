@@ -478,6 +478,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public void Dispose() {
 
+			// Se ho delle fotografie caricate, rilascio le immagini
+			if( carrello != null && carrello.righeCarrello != null ) {
+				foreach( RigaCarrello riga in carrello.righeCarrello )
+					AiutanteFoto.disposeImmagini( riga.fotografia );
+			}
+
 			// Se il carrello è stato modificato nel db o aggiunto al db ma non ancora committato, allora devo "tornare indietro"
 			if( carrello != null && isCarrelloTransient == false ) {
 
@@ -485,6 +491,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 				carrello = null;
 			}
+
+
+
 			// Distruggo anche il contesto. In questo modo riparto pulito per il prossimo carrello.
 			this.mioDbContext.Dispose();
 			this.mioDbContext = null;

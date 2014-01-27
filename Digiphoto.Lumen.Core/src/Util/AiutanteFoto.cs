@@ -112,14 +112,15 @@ namespace Digiphoto.Lumen.Util {
 		/// <returns>il nome del file interessato su disco</returns>
 		public static string idrataImmagineDaStampare( Fotografia foto ) {
 
+			// Se ho delle correzioni, allora devo usare il file Risultante. Se non ho modifiche, allora uso l'originale.
+			IdrataTarget quale = (foto.correzioniXml == null ? IdrataTarget.Originale : IdrataTarget.Risultante);
+
 			// Ho delle correzioni che non sono ancora state applicate. Lo faccio adesso.
 			if( foto.imgRisultante == null && foto.correzioniXml != null ) {
 				// Se il file esiste già su disco, allora uso quello.
 				if( ! File.Exists( PathUtil.nomeCompletoRisultante( foto ) ) )
 	 				creaRisultanteFoto( foto );
 			}
-
-			IdrataTarget quale = foto.imgRisultante != null ? IdrataTarget.Risultante : IdrataTarget.Originale;
 
 			AiutanteFoto.idrataImmaginiFoto( foto, quale, true );
 
@@ -194,9 +195,11 @@ namespace Digiphoto.Lumen.Util {
 			IFotoRitoccoSrv fr = LumenApplication.Instance.getServizioAvviato<IFotoRitoccoSrv>();
 
 			// Carico l'immagine grande originale (solo la prima volta)
+			bool caricataOrig = false;
 			if( foto.imgOrig == null ) {
 				_giornale.Debug( "carico immagine originale da disco: " + nomeFileOriginale );
 				foto.imgOrig = gis.load( nomeFileOriginale );
+				caricataOrig = true;
 			}
 
 
@@ -231,8 +234,10 @@ namespace Digiphoto.Lumen.Util {
 
 			_giornale.Debug( "Ho ricreato il file immagine di cache: " + nomeFileDest );
 
-			// Eventualmente chiudo l'immagine precedente (per pulizia)
-			AiutanteFoto.disposeImmagini( foto, quale );
+			// Eventualmente chiudo l'immagine grande se l'avevo aperta io.
+			// Il provino, invece lo lascio aperto (non so se mi causerà problemi di memoria)
+			if( caricataOrig )
+				AiutanteFoto.disposeImmagini( foto, IdrataTarget.Originale );
 
 			// Modifico la foto che mi è stata passata.
 			if( quale == IdrataTarget.Provino ) 

@@ -67,8 +67,8 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 			double newW = ww / bitmapSource.Width * dpi / bitmapSource.DpiX;
 			double newH = hh / bitmapSource.Height * dpi / bitmapSource.DpiY;
 			var target = new TransformedBitmap( bitmapSource, new ScaleTransform( newW, newH, 0, 0 ) );
-			// return BitmapFrame.Create( target );
-			return target;
+			return BitmapFrame.Create( target );
+			//return target;
 		}
 
 		/// <summary>

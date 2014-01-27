@@ -2,6 +2,7 @@
 using Digiphoto.Lumen.Imaging;
 using Digiphoto.Lumen.Servizi.Stampare;
 using System;
+using System.Linq;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows.Documents;
@@ -14,6 +15,8 @@ using System.Windows.Markup;
 using System.Text;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Util;
+using System.IO;
+using System.Windows.Threading;
 
 namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 
@@ -45,6 +48,8 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 
 			try {
 
+				string nomeFileFoto = AiutanteFoto.idrataImmagineDaStampare( _lavoroDiStampa.fotografia );
+
 				// Ricavo l'immagine da stampare
 				IImmagine immagineDaStampare = _lavoroDiStampa.fotografia.imgRisultante != null ? _lavoroDiStampa.fotografia.imgRisultante : _lavoroDiStampa.fotografia.imgOrig;
 
@@ -53,10 +58,12 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 					throw new System.IO.FileNotFoundException( "fotografia = " + _lavoroDiStampa.fotografia, _lavoroDiStampa.fotografia.nomeFile );
 
 
-// TODO BLUCA provo a duplicare l'immagine per evitare l'errore che è di proprietà del thread chiamante.
-				BitmapSource bmp = new WriteableBitmap( ((ImmagineWic)immagineDaStampare).bitmapSource );
-				bmp.Freeze();
-				;
+				// TODO BLUCA provo a duplicare l'immagine per evitare l'errore che è di proprietà del thread chiamante.
+//				BitmapSource bmp = new WriteableBitmap( ((ImmagineWic)immagineDaStampare).bitmapSource );
+				BitmapSource bmp = ((ImmagineWic)immagineDaStampare).bitmapSource;
+				// bmp.Freeze();
+
+
 				// Come print-server uso me stesso
 				using( PrintServer ps1 = new PrintServer() ) {
 
@@ -80,16 +87,14 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 
 						// Compongo il titolo della stampa che comparirà nella descrizione della riga nello spooler di windows
 						StringBuilder titolo = new StringBuilder();
-						titolo.AppendFormat( "foto N.{0} Oper={1} gg={2}",
-						_lavoroDiStampa.fotografia.etichetta,
-							_lavoroDiStampa.fotografia.fotografo.iniziali,
-							String.Format("{0:dd-MMM}", _lavoroDiStampa.fotografia.dataOraAcquisizione));
-
-						if( _giornale.IsDebugEnabled ) {
-							titolo.Append( " #" );
-							titolo.Append( _conta );
-						}
-
+						titolo.AppendFormat( "foto N.{0} Oper={1} gg={2}", 
+							                 _lavoroDiStampa.fotografia.etichetta, 
+											 _lavoroDiStampa.fotografia.fotografo.iniziali,
+											 String.Format( "{0:dd-MMM}", _lavoroDiStampa.fotografia.dataOraAcquisizione ) );
+#if DEBUG
+						titolo.Append( " #" );
+						titolo.Append( DateTime.Now.ToString( "mmssss") );  // Uso un numero univoco per evitare doppioni per il doPdf altrimenti mi chiede sempre di sovrascrivere
+#endif
 						// Eventuale rotazione dell'orientamento dell'area di stampa
 						// Devo decidere in anticipo se la stampante va girata. Dopo che ho chiamato Print non si può più fare !!!
 						bool _ruotareStampante = false;
@@ -149,23 +154,24 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 
 						// Creo una immagine che contiene la bitmap da stampare
 						Image image = new Image();
-						image.BeginInit();
+//						image.BeginInit();
 						image.VerticalAlignment = VerticalAlignment.Center;
 						image.HorizontalAlignment = HorizontalAlignment.Center;
+						
+//						BitmapSource clone = bmp.Clone();
+//						clone.Freeze();
 						image.Source = bmp;
 
-						if (_lavoroDiStampa.param.autoZoomNoBordiBianchi)
+						if( _lavoroDiStampa.param.autoZoomNoBordiBianchi )
 							image.Stretch = Stretch.UniformToFill;
 						else
 							image.Stretch = Stretch.Uniform;
 						image.StretchDirection = StretchDirection.Both;
 
-						image.EndInit();
+//						image.EndInit();
 
 						grid.Children.Add( image );
 						page1.Children.Add( grid );
-
-
 
 						//
 						eventualiStampigli( page1, _lavoroDiStampa );
@@ -173,7 +179,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 
 						// add the page to the document
 						PageContent page1Content = new PageContent();
-						((IAddChild)page1Content).AddChild( page1 );
+						page1Content.Child = page1;
 						document.Pages.Add( page1Content );
 
 						//
@@ -185,18 +191,31 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 
 							_esito = EsitoStampa.Ok;
 						}
-
 						_giornale.Debug( "Stampa completata" );
+
+						// Per cercare di liberare memoria più possibile svuoto le pagine  forzatamente a mano.
+						// Pare che il GC non riesce a pulire.
+						foreach( var fixedPage in document.Pages.Select( pageContent => pageContent.Child ) ) {
+							fixedPage.Children.Clear();
+						}
 					}
 				}
 			} catch( Exception ee ) {
 				_esito = EsitoStampa.Errore;
 				_giornale.Error( "Stampa fallita", ee );
+			} finally {
+				// Rilascio le immagini idratate altrimenti in loop vado in outOfMemory
+				AiutanteFoto.disposeImmagini( _lavoroDiStampa.fotografia, IdrataTarget.Risultante );
+				AiutanteFoto.disposeImmagini( _lavoroDiStampa.fotografia, IdrataTarget.Originale );
+
+				CoreUtil.abraCadabra();   //   :-)
 			}
 		
 			_giornale.Info( "Completato lavoro di stampa. Esito = " + _esito + " lavoro = " + lavoroDiStampa.ToString() );
 			return _esito;
 		}
+
+
 
 		private static void eventualiStampigli( FixedPage page1, LavoroDiStampaFoto lavoroDiStampa ) {
 
@@ -270,5 +289,38 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 				throw new NotImplementedException();
 			}
 		}
+
+
+
+		/// <summary>
+		/// Mi dice quale tipo di parametri è in grado di gestire.
+		/// </summary>
+		public Type tipoParamGestito {
+			get {
+				return typeof( ParamStampaFoto );
+			}
+		}
+
+
+		private BitmapSource CreateImageSource( Stream stream ) {
+			BitmapImage bi = new BitmapImage();
+			bi.BeginInit();
+			bi.CacheOption = BitmapCacheOption.OnLoad;
+			bi.StreamSource = stream;
+			bi.EndInit();
+			bi.Freeze();
+			BitmapSource prgbaSource = new FormatConvertedBitmap( bi, PixelFormats.Pbgra32, null, 0 );
+			WriteableBitmap bmp = new WriteableBitmap( prgbaSource );
+			int w = bmp.PixelWidth;
+			int h = bmp.PixelHeight;
+			int[] pixelData = new int[w * h];
+			//int widthInBytes = 4 * w;
+			int widthInBytes = bmp.PixelWidth * (bmp.Format.BitsPerPixel / 8); //equals 4*w
+			bmp.CopyPixels( pixelData, widthInBytes, 0 );
+			bmp.WritePixels( new Int32Rect( 0, 0, w, h ), pixelData, widthInBytes, 0 );
+			bi = null;
+			return bmp;
+		}
+
 	}
 }

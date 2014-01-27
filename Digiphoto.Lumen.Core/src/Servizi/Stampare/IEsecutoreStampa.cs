@@ -19,5 +19,9 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 		}
 
 		EsitoStampa esegui( LavoroDiStampa lavoroDiStampa );
+
+		Type tipoParamGestito {
+			get;
+		}
 	}
 }
