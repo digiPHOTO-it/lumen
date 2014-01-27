@@ -180,8 +180,8 @@ CREATE TABLE [RigheCarrelli] (
     [nomeStampante] nvarchar(255)   NULL ,
     [bordiBianchi] bit   NULL ,
     [carrello_id] uniqueidentifier   NOT NULL ,
-    [fotografo_id] nvarchar(16)   NULL ,
-    [fotografia_id] uniqueidentifier   NULL ,
+    [fotografo_id] nvarchar(16)   NOT NULL ,
+    [fotografia_id] uniqueidentifier   NOT NULL ,
     [formatoCarta_id] uniqueidentifier   NULL 
  , PRIMARY KEY ([id])	
 					

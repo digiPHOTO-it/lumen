@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using Digiphoto.Lumen.Applicazione;
+using System.Data.Entity.Validation;
 
 namespace Digiphoto.Lumen.Core.VsTest {
 
@@ -66,6 +67,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				c.prezzoDischetto = 123;
 				c.tempo = DateTime.Now;
 				c.venduto = false;
+				c.totaleAPagare = 234;
 
 				// Creo anche una riga
 				RigaCarrello r = new RigaCarrello();
@@ -93,7 +95,20 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				c.incassiFotografi.Add( i );
 
 				context.Carrelli.Add( c );
-				context.SaveChanges();
+
+				try {
+					context.SaveChanges();
+				} catch( DbEntityValidationException qq ) {
+					foreach( var item in qq.EntityValidationErrors ) {
+						foreach( var item2 in item.ValidationErrors ) {
+							String errore = item2.ErrorMessage;
+							Console.WriteLine( errore );
+						}
+					}
+					throw;
+				} catch( Exception ee ) {
+					throw;
+				}
 			}
 
 			using( LumenEntities context = new LumenEntities() ) {
