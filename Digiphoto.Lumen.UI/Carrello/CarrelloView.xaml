@@ -40,7 +40,7 @@
 				<TextBox Text="{Binding Path=rigaCarrelloStampataSelezionata.quantita,Mode=TwoWay}" IsEnabled="{Binding possoAggiornareQuantitaRiga}" TextAlignment="Center" FontSize="24" ToolTip="Quantità di riga" MinWidth="24"/>
 				<Button Command="{Binding UpdateQuantitaCommand}" CommandParameter="-1" Style="{StaticResource styleCartQtaDown}" />
 				<Separator />
-				<Button Command="{Binding eliminaRigaCommand}" Style="{StaticResource styleCartDelRiga}" />
+                <Button Command="{Binding eliminaRigaCommand}" CommandParameter="S" Style="{StaticResource styleCartDelRigaStampate}" />
 			</ToolBar>
 		</ToolBarTray>
 
@@ -80,9 +80,10 @@
 					<TextBox Text="{Binding Path=carrelloCorrente.prezzoDischetto,StringFormat=\{0:c0\},TargetNullValue=''}" 
 							 HorizontalContentAlignment="Center" Margin="44,26,0,0" Height="30" Width="47" HorizontalAlignment="Left" VerticalAlignment="Top" />
 
-					<Button  Command="{Binding eliminaDischettoCommand}" VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="175,18,0,0" Style="{StaticResource styleCartEliminaCd}" ToolTip="Rimuove tutte le foto da masterizzate dal carrello" />
+                    <Button  Command="{Binding eliminaDischettoCommand}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="175,2,2,2" Style="{StaticResource styleCartEliminaCd}" ToolTip="Rimuove tutte le foto da masterizzate dal carrello" />
+                    <Button  Command="{Binding eliminaRigaCommand}" CommandParameter="M" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="174,50,2,2" Style="{StaticResource styleCartDelRigaMasterizzate}" ToolTip="Rimuove la riga selezionata da masterizzate dal carrello" />
 
-				</Grid>
+                </Grid>
 
 
 			</GroupBox>
