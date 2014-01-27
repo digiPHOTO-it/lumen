@@ -147,9 +147,9 @@
 						</StackPanel>
 
 						<Separator Margin="0,1,0,0" />
-						<Label Content="Ricerca Intestazione" ToolTip="Inserire l'intestazione su cui si desidera filtrare" FontSize="11"/>
+						<Label Content="Ricerca Intestazione" ToolTip="Inserire l'intestazione su cui si desidera filtrare" FontSize="11" Padding="0" />
 						<TextBox Text="{Binding Path=IntestazioneSearch}" FontSize="11" />
-						<CheckBox Name="checkBoxVenduto" Content="Anche C. Venduti" IsChecked="{Binding Path=IsVendutoChecked,Mode=TwoWay}" Margin="0,2,0,0" HorizontalAlignment="Center" ToolTip="Filtra solo carrelli venduti. Di norma estrae solo quelli invenduti" />
+						<CheckBox x:Name="checkBoxVenduto" Content="Anche C. Venduti" IsChecked="{Binding IsVendutoChecked, Mode=TwoWay}" Margin="0,2,0,0" HorizontalAlignment="Center" ToolTip="Seleziona anche i carrelli venduti. Di norma estrae solo quelli invenduti" />
 
 					</StackPanel>
 				</GroupBox>
@@ -207,7 +207,7 @@
 					IsSynchronizedWithCurrentItem="True"
 					 SelectedItem="{Binding rigaCarrelloStampataSelezionata, Mode=TwoWay}"
 					 ItemsPanel="{DynamicResource righeCarrelloItemsPanelTemplate}" 
-					 ItemTemplate="{DynamicResource rigaCarrelloDataTemplate}"
+					 ItemTemplate="{DynamicResource rigaCarrelloStampaDataTemplate}"
 					 ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
 
             <Button Grid.Row="0" Grid.Column="1" Command="{Binding SpostaFotoRigaCommand}" CommandParameter="M" Style="{StaticResource styleSpostaM}" Height="32" Width="32" Margin="0,100,0,152" />
@@ -220,7 +220,7 @@
 					IsSynchronizedWithCurrentItem="True"
 					 SelectedItem="{Binding rigaCarrelloMasterizzataSelezionata, Mode=TwoWay}"
 					 ItemsPanel="{DynamicResource righeCarrelloItemsPanelTemplate}" 
-					 ItemTemplate="{DynamicResource rigaCarrelloDataTemplate}"
+					 ItemTemplate="{DynamicResource rigaCarrelloMasterizzataDataTemplate}"
 					 ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
 
 		</Grid>
