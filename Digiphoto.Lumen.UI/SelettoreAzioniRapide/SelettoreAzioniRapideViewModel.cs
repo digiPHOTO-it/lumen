@@ -534,8 +534,9 @@ namespace Digiphoto.Lumen.UI
 		private void tornareOriginale()
 		{
 			// per ogni foto elimino le correzioni e ricreo il provino partendo dall'originale.
-			foreach (Fotografia f in fotoSelezionate)
-				fotoRitoccoSrv.tornaOriginale(f);
+			foreach( Fotografia f in fotoSelezionate )
+				fotoRitoccoSrv.tornaOriginale( f );
+
 		}
 
 

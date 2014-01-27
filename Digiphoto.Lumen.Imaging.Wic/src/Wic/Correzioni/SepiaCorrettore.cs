@@ -14,18 +14,17 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 	
 	public class SepiaCorrettore : Correttore {
 
-		private ShaderEffect [] _effetti;
-		
 		public SepiaCorrettore() {
-			// Purtroppo devo creare un array con un solo elemento. TODO migliorare
-			_effetti = new ShaderEffect []  { new SepiaEffect() };
 		}
 
 		public override IImmagine applica( IImmagine immagineSorgente, Correzione correzione ) {
 
 			ImmagineWic iw = (ImmagineWic)immagineSorgente;
 
-			BitmapSource modificata = EffectsUtil.RenderImageWithEffectsToBitmap( iw.bitmapSource, _effetti );
+			// Non spostare da qui questo vettore. Deve essere istanziato ogni volta, altrimenti romper il cavolo con i thread diversi
+			ShaderEffect[] localEffetti = new ShaderEffect[] { new SepiaEffect() };
+
+			BitmapSource modificata = EffectsUtil.RenderImageWithEffectsToBitmap( iw.bitmapSource, localEffetti );
 
 			return new ImmagineWic( modificata );
 		}

@@ -673,7 +673,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			encoder.Frames.Add( frame );
 
 			// ----- scrivo su disco
-			using( FileStream fs = new FileStream( nomeFile, FileMode.Create ) ) {
+			using( FileStream fs = FileUtil.waitForFile( nomeFile ) ) {
 				encoder.Save( fs );
 				fs.Flush();
 			}

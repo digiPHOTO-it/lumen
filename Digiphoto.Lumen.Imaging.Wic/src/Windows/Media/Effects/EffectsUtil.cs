@@ -69,11 +69,11 @@ namespace Digiphoto.Lumen.Windows.Media.Effects {
 			Arrange( root, ww, hh );
 			Grid current = root;
 			foreach( var shaderEffect in effects ) {
-				var effect = new Grid();
-				Arrange( effect, ww, hh );
-				effect.Effect = shaderEffect;
-				current.Children.Add( effect );
-				current = effect;
+				Grid grid = new Grid();
+				Arrange( grid, ww, hh );
+				grid.Effect = shaderEffect;
+				current.Children.Add( grid );
+				current = grid;
 			}
 
 			Image img = new Image();

@@ -404,5 +404,12 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 				throw new NotImplementedException();
 			}
 		}
+
+
+		public Type tipoParamGestito {
+			get {
+				return typeof(ParamStampaProvini);
+			}
+		}
 	}
 }

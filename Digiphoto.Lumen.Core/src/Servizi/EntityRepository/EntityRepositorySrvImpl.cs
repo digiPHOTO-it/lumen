@@ -80,6 +80,9 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 				EntityCambiataMsg ecm = new EntityCambiataMsg( this );
 				ecm.type = typeof( TEntity );
 				pubblicaMessaggio( ecm );
+			} else {
+				_giornale.Warn( "Salvataggio con zero record. Strano. Controllare" );
+				System.Diagnostics.Debugger.Break(); // Come mai ??
 			}
 
 			return quanti;

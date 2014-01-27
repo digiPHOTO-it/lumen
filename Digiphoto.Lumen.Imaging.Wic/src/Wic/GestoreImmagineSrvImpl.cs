@@ -13,6 +13,8 @@ using Digiphoto.Lumen.Core.Database;
 using System.Data;
 using Digiphoto.Lumen.Servizi.EntityRepository;
 using Digiphoto.Lumen.Applicazione;
+using System;
+using Digiphoto.Lumen.Util;
 
 namespace Digiphoto.Lumen.Imaging.Wic {
 
@@ -60,30 +62,47 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		}
 
 		public void save( IImmagine immagine, string fileName ) {
+			BitmapSource bmpSrc = ((ImmagineWic)immagine).bitmapSource;
+			this.save2( bmpSrc, fileName );
+		}
 
-			_giornale.Debug( "Richiesto di salvare l'immagine su disco: " + fileName );
 
-			using( FileStream fileStream = new FileStream( fileName, FileMode.Create ) ) {
+		public void save2( BitmapSource bmpSrc, string fileName ) {
 
-				BitmapSource bmSource = ((ImmagineWic)immagine).bitmapSource;
+//			_giornale.Debug( "Richiesto di salvare l'immagine su disco: " + fileName );
+
+        
+			// A rivaffanculo ancora alla microsoft. Questo pezzo di codice, si lascia il file loccato e non lo chiude.
+			// Nello stesso processo !!! E' da non credere!!!
+			// Se non ci credi googola questo: "filestream IOException file used by another process"
+			// il test-case di nome "creaProvinoANastro" fallisce.
+			// Ho dovuto creare un workaround con queso waitForFile.
+			using( FileStream fileStream = FileUtil.waitForFile( fileName ) ) {
 
 				// TODO : gestire encoder giusto in base alla estensione del file.
 				JpegBitmapEncoder encoder = new JpegBitmapEncoder();
 
-				if( immagine.ww == Configurazione.infoFissa.pixelProvino || immagine.hh == Configurazione.infoFissa.pixelProvino )
+				if( bmpSrc.PixelWidth == Configurazione.infoFissa.pixelProvino || bmpSrc.PixelHeight == Configurazione.infoFissa.pixelProvino )
 					encoder.QualityLevel = 80;
 				else
 					encoder.QualityLevel = 99;
 
-				_giornale.Debug( "Uso quality Level = " + encoder.QualityLevel );
+//				_giornale.Debug( "Uso quality Level = " + encoder.QualityLevel );
 
-				encoder.Frames.Add( BitmapFrame.Create( bmSource ) );
+				encoder.Frames.Add( BitmapFrame.Create( bmpSrc ) );
 				encoder.Save( fileStream );
-
+				fileStream.Flush();				
 				fileStream.Close();
-				_giornale.Debug( "Ok salvataggio file immagine completato" );
+				fileStream.Dispose();
+//				_giornale.Debug( "Ok salvataggio file immagine completato" );
 			}
+    
+
 		}
+
+
+
+
 
 		public Correttore getCorrettore( Correzione correzione ) {
 			// Se non ce l'ho in cache, allora lo creo.

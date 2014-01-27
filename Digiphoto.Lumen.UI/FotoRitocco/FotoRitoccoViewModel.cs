@@ -1449,7 +1449,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			string tempFile = PathUtil.dammiTempFileConEstesione("png");
 
 			// ----- scrivo su disco
-			using (FileStream fs = new FileStream(tempFile, FileMode.Create))
+			using (FileStream fs = FileUtil.waitForFile( tempFile ))
 			{
 				encoder.Save(fs);
 				fs.Flush();
@@ -1477,8 +1477,11 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		void svuotareListaDaModificare() {
 
 			// Prima di svuotare la lista, voglio provare a liberare un pò di memoria che forse è inutile.
-			foreach( Fotografia foto in fotografieDaModificare )
+			foreach( Fotografia foto in fotografieDaModificare ) {
+				// Il provino non posso rilasciarlo perché potrebbe essere visualizzato nella gallery o nel carrello
 				AiutanteFoto.disposeImmagini( foto, IdrataTarget.Originale );
+				AiutanteFoto.disposeImmagini( foto, IdrataTarget.Risultante );
+			}
 
 			fotografiaInModifica = null;
 

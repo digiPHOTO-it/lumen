@@ -323,6 +323,8 @@
     <Compile Include="src\Threading\WorkerThreadBase.cs" />
     <Compile Include="src\Util\AiutanteFoto.cs" />
     <Compile Include="src\Licensing\LicenseUtil.cs" />
+    <Compile Include="src\Util\FileUtil.cs" />
+    <Compile Include="src\Util\CoreUtil.cs" />
     <Compile Include="src\Util\LumenException.cs" />
     <Compile Include="src\Util\UsbEjectWithExe.cs" />
     <Compile Include="src\Util\ErroriUtil.cs" />

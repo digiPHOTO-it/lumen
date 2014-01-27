@@ -174,13 +174,19 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			string nomeFileRis = PathUtil.nomeCompletoRisultante( fotografia );
 			if( File.Exists( nomeFileRis ) )
 				File.Delete( nomeFileRis );
-			
-			AiutanteFoto.disposeImmagini( fotografia, IdrataTarget.Provino );
-			AiutanteFoto.disposeImmagini( fotografia, IdrataTarget.Risultante );
+
+			// Rilascio memoria
+			AiutanteFoto.disposeImmagini( fotografia, IdrataTarget.Tutte );
 
 			AiutanteFoto.creaProvinoFoto( fotografia );
+			
+			// Le due foto grandi le rilascio per non intasare la memoria qualora questo metodo è chiamato più volte
+			AiutanteFoto.disposeImmagini( fotografia, IdrataTarget.Originale );
+			AiutanteFoto.disposeImmagini( fotografia, IdrataTarget.Risultante );
 
 			if( salvare ) {
+				Fotografia f = fotografia;
+				fotografieRepositorySrv.update( ref f, true );
 				fotografieRepositorySrv.saveChanges();  // Persisto nel db le modifiche
 				
 				// Devo informate tutti che questa foto è cambiata

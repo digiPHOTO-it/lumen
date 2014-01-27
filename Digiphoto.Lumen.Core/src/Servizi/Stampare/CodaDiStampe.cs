@@ -75,17 +75,14 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			// Per evitare problemi di multi-thread, le immagini le idrato nello stesso thread con cui le manderò in stampa.
 			// Non anticipare questo metodo altrimenti poi non va.
 			// Se le immagini non sono idratate, le carico!
-
+			ParamStampa param = null;
 			if(lavoroDiStampa is LavoroDiStampaFoto){
 
 				LavoroDiStampaFoto lavoroDiStampaFoto = lavoroDiStampa as LavoroDiStampaFoto;
 
-				AiutanteFoto.idrataImmagineDaStampare( lavoroDiStampaFoto.fotografia );
-
 				//Rinstanzio il stampatore che potrebbe essere di un tipo differente dal mio
 				LavoroDiStampaFoto lsp = (LavoroDiStampaFoto)lavoroDiStampa;
-				ParamStampa param = lsp.param;
-				_stampatore = ImagingFactory.Instance.creaStampatore(param, param.nomeStampante);
+				param = lsp.param;
 
 			}else if(lavoroDiStampa is LavoroDiStampaProvini){
 				LavoroDiStampaProvini lavoroDiStampaProvini = lavoroDiStampa as LavoroDiStampaProvini;
@@ -97,10 +94,15 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 
 				//Rinstanzio il stampatore che potrebbe essere di un tipo differente dal mio
 				LavoroDiStampaProvini lsp = (LavoroDiStampaProvini)lavoroDiStampa;
-				ParamStampa param = lsp.param;
-				_stampatore = ImagingFactory.Instance.creaStampatore( param,param.nomeStampante);
-
+				param = lsp.param;
 			}
+
+			// Se sono cambiati i parametri istanzio nuovamente lo stampatore.
+
+			if( _stampatore == null ||  !param.GetType().IsAssignableFrom( _stampatore.tipoParamGestito ) )
+				_stampatore = ImagingFactory.Instance.creaStampatore( param, param.nomeStampante );
+
+			
 			EsitoStampa esito = _stampatore.esegui( lavoroDiStampa );
 
 			lavoroDiStampa.esitostampa = esito;
@@ -111,7 +113,13 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			eventArgs.esito = lavoroDiStampa.esitostampa == EsitoStampa.Ok ? Esito.Ok : Esito.Errore;
 
 			if( stampaCompletataCallback != null )
-				stampaCompletataCallback.Invoke( this, eventArgs ); 
+				stampaCompletataCallback.Invoke( this, eventArgs );
+
+
+			// Ci sono problemmi con 
+			// GC.Collect();
+			// GC.WaitForPendingFinalizers();
+			// GC.Collect();
 		}
 
 		
