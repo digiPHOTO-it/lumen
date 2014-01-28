@@ -331,8 +331,61 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public void spostaRigaCarrello(RigaCarrello rigaCarrello)
 		{
-			gestoreCarrello.removeRiga(rigaCarrello);
-			if(Carrello.TIPORIGA_STAMPA.Equals(rigaCarrello.discriminator)){
+			spostaRigaCarrello(rigaCarrello, true);
+		}
+
+		public void copiaSpostaRigaCarrello(RigaCarrello rigaCarrello)
+		{
+			RigaCarrello cloneRiga = new RigaCarrello();
+			if (Carrello.TIPORIGA_MASTERIZZATA.Equals(rigaCarrello.discriminator))
+			{
+				cloneRiga.id = Guid.NewGuid();
+				cloneRiga.bordiBianchi = rigaCarrello.bordiBianchi;
+				cloneRiga.carrello = rigaCarrello.carrello;
+				cloneRiga.carrello_id = rigaCarrello.carrello_id;
+				cloneRiga.descrizione = rigaCarrello.descrizione;
+				cloneRiga.discriminator = rigaCarrello.discriminator;
+				cloneRiga.formatoCarta = rigaCarrello.formatoCarta;
+				cloneRiga.fotografia = rigaCarrello.fotografia;
+				cloneRiga.fotografo = rigaCarrello.fotografo;
+				cloneRiga.id = rigaCarrello.id;
+				cloneRiga.nomeStampante = rigaCarrello.nomeStampante;
+				cloneRiga.prezzoLordoUnitario = rigaCarrello.prezzoLordoUnitario;
+				cloneRiga.prezzoNettoTotale = rigaCarrello.prezzoNettoTotale;
+				cloneRiga.quantita = rigaCarrello.quantita;
+				cloneRiga.sconto = rigaCarrello.sconto;
+				cloneRiga.totFogliStampati = rigaCarrello.totFogliStampati;
+
+			}
+			
+			if (Carrello.TIPORIGA_STAMPA.Equals(rigaCarrello.discriminator))
+			{
+				cloneRiga.id = Guid.NewGuid();
+				cloneRiga.bordiBianchi = rigaCarrello.bordiBianchi;
+				cloneRiga.carrello = rigaCarrello.carrello;
+				cloneRiga.carrello_id = rigaCarrello.carrello_id;
+				cloneRiga.descrizione = rigaCarrello.descrizione;
+				cloneRiga.discriminator = rigaCarrello.discriminator;
+				cloneRiga.formatoCarta = rigaCarrello.formatoCarta;
+				cloneRiga.fotografia = rigaCarrello.fotografia;
+				cloneRiga.fotografo = rigaCarrello.fotografo;
+				cloneRiga.id = rigaCarrello.id;
+				cloneRiga.nomeStampante = rigaCarrello.nomeStampante;
+				cloneRiga.prezzoLordoUnitario = rigaCarrello.prezzoLordoUnitario;
+				cloneRiga.prezzoNettoTotale = rigaCarrello.prezzoNettoTotale;
+				cloneRiga.quantita = rigaCarrello.quantita;
+				cloneRiga.sconto = rigaCarrello.sconto;
+				cloneRiga.totFogliStampati = rigaCarrello.totFogliStampati;
+			}
+			spostaRigaCarrello(cloneRiga, false);
+		}
+
+		private void spostaRigaCarrello(RigaCarrello rigaCarrello, bool remove)
+		{
+			if (remove)
+				gestoreCarrello.removeRiga(rigaCarrello);
+			if (Carrello.TIPORIGA_STAMPA.Equals(rigaCarrello.discriminator))
+			{
 				rigaCarrello.discriminator = Carrello.TIPORIGA_MASTERIZZATA;
 				rigaCarrello.quantita = 1;
 			}
@@ -453,23 +506,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			if( fotoDaMast.Count <= 0 )
 				return;
 
-			// Istanzio il servizio di masterizzazione, ma io uso la Impl.
-			if (_masterizzaSrvImpl == null)
-			{
-				// Siccome non voglio che si chiami il metodo masterizza da fuori, faccio una forzatura.
-				// Uso io direttamente la impl internamente.
-				_masterizzaSrvImpl = (MasterizzaSrvImpl)LumenApplication.Instance.creaServizio<IMasterizzaSrv>();
-			}
-
 			masterizzaSrv.addFotografie(fotoDaMast);
-
 
 			_masterizzaSrvImpl.start();
 			_masterizzaSrvImpl.masterizza( carrello.id );
 		}
 
 		public void rimasterizza() {
-			if( masterizzaSrv == null )
+			if( _masterizzaSrvImpl == null )
 				return;
 
 			if( masterizzaSrv.fotografie.Count <= 0 )
@@ -645,6 +689,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		private MasterizzaSrvImpl _masterizzaSrvImpl;
 		private IMasterizzaSrv masterizzaSrv {
 			get {
+				if (_masterizzaSrvImpl == null)
+				{
+					// Siccome non voglio che si chiami il metodo masterizza da fuori, faccio una forzatura.
+					// Uso io direttamente la impl internamente.
+					_masterizzaSrvImpl = (MasterizzaSrvImpl)LumenApplication.Instance.creaServizio<IMasterizzaSrv>();
+				}
 				return _masterizzaSrvImpl;
 			}
 		}
@@ -654,14 +704,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			if( ! possoAggiungereMasterizzate )
 				throw new InvalidOperationException( "Impossibile aggiungere foto da masterizzare a questo carrello" );
-
-			// Istanzio il servizio di masterizzazione, ma io uso la Impl.
-			if( _masterizzaSrvImpl == null ) {
-				// Siccome non voglio che si chiami il metodo masterizza da fuori, faccio una forzatura.
-				// Uso io direttamente la impl internamente.
-				_masterizzaSrvImpl = (MasterizzaSrvImpl)LumenApplication.Instance.creaServizio<IMasterizzaSrv>();
-	
-			}
 
 			foreach( Fotografia foto in fotografie ) {
 
@@ -946,18 +988,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// </summary>
 		public void removeDatiDischetto() {
 			this.removeRigheCarrello( Carrello.TIPORIGA_MASTERIZZATA );
-			// Istanzio il servizio di masterizzazione, ma io uso la Impl.
-			if (_masterizzaSrvImpl == null)
-			{
-				// Siccome non voglio che si chiami il metodo masterizza da fuori, faccio una forzatura.
-				// Uso io direttamente la impl internamente.
-				_masterizzaSrvImpl = (MasterizzaSrvImpl)LumenApplication.Instance.creaServizio<IMasterizzaSrv>();
-			}
 			setDatiDischetto( TipoDestinazione.NULLA, null, null );
 		}
 
 		public void setDatiDischetto( TipoDestinazione tipoDest, string nomeCartella ) {
-			this._masterizzaSrvImpl.impostaDestinazione( tipoDest, nomeCartella );
+			masterizzaSrv.impostaDestinazione( tipoDest, nomeCartella );
 		}
 
 		public void setDatiDischetto( TipoDestinazione tipoDest, string nomeCartella, decimal? prezzoDischetto ) {

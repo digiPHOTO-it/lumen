@@ -499,6 +499,24 @@
         </Setter>
     </Style>
 
+    <Style x:Key="styleSpostaCopyM" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+        <Setter Property="ToolTip" Value="Copia e sposta la riga selezionata nella lista delle foto da masterizzare" />
+        <Setter Property="Content">
+            <Setter.Value>
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-right-copy-48x48.png" Width="32"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="styleSpostaCopyS" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+        <Setter Property="ToolTip" Value="Copia e sposta la riga selezionata nella lista delle foto da stampare" />
+        <Setter Property="Content">
+            <Setter.Value>
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-left-copy-48x48.png" Width="32"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="styleCarrelliButtonDelete" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
 		<Setter Property="ToolTip" Value="Elimina carrello selezionato" />
 		<Setter Property="Content">
