@@ -13,6 +13,7 @@ namespace Digiphoto.Lumen.UI.Converters {
 	public class SumQuantitaConverter : IValueConverter
 	{
 		public object Convert( object value, Type targetType, object parameter, CultureInfo culture ) {
+
 			if (value == null)
 			{
 				return 0;
@@ -27,7 +28,8 @@ namespace Digiphoto.Lumen.UI.Converters {
 
 					foreach (RigaCarrello riga in cV)
 					{
-						quantitaTotale += riga.quantita;
+						if( riga.discriminator.Equals( parameter ) )
+							quantitaTotale += riga.quantita;
 					};
 
 					return quantitaTotale;
@@ -43,9 +45,8 @@ namespace Digiphoto.Lumen.UI.Converters {
 
 					foreach (RigaCarrello riga in cV)
 					{
-						if(riga.discriminator == Carrello.TIPORIGA_STAMPA ){
+						if( riga.discriminator.Equals( parameter ) )
 							quantitaTotale += riga.quantita;
-						}
 					};
 
 					return quantitaTotale;

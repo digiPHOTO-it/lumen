@@ -159,25 +159,48 @@
 				</GroupBox>
 
 
-				<GroupBox Header="Proprietà" DockPanel.Dock="Bottom">
-					<Grid Height="80">
-						<Label Content="Nome Carrello" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="121" Margin="5,6,0,0" />
-						<Label Content="{Binding Path=CarrelloSalvatoSelezionato.intestazione}" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="234" Margin="131,6,0,0" BorderBrush="WhiteSmoke" BorderThickness="1" />
 
-						<Label Content="Giornata" Height="32" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Margin="6,38,0,0" />
-						<Label Content="{Binding Path=CarrelloSalvatoSelezionato.giornata,StringFormat=D}" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="234" Margin="131,38,0,0" BorderBrush="WhiteSmoke" BorderThickness="1" />
-
-						<Label Content="Totale Foto Carrello" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="133" Margin="391,6,0,0" />
-						<Label Content="{Binding Path=CarrelloSalvatoSelezionato.righeCarrello,Converter={StaticResource sumQuantitaConverter}}" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="74" Margin="530,6,0,0" BorderBrush="WhiteSmoke" BorderThickness="1" HorizontalContentAlignment="Right" />
-
-						<Label Content="Prezzo" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="115" Margin="391,38,0,0" />
-						<Label Content="{Binding Path=CarrelloSalvatoSelezionato.totaleAPagare,StringFormat=C}" Margin="530,38,0,0" Height="28" VerticalAlignment="Top" Width="74" HorizontalAlignment="Left" HorizontalContentAlignment="Right" BorderBrush="WhiteSmoke" BorderThickness="1" />
-						<CheckBox Content="Venduto" Height="28" HorizontalAlignment="Left" Margin="642,6,0,0" VerticalAlignment="Top" Width="116" IsChecked="{Binding Path=CarrelloSalvatoSelezionato.venduto}" />
-						<TextBlock Height="60" HorizontalAlignment="Left" Margin="744,6,0,0" Name="textBlock1" Text="{Binding Path=CarrelloSalvatoSelezionato.note}" VerticalAlignment="Top" Width="235" />
-					</Grid>
-				</GroupBox>
-
+				<DataGrid 
+					ItemsSource="{Binding Path=CarrelliSalvatiCv}" 
+					SelectionMode="Single" CanUserAddRows="false"
+					AutoGenerateColumns="False"
+					SelectedItem="{Binding Path=CarrelloSalvatoSelezionato,Mode=TwoWay}"
+					ScrollViewer.VerticalScrollBarVisibility="Auto"
+					ScrollViewer.HorizontalScrollBarVisibility="Hidden"  
+					Background="#292929"
+					AlternatingRowBackground="LightGray"  AlternationCount="2"
+				>
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Giornata" Binding="{Binding giornata,StringFormat=D}" IsReadOnly="True" />
+						<DataGridCheckBoxColumn Header="Venduto" Binding="{Binding venduto}" IsReadOnly="True" />
+						<DataGridTextColumn Header="Prezzo" Binding="{Binding totaleAPagare,StringFormat=C}" IsReadOnly="True" >
+							<DataGridTextColumn.ElementStyle>
+								<Style TargetType="{x:Type TextBlock}">
+									<Setter Property="HorizontalAlignment" Value="Right" />
+								</Style>
+							</DataGridTextColumn.ElementStyle>
+						</DataGridTextColumn>
+						<DataGridTextColumn Header="Intestazione" Binding="{Binding intestazione}" IsReadOnly="True" />
+						<DataGridTextColumn Header="N°Stampe" Binding="{Binding Path=righeCarrello,Converter={StaticResource sumQuantitaConverter},ConverterParameter=S}" IsReadOnly="True" >
+							<DataGridTextColumn.ElementStyle>
+								<Style TargetType="{x:Type TextBlock}">
+									<Setter Property="HorizontalAlignment" Value="Right" />
+								</Style>
+							</DataGridTextColumn.ElementStyle>
+						</DataGridTextColumn>
+						<DataGridTextColumn Header="N°Mast." Binding="{Binding Path=righeCarrello,Converter={StaticResource sumQuantitaConverter},ConverterParameter=M}" IsReadOnly="True" >
+							<DataGridTextColumn.ElementStyle>
+								<Style TargetType="{x:Type TextBlock}">
+									<Setter Property="HorizontalAlignment" Value="Right" />
+								</Style>
+							</DataGridTextColumn.ElementStyle>
+						</DataGridTextColumn>
+						<DataGridTextColumn Header="Note" Binding="{Binding note}" IsReadOnly="True" />
+					</DataGrid.Columns>
+				</DataGrid>
+					
 				<!-- Questo è l'ultimo blocco che prenderà tutto lo spazio rimasto -->
+<!--				
 				<ListBox
 						x:Name="listCarrelli" SelectionMode="Single"
 						Style="{StaticResource ListaCarrelliStyle}"
@@ -188,7 +211,7 @@
 						ScrollViewer.VerticalScrollBarVisibility="Disabled"
 						ScrollViewer.HorizontalScrollBarVisibility="Visible" Height="75" />
 
-
+-->
 			</DockPanel>
 		</Expander>
 
@@ -219,7 +242,7 @@
             <Button Grid.Row="0" Grid.Column="1" Command="{Binding CopiaSpostaFotoRigaCommand}" CommandParameter="S" Style="{StaticResource styleSpostaCopyS}" Height="32" Width="32" Margin="0,140,0,100" />
             <Button Grid.Row="0" Grid.Column="1" Command="{Binding SpostaFotoRigaCommand}" CommandParameter="S" Style="{StaticResource styleSpostaS}" Height="32" Width="32" Margin="0,190,0,60" />
 
-			<ListBox x:Name="listCarrelloMasterizzate" Grid.Row="0" Grid.Column="2"
+			<ListBox x:Name="listCarrelloMasterizzate" Grid.Row="0" Grid.Column="2" Margin="10,0,2,0"
 					 SelectionMode="Single" 
 					 Style="{StaticResource ListCarrelloStyle}"
 					 ItemsSource="{Binding Path=RiCaFotoMasterizzateCv}"
