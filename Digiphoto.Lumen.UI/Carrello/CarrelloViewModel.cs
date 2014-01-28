@@ -362,6 +362,13 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
+		public decimal sommatoriaPrezziFotoDaStampare {
+			get {
+				return venditoreSrv.sommatoriaPrezziFotoDaStampare;
+			}
+		}
+
+
 		#endregion
 
 		#region Controlli
@@ -592,6 +599,7 @@ namespace Digiphoto.Lumen.UI
 			OnPropertyChanged( "ScontoApplicato" );
 			OnPropertyChanged( "sommatoriaFotoDaMasterizzare" );
 			OnPropertyChanged( "sommatoriaQtaFotoDaStampare" );
+			OnPropertyChanged( "sommatoriaPrezziFotoDaStampare" );
 			OnPropertyChanged( "possoVisualizzareIncassiFotografi" );
 		}
 

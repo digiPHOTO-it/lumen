@@ -90,6 +90,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			get;
 		}
 
+		// Ritorna la sommatoria dei prezzi delle foto da stampare (in pratica è il totale carrello - il prezzo del dischetto)
+		Decimal sommatoriaPrezziFotoDaStampare {
+			get;
+		}
+
 		Decimal prezzoNettoTotale {
 			get;
 		}

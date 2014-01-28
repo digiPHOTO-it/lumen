@@ -118,6 +118,13 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
+		public decimal sommatoraPrezziFotoDaStampare {
+			get {
+				return carrello.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_STAMPA ).Sum( rfs => rfs.prezzoNettoTotale );
+			}
+		}
+
+
 		/// <summary>
 		/// Questo è il totale aritmetico del carrello. E' dato dalla somma di tutte le righe con stampe + il prezzo globale del dischetto (se esiste)
 		/// </summary>

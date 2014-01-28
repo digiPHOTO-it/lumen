@@ -365,13 +365,13 @@
     </ItemsPanelTemplate>
 -->
 	<Style x:Key="styleGridTestata" TargetType="Grid">
-		<Setter Property="Background" Value="LightGray" />
 		
 		<Style.Resources>
 			<Style TargetType="Label">
 				<Setter Property="HorizontalContentAlignment" Value="Right" />
 				<Setter Property="HorizontalAlignment" Value="Left" />
 				<Setter Property="VerticalAlignment" Value="Top" />
+				<Setter Property="Foreground" Value="AntiqueWhite" />
 			</Style>
 			<Style TargetType="TextBox">
 				<Setter Property="MinWidth" Value="70" />
@@ -535,5 +535,16 @@
 		</Setter>
 	</Style>
 
+	<Style x:Key="gruppoTotaleTipoStyle" TargetType="GroupBox">
+		<Setter  Property="Margin" Value="2,0,0,0" />
+		<Setter Property="Background" Value="Black" />
+	</Style>
+
+	<Style x:Key="labelRiepilogoStyle" TargetType="Label">
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="BorderBrush" Value="Gray" />
+		<Setter Property="FontSize" Value="24" />
+		<Setter Property="Foreground" Value="AntiqueWhite" />
+	</Style>
 	
 </ResourceDictionary>

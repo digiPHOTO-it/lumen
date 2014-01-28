@@ -91,6 +91,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
+		public decimal sommatoriaPrezziFotoDaStampare {
+			get {
+				return gestoreCarrello.sommatoraPrezziFotoDaStampare;
+			}
+		}
+
 		public Decimal prezzoNettoTotale {
 			get {
 				return gestoreCarrello.prezzoNettoTotale;
@@ -977,5 +983,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			// idrato il provino per visualizzarlo
 			AiutanteFoto.idrataImmaginiFoto( riga.fotografia, IdrataTarget.Provino );
 		}
+
+
 	}
 }
