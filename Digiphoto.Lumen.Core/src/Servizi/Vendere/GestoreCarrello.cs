@@ -92,6 +92,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		public short? scontoApplicato {
 			get {
 				if (carrello.totaleAPagare == 0 || 
+					prezzoNettoTotale == 0 ||
 					carrello.totaleAPagare == null)
 					return null;
 

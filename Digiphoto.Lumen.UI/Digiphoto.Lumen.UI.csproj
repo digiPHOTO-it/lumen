@@ -702,6 +702,12 @@
   <ItemGroup>
     <Resource Include="Resources\Carrello-left-48x48.png" />
   </ItemGroup>
+   <ItemGroup>
+    <Resource Include="Resources\Carrello-right-copy-48x48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Carrello-left-copy-48x48.png" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\ssBurn-16x16.png" />
   </ItemGroup>

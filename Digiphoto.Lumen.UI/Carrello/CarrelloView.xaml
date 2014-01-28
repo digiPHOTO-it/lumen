@@ -214,8 +214,10 @@
 					 ItemTemplate="{DynamicResource rigaCarrelloStampaDataTemplate}"
 					 ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
 
-			<Button Grid.Row="0" Grid.Column="1" Command="{Binding SpostaFotoRigaCommand}" CommandParameter="M" Style="{StaticResource styleSpostaM}" Height="32" Width="32" Margin="0,100,0,152" />
-			<Button Grid.Row="0" Grid.Column="1" Command="{Binding SpostaFotoRigaCommand}" CommandParameter="S" Style="{StaticResource styleSpostaS}" Height="32" Width="32" Margin="0,137,0,115" />
+            <Button Grid.Row="0" Grid.Column="1" Command="{Binding CopiaSpostaFotoRigaCommand}" CommandParameter="M" Style="{StaticResource styleSpostaCopyM}" Height="32" Width="32" Margin="0,20,0,152" />
+            <Button Grid.Row="0" Grid.Column="1" Command="{Binding SpostaFotoRigaCommand}" CommandParameter="M" Style="{StaticResource styleSpostaM}" Height="32" Width="32" Margin="0,100,0,152" />
+            <Button Grid.Row="0" Grid.Column="1" Command="{Binding CopiaSpostaFotoRigaCommand}" CommandParameter="S" Style="{StaticResource styleSpostaCopyS}" Height="32" Width="32" Margin="0,140,0,100" />
+            <Button Grid.Row="0" Grid.Column="1" Command="{Binding SpostaFotoRigaCommand}" CommandParameter="S" Style="{StaticResource styleSpostaS}" Height="32" Width="32" Margin="0,190,0,60" />
 
 			<ListBox x:Name="listCarrelloMasterizzate" Grid.Row="0" Grid.Column="2"
 					 SelectionMode="Single" 

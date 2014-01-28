@@ -53,8 +53,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		void removeRigaCarrello(RigaCarrello rigaCarrello);
 
-		void spostaRigaCarrello(RigaCarrello rigaCarrello);
-
 		/// <summary>
 		/// Elimina dal carrello tutte le righe di un certo tipo
 		/// </summary>
@@ -62,6 +60,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		void removeRigheCarrello( string discriminator );
 
 		void removeCarrello(Carrello carrello);
+
+		void spostaRigaCarrello(RigaCarrello rigaCarrello);
+
+		void copiaSpostaRigaCarrello(RigaCarrello rigaCarrello);
 
 		/** Lavoro con un carrello alla volta. Esiste un solo carrello "corrente". */
 		Carrello carrello { get; }

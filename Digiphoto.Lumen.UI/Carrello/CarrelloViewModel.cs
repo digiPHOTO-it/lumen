@@ -1044,6 +1044,27 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
+		private void copiaSpostaFotoRiga(string discriminator)
+		{
+			if (Carrello.TIPORIGA_MASTERIZZATA.Equals(discriminator))
+				venditoreSrv.copiaSpostaRigaCarrello(rigaCarrelloStampataSelezionata);
+
+			if (Carrello.TIPORIGA_STAMPA.Equals(discriminator))
+			{
+				SelezionaStampanteDialog d = new SelezionaStampanteDialog();
+				bool? esito = d.ShowDialog();
+
+				if (esito == true)
+				{
+					//associo il nuovo formato carta alla riga
+					rigaCarrelloMasterizzataSelezionata.formatoCarta = d.formatoCarta;
+					venditoreSrv.copiaSpostaRigaCarrello(rigaCarrelloMasterizzataSelezionata);
+				}
+
+				d.Close();
+			}
+		}
+
 		private void visualizzareIncassiFotografi() {
 
 			// Aggiorno la collezione: non la ricreo perché è già bindata
@@ -1216,6 +1237,20 @@ namespace Digiphoto.Lumen.UI
 															   param => possoSpostareFotoRiga((String)param), false);
 				}
 				return _spostaFotoRigaCommand;
+			}
+		}
+
+		private RelayCommand _copiaSpostaFotoRigaCommand;
+		public ICommand CopiaSpostaFotoRigaCommand
+		{
+			get
+			{
+				if (_copiaSpostaFotoRigaCommand == null)
+				{
+					_copiaSpostaFotoRigaCommand = new RelayCommand(param => copiaSpostaFotoRiga((String)param),
+															   param => possoSpostareFotoRiga((String)param), false);
+				}
+				return _copiaSpostaFotoRigaCommand;
 			}
 		}
 
