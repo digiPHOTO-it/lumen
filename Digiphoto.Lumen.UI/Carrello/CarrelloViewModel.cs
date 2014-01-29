@@ -88,9 +88,8 @@ namespace Digiphoto.Lumen.UI
 			OnPropertyChanged("CarrelliSalvatiCv");
 		}
 
-
-		
-
+		private int indexMasterizzate = 0;
+		private int indexStampate = 0;
 		/// <summary>
 		/// Creo le viste sulle collezioni di righe che rappresentano il carrello.
 		/// </summary>
@@ -101,17 +100,29 @@ namespace Digiphoto.Lumen.UI
 			}
 			else
 			{
+				if (RiCaFotoStampateCv!=null && !RiCaFotoStampateCv.IsEmpty)
+					indexStampate = RiCaFotoStampateCv.IndexOf(rigaCarrelloStampataSelezionata);
 				// Creo la CollectionView delle rige stampate
 				RiCaFotoStampateCv = new ListCollectionView( carrelloCorrente.righeCarrello.ToList() );
 				RiCaFotoStampateCv.Filter = f => {
 					return ((RigaCarrello)f).discriminator == Carrello.TIPORIGA_STAMPA;
 				};
+				if (indexStampate > -1 && RiCaFotoStampateCv.Count > indexStampate)
+					rigaCarrelloStampataSelezionata = (RigaCarrello)RiCaFotoStampateCv.GetItemAt(indexStampate);
+				else if (RiCaFotoStampateCv.Count > 0)
+					rigaCarrelloStampataSelezionata = (RigaCarrello)RiCaFotoStampateCv.GetItemAt(RiCaFotoStampateCv.Count - 1);
 
+				if (RiCaFotoMasterizzateCv != null && !RiCaFotoMasterizzateCv.IsEmpty)
+					indexMasterizzate = RiCaFotoMasterizzateCv.IndexOf(rigaCarrelloMasterizzataSelezionata);
 				// Creo la CollectionView delle rige masterizzate
 				RiCaFotoMasterizzateCv = new ListCollectionView( carrelloCorrente.righeCarrello.ToList() );
 				RiCaFotoMasterizzateCv.Filter = f => {
 					return ((RigaCarrello)f).discriminator == Carrello.TIPORIGA_MASTERIZZATA;
 				};
+				if (indexMasterizzate>-1 && RiCaFotoMasterizzateCv.Count > indexMasterizzate)
+					rigaCarrelloMasterizzataSelezionata = (RigaCarrello)RiCaFotoMasterizzateCv.GetItemAt(indexMasterizzate);
+				else if (RiCaFotoMasterizzateCv.Count > 0)
+					rigaCarrelloMasterizzataSelezionata = (RigaCarrello)RiCaFotoMasterizzateCv.GetItemAt(RiCaFotoMasterizzateCv.Count-1);
 			}
 			OnPropertyChanged( "RiCaFotoStampateCv" );
 			OnPropertyChanged( "RiCaFotoMasterizzateCv" );
