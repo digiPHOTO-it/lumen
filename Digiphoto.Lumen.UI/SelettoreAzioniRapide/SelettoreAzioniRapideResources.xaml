@@ -1,9 +1,15 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-					xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI">
-	
-	<!--
+					xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI"
+                    xmlns:lumCC="clr-namespace:Digiphoto.Lumen.UI.Converters">
+
+
+    <lumCC:ListAzioniRapideVisibilityConverter x:Key="listAzioniRapideVisibilityConverter" />
+    <lumCC:BoolVisibilityConverter x:Key="boolVisibilityConverter" />
+
+
+    <!--
       ** I pulsanti di stampa, siccome sono tutti uguali,
       ** devo distinguerli con una scritta.
       ** Quindi creo un pulsante che ha una didascalia sotto.
@@ -143,6 +149,7 @@
                     </MenuItem>
 
                 <MenuItem Header="Tutte le Selezionate"
+                          Visibility="{Binding Path=fotografieCW, Mode=OneWay, Converter={StaticResource listAzioniRapideVisibilityConverter}}"
                           DataContext="{Binding}">
                       
                           <i:Interaction.Triggers>
