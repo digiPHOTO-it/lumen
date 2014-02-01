@@ -204,6 +204,7 @@
     <Compile Include="Converters\BoolBackgroundConverter.cs" />
     <Compile Include="Converters\CompNumFotoConverter.cs" />
     <Compile Include="Converters\BoolWindowStateConverter.cs" />
+    <Compile Include="Converters\ListAzioniRapideVisibilityConverter.cs" />
     <Compile Include="Converters\EnabledValidationMultiConverter.cs" />
     <Compile Include="Converters\FasiDelGiornoConverter.cs" />
     <Compile Include="Converters\ImageSourceConverter.cs" />

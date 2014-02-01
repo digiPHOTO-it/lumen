@@ -52,10 +52,20 @@ namespace Digiphoto.Lumen.UI
 			private set;
 		}
 
+		private MultiSelectCollectionView<Fotografia> _fotografieCW;
 		public MultiSelectCollectionView<Fotografia> fotografieCW
 		{
-			get;
-			set;
+			get{
+				return _fotografieCW;
+			}
+			set
+			{
+				if (_fotografieCW != value)
+				{
+					_fotografieCW = value;
+					OnPropertyChanged("fotografieCW");
+				}
+			}
 		}
 
 		private bool _isTuttoBloccato;
@@ -133,7 +143,12 @@ namespace Digiphoto.Lumen.UI
 					return foto.ToList();
 				}
 				else
-					return fotografieCW.SelectedItems.ToList();
+				{
+					if (fotografieCW == null)
+						return null;
+					else
+						return fotografieCW.SelectedItems.ToList();
+				}
 			}
 		}
 
