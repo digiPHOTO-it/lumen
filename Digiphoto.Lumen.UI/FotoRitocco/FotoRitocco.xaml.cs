@@ -1079,8 +1079,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					//	TranslateTransform tt = (TranslateTransform)qq.Children.First( c => c is TranslateTransform );
 					sliderTraslaX.Value = left;
 					sliderTraslaY.Value = top;
-				} else
-					System.Diagnostics.Debugger.Break(); // Strano che sia nullo. Come mai ?
+				} else {
+					// Strano che sia nullo. Come mai ?
+					bool strano = true;
+				}
 			}
 		}
 
@@ -1140,15 +1142,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		}
 
-
 		private void gridRitocco_SizeChanged(object sender, SizeChangedEventArgs e) {	
 			_viewModel.frpContenitoreMaxW = gridRitocco.ActualWidth;
 			_viewModel.frpContenitoreMaxH = gridRitocco.ActualHeight;
-		}
-
-
-		private void dacanc_Click_1( object sender, RoutedEventArgs e ) {
-			var www = imageRitoccata.ActualWidth;
 		}
 
 	}
