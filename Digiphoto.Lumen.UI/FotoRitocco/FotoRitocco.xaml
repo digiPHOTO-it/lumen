@@ -196,7 +196,6 @@
             
             <!-- Pulsantiera per paginazione -->
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Center">
-				<Button Name="dacanc" Content="DACANC" Click="dacanc_Click_1" />
                 <Button Content="|&lt;&lt;" Width="30" Command="{Binding fdmPaginareCommand}" CommandParameter="F"  />
                 <Button Content="&lt;" Width="30" Command="{Binding fdmPaginareCommand}" CommandParameter="P"  />
                 <Label Content="Pag" />
