@@ -26,6 +26,7 @@ namespace Digiphoto.Lumen.Config  {
 		public static readonly string companyName = "digiPHOTO.it";  // si potrebbero leggere dall'Assembly Info
 		public static readonly string applicationName = "Lumen";     // si potrebbero leggere dall'Assembly Info
 		public static readonly string pathBaseRegLumen = "Software\\" + Configurazione.companyName + "\\" + Configurazione.applicationName;
+		public static readonly string nomeLogoDefault = "digiPHOTO-logo.png";
 
 
 		DbUtil _dbUtil;
@@ -191,7 +192,7 @@ namespace Digiphoto.Lumen.Config  {
 			userConfig.autoRotazione = true;
 
 			// Questo è il logo di esempio che verrà distribuito nel pacchetto di installazione.
-			userConfig.logoNomeFile = "digiPHOTO-logo.png";
+			userConfig.logoNomeFile = nomeLogoDefault;
 			userConfig.logoPercentualeCopertura = 15;
 
 			// Geometria di default per lo slideShow
@@ -364,7 +365,7 @@ namespace Digiphoto.Lumen.Config  {
 
 			if( userConfig.cartellaLoghi != null ) {
 				string nomeLogo = Path.Combine( userConfig.cartellaLoghi, userConfig.logoNomeFile );
-				if( ! File.Exists(nomeLogo) )
+				if( !String.IsNullOrWhiteSpace( userConfig.logoNomeFile ) && !File.Exists( nomeLogo ) )
 					return  "File logo inesistente" + nomeLogo;
 			}
 
