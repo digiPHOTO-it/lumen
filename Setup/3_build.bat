@@ -1,7 +1,10 @@
-call "C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\vcvarsall.bat" x86
+rem call "C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\vcvarsall.bat" x86
+call "C:\Program Files\Microsoft Visual Studio 11.0\Common7\Tools\VsDevCmd.bat"
+
 
 rem scarico eventuali pacchetti necessari
-..\.nuget\nuget install packages.config -o ..\packages
+echo "disabilito nuget perche' necessario intervento manuale"
+rem ..\.nuget\nuget install packages.config -o ..\packages
 
 
 msbuild ..\Digiphoto.Lumen.sln /property:Configuration=Release /property:Platform=x86
