@@ -82,7 +82,6 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 				pubblicaMessaggio( ecm );
 			} else {
 				_giornale.Warn( "Salvataggio con zero record. Strano. Controllare" );
-				System.Diagnostics.Debugger.Break(); // Come mai ??
 			}
 
 			return quanti;

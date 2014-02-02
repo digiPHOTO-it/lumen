@@ -143,8 +143,7 @@ namespace Digiphoto.Lumen.Core.Database {
 				_isDisposed = true;
 
 			} else {
-				// Come mai casco qui ?? Impossibile !
-				System.Diagnostics.Debugger.Break();
+				_giornale.Warn( "Come mai casco qui ?? Impossibile !" );
 			}
 		}
 	}
