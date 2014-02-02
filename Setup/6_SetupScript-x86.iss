@@ -72,9 +72,6 @@ Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\Images\*"; DestD
 ; --- Driver sql x86 ---
 Source: "..\packages\System.Data.SQLite.x86.1.0.90.0\lib\net45\System.Data.SQLite.dll"; DestDir: "{app}";  Check: "not IsWin64"; Flags: ignoreversion
 Source: "..\packages\System.Data.SQLite.Linq.1.0.90.0\lib\net45\System.Data.SQLite.Linq.dll"; DestDir: "{app}";  Flags: ignoreversion
-; --- Driver sql x64 ---
-;Source: "..\packages\System.Data.SQLite.x64.1.0.81.0\lib\net40\System.Data.SQLite.dll"; DestDir: "{app}";  Check: "IsWin64"; Flags: ignoreversion
-;Source: "..\packages\System.Data.SQLite.x64.1.0.81.0\lib\net40\System.Data.SQLite.Linq.dll"; DestDir: "{app}"; Check: "IsWin64"; Flags: ignoreversion
 
 
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
