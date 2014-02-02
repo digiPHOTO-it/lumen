@@ -25,6 +25,8 @@ using Digiphoto.Lumen.GestoreConfigurazione.UI.Licenze;
 using Digiphoto.Lumen.Licensing;
 using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.UI.Util;
+using System.Windows.Resources;
+using System.Windows;
 
 namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 {
@@ -1076,6 +1078,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 			creaEventualiCartelleMancanti();
 
+			copiaLogoDiDefault();
 
 			string errore = Configurazione.getMotivoErrore( cfg );
 			int qquanti = ConfigurationManager.ConnectionStrings.Count;
@@ -1095,6 +1098,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 					inserisciEventualePubblicitaLumen();
 
+					
 
 					string msg = "Configurazione utente salvata";
 					if( quanti > 0 )
@@ -1135,6 +1139,40 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 				}
 			}
         }
+
+
+		/// <summary>
+		/// Estraggo dalle risorse interne dell'eseguibile, l'immagine con il logo di default
+		/// e lo scrivo su disco nella cartella indicata.
+		/// </summary>
+		private void copiaLogoDiDefault() {
+
+			if( cfg.logoNomeFile != null && cfg.logoNomeFile == Configurazione.nomeLogoDefault ) {
+				if( cfg.cartellaLoghi != null && String.IsNullOrWhiteSpace( cfg.cartellaLoghi ) == false ) {
+					String dest = null;
+					try {
+
+						dest = Path.Combine( cfg.cartellaLoghi, Configurazione.nomeLogoDefault );
+						if( File.Exists( dest ) == false ) {
+
+							Uri uri = new Uri( "/Resources/" + Configurazione.nomeLogoDefault, UriKind.Relative );
+
+							StreamResourceInfo info = Application.GetResourceStream( uri );
+
+							using( Stream output = File.OpenWrite( dest ) ) {
+								info.Stream.CopyTo( output );
+							}
+
+							info.Stream.Dispose();
+						}
+
+					} catch( Exception ee ) {
+						_giornale.Warn( "Errore copiando il logo di default: " + ee );
+						dialogProvider.ShowError( "Impossibile copiare il logo di default in:\n" + dest, "Errore copia", null );
+					}
+				}
+			}
+		}
 
 		private void creaEventualiCartelleMancanti() {
 
