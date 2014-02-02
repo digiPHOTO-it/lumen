@@ -1,6 +1,7 @@
 rem call "C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\vcvarsall.bat" x86
 call "C:\Program Files\Microsoft Visual Studio 11.0\Common7\Tools\VsDevCmd.bat"
 
+set EnableNuGetPackageRestore=true
 
 rem scarico eventuali pacchetti necessari
 echo "disabilito nuget perche' necessario intervento manuale"
@@ -23,7 +24,6 @@ goto Fine
 echo Ci sono stati degli errori
 pause
 exit 1
-
 
 
 :Fine
