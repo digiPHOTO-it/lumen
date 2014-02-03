@@ -118,6 +118,42 @@ namespace Digiphoto.Lumen.UI {
 			fotoGalleryViewModel.mandareInModificaImmediata( lbItem.Content as Fotografia );
 		}
 
+		private Fotografia ultimaSelezionata = null;
+		private void LsImageGallery_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+		{
+			Fotografia foto = (Fotografia)SelectItemOnLeftClick(e).Content;
+			if(ultimaSelezionata==null)
+				ultimaSelezionata = (Fotografia)SelectItemOnLeftClick(e).Content;
+
+			if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+			{
+				if(ultimaSelezionata!=null)
+				{
+					int firstIndex = fotoGalleryViewModel.fotografieCW.IndexOf(ultimaSelezionata);
+					int lastIndex = fotoGalleryViewModel.fotografieCW.IndexOf(foto);
+					//se ho selezionato dal più alto al più basso inverto gli indici
+					if (firstIndex > lastIndex)
+					{
+						int appoggio = firstIndex;
+						//faccio +1 perche se no non riesco a selezionare l'ultima foto
+						firstIndex = lastIndex+1;
+						lastIndex = appoggio;
+					}
+
+					for (int i = firstIndex; i < lastIndex; i++)
+					{
+						Fotografia f = (Fotografia)fotoGalleryViewModel.fotografieCW.GetItemAt(i);
+						if (!fotoGalleryViewModel.fotografieCW.SelectedItems.Contains(f))
+						{
+							fotoGalleryViewModel.fotografieCW.SelectedItems.Add(f);
+							fotoGalleryViewModel.fotografieCW.RefreshSelectedItemWithMemory();
+							ultimaSelezionata = null;
+						}
+					}
+				}
+			}
+		}
+
 		private void LsImageGallery_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			Fotografia foto = (Fotografia)SelectItemOnRightClick(e).Content;
@@ -136,8 +172,11 @@ namespace Digiphoto.Lumen.UI {
 				if( clickedListBoxItem != null ) 
 				{
 					Fotografia f = (Fotografia)clickedListBoxItem.Content;
-					if( !fotoGalleryViewModel.fotografieCW.SelectedItems.Contains( f ) )
-						fotoGalleryViewModel.fotografieCW.SelectedItems.Add( f );
+					if (!fotoGalleryViewModel.fotografieCW.SelectedItems.Contains(f))
+					{
+						fotoGalleryViewModel.fotografieCW.SelectedItems.Add(f);
+						fotoGalleryViewModel.fotografieCW.RefreshSelectedItemWithMemory();
+					}
 				}
 			}
 			return clickedListBoxItem;

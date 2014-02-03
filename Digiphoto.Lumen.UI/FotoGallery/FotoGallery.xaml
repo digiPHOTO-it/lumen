@@ -205,7 +205,9 @@
                  ItemsPanel="{DynamicResource ImageGalleryItemsPanelTemplate}" 
                  ItemTemplate="{DynamicResource fotografiaDataTemplate}"
 				 ContextMenu="{DynamicResource azioniRapideMenu}"
-				 ScrollViewer.HorizontalScrollBarVisibility="Disabled" PreviewMouseRightButtonDown="LsImageGallery_PreviewMouseRightButtonDown">
+				 ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                 PreviewMouseLeftButtonDown="LsImageGallery_PreviewMouseLeftButtonDown"
+                 PreviewMouseRightButtonDown="LsImageGallery_PreviewMouseRightButtonDown">
 
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}">
