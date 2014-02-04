@@ -18,16 +18,6 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		public SlideShow() {
 		}
 
-		public short righe {
-			get;
-			set;
-		}
-
-		public short colonne {
-			get;
-			set;
-		}
-
 		public int millisecondiIntervallo {
 			get;
 			set;
