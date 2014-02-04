@@ -17,10 +17,11 @@ using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.UI.Pubblico.GestioneGeometria;
 using System.Configuration;
 using System.Windows;
+using Digiphoto.Lumen.Servizi.Ritoccare;
 
 namespace Digiphoto.Lumen.UI.Pubblico {
 
-	public class SlideShowViewModel : ClosableWiewModel, IObserver<ScaricoFotoMsg> {
+	public class SlideShowViewModel : ClosableWiewModel, IObserver<ScaricoFotoMsg>, IObserver<FotoModificateMsg> {
 
 		private DispatcherTimer _orologio;
 
@@ -34,6 +35,9 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			pSSG = GestSlideShowViewModel.pSSG;
 
 			_elencoSpots = caricaElencoSpot();
+
+			slideShowRighe = 1;
+			slideShowColonne = 2;
 		}
 
 		private List<string> _elencoSpots;
@@ -60,7 +64,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		private int totSlidesPerPagina {
 			get {
-				return slideShow.colonne * slideShow.righe;
+				return slideShowColonne * slideShowRighe;
 			}
 		}
 
@@ -118,26 +122,27 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			}
 		}
 
-
+		private short _slideShowRighe;
 		public short slideShowRighe {
 			get {
-				return slideShow != null ? slideShow.righe : (short)1;
+				return _slideShowRighe;
 			}
 			set {
-				if( slideShow.righe != value ) {
-					slideShow.righe = value;
+				if( _slideShowRighe != value ) {
+					_slideShowRighe = value;
 					OnPropertyChanged( "slideShowRighe" );
 				}
 			}
 		}
 
+		private short _slideShowColonne;
 		public short slideShowColonne {
 			get {
-				return slideShow != null ? slideShow.colonne : (short)2;
+				return _slideShowColonne;
 			}
 			set {
-				if( slideShow.colonne != value ) {
-					slideShow.colonne = value;
+				if( _slideShowColonne != value ) {
+					_slideShowColonne = value;
 					OnPropertyChanged( "slideShowColonne" );
 				}
 			}
@@ -216,7 +221,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		public void creaShow( ParamCercaFoto paramCercaFoto ) {
 
 			// Mi f accio dare le foto dal servizio
-			fotoExplorerSrv.cercaFoto( paramCercaFoto );
+//			fotoExplorerSrv.cercaFoto( paramCercaFoto );
 
 			this.slideShow = new SlideShowAutomatico( paramCercaFoto );
 			this.slideShow.slides = fotoExplorerSrv.fotografie;
@@ -224,9 +229,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		}
 
 		private void creaShow() {
-			// Qualche parametro di default
-			slideShow.colonne = 2;	// TODO deve sceglierle l'utente
-			slideShow.righe = 1;	// TODO deve sceglierle l'utente
+			
 			slideShow.millisecondiIntervallo = Configurazione.UserConfigLumen.millisIntervalloSlideShow;
 
 			// Avvio il timer che serve a far girare le foto
@@ -236,16 +239,22 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			if( slideShow is SlideShowAutomatico ) {
 				IObservable<ScaricoFotoMsg> observable = LumenApplication.Instance.bus.Observe<ScaricoFotoMsg>();
 				observable.Subscribe( this );
-			}				
+			}
+
+			// Devo ascoltare sempre se qualche foto viene modificata
+			IObservable<FotoModificateMsg> observableFM = LumenApplication.Instance.bus.Observe<FotoModificateMsg>();
+			observableFM.Subscribe( this );
 		}
 
 		/// <summary>
 		/// creo uno slide show Manuale, con le immagini indicate
 		/// </summary>
 		public void creaShow( IList<Fotografia> newSlides )  {
+
 			this.slideShow = new SlideShow() { 
 				slides = newSlides 
 			};
+
 			creaShow();
 		}
 
@@ -416,5 +425,30 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 					if( isRunning == false )
 						start();
 		}
+
+
+		public void OnNext( FotoModificateMsg fmMsg ) {
+
+			if( slideShow == null )
+				return;
+
+			foreach( Fotografia modificata in fmMsg.fotos ) {
+
+				int pos =  slideShow.slides.IndexOf( modificata );
+				if( pos > 0 ) {
+					AiutanteFoto.disposeImmagini( slideShow.slides[pos], IdrataTarget.Provino );
+
+					// Se la foto è stata modificata, allora mi copio le correzioni.
+					slideShow.slides[pos].correzioniXml = modificata.correzioniXml;
+					// Se ho a  disposizione l'immagine del provino, me la copio, altrimenti me la rileggo da disco.
+					if( modificata.imgProvino != null )
+						slideShow.slides[pos].imgProvino = (Digiphoto.Lumen.Imaging.IImmagine)modificata.imgProvino;
+					else
+						AiutanteFoto.idrataImmaginiFoto( slideShow.slides[pos], IdrataTarget.Provino, true );
+				}
+			}
+		}
+
+
 	}
 }

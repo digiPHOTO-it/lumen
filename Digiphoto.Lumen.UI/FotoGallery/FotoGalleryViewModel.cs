@@ -366,7 +366,7 @@ namespace Digiphoto.Lumen.UI {
 		public short numRigheSlideShow {
 			
 			get {
-				return ( slideShowViewModel != null ) ? slideShowViewModel.slideShow.righe : (short)1;
+				return slideShowViewModel != null ? slideShowViewModel.slideShowRighe : (short)1;
 			}
 			set {
 				if( slideShowViewModel != null )
@@ -379,7 +379,7 @@ namespace Digiphoto.Lumen.UI {
 
 		public short numColonneSlideShow {
 			get {
-				return (slideShowViewModel != null && slideShowViewModel.slideShow != null) ? slideShowViewModel.slideShow.colonne : (short)2;
+				return slideShowViewModel != null ? slideShowViewModel.slideShowColonne : (short)2;
 			}
 			set {
 				if( slideShowViewModel != null )

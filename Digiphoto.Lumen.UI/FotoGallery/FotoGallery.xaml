@@ -119,25 +119,24 @@
         <Expander Header="Filtri per ricercare le foto nell'archivio" DockPanel.Dock="Bottom" IsExpanded="True" ExpandDirection="Up" >
             
             <StackPanel Orientation="Horizontal" MaxHeight="120">
-                
-                <GroupBox Header="Periodo">
+
+				<StackPanel Orientation="Vertical" Margin="3,0,3,0"  >
+
+					<Button Name="eseguireRicercaButton" Command="{Binding eseguireRicercaCommand}" Style="{StaticResource buttonCercaStyle}" />
+					<ProgressBar  Value="{Binding Path=idrataProgress,Mode=OneWay}" Style="{StaticResource idrataProgressBarStyle}" Height="{Binding Path=idrataProgress,Converter={StaticResource progressToVisibilityConverter},ConverterParameter=2:20}" Tag="Caricamento..." />
+					<Button Name="azzeraParamRicercaButton" ToolTip="Azzera i parametri di ricerca" Command="{Binding azzeraParamRicercaCommand}" Style="{StaticResource buttonAzzeraParametriStyle}" />
+
+					<StackPanel Orientation="Horizontal" Margin="2">
+						<Button Command="{Binding commandSpostarePaginazione}" CommandParameter="-999" Style="{StaticResource buttonMuoviFirstPageStyle}" />
+						<Button Command="{Binding commandSpostarePaginazione}" CommandParameter="-1" Style="{StaticResource buttonMuoviPreviousPageStyle}" />
+						<Label Content="{Binding paginaAttualeRicerca}" Width="24" HorizontalContentAlignment="Center" />
+						<Button Command="{Binding commandSpostarePaginazione}" CommandParameter="1" Style="{StaticResource buttonMuoviNextPageStyle}" />
+					</StackPanel>
+
+				</StackPanel>
+				<GroupBox Header="Periodo">
 
                     <StackPanel Orientation="Vertical">
-
-						<StackPanel Orientation="Vertical" Margin="3,0,3,0"  >
-
-							<Button Name="eseguireRicercaButton" Command="{Binding eseguireRicercaCommand}" Style="{StaticResource buttonCercaStyle}" />
-							<ProgressBar  Value="{Binding Path=idrataProgress,Mode=OneWay}" Style="{StaticResource idrataProgressBarStyle}" Height="{Binding Path=idrataProgress,Converter={StaticResource progressToVisibilityConverter},ConverterParameter=2:20}" Tag="Caricamento..." />
-							<Button Name="azzeraParamRicercaButton" ToolTip="Azzera i parametri di ricerca" Command="{Binding azzeraParamRicercaCommand}" Style="{StaticResource buttonAzzeraParametriStyle}" />
-
-							<StackPanel Orientation="Horizontal" Margin="2">
-								<Button Command="{Binding commandSpostarePaginazione}" CommandParameter="-999" Style="{StaticResource buttonMuoviFirstPageStyle}" />
-								<Button Command="{Binding commandSpostarePaginazione}" CommandParameter="-1" Style="{StaticResource buttonMuoviPreviousPageStyle}" />
-								<Label Content="{Binding paginaAttualeRicerca}" Width="24" HorizontalContentAlignment="Center" />
-								<Button Command="{Binding commandSpostarePaginazione}" CommandParameter="1" Style="{StaticResource buttonMuoviNextPageStyle}" />
-							</StackPanel>
-
-						</StackPanel>
 
 						<DatePicker SelectedDate="{Binding Path=paramCercaFoto.giornataIniz,Mode=TwoWay}"  IsTodayHighlighted="true" Name="datePickerRicercaIniz" ToolTip="Data inizio periodo" Margin="1"/>
 						<DatePicker SelectedDate="{Binding Path=paramCercaFoto.giornataFine,Mode=TwoWay}"  IsTodayHighlighted="true" Name="datePickerRicercaFine" ToolTip="Data fine periodo" Margin="1"/>
