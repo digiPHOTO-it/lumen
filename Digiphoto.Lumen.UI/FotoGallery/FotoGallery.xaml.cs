@@ -154,6 +154,22 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private ListBoxItem SelectItemOnLeftClick(System.Windows.Input.MouseButtonEventArgs e)
+		{
+			Point clickPoint = e.GetPosition(LsImageGallery);
+			object element = LsImageGallery.InputHitTest(clickPoint);
+			ListBoxItem clickedListBoxItem = null;
+			if (element != null)
+			{
+				clickedListBoxItem = GetVisualParent<ListBoxItem>(element);
+				if (clickedListBoxItem != null)
+				{
+					Fotografia f = (Fotografia)clickedListBoxItem.Content;
+				}
+			}
+			return clickedListBoxItem;
+		}
+
 		private void LsImageGallery_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			Fotografia foto = (Fotografia)SelectItemOnRightClick(e).Content;
