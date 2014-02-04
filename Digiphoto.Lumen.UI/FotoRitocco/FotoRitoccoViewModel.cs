@@ -1068,6 +1068,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			AiutanteFoto.creaProvinoFoto( fotografiaInModifica );
 
+			// Devo informare tutti che questa foto è cambiata
+			FotoModificateMsg msg = new FotoModificateMsg( this, fotografiaInModifica );
+			LumenApplication.Instance.bus.Publish( msg );
+
 			// Ora che ho persistito, concludo "dicamo cosi" la transazione, faccio una specie di commit.
 			modificheInCorso = false;
 		}
