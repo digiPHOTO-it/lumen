@@ -121,6 +121,10 @@ namespace Digiphoto.Lumen.UI {
 		private Fotografia ultimaSelezionata = null;
 		private void LsImageGallery_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
+			// Anche se clicco sulla scrollbar mi solleva l'evento button down.
+			if( ! (e.OriginalSource is Image) )
+				return;
+
 			Fotografia foto = (Fotografia)SelectItemOnLeftClick(e).Content;
 			if(ultimaSelezionata==null)
 				ultimaSelezionata = (Fotografia)SelectItemOnLeftClick(e).Content;
@@ -172,6 +176,9 @@ namespace Digiphoto.Lumen.UI {
 
 		private void LsImageGallery_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
 		{
+			if( !(e.OriginalSource is Image) )
+				return;
+
 			Fotografia foto = (Fotografia)SelectItemOnRightClick(e).Content;
 			((FotoGalleryViewModel)viewModelBase).selettoreAzioniRapideViewModel.ultimaFotoSelezionata = foto;
 			e.Handled = true;
