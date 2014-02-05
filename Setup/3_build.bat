@@ -8,10 +8,12 @@ echo "disabilito nuget perche' necessario intervento manuale"
 rem ..\.nuget\nuget install packages.config -o ..\packages
 
 
+msbuild ..\Digiphoto.Lumen.sln /property:Configuration=Release /property:Platform=x86 /target:Clean
 msbuild ..\Digiphoto.Lumen.sln /property:Configuration=Release /property:Platform=x86
 IF %ERRORLEVEL% NEQ 0 goto sub_problema
 pause
 
+msbuild ..\Digiphoto.Lumen.sln /property:Configuration=Release /property:Platform=x64 /target:Clean
 msbuild ..\Digiphoto.Lumen.sln /property:Configuration=Release /property:Platform=x64
 IF %ERRORLEVEL% NEQ 0 goto GesErrore
 
