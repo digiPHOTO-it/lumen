@@ -646,6 +646,7 @@
     <None Include="Properties\DataSources\Digiphoto.Lumen.Model.ConsumoCartaGiornaliero.datasource" />
     <None Include="Properties\DataSources\Digiphoto.Lumen.Model.FormatoCarta.datasource" />
     <None Include="Properties\DataSources\Digiphoto.Lumen.Servizi.Reports.ConsumoCarta.RigaReportConsumoCarta.datasource" />
+    <None Include="Properties\DataSources\Digiphoto.Lumen.Servizi.Reports.RigaReportVendite.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -703,7 +704,7 @@
   <ItemGroup>
     <Resource Include="Resources\Carrello-left-48x48.png" />
   </ItemGroup>
-   <ItemGroup>
+  <ItemGroup>
     <Resource Include="Resources\Carrello-right-copy-48x48.png" />
   </ItemGroup>
   <ItemGroup>
@@ -788,7 +789,7 @@
     <Resource Include="Resources\Carrello-qta-up-48x48.png" />
     <Resource Include="Resources\Carrello-delete-riga-48x48.png" />
     <Resource Include="Resources\Carrello-remove-cd-48x48.png" />
-	<Resource Include="Resources\Carrello-remove-riga-cd-48x48.png" />
+    <Resource Include="Resources\Carrello-remove-riga-cd-48x48.png" />
     <Resource Include="Resources\carrello-svuota-48x48.png" />
     <Resource Include="Resources\dvd-32x32.png" />
     <Resource Include="Resources\carrello-new-48x48.png" />
