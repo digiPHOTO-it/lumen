@@ -15,6 +15,7 @@ namespace Digiphoto.Lumen.Servizi.Reports {
 		public Decimal totIncassoCalcolato {get; set;}
 		public Decimal totIncassoDichiarato {get; set;}
 		public int totFotoStampate {get; set;}
+		public int totFotoMasterizzate {get; set;}
 		public int totFotoScattate {get; set;}
 		public int totDischettiMasterizzati {get; set;}
 
@@ -22,10 +23,7 @@ namespace Digiphoto.Lumen.Servizi.Reports {
 	}
 
 	public class ReportVenditeDettaglio {
-
 		public string desFormatoCarta { get; set; }
 		public int totFoto { get; set; }
 	}
-
-
 }
