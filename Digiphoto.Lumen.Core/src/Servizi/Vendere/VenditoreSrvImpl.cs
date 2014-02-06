@@ -869,14 +869,15 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 							 rr
 						 };
 
-			// Calcolo i cd masterizzati divisi per giornata
+			// Calcolo i cd masterizzati divisi per giornata e totalizzando per carrello (1 carrello = 1 cd)
 			var queryd = from dd in queryc
 						 group dd by new {
-							 dd.cc.giornata
+							 dd.cc.giornata,
+							 dd.cc.id
 						 } into grp
 						 select new {
 							 gg = grp.Key.giornata,
-							 dvd = grp.Sum( a => a.rr.quantita )
+							 contaMaster = grp.Count()   // 1 riga = 1 foto masterizzata (tanto la qta è sempre uno)
 						 };
 
 			// Ora ciclo i risultati e creo l'apposita riga
@@ -891,7 +892,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					reportVendite.Add( ris.gg, riga );
 				}
 				// Sommo i campi
-				riga.totDischettiMasterizzati += (int)ris.dvd;
+				riga.totDischettiMasterizzati += 1;
+				riga.totFotoMasterizzate += (int)ris.contaMaster;
 			}
 
 			_giornale.Debug( "report vendite: calcolati i dischetti masterizzati." );
