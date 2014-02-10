@@ -9,9 +9,15 @@ namespace Digiphoto.Lumen.Imaging.Correzioni {
 
 		public Zoom() : base() {
 			fattore = 1;  // Fattore moltiplicativo
+			quadroRuotato = false;
 		}
 
 		public double fattore {
+			get;
+			set;
+		}
+
+		public bool quadroRuotato {
 			get;
 			set;
 		}
@@ -23,7 +29,7 @@ namespace Digiphoto.Lumen.Imaging.Correzioni {
 		}
 
 		public override bool isSommabile( Correzione altra ) {
-			return (altra is Zoom);
+			return ( altra is Zoom && this.quadroRuotato == ((Zoom)altra).quadroRuotato );
 		}
 
 		public override Correzione somma( Correzione altra ) {

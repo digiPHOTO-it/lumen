@@ -117,14 +117,16 @@
 
 
 
-        <UniformGrid Rows="2" Columns="3" Style="{StaticResource gridOneShotRitoccoStyle}">
-                <ToggleButton Content="-90°"  Command="{Binding ruotareCommand}"   IsChecked="{Binding Path=isRotateMeno90Checked,Mode=OneWay}" Style="{StaticResource mioToggleButtonStyle}" CommandParameter="-90" />
-                <ToggleButton Content="+90°"  Command="{Binding ruotareCommand}"   IsChecked="{Binding Path=isRotatePiu90Checked,Mode=OneWay}"  Style="{StaticResource mioToggleButtonStyle}" CommandParameter="90" />
-                <ToggleButton Content="Flip"  Command="{Binding flipCommand}"      IsChecked="{Binding Path=isFlipChecked,Mode=OneWay}"         Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" />
-                <ToggleButton Content="B/N"   Command="{Binding grayScaleCommand}" IsChecked="{Binding Path=isGrayscaleChecked,Mode=OneWay}"    Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" />
-                <ToggleButton Content="Sepia" Command="{Binding sepiaCommand}"     IsChecked="{Binding Path=isSepiaChecked,Mode=OneWay}"        Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" />
-				<Button Content="Logo" ToolTip="Attiva disattiva sposta logo" Command="{Binding aggiungereLogoCommand}" />
-				<!--            
+        <UniformGrid Rows="2" Columns="4" Style="{StaticResource gridOneShotRitoccoStyle}">
+			<ToggleButton Content="-90°"  Command="{Binding ruotareCommand}"   IsChecked="{Binding Path=isRotateMeno90Checked,Mode=OneWay}" Style="{StaticResource mioToggleButtonStyle}" CommandParameter="-90" ToolTip="Ruota foto antiorario" />
+			<ToggleButton Content="+90°"  Command="{Binding ruotareCommand}"   IsChecked="{Binding Path=isRotatePiu90Checked,Mode=OneWay}"  Style="{StaticResource mioToggleButtonStyle}" CommandParameter="90"  ToolTip="Ruota foto orario"/>
+			<ToggleButton Content="H.V."  Command="{Binding ruotareQuadroCommand}"   IsChecked="{Binding Path=quadroRuotato,Mode=OneWay}"  Style="{StaticResource mioToggleButtonStyle}" ToolTip="Ruota quandro Oriz/Vert" />
+			<ToggleButton Content="Flip"  Command="{Binding flipCommand}"      IsChecked="{Binding Path=isFlipChecked,Mode=OneWay}"         Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" />
+
+			<ToggleButton Content="B/N"   Command="{Binding grayScaleCommand}" IsChecked="{Binding Path=isGrayscaleChecked,Mode=OneWay}"    Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" ToolTip="Bianco/Nero" />
+            <ToggleButton Content="Sepia" Command="{Binding sepiaCommand}"     IsChecked="{Binding Path=isSepiaChecked,Mode=OneWay}"        Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" ToolTip="Effetto invecchiato"/>
+			<Button Content="Logo" ToolTip="Attiva disattiva sposta logo" Command="{Binding aggiungereLogoCommand}" />
+			<!--            
                 <Button Name="buttonModificaConPrgEsterno" Content="Gimp" ToolTip="Modifica le foto con un programma esterno" Command="{Binding modificareConEditorEsternoCommand}"  />
 -->            
 			</UniformGrid>
@@ -264,7 +266,6 @@
                      
                 <!-- Questa è la grid per il fotoritocco -->
                 <Grid x:Name="gridRitocco" ClipToBounds="True"
-					  Background="Pink"
                       Visibility="{Binding isModalitaEditFotoRitocco,Converter={StaticResource booleanToVisibilityConverter}}"
                       Canvas.ZIndex="50" SizeChanged="gridRitocco_SizeChanged">
 

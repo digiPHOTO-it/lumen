@@ -962,14 +962,17 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			if( _viewModel.logo == null )
 				return;
-
+			String nomeFileLogo = PathUtil.nomeCompletoLogo( _viewModel.logo );
+			if( File.Exists( nomeFileLogo ) == false ) {
+				ShowError( nomeFileLogo, "Logo inesistente", null );
+				return;
+			}
 			Image imageLogino = new Image();
 
 
 			// Metto un nome univoco al componente
 			imageLogino.Name = "imageLogino";
 
-			String nomeFileLogo = PathUtil.nomeCompletoLogo( _viewModel.logo );
 
 			BitmapImage bmpLogo = new BitmapImage( new Uri(nomeFileLogo) );
 

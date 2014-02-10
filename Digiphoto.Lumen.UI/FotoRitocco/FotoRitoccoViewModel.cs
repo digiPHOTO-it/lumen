@@ -645,6 +645,19 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			set;
 		}
 
+		private bool _quadroRuotato;
+		public bool quadroRuotato {
+			get {
+				return _quadroRuotato;
+			}
+			set {
+				if( _quadroRuotato != value ) {
+					_quadroRuotato = value;
+					OnPropertyChanged( "quadroRuotato" );
+				}
+			}
+		}
+
 #endregion Proprietà
 
 
@@ -853,6 +866,18 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+
+		private RelayCommand _ruotareQuadroCommand;
+		public ICommand ruotareQuadroCommand {
+			get {
+				if( _ruotareQuadroCommand == null ) {
+					_ruotareQuadroCommand = new RelayCommand( p => ruotareQuadro(),
+															  p => possoModificareLaFoto );
+				}
+				return _ruotareQuadroCommand;
+			}
+		}
+
 #endregion Comandi
 
 		// ******************************************************************************************************
@@ -869,21 +894,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			if( ! _faseRipristinoFoto ) 
 				modificheInCorso = true;
-		}
-
-		/// <summary>
-		/// Aggiungo la correzione a tutte le foto selezionate
-		/// </summary>
-		private void addCorrezione( Correzione correzione ) {
-
-			// Sul correzione di traslazione, devo riportare due proprietà di front-end
-			// Mi serviranno per riproporzionare durante la provinatura, oppure la risultante.
-			if( correzione is Trasla && modalitaEdit == ModalitaEdit.FotoRitocco ) {
-				((Trasla)correzione).rifW = frpContenitoreW;
-				((Trasla)correzione).rifH = frpContenitoreH;
-			}
-
-			fotoRitoccoSrv.addCorrezione( fotografiaInModifica, correzione );
 		}
 
 		private void ruotare( int pGradi ) {
@@ -1076,6 +1086,24 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			modificheInCorso = false;
 		}
 
+		/// <summary>
+		/// Aggiungo la correzione a tutte le foto selezionate
+		/// </summary>
+		private void addCorrezione( Correzione correzione ) {
+
+			// Sul correzione di traslazione, devo riportare due proprietà di front-end
+			// Mi serviranno per riproporzionare durante la provinatura, oppure la risultante.
+			if( correzione is Trasla && modalitaEdit == ModalitaEdit.FotoRitocco ) {
+				((Trasla)correzione).rifW = frpContenitoreW;
+				((Trasla)correzione).rifH = frpContenitoreH;
+			}
+
+			if( correzione is Zoom )
+				((Zoom)correzione).quadroRuotato = this.quadroRuotato;
+
+			fotoRitoccoSrv.addCorrezione( fotografiaInModifica, correzione );
+		}
+
 		void addCorrezione( TipoCorrezione qualeTipo, Transform trasformazione ) {
 
 			if( ! isTrasformazioneNulla(trasformazione) ) {
@@ -1206,6 +1234,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			effettoCorrente = null;
 			trasformazioneCorrente = null;
 			mascheraAttiva = null;
+			quadroRuotato = false;
 
 			modalitaEdit = ModalitaEdit.FotoRitocco;
 			modificheInCorso = false;
@@ -1546,7 +1575,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			if( fotografiaInModifica == null )
 				return;
 
-
+			quadroRuotato = false;
 			try {
 				_faseRipristinoFoto = true;
 			
@@ -1585,16 +1614,20 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 							logo = (Logo)c;  // Per ora ne gestisco solo uno.
 						}
 
+						if( c is Zoom )
+							this.quadroRuotato = ((Zoom)c).quadroRuotato;
 					}
 
 					// cerco di capire se la foto è verticale, per rigirare il contenitore
-					Ruota rrr = (Ruota)correzioni.FirstOrDefault( c => c is Ruota );
+					// Ruota rrr = (Ruota)correzioni.FirstOrDefault( c => c is Ruota );
 				} 
 
 
 
 				if( maschera == null ) {
 					float ratio = fotografiaInModifica.imgOrig.rapporto;
+					if( quadroRuotato )
+						ratio = 1f / ratio;
 					frpCalcolaDimensioniContenitore( ratio );
 				}
 
@@ -1835,6 +1868,22 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 
 			forseInizioModifiche();
+		}
+
+
+		void ruotareQuadro() {
+
+			float ratio = fotografiaInModifica.imgOrig.rapporto;
+
+			if( quadroRuotato ) {
+				// torno regolare
+				frpCalcolaDimensioniContenitore( ratio );
+			} else {
+				// rovescio
+				frpCalcolaDimensioniContenitore( 1f/ratio );
+			}
+
+			quadroRuotato = (!quadroRuotato);
 		}
 
 
