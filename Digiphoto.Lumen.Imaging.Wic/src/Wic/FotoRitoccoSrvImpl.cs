@@ -571,8 +571,18 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 				wwDest = bmpMaschera.PixelWidth;
 				hhDest = bmpMaschera.PixelHeight;
 			} else {
-				wwDest = bmpFoto.PixelWidth;
-				hhDest = bmpFoto.PixelHeight;
+
+				// Cerco di intercettare un eventuale rotazione del quadro (non della foto)
+				Zoom zzz = (Zoom) correzioni.FirstOrDefault( c => c is Zoom );
+				bool rovesciare = zzz != null ? zzz.quadroRuotato : false;
+
+				if( rovesciare ) {
+					wwDest = bmpFoto.PixelHeight;
+					hhDest = bmpFoto.PixelWidth;
+				} else {
+					wwDest = bmpFoto.PixelWidth;
+					hhDest = bmpFoto.PixelHeight;
+				}
 			}
 
 
@@ -590,11 +600,11 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			// ::: Gestisco le correzioni
 			TransformGroup traGroup = new TransformGroup();
 			IList<ShaderEffect> effetti = null;
+//			bool quadroRuotato = false;
 
 			foreach( Correzione correzione in correzioni ) {
 				
 				Correttore correttore = gestoreImmaginiSrv.getCorrettore( correzione );
-
 
 				if( correttore.CanConvertTo( typeof( Transform ) ) ) {
 					// ::: Trasformazioni
