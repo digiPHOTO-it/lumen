@@ -779,7 +779,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			creaReportVenditeStep0( ref reportVendite, p );   // Foto scattate
 			creaReportVenditeStep1( ref reportVendite, p );   // Foto stampate (cioè vendute)
 			creaReportVenditeStep2( ref reportVendite, p );   // Dischetti masterizzati
-			creaReportVenditeStep3( ref reportVendite, p );   // Totale incasso previsto
+			creaReportVenditeStep3( ref reportVendite, p );   // Totale incasso dichiarato nei carrelli
+			creaReportVenditeStep4( ref reportVendite, p );   // Chiusura di cassa giorno
 
 			return reportVendite.Values.ToList();
 		}
@@ -900,7 +901,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 		/// <summary>
-		/// Calcolo il totale incasso previsto
+		/// Calcolo il totale incasso dichiarato nei carrelli
 		/// </summary>
 		void creaReportVenditeStep3( ref Dictionary<DateTime, RigaReportVendite> reportVendite, ParamRangeGiorni p ) {
 
@@ -932,7 +933,33 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				riga.totIncassoDichiarato = (decimal)ris.inca;
 			}
 
-			_giornale.Debug( "report vendite: calcolato l'incasso previsto." );
+			_giornale.Debug( "report vendite: calcolato l'incasso dichiarato." );
+		}
+
+
+		/// <summary>
+		/// Arricchisco con eventuale chiusura di cassa
+		/// </summary>
+		void creaReportVenditeStep4( ref Dictionary<DateTime, RigaReportVendite> reportVendite, ParamRangeGiorni p ) {
+
+			LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
+
+			foreach( Giornata giornata in dbContext.Giornate.Where( gg => gg.id >= p.dataIniz && gg.id <= p.dataFine ) ) {
+				RigaReportVendite riga;
+				if( reportVendite.ContainsKey( giornata.id ) )
+					riga = reportVendite[giornata.id];
+				else {
+					riga = new RigaReportVendite {
+						giornata = giornata.id
+					};
+					reportVendite.Add( giornata.id, riga );
+				}
+				// setto i dati della chiusura
+				riga.ccTotIncassoPrevisto = giornata.incassoPrevisto;
+				riga.ccTotIncassoDichiarato = giornata.incassoDichiarato;
+			}
+
+			_giornale.Debug( "report vendite: elaborate chiusure di cassa" );
 		}
 
 
