@@ -12,12 +12,19 @@ namespace Digiphoto.Lumen.Servizi.Reports {
 		}
 
 		public DateTime giornata {get; set;}
-		public Decimal totIncassoCalcolato {get; set;}
-		public Decimal totIncassoDichiarato {get; set;}
+		
 		public int totFotoStampate {get; set;}
 		public int totFotoMasterizzate {get; set;}
 		public int totFotoScattate {get; set;}
 		public int totDischettiMasterizzati {get; set;}
+
+		// Questo è preso dai carrelli (qui non si scappa)
+		public Decimal totIncassoCalcolato {get; set;}
+		public Decimal totIncassoDichiarato {get; set;}
+
+		// Chiusura di cassa (queste uno potrebbe dimenticarsi di farle)
+		public Decimal ccTotIncassoPrevisto {get; set;}
+		public Decimal ccTotIncassoDichiarato {get; set;}
 
 		public IList<ReportVenditeDettaglio> dettaglioFormatiCarta;
 	}
