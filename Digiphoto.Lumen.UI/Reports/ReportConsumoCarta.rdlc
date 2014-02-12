@@ -191,6 +191,7 @@
                               <Value>=Fields!giornata.Value</Value>
                               <Style>
                                 <FontFamily>Tahoma</FontFamily>
+                                <Format>ddd d MMM yy</Format>
                                 <Color>#4d4d4d</Color>
                               </Style>
                             </TextRun>
@@ -210,6 +211,7 @@
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
+                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
                 <TablixCell>
