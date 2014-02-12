@@ -211,8 +211,8 @@
 					</TabItem.Header>
 					<lumE:EliminaVecchiRulliniView/>
 				</TabItem>
-			
-				<TabItem ToolTip="Converti Numero Foto">
+
+                    <TabItem ToolTip="Converti Numero Foto" Visibility="{Binding Path=compNumFotoVisibility, Converter={StaticResource booleanToVisibilityConverter}}">
 					<TabItem.Header>
 						<TextBlock Text="Comprimi Numero Foto" FontSize="14" />
 					</TabItem.Header>

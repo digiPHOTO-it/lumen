@@ -129,6 +129,14 @@ namespace Digiphoto.Lumen.UI {
 			private set;
 		}
 
+		public Boolean compNumFotoVisibility
+		{
+			get
+			{
+				return Configurazione.UserConfigLumen.compNumFoto;
+			}
+		}
+
 		public SlideShowViewModel slideShowViewModel {
 			get {
 				return ((App)Application.Current).slideShowViewModel;
