@@ -71,6 +71,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		void caricaCarrello( Carrello c );
 
 		List<RigaReportVendite> creaReportVendite( ParamRangeGiorni param );
+		List<RigaReportProvvigioni> creaReportProvvigioni( ParamRangeGiorni paramRangeGiorni );
+
+
 
 		bool isStatoModifica {
 			get;

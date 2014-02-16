@@ -86,4 +86,11 @@
 
     </DataTemplate>
 
+	<Style x:Key="reportButtonStyle" TargetType="Button" BasedOn="{StaticResource buttonBaseStyle}">
+		<Setter Property="Height" Value="60" />
+		<Setter Property="Margin" Value="0,20,0,20" />
+		<Setter Property="Padding" Value="10" />
+		<Setter Property="FontSize" Value="16" />
+	</Style>
+
 </ResourceDictionary>

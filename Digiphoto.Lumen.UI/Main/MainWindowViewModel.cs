@@ -230,6 +230,18 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private RelayCommand _reportProvvigioniCommand;
+		public ICommand reportProvvigioniCommand {
+			get {
+				if( _reportProvvigioniCommand == null ) {
+					_reportProvvigioniCommand = new RelayCommand( param => reportProvvigioni(),
+															  param => true,
+															  false );
+				}
+				return _reportProvvigioniCommand;
+			}
+		}
+
 		private RelayCommand _commandRivelareNumFotoSlideShow;
 		public ICommand commandRivelareNumFotoSlideShow {
 			get {
@@ -261,49 +273,39 @@ namespace Digiphoto.Lumen.UI {
 
 		private void reportVendite() {
 
-			ParamRangeGiorni paramRangeGiorni = new ParamRangeGiorni();
+			ParamRangeGiorni paramRangeGiorni = richiediParametriRangeGiorni();
+			if( paramRangeGiorni == null )
+				return;
+
 			IVenditoreSrv srv = LumenApplication.Instance.getServizioAvviato<IVenditoreSrv>();
 
-			_giornale.Debug( "Sto per aprire il dialogo con il calendario per richiesta date" );
-			RangeGiorniDialog d = new RangeGiorniDialog();
-			bool? esito = d.ShowDialog();
-			
-			if( esito == true ) {
-				paramRangeGiorni.dataIniz = d.giornoIniz;
-				paramRangeGiorni.dataFine = d.giornoFine;
-			}
+			List<RigaReportVendite> righe = srv.creaReportVendite( paramRangeGiorni );
 
-			d.Close();
+			string nomeRpt = ".\\Reports\\ReportVendite.rdlc";
+			_giornale.Debug( "devo caricare il report: " + nomeRpt );
 
-			if( esito == true ) {
-				List<RigaReportVendite> righe = srv.creaReportVendite( paramRangeGiorni );
-
-				string nomeRpt = ".\\Reports\\ReportVendite.rdlc";
-				_giornale.Debug( "devo caricare il report: " + nomeRpt );
-
-				ReportHostWindow rhw = new ReportHostWindow();
-				rhw.impostaDataSource( righe );
-				rhw.reportPath = nomeRpt;
+			ReportHostWindow rhw = new ReportHostWindow();
+			rhw.impostaDataSource( righe );
+			rhw.reportPath = nomeRpt;
 
 
-				// Imposto qualche parametro da stampare nel report
-				ReportParameter p1 = new ReportParameter( "dataIniz", paramRangeGiorni.dataIniz.ToString() );
-				ReportParameter p2 = new ReportParameter( "dataFine", paramRangeGiorni.dataFine.ToString() );
-				string appo = String.IsNullOrEmpty( Configurazione.infoFissa.descrizPuntoVendita ) ? "pdv " + Configurazione.infoFissa.idPuntoVendita : Configurazione.infoFissa.descrizPuntoVendita;
-				ReportParameter p3 = new ReportParameter( "nomePdv", appo );
+			// Imposto qualche parametro da stampare nel report
+			ReportParameter p1 = new ReportParameter( "dataIniz", paramRangeGiorni.dataIniz.ToString() );
+			ReportParameter p2 = new ReportParameter( "dataFine", paramRangeGiorni.dataFine.ToString() );
+			string appo = String.IsNullOrEmpty( Configurazione.infoFissa.descrizPuntoVendita ) ? "pdv " + Configurazione.infoFissa.idPuntoVendita : Configurazione.infoFissa.descrizPuntoVendita;
+			ReportParameter p3 = new ReportParameter( "nomePdv", appo );
 
-				ReportParameter [] repoParam = { p1, p2, p3 };
-				rhw.viewerInstance.LocalReport.SetParameters( repoParam );
+			ReportParameter [] repoParam = { p1, p2, p3 };
+			rhw.viewerInstance.LocalReport.SetParameters( repoParam );
 
-				_giornale.Debug( "Impostati i parametri del report: " + paramRangeGiorni.dataIniz + " -> " + paramRangeGiorni.dataFine );
+			_giornale.Debug( "Impostati i parametri del report: " + paramRangeGiorni.dataIniz + " -> " + paramRangeGiorni.dataFine );
 
-				rhw.renderReport();
+			rhw.renderReport();
 
-				_giornale.Debug( "render del report" );
-				rhw.ShowDialog();
+			_giornale.Debug( "render del report" );
+			rhw.ShowDialog();
 
-				_giornale.Info( "Completato il report delle vendite DAL" + paramRangeGiorni.dataIniz + " -> " + paramRangeGiorni.dataFine );
-			}
+			_giornale.Info( "Completato il report delle vendite DAL" + paramRangeGiorni.dataIniz + " -> " + paramRangeGiorni.dataFine );
 		}
 
 		private void log(){
@@ -311,43 +313,72 @@ namespace Digiphoto.Lumen.UI {
 			loggingShowWindows.Show();
 		}
 
+		ParamRangeGiorni richiediParametriRangeGiorni() {
 
-		private void reportConsumoCarta()
-		{
-			ParamRangeGiorni paramRangeGiorni = new ParamRangeGiorni();
-			//IVenditoreSrv srv = LumenApplication.Instance.getServizioAvviato<IVenditoreSrv>();
+			ParamRangeGiorni paramRangeGiorni = null;
 
 			RangeGiorniDialog d = new RangeGiorniDialog();
 			bool? esito = d.ShowDialog();
 
-			if (esito == true)
-			{
+			if( esito == true ) {
+				paramRangeGiorni = new ParamRangeGiorni();
 				paramRangeGiorni.dataIniz = d.giornoIniz;
 				paramRangeGiorni.dataFine = d.giornoFine;
 			}
 
 			d.Close();
+			return paramRangeGiorni;
+		}
 
-			if (esito == true)
-			{
-				dialogProvider.ShowMessage( "Attualmente questo report conteggia soltanto i provini stampati, e non le fotografie", "Avviso" );
+		private void reportConsumoCarta()
+		{
+			ParamRangeGiorni paramRangeGiorni = richiediParametriRangeGiorni();
+			if( paramRangeGiorni == null )
+				return;
 
-				ReportHostWindow rhw = new ReportHostWindow();
-				rhw.impostaDataSource(RigaReportConsumoCarta.righe(paramRangeGiorni));
-				rhw.reportPath = ".\\Reports\\ReportConsumoCarta.rdlc";
+			dialogProvider.ShowMessage( "Attualmente questo report conteggia soltanto i provini stampati, e non le fotografie", "Avviso" );
 
-				// Imposto qualche parametro da stampare nel report
-				ReportParameter p1 = new ReportParameter("dataIniz", paramRangeGiorni.dataIniz.ToString());
-				ReportParameter p2 = new ReportParameter("dataFine", paramRangeGiorni.dataFine.ToString());
-				string appo = String.IsNullOrEmpty(Configurazione.infoFissa.descrizPuntoVendita) ? "pdv " + Configurazione.infoFissa.idPuntoVendita : Configurazione.infoFissa.descrizPuntoVendita;
-				ReportParameter p3 = new ReportParameter("nomePdv", appo);
+			ReportHostWindow rhw = new ReportHostWindow();
+			rhw.impostaDataSource(RigaReportConsumoCarta.righe(paramRangeGiorni));
+			rhw.reportPath = ".\\Reports\\ReportConsumoCarta.rdlc";
 
-				ReportParameter[] repoParam = { p1, p2, p3 };
-				rhw.viewerInstance.LocalReport.SetParameters(repoParam);
+			// Imposto qualche parametro da stampare nel report
+			ReportParameter p1 = new ReportParameter("dataIniz", paramRangeGiorni.dataIniz.ToString());
+			ReportParameter p2 = new ReportParameter("dataFine", paramRangeGiorni.dataFine.ToString());
+			string appo = String.IsNullOrEmpty(Configurazione.infoFissa.descrizPuntoVendita) ? "pdv " + Configurazione.infoFissa.idPuntoVendita : Configurazione.infoFissa.descrizPuntoVendita;
+			ReportParameter p3 = new ReportParameter("nomePdv", appo);
 
-				rhw.renderReport();
-				rhw.ShowDialog();
-			}
+			ReportParameter[] repoParam = { p1, p2, p3 };
+			rhw.viewerInstance.LocalReport.SetParameters(repoParam);
+
+			rhw.renderReport();
+			rhw.ShowDialog();
+		}
+
+		private void reportProvvigioni() {
+
+			ParamRangeGiorni paramRangeGiorni = richiediParametriRangeGiorni();
+			if( paramRangeGiorni == null )
+				return;
+			
+			IVenditoreSrv srv = LumenApplication.Instance.getServizioAvviato<IVenditoreSrv>();
+			List<RigaReportProvvigioni> righe = srv.creaReportProvvigioni( paramRangeGiorni );
+
+			ReportHostWindow rhw = new ReportHostWindow();
+			rhw.impostaDataSource( righe );
+			rhw.reportPath = ".\\Reports\\ReportProvvigioni.rdlc";
+
+			// Imposto qualche parametro da stampare nel report
+			ReportParameter p1 = new ReportParameter( "dataIniz", paramRangeGiorni.dataIniz.ToString() );
+			ReportParameter p2 = new ReportParameter( "dataFine", paramRangeGiorni.dataFine.ToString() );
+			string appo = String.IsNullOrEmpty( Configurazione.infoFissa.descrizPuntoVendita ) ? "pdv " + Configurazione.infoFissa.idPuntoVendita : Configurazione.infoFissa.descrizPuntoVendita;
+			ReportParameter p3 = new ReportParameter( "nomePdv", appo );
+
+			ReportParameter[] repoParam = { p1, p2, p3 };
+			rhw.viewerInstance.LocalReport.SetParameters( repoParam );
+
+			rhw.renderReport();
+			rhw.ShowDialog();
 		}
 
 		void dataEntry( string nomeEntita ) {

@@ -769,6 +769,28 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			return p;
 		}
 
+		public List<RigaReportProvvigioni> creaReportProvvigioni( ParamRangeGiorni p ) {
+
+			_giornale.Debug( "Devo preparare il report provvigioni da " + p.dataIniz + " a " + p.dataFine );
+
+			var queryh = from inf in this.objectContext.IncassiFotografi
+						 where 1==1
+						   && inf.carrello.venduto == true
+			                           && inf.carrello.giornata >= p.dataIniz && inf.carrello.giornata <= p.dataFine
+			                         orderby inf.fotografo.cognomeNome
+			                         group inf by inf.fotografo.cognomeNome into grp
+			                         select new RigaReportProvvigioni {
+			                                nomeFotografo = grp.Key,
+			                                incasso = grp.Sum( q2 => q2.incasso ),
+			                                incassoStampe = grp.Sum( q3 => q3.incassoStampe ),
+			                                incassoMasterizzate = grp.Sum( q4 => q4.incassoMasterizzate ),
+			                                contaStampe = grp.Sum( q5 => q5.contaStampe ),
+			                                contaMasterizzate = grp.Sum( q6 => q6.contaMasterizzate )
+			                         };
+
+			return queryh.ToList();
+		}
+
 
 		public List<RigaReportVendite> creaReportVendite( ParamRangeGiorni p ) {
 
@@ -1047,7 +1069,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			// idrato il provino per visualizzarlo
 			AiutanteFoto.idrataImmaginiFoto( riga.fotografia, IdrataTarget.Provino );
 		}
-
 
 	}
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Digiphoto.Lumen.Servizi.Reports {
 
-	public struct ParamRangeGiorni {
+	public class ParamRangeGiorni {
 		public DateTime dataIniz;
 		public DateTime dataFine;
 	}
