@@ -219,27 +219,15 @@
 					<lumCF:CompNumFotoView/>
 				</TabItem>
 
-				<TabItem ToolTip="Report Vendite">
+				<TabItem ToolTip="Report e Stampe">
 					<TabItem.Header>
 						<TextBlock Text="Report" FontSize="14" />
 					</TabItem.Header>
-					<Grid>
-						<Grid.RowDefinitions>
-							<RowDefinition Height="*" />
-							<RowDefinition Height="*" />
-							<RowDefinition Height="*" />
-							<RowDefinition Height="*" />
-							<RowDefinition Height="*" />
-							<RowDefinition Height="*" />
-						</Grid.RowDefinitions>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="*" />
-						</Grid.ColumnDefinitions>
-						<Button Grid.Row="2" Grid.Column="1" Content="Report Vendite" Height="50" Name="buttonReport" Command="{Binding reportVenditeCommand}" Width="150" />
-						<Button Grid.Row="3" Grid.Column="1" Content="Report Consumo Carta" Height="50" Name="buttonConsumoCarta" Command="{Binding reportConsumoCartaCommand}" Width="150" />
-					</Grid>
+						<StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+							<Button Content="Report Vendite" Name="buttonReport" Command="{Binding reportVenditeCommand}" Style="{StaticResource reportButtonStyle}" />
+							<Button Content="Report Consumo Carta" Name="buttonConsumoCarta" Command="{Binding reportConsumoCartaCommand}" Style="{StaticResource reportButtonStyle}" />
+							<Button Content="Report Provvigioni" Command="{Binding reportProvvigioniCommand}" Style="{StaticResource reportButtonStyle}" />
+						</StackPanel>
 				</TabItem>	
 				
 				<TabItem ToolTip="Consultazione giornale e messaggi applicativi">

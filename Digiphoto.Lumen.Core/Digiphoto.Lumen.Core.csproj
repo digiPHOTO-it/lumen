@@ -252,6 +252,7 @@
     <Compile Include="src\Servizi\Stampare\ParamStampaProvini.cs" />
     <Compile Include="src\Servizi\Stampare\StampanteAbbinata.cs" />
     <Compile Include="src\Servizi\Stampare\StampantiAbbinateUtil.cs" />
+    <Compile Include="src\Servizi\Reports\RigaReportProvvigioni.cs" />
     <Compile Include="src\Servizi\Vendere\RigaReportVendite.cs" />
     <Compile Include="src\Servizi\Ricerca\ParamCercaCarrello.cs" />
     <Compile Include="src\Servizi\Ritoccare\FotoDaModificareMsg.cs" />
@@ -345,8 +346,8 @@
     </None>
     <None Include="packages.config" />
     <None Include="Properties\DataSources\Digiphoto.Lumen.Servizi.Reports.ConsumoCarta.RigaReportConsumoCarta.datasource" />
-    <None Include="Properties\DataSources\Digiphoto.Lumen.Servizi.Reports.ReportVendite.datasource" />
     <None Include="Properties\DataSources\Digiphoto.Lumen.Servizi.Reports.ReportVenditeDettaglio.datasource" />
+    <None Include="Properties\DataSources\Digiphoto.Lumen.Servizi.Reports.RigaReportProvvigioni.datasource" />
     <None Include="Properties\DataSources\Digiphoto.Lumen.Servizi.Reports.RigaReportVendite.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

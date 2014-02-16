@@ -222,17 +222,15 @@
 	</Style>
 
 	<Style TargetType="{x:Type ButtonBase}" x:Key="buttonBaseStyle">
-<!--		
 		<Setter Property="Background">
 			<Setter.Value>
 				<LinearGradientBrush  StartPoint="0,0" EndPoint="0,1" >
 					<GradientStop Color= "LightBlue" Offset="0" />
-					<GradientStop Color= "SteelBlue" Offset="0.5" />
-					<GradientStop Color= "DarkBlue" Offset="0.9" />
+					<GradientStop Color= "WhiteSmoke" Offset="0.5" />
+					<GradientStop Color= "Cyan" Offset="1" />
 				</LinearGradientBrush>
 			</Setter.Value>
 		</Setter>
--->
 	</Style>
 	
 
