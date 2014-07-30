@@ -415,6 +415,18 @@ namespace Digiphoto.Lumen.UI
 
 		private void stampaRapida( StampanteAbbinata stampanteAbbinata, bool autoZoomNoBordiBianchi )
 		{
+
+			// Un parametro della configurazione mi dice il totale foto oltre il quale chiedere conferma
+			if( Configurazione.UserConfigLumen.sogliaNumFotoConfermaInStampaRapida > 0 && fotoSelezionate.Count >= Configurazione.UserConfigLumen.sogliaNumFotoConfermaInStampaRapida ) {
+				bool procediPure = false;
+				dialogProvider.ShowConfirmation( "Sei sicuro di voler stampare\nle " + fotoSelezionate.Count + " fotografie selezionate?", "Stampa rapida foto senza carrello",
+									  ( confermato ) => {
+										  procediPure = confermato;
+									  } );
+				if( !procediPure )
+					return;
+			}
+
 			using (IVenditoreSrv venditoreSpampaRapida = LumenApplication.Instance.creaServizio<IVenditoreSrv>())
 			{
 

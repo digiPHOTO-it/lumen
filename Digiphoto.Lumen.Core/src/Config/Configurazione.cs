@@ -195,6 +195,8 @@ namespace Digiphoto.Lumen.Config  {
 			userConfig.logoNomeFile = nomeLogoDefault;
 			userConfig.logoPercentualeCopertura = 15;
 
+			userConfig.sogliaNumFotoConfermaInStampaRapida = 3;  // Se stampo almeno 3 foto chiedo conferma
+
 			// Geometria di default per lo slideShow
 			creaGeometriaSlideShowSDefault(userConfig);
 
