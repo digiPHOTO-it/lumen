@@ -65,7 +65,13 @@
         <Button ToolTip="{Binding}" 
                 Command="{Binding Path=DataContext.stampareCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
                 CommandParameter="{Binding}">
-            <StackPanel Orientation="Vertical" >
+			<Button.InputBindings>
+				<MouseBinding Gesture="Control+LeftClick" 
+				              Command="{Binding Path=DataContext.stampareDirettaCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
+							  CommandParameter="{Binding}"
+							  />
+			</Button.InputBindings>
+			<StackPanel Orientation="Vertical" >
                 <Image Source="/Digiphoto.Lumen.UI;component/Resources/Printer-48x48.png" Width="48" />
                 <Label Content="{Binding FormatoCarta.descrizione}" Width="48" HorizontalAlignment="Center" />
             </StackPanel>

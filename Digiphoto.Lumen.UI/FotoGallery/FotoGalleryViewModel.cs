@@ -531,6 +531,17 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private RelayCommand _stampareDirettaCommand;
+		public ICommand stampareDirettaCommand {
+			get {
+				if( _stampareDirettaCommand == null ) {
+					_stampareDirettaCommand = new RelayCommand( param => stampare( param, true ),
+						                                        param => possoStampare, false );
+				}
+				return _stampareDirettaCommand;
+			}
+		}
+
 		private RelayCommand _stampareProviniCommand;
 		public ICommand stampareProviniCommand
 		{
@@ -722,12 +733,17 @@ namespace Digiphoto.Lumen.UI {
 				fotografieCW.DeselectAll();
 		}
 
+		private void stampare( object objStampanteAbbinata ) {
+			stampare( objStampanteAbbinata, Configurazione.UserConfigLumen.modoVendita == ModoVendita.StampaDiretta );
+		}
+
+		
 		/// <summary>
 		/// Devo mandare in stampa le foto selezionate
 		/// Nel parametro mi arriva l'oggetto StampanteAbbinata che mi da tutte le indicazioni
 		/// per la stampa: il formato carta e la stampante
 		/// </summary>
-		private void stampare( object objStampanteAbbinata ) {
+		private void stampare( object objStampanteAbbinata, bool stampaDiretta ) {
 			
 			StampanteAbbinata stampanteAbbinata = (StampanteAbbinata)objStampanteAbbinata;
 
@@ -736,16 +752,18 @@ namespace Digiphoto.Lumen.UI {
 			// Se ho selezionato più di una foto, e lavoro in stampa diretta, allora chiedo conferma
 			bool procediPure = true;
 			int quante = listaSelez.Count;
-			if (quante >= 1 && Configurazione.UserConfigLumen.modoVendita == ModoVendita.StampaDiretta)
+			if ( stampaDiretta &&
+				Configurazione.UserConfigLumen.sogliaNumFotoConfermaInStampaRapida > 0 &&
+				quante >= Configurazione.UserConfigLumen.sogliaNumFotoConfermaInStampaRapida )
 			{
-				dialogProvider.ShowConfirmation( "Confermi la stampa  di " + quante + " foto ?", "Stampa immediata",
+				dialogProvider.ShowConfirmation( "Confermi la stampa  di " + quante + " foto ?", "Stampa diretta senza carrello",
 				  (confermato) => {
 					  procediPure = confermato;
 				  } );
 			}
 
 			if( procediPure ) {
-				if(Configurazione.UserConfigLumen.modoVendita == ModoVendita.StampaDiretta){
+				if( stampaDiretta ){
 					using( IVenditoreSrv venditoreStampaDiretta = LumenApplication.Instance.creaServizio<IVenditoreSrv>() ) 
 					{
 						venditoreStampaDiretta.creaNuovoCarrello();
