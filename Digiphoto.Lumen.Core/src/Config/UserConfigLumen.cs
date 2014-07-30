@@ -335,6 +335,17 @@ namespace Digiphoto.Lumen.Config
 			set;
 		}
 
+		/// <summary>
+		/// Quando si lancia una stampa rapida di foto, senza passare dal carrello,
+		/// se il totale delle foto, raggiunge questa soglia, allora chiedo conferma all'utente che
+		/// davvero è intenzionato a stamparne così tante in modo immediato. Probabilmente si è sbagliato.
+		/// Se impostato = 0 non viene utilizzato (non ha effetto).
+		/// </summary>
+		public int sogliaNumFotoConfermaInStampaRapida {
+			get;
+			set;
+		}
+
 		# region SlideShowParam
 
 		public short deviceEnum
