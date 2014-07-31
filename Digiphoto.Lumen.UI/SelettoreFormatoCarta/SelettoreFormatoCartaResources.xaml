@@ -23,4 +23,11 @@
         <Setter Property="CharacterCasing" Value="Upper" />
     </Style>
 
+	<Style x:Key="creaNuovoFormatoExpanderStyle" TargetType="{x:Type Expander}">
+		<Setter Property="Background" Value="#FFD5F9DD" />
+		<Setter Property="BorderBrush" Value="Blue" />
+		<Setter Property="BorderThickness" Value="1" />
+	</Style>
+
+	
 </ResourceDictionary>

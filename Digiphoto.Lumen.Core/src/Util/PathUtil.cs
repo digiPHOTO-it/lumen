@@ -295,6 +295,31 @@ namespace Digiphoto.Lumen.Util {
 			return Path.Combine( Configurazione.UserConfigLumen.cartellaLoghi, logo.nomeFileLogo );
 		}
 
+		public static string getCartellaMaschera( FiltroMask filtro ) {
+			return getCartellaMaschera( Configurazione.UserConfigLumen, filtro );
+		}
+
+		public static string getCartellaMaschera( UserConfigLumen cfg, FiltroMask filtro ) {
+			string sub = filtro == FiltroMask.MskMultiple ? "Multiple" : "Singole";
+			return Path.Combine( cfg.cartellaMaschere, sub );
+		}
+
+		public static void creaEventualeCartellaMancante( String nomeDir, string titoloMsg ) {
+			try {
+				if( !Directory.Exists( nomeDir ) ) {
+					Directory.CreateDirectory( nomeDir );
+					_giornale.Info( "OK creata cartella " + titoloMsg + " : " + nomeDir );
+				}
+			} catch( Exception ee ) {
+				_giornale.Error( "Fallita creazione cartella " + titoloMsg + ":" + nomeDir, ee );
+			}
+		}
 
 	}
+
+	public enum FiltroMask {
+		MskSingole,
+		MskMultiple
+	}
+
 }

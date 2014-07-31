@@ -107,10 +107,4 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		void autoRuotaSuOriginale( Fotografia fotografia, Ruota ruota );
 	}
 
-
-	public enum FiltroMask {
-		MskSingole,
-		MskMultiple
-	}
-
 }

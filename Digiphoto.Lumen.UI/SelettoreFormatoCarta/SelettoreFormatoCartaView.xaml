@@ -36,7 +36,7 @@
         <Button Name="refreshButton" Content="Rileggi" Command="{Binding Path=rileggereFormatiCartaCommand}"  CommandParameter="True"
                 Grid.Row="1" Grid.Column="0" Width="100" Margin="0,4"/>
 
-                <Expander IsExpanded="False" Header="Crea nuovo formato carta" 
+			<Expander IsExpanded="True" Header="Crea nuovo formato carta" Style="{StaticResource creaNuovoFormatoExpanderStyle}"
                           Visibility="{Binding possoCreare, ElementName=selFormatiCarta, Converter={StaticResource BooleanToVisibilityConverter}}"
                           Grid.Row="2" Grid.Column="0">
             <StackPanel>
