@@ -396,6 +396,11 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		}
 
 
+		public string getCartellaMaschera( FiltroMask filtro ) {
+			return PathUtil.getCartellaMaschera( filtro );
+		}
+
+
 		private bool creaMiniaturaMaschera( string nomeFileMaschera, string nomeFileMiniatura ) {
 
 			bool esiste = false;
@@ -738,11 +743,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		}
 
 
-		public string getCartellaMaschera( FiltroMask filtro ) {
 
-			string sub = filtro == FiltroMask.MskMultiple ? "Multiple" : "Singole";
-			return Path.Combine( Configurazione.UserConfigLumen.cartellaMaschere, sub );
-		}
 
 		/// <summary>
 		/// Faccio qualche controllo preventivo.
@@ -828,6 +829,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			// Ricalcolo il provino giusto per poterlo visualizzare
 			AiutanteFoto.creaProvinoFoto( fotografia );
 		}
+
 
 	}
 }

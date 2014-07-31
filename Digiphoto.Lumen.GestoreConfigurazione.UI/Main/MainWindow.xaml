@@ -9,22 +9,22 @@
         xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters;assembly=Digiphoto.Lumen.UI"
         xmlns:lumL="clr-namespace:Digiphoto.Lumen.GestoreConfigurazione.UI.Licenze"
         FocusManager.FocusedElement="{Binding ElementName=PasswordBox}"
-        Title="Lumen Gestore Configurazione" Height="540" Width="790" WindowState="Normal" WindowStartupLocation="CenterScreen" Icon="/Digiphoto.Lumen.GestoreConfigurazione.UI;component/Images/Configuration-48x48.ico">
+        Title="Lumen Gestore Configurazione"  WindowState="Maximized" WindowStartupLocation="CenterScreen" Icon="/Digiphoto.Lumen.GestoreConfigurazione.UI;component/Images/Configuration-48x48.ico">
 
 	<Window.Resources>
 		<ResourceDictionary Source="MainWindowResources.xaml" />
 	</Window.Resources>
 
 	<DockPanel LastChildFill="True">
-		<StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Right" Height="32" Width="419">
+		<StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Right" Height="32" >
 			<Label Content="Password amministratore" Height="28" Margin="5,0,5,0" Name="label2"  Width="149" />
 			<PasswordBox Height="23" Name="amministratorePasswordBox" Width="120"
                 PasswordChar="*"
                 xamlHelpers:PasswordBoxAssistant.BindPassword="true"
                 xamlHelpers:PasswordBoxAssistant.BoundPassword="{Binding Path=LoginPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" KeyboardNavigation.TabIndex="0" />
-			<Button Name="amministratoreLoginButton" Content="&gt;" Height="23"  Margin="5,0,5,0"  Width="22" Command="{Binding Path=loginCommand}" ToolTip="Esegui Login" TabIndex="2" />
+			<Button Name="amministratoreLoginButton" Content="OK" Height="24"  Margin="10,0,5,0"  Width="100" Command="{Binding Path=loginCommand}" ToolTip="Esegui Login" TabIndex="2" IsDefault="True" />
 
-			<Button Content="About" Name="about" Height="23" Width="100" Click="about_Click"  Margin="5,0,5,0"/>
+			<Button Content="Informazioni su ..." Name="about" Height="24" Click="about_Click"  Margin="10,0,5,0"/>
 		</StackPanel>
 
 		<StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" >
@@ -118,7 +118,7 @@
 
 						<vc:SelettoreStampanteInstallata DataContext="{Binding Path=DataContextStampantiInstallate}" Grid.Row="0" Grid.Column="0" />
 
-						<vc:SelettoreFormatoCarta DataContext="{Binding Path=DataContextFormatoCarta}" Grid.Row="1" Grid.Column="0"/>
+						<vc:SelettoreFormatoCarta DataContext="{Binding Path=DataContextFormatoCarta}" Grid.Row="1" Grid.Column="0"  />
 
 					</Grid>
 

@@ -1176,26 +1176,11 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 		private void creaEventualiCartelleMancanti() {
 
-			// Provo a creare la cartella se non esiste
-			try {
-				if( !Directory.Exists( cfg.cartellaPubblicita ) ) {
-					Directory.CreateDirectory( cfg.cartellaPubblicita );
-					_giornale.Info( "Creata cartella pubblicità: " + cfg.cartellaPubblicita );
-				}
-			} catch( Exception ee ) {
-				_giornale.Error( "crea cartella pubblicita", ee );
-			}
-
-			// Provo a creare la cartella se non esiste
-			try {
-				if( !Directory.Exists( cfg.cartellaLoghi ) ) {
-					Directory.CreateDirectory( cfg.cartellaLoghi );
-					_giornale.Info( "Creata cartella loghi: " + cfg.cartellaLoghi );
-				}
-			} catch( Exception ee ) {
-				_giornale.Error( "crea cartella loghi", ee );
-			}
-
+			PathUtil.creaEventualeCartellaMancante( cfg.cartellaLoghi, "loghi" );
+			PathUtil.creaEventualeCartellaMancante( cfg.cartellaPubblicita, "pubblicità" );
+			PathUtil.creaEventualeCartellaMancante( cfg.cartellaMaschere, "maschere" );
+			PathUtil.creaEventualeCartellaMancante( PathUtil.getCartellaMaschera( cfg, FiltroMask.MskSingole ), "maschere singole" );
+			PathUtil.creaEventualeCartellaMancante( PathUtil.getCartellaMaschera( cfg, FiltroMask.MskMultiple ), "maschere multiple" );
 		}
 
 		private int saveInfoFisse() {
