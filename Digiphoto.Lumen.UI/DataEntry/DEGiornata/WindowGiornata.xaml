@@ -59,7 +59,7 @@
 				
 				<Grid Name="gridEditor" DataContext="{Binding entitySource}"  >
 					<Rectangle Height="31" HorizontalAlignment="Left" Margin="158,8,0,0" Name="rectangle1" Stroke="Black" VerticalAlignment="Top" Width="245" />
-					<Label  Content="Giorno" Margin="169,11,0,0" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="52" Height="26" VerticalAlignment="Top" />
+					<Label  Content="Giornata" Margin="169,11,0,0" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="52" Height="26" VerticalAlignment="Top" />
 					<DatePicker Height="25" HorizontalAlignment="Left" Margin="239,11,0,0"  VerticalAlignment="Top" Width="152"  SelectedDate="{Binding id,Mode=TwoWay}"  IsEnabled="{Binding Path=isKeyEditabile,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" IsTodayHighlighted="False" Name="datePickerGiorno" >
 						<i:Interaction.Triggers>
 							<i:EventTrigger EventName="SelectedDateChanged">
@@ -74,7 +74,7 @@
 					<TabControl Height="250" Margin="10,45,6,6" Style="{DynamicResource tabControlProspettiveStyle}">
 						<TabItem Header="Generale" >
 							<Grid>
-								<Label Content="Incasso dichiarato" Margin="8,23,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="110" HorizontalContentAlignment="Right" />
+								<Label Content="Incasso dichiarato" Margin="8,23,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="110" HorizontalContentAlignment="Right" FontWeight="Bold" />
                                 <TextBox Name="textBoxIncassoDichiarato" Text="{Binding incassoDichiarato,StringFormat=C}" Margin="136,23,0,0" HorizontalContentAlignment="Right" Height="24" VerticalAlignment="Top" HorizontalAlignment="Left" Width="60" TextChanged="textBoxIncassoDichiarato_TextChanged" 
 										 IsReadOnly="{Binding Path=DataContext.canEditFields,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},Converter={StaticResource boolInverterConverter}}" />
 
@@ -88,7 +88,7 @@
                                 <TextBox Name="textBoxNote" Margin="317,29,19,10" Text="{Binding note}"  AcceptsReturn="True" Height="179" 
 										 IsReadOnly="{Binding Path=DataContext.canEditFields,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},Converter={StaticResource boolInverterConverter}}" />
                                 
-                                <Label Content="Firma" Height="26" HorizontalAlignment="Left" Margin="8,126,0,0" Name="label2" VerticalAlignment="Top" Width="110" HorizontalContentAlignment="Right" />
+                                <Label Content="Firma" Height="26" HorizontalAlignment="Left" Margin="8,126,0,0" Name="label2" VerticalAlignment="Top" Width="110" HorizontalContentAlignment="Right" FontWeight="Bold" />
 								<TextBox Name="textBoxFirma" Height="24" Text="{Binding firma}" HorizontalAlignment="Left" Margin="136,128,0,0"  VerticalAlignment="Top" Width="164" 
 										 IsReadOnly="{Binding Path=DataContext.canEditFields,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},Converter={StaticResource boolInverterConverter}}" />
 

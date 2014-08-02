@@ -37,12 +37,11 @@ namespace Digiphoto.Lumen.UI {
 			set;
 		}
 
-		public string idFotografoNew {
+		public string cognomeNomeFotogafoNew {
 			get {
-				return nuovoFotografo.id;
+				return nuovoFotografo.cognomeNome;
 			}
 			set {
-				nuovoFotografo.id = value;
 				nuovoFotografo.cognomeNome = value;
 			}
 		}
@@ -123,6 +122,9 @@ namespace Digiphoto.Lumen.UI {
 
 			try {
 
+				if( "*".Equals( nuovoFotografo.id ) )
+					nuovoFotografo.id = (string)fotografiReporitorySrv.getNextId();
+
 				// Salvo nel database
 				fotografiReporitorySrv.addNew( nuovoFotografo );
 
@@ -145,8 +147,8 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		/// <summary>
-		///  istanzia un oggetto nomeCartellaRecente tipo Fotografo, pronto per essere utilizzato nella creazione
-		///  nomeCartellaRecente un nuovo fotografoSelezionato, in caso nell'elenco mancasse.
+		///  istanzia un oggetto di tipo Fotografo, pronto per essere utilizzato nella creazione
+		///  di un nuovo fotografoSelezionato, in caso nell'elenco mancasse.
 		/// </summary>
 		private void istanziaNuovoFotografo() {
 
@@ -154,9 +156,10 @@ namespace Digiphoto.Lumen.UI {
 			nuovoFotografo = new Fotografo();
 			nuovoFotografo.attivo = true;
 			nuovoFotografo.umano = true;
-			nuovoFotografo.cognomeNome = "Cognome e Nome";
+			nuovoFotografo.cognomeNome = "";
+			nuovoFotografo.id = "*";
 
-			OnPropertyChanged( "idFotografoNew" );
+			OnPropertyChanged( "cognomeNomeFotogafoNew" );
 			OnPropertyChanged( "nuovoFotografo" );
 		}
 

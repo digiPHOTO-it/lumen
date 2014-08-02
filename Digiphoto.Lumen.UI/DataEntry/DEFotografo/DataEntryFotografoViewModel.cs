@@ -13,6 +13,12 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEFotografo {
 	public class DataEntryFotografoViewModel : DataEntryViewModel<Fotografo> {
 
 		protected override void passoPreparaAddNew( Fotografo fotografo ) {
+
+			// Calcolo un codice numerico da 4 cifre
+			object prox = entityRepositorySrv.getNextId();
+			if( prox != null )
+				fotografo.id = (string)prox;
+
 			fotografo.attivo = true;
 			fotografo.umano = true;
 		}

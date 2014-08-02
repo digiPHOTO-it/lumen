@@ -41,10 +41,10 @@
 						<TabItem Header="Generale">
 							<Grid Height="240">
                                 
-								<Label Content="Id" Margin="15,31,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="110" HorizontalContentAlignment="Right"/>
+								<Label Content="Codice" Margin="15,31,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="110" HorizontalContentAlignment="Right" FontWeight="Bold"/>
 								<TextBox Name="textBoxId" CharacterCasing="Upper" HorizontalContentAlignment="Left" Margin="143,31,0,0" Text="{Binding id, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Height="24" VerticalAlignment="Top" HorizontalAlignment="Left" Width="239" />
 
-								<Label Content="Descrizione" Margin="15,67,0,0" HorizontalAlignment="Left" Width="110" Height="26" VerticalAlignment="Top" HorizontalContentAlignment="Right" />
+								<Label Content="Descrizione" Margin="15,67,0,0" HorizontalAlignment="Left" Width="110" Height="26" VerticalAlignment="Top" HorizontalContentAlignment="Right" FontWeight="Bold" />
 								<TextBox Name="textBoxDescrizione" CharacterCasing="Upper" Text="{Binding descrizione,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Height="24" HorizontalContentAlignment="Left" Margin="143,67,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="239" />
 								
                                 <Label  Content="Ordinamento" Margin="15,105,0,0" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="110" Height="26" VerticalAlignment="Top" />

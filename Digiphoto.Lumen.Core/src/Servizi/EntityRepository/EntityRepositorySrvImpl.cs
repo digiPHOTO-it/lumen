@@ -103,5 +103,14 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 			// Poi lo rinfesco dal db
 			UnitOfWorkScope.currentObjectContext.Refresh( RefreshMode.StoreWins, entita );
 		}
+
+		/// <summary>
+		/// In alcuni casi mi servirebbe un ID tipo una sequenza o qualcosa di auto-generato
+		/// </summary>
+		/// <returns></returns>
+		public virtual object getNextId() {
+			return null;
+		}
+
 	}
 }
