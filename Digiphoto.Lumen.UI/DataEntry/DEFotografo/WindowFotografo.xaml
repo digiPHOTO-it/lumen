@@ -43,7 +43,7 @@
 						<TabItem Header="Generale">
 							<Grid Height="233">
 								<TextBox Margin="317,31,19,21" Text="{Binding note,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"  AcceptsReturn="True" Name="textBoxNote" Height="181" />
-								<Label Content="Id" Margin="15,31,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="110" HorizontalContentAlignment="Right"/>
+								<Label Content="Codice" Margin="15,31,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="110" HorizontalContentAlignment="Right" FontWeight="Bold"/>
 								<TextBox Name="textBoxId" CharacterCasing="Upper" HorizontalContentAlignment="Left" Margin="143,31,0,0" Text="{Binding id, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Height="24" VerticalAlignment="Top" HorizontalAlignment="Left" Width="164" />
 
 								<Label Content="Nome" Margin="15,67,0,0" HorizontalAlignment="Left" Width="110" Height="26" VerticalAlignment="Top" HorizontalContentAlignment="Right" />
@@ -53,9 +53,9 @@
 								<TextBox Name="textBoxCognome" CharacterCasing="Upper" Height="24" Text="{Binding cognome,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" HorizontalAlignment="Left" Margin="143,102,0,0"  VerticalAlignment="Top" Width="164" />
 
 								<Label  Content="Iniziali" Margin="15,164,0,0" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="110" Height="26" VerticalAlignment="Top" />
-								<TextBox Name="textBoxCognomeNome" CharacterCasing="Upper" Text="{Binding cognomeNome, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"  VerticalAlignment="Bottom" Margin="143,0,292,77" Width="164" />
-								
-								<Label Content="Cognome e Nome" Height="26" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="15,130,0,0" Name="label3" VerticalAlignment="Top" Width="110" />
+								<TextBox Name="textBoxCognomeNome" CharacterCasing="Upper" Text="{Binding cognomeNome, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"  VerticalAlignment="Top" Margin="143,134,0,0" Width="164" HorizontalAlignment="Left" />
+
+								<Label Content="Soprannome" Height="26" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="15,130,0,0" Name="label3" VerticalAlignment="Top" Width="110" FontWeight="Bold" />
 								<TextBox CharacterCasing="Upper" Height="24" HorizontalAlignment="Left" Margin="143,164,0,0" Name="textBoxIniziali" Text="{Binding iniziali, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" MaxLength="100" VerticalAlignment="Top" Width="38" />
 							
 								<CheckBox Content="Attivo" IsChecked="{Binding attivo,Mode=TwoWay}" Margin="85,199,0,6" Width="58" HorizontalAlignment="Left" />
@@ -79,7 +79,7 @@
 					<DataGridTextColumn Binding="{Binding id}" Header="id"  />
 					<DataGridTextColumn Binding="{Binding nome}" Header="Nome" />
 					<DataGridTextColumn Binding="{Binding cognome}" Header="Cognome" />
-					<DataGridTextColumn Binding="{Binding cognomeNome}" Header="Cognome e Nome" />
+					<DataGridTextColumn Binding="{Binding cognomeNome}" Header="Soprannome" />
 					<DataGridTextColumn Binding="{Binding iniziali}" Header="Iniziali" />
 					<DataGridCheckBoxColumn Binding="{Binding umano}" Header="Umano"  />
 					<DataGridTextColumn Binding="{Binding note}" Header="Note" />

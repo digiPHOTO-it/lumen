@@ -15,13 +15,12 @@
         <Button Content="-&gt;|" ToolTip="Vai all'ultimo" Command="{Binding commandSpostamento}" CommandParameter="Last"/>
         <Separator />
 
-        <Button Content="View"  Command="{Binding commandCambiareStatus}" CommandParameter="View" />
-        <Button Content="Edit" Command="{Binding commandCambiareStatus}" CommandParameter="Edit" />
-        <Button Content="New" Command="{Binding commandCambiareStatus}" CommandParameter="New" Name="buttonNew" />
-        <Button Content="Delete" Command="{Binding commandCambiareStatus}" CommandParameter="Delete" />
+        <Button Content="Vedi"  Command="{Binding commandCambiareStatus}" CommandParameter="View" />
+        <Button Content="Modifica" Command="{Binding commandCambiareStatus}" CommandParameter="Edit" />
+        <Button Content="Nuovo" Command="{Binding commandCambiareStatus}" CommandParameter="New" Name="buttonNew" />
+        <Button Content="Elimina" Command="{Binding commandCambiareStatus}" CommandParameter="Delete" />
         <Separator />
-        <Button Content="Save" Command="{Binding commandSalvare}" IsEnabled="{Binding ElementName=this,Path=possoSalvare}" />
+        <Button Content="Salva" Command="{Binding commandSalvare}" IsEnabled="{Binding ElementName=this,Path=possoSalvare}" />
     </ToolBar>
-
 
 </lumM:UserControlBase>

@@ -46,9 +46,9 @@
 			</Grid.ColumnDefinitions>
 			
 			<StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0" >	
-				<Label Content="Cognome e Nome"  />
+				<Label Content="Soprannome"  />
                 <TextBox x:Name="newNomeFotografoTxt" 
-                         Text="{Binding  Path=idFotografoNew, UpdateSourceTrigger=PropertyChanged}"
+                         Text="{Binding  Path=cognomeNomeFotogafoNew, UpdateSourceTrigger=PropertyChanged}"
                          Style="{StaticResource newNomeFotografoTxtStyle}" />
 			</StackPanel>
 
