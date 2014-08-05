@@ -380,6 +380,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="EliminaVecchiRullini\EliminaRulliniVecchiResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="EliminaVecchiRullini\EliminaVecchiRulliniView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

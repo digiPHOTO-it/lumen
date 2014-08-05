@@ -143,6 +143,12 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		public Boolean eliminaFotoEnabled {
+			get {
+				return IsInDesignMode ? true : Configurazione.infoFissa.numGiorniEliminaFoto > 0;
+			}
+		}
+
 		public ObservableCollectionEx<DriveInfo> dischiRimovibili
 		{
 			get;

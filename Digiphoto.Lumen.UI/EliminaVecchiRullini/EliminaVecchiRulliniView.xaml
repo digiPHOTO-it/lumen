@@ -9,14 +9,19 @@
              mc:Ignorable="d" 
              d:DesignHeight="311" d:DesignWidth="552">
 
+	<UserControl.Resources>
+		<ResourceDictionary Source="EliminaRulliniVecchiResources.xaml" />
+	</UserControl.Resources>
+
 	<lumM:UserControlBase.DataContext>
 		<lumE:EliminaVecchiRulliniViewModel />
 	</lumM:UserControlBase.DataContext>
 
 	<Grid>
-        <TextBox Height="23" HorizontalAlignment="Left" Margin="152,201,0,0" Name="textBox1" VerticalAlignment="Top" Width="362" Text="{Binding Path=cfg.giorniDeleteFoto, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
-        <Button Content="Applica" Height="23" HorizontalAlignment="Left" Margin="38,201,0,0" Name="button1" VerticalAlignment="Top" Width="75" Command="{Binding applicaCommand}"/>
-		<Button Content="Clean" Height="23" HorizontalAlignment="Left" Margin="40,265,0,0" Name="button2" VerticalAlignment="Top" Width="75" Command="{Binding cleanCommand}"/>
-        <Calendar Height="170" HorizontalAlignment="Left" Margin="184,12,0,0" Name="calendar1" VerticalAlignment="Top" Width="180" />
-    </Grid>
+		
+		<TextBox  AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True" Margin="100,85,100,0" Text="{Binding testoEsplicativo,Mode=OneTime}" VerticalAlignment="Top" />
+
+		<Button Content="Inizia ricerca foto vecchie" Height="28" Margin="185,215,0,0" Name="button2" VerticalAlignment="Top" Command="{Binding cleanCommand}" HorizontalAlignment="Left" Width="200"/>
+
+	</Grid>
 </lumM:UserControlBase>

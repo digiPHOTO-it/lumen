@@ -25,6 +25,11 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
         {
         }
 
+		public DateTime giornoFineAnalisi {
+			get {
+				return DateTime.Now.AddDays( -Configurazione.infoFissa.numGiorniEliminaFoto );
+			}
+		}
 
         /// <summary>
         /// Restituisce la lista dei path che soddisfano il criterio di eliminazione in base alla data
@@ -33,9 +38,7 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
         {
 			IList<String> listaCartelleDaEliminare = new List<String>();
             String pathCartellaRepositoryFoto = Configurazione.cartellaRepositoryFoto;
-			int ggDel = Configurazione.infoFissa.numGiorniEliminaFoto;
-			DateTime dataIntervallo = DateTime.Now.AddDays( -ggDel );
-
+			
             if (System.IO.Directory.Exists(pathCartellaRepositoryFoto))
             {
                 String[] listPathsDate = Directory.GetDirectories(pathCartellaRepositoryFoto);
@@ -47,7 +50,7 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
                     DateTime dateDaEtichetta = Convert.ToDateTime(PathUtil.giornoFromPath(etichettaData));
 					String strDateDaEtichetta = dateDaEtichetta.ToString("yyyy/MM/dd");
 
-                    String dataInt = dataIntervallo.ToString("yyyy/MM/dd");
+                    String dataInt = giornoFineAnalisi.ToString("yyyy/MM/dd");
 
 					if (Convert.ToDateTime(strDateDaEtichetta).Date <= Convert.ToDateTime(dataInt).Date)
 					{
