@@ -603,6 +603,23 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
+
+		public bool possoAbbinare {
+			get {
+				return selettoreStampantiInstallateViewModel != null && 
+					   selettoreStampantiInstallateViewModel.stampanteSelezionata != null &&
+					   selettoreFormatoCartaViewModel != null && 
+					   selettoreFormatoCartaViewModel.formatoCartaSelezionato != null;
+			}
+		}
+
+		public bool possoRimuovereAbbinamento {
+			get {
+				return selettoreFormatoCartaAbbinatoViewModel != null &&
+					   selettoreFormatoCartaAbbinatoViewModel.formatoCartaAbbinatoSelezionato != null;
+			}
+		}
+
 		public bool possoAnnullare {
 			get {
 				return loginEffettuato;
@@ -711,7 +728,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             {
                 if (_abbinaCommand == null)
                 {
-                    _abbinaCommand = new RelayCommand(param => this.abbinaButton());
+                    _abbinaCommand = new RelayCommand(param => this.abbinaButton(), param => possoAbbinare, false);
                 }
                 return _abbinaCommand;
             }
@@ -724,7 +741,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             {
                 if (_rimuoviAbbinamentoCommand == null)
                 {
-                    _rimuoviAbbinamentoCommand = new RelayCommand(param => this.rimuoviAbbinamento());
+					_rimuoviAbbinamentoCommand = new RelayCommand( param => this.rimuoviAbbinamento(), param => possoRimuovereAbbinamento, false);
                 }
                 return _rimuoviAbbinamentoCommand;
             }

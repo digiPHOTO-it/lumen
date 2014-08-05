@@ -23,17 +23,24 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-        
-            
-            <ListBox Name="formatiCartaListBox" 
+
+
+			<ListBox Name="formatiCartaListBox" 
                      ItemsSource="{Binding Path=formatiCarta}" 
                      ItemTemplate="{StaticResource formatiCartaListBoxTemplate}"
                      SelectedItem="{Binding Path=formatoCartaSelezionato}"
                      ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"
-                     Grid.Row="0" Grid.Column="0" />
-            
+                     Grid.Row="0" Grid.Column="0" >
+				
+				<ListBox.Resources>
+					<!--SelectedItem with focus -->
+					<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="LightGreen" />
+					<!--SelectedItem without focus -->
+					<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="LightGreen" Opacity="0.7" />
+				</ListBox.Resources>
+			</ListBox>
 
-        <Button Name="refreshButton" Content="Rileggi" Command="{Binding Path=rileggereFormatiCartaCommand}"  CommandParameter="True"
+			<Button Name="refreshButton" Content="Rileggi" Command="{Binding Path=rileggereFormatiCartaCommand}"  CommandParameter="True"
                 Grid.Row="1" Grid.Column="0" Width="100" Margin="0,4"/>
 
 			<Expander IsExpanded="True" Header="Crea nuovo formato carta" Style="{StaticResource creaNuovoFormatoExpanderStyle}"

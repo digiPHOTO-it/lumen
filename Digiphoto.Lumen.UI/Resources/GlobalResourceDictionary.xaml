@@ -200,7 +200,7 @@
             <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Red" />
             
             <!--SelectedItem without focus-->
-            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Orange" Opacity=".6"/>
+			<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Orange" Opacity=".7"/>
         </Style.Resources>
     </Style>
 
@@ -346,4 +346,5 @@
         <Setter Property="Template" Value="{StaticResource mioToggleButtonTemplate}" />
     </Style>
 
+		
 </ResourceDictionary>

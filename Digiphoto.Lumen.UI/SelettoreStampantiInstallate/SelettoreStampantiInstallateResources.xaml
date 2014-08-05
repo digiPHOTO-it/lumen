@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <DataTemplate x:Key="stampantiInstallateListBoxTemplate">
+	<DataTemplate x:Key="stampantiInstallateListBoxTemplate">
 
         <Border BorderBrush="Red" >
             <StackPanel Orientation="Horizontal">
@@ -18,5 +18,5 @@
             <Setter Property="Width" Value="100" />
         </Style.Setters>
     </Style>
-    
+
 </ResourceDictionary>
