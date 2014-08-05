@@ -429,8 +429,8 @@
     <Compile Include="Pubblico\SlideShowWindow.xaml.cs">
       <DependentUpon>SlideShowWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SelettoreFormatoCartaAbbinato\SelettoreFormatoCartaAbbinato.xaml.cs">
-      <DependentUpon>SelettoreFormatoCartaAbbinato.xaml</DependentUpon>
+    <Compile Include="SelettoreFormatoCartaAbbinato\SelettoreFormatoCartaAbbinatoView.xaml.cs">
+      <DependentUpon>SelettoreFormatoCartaAbbinatoView.xaml</DependentUpon>
     </Compile>
     <Compile Include="SelettoreFormatoCartaAbbinato\SelettoreFormatoCartaAbbinatoViewModel.cs" />
     <Compile Include="SelettoreFormatoCarta\SelettoreFormatoCartaViewModel.cs" />
@@ -491,7 +491,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SelettoreFormatoCartaAbbinato\SelettoreFormatoCartaAbbinato.xaml">
+    <Page Include="SelettoreFormatoCartaAbbinato\SelettoreFormatoCartaAbbinatoView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -515,7 +515,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="SelettoreStampantiInstallate\SelettoreStampantiInstallateDictionary.xaml">
+    <Page Include="SelettoreStampantiInstallate\SelettoreStampantiInstallateResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

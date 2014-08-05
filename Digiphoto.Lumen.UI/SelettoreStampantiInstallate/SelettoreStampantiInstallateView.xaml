@@ -8,7 +8,7 @@
              d:DesignHeight="194" d:DesignWidth="300">
     
     <UserControl.Resources>
-        <ResourceDictionary Source="SelettoreStampantiInstallateDictionary.xaml" />
+        <ResourceDictionary Source="SelettoreStampantiInstallateResources.xaml" />
     </UserControl.Resources>
 
     <GroupBox Header="Selezionare una Stampante">
@@ -24,16 +24,25 @@
             </Grid.RowDefinitions>
 
 
-            <ListBox Name="stampantiInstallateListBox" 
+			<ListBox Name="stampantiInstallateListBox" 
                      ItemsSource="{Binding Path=stampantiInstallate}" 
                      ItemTemplate="{StaticResource stampantiInstallateListBoxTemplate}"
                      SelectedItem="{Binding Path=stampanteSelezionata}"
                      Grid.Row="0" Grid.Column="0"
                      ScrollViewer.CanContentScroll="True"
                      ScrollViewer.VerticalScrollBarVisibility="Auto"
-                     ScrollViewer.HorizontalScrollBarVisibility="Auto"	/>
+                     ScrollViewer.HorizontalScrollBarVisibility="Auto"	>
+				
+				<ListBox.Resources>
+					<!--SelectedItem with focus -->
+					<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="LightGreen" />
+					<!--SelectedItem without focus -->
+					<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="LightGreen" Opacity="0.7" />
+				</ListBox.Resources>
 
-            <Button Name="refreshButton" Content="Rileggi" Command="{Binding Path=rileggereStampantiInstallateCommand}"
+			</ListBox>
+
+			<Button Name="refreshButton" Content="Rileggi" Command="{Binding Path=rileggereStampantiInstallateCommand}"
                     Grid.Row="1" Grid.Column="0" />
         </Grid>
     </GroupBox>

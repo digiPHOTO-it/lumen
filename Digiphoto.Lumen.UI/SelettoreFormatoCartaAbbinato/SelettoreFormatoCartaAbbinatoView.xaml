@@ -23,7 +23,7 @@
             </Grid.RowDefinitions>
 
 
-        <ListBox Name="stampantiInstallateListBox" 
+			<ListBox Name="stampantiInstallateListBox" 
                  ItemsSource="{Binding Path=formatiCartaAbbinati}" 
                  ItemTemplate="{StaticResource formatoCartaAbbinatoListBoxTemplate}"
                  SelectedItem="{Binding Path=formatoCartaAbbinatoSelezionato}"
@@ -31,9 +31,18 @@
                  ScrollViewer.CanContentScroll="True"
                  ScrollViewer.VerticalScrollBarVisibility="Auto"
                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                 Grid.Row="0" Grid.Column="0" />
+                 Grid.Row="0" Grid.Column="0" >
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,4,0,4" Grid.Row="1" Grid.Column="0">
+				<ListBox.Resources>
+					<!--SelectedItem with focus -->
+					<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Orange" />
+					<!--SelectedItem without focus -->
+					<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Orange" Opacity="0.6" />
+				</ListBox.Resources>
+				
+			</ListBox>
+
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,4,0,4" Grid.Row="1" Grid.Column="0">
                 <Button Name="spostaSuAbbinamentoButton" Content="^ Su" ToolTip="Sposta sopra" Command="{Binding Path=suCommand}"/>
                 <Button Name="spostaGiuAbbinamentoButton" Content="Giù V" ToolTip="Sposta sotto" Command="{Binding Path=giuCommand}"/>
                 <Separator Width="20" Margin="4,0" />
