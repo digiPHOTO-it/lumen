@@ -28,6 +28,10 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
 		/// </summary>
 		/// <param name="fotoVecchie"></param>
 		int elimina( IEnumerable<Fotografia> fotoVecchie );
+
+		DateTime giornoFineAnalisi {
+			get;
+		}
     }
 
 }

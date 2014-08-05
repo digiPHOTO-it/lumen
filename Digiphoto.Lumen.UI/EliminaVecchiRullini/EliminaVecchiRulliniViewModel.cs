@@ -16,15 +16,19 @@ namespace Digiphoto.Lumen.UI.EliminaVecchiRullini
 
 		public EliminaVecchiRulliniViewModel()
 		{
-			this.cfg = Configurazione.UserConfigLumen;
 		}
 
 		#region Proprietà
 
-		public UserConfigLumen cfg
-		{
-			get;
-			set;
+		public string testoEsplicativo {
+			get {
+
+				if( abilitaClean ) {
+					return "La ricerca delle foto vecchie da cancellare si fermerà al giorno : " + eliminaFotoVecchieSrv.giornoFineAnalisi.ToString( "dd/MM/yyyy" ) + ".\r\nE' possibile poi confermare singolarmente le giornate da eliminare.\r\nPremere il pulsante per iniziare la ricerca";
+				} else {
+					return "Avviso:\r\nLa cancellazione delle foto vecchie non è stata prevista nella configurazione.\r\nPer abilitare questa funzionalità lanciare il programma 'Gestore Configurazione'\r\ne impostare il parametro : 'N° giorni elimina foto'.";
+				}
+			}
 		}
 
 		#endregion
@@ -67,28 +71,13 @@ namespace Digiphoto.Lumen.UI.EliminaVecchiRullini
 			}
 		}
 
-		private void applica()
-		{
-			string errore = Configurazione.getMotivoErrore(cfg);
-
-			if (errore != null)
-			{
-				dialogProvider.ShowError("Configurazione non valida.\nImpossibile salvare!\n\nMotivo errore:\n" + errore, "ERRORE", null);
-			}
-			else
-			{
-				UserConfigSerializer.serializeToFile(cfg);
-				dialogProvider.ShowMessage("OK\nConfigurazione Salvata", "Avviso");
-			}
-		}
-
 		private MessageBoxResult chiediConfermaEliminazionePath(String path)
 		{
 
-			StringBuilder msg = new StringBuilder("Confermare Eliminazione dell path :\n"+
-													path + "\nL'operazione è irreversibile");
+			StringBuilder msg = new StringBuilder("Confermi la cancellazione di tutte le foto del giorno :\r\n"+
+													path + "\r\nL'operazione è irreversibile.\r\nLe foto eliminate non potranno più essere recuperate");
 			MessageBoxResult procediPure = MessageBoxResult.Cancel;
-			dialogProvider.ShowConfirmationAnnulla(msg.ToString(), "Richiesta conferma",
+			dialogProvider.ShowConfirmationAnnulla(msg.ToString(), "Eliminazione foto",
 				(confermato) =>
 				{
 					procediPure = confermato;
@@ -105,35 +94,7 @@ namespace Digiphoto.Lumen.UI.EliminaVecchiRullini
 		{
 			get
 			{
-				if (IsInDesignMode)
-					return true;
-
-				bool posso = true;
-
-				if (posso && Configurazione.infoFissa.numGiorniEliminaFoto <= 0)
-				{
-					posso = false;
-				}
-
-				return posso;
-			}
-		}
-
-		public bool abilitaApplica
-		{
-			get
-			{
-				if (IsInDesignMode)
-					return true;
-
-				bool posso = true;
-
-				if (posso && Configurazione.infoFissa.numGiorniEliminaFoto <= 0)
-				{
-					posso = false;
-				}
-
-				return posso;
+				return IsInDesignMode ? true : Configurazione.infoFissa.numGiorniEliminaFoto > 0;
 			}
 		}
 
@@ -151,19 +112,6 @@ namespace Digiphoto.Lumen.UI.EliminaVecchiRullini
 					_cleanCommand = new RelayCommand(param => clean(), param => abilitaClean, false);
 				}
 				return _cleanCommand;
-			}
-		}
-
-		private RelayCommand _applicaCommand;
-		public ICommand applicaCommand
-		{
-			get
-			{
-				if (_applicaCommand == null)
-				{
-					_applicaCommand = new RelayCommand(param => applica(), param => abilitaApplica, false);
-				}
-				return _applicaCommand;
 			}
 		}
 
