@@ -780,6 +780,7 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\dominanti-16x16.png" />
     <Resource Include="Resources\move-16x16.png" />
     <Resource Include="Resources\quadretti.png" />
     <Resource Include="Resources\pagedown-48x48.png" />
