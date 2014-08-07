@@ -56,14 +56,41 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI {
 
         protected override void OnExit(ExitEventArgs e)
         {
-            _giornale.Info("Uscita dall'applicazione");
+			_giornale.Info( "Uscita dall'applicazione" );
 
 			if (LumenApplication.Instance.avviata)
 			{
 				LumenApplication.Instance.ferma();
 			}
 
+			rilascioMutex();
+
             base.OnExit(e);
         }
+
+		void rilascioMutex() {
+
+			try {
+				if( mutex != null ) {
+					mutex.ReleaseMutex();
+					mutex.Dispose();
+					mutex = null;
+				}
+			} catch( Exception ) {
+				_giornale.Error( "Problema 1 nel rilascio del mutex di lock applicazione" );
+			}
+
+			try {
+				if( mutexSingle != null ) {
+					mutexSingle.ReleaseMutex();
+					mutexSingle.Dispose();
+					mutexSingle = null;
+				}
+			} catch( Exception ) {
+				_giornale.Error( "Problema 2 nel rilascio del mutex di lock applicazione" );
+			}
+
+		}
+
 	}
 }

@@ -50,7 +50,7 @@ namespace Digiphoto.Lumen.UI {
 			{
 
 				mutexSingle = new Mutex(true, "Digiphoto.Lumen.Single");
-				if (mutexSingle.WaitOne(0, false))
+				if (mutexSingle.WaitOne(3000, false))
 				{
 					#if (! DEBUG)			
 						// Preparo finestra di attesa
@@ -90,6 +90,7 @@ namespace Digiphoto.Lumen.UI {
 						// Metto due message box perché la prima non si ferma !
 						MessageBox.Show( nve.Message, "ATTENZIONE" );
 						MessageBox.Show( "Impossibile avviare l'applicazione!\nLa configurazione non è valida, oppure\nnon è stata aggiornata dopo un cambio release.\nLanciare apposito programma di gestione configurazione.", "ERRORE non previsto", MessageBoxButton.OK, MessageBoxImage.Error );
+
 						Environment.Exit( 6 );
 
 					} catch( Exception ee ) {
@@ -149,8 +150,33 @@ namespace Digiphoto.Lumen.UI {
 			avvisoScadenzaLicenza( 1 );
 
 			LumenApplication.Instance.ferma();
+
+			rilascioMutex();
 			
 			base.OnExit( e );
+		}
+
+		void rilascioMutex() {
+			try {
+				if( mutex != null ) {
+					mutex.ReleaseMutex();
+					mutex.Dispose();
+					mutex = null;
+				}
+			} catch( Exception ) {
+				_giornale.Error( "Problema 1 nel rilascio del mutex di lock applicazione" );
+			}
+
+			try {
+				if( mutexSingle != null ) {
+					mutexSingle.ReleaseMutex();
+					mutexSingle.Dispose();
+					mutexSingle = null;
+				}
+			} catch( Exception ) {
+				_giornale.Error( "Problema 2 nel rilascio del mutex di lock applicazione" );
+			}
+
 		}
 
 		/// <summary>
