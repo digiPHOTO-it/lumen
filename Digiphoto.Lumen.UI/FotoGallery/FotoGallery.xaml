@@ -217,7 +217,7 @@
 							<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Yellow" />
 
 							<!--SelectedItem without focus-->
-							<SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Yellow" Opacity="70" />
+						<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Yellow" />
 						</Style.Resources>
                     </Style>
                 </ListBox.ItemContainerStyle>

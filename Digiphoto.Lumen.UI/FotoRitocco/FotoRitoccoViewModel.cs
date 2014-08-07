@@ -953,6 +953,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			// per ogni foto elimino le correzioni e ricreo il provino partendo dall'originale.
 			fotoRitoccoSrv.tornaOriginale( fotografiaInModifica );
 
+			// Devo reidratare la foto originale 
+			AiutanteFoto.idrataImmaginiFoto( fotografiaInModifica, IdrataTarget.Originale );
+
 			forzaRefreshStato();
 		}
 
@@ -1187,6 +1190,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			OnPropertyChanged( "trasformazioneTranslate" );
 			OnPropertyChanged( "trasformazioneCorrente" );
 
+			// TODO sul torna originale, questo mi fa sparire la foto da modificare e non so perché !!
 			OnPropertyChanged( "fotografiaInModifica" );
 		}
 
