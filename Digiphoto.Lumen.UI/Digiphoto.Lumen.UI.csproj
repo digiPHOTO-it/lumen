@@ -294,6 +294,11 @@
     <Compile Include="PanAndZoom\PanAndZoomWindow.xaml.cs">
       <DependentUpon>PanAndZoomWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pubblico\GestoreFinestrePubbliche.cs" />
+    <Compile Include="Pubblico\SnapshotPubblicoViewModel.cs" />
+    <Compile Include="Pubblico\SnapshotPubblicoWindow.xaml.cs">
+      <DependentUpon>SnapshotPubblicoWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pubblico\GestioneGeometria\GestSlideShowView.xaml.cs">
       <DependentUpon>GestSlideShowView.xaml</DependentUpon>
     </Compile>
@@ -409,6 +414,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PanAndZoom\PanAndZoomWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pubblico\SnapshotPubblicoWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

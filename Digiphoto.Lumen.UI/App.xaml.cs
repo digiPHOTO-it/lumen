@@ -15,6 +15,8 @@ using System.Runtime.InteropServices;
 using System.Windows.Markup;
 using System.Globalization;
 using System.ComponentModel;
+using System.Windows.Media;
+using Digiphoto.Lumen.UI.ScreenCapture;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -32,8 +34,7 @@ namespace Digiphoto.Lumen.UI {
 
 		private static Mutex mutexSingle;
 
-		private SlideShowWindow _slideShowWindow;
-		private MainWindow _mainWindow;
+		private GestoreFinestrePubbliche _gestoreFinestrePubbliche;
 
 
 		protected override void OnStartup( StartupEventArgs e ) {
@@ -44,108 +45,79 @@ namespace Digiphoto.Lumen.UI {
 			// Senza di questa istruzione, gli StringFormat usati nei binding, usano sempre la cultura americana.
 			FrameworkElement.LanguageProperty.OverrideMetadata( typeof( FrameworkElement ), new FrameworkPropertyMetadata( XmlLanguage.GetLanguage( CultureInfo.CurrentCulture.IetfLanguageTag ) ) );
 
+			impostaMutex();
 
-			mutex = new Mutex(true, "Digiphoto.Lumen.UI");
-			if (mutex.WaitOne(0, false)) 
-			{
-
-				mutexSingle = new Mutex(true, "Digiphoto.Lumen.Single");
-				if (mutexSingle.WaitOne(3000, false))
-				{
-					#if (! DEBUG)			
-						// Preparo finestra di attesa
-						SplashScreen splashScreen = new SplashScreen( "SplashScreen1.png" );
-						splashScreen.Show( false, true );
-					#endif
-					base.OnStartup(e);
+			#if (! DEBUG)			
+				// Preparo finestra di attesa
+				SplashScreen splashScreen = new SplashScreen( "SplashScreen1.png" );
+				splashScreen.Show( false, true );
+			#endif
+			base.OnStartup(e);
 
 
-					try {
+			try {
 
-						// Provo ad iniziare l'applicazione.
-						// Se la configurazione è mancante, allora rimando all'apposita gestione
-						LumenApplication.Instance.avvia();
+				// Provo ad iniziare l'applicazione.
+				// Se la configurazione è mancante, allora rimando all'apposita gestione
+				LumenApplication.Instance.avvia();
 
-						// Controllo la licenza
-						if( !LumenApplication.Instance.haveValidLicense ) {
-							// Metto due message box perché la prima non si ferma !
-							MessageBox.Show( "Errore nella licenza", "ATTENZIONE" );
-							MessageBox.Show( "Non è stata rilevata una licenza valida per l'uso del programma.\nContattare il fornitore del software " + Configurazione.applicationName + "\nper ottenere regolare licenza,\noppure una versione demo gratuita", "Licenza non valida", MessageBoxButton.OK, MessageBoxImage.Error );
-							Environment.Exit( 7 );
-						}
-
-						avvisoScadenzaLicenza( 2 );
-
-					} catch( ConfigurazioneMancanteException em ) {
-
-						_giornale.Warn( "Configurazione mancante. Occorre prima creare la configurazione", em );
-						MessageBox.Show( em.Message, "ATTENZIONE" );
-						MessageBox.Show( "Impossibile avviare l'applicazione adesso!\nOccorre prima creare la configurazione iniziale.\nLanciare il gestore della configurazione!", "Dimenticanza", MessageBoxButton.OK, MessageBoxImage.Exclamation );
-						Environment.Exit( 2 );
-					
-					} catch( ConfigurazioneNonValidaException  nve ) {
-
-						_giornale.Error( "Impossibile avviare applicazione", nve );
-
-						// Metto due message box perché la prima non si ferma !
-						MessageBox.Show( nve.Message, "ATTENZIONE" );
-						MessageBox.Show( "Impossibile avviare l'applicazione!\nLa configurazione non è valida, oppure\nnon è stata aggiornata dopo un cambio release.\nLanciare apposito programma di gestione configurazione.", "ERRORE non previsto", MessageBoxButton.OK, MessageBoxImage.Error );
-
-						Environment.Exit( 6 );
-
-					} catch( Exception ee ) {
-						
-						_giornale.Error( "Impossibile avviare applicazione", ee );
-
-						// Metto due message box perché la prima non si ferma !
-						MessageBox.Show( ee.Message, "ATTENZIONE" );
-						MessageBox.Show( "Impossibile avviare l'applicazione " + Configurazione.applicationName + " !\nErrore bloccante!\nVedere il log", "ERRORE non previsto", MessageBoxButton.OK, MessageBoxImage.Error );
-						Environment.Exit( 9 );
-					}
-
-					#if (! DEBUG)
-						// Chiudo lo splash
-						splashScreen.Close( new TimeSpan() );
-					#endif
-
-					_giornale.Info("Applicazione avviata. Apro il form principale.");
-
-					_mainWindow = new MainWindow();
-					_mainWindow.Show();
-
-				}
-				else
-				{
+				// Controllo la licenza
+				if( !LumenApplication.Instance.haveValidLicense ) {
 					// Metto due message box perché la prima non si ferma !
-					MessageBox.Show( "ATTENZIONE" );
-					MessageBox.Show( "L'applicazione di Digiphoto.Lumen.Configuratore è in esecuzione\nChiudere l'Applicazione e Riavviare" );
-					Environment.Exit(1);
-				} 
+					MessageBox.Show( "Errore nella licenza", "ATTENZIONE" );
+					MessageBox.Show( "Non è stata rilevata una licenza valida per l'uso del programma.\nContattare il fornitore del software " + Configurazione.applicationName + "\nper ottenere regolare licenza,\noppure una versione demo gratuita", "Licenza non valida", MessageBoxButton.OK, MessageBoxImage.Error );
+#if (! DEBUG)
+					Environment.Exit( 7 );
+#endif
+				}
 
-			}
-			else
-			{
+				avvisoScadenzaLicenza( 2 );
+
+			} catch( ConfigurazioneMancanteException em ) {
+
+				_giornale.Warn( "Configurazione mancante. Occorre prima creare la configurazione", em );
+				MessageBox.Show( em.Message, "ATTENZIONE" );
+				MessageBox.Show( "Impossibile avviare l'applicazione adesso!\nOccorre prima creare la configurazione iniziale.\nLanciare il gestore della configurazione!", "Dimenticanza", MessageBoxButton.OK, MessageBoxImage.Exclamation );
+				Environment.Exit( 2 );
+					
+			} catch( ConfigurazioneNonValidaException  nve ) {
+
+				_giornale.Error( "Impossibile avviare applicazione", nve );
+
 				// Metto due message box perché la prima non si ferma !
-				MessageBox.Show( "ATTENZIONE" );
-				MessageBox.Show( "L'applicazione " + Configurazione.applicationName + " è già in esecuzione" );
-				Environment.Exit(3);
+				MessageBox.Show( nve.Message, "ATTENZIONE" );
+				MessageBox.Show( "Impossibile avviare l'applicazione!\nLa configurazione non è valida, oppure\nnon è stata aggiornata dopo un cambio release.\nLanciare apposito programma di gestione configurazione.", "ERRORE non previsto", MessageBoxButton.OK, MessageBoxImage.Error );
+
+				Environment.Exit( 6 );
+
+			} catch( Exception ee ) {
+						
+					_giornale.Error( "Impossibile avviare applicazione", ee );
+
+					// Metto due message box perché la prima non si ferma !
+					MessageBox.Show( ee.Message, "ATTENZIONE" );
+					MessageBox.Show( "Impossibile avviare l'applicazione " + Configurazione.applicationName + " !\nErrore bloccante!\nVedere il log", "ERRORE non previsto", MessageBoxButton.OK, MessageBoxImage.Error );
+					Environment.Exit( 9 );
 			}
-			
+
+			#if (! DEBUG)
+				// Chiudo lo splash
+				splashScreen.Close( new TimeSpan() );
+			#endif
+
+			_giornale.Info("Applicazione avviata. Apro il form principale.");
+
+			// Creo il gestore delle finestre pubbliche e quindi apro la main.
+			gestoreFinestrePubbliche = new GestoreFinestrePubbliche();
+			gestoreFinestrePubbliche.creaMainWindow();
+
 		}
 
 		protected override void OnExit( ExitEventArgs e ) {
 
 			_giornale.Info( "Uscita dall'applicazione" );
 
-			if( _slideShowWindow != null ) {
-				_slideShowWindow.Close();
-				_slideShowWindow = null;
-			}
-
-			if( _mainWindow != null ) {
-				_mainWindow.Close();
-				_mainWindow = null;
-			}
+			gestoreFinestrePubbliche.chiudiTutto();
 
 			avvisoScadenzaLicenza( 1 );
 
@@ -154,6 +126,39 @@ namespace Digiphoto.Lumen.UI {
 			rilascioMutex();
 			
 			base.OnExit( e );
+		}
+
+		/// <summary>
+		/// Imposto i semafori per evitare esecuzioni multiple del programma.
+		/// </summary>
+		void impostaMutex() {
+
+			// In debug (cioè in sviluppo) mi serve lanciare più volte il prorgramma che testare l'utilizzo in concorrenza.
+#if (!DEBUG)
+
+			mutex = new Mutex(true, "Digiphoto.Lumen.UI");
+			if (mutex.WaitOne(0, false)) 
+			{
+				mutexSingle = new Mutex(true, "Digiphoto.Lumen.Single");
+				if( mutexSingle.WaitOne( 3000, false ) ) 
+				{
+				}
+				else 
+				{
+					// Metto due message box perché la prima non si ferma !
+					MessageBox.Show( "ATTENZIONE" );
+					MessageBox.Show( "L'applicazione di Digiphoto.Lumen.Configuratore è in esecuzione\nChiudere l'Applicazione e Riavviare" );
+					Environment.Exit(1);
+				} 
+			}
+			else
+			{
+				// Metto due message box perché la prima non si ferma !
+				MessageBox.Show( "ATTENZIONE" );
+				MessageBox.Show( "L'applicazione " + Configurazione.applicationName + " è già in esecuzione" );
+				Environment.Exit(3);
+			}
+#endif
 		}
 
 		void rilascioMutex() {
@@ -179,33 +184,7 @@ namespace Digiphoto.Lumen.UI {
 
 		}
 
-		/// <summary>
-		/// Se la finestra del pubblico non è aperta (o non è istanziata)
-		/// la creo sul momento
-		/// </summary>
-		public void forseApriWindowPubblica() {
 
-			// Se è già aperta, non faccio niente
-			if( _slideShowWindow != null )
-				return;  
-
-			// Apro la finestra modeless
-			// Create a window and make this window its owner
-			_slideShowWindow = new SlideShowWindow();
-			_slideShowWindow.Closed += chiusoSlideShowWindow;
-			_slideShowWindow.Show();
-		}
-
-		public SlideShowViewModel slideShowViewModel {
-			get {
-				return _slideShowWindow == null ? null : (SlideShowViewModel)_slideShowWindow.DataContext;
-			}
-		}
-
-		public void chiusoSlideShowWindow( object sender, EventArgs e ) {
-			_slideShowWindow.Closed -= chiusoSlideShowWindow;
-			_slideShowWindow = null;
-		}
 
 		private void avvisoScadenzaLicenza( int quanti ) {
 
@@ -213,5 +192,11 @@ namespace Digiphoto.Lumen.UI {
 				for( int ii = 1; ii <= quanti; ii++ )
 					MessageBox.Show( "ATTENZIONE !\n\nMancano " + LumenApplication.Instance.numGiorniScadenzaLicenza + " giorni allo scadere della licenza.\nContattare il fornitore del software per rinnovare il contratto.", Configurazione.applicationName , MessageBoxButton.OK, MessageBoxImage.Exclamation );
 		}
+
+		public GestoreFinestrePubbliche gestoreFinestrePubbliche {
+			get;
+			private set;
+		}
+
 	}
 }

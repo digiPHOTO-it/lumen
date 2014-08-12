@@ -94,7 +94,7 @@ namespace Digiphoto.Lumen.UI
 					return null;
 
 				App myApp = (App)Application.Current;
-				return myApp.slideShowViewModel;
+				return myApp.gestoreFinestrePubbliche.slideShowViewModel;
 			}
 		}
 
@@ -645,7 +645,7 @@ namespace Digiphoto.Lumen.UI
 
 		private void caricareSlideShow(string modo)
 		{
-			((App)Application.Current).forseApriWindowPubblica();
+			((App)Application.Current).gestoreFinestrePubbliche.forseApriSlideShowWindow();
 
 			if (modo.Equals("Manual", StringComparison.CurrentCultureIgnoreCase))
 				slideShowViewModel.creaShow(fotoSelezionate);

@@ -43,7 +43,6 @@ namespace Digiphoto.Lumen.UI {
 				_mainWindowViewModel.RequestClose -= handler;
 				this.DataContext = null;
 				this.Close();
-				Application.Current.Shutdown();
 			};
 
 			_mainWindowViewModel.RequestClose += handler;
@@ -185,5 +184,7 @@ namespace Digiphoto.Lumen.UI {
 				}
 			}
 		}
+
+
 	}
 }

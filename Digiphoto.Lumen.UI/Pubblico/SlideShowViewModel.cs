@@ -18,8 +18,16 @@ using Digiphoto.Lumen.UI.Pubblico.GestioneGeometria;
 using System.Configuration;
 using System.Windows;
 using Digiphoto.Lumen.Servizi.Ritoccare;
+using Digiphoto.Lumen.Servizi;
 
 namespace Digiphoto.Lumen.UI.Pubblico {
+
+	public enum SlideShowStatus {
+		Empty = 0,
+		Running = 1,
+		Stopped = 2
+	};
+
 
 	public class SlideShowViewModel : ClosableWiewModel, IObserver<ScaricoFotoMsg>, IObserver<FotoModificateMsg> {
 
@@ -29,6 +37,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
  
 
 		public SlideShowViewModel() {
+
 			// La dimensione delle foto deve essere calcolata in automatico in base alle dimensione del canvas che le contiene
 			dimensioneIconaFoto = double.NaN;
 
@@ -201,21 +210,60 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		
 		public void start() {
+
+			// Preparo messaggio di cambio stato
+			CambioStatoMsg msg = null;
+			if( !isRunning ) {
+				msg = new CambioStatoMsg( this ) {
+					nuovoStato = (int)SlideShowStatus.Running
+				};
+			}
+
 			_orologio.Start();
+
+			// Rilancio messaggio di cambio stato
+			if( msg != null )
+				LumenApplication.Instance.bus.Publish( msg );
 		}
 
 		public void stop() {
+
+			// Preparo messaggio di cambio stato
+			CambioStatoMsg msg = null;
+			if( isRunning ) {
+				msg = new CambioStatoMsg( this ) {
+					nuovoStato = (int)SlideShowStatus.Stopped
+				};
+			}
+
 			_orologio.Stop();
+
+			// Rilancio messaggio di cambio stato
+			if( msg != null )
+				LumenApplication.Instance.bus.Publish( msg );
 		}
 
 		/// <summary>
 		///  Fermo, svuoto ed azzero lo show
 		/// </summary>
 		public void reset() {
+
+			// Preparo messaggio di cambio stato
+			CambioStatoMsg msg = null;
+			if( !isEmpty ) {
+				msg = new CambioStatoMsg( this ) {
+					nuovoStato = (int)SlideShowStatus.Empty
+				};
+			}
+
 			stop();
 			this.slideShow = null;
 			this.slidesVisibili.Clear();
 			this.numSlideCorrente = 0;
+
+			// Rilancio messaggio di cambio stato
+			if( msg != null )
+				LumenApplication.Instance.bus.Publish( msg );
 		}
 
 		public void creaShow( ParamCercaFoto paramCercaFoto ) {

@@ -486,7 +486,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					Math.Abs(diff.Y) > SystemParameters.MinimumVerticalDragDistance) )
 				{
 					primoPianoCanvasMask( false );
-					DragDrop.DoDragDrop( container, container.DataContext, DragDropEffects.Copy );
+					var dragData = new DataObject( typeof( Fotografia ), (Fotografia)container.DataContext);
+					DragDrop.DoDragDrop( container, dragData, DragDropEffects.Copy );
 				}
 			}
 		}
@@ -1148,6 +1149,14 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		private void gridRitocco_SizeChanged(object sender, SizeChangedEventArgs e) {	
 			_viewModel.frpContenitoreMaxW = gridRitocco.ActualWidth;
 			_viewModel.frpContenitoreMaxH = gridRitocco.ActualHeight;
+		}
+
+		private void takeSnapshotPubblico_Click( object sender, RoutedEventArgs e ) {
+			((App)Application.Current).gestoreFinestrePubbliche.eseguiSnapshotSuFinestraPubblica( this, this.tabControlRitoccoComposizione );
+		}
+
+		private void closeSnapshotPubblico_Click( object sender, RoutedEventArgs e ) {
+			((App)Application.Current).gestoreFinestrePubbliche.chiudiSnapshotPubblicoWindow();
 		}
 
 	}

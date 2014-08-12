@@ -23,6 +23,15 @@
 		<ResourceDictionary Source="FotoRitoccoResources.xaml" />
 	</UserControl.Resources>
 
+	<UserControl.CommandBindings>
+		<CommandBinding Command="{StaticResource cmdTakeSnapshotPubblico2}" Executed="takeSnapshotPubblico_Click" />
+		<CommandBinding Command="{StaticResource cmdCloseSnapshotPubblico}" Executed="closeSnapshotPubblico_Click" />
+	</UserControl.CommandBindings>
+	<UserControl.InputBindings>
+		<KeyBinding  Key="F9" Command="{StaticResource cmdTakeSnapshotPubblico2}" />
+		<KeyBinding  Key="F10" Command="{StaticResource cmdCloseSnapshotPubblico}" />
+	</UserControl.InputBindings>
+
 
 	<DockPanel LastChildFill="True" >
 
@@ -163,10 +172,10 @@
 
 			<Button Content="Torna Originale" Command="{Binding tornareOriginaleCommand}"  />
 
-			<Separator Height="25" />
+			<Separator Height="20" />
+			<Button x:Name="applicareCorrezioniButton" Content="Applica" ToolTip="Applica le correzioni (tasto rapido = SPAZIO)" Command="{Binding applicareCorrezioniCommand}" FontSize="20" />
 
 			<Button Name="rifiutareCorrezioniButton" Content="Rifiuta" ToolTip="Annulla le correzioni (tasto rapido = ESC)" Command="{Binding rifiutareCorrezioniCommand}" />
-			<Button x:Name="applicareCorrezioniButton" Content="Applica" ToolTip="Applica le correzioni (tasto rapido = SPAZIO)" Command="{Binding applicareCorrezioniCommand}" FontSize="20" />
 			<Button Name="salvareMascheraButton" Content="Salva Maschera" ToolTip="Salva una nuova foto con cornice (tasto rapido = SPAZIO)" Click="salvareMascheraButton_Click" IsEnabled="{Binding possoSalvareMaschera}" />
 			<Separator Height="25" />
 			<!-- RRR
@@ -174,6 +183,8 @@
 			<Button Content="-All" ToolTip="Toglie tutte le foto dalla modifica" Command="{Binding commandSvuotareElencoInModifica}" />
 -->
 			<Button Content="Svuota lista" ToolTip="Svuota la lista delle foto in attesa di essere modificate" Command="{Binding svuotareListaDaModificareCommand}"  />
+
+			<ToggleButton Content="Snapshot"   Command="{Binding snapshotPubblicoOpenCloseCommand}" IsChecked="{Binding Path=isSnapshotPubblicoVisibile,Mode=TwoWay}"    Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" ToolTip="Apre/Chiude snapshot pubblico" />
 
 		</StackPanel>
 

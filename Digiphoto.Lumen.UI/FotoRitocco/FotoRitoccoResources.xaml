@@ -232,5 +232,8 @@
 		<Setter Property="Height" Value="16" />
 		<Setter Property="Margin" Value="0" />
 	</Style>
-	
+
+	<RoutedUICommand x:Key="cmdTakeSnapshotPubblico2" />
+	<RoutedUICommand x:Key="cmdCloseSnapshotPubblico" />
+
 </ResourceDictionary>

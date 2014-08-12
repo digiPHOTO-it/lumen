@@ -125,9 +125,14 @@ namespace Digiphoto.Lumen.UI {
 			if( ! (e.OriginalSource is Image) )
 				return;
 
-			Fotografia foto = (Fotografia)SelectItemOnLeftClick(e).Content;
+			//
+			ListBoxItem lbi = SelectItemOnLeftClick( e );
+			if( lbi == null )
+				return;
+
+			Fotografia foto = (Fotografia)lbi.Content;
 			if(ultimaSelezionata==null)
-				ultimaSelezionata = (Fotografia)SelectItemOnLeftClick(e).Content;
+				ultimaSelezionata = (Fotografia)lbi.Content;
 
 			if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
 			{
@@ -255,6 +260,13 @@ namespace Digiphoto.Lumen.UI {
 			LsImageGallery.Focus();
 		}
 
+		private void takeSnapshotPubblico_Click( object sender, RoutedEventArgs e ) {
+			((App)Application.Current).gestoreFinestrePubbliche.eseguiSnapshotSuFinestraPubblica( this, this.LsImageGallery );
+		}
+
+		private void closeSnapshotPubblico_Click( object sender, RoutedEventArgs e ) {
+			((App)Application.Current).gestoreFinestrePubbliche.chiudiSnapshotPubblicoWindow();
+		}
 
 	}
 }
