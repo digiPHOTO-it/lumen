@@ -17,8 +17,17 @@
 	<UserControl.Resources>
 		<ResourceDictionary Source="FotoGalleryResources.xaml" />
 	</UserControl.Resources>
+	<UserControl.CommandBindings>
+		<CommandBinding Command="{StaticResource cmdTakeSnapshotPubblico1}" Executed="takeSnapshotPubblico_Click" />
+		<CommandBinding Command="{StaticResource cmdCloseSnapshotPubblico}" Executed="closeSnapshotPubblico_Click" />
+	</UserControl.CommandBindings>
+	<UserControl.InputBindings>
+		<KeyBinding  Key="F9" Command="{StaticResource cmdTakeSnapshotPubblico1}" />
+		<KeyBinding  Key="F10" Command="{StaticResource cmdCloseSnapshotPubblico}" />
+	</UserControl.InputBindings>
 
-    <DockPanel>
+
+	<DockPanel>
 
 <!--
 		<ToolBarTray DockPanel.Dock="Left" Orientation="Vertical" >

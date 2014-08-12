@@ -84,7 +84,7 @@ namespace Digiphoto.Lumen.UI.Pubblico
 					return null;
 
 				App myApp = (App)Application.Current;
-				return myApp.slideShowViewModel;
+				return myApp.gestoreFinestrePubbliche.slideShowViewModel;
 			}
 		}
 

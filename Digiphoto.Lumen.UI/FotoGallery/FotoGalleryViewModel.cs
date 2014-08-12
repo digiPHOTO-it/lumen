@@ -258,32 +258,6 @@ namespace Digiphoto.Lumen.UI {
 			private set;
 		}
 
-		public BitmapSource statusSlideShowImage {
-
-			get {
-				// Decido qual'è la giusta icona da caricare per mostrare lo stato dello slide show (Running, Pause, Empty)
-
-				// Non so perchè ma se metto il percorso senza il pack, non funziona. boh eppure sono nello stesso assembly.
-				string uriTemplate = @"pack://application:,,,/Digiphoto.Lumen.UI;component/Resources/##-16x16.png";
-				Uri uri = null;
-
-				if( slideShowViewModel != null ) {
-					if( slideShowViewModel.isRunning )
-						uri = new Uri( uriTemplate.Replace( "##", "ssRunning" ) );
-
-					if( slideShowViewModel.isPaused )
-						uri = new Uri( uriTemplate.Replace( "##", "ssPause" ) );
-
-					if( slideShowViewModel.isEmpty )
-						uri = new Uri( uriTemplate.Replace( "##", "ssEmpty" ) );
-
-					return new BitmapImage( uri );
-				} else
-					return null;
-			}
-		}
-
-
 
 		#region fasi del giorno
 
@@ -321,7 +295,7 @@ namespace Digiphoto.Lumen.UI {
 					return null;
 
 				App myApp = (App)Application.Current;
-				return myApp.slideShowViewModel;
+				return myApp.gestoreFinestrePubbliche.slideShowViewModel;
 			}
 		}
 
@@ -1032,7 +1006,7 @@ namespace Digiphoto.Lumen.UI {
 
 		private void caricareSlideShow( string modo ) {
 
-			((App)Application.Current).forseApriWindowPubblica();
+			((App)Application.Current).gestoreFinestrePubbliche.forseApriSlideShowWindow();
 
 			if( modo.Equals( "Manual", StringComparison.CurrentCultureIgnoreCase ) )
 				slideShowViewModel.creaShow( creaListaFotoSelezionate() );
@@ -1063,8 +1037,6 @@ namespace Digiphoto.Lumen.UI {
 					slideShowViewModel.reset();
 					break;
 			}
-
-			OnPropertyChanged( "statusSlideShowImage" );
 		}
 
 		void azzeraParamRicerca() {

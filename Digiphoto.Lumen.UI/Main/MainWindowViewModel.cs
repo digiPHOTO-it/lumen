@@ -34,6 +34,7 @@ using System.Text;
 using Digiphoto.Lumen.Servizi.VolumeCambiato;
 using System.IO;
 using Digiphoto.Lumen.Servizi.Scaricatore;
+using Digiphoto.Lumen.Servizi;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -139,7 +140,7 @@ namespace Digiphoto.Lumen.UI {
 
 		public SlideShowViewModel slideShowViewModel {
 			get {
-				return ((App)Application.Current).slideShowViewModel;
+				return ((App)Application.Current).gestoreFinestrePubbliche.slideShowViewModel;
 			}
 		}
 
@@ -188,6 +189,18 @@ namespace Digiphoto.Lumen.UI {
 		#endregion Prorietà
 
 		#region Comandi
+
+		private RelayCommand _uscireCommand;
+		public ICommand uscireCommand {
+			get {
+				if( _uscireCommand == null ) {
+					_uscireCommand = new RelayCommand( param => uscire(),  param => true, false );
+				}
+				return _uscireCommand;
+			}
+		}
+
+
 		private RelayCommand _reportVenditeCommand;
 		public ICommand reportVenditeCommand {
 			get {
@@ -276,6 +289,11 @@ namespace Digiphoto.Lumen.UI {
 		#endregion Comandi
 
 		#region Metodi
+
+		private void uscire() {
+			((App)App.Current).gestoreFinestrePubbliche.chiudiTutto();
+		}
+
 
 		private void reportVendite() {
 
@@ -463,6 +481,32 @@ namespace Digiphoto.Lumen.UI {
 			dialogProvider.ShowMessage( sb.ToString(), "Stato Slide Show" );
 		}
 
+		public BitmapSource statusSlideShowImage {
+
+			get {
+				// Decido qual'è la giusta icona da caricare per mostrare lo stato dello slide show (Running, Pause, Empty)
+
+				// Non so perchè ma se metto il percorso senza il pack, non funziona. boh eppure sono nello stesso assembly.
+				string uriTemplate = @"pack://application:,,,/Digiphoto.Lumen.UI;component/Resources/##-16x16.png";
+				Uri uri = null;
+
+				if( slideShowViewModel != null ) {
+					if( slideShowViewModel.isRunning )
+						uri = new Uri( uriTemplate.Replace( "##", "ssRunning" ) );
+
+					if( slideShowViewModel.isPaused )
+						uri = new Uri( uriTemplate.Replace( "##", "ssPause" ) );
+
+					if( slideShowViewModel.isEmpty )
+						uri = new Uri( uriTemplate.Replace( "##", "ssEmpty" ) );
+
+					return new BitmapImage( uri );
+				} else
+					return null;
+			}
+		}
+
+
 		#endregion Metodi
 
 		#region Eventi
@@ -522,6 +566,15 @@ namespace Digiphoto.Lumen.UI {
 			if (msg is VolumeCambiatoMsg)
 			{
 				caricaElencoDischiRimovibili();
+			}
+
+			if( msg is CambioStatoMsg ) {
+				if( msg.sender is SlideShowViewModel ) {
+					// Devo aggiornare lo stato della icona dello slide show
+					CambioStatoMsg csm = (CambioStatoMsg)msg;
+					SlideShowStatus nuovoStato = (SlideShowStatus)csm.nuovoStato;
+					OnPropertyChanged( "statusSlideShowImage" );
+				}
 			}
 
 		}

@@ -276,10 +276,13 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 			dialogProvider.attenderePrego = true;
 
-			// Se è la prima volta, avvio tutto
-			if( !LumenApplication.Instance.avviata )
-				LumenApplication.Instance.avvia( true, qualeConnectionString );
+			// La cartella potrebbe essere cambiata
+			Configurazione.UserConfigLumen.cartellaDatabase = cfg.cartellaDatabase;
 
+			// Se è la prima volta, avvio tutto
+			if( !LumenApplication.Instance.avviata ) {
+				LumenApplication.Instance.avvia( true, qualeConnectionString );
+			}
 
 			// Se è la prima volta, avvio tutto
 			impostaConnectionStringFittizzia();
