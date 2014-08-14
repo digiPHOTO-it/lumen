@@ -137,14 +137,15 @@
 
 
 			<UniformGrid Rows="2" Columns="4" Style="{StaticResource gridOneShotRitoccoStyle}">
-				<ToggleButton Content="-90°"  Command="{Binding ruotareCommand}"   IsChecked="{Binding Path=isRotateMeno90Checked,Mode=OneWay}" Style="{StaticResource mioToggleButtonStyle}" CommandParameter="-90" ToolTip="Ruota foto antiorario" />
-				<ToggleButton Content="+90°"  Command="{Binding ruotareCommand}"   IsChecked="{Binding Path=isRotatePiu90Checked,Mode=OneWay}"  Style="{StaticResource mioToggleButtonStyle}" CommandParameter="90"  ToolTip="Ruota foto orario"/>
-				<ToggleButton Content="H.V."  Command="{Binding ruotareQuadroCommand}"   IsChecked="{Binding Path=quadroRuotato,Mode=OneWay}"  Style="{StaticResource mioToggleButtonStyle}" ToolTip="Ruota quandro Oriz/Vert" />
-				<ToggleButton Content="Flip"  Command="{Binding flipCommand}"      IsChecked="{Binding Path=isFlipChecked,Mode=OneWay}"         Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" />
+				
+				<ToggleButton Content="-90°"  Command="{Binding ruotareCommand}"   IsChecked="{Binding Path=isRotateMeno90Checked,Mode=OneWay}" Style="{StaticResource mioToggleButtonStyle}" CommandParameter="-90" ToolTip="Ruota foto antiorario" Margin="0,0,1,1" />
+				<ToggleButton Content="+90°"  Command="{Binding ruotareCommand}"   IsChecked="{Binding Path=isRotatePiu90Checked,Mode=OneWay}"  Style="{StaticResource mioToggleButtonStyle}" CommandParameter="90"  ToolTip="Ruota foto orario" Margin="0,0,1,1" />
+				<ToggleButton Content="R.Q."  Command="{Binding ruotareQuadroCommand}"   IsChecked="{Binding Path=quadroRuotato,Mode=OneWay}"  Style="{StaticResource mioToggleButtonStyle}" ToolTip="Ruota quadro Oriz/Vert" Margin="0,0,1,1" />
+				<ToggleButton Content="Flip"  Command="{Binding flipCommand}"      IsChecked="{Binding Path=isFlipChecked,Mode=OneWay}"         Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" Margin="0,0,0,1" />
 
-				<ToggleButton Content="B/N"   Command="{Binding grayScaleCommand}" IsChecked="{Binding Path=isGrayscaleChecked,Mode=OneWay}"    Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" ToolTip="Bianco/Nero" />
-				<ToggleButton Content="Sepia" Command="{Binding sepiaCommand}"     IsChecked="{Binding Path=isSepiaChecked,Mode=OneWay}"        Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" ToolTip="Effetto invecchiato"/>
-				<Button Content="Logo" ToolTip="Attiva disattiva sposta logo" Command="{Binding aggiungereLogoCommand}" />
+				<ToggleButton Content="B/N"   Command="{Binding grayScaleCommand}" IsChecked="{Binding Path=isGrayscaleChecked,Mode=OneWay}"    Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" ToolTip="Bianco/Nero" Margin="0,0,1,0" />
+				<ToggleButton Content="Sepia" Command="{Binding sepiaCommand}"     IsChecked="{Binding Path=isSepiaChecked,Mode=OneWay}"        Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" ToolTip="Effetto invecchiato" Margin="0,0,1,0" />
+				<Button Content="Logo" ToolTip="Attiva disattiva sposta logo" Command="{Binding aggiungereLogoCommand}" Margin="0,0,1,0" />
 				<!--            
                 <Button Name="buttonModificaConPrgEsterno" Content="Gimp" ToolTip="Modifica le foto con un programma esterno" Command="{Binding modificareConEditorEsternoCommand}"  />
 -->
@@ -183,8 +184,6 @@
 			<Button Content="-All" ToolTip="Toglie tutte le foto dalla modifica" Command="{Binding commandSvuotareElencoInModifica}" />
 -->
 			<Button Content="Svuota lista" ToolTip="Svuota la lista delle foto in attesa di essere modificate" Command="{Binding svuotareListaDaModificareCommand}"  />
-
-			<ToggleButton Content="Snapshot"   Command="{Binding snapshotPubblicoOpenCloseCommand}" IsChecked="{Binding Path=isSnapshotPubblicoVisibile,Mode=TwoWay}"    Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" ToolTip="Apre/Chiude snapshot pubblico" />
 
 		</StackPanel>
 
