@@ -20,10 +20,15 @@
 	<UserControl.CommandBindings>
 		<CommandBinding Command="{StaticResource cmdTakeSnapshotPubblico1}" Executed="takeSnapshotPubblico_Click" />
 		<CommandBinding Command="{StaticResource cmdCloseSnapshotPubblico}" Executed="closeSnapshotPubblico_Click" />
+		<CommandBinding Command="{StaticResource uicmdSelezionaTutteLeFoto}"  Executed="selezionareTutteLeFoto_Click"  />
+		<CommandBinding Command="{StaticResource uicmdDeselezionaTutteLeFoto}" Executed="deselezionareTutteLeFoto_Click" />
+
 	</UserControl.CommandBindings>
 	<UserControl.InputBindings>
 		<KeyBinding  Key="F9" Command="{StaticResource cmdTakeSnapshotPubblico1}" />
 		<KeyBinding  Key="F10" Command="{StaticResource cmdCloseSnapshotPubblico}" />
+		<KeyBinding  Key="S" Modifiers="Control" Command="{StaticResource uicmdSelezionaTutteLeFoto}" />
+		<KeyBinding  Key="Q" Modifiers="Control" Command="{StaticResource uicmdDeselezionaTutteLeFoto}" />
 	</UserControl.InputBindings>
 
 

@@ -135,6 +135,7 @@
 
 	<Style x:Key="gridOneShotRitoccoStyle" TargetType="UniformGrid" BasedOn="{StaticResource {x:Type Panel}}">
 		
+		<Setter Property="Background" Value="Transparent" />
 		<Setter Property="HorizontalAlignment" Value="Stretch" />
 		<Setter Property="VerticalAlignment" Value="Center" />
 		<Setter Property="Margin" Value="2,14,2,2" />

@@ -268,5 +268,14 @@ namespace Digiphoto.Lumen.UI {
 			((App)Application.Current).gestoreFinestrePubbliche.chiudiSnapshotPubblicoWindow();
 		}
 
+		void selezionareTutteLeFoto_Click( object sender, RoutedEventArgs e ) {
+			if( fotoGalleryViewModel.selezionareTuttoCommand.CanExecute( "true" ) ) 
+				fotoGalleryViewModel.selezionareTuttoCommand.Execute( "true" );
+		}
+		void deselezionareTutteLeFoto_Click( object sender, RoutedEventArgs e ) {
+			if( fotoGalleryViewModel.selezionareTuttoCommand.CanExecute( "false" ) )
+				fotoGalleryViewModel.selezionareTuttoCommand.Execute( "false" );
+		}
+
 	}
 }
