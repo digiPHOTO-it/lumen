@@ -239,13 +239,12 @@
 							</Image.Triggers>
 						</Image>
 						<Popup
-            				Name="popup"
-							IsOpen="{Binding IsMouseOver, ElementName=icon, Mode=OneWay}"
+            				Name="popupMasterizzata"
+							IsOpen="{Binding IsMouseOver, ElementName=iconMasterizzata, Mode=OneWay}"
 							PlacementTarget="{Binding ElementName=listCarrello}"
-							Placement="Absolute"
-							HorizontalOffset="{Binding Converter={StaticResource sumConverter},ElementName=RigaCarrelloGroupBox,Path=ActualWidth,ConverterParameter=80}"
-							Width="800"
-							Height="800"
+							Placement="RelativePoint"	
+							Width="600"
+							Height="600"
 							StaysOpen="true"
 							AllowsTransparency="True">
 							<Image
