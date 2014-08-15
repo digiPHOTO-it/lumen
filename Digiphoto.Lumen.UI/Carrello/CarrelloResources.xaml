@@ -79,7 +79,7 @@
     
    <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
 	<DataTemplate x:Key="rigaCarrelloStampaDataTemplate" >
-		<GroupBox x:Name="RigaCarrelloGroupBox" Width="Auto" Margin="2,2,2,2" >
+		<GroupBox x:Name="RigaCarrelloStampaGroupBox" Width="Auto" Margin="2,2,2,2" >
             <GroupBox.Header>
                 <TextBlock>
                     <TextBlock.Text>
@@ -140,10 +140,9 @@
             				Name="popup"
 							IsOpen="{Binding IsMouseOver, ElementName=icon, Mode=OneWay}"
 							PlacementTarget="{Binding ElementName=listCarrello}"
-							Placement="Absolute"
-							HorizontalOffset="{Binding Converter={StaticResource sumConverter},ElementName=RigaCarrelloGroupBox,Path=ActualWidth,ConverterParameter=80}"
-							Width="800"
-							Height="800"
+							Placement="RelativePoint"
+							Width="600"
+                            Height="600"
 							StaysOpen="true"
 							AllowsTransparency="True">
 							<Image
@@ -187,7 +186,7 @@
     </DataTemplate>
 
 	<DataTemplate x:Key="rigaCarrelloMasterizzataDataTemplate" >
-		<GroupBox x:Name="RigaCarrelloGroupBox" Width="Auto" Margin="2,2,2,2" >
+		<GroupBox x:Name="RigaCarrelloMasterizzataGroupBox" Width="Auto" Margin="2,2,2,2" >
 			<GroupBox.Header>
 				<TextBlock>
 					<TextBlock.Text>
@@ -216,7 +215,7 @@
                         BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="4" Margin="2,2,2,2">
 					<Canvas	Height="50" Width="50">
 						<Image 
-								Name="icon"
+								Name="iconMasterizzata"
 								Source="{Binding Path=fotografia.imgProvino,Converter={StaticResource imageSourceConverter}}"
 	             				Height="50"
 	             				Width="50"
