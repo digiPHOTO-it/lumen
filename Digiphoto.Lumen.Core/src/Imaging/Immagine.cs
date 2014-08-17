@@ -33,6 +33,8 @@ namespace Digiphoto.Lumen.Imaging {
 
 		public abstract object Clone();
 
+		public abstract byte[] getBytes(); 
+
 		#endregion
 	}
 }

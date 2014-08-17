@@ -148,6 +148,17 @@ var wb = new WriteableBitmap( this.bitmapSource );
 			return bmp;
 		}
 
+		public override byte[] getBytes() {
+
+			MemoryStream memStream = new MemoryStream();
+			JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+			BitmapFrame bf = BitmapFrame.Create( bitmapSource );
+			bf.Freeze();
+			encoder.Frames.Add( bf );
+			encoder.Save( memStream );
+			return memStream.GetBuffer();
+
+		}
 
 		#endregion
 	}
