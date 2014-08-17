@@ -30,6 +30,8 @@ namespace Digiphoto.Lumen.Imaging {
 		float rapporto { 
 			get; 
 		}
+
+		byte[] getBytes();
 	}
 
 }

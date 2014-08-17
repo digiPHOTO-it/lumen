@@ -161,10 +161,65 @@ namespace Digiphoto.Lumen.Applicazione {
 
 			// Creo i servizi
 
+			foreach( String key in this.configurazione.nomiServizi.Keys ) {
+
+				Type interfaccia = null;
+
+				int posIniz = key.IndexOf( "<" );
+				if( posIniz > 0 ) {
+					// Devo gestire i generic type
+					int posFine = key.IndexOf( ">", posIniz + 1 );
+					if( posFine > 0 ) {
+						String genericStr = key.Substring( posIniz+1, posFine-posIniz-1 );
+						Type generic = Type.GetType( genericStr );
+						if( generic == null )
+							generic = Type.GetType( genericStr + ",Digiphoto.Lumen.Core" );
+						if( generic == null )
+							generic = Type.GetType( genericStr + ",Digiphoto.Lumen.Model" );
+
+						String interfaceName = key.Substring( 0, posIniz );
+
+						String tutto = interfaceName + "`1";
+
+						interfaccia = Type.GetType( tutto );
+						if( interfaccia == null )
+							interfaccia = Type.GetType( tutto + ",Digiphoto.Lumen.Core" );
+						if( interfaccia == null )
+							interfaccia = Type.GetType( tutto + ",Digiphoto.Lumen.Model" );
+
+						interfaccia = interfaccia.MakeGenericType( generic );
+					}
+
+
+				} else {
+
+					interfaccia = Type.GetType( key );
+				}
+
+
+				creaAggiungiAvviaServizio( interfaccia );
+			}
+
+			// Questo servizio nasce
+			IVolumeCambiatoSrv vcs = getServizioAvviato<IVolumeCambiatoSrv>();
+			if( vcs != null ) {
+				// TODO forse si può sporstare dentro la IMPL
+				vcs.attesaBloccante = false;
+				vcs.attesaEventi();
+			}
+
+/*		
+
+			// calcolo il nome completo della interfaccia che mi fa da chiave per la mappa.
+			string key = calcFullName( tipo );
+
+
 			//
 			IVolumeCambiatoSrv vcs = creaAggiungiAvviaServizio<IVolumeCambiatoSrv>();
-			vcs.attesaBloccante = false;
-			vcs.attesaEventi();
+			if( vcs != null ) {
+				vcs.attesaBloccante = false;
+				vcs.attesaEventi();
+			}
 
 			creaAggiungiAvviaServizio<IStampantiInstallateSrv>();
 			//
@@ -195,18 +250,23 @@ namespace Digiphoto.Lumen.Applicazione {
 			creaAggiungiAvviaServizio<IEliminaFotoVecchieSrv>();
 
 			creaAggiungiAvviaServizio<IEntityRepositorySrv<Fotografia>>();
+ */
 		}
 
 		public T creaServizio<T>() where T : IServizio {
 			return (T) _servizioFactory.creaServizio( typeof(T) );
 		}
 
-		private T creaAggiungiAvviaServizio<T>() where T : IServizio {
-			T srv = creaServizio<T>();
-			string key = ServizioFactory.calcFullName( typeof( T ) );
+		private IServizio creaAggiungiAvviaServizio( Type type ) {
+			IServizio srv = _servizioFactory.creaServizio( type );
+			string key = ServizioFactory.calcFullName( type );
 			_serviziAvviati.Add( key, srv );
 			srv.start();
 			return srv;
+		}
+
+		private T creaAggiungiAvviaServizio<T>() where T : IServizio {
+			return (T)creaAggiungiAvviaServizio( typeof( T ) );
 		}
 
 
@@ -243,7 +303,12 @@ namespace Digiphoto.Lumen.Applicazione {
 		// </summary>
 		//
 		public IServizio getServizioAvviato( string mioFullName ) {
-			return _serviziAvviati [mioFullName];
+			if( _serviziAvviati.ContainsKey( mioFullName ) )
+				return _serviziAvviati[mioFullName];
+			else {
+				_giornale.Warn( "Servizio non avviato: " + mioFullName );
+				return null;
+			}
 		}
 
 		public T getServizioAvviato<T>() {
