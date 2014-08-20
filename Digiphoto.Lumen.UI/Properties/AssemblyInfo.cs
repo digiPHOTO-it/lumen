@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "digiPHOTO.it" )]
 [assembly: AssemblyProduct( "Digiphoto.Lumen.UI" )]
-[assembly: AssemblyCopyright( "Copyright © digiPHOTO.it 2013" )]
+[assembly: AssemblyCopyright( "Copyright © digiPHOTO.it 2014" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 

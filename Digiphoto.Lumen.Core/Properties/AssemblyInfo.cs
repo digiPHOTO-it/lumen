@@ -11,7 +11,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "digiPHOTO.it" )]
 [assembly: AssemblyProduct( "Lumen.Core" )]
-[assembly: AssemblyCopyright( "Copyright © digiPHOTO.it 2013" )]
+[assembly: AssemblyCopyright( "Copyright © digiPHOTO.it 2014" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
