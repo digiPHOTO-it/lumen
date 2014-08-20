@@ -224,6 +224,10 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			// Rilancio messaggio di cambio stato
 			if( msg != null )
 				LumenApplication.Instance.bus.Publish( msg );
+
+
+			// Se fosse aperta l'altra finestra pubblica, allora la chiudo
+			((App)Application.Current).gestoreFinestrePubbliche.chiudiSnapshotPubblicoWindow();
 		}
 
 		public void stop() {

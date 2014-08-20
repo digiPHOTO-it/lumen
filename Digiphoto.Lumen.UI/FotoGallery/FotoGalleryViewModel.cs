@@ -44,6 +44,10 @@ namespace Digiphoto.Lumen.UI {
 	{
 		private BackgroundWorker _bkgIdrata;
 
+		// Quando viene eseguito un comando che potenzialmente modifica la visuale della finestra pubblica, lo segnalo con un evento
+		public delegate void SnpashotCambiataEventHandler( object sender, EventArgs args );
+		public event SnpashotCambiataEventHandler snpashotCambiataEventHandler;
+
 		public FotoGalleryViewModel() {
 
 			IObservable<StampatoMsg> observableStampato = LumenApplication.Instance.bus.Observe<StampatoMsg>();
@@ -672,6 +676,8 @@ namespace Digiphoto.Lumen.UI {
 			} else {
 				fotografieCW.Filter = null;
 			}
+
+			raiseSnpashotCambiataEvent( EventArgs.Empty );
 		}
 
 		/// <summary>
@@ -964,6 +970,8 @@ namespace Digiphoto.Lumen.UI {
 			RicercaModificataMessaggio msg = new RicercaModificataMessaggio( this );
 			msg.abortito = e.Cancelled;
 			LumenApplication.Instance.bus.Publish( msg );
+
+			raiseSnpashotCambiataEvent( EventArgs.Empty );
 		}
 
 		void bkgIdrata_ProgressChanged( object sender, ProgressChangedEventArgs e ) {
@@ -1145,7 +1153,21 @@ namespace Digiphoto.Lumen.UI {
 
 
 		#endregion Metodi
-		
+
+		#region Gestori Eventi
+
+		/// <summary>
+		/// Avviso gli interessati che la schermata pubblica (snapshot) è cambiata.
+		/// Chi crede può prenderne atto.
+		/// </summary>
+		/// <param name="e"></param>
+		protected void raiseSnpashotCambiataEvent( EventArgs e ) {
+			if( snpashotCambiataEventHandler != null )
+				snpashotCambiataEventHandler( this, e );
+		}
+
+		#endregion
+
 		#region MemBus
 
 		public void OnCompleted()

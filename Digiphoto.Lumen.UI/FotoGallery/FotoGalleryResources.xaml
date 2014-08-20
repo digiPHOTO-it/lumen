@@ -178,6 +178,16 @@
 		</Style.Triggers>
 	</Style>
 
+	<Style x:Key="ssSnapshotStyle" TargetType="Button">
+		<Setter Property="ToolTip" Value="Foto dello schermo su finestra pubblica" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/ssSnapshot-32x32.png" Width="32"/>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	
 	<Style x:Key="styleSelettoreMetadati" TargetType="UserControl">
 		<Setter Property="MaxHeight" Value="140" />
 <!--  TODO Purtroppo non funziona. Non riconosce la property IsEnabled e non capisco perché		
