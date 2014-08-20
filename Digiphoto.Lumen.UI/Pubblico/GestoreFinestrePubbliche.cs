@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Digiphoto.Lumen.Config;
+using Digiphoto.Lumen.UI.Pubblico.GestioneGeometria;
 using Digiphoto.Lumen.UI.ScreenCapture;
 
 namespace Digiphoto.Lumen.UI.Pubblico {
@@ -142,12 +143,24 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			_snapshotPubblicoWindow.Closed += chiusoSnapshotPubblicoWindow;
 
 			if( _slideShowWindow != null ) {
-				// Se ho lo ss attivot, allora devo prendere il suo posto
-				_snapshotPubblicoWindow.Height = _slideShowWindow.Height;
-				_snapshotPubblicoWindow.Width = _slideShowWindow.Width;
-				_snapshotPubblicoWindow.Top = _slideShowWindow.Top;
-				_snapshotPubblicoWindow.Left = _slideShowWindow.Left;
-				_snapshotPubblicoWindow.WindowState = _slideShowWindow.WindowState;
+
+				// Se ho lo ss attivo, allora devo prendere il suo posto
+				if( _slideShowWindow.WindowState == WindowState.Maximized ) {
+					// In questo caso non posso massimizzare a mia volta :-(
+					// Se sono sul secondo monitor, devo lavorare come se fosse in normal
+					WpfScreen scrn = WpfScreen.GetScreenFrom( _slideShowWindow );
+					_snapshotPubblicoWindow.Height = scrn.WorkingArea.Height;
+					_snapshotPubblicoWindow.Width = scrn.WorkingArea.Width;
+					_snapshotPubblicoWindow.Top = scrn.WorkingArea.Top;
+					_snapshotPubblicoWindow.Left = scrn.WorkingArea.Left;
+				} else {
+					_snapshotPubblicoWindow.Height = _slideShowWindow.Height;
+					_snapshotPubblicoWindow.Width = _slideShowWindow.Width;
+					_snapshotPubblicoWindow.Top = _slideShowWindow.Top;
+					_snapshotPubblicoWindow.Left = _slideShowWindow.Left;
+				}
+
+				_snapshotPubblicoWindow.WindowState = WindowState.Normal;
 
 			} else {
 
