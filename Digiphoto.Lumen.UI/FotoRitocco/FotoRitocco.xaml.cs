@@ -1151,7 +1151,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			_viewModel.frpContenitoreMaxH = gridRitocco.ActualHeight;
 		}
 
-		private void takeSnapshotPubblico_Click( object sender, RoutedEventArgs e ) {
+		private void buttonTakeSnapshotPubblico_Click( object sender, RoutedEventArgs e ) {
 			((App)Application.Current).gestoreFinestrePubbliche.eseguiSnapshotSuFinestraPubblica( this, this.tabControlRitoccoComposizione );
 		}
 

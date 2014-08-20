@@ -180,6 +180,10 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			set;
 		}
 
+		public void eseguiSnapshotSuFinestraPubblica( Visual sourceVisual, Visual targetVisual ) {
+			eseguiSnapshotSuFinestraPubblica( sourceVisual, targetVisual, true );
+		}
+
 		/// <summary>
 		/// Se è aperto lo slide show, allora lo metto in pausa e visualizzo la finestra nel suo posto preciso (stessa geometria).
 		/// Se invece lo slide show è chiuso, allora apro la finestra nella posizione che mi ero memorizzata.
@@ -188,7 +192,11 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		/// <param name="sourceVisual">Questa è la Window di riferimento, cioè quella che viene usata per parametrare le dimensioni dell'oggetto</param>
 		/// <param name="targetVisual">Oggetto visuale da "fotografare"</param>
 
-		public void eseguiSnapshotSuFinestraPubblica( Visual sourceVisual, Visual targetVisual ) {
+		public void eseguiSnapshotSuFinestraPubblica( Visual sourceVisual, Visual targetVisual, bool forzaAperturaWin ) {
+
+			// Se la finestra è chiusa e il flag non mi forza l'apertura non faccio niente
+			if( !forzaAperturaWin && _snapshotPubblicoWindow == null )
+				return;
 
 			if( _snapshotPubblicoWindow == null ) {
 				stavaGirandoLoSlideShow = slideShowViewModel == null ? false : slideShowViewModel.isRunning;

@@ -18,15 +18,15 @@
 		<ResourceDictionary Source="FotoGalleryResources.xaml" />
 	</UserControl.Resources>
 	<UserControl.CommandBindings>
-		<CommandBinding Command="{StaticResource cmdTakeSnapshotPubblico1}" Executed="takeSnapshotPubblico_Click" />
+		<CommandBinding Command="{StaticResource cmdTakeSnapshotPubblico1}" Executed="buttonTakeSnapshotPubblico_Click" />
 		<CommandBinding Command="{StaticResource cmdCloseSnapshotPubblico}" Executed="closeSnapshotPubblico_Click" />
 		<CommandBinding Command="{StaticResource uicmdSelezionaTutteLeFoto}"  Executed="selezionareTutteLeFoto_Click"  />
 		<CommandBinding Command="{StaticResource uicmdDeselezionaTutteLeFoto}" Executed="deselezionareTutteLeFoto_Click" />
 
 	</UserControl.CommandBindings>
 	<UserControl.InputBindings>
-		<KeyBinding  Key="F9" Command="{StaticResource cmdTakeSnapshotPubblico1}" />
-		<KeyBinding  Key="F10" Command="{StaticResource cmdCloseSnapshotPubblico}" />
+		<KeyBinding  Key="F2" Command="{StaticResource cmdTakeSnapshotPubblico1}" />
+		<KeyBinding  Key="F3" Command="{StaticResource cmdCloseSnapshotPubblico}" />
 		<KeyBinding  Key="S" Modifiers="Control" Command="{StaticResource uicmdSelezionaTutteLeFoto}" />
 		<KeyBinding  Key="Q" Modifiers="Control" Command="{StaticResource uicmdDeselezionaTutteLeFoto}" />
 	</UserControl.InputBindings>
@@ -60,7 +60,7 @@
 
                     <Separator />
 
-                    <CheckBox Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" ToolTip="Vedi solo le foto selezionate" >
+                    <CheckBox Name="chkFiltaSelez" Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" ToolTip="Vedi solo le foto selezionate" >
                         <TextBlock TextWrapping="NoWrap">Slz</TextBlock>
                     </CheckBox>
                     <Button Content="^ Prec" Click="buttonScorriFotoSelez_Click" Tag="-1" ToolTip="Posiziona sulla precendete foto selezionata" Padding="1" />
@@ -94,6 +94,7 @@
 					<Separator />
 					<Button Command="{Binding controllareSlideShowCommand}" CommandParameter="Start" Style="{StaticResource ssStartStyle}" />
 					<Button Command="{Binding controllareSlideShowCommand}" CommandParameter="Stop"  Style="{StaticResource ssPauseStyle}" />
+					<Button Name="buttonTakeSnapshotPubblico" Style="{StaticResource ssSnapshotStyle}" Click="buttonTakeSnapshotPubblico_Click" ToolTip="F2 mostra foto del video al pubblico" />
 					<extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. righe Slide-Show" Value="{Binding numRigheSlideShow}" IsEnabled="{Binding possoControllareSlideShow}" />
 					<extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. colonne Slide-Show" Value="{Binding numColonneSlideShow}" IsEnabled="{Binding possoControllareSlideShow}" />
                 </ToolBar>

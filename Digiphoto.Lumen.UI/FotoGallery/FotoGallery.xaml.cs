@@ -16,6 +16,7 @@ using Digiphoto.Lumen.UI.Mvvm;
 using Digiphoto.Lumen.UI.ScreenCapture;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.UI.Util;
+using System.Windows.Threading;
 
 namespace Digiphoto.Lumen.UI {
 	/// <summary>
@@ -30,16 +31,22 @@ namespace Digiphoto.Lumen.UI {
 
         }
 
-/*
-		void fotoGalleryViewModel_riposizionaFocusEvent( object sender, EventArgs args ) {
-			this.LsImageGallery.Focus();
-		}
-*/
 		void fotoGallery_DataContextChanged( object sender, DependencyPropertyChangedEventArgs e ) {
 			associaDialogProvider();
 
-//			fotoGalleryViewModel.riposizionaFocusEvent += new FotoGalleryViewModel.RiposizionaFocusEventHandler( fotoGalleryViewModel_riposizionaFocusEvent );
+			fotoGalleryViewModel.snpashotCambiataEventHandler += new FotoGalleryViewModel.SnpashotCambiataEventHandler( onSnapshotCambiata );
 		}
+
+		/// <summary>
+		///  Questo evento lo ascolto direttamente dal viewmodel perché devo eseguire questa
+		///  operazione, dopo aver terminato l'esecuzione dei Command.
+		/// </summary>
+		/// <param name="sender">il viewmodel</param>
+		/// <param name="args">vuoto</param>
+		void onSnapshotCambiata( object sender, EventArgs args ) {
+			forsePrendoSnapshotPubblico();
+		}
+
 
 		#region Proprietà
 		private FotoGalleryViewModel fotoGalleryViewModel {
@@ -61,6 +68,8 @@ namespace Digiphoto.Lumen.UI {
 					--quanteRigheVedo;
 			}  else
 				quanteRigheVedo = Convert.ToInt16( param );
+
+			forsePrendoSnapshotPubblico();
 
 			LsImageGallery.Focus();   // mi consente di usare il tasto pg/up pg/down.
 		}
@@ -229,6 +238,7 @@ namespace Digiphoto.Lumen.UI {
 			if( fotoGalleryViewModel.fotoCorrenteSelezionataScorrimento != null )
 				LsImageGallery.ScrollIntoView( fotoGalleryViewModel.fotoCorrenteSelezionataScorrimento );
 
+			forsePrendoSnapshotPubblico();
 		}
 
 
@@ -252,15 +262,21 @@ namespace Digiphoto.Lumen.UI {
 		private void buttonPageUp_Click( object sender, RoutedEventArgs e ) {
 			ScrollViewer myScrollviewer = AiutanteUI.FindVisualChild<ScrollViewer>( LsImageGallery );
 			myScrollviewer.PageUp();
+
+			forsePrendoSnapshotPubblico();
+
 			LsImageGallery.Focus();
 		}
 		private void buttonPageDown_Click( object sender, RoutedEventArgs e ) {
 			ScrollViewer myScrollviewer = AiutanteUI.FindVisualChild<ScrollViewer>( LsImageGallery );
 			myScrollviewer.PageDown();
+
+			forsePrendoSnapshotPubblico();
+
 			LsImageGallery.Focus();
 		}
 
-		private void takeSnapshotPubblico_Click( object sender, RoutedEventArgs e ) {
+		private void buttonTakeSnapshotPubblico_Click( object sender, RoutedEventArgs e ) {
 			((App)Application.Current).gestoreFinestrePubbliche.eseguiSnapshotSuFinestraPubblica( this, this.LsImageGallery );
 		}
 
@@ -275,6 +291,24 @@ namespace Digiphoto.Lumen.UI {
 		void deselezionareTutteLeFoto_Click( object sender, RoutedEventArgs e ) {
 			if( fotoGalleryViewModel.selezionareTuttoCommand.CanExecute( "false" ) )
 				fotoGalleryViewModel.selezionareTuttoCommand.Execute( "false" );
+		}
+
+
+		/// <summary>
+		/// Solo se la finestra dello snapshot pubblico è già apera, allora prendo la foto.
+		/// Se invece è chiusa non faccio niente.
+		/// </summary>
+		void forsePrendoSnapshotPubblico() {
+
+			// Siccome la UI non è ancora stata ridisegnata, se faccio la foto adesso, vedo 
+			// la situazione precedente.
+			// Eseguo il comando quindi dopo che la UI si è ridisegnata
+			this.Dispatcher.Invoke(
+				DispatcherPriority.ApplicationIdle,
+				new Action( () => {
+					((App)Application.Current).gestoreFinestrePubbliche.eseguiSnapshotSuFinestraPubblica( this, this.LsImageGallery, false );
+				} ) );
+
 		}
 
 	}
