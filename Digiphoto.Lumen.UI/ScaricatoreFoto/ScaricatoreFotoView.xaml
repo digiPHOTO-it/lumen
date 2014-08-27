@@ -64,14 +64,10 @@
                           IsEnabled="{Binding possoModificareSpostaCopia,Mode=OneTime}">
                     <StackPanel>
 						<RadioButton Content="SPOSTA files" GroupName="copiaSpostaGrp" 
-                                 Command="{Binding Path=setCopiaSpostaCommad}" 
-                                 CommandParameter="true"
                                  IsChecked="{Binding Path=eraseFotoMemoryCard}"
 							 Style="{StaticResource spostaCopiaRadioStyle}"
 							   />
 						<RadioButton Content="COPIA files"  GroupName="copiaSpostaGrp" 
-                                 Command="{Binding Path=setCopiaSpostaCommad}" 
-                                 CommandParameter="false"
                                  IsChecked="{Binding Path=eraseFotoMemoryCard, Converter={StaticResource boolInverterConverter}}"
 							 Style="{StaticResource spostaCopiaRadioStyle}" />
 					</StackPanel>

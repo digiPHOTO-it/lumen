@@ -32,7 +32,7 @@
                 <Label Content="{Binding Path=etichetta}"        
                                Canvas.Right="2"
                                Canvas.Top="2"
-                               FontSize="{Binding Converter={StaticResource percentualeConverter},ElementName=canvasUnaFotoShow,Path=ActualHeight,ConverterParameter=8}"
+                               FontSize="{Binding Converter={StaticResource percentualeConverter}, FallbackValue=15, ElementName=canvasUnaFotoShow,Path=ActualHeight,ConverterParameter=8}"
                                Background="#FFC90E" />
             </Canvas>
 
