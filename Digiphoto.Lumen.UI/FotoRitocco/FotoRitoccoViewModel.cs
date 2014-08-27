@@ -147,6 +147,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 					_fotografiaInModifica = value;
 					OnPropertyChanged( "fotografiaInModifica" );
+					OnPropertyChanged("isModalitaEditFotoRitocco");
 
 					// Eseguo alcune operazioni al cambio di foto in modifica. Probabilmente dovrò salvare anche
 					onFotografiaInModificaChanged();
@@ -489,6 +490,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		public bool isModalitaEditFotoRitocco
+		{
+			get
+			{
+				return isAlmenoUnaFotoSelezionata;
+			}
+		}
 
 		BitmapImage _mascheraAttiva;
 		public BitmapImage mascheraAttiva {

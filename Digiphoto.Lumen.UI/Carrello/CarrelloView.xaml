@@ -37,7 +37,7 @@
 			</ToolBar>
 			<ToolBar Band="1" BandIndex="2" Header="Riga">
 				<Button Command="{Binding UpdateQuantitaCommand}" CommandParameter="+1" Style="{StaticResource styleCartQtaUp}" />
-				<TextBox Text="{Binding Path=rigaCarrelloStampataSelezionata.quantita,Mode=TwoWay}" IsEnabled="{Binding possoAggiornareQuantitaRiga}" TextAlignment="Center" FontSize="24" ToolTip="Quantità di riga" MinWidth="24"/>
+                <TextBox Text="{Binding Path=rigaCarrelloStampataSelezionata.quantita,Mode=TwoWay}" IsReadOnly="True" TextAlignment="Center" FontSize="24" ToolTip="Quantità di riga" MinWidth="24"/>
 				<Button Command="{Binding UpdateQuantitaCommand}" CommandParameter="-1" Style="{StaticResource styleCartQtaDown}" />
 				<Separator />
 				<Button Command="{Binding eliminaRigaCommand}" CommandParameter="S" Style="{StaticResource styleCartDelRigaStampate}" />

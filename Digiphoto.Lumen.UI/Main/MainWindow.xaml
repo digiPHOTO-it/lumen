@@ -48,7 +48,7 @@
 				</StackPanel>
 			</StatusBarItem>
 
-			<StatusBarItem Grid.Column="3" Visibility="{Binding }">
+			<StatusBarItem Grid.Column="3" >
 
 				<StackPanel Orientation="Horizontal">
 
