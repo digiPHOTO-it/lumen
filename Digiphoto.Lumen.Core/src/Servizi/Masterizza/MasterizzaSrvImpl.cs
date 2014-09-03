@@ -40,7 +40,11 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 
 		private object senderTag;
 
-	
+		public override bool possoChiudere()
+		{
+			return !(backgroundWorkerCopia != null && backgroundWorkerCopia.WorkerSupportsCancellation == true) &&
+				!(_threadCopiaSuChiavetta != null && _threadCopiaSuChiavetta.IsAlive);
+		}
 
 		public bool notificareProgressione {
 			get;

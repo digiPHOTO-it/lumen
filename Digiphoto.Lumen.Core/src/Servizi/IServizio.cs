@@ -26,6 +26,10 @@ namespace Digiphoto.Lumen.Servizi {
 		StatoRun statoRun {
 			get;
 		}
+
+		bool possoChiudere();
+
+		string msgPossoChiudere();
 	}
 
 }

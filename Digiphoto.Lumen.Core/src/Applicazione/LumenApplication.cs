@@ -21,6 +21,7 @@ using Digiphoto.Lumen.Servizi.Ritoccare;
 using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
 using Digiphoto.Lumen.Licensing;
 using Digiphoto.Lumen.Servizi.Io;
+using Digiphoto.Lumen.Applicazione;
 
 namespace Digiphoto.Lumen.Applicazione {
 
@@ -55,6 +56,25 @@ namespace Digiphoto.Lumen.Applicazione {
 			}
 		}
 
+		private string _msgPossoFermare;
+		private bool _possoFermare;
+		public bool possoFermare
+		{
+			get
+			{
+				_possoFermare = true;
+				foreach (string chiave in _serviziAvviati.Keys)
+				{
+					
+					if(!_serviziAvviati[chiave].possoChiudere()){
+						_possoFermare = false;
+						_msgPossoFermare = "\n " + _serviziAvviati[chiave].msgPossoChiudere();
+						_giornale.Info(_serviziAvviati[chiave].msgPossoChiudere());
+					}
+				}
+				return _possoFermare;
+			}
+		}
 
 		public bool avviata {
 			get;
@@ -275,8 +295,8 @@ namespace Digiphoto.Lumen.Applicazione {
 			observable.Subscribe( obj );
 		}
 
-		public void ferma() {
-	
+		public void ferma()
+		{
 			_giornale.Info( "L'applicazione sta per essere fermata. Ora spengo tutto." );
 
 			foreach( string chiave in _serviziAvviati.Keys )

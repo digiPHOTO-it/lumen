@@ -121,6 +121,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
+		public override bool possoChiudere()
+		{
+			return gestoreCarrello.isEmpty;
+		}
+
 		#endregion
 
 		#region Fields

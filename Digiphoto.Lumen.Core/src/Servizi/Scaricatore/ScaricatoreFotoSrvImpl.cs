@@ -55,6 +55,11 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			}
 		}
 
+		public override bool possoChiudere()
+		{
+			return !(_copiaImmaginiWorker != null && _copiaImmaginiWorker.disposed == false);
+		}
+
 		#endregion
 
 
