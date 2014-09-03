@@ -84,6 +84,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
+		public bool isEmpty
+		{
+			get
+			{
+				return carrello.righeCarrello.Count == 0;
+			}
+		}
+
 		/// <summary>
 		/// Ritorno una percenuale di sconto intera calcolata in base al prezzo del carrello calcolato automaticamente, 
 		/// confrontato con il totaleAPagare impostato eventualmente dall'utente.

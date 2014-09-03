@@ -23,12 +23,19 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
 
         public EliminaFotoVecchieSrvImpl()
         {
+			_possoChiudere = true;
         }
 
 		public DateTime giornoFineAnalisi {
 			get {
 				return DateTime.Now.AddDays( -Configurazione.infoFissa.numGiorniEliminaFoto );
 			}
+		}
+
+		private bool _possoChiudere;
+		public override bool possoChiudere()
+		{
+			return _possoChiudere;
 		}
 
         /// <summary>
@@ -75,6 +82,7 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
         /// <param name="pathCartella"></param>
         public int elimina(String pathCartella)
         {
+			_possoChiudere = false;
 			int quante = 0;
             String fotografoID = PathUtil.fotografoIDFromPath(pathCartella);
             DateTime dataRiferimento = Convert.ToDateTime(PathUtil.giornoFromPath(pathCartella)).Date;
@@ -111,6 +119,8 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
 			eliminaFotoVecchieMsg.descrizione = "Eliminate " + quante + " foto dalla cartella " + pathCartella;
 			eliminaFotoVecchieMsg.showInStatusBar = true;
             pubblicaMessaggio(eliminaFotoVecchieMsg);
+			_possoChiudere = true;
+			
 			return quante;
         }
 
@@ -119,7 +129,7 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
 		/// </summary>
 		/// <param name="fotosDaCanc"></param>
 		public int elimina( IEnumerable<Fotografia> fotosDaCanc ) {
-
+			_possoChiudere = false;
 			int conta = 0;
 			_giornale.Info( "E' stata richiesta la distruzione di " + fotosDaCanc.Count() + " fotografie. Iniizo eliminazione" );
 
@@ -157,6 +167,7 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
 				pubblicaMessaggio( msg );
 			}
 
+			_possoChiudere = true;
 			return conta;
 		}
 

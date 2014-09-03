@@ -43,6 +43,16 @@ namespace Digiphoto.Lumen.Servizi {
 			_giornale.Info( "E' stato fermato il servizio: " + this.GetType().Name );
 		}
 
+		public virtual bool possoChiudere()
+		{
+			return true;
+		}
+
+		public virtual string msgPossoChiudere()
+		{
+			return "Il servizio " + this.GetType().Name + " è ancora in esecuzione!!!";
+		}
+
 		/// <summary>
 		/// Non è virtual perché voglio essere io a chiamare per tutti i figli.
 		/// Eventualmente fare l'override di Dispose(bool).
