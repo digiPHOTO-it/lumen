@@ -346,6 +346,17 @@ namespace Digiphoto.Lumen.Config
 			set;
 		}
 
+		/// <summary>
+		/// Questo parametro serve a creare un margine alla lista delle foto nella gallery,
+		/// così che quando si visualizza una sola riga di foto, si attiva questa correzione
+		/// in modo da farci stare due foto sulla stessa riga (altrimenti ce ne sarebbe una sola).
+		/// </summary>
+		public int correzioneAltezzaGalleryDueFoto {
+			get;
+			set;
+		}
+
+
 		# region SlideShowParam
 
 		public short deviceEnum

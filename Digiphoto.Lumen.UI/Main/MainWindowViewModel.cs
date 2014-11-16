@@ -297,8 +297,8 @@ namespace Digiphoto.Lumen.UI {
 				bool procediPure = false;
 				string msg = "Attenzione:" +
 					"\nCi sono delle operazioni che non sono concluse." +
-					"\nForzando l'uscita si rischia la perdita di dati e si possono corrompere gli archivi." +
-					"\nSi consiglia di attendere che queste operazioni siano terminate." +
+					"\nForzando l'uscita si rischia la perdita di dati." +
+					"\nSi consiglia di chiudere correttamante i servizi rimasti in sospeso." +
 					"\nSei sicuro che vuoi forzare l'uscita dal programma ?";
 
 				dialogProvider.ShowConfirmation(msg, "Avviso", (sino) =>

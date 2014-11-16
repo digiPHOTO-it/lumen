@@ -32,7 +32,7 @@
 	</UserControl.InputBindings>
 
 
-	<DockPanel>
+	<DockPanel Name="dockPanelGallery">
 
 <!--
 		<ToolBarTray DockPanel.Dock="Left" Orientation="Vertical" >
@@ -131,13 +131,13 @@
             </ToolBarTray>
  
         
-        <Expander Header="Filtri per ricercare le foto nell'archivio" DockPanel.Dock="Bottom" IsExpanded="True" ExpandDirection="Up" >
+        <Expander Header="Filtri per ricercare le foto nell'archivio" DockPanel.Dock="Bottom" IsExpanded="True" ExpandDirection="Up" Name="expanderFiltriRicerca" >
             
             <StackPanel Orientation="Horizontal" MaxHeight="120">
 
 				<StackPanel Orientation="Vertical" Margin="3,0,3,0"  >
 
-					<Button Name="eseguireRicercaButton" Command="{Binding eseguireRicercaCommand}" Style="{StaticResource buttonCercaStyle}" />
+					<Button Name="eseguireRicercaButton" Command="{Binding eseguireRicercaCommand}" Style="{StaticResource buttonCercaStyle}" Click="eseguireRicercaButton_Click" />
 					<ProgressBar  Value="{Binding Path=idrataProgress,Mode=OneWay}" Style="{StaticResource idrataProgressBarStyle}" Height="{Binding Path=idrataProgress,Converter={StaticResource progressToVisibilityConverter},ConverterParameter=2:20}" Tag="Caricamento..." />
 					<Button Name="azzeraParamRicercaButton" ToolTip="Azzera i parametri di ricerca" Command="{Binding azzeraParamRicercaCommand}" Style="{StaticResource buttonAzzeraParametriStyle}" />
 
@@ -175,12 +175,11 @@
                 <lum:SelettoreEvento x:Name="selettoreEvento5" possoCreare="False"
 									 Margin="3,0,0,0"
                                  DataContext="{Binding selettoreEventoViewModel}" />
-
 				<GroupBox Header="Fasi del giorno">
 					<StackPanel Orientation="Vertical" Margin="3,0,3,0" VerticalAlignment="Center">
-						<CheckBox Name="checkBoxMattino" Content="Mattino" IsChecked="{Binding isMattinoChecked,Mode=TwoWay}" Margin="2" />
-						<CheckBox Name="checkBoxPomeriggio" Content="Pomeriggio" IsChecked="{Binding isPomeriggioChecked,Mode=TwoWay}" Margin="2" />
-						<CheckBox Name="checkBoxSera" Content="Sera" IsChecked="{Binding isSeraChecked,Mode=TwoWay}" Margin="2" />
+						<CheckBox x:Name="checkBoxMattino" Content="Mattino" IsChecked="{Binding isMattinoChecked, Mode=TwoWay}" Margin="2" />
+						<CheckBox x:Name="checkBoxPomeriggio" Content="Pomeriggio" IsChecked="{Binding isPomeriggioChecked, Mode=TwoWay}" Margin="2" />
+						<CheckBox x:Name="checkBoxSera" Content="Sera" IsChecked="{Binding isSeraChecked, Mode=TwoWay}" Margin="2" />
 					</StackPanel>
 				</GroupBox>
 
@@ -203,6 +202,7 @@
 				                          Margin="3,0,0,0"
 				                          DataContext="{Binding selettoreScaricoCardViewModel}" />
 
+				<CheckBox Name="checkBoxCollassaFiltri" Content="Collassa filtri in ricerca" IsChecked="True" ToolTip="Quando viene esegita la ricerca, viene nascosto atomaticamente il pannello dei filtri" />
 			</StackPanel>
 
 		</Expander>
@@ -211,7 +211,7 @@
 		<lum:SelettoreAzioniRapideView Visibility="Collapsed" DataContext="{Binding Path=selettoreAzioniRapideViewModel}"/>
         
         <!-- Questa è la lista delle immagini -->
-        <ListBox x:Name="LsImageGallery"  
+        <ListBox x:Name="LsImageGallery"   Margin="0,0,0,0"
                  SelectionMode="Multiple" 
                  lumMS:MultiSelect.IsEnabled="True" IsSynchronizedWithCurrentItem="True"
                  Style="{StaticResource LsImageGalleryStyle}"
