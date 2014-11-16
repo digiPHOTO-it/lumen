@@ -18,12 +18,24 @@
     <lumC:RectangleSizeConverter x:Key="rectangleSizeConverter" />
 
     
-    <Style TargetType="{x:Type Rectangle}" x:Key="styleRectCopriA">
+    <Style TargetType="{x:Type Border}" x:Key="styleBorderCopriA">
 
-        <Setter Property="Fill" Value="Black" />
-        <Setter Property="Opacity" Value="0.7" />
-        
-        <Setter Property="Canvas.Left">
+        <Setter Property="Background" Value="Black" />
+        <Setter Property="Opacity" Value="0.8" />
+		<Setter Property="BorderBrush" Value="Red" />
+		<Setter Property="BorderThickness">
+			<Setter.Value>
+				<MultiBinding Converter="{StaticResource rectangleSizeConverter}" ConverterParameter="a; ;T">
+					<Binding Path="DataContext.ratioAreaStampabile" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" />
+					<Binding Path="Width" ElementName="imageFotografia"/>
+					<Binding Path="Height" ElementName="imageFotografia"/>
+					<Binding Path="ActualWidth" ElementName="imageFotografia"/>
+					<Binding Path="ActualHeight" ElementName="imageFotografia"/>
+				</MultiBinding>
+			</Setter.Value>
+		</Setter>
+
+		<Setter Property="Canvas.Left">
             <Setter.Value>
                 <MultiBinding Converter="{StaticResource rectangleSizeConverter}" ConverterParameter="a;L">
                     <Binding Path="DataContext.ratioAreaStampabile" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" />
@@ -70,15 +82,27 @@
                 </MultiBinding>
             </Setter.Value>
         </Setter>
-
     </Style>
 
-    <Style TargetType="{x:Type Rectangle}" x:Key="styleRectCopriB">
+	<Style TargetType="{x:Type Border}" x:Key="styleBorderCopriB">
 
-        <Setter Property="Fill" Value="Black" />
-        <Setter Property="Opacity" Value="0.7" />
+        <Setter Property="Opacity" Value="0.8" />
+		<Setter Property="Background" Value="Black" />
+		<Setter Property="BorderBrush" Value="Red" />
 
-        <Setter Property="Canvas.Left">
+		<Setter Property="BorderThickness">
+			<Setter.Value>
+				<MultiBinding Converter="{StaticResource rectangleSizeConverter}" ConverterParameter="b; ;T">
+					<Binding Path="DataContext.ratioAreaStampabile" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" />
+					<Binding Path="Width" ElementName="imageFotografia"/>
+					<Binding Path="Height" ElementName="imageFotografia"/>
+					<Binding Path="ActualWidth" ElementName="imageFotografia"/>
+					<Binding Path="ActualHeight" ElementName="imageFotografia"/>
+				</MultiBinding>
+			</Setter.Value>
+		</Setter>
+
+		<Setter Property="Canvas.Left">
             <Setter.Value>
                 <MultiBinding Converter="{StaticResource rectangleSizeConverter}" ConverterParameter="b;L">
                     <Binding Path="DataContext.ratioAreaStampabile" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" />
@@ -145,13 +169,12 @@
 
 
                 <!-- Questo è il rettangolo a) di copertura per taglio area stampabile -->
-                <Rectangle HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource styleRectCopriA}" />
+                <Border HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource styleBorderCopriA}" />
 
                 <!-- Questo è il rettangolo b) di copertura per taglio area stampabile -->
-                <Rectangle HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource styleRectCopriB}" />
-
-
-                <Image 
+				<Border HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource styleBorderCopriB}" />
+				
+				<Image 
                     Source="/Digiphoto.Lumen.UI;component/Resources/info-16x16.png" Width="16" Height="16"
                     Canvas.Left="2"
                     Canvas.Bottom="2" >
