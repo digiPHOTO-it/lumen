@@ -17,6 +17,7 @@ using Digiphoto.Lumen.UI.ScreenCapture;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.UI.Util;
 using System.Windows.Threading;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.UI {
 	/// <summary>
@@ -61,17 +62,41 @@ namespace Digiphoto.Lumen.UI {
 
 			String param = (String)((Control)sender).Tag;
 
+			short quante = quanteRigheVedo;
+
 			if( param == "+" )
-				++quanteRigheVedo;
+				++quante;
 			else if( param == "-" ) {
 				if( quanteRigheVedo > 1 )
-					--quanteRigheVedo;
+					--quante;
 			}  else
-				quanteRigheVedo = Convert.ToInt16( param );
+				quante = Convert.ToInt16( param );
+
+			// prima questo
+			sistemaMarginePerVedereDueFotoAffiancate( quante );
+
+			// poi questo
+			quanteRigheVedo = quante;
 
 			forsePrendoSnapshotPubblico();
 
 			LsImageGallery.Focus();   // mi consente di usare il tasto pg/up pg/down.
+		}
+
+		/// <summary>
+		/// Se scelgo di vedere una sola "riga" di foto, allora cerco di farci stare 
+		/// due foto affiancate
+		/// </summary>
+		private void sistemaMarginePerVedereDueFotoAffiancate( short quante ) {
+
+			int quanto = 0;
+			Thickness margin = LsImageGallery.Margin;
+			if( quante == 1 && expanderFiltriRicerca.IsExpanded == false )
+				quanto = Configurazione.UserConfigLumen.correzioneAltezzaGalleryDueFoto;
+			margin.Bottom = quanto;
+			LsImageGallery.Margin = margin;
+
+			LsImageGallery.UpdateLayout();
 		}
 
 
@@ -309,6 +334,15 @@ namespace Digiphoto.Lumen.UI {
 					((App)Application.Current).gestoreFinestrePubbliche.eseguiSnapshotSuFinestraPubblica( this, this.LsImageGallery, false );
 				} ) );
 
+		}
+
+		private void eseguireRicercaButton_Click( object sender, RoutedEventArgs e ) {
+
+			if( panelFiltriHeight == 0 )
+				panelFiltriHeight = expanderFiltriRicerca.ActualHeight;
+
+			if( checkBoxCollassaFiltri.IsChecked == true )
+				expanderFiltriRicerca.IsExpanded = false;
 		}
 
 	}

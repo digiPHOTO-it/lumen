@@ -200,6 +200,8 @@ namespace Digiphoto.Lumen.Config  {
 			// Geometria di default per lo slideShow
 			creaGeometriaSlideShowSDefault(userConfig);
 
+			userConfig.correzioneAltezzaGalleryDueFoto = 50;
+
 			return userConfig;
 		}
 
