@@ -43,9 +43,52 @@ namespace Digiphoto.Lumen.UI.Converters {
 			string [] pezzi = ((string)parameter).Split( ';' );
 			string qualeFascia = pezzi [0];  // Può valere:  a, b
 			string qualeDimens = pezzi [1];  // Può valere:  W, H, L, T
+			string flagBordi = null;
+			if( pezzi.Length > 2 )
+				flagBordi = pezzi[2];        // Può valere "T" oppure niente
+
+
+			object ret = null;
+
+			if( flagBordi == "T" )
+				ret = calcolcaLatiBordo( qualeFascia, values );
+			else
+				ret = calcolaDimensione( qualeFascia, qualeDimens, values );
+
+			return ret;
+		}
+
+		private const int spessoreLinea = 2;
+
+		private object calcolcaLatiBordo( string qualeFascia, object[] values ) {
+
+			double w = calcolaDimensione( qualeFascia, "W", values );
+			double h = calcolaDimensione( qualeFascia, "H", values );
+
+			if( w < 5 || h < 5 )
+				return null;
+
+			Thickness t = new Thickness( 0, 0, 0, 0 );
+
+			if( qualeFascia == "a" ) {
+				if( w > h )
+					t.Bottom = spessoreLinea;
+				else
+					t.Right = spessoreLinea;
+			} else if( qualeFascia == "b" ) {
+				if( w > h )
+					t.Top = spessoreLinea;
+				else
+					t.Left = spessoreLinea;
+			}
+
+			return t;
+		}
+
+		private double calcolaDimensione( string qualeFascia, string qualeDimens, object[] values ) {
 
 			// Ricavo dal vettore dei parametri delle variabili con un nome più chiaro.
-			float ratioCarta = (float) values [0];
+			float ratioCarta = (float)values[0];
 
 			if( ratioCarta == 0 ) // probabilmente non è indicata nemmeno una stampante
 				return 0d;

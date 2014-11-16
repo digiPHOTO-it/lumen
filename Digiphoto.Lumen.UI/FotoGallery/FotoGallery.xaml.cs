@@ -338,9 +338,6 @@ namespace Digiphoto.Lumen.UI {
 
 		private void eseguireRicercaButton_Click( object sender, RoutedEventArgs e ) {
 
-			if( panelFiltriHeight == 0 )
-				panelFiltriHeight = expanderFiltriRicerca.ActualHeight;
-
 			if( checkBoxCollassaFiltri.IsChecked == true )
 				expanderFiltriRicerca.IsExpanded = false;
 		}
