@@ -219,5 +219,6 @@
 	<RoutedUICommand x:Key="cmdCloseSnapshotPubblico" />
 	<RoutedUICommand x:Key="uicmdSelezionaTutteLeFoto" />
 	<RoutedUICommand x:Key="uicmdDeselezionaTutteLeFoto" />
+	<RoutedUICommand x:Key="cmdGoToCurrentFotoSS" />
 
 </ResourceDictionary> 

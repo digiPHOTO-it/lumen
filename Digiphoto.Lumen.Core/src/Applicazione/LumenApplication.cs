@@ -228,49 +228,6 @@ namespace Digiphoto.Lumen.Applicazione {
 				vcs.attesaEventi();
 			}
 
-/*		
-
-			// calcolo il nome completo della interfaccia che mi fa da chiave per la mappa.
-			string key = calcFullName( tipo );
-
-
-			//
-			IVolumeCambiatoSrv vcs = creaAggiungiAvviaServizio<IVolumeCambiatoSrv>();
-			if( vcs != null ) {
-				vcs.attesaBloccante = false;
-				vcs.attesaEventi();
-			}
-
-			creaAggiungiAvviaServizio<IStampantiInstallateSrv>();
-			//
-			creaAggiungiAvviaServizio<IScaricatoreFotoSrv>();
-			//
-			creaAggiungiAvviaServizio<IGestoreImmagineSrv>();
-			//
-			creaAggiungiAvviaServizio<IFotoRitoccoSrv>();
-			//
-			creaAggiungiAvviaServizio<IFotoExplorerSrv>();
-			//
-			creaAggiungiAvviaServizio<ICarrelloExplorerSrv>();
-			//
-			creaAggiungiAvviaServizio<ISpoolStampeSrv>();
-			//
-			creaAggiungiAvviaServizio<IVenditoreSrv>();
-
-			creaAggiungiAvviaServizio<IEntityRepositorySrv<Fotografo>>();
-
-			creaAggiungiAvviaServizio<IEntityRepositorySrv<Evento>>();
-
-			creaAggiungiAvviaServizio<IEntityRepositorySrv<ScaricoCard>>();
-
-            creaAggiungiAvviaServizio<IEntityRepositorySrv<FormatoCarta>>();
-
-			creaAggiungiAvviaServizio<IEntityRepositorySrv<Giornata>>();
-
-			creaAggiungiAvviaServizio<IEliminaFotoVecchieSrv>();
-
-			creaAggiungiAvviaServizio<IEntityRepositorySrv<Fotografia>>();
- */
 		}
 
 		public T creaServizio<T>() where T : IServizio {

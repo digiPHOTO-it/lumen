@@ -236,5 +236,8 @@
 
 	<RoutedUICommand x:Key="cmdTakeSnapshotPubblico2" />
 	<RoutedUICommand x:Key="cmdCloseSnapshotPubblico" />
+	<RoutedUICommand x:Key="cmdGoToCurrentFotoSS" />
+
+	
 
 </ResourceDictionary>

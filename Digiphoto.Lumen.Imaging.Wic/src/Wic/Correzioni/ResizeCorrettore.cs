@@ -54,7 +54,8 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 
 			BitmapSource bitmapFrame = Resize( bitmapSource, calcW, calcH, DPI_PROVINO );
 			// _giornale.Debug( "effettuato resize" );
-			return new ImmagineWic( bitmapFrame );
+			ImmagineWic immagine = new ImmagineWic( bitmapFrame );
+			return immagine;
 		}
 
 		/// <summary>

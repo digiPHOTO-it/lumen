@@ -342,5 +342,59 @@ namespace Digiphoto.Lumen.UI {
 				expanderFiltriRicerca.IsExpanded = false;
 		}
 
+
+		/// <summary>
+		/// cerca nella collezione delle foto filtrate,
+		/// se ne esiste una con il numero indicato.
+		/// </summary>
+		/// <param name="numero"></param>
+		/// <returns></returns>
+		private Fotografia ricavaFotoByNumber( int numDaric ) {
+
+			// Devo scorrere la lista
+			Fotografia fotoTrovata = null;
+			if( fotoGalleryViewModel.fotografieCW != null )
+				foreach( var foto in fotoGalleryViewModel.fotografieCW.SourceCollection ) {
+					if( ((Fotografia)foto).numero == numDaric ) {
+						fotoTrovata = (Fotografia)foto;
+						break;
+					}
+				}
+
+			return fotoTrovata;
+		}
+
+		
+
+		private void textBoxGotoNumFoto_LostFocus( object sender, RoutedEventArgs e ) {
+
+			if( string.IsNullOrEmpty( textBoxGotoNumFoto.Text ) )
+				return;
+
+			int numDaric;
+			if( !Int32.TryParse( textBoxGotoNumFoto.Text, out numDaric ) )
+				return;
+		
+			posizionaListaSulFotogramma( numDaric );
+		}
+
+		private void posizionaListaSulFotogramma( int numDaric ) { 
+
+			Fotografia daric = ricavaFotoByNumber( numDaric );
+			if( daric != null )
+				LsImageGallery.ScrollIntoView( daric );
+		}
+
+		private void posizionaListaSulFotogrammaSS( object sender, RoutedEventArgs e ) {
+	
+			int nn = fotoGalleryViewModel.numFotoCorrenteInSlideShow;
+			if( nn > 0 ) {
+				posizionaListaSulFotogramma( nn );
+				textBoxGotoNumFoto.Text = nn.ToString();
+			} else
+				textBoxGotoNumFoto.Text = "";
+		}
+
+
 	}
 }

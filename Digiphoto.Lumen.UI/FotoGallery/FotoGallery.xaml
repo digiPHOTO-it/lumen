@@ -9,6 +9,7 @@
              xmlns:extToolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
              xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
              xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo"         
+			 xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              mc:Ignorable="d" 
              x:Name="this"
              d:DesignHeight="900" d:DesignWidth="1800" FontStretch="Condensed">
@@ -22,11 +23,13 @@
 		<CommandBinding Command="{StaticResource cmdCloseSnapshotPubblico}" Executed="closeSnapshotPubblico_Click" />
 		<CommandBinding Command="{StaticResource uicmdSelezionaTutteLeFoto}"  Executed="selezionareTutteLeFoto_Click"  />
 		<CommandBinding Command="{StaticResource uicmdDeselezionaTutteLeFoto}" Executed="deselezionareTutteLeFoto_Click" />
+		<CommandBinding Command="{StaticResource cmdGoToCurrentFotoSS}" Executed="posizionaListaSulFotogrammaSS" />
 
 	</UserControl.CommandBindings>
 	<UserControl.InputBindings>
 		<KeyBinding  Key="F2" Command="{StaticResource cmdTakeSnapshotPubblico1}" />
 		<KeyBinding  Key="F3" Command="{StaticResource cmdCloseSnapshotPubblico}" />
+		<KeyBinding  Key="F8" Command="{StaticResource cmdGoToCurrentFotoSS}" />
 		<KeyBinding  Key="S" Modifiers="Control" Command="{StaticResource uicmdSelezionaTutteLeFoto}" />
 		<KeyBinding  Key="Q" Modifiers="Control" Command="{StaticResource uicmdDeselezionaTutteLeFoto}" />
 	</UserControl.InputBindings>
@@ -47,7 +50,7 @@
 
         <ToolBarTray Name="toolBarTrayAzioniDx"  Orientation="Vertical" DockPanel.Dock="Right">
                 
-                <ToolBar Band="1" BandIndex="1" >
+			<ToolBar Band="1" BandIndex="1" >
                 <Button ToolTip="Page UP" Style="{StaticResource buttonBaseStyle}" Click="buttonPageUp_Click">
                     <Image Width="48" Source="/Digiphoto.Lumen.UI;component/Resources/PageUp-48x48.png" />
                 </Button>
@@ -55,18 +58,26 @@
                     <Image Width="48" Source="/Digiphoto.Lumen.UI;component/Resources/PageDown-48x48.png" />
                 </Button>
                 <Separator />
-                    <Button Content="Desel+-" Command="{Binding selezionareTuttoCommand}" CommandParameter="True" Style="{StaticResource buttonBaseStyle}" ToolTip="Seleziona/Deseleziona" />
-                    <!-- <Button Content="-Deselez" Command="{Binding selezionareTuttoCommand}" CommandParameter="False" Style="{StaticResource buttonBaseStyle}" /> -->
+				<Button Content="Desel+-" Command="{Binding selezionareTuttoCommand}" CommandParameter="True" Style="{StaticResource buttonBaseStyle}" ToolTip="Seleziona/Deseleziona" />
+				<!-- <Button Content="-Deselez" Command="{Binding selezionareTuttoCommand}" CommandParameter="False" Style="{StaticResource buttonBaseStyle}" /> -->
 
-                    <Separator />
+				<Separator />
 
                     <CheckBox Name="chkFiltaSelez" Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" ToolTip="Vedi solo le foto selezionate" >
                         <TextBlock TextWrapping="NoWrap">Slz</TextBlock>
                     </CheckBox>
                     <Button Content="^ Prec" Click="buttonScorriFotoSelez_Click" Tag="-1" ToolTip="Posiziona sulla precendete foto selezionata" Padding="1" />
                     <Button Content="v Succ" Click="buttonScorriFotoSelez_Click" Tag="+1" ToolTip="Posiziona sulla successiva foto selezionata" Padding="1" />
-
-                </ToolBar>
+					<TextBox ToolTip="Posiziona sul numero di fotogramma" BorderThickness="1" Width="46" Name="textBoxGotoNumFoto" BorderBrush="Cyan" LostFocus="textBoxGotoNumFoto_LostFocus"  >
+<!--						
+						<i:Interaction.Triggers>
+							<i:EventTrigger EventName="LostFocus" >
+							<i:InvokeCommandAction Command="{Binding filtrareNumFotogrammaCommand}" CommandParameter="{Binding ElementName=textBoxGotoNumFoto,Path=Text}" />
+							</i:EventTrigger>
+						</i:Interaction.Triggers>
+-->						
+					</TextBox>
+			</ToolBar>
 
                 <ToolBar Band="1" BandIndex="2" >
 
