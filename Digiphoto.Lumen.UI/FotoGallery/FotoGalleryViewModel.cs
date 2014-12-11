@@ -470,6 +470,19 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		public int numFotoCorrenteInSlideShow {
+			get {
+				int nn = 0;
+
+				if( slideShowViewModel != null )
+					if( slideShowViewModel.slidesVisibili != null )
+						if( slideShowViewModel.slidesVisibili.Count > 0 )
+							nn = slideShowViewModel.slidesVisibili[0].numero;
+
+				return nn;
+			}
+		}
+
 		#endregion Proprietà
 
 
@@ -542,6 +555,25 @@ namespace Digiphoto.Lumen.UI {
 				}
 				return _filtrareSelezionateCommand;
 			}
+		}
+
+		private RelayCommand _filtrareNumFotogrammaCommand;
+		public ICommand filtrareNumFotogrammaCommand {
+			get {
+				if( _filtrareNumFotogrammaCommand == null ) {
+					_filtrareNumFotogrammaCommand = new RelayCommand( param => filtrareNumFotogramma( (string)param ),
+																	  param => possoFiltrareNumFotogramma( param ) );
+				}
+				return _filtrareNumFotogrammaCommand;
+			}
+		}
+
+		private bool possoFiltrareNumFotogramma( object numero ) {
+
+			if( isAlmenoUnaFoto == false )
+				return false;
+
+			return true;
 		}
 
 		private bool possoFiltrareSelezionate( bool soloSelez ) {
@@ -659,6 +691,25 @@ namespace Digiphoto.Lumen.UI {
 
 
 		#region Metodi
+
+		private void filtrareNumFotogramma( string nnn ) {
+
+			// Alcune collezioni non sono filtrabili, per esempio la IEnumerable
+			if( fotografieCW.CanFilter == false )
+				return;
+
+			if( String.IsNullOrEmpty(nnn) == false ) {
+
+				int numDaric = Int32.Parse( nnn.ToString() );
+
+				Predicate<object> mioFinder = obj => {
+					return ((Fotografia)obj).numero == numDaric;
+				};
+				fotografieCW.Filter = mioFinder;
+			} else {
+				fotografieCW.Filter = null;
+			}
+		}
 
 		private void filtrareSelezionate( bool attivareFiltro ) {
 

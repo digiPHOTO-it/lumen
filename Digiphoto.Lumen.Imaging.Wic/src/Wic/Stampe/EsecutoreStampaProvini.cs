@@ -180,6 +180,16 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 
 							stampaUnaPagina(document, fotos, _lavoroDiStampa.param, sizeLatoW, sizeLatoH);
 
+
+							// Cerco di liberare un pò di memoria, altrimenti se stampo molta roba, mi va in OutOfMemory
+							foreach( var foto in fotos ) {
+								AiutanteFoto.disposeImmagini( foto, IdrataTarget.Originale );
+								AiutanteFoto.disposeImmagini( foto, IdrataTarget.Risultante );
+							}
+
+							GC.Collect();
+							GC.WaitForPendingFinalizers();
+							GC.Collect();
 						}
 
 						//

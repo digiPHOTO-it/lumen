@@ -158,6 +158,20 @@ namespace Digiphoto.Lumen.Core.VsTest {
 			}
 		}
 
+		private List<Fotografia> cercaFotoQuasiasi( int quante ) {
+
+			IFotoExplorerSrv fotoExplorer = LumenApplication.Instance.getServizioAvviato<IFotoExplorerSrv>();
+			ParamCercaFoto p = new ParamCercaFoto();
+			p.paginazione = new Lumen.Util.Paginazione {
+				take = quante
+			};
+
+			fotoExplorer.cercaFoto( p );
+			if( fotoExplorer.fotografie.Capacity == 0 )
+				return null;
+
+			return fotoExplorer.fotografie;
+		}
 
 		private Fotografia cercaUnaFotoQuasiasi() {
 
@@ -199,27 +213,31 @@ namespace Digiphoto.Lumen.Core.VsTest {
 		[TestMethod]
 		public void outOfMemoryImmagini() {
 
-			const int quante = 500;
+			const int quante = 1000;
 
-			Fotografia f = cercaUnaFotoQuasiasi();
-
+			List<Fotografia> ff = cercaFotoQuasiasi( 5 );
+			
 			// Ricavo la memoria libera prima del test
 			long memoryPrima = Process.GetCurrentProcess().WorkingSet64;
 
 			for( int ii = 0; ii < quante; ii++ ) {
+				foreach( Fotografia f in ff ) {
 
-				AiutanteFoto.idrataImmaginiFoto( f, IdrataTarget.Tutte );
+					AiutanteFoto.idrataImmaginiFoto( f, IdrataTarget.Tutte );
+					if( ii == 0 )
+						Console.WriteLine( "w=" + f.imgOrig.ww + " h=" + f.imgOrig.hh );
 
-//				AiutanteFoto.creaProvinoFoto( f );
+					//				AiutanteFoto.creaProvinoFoto( f );
 
-				AiutanteFoto.disposeImmagini( f, IdrataTarget.Tutte );
+					AiutanteFoto.disposeImmagini( f, IdrataTarget.Tutte );
 
-				long memoryDurante = Process.GetCurrentProcess().WorkingSet64;
-				long consumata = (memoryDurante - memoryPrima);
+					long memoryDurante = Process.GetCurrentProcess().WorkingSet64;
+					long consumata = (memoryDurante - memoryPrima);
 
-				// Se supero il massimo impostato, probabilmente il gc non sta pulendo.
-				if( consumata > maxMem )
-					Assert.Fail( "Probabilmente si sta consumando troppa memoria: diff(MB)=" + consumata / 1024 );
+					// Se supero il massimo impostato, probabilmente il gc non sta pulendo.
+					if( consumata > maxMem*2 )
+						Assert.Fail( "Probabilmente si sta consumando troppa memoria: diff(MB)=" + consumata / 1024 );
+				}
 			}
 		}
 

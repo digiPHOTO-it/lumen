@@ -169,8 +169,11 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			
 			get {
 				// ricavo la prima stampante
-				StampanteAbbinata primaAbbi = stampantiAbbinate.FirstOrDefault();
-				return primaAbbi != null ? primaAbbi.ratio : 0f;
+				if( stampantiAbbinate != null && stampantiAbbinate.Count > 0 ) {
+					StampanteAbbinata primaAbbi = stampantiAbbinate.FirstOrDefault();
+					return primaAbbi != null ? primaAbbi.ratio : 0f;
+				} else
+					return 0f;
 			}
 
 		}

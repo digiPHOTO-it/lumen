@@ -43,11 +43,18 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 		public IImmagine load( string nomeFile ) {
 
-			if( !File.Exists( nomeFile ) )
-				return null;
+			ImmagineWic immagineWic = null;
 
-			return new ImmagineWic( nomeFile );
+			try {
+				
+				if( File.Exists( nomeFile ) )
+					immagineWic = new ImmagineWic( nomeFile );
 
+			} catch( Exception ee ) {
+				_giornale.Warn( "load foto: " + nomeFile, ee );
+			}
+
+			return immagineWic;
 		}
 
 		public IImmagine creaProvino( IImmagine immagineGrande, long sizeLatoMax ) {

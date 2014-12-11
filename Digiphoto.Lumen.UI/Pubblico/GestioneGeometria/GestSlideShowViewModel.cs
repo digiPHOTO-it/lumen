@@ -72,10 +72,6 @@ namespace Digiphoto.Lumen.UI.Pubblico
 			set;
 		}
 
-		#endregion
-
-		#region Metodi
-
 		private SlideShowViewModel slideShowViewModel
 		{
 			get
@@ -87,6 +83,10 @@ namespace Digiphoto.Lumen.UI.Pubblico
 				return myApp.gestoreFinestrePubbliche.slideShowViewModel;
 			}
 		}
+
+		#endregion
+
+		#region Metodi
 
 		private void salva()
 		{

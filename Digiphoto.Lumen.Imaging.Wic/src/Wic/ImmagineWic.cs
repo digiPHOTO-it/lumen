@@ -26,62 +26,78 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		public ImmagineWic( string uriString ) {
 
 			try {
-				_giornale.Debug( "carico immagine da disco : " + uriString );
+				
+				caricaImmagineDaDisco( uriString );
+			
+			} catch( OutOfMemoryException assurdo ) {
 
-				const char metodo = 'C';
+				_giornale.Warn( "Sta finendo la memoria", assurdo );
 
-				if( metodo == 'A' ) {
-					// Soluzione A  : NON FUNZIONA!!! Lascia il file aperto su disco.
-					BitmapImage bitmapImage = new BitmapImage();
-					bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-					bitmapImage.BeginInit();
-					bitmapImage.UriSource = new Uri( uriString );
-					bitmapImage.EndInit();
+				// forzo il garbage collector
+				this.bitmapSource = null;
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
 
-					this.bitmapSource = bitmapImage;
+				// Riprovo poi come va va
+				caricaImmagineDaDisco( uriString );
+			} 
 
-				} else if( metodo == 'B' ) {
+			if( this.bitmapSource == null )
+				throw new InvalidOperationException( "Impossibile caricare l'immagine : " + uriString );
+		}
 
-					// Soluzione B (carico diretto da stream di byte). In questo caso, però chi è che fa il dispose ?
-					// Questa soluzione mi da problemi quando "torno originale".
-					// E' incredibile ma con questa modalità, questo testcase non funziona: outOfMemoryTest
+		private void caricaImmagineDaDisco( String uriString ) {
 
-					MemoryStream data = new MemoryStream( File.ReadAllBytes( uriString ) );
-					this.bitmapSource = BitmapFrame.Create( data );
-					this.bitmapSource.Freeze();
+			_giornale.Debug( "carico immagine da disco : " + uriString );
 
-				} else if( metodo == 'C' ) {
-					// Soluzione C (puttanazza eva vaffanculo alla microsoft. Ci fosse qualcosa che funziona.
-					MemoryStream ms = new MemoryStream();
-					BitmapImage bi = new BitmapImage();
-					byte[] bytArray = File.ReadAllBytes( uriString );
-					ms.Write(bytArray, 0, bytArray.Length);
-					ms.Position = 0;
-					bi.BeginInit();
-					bi.StreamSource = ms;
-					bi.EndInit();
-//					bi.Freeze();
-					this.bitmapSource = bi;
-				} else if( metodo == 'D' ) {
+			const char metodo = 'C';
 
-					using( FileStream fs = new FileStream( uriString, FileMode.Open ) ) {
-						this.bitmapSource = CreateImageSource( fs );
-						fs.Close();
-					}	
-				}
+			if( metodo == 'A' ) {
+				// Soluzione A  : NON FUNZIONA!!! Lascia il file aperto su disco.
+				BitmapImage bitmapImage = new BitmapImage();
+				bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+				bitmapImage.BeginInit();
+				bitmapImage.UriSource = new Uri( uriString );
+				bitmapImage.EndInit();
 
-				_giornale.Debug( "ok caricata. Ora freezzo" );
+				this.bitmapSource = bitmapImage;
 
-				// Se non frizzo, non riesco a passare queste bitmap da un thread all'altro.
+			} else if( metodo == 'B' ) {
+
+				// Soluzione B (carico diretto da stream di byte). In questo caso, però chi è che fa il dispose ?
+				// Questa soluzione mi da problemi quando "torno originale".
+				// E' incredibile ma con questa modalità, questo testcase non funziona: outOfMemoryTest
+
+				MemoryStream data = new MemoryStream( File.ReadAllBytes( uriString ) );
+				this.bitmapSource = BitmapFrame.Create( data );
 				this.bitmapSource.Freeze();
 
-				_giornale.Debug( "ok freezata" );
+			} else if( metodo == 'C' ) {
+				// Soluzione C (puttanazza eva vaffanculo alla microsoft. Ci fosse qualcosa che funziona.
+				MemoryStream ms = new MemoryStream();
+				BitmapImage bi = new BitmapImage();
+				byte[] bytArray = File.ReadAllBytes( uriString );
+				ms.Write( bytArray, 0, bytArray.Length );
+				ms.Position = 0;
+				bi.BeginInit();
+				bi.StreamSource = ms;
+				bi.EndInit();
+				this.bitmapSource = bi;
+					
+			} else if( metodo == 'D' ) {
 
-			} catch( Exception ee ) {
-				_giornale.Error( "fallita creazione immagine " + uriString, ee );
-				// Che posso fare ? Tiriamo avanti
-				this.bitmapSource = null;
+				using( FileStream fs = new FileStream( uriString, FileMode.Open ) ) {
+					this.bitmapSource = CreateImageSource( fs );
+					fs.Close();
+				}	
 			}
+
+			_giornale.Debug( "ok caricata. Ora freezzo" );
+
+			// Se non frizzo, non riesco a passare queste bitmap da un thread all'altro.
+			this.bitmapSource.Freeze();
+
+			_giornale.Debug( "ok freezata" );
 		}
 
 		#region Proprietà
@@ -119,12 +135,27 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			if( this.bitmapSource == null )
 				throw new ObjectDisposedException( "immagineWic" );
 
-			// Per motivi di thread multipli non posso chiamare il clone della mia sorgente, ma ne devo creare una nuova
-// TODO purtroppo queste operazioni mi fanno sciupare un sacco di memoria RAM inutile.
-//      Devo assolutamente risolvere in altro modo.
-var wb = new WriteableBitmap( this.bitmapSource );
+			WriteableBitmap wb;
 
-			return new ImmagineWic( wb );  // Se la bitmap è nulla mi sta bene che si spacchi. In tal caso correggere il programma chiamante.
+			try {
+
+
+				// Per motivi di thread multipli non posso chiamare il clone della mia sorgente, ma ne devo creare una nuova
+				// TODO purtroppo queste operazioni mi fanno sciupare un sacco di memoria RAM inutile.
+				//      Devo assolutamente risolvere in altro modo.
+				wb = new WriteableBitmap( this.bitmapSource );
+
+			} catch( OutOfMemoryException oom ) {
+
+				// Prima cerco di svuotare la memoria inutile (se ce ne fosse)
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+				// Riprovo
+				wb = new WriteableBitmap( this.bitmapSource );
+			}
+
+			ImmagineWic immagine = new ImmagineWic( wb );
+			return immagine;  // Se la bitmap è nulla mi sta bene che si spacchi. In tal caso correggere il programma chiamante.
 		}
 
 
