@@ -31,7 +31,12 @@
 		</GroupBox>
 
 		<GroupBox DockPanel.Dock="Bottom" Header="Intestazione" >
-			<TextBox Text="{Binding Path=paramStampaProvini.intestazione,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
+			<StackPanel>
+				<TextBox Text="{Binding Path=paramStampaProvini.intestazione,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
+				<CheckBox IsChecked="{Binding Path=paramStampaProvini.macchiaProvini}" IsEnabled="{Binding possoModificareWaterMark}">
+					<TextBox Text="Applica water-mark (sporca provini)" />
+				</CheckBox>
+			</StackPanel>
 		</GroupBox>
 
 		<GroupBox DockPanel.Dock="Bottom" Header="N° Righe e Colonne" Padding="0,10,0,10">

@@ -25,25 +25,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 		public ImmagineWic( string uriString ) {
 
-			try {
-				
-				caricaImmagineDaDisco( uriString );
-			
-			} catch( OutOfMemoryException assurdo ) {
-
-				_giornale.Warn( "Sta finendo la memoria", assurdo );
-
-				// forzo il garbage collector
-				this.bitmapSource = null;
-				GC.Collect();
-				GC.WaitForPendingFinalizers();
-
-				// Riprovo poi come va va
-				caricaImmagineDaDisco( uriString );
-			} 
-
-			if( this.bitmapSource == null )
-				throw new InvalidOperationException( "Impossibile caricare l'immagine : " + uriString );
+			caricaImmagineDaDisco( uriString );
 		}
 
 		private void caricaImmagineDaDisco( String uriString ) {
@@ -70,17 +52,17 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 				MemoryStream data = new MemoryStream( File.ReadAllBytes( uriString ) );
 				this.bitmapSource = BitmapFrame.Create( data );
-				this.bitmapSource.Freeze();
 
 			} else if( metodo == 'C' ) {
+				
 				// Soluzione C (puttanazza eva vaffanculo alla microsoft. Ci fosse qualcosa che funziona.
-				MemoryStream ms = new MemoryStream();
+				memoryStream = new MemoryStream();
 				BitmapImage bi = new BitmapImage();
 				byte[] bytArray = File.ReadAllBytes( uriString );
-				ms.Write( bytArray, 0, bytArray.Length );
-				ms.Position = 0;
+				memoryStream.Write( bytArray, 0, bytArray.Length );
+				memoryStream.Position = 0;
 				bi.BeginInit();
-				bi.StreamSource = ms;
+				bi.StreamSource = memoryStream;
 				bi.EndInit();
 				this.bitmapSource = bi;
 					
@@ -102,6 +84,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 		#region Proprietà
 
+		private MemoryStream memoryStream { get; set; }
 
 		/// <summary>
 		/// Rappresenta la larghezza della immagine in pixel.
@@ -124,6 +107,11 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 		public override void Dispose() {
 
+			if( memoryStream != null ) {
+				memoryStream.Dispose();
+				memoryStream = null;
+			}
+
 			if( bitmapSource != null ) {
 				bitmapSource = null;				
 			}
@@ -135,24 +123,10 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			if( this.bitmapSource == null )
 				throw new ObjectDisposedException( "immagineWic" );
 
-			WriteableBitmap wb;
-
-			try {
-
-
-				// Per motivi di thread multipli non posso chiamare il clone della mia sorgente, ma ne devo creare una nuova
-				// TODO purtroppo queste operazioni mi fanno sciupare un sacco di memoria RAM inutile.
-				//      Devo assolutamente risolvere in altro modo.
-				wb = new WriteableBitmap( this.bitmapSource );
-
-			} catch( OutOfMemoryException oom ) {
-
-				// Prima cerco di svuotare la memoria inutile (se ce ne fosse)
-				GC.Collect();
-				GC.WaitForPendingFinalizers();
-				// Riprovo
-				wb = new WriteableBitmap( this.bitmapSource );
-			}
+			// Per motivi di thread multipli non posso chiamare il clone della mia sorgente, ma ne devo creare una nuova
+			// TODO purtroppo queste operazioni mi fanno sciupare un sacco di memoria RAM inutile.
+			//      Devo assolutamente risolvere in altro modo.
+			WriteableBitmap wb = new WriteableBitmap( this.bitmapSource );
 
 			ImmagineWic immagine = new ImmagineWic( wb );
 			return immagine;  // Se la bitmap è nulla mi sta bene che si spacchi. In tal caso correggere il programma chiamante.

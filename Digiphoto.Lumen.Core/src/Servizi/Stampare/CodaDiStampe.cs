@@ -87,10 +87,12 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			}else if(lavoroDiStampa is LavoroDiStampaProvini){
 				LavoroDiStampaProvini lavoroDiStampaProvini = lavoroDiStampa as LavoroDiStampaProvini;
 
+/* li carico dopo in modo diverso
 				foreach (Fotografia fot in lavoroDiStampaProvini.fotografie)
 				{
 					AiutanteFoto.idrataImmagineDaStampare( fot );
 				}
+*/
 
 				//Rinstanzio il stampatore che potrebbe essere di un tipo differente dal mio
 				LavoroDiStampaProvini lsp = (LavoroDiStampaProvini)lavoroDiStampa;
@@ -114,12 +116,6 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 
 			if( stampaCompletataCallback != null )
 				stampaCompletataCallback.Invoke( this, eventArgs );
-
-
-			// Ci sono problemmi con 
-			// GC.Collect();
-			// GC.WaitForPendingFinalizers();
-			// GC.Collect();
 		}
 
 		

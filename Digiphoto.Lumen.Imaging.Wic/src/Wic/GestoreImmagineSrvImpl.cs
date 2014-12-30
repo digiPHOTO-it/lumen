@@ -15,6 +15,7 @@ using Digiphoto.Lumen.Servizi.EntityRepository;
 using Digiphoto.Lumen.Applicazione;
 using System;
 using Digiphoto.Lumen.Util;
+using Digiphoto.Lumen.Eventi;
 
 namespace Digiphoto.Lumen.Imaging.Wic {
 
@@ -41,6 +42,11 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 		}
 
+		/// <summary>
+		/// Carico la IImmagine indicata nel nome del file.
+		/// </summary>
+		/// <param name="nomeFile"></param>
+		/// <returns>null se non ci sono riuscito</returns>
 		public IImmagine load( string nomeFile ) {
 
 			ImmagineWic immagineWic = null;
@@ -51,6 +57,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 					immagineWic = new ImmagineWic( nomeFile );
 
 			} catch( Exception ee ) {
+				immagineWic = null;
 				_giornale.Warn( "load foto: " + nomeFile, ee );
 			}
 
@@ -142,5 +149,53 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			FotoModificateMsg msg = new FotoModificateMsg( this, fotografia );
 			pubblicaMessaggio( msg );
 		}
+
+		public void idrataImmaginiFoto( Fotografia foto, IdrataTarget target, bool forzatamente ) {
+
+			String nomeCompleto = null;
+			try {
+
+				//
+				if( forzatamente || foto.imgProvino == null )
+					if( (target & IdrataTarget.Provino) != 0 ) {
+						nomeCompleto = PathUtil.nomeCompletoProvino( foto );
+						foto.imgProvino = this.load( nomeCompleto );
+						if( foto.imgProvino == null )
+							throw new LumenException( "Impossibile caricare provino della foto n." + foto.numero );
+					}
+
+				//
+				if( forzatamente || foto.imgOrig == null )
+					if( (target & IdrataTarget.Originale) != 0 ) {
+						nomeCompleto = PathUtil.nomeCompletoFoto( foto );
+						foto.imgOrig = this.load( nomeCompleto );
+						if( foto.imgOrig == null )
+							throw new LumenException( "Impossibile caricare immagine originale della foto n." + foto.numero );
+					}
+
+				//
+				if( forzatamente || foto.imgRisultante == null )
+					if( (target & IdrataTarget.Risultante) != 0 ) {
+						nomeCompleto = PathUtil.nomeCompletoRisultante( foto );
+						foto.imgRisultante = this.load( nomeCompleto );
+						//if( foto.imgRisultante == null )
+						//	throw new LumenException( "Impossibile caricare immagine risultante della foto n." + foto.numero );
+					}
+
+			} catch( Exception ee ) {
+
+				// Se non riesco a caricare una immagine, non posso farci niente qui. Devo tirare dritto.
+				_giornale.Warn( ee.Message + " nomeCompleto=" + nomeCompleto, ee );
+
+				Messaggio msg = new Messaggio( ee.Source );
+				msg.esito = Esito.Errore;
+				msg.descrizione = ee.Message;
+				msg.showInStatusBar = true;
+				pubblicaMessaggio( msg );
+
+				throw ee;
+			}
+		}
+
 	}
 }

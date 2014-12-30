@@ -131,6 +131,42 @@ namespace Digiphoto.Lumen.Core.VsTest.Util {
 		}
 
 		[TestMethod]
+		public void testQueryEsqlJoin() {
+
+			using( LumenEntities dbContext = new LumenEntities() ) {
+
+				((IObjectContextAdapter)dbContext).ObjectContext.Connection.Open();
+
+				// ----- Ora provo in eSql
+				string esql = @"SELECT  f.numero, rc.id
+                              FROM LumenEntities.Fotografie as f
+                              left join LumenEntities.RigheCarrelli as rc on rc.fotografia = f
+                              WHERE 1=1 and rc.id is null";
+
+				DbCommand comando = ((IObjectContextAdapter)dbContext).ObjectContext.Connection.CreateCommand();
+				comando.CommandText = esql;
+				EntityParameter pquanti = new EntityParameter( "quanti", DbType.Int16 );
+				pquanti.Value = 3;
+				// comando.Parameters.Add( pquanti );
+
+				using( DbDataReader rdr = comando.ExecuteReader( CommandBehavior.SequentialAccess ) ) {
+					// Iterate through the collection of items
+					while( rdr.Read() ) {
+						// var q = rdr["qqq"];
+
+						for( int i = 0; i < rdr.FieldCount; i++ ) {
+							string w = rdr.GetName( i );
+							object campo = rdr.GetValue( i );
+							// if( rdr.IsDBNull( i ) )
+							if( i == 1 && campo == null )
+								Console.Write( "STOP" );
+						}
+					}
+				}
+			}
+		}
+
+		[TestMethod]
 		public void testNonScalar() {
 			using( LumenEntities dbContext = new LumenEntities() ) {
 
@@ -181,7 +217,6 @@ namespace Digiphoto.Lumen.Core.VsTest.Util {
 				}
 			}
 		}
-
 
 		[TestMethod]
 		public void soloLinqToEntities() {

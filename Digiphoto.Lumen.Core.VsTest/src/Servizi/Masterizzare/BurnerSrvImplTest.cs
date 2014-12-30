@@ -61,7 +61,7 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Stampare
         {
             using (LumenEntities dbContext = new LumenEntities())
             {
-                foreach (Fotografia fot in dbContext.Fotografie.ToList<Fotografia>())
+                foreach (Fotografia fot in dbContext.Fotografie.ToList<Fotografia>().Take( 10 ) )
                 {
                     System.Diagnostics.Trace.WriteLine("[Foto Aggiunta per la Masterizzazione]: " + Configurazione.cartellaRepositoryFoto + Path.DirectorySeparatorChar + fot.nomeFile);
                     _impl.addFileToBurner(Configurazione.cartellaRepositoryFoto + Path.DirectorySeparatorChar + fot.nomeFile);
@@ -74,10 +74,15 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Stampare
         {
             using (LumenEntities dbContext = new LumenEntities())
             {
-                foreach (Fotografia fot in dbContext.Fotografie.ToList<Fotografia>())
+                foreach (Fotografia fot in dbContext.Fotografie.ToList<Fotografia>().Take( 50 ) )
                 {
                     System.Diagnostics.Trace.WriteLine("[Foto Aggiunta per la Masterizzazione]: " + Configurazione.cartellaRepositoryFoto + Path.DirectorySeparatorChar + fot.nomeFile);
-                    _impl.addFileToBurner(Configurazione.cartellaRepositoryFoto + Path.DirectorySeparatorChar + fot.nomeFile);
+
+					try {
+						_impl.addFileToBurner( Configurazione.cartellaRepositoryFoto + Path.DirectorySeparatorChar + fot.nomeFile );
+					} catch( Exception ) {
+					}
+					
                 }
             }
 			if(!_impl.testMedia())

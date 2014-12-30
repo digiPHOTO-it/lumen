@@ -1632,11 +1632,11 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 					// cerco di capire se la foto è verticale, per rigirare il contenitore
 					// Ruota rrr = (Ruota)correzioni.FirstOrDefault( c => c is Ruota );
-				} 
+				}
 
 
 
-				if( maschera == null ) {
+				if( maschera == null && fotografiaInModifica.imgOrig != null ) {
 					float ratio = fotografiaInModifica.imgOrig.rapporto;
 					if( quadroRuotato )
 						ratio = 1f / ratio;
@@ -1993,8 +1993,15 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// </summary>
 		void onFotografiaInModificaChanged() {
 
-			// Riposiziono i controlli in modo da velocizzare il tutto.
-			riposizionaControlliFotoritocco();  // ** 1 **
+			try {
+
+				// Riposiziono i controlli in modo da velocizzare il tutto.
+				riposizionaControlliFotoritocco();  // ** 1 **
+
+			} catch( Exception ee ) {
+				fotografiaInModifica = null;
+			}
+
 
 			// Se ho spento la fotografia, allora spengo anche una eventuale maschera
 			if( fotografiaInModifica == null && modalitaEdit == ModalitaEdit.FotoRitocco ) {

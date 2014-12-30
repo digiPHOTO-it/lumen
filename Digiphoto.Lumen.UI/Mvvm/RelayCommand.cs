@@ -74,6 +74,22 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 
 				esegui( parameter );
 
+			} catch( OutOfMemoryException ofm ) {
+
+				long memoryPrima = Process.GetCurrentProcess().WorkingSet64;
+
+				FormuleMagiche.attendiGcFinalizers();
+
+				long memoryDopo = Process.GetCurrentProcess().WorkingSet64;
+
+				_giornale.Error( "finita la memoria: prima=" + memoryPrima + " dopo=" + memoryDopo );
+
+				if( _execute.Target is ViewModelBase ) {
+					ViewModelBase viewModel = _execute.Target as ViewModelBase;
+					if( viewModel.dialogProvider != null )
+						viewModel.dialogProvider.ShowError( ofm.GetType().Name + "\n" + ErroriUtil.estraiMessage( ofm ), "Errore imprevisto.", null );
+				}
+
 			} catch( Exception ee ) {
 				
 				_giornale.Error( _execute.Method.ToString(), ee );

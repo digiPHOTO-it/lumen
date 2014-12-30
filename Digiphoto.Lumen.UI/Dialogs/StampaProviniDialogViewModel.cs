@@ -52,6 +52,16 @@ namespace Digiphoto.Lumen.UI.Dialogs
 			set;
 		}
 
+		public bool possoModificareWaterMark {
+			get {
+#if DEBUG
+				return true;
+#else
+				return ( Configurazione.isFuoriStandardCiccio ? false : true );
+#endif
+			}
+		}
+
 		public bool stampaSoloSelezionate
 		{
 			get

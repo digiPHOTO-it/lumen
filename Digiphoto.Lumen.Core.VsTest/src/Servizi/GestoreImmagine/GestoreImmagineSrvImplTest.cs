@@ -22,6 +22,7 @@ using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Digiphoto.Lumen.Core.VsTest.Util;
 
 namespace Digiphoto.Lumen.Core.VsTest {
 
@@ -54,7 +55,8 @@ namespace Digiphoto.Lumen.Core.VsTest {
 		[TestMethod]
 		public void outOfMemorySimpleTest() {
 
-			BitmapSource bmp = new BitmapImage( new Uri(@"C:\Users\Public\Pictures\Sample Pictures\koala.jpg") );
+			string nomeImg = Costanti.getNomeImmagineRandom();
+			BitmapSource bmp = new BitmapImage( new Uri( nomeImg ) );
 
 			long memoryBefore = Process.GetCurrentProcess().WorkingSet64;
 
@@ -90,31 +92,11 @@ namespace Digiphoto.Lumen.Core.VsTest {
 		public void outOfMemoryTest() {
 
 			const int quante = 1000;
+			string nomeImg = Costanti.getNomeImmagineRandom();
 
 			GestoreImmagineSrvImpl impl = (GestoreImmagineSrvImpl) (LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>() );
-
-/*
-			IFotoExplorerSrv fotoExplorer = LumenApplication.Instance.getServizioAvviato<IFotoExplorerSrv>();
-			ParamCercaFoto p = new ParamCercaFoto();
-			p.paginazione = new Lumen.Util.Paginazione {
-				take = 1
-			};
-			fotoExplorer.cercaFoto( p );
-			if( fotoExplorer.fotografie.Capacity == 0 )
-				return;
-			
-			Fotografia f = fotoExplorer.fotografie[0];
-
-			IImmagine immagine = AiutanteFoto.idrataImmagineGrande( f );
-*/
-			
-//			IImmagine immagine = new ImmagineWic(@"C:\Users\Public\Pictures\Sample Pictures\koala.jpg");
-			BitmapSource bmp2 = new BitmapImage( new Uri( @"C:\Users\Public\Pictures\Sample Pictures\koala.jpg" ) );
+			BitmapSource bmp2 = new BitmapImage( new Uri( nomeImg ) );
 			IImmagine immagine = new ImmagineWic( bmp2 );
-
-
-
-
 
 			// Ricavo la memoria libera prima del test
 			GC.Collect();
@@ -139,9 +121,6 @@ namespace Digiphoto.Lumen.Core.VsTest {
 					}
 				}
 
-
-
-
 				System.IO.File.Delete( tmpFile );
 
 				long memoryDurante = Process.GetCurrentProcess().WorkingSet64;
@@ -156,6 +135,9 @@ namespace Digiphoto.Lumen.Core.VsTest {
 					Assert.Fail( "Probabilmente si sta consumando troppa memoria: diff(MB)=" + diffDurante / 1024 );
 				}
 			}
+
+			immagine.Dispose();
+
 		}
 
 		private List<Fotografia> cercaFotoQuasiasi( int quante ) {
@@ -214,6 +196,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 		public void outOfMemoryImmagini() {
 
 			const int quante = 1000;
+			const int ogniTotPurga = 100;
 
 			List<Fotografia> ff = cercaFotoQuasiasi( 5 );
 			
@@ -224,124 +207,111 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				foreach( Fotografia f in ff ) {
 
 					AiutanteFoto.idrataImmaginiFoto( f, IdrataTarget.Tutte );
-					if( ii == 0 )
-						Console.WriteLine( "w=" + f.imgOrig.ww + " h=" + f.imgOrig.hh );
-
-					//				AiutanteFoto.creaProvinoFoto( f );
 
 					AiutanteFoto.disposeImmagini( f, IdrataTarget.Tutte );
+
+					// ogni tot iterazioni, vado a liberare la memoria che inspiegabilmente non viene pulita.
+					if( (ii % ogniTotPurga) == 0 ) {
+						// ATTENZIONE: IMPORTANTE.
+						// Se non metto questa formula magica,
+						// il GC non pulisce la memoria occupata dalla bitmap (inspiegabilmente)
+						FormuleMagiche.rilasciaMemoria();
+					}
 
 					long memoryDurante = Process.GetCurrentProcess().WorkingSet64;
 					long consumata = (memoryDurante - memoryPrima);
 
 					// Se supero il massimo impostato, probabilmente il gc non sta pulendo.
-					if( consumata > maxMem*2 )
+					if( consumata > maxMem )
 						Assert.Fail( "Probabilmente si sta consumando troppa memoria: diff(MB)=" + consumata / 1024 );
 				}
 			}
 		}
 
+
 		[TestMethod]
 		public void outOfMemoryStampa() {
 
 			long memoryPrima = Process.GetCurrentProcess().WorkingSet64;
-			string nomeFileImmagine = @"C:\Users\bluca\Pictures\tante\2011-05-23 Mirabilandia\Mirabilandia 023.JPG";
 
-			for( int giri = 1; giri <= 50; giri++ ) {
-				using( PrintServer ps1 = new PrintServer() ) {
-					using( PrintQueue coda = ps1.GetPrintQueue( "Shinko CHC-S2145" ) ) {
+			string[] nomiFilesImmagine = Costanti.NomiFileImmagini;
 
-						PrintDialog dialog = new PrintDialog();
-						dialog.PrintQueue = coda;
+			// 10 foto x 50 giri = 500 foto
+			foreach( string nomeFileImmagine in nomiFilesImmagine ) {
+				for( int giri = 1; giri <= 50; giri++ ) {
+					using( PrintServer ps1 = new PrintServer() ) {
+						using( PrintQueue coda = ps1.GetPrintQueue( Costanti.NomeStampante ) ) {
 
-						Size areaStampabile = new Size( dialog.PrintableAreaWidth, dialog.PrintableAreaHeight );
-						// Ora creo il documento che andrò a stampare.
-						// L'uso di un FixedDocument, mi permetterà di interagire con misure, dimensioni e margini
-						FixedDocument document = new FixedDocument();
-						document.DocumentPaginator.PageSize = new Size( dialog.PrintableAreaWidth, dialog.PrintableAreaHeight );
+							PrintDialog dialog = new PrintDialog();
+							dialog.PrintQueue = coda;
 
-						// Creo una pagina della grandezza massima
-						FixedPage page1 = new FixedPage();
-						page1.Width = document.DocumentPaginator.PageSize.Width;
-						page1.Height = document.DocumentPaginator.PageSize.Height;
-						page1.VerticalAlignment = VerticalAlignment.Center;
-						page1.HorizontalAlignment = HorizontalAlignment.Center;
+							Size areaStampabile = new Size( dialog.PrintableAreaWidth, dialog.PrintableAreaHeight );
+							// Ora creo il documento che andrò a stampare.
+							// L'uso di un FixedDocument, mi permetterà di interagire con misure, dimensioni e margini
+							FixedDocument document = new FixedDocument();
+							document.DocumentPaginator.PageSize = new Size( dialog.PrintableAreaWidth, dialog.PrintableAreaHeight );
 
-
-						// Per fare in modo che l'immagine venga centrata bene automaticamente, e non venga tagliata solo da una parte ma nel centro,
-						// non devo mettere le dimensioni al componente Image, ma devo creare 
-						// una Grid più esterna con le dimensioni precise.
-						Grid grid = new Grid();
-						grid.Height = page1.Height;
-						grid.Width = page1.Width;
+							// Creo una pagina della grandezza massima
+							FixedPage page1 = new FixedPage();
+							page1.Width = document.DocumentPaginator.PageSize.Width;
+							page1.Height = document.DocumentPaginator.PageSize.Height;
+							page1.VerticalAlignment = VerticalAlignment.Center;
+							page1.HorizontalAlignment = HorizontalAlignment.Center;
 
 
-						// Creo una immagine che contiene la bitmap da stampare
-						Image image = new Image();
-						//						image.BeginInit();
-						image.VerticalAlignment = VerticalAlignment.Center;
-						image.HorizontalAlignment = HorizontalAlignment.Center;
+							// Per fare in modo che l'immagine venga centrata bene automaticamente, e non venga tagliata solo da una parte ma nel centro,
+							// non devo mettere le dimensioni al componente Image, ma devo creare 
+							// una Grid più esterna con le dimensioni precise.
+							Grid grid = new Grid();
+							grid.Height = page1.Height;
+							grid.Width = page1.Width;
 
 
-						ImmagineWic qq = new ImmagineWic( nomeFileImmagine );
+							// Creo una immagine che contiene la bitmap da stampare
+							Image image = new Image();
+							image.VerticalAlignment = VerticalAlignment.Center;
+							image.HorizontalAlignment = HorizontalAlignment.Center;
 
-#if NONONO
-//						BitmapImage bi = new BitmapImage( new Uri(nomeFileImmagine) );
-//						bi.CacheOption = BitmapCacheOption.OnLoad;
+							// E' importante fare la dispose dell'oggetto Immagine
+							using( ImmagineWic qq = new ImmagineWic( nomeFileImmagine ) ) {
+
+								image.Source = qq.bitmapSource;
+
+								image.Stretch = Stretch.UniformToFill;
+								image.StretchDirection = StretchDirection.Both;
+								grid.Children.Add( image );
+								page1.Children.Add( grid );
 
 
-						//						BitmapSource clone = bmp.Clone();
-						//						clone.Freeze();
-						using( FileStream fs = new FileStream( nomeFileImmagine, FileMode.Open ) ) {
-							image.Source = CreateImageSource( fs );
+								// add the page to the document
+								PageContent page1Content = new PageContent();
+								page1Content.Child = page1;
+								document.Pages.Add( page1Content );
+
+								//
+								// ----- STAMPA per davvero
+								//
+								dialog.PrintDocument( document.DocumentPaginator, "test" + giri.ToString() );
+
+								foreach( var fixedPage in document.Pages.Select( pageContent => pageContent.Child ) ) {
+									fixedPage.Children.Clear();
+								}
+							}
+
+							// ATTENZIONE: IMPORTANTE.
+							// Se non metto questa formula magica,
+							// il GC non pulisce la memoria occupata dalla bitmap (inspiegabilmente)
+							FormuleMagiche.rilasciaMemoria();
 						}
-#endif
-						image.Source = qq.bitmapSource;
-
-						image.Stretch = Stretch.UniformToFill;
-						image.StretchDirection = StretchDirection.Both;
-
-						//						image.EndInit();
-
-						grid.Children.Add( image );
-						page1.Children.Add( grid );
-
-
-						// add the page to the document
-						PageContent page1Content = new PageContent();
-						page1Content.Child = page1;
-						document.Pages.Add( page1Content );
-
-						//
-						// ----- STAMPA per davvero
-						//
-						dialog.PrintDocument( document.DocumentPaginator, "test"+giri.ToString() );
-
-						foreach( var fixedPage in document.Pages.Select( pageContent => pageContent.Child ) ) {
-							fixedPage.Children.Clear();
-						}
-
-
-						// ATTENZIONE: IMPORTANTE.
-						// Se non metto questa formula magica,
-						// il GC non pulisce la memoria occupata dalla bitmap (inspiegabilmente)
-						Dispatcher.CurrentDispatcher.Invoke( DispatcherPriority.SystemIdle, new DispatcherOperationCallback( delegate {
-							return null;
-						} ), null );
-
 					}
+
+					long memoryDopo = Process.GetCurrentProcess().WorkingSet64;
+					long consumata = (memoryDopo - memoryPrima);
+
+					// Se supero il massimo impostato, probabilmente il gc non sta pulendo.
+					if( consumata > maxMem )
+						Assert.Fail( "Probabilmente si sta consumando troppa memoria: diff(MB)=" + consumata / 1024 );
 				}
-
-//				GC.Collect();
-//				GC.WaitForPendingFinalizers();
-//				GC.Collect();
-
-				long memoryDopo = Process.GetCurrentProcess().WorkingSet64;
-				long consumata = (memoryDopo - memoryPrima);
-
-				// Se supero il massimo impostato, probabilmente il gc non sta pulendo.
-				if( consumata > maxMem )
-					Assert.Fail( "Probabilmente si sta consumando troppa memoria: diff(MB)=" + consumata / 1024 );
 			}
 		}
 

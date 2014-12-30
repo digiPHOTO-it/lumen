@@ -13,6 +13,7 @@ using Digiphoto.Lumen.Config;
 using System.Diagnostics;
 using Digiphoto.Lumen.Servizi.Io;
 using Digiphoto.Lumen.Servizi.Ritoccare;
+using Digiphoto.Lumen.Eventi;
 
 namespace Digiphoto.Lumen.Util {
 	
@@ -76,29 +77,7 @@ namespace Digiphoto.Lumen.Util {
 			System.Diagnostics.Debug.Assert( foto != null );  // Non deve succedere. Punto e basta.
 
 			IGestoreImmagineSrv gis = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
-
-			try {	        
-		
-				//
-				if( forzatamente || foto.imgProvino == null )
-					if( (target & IdrataTarget.Provino) != 0 )
-						foto.imgProvino = gis.load( PathUtil.nomeCompletoProvino( foto ) );
-
-				//
-				if( forzatamente || foto.imgOrig == null )
-					if( (target & IdrataTarget.Originale) != 0 )
-						foto.imgOrig = gis.load( PathUtil.nomeCompletoFoto( foto ) );
-
-				//
-				if( forzatamente || foto.imgRisultante == null )
-					if( (target & IdrataTarget.Risultante) != 0 )
-						foto.imgRisultante = gis.load( PathUtil.nomeCompletoRisultante( foto ) );
-				
-			} catch (Exception ee) {
-				// Se non riesco a caricare una immagine, non posso farci niente qui. Devo tirare dritto.
-				_giornale.Warn( "Impossibile caricare immagine della foto " + foto, ee );
-			}
-
+			gis.idrataImmaginiFoto( foto, target, forzatamente );
 		}
 
 

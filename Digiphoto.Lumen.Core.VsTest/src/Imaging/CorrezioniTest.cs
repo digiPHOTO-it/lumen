@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Imaging;
@@ -34,15 +35,21 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 			using( LumenEntities dbContext = new LumenEntities() ) {
 
+				Random rnd = new Random();
+				ImmagineWic iw;
+				Fotografia foto;
 
-				// Scelgo una foto qualsiasi e prendo l'immagine originale (cosi non rischio di avere già dei loghi)
-				Fotografia foto = dbContext.Fotografie.FirstOrDefault();
-				if( foto == null )
-					return;
+				do {
+					int num = rnd.Next( 1, 1000 );
+					iw = null;
 
-				AiutanteFoto.idrataImmaginiFoto( foto, IdrataTarget.Originale );
-
-				ImmagineWic iw = (ImmagineWic)foto.imgOrig;
+					// Scelgo una foto qualsiasi e prendo l'immagine originale (cosi non rischio di avere già dei loghi)
+					foto = dbContext.Fotografie.FirstOrDefault( f => f.numero == num );
+					if( foto != null ) {
+						AiutanteFoto.idrataImmaginiFoto( foto, IdrataTarget.Originale );
+						iw = (ImmagineWic)foto.imgOrig;
+					}
+				} while( iw == null );
 
 				_correttore = new LogoCorrettore();
 				Logo logo = LogoCorrettore.creaLogoDefault();
@@ -87,7 +94,8 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 			// Salvo su disco l'immagine di destinazione
 			IGestoreImmagineSrv gis = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
-			String nomeFile =  @"c:\tmp\imgConLogo-" + logo.posiz.ToString() + ".png";
+			
+			String nomeFile =  Path.Combine( Path.GetTempPath(), "imgConLogo-" + logo.posiz.ToString() + ".png" );
 			gis.save( imgConLogo, nomeFile );
 
 			Process p = new Process();

@@ -181,7 +181,7 @@ CREATE TABLE [RigheCarrelli] (
     [bordiBianchi] bit   NULL ,
     [carrello_id] uniqueidentifier   NOT NULL ,
     [fotografo_id] nvarchar(16)   NOT NULL ,
-    [fotografia_id] uniqueidentifier   NOT NULL ,
+    [fotografia_id] uniqueidentifier   NULL ,
     [formatoCarta_id] uniqueidentifier   NULL 
  , PRIMARY KEY ([id])	
 					

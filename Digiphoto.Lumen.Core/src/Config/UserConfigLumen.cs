@@ -357,6 +357,29 @@ namespace Digiphoto.Lumen.Config
 		}
 
 
+		/// <summary>
+		/// Durante la stampa dei provini abbiamo un problema di sovraccarico di memoria sulla singola
+		/// pagina stampata. Di conseguenza, non posso caricare 50 foto grandi in una unica pagina altrimenti
+		/// si rischia di esaurire la memoria.
+		/// Questo parametro, attualmente non viene visualizzato nella UI di configurazione, perché
+		/// è solo un parametro tecnico, che ho deciso di tenere esterno al programma per non doverlo
+		/// ricompilare.
+		/// 
+		/// I valori sono:  -1 = uso sempre la foto grande<br/>
+		///                 -2 = uso sempre la foto piccola<br/>
+		///                 -3 = ridurre la foto grande di un valore
+		///                      opportuno in base alla grandezza di ciascun provino da stampare.
+		///                      Potrebbe però portare via molto tempo di elaborazione.<br/>
+		///                > 0 = indica una soglia. Esempio se impostato a 20 significa che se nella
+		///                      singola pagina ci sono più di 20 provini, uso la foto piccola (else grande).
+		///                      <br/>
+		/// </summary>
+		public int tecSogliaStampaProvini {
+			get;
+			set;
+		}
+
+
 		# region SlideShowParam
 
 		public short deviceEnum

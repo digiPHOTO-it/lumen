@@ -31,13 +31,17 @@ namespace Digiphoto.Lumen.Servizi {
 			string assemblyName = (pezzi.Length > 1 ? pezzi[1] : null);
 
 			Object oo;
-			if( assemblyName != null ) {
-				ObjectHandle oh = (ObjectHandle) Activator.CreateInstance( AppDomain.CurrentDomain, assemblyName, nomeImpl );
-				oo = oh.Unwrap();
-			} else {
-				oo = Activator.CreateInstance( Type.GetType( nomeImpl ) );
+			try {
+				if( assemblyName != null ) {
+					ObjectHandle oh = (ObjectHandle)Activator.CreateInstance( AppDomain.CurrentDomain, assemblyName, nomeImpl );
+					oo = oh.Unwrap();
+				} else {
+					oo = Activator.CreateInstance( Type.GetType( nomeImpl ) );
+				}
+			} catch( Exception ee ) {
+				System.Console.Out.WriteLine( "Impossibile creare impl del servizio " + nomeImpl );			
+				throw ee;
 			}
-
 			
 			IServizio servizio = (IServizio)oo;
 			// IServizio servizio = (IServizio)Activator.CreateInstance( assemblyName, nomeImpl );

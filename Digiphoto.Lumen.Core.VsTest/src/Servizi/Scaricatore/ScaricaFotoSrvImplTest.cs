@@ -12,6 +12,7 @@ using Digiphoto.Lumen.Model;
 using System.Reflection;
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Util;
+using Digiphoto.Lumen.Core.VsTest.Util;
 
 namespace Digiphoto.Lumen.Core.VsTest.Servizi.Scaricatore {
 	
@@ -96,12 +97,7 @@ namespace Digiphoto.Lumen.Core.VsTest.Servizi.Scaricatore {
 
 			Guid guid = Guid.NewGuid();
 
-			String doveSono = Assembly.GetExecutingAssembly().Location;
-
-			string appPath = Path.GetDirectoryName( doveSono );
-			string cartella = Path.Combine( appPath, "images" );
-			string [] nomiFiles = Directory.GetFiles( cartella , "*.jpg" );
-
+			string [] nomiFiles = Costanti.NomiFileImmagini;
 
 			string dir = PathUtil.createTempDirectory();
 
