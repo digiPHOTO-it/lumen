@@ -11,6 +11,10 @@ using Digiphoto.Lumen.Servizi.Vendere;
 using Digiphoto.Lumen.Eventi;
 using System.Threading;
 using System.Data.Entity.Infrastructure;
+using System.Diagnostics;
+using Digiphoto.Lumen.Core.VsTest.Util;
+using Digiphoto.Lumen.Config;
+using Digiphoto.Lumen.Util;
 
 namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 {
@@ -18,6 +22,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 	public class StampaProviniTest : IObserver<StampatoMsg>
 	{
 		const int QUANTE = 5;
+		const long maxMem = 0;
 
 		private LumenApplication app;
 
@@ -76,7 +81,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 				_impl.aggiungereStampe(fotos2, p1);
 			}
 
-			while (!_elaborazioneTerminata)
+			while (_contaElaborazioniTerminate != 2)
 			{
 				Thread.Sleep(1000);
 			}
@@ -84,9 +89,52 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 		}
 
 		[TestMethod]
+		public void outOfMemoryStampaProviniTest() {
+
+			FormuleMagiche.sonoNellaUI = false;
+
+			ParamStampaProvini param = new ParamStampaProvini();
+			const int quante = 30;
+			const int totpag = 1;
+			List<Fotografia> fotos;
+			ParamStampaProvini p;
+
+			long memoryPrima = Process.GetCurrentProcess().WorkingSet64;
+
+			using( new UnitOfWorkScope( false ) ) {
+				p = ricavaParamStampaProvini();
+				p.numeroColonne = 6;
+				p.numeroRighe = 5;
+				p.macchiaProvini = false;
+
+				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
+				fotos = (from f in dbContext.Fotografie.Include( "fotografo" )
+					     select f).Take( quante ).ToList();
+			}
+
+			// Stampo un tot. pagine di provini
+			for( int pag=1; pag <= totpag; pag++ ) {
+				
+				_impl.aggiungereStampe( fotos, p );
+			}
+
+			while( _contaElaborazioniTerminate != totpag) {
+				Thread.Sleep( 10000 );
+
+				long memoryDopo = Process.GetCurrentProcess().WorkingSet64;
+				long consumata = (memoryDopo - memoryPrima);
+
+				// Se supero il massimo impostato, probabilmente il gc non sta pulendo.
+				if( maxMem > 0 && consumata > maxMem )
+					Assert.Fail( "Probabilmente si sta consumando troppa memoria: diff(MB)=" + consumata / 1024 );
+
+			}
+			Assert.IsTrue( esitoStampa == EsitoStampa.Ok );
+		}
+
+		[TestMethod]
 		public void stampaProviniFotoProviniTest()
 		{
-
 			using (new UnitOfWorkScope(false))
 			{
 
@@ -105,7 +153,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 				//Carico una stampa Foto
 				ParamStampaFoto p2 = ricavaParamStampaFoto();
 
-				CodaDiStampe c1 = new CodaDiStampe(p2, "doPDF v7");
+				CodaDiStampe c1 = new CodaDiStampe(p2, Costanti.NomeStampantePdf);
 
 				Fotografia foto = (from f in dbContext.Fotografie.Include("fotografo")
 								   select f).Take(QUANTE + 1).ToList().Last();
@@ -125,26 +173,11 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 				fotos2.RemoveRange(0, QUANTE+1);
 
 				_impl.aggiungereStampe(fotos2, p3);
-				/*
-				//*****************************
-				//*****************************
-				ParamStampaProvini p44 = ricavaParamStampaProvini();
-				p44.numeroColonne = 3;
-				p44.numeroRighe = 4;
-				p44.macchiaProvini = true;
-
-				CodaDiStampe c4 = new CodaDiStampe(p44, "doPDF v7");
-
-				c4.EnqueueItem(new LavoroDiStampaProvini(fotos2, p44));
-				c4.Start();
-				//*****************************
-				//*****************************
-				*/
-
+		
 				//Carico una stampa Foto
 				ParamStampaFoto p4 = ricavaParamStampaFoto();
 
-				CodaDiStampe c2 = new CodaDiStampe(p4, "doPDF v7");
+				CodaDiStampe c2 = new CodaDiStampe(p4, Costanti.NomeStampantePdf);
 
 				Fotografia foto2 = (from f in dbContext.Fotografie.Include("fotografo")
 								   select f).Take(2*QUANTE + 2).ToList().Last();
@@ -153,7 +186,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 				c2.Start();
 			}
 
-			while (!_elaborazioneTerminata)
+			while (_contaElaborazioniTerminate != 2)
 			{
 				Thread.Sleep(1000);
 			}
@@ -165,7 +198,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 		{
 			ParamStampaProvini param = new ParamStampaProvini();
 
-			CodaDiStampe c1 = new CodaDiStampe(param, "doPDF v7");
+			CodaDiStampe c1 = new CodaDiStampe(param, Costanti.NomeStampantePdf);
 			c1.Stop();
 
 			using (new UnitOfWorkScope(false))
@@ -201,7 +234,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 			formato.prezzo = 5;
 			p.formatoCarta = formato;
 			p.intestazione = "Prova";
-			p.nomeStampante = "doPDF v7";
+			p.nomeStampante = Costanti.NomeStampante;
 			p.numeroColonne = 5;
 			p.numeroRighe = 6;
 
@@ -224,7 +257,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 			FormatoCarta formato = Utilita.ottieniFormatoCarta(dbContext, "A5");
 			formato.prezzo = 5;
 			p.formatoCarta = formato;
-			p.nomeStampante = "doPDF v7";
+			p.nomeStampante = Costanti.NomeStampantePdf;
 
 			// Qui non si deve spaccare
 			Digiphoto.Lumen.Database.OrmUtil.forseAttacca<FormatoCarta>( ref formato);
@@ -245,8 +278,9 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 		public void OnNext(StampatoMsg value)
 		{
 			System.Diagnostics.Trace.WriteLine("DESCRIZIONE: " + value.descrizione + " ESITO: " + value.lavoroDiStampa.esitostampa);
-			esitoStampa = value.lavoroDiStampa.esitostampa;
-			_elaborazioneTerminata = true;
+			if( esitoStampa != EsitoStampa.Errore ) // un errore invalida tutto
+				esitoStampa = value.lavoroDiStampa.esitostampa;
+			++_contaElaborazioniTerminate;
 		}
 
 		public EsitoStampa esitoStampa
@@ -256,7 +290,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Stampare
 		}
 
 
-		public bool _elaborazioneTerminata
+		public int _contaElaborazioniTerminate
 		{
 			get;
 			set;

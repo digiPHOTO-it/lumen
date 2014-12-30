@@ -6,6 +6,7 @@ using Digiphoto.Lumen.Servizi;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Imaging.Correzioni;
 using Digiphoto.Lumen.Imaging;
+using Digiphoto.Lumen.Util;
 
 namespace Digiphoto.Lumen.Servizi.Io {
 
@@ -38,5 +39,6 @@ namespace Digiphoto.Lumen.Servizi.Io {
 		/// </summary>
 		void salvaCorrezioniTransienti( Fotografia fotografia );
 
+		void idrataImmaginiFoto( Fotografia foto, IdrataTarget target, bool forzatamente );
 	}
 }

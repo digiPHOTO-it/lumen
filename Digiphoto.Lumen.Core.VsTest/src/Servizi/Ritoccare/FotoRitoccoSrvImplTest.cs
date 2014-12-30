@@ -10,6 +10,7 @@ using Digiphoto.Lumen.Util;
 using System.IO;
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Imaging.Wic;
+using Digiphoto.Lumen.Core.VsTest.Util;
 
 namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Ritoccare {
 
@@ -42,9 +43,11 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Ritoccare {
 		public void modificaConProgrammaEsterno() {
 			
 			// Carico una foto a caso
-			using( LumenEntities dbContext = new LumenEntities() ) {
+			using( LumenEntities entities = new LumenEntities() ) {
 
-				var fotos = dbContext.Fotografie.Take( 2 );
+				Fotografia[] fotos = new Fotografia[2];
+				fotos[0] = Costanti.findUnaFotografiaRandom( entities );
+				fotos[1] = Costanti.findUnaFotografiaRandom( entities );
 	
 				Fotografia [] modificate = _impl.modificaConProgrammaEsterno( fotos.ToArray() );
 

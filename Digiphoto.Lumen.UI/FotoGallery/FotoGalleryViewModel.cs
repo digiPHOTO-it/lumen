@@ -996,8 +996,12 @@ namespace Digiphoto.Lumen.UI {
 					break;
 				} else {
 
-					// Perform a time consuming operation and report progress.
-					AiutanteFoto.idrataImmaginiFoto( fotoExplorerSrv.fotografie[ii], IdrataTarget.Provino );						
+					try {
+						// Perform a time consuming operation and report progress.
+						AiutanteFoto.idrataImmaginiFoto( fotoExplorerSrv.fotografie[ii], IdrataTarget.Provino );						
+					} catch( Exception ) {
+						// Se qualcosa va male, pazienza, devo tirare avanti.
+					}
 	
 					// Aggiorno la percentuale di progressi di idratazione. Esiste una ProgressBar che si abilita all'uopo.
 					int perc = (ii + 1) * 100 / tot;

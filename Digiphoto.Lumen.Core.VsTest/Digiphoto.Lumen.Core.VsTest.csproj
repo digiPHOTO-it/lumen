@@ -188,6 +188,7 @@
     <Compile Include="src\Servizi\EliminaFotoVecchie\EliminaFotoVecchieSrvImplTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\Servizi\Scaricatore\ScaricaFotoSrvImplTest.cs" />
+    <Compile Include="src\Util\Costanti.cs" />
     <Compile Include="Utilita.cs" />
     <Compile Include="src\Servizi\Vendere\VenditoreSrvImplTest.cs" />
   </ItemGroup>

@@ -25,6 +25,7 @@ using Digiphoto.Lumen.Servizi.Explorer;
 using Digiphoto.Lumen.Servizi.Ricerca;
 using Digiphoto.Lumen.Servizi.Stampare;
 using System.ComponentModel;
+using Digiphoto.Lumen.Core.VsTest.Util;
 
 namespace Digiphoto.Lumen.Core.VsTest {
 
@@ -105,6 +106,8 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				// ---
 
 				RigaCarrello r1 = new RigaCarrello();
+				r1.fotografia = Costanti.findUnaFotografiaRandom( dbContext );
+				r1.fotografo = r1.fotografia.fotografo;
 				r1.discriminator = Carrello.TIPORIGA_MASTERIZZATA;
 				r1.id = Guid.NewGuid();
 				r1.prezzoLordoUnitario = new Decimal( 20 );
@@ -117,6 +120,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				// ---
 
 				RigaCarrello r2 = new RigaCarrello();
+				r2.fotografia = Costanti.findUnaFotografiaRandom( dbContext );
 				r2.discriminator = Carrello.TIPORIGA_STAMPA;
 				r2.id = Guid.NewGuid();
 				r2.prezzoLordoUnitario = new Decimal( 5 );
@@ -133,6 +137,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 	
 				RigaCarrello r3 = new RigaCarrello();
+				r3.fotografia = Costanti.findUnaFotografiaRandom( dbContext );
 				r3.discriminator = Carrello.TIPORIGA_STAMPA;
 				r3.id = Guid.NewGuid();
 				r3.prezzoLordoUnitario = new Decimal( 5 );

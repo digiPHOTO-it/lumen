@@ -201,6 +201,7 @@ namespace Digiphoto.Lumen.Config  {
 			creaGeometriaSlideShowSDefault(userConfig);
 
 			userConfig.correzioneAltezzaGalleryDueFoto = 50;
+			userConfig.tecSogliaStampaProvini = -3;
 
 			return userConfig;
 		}

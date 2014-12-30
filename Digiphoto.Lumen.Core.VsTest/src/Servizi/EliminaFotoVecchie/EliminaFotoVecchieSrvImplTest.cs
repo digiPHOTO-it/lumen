@@ -8,6 +8,7 @@ using Digiphoto.Lumen.Core.Database;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Data;
 using System.Transactions;
 using System.Diagnostics;
 using Digiphoto.Lumen.Properties;
@@ -160,35 +161,51 @@ namespace Digiphoto.Lumen.Core.VsTest
 
 			 using( new UnitOfWorkScope() ) {
 
+				 UnitOfWorkScope.currentObjectContext.Connection.Open();
 				 LumenEntities entities = UnitOfWorkScope.currentDbContext;
 
-				 IEnumerable<Fotografia> listaDacanc = entities.Fotografie.Take( 1 );
+				 // ----- Ora provo in eSql
+				 string esql = @"SELECT  f.id
+                              FROM LumenEntities.Fotografie as f
+                              left join LumenEntities.RigheCarrelli as rc on rc.fotografia = f";
 
-				 if( listaDacanc.Count() == 1 ) {
+				 DbCommand comando = UnitOfWorkScope.currentObjectContext.Connection.CreateCommand();
+				 comando.CommandText = esql;
 
-					 Fotografia fDacanc = listaDacanc.Single();
-					 string nomeFileOrig = PathUtil.nomeCompletoOrig( fDacanc );
+				 // Devo scegliere una foto che non sia dentro un carrello, altrimenti mi si spacca
+				 Guid idFoto = Guid.Empty;
 
-					 Object [] parametri = new Object [] { fDacanc.id };
-
-					 Assert.IsTrue( File.Exists( nomeFileOrig ) );
-					 ObjectResult<int> test1 = ((IObjectContextAdapter)entities).ObjectContext.ExecuteStoreQuery<int>( @"select count(*) from Fotografie where id = {0}", parametri );
-					 Assert.IsTrue( test1.ElementAt( 0 ) == 1 );
-
-					 using( IEliminaFotoVecchieSrv srv = LumenApplication.Instance.creaServizio<IEliminaFotoVecchieSrv>() ) {
-
-						 int quante = srv.elimina( listaDacanc );
-
-						 Assert.IsTrue( quante == 1 );
+				 using( DbDataReader rdr = comando.ExecuteReader( CommandBehavior.SequentialAccess ) ) {
+					 if( rdr.Read() ) {
+						 var oo = rdr.GetValue( 0 );
+						 idFoto = (Guid)oo;
 					 }
 
-					 Assert.IsFalse( File.Exists( nomeFileOrig ) );
-					 ObjectResult<int> test2 = ((IObjectContextAdapter)entities).ObjectContext.ExecuteStoreQuery<int>( @"select count(*) from Fotografie where id = {0}", parametri );
-					 Assert.IsTrue( test2.ElementAt( 0 ) == 0 );
+					 if( idFoto == Guid.Empty )
+						 return;
 
-					 //
-					 // Siccome non mi fido, provo a fare una query per vedere che la foto in questione sia davvero sparita.
+					Fotografia fDacanc  = entities.Fotografie.Single( f => f.id == idFoto );
 
+					string nomeFileOrig = PathUtil.nomeCompletoOrig( fDacanc );
+
+					Object[] parametri = new Object[] { fDacanc.id };
+
+					Assert.IsTrue( File.Exists( nomeFileOrig ) );
+					ObjectResult<int> test1 = ((IObjectContextAdapter)entities).ObjectContext.ExecuteStoreQuery<int>( @"select count(*) from Fotografie where id = {0}", parametri );
+					Assert.IsTrue( test1.ElementAt( 0 ) == 1 );
+
+					using( IEliminaFotoVecchieSrv srv = LumenApplication.Instance.creaServizio<IEliminaFotoVecchieSrv>() ) {
+						Fotografia [] listaDacanc = { fDacanc };
+						int quante = srv.elimina( listaDacanc );
+						Assert.IsTrue( quante == 1 );
+					}
+
+					Assert.IsFalse( File.Exists( nomeFileOrig ) );
+					ObjectResult<int> test2 = ((IObjectContextAdapter)entities).ObjectContext.ExecuteStoreQuery<int>( @"select count(*) from Fotografie where id = {0}", parametri );
+					Assert.IsTrue( test2.ElementAt( 0 ) == 0 );
+
+					//
+					// Siccome non mi fido, provo a fare una query per vedere che la foto in questione sia davvero sparita.
 				 }
 			 }
 		 }
