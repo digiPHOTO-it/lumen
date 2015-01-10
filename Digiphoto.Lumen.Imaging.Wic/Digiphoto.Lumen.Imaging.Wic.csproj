@@ -152,7 +152,6 @@
     <Compile Include="src\Wic\Stampe\InformatoreWic.cs" />
     <Compile Include="src\Wic\Util\WpfUtil.cs" />
     <Compile Include="src\Wic\WicUtil.cs" />
-    <Compile Include="src\Windows\Documents\FixedDocumentMem.cs" />
     <Compile Include="src\Windows\Media\Effects\Dominanti\DominantiEffect.cs" />
     <Compile Include="src\Windows\Media\Effects\EffectsUtil.cs" />
     <Compile Include="src\Windows\Media\Effects\Grayscale\GrayscaleEffect.cs" />
