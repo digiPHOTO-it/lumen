@@ -21,6 +21,7 @@ using Digiphoto.Lumen.UI.Pubblico;
 using System.Collections.ObjectModel;
 using Digiphoto.Lumen.UI.PanAndZoom;
 using Digiphoto.Lumen.Servizi.Io;
+using Digiphoto.Lumen.UI.SelettoreAzioniRapide;
 
 namespace Digiphoto.Lumen.UI
 {
@@ -30,8 +31,11 @@ namespace Digiphoto.Lumen.UI
 
 		public event Digiphoto.Lumen.UI.FotoRitocco.FotoRitoccoViewModel.EditorModeChangedEventHandler editorModeChangedEvent;
 
-		public SelettoreAzioniRapideViewModel()
+		public IAzzioniRapide azioniRapideViewModel;
+
+		public SelettoreAzioniRapideViewModel(IAzzioniRapide azioniRapideViewModel)
 		{
+			this.azioniRapideViewModel = azioniRapideViewModel;
 			IObservable<GestoreCarrelloMsg> observableCarrello = LumenApplication.Instance.bus.Observe<GestoreCarrelloMsg>();
 			observableCarrello.Subscribe(this);
 
@@ -52,19 +56,10 @@ namespace Digiphoto.Lumen.UI
 			private set;
 		}
 
-		private MultiSelectCollectionView<Fotografia> _fotografieCW;
 		public MultiSelectCollectionView<Fotografia> fotografieCW
 		{
 			get{
-				return _fotografieCW;
-			}
-			set
-			{
-				if (_fotografieCW != value)
-				{
-					_fotografieCW = value;
-					OnPropertyChanged("fotografieCW");
-				}
+				return azioniRapideViewModel.fotografieCW;
 			}
 		}
 
@@ -118,19 +113,6 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 */
-
-		private ObservableCollection<Fotografia> _fotografieDaModificare;
-		public ObservableCollection<Fotografia> fotografieDaModificare
-		{
-			get
-			{
-				return _fotografieDaModificare;
-			}
-			set
-			{
-				_fotografieDaModificare = value;
-			}
-		}
 
 		public IList<Fotografia> fotoSelezionate
 		{
@@ -357,10 +339,14 @@ namespace Digiphoto.Lumen.UI
 		/// </summary>
 		private void accendiSpegniTutto(bool selez)
 		{
+			if (fotografieCW == null)
+				return;
+			
 			if (selez)
 				fotografieCW.SelectAll();
 			else
 				fotografieCW.DeselectAll();
+			
 		}
 
 		/// <summary>
@@ -474,7 +460,13 @@ namespace Digiphoto.Lumen.UI
 		
 		void modificaMetadati()
 		{
-			SelettoreMetadatiDialog s = new SelettoreMetadatiDialog(fotografieCW);
+
+			MultiSelectCollectionView<Fotografia> fotoSel = new MultiSelectCollectionView<Fotografia>(fotoSelezionate.ToList<Fotografia>());
+			foreach (Fotografia fS in fotoSelezionate){
+				fotoSel.SelectedItems.Add(fS);
+			}
+
+			SelettoreMetadatiDialog s = new SelettoreMetadatiDialog(fotoSel);
 
 			bool? esito = s.ShowDialog();
 
@@ -522,10 +514,13 @@ namespace Digiphoto.Lumen.UI
 			// Devo però duplicare la collezione perché non posso iterare e rimuovere contemporaneamente dalla stessa.
 			if( quanti > 0 ) {
 				Fotografia [] listaClone = itemsToDelete.ToArray();
-				foreach( Fotografia fDacanc in listaClone )
-					fotografieCW.Remove( fDacanc );
-				if(!singolaFotoWorks)
-					deselezionareTutto();
+				if (fotografieCW != null)
+				{
+					foreach (Fotografia fDacanc in listaClone)
+						fotografieCW.Remove(fDacanc);
+					if (!singolaFotoWorks)
+						deselezionareTutto();
+				}
 			} else
 				dialogProvider.ShowError( "Impossibile eliminare le foto indicate", "ERRORE", null );
 		}
@@ -610,18 +605,8 @@ namespace Digiphoto.Lumen.UI
 			if (toglila)
 			{
 				// La spengo
-				fotografieCW.Deselect(daTogliere);
-			}
-		}
-
-		void addFotoDaModificare(Fotografia f)
-		{
-			if (this.fotografieDaModificare.Contains(f) == false)
-			{
-				//				fotografieDaModificareCW.AddNewItem( f );
-				this.fotografieDaModificare.Insert(0, f);
-
-				AiutanteFoto.idrataImmaginiFoto(f, IdrataTarget.Provino);
+				if(fotografieCW!=null)
+					fotografieCW.Deselect(daTogliere);
 			}
 		}
 
@@ -713,8 +698,7 @@ namespace Digiphoto.Lumen.UI
 		private bool singolaFotoWorks = false;
 		private void setSingolaFotoWork(Object param)
 		{
-			if(param.ToString().Equals("SINGOLA"))
-			{
+			if(param.ToString().Equals("SINGOLA")){
 				singolaFotoWorks = true;
 			}else if(param.ToString().Equals("MULTI")){
 				singolaFotoWorks = false;
