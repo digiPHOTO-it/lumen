@@ -912,11 +912,9 @@ namespace Digiphoto.Lumen.UI {
 			if( ! _bkgIdrata.IsBusy )
 				_bkgIdrata.RunWorkerAsync();
 
-
 			// ricreo la collection-view e notifico che è cambiato il risultato. Le immagini verranno caricate poi
 			fotografieCW = new MultiSelectCollectionView<Fotografia>( fotoExplorerSrv.fotografie );
 			fotografieCW.SelectionChanged += fotografie_selezioneCambiata;
-//			OnPropertyChanged( "fotografieCW" );
 
 			// spengo tutte le selezioni eventualmente rimaste da prima
 			deselezionareTutto();
@@ -1000,7 +998,21 @@ namespace Digiphoto.Lumen.UI {
 						// Perform a time consuming operation and report progress.
 						AiutanteFoto.idrataImmaginiFoto( fotoExplorerSrv.fotografie[ii], IdrataTarget.Provino );						
 					} catch( Exception ) {
-						// Se qualcosa va male, pazienza, devo tirare avanti.
+
+						// Provo a crearlo. Magari non c'è perché è stato cancellato per sbaglio, oppure c'è ma si è corrotto.
+						try {
+
+							// Provo a dare il fuoco al mio usercontrol ma nel thread della GUI
+							Fotografia daRiProvinare = fotoExplorerSrv.fotografie[ii];
+							App.Current.Dispatcher.BeginInvoke(
+								new Action( () => {
+									AiutanteFoto.creaProvinoFoto( daRiProvinare );
+								}
+							) );
+							
+						} catch( Exception ) {
+							// Se qualcosa va male, pazienza, a questo punto non posso fare altro che tirare avanti.
+						}
 					}
 	
 					// Aggiorno la percentuale di progressi di idratazione. Esiste una ProgressBar che si abilita all'uopo.

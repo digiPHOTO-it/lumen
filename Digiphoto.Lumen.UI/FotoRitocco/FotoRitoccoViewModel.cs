@@ -1130,11 +1130,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// </summary>
 		private void rifiutareCorrezioni() {
 
+			bool saveFaseRipristinoFoto = _faseRipristinoFoto; // salvo
 			try {
 				// Evito di far scattare il trigger di modifiche in corso
 				_faseRipristinoFoto = true;
-
-				rifiutareCorrezioni( fotografiaInModifica, false );
 
 				riposizionaControlliFotoritocco();  //  **  1  **
 
@@ -1145,7 +1144,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				pubblicaMessaggioEffettiCambiati();  //  **  3 **
 
 			} finally {
-				_faseRipristinoFoto = false;
+				_faseRipristinoFoto = saveFaseRipristinoFoto;
 			}
 
 		}
@@ -1588,6 +1587,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				return;
 
 			quadroRuotato = false;
+			bool saveFaseRipristinoFoto = _faseRipristinoFoto; // salvo
 			try {
 				_faseRipristinoFoto = true;
 			
@@ -1644,7 +1644,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				}
 
 			} finally {
-				_faseRipristinoFoto = false;
+				_faseRipristinoFoto = saveFaseRipristinoFoto;
 			}
 
 		}
