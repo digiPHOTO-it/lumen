@@ -30,11 +30,12 @@ using Digiphoto.Lumen.Servizi.Stampare;
 using Digiphoto.Lumen.Servizi.Io;
 using Digiphoto.Lumen.Imaging;
 using Digiphoto.Lumen.Imaging.Wic.Correzioni;
+using Digiphoto.Lumen.UI.SelettoreAzioniRapide;
 
 namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 
-	public class FotoRitoccoViewModel : ViewModelBase, IObserver<Messaggio> {
+	public class FotoRitoccoViewModel : ViewModelBase, IObserver<Messaggio>, IAzzioniRapide {
 
 		public delegate void EditorModeChangedEventHandler( object sender, EditorModeEventArgs args );
 		public event EditorModeChangedEventHandler editorModeChangedEvent;
@@ -50,11 +51,11 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				IObservable<Messaggio> observable = LumenApplication.Instance.bus.Observe<Messaggio>();
 				observable.Subscribe( this );
 
-				selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel();
+				selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel(this);
 
 				fotografieDaModificare = new ObservableCollectionEx<Fotografia>();
 				fotografieDaModificareCW = new ListCollectionView( fotografieDaModificare );
-// TODO ?				selettoreAzioniRapideViewModel.fotografieCW = fotografieDaModificareCW;
+	//			selettoreAzioniRapideViewModel.fotografieCW = 
 				fotografieDaModificareCW.Filter += fdmViewFilter;
 
 				// Carico le maschere e mi setto in modalità fotoritocco
@@ -71,6 +72,16 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 
 		}
+
+		//Non ho la selezione multipla nel foto ritocco
+		public MultiSelectCollectionView<Fotografia> fotografieCW
+		{
+			get
+			{
+				return null;
+			}
+		}
+		
 
 #region Fields
 
