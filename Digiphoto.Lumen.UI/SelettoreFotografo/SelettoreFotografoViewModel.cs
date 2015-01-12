@@ -111,8 +111,13 @@ namespace Digiphoto.Lumen.UI {
 			// purtoppo pare che rimpiazzare il reference con uno nuovo, causa dei problemi.
 			// Non posso istanziare nuovamente la lista, ma la devo svuotare e ripopolare.
 			fotografi.Clear();
-			foreach( Fotografo f in listaF )
+			
+			foreach( Fotografo f in listaF ){
+				if (f.attivo)
+				{
 				fotografi.Add( f );
+				}
+			}
 
 			if( avvisami && dialogProvider != null )
 				dialogProvider.ShowMessage( "Riletti " + fotografi.Count + " fotografi", "Successo" );

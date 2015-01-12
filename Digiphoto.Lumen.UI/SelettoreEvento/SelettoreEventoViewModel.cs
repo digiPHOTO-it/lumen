@@ -88,8 +88,11 @@ namespace Digiphoto.Lumen.UI {
 			// Ho notato che è meglio non ri-istanziare le collezione.
 			eventi.Clear();
 			foreach( Evento ev in lista )
+			{
+				if(ev.attivo){
 				eventi.Add( ev );
-
+				}
+			}
 			if( avvisami && dialogProvider != null )
 				dialogProvider.ShowMessage( "Ricaricati " + eventi.Count + " elementi", "Successo" );
 		}

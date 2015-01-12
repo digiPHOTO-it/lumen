@@ -152,7 +152,6 @@ namespace Digiphoto.Lumen.UI {
 			fotoGalleryViewModel.mandareInModificaImmediata( lbItem.Content as Fotografia );
 		}
 
-		private Fotografia ultimaSelezionata = null;
 		private void LsImageGallery_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			// Anche se clicco sulla scrollbar mi solleva l'evento button down.
@@ -161,37 +160,33 @@ namespace Digiphoto.Lumen.UI {
 
 			//
 			ListBoxItem lbi = SelectItemOnLeftClick( e );
-			if( lbi == null )
+			if (lbi == null)
 				return;
 
 			Fotografia foto = (Fotografia)lbi.Content;
-			if(ultimaSelezionata==null)
-				ultimaSelezionata = (Fotografia)lbi.Content;
-
+			
 			if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
 			{
-				if(ultimaSelezionata!=null)
-				{
-					int firstIndex = fotoGalleryViewModel.fotografieCW.IndexOf(ultimaSelezionata);
-					int lastIndex = fotoGalleryViewModel.fotografieCW.IndexOf(foto);
-					//se ho selezionato dal più alto al più basso inverto gli indici
-					if (firstIndex > lastIndex)
-					{
-						int appoggio = firstIndex;
-						//faccio +1 perche se no non riesco a selezionare l'ultima foto
-						firstIndex = lastIndex+1;
-						lastIndex = appoggio;
-					}
+				Fotografia lastSelectedFoto = fotoGalleryViewModel.fotografieCW.SelectedItems.Last<Fotografia>();
+				int firstIndex = fotoGalleryViewModel.fotografieCW.IndexOf(lastSelectedFoto);
+				int lastIndex = fotoGalleryViewModel.fotografieCW.IndexOf(foto);
 
-					for (int i = firstIndex; i < lastIndex; i++)
+				//se ho selezionato dal più alto al più basso inverto gli indici
+				if (firstIndex > lastIndex)
+				{
+					int appoggio = firstIndex;
+					//faccio +1 perche se no non riesco a selezionare l'ultima foto
+					firstIndex = lastIndex + 1;
+					lastIndex = appoggio;
+				}
+
+				for (int i = firstIndex; i < lastIndex; i++)
+				{
+					Fotografia f = (Fotografia)fotoGalleryViewModel.fotografieCW.GetItemAt(i);
+					if (!fotoGalleryViewModel.fotografieCW.SelectedItems.Contains(f))
 					{
-						Fotografia f = (Fotografia)fotoGalleryViewModel.fotografieCW.GetItemAt(i);
-						if (!fotoGalleryViewModel.fotografieCW.SelectedItems.Contains(f))
-						{
-							fotoGalleryViewModel.fotografieCW.SelectedItems.Add(f);
-							fotoGalleryViewModel.fotografieCW.RefreshSelectedItemWithMemory();
-							ultimaSelezionata = null;
-						}
+						fotoGalleryViewModel.fotografieCW.SelectedItems.Add(f);
+						fotoGalleryViewModel.fotografieCW.RefreshSelectedItemWithMemory();
 					}
 				}
 			}
