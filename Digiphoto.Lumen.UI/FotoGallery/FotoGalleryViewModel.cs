@@ -35,12 +35,13 @@ using System.Text.RegularExpressions;
 using System.Windows.Controls;
 using Digiphoto.Lumen.Servizi.Ritoccare.Clona;
 using Digiphoto.Lumen.Eventi;
+using Digiphoto.Lumen.UI.SelettoreAzioniRapide;
 
 namespace Digiphoto.Lumen.UI {
 
 
 
-	public class FotoGalleryViewModel : ViewModelBase, IObserver<StampatoMsg>, IObserver<ClonaFotoMsg>
+	public class FotoGalleryViewModel : ViewModelBase, IObserver<StampatoMsg>, IObserver<ClonaFotoMsg>, IAzzioniRapide
 	{
 		private BackgroundWorker _bkgIdrata;
 
@@ -63,7 +64,7 @@ namespace Digiphoto.Lumen.UI {
 			selettoreScaricoCardViewModel = new SelettoreScaricoCardViewModel();
 			selettoreEventoMetadato = new SelettoreEventoViewModel();
 			selettoreFotografoViewModel = new SelettoreFotografoViewModel();
-			selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel();
+			selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel(this);
 
 			azzeraParamRicerca();
 
@@ -117,7 +118,6 @@ namespace Digiphoto.Lumen.UI {
 				if (_fotografieCW != value)
 				{
 					_fotografieCW = value;
-					selettoreAzioniRapideViewModel.fotografieCW = value;
 					OnPropertyChanged("fotografieCW");
 				}
 			}
