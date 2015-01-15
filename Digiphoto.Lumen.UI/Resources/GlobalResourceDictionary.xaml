@@ -167,13 +167,12 @@
                        Width="{Binding ActualWidth, ElementName=fotoCanvas}"
                        Height="{Binding ActualHeight, ElementName=fotoCanvas}" />
 
-
-                <!-- Questo è il rettangolo a) di copertura per taglio area stampabile -->
-                <Border HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource styleBorderCopriA}" />
-
-                <!-- Questo è il rettangolo b) di copertura per taglio area stampabile -->
+				<!-- TODO con questi diventa tutto lentissimo !!!!
+		  trovare una soluzione.
+			
+				<Border HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource styleBorderCopriA}" />
 				<Border HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource styleBorderCopriB}" />
-				
+-->				
 				<Image 
                     Source="/Digiphoto.Lumen.UI;component/Resources/info-16x16.png" Width="16" Height="16"
                     Canvas.Left="2"

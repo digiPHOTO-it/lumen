@@ -908,13 +908,11 @@ namespace Digiphoto.Lumen.UI {
 			fotoExplorerSrv.cercaFoto( paramCercaFoto );
 
 
-			// Ora ci penso io ad idratare le immagini, perchè devo fare questa operazione nello stesso thread della UI
-			if( ! _bkgIdrata.IsBusy )
-				_bkgIdrata.RunWorkerAsync();
 
 			// ricreo la collection-view e notifico che è cambiato il risultato. Le immagini verranno caricate poi
 			fotografieCW = new MultiSelectCollectionView<Fotografia>( fotoExplorerSrv.fotografie );
 			fotografieCW.SelectionChanged += fotografie_selezioneCambiata;
+
 
 			// spengo tutte le selezioni eventualmente rimaste da prima
 			deselezionareTutto();
@@ -926,6 +924,10 @@ namespace Digiphoto.Lumen.UI {
 			OnPropertyChanged( "totFotoPaginaAttuale" );
 			OnPropertyChanged( "stoPaginando" );
 
+			// Ora ci penso io ad idratare le immagini, perchè devo fare questa operazione nello stesso thread della UI
+			if( !_bkgIdrata.IsBusy )
+				_bkgIdrata.RunWorkerAsync();
+			// Lasciare come ultima cosa l'idratazione delle foto.
 		}
 
 		/// <summary>
@@ -1020,7 +1022,10 @@ namespace Digiphoto.Lumen.UI {
 					if( percPrec != perc ) {
 						worker.ReportProgress( perc );
 						percPrec = perc;
+
 					}
+
+
 				}
 			}
 
