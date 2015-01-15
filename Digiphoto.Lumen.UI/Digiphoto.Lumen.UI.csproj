@@ -669,6 +669,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <Compile Include="SelettoreAzioniRapide\IAzzioniRapide.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Digiphoto.Lumen.Core\Digiphoto.Lumen.Core.csproj">
