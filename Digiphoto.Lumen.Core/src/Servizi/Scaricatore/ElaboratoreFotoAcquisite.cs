@@ -56,6 +56,8 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		/// <param name="tempoScarico"></param>
 		public void elabora( DateTime tempoScarico ) {
 
+			_giornale.Debug( "Inizio ad elaborare le foto acquisite" );
+
 			// carico il fotografo che rimane uguale per tutta questa sessione di elaborazione
 			LumenEntities objContext = UnitOfWorkScope.currentDbContext;
 			_fotografo = objContext.Fotografi.Single<Fotografo>( ff => ff.id == _paramScarica.flashCardConfig.idFotografo );
@@ -83,8 +85,9 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 				Fotografia foto = aggiungiFoto( fileInfo, ++conta + ultimoNumFoto, tempoScarico );
 
+				_giornale.Debug( "Inizio Provinatura immagine " + fileInfo.FullName );
 				AiutanteFoto.creaProvinoFoto( fileInfo.FullName, foto );
-
+				_giornale.Debug( "Fine Provinatura immagine " );
 
 				// Libero la memoria occupata dalle immagini, altrimenti esplode.
 				AiutanteFoto.disposeImmagini( foto, IdrataTarget.Tutte );
@@ -98,6 +101,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 					NuovaFotoMsg msg = new NuovaFotoMsg( this, foto );
 					LumenApplication.Instance.bus.Publish( msg );
 				}
+				_giornale.Debug( "ok nuova foto provinata e inserita nel db: " + foto );
 
 				if (conta % 20 == 0)
 				{
@@ -122,6 +126,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		/** Quando ho finito di scaricar le foto, aggiorno il totale in apposita tabella */
 		private void incrementaTotaleFotoScaricate( DateTime tempoScarico ) {
 
+			_giornale.Debug( "Inizio incrementaTotaleFotoScaricate()" );
 			ScaricoCard scaricoCard = new ScaricoCard();
 			scaricoCard.id = Guid.NewGuid();
 			scaricoCard.totFoto = (short)numeroFotoAcquisite();
@@ -133,6 +138,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			IEntityRepositorySrv<ScaricoCard> erep = LumenApplication.Instance.getServizioAvviato<IEntityRepositorySrv<ScaricoCard>>();
 			erep.addNew( scaricoCard );
 			erep.saveChanges();
+			_giornale.Debug( "Fine incrementaTotaleFotoScaricate()" );
 		}
 
 
@@ -142,6 +148,8 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		 * (in pratica faccio una insert nel database).
 		 */
 		private Fotografia aggiungiFoto( FileInfo fileInfo, int numFotogramma, DateTime tempoScarico ) {
+
+			_giornale.Debug( "Inizio aggiungiFoto()" );
 
 			// Ad ogni foto persisto.
 			// Se per esempio ho 500 foto da salvare, non posso permettermi che se una salta, perdo anche le altre 499 !
@@ -193,6 +201,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 					objContext.ObjectContext.AcceptAllChanges();
  */
 			}
+			_giornale.Debug( "Fine aggiungiFoto()" );
 
 			return foto;
 		}

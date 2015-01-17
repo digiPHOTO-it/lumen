@@ -112,13 +112,14 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 		private void elaboraFotoAcquisite( EsitoScarico esitoScarico ) {
 
+			_giornale.Debug( "Inizio elaboraFotoAcquisite()" );
 			ScaricoFotoMsg scaricoFotoMsg = new ScaricoFotoMsg( this, "Scaricate " + esitoScarico.totFotoCopiateOk + " foto. Togliere la card" );
 			scaricoFotoMsg.esitoScarico = esitoScarico;
 			// Finito: genero un evento per notificare che l'utente può togliere la flash card.
 			scaricoFotoMsg.fase = FaseScaricoFoto.FineScarico;
 			scaricoFotoMsg.sorgente = _paramScarica.cartellaSorgente != null ? _paramScarica.cartellaSorgente : _paramScarica.nomeFileSingolo;
 			scaricoFotoMsg.showInStatusBar = true;
-
+			
 			// battezzo la flashcard al fotografo corrente
 			battezzaFlashCard( _paramScarica );
 
@@ -126,7 +127,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			// la flash card.
 			if( _paramScarica.nomeFileSingolo == null && _paramScarica.cartellaSorgente != null )
 				pubblicaMessaggio( scaricoFotoMsg );
-
+			_giornale.Debug( "Scaricate " + esitoScarico.totFotoCopiateOk + " foto. Si può togliere la card" );
 
 			// -- inizio elaborazione 
 
@@ -229,16 +230,18 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		 */
 		public bool battezzaFlashCard( ParamScarica param ) {
 
+			_giornale.Debug( "Inizio battezzaFlashCard()" );
+
 			bool riuscito = false;
 
 			if( param.cartellaSorgente == null )
 				return riuscito;
 
-			// Eseguo il controllo soltanto se il disco è rimovibile
-			DriveInfo driveInfo = new DriveInfo( param.cartellaSorgente );
-			if( driveInfo.DriveType == DriveType.Removable ) {
+			try {
 
-				try {
+				// Eseguo il controllo soltanto se il disco è rimovibile
+				DriveInfo driveInfo = new DriveInfo( param.cartellaSorgente );
+				if( driveInfo.DriveType == DriveType.Removable ) {
 
 					string nomeFileConfig = Path.Combine( param.cartellaSorgente, FlashCardConfig.NOMEFILECONFIG );
 
@@ -246,12 +249,15 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 					riuscito = true;
 
-				} catch( Exception ee ) {
-					// pazienza. Non è grave.
-					_giornale.Debug( "Non sono riuscito a battezzare la flash card", ee );
+					_giornale.Debug( "Battezzata memory card al fotografo: " + param.flashCardConfig.idFotografo );
 				}
+
+			} catch( Exception ee ) {
+				// pazienza. Non è grave.
+				_giornale.Debug( "Non sono riuscito a battezzare la flash card", ee );
 			}
 
+			_giornale.Debug( "Finito battezzaFlashCard(). riuscito=" + riuscito );
 			return riuscito;
 		}
 
