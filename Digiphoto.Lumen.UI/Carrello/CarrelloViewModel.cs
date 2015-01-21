@@ -314,8 +314,10 @@ namespace Digiphoto.Lumen.UI
 			}
 			set
 			{
-				_isErroriMasterizzazione = value;
-				OnPropertyChanged("IsErroriMasterizzazione");
+				if( _isErroriMasterizzazione != value ) {
+					_isErroriMasterizzazione = value;
+					OnPropertyChanged("IsErroriMasterizzazione");
+				}
 			}
 		}
 
