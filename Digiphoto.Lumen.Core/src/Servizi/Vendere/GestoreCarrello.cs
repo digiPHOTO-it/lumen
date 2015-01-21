@@ -105,6 +105,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					return null;
 
 				decimal x = (100 * (decimal)carrello.totaleAPagare) / prezzoNettoTotale;
+
+				if( x > short.MaxValue )
+					x = short.MaxValue;
+				if( x < short.MinValue )
+					x = short.MinValue;
+
 				return (short)(100 - x);
 			}
 		}
