@@ -83,7 +83,7 @@
 				</Grid>
 			</GroupBox>
 
-			<GroupBox Header="Cd/Dvd riepilogo" IsEnabled="{Binding Path=carrelloCorrente.venduto,Converter={StaticResource boolInverterConverter}}" Style="{StaticResource gruppoTotaleTipoStyle}">
+            <GroupBox Header="Cd/Dvd riepilogo" IsEnabled="{Binding Path=operazioniCd, Mode=OneWay,Converter={StaticResource boolInverterConverter}}" Style="{StaticResource gruppoTotaleTipoStyle}">
 
 				<Grid>
 					<Image Source="/Digiphoto.Lumen.UI;component/Resources/dvd-32x32.png" 
@@ -118,6 +118,13 @@
 				<Label Content="VENDUTO" VerticalContentAlignment="Center"  HorizontalContentAlignment="Center" FontSize="20" Background="Crimson" Height="50" Margin="2,0,0,0"
 					   Visibility="{Binding Path=carrelloCorrente.venduto, Converter={StaticResource boolVisibilityConverter}}" 
 					   />
+                <GroupBox Header="Spazio su Cd/Dvd" Style="{StaticResource gruppoTotaleTipoStyle}">
+                    <Grid >
+                        <Label Content="Spazio" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontSize="15" Height="50" Margin="2,0,0,0"
+					           />
+                        <Label Content="{Binding Path=spazioFotoDaMasterizzate, Mode=OneWay}" Height="50" Margin="50,0,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="81" />
+                    </Grid>
+               </GroupBox>    
 			</StackPanel>
 
 		</StackPanel>

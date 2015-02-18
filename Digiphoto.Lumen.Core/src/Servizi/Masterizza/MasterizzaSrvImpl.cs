@@ -133,8 +133,22 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 
                     if(_burner.testMedia()){
                         //Imposto l'etichetta del CD
-                        _burner.etichetta = DateTime.Now.ToString("dd MMM yyyy");;
-                        _burner.burning();
+                        _burner.etichetta = DateTime.Now.ToString("dd MMM yyyy");
+						if (_burner.CapacitaResidua() < 0)
+						{
+							MasterizzaMsg errorTestMediaMsg = new MasterizzaMsg(this);
+							errorTestMediaMsg.senderTag = senderTag;
+							errorTestMediaMsg.fase = Fase.ErroreSpazioDisco;
+							errorTestMediaMsg.esito = Esito.Errore;
+							errorTestMediaMsg.progress = 0;
+							errorTestMediaMsg.result = "Capacita del disco superata!!!";
+							pubblicaMessaggio(errorTestMediaMsg);
+						}
+						else
+						{
+							
+							_burner.burning();
+						}
                     }else{
                          MasterizzaMsg errorTestMediaMsg = new MasterizzaMsg( this );
 						 errorTestMediaMsg.senderTag = senderTag;

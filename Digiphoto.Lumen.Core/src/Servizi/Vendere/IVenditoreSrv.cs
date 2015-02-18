@@ -128,5 +128,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		void ricalcolaProvvigioni();
 
 		void rimpiazzaFotoInRiga( RigaCarrello riga, Fotografia fMod );
+
+		string spazioFotoDaMasterizzate{
+			get;
+		}
 	}
 }

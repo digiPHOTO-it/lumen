@@ -97,6 +97,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
+		public string spazioFotoDaMasterizzate
+		{
+			get
+			{
+				return gestoreCarrello.spazioFotoDaMasterizzate;
+			}
+		}
+
 		public Decimal prezzoNettoTotale {
 			get {
 				return gestoreCarrello.prezzoNettoTotale;
@@ -315,6 +323,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		public void removeRigaCarrello( RigaCarrello rigaCarrello ) {
 
 			gestoreCarrello.removeRiga( rigaCarrello );
+			if (masterizzaSrv != null && masterizzaSrv.fotografie!=null && masterizzaSrv.fotografie.Contains(rigaCarrello.fotografia))
+				masterizzaSrv.fotografie.Remove(rigaCarrello.fotografia);
 			ricalcolaTotaleCarrello();
 		}
 

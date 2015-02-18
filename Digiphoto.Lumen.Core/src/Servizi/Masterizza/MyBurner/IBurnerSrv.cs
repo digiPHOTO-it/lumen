@@ -23,5 +23,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
         IList<MsftDiscRecorder2> listaMasterizzatori();
 
         bool testMedia();
+
+		Int64 CapacitaResidua();
 	}
 }
