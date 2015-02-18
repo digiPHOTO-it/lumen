@@ -96,7 +96,7 @@ namespace Digiphoto.Lumen.UI
 		private void rinfrescaViewRighe() {
 			if (IsErroriMasterizzazione)
 			{
-				RiCaFotoStampateCv = null;
+				RiCaFotoStampateCv = new ListCollectionView(new List<Fotografia>());
 			}
 			else
 			{
@@ -111,6 +111,7 @@ namespace Digiphoto.Lumen.UI
 					rigaCarrelloStampataSelezionata = (RigaCarrello)RiCaFotoStampateCv.GetItemAt(indexStampate);
 				else if (RiCaFotoStampateCv.Count > 0)
 					rigaCarrelloStampataSelezionata = (RigaCarrello)RiCaFotoStampateCv.GetItemAt(RiCaFotoStampateCv.Count - 1);
+			}
 
 				if (RiCaFotoMasterizzateCv != null && !RiCaFotoMasterizzateCv.IsEmpty)
 					indexMasterizzate = RiCaFotoMasterizzateCv.IndexOf(rigaCarrelloMasterizzataSelezionata);
@@ -123,7 +124,8 @@ namespace Digiphoto.Lumen.UI
 					rigaCarrelloMasterizzataSelezionata = (RigaCarrello)RiCaFotoMasterizzateCv.GetItemAt(indexMasterizzate);
 				else if (RiCaFotoMasterizzateCv.Count > 0)
 					rigaCarrelloMasterizzataSelezionata = (RigaCarrello)RiCaFotoMasterizzateCv.GetItemAt(RiCaFotoMasterizzateCv.Count-1);
-			}
+
+
 			OnPropertyChanged( "RiCaFotoStampateCv" );
 			OnPropertyChanged( "RiCaFotoMasterizzateCv" );
 		}
@@ -381,6 +383,13 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
+		public string spazioFotoDaMasterizzate
+		{
+			get
+			{
+				return venditoreSrv.spazioFotoDaMasterizzate;
+			}
+		}
 
 		#endregion
 
@@ -467,6 +476,14 @@ namespace Digiphoto.Lumen.UI
 			} 
 		}
 
+		public bool operazioniCd
+		{
+			get
+			{
+				return carrelloCorrente.venduto && !IsErroriMasterizzazione;
+			}
+		}
+
 		public bool abilitaEliminaRigaFoto(String discriminator)
 		{
 			if (IsInDesignMode)
@@ -475,7 +492,7 @@ namespace Digiphoto.Lumen.UI
 			bool posso = true;
 
 			//Verifico che il carrello non sia stato venduto
-			if (posso && carrelloCorrente.venduto)
+			if (posso && carrelloCorrente.venduto && !IsErroriMasterizzazione)
 				posso = false;
 
 			if(posso && discriminator == Carrello.TIPORIGA_STAMPA){
@@ -496,8 +513,8 @@ namespace Digiphoto.Lumen.UI
 			}
 
 			// Ce un errore nella masterizzazione 
-			if (posso && IsErroriMasterizzazione)
-				posso = false;
+			//if (posso && IsErroriMasterizzazione)
+			//	posso = false;
 
 			return posso;
 		}
@@ -576,6 +593,12 @@ namespace Digiphoto.Lumen.UI
 					IsErroriMasterizzazione = true;
 					trayIconProvider.showError("Avviso", "Errore Media", 5000);
 				}
+				if (StatoMasterizzazione == Digiphoto.Lumen.Servizi.Masterizzare.Fase.ErroreSpazioDisco)
+				{
+					uri = new Uri(uriTemplate.Replace("##", "ssErroreMedia"));
+					IsErroriMasterizzazione = true;
+					trayIconProvider.showError("Avviso", "Capacita del disco superata!!!", 5000);
+				}
 				if (StatoMasterizzazione == Digiphoto.Lumen.Servizi.Masterizzare.Fase.InizioCopia)
 				{
 					uri = new Uri(uriTemplate.Replace("##", "ssBurn"));
@@ -614,6 +637,8 @@ namespace Digiphoto.Lumen.UI
 			OnPropertyChanged( "sommatoriaQtaFotoDaStampare" );
 			OnPropertyChanged( "sommatoriaPrezziFotoDaStampare" );
 			OnPropertyChanged( "possoVisualizzareIncassiFotografi" );
+			OnPropertyChanged( "spazioFotoDaMasterizzate" );
+			OnPropertyChanged( "operazioniCd" );
 		}
 
 
@@ -733,6 +758,8 @@ namespace Digiphoto.Lumen.UI
 			if( Configurazione.UserConfigLumen.masterizzaDirettamente ) {
 
 				bool procediPure = true;
+				venditoreSrv.setDatiDischetto(TipoDestinazione.MASTERIZZATORE, Configurazione.UserConfigLumen.defaultMasterizzatore);
+
 				dialogProvider.ShowConfirmation( "Voi continuare la masterizzazione sul CD/DVD ?",
 					"Richiesta conferma",
 					  ( confermato ) => {
@@ -740,10 +767,12 @@ namespace Digiphoto.Lumen.UI
 					  } );
 
 				#region cartella
-				if( !procediPure ) {
+				if (!procediPure)
+				{
 
 					string chiavettaPath = scegliCartellaDoveMasterizzare();
-					if( chiavettaPath == null ) {
+					if (chiavettaPath == null)
+					{
 						return false;
 						}
 
@@ -957,6 +986,13 @@ namespace Digiphoto.Lumen.UI
 
 		private void creaNuovoCarrello()
 		{
+			//Se ho avuto un errore di masterizzazione devo rinfrescarea anche le righe!!!
+			//Mah
+			if(IsErroriMasterizzazione){
+				RiCaFotoStampateCv	= new ListCollectionView(new List<Fotografia>());
+				RiCaFotoMasterizzateCv = new ListCollectionView(new List<Fotografia>());
+				rinfrescaViewRighe();
+			}
 			venditoreSrv.creaNuovoCarrello();
 			MasterizzazionePorgress = "";
 			StatoMasterizzazione = Digiphoto.Lumen.Servizi.Masterizzare.Fase.Attesa;

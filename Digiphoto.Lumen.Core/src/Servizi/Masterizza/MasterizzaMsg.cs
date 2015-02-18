@@ -12,7 +12,8 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 		Attesa,
         InizioCopia,
         CopiaCompletata,
-		ErroreMedia
+		ErroreMedia,
+		ErroreSpazioDisco
     };
 
     public class MasterizzaMsg : Messaggio

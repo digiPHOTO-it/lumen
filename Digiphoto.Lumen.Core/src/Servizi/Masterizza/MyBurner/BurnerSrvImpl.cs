@@ -226,6 +226,32 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare.MyBurner
             return true;
         }
 
+		public Int64 CapacitaResidua()
+		{
+			Int64 capacity = 0;
+			
+			if (_totalDiscSize == 0)
+				return capacity;
+
+			Int64 totalMediaSize = 0;
+			foreach (IMediaItem mediaItem in listaFileDaMasterizzare)
+			{
+				totalMediaSize += mediaItem.SizeOnDisc;
+			}
+
+
+			if (totalMediaSize == 0)
+			{
+				return _totalDiscSize;
+			}
+			else
+			{
+				capacity = _totalDiscSize - totalMediaSize;
+			}
+			
+			return capacity;
+		}
+
         /// <summary>
         /// Aggiorna la capacità rimanente nel disco
         /// </summary>

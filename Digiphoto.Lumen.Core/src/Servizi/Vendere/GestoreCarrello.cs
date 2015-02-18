@@ -20,6 +20,7 @@ using System.ComponentModel;
 using System.Data.Entity;
 using Digiphoto.Lumen.Util;
 using System.Data.Entity.Core;
+using System.IO;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 
@@ -136,6 +137,26 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		public decimal sommatoraPrezziFotoDaStampare {
 			get {
 				return carrello.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_STAMPA ).Sum( rfs => rfs.prezzoNettoTotale );
+			}
+		}
+
+		public string spazioFotoDaMasterizzate
+		{
+			get
+			{
+				long totalLength = 0;
+				foreach (RigaCarrello riga in carrello.righeCarrello.Where(r => r.discriminator == Carrello.TIPORIGA_MASTERIZZATA))
+                {
+                    String filePath = (Configurazione.cartellaRepositoryFoto + Path.DirectorySeparatorChar + riga.fotografia.nomeFile);
+					totalLength+= new FileInfo( filePath ).Length;
+				}
+
+				//long size = totalLength / 1024;
+
+				return Format.ByteSize(totalLength);
+
+				//return string.Format( "{0} MB", size / 1024 );
+
 			}
 		}
 
@@ -649,5 +670,31 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 	}
 
+	public static class Format
+	{
+		static string[] sizeSuffixes = {
+        "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
 
+		public static string ByteSize(long size)
+		{
+			const string formatTemplate = "{0}{1:0.#} {2}";
+
+			if (size == 0)
+			{
+				return string.Format(formatTemplate, null, 0, sizeSuffixes[0]);
+			}
+
+			var absSize = Math.Abs((double)size);
+			var fpPower = Math.Log(absSize, 1000);
+			var intPower = (int)fpPower;
+			var iUnit = intPower >= sizeSuffixes.Length
+				? sizeSuffixes.Length - 1
+				: intPower;
+			var normSize = absSize / Math.Pow(1000, iUnit);
+
+			return string.Format(
+				formatTemplate,
+				size < 0 ? "-" : null, normSize, sizeSuffixes[iUnit]);
+		}
+	}
 }
