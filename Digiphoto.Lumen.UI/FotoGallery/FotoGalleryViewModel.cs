@@ -902,7 +902,7 @@ namespace Digiphoto.Lumen.UI {
 			// while( _bkgIdrata.IsBusy )
 			//	System.Threading.Thread.Sleep( 2000 );
 
-			completaParametriRicerca();
+			completaParametriRicercaWithOrder(true);
 
 			// Eseguo la ricerca nel database
 			fotoExplorerSrv.cercaFoto( paramCercaFoto );
@@ -1050,14 +1050,22 @@ namespace Digiphoto.Lumen.UI {
 			idrataProgress = e.ProgressPercentage;
 		}
 
+		private void completaParametriRicerca()
+		{
+			completaParametriRicercaWithOrder(false);
+		}
 
 		/// <summary>
 		/// Sistemo i parametri e gestisco la paginazione
 		/// </summary>
 		/// <param name="numPagina">il numero di pagina</param>
-		private void completaParametriRicerca() {
+		private void completaParametriRicercaWithOrder(bool usaOrdinamentoAsc)
+		{
 
 			paramCercaFoto.idratareImmagini = false;
+
+			if(usaOrdinamentoAsc)
+				paramCercaFoto.ordinamentoAsc = Configurazione.UserConfigLumen.invertiRicerca;
 
 			// Aggiungo eventuale parametro il fotografo
 			if( selettoreFotografoViewModel.fotografoSelezionato != null )

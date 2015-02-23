@@ -24,6 +24,8 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 		public bool idratareImmagini { get; set; }
 
+		public bool ordinamentoAsc { get; set; }
+
 		public ParamCercaFoto() {
 
 			// Istanzio la lista vuota che mi è più comoda
