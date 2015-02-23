@@ -106,6 +106,12 @@ namespace Digiphoto.Lumen.Config
 			set;
 		}
 
+		public bool invertiRicerca
+		{
+			get;
+			set;
+		}
+
 		public string dbNomeDbVuoto {
 			get;
 			set;

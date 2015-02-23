@@ -194,6 +194,9 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			if( param.giornataFine != null )
 				query = query.Where( ff => ff.giornata <= param.giornataFine );
 
+			if (param.ordinamentoAsc)
+				query = query.OrderBy(ff => ff.giornata);
+
 			return query;
 		}
 
