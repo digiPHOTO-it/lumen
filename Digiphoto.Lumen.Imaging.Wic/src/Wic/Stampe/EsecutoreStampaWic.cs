@@ -51,155 +51,160 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 				string nomeFileFoto = AiutanteFoto.idrataImmagineDaStampare( _lavoroDiStampa.fotografia );
 
 				// Ricavo l'immagine da stampare
-				IImmagine immagineDaStampare = _lavoroDiStampa.fotografia.imgRisultante != null ? _lavoroDiStampa.fotografia.imgRisultante : _lavoroDiStampa.fotografia.imgOrig;
+				IImmagine immagine = _lavoroDiStampa.fotografia.imgRisultante != null ? _lavoroDiStampa.fotografia.imgRisultante : _lavoroDiStampa.fotografia.imgOrig;
 
 				// Gestisco una eccezione specifica, in questo modo ho un messaggio chiaro di cosa è andato storto.
-				if( immagineDaStampare == null )
-					throw new System.IO.FileNotFoundException( "fotografia = " + _lavoroDiStampa.fotografia, _lavoroDiStampa.fotografia.nomeFile );
+				if( immagine == null )
+					throw new FileNotFoundException( "fotografia = " + _lavoroDiStampa.fotografia, _lavoroDiStampa.fotografia.nomeFile );
 
+				// Devo clonare l'immagine perché negli atri thread potrebbero eseguire delle dispose che me la svuotano
+				using( IImmagine immagineDaStampare = (IImmagine)immagine.Clone() ) {
 
-				// TODO BLUCA provo a duplicare l'immagine per evitare l'errore che è di proprietà del thread chiamante.
-//				BitmapSource bmp = new WriteableBitmap( ((ImmagineWic)immagineDaStampare).bitmapSource );
-				BitmapSource bmp = ((ImmagineWic)immagineDaStampare).bitmapSource;
-				// bmp.Freeze();
+					// TODO BLUCA provo a duplicare l'immagine per evitare l'errore che è di proprietà del thread chiamante.
+					// BitmapSource bmp = new WriteableBitmap( ((ImmagineWic)immagineDaStampare).bitmapSource );
+					// bmp.Freeze();
 
+					BitmapSource bmp = ((ImmagineWic)immagineDaStampare).bitmapSource;
 
-				// Come print-server uso me stesso
-				using( PrintServer ps1 = new PrintServer() ) {
+					// Come print-server uso me stesso
+					using( PrintServer ps1 = new PrintServer() ) {
 
-					// Ricavo la coda di stampa (cioè la stampante) e le sue capacità.
-					using( PrintQueue coda = ps1.GetPrintQueue( lavoroDiStampa.param.nomeStampante ) ) {
+						// Ricavo la coda di stampa (cioè la stampante) e le sue capacità.
+						using( PrintQueue coda = ps1.GetPrintQueue( lavoroDiStampa.param.nomeStampante ) ) {
 
-						PrintCapabilities capabilities = coda.GetPrintCapabilities();
+							PrintCapabilities capabilities = coda.GetPrintCapabilities();
 
-						// Imposto la stampante (così che mi carica le impostazioni)
-						PrintDialog dialog = new PrintDialog();
-						dialog.PrintQueue = coda;
+							// Imposto la stampante (così che mi carica le impostazioni)
+							PrintDialog dialog = new PrintDialog();
+							dialog.PrintQueue = coda;
 
-						Size areaStampabile = new Size( dialog.PrintableAreaWidth, dialog.PrintableAreaHeight );
+							Size areaStampabile = new Size( dialog.PrintableAreaWidth, dialog.PrintableAreaHeight );
 
-						// Imposto qualche attributo della stampa
-						bool piuRealistaDelRe = false;
-						if( piuRealistaDelRe ) { // Meglio non essere più realisti del re.
-							dialog.PrintTicket.OutputQuality = OutputQuality.Photographic;
-							dialog.PrintTicket.PhotoPrintingIntent = PhotoPrintingIntent.PhotoBest;
-						}
+							// Imposto qualche attributo della stampa
+							bool piuRealistaDelRe = false;
+							if( piuRealistaDelRe ) { // Meglio non essere più realisti del re.
+								dialog.PrintTicket.OutputQuality = OutputQuality.Photographic;
+								dialog.PrintTicket.PhotoPrintingIntent = PhotoPrintingIntent.PhotoBest;
+							}
 
-						// Compongo il titolo della stampa che comparirà nella descrizione della riga nello spooler di windows
-						StringBuilder titolo = new StringBuilder();
-						titolo.AppendFormat( "foto N.{0} Oper={1} gg={2}", 
-							                 _lavoroDiStampa.fotografia.etichetta, 
-											 _lavoroDiStampa.fotografia.fotografo.iniziali,
-											 String.Format( "{0:dd-MMM}", _lavoroDiStampa.fotografia.dataOraAcquisizione ) );
+							// Compongo il titolo della stampa che comparirà nella descrizione della riga nello spooler di windows
+							StringBuilder titolo = new StringBuilder();
+							titolo.AppendFormat( "foto N.{0} Oper={1} gg={2}",
+												 _lavoroDiStampa.fotografia.etichetta,
+												 _lavoroDiStampa.fotografia.fotografo.iniziali,
+												 String.Format( "{0:dd-MMM}", _lavoroDiStampa.fotografia.dataOraAcquisizione ) );
 #if DEBUG
-						titolo.Append( " #" );
-						titolo.Append( DateTime.Now.ToString( "mmssss") );  // Uso un numero univoco per evitare doppioni per il doPdf altrimenti mi chiede sempre di sovrascrivere
+							titolo.Append( " #" );
+							titolo.Append( DateTime.Now.ToString( "mmssss" ) );  // Uso un numero univoco per evitare doppioni per il doPdf altrimenti mi chiede sempre di sovrascrivere
 #endif
-						// Eventuale rotazione dell'orientamento dell'area di stampa
-						// Devo decidere in anticipo se la stampante va girata. Dopo che ho chiamato Print non si può più fare !!!
-						bool _ruotareStampante = false;
-						if( _lavoroDiStampa.param.autoRuota )
-							if( !ProiettoreArea.isStessoOrientamento( areaStampabile, immagineDaStampare ) )
-								_ruotareStampante = true;
+							// Eventuale rotazione dell'orientamento dell'area di stampa
+							// Devo decidere in anticipo se la stampante va girata. Dopo che ho chiamato Print non si può più fare !!!
+							bool _ruotareStampante = false;
+							if( _lavoroDiStampa.param.autoRuota )
+								if( !ProiettoreArea.isStessoOrientamento( areaStampabile, immagineDaStampare ) )
+									_ruotareStampante = true;
 
-						if( _ruotareStampante ) {
+							if( _ruotareStampante ) {
 
-							if( capabilities.PageOrientationCapability.Contains( PageOrientation.Landscape ) && capabilities.PageOrientationCapability.Contains( PageOrientation.Portrait ) ) {
-								// tutto ok
-								dialog.PrintTicket.PageOrientation = (dialog.PrintTicket.PageOrientation == PageOrientation.Landscape ? PageOrientation.Portrait : PageOrientation.Landscape);
-							} else
-								_giornale.Warn( "La stampante " + lavoroDiStampa.param.nomeStampante + " non accetta cambio orientamento landscape/portrait" );
+								if( capabilities.PageOrientationCapability.Contains( PageOrientation.Landscape ) && capabilities.PageOrientationCapability.Contains( PageOrientation.Portrait ) ) {
+									// tutto ok
+									dialog.PrintTicket.PageOrientation = (dialog.PrintTicket.PageOrientation == PageOrientation.Landscape ? PageOrientation.Portrait : PageOrientation.Landscape);
+								} else
+									_giornale.Warn( "La stampante " + lavoroDiStampa.param.nomeStampante + " non accetta cambio orientamento landscape/portrait" );
 
-							// Quando giro la stampante, non mi si girano anche le dimensioni. Ci penso da solo.
-							areaStampabile = ProiettoreArea.ruota( areaStampabile );
-						}
+								// Quando giro la stampante, non mi si girano anche le dimensioni. Ci penso da solo.
+								areaStampabile = ProiettoreArea.ruota( areaStampabile );
+							}
 
-						//
-						// ----- gestisco il numero di copie
-						//
-						int cicliStampa = 1;
-						if( lavoroDiStampa.param.numCopie > 1 ) {
-							// Se la stampante gestisce le copie multiple, faccio un invio solo.
-							if( capabilities.MaxCopyCount >= lavoroDiStampa.param.numCopie )
-								dialog.PrintTicket.CopyCount = lavoroDiStampa.param.numCopie;
+							//
+							// ----- gestisco il numero di copie
+							//
+							int cicliStampa = 1;
+							if( lavoroDiStampa.param.numCopie > 1 ) {
+								// Se la stampante gestisce le copie multiple, faccio un invio solo.
+								if( capabilities.MaxCopyCount >= lavoroDiStampa.param.numCopie )
+									dialog.PrintTicket.CopyCount = lavoroDiStampa.param.numCopie;
+								else
+									cicliStampa = lavoroDiStampa.param.numCopie;
+							}
+
+							//
+							// ----- Preparo la realizzazione grafica da mandare in output
+							//
+
+							// Ora creo il documento che andrò a stampare.
+							// L'uso di un FixedDocument, mi permetterà di interagire con misure, dimensioni e margini
+							FixedDocument document = new FixedDocument();
+							document.DocumentPaginator.PageSize = new Size( dialog.PrintableAreaWidth, dialog.PrintableAreaHeight );
+
+
+							// Creo una pagina della grandezza massima
+							FixedPage page1 = new FixedPage();
+							page1.Width = document.DocumentPaginator.PageSize.Width;
+							page1.Height = document.DocumentPaginator.PageSize.Height;
+							page1.VerticalAlignment = VerticalAlignment.Center;
+							page1.HorizontalAlignment = HorizontalAlignment.Center;
+
+
+							// Per fare in modo che l'immagine venga centrata bene automaticamente, e non venga tagliata solo da una parte ma nel centro,
+							// non devo mettere le dimensioni al componente Image, ma devo creare 
+							// una Grid più esterna con le dimensioni precise.
+							Grid grid = new Grid();
+							grid.Height = page1.Height;
+							grid.Width = page1.Width;
+
+
+							// Creo una immagine che contiene la bitmap da stampare
+							Image image = new Image();
+							//						image.BeginInit();
+							image.VerticalAlignment = VerticalAlignment.Center;
+							image.HorizontalAlignment = HorizontalAlignment.Center;
+
+							//						BitmapSource clone = bmp.Clone();
+							//						clone.Freeze();
+							image.Source = bmp;
+
+							if( _lavoroDiStampa.param.autoZoomNoBordiBianchi )
+								image.Stretch = Stretch.UniformToFill;
 							else
-								cicliStampa = lavoroDiStampa.param.numCopie;
-						}
+								image.Stretch = Stretch.Uniform;
+							image.StretchDirection = StretchDirection.Both;
 
-						//
-						// ----- Preparo la realizzazione grafica da mandare in output
-						//
+							//						image.EndInit();
 
-						// Ora creo il documento che andrò a stampare.
-						// L'uso di un FixedDocument, mi permetterà di interagire con misure, dimensioni e margini
-						FixedDocument document = new FixedDocument();
-						document.DocumentPaginator.PageSize = new Size( dialog.PrintableAreaWidth, dialog.PrintableAreaHeight );
+							grid.Children.Add( image );
+							page1.Children.Add( grid );
 
-
-						// Creo una pagina della grandezza massima
-						FixedPage page1 = new FixedPage();
-						page1.Width = document.DocumentPaginator.PageSize.Width;
-						page1.Height = document.DocumentPaginator.PageSize.Height;
-						page1.VerticalAlignment = VerticalAlignment.Center;
-						page1.HorizontalAlignment = HorizontalAlignment.Center;
+							//
+							eventualiStampigli( page1, _lavoroDiStampa );
 
 
-						// Per fare in modo che l'immagine venga centrata bene automaticamente, e non venga tagliata solo da una parte ma nel centro,
-						// non devo mettere le dimensioni al componente Image, ma devo creare 
-						// una Grid più esterna con le dimensioni precise.
-						Grid grid = new Grid();
-						grid.Height = page1.Height;
-						grid.Width = page1.Width;
+							// add the page to the document
+							PageContent page1Content = new PageContent();
+							page1Content.Child = page1;
+							document.Pages.Add( page1Content );
 
+							//
+							// ----- STAMPA per davvero
+							//
+							for( int ciclo = 0; ciclo < cicliStampa; ciclo++ ) {
 
-						// Creo una immagine che contiene la bitmap da stampare
-						Image image = new Image();
-//						image.BeginInit();
-						image.VerticalAlignment = VerticalAlignment.Center;
-						image.HorizontalAlignment = HorizontalAlignment.Center;
-						
-//						BitmapSource clone = bmp.Clone();
-//						clone.Freeze();
-						image.Source = bmp;
+								dialog.PrintDocument( document.DocumentPaginator, titolo.ToString() );
 
-						if( _lavoroDiStampa.param.autoZoomNoBordiBianchi )
-							image.Stretch = Stretch.UniformToFill;
-						else
-							image.Stretch = Stretch.Uniform;
-						image.StretchDirection = StretchDirection.Both;
+								_esito = EsitoStampa.Ok;
+							}
+							_giornale.Debug( "Stampa completata" );
 
-//						image.EndInit();
+							// Per cercare di liberare memoria più possibile svuoto le pagine  forzatamente a mano.
+							// Pare che il GC non riesce a pulire.
+							foreach( var fixedPage in document.Pages.Select( pageContent => pageContent.Child ) ) {
+								fixedPage.Children.Clear();
+							}
 
-						grid.Children.Add( image );
-						page1.Children.Add( grid );
+						} // using printqueue
+					} // using printserver
+				} // using iimagine
 
-						//
-						eventualiStampigli( page1, _lavoroDiStampa );
-
-
-						// add the page to the document
-						PageContent page1Content = new PageContent();
-						page1Content.Child = page1;
-						document.Pages.Add( page1Content );
-
-						//
-						// ----- STAMPA per davvero
-						//
-						for( int ciclo = 0; ciclo < cicliStampa; ciclo++ ) {
-
-							dialog.PrintDocument( document.DocumentPaginator, titolo.ToString() );
-
-							_esito = EsitoStampa.Ok;
-						}
-						_giornale.Debug( "Stampa completata" );
-
-						// Per cercare di liberare memoria più possibile svuoto le pagine  forzatamente a mano.
-						// Pare che il GC non riesce a pulire.
-						foreach( var fixedPage in document.Pages.Select( pageContent => pageContent.Child ) ) {
-							fixedPage.Children.Clear();
-						}
-					}
-				}
 			} catch( Exception ee ) {
 				_esito = EsitoStampa.Errore;
 				_giornale.Error( "Stampa fallita", ee );
@@ -211,6 +216,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 				CoreUtil.abraCadabra();   //   :-)
 			}
 		
+			
 			_giornale.Info( "Completato lavoro di stampa. Esito = " + _esito + " lavoro = " + lavoroDiStampa.ToString() );
 			return _esito;
 		}
