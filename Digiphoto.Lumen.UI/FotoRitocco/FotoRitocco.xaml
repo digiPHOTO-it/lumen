@@ -32,6 +32,12 @@
 		<KeyBinding  Key="F3" Command="{StaticResource cmdCloseSnapshotPubblico}" />
 	</UserControl.InputBindings>
 
+	<i:Interaction.Triggers>
+		<i:EventTrigger EventName="GotFocus">
+			<i:InvokeCommandAction Command="{Binding commandGotFocus}"/>
+		</i:EventTrigger>
+	</i:Interaction.Triggers>
+
 
 	<DockPanel LastChildFill="True" >
 

@@ -897,6 +897,16 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		private RelayCommand _commandGotFocus;
+		public ICommand commandGotFocus {
+			get {
+				if( _commandGotFocus == null ) {
+					_commandGotFocus = new RelayCommand( p => gotFocus(), p => true );
+				}
+				return _commandGotFocus;
+			}
+		}
+
 #endregion Comandi
 
 		// ******************************************************************************************************
@@ -1907,6 +1917,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 
 			quadroRuotato = (!quadroRuotato);
+		}
+
+		void gotFocus() {
+			// Eventualmente idrato nuovamente i provini che potrebbero essere stati disidratati
+			if( fotografieDaModificare != null )
+				foreach( Fotografia foto in fotografieDaModificare )
+					AiutanteFoto.idrataImmaginiFoto( foto, IdrataTarget.Provino, false );
 		}
 
 
