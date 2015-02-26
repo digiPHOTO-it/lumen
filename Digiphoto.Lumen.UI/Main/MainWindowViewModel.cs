@@ -48,6 +48,9 @@ namespace Digiphoto.Lumen.UI {
 			carrelloViewModel = new CarrelloViewModel();
 			fotoGalleryViewModel = new FotoGalleryViewModel();
 
+			selettoreStampantiInstallateViewModel = new SelettoreStampantiInstallateViewModel();
+			DataContextStampantiInstallate = selettoreStampantiInstallateViewModel;
+
 			// Ascolto i messaggi
 			IObservable<Messaggio> observable = LumenApplication.Instance.bus.Observe<Messaggio>();
 			observable.Subscribe( this );
@@ -101,6 +104,12 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private SelettoreStampantiInstallateViewModel selettoreStampantiInstallateViewModel = null;
+
+		public SelettoreStampantiInstallateViewModel DataContextStampantiInstallate {
+			get;
+			set;
+		}
 
 		/// <summary>
 		/// Ritorno la testa del buffer circolare

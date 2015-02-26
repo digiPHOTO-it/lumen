@@ -42,9 +42,17 @@
 
 			</ListBox>
 
-			<Button Name="refreshButton" Content="Rileggi" Command="{Binding Path=rileggereStampantiInstallateCommand}"
-                    Grid.Row="1" Grid.Column="0" />
-        </Grid>
+			<StackPanel Orientation="Horizontal"  Grid.Row="1" Grid.Column="0">
+
+				<Button Name="refreshButton" Content="Rileggi" Command="{Binding Path=rileggereStampantiInstallateCommand}" />
+
+				<Button Content="Visualizza coda di stampe" ToolTip="Apre coda di stampa"
+						Width="auto" 
+						Visibility="{Binding Path=aprireCoda, Converter={StaticResource boolVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+						Command="{Binding Path=aprireCodaCommand}"  />
+
+			</StackPanel>
+		</Grid>
     </GroupBox>
 
 </UserControl>
