@@ -23,5 +23,17 @@ namespace Digiphoto.Lumen.UI
         {
             InitializeComponent();
         }
+
+		public static readonly DependencyProperty aprireCodaProperty = DependencyProperty.Register( "aprireCoda", typeof( bool ), typeof( SelettoreStampanteInstallata ), new FrameworkPropertyMetadata( false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault ) );
+
+		public bool aprireCoda {
+			get {
+				return (bool)GetValue( aprireCodaProperty );
+			}
+			set {
+				SetValue( aprireCodaProperty, value );
+			}
+		}
+
     }
 }

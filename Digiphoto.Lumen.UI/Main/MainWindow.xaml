@@ -192,6 +192,16 @@
 						Style="{DynamicResource tabControlProspettiveStyle}"
 						ItemContainerStyle="{StaticResource tabItemProspettiveStyle}">
 
+					<TabItem ToolTip="Visualizza la coda di stampe della stampante selezionata">
+						<TabItem.Header>
+							<TextBlock Text="Coda di stampe" />
+						</TabItem.Header>
+						
+						<lum:SelettoreStampanteInstallata DataContext="{Binding Path=DataContextStampantiInstallate}" 
+														  Width="600" Height="300" 
+														  aprireCoda="True" />
+					</TabItem>
+
 					<TabItem ToolTip="Cancella foto vecchie">
 						<TabItem.Header>
 							<TextBlock Text="Elimina foto vecchie" FontSize="14" />

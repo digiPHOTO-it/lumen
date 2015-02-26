@@ -10,6 +10,7 @@ using Digiphoto.Lumen.Servizi.EntityRepository;
 using Digiphoto.Lumen.Core.DatiDiEsempio;
 using System.Windows.Input;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Digiphoto.Lumen.UI
 {
@@ -62,7 +63,7 @@ namespace Digiphoto.Lumen.UI
             }
         }
 
-        #endregion
+		#endregion
 
         #region Metodi
         private void rileggereStampantiInstallate()
@@ -87,6 +88,17 @@ namespace Digiphoto.Lumen.UI
                 stampantiInstallate.Add(s);
         }
 
+		private void aprireCoda() {
+			
+			if( this.stampanteSelezionata == null )
+				return;
+
+			string exe = Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.System ), "rundll32.exe" );
+			string param = String.Format( "printui.dll,PrintUIEntry /o /n \"{0}\"", stampanteSelezionata.NomeStampante );
+			System.Diagnostics.Process.Start( exe, param );
+
+		}
+
         #endregion
 
         #region Comandi
@@ -103,6 +115,16 @@ namespace Digiphoto.Lumen.UI
                 return _rileggereStampantiInstallateCommand;
             }
         }
+
+		private RelayCommand _aprireCodaCommand;
+		public ICommand aprireCodaCommand {
+			get {
+				if( _aprireCodaCommand == null ) {
+					_aprireCodaCommand = new RelayCommand( param => this.aprireCoda() );
+				}
+				return _aprireCodaCommand;
+			}
+		}
 
         #endregion
     }
