@@ -206,7 +206,7 @@
 								<CheckBox Content="Auto rotazione durante scarico" HorizontalAlignment="Left" Width="184" ToolTip="Ruota automaticamente le foto verticali" IsChecked="{Binding Path=cfg.autoRotazione,Mode=TwoWay}"/>
 								<CheckBox Content="Svuota memory card dopo averla scaricata" Name="svuotaCardCheckBox" IsChecked="{Binding Path=cfg.eraseFotoMemoryCard,Mode=TwoWay}"/>
 								<CheckBox Content="Proietta area stampabile sulle diapositive" HorizontalAlignment="Left" Name="checkBox2" IsChecked="{Binding Path=cfg.proiettaDiapo}"/>
-                                <CheckBox Content="Inverti Ricerca nella Gallery" HorizontalAlignment="Left" Name="invertiRicercaCheckBox" IsChecked="{Binding Path=cfg.invertiRicerca}"/>
+                                <CheckBox Content="Ordina crescente nella Gallery" HorizontalAlignment="Left" Name="invertiRicercaCheckBox" IsChecked="{Binding Path=cfg.invertiRicerca}" ToolTip="Attivato=prima le foto più vecchie ; Disattivato=Prima le foto più nuove" />
 							</StackPanel>
 						</GroupBox>
 						<Label Content="Cartella Rullini" Height="25" HorizontalAlignment="Left" Margin="13,12,0,0" Name="label5" VerticalAlignment="Top" Width="121" />
