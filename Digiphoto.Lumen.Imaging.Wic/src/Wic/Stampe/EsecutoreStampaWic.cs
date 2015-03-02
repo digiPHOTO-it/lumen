@@ -232,11 +232,11 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 			if( lavoroDiStampa.param.stampigli.numFoto ) {
 				TextBlock textNumero = new TextBlock();
 				textNumero.Text = lavoroDiStampa.fotografia.etichetta;
-				textNumero.FontSize = 6; // 30pt text
+				textNumero.FontSize = 8; // 30pt text
 				textNumero.Foreground = coloreFg;
 				textNumero.Background = coloreBg;
-				FixedPage.SetTop( textNumero, 1 );
-				FixedPage.SetRight( textNumero, 1 );
+				FixedPage.SetTop( textNumero, 2 );
+				FixedPage.SetRight( textNumero, 2 );
 				page1.Children.Add( textNumero );
 			}
 
@@ -244,11 +244,11 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 			if( lavoroDiStampa.param.stampigli.giornata ) {
 				TextBlock textGiorno = new TextBlock();
 				textGiorno.Text = lavoroDiStampa.fotografia.giornata.ToString( "d" );
-				textGiorno.FontSize = 6; // 30pt text
+				textGiorno.FontSize = 8; // 30pt text
 				textGiorno.Foreground = coloreFg;
 				textGiorno.Background = coloreBg;
-				FixedPage.SetBottom( textGiorno, 1 );
-				FixedPage.SetLeft( textGiorno, 1 );
+				FixedPage.SetBottom( textGiorno, 2 );
+				FixedPage.SetLeft( textGiorno, 2 );
 				page1.Children.Add( textGiorno );
 			}
 
@@ -256,11 +256,11 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 			if( lavoroDiStampa.param.stampigli.operatore ) {
 				TextBlock textOperatore = new TextBlock();
 				textOperatore.Text = lavoroDiStampa.fotografia.fotografo.iniziali;
-				textOperatore.FontSize = 6; // 30pt text
+				textOperatore.FontSize = 8; // 30pt text
 				textOperatore.Foreground = coloreFg;
 				textOperatore.Background = coloreBg;
-				FixedPage.SetBottom( textOperatore, 1 );
-				FixedPage.SetRight( textOperatore, 1 );
+				FixedPage.SetBottom( textOperatore, 2 );
+				FixedPage.SetRight( textOperatore, 2 );
 				page1.Children.Add( textOperatore );
 			}
 
