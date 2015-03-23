@@ -110,6 +110,7 @@
     <Property Name="attivo" Type="bit" Nullable="false" DefaultValue="true" />
     <Property Name="umano" Type="bit" Nullable="false" DefaultValue="true" />
     <Property Name="note" Type="nvarchar" Nullable="true" />
+    <Property Name="immagine" Type="blob" Nullable="true" />
   </EntityType>
   <EntityType Name="Giornate">
     <Key>
@@ -164,7 +165,7 @@
     <Property Name="id" Type="uniqueidentifier" Nullable="false" />
     <Property Name="giornata" Type="datetime" Nullable="false" />
     <Property Name="tempo" Type="datetime" Nullable="false" />
-    <Property Name="totaleAPagare" Type="decimal" Nullable="false" Precision="6" Scale="2" />
+    <Property Name="totaleAPagare" Type="decimal" Nullable="true" Precision="6" Scale="2" />
     <Property Name="intestazione" Type="nvarchar" Nullable="true" MaxLength="100" />
     <Property Name="venduto" Type="bit" Nullable="false" DefaultValue="false" />
     <Property Name="note" Type="nvarchar" Nullable="true" />
@@ -459,6 +460,7 @@
           <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true"><a:Display Order="4" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></Property>
           <Property Type="Boolean" Name="umano" Nullable="false" DefaultValue="true"><a:Display Order="3" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></Property>
           <Property Type="String" Name="note" Nullable="true"><a:Display Order="5" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></Property>
+          <Property Name="immagine" Type="Binary" Nullable="false" />
         <pem:Validations Enforcement="Must" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></EntityType>
         <Association Name="FotografoFotografia">
           <End Type="LumenModel.Fotografo" Role="Fotografo" Multiplicity="1" />
@@ -528,7 +530,7 @@
           <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="DateTime" Name="giornata" Nullable="false" />
           <Property Type="DateTime" Name="tempo" Nullable="false" />
-          <Property Type="Decimal" Name="totaleAPagare" Nullable="false" Precision="6" Scale="2" />
+          <Property Type="Decimal" Name="totaleAPagare" Precision="6" Scale="2" Nullable="true" />
           <Property Type="String" Name="intestazione" Nullable="true" MaxLength="100" />
           <Property Type="Boolean" Name="venduto" Nullable="false" DefaultValue="false" />
           <Property Type="String" Name="note" Nullable="true" />
@@ -672,6 +674,7 @@
           <ScalarProperty Name="attivo" ColumnName="attivo" />
           <ScalarProperty Name="umano" ColumnName="umano" />
           <ScalarProperty Name="note" ColumnName="note" />
+          <ScalarProperty Name="immagine" ColumnName="immagine" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

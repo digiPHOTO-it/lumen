@@ -26,5 +26,6 @@ namespace Digiphoto.Lumen.Model
         public bool attivo { get; set; }
         public bool umano { get; set; }
         public string note { get; set; }
+        public byte[] immagine { get; set; }
     }
 }

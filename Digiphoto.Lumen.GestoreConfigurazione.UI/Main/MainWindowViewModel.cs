@@ -281,7 +281,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 			// Se è la prima volta, avvio tutto
 			if( !LumenApplication.Instance.avviata ) {
-				LumenApplication.Instance.avvia( true, qualeConnectionString );
+				LumenApplication.Instance.avvia( true, qualeConnectionString, false );
 			}
 
 			// Se è la prima volta, avvio tutto

@@ -93,7 +93,8 @@ CREATE TABLE [Fotografi] (
     [iniziali] nvarchar(2)   NOT NULL ,
     [attivo] bit   DEFAULT 'True' NOT NULL ,
     [umano] bit   DEFAULT 'True' NOT NULL ,
-    [note] nvarchar(2147483647)   NULL 
+    [note] nvarchar(2147483647)   NULL,
+	[immagine] blob NULL
  , PRIMARY KEY ([id])	
 		);
 
@@ -158,7 +159,7 @@ CREATE TABLE [Carrelli] (
     [id] uniqueidentifier   NOT NULL ,
     [giornata] datetime   NOT NULL ,
     [tempo] datetime   NOT NULL ,
-    [totaleAPagare] decimal(6,2)   NOT NULL ,
+    [totaleAPagare] decimal(6,2)   NULL ,
     [intestazione] nvarchar(100)   NULL ,
     [venduto] bit   DEFAULT 'False' NOT NULL ,
     [note] nvarchar(2147483647)   NULL ,

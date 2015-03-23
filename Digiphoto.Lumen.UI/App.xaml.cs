@@ -17,6 +17,7 @@ using System.Globalization;
 using System.ComponentModel;
 using System.Windows.Media;
 using Digiphoto.Lumen.UI.ScreenCapture;
+using Digiphoto.Lumen.Licensing;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -61,17 +62,14 @@ namespace Digiphoto.Lumen.UI {
 				// Se la configurazione è mancante, allora rimando all'apposita gestione
 				LumenApplication.Instance.avvia();
 
-				// Controllo la licenza
-				if( !LumenApplication.Instance.haveValidLicense ) {
-					// Metto due message box perché la prima non si ferma !
-					MessageBox.Show( "Errore nella licenza", "ATTENZIONE" );
-					MessageBox.Show( "Non è stata rilevata una licenza valida per l'uso del programma.\nContattare il fornitore del software " + Configurazione.applicationName + "\nper ottenere regolare licenza,\noppure una versione demo gratuita", "Licenza non valida", MessageBoxButton.OK, MessageBoxImage.Error );
-#if (! DEBUG)
-					Environment.Exit( 7 );
-#endif
-				}
-
 				avvisoScadenzaLicenza( 2 );
+				
+			} catch ( LicenseNotFoundException ) {
+				
+				// Metto due message box perché la prima non si ferma !
+				MessageBox.Show( "Errore nella licenza", "ATTENZIONE" );
+				MessageBox.Show( "Non è stata rilevata una licenza valida per l'uso del programma.\nContattare il fornitore del software " + Configurazione.applicationName + "\nper ottenere regolare licenza,\noppure una versione demo gratuita", "Licenza non valida", MessageBoxButton.OK, MessageBoxImage.Error );
+				Environment.Exit( 7 );
 
 			} catch( ConfigurazioneMancanteException em ) {
 
