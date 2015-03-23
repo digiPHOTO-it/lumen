@@ -85,12 +85,12 @@ namespace Digiphoto.Lumen.Applicazione {
 		 * Avvio della applicazione. Accendiamo la baracca.
 		 */
 		public void avvia() {
-			avvia( false, (string)null );
+			avvia( false, (string)null, true );
 		}
 
 
 		// TODO questa dovrebbe essere internal usata solo dalla configurazione
-		public void avvia( bool autoSistema, string connectionString ) {
+		public void avvia( bool autoSistema, string connectionString, bool stopSeMancaLicenza ) {
 
 		/*
 		 * Purtoppo non posso mettere questo controllo perché gli Test-Case si inciampano qui.
@@ -119,6 +119,12 @@ namespace Digiphoto.Lumen.Applicazione {
 			}
 
 			caricaDatiLicenza();
+
+
+			// Controllo la licenza
+			if( !this.haveValidLicense )
+				if( stopSeMancaLicenza )
+					throw new LicenseNotFoundException();
 
 			avviata = true;
 
@@ -300,6 +306,7 @@ namespace Digiphoto.Lumen.Applicazione {
 		}
 
 		void caricaDatiLicenza() {
+
 			registryLicense = LicenseUtil.createCurrentLicense();
 
 			if( haveValidLicense )

@@ -1,5 +1,6 @@
 ﻿body {
     background-color: black;
+    color: wheat;
 }
 
 
@@ -26,3 +27,8 @@ div#image-container img
 }
 
 
+
+ul.listaFotografi
+{
+    list-style: none;
+}

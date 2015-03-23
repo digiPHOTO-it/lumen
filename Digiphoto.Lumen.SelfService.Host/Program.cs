@@ -23,8 +23,10 @@ namespace Digiphoto.Lumen.SelfService.Host {
 			LumenApplication app = LumenApplication.Instance;
 			app.avvia();
 
-			string baseAddress = "http://tirannos:9000/";
-			
+			string baseAddress = calcolaBaseAddress();
+
+			System.Console.WriteLine( "Lancio OWIN host su " + baseAddress );
+
 			// Start OWIN host
 			using( WebApp.Start<Startup>( url: baseAddress ) ) {
 
@@ -46,6 +48,14 @@ namespace Digiphoto.Lumen.SelfService.Host {
 
 					Console.WriteLine( "----" );
 
+					HttpResponseMessage response2 = client.GetAsync( baseAddress + "api/selfservice/fotografo/Operator1/fotografie/3" ).Result;
+					List<FotografiaDto> lista2 = response2.Content.ReadAsAsync<List<FotografiaDto>>().Result;
+					foreach( FotografiaDto fotoDto in lista ) {
+						Console.WriteLine( "num=" + fotoDto.numero + " data=" + fotoDto.giornata + " oper=" + fotoDto.nomeFotografo );
+					}
+
+					Console.WriteLine( "----" );
+
 					Guid guid = lista[0].id;
 					String url = baseAddress + "api/selfservice/" + guid.ToString() + "/image";
 					response = client.GetAsync( url ).Result;
@@ -58,11 +68,28 @@ namespace Digiphoto.Lumen.SelfService.Host {
 					}
 				}
 
-				Console.WriteLine( "* * * * ATTESA * * * " );
+				Console.WriteLine( "* * * * *          ATTESA richieste dai client          * * * * *" );
+				Console.WriteLine( "* * * * *     Premere INVIO per fermare il servizio     * * * * * " );
 				Console.ReadLine();
 			}
 
 			app.ferma();
 		}
+
+		private static string calcolaBaseAddress() {
+			String hostName;
+			if( Properties.Settings.Default.NomeHost == "(this)" )
+				hostName = System.Net.Dns.GetHostName();
+			else
+				hostName = Properties.Settings.Default.NomeHost;
+
+			int numPorta = Properties.Settings.Default.NumPorta;
+			if( numPorta == 0 )
+				numPorta = 9000;
+
+			string baseAddress = "http://" + hostName + ":" + numPorta;
+			return baseAddress;
+		}
+
 	}
 }

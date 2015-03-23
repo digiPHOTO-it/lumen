@@ -160,6 +160,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="src\Licensing\LicenseNotFoundException.cs" />
     <Compile Include="src\Applicazione\StartupUtil.cs" />
     <Compile Include="src\Applicazione\Stato.cs" />
     <Compile Include="src\Collections\RingBuffer.cs" />
