@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AltroIeri" xml:space="preserve">
+    <value>The day before yesterday</value>
+  </data>
   <data name="Avanti" xml:space="preserve">
     <value>Next</value>
+  </data>
+  <data name="Ieri" xml:space="preserve">
+    <value>Yesterday</value>
   </data>
   <data name="Indietro" xml:space="preserve">
     <value>Back</value>
@@ -127,6 +133,33 @@
     <value>Let's start searching</value>
   </data>
   <data name="LabelSpiagazioneHome" xml:space="preserve">
-    <value>With this application, you can find your pictures. Our team is at your disposal to inform you and to help you.</value>
+    <value>With this easy application, you can find your pictures. Our team is at your disposal to help and inform you.</value>
+  </data>
+  <data name="Oggi" xml:space="preserve">
+    <value>Today</value>
+  </data>
+  <data name="Pagina" xml:space="preserve">
+    <value>Page</value>
+  </data>
+  <data name="RicercaFoto" xml:space="preserve">
+    <value>Find pictures</value>
+  </data>
+  <data name="SelezionaGiornoDalCalendario" xml:space="preserve">
+    <value>Select a day from the calendar</value>
+  </data>
+  <data name="Spiegazione2" xml:space="preserve">
+    <value>If you remember the photographer who took the photos, click on his image. If you don't remember it, click the "&lt;i&gt;Next&lt;/i&gt;" button.</value>
+  </data>
+  <data name="Spiegazione3" xml:space="preserve">
+    <value>Select the day the photo was taken. If you don't remember it, go on with the "&lt;i&gt;Next&lt;/i&gt;" key.</value>
+  </data>
+  <data name="TitoloBanner1" xml:space="preserve">
+    <value>Photo Shop - Find pictures</value>
+  </data>
+  <data name="TitoloBanner2" xml:space="preserve">
+    <value>Find pictures - Select photographer</value>
+  </data>
+  <data name="TitoloBanner3" xml:space="preserve">
+    <value>Find pictures - Select the day</value>
   </data>
 </root>

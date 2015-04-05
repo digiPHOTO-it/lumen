@@ -123,10 +123,14 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 		private IQueryable<Fotografia> creaQueryEntita( ParamCercaFoto param ) {
 
-			IQueryable<Fotografia> query = from ff in this.objectContext.Fotografie.Include( "fotografo" ).Include( "evento" )
-										   orderby ff.dataOraAcquisizione descending, ff.numero descending
-										   select ff;
-			
+			var qq = this.objectContext.Fotografie.Include( "fotografo" );			
+
+			if( !param.evitareJoinEvento )
+				qq = qq.Include( "evento" );
+
+			var qq2 = qq.OrderByDescending( ff => ff.dataOraAcquisizione ).ThenByDescending( ff => ff.numero );
+
+			IQueryable<Fotografia> query = qq2.AsQueryable();
 			
 			// ----- Filtro eventi
 			// Siccome non esiste la WhereIn, me la sono creata io. 

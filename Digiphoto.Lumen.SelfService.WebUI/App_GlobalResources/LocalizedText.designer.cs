@@ -61,11 +61,29 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Altro ieri.
+        /// </summary>
+        internal static string AltroIeri {
+            get {
+                return ResourceManager.GetString("AltroIeri", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Avanti.
         /// </summary>
         internal static string Avanti {
             get {
                 return ResourceManager.GetString("Avanti", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ieri.
+        /// </summary>
+        internal static string Ieri {
+            get {
+                return ResourceManager.GetString("Ieri", resourceCulture);
             }
         }
         
@@ -88,11 +106,92 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Con questa procedura potrai ricercare le tue fotografie. Il nostro personale sarà a tua disposizione per ogni tua richiesta..
+        ///   Looks up a localized string similar to Con questa semplice procedura potrai ricercare le tue fotografie. Il nostro personale sarà a tua disposizione per ogni tua richiesta..
         /// </summary>
         internal static string LabelSpiagazioneHome {
             get {
                 return ResourceManager.GetString("LabelSpiagazioneHome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Oggi.
+        /// </summary>
+        internal static string Oggi {
+            get {
+                return ResourceManager.GetString("Oggi", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pagina.
+        /// </summary>
+        internal static string Pagina {
+            get {
+                return ResourceManager.GetString("Pagina", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ricerca foto.
+        /// </summary>
+        internal static string RicercaFoto {
+            get {
+                return ResourceManager.GetString("RicercaFoto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Seleziona un giorno dal calendario.
+        /// </summary>
+        internal static string SelezionaGiornoDalCalendario {
+            get {
+                return ResourceManager.GetString("SelezionaGiornoDalCalendario", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Se ti ricordi il fotografo che ti ha scattato le foto, clicca sulla sua immagine. Se invece non te lo ricordi, prosegui oltre con il tasto &quot;&lt;i&gt;Avanti&lt;/i&gt;&quot;.
+        /// </summary>
+        internal static string Spiegazione2 {
+            get {
+                return ResourceManager.GetString("Spiegazione2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indica il giorno in cui è stata scattata la foto. Se non lo sai, o non te lo ricordi, prosegui oltre con il tasto &quot;&lt;i&gt;Avanti&lt;/i&gt;&quot;..
+        /// </summary>
+        internal static string Spiegazione3 {
+            get {
+                return ResourceManager.GetString("Spiegazione3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Negozio di Fotografia - Ricerca Foto.
+        /// </summary>
+        internal static string TitoloBanner1 {
+            get {
+                return ResourceManager.GetString("TitoloBanner1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ricerca Foto - Imposta il Fotografo.
+        /// </summary>
+        internal static string TitoloBanner2 {
+            get {
+                return ResourceManager.GetString("TitoloBanner2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RicercaFoto - Imposta il Giorno.
+        /// </summary>
+        internal static string TitoloBanner3 {
+            get {
+                return ResourceManager.GetString("TitoloBanner3", resourceCulture);
             }
         }
     }

@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AltroIeri" xml:space="preserve">
+    <value>Altro ieri</value>
+  </data>
   <data name="Avanti" xml:space="preserve">
     <value>Avanti</value>
+  </data>
+  <data name="Ieri" xml:space="preserve">
+    <value>Ieri</value>
   </data>
   <data name="Indietro" xml:space="preserve">
     <value>Indietro</value>
@@ -127,6 +133,33 @@
     <value>Inizia la ricerca</value>
   </data>
   <data name="LabelSpiagazioneHome" xml:space="preserve">
-    <value>Con questa procedura potrai ricercare le tue fotografie. Il nostro personale sarà a tua disposizione per ogni tua richiesta.</value>
+    <value>Con questa semplice procedura potrai ricercare le tue fotografie. Il nostro personale sarà a tua disposizione per ogni tua richiesta.</value>
+  </data>
+  <data name="Oggi" xml:space="preserve">
+    <value>Oggi</value>
+  </data>
+  <data name="Pagina" xml:space="preserve">
+    <value>Pagina</value>
+  </data>
+  <data name="RicercaFoto" xml:space="preserve">
+    <value>Ricerca foto</value>
+  </data>
+  <data name="SelezionaGiornoDalCalendario" xml:space="preserve">
+    <value>Seleziona un giorno dal calendario</value>
+  </data>
+  <data name="Spiegazione2" xml:space="preserve">
+    <value>Se ti ricordi il fotografo che ti ha scattato le foto, clicca sulla sua immagine. Se invece non te lo ricordi, prosegui oltre con il tasto "&lt;i&gt;Avanti&lt;/i&gt;"</value>
+  </data>
+  <data name="Spiegazione3" xml:space="preserve">
+    <value>Indica il giorno in cui è stata scattata la foto. Se non lo sai, o non te lo ricordi, prosegui oltre con il tasto "&lt;i&gt;Avanti&lt;/i&gt;".</value>
+  </data>
+  <data name="TitoloBanner1" xml:space="preserve">
+    <value>Negozio di Fotografia - Ricerca Foto</value>
+  </data>
+  <data name="TitoloBanner2" xml:space="preserve">
+    <value>Ricerca Foto - Imposta il Fotografo</value>
+  </data>
+  <data name="TitoloBanner3" xml:space="preserve">
+    <value>RicercaFoto - Imposta il Giorno</value>
   </data>
 </root>

@@ -26,11 +26,14 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 		public bool ordinamentoAsc { get; set; }
 
+		public bool evitareJoinEvento { get; set; }
+
 		public ParamCercaFoto() {
 
 			// Istanzio la lista vuota che mi è più comoda
 			fasiDelGiorno = new List<FaseDelGiorno>();
 			idratareImmagini = true;
+			evitareJoinEvento = false;
 		}
 
 		public ParamCercaFoto ShallowCopy() {

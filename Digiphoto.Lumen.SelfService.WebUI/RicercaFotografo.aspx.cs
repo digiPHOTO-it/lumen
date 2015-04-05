@@ -42,6 +42,11 @@ namespace Digiphoto.Lumen.SelfService.WebUI {
 
 		HttpClient _httpClient = new HttpClient();
 
+		protected override void InitializeCulture() {
+			UICulture = Util.ImpostaLingua( Session ); // la prendo dalla sessione
+			base.InitializeCulture();
+		}
+
 		public string getImage( string idFotografo ) {
 			return Util.baseAddress + "/api/fotografi/" + idFotografo + "/immagine";
 		}
@@ -56,10 +61,10 @@ namespace Digiphoto.Lumen.SelfService.WebUI {
 
 		bool caricaFotografi() {
 
-			// Devo caricare la lista dei fotografi
+			// Devo caricare la lista dei fotografi (prendo solo quelli che hanno anche l'immagine, tanto senza farebbe schifezza
 			bool ret = false;
 
-			string url = Util.baseAddress + "/api/fotografi";
+			string url = Util.baseAddress + "/api/fotografi?onlyWithImg=true";
 			HttpResponseMessage response = _httpClient.GetAsync( url ).Result;
 			if( response.StatusCode == HttpStatusCode.OK ) {
 				listaFotografiDto = response.Content.ReadAsAsync<List<FotografoDto>>().Result;

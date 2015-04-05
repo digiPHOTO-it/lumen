@@ -37,15 +37,6 @@ namespace Digiphoto.Lumen.SelfService.WebUI {
 			}
 		}
 
-		public int indexFotoCorrente {
-			get {
-				return (int)Session["indexFotoCorrente"];
-			}
-			set {
-				Session["indexFotoCorrente"] = value;
-			}
-		}
-
 		/// <summary>
 		/// Acceso significa che le foto scorrono da sole.
 		/// </summary>
@@ -63,17 +54,8 @@ namespace Digiphoto.Lumen.SelfService.WebUI {
 
 		#endregion Session Properties
 
-		public FotografiaDto fotoCorrente {
-			get {
-				return (listaFotografieDto == null || listaFotografieDto.Count == 0 || indexFotoCorrente < 0) ? null : listaFotografieDto[indexFotoCorrente];
-			}
-		}
-
-
-		public string urlImmagineCorrente {
-			get {
-				return fotoCorrente == null ? null : Util.baseAddress + "api/fotografie/" + fotoCorrente.id.ToString() + "/provino";
-			}
+		public string getUrlImmagine( int index ) {
+			return Util.baseAddress + "api/fotografie/" + listaFotografieDto[index].id.ToString() + "/provino";
 		}
 
 		public int totImmagini {
@@ -82,17 +64,19 @@ namespace Digiphoto.Lumen.SelfService.WebUI {
 			}
 		}
 
+		private const int TAKE = 12;
+
 		public bool possoAndareAvanti {
 			get {
 				// TODO dovrei sapere quante foto in tutto mi ritorna la query, ma per ora non lo so. Da fare
-				return totImmagini > 0 && !autoPlay;
+				return totImmagini == TAKE
+					   && !autoPlay;
 			}
 		}
 
 		public bool possoAndareIndietro {
 			get {
-				return    totImmagini > 0 
-					   && (paramRicerca.numPagina > 1 || indexFotoCorrente > 0)
+				return paramRicerca.numPagina > 1
 					   && !autoPlay;
 			}
 		}
@@ -119,11 +103,18 @@ namespace Digiphoto.Lumen.SelfService.WebUI {
 		private void init() {
 
 			listaFotografieDto = null;
-			indexFotoCorrente = 0;
-
+			
 			// Posso arrivare su questa pagina direttamente, oppure navigando i parametri. In questo caso li trovo già pronti
 			if( paramRicerca == null )
 				paramRicerca = new ParamRicerca();
+
+			// Quando arrivo sulla pagina sparando il QR code che contiene anche il cod. del fotogrfo,
+			// allora fisso anche la giornata di oggi
+			var idFotografo = Request.QueryString["oper"];
+			if( idFotografo != null ) {
+				paramRicerca.idFotografo = idFotografo;
+				paramRicerca.giorno = DateTime.Today;
+			}
 
 			// Vado sulla prima foto (se esiste)
 			andareAvanti();
@@ -139,6 +130,7 @@ namespace Digiphoto.Lumen.SelfService.WebUI {
 		}
 
 		protected void buttonHome_Click( object sender, EventArgs e ) {
+			autoPlay = false;
 			Response.Redirect( "Default.aspx" );
 		}
 
@@ -150,20 +142,12 @@ namespace Digiphoto.Lumen.SelfService.WebUI {
 		/// <param name="direz">+1 = foto successiva ; -1 = foto precedente </param>
 		private bool andareAvanti() {
 
-			bool andato = false;
-
-			if( listaFotografieDto != null && indexFotoCorrente < totImmagini - 1 ) {
-				++indexFotoCorrente;
-				andato = true;
+			bool andato = caricaPaginaCacheFoto( +1 );
+			if( andato ) {
 			} else {
-				andato = caricaPaginaCacheFoto( +1 );
-				if( andato ) {
-					// Devo chiamare la prossima pagina
-					indexFotoCorrente = 0;
-				} else {
-					// Non ci sono più pagine. Rimango fermo
-				}
+				// Non ci sono più pagine. Rimango fermo
 			}
+			
 			Page.DataBind();
 
 			return andato;
@@ -171,15 +155,9 @@ namespace Digiphoto.Lumen.SelfService.WebUI {
 
 		private void andareIndietro() {
 
-			if( listaFotografieDto != null && indexFotoCorrente > 0 ) {
-				--indexFotoCorrente;
+			if( caricaPaginaCacheFoto( -1 ) ) {
 			} else {
-				if( caricaPaginaCacheFoto( -1 ) ) {
-					// Devo chiamare la prossima pagina
-					indexFotoCorrente = totImmagini-1;  // ultima della pagina precedente (sto andando indietro)
-				} else {
-					// Non ci sono più pagine. Rimango fermo
-				}
+				// Non ci sono più pagine. Rimango fermo
 			}
 			Page.DataBind();
 		}
@@ -187,6 +165,11 @@ namespace Digiphoto.Lumen.SelfService.WebUI {
 
 
 		bool caricaPaginaCacheFoto( int direz ) {
+
+			// -- succede quando si preme il CTR+R (reload) del browser. Meglio controllare
+			if( direz < 0 && paramRicerca.numPagina <= 1 )
+				return false;
+
 
 			bool ret = false;
 			int proxPagina = paramRicerca.numPagina + direz;
@@ -240,6 +223,17 @@ namespace Digiphoto.Lumen.SelfService.WebUI {
 			autoPlay = !autoPlay;
 		}
 
+		protected void Giornata_TextChanged( object sender, EventArgs e ) {
+
+			DateTime nuovoGiorno;
+			if( DateTime.TryParse( ((TextBox)sender).Text, out nuovoGiorno ) ) {
+				// Rieseguo la ricerca sul giorno indicato
+				paramRicerca.numPagina = 0;
+				paramRicerca.giorno = nuovoGiorno;
+				andareAvanti();
+			}
+
+		}
 
 	}
 }

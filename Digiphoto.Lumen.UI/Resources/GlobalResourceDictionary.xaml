@@ -152,19 +152,19 @@
 
     </Style>
 
-    <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
+	<!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
     <DataTemplate x:Key="fotografiaDataTemplate" DataType="{x:Type model:Fotografia}" >
 
-		<Border BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="8" Margin="0,0,2,2" >
-            
-            <Canvas x:Name="fotoCanvas"
+		<Border BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="6" Margin="0,0,2,2">
+
+			<Canvas x:Name="fotoCanvas"
                     Height="{Binding  Path=DataContext.dimensioneIconaFoto, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
                     Width="{Binding  Path=DataContext.dimensioneIconaFoto, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" >
 
                 <!-- Questa è l'immagine vera con la foto -->
                 <Image Source="{Binding Path=imgProvino,Converter={StaticResource imageSourceConverter}}" Stretch="Uniform"  
                        x:Name="imageFotografia"
-                       Width="{Binding ActualWidth, ElementName=fotoCanvas, FallbackValue=14}"
+					   Width="{Binding ActualWidth, ElementName=fotoCanvas, FallbackValue=14}"
                        Height="{Binding ActualHeight, ElementName=fotoCanvas, FallbackValue=14}" />
 
 				<!-- TODO con questi diventa tutto lentissimo !!!!

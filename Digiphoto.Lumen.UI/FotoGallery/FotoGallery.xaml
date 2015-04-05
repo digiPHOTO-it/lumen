@@ -51,10 +51,10 @@
         <ToolBarTray Name="toolBarTrayAzioniDx"  Orientation="Vertical" DockPanel.Dock="Right">
                 
 			<ToolBar Band="1" BandIndex="1" >
-                <Button ToolTip="Page UP" Style="{StaticResource buttonBaseStyle}" Click="buttonPageUp_Click">
+                <Button ToolTip="Page UP" Style="{StaticResource buttonBaseStyle}" Click="buttonMovePage_Click" CommandParameter="-1">
                     <Image Width="48" Source="/Digiphoto.Lumen.UI;component/Resources/PageUp-48x48.png" />
                 </Button>
-                <Button ToolTip="Page DOWN" Style="{StaticResource buttonBaseStyle}" Click="buttonPageDown_Click" >
+				<Button ToolTip="Page DOWN" Style="{StaticResource buttonBaseStyle}" Click="buttonMovePage_Click" CommandParameter="+1" >
                     <Image Width="48" Source="/Digiphoto.Lumen.UI;component/Resources/PageDown-48x48.png" />
                 </Button>
                 <Separator />
@@ -236,7 +236,8 @@
 
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}">
-                    <EventSetter Event="MouseDoubleClick" Handler="listBoxItemImageGallery_MouseDoubleClick" />
+
+					<EventSetter Event="MouseDoubleClick" Handler="listBoxItemImageGallery_MouseDoubleClick" />
 
 						<Style.Resources>
 							<!--SelectedItem with focus -->
@@ -245,7 +246,7 @@
 							<!--SelectedItem without focus-->
 						<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Yellow" />
 						</Style.Resources>
-                    </Style>
+	                </Style>				
                 </ListBox.ItemContainerStyle>
 		</ListBox>
 

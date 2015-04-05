@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web.Http;
 using Digiphoto.Lumen.Applicazione;
+using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Imaging;
 using Digiphoto.Lumen.Model;
@@ -100,7 +101,10 @@ namespace Digiphoto.Lumen.SelfService {
 */
 		public IEnumerable<FotografiaDto> GetFotografie( DateTime? giorno, string idFotografo, int? pagina ) {
 
-			const int TAKE = 5;
+			// TODO casino: occorre spostare sul web
+			const int TAKE = 12;
+
+			System.Diagnostics.Trace.WriteLine( "Inizio query ricerca foto: " + DateTime.Now.ToString() + "  pag: " + pagina );
 
 			IFotoExplorerSrv fotoExplorerSrv = LumenApplication.Instance.getServizioAvviato<IFotoExplorerSrv>();
 
@@ -113,7 +117,8 @@ namespace Digiphoto.Lumen.SelfService {
 
 			ParamCercaFoto param = new ParamCercaFoto() {
 				paginazione = pag,
-				idratareImmagini = false
+				idratareImmagini = false,
+				evitareJoinEvento = true
 			};
 
 			// Eventuale filtro per giorno
@@ -140,6 +145,8 @@ namespace Digiphoto.Lumen.SelfService {
 
 			fotoExplorerSrv.cercaFoto( param );
 
+			System.Diagnostics.Trace.WriteLine( "Fine query ricerca foto: " + DateTime.Now.ToString() );
+
 			List<FotografiaDto> fotografieDtos = new List<FotografiaDto>();
 			foreach( Fotografia f in fotoExplorerSrv.fotografie ) {
 
@@ -151,6 +158,8 @@ namespace Digiphoto.Lumen.SelfService {
 				};
 				fotografieDtos.Add( dto );
 			}
+
+			System.Diagnostics.Trace.WriteLine( "Fine idratazione dto: " + DateTime.Now.ToString() );
 
 			return fotografieDtos;
 		}
@@ -245,14 +254,20 @@ namespace Digiphoto.Lumen.SelfService {
 			return GetFotografie( null, idFotografo, pagina );
 		}
 
-		[Route( "~/api/fotografi" )]
-		public IEnumerable<FotografoDto> GetFotografi() {
+		[Route( "~/api/fotografi/{onlyWithImg:bool=false}" )]
+		public IEnumerable<FotografoDto> GetFotografi( bool onlyWithImg ) {
 
 			List<FotografoDto> fotografiDtos = new List<FotografoDto>();
 			using( new UnitOfWorkScope() ) {
 				IEntityRepositorySrv<Fotografo> repo = LumenApplication.Instance.getServizioAvviato<IEntityRepositorySrv<Fotografo>>();
 				var fff = repo.getAll().Where( f => f.attivo == true && f.umano == true );
 				foreach( Fotografo f in fff ) {
+
+					// Eventuale controllo per filtrare solo i fotografi con immagine
+					if( onlyWithImg )
+						if( !esisteImmagineFotografo( f ) )
+							continue;
+
 					FotografoDto dto = new FotografoDto {
 						id = f.id,
 						cognomeNome = f.cognomeNome
@@ -278,18 +293,22 @@ namespace Digiphoto.Lumen.SelfService {
 					fotografo = repo.getById( id );
 				}
 
-				if( fotografo.immagine != null ) {
-					Stream dataStream;
+
+				// dataStream = new MemoryStream( fotografo.immagine );
+				// Stream dataStream = caricaImmagineFotografo( fotografo );
+				var bytes = caricaBytesImgFotografo( fotografo );
+				if( bytes != null ) {
+					MemoryStream dataStream = new MemoryStream( bytes );
+
 					long? dimensione;
-
-					dataStream = new MemoryStream( fotografo.immagine );
-					dimensione = fotografo.immagine.Length;
-
+					dimensione = dataStream.Length;
+					// dimensione = fotografo.immagine.Length;
 					response = new HttpResponseMessage( HttpStatusCode.OK );
 					response.Content = new StreamContent( dataStream );
 					response.Content.Headers.ContentType = new MediaTypeHeaderValue( "image/jpeg" );
 					response.Content.Headers.ContentLength = dimensione;
 				}
+				
 
 			} catch( Exception ee ) {
 				Console.WriteLine( ee );
@@ -299,6 +318,40 @@ namespace Digiphoto.Lumen.SelfService {
 			return response;
 		}
 
+		/// <summary>
+		/// TODO questa modalità è temporanea. Queste immagini andranno nel db
+		/// </summary>
+		private Stream caricaImmagineFotografo( Fotografo f ) {
+
+			Stream stream = null;
+			var nomeFile = nomeFileImgFotografo( f );
+			if( nomeFile != null )
+				stream = new FileStream( nomeFile, FileMode.Open, FileAccess.Read );
+
+			return stream;
+		}
+
+		private byte[] caricaBytesImgFotografo( Fotografo f ) {
+
+			var nomeFile = nomeFileImgFotografo( f );
+			if( nomeFile != null )
+				return File.ReadAllBytes( nomeFile );
+			else
+				return null;
+		}
+
+		private bool esisteImmagineFotografo( Fotografo f ) {
+			string nomeFile = nomeFileImgFotografo( f );
+			return File.Exists( nomeFile );
+		}
+
+		private string nomeFileImgFotografo( Fotografo f ) {
+			DirectoryInfo di = new DirectoryInfo( Configurazione.UserConfigLumen.cartellaMaschere );
+			var folder = Path.Combine( di.Parent.FullName, "Fotografi" );
+			var nomeFile = Path.Combine( folder, f.id + ".jpg" );
+
+			return File.Exists( nomeFile ) ? nomeFile : null;
+		}
+
 	}
-	
 }

@@ -78,10 +78,12 @@ namespace Digiphoto.Lumen.UI {
 			// poi questo
 			quanteRigheVedo = quante;
 
-			forsePrendoSnapshotPubblico();
+			spostamentoScrollerSuGiu( 0 );
+//			forsePrendoSnapshotPubblico();
 
-			LsImageGallery.Focus();   // mi consente di usare il tasto pg/up pg/down.
+//			LsImageGallery.Focus();   // mi consente di usare il tasto pg/up pg/down.
 		}
+
 
 		/// <summary>
 		/// Se scelgo di vedere una sola "riga" di foto, allora cerco di farci stare 
@@ -279,20 +281,100 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 
-		private void buttonPageUp_Click( object sender, RoutedEventArgs e ) {
+		// TODO DACANC
+		private void buttonPageUp_Click___DACANC( object sender, RoutedEventArgs e ) {
+
+			ContentPresenter myContentPresenter = AiutanteUI.FindVisualChild<ContentPresenter>( LsImageGallery );
+			ListBoxItem co = (ListBoxItem)LsImageGallery.ItemContainerGenerator.ContainerFromIndex( 0 );
+
 			ScrollViewer myScrollviewer = AiutanteUI.FindVisualChild<ScrollViewer>( LsImageGallery );
-			myScrollviewer.PageUp();
+
+			double newOffset = 0;
+			if( myScrollviewer.VerticalOffset % co.ActualHeight == 0 )
+				newOffset = myScrollviewer.VerticalOffset - co.ActualHeight;	
+			else
+				newOffset = (int)(myScrollviewer.VerticalOffset / co.ActualHeight) - co.ActualHeight;
+
+			myScrollviewer.ScrollToVerticalOffset( newOffset );
 
 			forsePrendoSnapshotPubblico();
 
 			LsImageGallery.Focus();
-		}
-		private void buttonPageDown_Click( object sender, RoutedEventArgs e ) {
-			ScrollViewer myScrollviewer = AiutanteUI.FindVisualChild<ScrollViewer>( LsImageGallery );
-			myScrollviewer.PageDown();
 
+		}
+
+		private void buttonMovePage_Click( object sender, RoutedEventArgs e ) {
+
+			int direzione = Convert.ToInt32( ((Button)sender).CommandParameter );
+			spostamentoScrollerSuGiu( direzione );
+		}
+
+		/// <summary>
+		/// Posiziono lo scroller in modo da avere sempre una fila di foto "piena" 
+		/// e non posizionata a metà nel video.
+		/// </summary>
+		/// <param name="direzione">
+		///   -1 = una pagina indietro (Pg Up)
+		///    0 = risposiziono su stessa pagina
+		///   +1 = una pagina avanti (Pg Down)
+		/// </param>
+		void spostamentoScrollerSuGiu( int direzione ) {
+
+			ContentPresenter myContentPresenter = AiutanteUI.FindVisualChild<ContentPresenter>( LsImageGallery );
+			ListBoxItem co = (ListBoxItem)LsImageGallery.ItemContainerGenerator.ContainerFromIndex( 0 );
+			double elemH = co.ActualHeight;
+
+			ScrollViewer myScrollviewer = AiutanteUI.FindVisualChild<ScrollViewer>( LsImageGallery );
+
+			// Prima calcolo quante righe di foto intere ci stanno a video in questo momento
+			int quanteRighe = (int)(myContentPresenter.ActualHeight / elemH);
+			if( quanteRighe == 0 )
+				quanteRighe = 1;   // Questa correzione serve perché ci sono dei pixel del bordo che sfasano di poco il calcolo
+
+			// ora mi sposto alla prossima riga visibile (esempio se vedo adesso 4 righe, mi sposto sulla 5°)
+			double incremento = (direzione * co.ActualHeight * quanteRighe);
+			double posizioneFutura = myScrollviewer.VerticalOffset + incremento;
+			int numrighe = (int)(posizioneFutura / elemH);
+
+			if( posizioneFutura % elemH != 0 ) {
+				// Se mi andrò a posizionare in un punto che non è multiplo della altezza foto, 
+				// Significa che vedrò la fila di foto tagliata. Cerco di posizionare
+
+				// Questo dovrebbe fare al posto dello switch seguente
+				posizioneFutura = (numrighe - direzione) * elemH;
+/*
+				switch( direzione ) {
+
+					case -1:
+						// Indietro
+						posizioneFutura = (numrighe + 1) * elemH;
+						break;
+
+					case 0:
+						// non mi muovo rimango sulla pagina attuale
+						posizioneFutura = (numrighe) * elemH;
+						break;
+
+					case 1:
+						// Avanti: non so quando capita. Vediamo
+						var qq = 1;
+						posizioneFutura = (numrighe - 1) * elemH;  // TODO da testare non so se funziona
+						break;
+				}
+ */
+			}
+
+			if( posizioneFutura < 0 )
+				posizioneFutura = 0;
+			// TODO : testare anche il massimo ?
+
+			// Sistemo la posizione delle foto
+			myScrollviewer.ScrollToVerticalOffset( posizioneFutura );
+
+			// Faccio vedere la schermata al cliente
 			forsePrendoSnapshotPubblico();
 
+			// Rimetto il fuoco sul componente gallery, in modo che se premo le freccie su/giu mi sposto correttamente
 			LsImageGallery.Focus();
 		}
 

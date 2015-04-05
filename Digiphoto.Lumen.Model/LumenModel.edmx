@@ -110,7 +110,6 @@
     <Property Name="attivo" Type="bit" Nullable="false" DefaultValue="true" />
     <Property Name="umano" Type="bit" Nullable="false" DefaultValue="true" />
     <Property Name="note" Type="nvarchar" Nullable="true" />
-    <Property Name="immagine" Type="blob" Nullable="true" />
   </EntityType>
   <EntityType Name="Giornate">
     <Key>
@@ -460,7 +459,6 @@
           <Property Type="Boolean" Name="attivo" Nullable="false" DefaultValue="true"><a:Display Order="4" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></Property>
           <Property Type="Boolean" Name="umano" Nullable="false" DefaultValue="true"><a:Display Order="3" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></Property>
           <Property Type="String" Name="note" Nullable="true"><a:Display Order="5" Visible="True" xmlns:a="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></Property>
-          <Property Name="immagine" Type="Binary" Nullable="false" />
         <pem:Validations Enforcement="Must" xmlns:pem="http://schemas.microsoft.com/PEM/2009/01" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" /></EntityType>
         <Association Name="FotografoFotografia">
           <End Type="LumenModel.Fotografo" Role="Fotografo" Multiplicity="1" />
@@ -674,7 +672,6 @@
           <ScalarProperty Name="attivo" ColumnName="attivo" />
           <ScalarProperty Name="umano" ColumnName="umano" />
           <ScalarProperty Name="note" ColumnName="note" />
-          <ScalarProperty Name="immagine" ColumnName="immagine" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

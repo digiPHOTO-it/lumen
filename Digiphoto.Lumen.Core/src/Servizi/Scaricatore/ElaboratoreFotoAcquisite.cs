@@ -83,32 +83,43 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			foreach( FileInfo fileInfo in _listaFiles ) {
 
-				Fotografia foto = aggiungiFoto( fileInfo, ++conta + ultimoNumFoto, tempoScarico );
+				// Eseguo una transazione per ogni foto, in questo modo sono sicuro che tutto quello che posso buttare dentro, ci va.
+				using( TransactionScope transaction = new TransactionScope() ) {
 
-				_giornale.Debug( "Inizio Provinatura immagine " + fileInfo.FullName );
-				AiutanteFoto.creaProvinoFoto( fileInfo.FullName, foto );
-				_giornale.Debug( "Fine Provinatura immagine " );
+					try {
 
-				// Libero la memoria occupata dalle immagini, altrimenti esplode.
-				AiutanteFoto.disposeImmagini( foto, IdrataTarget.Tutte );
+						Fotografia foto = aggiungiFoto( fileInfo, ++conta + ultimoNumFoto, tempoScarico );
 
+						_giornale.Debug( "Inizio Provinatura immagine " + fileInfo.FullName );
+						AiutanteFoto.creaProvinoFoto( fileInfo.FullName, foto );
+						_giornale.Debug( "Fine Provinatura immagine " );
 
-				// Se lavoro con una singola foto, allora lancio l'evento che mi dice che è pronta.
-				if( String.IsNullOrEmpty(_paramScarica.nomeFileSingolo) == false ) {
-					// Quando sono a posto con la foto, sollevo un evento per avvisare tutti
-					// Siccome questa operazione è un pò onerosa, per il momento la abilito
-					// soltanto sulla singola foto. Se ne scarico 1000 di foto, non voglio lanciare 1000 eventi!!!
-					NuovaFotoMsg msg = new NuovaFotoMsg( this, foto );
-					LumenApplication.Instance.bus.Publish( msg );
+						// Mark the transaction as complete.
+						transaction.Complete();
+
+						// Libero la memoria occupata dalle immagini, altrimenti esplode.
+						AiutanteFoto.disposeImmagini( foto, IdrataTarget.Tutte );
+
+						// Se lavoro con una singola foto, allora lancio l'evento che mi dice che è pronta.
+						if( String.IsNullOrEmpty( _paramScarica.nomeFileSingolo ) == false ) {
+							// Quando sono a posto con la foto, sollevo un evento per avvisare tutti
+							// Siccome questa operazione è un pò onerosa, per il momento la abilito
+							// soltanto sulla singola foto. Se ne scarico 1000 di foto, non voglio lanciare 1000 eventi!!!
+							NuovaFotoMsg msg = new NuovaFotoMsg( this, foto );
+							LumenApplication.Instance.bus.Publish( msg );
+						}
+						_giornale.Debug( "ok nuova foto provinata e inserita nel db: " + foto );
+
+						if( conta % 20 == 0 ) {
+							scaricoFotoMsg.esitoScarico.totFotoProvinateProg = conta;
+							LumenApplication.Instance.bus.Publish( scaricoFotoMsg );
+						}
+
+					} catch( Exception ee ) {
+						transaction.Dispose();
+						_giornale.Error( "Errore elaborazione foto. Viene ignorata " + fileInfo, ee );
+					}
 				}
-				_giornale.Debug( "ok nuova foto provinata e inserita nel db: " + foto );
-
-				if (conta % 20 == 0)
-				{
-					scaricoFotoMsg.esitoScarico.totFotoProvinateProg = conta;
-					LumenApplication.Instance.bus.Publish(scaricoFotoMsg);
-				}
-
 			}
 
 			if (conta != 0)
@@ -156,52 +167,34 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			bool success = false;
 			Fotografia foto = null;
 
-			using (TransactionScope transaction = new TransactionScope()) {
+			LumenEntities objContext = UnitOfWorkScope.currentDbContext;
 
-				LumenEntities objContext = UnitOfWorkScope.currentDbContext;
-				try {
+				foto = new Fotografia();
+				foto.id = Guid.NewGuid();
+				foto.dataOraAcquisizione = tempoScarico;
+				foto.fotografo = _fotografo;
+				foto.evento = _evento;
+				foto.didascalia = _paramScarica.flashCardConfig.didascalia;
+				foto.numero = numFotogramma;
+				foto.faseDelGiorno = (short?) _paramScarica.faseDelGiorno;
+				foto.giornata = LumenApplication.Instance.stato.giornataLavorativa;
 
-					foto = new Fotografia();
-					foto.id = Guid.NewGuid();
-					foto.dataOraAcquisizione = tempoScarico;
-					foto.fotografo = _fotografo;
-					foto.evento = _evento;
-					foto.didascalia = _paramScarica.flashCardConfig.didascalia;
-					foto.numero = numFotogramma;
-					foto.faseDelGiorno = (short?) _paramScarica.faseDelGiorno;
-					foto.giornata = LumenApplication.Instance.stato.giornataLavorativa;
+				// il nome del file, lo memorizzo solamente relativo
+				// scarto la parte iniziale di tutto il path togliendo il nome della cartella di base delle foto.
+				// Questo perché le stesse foto le devono vedere altri computer della rete che
+				// vedono il percorso condiviso in maniera differente.
+				foto.nomeFile = PathUtil.nomeRelativoFoto( fileInfo );
 
-					// il nome del file, lo memorizzo solamente relativo
-					// scarto la parte iniziale di tutto il path togliendo il nome della cartella di base delle foto.
-					// Questo perché le stesse foto le devono vedere altri computer della rete che
-					// vedono il percorso condiviso in maniera differente.
-					foto.nomeFile = PathUtil.nomeRelativoFoto( fileInfo );
+				caricaMetadatiImmagine( fileInfo.FullName, foto );
 
-					caricaMetadatiImmagine( fileInfo.FullName, foto );
-
-					objContext.Fotografie.Add( foto );
+				objContext.Fotografie.Add( foto );
 					
-					objContext.SaveChanges();
+				objContext.SaveChanges();
 
-					// Mark the transaction as complete.
-					transaction.Complete();
-					success = true;
-					++conta;
+				success = true;
+				++conta;
 					
-					_giornale.Debug( "Inserita nuova foto: " + foto.ToString() + " ora sono " + conta );
-
-				} catch( Exception ee ) {
-					_giornale.Error( "Non riesco ad inserire una foto. Nel db non c'è ma nel filesystem si: " + fileInfo, ee );
-				}
-
-/*
-				// TODO forse non serve neanche. Credo che venga salvato tutto ugualmente.
-				// TODO provare a togliere.
-				if( success )
-					objContext.ObjectContext.AcceptAllChanges();
- */
-			}
-			_giornale.Debug( "Fine aggiungiFoto()" );
+				_giornale.Debug( "Inserita nuova foto: " + foto.ToString() + " ora sono " + conta );
 
 			return foto;
 		}
