@@ -46,22 +46,13 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		/// Carico la IImmagine indicata nel nome del file.
 		/// </summary>
 		/// <param name="nomeFile"></param>
-		/// <returns>null se non ci sono riuscito</returns>
+		/// <returns>se non ci sono riuscito sollevo una eccezione</returns>
 		public IImmagine load( string nomeFile ) {
 
-			ImmagineWic immagineWic = null;
-
-			try {
-				
-				if( File.Exists( nomeFile ) )
-					immagineWic = new ImmagineWic( nomeFile );
-
-			} catch( Exception ee ) {
-				immagineWic = null;
-				_giornale.Warn( "load foto: " + nomeFile, ee );
-			}
-
-			return immagineWic;
+			if( File.Exists( nomeFile ) )
+				return new ImmagineWic( nomeFile );
+			else
+				throw new LumenException( "Nome file insesistente: " + nomeFile + ". Impossibile caricare immagine" );
 		}
 
 		public IImmagine creaProvino( IImmagine immagineGrande, long sizeLatoMax ) {
@@ -160,8 +151,6 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 					if( (target & IdrataTarget.Provino) != 0 ) {
 						nomeCompleto = PathUtil.nomeCompletoProvino( foto );
 						foto.imgProvino = this.load( nomeCompleto );
-						if( foto.imgProvino == null )
-							throw new LumenException( "Impossibile caricare provino della foto n." + foto.numero );
 					}
 
 				//
@@ -169,8 +158,6 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 					if( (target & IdrataTarget.Originale) != 0 ) {
 						nomeCompleto = PathUtil.nomeCompletoFoto( foto );
 						foto.imgOrig = this.load( nomeCompleto );
-						if( foto.imgOrig == null )
-							throw new LumenException( "Impossibile caricare immagine originale della foto n." + foto.numero );
 					}
 
 				//
@@ -178,8 +165,6 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 					if( (target & IdrataTarget.Risultante) != 0 ) {
 						nomeCompleto = PathUtil.nomeCompletoRisultante( foto );
 						foto.imgRisultante = this.load( nomeCompleto );
-						//if( foto.imgRisultante == null )
-						//	throw new LumenException( "Impossibile caricare immagine risultante della foto n." + foto.numero );
 					}
 
 			} catch( Exception ee ) {

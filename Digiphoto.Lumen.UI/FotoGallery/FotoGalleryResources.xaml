@@ -18,24 +18,9 @@
     <Style x:Key="LsImageGalleryStyle" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
 		<Setter Property="Background" Value="#4c4c4c" />
 			 
-<!--		
-        <Setter Property="Control.Background">
-            <Setter.Value>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black"/>
-                    <GradientStop Color="#FF1E2A2F" Offset="1"/>
-                </LinearGradientBrush>
-            </Setter.Value>  
-        </Setter>
--->
 		<Setter Property="ItemContainerStyle" Value="{DynamicResource ImageGalleryImageContainerStyle}" />
-
-    </Style>
-    <!--
-    <Style x:Key="LsImageGalleryStyle" TargetType="ListBoxItem">
-        <Setter Property="Background" Value="Red" />
-    </Style>
-    -->
+		
+	</Style>
 
     <Style x:Key="textBoxNumFotogrammi" TargetType="TextBox">
         <Setter Property="MinWidth" Value="100" />

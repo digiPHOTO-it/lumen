@@ -7,37 +7,65 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>digiPHOTO - Foto Explorer</title>
-    <link rel="stylesheet" href="css/fotoexplorer.css" type="text/css" media="screen" />
+    <title>digiPHOTO - Self Service</title>
+    <link rel="stylesheet" media="all"  href="css/common.css" type="text/css"  />
+    <link rel="stylesheet" media="all and (orientation:portrait)" href="css/portrait.css" />
+    <link rel="stylesheet" media="all and (orientation:landscape)" href="css/landscape.css" /> 
 </head>
-<body>
+
+<body id="foto-explorer">
     
 
     <form id="form1" runat="server">
 
     <div id="pulsantiera">
-        <asp:Button ID="Home"           CssClass="bottone-spostamento" runat="server" OnClick="buttonHome_Click"     Text="Home" />
-        <asp:Button ID="buttonPrev"     CssClass="bottone-spostamento" runat="server" OnClick="buttonPrev_Click"     Text="&lt;- Indietro" Enabled="<%# possoAndareIndietro %>" />
+   
+        <asp:Button ID="btnGoHome" runat="server" OnClick="buttonHome_Click" Text="Go Home" />
+        
+<!--
         <asp:Button ID="buttonAutoPlay" CssClass="bottone-spostamento" runat="server" OnClick="buttonAutoPlay_Click" Text='<%# autoPlay ? "Pause" : "Auto Play" %>' Enabled="<%# possoAutoPlay %>" />
-        <asp:Button ID="buttonNext"     CssClass="bottone-spostamento" runat="server" OnClick="buttonNext_Click"     Text="Avanti -&gt;"   Enabled="<%# possoAndareAvanti %>" />
-
-        <asp:Label ID="Label2" runat="server" Text="Pagina" />
-        <asp:Label ID="Label1" runat="server" Text="<%# paramRicerca.numPagina %>" />
-
-        <asp:Label ID="Label3" runat="server" Text="Num foto" />
-        <asp:Label ID="Label4" runat="server" Text="<%# fotoCorrente == null ? ' ' : fotoCorrente.numero %>" />
-
-        <asp:Label ID="Label5" runat="server" Text="Oper=" />
-        <asp:Label ID="Label6" runat="server" Text="<%# fotoCorrente == null ? null : fotoCorrente.nomeFotografo %>" />
-
-        <asp:Label ID="Label7" runat="server" Text="Giorno=" />
-        <asp:Label ID="Label8" runat="server" Text="<%# fotoCorrente == null ? null : fotoCorrente.giornata.ToShortDateString() %>" />
+-->
+        <asp:Label ID="LabelGiorno" runat="server" Text="Giorno" />
+        <asp:TextBox ID="Giornata" runat="server" type="date" 
+                     Text='<%# paramRicerca.giorno == null ? "" : ((DateTime)paramRicerca.giorno).ToString("yyyy-MM-dd") %>' 
+                     OnTextChanged="Giornata_TextChanged" AutoPostBack="true" />
+        <asp:Label ID="LabelPagina" runat="server" Text="Pagina" />
+        <asp:Label ID="LabelNumPag" runat="server" Text="<%# paramRicerca.numPagina %>" />
 
     </div>
 
+        <div id="foto-container" >
+            <asp:Repeater ID="FotoRepeater" runat="server" DataSource="<%#listaFotografieDto%>">
+                <ItemTemplate>
+                    <div runat="server" class="foto">                        
+                        <div runat="server" class="foto-img">
+                            <asp:Image runat="server" ImageUrl='<%# getUrlImmagine( Container.ItemIndex ) %>' CssClass="foto-immagine" />
+                            <span runat="server" class="foto-label">
+                                Num. <%# Eval("numero") %>
+                            </span>
+                            <div runat="server" class="copertura">
+                            </div>
+                        </div>
+                        <div id="Div2" runat="server" style="clear: both" />
+                    </div>
+                </ItemTemplate>
+            </asp:Repeater>
+        </div>
 
-    <div id="image-container" >
-        <asp:Image ID="imageFotografia" runat="server" ImageUrl="<%# urlImmagineCorrente %>"  />
+
+
+    <div id="container-sposta">
+        <div id="popup-sposta-prev">
+            <asp:ImageButton ID="frecciaIndietro" runat="server" 
+                Enabled="<%# possoAndareIndietro %>" ImageUrl="~/images/left_arrow-128.png" OnClick="buttonPrev_Click" CausesValidation="false" 
+                CssClass="freccia-sposta"
+                />
+        </div>
+        <div id="popup-sposta-next">
+            <asp:ImageButton ID="frecciaAvanti" runat="server" 
+                Enabled="<%# possoAndareAvanti %>" ImageUrl="~/images/right_arrow-128.png" OnClick="buttonNext_Click" CausesValidation="false" 
+                CssClass="freccia-sposta" />
+        </div>
     </div>
 
 

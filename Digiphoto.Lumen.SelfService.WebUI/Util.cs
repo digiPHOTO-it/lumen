@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Web;
+using System.Web.SessionState;
 
 namespace Digiphoto.Lumen.SelfService.WebUI {
 	
-	public static class Util {
+	internal static class Util {
 		/// <summary>
 		/// Calcola l'indirizzo base del servizio con barra finale
 		/// </summary>
@@ -26,6 +29,38 @@ namespace Digiphoto.Lumen.SelfService.WebUI {
 
 				return "http://" + hostName + ":" + numPorta + "/";
 			}
+		}
+
+
+		/// <summary>
+		/// Se la lingua è indicata, la setto,
+		/// altrimenti la prendo dalla sessione.
+		/// </summary>
+		/// <param name="lingua"></param>
+		internal static string ImpostaLingua( HttpSessionState session, string lingua ) {
+
+			string linguaSelezionata = "it-IT";
+
+			if( lingua != null ) {
+				session["linguaSelezionata"] = lingua;
+			}
+
+			if( session["linguaSelezionata"] != null ) {
+				linguaSelezionata = (string)session["linguaSelezionata"];
+				try {
+					Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture( linguaSelezionata );
+					Thread.CurrentThread.CurrentUICulture = new CultureInfo( linguaSelezionata );
+				} catch( Exception ) {
+					linguaSelezionata = "it-IT";
+				}
+			}
+
+			return linguaSelezionata;
+		}
+
+
+		internal static string ImpostaLingua( HttpSessionState session ) {
+			return ImpostaLingua( session, null );
 		}
 	}
 }

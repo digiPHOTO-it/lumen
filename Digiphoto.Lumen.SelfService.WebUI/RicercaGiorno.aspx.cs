@@ -6,6 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace Digiphoto.Lumen.SelfService.WebUI {
+
 	public partial class RicercaOrario : System.Web.UI.Page {
 
 		protected void ButtonGiorno_Click( object sender, EventArgs e ) {
@@ -16,8 +17,19 @@ namespace Digiphoto.Lumen.SelfService.WebUI {
 		}
 
 		protected void linkButtonNavAvanti_Click( object sender, EventArgs e ) {
-			paramRicerca.giorno = null;
+
+			if( GiornoIniz.SelectedDate == DateTime.MinValue )
+				paramRicerca.giorno = null;
+			else {
+				// paramRicerca.giorno = Convert.ToDateTime( GiornoIniz.Text );
+				paramRicerca.giorno = GiornoIniz.SelectedDate;
+			}
 			navigaAvanti();
+		}
+
+		protected override void InitializeCulture() {
+			UICulture = Util.ImpostaLingua( Session ); // la prendo dalla sessione
+			base.InitializeCulture();
 		}
 
 		protected void linkButtonNavIndietro_Click( object sender, EventArgs e ) {
