@@ -54,13 +54,9 @@ div#image-container img
 
 /* EXPLORER */
 
-#foto-explorer div#pulsantiera
+
+#foto-explorer #foto-container .foto .foto-label
 {
-    height: 50px;
+    font-size: 50px;
 }
 
-
-#foto-explorer #pulsantiera #btnGoHome
-{
-    min-height: 60px;
-}

@@ -1006,12 +1006,25 @@ namespace Digiphoto.Lumen.UI {
 
 							// Provo a dare il fuoco al mio usercontrol ma nel thread della GUI
 							Fotografia daRiProvinare = fotoExplorerSrv.fotografie[ii];
+							bool okCiSonoRiuscito = false;
 							App.Current.Dispatcher.BeginInvoke(
 								new Action( () => {
-									AiutanteFoto.creaProvinoFoto( daRiProvinare );
+
+									try {
+										AiutanteFoto.creaProvinoFoto( daRiProvinare );
+										okCiSonoRiuscito = true;
+									} catch( Exception ) {
+										var todo = true;
+										// Se qualcosa va male, pazienza, a questo punto non posso fare altro che tirare avanti.
+										// TODO : forse dovrei togliere la foto in esame dalla collezione della gallery ....
+									}
+
 								}
 							) );
 							
+
+
+
 						} catch( Exception ) {
 							// Se qualcosa va male, pazienza, a questo punto non posso fare altro che tirare avanti.
 						}

@@ -1343,11 +1343,15 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			if( fotografieDaModificare.Contains( f )  )
 				return;
 
+			// Per visualizzare la foto devo caricare il provino da disco
+			try {
+				AiutanteFoto.idrataImmaginiFoto( f, IdrataTarget.Provino );
+			} catch( Exception ee ) {
+				dialogProvider.ShowError( ee.Message, "Errore apertura foto", null );
+				return;
+			}
+
 			this.fotografieDaModificare.Add( f );
-
-			// TODO: Se la pagina corrente (paginazione) è piena, allora non faccio niente.
-			// Se invece ho del posto libero (perchè sono in fondo, allora la aggiungo.
-
 
 			// Ricalcolo il totale pagine per la paginazione
 			int totalPages = fotografieDaModificare.Count / fdmFotoPerPagina;
@@ -1357,8 +1361,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			fdmTotPagine = totalPages;
 
 
-			// Per visualizzare la foto devo caricare il provino da disco
-			AiutanteFoto.idrataImmaginiFoto( f, IdrataTarget.Provino );
 			
 		}
 
