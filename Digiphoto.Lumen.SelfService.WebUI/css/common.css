@@ -4,12 +4,10 @@
     min-width: 600px;
     background-color: #141414;
     color: #FFFFFF;
-    width: 96%;
+    width: 98%;
     font-size: 24px;    
     font-family: Verdana;
 }
-
-
 
 
 /* tablet */
@@ -243,10 +241,11 @@ div.navigazione #linkButtonNavIndietro
 
 #foto-explorer #pulsantiera #btnGoHome
 {
-    width: 250px;
+    width: 220px;
+    height: 60px;
     background-repeat: no-repeat;
     background-image: url(../images/home-64.png);
-    background-size: 34px;
+    background-size: 54px;
     min-height: 44px;
     min-width: 130px;
     margin: 4px;
@@ -270,6 +269,7 @@ div.navigazione #linkButtonNavIndietro
     float: left;
     margin-left: 10px;
     margin-top: 10px;
+    overflow: hidden;
 }
 
 
@@ -294,21 +294,160 @@ div.navigazione #linkButtonNavIndietro
 
 
 
-#foto-explorer #foto-container .foto .foto-label
-{
-    z-index: 10;
-    display: inline-block;
-    position: absolute;
-    width: 100%;
-    left: 0;
-    top: 100px;
-    background-color: darkblue;
-    color: white;
-    opacity: 0.7; /* Firefox, Chrome, Safari, Opera, IE >= 9 (preview) */
-    filter:alpha(opacity=70); /* for <= IE 8 */
-    -ms-transform: rotate(10deg); /* IE 9 */
-    -webkit-transform: rotate(10deg); /* Chrome, Safari, Opera */
-    transform: rotate(10deg);
-    font-size: 24px;
-    text-align: center;
-}
+    #foto-explorer #foto-container .foto .foto-label
+    {
+        z-index: 100;
+        display: inline-block;
+        position: absolute;
+        right: 2px;
+        top: 2px;
+        width: auto;
+        background-color: orange;
+        color: black;
+        opacity: 0.8; /* Firefox, Chrome, Safari, Opera, IE >= 9 (preview) */
+        filter: alpha(opacity=80); /* for <= IE 8 */
+        font-size: 24px;
+        text-align: center;
+        border: 1px solid darkblue;
+    }
+
+    #foto-explorer #foto-container .foto .foto-watermark
+    {
+        z-index: 50;
+        font-size: 14px;
+        color: white;
+        position: absolute;
+        opacity: 0.5; /* Firefox, Chrome, Safari, Opera, IE >= 9 (preview) */
+        filter: alpha(opacity=50); /* for <= IE 8 */
+
+        -ms-transform: rotate(10deg);      /* IE 9 */
+        -webkit-transform: rotate(10deg);  /* Chrome, Safari, Opera */
+        transform: rotate(10deg);
+
+        -webkit-text-fill-color: transparent;
+        -webkit-text-stroke-color: black;
+        -webkit-text-stroke-width: 0.5px;
+  
+    }
+
+/*
+    #foto-explorer #foto-container .foto #WaterMark1
+    {
+        left: 20px;
+        top: 10px;
+    }
+
+    #foto-explorer #foto-container .foto #WaterMark2
+    {
+        left: 70px;
+        top: 40px;
+    }
+
+    #foto-explorer #foto-container .foto #WaterMark3
+    {
+        left: 120px;    
+        top: 70px;
+    }
+
+    #foto-explorer #foto-container .foto #WaterMark4
+    {
+        left: 170px;
+        top: 100px;
+    }
+
+    #foto-explorer #foto-container .foto #WaterMark5
+    {
+        left: 220px;
+        top: 130px;
+    }
+
+    #foto-explorer #foto-container .foto #WaterMark6
+    {
+        left: 20px;
+        top: 70px;
+    }
+
+    #foto-explorer #foto-container .foto #WaterMark7
+    {
+        left: 70px;
+        top: 100px;
+    }
+
+    #foto-explorer #foto-container .foto #WaterMark8
+    {
+        left: 120px;
+        top: 130px;
+    }
+
+    #foto-explorer #foto-container .foto #WaterMark9
+    {
+        left: 170px;
+        top: 160px;
+    }
+
+    #foto-explorer #foto-container .foto #WaterMark10
+    {
+        left: 220px;
+        top: 190px;
+    }
+
+    #foto-explorer #foto-container .foto #WaterMark11
+    {
+        left: 40px;
+        top: 160px;
+    }
+
+    #foto-explorer #foto-container .foto #WaterMark12
+    {
+        left: 90px;
+        top: 190px;
+    }
+
+    #foto-explorer #foto-container .foto #WaterMark13
+    {
+        left: 170px;    
+        top: 220px;
+    }
+
+    #foto-explorer #foto-container .foto #WaterMark14
+    {
+        left: 220px;
+        top: 250px;
+    }
+
+    #foto-explorer #foto-container .foto #WaterMark15
+    {
+        left: 270px;
+        top: 280px;
+    }
+
+    #foto-explorer #foto-container .foto #WaterMark16
+    {
+        left: 20px;
+        top: 190px;
+    }
+
+    #foto-explorer #foto-container .foto #WaterMark17
+    {
+        left: 70px;
+        top: 220px;
+    }
+
+    #foto-explorer #foto-container .foto #WaterMark18
+    {
+        left: 120px;
+        top: 250px;
+    }
+
+    #foto-explorer #foto-container .foto #WaterMark19
+    {
+        left: 170px;
+        top: 280px; 
+    }
+
+    #foto-explorer #foto-container .foto #WaterMark20
+    {
+        left: 220px;
+        top: 310px;
+    }
+*/

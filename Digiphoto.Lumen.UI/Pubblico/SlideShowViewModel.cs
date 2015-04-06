@@ -365,9 +365,14 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			// Quindi le idrato un pò alla volta quando passano da qui
 			// Al primo giro sarà più lento perché le deve idratare per davvero. 
 			// Dal secondo giro, invece non ci sarà più bisogno
-			foreach( Fotografia f in slidesVisibili )
-				AiutanteFoto.idrataImmaginiFoto( f, IdrataTarget.Provino );
+			foreach( Fotografia f in slidesVisibili ) {
 
+				try {
+					AiutanteFoto.idrataImmaginiFoto( f, IdrataTarget.Provino );
+				} catch( Exception ) {
+					// Se la foto è rovinata, oppure inaccessibile, devo proseguire
+				}
+			}
 
 			// Dopo che ho visualizzato le foto, se mi accorgo che il numero totale di foto da visualizzare 
 			// è inferiore al numero massimo di foto che stanno nello show,
