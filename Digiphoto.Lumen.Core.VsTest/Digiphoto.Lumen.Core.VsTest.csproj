@@ -164,6 +164,7 @@
     <Compile Include="src\Imaging\CorrezioniTest.cs" />
     <Compile Include="src\Licenza\LicenzaTest.cs" />
     <Compile Include="src\Model\crudTest.cs" />
+    <Compile Include="src\Servizi\BarCode\BarCodeSrvImplTest.cs" />
     <Compile Include="src\Servizi\Ricostruire\DbRebuilderSrvImplTest.cs" />
     <Compile Include="src\Mvvm\ObservableCollectionExTest.cs" />
     <Compile Include="SerializzaUtilTest.cs" />
