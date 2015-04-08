@@ -70,6 +70,8 @@
 						<RadioButton Content="COPIA files"  GroupName="copiaSpostaGrp" 
                                  IsChecked="{Binding Path=eraseFotoMemoryCard, Converter={StaticResource boolInverterConverter}}"
 							 Style="{StaticResource spostaCopiaRadioStyle}" />
+                        
+                            <CheckBox x:Name="checkBoxRicercaBarCode" Content="Ricerca Codici a Barre" IsChecked="{Binding Path=ricercaBarCode, Mode=TwoWay}" />
 					</StackPanel>
 				</GroupBox>
 

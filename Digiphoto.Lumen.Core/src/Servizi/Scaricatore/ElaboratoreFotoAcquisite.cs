@@ -19,6 +19,7 @@ using ExifLib;
 using Digiphoto.Lumen.Imaging.Correzioni;
 using Digiphoto.Lumen.Servizi.Ritoccare;
 using Digiphoto.Lumen.Servizi.EntityRepository;
+using Digiphoto.Lumen.Servizi.BarCode;
 
 namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
@@ -80,6 +81,11 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			scaricoFotoMsg.sorgente = _paramScarica.cartellaSorgente != null ? _paramScarica.cartellaSorgente : _paramScarica.nomeFileSingolo;
 			scaricoFotoMsg.showInStatusBar = false;
 
+			IList<Fotografia> fotoDaEsaminare = null;
+			if (_paramScarica.ricercaBarCode)
+			{
+				fotoDaEsaminare = new List<Fotografia>();
+			}
 
 			foreach( FileInfo fileInfo in _listaFiles ) {
 
@@ -120,6 +126,10 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 						_giornale.Error( "Errore elaborazione foto. Viene ignorata " + fileInfo, ee );
 					}
 				}
+			}
+
+			if (_paramScarica.ricercaBarCode){
+				barCodeSrv.applicaBarCodeDidascalia(fotoDaEsaminare);
 			}
 
 			if (conta != 0)
@@ -241,6 +251,14 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		IFotoRitoccoSrv fotoRitoccoSrv {
 			get {
 				return LumenApplication.Instance.getServizioAvviato<IFotoRitoccoSrv>();
+			}
+		}
+
+		IBarCodeSrv barCodeSrv
+		{
+			get
+			{
+				return LumenApplication.Instance.getServizioAvviato<IBarCodeSrv>();
 			}
 		}
 

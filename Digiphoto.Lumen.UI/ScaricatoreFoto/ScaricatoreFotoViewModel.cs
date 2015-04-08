@@ -119,6 +119,24 @@ namespace Digiphoto.Lumen.UI {
 
 		}
 
+		private bool _ricercaBarCode;
+		public bool ricercaBarCode
+		{
+			get
+			{
+				return _ricercaBarCode;
+			}
+			set
+			{
+				if (value != _ricercaBarCode)
+				{
+					_ricercaBarCode = value;
+					OnPropertyChanged("ricercaBarCode");
+				}
+			}
+
+		}
+
 
 		/// <summary>
 		///  Mi dice se il servizio scaricatore foto è impegnato oppure no.
@@ -228,6 +246,8 @@ namespace Digiphoto.Lumen.UI {
 				paramScarica.flashCardConfig.idEvento = selettoreEventoViewModel.eventoSelezionato.id;
 
 			paramScarica.eliminaFilesSorgenti = eraseFotoMemoryCard;
+
+			paramScarica.ricercaBarCode = ricercaBarCode;
 
 			paramScarica.faseDelGiorno = faseDelGiorno;
 
