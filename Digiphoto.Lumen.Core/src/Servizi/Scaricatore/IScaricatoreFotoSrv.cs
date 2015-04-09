@@ -27,6 +27,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		public string nomeFileSingolo { get; set; }
 		public bool eliminaFilesSorgenti { get; set; }
 		public FaseDelGiorno? faseDelGiorno  { get; set; }
+		public bool ricercaBarCode { get; set; }
 
 		public override string ToString() {
 			
