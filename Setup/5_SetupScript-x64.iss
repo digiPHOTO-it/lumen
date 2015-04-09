@@ -54,7 +54,7 @@ Source: "..\Digiphoto.Lumen.Core\{#dirPlat}\log4net.dll"; DestDir: "{app}"; Flag
 Source: "..\Digiphoto.Lumen.Core\{#dirPlat}\MemBus.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.Core\{#dirPlat}\ExifLib.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.Core\{#dirPlat}\skgl.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Digiphoto.Lumen.Core\{#dirPlat}\Resources\RemoveDrive.exe"; DestDir: "{app}\Resources"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.Core\{#dirPlat}\Resources\*"; DestDir: "{app}\Resources"; Flags: recursesubdirs
 ; --- Imaging ---                                                            
 Source: "..\Digiphoto.Lumen.Imaging.Wic\{#dirPlat}\Digiphoto.Lumen.Imaging.Wic.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; --- Lumen ---
