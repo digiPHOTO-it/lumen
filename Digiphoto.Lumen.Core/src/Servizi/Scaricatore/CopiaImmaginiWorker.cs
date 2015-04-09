@@ -134,6 +134,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 				_elaboraImmaginiAcquisiteCallback.Invoke( _esitoScarico );
 			}
 
+			_giornale.Debug( "Terminato background worker per copia files" );
 
 		}
 

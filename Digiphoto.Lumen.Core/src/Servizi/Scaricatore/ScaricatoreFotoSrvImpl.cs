@@ -90,6 +90,9 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			seNonPossoScaricareSpaccati();
 
+			// Se per sbaglio ho ancora un worker aperto, lo chiudo
+			chiudiWorker();
+
 			_copiaImmaginiWorker = new CopiaImmaginiWorker( paramScarica, elaboraFotoAcquisite );
 
 			// Lancio il worker che scarica ed elabora le foto.
@@ -261,15 +264,16 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			return riuscito;
 		}
 
-
+		private void chiudiWorker() {
+			if( _copiaImmaginiWorker != null && _copiaImmaginiWorker.disposed == false ) {
+				_copiaImmaginiWorker.Dispose();
+			}
+		}
 
 		protected override void Dispose( bool disposing ) {
 
 			try {
-
-				if( _copiaImmaginiWorker != null && _copiaImmaginiWorker.disposed == false ) {
-					_copiaImmaginiWorker.Dispose();
-				}
+				chiudiWorker();
 			} catch( Exception e ) {
 				_giornale.Error( "worker copia fallita dispose", e );
 			} finally {
