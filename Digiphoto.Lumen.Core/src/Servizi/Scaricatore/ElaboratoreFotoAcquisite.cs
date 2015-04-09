@@ -207,33 +207,37 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			try {
 
-				// Instantiate the reader
-				ExifReader reader = new ExifReader( nomeFile );
+				bool presoOrientamento;
+				ushort orientamento = 0;
 
-				DateTime dateTime;
-				if( reader.GetTagValue<DateTime>( ExifTags.DateTime, out dateTime ) ) {
-					foto.dataOraScatto = dateTime;
+				// Istanzio il reader poi lo chiudo subito perché tiene aperto il file.
+				using( ExifReader reader = new ExifReader( nomeFile ) ) {
+
+					DateTime dateTime;
+					if( reader.GetTagValue<DateTime>( ExifTags.DateTime, out dateTime ) ) {
+						foto.dataOraScatto = dateTime;
+					}
+
+					presoOrientamento = reader.GetTagValue<ushort>( ExifTags.Orientation, out orientamento );
 				}
 
 				// Gestisco eventuale auto rotazione
-				if( Configurazione.UserConfigLumen.autoRotazione ) {
-					ushort orientamento;
-					if( reader.GetTagValue<ushort>( ExifTags.Orientation, out orientamento ) ) {
+				if( Configurazione.UserConfigLumen.autoRotazione && presoOrientamento ) {
 
-						Ruota ruota = null;
-						if( orientamento == 6 ) {
-							ruota = new Ruota( 90f );
-						} else if( orientamento == 8 ) {
-							ruota = new Ruota( -90f );
-						}
+					Ruota ruota = null;
+					if( orientamento == 6 ) {
+						ruota = new Ruota( 90f );
+					} else if( orientamento == 8 ) {
+						ruota = new Ruota( -90f );
+					}
 
-						if( ruota != null ) {
-							fotoRitoccoSrv.autoRuotaSuOriginale( foto, ruota );
-						}
+					if( ruota != null ) {
+						fotoRitoccoSrv.autoRuotaSuOriginale( foto, ruota );
 					}
 				}
 
-			} catch( Exception ) {
+			} catch( Exception ee ) {
+				_giornale.Debug( "lettura metadati", ee );
 				// Pazienza se non ho informazioni exif vado avanti ugualmente.
 			}
 		}

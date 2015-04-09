@@ -68,6 +68,11 @@ Source: "..\Digiphoto.Lumen.UI\{#dirPlat}\Reports\*"; DestDir: "{app}\Reports"; 
 Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\Digiphoto.Lumen.GestoreConfigurazione.UI.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\Digiphoto.Lumen.GestoreConfigurazione.UI.exe.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\Images\*"; DestDir: "{app}\Images"; Flags: recursesubdirs
+; --- Self Service
+Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirPlat}\Digiphoto.Lumen.SelfService.Host.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirPlat}\Digiphoto.Lumen.SelfService.Host.exe.config"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.SelfService\{#dirPlat}\Digiphoto.Lumen.SelfService.dll"; DestDir: "{app}"; Flags: ignoreversion
+
 
 ; --- Driver sql x86 ---
 Source: "..\packages\System.Data.SQLite.x86.1.0.90.0\lib\net45\System.Data.SQLite.dll"; DestDir: "{app}";  Check: "not IsWin64"; Flags: ignoreversion

@@ -766,8 +766,6 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 			IImmagine imgRuotata = applicaCorrezione( fotografia.imgOrig, ruota );
 
-			// AiutanteFoto.disposeImmagini( fotografia, IdrataTarget.Tutte );
-
 			string nomeFileBackup = Path.ChangeExtension( nomeFileOrig, "BACKUP" + estensione );
 			if( !File.Exists( nomeFileBackup ) ) {
 				// Salvo per sicurezza il file originale
