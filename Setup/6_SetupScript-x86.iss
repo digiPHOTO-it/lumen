@@ -2,12 +2,13 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Lumen"
-#define MyAppVersion "0.19"
+#define MyAppVersion "0.23"
 #define MyAppPublisher "digiPHOTO.it"
 #define MyAppURL "http://www.digiphoto.it/Lumen"
 #define MyAppExeName "Digiphoto.Lumen.UI.exe"
 #define MyConfExeName "Digiphoto.Lumen.GestoreConfigurazione.UI.exe"
 #define dirPlat "bin\x86\Release"
+#define dirAny  "bin\Release"
 
 
 
@@ -69,9 +70,9 @@ Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\Digiphoto.Lumen.
 Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\Digiphoto.Lumen.GestoreConfigurazione.UI.exe.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\Images\*"; DestDir: "{app}\Images"; Flags: recursesubdirs
 ; --- Self Service
-Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirPlat}\Digiphoto.Lumen.SelfService.Host.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirPlat}\Digiphoto.Lumen.SelfService.Host.exe.config"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Digiphoto.Lumen.SelfService\{#dirPlat}\Digiphoto.Lumen.SelfService.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirAny}\Digiphoto.Lumen.SelfService.Host.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirAny}\Digiphoto.Lumen.SelfService.Host.exe.config"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.SelfService\{#dirAny}\Digiphoto.Lumen.SelfService.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 
 ; --- Driver sql x86 ---
