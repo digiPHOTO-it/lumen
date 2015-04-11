@@ -73,6 +73,22 @@ Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\Images\*"; DestD
 Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirAny}\Digiphoto.Lumen.SelfService.Host.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirAny}\Digiphoto.Lumen.SelfService.Host.exe.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.SelfService\{#dirAny}\Digiphoto.Lumen.SelfService.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirAny}\System.Net.Http.Formatting.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirAny}\Microsoft.Owin.Hosting.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirAny}\Microsoft.Owin.Host.HttpListener.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirAny}\Microsoft.Owin.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirAny}\System.Web.Http.Owin.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirAny}\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirAny}\System.Net.Http.Formatting.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirAny}\System.Web.Http.dll"; DestDir: "{app}"; Flags: ignoreversion
+
+
+
+
+
+
+
+
 
 
 
