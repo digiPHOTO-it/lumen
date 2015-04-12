@@ -9,3 +9,5 @@ TestResults/**
 packages
 doc/Verbale_riunione_1.pdf
 *.psess
+Digiphoto.Lumen.SelfService.WebUI\ssWebPackage
+Digiphoto.Lumen.SelfService.WebUI\ssWebPackage.zip
