@@ -230,7 +230,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 
 			} catch( Exception ee ) {
 				// Non rilancio l'eccezione perché voglio continuare a stampare
-				_giornale.Error( "Impossibile caricare immagime della foto: " + foto );
+				_giornale.Error( "Impossibile caricare immagime della foto: " + foto, ee );
 			}
 			 
 			eventualiStampigli( canvas, x, y, foto );

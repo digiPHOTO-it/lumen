@@ -174,7 +174,6 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			// Ad ogni foto persisto.
 			// Se per esempio ho 500 foto da salvare, non posso permettermi che se una salta, perdo anche le altre 499 !
-			bool success = false;
 			Fotografia foto = null;
 
 			LumenEntities objContext = UnitOfWorkScope.currentDbContext;
@@ -201,7 +200,6 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 					
 				objContext.SaveChanges();
 
-				success = true;
 				++conta;
 					
 				_giornale.Debug( "Inserita nuova foto: " + foto.ToString() + " ora sono " + conta );

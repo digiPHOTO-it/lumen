@@ -35,7 +35,7 @@ namespace Digiphoto.Lumen.UI {
 
 		private static Mutex mutexSingle;
 
-		private GestoreFinestrePubbliche _gestoreFinestrePubbliche;
+//		private GestoreFinestrePubbliche _gestoreFinestrePubbliche;
 
 
 		protected override void OnStartup( StartupEventArgs e ) {

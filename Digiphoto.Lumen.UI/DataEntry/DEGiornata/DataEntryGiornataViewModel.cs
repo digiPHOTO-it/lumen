@@ -60,7 +60,7 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 
 			// Ricavo l'incasso previsto per la giornata
 			// NO: lo faccio sempre : Solo in inserimento ricalcolo l'incasso previsto
-			if( 1==1 || this.status == DataEntryStatus.New )
+//			if( 1==1 || this.status == DataEntryStatus.New )
 				giornata.incassoPrevisto = calcolaIncassoPrevisto( giornata.id );
 
 			calcolaIncassiFotografiGiorno( giornata.id );

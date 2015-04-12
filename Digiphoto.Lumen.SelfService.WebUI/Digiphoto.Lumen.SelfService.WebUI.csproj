@@ -38,6 +38,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -81,8 +82,12 @@
     <Content Include="css\portrait.css" />
     <Content Include="FotoExplorer.aspx" />
     <Content Include="Default.aspx" />
-    <Content Include="images\Flag_EN.png" />
-    <Content Include="images\Flag_IT.png" />
+    <Content Include="images\Flag_EN-128x128.png" />
+    <Content Include="images\Flag_EN-32x32.png" />
+    <Content Include="images\Flag_EN-64x64.png" />
+    <Content Include="images\Flag_IT-128x128.png" />
+    <Content Include="images\Flag_IT-32x32.png" />
+    <Content Include="images\Flag_IT-64x64.png" />
     <Content Include="images\home-64.png" />
     <Content Include="images\left_arrow-128.png" />
     <Content Include="images\left_arrow-64.png" />
@@ -146,6 +151,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </Content>
     <Content Include="packages.config" />
+    <None Include="Properties\PublishProfiles\FileSystem-profile.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

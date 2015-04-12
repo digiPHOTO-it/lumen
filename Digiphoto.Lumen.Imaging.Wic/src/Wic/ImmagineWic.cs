@@ -32,6 +32,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 			_giornale.Debug( "carico immagine da disco : " + uriString );
 
+#if NONFUNZIONA
 			const char metodo = 'C';
 
 			if( metodo == 'A' ) {
@@ -52,9 +53,14 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 				MemoryStream data = new MemoryStream( File.ReadAllBytes( uriString ) );
 				this.bitmapSource = BitmapFrame.Create( data );
+			} else if( metodo == 'D' ) {
 
+				using( FileStream fs = new FileStream( uriString, FileMode.Open ) ) {
+					this.bitmapSource = CreateImageSource( fs );
+					fs.Close();
+				}	
 			} else if( metodo == 'C' ) {
-				
+#endif				
 				// Soluzione C (puttanazza eva vaffanculo alla microsoft. Ci fosse qualcosa che funziona.
 				memoryStream = new MemoryStream();
 				BitmapImage bi = new BitmapImage();
@@ -66,13 +72,8 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 				bi.EndInit();
 				this.bitmapSource = bi;
 					
-			} else if( metodo == 'D' ) {
+//			} 
 
-				using( FileStream fs = new FileStream( uriString, FileMode.Open ) ) {
-					this.bitmapSource = CreateImageSource( fs );
-					fs.Close();
-				}	
-			}
 
 			_giornale.Debug( "ok caricata. Ora freezzo" );
 

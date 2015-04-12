@@ -2028,7 +2028,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				// Riposiziono i controlli in modo da velocizzare il tutto.
 				riposizionaControlliFotoritocco();  // ** 1 **
 
-			} catch( Exception ee ) {
+			} catch( Exception ) {
 				fotografiaInModifica = null;
 			}
 

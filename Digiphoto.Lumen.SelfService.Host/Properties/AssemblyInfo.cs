@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "digiPHOTO.it" )]
 [assembly: AssemblyProduct( "Digiphoto.Lumen.SelfService.Host" )]
-[assembly: AssemblyCopyright( "Copyright © digiPHOTO.it 2014" )]
+[assembly: AssemblyCopyright( "Copyright © digiPHOTO.it 2015" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 

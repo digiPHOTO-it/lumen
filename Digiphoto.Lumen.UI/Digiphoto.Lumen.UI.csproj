@@ -659,7 +659,9 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="app.manifest" />
+    <None Include="app.manifest">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\DataSources\Digiphoto.Lumen.Servizi.Reports.ConsumoCarta.RigaReportConsumoCarta.datasource" />
     <None Include="Properties\DataSources\Digiphoto.Lumen.Servizi.Reports.RigaReportProvvigioni.datasource" />
@@ -841,14 +843,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if $(PlatformName) == x64 (
-   copy "$(SolutionDir)packages\System.Data.SQLite.x64.1.0.90.0\lib\net45\System.Data.SQLite.dll"  "$(TargetDir)" /y
-) else (
-   copy "$(SolutionDir)packages\System.Data.SQLite.x86.1.0.90.0\lib\net45\System.Data.SQLite.dll"  "$(TargetDir)" /y
-)
-
-copy "$(SolutionDir)packages\System.Data.SQLite.Linq.1.0.90.0\lib\net45\System.Data.SQLite.Linq.dll"  "$(TargetDir)" /y
-</PostBuildEvent>
+    <PostBuildEvent>copy "$(SolutionDir)packages\System.Data.SQLite.x64.1.0.90.0\lib\net45\System.Data.SQLite.dll"  "$(TargetDir)" /y
+copy "$(SolutionDir)packages\System.Data.SQLite.Linq.1.0.90.0\lib\net45\System.Data.SQLite.Linq.dll"  "$(TargetDir)" /y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
