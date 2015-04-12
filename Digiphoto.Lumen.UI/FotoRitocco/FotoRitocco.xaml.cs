@@ -1085,7 +1085,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					sliderTraslaY.Value = top;
 				} else {
 					// Strano che sia nullo. Come mai ?
-					bool strano = true;
 				}
 			}
 		}

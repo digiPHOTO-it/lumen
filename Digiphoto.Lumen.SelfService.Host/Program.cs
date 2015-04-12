@@ -68,9 +68,12 @@ namespace Digiphoto.Lumen.SelfService.Host {
 					}
 				}
 
-				Console.WriteLine( "* * * * *          ATTESA richieste dai client          * * * * *" );
-				Console.WriteLine( "* * * * *     Premere INVIO per fermare il servizio     * * * * * " );
-				Console.ReadLine();
+				Console.WriteLine( "* * * * *        ATTESA richieste dai client        * * * * *" );
+				Console.WriteLine( "* * * * *     Premere Q per fermare il servizio     * * * * * " );
+				ConsoleKeyInfo keyInfo;
+				do {
+					keyInfo = Console.ReadKey();
+				} while( Char.ToUpper( keyInfo.KeyChar ) != 'Q' );
 			}
 
 			app.ferma();
