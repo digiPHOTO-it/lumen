@@ -11,6 +11,7 @@
 		Width="{Binding Path=pSSG.slideWidth,Mode=TwoWay}" 
 		Top="{Binding Path=pSSG.slideTop,Mode=TwoWay}" 
 		Left="{Binding Path=pSSG.slideLeft,Mode=TwoWay}" 
+		Closing="windowSlideShow_Closing"
 		LocationChanged="windowSlideShow_LocationChanged">
 
 		<Window.WindowState>

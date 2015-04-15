@@ -155,5 +155,16 @@ if( 1 == 1 ) {  // TODO
 
 			return proiettabile;
 		}
+
+		private void windowSlideShow_Closing( object sender, System.ComponentModel.CancelEventArgs e ) {
+
+			// Se mi hanno premuto X per chiudere la finestra, fermo lo show
+			if( _slideShowViewModel != null ) {
+				_slideShowViewModel.stop();
+				_slideShowViewModel.Dispose();
+				_slideShowViewModel = null;
+			}
+
+		}
 	}
 }

@@ -68,7 +68,7 @@
                     </CheckBox>
                     <Button Content="^ Prec" Click="buttonScorriFotoSelez_Click" Tag="-1" ToolTip="Posiziona sulla precendete foto selezionata" Padding="1" />
                     <Button Content="v Succ" Click="buttonScorriFotoSelez_Click" Tag="+1" ToolTip="Posiziona sulla successiva foto selezionata" Padding="1" />
-					<TextBox ToolTip="Posiziona sul numero di fotogramma" BorderThickness="1" Width="46" Name="textBoxGotoNumFoto" BorderBrush="Cyan" LostFocus="textBoxGotoNumFoto_LostFocus"  >
+					<TextBox ToolTip="Vai al N° di fotogramma. Uscire dal campo con il tasto TAB" BorderThickness="1" Width="46" Name="textBoxGotoNumFoto" BorderBrush="Cyan" LostFocus="textBoxGotoNumFoto_LostFocus"  >
 <!--						
 						<i:Interaction.Triggers>
 							<i:EventTrigger EventName="LostFocus" >
@@ -99,12 +99,24 @@
                 </ToolBar>
 
                 <ToolBar Band="1" BandIndex="3" Header="Pubblico">
-					<Button Content="+All" Command="{Binding caricareSlideShowCommand}" CommandParameter="Auto" ToolTip="Carica tutte le foto nello show" />
-					<Button Content="+Selez" Command="{Binding caricareSlideShowCommand}" CommandParameter="Manual" ToolTip="Carica solo le foto selezionate nello show" />
+					<Button Command="{Binding caricareSlideShowCommand}" CommandParameter="Tutte" ToolTip="Carica tutte le foto nello show" >
+						<Image Source="/Digiphoto.Lumen.UI;component/Resources/ssPlayAll-48x48.png" Height="22" Width="48" />
+					</Button>
+					<Button Command="{Binding caricareSlideShowCommand}" CommandParameter="ZeroPiuSelez" ToolTip="Carica solo le foto selezionate nello show" >
+						<Image Source="/Digiphoto.Lumen.UI;component/Resources/ssPlaySelected-48x48.png" Height="22" Width="48" />
+					</Button>
+					<Button Command="{Binding caricareSlideShowCommand}" CommandParameter="AddSelez" ToolTip="Aggiunge le foto selezionate nello show">
+						<Image Source="/Digiphoto.Lumen.UI;component/Resources/ssAddSelected-48x48.png" Height="22" Width="48" />
+					</Button>
+					<!--
 					<Button Content="Svuota" Command="{Binding controllareSlideShowCommand}" CommandParameter="Reset"  />
+					-->
 					<Separator />
+				
 					<Button Command="{Binding controllareSlideShowCommand}" CommandParameter="Start" Style="{StaticResource ssStartStyle}" />
+					<!--
 					<Button Command="{Binding controllareSlideShowCommand}" CommandParameter="Stop"  Style="{StaticResource ssPauseStyle}" />
+					-->
 					<Button Name="buttonTakeSnapshotPubblico" Style="{StaticResource ssSnapshotStyle}" Click="buttonTakeSnapshotPubblico_Click" ToolTip="F2 mostra foto del video al pubblico" />
 					<extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. righe Slide-Show" Value="{Binding numRigheSlideShow}" IsEnabled="{Binding possoControllareSlideShow}" />
 					<extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. colonne Slide-Show" Value="{Binding numColonneSlideShow}" IsEnabled="{Binding possoControllareSlideShow}" />
