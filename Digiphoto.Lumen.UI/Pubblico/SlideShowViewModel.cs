@@ -33,8 +33,6 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		private DispatcherTimer _orologio;
 
-// 		public delegate void SlideShowCambiatoEventHandler( object sender, EventArgs args );
- 
 
 		public SlideShowViewModel() {
 
@@ -102,6 +100,13 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 				return (slideShow == null || slideShow.slides.Count <= 0);
 			}
 		}
+
+		public bool isLoaded {
+			get {
+				return !isEmpty;
+			}
+		}
+
 
 		IFotoExplorerSrv fotoExplorerSrv {
 			get {
@@ -228,6 +233,18 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 			// Se fosse aperta l'altra finestra pubblica, allora la chiudo
 			((App)Application.Current).gestoreFinestrePubbliche.chiudiSnapshotPubblicoWindow();
+
+			raiseCambioStatoProperties();
+		}
+
+		private void raiseCambioStatoProperties() {
+			OnPropertyChanged( "isRunning" );
+			OnPropertyChanged( "isPaused" );
+			OnPropertyChanged( "isEmpty" );
+			OnPropertyChanged( "isLoaded" );
+			OnPropertyChanged( "pubblicitaInCorso" );
+			OnPropertyChanged( "slideShowInCorso" );
+			OnPropertyChanged( "numFotoCorrente" );
 		}
 
 		public void stop() {
@@ -245,6 +262,8 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			// Rilancio messaggio di cambio stato
 			if( msg != null )
 				LumenApplication.Instance.bus.Publish( msg );
+
+			raiseCambioStatoProperties();
 		}
 
 		/// <summary>
@@ -268,12 +287,11 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			// Rilancio messaggio di cambio stato
 			if( msg != null )
 				LumenApplication.Instance.bus.Publish( msg );
+
+			raiseCambioStatoProperties();
 		}
 
 		public void creaShow( ParamCercaFoto paramCercaFoto ) {
-
-			// Mi f accio dare le foto dal servizio
-//			fotoExplorerSrv.cercaFoto( paramCercaFoto );
 
 			this.slideShow = new SlideShowAutomatico( paramCercaFoto );
 			this.slideShow.slides = fotoExplorerSrv.fotografie;
@@ -296,6 +314,8 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			// Devo ascoltare sempre se qualche foto viene modificata
 			IObservable<FotoModificateMsg> observableFM = LumenApplication.Instance.bus.Observe<FotoModificateMsg>();
 			observableFM.Subscribe( this );
+
+			raiseCambioStatoProperties();
 		}
 
 		/// <summary>
@@ -310,7 +330,22 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			creaShow();
 		}
 
+		/// <summary>
+		/// Aggiunge le foto ad uno show esistente senza interromperlo
+		/// </summary>
+		/// <param name="newSlides"></param>
+		public void add( IList<Fotografia> newSlides ) {
 
+			bool isVuoto = (slideShow == null);
+			if( isVuoto )
+				this.slideShow = new SlideShow();
+
+			foreach( Fotografia f in newSlides )
+				slideShow.slides.Add( f );
+
+			if( isVuoto )
+				creaShow();
+		}
 
 		private void creaNuovoTimer() {
 

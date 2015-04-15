@@ -792,6 +792,10 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\ssPlaySelected-48x48.png" />
+    <Resource Include="Resources\ssPlayAll-48x48.png" />
+    <Resource Include="Resources\ssAddSelected-48x48.png" />
+    <Resource Include="Resources\ssPlaySelected-32x32.png" />
     <Resource Include="Resources\ssSnapshot-32x32.png" />
     <Resource Include="Resources\dominanti-16x16.png" />
     <Resource Include="Resources\move-16x16.png" />

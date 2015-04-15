@@ -109,7 +109,7 @@
 					Style="{DynamicResource tabControlProspettiveStyle}"
 					ItemContainerStyle="{StaticResource tabItemProspettiveStyle}" >
 
-			<TabItem MinHeight="30">
+			<TabItem MinHeight="30" Name="tabItemScarica">
 				<TabItem.Header>
 					<TextBlock Text="Scarica" ToolTip="Scarica foto da memory-card o da altra cartella" />
 				</TabItem.Header>
@@ -133,14 +133,14 @@
 			<lumFR:FotoRitocco x:Name="fotoRitoccoUserControl" Focusable="True" />
 		</TabItem>
 
-		<TabItem>
+		<TabItem Name="tabItemCarrello">
 			<TabItem.Header>
 				<TextBlock Text="Carrello" ToolTip="Vendere stampe e CD" />
 			</TabItem.Header>
 			<lum:CarrelloView x:Name="carrelloView" />
         </TabItem>
 
-		<TabItem>
+		<TabItem Name="tabItemPreferenze">
 			<TabItem.Header>
 				<TextBlock Text="Preferenze" ToolTip="Impostazioni operative" />
 			</TabItem.Header> 
@@ -158,7 +158,7 @@
 			</TabControl>
         </TabItem>
 
-		<TabItem>
+		<TabItem Name="tabItemTabelle">
 			<TabItem.Header>
 				<TextBlock Text="Tabelle" ToolTip="Archivi della base dati" />
 			</TabItem.Header>
@@ -183,7 +183,7 @@
 			</Grid>
 		</TabItem>
 
-		<TabItem>
+		<TabItem Name="tabItemUtilita">
 			<TabItem.Header>
 				<TextBlock Text="Utilità" ToolTip="Report e funzionalità varie" />
 			</TabItem.Header>

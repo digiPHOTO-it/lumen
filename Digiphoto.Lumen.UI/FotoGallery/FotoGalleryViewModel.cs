@@ -149,10 +149,10 @@ namespace Digiphoto.Lumen.UI {
 		public bool possoCaricareSlideShow( string modoAutoManuale ) {
 
 			bool posso = false;
-			if( modoAutoManuale.Equals( "Manual", StringComparison.CurrentCultureIgnoreCase ) )
+			if( modoAutoManuale == "AddSelez" || modoAutoManuale == "ZeroPiuSelez" )
 				// Deve esserci almeno una foto selezionata
 				posso = fotografieCW != null && fotografieCW.SelectedItems.Count > 0;
-			else if( modoAutoManuale.Equals( "Auto", StringComparison.CurrentCultureIgnoreCase ) ) {
+			else if( modoAutoManuale.Equals( "Tutte", StringComparison.CurrentCultureIgnoreCase ) ) {
 				// Qui basta che ho eseguito una ricerca qualsiasi
 				posso = isAlmenoUnaFoto;
 			}
@@ -164,6 +164,12 @@ namespace Digiphoto.Lumen.UI {
 			get
 			{
 				return slideShowViewModel != null && slideShowViewModel.slideShow != null;
+			}
+		}
+
+		public bool possoPlayPauseSlideShow {
+			get {
+				return possoControllareSlideShow && slideShowViewModel.isLoaded;
 			}
 		}
 
@@ -622,6 +628,18 @@ namespace Digiphoto.Lumen.UI {
 				return _controllareSlideShowCommand;
 			}
 		}
+
+		private RelayCommand _playPauseSlideShowCommand;
+		public ICommand playPauseSlideShowCommand {
+			get {
+				if( _playPauseSlideShowCommand == null ) {
+					_playPauseSlideShowCommand = new RelayCommand( azione => playPauseSlideShow(),
+																   azione => possoPlayPauseSlideShow );
+				}
+				return _playPauseSlideShowCommand;
+			}
+		}
+
 
 /*
 		private RelayCommand _screenShotPubblicaCommand;
@@ -1108,15 +1126,21 @@ namespace Digiphoto.Lumen.UI {
 
 			((App)Application.Current).gestoreFinestrePubbliche.forseApriSlideShowWindow();
 
-			if( modo.Equals( "Manual", StringComparison.CurrentCultureIgnoreCase ) )
+			if( modo == "AddSelez" )
+				slideShowViewModel.add( creaListaFotoSelezionate() );
+			else if( modo == "ZeroPiuSelez" ) {
+				// Azzera e fa partire le selezionate
 				slideShowViewModel.creaShow( creaListaFotoSelezionate() );
-			else if( modo.Equals( "Auto", StringComparison.CurrentCultureIgnoreCase ) ) {
+			} else if( modo == "Tutte" ) {
 				completaParametriRicerca();
 				ParamCercaFoto copiaParam = paramCercaFoto.ShallowCopy();
 				slideShowViewModel.creaShow( copiaParam );
 			} else {
 				throw new ArgumentOutOfRangeException( "modo slide show" );
 			}
+
+			// L'azione di play deve essere automatica (ipse dixit)
+			slideShowViewModel.start();
 
 			OnPropertyChanged( "possoControllareSlideShow" );
 		}
@@ -1138,6 +1162,15 @@ namespace Digiphoto.Lumen.UI {
 					break;
 			}
 		}
+
+
+		private void playPauseSlideShow() {
+			if( slideShowViewModel.isRunning )
+				slideShowViewModel.stop();
+			else if( slideShowViewModel.isPaused )
+				slideShowViewModel.start();
+		}
+
 
 		void azzeraParamRicerca() {
 			paramCercaFoto = new ParamCercaFoto();

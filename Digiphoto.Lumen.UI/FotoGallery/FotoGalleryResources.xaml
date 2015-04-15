@@ -144,7 +144,7 @@
 		</Setter>
 		<Style.Triggers>
 			<Trigger Property="IsEnabled" Value="False"> 
-				<Setter Property="Opacity" Value="0.4" />
+				<Setter Property="Opacity" Value="0.3" />
 			</Trigger>
 		</Style.Triggers>
 	</Style>
@@ -200,6 +200,33 @@
 		</Setter>
 	</Style>
 
+
+	<Style x:Key="tbuttonSSPlayPauseStyle" TargetType="ToggleButton">
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Width="32" Height="32" >
+					<Image.Style>
+						<Style TargetType="{x:Type Image}">
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding ElementName=togglePlayPauseSlideShow, Path=IsChecked}" Value="true">
+									<Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/ssPause-32x32.png"/>
+								</DataTrigger>
+								<DataTrigger Binding="{Binding ElementName=togglePlayPauseSlideShow, Path=IsChecked}" Value="false">
+									<Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/ssPlay-32x32.png"/>
+								</DataTrigger>
+								<DataTrigger Binding="{Binding ElementName=togglePlayPauseSlideShow, Path=IsEnabled}" Value="false">
+									<Setter Property="Opacity" Value="0.3"/>
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</Image.Style>
+				</Image>
+			</Setter.Value>
+		</Setter>	
+	</Style>	
+	
+	
+	
 	<RoutedUICommand x:Key="cmdTakeSnapshotPubblico1" />
 	<RoutedUICommand x:Key="cmdCloseSnapshotPubblico" />
 	<RoutedUICommand x:Key="uicmdSelezionaTutteLeFoto" />
