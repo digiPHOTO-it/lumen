@@ -25,12 +25,18 @@ namespace Digiphoto.Lumen.UI {
 			set;
 		}
 
+		public bool shutdownConfermato {
+			get;
+			set;
+		}
+
         #endregion // Fields
 
         #region Constructor
 
         protected ClosableWiewModel() {
 			abilitoShutdown = false;
+			shutdownConfermato = false;
         }
 
         #endregion // Constructor
@@ -61,14 +67,13 @@ namespace Digiphoto.Lumen.UI {
 
         protected virtual void OnRequestClose()
         {
-			bool spegni = false;
+			bool spegni = shutdownConfermato;
 
-			if( abilitoShutdown ) {
+			if( abilitoShutdown && !shutdownConfermato ) {
 				if( dialogProvider != null ) {
 					dialogProvider.ShowConfirmation( "Vuoi spegnere il computer", "Uscita",
 						( sino ) => {
-							if( spegni = sino )
-								return;
+							spegni = sino;
 						} );
 				}
 			}

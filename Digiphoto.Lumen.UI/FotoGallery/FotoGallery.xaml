@@ -37,75 +37,55 @@
 
 	<DockPanel Name="dockPanelGallery">
 
-<!--
-		<ToolBarTray DockPanel.Dock="Left" Orientation="Vertical" >
-        </ToolBarTray>
--->
-			<Expander DockPanel.Dock="Top" Header="Metadati da imporre" IsExpanded="False" ExpandDirection="Down">
+		<Expander DockPanel.Dock="Top" Header="Metadati da imporre" IsExpanded="False" ExpandDirection="Down">
 			<lum:SelettoreMetadati x:Name="selettoreMetadati" MyItemsSource="{Binding ElementName=this, Path=DataContext.fotografieCW}"
 								   IsEnabled="{Binding Path=MyItemsSource.isAlmenoUnaSelezionata}" Style="{StaticResource styleSelettoreMetadati}" />
         </Expander>
 
 
 
-        <ToolBarTray Name="toolBarTrayAzioniDx"  Orientation="Vertical" DockPanel.Dock="Right">
-                
-			<ToolBar Band="1" BandIndex="1" >
-                <Button ToolTip="Page UP" Style="{StaticResource buttonBaseStyle}" Click="buttonMovePage_Click" CommandParameter="-1">
+		<ToolBarTray Name="toolBarTrayAzioniDx"  Orientation="Vertical" DockPanel.Dock="Right" Style="{StaticResource fgToolBarTrayStyle}">
+
+			<ToolBar Band="1" BandIndex="1" Style="{StaticResource fgToolBarStyle}">
+                <Button ToolTip="Page UP" Style="{StaticResource imageButtonToolBarStyle}" Click="buttonMovePage_Click" CommandParameter="-1" IsEnabled="{Binding isAlmenoUnaFoto}">
                     <Image Width="48" Source="/Digiphoto.Lumen.UI;component/Resources/PageUp-48x48.png" />
                 </Button>
-				<Button ToolTip="Page DOWN" Style="{StaticResource buttonBaseStyle}" Click="buttonMovePage_Click" CommandParameter="+1" >
+				<Button ToolTip="Page DOWN" Style="{StaticResource imageButtonToolBarStyle}" Click="buttonMovePage_Click" CommandParameter="+1" IsEnabled="{Binding isAlmenoUnaFoto}">
                     <Image Width="48" Source="/Digiphoto.Lumen.UI;component/Resources/PageDown-48x48.png" />
                 </Button>
                 <Separator />
-				<Button Content="Desel+-" Command="{Binding selezionareTuttoCommand}" CommandParameter="True" Style="{StaticResource buttonBaseStyle}" ToolTip="Seleziona/Deseleziona" />
+				<Button Content="Desel+-" Command="{Binding selezionareTuttoCommand}" CommandParameter="True" Style="{StaticResource bottoneTestualeStyle}" ToolTip="Seleziona/Deseleziona" IsEnabled="{Binding isAlmenoUnaFoto}"/>
 				<!-- <Button Content="-Deselez" Command="{Binding selezionareTuttoCommand}" CommandParameter="False" Style="{StaticResource buttonBaseStyle}" /> -->
 
 				<Separator />
 
-                    <CheckBox Name="chkFiltaSelez" Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" ToolTip="Vedi solo le foto selezionate" >
-                        <TextBlock TextWrapping="NoWrap">Slz</TextBlock>
-                    </CheckBox>
-                    <Button Content="^ Prec" Click="buttonScorriFotoSelez_Click" Tag="-1" ToolTip="Posiziona sulla precendete foto selezionata" Padding="1" />
-                    <Button Content="v Succ" Click="buttonScorriFotoSelez_Click" Tag="+1" ToolTip="Posiziona sulla successiva foto selezionata" Padding="1" />
-					<TextBox ToolTip="Vai al N° di fotogramma. Uscire dal campo con il tasto TAB" BorderThickness="1" Width="46" Name="textBoxGotoNumFoto" BorderBrush="Cyan" LostFocus="textBoxGotoNumFoto_LostFocus"  >
-<!--						
-						<i:Interaction.Triggers>
-							<i:EventTrigger EventName="LostFocus" >
-							<i:InvokeCommandAction Command="{Binding filtrareNumFotogrammaCommand}" CommandParameter="{Binding ElementName=textBoxGotoNumFoto,Path=Text}" />
-							</i:EventTrigger>
-						</i:Interaction.Triggers>
--->						
-					</TextBox>
+				<CheckBox Name="chkFiltaSelez" Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" ToolTip="Vedi solo le foto selezionate" Style="{StaticResource bottoneTestualeStyle}" IsEnabled="{Binding isAlmenoUnaSelezionata}" >
+					<TextBlock TextWrapping="NoWrap">Selz</TextBlock>
+				</CheckBox>
+				<Button Content="^ Prec" Click="buttonScorriFotoSelez_Click" Tag="-1" ToolTip="Posiziona sulla precendete foto selezionata" Padding="1" Style="{StaticResource bottoneTestualeStyle}" IsEnabled="{Binding isAlmenoUnaSelezionata}" />
+				<Button Content="v Succ" Click="buttonScorriFotoSelez_Click" Tag="+1" ToolTip="Posiziona sulla successiva foto selezionata" Padding="1" Style="{StaticResource bottoneTestualeStyle}" IsEnabled="{Binding isAlmenoUnaSelezionata}" />
+				<TextBox ToolTip="Vai al N° di fotogramma. Uscire dal campo con il tasto TAB" Name="textBoxGotoNumFoto" LostFocus="textBoxGotoNumFoto_LostFocus" IsEnabled="{Binding isAlmenoUnaFoto}" Style="{StaticResource tbVaiNumStyle}" />
 			</ToolBar>
 
-                <ToolBar Band="1" BandIndex="2" >
+                <ToolBar Band="1" BandIndex="2" Style="{StaticResource fgToolBarStyle}">
 
-                    <Button Content="*" Tag="1" Click="buttonQuanteNeVedo_Click" />
-                    <Button Content="**" Tag="2"  Click="buttonQuanteNeVedo_Click" />
-                    <Button Content="***" Tag="4"  Click="buttonQuanteNeVedo_Click" />
-                    <!--
-                    <Slider Name="dimensioneIconeSlider" 
-                            Minimum="32" Maximum="2000"
-                            Orientation="Vertical" Height="50" 
-                            Value="{Binding Path=dimensioneIconaFoto,Mode=TwoWay}"
-                            HorizontalAlignment="Center" />
-                    <Separator />
-                    -->
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button Width="20" Content="-" Click="buttonQuanteNeVedo_Click" Tag="-" ToolTip="Riduci num. di righe"  />
-                        <Button Width="20" Content="+" Click="buttonQuanteNeVedo_Click" Tag="+" ToolTip="Aumenta num. di righe"  />
-                    </StackPanel>
+					<Button Content="*" Tag="1" Click="buttonQuanteNeVedo_Click" Style="{StaticResource bottoneTestualeStyle}" IsEnabled="{Binding isAlmenoUnaFoto}" />
+					<Button Content="**" Tag="2"  Click="buttonQuanteNeVedo_Click" Style="{StaticResource bottoneTestualeStyle}" IsEnabled="{Binding isAlmenoUnaFoto}" />
+					<Button Content="***" Tag="4"  Click="buttonQuanteNeVedo_Click" Style="{StaticResource bottoneTestualeStyle}" IsEnabled="{Binding isAlmenoUnaFoto}" />
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+					<Button Width="20" Content="-" Click="buttonQuanteNeVedo_Click" Tag="-" ToolTip="Riduci num. di righe" IsEnabled="{Binding isAlmenoUnaFoto}" Style="{StaticResource bottoneNellaToolbarStyle}" />
+					<Button Width="20" Content="+" Click="buttonQuanteNeVedo_Click" Tag="+" ToolTip="Aumenta num. di righe"  IsEnabled="{Binding isAlmenoUnaFoto}" Style="{StaticResource bottoneNellaToolbarStyle}" />
+					</StackPanel>
                 </ToolBar>
 
-                <ToolBar Band="1" BandIndex="3" Header="Pubblico">
-					<Button Command="{Binding caricareSlideShowCommand}" CommandParameter="Tutte" ToolTip="Carica tutte le foto nello show" >
+				<ToolBar Band="1" BandIndex="3" Header="Pubblico" Style="{StaticResource fgToolBarStyle}">
+				<Button Command="{Binding caricareSlideShowCommand}" CommandParameter="Tutte" ToolTip="Carica tutte le foto nello show"  Style="{StaticResource imageButtonToolBarStyle}">
 						<Image Source="/Digiphoto.Lumen.UI;component/Resources/ssPlayAll-48x48.png" Height="22" Width="48" />
 					</Button>
-					<Button Command="{Binding caricareSlideShowCommand}" CommandParameter="ZeroPiuSelez" ToolTip="Carica solo le foto selezionate nello show" >
+				<Button Command="{Binding caricareSlideShowCommand}" CommandParameter="ZeroPiuSelez" ToolTip="Carica solo le foto selezionate nello show" Style="{StaticResource imageButtonToolBarStyle}">
 						<Image Source="/Digiphoto.Lumen.UI;component/Resources/ssPlaySelected-48x48.png" Height="22" Width="48" />
 					</Button>
-					<Button Command="{Binding caricareSlideShowCommand}" CommandParameter="AddSelez" ToolTip="Aggiunge le foto selezionate nello show">
+				<Button Command="{Binding caricareSlideShowCommand}" CommandParameter="AddSelez" ToolTip="Aggiunge le foto selezionate nello show" Style="{StaticResource imageButtonToolBarStyle}">
 						<Image Source="/Digiphoto.Lumen.UI;component/Resources/ssAddSelected-48x48.png" Height="22" Width="48" />
 					</Button>
 					<!--
@@ -117,33 +97,36 @@
 					<!--
 					<Button Command="{Binding controllareSlideShowCommand}" CommandParameter="Stop"  Style="{StaticResource ssPauseStyle}" />
 					-->
-					<Button Name="buttonTakeSnapshotPubblico" Style="{StaticResource ssSnapshotStyle}" Click="buttonTakeSnapshotPubblico_Click" ToolTip="F2 mostra foto del video al pubblico" />
+				<Button Name="buttonTakeSnapshotPubblico" Style="{StaticResource ssSnapshotStyle}" Click="buttonTakeSnapshotPubblico_Click" ToolTip="F2 mostra foto del video al pubblico" IsEnabled="{Binding isAlmenoUnaFoto}" />
 					<extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. righe Slide-Show" Value="{Binding numRigheSlideShow}" IsEnabled="{Binding possoControllareSlideShow}" />
 					<extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. colonne Slide-Show" Value="{Binding numColonneSlideShow}" IsEnabled="{Binding possoControllareSlideShow}" />
                 </ToolBar>
 
 
-                <ToolBar Band="2" BandIndex="1" Name="stampaProvini" IsEnabled="{Binding Path=stampantiAbbinate, Converter={StaticResource listVisibilityConverter}}">
-                    <Button Command="{Binding Path=stampareProviniCommand}" ToolTip="Stampa provini" Style="{StaticResource buttonBaseStyle}">
+			<ToolBar Band="2" BandIndex="1" Name="stampaProvini" IsEnabled="{Binding Path=stampantiAbbinate, Converter={StaticResource listVisibilityConverter}}" Style="{StaticResource fgToolBarStyle}">
+                    <Button Command="{Binding Path=stampareProviniCommand}" ToolTip="Stampa provini" 
+							Style="{StaticResource imageButtonToolBarStyle}" IsEnabled="{Binding isAlmenoUnaSelezionata}">
                         <Image Source="/Digiphoto.Lumen.UI;component/Resources/Provini-48x48.png"  />
                     </Button>
                 </ToolBar>
 
-                <ToolBar Band="2" BandIndex="2">
+			<ToolBar Band="2" BandIndex="2" Style="{StaticResource fgToolBarStyle}">
 
-                    <Button Command="{Binding mandareInModificaCommand}" ToolTip="aggiunge alla lista delle foto da modificare" Style="{StaticResource buttonBaseStyle}" >
+                    <Button Command="{Binding mandareInModificaCommand}" ToolTip="aggiunge alla lista delle foto da modificare" 
+							Style="{StaticResource imageButtonToolBarStyle}" IsEnabled="{Binding isAlmenoUnaSelezionata}" >
                         <Image Source="/Digiphoto.Lumen.UI;component/Resources/PhotoEdit-48x48.png" />
                     </Button>
 
                     <Separator />
 
-                    <Button Command="{Binding Path=aggiungereAlMasterizzatoreCommand}" ToolTip="Aggiungi al masterizzatore" Style="{StaticResource buttonBaseStyle}">
+                    <Button Command="{Binding Path=aggiungereAlMasterizzatoreCommand}" ToolTip="Aggiungi al masterizzatore" 
+							Style="{StaticResource imageButtonToolBarStyle}" IsEnabled="{Binding isAlmenoUnaSelezionata}">
                         <Image Source="/Digiphoto.Lumen.UI;component/Resources/DvdBurn-48x48.png"  />
                     </Button>
                 </ToolBar>
 
                 <ToolBar Band="2" BandIndex="3" Name="stampaToolBar" 
-                     Header="Stampe"
+                     Header="Stampe" Style="{StaticResource fgToolBarStyle}"
                      ItemsSource="{Binding stampantiAbbinate}" 
                      ItemTemplate="{StaticResource pulsanteDiStampaTemplate}" >
                 </ToolBar>

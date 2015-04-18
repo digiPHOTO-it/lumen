@@ -941,6 +941,7 @@ namespace Digiphoto.Lumen.UI {
 
 			OnPropertyChanged( "totFotoPaginaAttuale" );
 			OnPropertyChanged( "stoPaginando" );
+			OnPropertyChanged( "isAlmenoUnaFoto" );
 
 			// Ora ci penso io ad idratare le immagini, perchè devo fare questa operazione nello stesso thread della UI
 			if( !_bkgIdrata.IsBusy )

@@ -246,7 +246,7 @@
 		<Setter Property="Foreground" Value="WhiteSmoke" />
 	</Style>
 
-	<Style TargetType="{x:Type ButtonBase}" x:Key="buttonBaseStyle">
+	<Style TargetType="{x:Type Control}" x:Key="buttonBaseStyle">
 		<Setter Property="Background">
 			<Setter.Value>
 				<LinearGradientBrush  StartPoint="0,0" EndPoint="0,1" >

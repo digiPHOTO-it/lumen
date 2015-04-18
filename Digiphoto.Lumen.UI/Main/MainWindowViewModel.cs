@@ -64,9 +64,7 @@ namespace Digiphoto.Lumen.UI {
 			
 			caricaElencoDischiRimovibili();
 
-			#if(!DEBUG)
-				this.abilitoShutdown = true;  // permetto all'utente di scegliere se spegnere il computer.
-			#endif
+			this.abilitoShutdown = true;  // permetto all'utente di scegliere se spegnere il computer.
         }
 
 		private void ejectUsb()
@@ -203,7 +201,7 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand uscireCommand {
 			get {
 				if( _uscireCommand == null ) {
-					_uscireCommand = new RelayCommand( param => uscire(),  param => true, false );
+					_uscireCommand = new RelayCommand( param => uscire( "SHUTDOWN".Equals(param) ),  param => true, false );
 				}
 				return _uscireCommand;
 			}
@@ -299,7 +297,7 @@ namespace Digiphoto.Lumen.UI {
 
 		#region Metodi
 
-		private void uscire() {
+		private void uscire( bool eseguiShutdown ) {
 			//Controllo se posso fermare l'applicazione
 			if (!LumenApplication.Instance.possoFermare)
 			{
@@ -317,6 +315,12 @@ namespace Digiphoto.Lumen.UI {
 				if (!procediPure)
 					return;
 			}
+
+			if( eseguiShutdown )
+				this.shutdownConfermato = true;		// mi ha già detto che vuole spegnere
+			else
+				this.abilitoShutdown = false;		// mi ha già detto che NON vuole spegnere
+
 
 			((App)App.Current).gestoreFinestrePubbliche.chiudiTutto();
 
