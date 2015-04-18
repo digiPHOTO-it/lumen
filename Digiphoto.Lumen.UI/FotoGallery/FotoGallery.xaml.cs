@@ -322,6 +322,8 @@ namespace Digiphoto.Lumen.UI {
 
 			ContentPresenter myContentPresenter = AiutanteUI.FindVisualChild<ContentPresenter>( LsImageGallery );
 			ListBoxItem co = (ListBoxItem)LsImageGallery.ItemContainerGenerator.ContainerFromIndex( 0 );
+			if( co == null )
+				return;  // Non dovrebbe succedere ma per sicurezza...
 			double elemH = co.ActualHeight;
 
 			ScrollViewer myScrollviewer = AiutanteUI.FindVisualChild<ScrollViewer>( LsImageGallery );

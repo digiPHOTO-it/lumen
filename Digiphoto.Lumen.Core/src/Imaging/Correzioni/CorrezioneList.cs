@@ -16,9 +16,24 @@ namespace Digiphoto.Lumen.Imaging.Correzioni {
 			int pos = this.FindIndex( x => x == vecchia );
 			if( pos >= 0 )
 				this[pos] = nuova;
-			//else
-				//throw new InvalidOperationException( "Correzione vecchia non trovata" );
 		}
+
+		/// <summary>
+		/// Controllo se la lista delle correzioni ne contiene una di un determinato tipo
+		/// </summary>
+		/// <param name="type">Indicare una classe che derivi da Correzione</param>
+		/// <returns>true se trovo una correzione con il tipo (classe) indicata</returns>
+		public bool Contains( Type type ) {
+			bool trovato = false;
+			foreach( Correzione c in this ) {
+				if( c.GetType() == type ) {
+					trovato = true;
+					break;
+				}
+			}
+			return trovato;
+		}
+
 	}
 
 

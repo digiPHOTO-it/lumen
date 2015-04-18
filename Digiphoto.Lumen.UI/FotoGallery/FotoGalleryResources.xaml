@@ -13,6 +13,24 @@
 	<BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
 	<lumC:ProgressToVisibilityConverter x:Key="progressToVisibilityConverter" />
 
+	<Style x:Key="imageButtonToolBarStyle" TargetType="Button">
+		<Setter Property="MinWidth" Value="48" />
+		<Setter Property="Margin" Value="0,1,0,0" />
+		<Style.Triggers>
+			<Trigger Property="IsEnabled" Value="False">
+				<Setter Property="Background" Value="DarkGray" />
+				<Setter Property="Opacity" Value="0.3" />
+			</Trigger>
+			<Trigger Property="IsEnabled" Value="True">
+				<Setter Property="Background" Value="White" />
+				<Setter Property="BorderBrush" Value="Orange" />
+			</Trigger>
+		</Style.Triggers>
+	</Style>
+
+	<Style x:Key="bottoneNellaToolbarStyle" BasedOn="{StaticResource buttonBaseStyle}" TargetType="Control">
+		<Setter Property="Width" Value="48" />
+	</Style>
 
 	<!-- Stile della listbox che itera le immagini -->
     <Style x:Key="LsImageGalleryStyle" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
@@ -49,7 +67,9 @@
     <DataTemplate x:Key="pulsanteDiStampaTemplate">
         <Button ToolTip="{Binding}" 
                 Command="{Binding Path=DataContext.stampareCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
-                CommandParameter="{Binding}">
+                CommandParameter="{Binding}"
+				Style="{StaticResource imageButtonToolBarStyle}"
+				>
 			<Button.InputBindings>
 				<MouseBinding Gesture="Control+LeftClick" 
 				              Command="{Binding Path=DataContext.stampareDirettaCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
@@ -58,7 +78,7 @@
 			</Button.InputBindings>
 			<StackPanel Orientation="Vertical" >
                 <Image Source="/Digiphoto.Lumen.UI;component/Resources/Printer-48x48.png" Width="48" />
-                <Label Content="{Binding FormatoCarta.descrizione}" Width="48" HorizontalAlignment="Center" />
+                <Label Content="{Binding FormatoCarta.descrizione}" Width="48" HorizontalContentAlignment="Center" Foreground="Black"  />
             </StackPanel>
         </Button>
     </DataTemplate>
@@ -135,20 +155,6 @@
 		</Setter>
 	</Style>
 
-	<Style x:Key="ssStartStyle" TargetType="Button">
-		<Setter Property="ToolTip" Value="Start Slide Show" />
-		<Setter Property="Content">
-			<Setter.Value>
-				<Image Source="/Digiphoto.Lumen.UI;component/Resources/ssPlay-32x32.png" Width="32" />
-			</Setter.Value>
-		</Setter>
-		<Style.Triggers>
-			<Trigger Property="IsEnabled" Value="False"> 
-				<Setter Property="Opacity" Value="0.3" />
-			</Trigger>
-		</Style.Triggers>
-	</Style>
-	
 	<Style x:Key="ssPauseStyle" TargetType="Button">
 		<Setter Property="ToolTip" Value="Pause Slide Show" />
 		<Setter Property="Content">
@@ -163,14 +169,6 @@
 		</Style.Triggers>
 	</Style>
 
-	<Style x:Key="ssSnapshotStyle" TargetType="Button">
-		<Setter Property="ToolTip" Value="Foto dello schermo su finestra pubblica" />
-		<Setter Property="Content">
-			<Setter.Value>
-				<Image Source="/Digiphoto.Lumen.UI;component/Resources/ssSnapshot-32x32.png" Width="32"/>
-			</Setter.Value>
-		</Setter>
-	</Style>
 
 	
 	<Style x:Key="styleSelettoreMetadati" TargetType="UserControl">
@@ -223,9 +221,59 @@
 				</Image>
 			</Setter.Value>
 		</Setter>	
-	</Style>	
-	
-	
+	</Style>
+
+	<Style x:Key="fgToolBarTrayStyle" TargetType="ToolBarTray">
+		<Setter Property="Background" Value="Silver" />
+	</Style>
+
+	<Style x:Key="fgToolBarStyle" TargetType="ToolBar">
+		<Setter Property="Foreground" Value="Black" />
+	</Style>
+
+
+	<Style x:Key="ssStartStyle" TargetType="Button" BasedOn="{StaticResource imageButtonToolBarStyle}">
+		<Setter Property="ToolTip" Value="Start Slide Show" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/ssPlay-32x32.png" Width="32" />
+			</Setter.Value>
+		</Setter>
+		<Style.Triggers>
+			<Trigger Property="IsEnabled" Value="False">
+				<Setter Property="Opacity" Value="0.3" />
+			</Trigger>
+		</Style.Triggers>
+	</Style>
+
+	<Style x:Key="ssSnapshotStyle" TargetType="Button" BasedOn="{StaticResource imageButtonToolBarStyle}">
+		<Setter Property="ToolTip" Value="Foto dello schermo su finestra pubblica" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/ssSnapshot-32x32.png" Width="32"/>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="tbVaiNumStyle" TargetType="TextBox">
+		<Setter Property="Width" Value="48" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="BorderBrush" Value="Cyan" />
+	</Style>
+
+	<Style x:Key="bottoneTestualeStyle" BasedOn="{StaticResource buttonBaseStyle}" TargetType="Control">
+		<Setter Property="MinWidth" Value="48" />
+		<Setter Property="Margin" Value="0,1,0,0" />
+		<Style.Triggers>
+			<Trigger Property="IsEnabled" Value="False">
+				<Setter Property="Background" Value="DarkGray" />
+				<Setter Property="Opacity" Value="0.3" />
+			</Trigger>
+			<Trigger Property="IsEnabled" Value="True">
+				<Setter Property="BorderBrush" Value="Orange" />
+			</Trigger>
+		</Style.Triggers>
+	</Style>
 	
 	<RoutedUICommand x:Key="cmdTakeSnapshotPubblico1" />
 	<RoutedUICommand x:Key="cmdCloseSnapshotPubblico" />

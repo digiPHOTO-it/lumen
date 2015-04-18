@@ -160,7 +160,7 @@ namespace Digiphoto.Lumen.Util {
 		}
 
 		/// <summary>
-		/// Creo il Provino, oppure la Risultante di una foto e scrivo l'immagine su disco nel file indicato
+		/// Creo il Provino, e/o la Risultante di una foto e scrivo l'immagine su disco nel file indicato
 		/// </summary>
 		/// <param name="nomeFileSorgente">E' il nome del file della foto vera, grande</param>
 		/// <param name="foto"></param>
@@ -181,30 +181,51 @@ namespace Digiphoto.Lumen.Util {
 				caricataOrig = true;
 			}
 
+			// carico eventuali correzioni
+			CorrezioniList correzioni = null;
+			if( foto.correzioniXml != null )
+				correzioni = SerializzaUtil.stringToObject<CorrezioniList>( foto.correzioniXml );
 
-			IImmagine immagineDestinazione = null; 
-			if( quale == IdrataTarget.Provino ) {
-				// Scale per ridimensionare
-				immagineDestinazione = gis.creaProvino( foto.imgOrig );   // creo una immagine più piccola
-				PathUtil.creaCartellaProvini( foto );
-				
-				// Siccome sto ri-creando il provino, significa che qualcosa è cambiato, quindi una eventuale risultante non è più valida.
-				foto.imgRisultante = null;  // Sto ricreando il provino, quindi la risultante non è più valida.
-				string nomeFileRis = PathUtil.nomeCompletoFile( foto, IdrataTarget.Risultante );
-				if( File.Exists(nomeFileRis) )
-					File.Delete( nomeFileRis );
+			// Se devo crere il provino ma la foto contiene la correzione di Zoom, 
+			// devo passare dalla foto grande, altrimenti perde di qualità
+			bool devoPassareDallaGrande = false;
+			if( quale == IdrataTarget.Risultante )
+				devoPassareDallaGrande = true;
+			if( correzioni != null && correzioni.Contains( typeof(Zoom) ) )
+				devoPassareDallaGrande = true;
+			
 
-			} else if( quale == IdrataTarget.Risultante ) {
-				immagineDestinazione = (IImmagine) foto.imgOrig.Clone();  // creo un duplicato
-				PathUtil.creaCartellaRisultanti( foto );   // se non esiste la cartelle delle modificate, la creo al volo
-			} else 
-				throw new ArgumentException( "target per creazione cache non gestito : " + quale );
+			// Cancello il file Risultante da disco perchè tanto sta per cambiare.
+			IImmagine immagineDestinazione = null;
+			foto.imgRisultante = null;
+			string nomeFileRisultante = PathUtil.nomeCompletoFile( foto, IdrataTarget.Risultante );
+			if( File.Exists( nomeFileRisultante ) )
+				File.Delete( nomeFileRisultante );
 
+			// Eventuale creazione delle cartelle di destinazione (potrebbero non esistere)
+			PathUtil.creaCartellaProvini( foto );
+			PathUtil.creaCartellaRisultanti( foto );
+
+			// OK partiamo!
+			if( devoPassareDallaGrande )
+				immagineDestinazione = (IImmagine)foto.imgOrig.Clone();		// creo un duplicato della Originale per poi lavorarci
+			else
+				immagineDestinazione = gis.creaProvino( foto.imgOrig );		// creo una immagine più piccola
 
 			// applico eventuali correzioni
-			if( foto.correzioniXml != null ) {
-				CorrezioniList correzioni = SerializzaUtil.stringToObject<CorrezioniList>( foto.correzioniXml );
+			if( correzioni != null ) {
 				immagineDestinazione = fr.applicaCorrezioni( immagineDestinazione, correzioni, quale );
+
+				// Se sto facendo un provino che prevede lo zoom, devo passare dalla immagine grande,
+				// quindi sono obbligato a ricalcolare la Risultante e quindi rimpicciolirla.
+				// quindi per essere efficiente, salvo la Risultante che ho già pronta (cosi risparmio tempo dopo)
+				if( devoPassareDallaGrande && quale == IdrataTarget.Provino ) {
+					gis.save( immagineDestinazione, nomeFileRisultante );
+					foto.imgRisultante = immagineDestinazione;
+
+					// Poi la ritaglio per fare il provino buono.
+					immagineDestinazione = gis.creaProvino( immagineDestinazione );
+				}
 			}
 
 			// Salvo su disco l'immagine di destinazione
@@ -219,8 +240,9 @@ namespace Digiphoto.Lumen.Util {
 				AiutanteFoto.disposeImmagini( foto, IdrataTarget.Originale );
 
 			// Modifico la foto che mi è stata passata.
-			if( quale == IdrataTarget.Provino ) 
+			if( quale == IdrataTarget.Provino ) {
 				foto.imgProvino = immagineDestinazione;
+			}
 			if( quale == IdrataTarget.Risultante )
 				foto.imgRisultante = immagineDestinazione;
 		}
