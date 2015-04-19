@@ -52,6 +52,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			_viewModel.PropertyChanged += _viewModel_PropertyChanged;
 
+			// Questo bottone è solo UI. Lo gestisco io da qui, senza viewmodel
+			toggleButtonReticolo.DataContext = this;
+			
 
 			// Mi sottoscrivo per ascoltare i messaggi di fotoritocco per ribindare i controlli.
 			IObservable<RitoccoPuntualeMsg> observable = LumenApplication.Instance.bus.Observe<RitoccoPuntualeMsg>();
@@ -72,8 +75,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				// cambiato il logo.
 				this.Dispatcher.BeginInvoke( creaImmaginettaLogoAction );
 			}
-		}
 
+			if( e.PropertyName == "fotografiaInModifica" ) {
+
+				// Se la nuova fotografia ha la ratio diversa da quella prima...
+				eliminaReticoloPerpendicolare();
+			}
+		}
 
 		#region Aggancio Controlli Bindings
 
@@ -1152,18 +1160,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		private void gridRitocco_SizeChanged(object sender, SizeChangedEventArgs e) {	
 			_viewModel.frpContenitoreMaxW = gridRitocco.ActualWidth;
 			_viewModel.frpContenitoreMaxH = gridRitocco.ActualHeight;
-
-/* non va
-			// Creo delle linee di orizzonte
-			for( int ii = 1; ii <= 10; ii++ ) {
-				Line line = new Line();
-				line.Height = 1;
-				line.Width = gridRitocco.ActualWidth;
-				Canvas.SetTop( line, ii * 20 );
-				Canvas.SetLeft( line, 0 );
-				gridRitocco.Children.Add( line );
-			}
-*/
 		}
 
 		private void buttonTakeSnapshotPubblico_Click( object sender, RoutedEventArgs e ) {
@@ -1172,6 +1168,94 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		private void closeSnapshotPubblico_Click( object sender, RoutedEventArgs e ) {
 			((App)Application.Current).gestoreFinestrePubbliche.chiudiSnapshotPubblicoWindow();
+		}
+
+		private void borderCornice_SizeChanged( object sender, SizeChangedEventArgs e ) {
+			if( reticoloVisibile )
+				creaReticoloPerpendicolare();
+		}
+
+		private void creaReticoloPerpendicolare() {
+			// uso 10 righe nel lato più piccolo 
+			// uso 15 righe nel lato più grande
+
+			int nRigheOriz, nRigheVert;
+
+			if( borderCornice.ActualWidth > borderCornice.ActualHeight ) {
+				// landscape
+				nRigheOriz = 10;
+				nRigheVert = 15;
+			} else {
+				// portrait
+				nRigheOriz = 15;
+				nRigheVert = 10;
+			}
+
+			// Queste sono le coordinate di origine del borderCornice all'interno della grid.
+			var p = borderCornice.TranslatePoint( new Point( 0, 0 ), gridRitocco );
+			double currentLeft = p.X;
+			double currentTop = p.Y;
+
+			// Creo delle linee orizzontali
+			double deltaY = (borderCornice.ActualHeight / nRigheOriz);
+			for( int ii = 1; ii < nRigheOriz; ii++ ) {
+
+				Line line = creaLinea();
+
+				line.X1 = currentLeft;
+				line.X2 = line.X1 + borderCornice.ActualWidth;
+				line.Y1 = currentTop + (ii * deltaY);
+				line.Y2 = line.Y1;
+				gridRitocco.Children.Add( line );
+			}
+
+			// Creo delle linee verticali
+			double deltaX = (borderCornice.ActualWidth / nRigheVert);
+			for( int ii = 1; ii < nRigheVert; ii++ ) {
+
+				Line line = creaLinea();
+
+				line.X1 = currentLeft + (ii * deltaX);
+				line.X2 = line.X1;
+				line.Y1 = currentTop;
+				line.Y2 = line.Y1 + borderCornice.ActualHeight;
+				gridRitocco.Children.Add( line );
+			}
+
+		}
+
+		private Line creaLinea() {
+			Line line = new Line();
+			line.Tag = "reticolo";
+			line.HorizontalAlignment = HorizontalAlignment.Left;
+			line.VerticalAlignment = VerticalAlignment.Top;
+
+			Style style = this.FindResource( "reticoloPerpendicolareLineStyle" ) as Style;
+			line.Style = style;
+			return line;
+		}
+		void eliminaReticoloPerpendicolare() {
+
+			for( int ii = gridRitocco.Children.Count-1; ii >= 0; ii-- ) {
+				UIElement element = gridRitocco.Children[ii];
+				if( element is FrameworkElement && "reticolo".Equals( (string)((FrameworkElement)element).Tag) )
+					gridRitocco.Children.RemoveAt( ii );
+			}
+		}
+
+		private bool _reticoloVisibile;
+		public bool reticoloVisibile {
+			get {
+				return _reticoloVisibile;
+			}
+			set {
+				_reticoloVisibile = value;
+				if( value == true ) {
+					creaReticoloPerpendicolare();
+				} else {
+					eliminaReticoloPerpendicolare();
+				}
+			}
 		}
 
 	}
