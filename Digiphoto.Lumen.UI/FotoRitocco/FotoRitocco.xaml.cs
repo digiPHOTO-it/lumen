@@ -29,6 +29,7 @@ using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
 using Digiphoto.Lumen.UI.Main;
 using System.Windows.Threading;
 using Digiphoto.Lumen.Imaging.Wic.Correzioni;
+using System.Windows.Shapes;
 
 
 
@@ -60,7 +61,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 //			this.KeyDown += new KeyEventHandler( onFotoRitoccoUserControl_KeyDown );			
 
-			// Fino a che non renderizzo i controlli per davvero, non so quanto sia l'area di fotoritozzo. Per ora quindi mi setto un valore verosimile e funzionante.
+			// Fino a che non renderizzo i controlli per davvero, non so quanto sia l'area di fotoritocco. Per ora quindi mi setto un valore verosimile e funzionante.
 			_viewModel.frpContenitoreMaxW = 500;
 			_viewModel.frpContenitoreMaxH = 500;
 
@@ -73,6 +74,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+
+		#region Aggancio Controlli Bindings
 
 		private void sliderLuminosita_ValueChanged( object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e ) {
 
@@ -305,6 +308,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				_viewModel.luminositaContrastoEffect.Brightness = salvaValore;
 		}
 
+		#endregion Aggancio Controlli Bindings
 
 		void cambiareModoEditor( object sender, EditorModeEventArgs args ) {
 
@@ -1148,6 +1152,18 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		private void gridRitocco_SizeChanged(object sender, SizeChangedEventArgs e) {	
 			_viewModel.frpContenitoreMaxW = gridRitocco.ActualWidth;
 			_viewModel.frpContenitoreMaxH = gridRitocco.ActualHeight;
+
+/* non va
+			// Creo delle linee di orizzonte
+			for( int ii = 1; ii <= 10; ii++ ) {
+				Line line = new Line();
+				line.Height = 1;
+				line.Width = gridRitocco.ActualWidth;
+				Canvas.SetTop( line, ii * 20 );
+				Canvas.SetLeft( line, 0 );
+				gridRitocco.Children.Add( line );
+			}
+*/
 		}
 
 		private void buttonTakeSnapshotPubblico_Click( object sender, RoutedEventArgs e ) {

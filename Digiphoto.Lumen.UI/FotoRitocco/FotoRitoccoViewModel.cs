@@ -152,16 +152,17 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			set {
 				if( _fotografiaInModifica != value ) {
 
-					// Se la foto precedente aveva delle modifiche in sospeso, allora le salvo
-					eventualeSalvataggioAutomatico();
-
+					// Operazioni prima della modifica
+					onFotografiaInModificaChanged( true );
 
 					_fotografiaInModifica = value;
-					OnPropertyChanged( "fotografiaInModifica" );
-					OnPropertyChanged("isModalitaEditFotoRitocco");
 
-					// Eseguo alcune operazioni al cambio di foto in modifica. Probabilmente dovrò salvare anche
-					onFotografiaInModificaChanged();
+					// Operazioni dopo della modifica
+					onFotografiaInModificaChanged( false );
+
+
+					OnPropertyChanged( "fotografiaInModifica" );
+					OnPropertyChanged( "isModalitaEditFotoRitocco" );
 				}
 			}
 		}
@@ -1277,6 +1278,11 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			bool creatoNuovo = false;
 
+			if( _faseRipristinoFoto && isTrasformazioneNulla( trasformazioni.Children[quale] ) ) {
+				// Se sto ripristinando una foto, e la trasformazione indicata è inefficace, esco subito
+				return false;
+			}
+
 			// Controllo se la trasformazione corrente è già quello attuale non faccio niente.
 			if( trasformazioneCorrente == null || !trasformazioneCorrente.Equals( trasformazioni.Children[quale] ) ) {
 
@@ -1610,9 +1616,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				return;
 
 			quadroRuotato = false;
-			bool saveFaseRipristinoFoto = _faseRipristinoFoto; // salvo
+//			bool saveFaseRipristinoFoto = _faseRipristinoFoto; // salvo
 			try {
-				_faseRipristinoFoto = true;
+//				_faseRipristinoFoto = true;
 			
 
 				// resetto tutti gli effetti e trasformazioni precedenti per resettare i controlli ui.
@@ -1667,7 +1673,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				}
 
 			} finally {
-				_faseRipristinoFoto = saveFaseRipristinoFoto;
+//				_faseRipristinoFoto = saveFaseRipristinoFoto;
 			}
 
 		}
@@ -2020,29 +2026,48 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		/// <summary>
 		/// Quando cambia la fotografia in modifica.
+		/// <param name="primaDopo">
+		///   false = prima di cambiare 
+		///   true  = dopo aver cambiato
+		/// </param>
 		/// </summary>
-		void onFotografiaInModificaChanged() {
+		void onFotografiaInModificaChanged( bool primaDiCambiare ) {
 
-			try {
+			if( primaDiCambiare ) {
+				// Operazioni prima di spostare la foto corrente
+				// Se la foto precedente aveva delle modifiche in sospeso, allora le salvo
+				eventualeSalvataggioAutomatico();
 
-				// Riposiziono i controlli in modo da velocizzare il tutto.
-				riposizionaControlliFotoritocco();  // ** 1 **
+			} else {
 
-			} catch( Exception ) {
-				fotografiaInModifica = null;
+				// Operazioni dopo di spostare la foto corrente
+
+				bool saveFaseRipristinoFoto = _faseRipristinoFoto; // salvo
+				try {
+					// Evito di far scattare il trigger di modifiche in corso
+					_faseRipristinoFoto = true;
+
+					// Riposiziono i controlli in modo da velocizzare il tutto.
+					riposizionaControlliFotoritocco();  // ** 1 **
+
+					// Se ho spento la fotografia, allora spengo anche una eventuale maschera
+					if( fotografiaInModifica == null && modalitaEdit == ModalitaEdit.FotoRitocco ) {
+						modificheInCorso = false;
+						mascheraAttiva = null;
+					}
+
+					// Provoco la rilettura delle property che determinano lo stato dei pulsanti.
+					forzaRefreshStato();  //  ** 2 **
+
+					pubblicaMessaggioEffettiCambiati();  //  **  3 **
+
+				} catch( Exception ) {
+					fotografiaInModifica = null;
+				} finally {
+					_faseRipristinoFoto = saveFaseRipristinoFoto;
+				}
+
 			}
-
-
-			// Se ho spento la fotografia, allora spengo anche una eventuale maschera
-			if( fotografiaInModifica == null && modalitaEdit == ModalitaEdit.FotoRitocco ) {
-				modificheInCorso = false;
-				mascheraAttiva = null;
-			}
-
-			// Provoco la rilettura delle property che determinano lo stato dei pulsanti.
-			forzaRefreshStato();  //  ** 2 **
-
-			pubblicaMessaggioEffettiCambiati();  //  **  3 **
 		}
 
 #endregion Gestori Eventi
