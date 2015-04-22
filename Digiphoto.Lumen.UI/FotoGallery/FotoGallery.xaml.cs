@@ -18,6 +18,7 @@ using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.UI.Util;
 using System.Windows.Threading;
 using Digiphoto.Lumen.Config;
+using System.Collections.Generic;
 
 namespace Digiphoto.Lumen.UI {
 	/// <summary>
@@ -73,17 +74,87 @@ namespace Digiphoto.Lumen.UI {
 				quante = Convert.ToInt16( param );
 
 			// prima questo
-			sistemaMarginePerVedereDueFotoAffiancate( quante );
+			//sistemaMarginePerVedereDueFotoAffiancate( quante );
+
+			/*
+			ContentPresenter myContentPresenter = AiutanteUI.FindVisualChild<ContentPresenter>(LsImageGallery);
+			
+			ScrollViewer myScrollviewer = AiutanteUI.FindVisualChild<ScrollViewer>(LsImageGallery);
+			
+			List<Fotografia> viewFotos = GetVisibleItemsFromListbox(LsImageGallery, myScrollviewer);
+			Fotografia viewFoto = null;
+			if (viewFotos != null && viewFotos.Count > 0)
+				viewFoto = viewFotos.First<Fotografia>();
+
+			List<Fotografia> viewFotos2 = GetVisibleItemsFromListbox(LsImageGallery, myContentPresenter);
+			Fotografia viewFoto2 = null;
+			if (viewFotos2 != null && viewFotos2.Count > 0)
+				viewFoto2 = viewFotos2.First<Fotografia>();
+			*/
+
+			List<Fotografia> viewFotos3 = GetVisibleItemsFromListbox(LsImageGallery, LsImageGallery);
+			Fotografia viewFoto3 = null;
+			if (viewFotos3 != null && viewFotos3.Count > 0){
+
+				if (LsImageGallery.SelectedItems.Count > 0 &&
+					viewFotos3.Any<Fotografia>(element => LsImageGallery.SelectedItems.Contains(element)))
+				{
+					viewFoto3 = LsImageGallery.SelectedItems.OfType<Fotografia>().First<Fotografia>();
+				}
+				else
+				{
+					viewFoto3 = viewFotos3.First<Fotografia>();
+				}
+
+			}
 
 			// poi questo
 			quanteRigheVedo = quante;
 
-			spostamentoScrollerSuGiu( 0 );
-//			forsePrendoSnapshotPubblico();
-
-//			LsImageGallery.Focus();   // mi consente di usare il tasto pg/up pg/down.
+			//Mi posiziono sulla foto su cui avevo il focus
+			if (viewFoto3!=null)
+				posizionaListaSulFotogramma(viewFoto3.numero);
 		}
 
+		private List<Fotografia> GetVisibleItemsFromListbox(ListBox listBox, FrameworkElement parentToTestVisibility)
+		{
+			var items = new List<Fotografia>();
+
+			foreach (var item in LsImageGallery.Items)
+			{
+				if (IsUserVisible((ListBoxItem)listBox.ItemContainerGenerator.ContainerFromItem(item), parentToTestVisibility))
+				{
+					items.Add((Fotografia)item);
+				}
+				else if (items.Any())
+				{
+					break;
+		}
+			}
+
+			return items;
+		}
+
+		private static bool IsUserVisible(FrameworkElement element, FrameworkElement container)
+		{
+			if (!element.IsVisible)
+				return false;
+
+			Rect bounds = element.TransformToAncestor(container).TransformBounds(new Rect(0.0, 0.0, element.ActualWidth, element.ActualHeight));
+			var rect = new Rect(0.0, 0.0, container.ActualWidth, container.ActualHeight);
+			return rect.Contains(bounds.TopLeft) && rect.Contains(bounds.BottomRight);
+		}
+
+		protected bool IsFullyOrPartiallyVisible(FrameworkElement child, FrameworkElement scrollViewer)
+		{
+			if (!child.IsVisible)
+				return false;
+
+			var childTransform = child.TransformToAncestor(scrollViewer);
+			var childRectangle = childTransform.TransformBounds(new Rect(new Point(0, 0), child.RenderSize));
+			var ownerRectangle = new Rect(new Point(0, 0), scrollViewer.RenderSize);
+			return ownerRectangle.IntersectsWith(childRectangle);
+		}
 
 		/// <summary>
 		/// Se scelgo di vedere una sola "riga" di foto, allora cerco di farci stare 
