@@ -629,12 +629,13 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 					} else
 						traGroup.Children.Add( trasformazione );
 
-				} else if( correttore.CanConvertTo( typeof(ShaderEffectBase) ) ) {
-					
+				} else if( correttore.CanConvertTo( typeof( ShaderEffectBase ) ) ) {
+
 					// ::: Effetti li sommo poi li faccio tutti in una volta per essere più veloce
 					if( effetti == null )
 						effetti = new List<ShaderEffect>();
-					effetti.Add( (ShaderEffect)correttore.ConvertTo( correzione, typeof(ShaderEffectBase ) ) );
+					effetti.Add( (ShaderEffect)correttore.ConvertTo( correzione, typeof( ShaderEffectBase ) ) );
+
 				}
 			}
 
@@ -708,6 +709,14 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 			} finally {
 				w.Close();
+			}
+
+
+			// Per ultima cosa, mi rimane fuori un evenuale logo
+			Logo correzioneLogo = (Logo) correzioni.FirstOrDefault( c => c is Logo );
+			if( correzioneLogo != null ) {
+				Correttore correttore = gestoreImmaginiSrv.getCorrettore( correzioneLogo );
+				immagineMod = correttore.applica( immagineMod, correzioneLogo );
 			}
 
 			return immagineMod;
