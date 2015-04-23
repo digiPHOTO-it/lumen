@@ -920,7 +920,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// devo salvarmi le correzioni attuali di tutte quelle che stanno per essere modificate.
 		/// Mi serve per gestire eventuale rollback
 		/// </summary>
-		private void forseInizioModifiche() {
+		public void forseInizioModifiche() {
 
 			if( ! _faseRipristinoFoto ) 
 				modificheInCorso = true;
@@ -1104,8 +1104,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			addCorrezione( TipoCorrezione.Zoom,     trasformazioni.Children[TFXPOS_ZOOM]      );
 			addCorrezione( TipoCorrezione.Trasla,   trasformazioni.Children[TFXPOS_TRANSLATE] );
 
-			// Ormai che li ho acquisiti, li svuoto
-//			resetEffettiAndTrasformazioni();
 
 			gestoreImmaginiSrv.salvaCorrezioniTransienti( fotografiaInModifica );
 
@@ -1116,6 +1114,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			LumenApplication.Instance.bus.Publish( msg );
 
 			// Ora che ho persistito, concludo "dicamo cosi" la transazione, faccio una specie di commit.
+			// Ormai che li ho acquisiti, li svuoto
+
 			modificheInCorso = false;
 		}
 

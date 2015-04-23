@@ -7,6 +7,7 @@
 #define MyAppURL       "http://www.digiphoto.it/Lumen"
 #define MyAppExeName   "Digiphoto.Lumen.UI.exe"
 #define MyConfExeName  "Digiphoto.Lumen.GestoreConfigurazione.UI.exe"
+#define SSHostExeName  "Digiphoto.Lumen.SelfService.Host.exe" 
 #define dirPLat        "bin\Release"
 
 
@@ -97,6 +98,7 @@ Source: "..\packages\System.Data.SQLite.Linq.1.0.90.0\lib\net45\System.Data.SQLi
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{group}\{#MyAppName} Configurazione"; Filename: "{app}\{#MyConfExeName}"
+Name: "{group}\{#MyAppName} Self Service Host"; Filename: "{app}\{#SSHostExeName}"
 Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 

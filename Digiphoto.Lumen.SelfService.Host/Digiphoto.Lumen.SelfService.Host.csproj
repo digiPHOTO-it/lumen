@@ -23,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -124,7 +125,7 @@
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>copy "$(SolutionDir)packages\System.Data.SQLite.x86.1.0.90.0\lib\net45\System.Data.SQLite.dll"  "$(TargetDir)" /y
+    <PostBuildEvent>copy "$(SolutionDir)packages\System.Data.SQLite.x64.1.0.90.0\lib\net45\System.Data.SQLite.dll"  "$(TargetDir)" /y
 copy "$(SolutionDir)packages\System.Data.SQLite.Linq.1.0.90.0\lib\net45\System.Data.SQLite.Linq.dll"  "$(TargetDir)" /y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

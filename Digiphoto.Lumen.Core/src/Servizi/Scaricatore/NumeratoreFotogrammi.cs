@@ -67,7 +67,12 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 							numero = 0;
 						break;
 
-					case 'M':   // mai (non faccio nulla)
+					case 'M':   // settimanale
+						if( diff.TotalDays > 30 )
+							numero = 0;
+						break;
+
+					case 'X':   // mai (non faccio nulla)
 						break;
 
 					default:
