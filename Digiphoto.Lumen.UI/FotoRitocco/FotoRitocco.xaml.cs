@@ -1037,9 +1037,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				// TODO
 			} else {
 
-				Point relativeLocation = imageRitoccata.TranslatePoint( new Point( 0, 0 ), gridRitocco );
+				Point relativeLocation = borderCornice.TranslatePoint( new Point( 0, 0 ), gridRitocco );
 
-				Rect r = LogoCorrettore.calcolaCoordinateLogoAutomatiche( (int)imageRitoccata.ActualWidth, (int)imageRitoccata.ActualHeight, wl, hl, _viewModel.logo );
+				Rect r = LogoCorrettore.calcolaCoordinateLogoAutomatiche( (int)borderCornice.ActualWidth, (int)borderCornice.ActualHeight, wl, hl, _viewModel.logo );
 
 				imageLogino.Width = r.Width;
 				imageLogino.Height = r.Height;

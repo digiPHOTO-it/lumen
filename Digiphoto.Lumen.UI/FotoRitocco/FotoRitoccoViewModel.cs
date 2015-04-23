@@ -1086,9 +1086,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				addCorrezione( maschera );
 			}
 
-			if( logo != null ) {
-				addCorrezione( logo );
-			}
 
 			// Vado ad aggiungerli solo al momento di applicare per davvero
 			// Prima tratto gli effetti
@@ -1104,6 +1101,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			addCorrezione( TipoCorrezione.Zoom,     trasformazioni.Children[TFXPOS_ZOOM]      );
 			addCorrezione( TipoCorrezione.Trasla,   trasformazioni.Children[TFXPOS_TRANSLATE] );
 
+			// IL logo lo metto per ultimo perché potrebbe andare su di una immagine traslata o zoomata
+			if( logo != null ) {
+				addCorrezione( logo );
+			}
 
 			gestoreImmaginiSrv.salvaCorrezioniTransienti( fotografiaInModifica );
 
@@ -1895,7 +1896,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 				// Devo provocare il property change perché la UI si aggiorni. Clono quindi il logo per riassegnarlo.
 				Logo clone = (Logo)this.logo.Clone();
-
+				 
 				if( logo.posiz == Logo.PosizLogo.SudEst ) {
 					clone.posiz = Logo.PosizLogo.SudOvest;
 				} else if( logo.posiz == Logo.PosizLogo.SudOvest ) {
