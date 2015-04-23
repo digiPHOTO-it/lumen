@@ -76,9 +76,10 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			get {
 				if( _modiAzzeramentoNumeroFoto == null ) {
 					_modiAzzeramentoNumeroFoto = new Dictionary<string,string>();
-					_modiAzzeramentoNumeroFoto.Add( "M", "Mai" );
+					_modiAzzeramentoNumeroFoto.Add( "X", "Mai" );
 					_modiAzzeramentoNumeroFoto.Add( "G", "Giornaliero" );
 					_modiAzzeramentoNumeroFoto.Add( "S", "Settimanale" );
+					_modiAzzeramentoNumeroFoto.Add( "M", "Mensile" );
 				}
 				return _modiAzzeramentoNumeroFoto;
 			}

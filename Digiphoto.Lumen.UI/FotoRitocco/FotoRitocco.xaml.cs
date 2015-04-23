@@ -87,46 +87,57 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		private void sliderLuminosita_ValueChanged( object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e ) {
 
-			if( _viewModel != null )
+			if( _viewModel != null ) {
 				if( _viewModel.forseCambioEffettoCorrente( typeof( LuminositaContrastoEffect ) ) )
 					bindaSliderLuminositaContrasto();
+				_viewModel.forseInizioModifiche();
+			}
 		}
 
 		private void sliderContrasto_ValueChanged( object sender, RoutedPropertyChangedEventArgs<double> e ) {
 
-			if( _viewModel != null )
+			if( _viewModel != null ) {
 				if( _viewModel.forseCambioEffettoCorrente( typeof( LuminositaContrastoEffect ) ) )
 					bindaSliderLuminositaContrasto();
+				_viewModel.forseInizioModifiche();
+			}
 		}
 
 
 		private void sliderRuota_ValueChanged( object sender, RoutedPropertyChangedEventArgs<double> e ) {
 
-			if( _viewModel != null )
+			if( _viewModel != null ) {
 				if( _viewModel.forseCambioTrasformazioneCorrente( FotoRitoccoViewModel.TFXPOS_ROTATE ) )
 					bindaSliderRuota();
+				_viewModel.forseInizioModifiche();
+			}
 		}
 
 
 		private void sliderDominanti_ValueChanged( object sender, RoutedPropertyChangedEventArgs<double> e ) {
 
-			if( _viewModel != null )
+			if( _viewModel != null ) {
 				if( _viewModel.forseCambioEffettoCorrente( typeof( DominantiEffect ) ) )
 					bindaSlidersDominanti();
+				_viewModel.forseInizioModifiche();
+			}
 		}
 
 		private void sliderZoom_ValueChanged( object sender, RoutedPropertyChangedEventArgs<double> e ) {
 
-			if( _viewModel != null )
+			if( _viewModel != null ) {
 				if( _viewModel.forseCambioTrasformazioneCorrente( FotoRitoccoViewModel.TFXPOS_ZOOM ) )
 					bindaSliderZoom();
+				_viewModel.forseInizioModifiche();
+			}
 		}
 
 		private void sliderTrasla_ValueChanged( object sender, RoutedPropertyChangedEventArgs<double> e ) {
-			if( _viewModel != null )
-				if( _viewModel.forseCambioTrasformazioneCorrente( FotoRitoccoViewModel.TFXPOS_TRANSLATE ) ) {
+			if( _viewModel != null ) {
+				if( _viewModel.forseCambioTrasformazioneCorrente( FotoRitoccoViewModel.TFXPOS_TRANSLATE ) )
 					bindaSliderTrasla();
-				}
+				_viewModel.forseInizioModifiche();
+			}
 		}
 
 

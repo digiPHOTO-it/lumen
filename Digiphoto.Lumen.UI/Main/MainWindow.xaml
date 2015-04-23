@@ -71,7 +71,7 @@
 					</TextBlock>
 
                     <Image Source="{Binding Path=statusSlideShowImage}" Width="16" Height="16" 
-                           ToolTip="Cliccare per vedere stato slide show" Margin="4,0,0,0">
+                           ToolTip="Cliccare per vedere stato slide show oppure premi F8" Margin="4,0,0,0">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseLeftButtonUp">
                                 <i:InvokeCommandAction Command="{Binding commandRivelareNumFotoSlideShow}"/>
