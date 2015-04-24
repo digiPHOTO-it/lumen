@@ -1,3 +1,4 @@
+@echo off
 rem call "C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\vcvarsall.bat" x86
 call "C:\Program Files\Microsoft Visual Studio 11.0\Common7\Tools\VsDevCmd.bat"
 
@@ -8,15 +9,13 @@ echo "disabilito nuget perche' necessario intervento manuale"
 rem ..\.nuget\nuget install packages.config -o ..\packages
 
 
+set GIORNALE=%TEMP%\build.out.txt
 rmdir /S ..\Digiphoto.Lumen.SelfService.WebUI\ssWebPackage
 msbuild ..\Digiphoto.Lumen.sln /property:Configuration=Release /property:Platform="Any CPU" /target:Clean
-msbuild ..\Digiphoto.Lumen.sln /property:Configuration=Release /property:Platform="Any CPU" > c:\tmp\build.out
+msbuild ..\Digiphoto.Lumen.sln /property:Configuration=Release /property:Platform="Any CPU" > %GIORNALE%
 IF %ERRORLEVEL% NEQ 0 goto sub_problema
+echo build OK: verificare il log %GIORNALE%
 pause
-
-rem msbuild ..\Digiphoto.Lumen.sln /property:Configuration=Release /property:Platform=x64 /target:Clean
-rem msbuild ..\Digiphoto.Lumen.sln /property:Configuration=Release /property:Platform=x64
-IF %ERRORLEVEL% NEQ 0 goto GesErrore
 
 
 echo tutto ok
