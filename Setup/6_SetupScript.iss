@@ -83,6 +83,7 @@ Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirPlat}\System.Net.Http.Formatti
 Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirPlat}\System.Web.Http.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.SelfService.WebUI\ssWebPackage.zip"; DestDir: "{app}"; Flags: ignoreversion
 
+Source: "..\Digiphoto.Lumen.SelfService.WebUI\images\Operator1.jpg"; DestDir: "C:\Users\Public\Pictures\Lumen\Fotografi"; Flags: ignoreversion
 
 ; --- Driver sql ---
 Source: "..\packages\System.Data.SQLite.x86.1.0.90.0\lib\net45\System.Data.SQLite.dll"; DestDir: "{app}";  Check: "not IsWin64"; Flags: ignoreversion
