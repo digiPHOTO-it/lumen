@@ -352,10 +352,10 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 		}
 
 
-		void cancella( TEntity entita ) {
+		protected virtual bool cancella( TEntity entita ) {
 
-			bool prosegui = false;
-
+			bool prosegui = false, esito = false;
+			
 			dialogProvider.ShowConfirmation( "L'elemento verrà cancellato in modo definitivo.\nConfermi la cancellazione ?", "Cancellazione",
 				( sino ) => {
 					prosegui = sino;
@@ -364,17 +364,36 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 			if( prosegui ) {
 
 				try {
-					collectionView.Remove( entita ); // rimuovo dalla collection
-					entityRepositorySrv.delete( entita );  // rimuovo dal database
+					if( !collectionView.Contains( entita ) )
+						throw new LumenException( "elemento da cancellare non trovato in lista" );
+
+					// Prima di rimuovere dall'elenco devo spegnere l'elemento corrente
+					// se non sposto il puntatore all'elemento corrente, non posso poi toglierlo dalla collection osservabile.
+					if( collectionView.CurrentPosition > 0 )
+						collectionView.MoveCurrentToPosition( 0 );
+					else
+						collectionView.MoveCurrentToNext();
+
+					collectionView.Remove( entita );		// rimuovo dalla collection
+					entityRepositorySrv.delete( entita );	// rimuovo dal database
 					int quanti = entityRepositorySrv.saveChanges();
-					if( quanti != 1 )
+
+					if( quanti == 1 ) {
+						esito = true;
+
+
+						dialogProvider.ShowMessage( "L'elemento è stato cancellato correttamente.", "Cancellazione riuscita" );
+
+					} else
 						dialogProvider.ShowError( "Cancellati " + quanti + " entità", "Attenzione", null );
+
 				} catch( Exception ee ) {
 					_giornale.Error( ErroriUtil.estraiMessage( ee ), ee );
 					dialogProvider.ShowError( ErroriUtil.estraiMessage( ee ), "Cancellazione fallita", null );
-					entityRepositorySrv.refresh( entita );  // Devo rileggere lo stato, altrimenti rimane unchanged e mi sampre errore
+					entityRepositorySrv.refresh( entita );  // Devo rileggere lo stato, altrimenti rimane unchanged e mi da sampre errore
 				}
 			}
+			return esito;
 		}
 
 		#endregion Metodi

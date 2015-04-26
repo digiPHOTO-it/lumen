@@ -1550,6 +1550,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		void svuotareListaDaModificare() {
 
+			// Anche contro il mio parere Ciccio vuole che quando si svuota la lista, si salvi eventualmente la foto ultima rimasta da salvare
+			eventualeSalvataggioAutomatico();
+
 			// Prima di svuotare la lista, voglio provare a liberare un pò di memoria che forse è inutile.
 			foreach( Fotografia foto in fotografieDaModificare ) {
 				// Il provino non posso rilasciarlo perché potrebbe essere visualizzato nella gallery o nel carrello
