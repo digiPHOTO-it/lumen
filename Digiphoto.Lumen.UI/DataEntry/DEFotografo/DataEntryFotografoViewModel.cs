@@ -47,6 +47,19 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEFotografo {
 			fotografo.umano = true;
 		}
 
+		protected override bool cancella( Fotografo entita ) {
+			bool esito = base.cancella( entita );
+			if( esito == true ) {
+				string nomeFileImg = AiutanteFoto.nomeFileImgFotografo( entita );
+				try {
+					File.Delete( nomeFileImg );
+				} catch( Exception ) {
+					_giornale.Warn( "Impossibile cancellare il file con l'immagine del fotografo: " + nomeFileImg );
+				}
+			}
+			return esito;
+		}
+
 		protected override void passoPrimaDiSalvare( Fotografo fotografo ) {
 			collectionView.Refresh();
 		}
