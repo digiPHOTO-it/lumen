@@ -346,11 +346,7 @@ namespace Digiphoto.Lumen.SelfService {
 		}
 
 		private string nomeFileImgFotografo( Fotografo f ) {
-			DirectoryInfo di = new DirectoryInfo( Configurazione.UserConfigLumen.cartellaMaschere );
-			var folder = Path.Combine( di.Parent.FullName, "Fotografi" );
-			var nomeFile = Path.Combine( folder, f.id + ".jpg" );
-
-			return File.Exists( nomeFile ) ? nomeFile : null;
+			return AiutanteFoto.nomeFileImgFotografo( f );
 		}
 
 	}

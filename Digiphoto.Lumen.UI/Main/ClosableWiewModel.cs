@@ -68,7 +68,9 @@ namespace Digiphoto.Lumen.UI {
         protected virtual void OnRequestClose()
         {
 			bool spegni = shutdownConfermato;
-
+#if DEBUG
+			spegni = false;
+#else
 			if( abilitoShutdown && !shutdownConfermato ) {
 				if( dialogProvider != null ) {
 					dialogProvider.ShowConfirmation( "Vuoi spegnere il computer", "Uscita",
@@ -77,7 +79,7 @@ namespace Digiphoto.Lumen.UI {
 						} );
 				}
 			}
-
+#endif
             EventHandler handler = this.RequestClose;
             if (handler != null)
                 handler(this, EventArgs.Empty);

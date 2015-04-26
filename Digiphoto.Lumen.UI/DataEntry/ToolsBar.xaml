@@ -7,20 +7,26 @@
              xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
              x:Name="this"
              mc:Ignorable="d ">
-    
-    <ToolBar DockPanel.Dock="Top">
-        <Button Content="|&lt;-" ToolTip="Vai al Primo" Command="{Binding commandSpostamento}" CommandParameter="First" />
-        <Button Content="&lt;" ToolTip="Vai al precedente" Command="{Binding commandSpostamento}" CommandParameter="Previous"/>
-        <Button Content="&gt;" ToolTip="Vai al successivo" Command="{Binding commandSpostamento}" CommandParameter="Next"/>
-        <Button Content="-&gt;|" ToolTip="Vai all'ultimo" Command="{Binding commandSpostamento}" CommandParameter="Last"/>
+
+	<UserControl.Resources>
+		<ResourceDictionary Source="ToolsBarResources.xaml" />
+	</UserControl.Resources>
+	
+	<ToolBar DockPanel.Dock="Top">
+		
+        <Button Content="|&lt;-" ToolTip="Vai al Primo" Command="{Binding commandSpostamento}" CommandParameter="First" Style="{StaticResource buttonSpostamentoDEStyle}" IsEnabled="{Binding isLovEnabled}" />
+		<Button Content="&lt;" ToolTip="Vai al precedente" Command="{Binding commandSpostamento}" CommandParameter="Previous" Style="{StaticResource buttonSpostamentoDEStyle}" IsEnabled="{Binding isLovEnabled}" />
+		<Button Content="&gt;" ToolTip="Vai al successivo" Command="{Binding commandSpostamento}" CommandParameter="Next" Style="{StaticResource buttonSpostamentoDEStyle}" IsEnabled="{Binding isLovEnabled}" />
+		<Button Content="-&gt;|" ToolTip="Vai all'ultimo" Command="{Binding commandSpostamento}" CommandParameter="Last" Style="{StaticResource buttonSpostamentoDEStyle}" IsEnabled="{Binding isLovEnabled}" />
+			
         <Separator />
 
-        <Button Content="Vedi"  Command="{Binding commandCambiareStatus}" CommandParameter="View" />
-        <Button Content="Modifica" Command="{Binding commandCambiareStatus}" CommandParameter="Edit" />
-        <Button Content="Nuovo" Command="{Binding commandCambiareStatus}" CommandParameter="New" Name="buttonNew" />
-        <Button Content="Elimina" Command="{Binding commandCambiareStatus}" CommandParameter="Delete" />
+		<Button Content="Vedi"  Command="{Binding commandCambiareStatus}" CommandParameter="View" Style="{StaticResource buttonStatoDEStyle}" />
+		<Button Content="Modifica" Command="{Binding commandCambiareStatus}" CommandParameter="Edit"  Style="{StaticResource buttonStatoDEStyle}" />
+		<Button Content="Nuovo" Command="{Binding commandCambiareStatus}" CommandParameter="New" Name="buttonNew" Style="{StaticResource buttonStatoDEStyle}" />
+		<Button Content="Elimina" Command="{Binding commandCambiareStatus}" CommandParameter="Delete" Style="{StaticResource buttonStatoDEStyle}" />
         <Separator />
-        <Button Content="Salva" Command="{Binding commandSalvare}" IsEnabled="{Binding ElementName=this,Path=possoSalvare}" />
+		<Button Content="Salva" Command="{Binding commandSalvare}" IsEnabled="{Binding ElementName=this,Path=possoSalvare}" Style="{StaticResource buttonStatoDEStyle}" />
     </ToolBar>
 
 </lumM:UserControlBase>

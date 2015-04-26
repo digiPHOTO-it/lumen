@@ -14,6 +14,7 @@ using System.Diagnostics;
 using Digiphoto.Lumen.Servizi.Io;
 using Digiphoto.Lumen.Servizi.Ritoccare;
 using Digiphoto.Lumen.Eventi;
+using System.Text.RegularExpressions;
 
 namespace Digiphoto.Lumen.Util {
 	
@@ -256,6 +257,41 @@ namespace Digiphoto.Lumen.Util {
 		public static bool esisteFileRisultante( Fotografia foto ) {
 			string fileName = PathUtil.nomeCompletoRisultante( foto );
 			return File.Exists( fileName );
+		}
+
+		public static bool IsValidFotografoId( string idFotografo ) {
+
+			bool valido;
+
+			if( String.IsNullOrEmpty( idFotografo ) || idFotografo.Contains( ' ' ) )
+				valido = false;
+			else {
+				valido = true;
+				foreach( char c in Path.GetInvalidFileNameChars() ) {
+					if( idFotografo.Contains( c ) ) {
+						valido = false;
+						break;
+					}
+				}
+			}
+
+			return valido;
+		}
+
+		public static string nomeCartellaImmaginiFotografi {
+			get {
+				DirectoryInfo di = new DirectoryInfo( Configurazione.UserConfigLumen.cartellaMaschere );
+				return  Path.Combine( di.Parent.FullName, "Fotografi" );
+			}
+		}
+
+		public static string nomeFileImgFotografo( Fotografo f ) {
+			return nomeFileImgFotografo( f, false );
+		}
+
+		public static string nomeFileImgFotografo( Fotografo f, bool seNonEsisteNull ) {
+			var nomeFile = Path.Combine( nomeCartellaImmaginiFotografi, f.id + ".jpg" );
+			return seNonEsisteNull && !File.Exists( nomeFile ) ? null : nomeFile;
 		}
 
 

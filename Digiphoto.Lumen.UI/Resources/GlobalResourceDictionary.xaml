@@ -256,6 +256,16 @@
 				</LinearGradientBrush>
 			</Setter.Value>
 		</Setter>
+
+		<Style.Triggers>
+			<Trigger Property="IsEnabled" Value="False">
+				<Setter Property="Background" Value="DarkGray" />
+				<Setter Property="Opacity" Value="0.3" />
+			</Trigger>
+			<Trigger Property="IsEnabled" Value="True">
+				<Setter Property="BorderBrush" Value="Orange" />
+			</Trigger>
+		</Style.Triggers>
 	</Style>
 	
 
