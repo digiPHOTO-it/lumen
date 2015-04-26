@@ -33,6 +33,9 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEFotografo {
 			_viewModel.dialogProvider = this;
 			this.DataContext = _viewModel;
 
+			// Questo attributo attualmente non è sull'entità. Lo gestisco tramite il viewmodel
+			this.imageFotografo.DataContext = _viewModel;
+			buttonUploadNuovaImmagine.DataContext = _viewModel;
 
 //			_viewModel.collectionView.CurrentChanged += new EventHandler( SelectedItemChanged );
 		}

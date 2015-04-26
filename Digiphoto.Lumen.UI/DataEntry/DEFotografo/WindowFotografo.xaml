@@ -5,25 +5,25 @@
 		xmlns:extToolkit="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit.Extended"
         Title="Fotografo" Height="561" Width="650" 
 		Background="Black">
-	
+
 	<Window.Resources>
-		<ResourceDictionary Source="/Resources/GlobalResourceDictionary.xaml" />
+		<ResourceDictionary Source="DataEntryFotografoResources.xaml" />
 	</Window.Resources>
-	
+
 	<DockPanel LastChildFill="True">
-        <ToolBar DockPanel.Dock="Top">
-            <lumDE:ToolsBar >
-                <lumDE:ToolsBar.possoSalvare>
-                    <MultiBinding Converter="{StaticResource enabledValidationMultiConverter}" >
-                        <Binding ElementName="textBoxId" Path="(Validation.Errors)[0]" />
-                        <Binding ElementName="textBoxNome" Path="(Validation.Errors)[0]" />
-                        <Binding ElementName="textBoxCognome" Path="(Validation.Errors)[0]" />
-                        <Binding ElementName="textBoxCognomeNome" Path="(Validation.Errors)[0]" />
-                        <Binding ElementName="textBoxIniziali" Path="(Validation.Errors)[0]" />
-                    </MultiBinding>
-                </lumDE:ToolsBar.possoSalvare>
-            </lumDE:ToolsBar>
-        </ToolBar>
+		<ToolBar DockPanel.Dock="Top">
+			<lumDE:ToolsBar >
+				<lumDE:ToolsBar.possoSalvare>
+					<MultiBinding Converter="{StaticResource enabledValidationMultiConverter}" >
+						<Binding ElementName="textBoxId" Path="(Validation.Errors)[0]" />
+						<Binding ElementName="textBoxNome" Path="(Validation.Errors)[0]" />
+						<Binding ElementName="textBoxCognome" Path="(Validation.Errors)[0]" />
+						<Binding ElementName="textBoxCognomeNome" Path="(Validation.Errors)[0]" />
+						<Binding ElementName="textBoxIniziali" Path="(Validation.Errors)[0]" />
+					</MultiBinding>
+				</lumDE:ToolsBar.possoSalvare>
+			</lumDE:ToolsBar>
+		</ToolBar>
 
 		<!-- Questo è il last child che prende tutto lo spazio centrale -->
 		<Grid>
@@ -36,19 +36,24 @@
 				<ColumnDefinition />
 			</Grid.ColumnDefinitions>
 
-			<ScrollViewer Grid.Row="0" Grid.Column="0"  IsEnabled="{Binding canEditFields}">
-				
+			<ScrollViewer Grid.Row="0" Grid.Column="0"  IsEnabled="{Binding canEditFields}" Margin="0,-4,0,4">
+
 				<Grid Name="gridEditor" DataContext="{Binding entitySource}"  >
 					<TabControl Margin="10,31,6,57" Style="{DynamicResource tabControlProspettiveStyle}">
 						<TabItem Header="Generale">
 							<Grid Height="233">
-								<TextBox Margin="317,31,19,21" Text="{Binding note,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"  AcceptsReturn="True" Name="textBoxNote" Height="181" />
+								<TextBox Margin="317,31,29,140" Text="{Binding note,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"  AcceptsReturn="True" Name="textBoxNote" Height="62" />
 								<Label Content="Codice" Margin="15,31,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="110" HorizontalContentAlignment="Right" FontWeight="Bold"/>
 								<TextBox Name="textBoxId" CharacterCasing="Upper" HorizontalContentAlignment="Left" Margin="143,31,0,0" Text="{Binding id, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Height="24" VerticalAlignment="Top" HorizontalAlignment="Left" Width="164" />
 
 								<Label Content="Nome" Margin="15,67,0,0" HorizontalAlignment="Left" Width="110" Height="26" VerticalAlignment="Top" HorizontalContentAlignment="Right" />
 								<TextBox Name="textBoxNome" CharacterCasing="Upper" Text="{Binding nome,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Height="24" HorizontalContentAlignment="Left" Margin="143,67,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="164" />
 								<Label Content="Note" Height="29" HorizontalAlignment="Left" Margin="317,0,0,0" Name="label1" VerticalAlignment="Top" Width="58" />
+								<Border Margin="361,123,0,0" Style="{StaticResource borderImageStyle}" HorizontalAlignment="Left" Width="100" Height="100" VerticalAlignment="Top" >
+									<Image Name="imageFotografo" Source="{Binding Path=immagineFotografo,Converter={StaticResource imageSourceConverter}}" />
+								</Border>
+								<Button Name="buttonUploadNuovaImmagine" Content="Carica&#x0a;Immagine" HorizontalAlignment="Left" Margin="466,180,0,0" VerticalAlignment="Top" Width="71" Height="43" Command="{Binding commandUploadNuovaImmagine}" ToolTip="Attenzione: l'immagine viene modificata immediatamente, senza dover salvare il fotografo."/>
+
 								<Label Content="Cognome" Height="26" HorizontalAlignment="Left" Margin="15,100,0,0" Name="label2" VerticalAlignment="Top" Width="110" HorizontalContentAlignment="Right" />
 								<TextBox Name="textBoxCognome" CharacterCasing="Upper" Height="24" Text="{Binding cognome,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" HorizontalAlignment="Left" Margin="143,102,0,0"  VerticalAlignment="Top" Width="164" />
 
@@ -57,7 +62,7 @@
 
 								<Label Content="Soprannome" Height="26" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="15,130,0,0" Name="label3" VerticalAlignment="Top" Width="110" FontWeight="Bold" />
 								<TextBox CharacterCasing="Upper" Height="24" HorizontalAlignment="Left" Margin="143,164,0,0" Name="textBoxIniziali" Text="{Binding iniziali, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" MaxLength="100" VerticalAlignment="Top" Width="38" />
-							
+
 								<CheckBox Content="Attivo" IsChecked="{Binding attivo,Mode=TwoWay}" Margin="85,199,0,6" Width="58" HorizontalAlignment="Left" />
 								<CheckBox Content="Umano" IsChecked="{Binding umano,Mode=TwoWay}" Margin="143,199,0,6" Width="58" HorizontalAlignment="Left" />
 							</Grid>
@@ -73,7 +78,7 @@
 						  Background="Green"/>
 
 			<DataGrid Name="gridLov" ItemsSource="{Binding collectionView}" Grid.Row="2" Grid.Column="0"
-					  AutoGenerateColumns="False" IsReadOnly="True" >
+					  AutoGenerateColumns="False" IsReadOnly="True" IsEnabled="{Binding isLovEnabled}" >
 				<DataGrid.Columns>
 					<DataGridCheckBoxColumn Binding="{Binding attivo}" Header="Attivo"  />
 					<DataGridTextColumn Binding="{Binding id}" Header="id"  />
@@ -88,6 +93,6 @@
 
 		</Grid>
 	</DockPanel>
-	
+
 
 </Window>

@@ -5,6 +5,7 @@ using System.Text;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Core.Database;
 using  System.Data.Entity.Core.Objects;
+using Digiphoto.Lumen.Util;
 
 namespace Digiphoto.Lumen.Servizi.EntityRepository {
 
@@ -47,5 +48,25 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 
 			return prossimo.ToString( "0000" );
 		}
+
+
+		public override void addNew( Fotografo entita ) {
+
+			seIdErratoSpaccati( entita.id );
+			base.addNew( entita );
+		}
+
+
+		public override void update( ref Fotografo entita, bool forzaDaModificare ) {
+
+			seIdErratoSpaccati( entita.id );
+			base.update( ref entita, forzaDaModificare );
+		}
+
+		private static void seIdErratoSpaccati( string id ) {
+			if( !AiutanteFoto.IsValidFotografoId( id ) )
+				throw new LumenException( "Il codice (ID) fotografo contiene caratteri non validi" );
+		}
+
 	}
 }

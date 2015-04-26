@@ -265,13 +265,6 @@
 		<Setter Property="MinWidth" Value="48" />
 		<Setter Property="Margin" Value="0,1,0,0" />
 		<Style.Triggers>
-			<Trigger Property="IsEnabled" Value="False">
-				<Setter Property="Background" Value="DarkGray" />
-				<Setter Property="Opacity" Value="0.3" />
-			</Trigger>
-			<Trigger Property="IsEnabled" Value="True">
-				<Setter Property="BorderBrush" Value="Orange" />
-			</Trigger>
 
 			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="True">
 				<Setter Property="BorderBrush" Value="Red" />

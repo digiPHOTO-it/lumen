@@ -82,6 +82,7 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 					OnPropertyChanged( "isKeyEditabile" ); // TODO si potrebbe fare una dipendenza tra property come questo esempio: http://www.codeproject.com/Articles/375192/WPF-The-calculated-property-dependency-problem nello step 4.
 					OnPropertyChanged( "canEditFields" );
 					OnPropertyChanged( "possoSalvare" );
+					OnPropertyChanged( "isLovEnabled" );
 				}
 			}
 		}
@@ -100,6 +101,18 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 				return status == DataEntryStatus.Edit || status == DataEntryStatus.New;
 			}
 		}
+
+		/// <summary>
+		/// Mi dice se la Lista di Valori (cioè la datagrid con tutti i record)
+		/// e' abilitata oppure no. Infatti quando sono in modifica di un record, 
+		/// non posso spostarmi.
+		/// </summary>
+		public bool isLovEnabled {
+			get {
+				return !canEditFields;
+			}
+		}
+		
 
 		#endregion Proprietà
 
@@ -162,6 +175,8 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 						collectionView.MoveCurrentToPrevious();
 					break;
 			}
+
+			OnPropertyChanged( "entitaCorrente" );
 		}
 
 		bool possoSpostamento( string dove ) {
