@@ -227,7 +227,8 @@
 				 ContextMenu="{DynamicResource azioniRapideMenu}"
 				 ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                  PreviewMouseLeftButtonDown="LsImageGallery_PreviewMouseLeftButtonDown"
-                 PreviewMouseRightButtonDown="LsImageGallery_PreviewMouseRightButtonDown">
+                 PreviewMouseRightButtonDown="LsImageGallery_PreviewMouseRightButtonDown"
+                 PreviewKeyDown="LsImageGallery_PreviewKeyDown">
 
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}">
