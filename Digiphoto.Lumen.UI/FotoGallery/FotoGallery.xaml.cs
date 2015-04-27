@@ -19,6 +19,8 @@ using Digiphoto.Lumen.UI.Util;
 using System.Windows.Threading;
 using Digiphoto.Lumen.Config;
 using System.Collections.Generic;
+using Digiphoto.Lumen.Servizi.Ritoccare;
+using Digiphoto.Lumen.Applicazione;
 
 namespace Digiphoto.Lumen.UI {
 	/// <summary>
@@ -262,6 +264,15 @@ namespace Digiphoto.Lumen.UI {
 						fotoGalleryViewModel.fotografieCW.RefreshSelectedItemWithMemory();
 					}
 				}
+			}
+		}
+
+		private void LsImageGallery_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Z && Keyboard.Modifiers == ModifierKeys.Control && 
+				LsImageGallery.SelectedItems.Count > 0)
+			{
+				fotoGalleryViewModel.riportaOriginaleFotoSelezionateCommand.Execute(null);
 			}
 		}
 
