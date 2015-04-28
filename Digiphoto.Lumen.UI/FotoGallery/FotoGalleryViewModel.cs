@@ -498,6 +498,40 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private ModoVendita _modoVendita = Configurazione.UserConfigLumen.modoVendita;
+		public ModoVendita modoVendita
+		{
+			get
+			{
+				return _modoVendita;
+			}
+			private set
+			{
+				if (_modoVendita != value)
+				{
+					_modoVendita = value;
+
+					OnPropertyChanged("modoVendita");
+					OnPropertyChanged("stringModoVendita");
+				}
+			}
+		}
+
+		public String stringModoVendita
+		{
+			get
+			{
+				switch (modoVendita)
+				{
+					case ModoVendita.Carrello:
+						return "Carrello";
+					case ModoVendita.StampaDiretta:
+						return "Stampa\nDiretta";
+				}
+				return modoVendita.ToString();
+			}
+		}
+
 		#endregion Proprietà
 
 
@@ -728,6 +762,20 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private RelayCommand _switchModoVenditaCommand;
+		public ICommand switchModoVenditaCommand
+		{
+			get
+			{
+				if (_switchModoVenditaCommand == null)
+				{
+					_switchModoVenditaCommand = new RelayCommand(azione => switchModoVenditaDiretta(),
+																	 azione => true);
+				}
+				return _switchModoVenditaCommand;
+			}
+		}
+
 		#endregion
 
 
@@ -806,7 +854,8 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		private void stampare( object objStampanteAbbinata ) {
-			stampare( objStampanteAbbinata, Configurazione.UserConfigLumen.modoVendita == ModoVendita.StampaDiretta );
+			stampare( objStampanteAbbinata, modoVendita == ModoVendita.StampaDiretta );
+			//stampare( objStampanteAbbinata, Configurazione.UserConfigLumen.modoVendita == ModoVendita.StampaDiretta );
 		}
 
 		
@@ -1328,6 +1377,13 @@ namespace Digiphoto.Lumen.UI {
 			}
 
 			return true;
+		}
+
+		private void switchModoVenditaDiretta(){
+			if (modoVendita == ModoVendita.Carrello)
+				modoVendita = ModoVendita.StampaDiretta;
+			else
+				modoVendita = ModoVendita.Carrello;
 		}
 
 		#endregion Metodi
