@@ -125,14 +125,15 @@
                     </Button>
                 </ToolBar>
 
+                <ToolBar Band="1" Header="{Binding stringModoVendita}" BandIndex="2" Style="{StaticResource fgToolBarStyle}">
+                    <Button Command="{Binding switchModoVenditaCommand}" Style="{StaticResource statusModoVenditaSwitchImage}" />
+                </ToolBar>
+
                 <ToolBar Band="2" BandIndex="3" Name="stampaToolBar" 
-                     Header="Stampe" Style="{StaticResource fgToolBarStyle}"
+                     Header="Vendita" Style="{StaticResource fgToolBarStyle}"
                      ItemsSource="{Binding stampantiAbbinate}" 
                      ItemTemplate="{StaticResource pulsanteDiStampaTemplate}" >
                 </ToolBar>
-
-
-
 
             </ToolBarTray>
  

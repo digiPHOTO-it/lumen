@@ -12,6 +12,7 @@
 	<lumC:ListVisibilityConverter x:Key="listVisibilityConverter" />
 	<BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
 	<lumC:ProgressToVisibilityConverter x:Key="progressToVisibilityConverter" />
+    <lumC:ModoVenditaImageSourceConverter x:Key="modoVenditaImageSourceConverter" />
 
 	<Style x:Key="imageButtonToolBarStyle" TargetType="Button">
 		<Setter Property="MinWidth" Value="48" />
@@ -77,7 +78,7 @@
 							  />
 			</Button.InputBindings>
 			<StackPanel Orientation="Vertical" >
-                <Image Source="/Digiphoto.Lumen.UI;component/Resources/Printer-48x48.png" Width="48" />
+                <Image Source="{Binding Path=DataContext.modoVendita, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Converter={StaticResource modoVenditaImageSourceConverter}}"/>
                 <Label Content="{Binding FormatoCarta.descrizione}" Width="48" HorizontalContentAlignment="Center" Foreground="Black"  />
             </StackPanel>
         </Button>
@@ -92,8 +93,23 @@
 		</Style.Resources>
 	</Style>
 
-
-
+    <Style x:Key="statusModoVenditaSwitchImage" TargetType="Button">
+        <Setter Property="ToolTip" Value="Cambiare Carrello/Stampa Diretta" />
+        <Setter Property="Content">
+            <Setter.Value>
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/switch_on-48x48.png"/>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsPressed" Value="False">
+                <Setter Property="Content">
+                    <Setter.Value>
+                        <Image Source="/Digiphoto.Lumen.UI;component/Resources/switch_off-48x48.png" />
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 
 	<Style x:Key="buttonCercaStyle" TargetType="Button">
 		<Setter Property="Height" Value="44" />

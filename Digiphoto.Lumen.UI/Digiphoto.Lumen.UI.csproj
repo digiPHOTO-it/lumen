@@ -204,6 +204,7 @@
     <Compile Include="Converters\BoolBackgroundConverter.cs" />
     <Compile Include="Converters\CompNumFotoConverter.cs" />
     <Compile Include="Converters\BoolWindowStateConverter.cs" />
+    <Compile Include="Converters\ModoVenditaImageSourceConverter.cs" />
     <Compile Include="Converters\ListAzioniRapideVisibilityConverter.cs" />
     <Compile Include="Converters\EnabledValidationMultiConverter.cs" />
     <Compile Include="Converters\FasiDelGiornoConverter.cs" />
@@ -796,6 +797,8 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\switch_off-48x48.png" />
+    <Resource Include="Resources\switch_on-48x48.png" />
     <Resource Include="Resources\ssPlaySelected-48x48.png" />
     <Resource Include="Resources\ssPlayAll-48x48.png" />
     <Resource Include="Resources\ssAddSelected-48x48.png" />
