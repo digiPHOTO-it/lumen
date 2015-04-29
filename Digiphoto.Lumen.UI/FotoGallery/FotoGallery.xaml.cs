@@ -97,17 +97,18 @@ namespace Digiphoto.Lumen.UI {
 			List<Fotografia> viewFotos3 = GetVisibleItemsFromListbox(LsImageGallery, LsImageGallery);
 			Fotografia viewFoto3 = null;
 			if (viewFotos3 != null && viewFotos3.Count > 0){
-
-				if (LsImageGallery.SelectedItems.Count > 0 &&
-					viewFotos3.Any<Fotografia>(element => LsImageGallery.SelectedItems.Contains(element)))
+				if (LsImageGallery.SelectedItems.Count > 0)
 				{
-					viewFoto3 = LsImageGallery.SelectedItems.OfType<Fotografia>().First<Fotografia>();
+					viewFoto3 = viewFotos3.FirstOrDefault<Fotografia>(element => LsImageGallery.SelectedItems.Contains(element));
+					if (viewFoto3 == null)
+					{
+						viewFoto3 = viewFotos3.First<Fotografia>();
+					}
 				}
 				else
 				{
 					viewFoto3 = viewFotos3.First<Fotografia>();
 				}
-
 			}
 
 			// poi questo
