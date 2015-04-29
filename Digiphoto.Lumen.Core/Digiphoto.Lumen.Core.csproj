@@ -160,6 +160,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="src\Config\ConfigSerializer.cs" />
+    <Compile Include="src\Config\LastUsedConfigSerializer.cs" />
+    <Compile Include="src\Config\LastUsedConfigLumen.cs" />
     <Compile Include="src\Licensing\LicenseNotFoundException.cs" />
     <Compile Include="src\Applicazione\StartupUtil.cs" />
     <Compile Include="src\Applicazione\Stato.cs" />

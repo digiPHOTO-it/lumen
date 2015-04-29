@@ -42,6 +42,8 @@ namespace Digiphoto.Lumen.UI {
 
 		public MainWindowViewModel() {
 
+			lastUsedTestConfig();
+
 			// Tengo un massimo di elementi in memoria per evitare consumi eccessivi
 			informazioniUtente = new RingBuffer<InformazioneUtente>( 30 );
 
@@ -538,6 +540,18 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private void lastUsedTestConfig()
+		{
+			_giornale.Debug("Carico eventuale configurazione last-used già presente");
+
+			// Verifico se ho il file di configurazione last-used nel caso lo creo
+			if (Configurazione.caricaLastUsedConfig() == null)
+			{
+				_giornale.Debug("La configurazione last-used non esite. La creo adesso su file.");
+				Configurazione.LastUsedConfigLumen = Configurazione.creaLastUsedConfig();
+				LastUsedConfigSerializer.serializeToFile(Configurazione.LastUsedConfigLumen);
+			}
+		}
 
 		#endregion Metodi
 

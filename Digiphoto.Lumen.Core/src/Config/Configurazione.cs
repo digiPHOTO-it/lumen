@@ -40,6 +40,7 @@ namespace Digiphoto.Lumen.Config  {
 
 		static Configurazione() {
 			UserConfigLumen = caricaUserConfig();
+			LastUsedConfigLumen = caricaLastUsedConfig();
 		}
 
 		public static UserConfigLumen caricaUserConfig() {
@@ -48,6 +49,12 @@ namespace Digiphoto.Lumen.Config  {
 			return UserConfigSerializer.deserialize();
 		}
 
+		public static LastUsedConfigLumen caricaLastUsedConfig()
+		{
+
+			// Carico i settaggi che ho appoggiato su un xml esterno
+			return LastUsedConfigSerializer.deserialize();
+		}
 
 		internal Configurazione() : this( true ) {
 		}
@@ -132,6 +139,15 @@ namespace Digiphoto.Lumen.Config  {
 				// Sistemare eventuali parametri nuovi di release future..
 			}
 
+			if (LastUsedConfigLumen == null)
+			{
+				LastUsedConfigLumen = creaLastUsedConfig();
+			}
+			else
+			{
+				// Sistemare eventuali parametri nuovi di release future..
+			}
+
 			// ---
 
 			// Se non esiste la cartella per il database, allora la creo.
@@ -206,6 +222,18 @@ namespace Digiphoto.Lumen.Config  {
 			return userConfig;
 		}
 
+		public static Config.LastUsedConfigLumen creaLastUsedConfig()
+		{
+			LastUsedConfigLumen lastUsedConfig = new LastUsedConfigLumen();
+
+			// Setto i default
+			lastUsedConfig.slideShowNumRighe = 1;
+			lastUsedConfig.slideShowNumColonne = 2;
+
+
+			return lastUsedConfig;
+		}
+
 		public static void creaGeometriaSlideShowSDefault(UserConfigLumen userConfig)
 		{
 			userConfig.deviceEnum = 0;
@@ -256,8 +284,19 @@ namespace Digiphoto.Lumen.Config  {
 			}
 		}
 
+		public static void salvaAllConfig()
+		{
+			SalvaUserConfig();
+			SalvaLastUsedConfig();
+		}
+
 		public static void SalvaUserConfig() {
 			UserConfigSerializer.serializeToFile( UserConfigLumen );
+		}
+
+		public static void SalvaLastUsedConfig()
+		{
+			LastUsedConfigSerializer.serializeToFile(LastUsedConfigLumen);
 		}
 
 		/// <summary>
@@ -329,6 +368,11 @@ namespace Digiphoto.Lumen.Config  {
 			set;
 		}
 
+		public static LastUsedConfigLumen LastUsedConfigLumen
+		{
+			get;
+			set;
+		}
 
 		private static string decidiCartellaDatabase() {
 
