@@ -59,11 +59,26 @@
 
 				<Separator />
 
-				<CheckBox Name="chkFiltaSelez" Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" ToolTip="Vedi solo le foto selezionate" Style="{StaticResource bottoneTestualeStyle}" IsEnabled="{Binding isAlmenoUnaSelezionata}" >
+<!--
+Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" ToolTip="Vedi solo le foto selezionate" Style="{StaticResource bottoneTestualeStyle}" 
+-->
+				<CheckBox Name="chkFiltaSelez" IsChecked="{Binding flagFiltraSelezionate,Mode=TwoWay}" 
+						  ToolTip="Filtra solo le foto selezionate" Style="{StaticResource bottoneTestualeStyle}" 
+						  IsEnabled="{Binding isAlmenoUnaSelezionata}" >
 					<TextBlock TextWrapping="NoWrap">Selz</TextBlock>
 				</CheckBox>
+<!--
+Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" 
+-->
+				<CheckBox Name="chkMuoviSuSelez" IsChecked="{Binding flagPosizionaSuSelezionate,Mode=TwoWay}"
+						  ToolTip="Spostamento sulle foto selezionate" Style="{StaticResource bottoneTestualeStyle}" 
+						  IsEnabled="{Binding isAlmenoUnaSelezionata}" >
+					<TextBlock TextWrapping="NoWrap">Salta</TextBlock>
+				</CheckBox>
+<!--				
 				<Button Content="^ Prec" Click="buttonScorriFotoSelez_Click" Tag="-1" ToolTip="Posiziona sulla precendete foto selezionata" Padding="1" Style="{StaticResource bottoneTestualeStyle}" IsEnabled="{Binding isAlmenoUnaSelezionata}" />
 				<Button Content="v Succ" Click="buttonScorriFotoSelez_Click" Tag="+1" ToolTip="Posiziona sulla successiva foto selezionata" Padding="1" Style="{StaticResource bottoneTestualeStyle}" IsEnabled="{Binding isAlmenoUnaSelezionata}" />
+-->				
 				<TextBox ToolTip="Vai al N° di fotogramma. Uscire dal campo con il tasto TAB" Name="textBoxGotoNumFoto" LostFocus="textBoxGotoNumFoto_LostFocus" IsEnabled="{Binding isAlmenoUnaFoto}" Style="{StaticResource tbVaiNumStyle}" />
 			</ToolBar>
 

@@ -476,11 +476,28 @@ namespace Digiphoto.Lumen.UI
 			} 
 		}
 
+		/// <summary>
+		/// Decido se e quando posso rimasterizzare un cd.
+		/// Se il carrello è venduto e ci sono righe masterizzate
+		/// </summary>
+		public bool possoRimasterizzare {
+			get {
+				return (carrelloCorrente != null
+					    && carrelloCorrente.venduto
+					    && RiCaFotoMasterizzateCv.IsEmpty == false);
+			}
+		}
+
+		/// <summary>
+		/// Posso effetture operazioni sul cd
+		/// </summary>
 		public bool operazioniCd
 		{
 			get
 			{
-				return carrelloCorrente.venduto && !IsErroriMasterizzazione;
+				return (carrelloCorrente != null
+						&& carrelloCorrente.venduto == false
+						&& RiCaFotoMasterizzateCv.IsEmpty == false);
 			}
 		}
 
@@ -639,6 +656,7 @@ namespace Digiphoto.Lumen.UI
 			OnPropertyChanged( "possoVisualizzareIncassiFotografi" );
 			OnPropertyChanged( "spazioFotoDaMasterizzate" );
 			OnPropertyChanged( "operazioniCd" );
+			OnPropertyChanged( "possoRimasterizzare" );
 		}
 
 
@@ -1393,8 +1411,6 @@ namespace Digiphoto.Lumen.UI
 		{
 			bool ricreaCV = false;
 
-			updateGUI();
-
 			// Qui cambiano soltanto gli attributi con il totale del carrello
 			if(msg.fase== Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.UpdateCarrello){
 				ricreaCV = true;
@@ -1412,6 +1428,9 @@ namespace Digiphoto.Lumen.UI
 
 			if( ricreaCV )
 				rinfrescaViewRighe();
+
+			updateGUI();
+
 		}
 
 		public void OnNext(StampatoMsg value)

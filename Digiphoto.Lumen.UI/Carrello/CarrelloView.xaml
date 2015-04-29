@@ -32,7 +32,7 @@
 				<Button Command="{Binding eliminaCarrelloCommand}" Style="{StaticResource styleCarrelliButtonDelete}" />
 
 				<Separator Height="10"  Visibility="{Binding Path=IsErroriMasterizzazione,Converter={StaticResource boolVisibilityConverter}}"  />
-				<Button Command="{Binding rimasterizzaCommand}" Visibility="{Binding Path=IsErroriMasterizzazione,Converter={StaticResource boolVisibilityConverter}}" Style="{StaticResource styleCartRimasterizza}" />
+				<Button Command="{Binding rimasterizzaCommand}" IsEnabled="{Binding Path=possoRimasterizzare,Converter={StaticResource boolVisibilityConverter}}" Style="{StaticResource styleCartRimasterizza}" />
 
 			</ToolBar>
 			<ToolBar Band="1" BandIndex="2" Header="Riga">
@@ -83,7 +83,7 @@
 				</Grid>
 			</GroupBox>
 
-            <GroupBox Header="Cd/Dvd riepilogo" IsEnabled="{Binding Path=operazioniCd, Mode=OneWay,Converter={StaticResource boolInverterConverter}}" Style="{StaticResource gruppoTotaleTipoStyle}">
+            <GroupBox Header="Cd/Dvd riepilogo" IsEnabled="{Binding Path=operazioniCd}" Style="{StaticResource gruppoTotaleTipoStyle}">
 
 				<Grid>
 					<Image Source="/Digiphoto.Lumen.UI;component/Resources/dvd-32x32.png" 
@@ -244,11 +244,15 @@
 					 ItemTemplate="{DynamicResource rigaCarrelloStampaDataTemplate}"
 					 ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
 
-            <Button Grid.Row="0" Grid.Column="1" Command="{Binding CopiaSpostaFotoRigaCommand}" CommandParameter="M" Style="{StaticResource styleSpostaCopyM}" Height="32" Width="32" Margin="0,20,0,152" />
-            <Button Grid.Row="0" Grid.Column="1" Command="{Binding SpostaFotoRigaCommand}" CommandParameter="M" Style="{StaticResource styleSpostaM}" Height="32" Width="32" Margin="0,100,0,152" />
-            <Button Grid.Row="0" Grid.Column="1" Command="{Binding CopiaSpostaFotoRigaCommand}" CommandParameter="S" Style="{StaticResource styleSpostaCopyS}" Height="32" Width="32" Margin="0,140,0,100" />
-            <Button Grid.Row="0" Grid.Column="1" Command="{Binding SpostaFotoRigaCommand}" CommandParameter="S" Style="{StaticResource styleSpostaS}" Height="32" Width="32" Margin="0,190,0,60" />
-
+			<StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1" 
+						VerticalAlignment="Center"
+						IsEnabled="{Binding Path=operazioniCd}">
+            <Button Command="{Binding CopiaSpostaFotoRigaCommand}" CommandParameter="M" Style="{StaticResource styleSpostaCopyM}" Height="32" Width="32" />
+				<Button Command="{Binding SpostaFotoRigaCommand}" CommandParameter="M" Style="{StaticResource styleSpostaM}" Height="32" Width="32"  Margin="0,20,0,0"/>
+				<Button Command="{Binding CopiaSpostaFotoRigaCommand}" CommandParameter="S" Style="{StaticResource styleSpostaCopyS}" Height="32" Width="32"  Margin="0,20,0,0"/>
+				<Button Command="{Binding SpostaFotoRigaCommand}" CommandParameter="S" Style="{StaticResource styleSpostaS}" Height="32" Width="32"  Margin="0,20,0,0"/>
+			</StackPanel>
+				
 			<ListBox x:Name="listCarrelloMasterizzate" Grid.Row="0" Grid.Column="2" Margin="10,0,2,0"
 					 SelectionMode="Single" 
 					 Style="{StaticResource ListCarrelloStyle}"
