@@ -134,6 +134,15 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		public IFotoRitoccoSrv fotoRitoccoSrv
+		{
+			get
+			{
+				return LumenApplication.Instance.getServizioAvviato<IFotoRitoccoSrv>();
+			}
+		}
+
+
 		public bool isAlmenoUnaSelezionata {
 			get {
 				return fotografieCW != null && fotografieCW.SelectedItems != null && fotografieCW.SelectedItems.Count > 0;
@@ -523,6 +532,40 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private ModoVendita _modoVendita = Configurazione.UserConfigLumen.modoVendita;
+		public ModoVendita modoVendita
+		{
+			get
+			{
+				return _modoVendita;
+			}
+			private set
+			{
+				if (_modoVendita != value)
+				{
+					_modoVendita = value;
+
+					OnPropertyChanged("modoVendita");
+					OnPropertyChanged("stringModoVendita");
+				}
+			}
+		}
+
+		public String stringModoVendita
+		{
+			get
+			{
+				switch (modoVendita)
+				{
+					case ModoVendita.Carrello:
+						return "Carrello";
+					case ModoVendita.StampaDiretta:
+						return "Stampa\nDiretta";
+				}
+				return modoVendita.ToString();
+			}
+		}
+		
 		#endregion Proprietà
 
 
@@ -738,6 +781,20 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private RelayCommand _riportaOriginaleFotoSelezionateCommand;
+		public ICommand riportaOriginaleFotoSelezionateCommand
+		{
+			get
+			{
+				if (_riportaOriginaleFotoSelezionateCommand == null)
+				{
+					_riportaOriginaleFotoSelezionateCommand = new RelayCommand(param => riportaOriginaleFotoSelezionate(),
+															  param => true,
+															  false);
+				}
+				return _riportaOriginaleFotoSelezionateCommand;
+			}
+		}
 
 		#endregion
 
@@ -822,7 +879,8 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		private void stampare( object objStampanteAbbinata ) {
-			stampare( objStampanteAbbinata, Configurazione.UserConfigLumen.modoVendita == ModoVendita.StampaDiretta );
+			stampare( objStampanteAbbinata, modoVendita == ModoVendita.StampaDiretta );
+			//stampare( objStampanteAbbinata, Configurazione.UserConfigLumen.modoVendita == ModoVendita.StampaDiretta );
 		}
 
 		
@@ -1316,6 +1374,35 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private bool riportaOriginaleFotoSelezionate()
+		{
+			bool procediPure = true;
+
+			if (!fotografieCW.SelectedItems.Any())
+				return false;
+
+			if (fotografieCW.SelectedItems.Count > 10)
+			{
+				procediPure = false;
+				StringBuilder msg = new StringBuilder("Attenzione: stai per far tornare a Originale più di 10 Fotografie!!!");
+				dialogProvider.ShowConfirmation(msg.ToString(), "Richiesta conferma",
+					(confermato) =>
+					{
+						procediPure = confermato;
+					});
+			}
+
+			if (procediPure)
+			{
+				foreach (Fotografia f in fotografieCW.SelectedItems)
+				{
+					fotoRitoccoSrv.tornaOriginale(f);
+				}
+				dialogProvider.ShowMessage("Operazione Terminata", "Info");
+			}
+
+			return true;
+		}
 
 		#endregion Metodi
 

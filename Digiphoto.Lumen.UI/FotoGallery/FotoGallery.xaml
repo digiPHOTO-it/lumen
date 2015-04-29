@@ -138,16 +138,17 @@ Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding P
 							Style="{StaticResource imageButtonToolBarStyle}" IsEnabled="{Binding isAlmenoUnaSelezionata}">
                         <Image Source="/Digiphoto.Lumen.UI;component/Resources/DvdBurn-48x48.png"  />
                     </Button>
-                </ToolBar>
+
+				<ToggleButton IsChecked="{Binding Path=modoVendita,Mode=TwoWay,Converter={StaticResource modoVenditaBoolConverter}}" Style="{StaticResource statusModoVenditaSwitchImage}" />
+
+			</ToolBar>
+
 
                 <ToolBar Band="2" BandIndex="3" Name="stampaToolBar" 
-                     Header="Stampe" Style="{StaticResource fgToolBarStyle}"
+                     Header="Vendita" Style="{StaticResource fgToolBarStyle}"
                      ItemsSource="{Binding stampantiAbbinate}" 
                      ItemTemplate="{StaticResource pulsanteDiStampaTemplate}" >
                 </ToolBar>
-
-
-
 
             </ToolBarTray>
  
@@ -242,7 +243,8 @@ Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding P
 				 ContextMenu="{DynamicResource azioniRapideMenu}"
 				 ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                  PreviewMouseLeftButtonDown="LsImageGallery_PreviewMouseLeftButtonDown"
-                 PreviewMouseRightButtonDown="LsImageGallery_PreviewMouseRightButtonDown">
+                 PreviewMouseRightButtonDown="LsImageGallery_PreviewMouseRightButtonDown"
+                 PreviewKeyDown="LsImageGallery_PreviewKeyDown">
 
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}">
