@@ -43,8 +43,8 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 			_elencoSpots = caricaElencoSpot();
 
-			slideShowRighe = 1;
-			slideShowColonne = 2;
+			slideShowRighe = Configurazione.LastUsedConfigLumen.slideShowNumRighe;
+			slideShowColonne = Configurazione.LastUsedConfigLumen.slideShowNumColonne;
 		}
 
 		private List<string> _elencoSpots;

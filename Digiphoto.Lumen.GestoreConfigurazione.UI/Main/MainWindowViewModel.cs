@@ -54,6 +54,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             caricaListaMasterizzatori();
 
             loadUserConfig();
+			loadLastUsedConfig();
 
 			licenseEditorViewModel = new LicenseEditorViewModel();
 
@@ -86,6 +87,12 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 		}
 
 		public UserConfigLumen cfg {
+			get;
+			set;
+		}
+
+		public LastUsedConfigLumen lastUsedCfg
+		{
 			get;
 			set;
 		}
@@ -155,6 +162,24 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			motorePrecedente = cfg.motoreDatabase;
         }
 
+		private void loadLastUsedConfig()
+		{
+			_giornale.Debug("Carico eventuale configurazione last-used già presente");
+
+			// La carico da disco, non uso quella statica già caricata dentro Configurazione.
+			this.lastUsedCfg = Configurazione.caricaLastUsedConfig();
+
+			// Se è nullo, significa che è la prima volta che parte il programma, ma non è ancora stata avviata la configurazione.
+			if (this.lastUsedCfg == null)
+			{
+
+				_giornale.Debug("La configurazione last-used non esite. La creo adesso in memoria.");
+
+				this.lastUsedCfg = Configurazione.creaLastUsedConfig();
+				Configurazione.LastUsedConfigLumen = this.lastUsedCfg;
+			}
+		}
+
         private void saveUserConfig()
         {
 			_giornale.Debug( "Devo salvare la configurazione utente su file xml" );
@@ -164,6 +189,15 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
             salvaConfigDB();
         }
+
+		private void saveLastUsedConfig()
+		{
+			_giornale.Debug("Devo salvare la configurazione last-used su file xml");
+
+			LastUsedConfigSerializer.serializeToFile(lastUsedCfg);
+			_giornale.Info("Salvata la configurazione last-used su file xml");
+
+		}
 
 		void saveRegistry() {
 			_giornale.Debug( "Salvo nel registry: cod licenza = " + licenseEditorViewModel.codiceLicenza );
@@ -1113,6 +1147,8 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 					int quanti = saveInfoFisse();
 					
 					saveUserConfig();
+
+					saveLastUsedConfig();
 
 					saveRegistry();
 

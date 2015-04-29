@@ -104,6 +104,7 @@ namespace Digiphoto.Lumen.UI.Pubblico
 
 			_giornale.Debug("Devo salvare la configurazione utente su file xml");
 			UserConfigSerializer.serializeToFile(Configurazione.UserConfigLumen);
+			LastUsedConfigSerializer.serializeToFile(Configurazione.LastUsedConfigLumen);
 			_giornale.Info("Salvata la configurazione utente su file xml");
 
 			dialogProvider.ShowMessage("Posizione salvata Correttamente", "Avviso");

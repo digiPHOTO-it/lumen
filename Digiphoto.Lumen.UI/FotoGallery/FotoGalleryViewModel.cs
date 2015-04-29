@@ -359,20 +359,22 @@ namespace Digiphoto.Lumen.UI {
 		public short numRigheSlideShow {
 			
 			get {
-				return slideShowViewModel != null ? slideShowViewModel.slideShowRighe : (short)1;
+				return slideShowViewModel != null ? slideShowViewModel.slideShowRighe : Configurazione.LastUsedConfigLumen.slideShowNumRighe;
 			}
 			set {
 				if( slideShowViewModel != null )
 					if( slideShowViewModel.slideShowRighe != value ) {
 						slideShowViewModel.slideShowRighe = value;
 						OnPropertyChanged( "numRigheSlideShow" );
+						Configurazione.LastUsedConfigLumen.slideShowNumRighe = value;
+						Configurazione.SalvaLastUsedConfig();
 					}
 			}
 		}
 
 		public short numColonneSlideShow {
 			get {
-				return slideShowViewModel != null ? slideShowViewModel.slideShowColonne : (short)2;
+				return slideShowViewModel != null ? slideShowViewModel.slideShowColonne : Configurazione.LastUsedConfigLumen.slideShowNumColonne;
 			}
 			set {
 				if( slideShowViewModel != null )
