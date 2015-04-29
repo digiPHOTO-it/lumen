@@ -489,6 +489,40 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private bool _flagPosizionaSuSelezionate;
+		public bool flagPosizionaSuSelezionate {
+			get {
+				return _flagPosizionaSuSelezionate;
+			}
+			set {
+				if( _flagPosizionaSuSelezionate != value ) {
+					_flagPosizionaSuSelezionate = value;
+					OnPropertyChanged( "flagPosizionaSuSelezionate" );
+
+					posizionareSuSelezionate( value );
+					if( value )
+						flagFiltraSelezionate = false;
+				}
+			}
+		}
+
+		private bool _flagFiltraSelezionate;
+		public bool flagFiltraSelezionate {
+			get {
+				return _flagFiltraSelezionate;
+			}
+			set {
+				if( _flagFiltraSelezionate != value ) {
+					_flagFiltraSelezionate = value;
+					OnPropertyChanged( "flagFiltraSelezionate" );
+
+					filtrareSelezionate( value );
+					if( value )
+						flagPosizionaSuSelezionate = false; // Spengo l'altro (sono esclusivi)
+				}
+			}
+		}
+
 		#endregion Proprietà
 
 
@@ -748,6 +782,11 @@ namespace Digiphoto.Lumen.UI {
 
 			raiseSnpashotCambiataEvent( EventArgs.Empty );
 		}
+
+		private void posizionareSuSelezionate( bool attivare ) {
+			// per ora niente
+		}
+
 
 		/// <summary>
 		/// Aggiungo le immagini selezionate al masterizzatore

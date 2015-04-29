@@ -325,13 +325,7 @@ namespace Digiphoto.Lumen.UI {
 		private void buttonScorriFotoSelez_Click( object sender, RoutedEventArgs e ) {
 
 			int direzione = Int32.Parse( ((FrameworkElement)sender).Tag.ToString() );
-
-			fotoGalleryViewModel.calcolaFotoCorrenteSelezionataScorrimento( direzione );
-
-			if( fotoGalleryViewModel.fotoCorrenteSelezionataScorrimento != null )
-				LsImageGallery.ScrollIntoView( fotoGalleryViewModel.fotoCorrenteSelezionataScorrimento );
-
-			forsePrendoSnapshotPubblico();
+			spostamentoScrollerSoloSuSelezionate( direzione );
 		}
 
 
@@ -377,7 +371,17 @@ namespace Digiphoto.Lumen.UI {
 		private void buttonMovePage_Click( object sender, RoutedEventArgs e ) {
 
 			int direzione = Convert.ToInt32( ((Button)sender).CommandParameter );
-			spostamentoScrollerSuGiu( direzione );
+
+			if( fotoGalleryViewModel.flagPosizionaSuSelezionate ) {
+
+				// Spostamento solo sulle selezionate ..
+				spostamentoScrollerSoloSuSelezionate( direzione );
+
+			} else {
+				// Spostamento normale mi sposto di una pagina
+				spostamentoScrollerNormaleSuGiu( direzione );
+			}
+
 		}
 
 		/// <summary>
@@ -389,7 +393,7 @@ namespace Digiphoto.Lumen.UI {
 		///    0 = risposiziono su stessa pagina
 		///   +1 = una pagina avanti (Pg Down)
 		/// </param>
-		void spostamentoScrollerSuGiu( int direzione ) {
+		void spostamentoScrollerNormaleSuGiu( int direzione ) {
 
 			ContentPresenter myContentPresenter = AiutanteUI.FindVisualChild<ContentPresenter>( LsImageGallery );
 			ListBoxItem co = (ListBoxItem)LsImageGallery.ItemContainerGenerator.ContainerFromIndex( 0 );
@@ -450,6 +454,22 @@ namespace Digiphoto.Lumen.UI {
 			// Rimetto il fuoco sul componente gallery, in modo che se premo le freccie su/giu mi sposto correttamente
 			LsImageGallery.Focus();
 		}
+
+		/// <summary>
+		/// Eseguo lo spostamento della finestra dello scroller per andare a posizionarmi
+		/// sulla foto selezionata successiva.
+		/// </summary>
+		/// <param name="direzione"></param>
+		void spostamentoScrollerSoloSuSelezionate( int direzione ) {
+
+			fotoGalleryViewModel.calcolaFotoCorrenteSelezionataScorrimento( direzione );
+
+			if( fotoGalleryViewModel.fotoCorrenteSelezionataScorrimento != null )
+				LsImageGallery.ScrollIntoView( fotoGalleryViewModel.fotoCorrenteSelezionataScorrimento );
+
+			forsePrendoSnapshotPubblico();
+		}
+
 
 		private void buttonTakeSnapshotPubblico_Click( object sender, RoutedEventArgs e ) {
 			((App)Application.Current).gestoreFinestrePubbliche.eseguiSnapshotSuFinestraPubblica( this, this.LsImageGallery );

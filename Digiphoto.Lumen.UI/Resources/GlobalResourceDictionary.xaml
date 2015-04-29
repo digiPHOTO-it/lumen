@@ -263,7 +263,7 @@
 				<Setter Property="Opacity" Value="0.3" />
 			</Trigger>
 			<Trigger Property="IsEnabled" Value="True">
-				<Setter Property="BorderBrush" Value="Orange" />
+				<Setter Property="BorderBrush" Value="Green" />
 			</Trigger>
 		</Style.Triggers>
 	</Style>

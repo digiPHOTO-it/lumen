@@ -268,9 +268,13 @@
 
 			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="True">
 				<Setter Property="BorderBrush" Value="Red" />
-				<Setter Property="BorderThickness" Value="2" />
+				<Setter Property="BorderThickness" Value="1" />
+				<Setter Property="Background" Value="Yellow" />
 			</DataTrigger>
-			
+			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="False">
+				<Setter Property="Background" Value="DarkGray" />
+			</DataTrigger>
+
 		</Style.Triggers>
 	</Style>
 	
