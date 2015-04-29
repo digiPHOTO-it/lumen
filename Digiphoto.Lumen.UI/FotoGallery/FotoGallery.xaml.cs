@@ -19,6 +19,8 @@ using Digiphoto.Lumen.UI.Util;
 using System.Windows.Threading;
 using Digiphoto.Lumen.Config;
 using System.Collections.Generic;
+using Digiphoto.Lumen.Servizi.Ritoccare;
+using Digiphoto.Lumen.Applicazione;
 
 namespace Digiphoto.Lumen.UI {
 	/// <summary>
@@ -95,17 +97,18 @@ namespace Digiphoto.Lumen.UI {
 			List<Fotografia> viewFotos3 = GetVisibleItemsFromListbox(LsImageGallery, LsImageGallery);
 			Fotografia viewFoto3 = null;
 			if (viewFotos3 != null && viewFotos3.Count > 0){
-
-				if (LsImageGallery.SelectedItems.Count > 0 &&
-					viewFotos3.Any<Fotografia>(element => LsImageGallery.SelectedItems.Contains(element)))
+				if (LsImageGallery.SelectedItems.Count > 0)
 				{
-					viewFoto3 = LsImageGallery.SelectedItems.OfType<Fotografia>().First<Fotografia>();
+					viewFoto3 = viewFotos3.FirstOrDefault<Fotografia>(element => LsImageGallery.SelectedItems.Contains(element));
+					if (viewFoto3 == null)
+					{
+						viewFoto3 = viewFotos3.First<Fotografia>();
+					}
 				}
 				else
 				{
 					viewFoto3 = viewFotos3.First<Fotografia>();
 				}
-
 			}
 
 			// poi questo
@@ -262,6 +265,15 @@ namespace Digiphoto.Lumen.UI {
 						fotoGalleryViewModel.fotografieCW.RefreshSelectedItemWithMemory();
 					}
 				}
+			}
+		}
+
+		private void LsImageGallery_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Z && Keyboard.Modifiers == ModifierKeys.Control && 
+				LsImageGallery.SelectedItems.Count > 0)
+			{
+				fotoGalleryViewModel.riportaOriginaleFotoSelezionateCommand.Execute(null);
 			}
 		}
 
