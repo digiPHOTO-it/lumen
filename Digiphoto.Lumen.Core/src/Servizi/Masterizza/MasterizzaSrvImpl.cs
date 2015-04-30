@@ -150,13 +150,18 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 							_burner.burning();
 						}
                     }else{
-                         MasterizzaMsg errorTestMediaMsg = new MasterizzaMsg( this );
-						 errorTestMediaMsg.senderTag = senderTag;
+						MasterizzaMsg errorTestMediaMsg = new MasterizzaMsg( this );
+						errorTestMediaMsg.senderTag = senderTag;
 						errorTestMediaMsg.fase = Fase.ErroreMedia;
                         errorTestMediaMsg.esito = Esito.Errore;
                         errorTestMediaMsg.progress = 0;
                         errorTestMediaMsg.result = "Error Media";
                         pubblicaMessaggio(errorTestMediaMsg);
+						throw new Exception("Errore supporto\n"+
+											"Molto probabilmente non è stato inserito il CD nell'unita o la capacita del supporto non è sufficiente!!"+ 
+											"\n\nVerifica il supporto e prova a rimasterizzare usando il pulsante"+
+											"\n\nRimasterizza nuovamente causa eventuali errori"+
+											"\n\nChe si trova alla tua Sinistra!!!!");
                     }
                     break;
 				default:
