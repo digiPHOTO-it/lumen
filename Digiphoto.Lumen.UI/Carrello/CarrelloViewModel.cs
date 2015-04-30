@@ -608,7 +608,7 @@ namespace Digiphoto.Lumen.UI
 				{
 					uri = new Uri(uriTemplate.Replace("##", "ssErroreMedia"));
 					IsErroriMasterizzazione = true;
-					trayIconProvider.showError("Avviso", "Errore Media", 5000);
+					trayIconProvider.showError("Avviso", "Errore Media\nVerifica il Cd e riprova!!", 5000);
 				}
 				if (StatoMasterizzazione == Digiphoto.Lumen.Servizi.Masterizzare.Fase.ErroreSpazioDisco)
 				{
@@ -754,6 +754,7 @@ namespace Digiphoto.Lumen.UI
 					_giornale.Warn( "Riscontrati errori durante la masterizzazione" );
 					GestoreCarrelloMsg msg = new GestoreCarrelloMsg(this);
 					msg.fase = Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.ErroreMasterizzazione;
+					msg.descrizione = "Verificare il Cd e riprovare a Masterizzare";
 					LumenApplication.Instance.bus.Publish(msg);
 				}
 			}
