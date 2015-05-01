@@ -294,7 +294,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		public void creaShow( ParamCercaFoto paramCercaFoto ) {
 
 			this.slideShow = new SlideShowAutomatico( paramCercaFoto );
-			this.slideShow.slides = fotoExplorerSrv.fotografie;
+			this.slideShow.sostituisciFoto( fotoExplorerSrv.fotografie );
 			creaShow();
 		}
 
@@ -323,10 +323,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		/// </summary>
 		public void creaShow( IList<Fotografia> newSlides )  {
 
-			this.slideShow = new SlideShow() { 
-				slides = newSlides 
-			};
-
+			slideShow = new SlideShow( newSlides );
 			creaShow();
 		}
 
@@ -339,9 +336,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			bool isVuoto = (slideShow == null);
 			if( isVuoto )
 				this.slideShow = new SlideShow();
-
-			foreach( Fotografia f in newSlides )
-				slideShow.slides.Add( f );
+			slideShow.slides.AddRange( newSlides );
 
 			if( isVuoto )
 				creaShow();

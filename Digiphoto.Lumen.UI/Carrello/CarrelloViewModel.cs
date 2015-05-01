@@ -458,21 +458,32 @@ namespace Digiphoto.Lumen.UI
 
 		public bool possoSpostareFotoRiga(string discriminator)
 		{
-			if (Carrello.TIPORIGA_MASTERIZZATA.Equals(discriminator))
+			if( Carrello.TIPORIGA_MASTERIZZATA.Equals( discriminator ) ) {
 				//Se voglio spostare le foto nelle masterizzate devo avere qualcosa nelle stampate
-				return RiCaFotoStampateCv != null && RiCaFotoStampateCv.CurrentItem != null;
+				return rigaCarrelloStampataSelezionata != null;
+			}
 
-			if (Carrello.TIPORIGA_STAMPA.Equals(discriminator))
+			if( Carrello.TIPORIGA_STAMPA.Equals( discriminator ) ) {
 				//Se voglio spostare le foto nelle stampate devo avere qualcosa nelle masterizzate
-				return RiCaFotoMasterizzateCv != null && RiCaFotoMasterizzateCv.CurrentItem != null;
+				return rigaCarrelloMasterizzataSelezionata != null;
 
-			else
-				return false;
+			}
+
+			return false;
 		}
 
 		public bool possoVisualizzareIncassiFotografi {
 			get {
 				return carrelloCorrente != null && carrelloCorrente.righeCarrello.Any();
+			} 
+		}
+
+		/// <summary>
+		/// Mi dice se posso modificare i controlli del carrello
+		/// </summary>
+		public bool possoEditareCarrello {
+			get {
+				return carrelloCorrente != null && carrelloCorrente.venduto == false;
 			} 
 		}
 
@@ -1261,7 +1272,8 @@ namespace Digiphoto.Lumen.UI
 			{
 				if (_rimasterizzaCommand == null)
 				{
-					_rimasterizzaCommand = new RelayCommand(param => rimasterizza(), param => IsErroriMasterizzazione, false);
+					_rimasterizzaCommand = new RelayCommand( p => rimasterizza(),
+															 p => possoRimasterizzare, false );
 				}
 				return _rimasterizzaCommand;
 			}
@@ -1315,8 +1327,8 @@ namespace Digiphoto.Lumen.UI
 			{
 				if (_copiaSpostaFotoRigaCommand == null)
 				{
-					_copiaSpostaFotoRigaCommand = new RelayCommand(param => copiaSpostaFotoRiga((String)param),
-															   param => possoSpostareFotoRiga((String)param), false);
+					_copiaSpostaFotoRigaCommand = new RelayCommand( param => copiaSpostaFotoRiga((String)param),
+					                                                param => possoSpostareFotoRiga((String)param), false);
 				}
 				return _copiaSpostaFotoRigaCommand;
 			}

@@ -32,7 +32,7 @@
 				<Button Command="{Binding eliminaCarrelloCommand}" Style="{StaticResource styleCarrelliButtonDelete}" />
 
 				<Separator Height="10"  Visibility="{Binding Path=IsErroriMasterizzazione,Converter={StaticResource boolVisibilityConverter}}"  />
-				<Button Command="{Binding rimasterizzaCommand}" IsEnabled="{Binding Path=possoRimasterizzare,Converter={StaticResource boolVisibilityConverter}}" Style="{StaticResource styleCartRimasterizza}" />
+				<Button Command="{Binding rimasterizzaCommand}" Style="{StaticResource styleCartRimasterizza}" />
 
 			</ToolBar>
 			<ToolBar Band="1" BandIndex="2" Header="Riga">
@@ -148,7 +148,7 @@
 
 					<StackPanel Orientation="Vertical">
 
-						<DatePicker SelectedDate="{Binding Path=paramCercaCarrello.giornataIniz,Mode=TwoWay}"  IsTodayHighlighted="true" Name="datePickerRicercaIniz" ToolTip="Data inizio periodo" Margin="1"/>
+						<DatePicker SelectedDate="{Binding Path=paramCercaCarrello.giornataIniz,Mode=TwoWay}"  IsTodayHighlighted="true" Name="datePickerRicercaIniz" ToolTip="Data inizio periodo" Margin="1" />
 						<DatePicker SelectedDate="{Binding Path=paramCercaCarrello.giornataFine,Mode=TwoWay}"  IsTodayHighlighted="true" Name="datePickerRicercaFine" ToolTip="Data fine periodo" Margin="1"/>
 
 						<StackPanel Orientation="Horizontal" Margin="0,3,0,0" HorizontalAlignment="Center">
@@ -246,8 +246,8 @@
 
 			<StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1" 
 						VerticalAlignment="Center"
-						IsEnabled="{Binding Path=operazioniCd}">
-            <Button Command="{Binding CopiaSpostaFotoRigaCommand}" CommandParameter="M" Style="{StaticResource styleSpostaCopyM}" Height="32" Width="32" />
+				        IsEnabled="{Binding Path=carrelloCorrente.venduto,Converter={StaticResource boolInverterConverter}}">
+				<Button Command="{Binding CopiaSpostaFotoRigaCommand}" CommandParameter="M" Style="{StaticResource styleSpostaCopyM}" Height="32" Width="32" />
 				<Button Command="{Binding SpostaFotoRigaCommand}" CommandParameter="M" Style="{StaticResource styleSpostaM}" Height="32" Width="32"  Margin="0,20,0,0"/>
 				<Button Command="{Binding CopiaSpostaFotoRigaCommand}" CommandParameter="S" Style="{StaticResource styleSpostaCopyS}" Height="32" Width="32"  Margin="0,20,0,0"/>
 				<Button Command="{Binding SpostaFotoRigaCommand}" CommandParameter="S" Style="{StaticResource styleSpostaS}" Height="32" Width="32"  Margin="0,20,0,0"/>

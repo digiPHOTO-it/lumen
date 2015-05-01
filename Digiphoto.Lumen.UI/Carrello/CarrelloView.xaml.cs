@@ -32,6 +32,10 @@ namespace Digiphoto.Lumen.UI
 			associaDialogProvider();
 
 			this.incassiFotografiView.DataContext = carrelloViewModel.incassiFotografiViewModel;
+
+			// Mi posiziono per default sulla data di oggi.
+			carrelloViewModel.paramCercaCarrello.giornataIniz = carrelloViewModel.oggi;
+			carrelloViewModel.paramCercaCarrello.giornataFine = carrelloViewModel.oggi;
 		}
 
 		private CarrelloViewModel carrelloViewModel
