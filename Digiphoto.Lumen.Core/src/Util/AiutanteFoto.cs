@@ -119,8 +119,11 @@ namespace Digiphoto.Lumen.Util {
 			
 			IImmagine immagine = null;
 
-			AiutanteFoto.idrataImmaginiFoto( foto, IdrataTarget.Risultante );
-			immagine = foto.imgRisultante;
+			if (esisteFileRisultante(foto))
+			{
+				AiutanteFoto.idrataImmaginiFoto(foto, IdrataTarget.Risultante);
+				immagine = foto.imgRisultante;
+			}
 
 			// Se non l'ho trovata, prendo l'immagine grande originale
 			if( immagine == null ) {
