@@ -272,6 +272,8 @@ namespace Digiphoto.Lumen.UI
 				}
 			}
 
+			//Consento la modifica di tutto!!
+			/*
 			if (listDidascalie.Distinct().Count() > 1)
 			{
 				DidascaliaEnabled = false;
@@ -286,6 +288,7 @@ namespace Digiphoto.Lumen.UI
 			{
 				EventoEnabled = false;
 			}
+			 */
 		}
 
 		#endregion

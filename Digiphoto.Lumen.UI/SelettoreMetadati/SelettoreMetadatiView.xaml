@@ -9,7 +9,8 @@
 			 xmlns:model="clr-namespace:Digiphoto.Lumen.Model;assembly=Digiphoto.Lumen.Model"
              mc:Ignorable="d" 
 			 x:Name="this"
-             d:DesignHeight="140" d:DesignWidth="700">
+             d:DesignHeight="140" d:DesignWidth="700"
+             Background="Black" >
 
 	<UserControl.Resources>
         <ResourceDictionary Source="pack://application:,,,/Digiphoto.Lumen.UI;component/SelettoreMetadati/SelettoreMetadatiResources.xaml" />
