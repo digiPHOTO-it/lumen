@@ -169,6 +169,11 @@ namespace Digiphoto.Lumen.UI.Dialogs
 			}
 		}
 
+		private void annulla()
+		{
+			stampaProviniDialog.Close();
+		}
+
 		#endregion
 
 
@@ -210,6 +215,20 @@ namespace Digiphoto.Lumen.UI.Dialogs
 				return _updateQuantitaRigheCommand;
 			}
 		}
+
+		private RelayCommand _annullaCommand;
+		public ICommand annullaCommand
+		{
+			get
+			{
+				if (_annullaCommand == null)
+				{
+					_annullaCommand = new RelayCommand(param => this.annulla());
+				}
+				return _annullaCommand;
+			}
+		}
+
 
 	}
 }
