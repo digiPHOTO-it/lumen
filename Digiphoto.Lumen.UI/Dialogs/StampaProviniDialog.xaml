@@ -30,7 +30,23 @@
 			</Grid>
 		</GroupBox>
 
-		<GroupBox DockPanel.Dock="Bottom" Header="Intestazione" >
+        <GroupBox DockPanel.Dock="Bottom" >
+            <StackPanel Margin="4">
+                <Label Content="- SELEZIONARE IL FORMATO CARTA PER STAMPARE -"  VerticalAlignment="Top" HorizontalAlignment="Center" Background="Yellow" Margin="4"/>
+                <GroupBox Header="Formato Carta" >
+                    <ListBox
+				        ItemsSource="{Binding stampantiAbbinate}" 
+				        ItemsPanel="{DynamicResource listaPulsantiDiStampaItemsPanelTemplate}" 
+                        ItemTemplate="{StaticResource pulsanteDiStampaTemplate}"
+				        ScrollViewer.VerticalScrollBarVisibility="Disabled"
+				        ScrollViewer.HorizontalScrollBarVisibility="Visible">
+                    </ListBox>
+                </GroupBox>
+                <Button Content="ANNULLA" Command="{Binding annullaCommand}" Width="160" Margin="4" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox DockPanel.Dock="Bottom" Header="Intestazione" >
 			<StackPanel>
 				<TextBox Text="{Binding Path=paramStampaProvini.intestazione,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
 				<CheckBox IsChecked="{Binding Path=paramStampaProvini.macchiaProvini}" IsEnabled="{Binding possoModificareWaterMark}">
@@ -62,15 +78,5 @@
 			</Grid>
 		</GroupBox>
 
-		<GroupBox DockPanel.Dock="Bottom" Header="Formato Carta" >
-			<ListBox
-				ItemsSource="{Binding stampantiAbbinate}" 
-				ItemsPanel="{DynamicResource listaPulsantiDiStampaItemsPanelTemplate}" 
-                ItemTemplate="{StaticResource pulsanteDiStampaTemplate}"
-				ScrollViewer.VerticalScrollBarVisibility="Disabled"
-				ScrollViewer.HorizontalScrollBarVisibility="Visible">
-			</ListBox>
-		</GroupBox>
-
-	</DockPanel>
+    </DockPanel>
 </Window>
