@@ -141,9 +141,9 @@ namespace Digiphoto.Lumen.UI.Dialogs
 				case "-":
 					// Se voglio una quantita uguale a 0 elimino la riga
 					--paramStampaProvini.numeroColonne;
-					if (paramStampaProvini.numeroColonne < 0)
+					if (paramStampaProvini.numeroColonne < 1)
 					{
-						paramStampaProvini.numeroColonne = 0;
+						paramStampaProvini.numeroColonne = 1;
 					}
 					break;
 			}
@@ -161,9 +161,9 @@ namespace Digiphoto.Lumen.UI.Dialogs
 				case "-":
 					// Se voglio una quantita uguale a 0 elimino la riga
 					--paramStampaProvini.numeroRighe;
-					if (paramStampaProvini.numeroRighe < 0)
+					if (paramStampaProvini.numeroRighe < 1)
 					{
-						paramStampaProvini.numeroRighe = 0;
+						paramStampaProvini.numeroRighe = 1;
 					}
 					break;
 			}

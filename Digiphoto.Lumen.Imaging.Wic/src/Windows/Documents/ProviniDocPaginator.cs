@@ -298,8 +298,12 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 				;
 				textMacchiaProvini.Background = new SolidColorBrush( Colors.Transparent );
 				;
-				textMacchiaProvini.SetValue( Canvas.TopProperty, (Double)(sizeLatoH * (y)) - 2 * textMacchiaProvini.FontSize + testataH - sizeLatoH / 2 );
-				textMacchiaProvini.SetValue( Canvas.LeftProperty, riquadroL + 1 );
+				//textMacchiaProvini.SetValue( Canvas.TopProperty, (Double)((sizeLatoH * (y)) - (2 * textMacchiaProvini.FontSize + testataH) - (sizeLatoH / 2) ));
+				//textMacchiaProvini.SetValue(Canvas.LeftProperty, riquadroL + 1);
+				//Centro il water-mark su entrambi gli assi!!
+
+				textMacchiaProvini.SetValue(Canvas.TopProperty, (Double)(sizeLatoH * (y)) - ((riquadroH / 2) + (textMacchiaProvini.FontSize / 2) - testataH));
+				textMacchiaProvini.SetValue(Canvas.LeftProperty, (Double)(riquadroL + (sizeLatoW / 2 - MeasureString(textMacchiaProvini).Width / 2) + 1));
 				canvas.Children.Add( textMacchiaProvini );
 			}
 
