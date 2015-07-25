@@ -46,13 +46,30 @@
             </StackPanel>
         </GroupBox>
 
-        <GroupBox DockPanel.Dock="Bottom" Header="Intestazione" >
-			<StackPanel>
-				<TextBox Text="{Binding Path=paramStampaProvini.intestazione,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
-				<CheckBox IsChecked="{Binding Path=paramStampaProvini.macchiaProvini}" IsEnabled="{Binding possoModificareWaterMark}">
+        <GroupBox DockPanel.Dock="Bottom" Header="Opzioni" >
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition />
+					<RowDefinition />
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition  />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+				
+				<Label Content="Titolo" Grid.Row="0" Grid.Column="0" />
+				<TextBox Text="{Binding Path=paramStampaProvini.intestazione,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" MinWidth="100" Grid.Row="1" Grid.Column="0" />
+				
+				<CheckBox IsChecked="{Binding Path=paramStampaProvini.macchiaProvini}" IsEnabled="{Binding possoModificareWaterMark}" Grid.Row="0" Grid.Column="2">
 					<TextBox Text="Applica water-mark (sporca provini)" />
 				</CheckBox>
-			</StackPanel>
+				<CheckBox IsChecked="{Binding Path=paramStampaProvini.rompePerGiorno}" Grid.Row="1" Grid.Column="2" ToolTip="Salto pagina al cambio di giornata">
+					<TextBox Text="Cambio pagina per giorno" />
+				</CheckBox>
+			</Grid>
+
+					
+
 		</GroupBox>
 
 		<GroupBox DockPanel.Dock="Bottom" Header="N° Righe e Colonne" Padding="0,10,0,10">
