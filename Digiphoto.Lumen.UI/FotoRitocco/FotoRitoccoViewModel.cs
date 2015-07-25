@@ -953,15 +953,37 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		private void zoomare( double factor ) {
+
+			bool elimina = (factor == 1);
+
 			forseCambioTrasformazioneCorrente( TFXPOS_ZOOM );
+
 			((ScaleTransform)trasformazioneZoom).ScaleX = factor;
 			((ScaleTransform)trasformazioneZoom).ScaleY = factor;
+
+			forseInizioModifiche();
+
+			OnPropertyChanged( "trasformazioneZoom" );
+
+			if( elimina )
+				removeTrasformazione( TFXPOS_ZOOM );
 		}
 
 		private void traslare( double value ) {
+
+			bool elimina = (value == 0);
+
 			forseCambioTrasformazioneCorrente( TFXPOS_TRANSLATE );
+
 			((TranslateTransform)trasformazioneTranslate).X = value;
 			((TranslateTransform)trasformazioneTranslate).Y = value;
+
+			forseInizioModifiche();
+
+			OnPropertyChanged( "trasformazioneTranslate" );
+
+			if( elimina )
+				removeTrasformazione( TFXPOS_TRANSLATE );
 		}
 
 		private void grayScale( bool addRemove ) {
@@ -986,7 +1008,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			// Devo reidratare la foto originale 
 			AiutanteFoto.idrataImmaginiFoto( fotografiaInModifica, IdrataTarget.Originale );
 
-			forzaRefreshStato();
+			rifiutareCorrezioni();
 		}
 
 		private void sepia( bool addRemove ) {

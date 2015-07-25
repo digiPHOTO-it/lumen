@@ -29,11 +29,55 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 			this.lavoroDiStampaProvini = lsp;
 			numFotPerPag = lavoroDiStampaProvini.param.numeroRighe * lavoroDiStampaProvini.param.numeroColonne;
 
-			pageCount = numFotPerPag > 0 ? (int)Math.Ceiling( (decimal)lavoroDiStampaProvini.fotografie.Count / numFotPerPag ) : 1;
+			pageCount = calcolaNumeroPagine();
+
 			lavoroDiStampaProvini.param.numPag = (short)pageCount;
 
 			immaginiPaginaPrecedente = new List<IImmagine>();
 		}
+
+		int calcolaNumeroPagine() {
+
+			int totPagine = 0;
+
+			if( lavoroDiStampaProvini.param.rompePerGiorno ) {
+
+				// Per sapere quante pagine saranno, devo contare una ad una le foto
+				DateTime ggPrec = DateTime.MinValue;
+				int contaFotoStessoGiorno = 0;
+
+				foreach( var foto in lavoroDiStampaProvini.fotografie ) {
+
+					bool saltoPag = false;
+
+					// Se ho almeno una foto, allora ho almeno una pagina
+					if( totPagine == 0 )
+						totPagine = 1;
+
+					// Se cambia giorno, allora salto pagina...
+					if( foto.giornata != ggPrec && ggPrec != DateTime.MinValue )
+						saltoPag = true;
+		
+					// Se nello stesso giorno supero il num di foto x giorno...
+					if( ++contaFotoStessoGiorno > numFotPerPag )
+						saltoPag = true;
+
+					if( saltoPag ) {
+						++totPagine;
+						contaFotoStessoGiorno = 1;
+					}
+
+					ggPrec = foto.giornata;
+				}
+
+			} else {
+				totPagine = numFotPerPag > 0 ? (int)Math.Ceiling( (decimal)lavoroDiStampaProvini.fotografie.Count / numFotPerPag ) : 1;
+			}
+
+
+			return totPagine;
+		}
+
 
 		private void inizializza() {
 
@@ -108,10 +152,10 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 			pageContent.VerticalAlignment = VerticalAlignment.Center;
 			pageContent.HorizontalAlignment = HorizontalAlignment.Center;
 
-			int toSkip = (numFotPerPag * (pageNumber) );  // Numero di foto da skippare nella paginazione
 
-			// Prendo solo le foto interessate da questa pagina
-			var fotos = lavoroDiStampaProvini.fotografie.Skip( toSkip ).Take( numFotPerPag );
+			// Ricavo le foto da stampare
+			var fotos = ricavaFotoDellaPagina( pageNumber );
+
 
 			Canvas canvas = new Canvas();
 			canvas.Background = new SolidColorBrush( Colors.Transparent );
@@ -139,6 +183,59 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 			DocumentPage actualPage = new DocumentPage( pageContent );
 			lastLoadedPage = actualPage;
 			return actualPage;
+		}
+
+		private IEnumerable<Fotografia> ricavaFotoDellaPagina( int paginaDaStampare ) {
+
+			IEnumerable<Fotografia> fotos = null;
+
+			if( lavoroDiStampaProvini.param.rompePerGiorno ) {
+
+				// Per sapere quante pagine saranno, devo contare una ad una le foto
+				DateTime ggPrec = DateTime.MinValue;
+				List<Fotografia> lista = new List<Fotografia>();
+				int contaFotoStessoGiorno = 0;
+				int pagCorrente = 0; // Le conta in base 0.
+
+				foreach( var foto in lavoroDiStampaProvini.fotografie ) {
+
+					bool saltoPag = false;
+				
+					// Se cambia giorno, allora salto pagina...
+					if( foto.giornata != ggPrec && ggPrec != DateTime.MinValue )
+						saltoPag = true;
+
+					// Se nello stesso giorno supero il num di foto x giorno...
+					if( ++contaFotoStessoGiorno > numFotPerPag )
+						saltoPag = true;
+
+					if( saltoPag ) {
+						++pagCorrente;
+						contaFotoStessoGiorno = 1;
+					}
+
+					ggPrec = foto.giornata;
+
+					if( pagCorrente == paginaDaStampare )
+						lista.Add( foto );
+
+					// Se ho riempito la pagina, esco
+					if( lista.Count == numFotPerPag )
+						break;
+				}
+
+				fotos = lista.AsEnumerable();
+
+			} else {
+
+				// Le pagine sono tutte uguali
+				int toSkip = (numFotPerPag * (paginaDaStampare));  // Numero di foto da skippare nella paginazione
+
+				// Prendo solo le foto interessate da questa pagina
+				fotos = lavoroDiStampaProvini.fotografie.Skip( toSkip ).Take( numFotPerPag );
+			}
+
+			return fotos;
 		}
 
 		private void rilasciaRisorsePaginaPrecendete( int pageNumber ) {
@@ -258,8 +355,24 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 			// Intestazione
 			if( true ) {
 				TextBlock textIntestazione = new TextBlock();
-				textIntestazione.Text = this.lavoroDiStampaProvini.param.intestazione + "   " + Configurazione.infoFissa.descrizPuntoVendita;
-				textIntestazione.FontSize = testataH * 65 / 100;
+
+				// Intestazione con eventuale data (se richiesto)
+				StringBuilder titolo = new StringBuilder();
+				if( lavoroDiStampaProvini.param.rompePerGiorno )
+					titolo.Append( foto.giornata.Date.ToString( "D" ) );
+				
+				if( titolo.Length > 0 && string.IsNullOrEmpty(this.lavoroDiStampaProvini.param.intestazione) == false )
+					titolo.Append( " - " );
+				titolo.Append( this.lavoroDiStampaProvini.param.intestazione );
+
+				if( titolo.Length > 0 && string.IsNullOrEmpty(Configurazione.infoFissa.descrizPuntoVendita) == false )
+					titolo.Append( " - " );
+				titolo.Append( Configurazione.infoFissa.descrizPuntoVendita );
+
+				textIntestazione.Text = titolo.ToString();
+
+
+				textIntestazione.FontSize = Math.Max( 9, testataH * 65 / 100 );  // Almeno 9 pixel altimenti non si legge
 				textIntestazione.Foreground = coloreHeaderFg;
 				textIntestazione.Background = coloreHeaderBg;
 				textIntestazione.SetValue( Canvas.TopProperty, 1.0 );
@@ -293,7 +406,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 				textMacchiaProvini.Width = riquadroW - 2;
 
 				textMacchiaProvini.Text = "digiPHOTO.it";
-				textMacchiaProvini.FontSize = sizeLatoH / 8;
+				textMacchiaProvini.FontSize = Math.Max( 9, sizeLatoH / 8 );
 				textMacchiaProvini.Foreground = coloreWaterMarkFg;
 				;
 				textMacchiaProvini.Background = new SolidColorBrush( Colors.Transparent );
@@ -311,7 +424,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 			if( true ) {
 				TextBlock textGiorno = new TextBlock();
 				textGiorno.Text = foto.giornata.ToString( "d" );
-				textGiorno.FontSize = sizeLatoH / 30; // 30pt text
+				textGiorno.FontSize = Math.Max( 9, sizeLatoH / 30); // 30pt text
 				textGiorno.Foreground = coloreWaterMarkFg;
 				textGiorno.Background = coloreWaterMarkBg;
 				textGiorno.SetValue( Canvas.TopProperty, (Double)(sizeLatoH * (y)) - 2 * textGiorno.FontSize + testataH );
@@ -323,7 +436,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 			if( true ) {
 				TextBlock textNumero = new TextBlock();
 				textNumero.Text = foto.etichetta;
-				textNumero.FontSize = sizeLatoH / 10;
+				textNumero.FontSize = Math.Max( 9, sizeLatoH / 10 );
 				textNumero.Foreground = coloreNumFotoFg;
 				textNumero.Background = coloreNumFotoBg;
 				textNumero.SetValue( Canvas.TopProperty, riquadroT + 2 );
@@ -336,7 +449,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 				TextBlock textOperatore = new TextBlock();
 				StringBuilder operatore = new StringBuilder();
 				textOperatore.Text = foto.fotografo.iniziali;
-				textOperatore.FontSize = sizeLatoH / 30;
+				textOperatore.FontSize = Math.Max( 9, sizeLatoH / 30 );
 				textOperatore.Foreground = coloreWaterMarkFg;
 				textOperatore.Background = coloreWaterMarkBg;
 				textOperatore.SetValue( Canvas.TopProperty, riquadroT + 2 );

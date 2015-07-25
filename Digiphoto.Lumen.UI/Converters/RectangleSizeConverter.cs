@@ -65,8 +65,11 @@ namespace Digiphoto.Lumen.UI.Converters {
 			double w = calcolaDimensione( qualeFascia, "W", values );
 			double h = calcolaDimensione( qualeFascia, "H", values );
 
+// TODO stabilire con Ciccio se meglio vedere area microscopica oppure non vederla per nulla.
+#if false
 			if( w < 5 || h < 5 )
 				return null;
+#endif
 
 			Thickness t = new Thickness( 0, 0, 0, 0 );
 
