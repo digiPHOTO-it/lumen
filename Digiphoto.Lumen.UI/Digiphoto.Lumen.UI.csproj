@@ -700,6 +700,7 @@
     <None Include="Resources\Stampante.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\gallery-view-plus.png" />
     <Resource Include="Resources\Printer-48x48.png" />
     <Resource Include="Resources\zoom-16x16.png" />
   </ItemGroup>
@@ -798,6 +799,11 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\gallery-view-selez-deselez.png" />
+    <Resource Include="Resources\gallery-view-minus.png" />
+    <Resource Include="Resources\gallery-view-1.png" />
+    <Resource Include="Resources\gallery-view-2.png" />
+    <Resource Include="Resources\gallery-view-3.png" />
     <Resource Include="Resources\switch_off-48x48.png" />
     <Resource Include="Resources\switch_on-48x48.png" />
     <Resource Include="Resources\ssPlaySelected-48x48.png" />

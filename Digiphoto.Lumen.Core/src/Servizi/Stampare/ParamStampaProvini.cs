@@ -92,9 +92,26 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 			}
 		}
 
+		private bool _rompePerGiorno;
+		/// <summary>
+		/// Saltare pagina al cambio di giorno
+		/// </summary>
+		public bool rompePerGiorno {
+			get {
+				return _rompePerGiorno;
+			}
+			set {
+				if( _rompePerGiorno != value ) {
+					_rompePerGiorno = value;
+					OnPropertyChanged( "rompePerGiorno" );
+				}
+			}
+		}
+
 		public ParamStampaProvini()
 		{
 			this.autoRuota = true;
+			this.rompePerGiorno = true;
 			this.numCopie = 1;
 		}
 

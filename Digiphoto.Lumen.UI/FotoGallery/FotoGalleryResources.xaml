@@ -280,6 +280,20 @@
 		<Setter Property="Width" Value="48" />
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="BorderBrush" Value="Cyan" />
+
+		<Style.Triggers>
+			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="GOTO_VUOTO">
+				<Setter Property="FontStyle" Value="Italic" />
+				<Setter Property="FontSize" Value="9" />
+				<Setter Property="Text" Value="N°foto..." /> <!-- occhio che questa scritta c'è anche in FotoGallery.xaml.cs -->
+				<Setter Property="Foreground" Value="LightGray" />
+			</DataTrigger>
+			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="GOTO_ERRATO">
+				<Setter Property="BorderBrush" Value="Red" />
+				<Setter Property="Background" Value="Orange" />
+			</DataTrigger>
+		</Style.Triggers>
+
 	</Style>
 
 	<Style x:Key="bottoneTestualeStyle" BasedOn="{StaticResource buttonBaseStyle}" TargetType="Control">

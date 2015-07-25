@@ -1055,6 +1055,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		private void imageRitoccata_MouseWheel( object sender, MouseWheelEventArgs e ) {
+
+			bool saveModificheInCorso = _viewModel.modificheInCorso;
+
 			if( Keyboard.IsKeyDown( Key.LeftCtrl ) ) {
 				// Rotazione
 				double angolo = e.Delta > 0 ? sliderRuota.SmallChange : sliderRuota.SmallChange * (-1);
@@ -1064,6 +1067,14 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				double zoom = e.Delta > 0 ? sliderZoom.SmallChange : sliderZoom.SmallChange * (-1);
 				sliderZoom.Value += zoom;
 			}
+
+
+			// Questo utilizzo con la ruota del mouse, siccome non ci sono dei click fisici sulle superfici
+			// delle views, non provocano l'aggiornamento dello stato dei Command.CanExecute
+			// In pratica non si accende il pulsante "Applica" come succede invece se muovo fisicamente gli 
+			// sliders. Devo far rivalutare i CanExecute dei comandi.
+			if( _viewModel.modificheInCorso != saveModificheInCorso )
+				CommandManager.InvalidateRequerySuggested();
 		}
 
 		// Serve per gestire il drag della foto
