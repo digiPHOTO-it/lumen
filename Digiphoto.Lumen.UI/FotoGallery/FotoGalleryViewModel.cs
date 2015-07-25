@@ -954,8 +954,11 @@ namespace Digiphoto.Lumen.UI {
 				// Riordino i Provini per data acquisizione foto + numero foto (Prima quelli più vecchi)
 				IEnumerable<Fotografia> sortedEnum = listaSelez.OrderBy(f => f.dataOraAcquisizione).OrderBy(f => f.numero);
 				listaSelez = sortedEnum.ToList();
-				
-				venditoreSrv.aggiungereStampe(listaSelez, creaParamStampaProvini(d.paramStampaProvini));
+	
+// non capisco a cosa servisse clonare i parametri			
+//				venditoreSrv.aggiungereStampe(listaSelez, creaParamStampaProvini(d.paramStampaProvini));
+				venditoreSrv.aggiungereStampe( listaSelez, d.paramStampaProvini );
+
 			}
 
 			d.Close();
@@ -982,6 +985,8 @@ namespace Digiphoto.Lumen.UI {
 			return p;
 		}
 		
+// non so perché l'avevo fatto. Sembra un clone !! boh ??		
+#if false
 		private ParamStampaProvini creaParamStampaProvini( ParamStampaProvini param ) {
 
 			ParamStampaProvini p = venditoreSrv.creaParamStampaProvini();
@@ -996,6 +1001,7 @@ namespace Digiphoto.Lumen.UI {
 
 			return p;
 		}
+#endif
 
 		//public string paramGiornataIniz {
 		//    get;

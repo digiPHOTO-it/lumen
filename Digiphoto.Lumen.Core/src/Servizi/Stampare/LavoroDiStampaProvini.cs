@@ -23,7 +23,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 
 		public LavoroDiStampaProvini(IList<Fotografia> fotografie, ParamStampaProvini param) : base(param) 
 		{
-			this.fotografie = fotografie;
+			this.fotografie = fotografie.OrderBy( f => f.giornata ).ThenBy( f => f.numero ).ToList();
 			this.param = param;
 		}
 

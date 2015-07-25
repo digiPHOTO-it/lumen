@@ -23,16 +23,23 @@ using Digiphoto.Lumen.Servizi.Ritoccare;
 using Digiphoto.Lumen.Applicazione;
 
 namespace Digiphoto.Lumen.UI {
+
+	
 	/// <summary>
 	/// Interaction logic for FotoGallery.xaml
 	/// </summary>
 	public partial class FotoGallery : UserControlBase {
-		
+
+		private const string GOTO_VUOTO = "GOTO_VUOTO";
+		private const string GOTO_ERRATO = "GOTO_ERRATO";
+		private const string GOTO_EDITING = "GOTO_EDITING";
+
 		public FotoGallery() {
 			InitializeComponent();
 
-			DataContextChanged += new DependencyPropertyChangedEventHandler(fotoGallery_DataContextChanged);
+			textBoxGotoNumFoto.Tag = GOTO_VUOTO;
 
+			DataContextChanged += new DependencyPropertyChangedEventHandler(fotoGallery_DataContextChanged);
         }
 
 		void fotoGallery_DataContextChanged( object sender, DependencyPropertyChangedEventArgs e ) {
@@ -546,25 +553,42 @@ namespace Digiphoto.Lumen.UI {
 			return fotoTrovata;
 		}
 
-		
+
+		private void textBoxGotoNumFoto_GotFocus( object sender, RoutedEventArgs e ) {
+			if( (string)textBoxGotoNumFoto.Tag == GOTO_VUOTO ) {
+				textBoxGotoNumFoto.Text = "";
+				textBoxGotoNumFoto.Tag = GOTO_EDITING;
+			}
+		}
 
 		private void textBoxGotoNumFoto_LostFocus( object sender, RoutedEventArgs e ) {
 
-			if( string.IsNullOrEmpty( textBoxGotoNumFoto.Text ) )
+			// Caso particolare: se svuoto la cella, allora rimetto la scritta "goto"
+			if( textBoxGotoNumFoto.Text == null || textBoxGotoNumFoto.Text.Trim() == String.Empty ) {
+				textBoxGotoNumFoto.Tag = GOTO_VUOTO;
+				textBoxGotoNumFoto.Text = "N°foto..."; // occhio che questa scritta c'è anche in FotoGallery.xaml
 				return;
+			}
 
+			bool posizionato = false;
 			int numDaric;
-			if( !Int32.TryParse( textBoxGotoNumFoto.Text, out numDaric ) )
-				return;
-		
-			posizionaListaSulFotogramma( numDaric );
+			if( Int32.TryParse( textBoxGotoNumFoto.Text, out numDaric ) )
+				posizionato = posizionaListaSulFotogramma( numDaric );
+
+			if( posizionato ) {
+				textBoxGotoNumFoto.Tag = GOTO_VUOTO;
+				textBoxGotoNumFoto.Text = "N°foto..."; // occhio che questa scritta c'è anche in FotoGallery.xaml
+			} else
+				textBoxGotoNumFoto.Tag = GOTO_ERRATO;
 		}
 
-		private void posizionaListaSulFotogramma( int numDaric ) { 
+		private bool posizionaListaSulFotogramma( int numDaric ) { 
 
 			Fotografia daric = ricavaFotoByNumber( numDaric );
 			if( daric != null )
 				LsImageGallery.ScrollIntoView( daric );
+
+			return daric != null;
 		}
 
 		private void posizionaListaSulFotogrammaSS( object sender, RoutedEventArgs e ) {
@@ -577,6 +601,70 @@ namespace Digiphoto.Lumen.UI {
 				textBoxGotoNumFoto.Text = "";
 		}
 
+		private void mostraAreaStampabileButton_Click( object sender, RoutedEventArgs e ) {
 
+
+			ContentPresenter myContentPresenter = AiutanteUI.FindVisualChild<ContentPresenter>( LsImageGallery );
+			// ListBoxItem co = (ListBoxItem)LsImageGallery.ItemContainerGenerator.ContainerFromIndex( 0 );
+
+			iteraAlberoFigli( myContentPresenter );
+			// iteraAlberoVisibili();
+
+			// Aggiorno la vista del cliente
+			forsePrendoSnapshotPubblico();
+		}
+
+#if false
+		private void iteraAlberoVisibili() {
+
+			foreach( var item in LsImageGallery.Items ) {
+			
+				var listBoxItem = (ListBoxItem)LsImageGallery.ItemContainerGenerator.ContainerFromItem( item );
+
+				if( IsUserVisible( listBoxItem, LsImageGallery ) ) {
+					iteraAlberoFigli( listBoxItem );
+				}
+			}
+		}
+#endif
+
+		void iteraAlberoFigli( FrameworkElement ele ) {
+
+			int quanti = VisualTreeHelper.GetChildrenCount( ele );
+			for( int i = 0; i < quanti; i++ ) {
+				var child = VisualTreeHelper.GetChild( ele, i ) as FrameworkElement;
+				if( child.Name == "fotoCanvas" ) {
+
+					// Per far prima, invece che applicarlo a tutti, la applico soltanto ai componenti visibili
+					if( IsUserVisible( ele, LsImageGallery )) {
+
+						Canvas canvas = (Canvas)child;
+
+						// prima controllo che non ce l'ho già messo
+						if( AiutanteUI.FindVisualChild<Border>( canvas, "borderCopriA" ) == null ) {
+							Border borderA = new Border();
+							borderA.Name = "borderCopriA";
+							borderA.HorizontalAlignment = HorizontalAlignment.Left;
+							borderA.VerticalAlignment = VerticalAlignment.Top;
+							borderA.Style = (Style)FindResource( "styleBorderCopriA" );
+							canvas.Children.Add( borderA );
+							borderA.SetValue( Canvas.ZIndexProperty, 99 );
+						}
+
+						if( AiutanteUI.FindVisualChild<Border>( canvas, "borderCopriB" ) == null ) {
+							Border borderB = new Border();
+							borderB.Name = "borderCopriB";
+							borderB.HorizontalAlignment = HorizontalAlignment.Left;
+							borderB.VerticalAlignment = VerticalAlignment.Top;
+							borderB.Style = (Style)FindResource( "styleBorderCopriB" );
+							canvas.Children.Add( borderB );
+							borderB.SetValue( Canvas.ZIndexProperty, 99 );
+						}
+					}
+				} else {
+					iteraAlberoFigli( child );
+				}
+			}
+		}
 	}
 }
