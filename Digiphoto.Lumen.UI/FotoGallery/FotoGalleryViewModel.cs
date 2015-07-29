@@ -240,7 +240,25 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		
+
+		public bool possoEseguireRicercaCommand
+		{
+			get {
+				bool posso = true;
+
+				if (Configurazione.isFuoriStandardCiccio)
+				{
+					if (posso && 
+						paramCercaFoto.giornataIniz == null && 
+						paramCercaFoto.giornataFine == null)
+					{
+						posso = false;
+					}
+				}
+
+				return posso;
+			}
+		}
 
 		private IVenditoreSrv venditoreSrv {
 			get {
@@ -679,7 +697,7 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand eseguireRicercaCommand {
 			get {
 				if( _eseguireRicercaCommand == null ) {
-					_eseguireRicercaCommand = new RelayCommand( numPag => eseguireRicerca(), p => true, false );
+					_eseguireRicercaCommand = new RelayCommand( numPag => eseguireRicerca(), p => possoEseguireRicercaCommand, false );
 				}
 				return _eseguireRicercaCommand;
 			}
