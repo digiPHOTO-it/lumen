@@ -34,6 +34,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			fasiDelGiorno = new List<FaseDelGiorno>();
 			idratareImmagini = true;
 			evitareJoinEvento = false;
+			didascalia = "%";
 		}
 
 		public ParamCercaFoto ShallowCopy() {
