@@ -187,8 +187,20 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			}
 
 			// ----- Didascalia (le didascalie le memorizziamo solo in maiuscolo)
-			if( ! String.IsNullOrWhiteSpace( param.didascalia ) )
-				query = query.Where( ff => ff.didascalia.Contains( param.didascalia ) );
+			if( !String.IsNullOrWhiteSpace( param.didascalia ) && param.didascalia != "%" ) {
+
+				if( param.didascalia.Contains( "%" ) ) {
+					if( param.didascalia.StartsWith( "%" ) ) {
+						string dida = param.didascalia.Substring( 1 );
+						query = query.Where( ff => ff.didascalia.EndsWith( dida ) );
+					} else if( param.didascalia.EndsWith( "%" ) ) {
+						string dida = param.didascalia.Substring( 0, param.didascalia.Length - 1 );
+						query = query.Where( ff => ff.didascalia.StartsWith( dida ) );
+					}
+				} else {
+					query = query.Where( ff => ff.didascalia.Equals( param.didascalia ) );
+				}
+			}
 
 			// ----- Giornata Inizio
 			if( param.giornataIniz != null )
