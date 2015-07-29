@@ -23,7 +23,24 @@ namespace Digiphoto.Lumen.Model
         public System.Guid id { get; set; }
         public string nomeFile { get; set; }
         public Nullable<System.DateTime> dataOraScatto { get; set; }
-        public string didascalia { get; set; }
+		
+		private string _didascalia;
+		public string didascalia 
+		{
+			get
+			{
+				return _didascalia;
+			}
+			set
+			{
+				if (value != null)
+				{
+					_didascalia = value;
+					OnPropertyChanged("didascalia");
+				}
+			}
+		}
+		
         public System.DateTime dataOraAcquisizione { get; set; }
         public int numero { get; set; }
         public Nullable<short> faseDelGiorno { get; set; }

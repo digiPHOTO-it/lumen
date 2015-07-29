@@ -16,6 +16,8 @@
 	<BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
 	<lumC:BoolInverterConverter x:Key="boolInverterConverter" />
     <lumC:RectangleSizeConverter x:Key="rectangleSizeConverter" />
+    <lumC:BoolIsNullConverter x:Key="boolIsNullConverter" />
+
 
     
     <Style TargetType="{x:Type Border}" x:Key="styleBorderCopriA">
@@ -174,9 +176,22 @@
 				<Border HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource styleBorderCopriB}" />
 -->				
 				<Image 
-                    Source="/Digiphoto.Lumen.UI;component/Resources/info-16x16.png" Width="16" Height="16"
+                    
                     Canvas.Left="2"
                     Canvas.Bottom="2" >
+
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=didascalia, Converter={StaticResource boolIsNullConverter}, Mode=OneWay}" Value="True" >
+                                    <Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/info-16x16.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=didascalia, Converter={StaticResource boolIsNullConverter}, Mode=OneWay}" Value="False" >
+                                    <Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/info-16x16_v.png"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
 
                     <Image.ToolTip>
                         <TextBlock >

@@ -204,6 +204,7 @@
     <Compile Include="Converters\BoolBackgroundConverter.cs" />
     <Compile Include="Converters\CompNumFotoConverter.cs" />
     <Compile Include="Converters\BoolWindowStateConverter.cs" />
+    <Compile Include="Converters\BoolIsNullConverter.cs" />
     <Compile Include="Converters\ModoVenditaBoolConverter.cs" />
     <Compile Include="Converters\ModoVenditaImageSourceConverter.cs" />
     <Compile Include="Converters\ListAzioniRapideVisibilityConverter.cs" />
@@ -799,6 +800,7 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\info-16x16_v.png" />
     <Resource Include="Resources\gallery-view-selez-deselez.png" />
     <Resource Include="Resources\gallery-view-minus.png" />
     <Resource Include="Resources\gallery-view-1.png" />
