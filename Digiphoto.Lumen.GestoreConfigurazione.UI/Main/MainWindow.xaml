@@ -194,6 +194,14 @@
 								<CheckBox Content="Giornata" IsChecked="{Binding cfg.stampiglioGiornata}" />
 								<CheckBox Content="N° foto" IsChecked="{Binding cfg.stampiglioNumFoto}" />
 								<CheckBox Content="Macchia Provini" IsChecked="{Binding cfg.macchiaProvini}" />
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Margin Bottom/Top" Margin="5" HorizontalAlignment="Left" Name="stampigliMarginBottom" VerticalAlignment="Top" Width="120" />
+                                    <TextBox HorizontalAlignment="Left" Margin="5" Text="{Binding cfg.stampigliMarginBottom}" ToolTip="Offset di rientro dello stampiglio dal lato orizzontale della foto"  Width="39" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Margin Right/Left" Margin="5" HorizontalAlignment="Left" Name="stampigliMarginRight" VerticalAlignment="Top" Width="120" />
+                                    <TextBox HorizontalAlignment="Left" Margin="5" Text="{Binding cfg.stampigliMarginRight}" ToolTip="Offset di rientro dello stampiglio dal verticale della foto"  Width="39" />
+                                </StackPanel>
 							</StackPanel>
 						</GroupBox>
 

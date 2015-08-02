@@ -15,6 +15,7 @@
 	<lumC:PercentualeConverter      x:Key="percentualeConverter" />
     <lumC:MathConverter             x:Key="mathConverter" />
     <BooleanToVisibilityConverter   x:Key="booleanToVisibilityConverter"/>
+    <lumC:BoolIsNullConverter       x:Key="boolIsNullConverter" />
 
     <!-- Stile della listbox che itera le immagini -->
     <Style x:Key="listBoxImmaginiDaModificareStyle" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
@@ -56,13 +57,26 @@
 				<Border HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource styleBorderCopriA}" />
 				<Border HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource styleBorderCopriB}" />
 -->
-
-				<Image 
-						Source="/Digiphoto.Lumen.UI;component/Resources/info-16x16.png" Width="16" Height="16"
+           
+                    <Image
+						
 						Canvas.Left="2"
 						Canvas.Bottom="2" >
-
-						<Image.ToolTip>
+                        
+                        <Image.Style>
+                            <Style TargetType="{x:Type Image}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=didascalia, Converter={StaticResource boolIsNullConverter}, Mode=OneWay}" Value="True" >
+                                        <Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/info-16x16.png"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=didascalia, Converter={StaticResource boolIsNullConverter}, Mode=OneWay}" Value="False" >
+                                        <Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/info-16x16_v.png"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                        
+                        <Image.ToolTip>
 							<TextBlock>
                             <TextBlock.Text>
                                 <MultiBinding StringFormat="Num = {0}&#x0a;Gio =  {1:dd/MM/yy}&#x0a;Ope = {2}&#x0a;- - - - -&#x0a;Fas = {3}&#x0a;Did = {4}&#x0a;Eve = {5}">
