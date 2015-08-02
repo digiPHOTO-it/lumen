@@ -219,6 +219,7 @@ namespace Digiphoto.Lumen.UI
 			metadati = new MetadatiFoto();
 			selettoreEventoMetadato.eventoSelezionato = null;
 			OnPropertyChanged("metadati");
+			deselezionareTutto();
 		}
 
 		void eliminareMetadati()
@@ -245,6 +246,7 @@ namespace Digiphoto.Lumen.UI
 			MetadatiMsg msg = new MetadatiMsg(this);
 			msg.fase = Fase.Completata;
 			LumenApplication.Instance.bus.Publish(msg);
+			deselezionareTutto();
 		}
 
 		private void controllaMetadati()
@@ -289,6 +291,31 @@ namespace Digiphoto.Lumen.UI
 				EventoEnabled = false;
 			}
 			 */
+		}
+
+		private void deselezionareTutto()
+		{
+			accendiSpegniTutto(false);
+		}
+
+		private void selezionareTutto()
+		{
+			accendiSpegniTutto(true);
+		}
+
+		/// <summary>
+		/// Accendo o Spengo tutte le selezioni
+		/// </summary>
+		private void accendiSpegniTutto(bool selez)
+		{
+			if (fotografieMCW == null)
+				return;
+
+			if (selez)
+				fotografieMCW.SelectAll();
+			else
+				fotografieMCW.DeselectAll();
+
 		}
 
 		#endregion

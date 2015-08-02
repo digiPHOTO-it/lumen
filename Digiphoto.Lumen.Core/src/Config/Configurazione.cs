@@ -221,6 +221,8 @@ namespace Digiphoto.Lumen.Config  {
 
 			userConfig.imprimereAreaDiRispetto = false;
 			userConfig.expRatioAreaDiRispetto = "4/3";
+			userConfig.stampigliMarginBottom = 20;
+			userConfig.stampigliMarginRight = 20;
 
 			return userConfig;
 		}
