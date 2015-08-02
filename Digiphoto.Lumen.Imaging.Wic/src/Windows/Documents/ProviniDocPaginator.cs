@@ -338,6 +338,9 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 			Opacity = 0.7
 		};
 		private SolidColorBrush coloreWaterMarkBg = new SolidColorBrush( Colors.White );
+		// Stampigli 
+		private SolidColorBrush coloreStampigliBg = new SolidColorBrush(Colors.White);
+		private SolidColorBrush coloreStampigliFg = new SolidColorBrush(Colors.Black);
 		// Intestazione striscia
 		private SolidColorBrush coloreHeaderBg = new SolidColorBrush( Colors.Cyan );
 		private SolidColorBrush coloreHeaderFg = new SolidColorBrush( Colors.Black );
@@ -425,8 +428,8 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 				TextBlock textGiorno = new TextBlock();
 				textGiorno.Text = foto.giornata.ToString( "d" );
 				textGiorno.FontSize = Math.Max( 9, sizeLatoH / 30); // 30pt text
-				textGiorno.Foreground = coloreWaterMarkFg;
-				textGiorno.Background = coloreWaterMarkBg;
+				textGiorno.Foreground = coloreStampigliFg;
+				textGiorno.Background = coloreStampigliBg;
 				textGiorno.SetValue( Canvas.TopProperty, (Double)(sizeLatoH * (y)) - 2 * textGiorno.FontSize + testataH );
 				textGiorno.SetValue( Canvas.LeftProperty, (Double)(sizeLatoW * (x - 1)) + riquadroW - MeasureString( textGiorno ).Width - 1 );
 				canvas.Children.Add( textGiorno );
@@ -450,8 +453,8 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 				StringBuilder operatore = new StringBuilder();
 				textOperatore.Text = foto.fotografo.iniziali;
 				textOperatore.FontSize = Math.Max( 9, sizeLatoH / 30 );
-				textOperatore.Foreground = coloreWaterMarkFg;
-				textOperatore.Background = coloreWaterMarkBg;
+				textOperatore.Foreground = coloreStampigliFg;
+				textOperatore.Background = coloreStampigliBg;
 				textOperatore.SetValue( Canvas.TopProperty, riquadroT + 2 );
 				textOperatore.SetValue( Canvas.LeftProperty, riquadroL + 2 );
 				canvas.Children.Add( textOperatore );

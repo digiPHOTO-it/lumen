@@ -194,6 +194,14 @@
 								<CheckBox Content="Giornata" IsChecked="{Binding cfg.stampiglioGiornata}" />
 								<CheckBox Content="N° foto" IsChecked="{Binding cfg.stampiglioNumFoto}" />
 								<CheckBox Content="Macchia Provini" IsChecked="{Binding cfg.macchiaProvini}" />
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Margin Bottom/Top" Margin="5" HorizontalAlignment="Left" Name="stampigliMarginBottom" VerticalAlignment="Top" Width="120" />
+                                    <TextBox HorizontalAlignment="Left" Margin="5" Text="{Binding cfg.stampigliMarginBottom}" ToolTip="Offset di rientro dello stampiglio dal lato orizzontale della foto"  Width="39" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Margin Right/Left" Margin="5" HorizontalAlignment="Left" Name="stampigliMarginRight" VerticalAlignment="Top" Width="120" />
+                                    <TextBox HorizontalAlignment="Left" Margin="5" Text="{Binding cfg.stampigliMarginRight}" ToolTip="Offset di rientro dello stampiglio dal verticale della foto"  Width="39" />
+                                </StackPanel>
 							</StackPanel>
 						</GroupBox>
 
@@ -229,8 +237,8 @@
 						<Label Content="Paginazione risultati gallery" HorizontalAlignment="Left" Margin="16,298,0,0" VerticalAlignment="Top" Width="164" />
 						<TextBox HorizontalAlignment="Left" Margin="194,302,0,0" Text="{Binding Path=cfg.paginazioneRisultatiGallery}" ToolTip="Il num. massimo di risultati per pagina nella gallery" VerticalAlignment="Top" Width="40" />
 
-						<Label Content="Soglia conferma stampa immediata" HorizontalAlignment="Left" Margin="280,189,0,0" VerticalAlignment="Top" Width="205" />
-						<TextBox  HorizontalAlignment="Left" Margin="490,189,0,0" Text="{Binding Path=cfg.sogliaNumFotoConfermaInStampaRapida}" ToolTip="In stampa rapida, se stampo troppe foto, chiedo conferma"  VerticalAlignment="Top" Width="40" />
+						<Label Content="Soglia conferma stampa immediata" HorizontalAlignment="Left" Margin="280,250,0,0" VerticalAlignment="Top" Width="205" />
+						<TextBox  HorizontalAlignment="Left" Margin="490,250,0,0" Text="{Binding Path=cfg.sogliaNumFotoConfermaInStampaRapida}" ToolTip="In stampa rapida, se stampo troppe foto, chiedo conferma"  VerticalAlignment="Top" Width="40" />
 						
 					</Grid>
 				</StackPanel>

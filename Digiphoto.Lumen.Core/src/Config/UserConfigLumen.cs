@@ -385,6 +385,24 @@ namespace Digiphoto.Lumen.Config
 			set;
 		}
 
+		/// <summary>
+		/// Questo valore indica l'Offset di rientro dello stampiglio dai lati orizzontali della foto
+		/// </summary
+		public int stampigliMarginBottom
+		{
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Questo valore indica l'Offset di rientro dello stampiglio dai lati verticali della foto
+		/// </summary
+		public int stampigliMarginRight
+		{
+			get;
+			set;
+		}
+
 
 		# region SlideShowParam
 

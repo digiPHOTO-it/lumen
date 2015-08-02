@@ -219,6 +219,9 @@ namespace Digiphoto.Lumen.Config  {
 			userConfig.correzioneAltezzaGalleryDueFoto = 50;
 			userConfig.tecSogliaStampaProvini = -3;
 
+			userConfig.stampigliMarginBottom = 20;
+			userConfig.stampigliMarginRight = 20;
+
 			return userConfig;
 		}
 
