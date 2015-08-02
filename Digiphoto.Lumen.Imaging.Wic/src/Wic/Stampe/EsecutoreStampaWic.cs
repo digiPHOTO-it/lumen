@@ -17,6 +17,7 @@ using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Util;
 using System.IO;
 using System.Windows.Threading;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 
@@ -225,8 +226,13 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 
 		private static void eventualiStampigli( FixedPage page1, LavoroDiStampaFoto lavoroDiStampa ) {
 
-			SolidColorBrush coloreFg = new SolidColorBrush( Colors.LightGray );
+			SolidColorBrush coloreFg = new SolidColorBrush( Colors.Black );
 			SolidColorBrush coloreBg = new SolidColorBrush( Colors.White );
+
+			int stampigliMarginBotton = Configurazione.UserConfigLumen.stampigliMarginBottom;
+			int stampigliMarginTop = Configurazione.UserConfigLumen.stampigliMarginBottom;
+			int stampigliMarginRight = Configurazione.UserConfigLumen.stampigliMarginRight;
+			int stampigliMarginLeft = Configurazione.UserConfigLumen.stampigliMarginRight;
 
 			// Numero della foto
 			if( lavoroDiStampa.param.stampigli.numFoto ) {
@@ -235,8 +241,8 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 				textNumero.FontSize = 16; // 30pt text
 				textNumero.Foreground = coloreFg;
 				textNumero.Background = coloreBg;
-				FixedPage.SetBottom( textNumero, 2 );
-				FixedPage.SetRight( textNumero, 2 );
+				FixedPage.SetBottom( textNumero, stampigliMarginBotton );
+				FixedPage.SetRight( textNumero, stampigliMarginRight );
 				page1.Children.Add( textNumero );
 			}
 
@@ -247,8 +253,8 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 				textGiorno.FontSize = 16; // 30pt text
 				textGiorno.Foreground = coloreFg;
 				textGiorno.Background = coloreBg;
-				FixedPage.SetBottom( textGiorno, 2 );
-				FixedPage.SetLeft( textGiorno, 2 );
+				FixedPage.SetBottom( textGiorno, stampigliMarginBotton );
+				FixedPage.SetLeft( textGiorno, stampigliMarginLeft );
 				page1.Children.Add( textGiorno );
 			}
 
@@ -259,8 +265,8 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 				textOperatore.FontSize = 16; // 30pt text
 				textOperatore.Foreground = coloreFg;
 				textOperatore.Background = coloreBg;
-				FixedPage.SetTop( textOperatore, 2 );
-				FixedPage.SetRight( textOperatore, 2 );
+				FixedPage.SetTop( textOperatore, stampigliMarginTop );
+				FixedPage.SetRight( textOperatore, stampigliMarginRight );
 				page1.Children.Add( textOperatore );
 			}
 
