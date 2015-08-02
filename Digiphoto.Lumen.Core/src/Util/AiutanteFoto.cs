@@ -29,6 +29,13 @@ namespace Digiphoto.Lumen.Util {
 
 		private static readonly ILog _giornale = LogManager.GetLogger(typeof(AiutanteFoto));
 
+		private static AreaRispetto areaRispetto;
+
+		static AiutanteFoto() {
+			float ratio = Convert.ToSingle( CoreUtil.evaluateExpressio( Configurazione.UserConfigLumen.expRatioAreaDiRispetto ) );
+			areaRispetto = new AreaRispetto( ratio );
+		}
+
 		public static void disposeImmagini( Fotografia foto ) {
 			disposeImmagini( foto, IdrataTarget.Tutte );
 		}
@@ -197,7 +204,19 @@ namespace Digiphoto.Lumen.Util {
 				devoPassareDallaGrande = true;
 			if( correzioni != null && correzioni.Contains( typeof(Zoom) ) )
 				devoPassareDallaGrande = true;
-			
+
+
+			// Se richiesto nella configurazione, scrivo direttamente sul provino le righe tratteggiate di rispetto area stampabile
+			if( Configurazione.UserConfigLumen.imprimereAreaDiRispetto ) {
+				if( quale == IdrataTarget.Provino ) {
+					if( correzioni == null )
+						correzioni = new CorrezioniList();
+					if( correzioni.Contains( typeof( AreaRispetto ) ) == false )
+						correzioni.Add( areaRispetto );
+				}
+			}
+
+
 
 			// Cancello il file Risultante da disco perchè tanto sta per cambiare.
 			IImmagine immagineDestinazione = null;

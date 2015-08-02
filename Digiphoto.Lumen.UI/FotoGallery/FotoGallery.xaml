@@ -114,7 +114,9 @@ Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding P
 					</Button>
 						
 					</StackPanel>
-				<Button Content="AREA" x:Name="mostraAreaStampabileButton" Click="mostraAreaStampabileButton_Click" Style="{StaticResource bottoneTestualeStyle}" ToolTip="Evidenzia area stampabile su foto visibili" />
+				<Button Content="AREA" x:Name="mostraAreaStampabileButton" Click="mostraAreaStampabileButton_Click" Style="{StaticResource bottoneTestualeStyle}" ToolTip="Evidenzia area stampabile su foto visibili" 
+						Visibility="{Binding Path=possoVisualizzareAreaDiRispetto,Mode=OneTime,Converter={StaticResource booleanToVisibilityConverter}}"
+						/>
 			</ToolBar>
 
 				<ToolBar Band="1" BandIndex="3" Header="Pubblico" Style="{StaticResource fgToolBarStyle}">
@@ -270,7 +272,8 @@ Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding P
 				 ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                  PreviewMouseLeftButtonDown="LsImageGallery_PreviewMouseLeftButtonDown"
                  PreviewMouseRightButtonDown="LsImageGallery_PreviewMouseRightButtonDown"
-                 PreviewKeyDown="LsImageGallery_PreviewKeyDown">
+                 PreviewKeyDown="LsImageGallery_PreviewKeyDown" 
+				 PreviewMouseWheel="LsImageGallery_PreviewMouseWheel">
 
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}">

@@ -62,12 +62,12 @@
 					<Image Source="/Digiphoto.Lumen.UI;component/Resources/brightness-16x16.png" Grid.Row="0" Grid.Column="1" Style="{StaticResource stileIconaBottoniSliders}" />
 				</Button>
 				
-				<Slider Name="sliderLuminosita" Minimum="-0.6" Maximum="0.6" Value="0" ValueChanged="sliderLuminosita_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.2" SmallChange="0.05" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="0.15" TickPlacement="TopLeft" Grid.Row="0" Grid.Column="2" />
+				<Slider Name="sliderLuminosita" Minimum="-0.6" Maximum="0.6" Value="0" ValueChanged="sliderLuminosita_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.02" SmallChange="0.005" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="0.15" TickPlacement="TopLeft" Grid.Row="0" Grid.Column="2"  />
 
 				<Button Name="buttonAbilitaContrasto"  Grid.Row="1" Grid.Column="0" Command="{Binding resettareValoreEffettoCommand}" CommandParameter="Contrast" Style="{StaticResource stileBottoniResetSliders}" ToolTip="Contrasto reimposta">
 					<Image Source="/Digiphoto.Lumen.UI;component/Resources/contrast-16x16.png" Grid.Row="1" Grid.Column="1" Style="{StaticResource stileIconaBottoniSliders}" />
 				</Button>
-				<Slider Name="sliderContrasto" Minimum="0.5" Maximum="1.5" Value="1" ValueChanged="sliderContrasto_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.2" SmallChange="0.05" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="0.15" TickPlacement="TopLeft" Grid.Row="1" Grid.Column="2" />
+				<Slider Name="sliderContrasto" Minimum="0.5" Maximum="1.5" Value="1" ValueChanged="sliderContrasto_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.02" SmallChange="0.005" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="0.15" TickPlacement="TopLeft" Grid.Row="1" Grid.Column="2" />
 
 				<Button Name="buttonAbilitaRotate"  Grid.Row="2" Grid.Column="0" Command="{Binding ruotareCommand}" CommandParameter="0" Style="{StaticResource stileBottoniResetSliders}" ToolTip="Rotazione reimposta">
 					<Image Source="/Digiphoto.Lumen.UI;component/Resources/rotate-16x16.png" Grid.Row="2" Grid.Column="1" Style="{StaticResource stileIconaBottoniSliders}" />
@@ -111,6 +111,18 @@
 								<!-- y -->
 							</MultiBinding>
 						</Slider.Maximum>
+						<Slider.SmallChange>
+							<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/100">
+								<!-- x -->
+								<Binding ElementName="sliderTraslaX" Path="Maximum" />
+							</MultiBinding>
+						</Slider.SmallChange>
+						<Slider.LargeChange>
+							<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/25">
+								<!-- x -->
+								<Binding ElementName="sliderTraslaX" Path="Maximum" />
+							</MultiBinding>
+						</Slider.LargeChange>
 					</Slider>
 
 					<Slider Name="sliderTraslaY" 
@@ -135,6 +147,18 @@
 								<!-- y -->
 							</MultiBinding>
 						</Slider.Maximum>
+						<Slider.SmallChange>
+							<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/100">
+								<!-- x -->
+								<Binding ElementName="sliderTraslaY" Path="Maximum" />
+							</MultiBinding>
+						</Slider.SmallChange>
+						<Slider.LargeChange>
+							<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/25">
+								<!-- x -->
+								<Binding ElementName="sliderTraslaY" Path="Maximum" />
+							</MultiBinding>
+						</Slider.LargeChange>
 					</Slider>
 				</StackPanel>
 

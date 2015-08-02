@@ -68,19 +68,18 @@ namespace Digiphoto.Lumen.UI {
 		#endregion
 
 
-		private void buttonQuanteNeVedo_Click( object sender, RoutedEventArgs e ) {
+		void incrementaQuanteNeVedo( short incremento ) {
 
-			String param = (String)((Control)sender).Tag;
+			short quante = (short)(quanteRigheVedo + incremento);
+			impostaQuanteNeVedo( quante );
+		}
 
-			short quante = quanteRigheVedo;
+		void impostaQuanteNeVedo( short quante ) {
 
-			if( param == "+" )
-				++quante;
-			else if( param == "-" ) {
-				if( quanteRigheVedo > 1 )
-					--quante;
-			}  else
-				quante = Convert.ToInt16( param );
+			if( quante <= 0 )
+				return;
+
+
 
 			// prima questo
 			//sistemaMarginePerVedereDueFotoAffiancate( quante );
@@ -101,19 +100,15 @@ namespace Digiphoto.Lumen.UI {
 				viewFoto2 = viewFotos2.First<Fotografia>();
 			*/
 
-			List<Fotografia> viewFotos3 = GetVisibleItemsFromListbox(LsImageGallery, LsImageGallery);
+			List<Fotografia> viewFotos3 = GetVisibleItemsFromListbox( LsImageGallery, LsImageGallery );
 			Fotografia viewFoto3 = null;
-			if (viewFotos3 != null && viewFotos3.Count > 0){
-				if (LsImageGallery.SelectedItems.Count > 0)
-				{
-					viewFoto3 = viewFotos3.FirstOrDefault<Fotografia>(element => LsImageGallery.SelectedItems.Contains(element));
-					if (viewFoto3 == null)
-					{
+			if( viewFotos3 != null && viewFotos3.Count > 0 ) {
+				if( LsImageGallery.SelectedItems.Count > 0 ) {
+					viewFoto3 = viewFotos3.FirstOrDefault<Fotografia>( element => LsImageGallery.SelectedItems.Contains( element ) );
+					if( viewFoto3 == null ) {
 						viewFoto3 = viewFotos3.First<Fotografia>();
 					}
-				}
-				else
-				{
+				} else {
 					viewFoto3 = viewFotos3.First<Fotografia>();
 				}
 			}
@@ -122,8 +117,21 @@ namespace Digiphoto.Lumen.UI {
 			quanteRigheVedo = quante;
 
 			//Mi posiziono sulla foto su cui avevo il focus
-			if (viewFoto3!=null)
-				posizionaListaSulFotogramma(viewFoto3.numero);
+			if( viewFoto3 != null )
+				posizionaListaSulFotogramma( viewFoto3.numero );
+		}
+
+		private void buttonQuanteNeVedo_Click( object sender, RoutedEventArgs e ) {
+
+			String param = (String)((Control)sender).Tag;
+
+			if( param == "+" )
+				incrementaQuanteNeVedo( 1 );
+			else if( param == "-" ) {
+				incrementaQuanteNeVedo( -1 );
+			} else
+				impostaQuanteNeVedo( Convert.ToInt16( param ) );
+			
 		}
 
 		private List<Fotografia> GetVisibleItemsFromListbox(ListBox listBox, FrameworkElement parentToTestVisibility)
@@ -665,6 +673,25 @@ namespace Digiphoto.Lumen.UI {
 					iteraAlberoFigli( child );
 				}
 			}
+		}
+
+		private void LsImageGallery_PreviewMouseWheel( object sender, MouseWheelEventArgs e ) {
+
+
+			if( Keyboard.IsKeyDown( Key.LeftCtrl ) ) {
+
+				short increm = 0;
+
+				// Eseguo lo zoom
+				if( e.Delta > 0 )
+					increm = 1;
+				if( e.Delta < 0 )
+					increm = -1;
+
+				incrementaQuanteNeVedo( increm );
+				e.Handled = true;
+			}
+
 		}
 	}
 }

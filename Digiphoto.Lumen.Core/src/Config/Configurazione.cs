@@ -219,6 +219,9 @@ namespace Digiphoto.Lumen.Config  {
 			userConfig.correzioneAltezzaGalleryDueFoto = 50;
 			userConfig.tecSogliaStampaProvini = -3;
 
+			userConfig.imprimereAreaDiRispetto = false;
+			userConfig.expRatioAreaDiRispetto = "4/3";
+
 			return userConfig;
 		}
 
@@ -416,6 +419,22 @@ namespace Digiphoto.Lumen.Config  {
 				string nomeLogo = Path.Combine( userConfig.cartellaLoghi, userConfig.logoNomeFile );
 				if( !String.IsNullOrWhiteSpace( userConfig.logoNomeFile ) && !File.Exists( nomeLogo ) )
 					return  "File logo inesistente" + nomeLogo;
+			}
+
+			if( userConfig.imprimereAreaDiRispetto ) {
+				// Verifico che la ratio sia != 0
+
+				try {	        
+					double ris = CoreUtil.evaluateExpressio( userConfig.expRatioAreaDiRispetto ) ;
+					if( ris < 1 ) {
+						throw new ArgumentException( "valore non valido (es: 4/3)" );
+					}
+
+				} catch (Exception ee) {
+					return "Rapporto dell'area di rispetto: " + ee.Message;
+				}
+
+
 			}
 
 			return null;
