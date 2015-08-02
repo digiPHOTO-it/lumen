@@ -712,11 +712,18 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			}
 
 
-			// Per ultima cosa, mi rimane fuori un evenuale logo
+			// Per ultima cosa, mi rimane fuori un evenuale logo ...
 			Logo correzioneLogo = (Logo) correzioni.FirstOrDefault( c => c is Logo );
 			if( correzioneLogo != null ) {
 				Correttore correttore = gestoreImmaginiSrv.getCorrettore( correzioneLogo );
 				immagineMod = correttore.applica( immagineMod, correzioneLogo );
+			}
+
+			// .. oppure una eventuale area di rispetto
+			AreaRispetto correzioneAreaRispetto = (AreaRispetto)correzioni.FirstOrDefault( c => c is AreaRispetto );
+			if( correzioneAreaRispetto != null ) {
+				Correttore correttore = gestoreImmaginiSrv.getCorrettore( correzioneAreaRispetto );
+				immagineMod = correttore.applica( immagineMod, correzioneAreaRispetto );
 			}
 
 			return immagineMod;

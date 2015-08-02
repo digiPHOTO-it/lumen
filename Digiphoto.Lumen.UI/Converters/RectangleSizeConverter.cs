@@ -40,26 +40,53 @@ namespace Digiphoto.Lumen.UI.Converters {
 
 		public object Convert( object [] values, Type targetType, object parameter, System.Globalization.CultureInfo culture ) {
 
-			string [] pezzi = ((string)parameter).Split( ';' );
-			string qualeFascia = pezzi [0];  // Può valere:  a, b
-			string qualeDimens = pezzi [1];  // Può valere:  W, H, L, T
+			string[] pezzi = ((string)parameter).Split( ';' );
+
+			CalcolatoreAreeRispetto.Fascia qualeFascia = (CalcolatoreAreeRispetto.Fascia)( pezzi[0][0] );  // Può valere:  a, b
+			CalcolatoreAreeRispetto.Dimensione qualeDimens = (CalcolatoreAreeRispetto.Dimensione)( pezzi[1][0] );  // Può valere:  W, H, L, T
 			string flagBordi = null;
 			if( pezzi.Length > 2 )
 				flagBordi = pezzi[2];        // Può valere "T" oppure niente
 
 
+			// Ricavo dal vettore dei parametri delle variabili con un nome più chiaro.
+			float ratioCarta = (float)values[0];
+
+			CalcolatoreAreeRispetto.Geo imageGeo = new CalcolatoreAreeRispetto.Geo();
+			imageGeo.w = (double)values[1];
+			imageGeo.h = (double)values[2];
+
+			CalcolatoreAreeRispetto.Geo imageActualGeo = new CalcolatoreAreeRispetto.Geo();
+			imageActualGeo.w = (double)values[3];
+			imageActualGeo.h = (double)values[4];
+
+
 			object ret = null;
 
-			if( flagBordi == "T" )
-				ret = calcolcaLatiBordo( qualeFascia, values );
-			else
-				ret = calcolaDimensione( qualeFascia, qualeDimens, values );
+			if( flagBordi == "T" ) {
+				CalcolatoreAreeRispetto.Bordi bordo = CalcolatoreAreeRispetto.calcolcaLatiBordo( qualeFascia, ratioCarta, imageGeo, imageActualGeo );
+				Thickness t = new Thickness();
+				if( bordo.left )
+					t.Left = spessoreLinea;
+				if( bordo.top )
+					t.Top = spessoreLinea;
+				if( bordo.bottom )
+					t.Bottom = spessoreLinea;
+				if( bordo.right )
+					t.Right = spessoreLinea;
+
+				ret = t;
+
+			} else
+				ret = CalcolatoreAreeRispetto.calcolaDimensione( qualeFascia, qualeDimens, ratioCarta, imageGeo, imageActualGeo );
 
 			return ret;
 		}
 
 		private const int spessoreLinea = 2;
 
+#if false
+spostato tutto in apposita classe CalcolaAreaRispetto
 		private object calcolcaLatiBordo( string qualeFascia, object[] values ) {
 
 			double w = calcolaDimensione( qualeFascia, "W", values );
@@ -181,6 +208,7 @@ namespace Digiphoto.Lumen.UI.Converters {
 
 			return ret;
 		}
+#endif
 
 		public object [] ConvertBack( object value, Type [] targetTypes, object parameter, System.Globalization.CultureInfo culture ) {
 			throw new NotImplementedException();

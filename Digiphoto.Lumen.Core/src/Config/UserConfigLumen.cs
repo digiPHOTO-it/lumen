@@ -101,7 +101,12 @@ namespace Digiphoto.Lumen.Config
 			set;
 		}
 
-		public bool proiettaDiapo {
+		public bool imprimereAreaDiRispetto {
+			get;
+			set;
+		}
+
+		public string expRatioAreaDiRispetto {
 			get;
 			set;
 		}

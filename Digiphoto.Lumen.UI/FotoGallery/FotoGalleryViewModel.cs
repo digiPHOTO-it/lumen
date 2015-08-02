@@ -567,8 +567,19 @@ namespace Digiphoto.Lumen.UI {
 				return modoVendita.ToString();
 			}
 		}
+
+		/// <summary>
+		/// Se imprimo l'area di rispetto sul jpg del provino,
+		/// allora il bottone per visualizzare i controlli grafici sopra la foto, lo tengo spento.
+		/// </summary>
+		public bool possoVisualizzareAreaDiRispetto {
+			get {
+				return ! Configurazione.UserConfigLumen.imprimereAreaDiRispetto;
+			}
+		}
 		
 		#endregion Proprietà
+
 
 
 		#region Comandi
@@ -1382,6 +1393,7 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+
 		private bool riportaOriginaleFotoSelezionate()
 		{
 			bool procediPure = true;
@@ -1402,10 +1414,12 @@ namespace Digiphoto.Lumen.UI {
 
 			if (procediPure)
 			{
+
 				foreach (Fotografia f in fotografieCW.SelectedItems)
 				{
 					fotoRitoccoSrv.tornaOriginale(f);
 				}
+
 				dialogProvider.ShowMessage("Operazione Terminata", "Info");
 			}
 

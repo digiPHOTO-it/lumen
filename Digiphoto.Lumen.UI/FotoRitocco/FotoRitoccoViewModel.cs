@@ -678,6 +678,16 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		/// <summary>
+		/// Se imprimo l'area di rispetto sul jpg del provino,
+		/// allora il bottone per visualizzare i controlli grafici sopra la foto, lo tengo spento.
+		/// </summary>
+		public bool possoVisualizzareAreaDiRispetto {
+			get {
+				return !Configurazione.UserConfigLumen.imprimereAreaDiRispetto;
+			}
+		}
+
 #endregion Proprietà
 
 
