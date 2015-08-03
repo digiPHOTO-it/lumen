@@ -145,7 +145,14 @@ namespace Digiphoto.Lumen.UI {
 
 		public bool isAlmenoUnaSelezionata {
 			get {
-				return fotografieCW != null && fotografieCW.SelectedItems != null && fotografieCW.SelectedItems.Count > 0;
+				bool result = fotografieCW != null && fotografieCW.SelectedItems != null && fotografieCW.SelectedItems.Count > 0;
+				if (!result && flagPosizionaSuSelezionate)
+					flagPosizionaSuSelezionate = false;
+
+				if (!result && flagFiltraSelezionate)
+					flagFiltraSelezionate = false;
+
+				return result;
 			}
 		}
 
