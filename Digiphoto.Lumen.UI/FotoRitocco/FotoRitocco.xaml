@@ -341,9 +341,12 @@
                                IsHitTestVisible="False"
                                Source="{Binding Path=mascheraAttiva}" />
 
+
 					</Border>
 
 					<!-- TODO creare un border interno per delineare l'area stampabile. Questo bordo ha ratio fisso, definito come costante -->
+					<Border Name="bordoRispettoA" BorderBrush="Red" BorderThickness="2" Canvas.ZIndex="60" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+					<Border Name="bordoRispettoB" BorderBrush="Red" BorderThickness="2" Canvas.ZIndex="60" HorizontalAlignment="Left"  VerticalAlignment="Top" />
 
 					<!-- Visto che la classe EffectGroup è deprecata, per creare una composizione, utilizzo 3 Border innestati -->
 					<Border Effect="{Binding Path=effetto3}"  BorderThickness="0" >

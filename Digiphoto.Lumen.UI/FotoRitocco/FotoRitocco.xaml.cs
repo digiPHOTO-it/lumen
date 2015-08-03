@@ -1180,8 +1180,63 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		private void gridRitocco_SizeChanged(object sender, SizeChangedEventArgs e) {	
+
 			_viewModel.frpContenitoreMaxW = gridRitocco.ActualWidth;
 			_viewModel.frpContenitoreMaxH = gridRitocco.ActualHeight;
+
+		}
+
+
+		void dimensionaBordiPerAreaDiRispetto() {
+
+			// Ora ricalcolo la dimensione dell'area di rispetto
+			if( !String.IsNullOrWhiteSpace( Configurazione.UserConfigLumen.expRatioAreaDiRispetto ) ) {
+
+				float ratio = (float)CoreUtil.evaluateExpressio( Configurazione.UserConfigLumen.expRatioAreaDiRispetto );
+
+				CalcolatoreAreeRispetto.Geo imageGeo = new CalcolatoreAreeRispetto.Geo();
+
+				imageGeo.w = borderCornice.ActualWidth;
+				imageGeo.h = borderCornice.ActualHeight;
+
+				// Calcolo la fascia A
+				Rect rettangoloA = CalcolatoreAreeRispetto.calcolaDimensioni( CalcolatoreAreeRispetto.Fascia.FasciaA, ratio, imageGeo );
+				CalcolatoreAreeRispetto.Bordi bordiA = CalcolatoreAreeRispetto.calcolcaLatiBordo( CalcolatoreAreeRispetto.Fascia.FasciaA, ratio, imageGeo, imageGeo );
+
+				// Calcolo la fascia B
+				Rect rettangoloB = CalcolatoreAreeRispetto.calcolaDimensioni( CalcolatoreAreeRispetto.Fascia.FasciaB, ratio, imageGeo );
+				CalcolatoreAreeRispetto.Bordi bordiB = CalcolatoreAreeRispetto.calcolcaLatiBordo( CalcolatoreAreeRispetto.Fascia.FasciaB, ratio, imageGeo, imageGeo );
+
+				var p = borderCornice.TranslatePoint( new Point( 0, 0 ), gridRitocco );
+				double currentLeft = p.X;
+				double currentTop = p.Y;
+
+				// Setto fascia A
+				bordoRispettoA.Width = rettangoloA.Width;
+				bordoRispettoA.Height = rettangoloA.Height;
+				var left = currentLeft + rettangoloA.Left;
+				var top = currentTop + rettangoloA.Top;
+				var right = 0;
+				var bottom = 0;
+
+				Thickness ticA = new Thickness( left, top, right, bottom );
+				bordoRispettoA.Margin = ticA;
+				bordoRispettoA.BorderThickness = new Thickness( bordiA.left ? 2 : 0, bordiA.top ? 2 : 0, bordiA.right ? 2 : 0, bordiA.bottom ? 2 : 0 );
+
+				// ---
+
+				// Setto fascia B
+				bordoRispettoB.Width = rettangoloB.Width;
+				bordoRispettoB.Height = rettangoloB.Height;
+				left = currentLeft + rettangoloB.Left;
+				top = currentTop + rettangoloB.Top;
+				right = 0;
+				bottom = 0;
+
+				Thickness ticB = new Thickness( left, top, right, bottom );
+				bordoRispettoB.Margin = ticB;
+				bordoRispettoB.BorderThickness = new Thickness( bordiB.left ? 2 : 0, bordiB.top ? 2 : 0, bordiB.right ? 2 : 0, bordiB.bottom ? 2 : 0 );
+			}
 		}
 
 		private void buttonTakeSnapshotPubblico_Click( object sender, RoutedEventArgs e ) {
@@ -1195,6 +1250,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		private void borderCornice_SizeChanged( object sender, SizeChangedEventArgs e ) {
 			if( reticoloVisibile )
 				creaReticoloPerpendicolare();
+
+			dimensionaBordiPerAreaDiRispetto();
 		}
 
 		private void creaReticoloPerpendicolare() {
