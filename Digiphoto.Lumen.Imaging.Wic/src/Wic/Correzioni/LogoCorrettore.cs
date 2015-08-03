@@ -16,9 +16,6 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 
 	public class LogoCorrettore : Correttore {
 
-		private ZoomCorrettore _zoomCorrettore;
-		private RuotaCorrettore _ruotaCorrettore;
-
 		public override IImmagine applica( IImmagine immagineSorgente, Correzione correzione ) {
 
 			Logo logoCorrezione = (Logo)correzione;
@@ -43,9 +40,8 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 			//
 
 			if( logoCorrezione.rotazione != null ) {
-				if( _ruotaCorrettore == null )
-					_ruotaCorrettore = new RuotaCorrettore();
-				immagineLogoModificato = _ruotaCorrettore.applica( immagineLogoModificato, logoCorrezione.rotazione );
+				RuotaCorrettore ruotaCorrettore = new RuotaCorrettore();
+				immagineLogoModificato = ruotaCorrettore.applica( immagineLogoModificato, logoCorrezione.rotazione );
 			}
 
 			//
@@ -53,9 +49,8 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 			//
 
 			if( logoCorrezione.zoom != null ) {
-				if( _zoomCorrettore == null )
-					_zoomCorrettore = new ZoomCorrettore();
-				immagineLogoModificato = _zoomCorrettore.applica( immagineLogoModificato, logoCorrezione.zoom );
+				ZoomCorrettore zoomCorrettore = new ZoomCorrettore();
+				immagineLogoModificato = zoomCorrettore.applica( immagineLogoModificato, logoCorrezione.zoom );
 			}
 
 			BitmapSource bitmapSourceLogoModificato = ((ImmagineWic)immagineLogoModificato).bitmapSource;
