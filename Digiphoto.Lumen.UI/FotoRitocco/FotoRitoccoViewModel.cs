@@ -73,16 +73,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		}
 
-		//Non ho la selezione multipla nel foto ritocco
-		public MultiSelectCollectionView<Fotografia> fotografieCW
-		{
-			get
-			{
-				return null;
-			}
-		}
-		
-
 #region Fields
 
 		/// <summary>
@@ -102,6 +92,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 
 #region Proprietà
+
+		//Non ho la selezione multipla nel foto ritocco
+		public MultiSelectCollectionView<Fotografia> fotografieCW {
+			get {
+				return null;
+			}
+		}
 
 		private Transform _trasformazioneCorrente;
 		public Transform trasformazioneCorrente {
@@ -688,6 +685,37 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		/// <summary>
+		/// Se l'espressione non è vuota
+		/// </summary>
+		public bool esisteRatioAreaRispetto {
+			get {
+				return !string.IsNullOrWhiteSpace( Configurazione.UserConfigLumen.expRatioAreaDiRispetto );
+			}
+		}
+
+		public string expAreaDiRispetto {
+			get {
+				if( IsInDesignMode )
+					return "4/3";
+				else
+					return Configurazione.UserConfigLumen.expRatioAreaDiRispetto;
+			}
+		}
+
+		private bool _isCostrizioneAbilitata;
+		public bool isCostrizioneAbilitata {
+			get {
+				return _isCostrizioneAbilitata;
+			}
+			set {
+				if( _isCostrizioneAbilitata != value ) {
+					_isCostrizioneAbilitata = value;
+					OnPropertyChanged( "isCostrizioneAbilitata" );
+				}
+			}
+		}
+
 #endregion Proprietà
 
 
@@ -918,6 +946,19 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		private RelayCommand _costringereAdAreaDiRispettoCommand;
+		public ICommand costringereAdAreaDiRispettoCommand {
+			get {
+				if( _costringereAdAreaDiRispettoCommand == null ) {
+					_costringereAdAreaDiRispettoCommand = new RelayCommand( param => this.costringereAdAreaDiRispetto( (bool)param ),
+				                                                            param => this.possoApplicareCorrezione );
+				}
+				return _costringereAdAreaDiRispettoCommand;
+			}
+		}
+
+		
+
 #endregion Comandi
 
 		// ******************************************************************************************************
@@ -1033,6 +1074,21 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			OnPropertyChanged( "isSepiaChecked" );
 		}
+
+		private void costringereAdAreaDiRispetto( bool addRemove ) {
+#if false
+			if( addRemove ) {
+				TODO
+				forseCambioEffettoCorrente( typeof( SepiaEffect ) );
+			}  else
+				removeEffetto( typeof( SepiaEffect ) );
+
+			forseInizioModifiche();
+
+			OnPropertyChanged( "isCostrizioneAbilitata" );
+#endif
+		}
+		
 
 		private void removeEffetto( Type effettoType ) {
 
