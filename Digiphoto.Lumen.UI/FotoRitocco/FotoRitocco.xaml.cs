@@ -1189,9 +1189,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		void dimensionaBordiPerAreaDiRispetto() {
 
-			// Ora ricalcolo la dimensione dell'area di rispetto
-			if( !String.IsNullOrWhiteSpace( Configurazione.UserConfigLumen.expRatioAreaDiRispetto ) ) {
+			// Se non è indicato il rapporto non faccio nulla
+			if( !_viewModel.esisteRatioAreaRispetto )
+				return;
 
+			try {
+
+				// Ora ricalcolo la dimensione dell'area di rispetto
 				float ratio = (float)CoreUtil.evaluateExpressio( Configurazione.UserConfigLumen.expRatioAreaDiRispetto );
 
 				CalcolatoreAreeRispetto.Geo imageGeo = new CalcolatoreAreeRispetto.Geo();
@@ -1236,6 +1240,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				Thickness ticB = new Thickness( left, top, right, bottom );
 				bordoRispettoB.Margin = ticB;
 				bordoRispettoB.BorderThickness = new Thickness( bordiB.left ? 2 : 0, bordiB.top ? 2 : 0, bordiB.right ? 2 : 0, bordiB.bottom ? 2 : 0 );
+			} catch( Exception ) {
+				// pazienza : dovrei loggare l'errore
 			}
 		}
 
