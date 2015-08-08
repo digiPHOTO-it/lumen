@@ -96,6 +96,37 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			}
 		}
 
+		public bool isEmpty()
+		{
+			bool isEmpty = true;
+
+			if(isEmpty && eventi != null)
+				isEmpty = false;
+
+			if (isEmpty && fotografi != null)
+				isEmpty = false;
+
+			if (isEmpty && scaricoCard != null)
+				isEmpty = false;
+
+			if (isEmpty && !didascalia.Equals("") && !didascalia.Equals("%"))
+				isEmpty = false;
+
+			if (isEmpty && fasiDelGiorno.Count > 0)
+				isEmpty = false;
+
+			if (isEmpty && numeriFotogrammi != null)
+				isEmpty = false;
+
+			if (isEmpty && giornataIniz != null)
+				isEmpty = false;
+
+			if (isEmpty && giornataFine != null)
+				isEmpty = false;
+
+			return isEmpty;
+		}
+
 
 	}
 }
