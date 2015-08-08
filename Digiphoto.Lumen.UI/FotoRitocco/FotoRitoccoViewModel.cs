@@ -1593,6 +1593,11 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			mascheraAttiva = msk;
 
 			if( modalitaEdit == ModalitaEdit.FotoRitocco ) {
+
+				// Se sto abilitando una cornice, allora significa che sto facendo una modifica e devo poter subito salvare.
+				if( mascheraAttiva != null && fotografiaInModifica != null )
+					forseInizioModifiche();
+
 				// Devo modificare le dimensioni del contenitore.
 				frpCalcolaDimensioniContenitore( (float)(msk.Width / msk.Height) );
 			}
