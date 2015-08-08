@@ -253,6 +253,7 @@ namespace Digiphoto.Lumen.UI {
 			get {
 				bool posso = true;
 
+				/*
 				if (Configurazione.isFuoriStandardCiccio)
 				{
 					if (posso && 
@@ -262,6 +263,7 @@ namespace Digiphoto.Lumen.UI {
 						posso = false;
 					}
 				}
+				*/
 
 				return posso;
 			}
@@ -1063,10 +1065,13 @@ namespace Digiphoto.Lumen.UI {
 
 			completaParametriRicercaWithOrder(true);
 
+			//Dopo aver completato tutti i parametri di ricerca...
+			//verifico se ho impostato almeno un parametro
+			if (verificaChiediConfermaRicercaSenzaParametri() == false)
+				return;
+
 			// Eseguo la ricerca nel database
 			fotoExplorerSrv.cercaFoto( paramCercaFoto );
-
-
 
 			// ricreo la collection-view e notifico che è cambiato il risultato. Le immagini verranno caricate poi
 			fotografieCW = new MultiSelectCollectionView<Fotografia>( fotoExplorerSrv.fotografie );
@@ -1088,6 +1093,24 @@ namespace Digiphoto.Lumen.UI {
 			if( !_bkgIdrata.IsBusy )
 				_bkgIdrata.RunWorkerAsync();
 			// Lasciare come ultima cosa l'idratazione delle foto.
+		}
+
+		private bool verificaChiediConfermaRicercaSenzaParametri()
+		{
+			bool procediPure = true;
+			
+			if (!paramCercaFoto.isEmpty())
+				return procediPure;
+
+			procediPure = false;
+			StringBuilder msg = new StringBuilder("Attenzione: stai eseguendo una ricerca senza parametri.\nConfermi?");
+			dialogProvider.ShowConfirmation(msg.ToString(), "Richiesta conferma",
+				(confermato) =>
+				{
+					procediPure = confermato;
+				});
+
+			return procediPure;
 		}
 
 		/// <summary>
