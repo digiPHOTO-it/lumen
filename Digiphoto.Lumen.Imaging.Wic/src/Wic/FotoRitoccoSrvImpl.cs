@@ -719,11 +719,14 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 				immagineMod = correttore.applica( immagineMod, correzioneLogo );
 			}
 
-			// .. oppure una eventuale area di rispetto
-			AreaRispetto correzioneAreaRispetto = (AreaRispetto)correzioni.FirstOrDefault( c => c is AreaRispetto );
-			if( correzioneAreaRispetto != null ) {
-				Correttore correttore = gestoreImmaginiSrv.getCorrettore( correzioneAreaRispetto );
-				immagineMod = correttore.applica( immagineMod, correzioneAreaRispetto );
+			// Questa forzatura anche se filosoficamente non è bella, ma mi serve per essere più veloce a creare le correzioni complesse sulla foto da stampare.
+			// .. oppure una eventuale area di rispetto (solo sul provino)
+			if( qualeTarget == IdrataTarget.Provino ) {
+				AreaRispetto correzioneAreaRispetto = (AreaRispetto)correzioni.FirstOrDefault( c => c is AreaRispetto );
+				if( correzioneAreaRispetto != null ) {
+					Correttore correttore = gestoreImmaginiSrv.getCorrettore( correzioneAreaRispetto );
+					immagineMod = correttore.applica( immagineMod, correzioneAreaRispetto );
+				}
 			}
 
 			return immagineMod;

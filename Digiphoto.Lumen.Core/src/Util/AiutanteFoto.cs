@@ -237,8 +237,14 @@ namespace Digiphoto.Lumen.Util {
 
 			// applico eventuali correzioni
 			if( correzioni != null ) {
-				immagineDestinazione = fr.applicaCorrezioni( immagineDestinazione, correzioni, quale );
 
+				IdrataTarget tempQuale = quale;
+				if( devoPassareDallaGrande && quale == IdrataTarget.Provino )
+					tempQuale = IdrataTarget.Risultante;
+				
+				immagineDestinazione = fr.applicaCorrezioni( immagineDestinazione, correzioni, tempQuale );
+
+				// NO : non funziona sempre bene.
 				// Se sto facendo un provino che prevede lo zoom, devo passare dalla immagine grande,
 				// quindi sono obbligato a ricalcolare la Risultante e quindi rimpicciolirla.
 				// quindi per essere efficiente, salvo la Risultante che ho già pronta (cosi risparmio tempo dopo)
