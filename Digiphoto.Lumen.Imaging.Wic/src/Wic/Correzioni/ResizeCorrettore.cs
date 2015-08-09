@@ -75,26 +75,6 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 			//return target;
 		}
 
-		public static BitmapSource Resize2( BitmapSource input, int ww, int hh, int dpi ) {
-
-			double newW = ww / input.Width * dpi / input.DpiX;
-			double newH = hh / input.Height * dpi / input.DpiY;
-			var scaled = new TransformedBitmap( input, new ScaleTransform( newW, newH, 0, 0 ) );
-
-			var stride = scaled.PixelWidth * (scaled.Format.BitsPerPixel / 8);
-
-			var result = new WriteableBitmap( ww, hh, input.DpiX, input.DpiY, input.Format, null );
-
-			var data = new byte[scaled.PixelHeight * stride];
-			scaled.CopyPixels( data, stride, 0 );
-			int x = 0, y = 0;
-			result.WritePixels( new Int32Rect( 0, 0, scaled.PixelWidth, scaled.PixelHeight ), data, stride, x, y );
-
-			result.Clear( Colors.Transparent );
-
-			return result;
-		}
-
 		/// <summary>
 		/// Decide quale lato del provino tagliare e quale invece ricalcolare in proporzione
 		/// </summary>

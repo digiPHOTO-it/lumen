@@ -13,7 +13,7 @@ set GIORNALE=%TEMP%\build.out.txt
 rmdir /S ..\Digiphoto.Lumen.SelfService.WebUI\ssWebPackage
 msbuild ..\Digiphoto.Lumen.sln /property:Configuration=Release /property:Platform="Any CPU" /target:Clean
 msbuild ..\Digiphoto.Lumen.sln /property:Configuration=Release /property:Platform="Any CPU" > %GIORNALE%
-IF %ERRORLEVEL% NEQ 0 goto sub_problema
+IF %ERRORLEVEL% NEQ 0 goto GesErrore
 echo build OK: verificare il log %GIORNALE%
 pause
 
