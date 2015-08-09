@@ -32,7 +32,7 @@ namespace Digiphoto.Lumen.Util {
 		private static AreaRispetto areaRispetto;
 
 		static AiutanteFoto() {
-			float ratio = Convert.ToSingle( CoreUtil.evaluateExpressio( Configurazione.UserConfigLumen.expRatioAreaDiRispetto ) );
+			float ratio = Convert.ToSingle( CoreUtil.evaluateExpression( Configurazione.UserConfigLumen.expRatioAreaDiRispetto ) );
 			areaRispetto = new AreaRispetto( ratio );
 		}
 
@@ -321,6 +321,8 @@ namespace Digiphoto.Lumen.Util {
 			var nomeFile = Path.Combine( nomeCartellaImmaginiFotografi, f.id + ".jpg" );
 			return seNonEsisteNull && !File.Exists( nomeFile ) ? null : nomeFile;
 		}
+
+
 
 
 	}

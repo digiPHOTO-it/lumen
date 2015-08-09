@@ -176,6 +176,7 @@
   <ItemGroup>
     <Resource Include="src\Windows\Media\Effects\Dominanti\DominantiEffect.ps" />
     <None Include="App.config" />
+    <None Include="packages.config" />
     <None Include="src\Windows\Media\Effects\Grayscale\GrayscaleEffect.fx" />
     <Resource Include="src\Windows\Media\Effects\Grayscale\GrayscaleEffect.ps" />
     <None Include="src\Windows\Media\Effects\LuminositaContrasto\LuminositaContrastoEffect.fx" />

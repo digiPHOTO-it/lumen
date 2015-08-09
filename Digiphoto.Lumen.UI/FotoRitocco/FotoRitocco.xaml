@@ -179,13 +179,6 @@
 				<!--            
                 <Button Name="buttonModificaConPrgEsterno" Content="Gimp" ToolTip="Modifica le foto con un programma esterno" Command="{Binding modificareConEditorEsternoCommand}"  />
 -->
-				<ToggleButton Content="{Binding expAreaDiRispetto}" 
-							  Command="{Binding costringereAdAreaDiRispetto}" 
-							  IsChecked="{Binding Path=isCostrizioneAbilitata,Mode=TwoWay}"        
-							  Style="{StaticResource mioToggleButtonStyle}" 
-							  Visibility="Hidden"
-							  CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" 
-							  ToolTip="Costringe la foto finale al formato indicato" Margin="0,0,1,0" />
 			</UniformGrid>
 
 			<GroupBox DockPanel.Dock="Right">
@@ -232,15 +225,34 @@
 				<!-- Maschere -->
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
 					<RowDefinition Height="*" />
 				</Grid.RowDefinitions>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition />
 				</Grid.ColumnDefinitions>
 
-				<Button Grid.Row="0" Grid.Column="0" Content="Carica da disco ..." ToolTip="Carica maschera da un'altra cartella" Command="{Binding commandSfogliarePerFileCornice}" Margin="5" />
+				<Button Grid.Row="0" Grid.Column="0" Content="Carica da disco ..." ToolTip="Carica maschera da un'altra cartella" Command="{Binding commandSfogliarePerFileCornice}" Margin="2" />
 
-				<ScrollViewer Grid.Row="1" Grid.Column="0">
+				<Grid Grid.Row="1" Grid.Column="0" Margin="2"  Visibility="{Binding ElementName=tabItemComposizione,Path=IsSelected,Converter={StaticResource booleanToVisibilityConverter}}">
+					<Grid.RowDefinitions>
+						<RowDefinition/>
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
+
+					<RadioButton Content="x"   Grid.Row="0" Grid.Column="0" Style="{StaticResource {x:Type ToggleButton}}" Command="{Binding forzareRatioMascheraCommand}" CommandParameter=""    ToolTip="Nessuna forzatura sul formato mashera. Usa la maschera originale" />
+					<RadioButton Content="4/3" Grid.Row="0" Grid.Column="1" Style="{StaticResource {x:Type ToggleButton}}" Command="{Binding forzareRatioMascheraCommand}" CommandParameter="4/3" ToolTip="Il formato maschera viene forzato al rapporto 4/3" />
+					<RadioButton Content="3/2" Grid.Row="0" Grid.Column="2" Style="{StaticResource {x:Type ToggleButton}}" Command="{Binding forzareRatioMascheraCommand}" CommandParameter="3/2" ToolTip="Il formato maschera viene forzato al rapporto 3/2" />
+				</Grid>
+				
+					
+
+
+				<ScrollViewer Grid.Row="2" Grid.Column="0">
 					<ItemsControl Name="itemsContolMaschere"                                
 								    ItemsSource="{Binding maschereCW}" 
 								    ItemsPanel="{DynamicResource itemsPanelTemplateMaschere}" 
@@ -396,9 +408,13 @@
 
 					<!-- Questo è il canvas di copertura dove compare la cornice bucata -->
 					<Grid Name="canvasMskCopertura" >
-						<Image Name="imageMask" 
+						<Image Name="imageMask"
                                        Width="500" Height="500" 
                                        Source="{Binding mascheraAttiva}" />
+
+						<Rectangle Stroke="Pink" StrokeThickness="1"
+                                   Width="{Binding ElementName=imageMask,Path=Width}"
+                                   Height="{Binding ElementName=imageMask,Path=Height}" />
 
 						<Rectangle Stroke="Red" StrokeThickness="1"
                                    Width="{Binding ElementName=imageMask,Path=ActualWidth}"

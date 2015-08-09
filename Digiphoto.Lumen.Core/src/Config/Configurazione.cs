@@ -427,7 +427,7 @@ namespace Digiphoto.Lumen.Config  {
 				// Verifico che la ratio sia != 0
 
 				try {	        
-					double ris = CoreUtil.evaluateExpressio( userConfig.expRatioAreaDiRispetto ) ;
+					double ris = CoreUtil.evaluateExpression( userConfig.expRatioAreaDiRispetto ) ;
 					if( ris < 1 ) {
 						throw new ArgumentException( "valore non valido (es: 4/3)" );
 					}

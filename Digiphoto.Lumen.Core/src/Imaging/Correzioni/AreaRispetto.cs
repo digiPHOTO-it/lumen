@@ -22,5 +22,14 @@ namespace Digiphoto.Lumen.Imaging.Correzioni {
 			set;
 		}
 
+		/// <summary>
+		/// Se false, allora disegno l'area di rispetto sull'immagine.
+		/// Se true, invece eseguo uno strech (allungamento) dell'immagine
+		/// </summary>
+		public bool costringi {
+			get;
+			set;
+		}
+
 	}
 }

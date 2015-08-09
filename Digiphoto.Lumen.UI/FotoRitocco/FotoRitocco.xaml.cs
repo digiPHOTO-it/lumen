@@ -1196,7 +1196,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			try {
 
 				// Ora ricalcolo la dimensione dell'area di rispetto
-				float ratio = (float)CoreUtil.evaluateExpressio( Configurazione.UserConfigLumen.expRatioAreaDiRispetto );
+				float ratio = (float)CoreUtil.evaluateExpression( Configurazione.UserConfigLumen.expRatioAreaDiRispetto );
 
 				CalcolatoreAreeRispetto.Geo imageGeo = new CalcolatoreAreeRispetto.Geo();
 

@@ -694,6 +694,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		/// <summary>
+		/// Questo serve per tratteggiare i provini
+		/// </summary>
 		public string expAreaDiRispetto {
 			get {
 				if( IsInDesignMode )
@@ -712,6 +715,19 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				if( _isCostrizioneAbilitata != value ) {
 					_isCostrizioneAbilitata = value;
 					OnPropertyChanged( "isCostrizioneAbilitata" );
+				}
+			}
+		}
+
+		private string _forzauraRatioMaschera;
+		public string forzauraRatioMaschera {
+			get {
+				return _forzauraRatioMaschera;
+			}
+			set {
+				if( _forzauraRatioMaschera != value ) {
+					_forzauraRatioMaschera = value;
+					OnPropertyChanged( "forzauraRatioMaschera" );
 				}
 			}
 		}
@@ -946,14 +962,14 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		private RelayCommand _costringereAdAreaDiRispettoCommand;
-		public ICommand costringereAdAreaDiRispettoCommand {
+		private RelayCommand _forzareRatioMascheraCommand;
+		public ICommand forzareRatioMascheraCommand {
 			get {
-				if( _costringereAdAreaDiRispettoCommand == null ) {
-					_costringereAdAreaDiRispettoCommand = new RelayCommand( param => this.costringereAdAreaDiRispetto( (bool)param ),
-				                                                            param => this.possoApplicareCorrezione );
+				if( _forzareRatioMascheraCommand == null ) {
+					_forzareRatioMascheraCommand = new RelayCommand( param => this.forzareRatioMaschera( (string) param ),
+						param => modalitaEdit == ModalitaEdit.GestioneMaschere );
 				}
-				return _costringereAdAreaDiRispettoCommand;
+				return _forzareRatioMascheraCommand;
 			}
 		}
 
@@ -1075,18 +1091,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			OnPropertyChanged( "isSepiaChecked" );
 		}
 
-		private void costringereAdAreaDiRispetto( bool addRemove ) {
-#if false
-			if( addRemove ) {
-				TODO
-				forseCambioEffettoCorrente( typeof( SepiaEffect ) );
-			}  else
-				removeEffetto( typeof( SepiaEffect ) );
-
-			forseInizioModifiche();
-
-			OnPropertyChanged( "isCostrizioneAbilitata" );
-#endif
+		private void forzareRatioMaschera( string expRatio ) {
+			forzauraRatioMaschera = String.IsNullOrWhiteSpace( expRatio ) ? null : expRatio;
 		}
 		
 
@@ -1165,12 +1171,16 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			// Nel fotoritocco, la maschera viene gestita come una correzione
 			if( mascheraAttiva != null ) {
+				
 				string nomeFile = Path.GetFileName( mascheraAttiva.UriSource.LocalPath );
+
+				// Uso la maschera nella sua dimensione naturale
 				Maschera maschera = new Maschera {
 					nome = nomeFile,
 					width = mascheraAttiva.PixelWidth,
 					height = mascheraAttiva.PixelHeight
 				};
+			
 				addCorrezione( maschera );
 			}
 
@@ -1556,6 +1566,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			string nomeMaschera = null;
 			BitmapImage bi = null;
 
+
 			if( p is Maschera ) {
 				if( p == null ) {
 					mascheraAttiva = null;
@@ -1579,6 +1590,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					nomeMaschera = Path.GetFullPath( bi.UriSource.LocalPath );
 				}
 
+				// Gestisco eventuale forzatura di formato sulla maschera.
+				if( modalitaEdit == ModalitaEdit.GestioneMaschere ) {
+					if( !String.IsNullOrWhiteSpace( forzauraRatioMaschera ) ) {
+						nomeMaschera = gestisciCacheMascheraForzata( nomeMaschera, forzauraRatioMaschera );
+					}
+				}
 			}
 	
 			// Le maschere quelle aggiunte al volo, non sono trattate come le altre che hanno una miniatura.
@@ -1590,19 +1607,79 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 
 			BitmapImage msk = new BitmapImage( uriMaschera );
-			mascheraAttiva = msk;
 
 			if( modalitaEdit == ModalitaEdit.FotoRitocco ) {
 
 				// Se sto abilitando una cornice, allora significa che sto facendo una modifica e devo poter subito salvare.
-				if( mascheraAttiva != null && fotografiaInModifica != null )
+				if( msk != null && fotografiaInModifica != null )
 					forseInizioModifiche();
 
 				// Devo modificare le dimensioni del contenitore.
 				frpCalcolaDimensioniContenitore( (float)(msk.Width / msk.Height) );
 			}
 
+			mascheraAttiva = msk;
 		}
+
+		/// <summary>
+		/// La maschera indicata dall'operatore, potrebbe subire un forzatura di formato.
+		/// Per esempio voglio imporre 4/3.
+		/// 
+		/// Creo una cache su disco delle maschere forzate in una cartella apposita,
+		/// infatti modificarla al volo in memoria, oltre a essere più lento, non funziona bene la trasparenza.
+		/// Devo per forza appoggiare su file.
+		/// 
+		/// </summary>
+		/// <param name="nomeMaschera"></param>
+		/// <returns></returns>
+
+		private string gestisciCacheMascheraForzata( string nomeMaschera, string expRatio ) {
+
+			FileInfo fileInfoMaschera = new FileInfo( nomeMaschera );
+
+			string pathCompleto = PathUtil.getCartellaMaschera( FiltroMask.MskMultiple );
+			pathCompleto = Path.Combine( pathCompleto, ".Cache", expRatio.Replace( "/", "_" ) );
+			Directory.CreateDirectory( pathCompleto );
+
+			// Vediamo se il file esiste già e se è più nuovo dell'immagine originale, altrimento lo rigenero
+			bool rigenerare = true;
+			string nomeFileCache = Path.Combine( pathCompleto, fileInfoMaschera.Name );
+			
+			FileInfo fileInfoCache = new FileInfo( nomeFileCache );
+
+			if( fileInfoCache.Exists && fileInfoCache.CreationTime > fileInfoMaschera.CreationTime )
+				rigenerare = false;
+
+			// La cache non esiste: la genero
+			if( rigenerare ) {
+
+				float newratio = (float)CoreUtil.evaluateExpression( expRatio );
+				AreaRispetto areaRispetto = new AreaRispetto( newratio ) {
+					costringi = true
+				};
+
+				IImmagine imgMaschera = gestoreImmaginiSrv.load( nomeMaschera );
+				IImmagine newMsk = fotoRitoccoSrv.applicaCorrezione( imgMaschera, areaRispetto );
+				gestoreImmaginiSrv.save( newMsk, nomeFileCache );
+			}
+
+			return nomeFileCache;
+		}
+
+		public static BitmapImage toImage( byte[] array ) {
+			using( var ms = new MemoryStream( array ) ) {
+				var image = new BitmapImage();
+				image.BeginInit();
+				image.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+				image.CacheOption = BitmapCacheOption.OnLoad; // here
+				image.StreamSource = ms;
+				image.EndInit();
+				if( image.CanFreeze )
+					image.Freeze();
+				return image;
+			}
+		}
+
 
 		// Devo creare una immagine modificata in base
 		internal void salvareImmagineIncorniciata(Fotografia fotoOrig, RenderTargetBitmap bitmapIncorniciata)
