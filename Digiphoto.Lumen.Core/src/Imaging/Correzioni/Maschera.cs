@@ -26,5 +26,15 @@ namespace Digiphoto.Lumen.Imaging.Correzioni {
 			set;
 		}
 
+		/// <summary>
+		/// Se indicato, significa che la cornice indicata, va applicata con un
+		/// rapporto forzato (es: 4/3)
+		/// In questo caso, prima di applicarla, devo fare uno stretch dell'immagine.
+		/// </summary>
+		public string expRatioForzato {
+			get;
+			set;
+		}
+
 	}
 }

@@ -85,12 +85,18 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			using( FileStream fileStream = FileUtil.waitForFile( fileName ) ) {
 
 				// TODO : gestire encoder giusto in base alla estensione del file.
-				JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+				BitmapEncoder encoder;
+				if( fileName.ToLower().EndsWith( ".png" ) )
+					encoder = new PngBitmapEncoder();
+				else {
+					JpegBitmapEncoder jpgEncoder = new JpegBitmapEncoder();
 
-				if( bmpSrc.PixelWidth == Configurazione.infoFissa.pixelProvino || bmpSrc.PixelHeight == Configurazione.infoFissa.pixelProvino )
-					encoder.QualityLevel = 80;
-				else
-					encoder.QualityLevel = 99;
+					if( bmpSrc.PixelWidth == Configurazione.infoFissa.pixelProvino || bmpSrc.PixelHeight == Configurazione.infoFissa.pixelProvino )
+						jpgEncoder.QualityLevel = 80;
+					else
+						jpgEncoder.QualityLevel = 99;
+					encoder = jpgEncoder;
+				}
 
 //				_giornale.Debug( "Uso quality Level = " + encoder.QualityLevel );
 

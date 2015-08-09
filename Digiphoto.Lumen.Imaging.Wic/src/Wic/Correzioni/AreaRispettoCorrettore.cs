@@ -42,31 +42,55 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 			CalcolatoreAreeRispetto.Bordi bordiB = CalcolatoreAreeRispetto.calcolcaLatiBordo( CalcolatoreAreeRispetto.Fascia.FasciaB, areaRispetto.ratio, imageGeo, imageGeo );
 
 
-			// Create a DrawingVisual/Context to render with
-			DrawingVisual drawingVisual = new DrawingVisual();
-			Rect rect = new Rect( 0, 0, immagineSorgente.ww, immagineSorgente.hh );
+			BitmapSource bmpFinale = null;
 
-			RenderTargetBitmap bmpFinale = null;
+			if( areaRispetto.costringi ) {
+				
+				int w = 0, h = 0;
 
-			Pen pennaRossa = new Pen( Brushes.Red, 2 );
-			pennaRossa.DashStyle = DashStyles.Dash; // tratteggio
+				// Devo fare un resize che preservi il canale alpha (ovviamente l'immagine potrà risultare distorta, perché non devo preservare le proporzioni
+				if( bordiA.right || bordiA.left || bordiB.right || bordiB.left ) {
+					// Taglio verticale: la foto è orizzontale
+					w = immagineSorgente.ww - (int)rettangoloA.Width - (int)rettangoloB.Width;
+					h = immagineSorgente.hh;
+				}
+				if( bordiA.top || bordiA.bottom || bordiB.top || bordiB.bottom ) {
+					// Tagli orizzontali: la foto è verticale
+					h = immagineSorgente.hh - (int)rettangoloA.Height - (int)rettangoloB.Height;
+					w = immagineSorgente.ww;
+				}
 
-			using( DrawingContext drawingContext = drawingVisual.RenderOpen() ) {
+				bmpFinale = ResizeCorrettore.Resize( bmpSorgente, w, h, (int)bmpSorgente.DpiX );
+				
+			} else {
 
-				drawingContext.DrawImage( bmpSorgente, rect );
+				// Create a DrawingVisual/Context to render with
+				DrawingVisual drawingVisual = new DrawingVisual();
+				Rect rect = new Rect( 0, 0, immagineSorgente.ww, immagineSorgente.hh );
 
-				// Prima linea di rispetto : calcolo i due punti
-				Point p1, p2, p3, p4;
-				calcolaPunti( bordiA, rettangoloA, out p1, out p2 );
-				calcolaPunti( bordiB, rettangoloB, out p3, out p4 );
+				RenderTargetBitmap renderTargetBitmap = null;
 
-				// Disegno le due linee di rispetto
-				drawingContext.DrawLine( pennaRossa, p1, p2 );
-				drawingContext.DrawLine( pennaRossa, p3, p4 );
+				Pen pennaRossa = new Pen( Brushes.Red, 2 );
+				pennaRossa.DashStyle = DashStyles.Dash; // tratteggio
+
+				using( DrawingContext drawingContext = drawingVisual.RenderOpen() ) {
+
+					drawingContext.DrawImage( bmpSorgente, rect );
+
+					// Prima linea di rispetto : calcolo i due punti
+					Point p1, p2, p3, p4;
+					calcolaPunti( bordiA, rettangoloA, out p1, out p2 );
+					calcolaPunti( bordiB, rettangoloB, out p3, out p4 );
+
+					// Disegno le due linee di rispetto
+					drawingContext.DrawLine( pennaRossa, p1, p2 );
+					drawingContext.DrawLine( pennaRossa, p3, p4 );
+				}
+
+				renderTargetBitmap = new RenderTargetBitmap( (int)rect.Width, (int)rect.Height, 96, 96, PixelFormats.Default );
+				renderTargetBitmap.Render( drawingVisual );
+				bmpFinale = renderTargetBitmap;
 			}
-
-			bmpFinale = new RenderTargetBitmap( (int)rect.Width, (int)rect.Height, 96, 96, PixelFormats.Default );
-			bmpFinale.Render( drawingVisual );
 
 			if( bmpFinale.CanFreeze )
 				bmpFinale.Freeze();

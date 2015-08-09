@@ -27,7 +27,7 @@ namespace Digiphoto.Lumen.Util {
 		/// <param name="expression">Una stringa contenente una espressione da valutare</param>
 		/// <returns>il risultato del calcolo</returns>
 
-		public static double evaluateExpressio( string expression ) {
+		public static double evaluateExpression( string expression ) {
 			var loDataTable = new DataTable();
 			var loDataColumn = new DataColumn( "Eval", typeof( double ), expression );
 			loDataTable.Columns.Add( loDataColumn );
