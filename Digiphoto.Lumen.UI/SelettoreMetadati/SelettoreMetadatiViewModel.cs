@@ -142,6 +142,16 @@ namespace Digiphoto.Lumen.UI
 				{
 					_eventoEnabled = value;
 					OnPropertyChanged("EventoEnabled");
+
+					foreach (Fotografia fot in fotografieCW)
+					{
+						if (fot.evento != null)
+						{
+							//Serve a selezzionare l'evento dal menu rapido
+							selettoreEventoMetadato.eventoSelezionato = fot.evento;
+						}
+					}
+
 				}
 			}
 		}
@@ -269,7 +279,7 @@ namespace Digiphoto.Lumen.UI
 				if (fot.evento!=null)
 				{
 					//Serve a selezzionare l'evento dal menu rapido
-					selettoreEventoMetadato.eventoSelezionato = fot.evento;
+					//selettoreEventoMetadato.eventoSelezionato = fot.evento;
 					listEvento.Add(fot.evento.descrizione);
 				}
 			}
