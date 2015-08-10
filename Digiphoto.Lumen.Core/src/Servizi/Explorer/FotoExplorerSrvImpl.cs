@@ -188,8 +188,9 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			Fotografia f = foto;
 			OrmUtil.forseAttacca<Fotografia>("Fotografie", ref f);
 
-			//
-			if( !String.IsNullOrWhiteSpace( metadati.didascalia ) )
+			//Consento la modifica anche di valori nulli
+			//if( !String.IsNullOrWhiteSpace( metadati.didascalia ) )
+			if (metadati.didascalia != null)
 				foto.didascalia = metadati.didascalia.Trim();
 			else {
 				if( forzaNullo )

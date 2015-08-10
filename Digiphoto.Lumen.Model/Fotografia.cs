@@ -33,7 +33,7 @@ namespace Digiphoto.Lumen.Model
 			}
 			set
 			{
-				if (value != null)
+				if (value != _didascalia)
 				{
 					_didascalia = value;
 					OnPropertyChanged("didascalia");
