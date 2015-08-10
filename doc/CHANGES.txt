@@ -6,4 +6,4 @@ Rel. 1.1-alpha1 (04 agosto 2015)
 318, 330, 329, 325, 320, 321, 317, 319 e quasi completamente il 315.
 
 Issue risolte a per il rilascio di metà agosto
-323, 328, 326, 332, 333
+323, 328, 326, 332, 333, 324
