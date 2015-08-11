@@ -112,13 +112,13 @@
 							</MultiBinding>
 						</Slider.Maximum>
 						<Slider.SmallChange>
-							<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/100">
+							<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/400">
 								<!-- x -->
 								<Binding ElementName="sliderTraslaX" Path="Maximum" />
 							</MultiBinding>
 						</Slider.SmallChange>
 						<Slider.LargeChange>
-							<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/25">
+							<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/200">
 								<!-- x -->
 								<Binding ElementName="sliderTraslaX" Path="Maximum" />
 							</MultiBinding>
@@ -148,13 +148,13 @@
 							</MultiBinding>
 						</Slider.Maximum>
 						<Slider.SmallChange>
-							<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/100">
+							<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/400">
 								<!-- x -->
 								<Binding ElementName="sliderTraslaY" Path="Maximum" />
 							</MultiBinding>
 						</Slider.SmallChange>
 						<Slider.LargeChange>
-							<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/25">
+							<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/200">
 								<!-- x -->
 								<Binding ElementName="sliderTraslaY" Path="Maximum" />
 							</MultiBinding>
