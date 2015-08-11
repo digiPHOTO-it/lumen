@@ -43,8 +43,8 @@ if( 1 == 1 ) {  // TODO
 		}
 
 		protected override void OnClosed( EventArgs e ) {
-
-			_slideShowViewModel.Dispose();
+			if(_slideShowViewModel!=null)
+				_slideShowViewModel.Dispose();
 			base.OnClosed( e );
 		}
 

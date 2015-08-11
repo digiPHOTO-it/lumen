@@ -169,10 +169,12 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 				_snapshotPubblicoWindow.Width = Configurazione.UserConfigLumen.slideWidth;
 				_snapshotPubblicoWindow.Top = Configurazione.UserConfigLumen.slideTop;
 				_snapshotPubblicoWindow.Left = Configurazione.UserConfigLumen.slideLeft;
+				/*
 				if( Configurazione.UserConfigLumen.fullScreen )
 					_snapshotPubblicoWindow.WindowState = WindowState.Maximized;
 				else
 					_snapshotPubblicoWindow.WindowState = WindowState.Normal;
+				 * */
 			}
 
 			_snapshotPubblicoWindow.Show();
@@ -180,6 +182,11 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 			// Riposiziono il fuoco sul componente che lo deteneva prima di aprire la finestra
 			Keyboard.Focus( elementoKeyboardInfuocato );
+			
+			if( Configurazione.UserConfigLumen.fullScreen )
+				_snapshotPubblicoWindow.WindowState = WindowState.Maximized;
+			else
+				_snapshotPubblicoWindow.WindowState = WindowState.Normal;
 
 			return true;
 		}
@@ -226,8 +233,11 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		}
 
 		public void chiusoSlideShowWindow( object sender, EventArgs e ) {
-			_slideShowWindow.Closed -= chiusoSlideShowWindow;
-			_slideShowWindow = null;
+			if (_slideShowWindow!=null)
+			{
+				_slideShowWindow.Closed -= chiusoSlideShowWindow;
+				_slideShowWindow = null;
+			}
 		}
 
 		public void chiusoSnapshotPubblicoWindow( object sender, EventArgs e ) {
