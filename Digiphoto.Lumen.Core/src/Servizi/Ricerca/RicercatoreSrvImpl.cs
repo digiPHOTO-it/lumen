@@ -128,7 +128,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			if( !param.evitareJoinEvento )
 				qq = qq.Include( "evento" );
 
-			var qq2 = qq.OrderByDescending( ff => ff.dataOraAcquisizione ).ThenByDescending( ff => ff.numero );
+			var qq2 = qq;
 
 			IQueryable<Fotografia> query = qq2.AsQueryable();
 			
@@ -210,8 +210,11 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			if( param.giornataFine != null )
 				query = query.Where( ff => ff.giornata <= param.giornataFine );
 
+			// ----- Ordinamento
 			if (param.ordinamentoAsc)
-				query = query.OrderBy(ff => ff.giornata);
+				query = query.OrderBy(ff => ff.dataOraAcquisizione).ThenBy(ff => ff.numero);
+			else
+				query = query.OrderByDescending(ff => ff.dataOraAcquisizione).ThenByDescending(ff => ff.numero);
 
 			return query;
 		}
