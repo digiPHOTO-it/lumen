@@ -972,8 +972,15 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 //			this.Dispatcher.BeginInvoke( creaImmaginettaLogoAction );
 
 			// Devo dare il fuoco allo UserControl del fotoritocco, altrimenti non mi sente l'evento KeyDown per salvare le correzioni.
-			Action focusAction = () => fotoRitoccoUserControl.Focus();
-			this.Dispatcher.BeginInvoke( focusAction, DispatcherPriority.ApplicationIdle );
+			spostareIlFocus( fotoRitoccoUserControl );
+		}
+
+		void spostareIlFocus( UIElement element ) {
+
+			if( !element.IsFocused ) {
+				Action focusAction = () => element.Focus();
+				this.Dispatcher.BeginInvoke( focusAction, DispatcherPriority.ApplicationIdle );
+			}
 		}
 
 		void creaImmaginettaLogo() {
@@ -1060,8 +1067,19 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			if( Keyboard.IsKeyDown( Key.LeftCtrl ) ) {
 				// Rotazione
+				spostareIlFocus( sliderRuota );
 				double angolo = e.Delta > 0 ? sliderRuota.SmallChange : sliderRuota.SmallChange * (-1);
 				sliderRuota.Value += angolo;
+			} else if( Keyboard.IsKeyDown( Key.LeftShift ) ) {
+				// Traslazione Y
+				spostareIlFocus( sliderTraslaY );
+				double deltaY = e.Delta > 0 ? sliderTraslaY.SmallChange : sliderTraslaY.SmallChange * (-1);
+				sliderTraslaY.Value += deltaY;
+			} else if( Keyboard.IsKeyDown( Key.LeftAlt ) ) {
+				// Traslazione X
+				spostareIlFocus( sliderTraslaX );
+				double deltaX = e.Delta > 0 ? sliderTraslaX.SmallChange : sliderTraslaX.SmallChange * (-1);
+				sliderTraslaX.Value += deltaX;
 			} else {
 				// Zoom
 				double zoom = e.Delta > 0 ? sliderZoom.SmallChange : sliderZoom.SmallChange * (-1);
@@ -1110,6 +1128,17 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 				double left = mouseCurrent.X - posizioneX;
 				double top = mouseCurrent.Y - posizioneY;
+
+				if( Keyboard.IsKeyDown( Key.LeftShift ) ) {
+					// Blocco l'asse X
+					spostareIlFocus( sliderTraslaY );
+					left = 0;
+				} else if( Keyboard.IsKeyDown( Key.LeftAlt ) ) {
+					// Blocco l'asse Y
+					spostareIlFocus( sliderTraslaX );
+					top = 0;
+				}
+				
 
 				TransformGroup qq = imageRitoccata.RenderTransform as TransformGroup;
 
