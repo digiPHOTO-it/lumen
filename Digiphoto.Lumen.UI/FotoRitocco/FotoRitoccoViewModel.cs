@@ -2179,6 +2179,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					if( modificheInCorso == false ) {
 						//fotografieDaModificareCW.SelectedItems.Clear();
 						if( fotoDaModificareMsg.fotosDaModificare.Count == 1 ) {
+
+							// Potrebbe essere che sto chiedendo di modificare la foto che attualmente è in modifica.
+							// Gestisco questo caso particolare.
+							if( fotoDaModificareMsg.fotosDaModificare[0].Equals( fotografiaInModifica ) )
+								fotografiaInModifica = null;  // in questo modo causo il property change successivo
+
 							fotografiaInModifica = fotoDaModificareMsg.fotosDaModificare[0];
 							refresh = true;
 						}
