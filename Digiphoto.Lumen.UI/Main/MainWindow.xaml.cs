@@ -87,13 +87,13 @@ namespace Digiphoto.Lumen.UI {
 		/// <param name="afterHideCallback"></param>
 		public void ShowError( string message, string title, Action afterHideCallback ) {
 
-			var risultato = MessageBox.Show( message, title, MessageBoxButton.OK, MessageBoxImage.Error );
+			var risultato = MessageBox.Show( this, message, title, MessageBoxButton.OK, MessageBoxImage.Error );
 			if( afterHideCallback != null )
 				afterHideCallback();
 		}
 
 		public void ShowMessage( string message, string title ) {
-			MessageBox.Show( message, title, MessageBoxButton.OK, MessageBoxImage.Information );
+			MessageBox.Show( this, message, title, MessageBoxButton.OK, MessageBoxImage.Information );
 		}
 
 
@@ -102,7 +102,7 @@ namespace Digiphoto.Lumen.UI {
 		/// Chiamo la callback passando TRUE se l'utente ha scelto SI.
 		/// </summary>
 		public void ShowConfirmation( string message, string title, Action<bool> afterHideCallback ) {
-			var tastoPremuto = MessageBox.Show( message, title, MessageBoxButton.YesNo, MessageBoxImage.Question );
+			var tastoPremuto = MessageBox.Show( this, message, title, MessageBoxButton.YesNo, MessageBoxImage.Question );
 			afterHideCallback( tastoPremuto == MessageBoxResult.Yes );
 		}
 		
@@ -112,7 +112,7 @@ namespace Digiphoto.Lumen.UI {
 		/// </summary>
 		public void ShowConfirmationAnnulla(string message, string title, Action<MessageBoxResult> afterHideCallback)
 		{
-			var tastoPremuto = MessageBox.Show(message, title, MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+			var tastoPremuto = MessageBox.Show( this, message, title, MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
 			afterHideCallback(tastoPremuto);
 		}
 

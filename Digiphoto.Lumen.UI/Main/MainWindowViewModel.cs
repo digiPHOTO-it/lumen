@@ -571,7 +571,11 @@ namespace Digiphoto.Lumen.UI {
 				StampatoMsg sm = (StampatoMsg)msg;
 
 				if( sm.lavoroDiStampa.esitostampa == EsitoStampa.Errore ) {
-					dialogProvider.ShowError( sm.lavoroDiStampa.ToString(), "Lavoro di stampa fallito", null );
+					App.Current.Dispatcher.BeginInvoke(
+							new Action( () => {
+								dialogProvider.ShowError( sm.lavoroDiStampa.ToString(), "Lavoro di stampa fallito", null );
+							}
+						) );
 				}
 			}
 

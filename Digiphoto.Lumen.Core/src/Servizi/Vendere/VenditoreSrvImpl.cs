@@ -585,6 +585,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			LavoroDiStampaFoto lavoroDiStampaFoto = null;
 			LavoroDiStampaProvini lavoroDiStampaProvini = null;
 
+			
 			if (lavoroDiStampa is LavoroDiStampaFoto)
 			{
 				lavoroDiStampaFoto = lavoroDiStampa as LavoroDiStampaFoto;
@@ -627,7 +628,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 
 			// Se la stampa è stata completata correttamente, non faccio niente. Sono già a posto.
-			// TODO rimettere a posto con ==
 			if( lavoroDiStampa.esitostampa == EsitoStampa.Ok )
 			{
 				if (lavoroDiStampaProvini != null)
