@@ -11,3 +11,10 @@ Issue risolte a per il rilascio di metà agosto
 
 Patch 2
 334, 327
+
+patch 3
+335, 336 
+
+
+patch ???
+337

@@ -1504,10 +1504,8 @@ namespace Digiphoto.Lumen.UI {
 		
 		public void OnNext(StampatoMsg value)
 		{
-			if (value.lavoroDiStampa.esitostampa == EsitoStampa.Errore)
-			{
-				dialogProvider.ShowError("Stampa non Eseguita Correttamente", "Errore", null);
-			}
+			// TODO forse non serve più ascoltare questo messaggio.
+			//      Ora il messaggio lo ascolta il MainWindow per dare avviso all'utente
 		}
 
 		public void OnNext(ClonaFotoMsg value)

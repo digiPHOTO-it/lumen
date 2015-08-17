@@ -24,6 +24,7 @@ using System.IO;
 using Digiphoto.Lumen.UI.IncassiFotografi;
 using Digiphoto.Lumen.UI.Dialogs.SelezionaStampante;
 using Digiphoto.Lumen.Servizi.Ritoccare;
+using System.Windows.Threading;
 
 namespace Digiphoto.Lumen.UI
 {
@@ -1448,10 +1449,10 @@ namespace Digiphoto.Lumen.UI
 
 		public void OnNext(StampatoMsg value)
 		{
-			if (value.lavoroDiStampa.esitostampa == EsitoStampa.Errore)
-			{
-				dialogProvider.ShowError("Stampa non Eseguita Correttamente", "Errore", null);
-			}
+			// TODO forse non serve più ascoltare questo messaggio.
+			//      Ora il messaggio lo ascolta il MainWindow per dare avviso all'utente
+
+			// TODO capire chi deve stornare l'importo dal carrello
 		}
 
 		// E' stata modificata una o più foto
