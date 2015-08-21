@@ -160,6 +160,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 					OnPropertyChanged( "fotografiaInModifica" );
 					OnPropertyChanged( "isModalitaEditFotoRitocco" );
+					OnPropertyChanged( "possoScegliereMaschera" );
 				}
 			}
 		}
@@ -536,6 +537,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					OnPropertyChanged( "modalitaEdit" );
 					OnPropertyChanged( "possoSalvareMaschera" );
 					OnPropertyChanged( "fotografiaInModifica" );
+					OnPropertyChanged( "possoScegliereMaschera" );
 					
 					forzaRefreshStato();
 					
@@ -729,6 +731,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					_forzauraRatioMaschera = value;
 					OnPropertyChanged( "forzauraRatioMaschera" );
 				}
+			}
+		}
+
+		public bool possoScegliereMaschera {
+			get {
+				return (modalitaEdit == ModalitaEdit.GestioneMaschere || isAlmenoUnaFotoSelezionata);
 			}
 		}
 
