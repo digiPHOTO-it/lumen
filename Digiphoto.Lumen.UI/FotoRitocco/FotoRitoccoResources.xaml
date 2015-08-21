@@ -261,6 +261,16 @@
 	<RoutedUICommand x:Key="cmdCloseSnapshotPubblico" />
 	<RoutedUICommand x:Key="cmdGoToCurrentFotoSS" />
 
+	<!-- Quando le maschere sono disabilitate, rendo tutto il pannello girigietto -->
+	<eff:GrayscaleEffect x:Key="grayscaleEffect" Factor="0.1" />
 	
+	<Style x:Key="styleItemsControlMaschere" TargetType="ItemsControl">
+		<Style.Triggers>
+			<Trigger Property="IsEnabled" Value="False">
+				<Setter Property="Effect" Value="{StaticResource grayscaleEffect}" />
+			</Trigger>
+		</Style.Triggers>
+	</Style>
+	<!-- -->
 
 </ResourceDictionary>

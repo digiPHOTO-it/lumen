@@ -253,11 +253,12 @@
 
 
 				<ScrollViewer Grid.Row="2" Grid.Column="0">
-					<ItemsControl Name="itemsContolMaschere"                                
+					<ItemsControl Name="itemsControlMaschere"
+					                IsEnabled="{Binding possoScegliereMaschera}"
+								    Style="{StaticResource styleItemsControlMaschere}"
 								    ItemsSource="{Binding maschereCW}" 
 								    ItemsPanel="{DynamicResource itemsPanelTemplateMaschere}" 
-								    ItemTemplate="{DynamicResource itemTemplateThumbMaschera}"
-								    />
+								    ItemTemplate="{DynamicResource itemTemplateThumbMaschera}" />
 				</ScrollViewer>
 
 			</Grid>

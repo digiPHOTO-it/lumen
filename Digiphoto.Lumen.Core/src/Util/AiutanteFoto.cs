@@ -207,12 +207,14 @@ namespace Digiphoto.Lumen.Util {
 
 
 			// Se richiesto nella configurazione, scrivo direttamente sul provino le righe tratteggiate di rispetto area stampabile
+			bool aggiungiCorrezioneAreaRispetto = false;
 			if( Configurazione.UserConfigLumen.imprimereAreaDiRispetto ) {
 				if( quale == IdrataTarget.Provino ) {
+
 					if( correzioni == null )
 						correzioni = new CorrezioniList();
-					if( correzioni.Contains( typeof( AreaRispetto ) ) == false )
-						correzioni.Add( areaRispetto );
+					if( !correzioni.Contains( typeof( AreaRispetto ) ) )
+						aggiungiCorrezioneAreaRispetto = true;
 				}
 			}
 
@@ -241,6 +243,9 @@ namespace Digiphoto.Lumen.Util {
 				IdrataTarget tempQuale = quale;
 				if( devoPassareDallaGrande && quale == IdrataTarget.Provino )
 					tempQuale = IdrataTarget.Risultante;
+
+				if( aggiungiCorrezioneAreaRispetto && tempQuale == IdrataTarget.Provino )
+					correzioni.Add( areaRispetto );
 				
 				immagineDestinazione = fr.applicaCorrezioni( immagineDestinazione, correzioni, tempQuale );
 
@@ -249,11 +254,16 @@ namespace Digiphoto.Lumen.Util {
 				// quindi sono obbligato a ricalcolare la Risultante e quindi rimpicciolirla.
 				// quindi per essere efficiente, salvo la Risultante che ho già pronta (cosi risparmio tempo dopo)
 				if( devoPassareDallaGrande && quale == IdrataTarget.Provino ) {
+
 					gis.save( immagineDestinazione, nomeFileRisultante );
 					foto.imgRisultante = immagineDestinazione;
 
 					// Poi la ritaglio per fare il provino buono.
 					immagineDestinazione = gis.creaProvino( immagineDestinazione );
+
+					// Aggiungo l'area di rispetto al provino
+					if( aggiungiCorrezioneAreaRispetto )
+						immagineDestinazione = fr.applicaCorrezione( immagineDestinazione, areaRispetto );
 				}
 			}
 

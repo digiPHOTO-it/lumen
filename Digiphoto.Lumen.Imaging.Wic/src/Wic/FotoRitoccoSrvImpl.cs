@@ -521,7 +521,8 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			bool complicato = false;
 			if( correzioni.SingleOrDefault( c => c is Maschera ) != null ||
 				correzioni.SingleOrDefault( c => c is Ruota && ((Ruota)c).isAngoloRetto == false ) != null ||
-				correzioni.SingleOrDefault( c => c is Trasla ) != null )
+				correzioni.SingleOrDefault( c => c is Trasla ) != null ||
+				correzioni.SingleOrDefault( c => c is Zoom ) != null )
 				complicato = true;
 
 			if( complicato ) {

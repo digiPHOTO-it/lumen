@@ -5,16 +5,14 @@
 Rel. 1.1-alpha1 (04 agosto 2015)
 318, 330, 329, 325, 320, 321, 317, 319 e quasi completamente il 315.
 
-Patch 1
-Issue risolte a per il rilascio di metà agosto
+Patch 1 (agosto)
 323, 328, 326, 332, 333, 324
 
-Patch 2
+Patch 2 (agosto)
 334, 327
 
-patch 3
+patch 3 (agosto)
 335, 336 
 
-
-patch ???
-337
+patch 4 (agosto)
+337, 338, 339, 340
