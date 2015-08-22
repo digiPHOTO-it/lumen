@@ -16,16 +16,32 @@
 				<RowDefinition Height="*"/>
 			</Grid.RowDefinitions>
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition />
-				<ColumnDefinition />
-				<ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-				<ColumnDefinition Width="*"/>
+				
+				<!-- comboBoxHistoryInfo -->
+				<ColumnDefinition Width="280" />
+				
+				<!-- Foto: nn Pagare: yy -->
+				<ColumnDefinition Width="160" />
+				
+				<!-- esito masterizzazione -->
+				<ColumnDefinition MinWidth="50" MaxWidth="260" Width="Auto" />
+				
+				<!-- selezione gallery / paginazione -->
+				<ColumnDefinition MinWidth="100" MaxWidth="180"  Width="Auto" />
+				
+				<!-- scaricamento e provinatura -->
+				<ColumnDefinition MinWidth="150" MaxWidth="260" Width="Auto" />
+				
+				<!-- eject usb -->
+				<ColumnDefinition Width="114" />
+				
 			</Grid.ColumnDefinitions>
 		</Grid>
 	</ItemsPanelTemplate>
 
+	<Style x:Key="styleComboBoxHistoryInfo" TargetType="ComboBox">
+		<Setter Property="Width" Value="260" />
+	</Style>
 
 	<Style x:Key="mainWindowStyle" TargetType="{x:Type Window}" >
 		<Setter Property="Background" Value="Black" />

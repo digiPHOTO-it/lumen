@@ -94,6 +94,18 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			// Se per sbaglio ho ancora un worker aperto, lo chiudo
 			chiudiWorker();
 
+			// --- Pubblico un messaggio di inizio scaricamento foto
+			ScaricoFotoMsg scaricoFotoMsg = new ScaricoFotoMsg( this, "Inizio Scarico Foto" );
+			scaricoFotoMsg.esitoScarico = new EsitoScarico {
+				riscontratiErrori = false
+			};
+			scaricoFotoMsg.fase = FaseScaricoFoto.InizioScarico;
+			scaricoFotoMsg.sorgente = _paramScarica.cartellaSorgente != null ? _paramScarica.cartellaSorgente : _paramScarica.nomeFileSingolo;
+			scaricoFotoMsg.showInStatusBar = true;
+			pubblicaMessaggio( scaricoFotoMsg );
+			// --- 
+
+			// Creo il worker che copierà le foto in background
 			_copiaImmaginiWorker = new CopiaImmaginiWorker( paramScarica, elaboraFotoAcquisite );
 
 			// Lancio il worker che scarica ed elabora le foto.
@@ -104,21 +116,23 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 				_copiaImmaginiWorker.StartSingleThread();
 
 			statoScarica = StatoScarica.Scaricamento;
-
-			ScaricoFotoMsg scaricoFotoMsg = new ScaricoFotoMsg( this, "Inizio Scarico Foto" );
-			scaricoFotoMsg.esitoScarico = new EsitoScarico();
-			scaricoFotoMsg.fase = FaseScaricoFoto.InizioScarico;
-			scaricoFotoMsg.sorgente = _paramScarica.cartellaSorgente != null ? _paramScarica.cartellaSorgente : _paramScarica.nomeFileSingolo;
-			scaricoFotoMsg.showInStatusBar = true;
-			pubblicaMessaggio( scaricoFotoMsg );
 		}
 
 
 		private void elaboraFotoAcquisite( EsitoScarico esitoScarico ) {
 
 			_giornale.Debug( "Inizio elaboraFotoAcquisite()" );
-			ScaricoFotoMsg scaricoFotoMsg = new ScaricoFotoMsg( this, "Scaricate " + esitoScarico.totFotoCopiateOk + " foto. Togliere la card" );
+
+			StringBuilder msg = new StringBuilder();
+			if( esitoScarico.riscontratiErrori )
+				msg.AppendFormat( "Errore in acquisizione {0} foto. Verificare!", esitoScarico.totFotoCopiateOk );
+			else
+				msg.AppendFormat( "Scaricate OK {0} foto.", + esitoScarico.totFotoCopiateOk );
+			msg.Append( " Togliere la card" );
+
+			ScaricoFotoMsg scaricoFotoMsg = new ScaricoFotoMsg( this, msg.ToString() );
 			scaricoFotoMsg.esitoScarico = esitoScarico;
+			scaricoFotoMsg.esito = esitoScarico.riscontratiErrori ? Esito.Errore : Esito.Ok;
 			// Finito: genero un evento per notificare che l'utente può togliere la flash card.
 			scaricoFotoMsg.fase = FaseScaricoFoto.FineScarico;
 			scaricoFotoMsg.sorgente = _paramScarica.cartellaSorgente != null ? _paramScarica.cartellaSorgente : _paramScarica.nomeFileSingolo;
@@ -126,6 +140,11 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			
 			// battezzo la flashcard al fotografo corrente
 			battezzaFlashCard( _paramScarica );
+
+			// Se il drive che ho appena scaricato è rimovibile, allora lo smonto
+			smontaSeRimovibile();
+
+
 
 			// Rendo pubblico l'esito dello scarico in modo che la UI possa notificare l'utente di togliere 
 			// la flash card.
@@ -154,6 +173,20 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 		}
 
+		private void smontaSeRimovibile() {
+
+			try {
+
+				if( _paramScarica.cartellaSorgente.Length >= 2 && _paramScarica.cartellaSorgente[1] == ':' ) {
+					char driveLetter = _paramScarica.cartellaSorgente[0];
+					DriveInfo driveInfo = new DriveInfo( driveLetter.ToString() );
+					if( driveInfo.DriveType == DriveType.Removable && driveInfo.IsReady )
+						UsbEjectWithExe.usbEject( driveLetter );
+				}
+
+			} catch( Exception ) {
+			}
+		}
 
 
 		private void seNonPossoScaricareSpaccati() {

@@ -127,16 +127,32 @@ namespace Digiphoto.Lumen.UI {
 			private set;
 		}
 
+		private String _numFotoFase;
 		public String numFotoFase
 		{
-			get;
-			private set;
+			get {
+				return _numFotoFase;
+			}
+			private set {
+				if( _numFotoFase != value ) {
+					_numFotoFase = value;
+					OnPropertyChanged( "numFotoFase" );
+				}
+			}
 		}
 
-		public Boolean numFotoFaseVisibility
+		private bool _numFotoFaseVisibility;
+		public bool numFotoFaseVisibility
 		{
-			get;
-			private set;
+			get {
+				return _numFotoFaseVisibility;
+			}
+			private set {
+				if( _numFotoFaseVisibility != value ) {
+					_numFotoFaseVisibility = value;
+					OnPropertyChanged( "numFotoFaseVisibility" );
+				}
+			}
 		}
 
 		public Boolean compNumFotoVisibility
@@ -584,18 +600,17 @@ namespace Digiphoto.Lumen.UI {
 				ScaricoFotoMsg sm = (ScaricoFotoMsg)msg;
 				if(sm.fase == FaseScaricoFoto.InizioScarico){
 					numFotoFaseVisibility = true;
-					numFotoFase = String.Format("Fase: 0/0");
-				}else if(sm.fase == FaseScaricoFoto.Scaricamento){
-					numFotoFase = String.Format("Fase: 0/{0}", sm.esitoScarico.totFotoScaricateProg);
+					numFotoFase = String.Format( "Scaricate = {0:000}", 0 );
+				}else if(sm.fase == FaseScaricoFoto.Scaricamento) {
+					numFotoFaseVisibility = true;
+					numFotoFase = String.Format( "Scaricate = {0:000}", sm.esitoScarico.totFotoScaricateProg );
 				}
 				else if (sm.fase == Digiphoto.Lumen.Servizi.Scaricatore.FaseScaricoFoto.Provinatura)
 				{
-					numFotoFase = String.Format("Fase: {0}/{1}", sm.esitoScarico.totFotoProvinateProg, sm.esitoScarico.totFotoScaricate); 
-				}else if(sm.fase == FaseScaricoFoto.FineLavora){
+					numFotoFase = String.Format("Provinate = {0:000}/{1:000}", sm.esitoScarico.totFotoProvinateProg, sm.esitoScarico.totFotoScaricate );
+				} else if(sm.fase == FaseScaricoFoto.FineLavora){
 					numFotoFaseVisibility = false;
 				}
-				OnPropertyChanged("numFotoFaseVisibility");
-				OnPropertyChanged("numFotoFase");
 			}
 
 			if( msg.showInStatusBar ) {

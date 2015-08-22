@@ -79,41 +79,50 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			scaricoFotoMsg.sorgente = _paramScarica.cartellaSorgente != null ? _paramScarica.cartellaSorgente : _paramScarica.nomeFileSingolo;
 			scaricoFotoMsg.showInStatusBar = false;
 
+			try {
 
-			if( _paramScarica.nomeFileSingolo != null ) {
+				if( _paramScarica.nomeFileSingolo != null ) {
 
-				// Lavoro un solo file che mi è stato indicato. Serve per creare una maschera quando lavoro con le cornici.
-				if (scaricaAsincronoUnFile(_paramScarica.nomeFileSingolo, nomeDirDest))
-				{
-					++conta;
-					if (conta % 20 == 0)
-					{
-						scaricoFotoMsg.esitoScarico.totFotoScaricateProg = conta;
-						LumenApplication.Instance.bus.Publish(scaricoFotoMsg);
+					// Lavoro un solo file che mi è stato indicato. Serve per creare una maschera quando lavoro con le cornici.
+					if( scaricaAsincronoUnFile( _paramScarica.nomeFileSingolo, nomeDirDest ) ) {
+						++conta;
+						if( conta % 20 == 0 ) {
+							scaricoFotoMsg.esitoScarico.totFotoScaricateProg = conta;
+							LumenApplication.Instance.bus.Publish( scaricoFotoMsg );
+						}
+					} else {
+						// La copia di questo file non è andata a buon fine
+						_esitoScarico.riscontratiErrori = true;
 					}
-				}
 
-			} else {
+				} else {
 
-				// Faccio giri diversi per i vari formati grafici che sono indicati nella configurazione (jpg, tif)
-				string [] estensioni = Configurazione.UserConfigLumen.estensioniGrafiche.Split( ';' );
-				foreach( string estensione in estensioni ) {
+					// Faccio giri diversi per i vari formati grafici che sono indicati nella configurazione (jpg, tif)
+					string[] estensioni = Configurazione.UserConfigLumen.estensioniGrafiche.Split( ';' );
+					foreach( string estensione in estensioni ) {
 
-					string [] files = Directory.GetFiles( _paramScarica.cartellaSorgente, searchPattern: "*" + estensione, searchOption: SearchOption.AllDirectories );
+						string[] files = Directory.GetFiles( _paramScarica.cartellaSorgente, searchPattern: "*" + estensione, searchOption: SearchOption.AllDirectories );
 
-					// trasferisco tutti i files elencati
-					foreach( string nomeFileSrc in files ) {
-						if (scaricaAsincronoUnFile(nomeFileSrc, nomeDirDest))
-						{
-							++conta;
-							if (conta % 20 == 0)
-							{
-								scaricoFotoMsg.esitoScarico.totFotoScaricateProg = conta;
-								LumenApplication.Instance.bus.Publish(scaricoFotoMsg);
+						// trasferisco tutti i files elencati
+						foreach( string nomeFileSrc in files ) {
+							if( scaricaAsincronoUnFile( nomeFileSrc, nomeDirDest ) ) {
+								++conta;
+								if( conta % 20 == 0 ) {
+									scaricoFotoMsg.esitoScarico.totFotoScaricateProg = conta;
+									LumenApplication.Instance.bus.Publish( scaricoFotoMsg );
+								}
+							} else {
+								// La copia di questo file non è andata a buon fine
+								_esitoScarico.riscontratiErrori = true;
 							}
 						}
 					}
 				}
+
+			} catch( Exception qq ) {
+				// Se casco qui, probabilmente è perché è stata sfilata la memorycard prima che sia completato lo scarico.
+				_esitoScarico.riscontratiErrori = true;
+				_giornale.Error( "Errore imprevisto durante scarico card", qq );
 			}
 
 			if (conta != 0)

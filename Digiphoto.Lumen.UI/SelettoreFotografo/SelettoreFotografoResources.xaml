@@ -19,4 +19,12 @@
 		<Setter Property="HorizontalAlignment" Value="Left" />
     </Style>
 	
+	<Style x:Key="styleCreareNuovoButton" TargetType="Button">
+		<Style.Triggers>
+			<Trigger Property="IsEnabled" Value="False">
+				<Setter Property="Effect" Value="{StaticResource grayscaleEffect}" />
+			</Trigger>
+		</Style.Triggers>
+	</Style>
+	
 </ResourceDictionary>

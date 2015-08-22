@@ -1,7 +1,11 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="pack://application:,,,/Digiphoto.Lumen.UI;component/Resources/GlobalResourceDictionary.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+	
+	<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
     <!-- il nuovo evento è tutto maiuscolo -->
     <Style x:Key="newDescrizioneTextBox" TargetType="{x:Type TextBox}">
@@ -9,5 +13,12 @@
 		<Setter Property="ToolTip" Value="ID evento. Inserire una descrizione univoca" />
     </Style>
 
-
+	<Style x:Key="styleCreareNuovoEventoButton" TargetType="Button">
+		<Style.Triggers>
+			<Trigger Property="IsEnabled" Value="False">
+				<Setter Property="Effect" Value="{StaticResource grayscaleEffect}" />
+			</Trigger>
+		</Style.Triggers>
+	</Style>
+	
 </ResourceDictionary>

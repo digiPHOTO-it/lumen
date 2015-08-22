@@ -60,7 +60,7 @@
                          Style="{StaticResource newInizialiFotografoTxtStyle}"
                          />
 
-				<Button Name="creareNuovoButton" Command="{Binding Path=creareNuovoCommand}" ToolTip="Crea nuovo fotografo" Margin="40,0,0,0">
+				<Button Name="creareNuovoButton" Command="{Binding Path=creareNuovoCommand}" ToolTip="Crea nuovo fotografo" Margin="40,0,0,0" Style="{StaticResource styleCreareNuovoButton}">
 					<Image Source="/Digiphoto.Lumen.UI;component/Resources/add-16x16.png" Height="16" />
 				</Button>
 

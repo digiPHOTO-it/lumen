@@ -717,7 +717,7 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand eseguireRicercaCommand {
 			get {
 				if( _eseguireRicercaCommand == null ) {
-					_eseguireRicercaCommand = new RelayCommand( numPag => eseguireRicerca(), p => possoEseguireRicercaCommand, false );
+					_eseguireRicercaCommand = new RelayCommand( numPag => eseguireRicerca( true ), p => possoEseguireRicercaCommand, false );
 				}
 				return _eseguireRicercaCommand;
 			}
@@ -1050,6 +1050,10 @@ namespace Digiphoto.Lumen.UI {
 		/// Chiamo il servizio che esegue la query sul database
 		/// </summary>
 		private void eseguireRicerca() {
+			eseguireRicerca( false );
+		}
+
+		private void eseguireRicerca( bool chiediConfermaSeFiltriVuoti ) {
 
 			// Se avevo un worker già attivo, allora provo a cancellarlo.
 			if( _bkgIdrata.WorkerSupportsCancellation == true && _bkgIdrata.IsBusy ) {
@@ -1067,8 +1071,9 @@ namespace Digiphoto.Lumen.UI {
 
 			//Dopo aver completato tutti i parametri di ricerca...
 			//verifico se ho impostato almeno un parametro
-			if (verificaChiediConfermaRicercaSenzaParametri() == false)
-				return;
+			if( chiediConfermaSeFiltriVuoti )
+				if (verificaChiediConfermaRicercaSenzaParametri() == false)
+					return;
 
 			// Eseguo la ricerca nel database
 			fotoExplorerSrv.cercaFoto( paramCercaFoto );
