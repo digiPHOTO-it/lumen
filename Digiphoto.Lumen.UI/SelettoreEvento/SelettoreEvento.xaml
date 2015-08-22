@@ -49,7 +49,7 @@
                 <TextBox x:Name="newDescrizioneTextBox" Text="{Binding  Path=nuovoEvento.descrizione, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                          Style="{StaticResource newDescrizioneTextBox}" Grid.Row="0" Grid.Column="0"/>
 
-				<Button Name="creareNuovoEventoButton" Command="{Binding Path=creareNuovoEventoCommand}" ToolTip="Crea nuovo evento" Grid.Row="0" Grid.Column="1" >
+			<Button Name="creareNuovoEventoButton" Command="{Binding Path=creareNuovoEventoCommand}" ToolTip="Crea nuovo evento" Grid.Row="0" Grid.Column="1" Style="{StaticResource styleCreareNuovoEventoButton}" >
 					<Image Source="/Digiphoto.Lumen.UI;component/Resources/add-16x16.png" Width="16" Height="16" />
 				</Button>
 

@@ -1,7 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                     xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
-                    xmlns:eff="clr-namespace:Digiphoto.Lumen.Windows.Media.Effects;assembly=Digiphoto.Lumen.Imaging.Wic"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 	<ResourceDictionary.MergedDictionaries>
@@ -262,7 +261,6 @@
 	<RoutedUICommand x:Key="cmdGoToCurrentFotoSS" />
 
 	<!-- Quando le maschere sono disabilitate, rendo tutto il pannello girigietto -->
-	<eff:GrayscaleEffect x:Key="grayscaleEffect" Factor="0.1" />
 	
 	<Style x:Key="styleItemsControlMaschere" TargetType="ItemsControl">
 		<Style.Triggers>
