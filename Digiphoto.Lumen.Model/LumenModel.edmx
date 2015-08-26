@@ -17,6 +17,7 @@
     <EntitySet Name="Carrelli" EntityType="LumenModel.Store.Carrelli" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
     <EntitySet Name="RigheCarrelli" EntityType="LumenModel.Store.RigheCarrelli" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
     <EntitySet Name="IncassiFotografi" EntityType="LumenModel.Store.IncassiFotografi" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+    <EntitySet Name="AzioniAutomatiche" EntityType="LumenModel.Store.AzioniAutomatiche" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
     <AssociationSet Name="EventoFotografia" Association="LumenModel.Store.EventoFotografia">
       <End Role="Evento" EntitySet="Eventi" />
       <End Role="Fotografia" EntitySet="Fotografie" />
@@ -58,7 +59,18 @@
       <End Role="IncassoFotografo" EntitySet="IncassiFotografi" />
     </AssociationSet>
   </EntityContainer>
-  <EntityType Name="InfosFisse">
+
+    <EntityType Name="AzioniAutomatiche">
+      <Key>
+        <PropertyRef Name="id" />
+      </Key>
+      <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+      <Property Name="nome" Type="nvarchar" Nullable="false" MaxLength="30" />
+      <Property Name="correzioniXml" Type="nvarchar" Nullable="false" />
+      <Property Name="attivo" Type="bit" Nullable="false" DefaultValue="true" />
+    </EntityType>
+      
+    <EntityType Name="InfosFisse">
     <Key>
       <PropertyRef Name="id" />
     </Key>
@@ -384,6 +396,7 @@
             <End Role="Carrello" EntitySet="Carrelli" />
             <End Role="IncassoFotografo" EntitySet="IncassiFotografi" />
           </AssociationSet>
+          <EntitySet Name="AzioniAutomatiche" EntityType="LumenModel.AzioneAuto" />
           </EntityContainer>
         <EntityType Name="InfoFissa">
           <Key>
@@ -393,7 +406,7 @@
           <Property Type="Int32" Name="ultimoNumFotogramma" Nullable="false" />
           <Property Type="DateTime" Name="dataUltimoScarico" Nullable="true" />
           <Property Type="String" Name="versioneDbCompatibile" Nullable="false" DefaultValue="1.0" MaxLength="10" />
-          <Property Type="String" Name="modoNumerazFoto" Nullable="false" DefaultValue="M" MaxLength="1" />
+          <Property Type="String" Name="modoNumerazFoto" Nullable="false" DefaultValue="X" MaxLength="1" />
           <Property Type="Int16" Name="pixelProvino" Nullable="false" />
           <Property Type="String" Name="idPuntoVendita" Nullable="true" MaxLength="5" />
           <Property Type="String" Name="descrizPuntoVendita" Nullable="true" MaxLength="50" />
@@ -614,6 +627,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="AzioneAuto">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Name="nome" Type="String" Nullable="false" />
+          <Property Name="correzioniXml" Type="String" Nullable="false" />
+          <Property Name="attivo" Type="Boolean" Nullable="false" DefaultValue="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -844,6 +866,16 @@
               <ScalarProperty Name="id" ColumnName="Id" />
       </EndProperty>
     </AssociationSetMapping>
+          <EntitySetMapping Name="AzioniAutomatiche">
+            <EntityTypeMapping TypeName="IsTypeOf(LumenModel.AzioneAuto)">
+              <MappingFragment StoreEntitySet="AzioniAutomatiche">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="attivo" ColumnName="attivo" />
+                <ScalarProperty Name="correzioniXml" ColumnName="correzioniXml" />
+                <ScalarProperty Name="nome" ColumnName="nome" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping></edmx:Mappings>
   </edmx:Runtime>

@@ -96,6 +96,12 @@ namespace Digiphoto.Lumen.Core.VsTest
 			generaMoltiTestHelper<Fotografo>();
 		}
 
+		[TestMethod()]
+		public void generaMolteAzioniAutoTest() {
+			generaMoltiTestHelper<AzioneAuto>();
+		}
+
+
 		[TestMethod]
 		public void infosFisseRepositoryTest() {
 
