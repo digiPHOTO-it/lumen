@@ -30,6 +30,8 @@
     
 	DROP TABLE if exists [IncassiFotografi];
 
+	DROP TABLE if exists [AzioniAutomatiche];
+
 -- --------------------------------------------------
 -- Creating all tables
 -- --------------------------------------------------
@@ -232,6 +234,13 @@ CREATE TABLE [IncassiFotografi] (
     		
 			);
 
+CREATE TABLE [AzioniAutomatiche] (
+	[id] uniqueidentifier   NOT NULL ,
+	[nome] nvarchar(30)   NOT NULL ,
+	[correzioniXml] nvarchar(2147483647)  not NULL ,
+	[attivo] bit   DEFAULT 'True' NOT NULL ,
+	PRIMARY KEY ([id])	
+);
 
 -- --------------------------------------------------
 -- Script has ended

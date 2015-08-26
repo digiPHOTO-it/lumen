@@ -41,7 +41,17 @@ namespace Digiphoto.Lumen.Core.DatiDiEsempio {
                 return generaUnoFormatoCarta() as TEntity;
             if (tipo.Equals(typeof(StampanteInstallata)))
                 return generaUnoStampantiInstallate() as TEntity;
+			if( tipo.Equals( typeof( AzioneAuto ) ) )
+				return generaUnoAzioneAuto() as TEntity;
 			return null;
+		}
+
+		private AzioneAuto generaUnoAzioneAuto() {
+			AzioneAuto az = new AzioneAuto();
+			az.id = Guid.NewGuid();
+			az.nome = pc.genera( 30 );
+			az.correzioniXml = pc.genera( 20 );
+			return az;
 		}
 
 		private Fotografo generaUnoFotografo() {

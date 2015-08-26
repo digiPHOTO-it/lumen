@@ -41,5 +41,6 @@ namespace Digiphoto.Lumen.Model
         public DbSet<Carrello> Carrelli { get; set; }
         public DbSet<RigaCarrello> RigheCarrelli { get; set; }
         public DbSet<IncassoFotografo> IncassiFotografi { get; set; }
+        public DbSet<AzioneAuto> AzioniAutomatiche { get; set; }
     }
 }
