@@ -52,7 +52,8 @@
 
         <ContextMenu.ItemsSource>
             <CompositeCollection>
-          
+                
+                <!--Singola foto-->
                 <MenuItem Header="Singola Foto" 
                           DataContext="{Binding}">
 
@@ -63,91 +64,91 @@
                                 </i:EventTrigger>
                           </i:Interaction.Triggers>
                     
-                <MenuItem Header="Torna originale" 
-                        Command="{Binding Path=tornareOriginaleCommand}"
-						DataContext="{Binding}"	/>
-
+                    <MenuItem Header="Torna originale" 
+                              Command="{Binding Path=tornareOriginaleCommand}"
+                              DataContext="{Binding}"	/>
+                    
                     <Separator />
-
-                    <MenuItem Header="Stampa immediata...">
-            
-            <MenuItem Header="a Formato Pieno"
-				      ItemsSource="{Binding Path=stampantiAbbinate}"
-			          ItemTemplate="{StaticResource stampaRapidaMenu}"
-				      DataContext="{Binding}">
-		    </MenuItem>
-            <MenuItem Header="con Bordi Bianchi"
-				      ItemsSource="{Binding Path=stampantiAbbinate}"
-			          ItemTemplate="{StaticResource stampaRapidBordiBianchiaMenu}"
-				      DataContext="{Binding}">
-            </MenuItem>
-        </MenuItem>
-
-        <MenuItem Header="Aggiungi al Carrello"
-				  ItemsSource="{Binding Path=stampantiAbbinate}" 
-				  ItemTemplate="{StaticResource pulsanteDiStampaTemplateContextMenu}"
-				  DataContext="{Binding}">
-		</MenuItem>
-
-		<MenuItem Header="Aggiungi al CD" 
-                        Command="{Binding Path=aggiungereAlMasterizzatoreCommand}" 
-						DataContext="{Binding}"/>
-
-		<MenuItem Header="Ruota" >
-			<MenuItem Header="-90°"
-					  Command="{Binding Path=ruotareCommand}" 
-					  CommandParameter="-90"
-					  DataContext="{Binding}">
-			</MenuItem>
-			<MenuItem Header="+90°"
-					  Command="{Binding Path=ruotareCommand}" 
-					  CommandParameter="+90"
-					  DataContext="{Binding}">
-			</MenuItem>
-		</MenuItem>
-
-		<MenuItem Header="Aggiungi Logo...">
-			<MenuItem Header="Nord-Est"
-						Command="{Binding Path=aggiungereLogoCommand}"
-						CommandParameter="NordEst"
-						DataContext="{Binding}" />
-			<MenuItem Header="Sud-Est"
-						Command="{Binding Path=aggiungereLogoCommand}"
-						CommandParameter="SudEst"
-						DataContext="{Binding}" />
-			<MenuItem Header="Sud-Ovest"
-						Command="{Binding Path=aggiungereLogoCommand}"
-						CommandParameter="SudOvest"
-						DataContext="{Binding}" />
-			<MenuItem Header="Nord-Ovest"
-						Command="{Binding Path=aggiungereLogoCommand}"
-						CommandParameter="NordOvest"
-						DataContext="{Binding}" />
-		</MenuItem>
-
-		<MenuItem Header="Modifica Metadati" 
-				  Command="{Binding Path=modificaMetadatiCommand}"
-				  CommandParameter="SEL" 
-				  DataContext="{Binding}"/>
-
-		<MenuItem Header="Aggiungi allo slide show" 
-				  Command="{Binding caricareSlideShowCommand}" 
-				  CommandParameter="Manual" 
-				  DataContext="{Binding}"/>
-
-		<MenuItem Header="Vedi a tutto schermo"
-				  Command="{Binding Path=viewFotoFullScreenCommand}" 
-				  DataContext="{Binding}"/>
-		
-		<MenuItem Header="Clona" 
-                        Command="{Binding Path=clonaFotografieCommand}"
-						DataContext="{Binding}"	/>
-
-		<MenuItem Header="Elimina" 
-				  Command="{Binding eliminareFotoCommand}"
-				              DataContext="{Binding}"/>
+                    
+                    <MenuItem Header="Stampa a Formato Pieno"
+                              ItemsSource="{Binding Path=stampantiAbbinate}"
+                              ItemTemplate="{StaticResource stampaRapidaMenu}"
+                              DataContext="{Binding}">
+                        
+                    </MenuItem>
+                    
+                    <MenuItem Header="Stampa con Bordi Bianchi"
+                              ItemsSource="{Binding Path=stampantiAbbinate}"
+                              ItemTemplate="{StaticResource stampaRapidBordiBianchiaMenu}"
+                              DataContext="{Binding}">
                     </MenuItem>
 
+                    <MenuItem Header="Aggiungi al Carrello"
+				              ItemsSource="{Binding Path=stampantiAbbinate}" 
+				              ItemTemplate="{StaticResource pulsanteDiStampaTemplateContextMenu}"
+				              DataContext="{Binding}">
+		            </MenuItem>
+
+		            <MenuItem Header="Aggiungi al CD" 
+                              Command="{Binding Path=aggiungereAlMasterizzatoreCommand}" 
+                              DataContext="{Binding}"/>
+
+		            <MenuItem Header="Ruota" >
+			            <MenuItem Header="-90°"
+					              Command="{Binding Path=ruotareCommand}" 
+					              CommandParameter="-90"
+					              DataContext="{Binding}">
+			            </MenuItem>
+			            <MenuItem Header="+90°"
+					              Command="{Binding Path=ruotareCommand}" 
+					              CommandParameter="+90"
+					              DataContext="{Binding}">
+			            </MenuItem>
+		            </MenuItem>
+
+		            <MenuItem Header="Aggiungi Logo...">
+			            <MenuItem Header="Nord-Est"
+                                  Command="{Binding Path=aggiungereLogoCommand}"
+                                  CommandParameter="NordEst"
+                                  DataContext="{Binding}" />
+			            <MenuItem Header="Sud-Est"
+						          Command="{Binding Path=aggiungereLogoCommand}"
+                                  CommandParameter="SudEst"
+                                  DataContext="{Binding}" />
+			            <MenuItem Header="Sud-Ovest"
+                                  Command="{Binding Path=aggiungereLogoCommand}"
+                                  CommandParameter="SudOvest"
+                                  DataContext="{Binding}" />
+			            <MenuItem Header="Nord-Ovest"
+                                  Command="{Binding Path=aggiungereLogoCommand}"
+                                  CommandParameter="NordOvest"
+                                  DataContext="{Binding}" />
+                    </MenuItem>
+
+		            <MenuItem Header="Modifica Metadati" 
+                              Command="{Binding Path=modificaMetadatiCommand}"
+                              CommandParameter="SEL" 
+                              DataContext="{Binding}"/>
+
+		            <MenuItem Header="Aggiungi allo slide show" 
+                              Command="{Binding caricareSlideShowCommand}" 
+                              CommandParameter="Manual" 
+                              DataContext="{Binding}"/>
+
+		            <MenuItem Header="Vedi a tutto schermo"
+                              Command="{Binding Path=viewFotoFullScreenCommand}" 
+                              DataContext="{Binding}"/>
+		
+		            <MenuItem Header="Clona" 
+                              Command="{Binding Path=clonaFotografieCommand}"
+                              DataContext="{Binding}"	/>
+
+		            <MenuItem Header="Elimina" 
+                              Command="{Binding eliminareFotoCommand}"
+                              DataContext="{Binding}"/>
+                </MenuItem>
+
+                <!--Tutte le Selezionate-->
                 <MenuItem Header="Tutte le Selezionate"
                           Visibility="{Binding Path=fotografieCW, Mode=OneWay, Converter={StaticResource listAzioniRapideVisibilityConverter}}"
                           DataContext="{Binding}">
@@ -158,37 +159,34 @@
                                                            CommandParameter="MULTI"/>
                                 </i:EventTrigger>
                           </i:Interaction.Triggers>
-
+                    
                     <MenuItem Header="Torna originale" 
-                                Command="{Binding Path=tornareOriginaleCommand}"
-						        DataContext="{Binding}"	/>
-
+                              Command="{Binding Path=tornareOriginaleCommand}"
+                              DataContext="{Binding}"	/>
+                    
                     <Separator />
                     
-                    <MenuItem Header="Stampa immediata..."  >
-
-                        <MenuItem Header="a Formato Pieno"
-				              ItemsSource="{Binding Path=stampantiAbbinate}"
-			                  ItemTemplate="{StaticResource stampaRapidaMenu}"
-				              DataContext="{Binding}">
-                        </MenuItem>
-
-                        <MenuItem Header="con Bordi B ianchi"
-				              ItemsSource="{Binding Path=stampantiAbbinate}"
-			                  ItemTemplate="{StaticResource stampaRapidBordiBianchiaMenu}"
-				              DataContext="{Binding}">
-                        </MenuItem>
+                    <MenuItem Header="Stampa Formato Pieno"
+                              ItemsSource="{Binding Path=stampantiAbbinate}"
+                              ItemTemplate="{StaticResource stampaRapidaMenu}"
+                              DataContext="{Binding}">
                     </MenuItem>
 
+                    <MenuItem Header="Stampa con Bordi Bianchi"
+                              ItemsSource="{Binding Path=stampantiAbbinate}"
+                              ItemTemplate="{StaticResource stampaRapidBordiBianchiaMenu}"
+                              DataContext="{Binding}">
+                    </MenuItem>
+                            
                     <MenuItem Header="Aggiungi al Carrello"
-				              ItemsSource="{Binding Path=stampantiAbbinate}" 
+                              ItemsSource="{Binding Path=stampantiAbbinate}" 
 				              ItemTemplate="{StaticResource pulsanteDiStampaTemplateContextMenu}"
 				              DataContext="{Binding}">
                     </MenuItem>
 
                     <MenuItem Header="Aggiungi al CD" 
-                                Command="{Binding Path=aggiungereAlMasterizzatoreCommand}" 
-						        DataContext="{Binding}"/>
+                              Command="{Binding Path=aggiungereAlMasterizzatoreCommand}" 
+                              DataContext="{Binding}"/>
 
                     <MenuItem Header="Ruota" >
                         <MenuItem Header="-90°"
@@ -223,26 +221,26 @@
 					</MenuItem>
 
 					<MenuItem Header="Modifica Metadati" 
-				          Command="{Binding Path=modificaMetadatiCommand}"
-				  CommandParameter="SEL" 
-				  DataContext="{Binding}"/>
+                              Command="{Binding Path=modificaMetadatiCommand}"
+                              CommandParameter="SEL" 
+                              DataContext="{Binding}"/>
 
                     <MenuItem Header="Aggiungi allo slide show" 
-				          Command="{Binding caricareSlideShowCommand}" 
-				          CommandParameter="Manual" 
-				          DataContext="{Binding}"/>
+                              Command="{Binding caricareSlideShowCommand}" 
+                              CommandParameter="Manual" 
+                              DataContext="{Binding}"/>
 
                     <MenuItem Header="Vedi a tutto schermo"
-				          Command="{Binding Path=viewFotoFullScreenCommand}" 
-				          DataContext="{Binding}"/>
+                              Command="{Binding Path=viewFotoFullScreenCommand}" 
+                              DataContext="{Binding}"/>
 
                     <MenuItem Header="Clona" 
-                        Command="{Binding Path=clonaFotografieCommand}"
-						DataContext="{Binding}"	/>
+                              Command="{Binding Path=clonaFotografieCommand}"
+                              DataContext="{Binding}"	/>
 
                     <MenuItem Header="Elimina" 
-				          Command="{Binding eliminareFotoCommand}"
-				          DataContext="{Binding}"/>
+                              Command="{Binding eliminareFotoCommand}"
+                              DataContext="{Binding}"/>
                 </MenuItem>
 
             </CompositeCollection>
