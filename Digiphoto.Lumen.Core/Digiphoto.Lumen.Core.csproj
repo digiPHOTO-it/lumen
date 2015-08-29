@@ -224,6 +224,7 @@
     </Compile>
     <Compile Include="src\Servizi\BarCode\BarCodeSrvImpl.cs" />
     <Compile Include="src\Servizi\BarCode\IBarCodeSrv.cs" />
+    <Compile Include="src\Servizi\EntityRepository\AzioniAutoRepositorySrvImpl.cs" />
     <Compile Include="src\Servizi\EntityRepository\FotografieRepositorySrvImpl.cs" />
     <Compile Include="src\Servizi\EntityRepository\ScarichiCardsRepositorySrvImpl.cs" />
     <Compile Include="src\Servizi\Io\IGestoreImmagineSrv.cs">

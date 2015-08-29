@@ -30,6 +30,7 @@ using System.Windows.Media.Effects;
 using Digiphoto.Lumen.Servizi.Io;
 using Digiphoto.Lumen.Servizi.EntityRepository;
 using Digiphoto.Lumen.Imaging.Wic.Correzioni;
+using System.ComponentModel;
 
 namespace Digiphoto.Lumen.Imaging.Wic {
 
@@ -849,6 +850,91 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			AiutanteFoto.creaProvinoFoto( fotografia );
 		}
 
+		public void ruotare( IEnumerable<Fotografia> fotografie, int pGradi ) {
+			
+			Ruota ruota = new Ruota( pGradi );
+
+			// Devo informate tutti che queste foto sono cambiate. Preparo il messaggio
+			FotoModificateMsg msg = new FotoModificateMsg( this );
+
+			foreach( Fotografia f in fotografie ) {
+
+				if( ruota.isAngoloRetto ) {
+					autoRuotaSuOriginale( f, ruota );
+				} else {
+					addCorrezione( f, ruota );
+
+					gestoreImmaginiSrv.salvaCorrezioniTransienti( f );
+				}
+				msg.add( f );
+			}
+
+			pubblicaMessaggio( msg );
+		}
+
+		public void applicareAzioneAutomatica( IEnumerable<Fotografia> fotografie, AzioneAuto azioneAuto ) {
+
+			// Modifico sul db
+			gestoreImmaginiSrv.salvaCorrezioniAutomatiche( fotografie, azioneAuto );
+
+			provinare( fotografie );
+		}
+
+		/// <summary>
+		/// Questo metodo serve a ricreare i provini di una o più foto.
+		/// </summary>
+		/// <param name="fotografie"></param>
+		public void provinare( IEnumerable<Fotografia> fotografie ) {
+
+			BackgroundWorker provinatore = new BackgroundWorker();
+			provinatore.WorkerReportsProgress = true;
+			provinatore.WorkerSupportsCancellation = false;
+			provinatore.DoWork += provinatore_DoWork;  // Questo non viene eseguito nel thread della UI e quindi mi da problemi
+			provinatore.ProgressChanged += provinatore_ProgressChanged;
+			provinatore.RunWorkerAsync( fotografie );
+		}
+
+		void provinatore_ProgressChanged( object sender, ProgressChangedEventArgs e ) {
+
+			Fotografia foto = (Fotografia)e.UserState;
+			AiutanteFoto.creaProvinoFoto( foto );
+
+
+		}
+
+		void provinatore_DoWork( object sender, DoWorkEventArgs e ) {
+			BackgroundWorker worker = sender as BackgroundWorker;
+			IEnumerable<Fotografia> fotografie = (IEnumerable<Fotografia>) e.Argument;
+			
+			// TODO 
+			// qui abbiamo un problema da risolvere:
+			//   se imposto   0 = il programma è veloce ma la UI è bloccatissima (niente refresh, niente mouse)
+			//   se imposto da 100 a 500 = la UI comincia a muoversi
+			//   se imposto oltre 1000 sarebbe l'effetto più bello, ma ri rallenta di brutto. Su 100 foto si perdono 100 secondi (una enormità).
+			// per ora scelgo la strada di tenere un minimo per rinfrescale le foto
+			// Cmq non è un buon compromesso.
+			const int attesaPiccola = 250;
+			const int attesaGrande = 1500;
+			int conta = 0;
+
+			foreach( Fotografia foto in fotografie ) {
+
+				// Eseguo il lavoro nel ReportProgess perché questo metodo viene eseguito nel thread della UI
+				worker.ReportProgress( 0, foto );
+
+				// Avviso tutti che questa foto è cambiata
+				FotoModificateMsg msg = new FotoModificateMsg( this, foto );
+				pubblicaMessaggio( msg );
+
+				// Devo dare respiro alla UI altrimenti non mi sente i click del mouse dell'utente
+				// e l'effetto sarebbe quello che NON lavora in background
+				if( 1 == 0 && ++conta >= 10 ) {
+					Thread.Sleep( attesaGrande );
+					conta = 0;
+				}  else
+					Thread.Sleep( attesaPiccola );
+			}
+		}
 
 	}
 }
