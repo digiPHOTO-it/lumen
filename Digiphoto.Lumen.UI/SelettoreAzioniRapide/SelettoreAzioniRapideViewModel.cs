@@ -93,27 +93,6 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
-/*
-		private Transform _trasformazioneCorrente;
-		public Transform trasformazioneCorrente
-		{
-			get
-			{
-				return _trasformazioneCorrente;
-			}
-			set
-			{
-				if (_trasformazioneCorrente != value)
-				{
-					_trasformazioneCorrente = value;
-					OnPropertyChanged("trasformazioneCorrente");
-
-					forseInizioModifiche();
-				}
-			}
-		}
-*/
-
 		public IList<Fotografia> fotoSelezionate
 		{
 			get
@@ -254,42 +233,6 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
-		public bool possoApplicareCorrezioni
-		{
-			get
-			{
-				return modificheInCorso == true;
-			}
-		}
-
-		/// <summary>
-		/// Le foto selezionate sono in fase di modifica
-		/// </summary>
-		private bool _modificheInCorso;
-		public bool modificheInCorso
-		{
-			get
-			{
-				return _modificheInCorso;
-			}
-			private set
-			{
-				if (_modificheInCorso != value)
-				{
-					_modificheInCorso = value;
-					OnPropertyChanged("modificheInCorso");
-				}
-			}
-		}
-
-		public bool possoRifiutareCorrezioni
-		{
-			get
-			{
-				return possoApplicareCorrezioni;
-			}
-		}
-
 		public bool possoApplicareCorrezione
 		{
 			get
@@ -301,7 +244,7 @@ namespace Digiphoto.Lumen.UI
 		#endregion Controlli
 
 
-		#region Medoti
+		#region Metodi
 
 		/// <summary>
 		/// Carico tutti i formati carta che sono abbinati alle stampanti installate
@@ -527,17 +470,8 @@ namespace Digiphoto.Lumen.UI
 
 		private void ruotare(int pGradi)
 		{
-			Ruota ruota = new Ruota( pGradi );
-
-			if( ruota.isAngoloRetto ) {
-				foreach( Fotografia f in fotoSelezionate )
-					fotoRitoccoSrv.autoRuotaSuOriginale( f, ruota );
-			} else {
-
-				addCorrezione( ruota );
-
-				salvareCorrezioni();
-			}
+			// Demando al servizio più opportuno
+			fotoRitoccoSrv.ruotare( fotoSelezionate.AsEnumerable(), pGradi );
 		}
 
 		/// <summary>
@@ -546,11 +480,19 @@ namespace Digiphoto.Lumen.UI
 		/// <param name="posiz"></param>
 		private void aggiungereLogo( String posiz ) {
 
+#if true 
+// TODO eliminare: solo per prova !! ! ! !
+Digiphoto.Lumen.Servizi.EntityRepository.IEntityRepositorySrv<AzioneAuto> repo = LumenApplication.Instance.getServizioAvviato<Digiphoto.Lumen.Servizi.EntityRepository.IEntityRepositorySrv<AzioneAuto>>();
+string id = "42662270-CB0D-40A1-A179-EB753F955DE2";
+id = "aac63718-b23d-4d33-8371-a10dee7c67a0";
+AzioneAuto azioneAuto = repo.getById( new Guid( id ) );
+fotoRitoccoSrv.applicareAzioneAutomatica( fotoSelezionate.AsEnumerable(), azioneAuto );
+#else
 			foreach( Fotografia f in fotoSelezionate ) {
-
-				// forseInizioModifiche();
 				fotoRitoccoSrv.addLogoDefault( f, posiz, true );
 			}
+#endif
+			
 		}
 
 		private void tornareOriginale()
@@ -558,73 +500,6 @@ namespace Digiphoto.Lumen.UI
 			// per ogni foto elimino le correzioni e ricreo il provino partendo dall'originale.
 			foreach( Fotografia f in fotoSelezionate )
 				fotoRitoccoSrv.tornaOriginale( f );
-		}
-
-
-		/// <summary>
-		/// La prima volta che inizio a toccare una foto,
-		/// devo salvarmi le correzioni attuali di tutte quelle che stanno per essere modificate.
-		/// Mi serve per gestire eventuale rollback
-		/// </summary>
-		private void forseInizioModifiche()
-		{
-			if (!modificheInCorso)
-			{
-				// devo fare qualcosa al primo cambio di stato ?
-			}
-			modificheInCorso = true;
-		}
-
-		/// <summary>
-		/// Aggiungo la correzione a tutte le foto selezionate
-		/// </summary>
-		private void addCorrezione(Correzione correzione)
-		{
-
-			forseInizioModifiche();
-
-			foreach (Fotografia f in fotoSelezionate)
-				fotoRitoccoSrv.addCorrezione(f, correzione);
-		}
-
-		private void rifiutareCorrezioni()
-		{
-			foreach (Fotografia f in fotoSelezionate)
-				rifiutareCorrezioni(f, false);
-			modificheInCorso = false;
-		}
-
-		/// <summary>
-		/// Voglio rinunciare a modificare una foto e la tolgo anche dall'elenco di quelle in modifica.
-		/// </summary>
-		/// <param name="daTogliere"></param>
-		internal void rifiutareCorrezioni(Fotografia daTogliere, bool toglila)
-		{
-			fotoRitoccoSrv.undoCorrezioniTransienti(daTogliere);
-			if (toglila)
-			{
-				// La spengo
-				if(fotografieCW!=null)
-					fotografieCW.Deselect(daTogliere);
-			}
-		}
-
-		private void salvareCorrezioni()
-		{
-/*
-			// Purtoppo anche la trasformazione di rotazione, è gestita a parte.
-			if (trasformazioneCorrente is RotateTransform)
-			{
-				Ruota rc = new Ruota();
-				rc.gradi = (float)((RotateTransform)trasformazioneCorrente).Angle;
-				addCorrezione(rc);
-			}
-*/
-			foreach (Fotografia f in fotoSelezionate)
-				gestoreImmaginiSrv.salvaCorrezioniTransienti(f);
-
-			// Ora che ho persistito, concludo "dicamo cosi" la transazione, faccio una specie di commit.
-			modificheInCorso = false;
 		}
 
 		private void caricareSlideShow(string modo)
@@ -831,7 +706,7 @@ namespace Digiphoto.Lumen.UI
 				{
 					_aggiungereLogoCommand = new RelayCommand( posiz => this.aggiungereLogo( posiz.ToString() ),
 						                                       posiz => this.possoApplicareCorrezione,
-														       false );
+														       true );
 				}
 				return _aggiungereLogoCommand;
 			}

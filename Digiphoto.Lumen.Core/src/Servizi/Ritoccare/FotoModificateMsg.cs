@@ -30,6 +30,10 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		public void add( Fotografia f ) {
 			fotos.Add( f );
 		}
+
+		public void addRange( IEnumerable<Fotografia> fotografie ) {
+			fotos.AddRange( fotografie );
+		}
 	}
 
 }

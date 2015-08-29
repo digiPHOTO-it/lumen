@@ -105,6 +105,17 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		/// <param name="fotografia"></param>
 		/// <param name="ruota"></param>
 		void autoRuotaSuOriginale( Fotografia fotografia, Ruota ruota );
+
+		void ruotare( IEnumerable<Fotografia> fotografie, int pGradi );
+
+		void applicareAzioneAutomatica( IEnumerable<Fotografia> fotografie, AzioneAuto azioneAuto );
+
+		/// <summary>
+		/// Rigenera i provini (in background) di una o più foto
+		/// </summary>
+		/// <param name="fotografie"></param>
+		void provinare( IEnumerable<Fotografia> fotografie );
+
 	}
 
 }
