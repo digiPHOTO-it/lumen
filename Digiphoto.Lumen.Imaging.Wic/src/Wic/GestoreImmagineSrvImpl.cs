@@ -16,6 +16,7 @@ using Digiphoto.Lumen.Applicazione;
 using System;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Eventi;
+using System.Collections.Generic;
 
 namespace Digiphoto.Lumen.Imaging.Wic {
 
@@ -141,10 +142,16 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 			fotografieRepository.update( ref fotografia, true );
 			fotografieRepository.saveChanges();
+		}
 
-			// Devo informate tutti che questa foto è cambiata
-			FotoModificateMsg msg = new FotoModificateMsg( this, fotografia );
-			pubblicaMessaggio( msg );
+		public void salvaCorrezioniAutomatiche( IEnumerable<Fotografia> fotografie, AzioneAuto azioneAuto ) {
+
+			foreach( Fotografia f in fotografie ) {
+				Fotografia fotografia = f;
+				fotografia.correzioniXml = azioneAuto.correzioniXml;
+				fotografieRepository.update( ref fotografia, true );
+			}
+			fotografieRepository.saveChanges();
 		}
 
 		public void idrataImmaginiFoto( Fotografia foto, IdrataTarget target, bool forzatamente ) {
