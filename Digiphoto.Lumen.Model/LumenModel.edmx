@@ -77,7 +77,7 @@
     <Property Name="id" Type="nvarchar" Nullable="false" DefaultValue="K" MaxLength="1" />
     <Property Name="ultimoNumFotogramma" Type="int" Nullable="false" />
     <Property Name="dataUltimoScarico" Type="datetime" Nullable="true" />
-    <Property Name="versioneDbCompatibile" Type="nvarchar" Nullable="false" DefaultValue="1.0" MaxLength="10" />
+    <Property Name="versioneDbCompatibile" Type="nvarchar" Nullable="false" DefaultValue="1.1" MaxLength="10" />
     <Property Name="modoNumerazFoto" Type="nvarchar" Nullable="false" DefaultValue="M" MaxLength="1" />
     <Property Name="pixelProvino" Type="smallint" Nullable="false" />
     <Property Name="idPuntoVendita" Type="nvarchar" Nullable="true" MaxLength="5" />
@@ -405,7 +405,7 @@
           <Property Type="String" Name="id" Nullable="false" DefaultValue="K" MaxLength="1" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="Int32" Name="ultimoNumFotogramma" Nullable="false" />
           <Property Type="DateTime" Name="dataUltimoScarico" Nullable="true" />
-          <Property Type="String" Name="versioneDbCompatibile" Nullable="false" DefaultValue="1.0" MaxLength="10" />
+          <Property Type="String" Name="versioneDbCompatibile" Nullable="false" DefaultValue="1.1" MaxLength="10" />
           <Property Type="String" Name="modoNumerazFoto" Nullable="false" DefaultValue="X" MaxLength="1" />
           <Property Type="Int16" Name="pixelProvino" Nullable="false" />
           <Property Type="String" Name="idPuntoVendita" Nullable="true" MaxLength="5" />
@@ -631,7 +631,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Type="Guid" Name="id" Nullable="false" annotation:StoreGeneratedPattern="None" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />          
           <Property Name="nome" Type="String" Nullable="false" />
           <Property Name="correzioniXml" Type="String" Nullable="false" />
           <Property Name="attivo" Type="Boolean" Nullable="false" DefaultValue="true" />

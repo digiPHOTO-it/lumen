@@ -12,7 +12,7 @@ namespace Digiphoto.Lumen.Servizi.Io {
 
 	/**
 	 * Questo servizio non contiene intelligenza o stato.
-	 * E' un esecutore di interventi grafici.
+	 * gestisce le operazioni da/verso il filesystem che riguardano le Immagini.
 	 * Verrà pilotato da un altro servizio "più intelligente" e più vicino
 	 * al modello.
 	 */
@@ -38,6 +38,12 @@ namespace Digiphoto.Lumen.Servizi.Io {
 		/// Con questo metodo, rendo persistenti le correzioniXml che ancora sono transienti.
 		/// </summary>
 		void salvaCorrezioniTransienti( Fotografia fotografia );
+		
+		/// <summary>
+		/// Una azione automatica contiene diverse correzioni.
+		/// Ribalto queste correzioni sulla foto indicata, e quindi le salvo su disco.
+		/// </summary>
+		void salvaCorrezioniAutomatiche( IEnumerable<Fotografia> fotografie, AzioneAuto azioneAuto );
 
 		void idrataImmaginiFoto( Fotografia foto, IdrataTarget target, bool forzatamente );
 	}

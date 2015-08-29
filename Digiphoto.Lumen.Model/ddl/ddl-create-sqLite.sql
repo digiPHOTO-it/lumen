@@ -41,7 +41,7 @@ CREATE TABLE [InfosFisse] (
     [id] nvarchar(1)   DEFAULT 'K' NOT NULL ,
     [ultimoNumFotogramma] integer   NOT NULL ,
     [dataUltimoScarico] datetime   NULL ,
-    [versioneDbCompatibile] nvarchar(10)   DEFAULT '1.0' NOT NULL ,
+    [versioneDbCompatibile] nvarchar(10)   DEFAULT '1.1' NOT NULL ,
     [modoNumerazFoto] nvarchar(1)   DEFAULT 'M' NOT NULL ,
     [pixelProvino] smallint   NOT NULL ,
     [idPuntoVendita] nvarchar(5)   NULL ,
