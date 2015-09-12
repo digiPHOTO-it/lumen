@@ -31,6 +31,9 @@ using Digiphoto.Lumen.Servizi.Io;
 using Digiphoto.Lumen.Imaging;
 using Digiphoto.Lumen.Imaging.Wic.Correzioni;
 using Digiphoto.Lumen.UI.SelettoreAzioniRapide;
+using Digiphoto.Lumen.UI.Dialogs;
+using Digiphoto.Lumen.Core.Database;
+using Digiphoto.Lumen.Servizi.EntityRepository;
 
 namespace Digiphoto.Lumen.UI.FotoRitocco {
 
@@ -656,6 +659,14 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		private IEntityRepositorySrv<AzioneAuto> azioniAutomaticheRepositorySrv
+		{
+			get
+			{
+				return (IEntityRepositorySrv<AzioneAuto>)LumenApplication.Instance.getServizioAvviato<IEntityRepositorySrv<AzioneAuto>>();
+			}
+		}
+
 		/// <summary>
 		/// Quando passo da una foto ad un altra, salvo automaticamente eventuali modifiche effettuate
 		/// </summary>
@@ -981,7 +992,20 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		
+		private RelayCommand _creaAzioniAutoCommand;
+		public ICommand creaAzioniAutoCommand
+		{
+			get
+			{
+				if (_creaAzioniAutoCommand == null)
+				{
+					_creaAzioniAutoCommand = new RelayCommand(param => creaAzioneAuto(),
+													  param => this.possoRifiutareCorrezioni,
+													  true);
+				}
+				return _creaAzioniAutoCommand;
+			}
+		}
 
 #endregion Comandi
 
@@ -1250,6 +1274,37 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				Correzione ccc = fotoRitoccoSrv.converteInCorrezione( qualeTipo, trasformazione );
 				if( ccc != null )
 					addCorrezione( ccc );
+			}
+		}
+
+		/// <summary>
+		/// Aggiungo la correzione a tutte le foto selezionate
+		/// </summary>
+		private void addCorrezione(CorrezioniList correzioni, Correzione correzione)
+		{
+
+			// Sul correzione di traslazione, devo riportare due proprietà di front-end
+			// Mi serviranno per riproporzionare durante la provinatura, oppure la risultante.
+			if (correzione is Trasla && modalitaEdit == ModalitaEdit.FotoRitocco)
+			{
+				((Trasla)correzione).rifW = frpContenitoreW;
+				((Trasla)correzione).rifH = frpContenitoreH;
+			}
+
+			if (correzione is Zoom)
+				((Zoom)correzione).quadroRuotato = this.quadroRuotato;
+
+			fotoRitoccoSrv.addCorrezione(ref correzioni, correzione);
+		}
+
+		void addCorrezione(CorrezioniList correzioni, TipoCorrezione qualeTipo, Transform trasformazione)
+		{
+
+			if (!isTrasformazioneNulla(trasformazione))
+			{
+				Correzione ccc = fotoRitoccoSrv.converteInCorrezione(qualeTipo, trasformazione);
+				if (ccc != null)
+					addCorrezione(correzioni, ccc);
 			}
 		}
 
@@ -2114,6 +2169,74 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			if( fotografieDaModificare != null )
 				foreach( Fotografia foto in fotografieDaModificare )
 					AiutanteFoto.idrataImmaginiFoto( foto, IdrataTarget.Provino, false );
+		}
+
+		/// <summary>
+		/// Creo un Azione Auto
+		/// </summary>
+		private void creaAzioneAuto()
+		{
+			CorrezioniList correzioni = new CorrezioniList();
+
+			InputBoxDialog d = new InputBoxDialog();
+			d.Title = "Inserire il nome dell'azione";
+			bool? esito = d.ShowDialog();
+
+			if (esito != true)
+				return;
+
+			// Nel fotoritocco, la maschera viene gestita come una correzione
+			if (mascheraAttiva != null)
+			{
+
+				string nomeFile = Path.GetFileName(mascheraAttiva.UriSource.LocalPath);
+
+				// Uso la maschera nella sua dimensione naturale
+				Maschera maschera = new Maschera
+				{
+					nome = nomeFile,
+					width = mascheraAttiva.PixelWidth,
+					height = mascheraAttiva.PixelHeight
+				};
+
+				addCorrezione(correzioni, maschera);
+			}
+
+
+			// Vado ad aggiungerli solo al momento di applicare per davvero
+			// Prima tratto gli effetti
+
+			CorrezioniList lista1 = fotoRitoccoSrv.converteInCorrezioni(effetti.AsEnumerable<Object>());
+			foreach (Correzione correz in lista1)
+				addCorrezione(correzioni, correz);
+
+			// Poi tratto le trasformazioni : occhio sono posizionali
+			addCorrezione(correzioni, TipoCorrezione.Specchio, trasformazioni.Children[TFXPOS_FLIP]);
+			addCorrezione(correzioni, TipoCorrezione.Ruota, trasformazioni.Children[TFXPOS_ROTATE]);
+			addCorrezione(correzioni, TipoCorrezione.Zoom, trasformazioni.Children[TFXPOS_ZOOM]);
+			addCorrezione(correzioni, TipoCorrezione.Trasla, trasformazioni.Children[TFXPOS_TRANSLATE]);
+
+			// IL logo lo metto per ultimo perché potrebbe andare su di una immagine traslata o zoomata
+			if (logo != null)
+			{
+				addCorrezione(correzioni, logo);
+			}
+
+			LumenEntities objContext = UnitOfWorkScope.currentDbContext;
+
+			AzioneAuto azioneAuto = new AzioneAuto();
+			azioneAuto.id = Guid.NewGuid();
+			azioneAuto.nome = d.inputValue.Text;
+			azioneAuto.attivo = true;
+			azioneAuto.correzioniXml = SerializzaUtil.objectToString(correzioni);
+
+			azioniAutomaticheRepositorySrv.addNew(azioneAuto);
+			if (azioniAutomaticheRepositorySrv.saveChanges() > 0)
+				dialogProvider.ShowMessage(d.inputValue.Text, "Azione Creata Correttamente");
+			else
+				_giornale.Error("Non ho salvato nessun record!!!");
+
+
 		}
 
 

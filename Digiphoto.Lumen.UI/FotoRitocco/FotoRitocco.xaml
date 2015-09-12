@@ -208,7 +208,8 @@
 
 			<Button Name="rifiutareCorrezioniButton" Content="Rifiuta" ToolTip="Annulla le correzioni (tasto rapido = ESC)" Command="{Binding rifiutareCorrezioniCommand}" />
 			<Button Name="salvareMascheraButton" Content="Salva Maschera" ToolTip="Salva una nuova foto con cornice (tasto rapido = SPAZIO)" Click="salvareMascheraButton_Click" IsEnabled="{Binding possoSalvareMaschera}" />
-			<Separator Height="25" />
+            <Button Name="creaAzioniAutoButton" Content="Crea Azioni Auto" ToolTip="Crea una Azione Auto"  Command="{Binding creaAzioniAutoCommand}" />
+            <Separator Height="25" />
 			<!-- RRR
             <Button Content="+All" ToolTip="Mette tutte le foto in modifica" Command="{Binding commandRiempireElencoInModifica}" />
 			<Button Content="-All" ToolTip="Toglie tutte le foto dalla modifica" Command="{Binding commandSvuotareElencoInModifica}" />
