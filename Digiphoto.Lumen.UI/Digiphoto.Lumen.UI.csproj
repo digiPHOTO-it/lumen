@@ -241,6 +241,9 @@
     <Compile Include="DataEntry\DEGiornata\WindowGiornata.xaml.cs">
       <DependentUpon>WindowGiornata.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\InputBoxDialog.xaml.cs">
+      <DependentUpon>InputBoxDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\RangeGiorniDialog.xaml.cs">
       <DependentUpon>RangeGiorniDialog.xaml</DependentUpon>
     </Compile>
@@ -367,6 +370,10 @@
     <Page Include="DataEntry\ToolsBarResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\InputBoxDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Dialogs\RangeGiorniDialog.xaml">
       <SubType>Designer</SubType>

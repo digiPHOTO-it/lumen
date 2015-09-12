@@ -116,6 +116,44 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			}
 		}
 
+		/// <summary>
+		/// Aggiungo una correzione ad una lista di correzione.
+		/// Se la correzione esiste già, gestisco eventuale somma, oppure rimozione in caso che sia inutile (ininfluente)
+		/// </summary>
+		/// <param name="correzioni"></param>
+		/// <param name="correzioneNuova"></param>
+		public void addCorrezione(ref CorrezioniList correzioni, Correzione correzioneNuova)
+		{
+
+			// Alcune correzioni, non devono andare sempre in aggiunta, ma possono sommarsi l'un l'altra.
+			// Per esempio la rotazione. Se ruoto 90° poi altri 90, l'effetto finale è quello di avere una sola da 180°
+			Correzione daSost = null;
+			Correzione vecchia = null;
+			foreach (Correzione c in correzioni)
+			{
+				if (c.isSommabile(correzioneNuova))
+				{
+					vecchia = c;
+					daSost = c.somma(correzioneNuova);
+					break;
+				}
+			}
+
+			if (daSost != null)
+			{
+				// Sostituisco la correzione con quella ricalcolata
+				if (daSost.isInutile)
+					correzioni.Remove(vecchia);
+				else
+					correzioni.sostituire(vecchia, daSost);
+			}
+			else
+			{
+				// Aggiungo in fondo (se la correzione è inutile, allora non aggiungo nulla)
+				if (!correzioneNuova.isInutile)
+					correzioni.Add(correzioneNuova);
+			}
+		}
 		
 		public void removeCorrezione( Fotografia foto, Type quale ) {
 

@@ -1,0 +1,13 @@
+﻿<Window x:Class="Digiphoto.Lumen.UI.Dialogs.InputBoxDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="" Height="130" Width="310" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+
+    <Grid >
+        <TextBox x:Name="inputValue" Margin="10,11,10,41" Height="30"/>
+        <Button Content="OK" Width="75" Height="23" Margin="70,54,148,5" Name="buttonOk" IsDefault="True" Click="buttonOk_Click" />
+        <Button Content="Annulla" Width="75" Height="23" Margin="160,54,58,5" Name="buttonAnnulla" IsCancel="True" Click="buttonAnnulla_Click" />
+    </Grid>
+
+
+</Window>
