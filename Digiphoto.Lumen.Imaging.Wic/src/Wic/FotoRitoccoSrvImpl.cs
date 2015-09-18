@@ -935,9 +935,19 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		void provinatore_ProgressChanged( object sender, ProgressChangedEventArgs e ) {
 
 			Fotografia foto = (Fotografia)e.UserState;
+
+			bool esistevaRisultante = foto.imgRisultante != null;
+
 			AiutanteFoto.creaProvinoFoto( foto );
+			
+			bool esisteRisultante = foto.imgRisultante != null;
 
-
+			// Siccome è molto probabile che venga idratata l'immagine risultante e siccome sono in un loop,
+			// non posso tenere in memoria tanta roba, altrimenti esplode
+			if( esisteRisultante && !esistevaRisultante ) {
+				// Significa che l'ho idratata io in questo momento
+				AiutanteFoto.disposeImmagini( foto, IdrataTarget.Risultante );
+			}
 		}
 
 		void provinatore_DoWork( object sender, DoWorkEventArgs e ) {
