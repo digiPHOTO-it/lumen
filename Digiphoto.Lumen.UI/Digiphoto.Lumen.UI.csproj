@@ -205,6 +205,7 @@
     <Compile Include="Converters\CompNumFotoConverter.cs" />
     <Compile Include="Converters\BoolWindowStateConverter.cs" />
     <Compile Include="Converters\BoolIsNullConverter.cs" />
+    <Compile Include="Converters\CorrezioniXml ImageSourceConverter.cs" />
     <Compile Include="Converters\ModoVenditaBoolConverter.cs" />
     <Compile Include="Converters\ModoVenditaImageSourceConverter.cs" />
     <Compile Include="Converters\ListAzioniRapideVisibilityConverter.cs" />
@@ -314,6 +315,10 @@
     <Compile Include="Reports\ReportHostWindow.xaml.cs">
       <DependentUpon>ReportHostWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SelettoreAzioniAutomatiche\SelettoreAzioniAutomaticheView.xaml.cs">
+      <DependentUpon>SelettoreAzioniAutomaticheView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SelettoreAzioniAutomatiche\SelettoreAzioniAutomaticheViewModel.cs" />
     <Compile Include="SelettoreAzioniRapide\SelettoreAzioniRapideView.xaml.cs">
       <DependentUpon>SelettoreAzioniRapideView.xaml</DependentUpon>
     </Compile>
@@ -505,6 +510,14 @@
     <Page Include="Resources\GlobalResourceDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SelettoreAzioniAutomatiche\SelettoreAzioniAutomaticheResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SelettoreAzioniAutomatiche\SelettoreAzioniAutomaticheView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="SelettoreAzioniRapide\SelettoreAzioniRapideResources.xaml">
       <SubType>Designer</SubType>
@@ -768,6 +781,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\usbPendrive-16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\cornice_empty-48x48.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
