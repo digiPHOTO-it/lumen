@@ -6,54 +6,59 @@
              xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
              xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
              mc:Ignorable="d"
-             d:DesignHeight="140" d:DesignWidth="700"
-             Background="Black">
+             d:DesignHeight="400" d:DesignWidth="250">
 
     <UserControl.Resources>
         <ResourceDictionary Source="SelettoreAzioniAutomaticheResources.xaml" />
     </UserControl.Resources>
 
-    <GroupBox Header="Selezionare un Azione Automatica">
-
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
 
 
-            <ListBox Name="azioniAutomaticheListBox" 
-                     Height="90"
-                     ItemsSource="{Binding azioniAutomatiche}" 
-                     ItemTemplate="{StaticResource azioniAutomaticheListBoxTemplate}"
-                     SelectedItem="{Binding Path=azioneAutomaticaSelezionata}"
-                     ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"
-                     Grid.Row="0" Grid.Column="0" Margin="0,0,0,5" >
+        <ListBox Name="azioniAutomaticheListBox" 
+                    ItemsSource="{Binding azioniAutomatiche}" 
+                    ItemTemplate="{StaticResource azioniAutomaticheListBoxTemplate}"
+                    SelectedItem="{Binding Path=azioneAutomaticaSelezionata}"
+                    ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    Grid.Row="0" Grid.Column="0" >
 
-                <ListBox.Resources>
-                    <!--SelectedItem with focus -->
-                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="LightGreen" />
-                    <!--SelectedItem without focus -->
-                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="LightGreen" Opacity="0.7" />
-                </ListBox.Resources>
+            <ListBox.Resources>
+                <!--SelectedItem with focus -->
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="LightGreen" />
+                <!--SelectedItem without focus -->
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="LightGreen" Opacity="0.7" />
+            </ListBox.Resources>
 
-                <ListBox.ContextMenu >
-                    <ContextMenu>
-                        <MenuItem Header="Rinomina" Command="{Binding rinominaCommand}" />
-                        <MenuItem Header="Elimina" Command="{Binding eliminaCommand}" />
-                    </ContextMenu>
-                </ListBox.ContextMenu>
-            </ListBox>
+            <ListBox.ContextMenu >
+                <ContextMenu>
+                    <MenuItem Header="Rinomina" Command="{Binding rinominaCommand}" />
+                    <MenuItem Header="Elimina" Command="{Binding eliminaCommand}" />
+                </ContextMenu>
+            </ListBox.ContextMenu>
+        </ListBox>
 
-            <Button Name="refreshButton" Content="Rileggi" Command="{Binding Path=rileggereAzioniAutomaticheCommand}"  CommandParameter="True"
-                Grid.Row="1" Grid.Column="0" Width="100" Margin="246,0,342,0" />
-            <Button Name="eseguiAzioneButton" Content="Esegui Azione" Command="{Binding Path=eseguiAzioniAutomaticheCommand}"  CommandParameter="True"
-                Grid.Row="1" Width="100" Margin="351,0,237,0"/>
+		<Grid Grid.Row="1" Grid.Column="0" Height="28">
+			<Grid.RowDefinitions>
+				<RowDefinition />
+			</Grid.RowDefinitions>		
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
 
-        </Grid>
-    </GroupBox>
+			<Button Name="refreshButton" Command="{Binding Path=rileggereAzioniAutomaticheCommand}"  CommandParameter="True" ToolTip="Rileggi elenco delle Azioni Automatiche" Grid.Row="0" Grid.Column="0" >
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/refresh-16x16.png"  />
+			</Button>
+			<Button Name="eseguiAzioneButton" Content="Esegui Azione" Command="{Binding Path=eseguiAzioniAutomaticheCommand}"  CommandParameter="True" Margin="5,0,5,0" MinWidth="140" Grid.Row="0" Grid.Column="1" />
+		</Grid>
+
+	</Grid>
 
 </lumM:UserControlBase>

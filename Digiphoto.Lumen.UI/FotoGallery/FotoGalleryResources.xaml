@@ -205,7 +205,6 @@
 	</Style>
 
     <Style x:Key="styleSelettoreAzioniAutomatiche" TargetType="UserControl">
-        <Setter Property="MaxHeight" Value="140" />
         <!--  TODO Purtroppo non funziona. Non riconosce la property IsEnabled e non capisco perché		
 		<Style.Triggers>
 			<Trigger Property="IsEnabled" Value="False">

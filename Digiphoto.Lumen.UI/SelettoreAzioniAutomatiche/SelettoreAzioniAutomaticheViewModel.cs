@@ -169,16 +169,20 @@ namespace Digiphoto.Lumen.UI
 		{
 			if (azioneAutomaticaSelezionata != null)
 			{
+				const int max = 3;
 				bool conferma = false;
 
-				dialogProvider.ShowConfirmation("Sei sicuro di voler applicare questa Azione Automatica? \n\n(" + 
-					azioneAutomaticaSelezionata.nome + 
-					")\n\nn° "+ fotografieCW.Count +
-					" foto" , "Elimina",
-					(confermato) =>
-					{
-						conferma = confermato;
-					});
+				if( fotografieCW.Count <= max )
+					conferma = true;
+				else {
+					dialogProvider.ShowConfirmation( "Sei sicuro di voler applicare questa Azione Automatica? \n\n(" +
+						azioneAutomaticaSelezionata.nome +
+						")\n\nn° " + fotografieCW.Count +
+						" foto", "Elimina",
+						( confermato ) => {
+							conferma = confermato;
+						} );
+				}
 
 				if (!conferma)
 				{
@@ -186,8 +190,6 @@ namespace Digiphoto.Lumen.UI
 				}
 
 				fotoRitoccoSrv.applicareAzioneAutomatica(fotografieCW, azioneAutomaticaSelezionata);
-
-				dialogProvider.ShowMessage("Operazione Completata", "Avviso");
 			}
 		}
 
