@@ -22,21 +22,8 @@ namespace Digiphoto.Lumen.UI
 {
     public class SelettoreAzioniAutomaticheViewModel : ViewModelBase, IObserver<EntityCambiataMsg>
     {
-		private SelettoreAzioniAutomatiche selettoreAzioniAutomaticheView = null;
 
-		public SelettoreAzioniAutomaticheViewModel(SelettoreAzioniAutomatiche selettoreAzioniAutomaticheView) : this()
-		{
-			// TODO EDI questo è un errore che va contro tutti i pattern MVVM e MVC. Il Model non deve conoscere la view. Rivedere se necessario!
-			this.selettoreAzioniAutomaticheView = selettoreAzioniAutomaticheView;
-		}
-
-		public SelettoreAzioniAutomaticheViewModel selettoreAzioniAutomatiche
-		{
-			get;
-			private set;
-		}
-
-		internal SelettoreAzioniAutomaticheViewModel()
+		public SelettoreAzioniAutomaticheViewModel()
 		{
 			this.DisplayName = "Selettore Azioni Automatiche";
 
@@ -51,19 +38,26 @@ namespace Digiphoto.Lumen.UI
 
 		#region Proprietà
 
+		/// <summary>
+		///  Uso questa particolare collectionView perché voglio tenere traccia nel ViewModel degli N-elementi selezionati.
+		///  Sottolineo N perché non c'è supporto nativo per questo. Vedere README.txt nel package di questa classe.
+		/// </summary>
+		private MultiSelectCollectionView<Fotografia> _fotografieMCW;
 		public MultiSelectCollectionView<Fotografia> fotografieMCW
 		{
 			get
 			{
-				if (selettoreAzioniAutomaticheView.MyItemsSource is MultiSelectCollectionView<Fotografia>)
+				return _fotografieMCW;
+			}
+			set
+			{
+				if (_fotografieMCW != value)
 				{
-					return (MultiSelectCollectionView<Fotografia>)selettoreAzioniAutomaticheView.MyItemsSource;
+					_fotografieMCW = value;
+					OnPropertyChanged("fotografieMCW");
 				}
-
-				return null;
 			}
 		}
-
 
 		public IList<Fotografia> fotografieCW
 		{
