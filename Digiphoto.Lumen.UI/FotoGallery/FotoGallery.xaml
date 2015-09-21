@@ -38,10 +38,10 @@
 	<DockPanel Name="dockPanelGallery">
 
 
-		<Expander DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left" Header="Metadati da imporre" IsExpanded="False" ExpandDirection="Down">
-			<lum:SelettoreMetadati x:Name="selettoreMetadati" MyItemsSource="{Binding ElementName=this, Path=DataContext.fotografieCW}"
-								    IsEnabled="{Binding Path=MyItemsSource.isAlmenoUnaSelezionata}" Style="{StaticResource styleSelettoreMetadati}" />
-		</Expander>
+        <Expander DockPanel.Dock="Top" Header="Metadati da imporre" IsExpanded="False" ExpandDirection="Down">
+            <lum:SelettoreMetadati x:Name="selettoreMetadati" MyItemsSource="{Binding ElementName=this, Path=DataContext.fotografieCW}"
+								   IsEnabled="{Binding Path=MyItemsSource.isAlmenoUnaSelezionata}" Style="{StaticResource styleSelettoreMetadati}" />
+        </Expander>
 
 		<Expander DockPanel.Dock="Left" IsExpanded="False" ExpandDirection="Right" >
 			<Expander.Header>
