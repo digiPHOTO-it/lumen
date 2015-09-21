@@ -25,23 +25,18 @@ namespace Digiphoto.Lumen.UI
     {
 		public static readonly DependencyProperty MyItemsSourceProperty;
 
-		SelettoreAzioniAutomaticheViewModel _model = null;
-
 		public SelettoreAzioniAutomatiche()
 		{
 			InitializeComponent();
-
-			_model = new SelettoreAzioniAutomaticheViewModel(this);
-
-			this.DataContext = _model;
+			this.DataContext = new SelettoreAzioniAutomaticheViewModel();
 		}
 
 		static SelettoreAzioniAutomatiche()
         {
 			SelettoreAzioniAutomatiche.MyItemsSourceProperty = DependencyProperty.Register("MyItemsSource",
 																			typeof(IEnumerable),
-																			typeof(SelettoreAzioniAutomatiche)
-																			);
+																			typeof(SelettoreAzioniAutomatiche),
+																			new PropertyMetadata(new PropertyChangedCallback(MyItemSourcePropertyCallback)));
         }
 
         public IEnumerable MyItemsSource
@@ -56,6 +51,11 @@ namespace Digiphoto.Lumen.UI
 				SetValue(SelettoreAzioniAutomatiche.MyItemsSourceProperty, value);
             }
         }
-		
+
+		private static void MyItemSourcePropertyCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			var uc = d as SelettoreAzioniAutomatiche;
+			((SelettoreAzioniAutomaticheViewModel)uc.viewModelBase).fotografieMCW = e.NewValue as MultiSelectCollectionView<Fotografia>;
+		}
     }
 }
