@@ -37,19 +37,26 @@
 
 	<DockPanel Name="dockPanelGallery">
 
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-            <Expander VerticalAlignment="Top" HorizontalAlignment="Left" Header="Metadati da imporre" IsExpanded="False" ExpandDirection="Down" Width="715">
-			    <lum:SelettoreMetadati x:Name="selettoreMetadati" MyItemsSource="{Binding ElementName=this, Path=DataContext.fotografieCW}"
-								       IsEnabled="{Binding Path=MyItemsSource.isAlmenoUnaSelezionata}" Style="{StaticResource styleSelettoreMetadati}" />
-            </Expander>
 
-            <Expander VerticalAlignment="Top" HorizontalAlignment="Right" Header="Azioni Automatiche" IsExpanded="False" ExpandDirection="Down" Width="715">
-                <lum:SelettoreAzioniAutomatiche x:Name="selettoreAzioniAutomatiche" MyItemsSource="{Binding ElementName=this, Path=DataContext.fotografieCW}"
-                                                IsEnabled="{Binding Path=MyItemsSource.isAlmenoUnaSelezionata}" Style="{StaticResource styleSelettoreAzioniAutomatiche}"/>
-            </Expander>
-        </StackPanel>
-        
-        <ToolBarTray Name="toolBarTrayAzioniDx"  Orientation="Vertical" DockPanel.Dock="Right" Style="{StaticResource fgToolBarTrayStyle}">
+		<Expander DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left" Header="Metadati da imporre" IsExpanded="False" ExpandDirection="Down">
+			<lum:SelettoreMetadati x:Name="selettoreMetadati" MyItemsSource="{Binding ElementName=this, Path=DataContext.fotografieCW}"
+								    IsEnabled="{Binding Path=MyItemsSource.isAlmenoUnaSelezionata}" Style="{StaticResource styleSelettoreMetadati}" />
+		</Expander>
+
+		<Expander DockPanel.Dock="Left" IsExpanded="False" ExpandDirection="Right" >
+			<Expander.Header>
+				<TextBlock Text="Azioni Automatiche">
+					<TextBlock.LayoutTransform>
+						<RotateTransform Angle="-90"/>
+					</TextBlock.LayoutTransform>
+				</TextBlock>
+			</Expander.Header>
+
+			<lum:SelettoreAzioniAutomatiche x:Name="selettoreAzioniAutomatiche" MyItemsSource="{Binding ElementName=this, Path=DataContext.fotografieCW}"
+                                                IsEnabled="{Binding Path=MyItemsSource.isAlmenoUnaSelezionata}" Style="{StaticResource styleSelettoreAzioniAutomatiche}"/>			
+		</Expander>
+
+		<ToolBarTray Name="toolBarTrayAzioniDx"  Orientation="Vertical" DockPanel.Dock="Right" Style="{StaticResource fgToolBarTrayStyle}">
 
 			<ToolBar Band="1" BandIndex="1" Style="{StaticResource fgToolBarStyle}">
                 <Button ToolTip="Page UP" Style="{StaticResource imageButtonToolBarStyle}" Click="buttonMovePage_Click" CommandParameter="-1" IsEnabled="{Binding isAlmenoUnaFoto}">

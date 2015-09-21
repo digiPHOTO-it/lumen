@@ -3,7 +3,11 @@
                     xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
                     >
 
-    <lumC:CorrezioniXmlImageSourceConverter x:Key="correzioniXmlImageSourceConverter" />
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="pack://application:,,,/Digiphoto.Lumen.UI;component/Resources/GlobalResourceDictionary.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+
+	<lumC:CorrezioniXmlImageSourceConverter x:Key="correzioniXmlImageSourceConverter" />
 
     <DataTemplate x:Key="azioniAutomaticheListBoxTemplate">
         <Border BorderBrush="Red" >
