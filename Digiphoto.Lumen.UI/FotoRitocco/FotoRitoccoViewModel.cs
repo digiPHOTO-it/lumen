@@ -2185,6 +2185,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			if (esito != true)
 				return;
 
+			//Verifico se c'e' già un azione con lo stesso nome
+			//nel caso modifico quella
+			AzioneAuto azioneAuto = searchOrCreateAzione(d.inputValue.Text);
+
+			if (azioneAuto == null)
+				return;
+
 			// Nel fotoritocco, la maschera viene gestita come una correzione
 			if (mascheraAttiva != null)
 			{
@@ -2236,7 +2243,39 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			else
 				_giornale.Error("Non ho salvato nessun record!!!");
 
+		}
 
+		public AzioneAuto searchOrCreateAzione(String nomeAzione)
+		{
+			AzioneAuto azioneAuto = azioniAutomaticheRepositorySrv.getAll().Where(a => a.nome.ToUpper().Equals(nomeAzione.ToUpper())).FirstOrDefault<AzioneAuto>();
+
+			if (azioneAuto != null)
+			{
+				bool procediPure = false;
+				dialogProvider.ShowConfirmation("E' gia presente un azione con lo stesso nome!!\nSovrascriverla", "Richiesta conferma",
+					(confermato) =>
+					{
+						procediPure = confermato;
+
+					});
+
+				azioneAuto.nome = nomeAzione;
+
+				if (!procediPure)
+				{
+					azioneAuto = null;
+				}
+
+				return azioneAuto;
+			}
+			else if (azioneAuto == null)
+			{
+				azioneAuto = new AzioneAuto();
+				azioneAuto.nome = nomeAzione;
+				azioneAuto.attivo = true;
+			}
+			
+			return azioneAuto;
 		}
 
 
