@@ -258,26 +258,29 @@ namespace Digiphoto.Lumen.UI {
 			
 			if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
 			{
-				Fotografia lastSelectedFoto = fotoGalleryViewModel.fotografieCW.SelectedItems.Last<Fotografia>();
-				int firstIndex = fotoGalleryViewModel.fotografieCW.IndexOf(lastSelectedFoto);
-				int lastIndex = fotoGalleryViewModel.fotografieCW.IndexOf(foto);
-
-				//se ho selezionato dal più alto al più basso inverto gli indici
-				if (firstIndex > lastIndex)
+				if (fotoGalleryViewModel.fotografieCW.SelectedItems.Count > 0)
 				{
-					int appoggio = firstIndex;
-					//faccio +1 perche se no non riesco a selezionare l'ultima foto
-					firstIndex = lastIndex + 1;
-					lastIndex = appoggio;
-				}
+					Fotografia lastSelectedFoto = fotoGalleryViewModel.fotografieCW.SelectedItems.Last<Fotografia>();
+					int firstIndex = fotoGalleryViewModel.fotografieCW.IndexOf(lastSelectedFoto);
+					int lastIndex = fotoGalleryViewModel.fotografieCW.IndexOf(foto);
 
-				for (int i = firstIndex; i < lastIndex; i++)
-				{
-					Fotografia f = (Fotografia)fotoGalleryViewModel.fotografieCW.GetItemAt(i);
-					if (!fotoGalleryViewModel.fotografieCW.SelectedItems.Contains(f))
+					//se ho selezionato dal più alto al più basso inverto gli indici
+					if (firstIndex > lastIndex)
 					{
-						fotoGalleryViewModel.fotografieCW.SelectedItems.Add(f);
-						fotoGalleryViewModel.fotografieCW.RefreshSelectedItemWithMemory();
+						int appoggio = firstIndex;
+						//faccio +1 perche se no non riesco a selezionare l'ultima foto
+						firstIndex = lastIndex + 1;
+						lastIndex = appoggio;
+					}
+
+					for (int i = firstIndex; i < lastIndex; i++)
+					{
+						Fotografia f = (Fotografia)fotoGalleryViewModel.fotografieCW.GetItemAt(i);
+						if (!fotoGalleryViewModel.fotografieCW.SelectedItems.Contains(f))
+						{
+							fotoGalleryViewModel.fotografieCW.SelectedItems.Add(f);
+							fotoGalleryViewModel.fotografieCW.RefreshSelectedItemWithMemory();
+						}
 					}
 				}
 			}
