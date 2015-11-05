@@ -2231,13 +2231,16 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			LumenEntities objContext = UnitOfWorkScope.currentDbContext;
 
-			AzioneAuto azioneAuto = new AzioneAuto();
-			azioneAuto.id = Guid.NewGuid();
 			azioneAuto.nome = d.inputValue.Text;
 			azioneAuto.attivo = true;
 			azioneAuto.correzioniXml = SerializzaUtil.objectToString(correzioni);
 
-			azioniAutomaticheRepositorySrv.addNew(azioneAuto);
+			if (azioneAuto.id == Guid.Empty)
+			{
+				azioneAuto.id = Guid.NewGuid();
+				azioniAutomaticheRepositorySrv.addNew(azioneAuto);
+			}
+
 			if (azioniAutomaticheRepositorySrv.saveChanges() > 0)
 				dialogProvider.ShowMessage(d.inputValue.Text, "Azione Creata Correttamente");
 			else
