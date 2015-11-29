@@ -29,6 +29,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI {
 			log4net.Config.XmlConfigurator.Configure();
 			_giornale.Debug( "GestoreConfiguratore sta per partire" );
 
+
 			mutex = new Mutex(true, "Digiphoto.Lumen.GestoreConfigurazione"); 
 			if (mutex.WaitOne(0, false))
 			{

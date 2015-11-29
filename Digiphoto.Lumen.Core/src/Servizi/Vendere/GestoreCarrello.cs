@@ -14,7 +14,6 @@ using System.Data.Entity.Infrastructure;
 using System.Windows.Forms;
 using System.Data.Common;
 using Digiphoto.Lumen.Database;
-using Digiphoto.Lumen.src.Database;
 using Digiphoto.Lumen.Config;
 using System.ComponentModel;
 using System.Data.Entity;

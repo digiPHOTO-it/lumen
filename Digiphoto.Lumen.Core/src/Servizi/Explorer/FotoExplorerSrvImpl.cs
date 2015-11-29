@@ -15,7 +15,6 @@ using System.Transactions;
 using Digiphoto.Lumen.Database;
 using System.Data.Entity.Core.Objects;
 using System.Data;
-using Digiphoto.Lumen.src.Database;
 using MemBus;
 
 namespace Digiphoto.Lumen.Servizi.Explorer {

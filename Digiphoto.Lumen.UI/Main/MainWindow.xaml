@@ -243,9 +243,9 @@
 						<Button Content="About" Height="50" Width="150" Click="Button_Click" />
 					</TabItem>
 
-					<TabItem ToolTip="Uscita" Height="Auto" Margin="0,40,0,-40">
+					<TabItem ToolTip="Termina la sessione di lavoro con lumen" Height="Auto" Margin="0,40,0,-40">
 						<TabItem.Header>
-							<TextBlock Text="Uscita" FontSize="16" />
+							<TextBlock Text="Fine lavoro" FontSize="16" />
 						</TabItem.Header>
 						<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 							<Button Content="Uscita" Height="50" Command="{Binding uscireCommand}" Width="150" ToolTip="Uscita dal programma"/>

@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
-  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="c0fc141ad77b4ef695f3c8e7ac1031af" Name="Diagram1" ZoomLevel="85" >
-        <EntityTypeShape EntityType="LumenModel.InfoFissa" Width="1.5" PointX="0.5" PointY="0.75" />
-        <EntityTypeShape EntityType="LumenModel.Evento" Width="1.5" PointX="6.125" PointY="2.625" />
-        <EntityTypeShape EntityType="LumenModel.Fotografia" Width="1.5" PointX="8.625" PointY="2.25" />
-        <AssociationConnector Association="LumenModel.EventoFotografia" />
-        <EntityTypeShape EntityType="LumenModel.Fotografo" Width="1.5" PointX="6.125" PointY="4.625" />
-        <AssociationConnector Association="LumenModel.FotografoFotografia" />
-        <EntityTypeShape EntityType="LumenModel.Giornata" Width="1.5" PointX="0.5" PointY="4" />
-        <EntityTypeShape EntityType="LumenModel.ScaricoCard" Width="1.5" PointX="6.125" PointY="7.375" />
-        <AssociationConnector Association="LumenModel.FotografoScaricoCard" />
-        <EntityTypeShape EntityType="LumenModel.FormatoCarta" Width="1.5" PointX="9.75" PointY="6.875" />
-        <EntityTypeShape EntityType="LumenModel.ConsumoCartaGiornaliero" Width="1.5" PointX="12.5" PointY="7.25" />
-        <AssociationConnector Association="LumenModel.FormatoCartaConsumoCartaGiornaliero" />
-        <EntityTypeShape EntityType="LumenModel.Carrello" Width="1.5" PointX="20" PointY="1.125" />
-        <EntityTypeShape EntityType="LumenModel.RigaCarrello" Width="1.5" PointX="17.125" PointY="1.5" />
-        <AssociationConnector Association="LumenModel.FotografoRigaCarrello" />
-        <AssociationConnector Association="LumenModel.FotografiaRigaCarrello" />
-        <AssociationConnector Association="LumenModel.FormatoCartaRigaCarrello" />
-        <EntityTypeShape EntityType="LumenModel.IncassoFotografo" Width="1.5" PointX="22.625" PointY="1.875" />
-        <AssociationConnector Association="LumenModel.FotografoIncassoFotografo" />
-        <AssociationConnector Association="LumenModel.CarrelloRigaCarrello" />
-        <AssociationConnector Association="LumenModel.CarrelloIncassoFotografo" />
-        <EntityTypeShape EntityType="LumenModel.AzioneAuto" Width="1.5" PointX="0.5" PointY="7.125" />
-        </Diagram>
+      <Diagram DiagramId="32fac51b00ea46acad2d4f74447c988c" Name="Diagram1" ZoomLevel="81">
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.AzioneAuto" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Carrello" Width="1.5" PointX="6" PointY="0.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.ConsumoCartaGiornaliero" Width="1.5" PointX="8.25" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Evento" Width="1.5" PointX="0.75" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.FormatoCarta" Width="1.5" PointX="6" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografo" Width="1.5" PointX="0.75" PointY="5.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Fotografia" Width="1.5" PointX="3" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.Giornata" Width="1.5" PointX="8.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.IncassoFotografo" Width="1.5" PointX="6" PointY="5.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.InfoFissa" Width="1.5" PointX="10.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.RigaCarrello" Width="1.5" PointX="8.25" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Digiphoto.Lumen.Model.ScaricoCard" Width="1.5" PointX="3" PointY="9.75" IsExpanded="true" />
+        <AssociationConnector Association="Digiphoto.Lumen.Model.FK_IncassiFotografi_1_0" ManuallyRouted="false" />
+        <AssociationConnector Association="Digiphoto.Lumen.Model.FK_RigheCarrelli_3_0" ManuallyRouted="false" />
+        <AssociationConnector Association="Digiphoto.Lumen.Model.FK_ConsumiCartaGiornalieri_0_0" ManuallyRouted="false" />
+        <AssociationConnector Association="Digiphoto.Lumen.Model.FK_Fotografie_1_0" ManuallyRouted="false" />
+        <AssociationConnector Association="Digiphoto.Lumen.Model.FK_RigheCarrelli_0_0" ManuallyRouted="false" />
+        <AssociationConnector Association="Digiphoto.Lumen.Model.FK_Fotografie_0_0" ManuallyRouted="false" />
+        <AssociationConnector Association="Digiphoto.Lumen.Model.FK_IncassiFotografi_0_0" ManuallyRouted="false" />
+        <AssociationConnector Association="Digiphoto.Lumen.Model.FK_RigheCarrelli_2_0" ManuallyRouted="false" />
+        <AssociationConnector Association="Digiphoto.Lumen.Model.FK_ScarichiCards_0_0" ManuallyRouted="false" />
+        <AssociationConnector Association="Digiphoto.Lumen.Model.FK_RigheCarrelli_1_0" ManuallyRouted="false" />
+      </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

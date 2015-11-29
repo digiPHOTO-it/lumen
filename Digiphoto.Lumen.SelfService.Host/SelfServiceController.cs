@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web.Http;
 using Digiphoto.Lumen.Applicazione;
-using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Imaging;
 using Digiphoto.Lumen.Model;

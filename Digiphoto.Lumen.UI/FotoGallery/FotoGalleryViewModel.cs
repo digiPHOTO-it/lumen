@@ -568,7 +568,7 @@ namespace Digiphoto.Lumen.UI {
 			{
 				return _modoVendita;
 			}
-			private set
+			set
 			{
 				if (_modoVendita != value)
 				{

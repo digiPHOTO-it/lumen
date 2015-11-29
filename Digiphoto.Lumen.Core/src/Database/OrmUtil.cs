@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Data.Entity.Core.Objects;
-using System.Data.Entity.Core.Objects.DataClasses;
 using System.Data;
 using System.ComponentModel.DataAnnotations;
-using System.Data.Entity;
 using Digiphoto.Lumen.Core.Database;
 using System.Linq.Expressions;
-using System.Data.Entity.Infrastructure;
 using Digiphoto.Lumen.Model;
+using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure;
 
 namespace Digiphoto.Lumen.Database {
 
