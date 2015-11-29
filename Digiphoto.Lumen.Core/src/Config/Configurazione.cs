@@ -5,7 +5,6 @@ using System.Text;
 using Digiphoto.Lumen.Core.Database;
 using log4net;
 using System.Configuration;
-using System.Data.Entity.Core.EntityClient;
 using System.IO;
 using Digiphoto.Lumen.Servizi.Vendere;
 using System.Windows.Forms;

@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using  System.Data.Entity.Core.Objects;
 using System.Reflection;
 using System.Data.Common;
 using System.Collections;
-using System.Data.Entity.Core.EntityClient;
 
 namespace Digiphoto.Lumen.src.Database {
 
