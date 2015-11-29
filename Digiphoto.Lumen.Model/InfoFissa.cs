@@ -18,9 +18,9 @@ namespace Digiphoto.Lumen.Model
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public InfoFissa()
         {
-            this.id = "\"K\"";
-            this.versioneDbCompatibile = "\"1.1\"";
-            this.modoNumerazFoto = "\"X\"";
+            this.id = "K";
+            this.versioneDbCompatibile = "1.1";
+            this.modoNumerazFoto = "X";
         }
     
     	public string id { get; set; }
