@@ -81,7 +81,7 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEFotografo {
 		private void caricaImmagineEsistente() {
 			
 			string nomeFile = AiutanteFoto.nomeFileImgFotografo( entitaCorrente );
-			if( File.Exists( nomeFile ) ) {
+			if( nomeFile != null && File.Exists( nomeFile ) ) {
 				IGestoreImmagineSrv g = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
 				immagineFotografo = g.load( nomeFile );
 			} else
@@ -92,7 +92,11 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEFotografo {
 			
 			string nomeImmagine = AiutanteUI.scegliFileImmagineDialog( null );
 			if( nomeImmagine != null ) {
-				File.Copy( nomeImmagine, AiutanteFoto.nomeFileImgFotografo( entitaCorrente ), true );
+				string nomeFileDest = AiutanteFoto.nomeFileImgFotografo(entitaCorrente);
+				DirectoryInfo dInfo = new DirectoryInfo(nomeFileDest).Parent;
+				if (!dInfo.Exists)
+					Directory.CreateDirectory( dInfo.FullName );
+                File.Copy( nomeImmagine, nomeFileDest, true );
 				caricaImmagineEsistente();
 			}
 

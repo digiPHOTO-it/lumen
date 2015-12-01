@@ -328,8 +328,12 @@ namespace Digiphoto.Lumen.Util {
 		}
 
 		public static string nomeFileImgFotografo( Fotografo f, bool seNonEsisteNull ) {
-			var nomeFile = Path.Combine( nomeCartellaImmaginiFotografi, f.id + ".jpg" );
-			return seNonEsisteNull && !File.Exists( nomeFile ) ? null : nomeFile;
+			if( f == null || f.id == null ) {
+				return null;
+			} else {
+				var nomeFile = Path.Combine(nomeCartellaImmaginiFotografi, f.id + ".jpg");
+				return seNonEsisteNull && !File.Exists(nomeFile) ? null : nomeFile;
+			}
 		}
 
 
