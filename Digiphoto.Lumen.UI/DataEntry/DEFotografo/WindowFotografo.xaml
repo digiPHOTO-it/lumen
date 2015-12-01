@@ -45,20 +45,14 @@
 								<TextBox Margin="317,31,29,140" Text="{Binding note,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"  AcceptsReturn="True" Name="textBoxNote" Height="62" />
 								<Label Content="Codice" Margin="15,31,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="110" HorizontalContentAlignment="Right" FontWeight="Bold"/>
 								<TextBox Name="textBoxId" CharacterCasing="Upper" HorizontalContentAlignment="Left" Margin="143,31,0,0" Text="{Binding id, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Height="24" VerticalAlignment="Top" HorizontalAlignment="Left" Width="164" />
-
-								<Label Content="Nome" Margin="15,67,0,0" HorizontalAlignment="Left" Width="110" Height="26" VerticalAlignment="Top" HorizontalContentAlignment="Right" />
-								<TextBox Name="textBoxNome" CharacterCasing="Upper" Text="{Binding nome,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" Height="24" HorizontalContentAlignment="Left" Margin="143,67,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="164" />
-								<Label Content="Note" Height="29" HorizontalAlignment="Left" Margin="317,0,0,0" Name="label1" VerticalAlignment="Top" Width="58" />
+                                <Label Content="Note" Height="29" HorizontalAlignment="Left" Margin="317,0,0,0" Name="label1" VerticalAlignment="Top" Width="58" />
 								<Border Margin="361,123,0,0" Style="{StaticResource borderImageStyle}" HorizontalAlignment="Left" Width="100" Height="100" VerticalAlignment="Top" >
 									<Image Name="imageFotografo" Source="{Binding Path=immagineFotografo,Converter={StaticResource imageSourceConverter}}" />
 								</Border>
 								<Button Name="buttonUploadNuovaImmagine" Content="Carica&#x0a;Immagine" HorizontalAlignment="Left" Margin="466,180,0,0" VerticalAlignment="Top" Width="71" Height="43" Command="{Binding commandUploadNuovaImmagine}" ToolTip="Attenzione: l'immagine viene modificata immediatamente, senza dover salvare il fotografo."/>
 
-								<Label Content="Cognome" Height="26" HorizontalAlignment="Left" Margin="15,100,0,0" Name="label2" VerticalAlignment="Top" Width="110" HorizontalContentAlignment="Right" />
-								<TextBox Name="textBoxCognome" CharacterCasing="Upper" Height="24" Text="{Binding cognome,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" HorizontalAlignment="Left" Margin="143,102,0,0"  VerticalAlignment="Top" Width="164" />
-
-								<Label  Content="Iniziali" Margin="15,164,0,0" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="110" Height="26" VerticalAlignment="Top" />
-								<TextBox Name="textBoxCognomeNome" CharacterCasing="Upper" Text="{Binding cognomeNome, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"  VerticalAlignment="Top" Margin="143,134,0,0" Width="164" HorizontalAlignment="Left" />
+                                <Label  Content="Iniziali" Margin="15,164,0,0" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="110" Height="26" VerticalAlignment="Top" />
+								<TextBox Name="textBoxCognomeNome" CharacterCasing="Upper" Text="{Binding cognomeNome, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=true, NotifyOnValidationError=true}"  VerticalAlignment="Top" Margin="143,138,0,0" Width="164" HorizontalAlignment="Left" />
 
 								<Label Content="Soprannome" Height="26" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="15,130,0,0" Name="label3" VerticalAlignment="Top" Width="110" FontWeight="Bold" />
 								<TextBox CharacterCasing="Upper" Height="24" HorizontalAlignment="Left" Margin="143,164,0,0" Name="textBoxIniziali" Text="{Binding iniziali, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=true, NotifyOnValidationError=true}" MaxLength="100" VerticalAlignment="Top" Width="38" />

@@ -69,7 +69,12 @@ namespace Digiphoto.Lumen.Model {
 	   public override bool Equals( object altro ) {
 		   bool uguali = false;
 		   if( altro != null && altro is Fotografo ) {
-			   uguali = this.id.Equals( ((Fotografo)altro).id );
+
+				if( this.id != null )
+					uguali = this.id.Equals(((Fotografo)altro).id);
+				else if( (((Fotografo)altro).id) != null )
+					uguali = ((Fotografo)altro).id.Equals( this.id );
+				// Se sono entrambi null ?? per me non devono essere uguali !!
 		   }
 
 		   return uguali;
