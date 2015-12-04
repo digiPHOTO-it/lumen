@@ -440,7 +440,11 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="DateTime" Nullable="false" />
+          <Property Name="id" Type="DateTime" Nullable="false" >
+            <Documentation>
+              <Summary>:NPC:</Summary>
+            </Documentation>
+          </Property>
           <Property Name="orologio" Type="DateTime" Nullable="false" />
           <Property Name="incassoDichiarato" Type="Decimal" Precision="7" Scale="2" Nullable="false" />
           <Property Name="note" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
@@ -475,11 +479,11 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="String" MaxLength="1" FixedLength="false" Unicode="true" Nullable="false" DefaultValue="&quot;K&quot;" />
+          <Property Name="id" Type="String" MaxLength="1" FixedLength="false" Unicode="true" Nullable="false" DefaultValue="K" />
           <Property Name="ultimoNumFotogramma" Type="Int32" Nullable="false" />
           <Property Name="dataUltimoScarico" Type="DateTime" />
-          <Property Name="versioneDbCompatibile" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" DefaultValue="&quot;1.1&quot;" />
-          <Property Name="modoNumerazFoto" Type="String" MaxLength="1" FixedLength="false" Unicode="true" Nullable="false" DefaultValue="&quot;X&quot;" />
+          <Property Name="versioneDbCompatibile" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" DefaultValue="1.1" />
+          <Property Name="modoNumerazFoto" Type="String" MaxLength="1" FixedLength="false" Unicode="true" Nullable="false" DefaultValue="X" />
           <Property Name="pixelProvino" Type="Int16" Nullable="false" />
           <Property Name="idPuntoVendita" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="descrizPuntoVendita" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />

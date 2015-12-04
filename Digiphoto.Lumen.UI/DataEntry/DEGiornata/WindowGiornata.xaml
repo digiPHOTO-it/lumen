@@ -5,19 +5,23 @@
 		xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
         xmlns:lumDE="clr-namespace:Digiphoto.Lumen.UI.DataEntry"
         xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"        
-		xmlns:extToolkit="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit.Extended"
+		xmlns:sys="clr-namespace:System;assembly=mscorlib"
         Title="Chiusura di Cassa" Height="561" Width="561"
         Background="Black">
 
     <Window.Resources>
         <ResourceDictionary>
-			
-			<Style x:Key="CellRightAlign">
-				<Setter Property="Control.HorizontalAlignment" Value="Right" />
-			</Style>
-			
-			<lumC:BoolInverterConverter x:Key="boolInverterConverter" />
-			
+
+            <Style x:Key="CellRightAlign">
+                <Setter Property="Control.HorizontalAlignment" Value="Right" />
+            </Style>
+
+            <Style x:Key="giornoPickerSyle" TargetType="DatePicker">
+                <Setter Property="FontSize" Value="20" />
+            </Style>
+
+            <lumC:BoolInverterConverter x:Key="boolInverterConverter" />
+
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
                     <CollectionViewSource x:Key="giornataSource" />
@@ -26,8 +30,8 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-	
-	<DockPanel LastChildFill="True">
+
+    <DockPanel LastChildFill="True">
 
         <ToolBar DockPanel.Dock="Top">
             <lumDE:ToolsBar >
@@ -44,100 +48,122 @@
             </lumDE:ToolsBar>
         </ToolBar>
 
-		<!-- Questo è il last child che prende tutto lo spazio centrale -->
-		<Grid>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="320"/>
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="*" />
-			</Grid.RowDefinitions>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition />
-			</Grid.ColumnDefinitions>
+        <!-- Questo è il last child che prende tutto lo spazio centrale -->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="320"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
 
-			<ScrollViewer Grid.Row="0" Grid.Column="0" >
-				
-				<Grid Name="gridEditor" DataContext="{Binding entitySource}"  >
-					<Rectangle Height="31" HorizontalAlignment="Left" Margin="158,8,0,0" Name="rectangle1" Stroke="Black" VerticalAlignment="Top" Width="245" />
-					<Label  Content="Giornata" Margin="169,11,0,0" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="52" Height="26" VerticalAlignment="Top" />
-					<DatePicker Height="25" HorizontalAlignment="Left" Margin="239,11,0,0"  VerticalAlignment="Top" Width="152"  SelectedDate="{Binding id,Mode=TwoWay}"  IsEnabled="{Binding Path=isKeyEditabile,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" IsTodayHighlighted="False" Name="datePickerGiorno" >
-						<i:Interaction.Triggers>
-							<i:EventTrigger EventName="SelectedDateChanged">
-								<i:InvokeCommandAction 
-									Command="{Binding Path=DataContext.ricalcolareGiornoCommand,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
-									CommandParameter="{Binding ElementName=datePickerGiorno,Path=SelectedDate}" />
-							</i:EventTrigger>
-						</i:Interaction.Triggers>
-					</DatePicker>
+            <ScrollViewer Grid.Row="0" Grid.Column="0" >
 
+                <Grid Name="gridEditor" DataContext="{Binding entitySource}"  >
+                    <Rectangle Height="31" HorizontalAlignment="Left" Margin="158,8,0,0" Name="rectangle1" Stroke="Black" VerticalAlignment="Top" Width="245" />
+                    <Label  Content="Giornata" Margin="10,10,0,0" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="199" Height="39" VerticalAlignment="Top" FontSize="20" />
 
-					<TabControl Height="250" Margin="10,45,6,6" Style="{DynamicResource tabControlProspettiveStyle}">
-						<TabItem Header="Generale" >
-							<Grid>
-								<Label Content="Incasso dichiarato" Margin="8,23,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="110" HorizontalContentAlignment="Right" FontWeight="Bold" />
+                    <DatePicker Height="25" HorizontalAlignment="Left" Margin="239,11,0,0"  VerticalAlignment="Top" Width="152"  FontSize="18"
+								SelectedDate="{Binding id,Mode=TwoWay}"  
+								IsEnabled="{Binding Path=isKeyEditabile,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" 
+								IsTodayHighlighted="False" Name="datePickerGiorno" >
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectedDateChanged">
+                                <i:InvokeCommandAction 
+									Command="{Binding Path=DataContext.ricalcolareGiornoCommand,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </DatePicker>
+					
+                    <!--					
+                    <xctk:DateTimePicker
+						Height="39" Margin="214,11,10,0"  VerticalAlignment="Top"  
+						AllowSpin="True" AllowTextInput="False" 
+						TimePickerVisibility="Hidden"
+						Format="Custom" 
+						FormatString="ddd dd/MM/yyyy"
+						Value="{Binding Path=id,Mode=TwoWay}"
+						IsEnabled="{Binding Path=DataContext.isKeyEditabile,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+						Name="datePickerGiorno" Style="{StaticResource giornoPickerSyle}">
+
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="ValueChanged">
+                                <i:InvokeCommandAction 
+									Command="{Binding Path=DataContext.ricalcolareGiornoCommand,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </xctk:DateTimePicker>
+-->
+
+                    <TabControl Height="250" Margin="10,45,6,6" Style="{DynamicResource tabControlProspettiveStyle}">
+                        <TabItem Header="Generale" >
+                            <Grid>
+                                <Label Content="Incasso dichiarato" Margin="8,23,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="110" HorizontalContentAlignment="Right" FontWeight="Bold" />
                                 <TextBox Name="textBoxIncassoDichiarato" Text="{Binding incassoDichiarato,StringFormat=C}" Margin="136,23,0,0" HorizontalContentAlignment="Right" Height="24" VerticalAlignment="Top" HorizontalAlignment="Left" Width="60" TextChanged="textBoxIncassoDichiarato_TextChanged" 
 										 IsReadOnly="{Binding Path=DataContext.canEditFields,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},Converter={StaticResource boolInverterConverter}}" />
 
-								<Label Content="Incasso previsto" Margin="8,57,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="110" HorizontalContentAlignment="Right" />
-								<TextBox Name="textBoxIncassoPrevisto" HorizontalContentAlignment="Right" Margin="136,57,0,0" Text="{Binding incassoPrevisto,StringFormat=C, UpdateSourceTrigger=Explicit}" Height="24" VerticalAlignment="Top" HorizontalAlignment="Left" Width="60" IsReadOnly="True" />
+                                <Label Content="Incasso previsto" Margin="8,57,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="110" HorizontalContentAlignment="Right" />
+                                <TextBox Name="textBoxIncassoPrevisto" HorizontalContentAlignment="Right" Margin="136,57,0,0" Text="{Binding incassoPrevisto,StringFormat=C, UpdateSourceTrigger=Explicit}" Height="24" VerticalAlignment="Top" HorizontalAlignment="Left" Width="60" IsReadOnly="True" />
 
-								<Label Content="Squadratura" Margin="8,93,0,0" HorizontalAlignment="Left" Width="110" Height="26" VerticalAlignment="Top" HorizontalContentAlignment="Right" />
-								<TextBox Name="textBoxSquadratura"  Height="24" HorizontalContentAlignment="Right" IsReadOnly="True" Margin="136,93,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="60" />
-								
+                                <Label Content="Squadratura" Margin="8,93,0,0" HorizontalAlignment="Left" Width="110" Height="26" VerticalAlignment="Top" HorizontalContentAlignment="Right" />
+                                <TextBox Name="textBoxSquadratura"  Height="24" HorizontalContentAlignment="Right" IsReadOnly="True" Margin="136,93,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="60" />
+
                                 <Label Content="Note" Height="29" HorizontalAlignment="Left" Margin="317,0,0,0" Name="label1" VerticalAlignment="Top" Width="58" />
                                 <TextBox Name="textBoxNote" Margin="317,29,19,10" Text="{Binding note}"  AcceptsReturn="True" Height="179" 
 										 IsReadOnly="{Binding Path=DataContext.canEditFields,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},Converter={StaticResource boolInverterConverter}}" />
-                                
+
                                 <Label Content="Firma" Height="26" HorizontalAlignment="Left" Margin="8,126,0,0" Name="label2" VerticalAlignment="Top" Width="110" HorizontalContentAlignment="Right" FontWeight="Bold" />
-								<TextBox Name="textBoxFirma" Height="24" Text="{Binding firma}" HorizontalAlignment="Left" Margin="136,128,0,0"  VerticalAlignment="Top" Width="164" 
+                                <TextBox Name="textBoxFirma" Height="24" Text="{Binding firma}" HorizontalAlignment="Left" Margin="136,128,0,0"  VerticalAlignment="Top" Width="164" 
 										 IsReadOnly="{Binding Path=DataContext.canEditFields,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},Converter={StaticResource boolInverterConverter}}" />
 
-								<Label  Content="Orologio" Margin="8,162,0,0" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="110" Height="26" VerticalAlignment="Top" />
+                                <Label  Content="Orologio" Margin="8,162,0,0" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="110" Height="26" VerticalAlignment="Top" />
                                 <TextBox Name="textBoxOrologio" Text="{Binding orologio,Mode=TwoWay}" Margin="136,162,0,0" HorizontalAlignment="Left" Width="164" VerticalAlignment="Top" IsReadOnly="True" />
-								
-                                <Label Content="Totale scarti" Height="26" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="8,190,0,0" VerticalAlignment="Top" Width="110" />
-								<TextBox Name="textBoxTotaleScarti" HorizontalAlignment="Left"  Margin="138,192,0,0" Text="{Binding totScarti}" VerticalAlignment="Top" Width="58" HorizontalContentAlignment="Right" 
-										 IsReadOnly="{Binding Path=DataContext.canEditFields,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},Converter={StaticResource boolInverterConverter}}" />
-							</Grid>
-						</TabItem>
-						<TabItem Header="Taglierine" HorizontalAlignment="Left" Name="tabItem1" VerticalAlignment="Top">
-							<Grid>
-								<Label Content="Progressivo taglierina 1" Height="28" HorizontalAlignment="Left" Margin="35,55,0,0" Name="label3" VerticalAlignment="Top" />
-								<TextBox Height="23" HorizontalAlignment="Left" Margin="187,57,0,0" VerticalAlignment="Top" Width="162" Text="{Binding prgTaglierina1}" 
-										 IsReadOnly="{Binding Path=DataContext.canEditFields,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},Converter={StaticResource boolInverterConverter}}" />
-								<Label Content="Progressivo taglierina 2" Height="28" HorizontalAlignment="Left" Margin="35,101,0,0" Name="label5" VerticalAlignment="Top" />
-								<TextBox Height="23" HorizontalAlignment="Left" Margin="187,103,0,0" VerticalAlignment="Top" Width="162" Text="{Binding prgTaglierina2}" 
-										 IsReadOnly="{Binding Path=DataContext.canEditFields,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},Converter={StaticResource boolInverterConverter}}" />
-								<Label Content="Progressivo taglierina 3" Height="28" HorizontalAlignment="Left" Margin="35,145,0,0" Name="label6" VerticalAlignment="Top" />
-								<TextBox Height="23" HorizontalAlignment="Left" Margin="187,147,0,0" VerticalAlignment="Top" Width="162" Text="{Binding prgTaglierina3}" 
-										 IsReadOnly="{Binding Path=DataContext.canEditFields,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},Converter={StaticResource boolInverterConverter}}" />
-							</Grid>
-						</TabItem>
-						<TabItem Header="Provvigioni" HorizontalAlignment="Left" Width="77">
-							<lum:IncassiFotografiView x:Name="incassiFotografiView"  />
-						</TabItem>
-					</TabControl>
-				</Grid>
-			</ScrollViewer>
 
-			<GridSplitter ResizeDirection="Rows" Grid.Row="1" Grid.Column="0"
+                                <Label Content="Totale scarti" Height="26" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="8,190,0,0" VerticalAlignment="Top" Width="110" />
+                                <TextBox Name="textBoxTotaleScarti" HorizontalAlignment="Left"  Margin="138,192,0,0" Text="{Binding totScarti}" VerticalAlignment="Top" Width="58" HorizontalContentAlignment="Right" 
+										 IsReadOnly="{Binding Path=DataContext.canEditFields,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},Converter={StaticResource boolInverterConverter}}" />
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Taglierine" HorizontalAlignment="Left" Name="tabItem1" VerticalAlignment="Top">
+                            <Grid>
+                                <Label Content="Progressivo taglierina 1" Height="28" HorizontalAlignment="Left" Margin="35,55,0,0" Name="label3" VerticalAlignment="Top" />
+                                <TextBox Height="23" HorizontalAlignment="Left" Margin="187,57,0,0" VerticalAlignment="Top" Width="162" Text="{Binding prgTaglierina1}" 
+										 IsReadOnly="{Binding Path=DataContext.canEditFields,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},Converter={StaticResource boolInverterConverter}}" />
+                                <Label Content="Progressivo taglierina 2" Height="28" HorizontalAlignment="Left" Margin="35,101,0,0" Name="label5" VerticalAlignment="Top" />
+                                <TextBox Height="23" HorizontalAlignment="Left" Margin="187,103,0,0" VerticalAlignment="Top" Width="162" Text="{Binding prgTaglierina2}" 
+										 IsReadOnly="{Binding Path=DataContext.canEditFields,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},Converter={StaticResource boolInverterConverter}}" />
+                                <Label Content="Progressivo taglierina 3" Height="28" HorizontalAlignment="Left" Margin="35,145,0,0" Name="label6" VerticalAlignment="Top" />
+                                <TextBox Height="23" HorizontalAlignment="Left" Margin="187,147,0,0" VerticalAlignment="Top" Width="162" Text="{Binding prgTaglierina3}" 
+										 IsReadOnly="{Binding Path=DataContext.canEditFields,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},Converter={StaticResource boolInverterConverter}}" />
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Provvigioni" HorizontalAlignment="Left" Width="77">
+                            <lum:IncassiFotografiView x:Name="incassiFotografiView"  />
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </ScrollViewer>
+
+            <GridSplitter ResizeDirection="Rows" Grid.Row="1" Grid.Column="0"
 						  Grid.ColumnSpan="10"
 						  Width="Auto" Height="6"
 						  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
 						  Background="Green"/>
 
-			<DataGrid Name="gridLov" ItemsSource="{Binding collectionView}" Grid.Row="2" Grid.Column="0"
+            <DataGrid Name="gridLov" ItemsSource="{Binding collectionView}" Grid.Row="2" Grid.Column="0"
 					  AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" >
-				<DataGrid.Columns>
-					<DataGridTextColumn Binding="{Binding Path=id,StringFormat=d}" Header="Giornata"  />
-					<DataGridTextColumn Binding="{Binding incassoDichiarato,StringFormat=C}" Header="Incasso" CellStyle="{StaticResource CellRightAlign}" />
-					<DataGridTextColumn Binding="{Binding firma}" Header="firma" />
-					<DataGridTextColumn Binding="{Binding note}" Header="Note" />
-				</DataGrid.Columns>
-			</DataGrid>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding Path=id,StringFormat=d}" Header="Giornata"  />
+                    <DataGridTextColumn Binding="{Binding incassoDichiarato,StringFormat=C}" Header="Incasso" CellStyle="{StaticResource CellRightAlign}" />
+                    <DataGridTextColumn Binding="{Binding firma}" Header="firma" />
+                    <DataGridTextColumn Binding="{Binding note}" Header="Note" />
+                </DataGrid.Columns>
+            </DataGrid>
 
-		</Grid>
-	</DockPanel>
-	
+        </Grid>
+    </DockPanel>
+
 
 </Window>
