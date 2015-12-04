@@ -15,7 +15,20 @@ namespace Digiphoto.Lumen.Model
     
     public partial class Giornata : INotifyPropertyChanged 
     {
-    	public System.DateTime id { get; set; }
+    	
+    	private System.DateTime _id;
+    	public System.DateTime id {
+    		get {
+    			return _id;
+    		}
+    		set {
+    			if( _id != value ) {
+    				_id = value;
+    				OnPropertyChanged("id");
+    			}
+    		}
+    	}
+    
     	public System.DateTime orologio { get; set; }
     	public decimal incassoDichiarato { get; set; }
     	public string note { get; set; }

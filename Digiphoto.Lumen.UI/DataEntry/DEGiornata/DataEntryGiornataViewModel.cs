@@ -45,10 +45,8 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 		}
 */
 		protected override void passoPreparaAddNew( Giornata giornata ) {
-			
 			giornata.id = DateTime.Today;
 			giornata.orologio = DateTime.Now;
-
 			ricalcolareGiornata( giornata );
 		}
 
@@ -67,7 +65,10 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 		}
 
 		private Decimal calcolaIncassoPrevisto( DateTime giorno ) {
-			return venditoreSrv.calcolaIncassoPrevisto( giorno );
+			if (giorno == DateTime.MinValue)
+				return 0;
+			else
+				return venditoreSrv.calcolaIncassoPrevisto( giorno );
 		}
 
 		protected override void passoPrimaDiSalvare( Giornata giornata ) {
@@ -100,26 +101,32 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 			OnPropertyChanged( "incassiFotografiViewModel" );
 		}
 
-		void ricalcolareGiorno( DateTime? giorno ) {
+		void ricalcolareGiorno() {
 
-			if( giorno == null ) {
-				incassiFotografiViewModel = null;
-				return;
-			}
+			bool svuota = false;
 
 			// Questo capita quando rinuncio all'inserimento di un record
-			if( entitaCorrente == null )
-				return;
+			if (entitaCorrente == null)
+				svuota = true;
+			else
+				if (entitaCorrente.id == DateTime.MinValue) {
+					svuota = true;
+					entitaCorrente.incassoPrevisto = 0;
+				}
 
-			entitaCorrente.id = (DateTime)giorno;
-			ricalcolareGiornata( entitaCorrente );
+			if ( svuota ) {
+				incassiFotografiViewModel = null;
+                return;
+			} else
+
+				ricalcolareGiornata( entitaCorrente );
 		}
 
 		private RelayCommand _ricalcolareGiornoCommand;
 		public ICommand ricalcolareGiornoCommand {
 			get {
 				if( _ricalcolareGiornoCommand == null ) {
-					_ricalcolareGiornoCommand = new RelayCommand( param => ricalcolareGiorno( (DateTime?)param ),
+					_ricalcolareGiornoCommand = new RelayCommand( param => ricalcolareGiorno(),
 						                                          param => true,
 															      false );
 				}
