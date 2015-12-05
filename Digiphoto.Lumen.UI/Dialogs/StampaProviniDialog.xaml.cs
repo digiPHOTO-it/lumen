@@ -25,8 +25,7 @@ namespace Digiphoto.Lumen.UI.Dialogs
 
 		StampaProviniDialogViewModel model = null;
 
-		public StampaProviniDialog()
-		{
+		public StampaProviniDialog() {
 			InitializeComponent();
 
 			model = new StampaProviniDialogViewModel(this);
@@ -34,53 +33,40 @@ namespace Digiphoto.Lumen.UI.Dialogs
 			DataContext = model;
 			model.dialogProvider = this;
 			model.trayIconProvider = this;
-
 		}
 
-		public int totaleFotoSelezionate
-		{
-			get
-			{
+		public int totaleFotoSelezionate {
+			get {
 				return model.totaleFotoSelezionate;
-		}
-			set
-		{
+			}
+			set {
 				model.totaleFotoSelezionate = value;
 			}
 		}
 
-		public int totoleFotoGallery
-		{
-			get
-		{
+		public int totoleFotoGallery {
+			get {
 				return model.totoleFotoGallery;
 			}
-			set
-			{
+			set {
 				model.totoleFotoGallery = value;
 			}
 		}
 
-		public ParamStampaProvini paramStampaProvini
-		{
-			get
-			{
+		public ParamStampaProvini paramStampaProvini {
+			get {
 				return model.paramStampaProvini;
 			}
-			set
-			{
+			set {
 				model.paramStampaProvini = value;
 			}
 		}
 
-		public bool stampaSoloSelezionate
-		{
-			get
-			{
+		public bool stampaSoloSelezionate {
+			get {
 				return model.stampaSoloSelezionate;
-		}
-			set
-		{
+			}
+			set {
 				model.stampaSoloSelezionate = value;
 			}
 		}
@@ -181,5 +167,11 @@ namespace Digiphoto.Lumen.UI.Dialogs
 
 		#endregion;
 
+		private void RapidoButton_Click(object sender, RoutedEventArgs e) {
+			String tag = (String) (e.Source as Button).Tag;
+			var vetRC = tag.Split('x');
+			model.paramStampaProvini.numeroRighe = int.Parse(vetRC[0]);
+			model.paramStampaProvini.numeroColonne = int.Parse(vetRC[1]);
+		}
 	}
 }
