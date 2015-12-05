@@ -17,12 +17,25 @@ namespace Digiphoto.Lumen.UI.Dialogs
 			caricaStampantiAbbinate();
 
 			paramStampaProvini = new ParamStampaProvini();
-
+			paramStampaProvini.PropertyChanged += ParamStampaProvini_PropertyChanged;
 			stampaSoloSelezionate = true;
 
 			paramStampaProvini.numeroColonne = Configurazione.UserConfigLumen.numColoneProvini;
 			paramStampaProvini.numeroRighe = Configurazione.UserConfigLumen.numRigheProvini;
 			paramStampaProvini.macchiaProvini = Configurazione.UserConfigLumen.macchiaProvini;
+
+			ricreaMatriceEsempio();
+		}
+
+		private void ParamStampaProvini_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+			if (e.PropertyName == "numeroRighe" || e.PropertyName == "numeroColonne")
+				ricreaMatriceEsempio();
+		}
+
+		private void ricreaMatriceEsempio() {
+			// Se la matrice contiene già il numero di elementi interessato, allora non la sto a ricreare
+			if( matriceEsempio == null || matriceEsempio.Length != quanteFotoEsempio )
+				matriceEsempio = new byte[quanteFotoEsempio];
 		}
 
 		private StampaProviniDialog stampaProviniDialog;
@@ -46,10 +59,16 @@ namespace Digiphoto.Lumen.UI.Dialogs
 			set;
 		}
 
-		public bool stampaTuttaLaGallery
+		private bool _stampaTuttaLaGallery;
+        public bool stampaTuttaLaGallery
 		{
-			get;
-			set;
+			get {
+				return _stampaTuttaLaGallery;
+			}
+			set {
+				_stampaTuttaLaGallery = value;
+				ricreaMatriceEsempio();
+            }
 		}
 
 		public bool possoModificareWaterMark {
@@ -74,19 +93,56 @@ namespace Digiphoto.Lumen.UI.Dialogs
 			}
 		}
 
-		public int totoleFotoGallery
+		public int _totoleFotoGallery;
+        public int totoleFotoGallery
 		{
-			get;
-			set;
+			get {
+				return _totoleFotoGallery;
+            }
+			set {
+				_totoleFotoGallery = value;
+				ricreaMatriceEsempio();
+            }
 		}
 
-		public int totaleFotoSelezionate
+		private int _totaleFotoSelezionate;
+        public int totaleFotoSelezionate
 		{
-			get;
-			set;
+			get {
+				return _totaleFotoSelezionate;
+            }
+			set {
+				_totaleFotoSelezionate = value;
+				ricreaMatriceEsempio();
+            }
 		}
 
-		#endregion
+
+		private int quanteFotoEsempio {
+			get {
+				int tot = paramStampaProvini.numeroColonne * paramStampaProvini.numeroRighe;
+				if (stampaTuttaLaGallery)
+					return Math.Min( totoleFotoGallery, tot );
+				else
+					return Math.Min( totaleFotoSelezionate, tot );
+			}
+		}
+
+		// Tengo una matrice giusto per bindare un esempio nel form
+		private byte[] _matriceEsempio;
+		public byte[] matriceEsempio {
+			get {
+				return _matriceEsempio;
+			}
+			private set {
+				if (_matriceEsempio != value) {
+					_matriceEsempio = value;
+					OnPropertyChanged("matriceEsempio");
+				}
+			}
+		}
+
+		#endregion Proprietà
 
 		#region Metodi
 

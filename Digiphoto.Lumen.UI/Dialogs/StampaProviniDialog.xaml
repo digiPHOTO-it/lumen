@@ -3,43 +3,44 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
         Title="StampaProviniDialog" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-		d:DesignHeight="570" d:DesignWidth="504" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
+		d:DesignHeight="570" d:DesignWidth="504" SizeToContent="WidthAndHeight" ResizeMode="NoResize"
+		Background="#362A24"
+		WindowStartupLocation="CenterOwner"
+		>
 
-	<Window.Resources>
-		<ResourceDictionary Source="StampaProviniDialogResources.xaml" />
-	</Window.Resources>
+    <Window.Resources>
+        <ResourceDictionary Source="StampaProviniDialogResources.xaml" />
+    </Window.Resources>
 
-	<DockPanel>
-		
-		<GroupBox DockPanel.Dock="Top" Header="Foto da Stampare">
-			<Grid>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="*" />
-					<RowDefinition Height="*" />
-				</Grid.RowDefinitions>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
-				<RadioButton Grid.Row="0" Grid.Column="0" Content="Solo le Selezionate" Height="24" Margin="15,15,15,15"  HorizontalAlignment="Left" Name="StampaSoloSelezionate" IsChecked="{Binding Path=stampaSoloSelezionate}" VerticalAlignment="Top" />
-				<RadioButton Grid.Row="1" Grid.Column="0" Content="Tutte le foto nella Gallery" Height="24"  Margin="15,15,15,15" HorizontalAlignment="Left" Name="StampaTuttaLaGallery" IsChecked="{Binding Path=stampaTuttaLaGallery}" VerticalAlignment="Top"  />
-				<Label Grid.Column="1" Content="N°" Height="24"  Margin="15,15,196,15" />
-				<Label Grid.Column="1" Content="{Binding Path=totaleFotoSelezionate}" Height="24"  Margin="45,15,0,15" HorizontalAlignment="Left" />
-				<Label Grid.Row="1" Grid.Column="1" Content="N°" Height="24"  Margin="15,15,15,15" HorizontalAlignment="Left" />
-				<Label Grid.Row="1" Grid.Column="1" Content="{Binding Path=totoleFotoGallery}" Height="24"  Margin="45,15,0,15" HorizontalAlignment="Left" />
-			</Grid>
-		</GroupBox>
+    <DockPanel LastChildFill="True">
+
+        <GroupBox DockPanel.Dock="Top" Header="Foto da Stampare">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <RadioButton Content="Solo le Selezionate" Name="StampaSoloSelezionate" IsChecked="{Binding Path=stampaSoloSelezionate}" FontSize="18" Width="260" />
+                    <Label Content="N°" FontSize="18" />
+                    <Label Content="{Binding Path=totaleFotoSelezionate}" HorizontalContentAlignment="Right" FontSize="18" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <RadioButton Content="Tutte le foto nella Gallery" Name="StampaTuttaLaGallery" IsChecked="{Binding Path=stampaTuttaLaGallery}" FontSize="18" Width="260" />
+                    <Label Content="N°" VerticalContentAlignment="Center" FontSize="18" />
+                    <Label Content="{Binding Path=totoleFotoGallery}" HorizontalContentAlignment="Right" FontSize="18" />
+                </StackPanel>
+
+            </StackPanel>
+        </GroupBox>
 
         <GroupBox DockPanel.Dock="Bottom" >
             <StackPanel Margin="4">
-                <Label Content="- SELEZIONARE IL FORMATO CARTA PER STAMPARE -"  VerticalAlignment="Top" HorizontalAlignment="Center" Background="Yellow" Margin="4"/>
+                <Label Content="- SELEZIONARE IL FORMATO CARTA PER STAMPARE -"  VerticalAlignment="Top" HorizontalAlignment="Center" Background="Yellow" Margin="4" Foreground="Black" />
                 <GroupBox Header="Formato Carta" >
                     <ListBox
 				        ItemsSource="{Binding stampantiAbbinate}" 
 				        ItemsPanel="{DynamicResource listaPulsantiDiStampaItemsPanelTemplate}" 
                         ItemTemplate="{StaticResource pulsanteDiStampaTemplate}"
 				        ScrollViewer.VerticalScrollBarVisibility="Disabled"
-				        ScrollViewer.HorizontalScrollBarVisibility="Visible">
+				        ScrollViewer.HorizontalScrollBarVisibility="Auto"
+						>
                     </ListBox>
                 </GroupBox>
                 <Button Content="ANNULLA" Command="{Binding annullaCommand}" Width="160" Margin="4" HorizontalAlignment="Center"/>
@@ -47,53 +48,65 @@
         </GroupBox>
 
         <GroupBox DockPanel.Dock="Bottom" Header="Opzioni" >
-			<Grid>
-				<Grid.RowDefinitions>
-					<RowDefinition />
-					<RowDefinition />
-				</Grid.RowDefinitions>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition  />
-					<ColumnDefinition />
-				</Grid.ColumnDefinitions>
-				
-				<Label Content="Titolo" Grid.Row="0" Grid.Column="0" />
-				<TextBox Text="{Binding Path=paramStampaProvini.intestazione,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" MinWidth="100" Grid.Row="1" Grid.Column="0" />
-				
-				<CheckBox IsChecked="{Binding Path=paramStampaProvini.macchiaProvini}" IsEnabled="{Binding possoModificareWaterMark}" Grid.Row="0" Grid.Column="2">
-					<TextBox Text="Applica water-mark (sporca provini)" />
-				</CheckBox>
-				<CheckBox IsChecked="{Binding Path=paramStampaProvini.rompePerGiorno}" Grid.Row="1" Grid.Column="2" ToolTip="Salto pagina al cambio di giornata">
-					<TextBox Text="Cambio pagina per giorno" />
-				</CheckBox>
-			</Grid>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition  />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
 
-					
+                <Label Content="Titolo" Grid.Row="0" Grid.Column="0" />
+                <TextBox Text="{Binding Path=paramStampaProvini.intestazione,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" MinWidth="100" Grid.Row="1" Grid.Column="0" />
 
-		</GroupBox>
+                <CheckBox IsChecked="{Binding Path=paramStampaProvini.macchiaProvini}" IsEnabled="{Binding possoModificareWaterMark}" Grid.Row="0" Grid.Column="2">
+                    <TextBox Text="Applica water-mark (sporca provini)" />
+                </CheckBox>
+                <CheckBox IsChecked="{Binding Path=paramStampaProvini.rompePerGiorno}" Grid.Row="1" Grid.Column="2" ToolTip="Salto pagina al cambio di giornata">
+                    <TextBox Text="Cambio pagina per giorno" />
+                </CheckBox>
+            </Grid>
+        </GroupBox>
 
-		<GroupBox DockPanel.Dock="Bottom" Header="N° Righe e Colonne" Padding="0,10,0,10">
-			<Grid >
-				<Grid.RowDefinitions>
-					<RowDefinition Height="*" />
-					<RowDefinition Height="*" />
-					<RowDefinition Height="*" />
-					<RowDefinition Height="*" />
-				</Grid.RowDefinitions>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
-				<Label Grid.Row="0" Grid.Column="0" HorizontalContentAlignment="Center" Content="N° Righe" />
-				<Button Grid.Row="1" Grid.Column="0" Content="+" Width="80" HorizontalContentAlignment="Center" FontSize="20"  CommandParameter="+" Command="{Binding UpdateQuantitaRigheCommand}" />
-				<TextBox  Grid.Row="2" Grid.Column="0" Text="{Binding Path=paramStampaProvini.numeroRighe,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Width="80" HorizontalContentAlignment="Center" FontSize="20" />
-				<Button Grid.Row="3" Grid.Column="0" Content="-" Width="80" HorizontalContentAlignment="Center" FontSize="20" CommandParameter="-" Command="{Binding UpdateQuantitaRigheCommand}" />
-				<Label Grid.Row="0" Grid.Column="1" HorizontalContentAlignment="Center" Content="N° Colonne" />
-				<Button Grid.Row="1" Grid.Column="1" Content="+" Width="80" HorizontalContentAlignment="Center" FontSize="20" CommandParameter="+" Command="{Binding UpdateQuantitaColonneCommand}" />
-				<TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Path=paramStampaProvini.numeroColonne,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Width="80" HorizontalContentAlignment="Center" FontSize="20" />
-				<Button Grid.Row="3" Grid.Column="1" Content="-" Width="80" HorizontalContentAlignment="Center" FontSize="20"  CommandParameter="-" Command="{Binding UpdateQuantitaColonneCommand}"/>
-			</Grid>
-		</GroupBox>
+        <GroupBox Header="Esempio" 
+				  DockPanel.Dock="Left" Width="140" Height="200">
+            <ItemsControl ItemsSource="{Binding Path=matriceEsempio}"
+						  ItemsPanel="{DynamicResource ResourceKey=matriceItemsPanelTemplate}"
+						  ItemTemplate="{DynamicResource ResourceKey=matriceDataTemplate}" />
+        </GroupBox>
+
+        <GroupBox Header="Disposizione provini nella pagina" Padding="0,10,0,10">
+            <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Row="0" Grid.Column="0" HorizontalContentAlignment="Center" Content="N° Righe" />
+                <Button Grid.Row="1" Grid.Column="0" Content="+" CommandParameter="+" Command="{Binding UpdateQuantitaRigheCommand}" Style="{StaticResource piuMenoButtonStyle}" />
+                <TextBox  Grid.Row="2" Grid.Column="0" Text="{Binding Path=paramStampaProvini.numeroRighe,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Style="{StaticResource piuMenoTextBoxStyle}" />
+                <Button Grid.Row="3" Grid.Column="0" Content="-" CommandParameter="-" Command="{Binding UpdateQuantitaRigheCommand}" Style="{StaticResource piuMenoButtonStyle}" />
+
+                <Button Style="{StaticResource rapidoButtonStyle}" Content="4 x 3" Grid.Row="1" Grid.Column="1" Tag="4x3" Click="RapidoButton_Click" />
+                <Button Style="{StaticResource rapidoButtonStyle}" Content="5 x 4" Grid.Row="2" Grid.Column="1" Tag="5x4" Click="RapidoButton_Click" />
+                <Button Style="{StaticResource rapidoButtonStyle}" Content="6 x 5" Grid.Row="3" Grid.Column="1" Tag="6x5" Click="RapidoButton_Click" />
+
+                <Label Grid.Row="0" Grid.Column="2" HorizontalContentAlignment="Center" Content="N° Colonne" />
+                <Button Grid.Row="1" Grid.Column="2" Content="+" CommandParameter="+" Command="{Binding UpdateQuantitaColonneCommand}" Style="{StaticResource piuMenoButtonStyle}" />
+                <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Path=paramStampaProvini.numeroColonne,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Style="{StaticResource piuMenoTextBoxStyle}" />
+                <Button Grid.Row="3" Grid.Column="2" Content="-" CommandParameter="-" Command="{Binding UpdateQuantitaColonneCommand}" Style="{StaticResource piuMenoButtonStyle}" />
+
+            </Grid>
+        </GroupBox>
 
     </DockPanel>
 </Window>
