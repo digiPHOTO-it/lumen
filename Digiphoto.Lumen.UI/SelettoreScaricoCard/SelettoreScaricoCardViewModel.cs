@@ -13,6 +13,7 @@ using Digiphoto.Lumen.Eventi;
 using System.Linq.Expressions;
 using Digiphoto.Lumen.Servizi.Explorer;
 using System.Windows.Threading;
+using Digiphoto.Lumen.Servizi.Ricerca;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -45,7 +46,10 @@ namespace Digiphoto.Lumen.UI {
 				if( value != _scaricoCardSelezionato ) {
 					_scaricoCardSelezionato = value;
 					OnPropertyChanged( "scaricoCardSelezionato" );
-				}
+
+                    SvuotaFiltriMsg svuotaFiltriMsg = new SvuotaFiltriMsg(this);
+                    LumenApplication.Instance.bus.Publish(svuotaFiltriMsg);
+                }
 			}
 		}
 

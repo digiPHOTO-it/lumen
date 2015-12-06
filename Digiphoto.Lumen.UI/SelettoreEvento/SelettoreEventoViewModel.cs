@@ -9,6 +9,7 @@ using Digiphoto.Lumen.Core.DatiDiEsempio;
 using System.Windows.Input;
 using Digiphoto.Lumen.Database;
 using Digiphoto.Lumen.Eventi;
+using Digiphoto.Lumen.Servizi.Ricerca;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -48,7 +49,10 @@ namespace Digiphoto.Lumen.UI {
 				if( value != _eventoSelezionato ) {
 					_eventoSelezionato = value;
 					OnPropertyChanged( "eventoSelezionato" );
-				}
+
+                    SvuotaFiltriMsg svuotaFiltriMsg = new SvuotaFiltriMsg(this);
+                    LumenApplication.Instance.bus.Publish(svuotaFiltriMsg);
+                }
 			}
 		}
 

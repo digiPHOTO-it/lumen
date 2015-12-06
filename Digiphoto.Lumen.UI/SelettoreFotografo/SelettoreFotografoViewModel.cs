@@ -11,6 +11,7 @@ using System;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Eventi;
+using Digiphoto.Lumen.Servizi.Ricerca;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -66,7 +67,10 @@ namespace Digiphoto.Lumen.UI {
 				if( value != _fotografoSelezionato ) {
 					_fotografoSelezionato = value;
 					OnPropertyChanged( "fotografoSelezionato" );
-				}
+
+                    SvuotaFiltriMsg svuotaFiltriMsg = new SvuotaFiltriMsg(this);
+                    LumenApplication.Instance.bus.Publish(svuotaFiltriMsg);
+                }
 			}
 		}
 
