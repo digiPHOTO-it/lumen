@@ -41,7 +41,7 @@ namespace Digiphoto.Lumen.UI {
 
 
 
-	public class FotoGalleryViewModel : ViewModelBase, IObserver<StampatoMsg>, IObserver<ClonaFotoMsg>, IAzzioniRapide
+	public class FotoGalleryViewModel : ViewModelBase, IObserver<StampatoMsg>, IObserver<ClonaFotoMsg>, IObserver<SvuotaFiltriMsg>, IAzzioniRapide
 	{
 		private BackgroundWorker _bkgIdrata;
 
@@ -1521,6 +1521,33 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		#endregion
-	}
+        public void OnNext(SvuotaFiltriMsg value)
+        {
+            if (value.sender is SelettoreScaricoCardViewModel)
+            {
+                paramCercaFoto = new ParamCercaFoto();
+
+                OnPropertyChanged("paramCercaFoto");
+                OnPropertyChanged("stringaNumeriFotogrammi");
+
+                OnPropertyChanged("isMattinoChecked");
+                OnPropertyChanged("isPomeriggioChecked");
+                OnPropertyChanged("isSeraChecked");
+
+
+                selettoreEventoViewModel.eventoSelezionato = null;
+                selettoreFotografoViewModel.fotografoSelezionato = null;
+            }
+            else if(value.sender is SelettoreEventoViewModel)
+            {
+                selettoreScaricoCardViewModel.scaricoCardSelezionato = null;
+            }
+            else if(value.sender is SelettoreFotografoViewModel)
+            {
+                selettoreScaricoCardViewModel.scaricoCardSelezionato = null;
+            }
+        }
+
+        #endregion
+    }
 }
