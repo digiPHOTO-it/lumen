@@ -16,6 +16,7 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 
 		readonly Action<object> _execute;
 		readonly Predicate<object> _canExecute;
+        readonly Action<object> _afterExecute;
 
 		/// <summary>
 		/// Ogni comando può essere eseguito in una precisa UnitOfWork 
@@ -38,7 +39,10 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 		public RelayCommand( Action<object> execute, Predicate<object> canExecute ) : this( execute, canExecute, null ) {
 		}
 
-		public RelayCommand( Action<object> execute, Predicate<object> canExecute, bool? salvaAllaFineDelComando ) {
+        public RelayCommand(Action<object> execute, Predicate<object> canExecute, bool? salvaAllaFineDelComando) : this( execute, canExecute, salvaAllaFineDelComando,  null){
+        }
+
+        public RelayCommand( Action<object> execute, Predicate<object> canExecute, bool? salvaAllaFineDelComando,  Action<object> afterExecute) {
 
 			if( execute == null )
 				throw new ArgumentNullException( "execute" );
@@ -46,6 +50,7 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 			_execute = execute;
 			_canExecute = canExecute;
 			this.salvaAllaFineDelComando = salvaAllaFineDelComando;
+            _afterExecute = afterExecute;
 		}
 
 		#endregion // Constructors
@@ -73,6 +78,9 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 				_giornale.Debug( "Eseguo RelayCommad: " + _execute.Method.ToString() + " parametro=" + parameter );
 
 				esegui( parameter );
+
+                if(_afterExecute != null)
+                    _afterExecute.Invoke(parameter);
 
 			} catch( OutOfMemoryException ofm ) {
 
