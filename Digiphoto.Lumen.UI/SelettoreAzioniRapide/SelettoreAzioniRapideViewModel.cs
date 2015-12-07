@@ -129,11 +129,28 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
-		#endregion Proprieta
+        private bool _visualizzaEliminaFoto = true;
+        public bool visualizzaEliminaFoto
+        {
+            get
+            {
+                return _visualizzaEliminaFoto;
+            }
+            set
+            {
+                if (_visualizzaEliminaFoto != value)
+                {
+                    _visualizzaEliminaFoto = value;
+                    OnPropertyChanged("visualizzaEliminaFoto");
+                }
+            }
+        }
 
-		#region Servizi
+        #endregion Proprieta
 
-		IFotoExplorerSrv fotoExplorerSrv
+        #region Servizi
+
+        IFotoExplorerSrv fotoExplorerSrv
 		{
 			get
 			{
