@@ -729,7 +729,9 @@ namespace Digiphoto.Lumen.UI {
 				if( _caricareSlideShowCommand == null ) {
 					_caricareSlideShowCommand =
 						new RelayCommand( autoManual => caricareSlideShow( (string)autoManual ),
-										  autoManual => possoCaricareSlideShow( (string)autoManual ) );
+										  autoManual => possoCaricareSlideShow( (string)autoManual ),
+                                          null,
+                                          autoManual => deselezionareTutto());
 				}
 				return _caricareSlideShowCommand;
 			}

@@ -580,6 +580,19 @@ fotoRitoccoSrv.applicareAzioneAutomatica( fotoSelezionate.AsEnumerable(), azione
 			}
 		}
 
+        public void deselezionaFoto()
+        {
+            if (!singolaFotoWorks)
+                deselezionareTutto();
+            else
+            {
+                if(fotografieCW != null && fotografieCW.SelectedItems != null)
+                {
+                    fotografieCW.Deselect(ultimaFotoSelezionata);
+                }
+            }
+        }
+
 		#endregion Metodi
 
 
@@ -594,7 +607,8 @@ fotoRitoccoSrv.applicareAzioneAutomatica( fotoSelezionate.AsEnumerable(), azione
 				{
 					_aggiungereAlMasterizzatoreCommand = new RelayCommand(param => aggiungereAlMasterizzatore()
 																		   , param => possoAggiungereAlMasterizzatore
-																		   , false );
+																		   , false
+                                                                           , param => deselezionaFoto() );
 				}
 				return _aggiungereAlMasterizzatoreCommand;
 			}
@@ -608,7 +622,9 @@ fotoRitoccoSrv.applicareAzioneAutomatica( fotoSelezionate.AsEnumerable(), azione
 				if (_stampareCommand == null)
 				{
 					_stampareCommand = new RelayCommand(param => stampare( param as StampanteAbbinata ),
-					                                    param => possoStampare, false);
+					                                    param => possoStampare, 
+                                                        false,
+                                                        param => deselezionaFoto());
 				}
 				return _stampareCommand;
 			}
@@ -622,7 +638,9 @@ fotoRitoccoSrv.applicareAzioneAutomatica( fotoSelezionate.AsEnumerable(), azione
 				if (_stampaRapidaCommand == null)
 				{
 					_stampaRapidaCommand = new RelayCommand(param => stampaRapida( (StampanteAbbinata)param, true ),
-					                                        param => this.possoStampare, false);
+					                                        param => this.possoStampare, 
+                                                            false,
+                                                            param => deselezionaFoto());
 				}
 				return _stampaRapidaCommand;
 			}
@@ -632,7 +650,9 @@ fotoRitoccoSrv.applicareAzioneAutomatica( fotoSelezionate.AsEnumerable(), azione
 			get {
 				if( _stampaRapidaBordiBianchiCommand == null ) {
 					_stampaRapidaBordiBianchiCommand = new RelayCommand( param => stampaRapida( (StampanteAbbinata)param, false ),
-															  param => this.possoStampare, false );
+															  param => this.possoStampare,
+                                                              false, 
+                                                              param => deselezionaFoto());
 				}
 				return _stampaRapidaBordiBianchiCommand;
 			}
@@ -648,7 +668,10 @@ fotoRitoccoSrv.applicareAzioneAutomatica( fotoSelezionate.AsEnumerable(), azione
 				{
 					_caricareSlideShowCommand =
 						new RelayCommand(autoManual => caricareSlideShow((string)autoManual),
-										  autoManual => possoCaricareSlideShow);
+										  autoManual => possoCaricareSlideShow, 
+                                          null,
+                                          param => deselezionaFoto()
+                                          );
 				}
 				return _caricareSlideShowCommand;
 			}
@@ -662,7 +685,9 @@ fotoRitoccoSrv.applicareAzioneAutomatica( fotoSelezionate.AsEnumerable(), azione
 				if (_mandareInModificaCommand == null)
 				{
 					_mandareInModificaCommand = new RelayCommand(param => mandareInModifica(),
-																  param => possoMandareInModifica);
+																  param => possoMandareInModifica,
+                                                                  null,
+                                                                  param => deselezionaFoto());
 				}
 				return _mandareInModificaCommand;
 			}
@@ -676,7 +701,9 @@ fotoRitoccoSrv.applicareAzioneAutomatica( fotoSelezionate.AsEnumerable(), azione
 				if (_eliminareFotoCommand == null)
 				{
 					_eliminareFotoCommand = new RelayCommand(param => eliminareFoto(),
-															 p => isAlmenoUnaSelezionata, false);
+															 p => isAlmenoUnaSelezionata, 
+                                                             false, 
+                                                             param => deselezionaFoto());
 				}
 				return _eliminareFotoCommand;
 			}
@@ -691,7 +718,8 @@ fotoRitoccoSrv.applicareAzioneAutomatica( fotoSelezionate.AsEnumerable(), azione
 				{
 					_ruotareCommand = new RelayCommand(sGradi => this.ruotare(Convert.ToInt16(sGradi)),
 														sGradi => this.possoApplicareCorrezione,
-														true);
+														true,
+                                                        param => deselezionaFoto());
 				}
 				return _ruotareCommand;
 			}
@@ -707,7 +735,8 @@ fotoRitoccoSrv.applicareAzioneAutomatica( fotoSelezionate.AsEnumerable(), azione
 				{
 					_aggiungereLogoCommand = new RelayCommand( posiz => this.aggiungereLogo( posiz.ToString() ),
 						                                       posiz => this.possoApplicareCorrezione,
-														       true );
+														       true,
+                                                               param => deselezionaFoto());
 				}
 				return _aggiungereLogoCommand;
 			}
@@ -722,7 +751,8 @@ fotoRitoccoSrv.applicareAzioneAutomatica( fotoSelezionate.AsEnumerable(), azione
 				{
 					_tornareOriginaleCommand = new RelayCommand(param => this.tornareOriginale(),
 														gradi => this.possoApplicareCorrezione,
-														true);
+														true,
+                                                        param => deselezionaFoto());
 				}
 				return _tornareOriginaleCommand;
 			}
@@ -737,7 +767,8 @@ fotoRitoccoSrv.applicareAzioneAutomatica( fotoSelezionate.AsEnumerable(), azione
 				{
 					_modificaMetadatiCommand = new RelayCommand(p => modificaMetadati(),
 																p => isAlmenoUnaSelezionata,
-																true);
+																true,
+                                                                param => deselezionaFoto());
 				}
 				return _modificaMetadatiCommand;
 			}
@@ -750,7 +781,10 @@ fotoRitoccoSrv.applicareAzioneAutomatica( fotoSelezionate.AsEnumerable(), azione
 			{
 				if (_viewFotoFullScreenCommand == null)
 				{
-					_viewFotoFullScreenCommand = new RelayCommand(param => viewFotoFullScreen(), p => isAlmenoUnaSelezionata, false);
+                    _viewFotoFullScreenCommand = new RelayCommand(param => viewFotoFullScreen(), 
+                                                                  p => isAlmenoUnaSelezionata, 
+                                                                  false,
+                                                                  param => deselezionaFoto());
 				}
 				return _viewFotoFullScreenCommand;
 			}
@@ -763,7 +797,10 @@ fotoRitoccoSrv.applicareAzioneAutomatica( fotoSelezionate.AsEnumerable(), azione
 			{
 				if (_clonaFotografieCommand == null)
 				{
-					_clonaFotografieCommand = new RelayCommand(param => clonaFotografie(), p => isAlmenoUnaSelezionata, null);
+					_clonaFotografieCommand = new RelayCommand(param => clonaFotografie(), 
+                                                               p => isAlmenoUnaSelezionata, 
+                                                               null,
+                                                               param => deselezionaFoto());
 				}
 				return _clonaFotografieCommand;
 			}
@@ -776,7 +813,8 @@ fotoRitoccoSrv.applicareAzioneAutomatica( fotoSelezionate.AsEnumerable(), azione
 			{
 				if (_setSingolaFotoWorkCommand == null)
 				{
-					_setSingolaFotoWorkCommand = new RelayCommand(param => setSingolaFotoWork(param), param => true, null);
+					_setSingolaFotoWorkCommand = new RelayCommand(param => setSingolaFotoWork(param), 
+                                                                  param => true);
 				}
 				return _setSingolaFotoWorkCommand;
 			}
