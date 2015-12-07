@@ -27,6 +27,7 @@
 		<GroupBox Header="Posizione dello Slide Show sul Monitor" DockPanel.Dock="Bottom">
 			<Grid DockPanel.Dock="Bottom">
 				<Canvas Name="monitor" 
+                        Visibility="Hidden"
 						VerticalAlignment="Center"
 						HorizontalAlignment="Center" Margin="6,6,0,0" Opacity="1" Background="Blue" Loaded="Monitor_Loaded" MouseMove="Monitor_MouseMove" MouseLeave="Monitor_MouseLeave" MouseLeftButtonDown="Monitor_MouseLeftButtonDown"
 						Height="{Binding Converter={StaticResource percentualeConverter},Path=cfg.screenHeight,ConverterParameter=25}" 

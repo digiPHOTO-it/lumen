@@ -49,11 +49,11 @@ namespace Digiphoto.Lumen.UI.Pubblico
 
 			pSSG.fullScreen = cfg.fullScreen;
 
-			pSSG.slideHeight = cfg.slideHeight;
-			pSSG.slideWidth = cfg.slideWidth;
+			//pSSG.slideHeight = cfg.slideHeight;
+			//pSSG.slideWidth = cfg.slideWidth;
 
-			pSSG.slideLeft = cfg.slideLeft;
-			pSSG.slideTop = cfg.slideTop;
+			//pSSG.slideLeft = cfg.slideLeft;
+			//pSSG.slideTop = cfg.slideTop;
 		}
 
 		#endregion
@@ -92,11 +92,11 @@ namespace Digiphoto.Lumen.UI.Pubblico
 		{
 			cfg = Configurazione.UserConfigLumen;
 
-			cfg.slideHeight = pSSG.slideHeight;
-			cfg.slideWidth = pSSG.slideWidth;
+			//cfg.slideHeight = pSSG.slideHeight;
+			//cfg.slideWidth = pSSG.slideWidth;
 
-			cfg.slideTop = pSSG.slideTop;
-			cfg.slideLeft = pSSG.slideLeft;
+			//cfg.slideTop = pSSG.slideTop;
+			//cfg.slideLeft = pSSG.slideLeft;
 
 			cfg.deviceEnum = pSSG.deviceEnum;
 
