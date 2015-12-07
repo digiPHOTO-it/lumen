@@ -55,6 +55,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				observable.Subscribe( this );
 
 				selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel(this);
+                selettoreAzioniRapideViewModel.visualizzaEliminaFoto = false;
 
 				fotografieDaModificare = new ObservableCollectionEx<Fotografia>();
 				fotografieDaModificareCW = new ListCollectionView( fotografieDaModificare );
