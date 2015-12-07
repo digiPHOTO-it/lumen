@@ -30,7 +30,6 @@ namespace Digiphoto.Lumen.UI
 {
 	public class CarrelloViewModel : ViewModelBase, IObserver<MasterizzaMsg>, IObserver<GestoreCarrelloMsg>, IObserver<StampatoMsg>, IObserver<FotoModificateMsg>
     {
-		private Digiphoto.Lumen.Servizi.Masterizzare.Fase StatoMasterizzazione = Digiphoto.Lumen.Servizi.Masterizzare.Fase.Attesa;
 
 		private BackgroundWorker _bkgIdrata = null;
 
@@ -216,9 +215,23 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
-		#region Ricerca
+        private Digiphoto.Lumen.Servizi.Masterizzare.Fase _statoMasterizzazione = Digiphoto.Lumen.Servizi.Masterizzare.Fase.Attesa;
+        public Digiphoto.Lumen.Servizi.Masterizzare.Fase StatoMasterizzazione
+        {
+            get {
+                return _statoMasterizzazione;
+			}
+            set {
+                if (_statoMasterizzazione != value ) {
+                    _statoMasterizzazione = value;
+                    OnPropertyChanged("StatoMasterizzazione");
+                }
+            }
+        }
 
-		private string _intestazioneSearch;
+        #region Ricerca
+
+        private string _intestazioneSearch;
 		public string IntestazioneSearch
 		{
 			get
@@ -1389,7 +1402,6 @@ namespace Digiphoto.Lumen.UI
 		private Digiphoto.Lumen.Servizi.Masterizzare.Fase faseOld = Digiphoto.Lumen.Servizi.Masterizzare.Fase.Attesa;
 		public void OnNext(MasterizzaMsg msg)
 		{
-			
 			System.Diagnostics.Trace.WriteLine("");
 			System.Diagnostics.Trace.WriteLine("[TotFotoNonAggiunte]: " + msg.totFotoNonAggiunte);
 			System.Diagnostics.Trace.WriteLine("[TotFotoAggiunte]: " + msg.totFotoAggiunte);
@@ -1418,7 +1430,7 @@ namespace Digiphoto.Lumen.UI
 				}
 			}
 			OnPropertyChanged("StatusStatoMasterizzazioneImage");
-		}
+          }
 		}
 
 		public void OnNext(GestoreCarrelloMsg msg)
