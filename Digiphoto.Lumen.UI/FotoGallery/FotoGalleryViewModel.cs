@@ -408,7 +408,9 @@ namespace Digiphoto.Lumen.UI {
 					if( slideShowViewModel.slideShowColonne != value ) {
 						slideShowViewModel.slideShowColonne = value;
 						OnPropertyChanged( "numColonneSlideShow" );
-					}
+                        Configurazione.LastUsedConfigLumen.slideShowNumColonne = value;
+                        Configurazione.SalvaLastUsedConfig();
+                    }
 			}
 		}
 
