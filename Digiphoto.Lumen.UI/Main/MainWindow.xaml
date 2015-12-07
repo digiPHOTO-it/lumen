@@ -44,7 +44,8 @@
 			<StatusBarItem Grid.Column="2" Padding="4,0,4,0" >
 				<StackPanel Orientation="Horizontal">
 					<Image Source="{Binding Path=carrelloViewModel.StatusStatoMasterizzazioneImage}" Width="16" Height="16" ToolTip="Stato della Masterizzazione" />
-					<TextBlock Text="{Binding Path=carrelloViewModel.MasterizzazionePorgress}" ToolTip="{Binding Path=carrelloViewModel.MasterizzazionePorgress}" />
+                    <ProgressBar Name="progressBarMasterizzazione" IsIndeterminate="True" Background="White" Foreground="Blue" Width="40" Height="16" Visibility="{Binding Path=carrelloViewModel.StatoMasterizzazione, Converter={StaticResource statoMasterizzazioneVisibilityConverter}}"/>
+                    <!--TextBlock Text="{Binding Path=carrelloViewModel.MasterizzazionePorgress}" ToolTip="{Binding Path=carrelloViewModel.MasterizzazionePorgress}" /-->
 				</StackPanel>
 			</StatusBarItem>
 

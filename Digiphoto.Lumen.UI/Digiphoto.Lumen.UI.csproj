@@ -204,6 +204,7 @@
       <DependentUpon>CompNumFotoView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\BoolInverterConverter.cs" />
+    <Compile Include="Converters\StatoMasterizzazioneVisibilityConverter.cs" />
     <Compile Include="Converters\CollectionViewVisibilityConverter.cs" />
     <Compile Include="Converters\CollectionViewVisibilityMultiConverter.cs" />
     <Compile Include="Converters\BoolVisibilityConverter.cs" />

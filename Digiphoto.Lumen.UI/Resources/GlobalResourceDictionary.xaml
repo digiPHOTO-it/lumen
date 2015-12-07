@@ -18,6 +18,7 @@
 	<lumC:BoolInverterConverter x:Key="boolInverterConverter" />
     <lumC:RectangleSizeConverter x:Key="rectangleSizeConverter" />
     <lumC:BoolIsNullConverter x:Key="boolIsNullConverter" />
+    <lumC:StatoMasterizzazioneVisibilityConverter x:Key="statoMasterizzazioneVisibilityConverter" />
 
 	<eff:GrayscaleEffect x:Key="grayscaleEffect" Factor="0.1" />
 
