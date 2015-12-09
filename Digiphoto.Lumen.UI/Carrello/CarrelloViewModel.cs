@@ -566,7 +566,31 @@ namespace Digiphoto.Lumen.UI
 			return posso;
 		}
 
-		public bool abilitaEliminaCarrello
+        public bool abilitaEliminaTutteFoto
+        {
+            get
+            {
+                if (IsInDesignMode)
+                    return true;
+
+                bool posso = true;
+
+                //Verifico che il carrello non sia stato venduto
+                if (posso && carrelloCorrente.venduto && !IsErroriMasterizzazione)
+                    posso = false;
+
+                // Verifico che i dati minimi siano stati indicati
+                if (posso && RiCaFotoStampateCv.IsEmpty)
+                    posso = false;
+
+                if (posso && rigaCarrelloStampataSelezionata == null)
+                    posso = false;
+
+                return posso;
+            }
+        }
+
+        public bool abilitaEliminaCarrello
 		{
 			get
 			{
@@ -956,13 +980,32 @@ namespace Digiphoto.Lumen.UI
 
 		private void eliminaRiga(String discriminator)
 		{
+            if (chiediConfermaEliminazioneRiga(discriminator) == false)
+            {
+                return;
+            }
+
 			if(discriminator == Carrello.TIPORIGA_STAMPA)
 				venditoreSrv.removeRigaCarrello(rigaCarrelloStampataSelezionata);
 			else if (discriminator == Carrello.TIPORIGA_MASTERIZZATA)
 				venditoreSrv.removeRigaCarrello(rigaCarrelloMasterizzataSelezionata);
 		}
 
-		private void eliminaDischetto()
+        private bool chiediConfermaEliminazioneRiga(String discriminator)
+        {
+
+            StringBuilder msg = new StringBuilder("Questa operazione rimuove la riga selezionata:\n L'operazione è irreversibile.\nConfermi");
+            bool procediPure = false;
+            dialogProvider.ShowConfirmation(msg.ToString(), (discriminator == Carrello.TIPORIGA_STAMPA ? "STAMPA" : "MASTERIZZA")+" - Richiesta conferma ",
+                (confermato) =>
+                {
+                    procediPure = confermato;
+                });
+
+            return procediPure;
+        }
+
+        private void eliminaDischetto()
 		{
 			if( venditoreSrv.sommatoriaFotoDaMasterizzare <= 0 )
 				return;
@@ -985,8 +1028,28 @@ namespace Digiphoto.Lumen.UI
 			return procediPure;
 		}
 
+        private void eliminaTutteFotoCarrello()
+        {
+            if (chiediConfermaEliminazioneTutteFoto() == false)
+                return;
+            venditoreSrv.removeRigheCarrello(Carrello.TIPORIGA_STAMPA);
+        }
 
-		private void caricareCarrelloSalvatoSelezionato()
+        private bool chiediConfermaEliminazioneTutteFoto()
+        {
+
+            StringBuilder msg = new StringBuilder("Questa operazione rimuove tutte le foto dal carrello:\n L'operazione è irreversibile.\nConfermi");
+            bool procediPure = false;
+            dialogProvider.ShowConfirmation(msg.ToString(), "Richiesta conferma",
+                (confermato) =>
+                {
+                    procediPure = confermato;
+                });
+
+            return procediPure;
+        }
+
+        private void caricareCarrelloSalvatoSelezionato()
 		{
 			// Eventualmente stoppo lavoro precedente.
 			if( _bkgIdrata.WorkerSupportsCancellation && _bkgIdrata.IsBusy )
@@ -1248,6 +1311,18 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
+        private RelayCommand _eliminaTutteFotoCommand;
+        public ICommand eliminaTutteFotoCommand
+        {
+            get
+            {
+                if (_eliminaTutteFotoCommand == null)
+                {
+                    _eliminaTutteFotoCommand = new RelayCommand(param => eliminaTutteFotoCarrello(), param => abilitaEliminaTutteFoto, true);
+                }
+                return _eliminaTutteFotoCommand;
+            }
+        }
 
 		private RelayCommand _eliminaDischettoCommand;
 		public ICommand eliminaDischettoCommand
