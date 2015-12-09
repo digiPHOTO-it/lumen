@@ -27,8 +27,6 @@
 
 				<Button Command="{Binding creaNuovoCarrelloCommand}" Style="{StaticResource styleCartNuovo}"/>
 
-				<Button Command="{Binding svuotaCarrelloCommand}" Style="{StaticResource styleCartSvuotare}" />
-
 				<Button Command="{Binding eliminaCarrelloCommand}" Style="{StaticResource styleCarrelliButtonDelete}" />
 
 				<Separator Height="10"  Visibility="{Binding Path=IsErroriMasterizzazione,Converter={StaticResource boolVisibilityConverter}}"  />
@@ -41,7 +39,9 @@
 				<Button Command="{Binding UpdateQuantitaCommand}" CommandParameter="-1" Style="{StaticResource styleCartQtaDown}" />
 				<Separator />
 				<Button Command="{Binding eliminaRigaCommand}" CommandParameter="S" Style="{StaticResource styleCartDelRigaStampate}" />
-			</ToolBar>
+
+                <Button Command="{Binding eliminaTutteFotoCommand}" Style="{StaticResource styleCartSvuotare}" />
+            </ToolBar>
 		</ToolBarTray>
 
 		<!-- Fascia alta del carrello con dati di testata e riassunto stampe/CD -->
