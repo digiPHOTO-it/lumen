@@ -248,15 +248,20 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
-		public bool? IsVendutoChecked
+        private bool _isVendutoChecked;
+		public bool IsVendutoChecked
 		{
 			get
 			{
-				return (paramCercaCarrello.isVenduto);
+				return _isVendutoChecked;
 			}
 			set
-			{
-				paramCercaCarrello.isVenduto = value;
+            {
+                if (_isVendutoChecked != value) {
+                    _isVendutoChecked = value;
+                    paramCercaCarrello.isVenduto = _isVendutoChecked;
+                    OnPropertyChanged("IsVendutoChecked");
+                }
 			}
 		}
 
@@ -1062,6 +1067,7 @@ namespace Digiphoto.Lumen.UI
 		private void azzeraParamRicerca()
 		{
 			paramCercaCarrello = new ParamCercaCarrello();
+            IsVendutoChecked = false;
 		}
 
 		/// <summary>
@@ -1083,16 +1089,6 @@ namespace Digiphoto.Lumen.UI
 		{
 
 			paramCercaCarrello.idratareImmagini = false;
-
-			// Aggiungo eventuale parametro l'intestazione
-			if (!String.IsNullOrEmpty(IntestazioneSearch))
-			{
-				paramCercaCarrello.intestazione = IntestazioneSearch;
-			}
-			else
-			{
-				paramCercaCarrello.intestazione = null;
-			}
 
 			// Aggiungo eventuale parametro l'intestazione
 			if (!String.IsNullOrEmpty(IntestazioneSearch))
