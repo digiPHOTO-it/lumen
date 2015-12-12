@@ -143,15 +143,15 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 			if( !inizializzato )
 				inizializza();
 
-			rilasciaRisorsePaginaPrecendete( pageNumber );
-
+		    rilasciaRisorsePaginaPrecendete( pageNumber );
+            /*
 			FixedPage pageContent = new FixedPage();
 			pageContent.Width = this.PageSize.Width;
 			pageContent.Height = this.PageSize.Height;
 			pageContent.Measure( this.PageSize );
 			pageContent.VerticalAlignment = VerticalAlignment.Center;
 			pageContent.HorizontalAlignment = HorizontalAlignment.Center;
-
+            */
 
 			// Ricavo le foto da stampare
 			var fotos = ricavaFotoDellaPagina( pageNumber );
@@ -159,9 +159,9 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 
 			Canvas canvas = new Canvas();
 			canvas.Background = new SolidColorBrush( Colors.Transparent );
-			canvas.Width = pageContent.Width;
-			canvas.Height = pageContent.Height;
-			canvas.HorizontalAlignment = HorizontalAlignment.Left;
+			canvas.Width = this.PageSize.Width;
+            canvas.Height = this.PageSize.Height;
+            canvas.HorizontalAlignment = HorizontalAlignment.Left;
 			canvas.VerticalAlignment = VerticalAlignment.Top;
 
 			double x = 1;
@@ -176,13 +176,17 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 				aggiungiImmagineAlCanvas( canvas, foto, x, y );
 				x++;
 			}
-			pageContent.Children.Add( canvas );
+			//pageContent.Children.Add( canvas );
 
-			pageContent.Arrange( new System.Windows.Rect( new Point( 0, 0 ), PageSize ) );
+			//pageContent.Arrange( new System.Windows.Rect( new Point( 0, 0 ), PageSize ) );
 
-			DocumentPage actualPage = new DocumentPage( pageContent );
-			lastLoadedPage = actualPage;
-			return actualPage;
+            canvas.Arrange(new System.Windows.Rect(new Point(0, 0), PageSize));
+            canvas.UpdateLayout();
+            //PageContent page1Content = new PageContent();
+            //page1Content.Child = pageContent;
+
+            DocumentPage documentPage = new DocumentPage(canvas);
+            return documentPage;
 		}
 
 		private IEnumerable<Fotografia> ricavaFotoDellaPagina( int paginaDaStampare ) {
