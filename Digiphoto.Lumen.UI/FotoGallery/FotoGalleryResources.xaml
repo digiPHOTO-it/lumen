@@ -35,16 +35,13 @@
 	</Style>
 
 	<!-- Stile della listbox che itera le immagini -->
-    <Style x:Key="LsImageGalleryStyle" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
+	<Style x:Key="LsImageGalleryStyle" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
 		<Setter Property="Background" Value="#4c4c4c" />
-			 
 		<Setter Property="ItemContainerStyle" Value="{DynamicResource ImageGalleryImageContainerStyle}" />
-		
 	</Style>
-
-    <Style x:Key="textBoxNumFotogrammi" TargetType="TextBox">
-        <Setter Property="MinWidth" Value="100" />
-    </Style>
+	<Style x:Key="textBoxNumFotogrammi" TargetType="TextBox">
+		<Setter Property="MinWidth" Value="100" />
+	</Style>
  
 
     <!-- Template per il pannello che contiene tutti gli elementi della lista -->

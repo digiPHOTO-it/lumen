@@ -37,5 +37,11 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+
+    <Style x:Key="listBoxFasiStyle" BasedOn="{StaticResource ResourceKey=listBoxItemEvidenziatoStyle}" TargetType="ListBoxItem">
+		<Setter Property="TextElement.FontSize" Value="14" />
+		<Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="0" />
+    </Style>
 	
 </ResourceDictionary>

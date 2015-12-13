@@ -537,18 +537,18 @@
 	<Style x:Key="styleCarrelliButtonSearch" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
 		<Setter Property="ToolTip" Value="Esegui ricerca carrelli" />
 		<Setter Property="Content">
-			<Setter.Value>
-				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-filtra-carrelli-32x32.png" Width="32"/>
-			</Setter.Value>
-		</Setter>
+            <Setter.Value>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/start-search-24x24.png" Width="24" />
+            </Setter.Value>
+        </Setter>
 	</Style>
 
 	<Style x:Key="styleCarrelliButtonClearFilter" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
 		<Setter Property="ToolTip" Value="Pulisci filtro di ricerca carrelli" />
 		<Setter Property="Content">
 			<Setter.Value>
-				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-remove-filter-32x32.png" Width="32"/>
-			</Setter.Value>
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/clear-filter-22x22.png" Width="22" />
+            </Setter.Value>
 		</Setter>
 	</Style>
 

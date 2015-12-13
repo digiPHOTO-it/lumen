@@ -22,27 +22,22 @@
         </Grid.ColumnDefinitions>
 
 
-        <ListBox Name="azioniAutomaticheListBox" 
-                    ItemsSource="{Binding azioniAutomatiche}" 
-                    ItemTemplate="{StaticResource azioniAutomaticheListBoxTemplate}"
-                    SelectedItem="{Binding Path=azioneAutomaticaSelezionata}"
-                    ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Auto"
-                    Grid.Row="0" Grid.Column="0" >
+        <ListBox Name="azioniAutomaticheListBox"
+				 ItemsSource="{Binding azioniAutomatiche}"
+				 ItemTemplate="{StaticResource azioniAutomaticheListBoxTemplate}"
+				 SelectedItem="{Binding Path=azioneAutomaticaSelezionata}"
+				 ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Auto"
+				 Grid.Row="0" Grid.Column="0" 
+				 ItemContainerStyle="{StaticResource ResourceKey=listBoxItemEvidenziatoStyle}"
+				 >
 
-            <ListBox.Resources>
-                <!--SelectedItem with focus -->
-                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="LightGreen" />
-                <!--SelectedItem without focus -->
-                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="LightGreen" Opacity="0.7" />
-            </ListBox.Resources>
-
-            <ListBox.ContextMenu >
-                <ContextMenu>
-                    <MenuItem Header="Rinomina" Command="{Binding rinominaCommand}" />
-                    <MenuItem Header="Elimina" Command="{Binding eliminaCommand}" />
-                </ContextMenu>
-            </ListBox.ContextMenu>
-        </ListBox>
+			<ListBox.ContextMenu>
+				<ContextMenu>
+					<MenuItem Header="Rinomina" Command="{Binding rinominaCommand}" />
+					<MenuItem Header="Elimina" Command="{Binding eliminaCommand}" />
+				</ContextMenu>
+			</ListBox.ContextMenu>
+		</ListBox>
 
 		<Grid Grid.Row="1" Grid.Column="0" Height="28">
 			<Grid.RowDefinitions>

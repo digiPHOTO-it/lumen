@@ -18,7 +18,9 @@
 			<ScrollViewer VerticalScrollBarVisibility="Auto" >
 				<ListBox Grid.IsSharedSizeScope="True"
 				         ItemsSource="{Binding scarichiCards,Mode=OneWay}" 
-				         SelectedItem="{Binding scaricoCardSelezionato}" >
+				         SelectedItem="{Binding scaricoCardSelezionato}" 
+						 ItemContainerStyle="{StaticResource ResourceKey=listBoxItemEvidenziatoStyle}"
+						 >
 					<ListBox.ItemTemplate>
 						<DataTemplate>
 							<Grid ShowGridLines="True">
