@@ -9,7 +9,7 @@
 			 xmlns:model="clr-namespace:Digiphoto.Lumen.Model;assembly=Digiphoto.Lumen.Model"
              mc:Ignorable="d" 
 			 x:Name="this"
-             d:DesignHeight="140" d:DesignWidth="700"
+             d:DesignHeight="170" d:DesignWidth="700"
              Background="Black" >
 
 	<UserControl.Resources>
@@ -18,16 +18,24 @@
 
 	<Grid>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition MaxWidth="200" />
-			<ColumnDefinition MaxWidth="350" />
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="Auto" />
 		</Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
 
-		<StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0">
-			<Label>Didascalia</Label>
-			<TextBox x:Name="didascalia" Text="{Binding ElementName=LsImageGallery,Path=SelectedValue.didascalia, Mode=OneWay}" IsEnabled="{Binding DidascaliaEnabled}" CharacterCasing="Upper" MinWidth="80" />
+		<StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0" >
+			<Label Content="Didascalia" />
+			<TextBox x:Name="didascalia" 
+					 Text="{Binding ElementName=LsImageGallery,Path=SelectedValue.didascalia, Mode=OneWay}" 
+					 IsEnabled="{Binding DidascaliaEnabled}" 
+					 CharacterCasing="Upper" Margin="0,0,0,0" 
+					 />
+			
 			<ListBox x:Name="LsImageGallery"
-					 Height="100"
+					 Height="10"
 					 SelectionMode="Extended" 
 					 lumMS:MultiSelect.IsEnabled="True" 
 					 ItemsSource="{Binding ElementName=this, Path=MyItemsSource}"
@@ -35,8 +43,12 @@
 			</ListBox>
 
 			<GroupBox Header="Fasi del giorno" >
-				<ListBox x:Name="fasiDelGiorno" ItemsSource="{Binding fasiDelGiorno}" FontSize="14"
-                         SelectedItem="{Binding ElementName=LsImageGallery,Path=SelectedValue.faseDelGiorno,Converter={StaticResource fasiDelGiornoConverter}, Mode=OneWay}" IsEnabled="{Binding GiornataEnabled}" />
+				<ListBox x:Name="fasiDelGiorno" 
+						 ItemsSource="{Binding fasiDelGiorno}"
+                         SelectedItem="{Binding ElementName=LsImageGallery,Path=SelectedValue.faseDelGiorno,Converter={StaticResource fasiDelGiornoConverter}, Mode=OneWay}" 
+						 IsEnabled="{Binding GiornataEnabled}" 
+						 ItemContainerStyle="{StaticResource ResourceKey=listBoxFasiStyle}"
+						 />
 			</GroupBox>
 
 		</StackPanel>
@@ -44,21 +56,25 @@
 
 		<!-- MySelectedItem="{Binding ElementName=LsImageGallery,Path=SelectedValue.evento}"-->
 
-		<lum:SelettoreEvento x:Name="selettoreEventoMetadatoName" Grid.Column="1"
+        <lum:SelettoreEvento x:Name="selettoreEventoMetadatoName" Grid.Row="0" Grid.Column="1"
                              DataContext="{Binding Path=selettoreEventoMetadato, Mode=OneWay}" 
 							 MySelectedItem="{Binding ElementName=LsImageGallery, Path=SelectedValue.evento, Mode=OneWay}"
 							 IsEnabled="{Binding Path=DataContext.EventoEnabled, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
-                             
-							 Margin="10,0,10,0"
-							 possoCreare="True"/>
+							 possoCreare="True"
+							 MinWidth="150" MaxWidth="400" MaxHeight="130" 
+							 ScrollViewer.CanContentScroll="true" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+							 Margin="8,0,8,0"
+							 />
 
-		<StackPanel Grid.Column="3" Orientation="Vertical">
-			
+        <StackPanel Grid.Column="3" Grid.Row="0" Orientation="Vertical">
+
 			<StackPanel Orientation="Horizontal">
 				<Label Content="N° Foto Selezionate" />
-				<Label Content="{Binding ElementName=this, Path=MyItemsSource.SelectedItems.Count }" />
+				<Label Content="{Binding ElementName=this, Path=MyItemsSource.SelectedItems.Count}" />
 			</StackPanel>
+
 			<Separator />
+
 			<Button Command="{Binding eliminareMetadatiCommand}" Style="{StaticResource styleButtonDelTag}" />
 			<Separator />
 			<Button Command="{Binding applicareMetadatiCommand}" Style="{StaticResource styleButtonSaveTag}" />

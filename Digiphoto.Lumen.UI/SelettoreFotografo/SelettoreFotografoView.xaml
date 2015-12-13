@@ -29,7 +29,9 @@
                 <ListBox Name="fotografiListBox" MinHeight="30" 
                          ItemsSource="{Binding Path=fotografi}" 
 						 DisplayMemberPath="cognomeNome" 
-                         SelectedItem="{Binding Path=fotografoSelezionato}" />
+                         SelectedItem="{Binding Path=fotografoSelezionato}" 
+						 ItemContainerStyle="{StaticResource ResourceKey=listBoxItemEvidenziatoStyle}"
+						 />
             </ScrollViewer>
         </GroupBox>
 

@@ -830,6 +830,7 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\clear-filter-32x32.png" />
     <Resource Include="Resources\panorama-16x16.png" />
     <Resource Include="Resources\info-16x16_v.png" />
     <Resource Include="Resources\gallery-view-selez-deselez.png" />
