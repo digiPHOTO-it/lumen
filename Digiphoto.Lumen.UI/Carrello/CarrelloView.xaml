@@ -242,6 +242,7 @@
 					 SelectedItem="{Binding rigaCarrelloStampataSelezionata, Mode=TwoWay}"
 					 ItemsPanel="{DynamicResource righeCarrelloItemsPanelTemplate}" 
 					 ItemTemplate="{DynamicResource rigaCarrelloStampaDataTemplate}"
+					 ItemContainerStyle="{StaticResource ResourceKey=listBoxItemEvidenziatoStyle}"
 					 ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
 
 			<StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1" 
@@ -261,6 +262,7 @@
 					 SelectedItem="{Binding rigaCarrelloMasterizzataSelezionata, Mode=TwoWay}"
 					 ItemsPanel="{DynamicResource righeCarrelloItemsPanelTemplate}" 
 					 ItemTemplate="{DynamicResource rigaCarrelloMasterizzataDataTemplate}"
+					 ItemContainerStyle="{StaticResource ResourceKey=listBoxItemEvidenziatoStyle}"
 					 ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
 
 		</Grid>

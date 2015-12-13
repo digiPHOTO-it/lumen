@@ -29,6 +29,7 @@
                          ItemsSource="{Binding eventi}" 
                          DisplayMemberPath="descrizione" 
                          SelectedItem="{Binding eventoSelezionato}"
+						 ItemContainerStyle="{StaticResource ResourceKey=listBoxItemEvidenziatoStyle}"
                          />
             </ScrollViewer>
         </GroupBox>

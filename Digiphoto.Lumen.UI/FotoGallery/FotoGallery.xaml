@@ -232,11 +232,14 @@ Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding P
                 <!-- eventuale filtro per fotografo -->
                 <lum:SelettoreFotografo x:Name="selettoreFotografo5" possoCreare="False"
 										Margin="3,0,0,0"
+										MaxWidth="200"
                                         DataContext="{Binding selettoreFotografoViewModel}" />
 
                 <lum:SelettoreEvento x:Name="selettoreEvento5" possoCreare="False"
 									 Margin="3,0,0,0"
+									 MaxWidth="200"
                                  DataContext="{Binding selettoreEventoViewModel}" />
+				
 				<GroupBox Header="Fasi del giorno">
 					<StackPanel Orientation="Vertical" Margin="3,0,3,0" VerticalAlignment="Center">
 						<CheckBox x:Name="checkBoxMattino" Content="Mattino" IsChecked="{Binding isMattinoChecked, Mode=TwoWay}" Margin="2" />
@@ -250,18 +253,20 @@ Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding P
 
 						<Label Content="Didascalia" FontSize="10" />
 						<TextBox Name="didascaliaTextBox" CharacterCasing="Upper" 
+								 Margin="0,0,0,0"
 								 Text="{Binding Path=paramCercaFoto.didascalia,Mode=TwoWay}" MinWidth="80" FontSize="11"/>
 
 						<Label Content="Numeri" FontSize="10" />
 						<TextBox  Text="{Binding Path=stringaNumeriFotogrammi}" 
 							  Name="textBoxNumFotogrammi"
+								  Margin="0,0,0,0"
 							  CharacterCasing="Upper" MinWidth="80" FontSize="11"
 							  ToolTip="Indicare i numeri separati da virgola , oppure range con il meno -" />
 					</StackPanel>
 				</GroupBox>
 
 				<lum:SelettoreScaricoCard x:Name="selettoreScaricoCard1" 
-				                          Margin="3,0,0,0"
+				                          Margin="3,0,0,0" FontSize="14"
 				                          DataContext="{Binding selettoreScaricoCardViewModel}" />
 
 				<CheckBox Name="checkBoxCollassaFiltri" Content="Collassa filtri in ricerca" IsChecked="True" ToolTip="Quando viene esegita la ricerca, viene nascosto atomaticamente il pannello dei filtri" />
@@ -287,20 +292,29 @@ Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding P
                  PreviewKeyDown="LsImageGallery_PreviewKeyDown" 
 				 PreviewMouseWheel="LsImageGallery_PreviewMouseWheel">
 
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListBoxItem}">
+			<ListBox.ItemContainerStyle>
+				
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <EventSetter Event="MouseDoubleClick" Handler="listBoxItemImageGallery_MouseDoubleClick" />
 
-					<EventSetter Event="MouseDoubleClick" Handler="listBoxItemImageGallery_MouseDoubleClick" />
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <Border Name="Border" Padding="1" SnapsToDevicePixels="true">
+                                    <ContentPresenter />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="true">
+                                        <Setter TargetName="Border" Property="Background" Value="Yellow"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
 
-						<Style.Resources>
-							<!--SelectedItem with focus -->
-							<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Yellow" />
-
-							<!--SelectedItem without focus-->
-						<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Yellow" />
-						</Style.Resources>
-	                </Style>				
-                </ListBox.ItemContainerStyle>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>				
+			</ListBox.ItemContainerStyle>
 		</ListBox>
 
     </DockPanel>

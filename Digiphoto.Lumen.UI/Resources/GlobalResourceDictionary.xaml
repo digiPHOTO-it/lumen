@@ -234,19 +234,61 @@
 
     </DataTemplate>
 
-    <!-- L'elemento selezionato della lista perde il colore quando non ha il fuoco. Con questo rimetto a posto -->
-    <Style TargetType="ListBoxItem">
-		<Setter Property="Foreground" Value="DarkBlue" />
-        <Style.Resources>
-            <!--SelectedItem with focus -->
-            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Red" />
-            
-            <!--SelectedItem without focus-->
-			<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Orange" Opacity=".7"/>
-        </Style.Resources>
+    <!-- 
+		Per colorare l'elemento selezionato di una listbox ci vogliono questi 20 Kg di codice: 
+		Questo stile colora di rosso l'elemento selezionato di una lista, anche quando la lista perde il fuoco.
+		Ho dovuto riscriverlo perché con windows10 il precedente sistema di definizione del colore selezionato,
+		non funzionava più.
+	-->
+		
+    <Style TargetType="{x:Type ListBoxItem}" x:Key="listBoxItemEvidenziatoStyle">
+        <Setter Property="Foreground" Value="DarkBlue" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                    <Border x:Name="Bd"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="true">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Selector.IsSelectionActive"
+                                            Value="False" />
+                                <Condition Property="IsSelected"
+                                            Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background"
+                                    TargetName="Bd"
+                                    Value="OrangeRed" />
+                            <Setter Property="Foreground" Value="White" />
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Selector.IsSelectionActive"
+                                            Value="True" />
+                                <Condition Property="IsSelected"
+                                            Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background"
+                                    TargetName="Bd"
+                                    Value="OrangeRed" />
+                            <Setter Property="Foreground" Value="White" />
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
+   
 
-	<Style x:Key="darkControlStyle" TargetType="{x:Type Control}">
+    <Style x:Key="darkControlStyle" TargetType="{x:Type Control}">
 		<!--
 		<Setter Property="Background" Value="{DynamicResource darkGradientBackground}" />
 		-->
@@ -398,5 +440,11 @@
         <Setter Property="Template" Value="{StaticResource mioToggleButtonTemplate}" />
     </Style>
 
-		
+    <Style TargetType="DataGridRow">
+        <Style.Resources>
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="OrangeRed"/>
+            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="OrangeRed"/>
+        </Style.Resources>
+    </Style>
+
 </ResourceDictionary>
