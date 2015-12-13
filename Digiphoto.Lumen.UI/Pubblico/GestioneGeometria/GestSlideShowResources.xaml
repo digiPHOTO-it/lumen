@@ -6,4 +6,10 @@
     <lumC:PercentualeConverterSlideX x:Key="percentualeConverterSlideX" />
     <lumC:PercentualeConverterSlideY x:Key="percentualeConverterSlideY" />
 
+    <Style x:Key="finestraPubblicaButtonStyle" TargetType="Button">
+		<Setter Property="Margin" Value="10,0,5,0" />
+		<Setter Property="Width" Value="150" />
+		<Setter Property="Height" Value="40" />
+				
+	</Style> 
 </ResourceDictionary>
