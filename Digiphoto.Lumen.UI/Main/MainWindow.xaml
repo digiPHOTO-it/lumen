@@ -149,10 +149,7 @@
 						Style="{DynamicResource tabControlProspettiveStyle}"
 						ItemContainerStyle="{StaticResource tabItemProspettiveStyle}">
 
-				<TabItem ToolTip="Gestione SlideShow">
-					<TabItem.Header>
-						<TextBlock Text="Gestione SlideShow" FontSize="14" />
-					</TabItem.Header>
+				<TabItem Header="Preferenze" ToolTip="Preferenze del monitor e della finestra del pubblico">
 					<lumGS:GestSlideShowView/>
 				</TabItem>
 
