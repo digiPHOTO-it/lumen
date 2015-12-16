@@ -49,6 +49,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		void abbandonaCarrello();
 
+		void clonareCarrello();
+
 		void rimasterizza();
 
 		void removeRigaCarrello(RigaCarrello rigaCarrello);
@@ -84,6 +86,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 		bool isPossibileSalvareCarrello {
+			get;
+		}
+
+		bool isPossibileClonareCarrello {
 			get;
 		}
 

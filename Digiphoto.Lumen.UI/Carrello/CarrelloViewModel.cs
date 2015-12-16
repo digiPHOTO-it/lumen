@@ -280,6 +280,12 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
+		public bool possoClonareCarrello {
+			get {
+				return venditoreSrv.isPossibileClonareCarrello;
+            }
+		}
+
 		#endregion Proprietà
 
 		#region Servizi
@@ -711,6 +717,7 @@ namespace Digiphoto.Lumen.UI
 			OnPropertyChanged( "spazioFotoDaMasterizzate" );
 			OnPropertyChanged( "operazioniCd" );
 			OnPropertyChanged( "possoRimasterizzare" );
+			OnPropertyChanged( "possoClonareCarrello" );
 		}
 
 
@@ -1224,8 +1231,13 @@ namespace Digiphoto.Lumen.UI
 			incassiFotografiViewModel.replace( carrelloCorrente.incassiFotografi );
 		}
 
+		public void clonareCarrello() {
 
-        #endregion
+			venditoreSrv.clonareCarrello();
+			updateGUI();
+		}
+
+        #endregion Metodi
 
         #region Comandi
 
@@ -1455,7 +1467,17 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
-        #endregion
+		private RelayCommand _clonareCarrelloCommand;
+		public ICommand clonareCarrelloCommand {
+			get {
+				if (_clonareCarrelloCommand == null) {
+					_clonareCarrelloCommand = new RelayCommand( param => clonareCarrello(), p => possoClonareCarrello );
+				}
+				return _clonareCarrelloCommand;
+			}
+		}
+
+		#endregion Comandi
 
 		#region MemBus
 

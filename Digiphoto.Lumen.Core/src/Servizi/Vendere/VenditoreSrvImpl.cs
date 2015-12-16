@@ -134,6 +134,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			return gestoreCarrello.isEmpty;
 		}
 
+		public bool isPossibileClonareCarrello {
+			get {
+				return gestoreCarrello.possoClonareCarrello;
+			}
+		}
+
 		#endregion
 
 		#region Fields
@@ -285,6 +291,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 
 			return esito;
+		}
+
+		public void clonareCarrello() {
+			gestoreCarrello.clonareCarrello();
 		}
 
 		public bool vendereCarrello() {
