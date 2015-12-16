@@ -26,8 +26,8 @@
 				<Button Command="{Binding salvaCarrelloCommand}" Style="{StaticResource styleCartSalva}" />
 
 				<Button Command="{Binding creaNuovoCarrelloCommand}" Style="{StaticResource styleCartNuovo}"/>
-
-				<Button Command="{Binding eliminaCarrelloCommand}" Style="{StaticResource styleCarrelliButtonDelete}" />
+                <Button Command="{Binding clonareCarrelloCommand}" Style="{StaticResource clonaCartButtonStyle}"/>
+                <Button Command="{Binding eliminaCarrelloCommand}" Style="{StaticResource styleCarrelliButtonDelete}" />
 
 				<Separator Height="10"  Visibility="{Binding Path=IsErroriMasterizzazione,Converter={StaticResource boolVisibilityConverter}}"  />
 				<Button Command="{Binding rimasterizzaCommand}" Style="{StaticResource styleCartRimasterizza}" />

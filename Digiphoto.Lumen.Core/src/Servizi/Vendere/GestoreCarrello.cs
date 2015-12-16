@@ -661,12 +661,60 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 
 		internal void rimpiazzaFotoInRiga( Guid idFotoDaRefresh ) {
-
 			RigaCarrello riga = carrello.righeCarrello.Where( r => r.fotografia.id == idFotoDaRefresh ).SingleOrDefault();
 			if( riga != null ) {
 				((IObjectContextAdapter)mioDbContext).ObjectContext.Refresh( RefreshMode.StoreWins, riga.fotografia );
 			}
 		}
+
+
+
+		public bool possoClonareCarrello {
+			get {
+				return isStatoModifica;
+            }
+		}
+
+		public void clonareCarrello() {
+
+			if( possoClonareCarrello == false )
+				throw new InvalidOperationException("nessun carrello caricato");
+
+			Carrello c = new Carrello();
+			c.giornata = DateTime.Today;
+			c.tempo = DateTime.Now;
+			c.intestazione = carrello.intestazione;
+			c.note = carrello.note;
+			c.prezzoDischetto = carrello.prezzoDischetto;
+			c.totaleAPagare = carrello.totaleAPagare;
+			c.totMasterizzate = carrello.totMasterizzate;
+
+			c.righeCarrello = new List<RigaCarrello>();
+			foreach( RigaCarrello r in carrello.righeCarrello ) {
+				RigaCarrello r2 = new RigaCarrello();
+				r2.carrello = c;
+				r2.bordiBianchi = r.bordiBianchi;
+				r2.descrizione = r.descrizione;
+				r2.discriminator = r.discriminator;
+				r2.formatoCarta = r.formatoCarta;
+				r2.fotografia = r.fotografia;
+				r2.fotografo = r.fotografo;
+				r2.nomeStampante = r.nomeStampante;
+				r2.prezzoLordoUnitario = r.prezzoLordoUnitario;
+				r2.prezzoNettoTotale = r.prezzoNettoTotale;
+				r2.quantita = r.quantita;
+				r2.sconto = r.sconto;
+				c.righeCarrello.Add( r2 );
+			}
+			
+			mioObjContext.Detach(carrello);
+			carrello = c;
+
+			isStatoModifica = false;
+
+		}
+
+
 	}
 
 	public static class Format

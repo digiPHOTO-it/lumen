@@ -525,7 +525,17 @@
 		</Setter>
 	</Style>
 
-	<Style x:Key="styleCarrelliButtonLoad" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+
+    <Style x:Key="clonaCartButtonStyle" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+        <Setter Property="ToolTip" Value="Clona carrello corrente" />
+        <Setter Property="Content">
+            <Setter.Value>
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/clone-32x32.png" Width="32"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="styleCarrelliButtonLoad" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
 		<Setter Property="ToolTip" Value="Carica carrello selezionato" />
 		<Setter Property="Content">
 			<Setter.Value>
