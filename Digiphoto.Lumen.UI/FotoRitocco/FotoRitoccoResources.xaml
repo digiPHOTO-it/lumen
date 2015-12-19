@@ -40,8 +40,7 @@
 
     <DataTemplate x:Key="immaginiDaModificareDataTemplate">
 
-            <Border BorderBrush="WhiteSmoke" BorderThickness="1" 
-                    CornerRadius="8" Margin="0,0,2,2" >
+            <Border BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="6" Margin="0,0,2,2" >
 
 				<Canvas x:Name="fotoCanvas" Width="140" Height="140">
 
@@ -51,11 +50,6 @@
 						   x:Name="imageFotografia"
 						   Width="{Binding ActualWidth, ElementName=fotoCanvas}"
 						   Height="{Binding ActualHeight, ElementName=fotoCanvas}" />
-
-<!--					
-				<Border HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource styleBorderCopriA}" />
-				<Border HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource styleBorderCopriB}" />
--->
            
                     <Image
 						
@@ -91,6 +85,30 @@
 						</Image.ToolTip>
 					</Image>
 
+					<!-- Icona per evidenziare che l'immagine è già stata stampata -->
+					<Image Canvas.Right="2" Canvas.Bottom="2" >
+
+						<Image.ToolTip>
+							<TextBlock >
+								<TextBlock.Text>
+									<MultiBinding StringFormat="Stampate {0} copie">
+										<Binding Path="contaStampata" />
+									</MultiBinding>
+								</TextBlock.Text>
+							</TextBlock>
+						</Image.ToolTip>
+
+						<Image.Style>
+							<Style TargetType="{x:Type Image}">
+								<Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/foto-gia-stampata-16x16.png" />
+								<Style.Triggers>
+									<DataTrigger Binding="{Binding Path=contaStampata}" Value="0" >
+										<Setter Property="Visibility" Value="Hidden" />
+									</DataTrigger>
+								</Style.Triggers>
+							</Style>
+						</Image.Style>
+					</Image>
 
 					<!-- IL font con cui stampo il numero, ha grandezza proporzionale al canvas . Per ora uso 8% della grandezza del contenitore della foto -->
 					<Label Content="{Binding Path=etichetta}"        

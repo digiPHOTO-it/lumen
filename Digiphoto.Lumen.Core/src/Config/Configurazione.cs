@@ -223,6 +223,9 @@ namespace Digiphoto.Lumen.Config  {
 			userConfig.stampigliMarginBottom = 20;
 			userConfig.stampigliMarginRight = 20;
 
+			// Grandezza del font per stampare gli stampigli sulla foto.
+			userConfig.fontSizeStampaFoto = 14;
+
 			return userConfig;
 		}
 
