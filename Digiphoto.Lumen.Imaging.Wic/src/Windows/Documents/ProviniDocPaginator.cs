@@ -442,17 +442,18 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 			// Numero della foto
 			if( true ) {
 				TextBlock textNumero = new TextBlock();
-				textNumero.Text = foto.etichetta;
+				textNumero.Text = " " + foto.etichetta + " ";
 				textNumero.FontSize = Math.Max( 9, sizeLatoH / 10 );
 				textNumero.Foreground = coloreNumFotoFg;
 				textNumero.Background = coloreNumFotoBg;
 				textNumero.SetValue( Canvas.TopProperty, riquadroT + 2 );
-				textNumero.SetValue( Canvas.LeftProperty, (Double)(sizeLatoW * (x - 1)) + riquadroW - MeasureString( textNumero ).Width - 3 );
+				var margSx = riquadroW * 2 / 100;
+				textNumero.SetValue( Canvas.LeftProperty, (Double)(sizeLatoW * (x - 1)) + riquadroW - MeasureString( textNumero ).Width - 3 - margSx );
 				canvas.Children.Add( textNumero );
 			}
 
 			// Operatore
-			if( true ) {
+			if( false ) {
 				TextBlock textOperatore = new TextBlock();
 				StringBuilder operatore = new StringBuilder();
 				textOperatore.Text = foto.fotografo.iniziali;
