@@ -234,11 +234,18 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 			int stampigliMarginRight = Configurazione.UserConfigLumen.stampigliMarginRight;
 			int stampigliMarginLeft = Configurazione.UserConfigLumen.stampigliMarginRight;
 
+
+			// Prima era 30 poi 16 poi l'ho reso esterno
+			int fontSize = Configurazione.UserConfigLumen.fontSizeStampaFoto;
+			if( fontSize <= 0 )
+				fontSize = 14; // Default
+
+
 			// Numero della foto
 			if( lavoroDiStampa.param.stampigli.numFoto ) {
 				TextBlock textNumero = new TextBlock();
 				textNumero.Text = lavoroDiStampa.fotografia.etichetta;
-				textNumero.FontSize = 16; // 30pt text
+				textNumero.FontSize = fontSize; // 30pt text
 				textNumero.Foreground = coloreFg;
 				textNumero.Background = coloreBg;
 				FixedPage.SetBottom( textNumero, stampigliMarginBotton );
@@ -250,7 +257,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 			if( lavoroDiStampa.param.stampigli.giornata ) {
 				TextBlock textGiorno = new TextBlock();
 				textGiorno.Text = lavoroDiStampa.fotografia.giornata.ToString( "d" );
-				textGiorno.FontSize = 16; // 30pt text
+				textGiorno.FontSize = fontSize; // 30pt text
 				textGiorno.Foreground = coloreFg;
 				textGiorno.Background = coloreBg;
 				FixedPage.SetBottom( textGiorno, stampigliMarginBotton );
@@ -262,7 +269,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 			if( lavoroDiStampa.param.stampigli.operatore ) {
 				TextBlock textOperatore = new TextBlock();
 				textOperatore.Text = lavoroDiStampa.fotografia.fotografo.iniziali;
-				textOperatore.FontSize = 16; // 30pt text
+				textOperatore.FontSize = fontSize; // 30pt text
 				textOperatore.Foreground = coloreFg;
 				textOperatore.Background = coloreBg;
 				FixedPage.SetTop( textOperatore, stampigliMarginTop );

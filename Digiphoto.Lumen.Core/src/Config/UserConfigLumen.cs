@@ -479,8 +479,13 @@ namespace Digiphoto.Lumen.Config
 			get;
 			set;
 		}
+		
+		public int fontSizeStampaFoto {
+			get;
+			set;
+		}
 
-		# endregion
+		#endregion
 
 	}
 }
