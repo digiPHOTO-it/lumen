@@ -309,19 +309,28 @@
 				<!-- ^^^^^^^^^ Disabilito la selezione sul tasto destro così posso gestirlo per abilitare il Menu Rapido ^^^^^^^^^ -->
 				<ListBox.ItemContainerStyle>
 
-					<Style TargetType="ListBoxItem">
+					<Style TargetType="{x:Type ListBoxItem}">
 
 						<!-- Questo evento serve per fare il drag della foto sulla cornice -->
 						<EventSetter Event="PreviewMouseLeftButtonDown" Handler="listBoxImmaginiDaModificare_PreviewMouseLeftButtonDown"/>
 						<EventSetter Event="MouseMove" Handler="listBoxImmaginiDaModificare_MouseMove"/>
 
-						<Style.Resources>
-							<!--SelectedItem with focus -->
-							<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Yellow" />
-
-							<!--SelectedItem without focus-->
-							<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Yellow" />
-						</Style.Resources>
+						<Setter Property="FocusVisualStyle" Value="{x:Null}" />
+						<Setter Property="Template">
+							<Setter.Value>
+								<ControlTemplate TargetType="ListBoxItem">
+									<Border Name="Border" Padding="1" SnapsToDevicePixels="true">
+										<ContentPresenter />
+									</Border>
+									<ControlTemplate.Triggers>
+										<Trigger Property="IsSelected" Value="true">
+											<Setter TargetName="Border" Property="Background" Value="Yellow"/>
+										</Trigger>
+									</ControlTemplate.Triggers>
+								</ControlTemplate>
+							</Setter.Value>
+						</Setter>
+						
 					</Style>
 				</ListBox.ItemContainerStyle>
 			</ListBox>
