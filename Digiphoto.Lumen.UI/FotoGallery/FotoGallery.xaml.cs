@@ -40,6 +40,9 @@ namespace Digiphoto.Lumen.UI {
 			textBoxGotoNumFoto.Tag = GOTO_VUOTO;
 
 			DataContextChanged += new DependencyPropertyChangedEventHandler(fotoGallery_DataContextChanged);
+
+			// Carico lo stato della checkbox di collasso filtri, prendendolo dal file di last-used
+			checkBoxCollassaFiltri.IsChecked = Configurazione.LastUsedConfigLumen.collassaFiltriInRicercaGallery;
         }
 
 		void fotoGallery_DataContextChanged( object sender, DependencyPropertyChangedEventArgs e ) {
@@ -539,6 +542,16 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		private void eseguireRicercaButton_Click( object sender, RoutedEventArgs e ) {
+
+			// Se è cambiato lo stato del flag di ricerca, lo memorizzo nei last-used
+			if( checkBoxCollassaFiltri.IsChecked != Configurazione.LastUsedConfigLumen.collassaFiltriInRicercaGallery ) {
+				Configurazione.LastUsedConfigLumen.collassaFiltriInRicercaGallery = (bool) checkBoxCollassaFiltri.IsChecked;
+				try {
+					Configurazione.SalvaLastUsedConfig();
+				} catch( Exception ) {
+
+				}
+			}
 
 			if( checkBoxCollassaFiltri.IsChecked == true )
 				expanderFiltriRicerca.IsExpanded = false;

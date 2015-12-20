@@ -27,6 +27,11 @@ namespace Digiphoto.Lumen.Config
 			set;
 		}
 
+		public bool collassaFiltriInRicercaGallery {
+			get;
+			set;
+		}
+
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		// Create the OnPropertyChanged method to raise the event
