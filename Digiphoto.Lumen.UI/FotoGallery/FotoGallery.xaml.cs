@@ -131,7 +131,8 @@ namespace Digiphoto.Lumen.UI {
 				incrementaQuanteNeVedo( -1 );
 			} else
 				impostaQuanteNeVedo( Convert.ToInt16( param ) );
-			
+
+			forsePrendoSnapshotPubblico();
 		}
 
 		private List<Fotografia> GetVisibleItemsFromListbox(ListBox listBox, FrameworkElement parentToTestVisibility)
