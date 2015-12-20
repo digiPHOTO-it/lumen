@@ -125,42 +125,42 @@
 						</Slider.LargeChange>
 					</Slider>
 
-					<Slider Name="sliderTraslaY" 
+                    <Slider Name="sliderTraslaY" 
                             Value="0"
                             ValueChanged="sliderTrasla_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" 
                             ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" 
                             MinWidth="60"
                             >
-						<Slider.Minimum>
-							<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="-1 * (y + ((x-1) * (y/2)))">
-								<Binding ElementName="sliderZoom" Path="Value" />
-								<!-- x -->
-								<Binding ElementName="borderImage1" Path="Height" />
-								<!-- y -->
-							</MultiBinding>
-						</Slider.Minimum>
-						<Slider.Maximum>
-							<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="1 * (y + ((x-1) * (y/2)))">
-								<Binding ElementName="sliderZoom" Path="Value" />
-								<!-- x -->
-								<Binding ElementName="borderImage1" Path="Height" />
-								<!-- y -->
-							</MultiBinding>
-						</Slider.Maximum>
-						<Slider.SmallChange>
-							<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/400">
-								<!-- x -->
-								<Binding ElementName="sliderTraslaY" Path="Maximum" />
-							</MultiBinding>
-						</Slider.SmallChange>
-						<Slider.LargeChange>
-							<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/200">
-								<!-- x -->
-								<Binding ElementName="sliderTraslaY" Path="Maximum" />
-							</MultiBinding>
-						</Slider.LargeChange>
-					</Slider>
-				</StackPanel>
+                        <Slider.Minimum>
+                            <MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="-1 * (y + ((x-1) * (y/2)))">
+                                <Binding ElementName="sliderZoom" Path="Value" />
+                                <!-- x -->
+                                <Binding ElementName="borderImage1" Path="Height" />
+                                <!-- y -->
+                            </MultiBinding>
+                        </Slider.Minimum>
+                        <Slider.Maximum>
+                            <MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="1 * (y + ((x-1) * (y/2)))">
+                                <Binding ElementName="sliderZoom" Path="Value" />
+                                <!-- x -->
+                                <Binding ElementName="borderImage1" Path="Height" />
+                                <!-- y -->
+                            </MultiBinding>
+                        </Slider.Maximum>
+                        <Slider.SmallChange>
+                            <MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/400">
+                                <!-- x -->
+                                <Binding ElementName="sliderTraslaY" Path="Maximum" />
+                            </MultiBinding>
+                        </Slider.SmallChange>
+                        <Slider.LargeChange>
+                            <MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/200">
+                                <!-- x -->
+                                <Binding ElementName="sliderTraslaY" Path="Maximum" />
+                            </MultiBinding>
+                        </Slider.LargeChange>
+                    </Slider>
+                </StackPanel>
 
 			</Grid>
 
@@ -217,7 +217,8 @@
 			<Button Content="Svuota lista" ToolTip="Svuota la lista delle foto in attesa di essere modificate" Command="{Binding svuotareListaDaModificareCommand}"  />
 			<Button x:Name="buttonTakeSnapshotPubblico" Content="Snapshot pubblico" ToolTip="F2 mostra foto del video al pubblico" Click="buttonTakeSnapshotPubblico_Click"   />
 			<ToggleButton x:Name="toggleButtonReticolo" Content="Reticolo" ToolTip="Attiva/Disattiva il reticolo perpendicolare" IsChecked="{Binding reticoloVisibile}" />
-		</StackPanel>
+            
+        </StackPanel>
 
 
 		<!-- elenco maschere sx -->
@@ -410,33 +411,36 @@
 
 			<TabItem x:Name="tabItemComposizione" Header="Composizione" Tag="M">
 
-				<Grid>
+				<AdornerDecorator> <!-- risolve problema del ticket #377 -->
+					<Grid>
 
-					<Label Content="Selezionare una maschera per iniziare la composizione..."   Margin="20,20,20,20" 
-                           Visibility="{Binding isMascheraInattiva,Converter={StaticResource booleanToVisibilityConverter}}" />
-					<Label Content="Trascinare una o più foto dentro la maschera..."   Margin="20,20,20,20" 
-                           Visibility="{Binding isMascheraAttiva,Converter={StaticResource booleanToVisibilityConverter}}" />
+						<Label Content="Selezionare una maschera per iniziare la composizione..."   Margin="20,20,20,20" 
+						       Visibility="{Binding isMascheraInattiva,Converter={StaticResource booleanToVisibilityConverter}}" />
+						<Label Content="Trascinare una o più foto dentro la maschera..."   Margin="20,20,20,20" 
+						       Visibility="{Binding isMascheraAttiva,Converter={StaticResource booleanToVisibilityConverter}}" />
 
-					<!-- Questo è il canvas di copertura dove compare la cornice bucata -->
-					<Grid Name="canvasMskCopertura" >
-						<Image Name="imageMask"
-                                       Width="500" Height="500" 
-                                       Source="{Binding mascheraAttiva}" />
+						<!-- Questo è il canvas di copertura dove compare la cornice bucata -->
+						<Grid Name="canvasMskCopertura" >
+							<Image Name="imageMask"
+										   Width="500" Height="500" 
+										   Source="{Binding mascheraAttiva}" />
 
-						<Rectangle Stroke="Pink" StrokeThickness="1"
-                                   Width="{Binding ElementName=imageMask,Path=Width}"
-                                   Height="{Binding ElementName=imageMask,Path=Height}" />
+							<Rectangle Stroke="Pink" StrokeThickness="1"
+									   Width="{Binding ElementName=imageMask,Path=Width}"
+									   Height="{Binding ElementName=imageMask,Path=Height}" />
 
-						<Rectangle Stroke="Red" StrokeThickness="1"
-                                   Width="{Binding ElementName=imageMask,Path=ActualWidth}"
-                                   Height="{Binding ElementName=imageMask,Path=ActualHeight}" />
+							<Rectangle Stroke="Red" StrokeThickness="1"
+									   Width="{Binding ElementName=imageMask,Path=ActualWidth}"
+									   Height="{Binding ElementName=imageMask,Path=ActualHeight}" />
+						</Grid>
+
+						<!-- Questo è il canvas di lavoro, dove consento il drag-n-drop delle foto -->
+                    
+							<Canvas  Name="canvasMsk" Background="Transparent" AllowDrop="True" 
+								 Drop="canvasMsk_Drop" />
+					
 					</Grid>
-
-					<!-- Questo è il canvas di lavoro, dove consento il drag-n-drop delle foto -->
-					<Canvas  Name="canvasMsk" Background="Transparent" AllowDrop="True" 
-					         Drop="canvasMsk_Drop" />
-
-				</Grid>
+                </AdornerDecorator>
 
 			</TabItem>
 

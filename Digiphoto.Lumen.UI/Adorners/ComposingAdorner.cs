@@ -156,7 +156,7 @@ namespace Digiphoto.Lumen.UI.Adorners {
 			
 			//
 			Rect rotateHandleRect = new Rect( -AdornedElement.RenderSize.Width / 2, -AdornedElement.RenderSize.Height / 2, AdornedElement.RenderSize.Width, AdornedElement.RenderSize.Height );
-			rotateHandle.ToolTip = "Ruota";
+			rotateHandle.ToolTip = "Ruota (CTRL + rotella del mouse)";
 			rotateHandle.Arrange( rotateHandleRect );
 			if( rotateHandle.Width < minSize )
 				rotateHandle.Width = minSize;
@@ -168,7 +168,7 @@ namespace Digiphoto.Lumen.UI.Adorners {
 
 			//
 			Rect scalehandleRect = new Rect( 0, -AdornedElement.RenderSize.Height / 2, AdornedElement.RenderSize.Width, AdornedElement.RenderSize.Height );
-			scaleHandle.ToolTip = "Scala";
+			scaleHandle.ToolTip = "Scala (rotella del mouse)";
 			scaleHandle.Arrange( scalehandleRect );
 
 			//
