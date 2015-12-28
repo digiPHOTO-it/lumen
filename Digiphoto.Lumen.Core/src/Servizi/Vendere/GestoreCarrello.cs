@@ -1,34 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Digiphoto.Lumen.Model;
-using  System.Data.Entity.Core.Objects.DataClasses;
+using System.Data.Entity.Core.Objects.DataClasses;
 using log4net;
-using System.Transactions;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Applicazione;
-using  System.Data.Entity.Core.Objects;
-using System.Data;
+using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
 using System.Windows.Forms;
-using System.Data.Common;
 using Digiphoto.Lumen.Database;
 using Digiphoto.Lumen.Config;
 using System.ComponentModel;
-using System.Data.Entity;
 using Digiphoto.Lumen.Util;
 using System.Data.Entity.Core;
 using System.IO;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 
-	internal class GestoreCarrello : IDisposable, INotifyPropertyChanged {
+#if DEBUG
+	public
+#else
+	internal
+#endif
+	class GestoreCarrello : IDisposable, INotifyPropertyChanged {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( GestoreCarrello ) );
 
 		#region Costruttore
-		protected internal GestoreCarrello() {
+
+#if DEBUG
+	public
+#else
+	protected internal 
+#endif
+		GestoreCarrello() {
 			// Provo a lavorare con un mio contesto separato dagli altri, per vedere se risolvo i problemi di attacca/stacca
 			creaMioDbContext();
 		}

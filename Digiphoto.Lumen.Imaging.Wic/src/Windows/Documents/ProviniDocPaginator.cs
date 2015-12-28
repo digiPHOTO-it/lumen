@@ -260,8 +260,9 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 
 			// Qualche cabala + incantesimi
 			FormuleMagiche.rilasciaMemoria();
-			FormuleMagiche.attendiGcFinalizers();
-			FormuleMagiche.rilasciaMemoria();
+// Dopo il passaggio a .net 4.6 e sqlite aggiornato, questo non funziona più e si pianta
+//			FormuleMagiche.attendiGcFinalizers();
+//			FormuleMagiche.rilasciaMemoria();
 		}
 
 		public override int PageCount {
@@ -453,6 +454,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 			}
 
 			// Operatore
+#if FALSO
 			if( false ) {
 				TextBlock textOperatore = new TextBlock();
 				StringBuilder operatore = new StringBuilder();
@@ -464,7 +466,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 				textOperatore.SetValue( Canvas.LeftProperty, riquadroL + 2 );
 				canvas.Children.Add( textOperatore );
 			}
-
+#endif
 		}
 
 

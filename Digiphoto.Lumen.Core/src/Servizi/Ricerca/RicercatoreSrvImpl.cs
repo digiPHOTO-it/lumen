@@ -189,13 +189,24 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			// ----- Didascalia (le didascalie le memorizziamo solo in maiuscolo)
 			if( !String.IsNullOrWhiteSpace( param.didascalia ) && param.didascalia != "%" ) {
 
+
 				if( param.didascalia.Contains( "%" ) ) {
-					if( param.didascalia.StartsWith( "%" ) ) {
-						string dida = param.didascalia.Substring( 1 );
-						query = query.Where( ff => ff.didascalia.EndsWith( dida ) );
-					} else if( param.didascalia.EndsWith( "%" ) ) {
-						string dida = param.didascalia.Substring( 0, param.didascalia.Length - 1 );
-						query = query.Where( ff => ff.didascalia.StartsWith( dida ) );
+
+					string dida;
+
+                    if( param.didascalia.StartsWith( "%" ) && param.didascalia.EndsWith( "%" ) ) {
+						// Cerco nel mezzo
+						dida = param.didascalia.Substring( 1, param.didascalia.Length - 2 );
+                        query = query.Where( ff => ff.didascalia.Contains( dida ) );
+					} else {
+
+						if( param.didascalia.StartsWith( "%" ) ) {
+							dida = param.didascalia.Substring( 1 );
+							query = query.Where( ff => ff.didascalia.EndsWith( dida ) );
+						} else if( param.didascalia.EndsWith( "%" ) ) {
+							dida = param.didascalia.Substring( 0, param.didascalia.Length - 1 );
+							query = query.Where( ff => ff.didascalia.StartsWith( dida ) );
+						}
 					}
 				} else {
 					query = query.Where( ff => ff.didascalia.Equals( param.didascalia ) );

@@ -134,7 +134,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 					{
 						//UnitOfWorkScope.CurrentObjectContext.Eventi.Attach(metadati.evento);
 						Evento e = metadati.evento;
-						OrmUtil.forseAttacca<Evento>("Eventi", ref e);
+						OrmUtil.forseAttacca<Evento>( ref e );
 					}
 
 					foreach (Fotografia fotografia in fotografie)
@@ -185,7 +185,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			//UnitOfWorkScope.CurrentObjectContext.Fotografie.Attach( foto );
 
 			Fotografia f = foto;
-			OrmUtil.forseAttacca<Fotografia>("Fotografie", ref f);
+			OrmUtil.forseAttacca<Fotografia>( ref f );
 
 			//Consento la modifica anche di valori nulli
 			//if( !String.IsNullOrWhiteSpace( metadati.didascalia ) )

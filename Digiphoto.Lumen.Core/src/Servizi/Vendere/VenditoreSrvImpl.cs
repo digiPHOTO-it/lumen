@@ -284,7 +284,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					pubblicaMessaggio( new Messaggio( this ) {
 						esito = Esito.Errore,
 						showInStatusBar = true,
-						descrizione = "Errore nel salvataggio del carrello"
+						descrizione = "Errore nel salvataggio del carrello:\r\n" + msg
 					} );
 
 				}
@@ -349,7 +349,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 
 		public void removeCarrello( Carrello carrello ) {
-			OrmUtil.forseAttacca<Carrello>( "Carrelli", ref carrello );
+			OrmUtil.forseAttacca<Carrello>( ref carrello );
 			LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 			dbContext.Carrelli.Remove( carrello );
 		}
@@ -474,11 +474,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			r.id = Guid.Empty;  // Lascio intenzionalmente vuoto. Lo valorizzo alla fine prima di salvare
 
 			// Riattacco un pò di roba altrimenti si incacchia
-			OrmUtil.forseAttacca<Fotografia>( "Fotografie", ref fotografia );
+			OrmUtil.forseAttacca<Fotografia>( ref fotografia );
 			FormatoCarta fc = param.formatoCarta;
-			OrmUtil.forseAttacca<FormatoCarta>( "FormatiCarta", ref fc );
+			OrmUtil.forseAttacca<FormatoCarta>( ref fc );
 			Fotografo fo = fotografia.fotografo;
-			OrmUtil.forseAttacca<Fotografo>( "Fotografi", ref fo );
+			OrmUtil.forseAttacca<Fotografo>( ref fo );
 
 			r.fotografia = fotografia;
 			r.fotografo = fotografia.fotografo;
@@ -645,10 +645,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					using (new UnitOfWorkScope(true))
 					{
 						LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
-						
+
 						DateTime giornata = DateTime.Today;
 						FormatoCarta formatoCarta = lavoroDiStampaProvini.param.formatoCarta;
-						OrmUtil.forseAttacca<FormatoCarta>("FormatiCarta", ref formatoCarta);
+						OrmUtil.forseAttacca<FormatoCarta>( ref formatoCarta );
 						//Verifico se sono già stati stampati dei provini all'interno della giornata.
 						ConsumoCartaGiornaliero consumoCarta = dbContext.ConsumiCartaGiornalieri.FirstOrDefault(cC => System.DateTime.Equals(cC.giornata,giornata) && cC.formatoCarta.id == formatoCarta.id);
 						

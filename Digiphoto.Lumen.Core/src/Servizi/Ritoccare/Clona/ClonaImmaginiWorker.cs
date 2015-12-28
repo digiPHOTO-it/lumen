@@ -217,13 +217,13 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare.Clona {
 				fotoClone.dataOraAcquisizione = foto.dataOraAcquisizione;
 
 				Fotografo f = foto.fotografo;
-				OrmUtil.forseAttacca<Fotografo>("Fotografi", ref f);
+				OrmUtil.forseAttacca<Fotografo>( ref f );
 				fotoClone.fotografo = f;
 
 				if (foto.evento != null)
 				{
 					Evento e = foto.evento;
-					OrmUtil.forseAttacca<Evento>("Eventi", ref e);
+					OrmUtil.forseAttacca<Evento>( ref e );
 					fotoClone.evento = e;
 				}
 						

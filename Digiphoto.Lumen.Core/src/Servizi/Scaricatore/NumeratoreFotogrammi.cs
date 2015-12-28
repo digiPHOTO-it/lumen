@@ -47,7 +47,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		 * Il risultato devo scriverlo nel db perché deve essere visibile da tutti
 		 * gli utenti della rete.
 		 */
-		private static int eventualeAzzeramento( string modoAzzeramento, int ultimoFotogramma, DateTime? dataUltimoScarico ) {
+		internal static int eventualeAzzeramento( string modoAzzeramento, int ultimoFotogramma, DateTime? dataUltimoScarico ) {
 
 			int numero = ultimoFotogramma;
 
