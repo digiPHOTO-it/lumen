@@ -84,13 +84,13 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Imaging\CorrezioniTest.cs" />
-    <Compile Include="Imaging\ProiettoreAreaTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\Collections\RingBufferTests.cs" />
     <Compile Include="src\Core\AvvioFermaTest.cs" />
     <Compile Include="src\DatiDiEsempio\DataGenTest.cs" />
     <Compile Include="src\DatiDiEsempio\ParoleCasualiTest.cs" />
+    <Compile Include="src\Imaging\CorrezioniTest.cs" />
+    <Compile Include="src\Imaging\ProiettoreAreaTest.cs" />
     <Compile Include="src\Licenza\LicenzaTest.cs" />
     <Compile Include="src\Model\CarrelloTest.cs" />
     <Compile Include="src\Model\crudTest.cs" />
