@@ -69,12 +69,6 @@
                 CommandParameter="{Binding}"
 				Style="{StaticResource imageButtonToolBarStyle}"
 				>
-			<Button.InputBindings>
-				<MouseBinding Gesture="Control+LeftClick" 
-				              Command="{Binding Path=DataContext.stampareDirettaCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
-							  CommandParameter="{Binding}"
-							  />
-			</Button.InputBindings>
 			<StackPanel Orientation="Vertical" >
                 <Image Source="{Binding Path=DataContext.modoVendita, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Converter={StaticResource modoVenditaImageSourceConverter}}"/>
                 <Label Content="{Binding FormatoCarta.descrizione}" Width="48" HorizontalContentAlignment="Center" Foreground="Black"  />

@@ -10,7 +10,7 @@ using System.Resources;
 [assembly: AssemblyDescription( "Lumen core classes and services" )]
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "digiPHOTO.it" )]
-[assembly: AssemblyProduct( "Lumen.Core" )]
+[assembly: AssemblyProduct( "Lumen" )]
 [assembly: AssemblyCopyright( "Copyright © digiPHOTO.it 2014" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
@@ -39,3 +39,4 @@ using System.Resources;
 [assembly: NeutralResourcesLanguageAttribute( "it" )]
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Digiphoto.Lumen.Core.VsTest")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo( "Digiphoto.Lumen.Core.Test" )]

@@ -16,18 +16,17 @@ namespace Digiphoto.Lumen.Database {
 	public static class OrmUtil {
 
 		public static bool forseAttacca<TEntity>( ref TEntity entity ) where TEntity : class {
+			return forseAttacca( ref entity, UnitOfWorkScope.currentDbContext );
+        }
 
-			DbContext dbContext = UnitOfWorkScope.currentDbContext;
-			ObjectContext objContext = UnitOfWorkScope.currentObjectContext;
-			ObjectStateEntry entry;
+		public static bool forseAttacca<TEntity>( ref TEntity entity, DbContext dbContext ) where TEntity : class {
 
+			ObjectContext objContext = ((IObjectContextAdapter)dbContext).ObjectContext;
+            ObjectStateEntry entry;
 
 			// Track whether we need to perform an attach
 			bool attach = false;
 			bool trovato = objContext.ObjectStateManager.TryGetObjectStateEntry( entity, out entry );
-
-//			DbEntityEntry dbEE = dbContext.Entry( entity );
-//			if( dbEE.State == EntityState.Detached ) {
 
 			if( trovato ) {
 				// Re-attach if necessary

@@ -21,7 +21,7 @@ namespace Digiphoto.Lumen.Licensing {
 			_validate.Key = licenceKey;
 
 			if( ! _validate.IsValid )
-				throw new NullReferenceException( "The licence code is not valid" );
+				throw new ApplicationException( "The licence code is not valid" );
 		}
 
 		public override string LicenseKey {

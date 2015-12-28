@@ -220,8 +220,9 @@ namespace Digiphoto.Lumen.UI {
 
 					// Verifico che non abbia fatto nel carrello operazioni di 
 					// stampa con errore o abbia caricato un carrello salvato
-					if( posso && !venditoreSrv.possoAggiungereStampe )
-						posso = false;
+					if( posso )
+						if( modoVendita == ModoVendita.Carrello && venditoreSrv.possoAggiungereStampe == false )
+							posso = false;
 				}
 
 				return posso;

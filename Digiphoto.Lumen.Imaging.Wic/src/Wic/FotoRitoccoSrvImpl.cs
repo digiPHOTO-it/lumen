@@ -335,13 +335,13 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 					fotoMsk.dataOraAcquisizione = fotoOrig.dataOraAcquisizione;
 
 					Fotografo f = fotoOrig.fotografo;
-					OrmUtil.forseAttacca<Fotografo>("Fotografi", ref f);
+					OrmUtil.forseAttacca<Fotografo>( ref f);
 					fotoMsk.fotografo = f;
 
 					if (fotoOrig.evento != null)
 					{
 						Evento e = fotoOrig.evento;
-						OrmUtil.forseAttacca<Evento>("Eventi", ref e);
+						OrmUtil.forseAttacca<Evento>( ref e);
 						fotoMsk.evento = e;
 					}
 

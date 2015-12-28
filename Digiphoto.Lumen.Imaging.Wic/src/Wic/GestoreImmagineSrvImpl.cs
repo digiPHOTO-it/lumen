@@ -177,7 +177,12 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 				if( forzatamente || foto.imgRisultante == null )
 					if( (target & IdrataTarget.Risultante) != 0 ) {
 						nomeCompleto = PathUtil.nomeCompletoRisultante( foto );
-						foto.imgRisultante = this.load( nomeCompleto );
+
+						// Se mi chiedono idratare tutte le foto, e quella modificata non esiste, non do errore.
+						if( target == IdrataTarget.Tutte && !File.Exists( nomeCompleto ) ) {
+							// E' possibile che la foto modificata non esista. Mentre le altre devono esistere (provino e originale)
+						} else
+							foto.imgRisultante = this.load( nomeCompleto );
 					}
 
 			} catch( Exception ee ) {

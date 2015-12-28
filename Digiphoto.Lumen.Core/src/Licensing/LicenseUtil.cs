@@ -138,7 +138,7 @@ namespace Digiphoto.Lumen.Licensing {
 			return valida;
 		}
 
-		private static string SUBKEY_REG = "Software\\digiPHOTO.it\\Lumen\\Registration";
+		private static string SUBKEY_REG = @"SOFTWARE\digiPHOTO.it\Lumen\Registration";
 		private static string VAL_KEY = "LicenseKey";
 
 
@@ -162,6 +162,19 @@ namespace Digiphoto.Lumen.Licensing {
 			string strLic = null;
 
 			RegistryKey licenseKey = Registry.LocalMachine.OpenSubKey( SUBKEY_REG );
+
+			if( licenseKey == null ) {
+				// Se l'applicazione è 32 bit su di un s.o. a 64 bit, lui deve cercare in un posto diverso (HKLM\Software\Wow6432Node)
+				// Provo a leggere la parte di registro dedicata alle applicazioni 64.
+				RegistryKey localKey = RegistryKey.OpenBaseKey( Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64 );
+				licenseKey = localKey.OpenSubKey( SUBKEY_REG );
+ 			}
+			if( licenseKey == null ) {
+				// Se l'applicazione è 32 bit su di un s.o. a 64 bit, lui deve cercare in un posto diverso (HKLM\Software\Wow6432Node)
+				// Provo a leggere la parte di registro dedicata alle applicazioni 64.
+				RegistryKey localKey = RegistryKey.OpenBaseKey( Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry32 );
+				licenseKey = localKey.OpenSubKey( SUBKEY_REG );
+			}
 
 			if( licenseKey != null ) {
 				strLic = (string)licenseKey.GetValue( VAL_KEY );
