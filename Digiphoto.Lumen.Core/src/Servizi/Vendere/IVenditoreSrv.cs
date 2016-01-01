@@ -23,36 +23,56 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		ParamStampaProvini creaParamStampaProvini();
 
-		/** Foto da vendere come stampe */
+		/// <summary>
+		///  Aggiungere foto da vendere come stampe
+		/// </summary>
 		void aggiungereStampe( IEnumerable<Fotografia> fotografie, ParamStampa param );
 
 		void removeDatiDischetto();
 		void setDatiDischetto( TipoDestinazione tipoDest, String nomeCartella );
 		void setDatiDischetto( TipoDestinazione tipoDest, String nomeCartella, decimal? prezzoDischetto );
+
+		/// <summary>
+		///  Aggiungere foto da vendere come cd da masterizzare
+		/// </summary>
 		void aggiungereMasterizzate( IEnumerable<Fotografia> fotografie );
 
-		/** 
-		 * Prepara un nuovo carrello vuoto (da riempire).
-		 * Il carrello corrente viene "abbandonato" senza nessun salvataggio.
-		 */
+		/// <summary>
+		/// Prepara un nuovo carrello vuoto (da riempire).
+		/// Il carrello corrente viene "abbandonato" senza nessun salvataggio.
+		/// </summary>
 		void creaNuovoCarrello();
+		
 
-		/**
-		 * Il carrello corrente viene venduto. Diventa definitivo
-		 */
-		bool vendereCarrello();
+		/// <summary>
+		/// Il carrello corrente viene venduto. Diventa definitivo
+		/// </summary>
+		/// <returns>
+		/// null se tutto ok. Altrimenti ritorna il messaggio di errore
+		/// che descrive il problema che è capitato.
+		/// </returns>
+		string vendereCarrello();
 
-		/**
-		 * Consente il Salvattaggio del Carrello senza effettuare ne la stampa ne la Masterizzazione
-         */
-		bool salvaCarrello();
+		/// <summary>
+		/// Consente il Salvattaggio del Carrello senza effettuare ne la stampa ne la Masterizzazione
+        /// </summary>
+		string salvaCarrello();
 
 		void abbandonaCarrello();
 
 		void clonareCarrello();
 
+		/// <summary>
+		/// Esegue nuovamente la masterizzazione che potrebbe, in prima istanza,
+		/// essere fallita (per es. se il CD non è vuoto)
+		/// </summary>
 		void rimasterizza();
 
+		/// <summary>
+		/// Elimina la riga dal carrello. Se la riga è persistente, allora
+		/// rimuove anche dal db (senza commit).
+		/// </summary>
+		/// <param name="rigaCarrello"></param>
 		void removeRigaCarrello(RigaCarrello rigaCarrello);
 
 		/// <summary>

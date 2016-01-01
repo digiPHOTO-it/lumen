@@ -645,7 +645,9 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 
 			using( new UnitOfWorkScope() ) {
 				var context = UnitOfWorkScope.currentDbContext;
-				bool esito = venditoreSrv.salvaCarrello();
+
+				string msgErrore = venditoreSrv.salvaCarrello();
+				bool esito = (msgErrore == null);
 				Assert.IsTrue( esito );
 			}
 

@@ -370,8 +370,8 @@
               <Summary>:NPC:</Summary>
             </Documentation>
           </Property>
-          <NavigationProperty Name="incassiFotografi" Relationship="Self.FK_IncassiFotografi_1_0" FromRole="Carrelli" ToRole="IncassiFotografi" />
-          <NavigationProperty Name="righeCarrello" Relationship="Self.FK_RigheCarrelli_3_0" FromRole="Carrelli" ToRole="RigheCarrelli" />
+          <NavigationProperty Name="incassiFotografi" Relationship="Digiphoto.Lumen.Model.FK_IncassiFotografi_Carrello" FromRole="Carrelli" ToRole="IncassiFotografi" />
+          <NavigationProperty Name="righeCarrello" Relationship="Digiphoto.Lumen.Model.FK_RigheCarrelli_Carrelli" FromRole="Carrelli" ToRole="RigheCarrelli" />
         </EntityType>
         <EntityType Name="ConsumoCartaGiornaliero">
           <Key>
@@ -472,7 +472,7 @@
           <Property Name="provvigioni" Type="Decimal" Precision="6" Scale="2" />
           <Property Name="carrello_id" Nullable="false" Type="Guid" />
           <Property Name="fotografo_id" Nullable="false" MaxLength="16" FixedLength="false" Unicode="true" Type="String" />
-          <NavigationProperty Name="carrello" Relationship="Self.FK_IncassiFotografi_1_0" FromRole="IncassiFotografi" ToRole="Carrelli" />
+          <NavigationProperty Name="carrello" Relationship="Digiphoto.Lumen.Model.FK_IncassiFotografi_Carrello" FromRole="IncassiFotografi" ToRole="Carrelli" />
           <NavigationProperty Name="fotografo" Relationship="Self.FK_IncassiFotografi_0_0" FromRole="IncassiFotografi" ToRole="Fotografi" />
         </EntityType>
         <EntityType Name="InfoFissa">
@@ -516,10 +516,10 @@
           <Property Name="fotografo_id" Nullable="false" MaxLength="16" FixedLength="false" Unicode="true" Type="String" />
           <Property Name="fotografia_id" Type="Guid" />
           <Property Name="formatoCarta_id" Type="Guid" />
-          <NavigationProperty Name="carrello" Relationship="Self.FK_RigheCarrelli_3_0" FromRole="RigheCarrelli" ToRole="Carrelli" />
+          <NavigationProperty Name="carrello" Relationship="Digiphoto.Lumen.Model.FK_RigheCarrelli_Carrelli" FromRole="RigheCarrelli" ToRole="Carrelli" />
           <NavigationProperty Name="formatoCarta" Relationship="Self.FK_RigheCarrelli_0_0" FromRole="RigheCarrelli" ToRole="FormatiCarta" />
           <NavigationProperty Name="fotografo" Relationship="Self.FK_RigheCarrelli_2_0" FromRole="RigheCarrelli" ToRole="Fotografi" />
-          <NavigationProperty Name="fotografia" Relationship="Self.FK_RigheCarrelli_1_0" FromRole="RigheCarrelli" ToRole="Fotografie" />
+          <NavigationProperty Name="fotografia" Relationship="Digiphoto.Lumen.Model.FK_RigheCarrelli_Fotografie" FromRole="RigheCarrelli" ToRole="Fotografie" />
         </EntityType>
         <EntityType Name="ScaricoCard">
           <Key>
@@ -532,8 +532,10 @@
           <Property Name="fotografo_id" Nullable="false" MaxLength="16" FixedLength="false" Unicode="true" Type="String" />
           <NavigationProperty Name="fotografo" Relationship="Self.FK_ScarichiCards_0_0" FromRole="ScarichiCards" ToRole="Fotografi" />
         </EntityType>
-        <Association Name="FK_IncassiFotografi_1_0">
-          <End Role="Carrelli" Type="Digiphoto.Lumen.Model.Carrello" Multiplicity="1" />
+        <Association Name="FK_IncassiFotografi_Carrello">
+          <End Role="Carrelli" Type="Digiphoto.Lumen.Model.Carrello" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="IncassiFotografi" Type="Digiphoto.Lumen.Model.IncassoFotografo" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Carrelli">
@@ -544,8 +546,10 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_RigheCarrelli_3_0">
-          <End Role="Carrelli" Type="Digiphoto.Lumen.Model.Carrello" Multiplicity="1" />
+        <Association Name="FK_RigheCarrelli_Carrelli">
+          <End Role="Carrelli" Type="Digiphoto.Lumen.Model.Carrello" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="RigheCarrelli" Type="Digiphoto.Lumen.Model.RigaCarrello" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Carrelli">
@@ -640,7 +644,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_RigheCarrelli_1_0">
+        <Association Name="FK_RigheCarrelli_Fotografie">
           <End Role="Fotografie" Type="Digiphoto.Lumen.Model.Fotografia" Multiplicity="0..1" />
           <End Role="RigheCarrelli" Type="Digiphoto.Lumen.Model.RigaCarrello" Multiplicity="*" />
           <ReferentialConstraint>
@@ -665,11 +669,11 @@
           <EntitySet Name="InfosFisse" EntityType="Digiphoto.Lumen.Model.InfoFissa" />
           <EntitySet Name="RigheCarrelli" EntityType="Digiphoto.Lumen.Model.RigaCarrello" />
           <EntitySet Name="ScarichiCards" EntityType="Digiphoto.Lumen.Model.ScaricoCard" />
-          <AssociationSet Name="FK_IncassiFotografi_1_0" Association="Self.FK_IncassiFotografi_1_0">
+          <AssociationSet Name="FK_IncassiFotografi_1_0" Association="Digiphoto.Lumen.Model.FK_IncassiFotografi_Carrello">
             <End Role="Carrelli" EntitySet="Carrelli" />
             <End Role="IncassiFotografi" EntitySet="IncassiFotografi" />
           </AssociationSet>
-          <AssociationSet Name="FK_RigheCarrelli_3_0" Association="Self.FK_RigheCarrelli_3_0">
+          <AssociationSet Name="FK_RigheCarrelli_3_0" Association="Digiphoto.Lumen.Model.FK_RigheCarrelli_Carrelli">
             <End Role="Carrelli" EntitySet="Carrelli" />
             <End Role="RigheCarrelli" EntitySet="RigheCarrelli" />
           </AssociationSet>
@@ -701,7 +705,7 @@
             <End Role="Fotografi" EntitySet="Fotografi" />
             <End Role="ScarichiCards" EntitySet="ScarichiCards" />
           </AssociationSet>
-          <AssociationSet Name="FK_RigheCarrelli_1_0" Association="Self.FK_RigheCarrelli_1_0">
+          <AssociationSet Name="FK_RigheCarrelli_1_0" Association="Digiphoto.Lumen.Model.FK_RigheCarrelli_Fotografie">
             <End Role="Fotografie" EntitySet="Fotografie" />
             <End Role="RigheCarrelli" EntitySet="RigheCarrelli" />
           </AssociationSet>

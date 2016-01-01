@@ -199,6 +199,7 @@
     </Compile>
     <Compile Include="Licenze\LicenseEditorViewModel.cs" />
     <Compile Include="Util\Md5.cs" />
+    <Compile Include="Util\UtilWinForm.cs" />
     <Compile Include="XamlHelpers\PasswordBoxAssistant.cs" />
     <Page Include="About\AboutBox.xaml">
       <SubType>Designer</SubType>

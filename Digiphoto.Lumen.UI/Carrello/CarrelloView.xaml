@@ -148,8 +148,8 @@
 
 					<StackPanel Orientation="Vertical">
 
-						<DatePicker SelectedDate="{Binding Path=paramCercaCarrello.giornataIniz,Mode=TwoWay}"  IsTodayHighlighted="true" Name="datePickerRicercaIniz" ToolTip="Data inizio periodo" Margin="1" />
-						<DatePicker SelectedDate="{Binding Path=paramCercaCarrello.giornataFine,Mode=TwoWay}"  IsTodayHighlighted="true" Name="datePickerRicercaFine" ToolTip="Data fine periodo" Margin="1"/>
+                        <DatePicker SelectedDate="{Binding Path=paramCercaCarrello.giornataIniz,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  IsTodayHighlighted="true" Name="datePickerRicercaIniz" ToolTip="Data inizio periodo" Margin="1" />
+                        <DatePicker SelectedDate="{Binding Path=paramCercaCarrello.giornataFine,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  IsTodayHighlighted="true" Name="datePickerRicercaFine" ToolTip="Data fine periodo" Margin="1"/>
 
 						<StackPanel Orientation="Horizontal" Margin="0,3,0,0" HorizontalAlignment="Center">
 							<Button Content="Oggi" Name="oggiButton" Click="oggiButton_Click" Margin="1" Padding="2,0,2,0" MinWidth="40" />

@@ -1,24 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Digiphoto.Lumen.Model;
-using  System.Data.Entity.Core.Objects.DataClasses;
 using Digiphoto.Lumen.Core.Database;
 using log4net;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Servizi.Stampare;
 using Digiphoto.Lumen.Eventi;
-using System.Transactions;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Servizi.Masterizzare;
 using Digiphoto.Lumen.Database;
-using System.Windows.Forms;
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Servizi.Reports;
-using System.Data.Entity;
-using  System.Data.Entity.Core.Objects;
-using System.Data.Common;
+using System.ComponentModel;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 
@@ -36,12 +30,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 		public Carrello carrello {
+
 			get {
 				return gestoreCarrello.carrello;
 			}
 
-			set {
-			}
 		}
 
 		public ModoVendita modoVendita {
@@ -178,14 +171,32 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			// Sistemo i prezzi e i totali documento
 			gestoreCarrello.ricalcolaDocumento( false );
 
+			inviaMessaggioValoreCarrelloCambiato();
+		}
+
+		private void inviaMessaggioValoreCarrelloCambiato() {
+			inviaMessaggioValoreCarrelloCambiato( false );
+        }
+
+		/// <summary>
+		/// Invio un messaggio sul bus che il prezzo del carrello è cambiato
+		/// </summary>
+		private void inviaMessaggioValoreCarrelloCambiato( bool cambiateRighe ) {
 			GestoreCarrelloMsg msg = new GestoreCarrelloMsg( this );
 			msg.fase = Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.UpdateCarrello;
+			if( cambiateRighe )
+				msg.descrizione = "cambiate-righe";
 			LumenApplication.Instance.bus.Publish( msg );
 		}
 
 		public void caricaCarrello( Carrello c ) {
-			
+
+			ascoltatorePropertyChangedElimina();
+
 			gestoreCarrello.caricaCarrello( c.id );
+
+			ascoltatorePropertyChangedCrea();
+
 
 			GestoreCarrelloMsg msg = new GestoreCarrelloMsg( this );
 			msg.descrizione = "Caricato carrello dal database: " + c.intestazione;
@@ -193,6 +204,29 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			msg.fase = Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.LoadCarrelloSalvato;
 			LumenApplication.Instance.bus.Publish( msg );
 		}
+
+		private void ascoltatorePropertyChangedCrea() {
+			// Aggancio un ascoltatore di attributi cambiati
+			gestoreCarrello.carrello.PropertyChanged += carrelloCorrente_PropertyChanged;
+		}
+
+		private void ascoltatorePropertyChangedElimina() {
+			if( gestoreCarrello != null && gestoreCarrello.carrello != null )
+				gestoreCarrello.carrello.PropertyChanged -= carrelloCorrente_PropertyChanged;
+		}
+
+		/// <summary>
+		/// Se viene modificato il prezzo del dischetto, oppure il totale forfettario, rilancio un messaggio di valorizzazione modificata.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		void carrelloCorrente_PropertyChanged( object sender, PropertyChangedEventArgs e ) {
+
+			if( e.PropertyName == "prezzoDischetto" || e.PropertyName == "totaleAPagare" ) {
+				inviaMessaggioValoreCarrelloCambiato();
+            }
+		}
+
 
 		/** 
 		 * Per ogni foto indicata, creo una nuova riga di carrello
@@ -227,12 +261,15 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		public void creaNuovoCarrello() {
 
 			if( gestoreCarrello != null ) {
+				ascoltatorePropertyChangedElimina();
 				gestoreCarrello.Dispose();
 				gestoreCarrello = null;
 			}
 
 			gestoreCarrello = new GestoreCarrello();
 			gestoreCarrello.creaNuovo();
+
+			ascoltatorePropertyChangedCrea();
 
 			GestoreCarrelloMsg msg = new GestoreCarrelloMsg( this );
 			msg.fase = Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.CreatoNuovoCarrello;
@@ -245,9 +282,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
-		public bool salvaCarrello() {
-			bool esito = false;
+		public string salvaCarrello() {
 
+			string msgErrore = null;
 
 			//
 			// Siccome l'esito della stampa e della masterizzazione lo riceverò più tardi 
@@ -256,60 +293,53 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			// Quindi memorizzo il carrello intero. Poi gestirò i problemi (sperando che non ce ne siano).
 			//
 
-			using( TransactionScope transaction = new TransactionScope() ) {
+			try {
+				// aggiornaTotFotoMasterizzate();
 
-				try {
-					// aggiornaTotFotoMasterizzate();
+				// Poi salvo il carrello
+				gestoreCarrello.salva();
 
-					// Poi salvo il carrello
-					gestoreCarrello.salva();
-					_giornale.Debug( "salvataggio eseguito. Ora committo la transazione" );
+				_giornale.Debug( "salvataggio carrello " + carrello.id + " a buon fine" );
 
-					transaction.Complete();
-					_giornale.Info( "commit carrello a buon fine" );
+				pubblicaMessaggio( new Messaggio( this ) {
+					esito = Esito.Ok,
+					showInStatusBar = true,
+					descrizione = "Carrello salvato ok"
+				} );
 
-					esito = true;
+			} catch( Exception eee ) {
 
-					pubblicaMessaggio( new Messaggio( this ) {
-						esito = Esito.Ok,
-						showInStatusBar = true,
-						descrizione = "Carrello salvato ok"
-					} );
+				msgErrore = ErroriUtil.estraiMessage(eee);
+				_giornale.Error( msgErrore, eee );
 
-				} catch( Exception eee ) {
-					esito = false;
-					string msg = ErroriUtil.estraiMessage(eee);
-					_giornale.Error( msg, eee );
+				pubblicaMessaggio( new Messaggio( this ) {
+					esito = Esito.Errore,
+					showInStatusBar = true,
+					descrizione = "Errore nel salvataggio del carrello:\r\n" + msgErrore
+				} );
 
-					pubblicaMessaggio( new Messaggio( this ) {
-						esito = Esito.Errore,
-						showInStatusBar = true,
-						descrizione = "Errore nel salvataggio del carrello:\r\n" + msg
-					} );
-
-				}
 			}
 
-			return esito;
+			return msgErrore;
 		}
 
 		public void clonareCarrello() {
 			gestoreCarrello.clonareCarrello();
 		}
 
-		public bool vendereCarrello() {
+		public string vendereCarrello() {
 
 			_giornale.Debug( "carrello valido. Inizio operazioni di produzione" );
 
-			bool esito = false;
+			string msgErrore = null;
 
 			try {
 
 				carrello.venduto = true;
 
-				esito = salvaCarrello();
+				msgErrore = salvaCarrello();
 
-				if( !esito )
+				if( msgErrore != null )
 					carrello.venduto = false;
 
 			} finally {
@@ -326,15 +356,17 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			info.showInStatusBar = true;
 			pubblicaMessaggio( info );
 
-			return esito;
+			return msgErrore;
 		}
 
 
 		public void removeRigaCarrello( RigaCarrello rigaCarrello ) {
 
 			gestoreCarrello.removeRiga( rigaCarrello );
+
 			if (masterizzaSrv != null && masterizzaSrv.fotografie!=null && masterizzaSrv.fotografie.Contains(rigaCarrello.fotografia))
 				masterizzaSrv.fotografie.Remove(rigaCarrello.fotografia);
+
 			ricalcolaTotaleCarrello();
 		}
 
@@ -349,9 +381,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 
 		public void removeCarrello( Carrello carrello ) {
-			OrmUtil.forseAttacca<Carrello>( ref carrello );
-			LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
-			dbContext.Carrelli.Remove( carrello );
+			gestoreCarrello.elimina( carrello );
 		}
 
 		public void spostaRigaCarrello(RigaCarrello rigaCarrello)
@@ -407,25 +437,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		private void spostaRigaCarrello(RigaCarrello rigaCarrello, bool remove)
 		{
-			if (remove)
-				gestoreCarrello.removeRiga(rigaCarrello);
-			if (Carrello.TIPORIGA_STAMPA.Equals(rigaCarrello.discriminator))
-			{
-				rigaCarrello.discriminator = Carrello.TIPORIGA_MASTERIZZATA;
-				rigaCarrello.quantita = 1;
-			}
-			else if (Carrello.TIPORIGA_MASTERIZZATA.Equals(rigaCarrello.discriminator))
-			{
-				//Quando sposto la riga setto di default i bordi bianchi a false
-				rigaCarrello.bordiBianchi = false;
-				rigaCarrello.discriminator = Carrello.TIPORIGA_STAMPA;
-			}
-			else
-			{
-				_giornale.Warn("Errorre è stata spostat una riga senza dicriminator");
-			}
-			gestoreCarrello.aggiungiRiga(rigaCarrello);
-			ricalcolaTotaleCarrello();
+			gestoreCarrello.spostaRigaCarrello( rigaCarrello, remove );
+			inviaMessaggioValoreCarrelloCambiato( true );
 		}
 
 		private void eventualeStampa(Carrello carrello) {
@@ -698,8 +711,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public void abbandonaCarrello() {
 
-			if( gestoreCarrello != null )
+			if( gestoreCarrello != null ) {
+				ascoltatorePropertyChangedElimina();
 				gestoreCarrello.Dispose();
+			}
 
 			creaNuovoCarrello();
 		}

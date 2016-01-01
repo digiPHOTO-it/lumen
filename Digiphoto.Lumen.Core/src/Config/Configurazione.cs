@@ -7,7 +7,6 @@ using log4net;
 using System.Configuration;
 using System.IO;
 using Digiphoto.Lumen.Servizi.Vendere;
-using System.Windows.Forms;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Model;
 

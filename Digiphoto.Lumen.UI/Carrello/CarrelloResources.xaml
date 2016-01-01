@@ -83,10 +83,11 @@
             <GroupBox.Header>
                 <TextBlock>
                     <TextBlock.Text>
-                        <MultiBinding StringFormat="Riga {0} Carrello stampa">
+                        <MultiBinding StringFormat="Riga {0} su stampante: {1}">
                             <Binding Path="."
                                      RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}"
                                      Converter="{StaticResource listItemIndexConverter}" />
+                            <Binding Path="nomeStampante" />
                         </MultiBinding>
                     </TextBlock.Text>
                 </TextBlock>

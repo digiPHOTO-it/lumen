@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Core.Database;
-using System.Windows.Forms;
 
 namespace Digiphoto.Lumen.Servizi.Reports.ConsumoCarta
 {

@@ -24,9 +24,9 @@ using Digiphoto.Lumen.Servizi.Ricostruzione;
 using Digiphoto.Lumen.GestoreConfigurazione.UI.Licenze;
 using Digiphoto.Lumen.Licensing;
 using Digiphoto.Lumen.Eventi;
-using Digiphoto.Lumen.UI.Util;
 using System.Windows.Resources;
 using System.Windows;
+using Digiphoto.Lumen.UI.Util;
 
 namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 {
@@ -987,7 +987,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 		private void scegliereCartella( string quale ) {
 
-			string appo = PathUtil.scegliCartella();
+			string appo = Util.UtilWinForm.scegliCartella();
 			if( appo != null ) {
 
 				if( quale.Equals( "mask", StringComparison.CurrentCultureIgnoreCase ) )

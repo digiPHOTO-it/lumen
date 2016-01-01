@@ -8,13 +8,14 @@ using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Applicazione;
 using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
-using System.Windows.Forms;
 using Digiphoto.Lumen.Database;
 using Digiphoto.Lumen.Config;
 using System.ComponentModel;
 using Digiphoto.Lumen.Util;
 using System.Data.Entity.Core;
 using System.IO;
+using System.Data.Entity.Validation;
+using System.Data.Entity;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 
@@ -218,6 +219,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			creaMioDbContext();
 
 			carrello = new Carrello();
+			carrello.giornata = DateTime.Today;
+
 			carrello.righeCarrello = new EntityCollection<RigaCarrello>();
 			//Metto un'intestazione automatica per distinguere il carrello autogenerato dagli altri
 			// scarrello.intestazione = "Auto";
@@ -277,15 +280,25 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 		public void removeRiga( RigaCarrello rigaDacanc ) {
-				
-			// Rimuovo l'elemento dalla collezione. Essendo una relazione identificante, EF si preoccua di rimuovere anche da disco la riga.
+
+			EntityState stato = OrmUtil.getEntityState( rigaDacanc );
+
+			// Rimuovo l'elemento dalla collezione. 
+			// Non so perché, ma essendo una relazione identificante, perché EF NON si preoccua di rimuovere anche da disco la riga da solo ??
+			// Dovrebbe chiamare la delete sul db, ma non lo fa! ...
 			bool test = carrello.righeCarrello.Remove( rigaDacanc );
 			if( !test ) {
 				_giornale.Error( "Si è cercato di cancellare una riga dal carrello che non esiste. Probabilmente la riga era già stata eliminata dal carrello in precedenza" );
 				throw new LumenException( "La riga non è presente nel carrello" );
 			}
 
-		}
+			// ... per quanto sopra, se l'oggetto era persistente, devo preoccuparmi io di rimuoverlo anche dal dbcontext
+			if( isStatoModifica == true && rigaDacanc.id != Guid.Empty ) {
+				if( stato == EntityState.Detached || stato == EntityState.Modified || stato == EntityState.Unchanged )
+					mioDbContext.RigheCarrelli.Remove( rigaDacanc );
+			}
+
+		} 
 
 		public void aggiungiRiga( RigaCarrello riga ) {
 
@@ -316,9 +329,19 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				carrello.righeCarrello.Add( riga );
 
 			} else {
-				// TODO non è molto mvvm. Da migliorare.
-				MessageBox.Show("La fotografia è già stata caricata nel carrello\nModificare la quantita","Avviso");
+				throw new ArgumentException( "La fotografia è già stata caricata nel carrello\r\nModificare la quantità\r\nRiga non aggiunta" );
 			}	
+		}
+
+		internal void elimina( Carrello carrelloDacanc ) {
+
+			if( ! carrelloDacanc.Equals( this.carrello ) ) {
+				OrmUtil.forseAttacca<Carrello>( ref carrelloDacanc, mioDbContext );
+			}
+
+			mioDbContext.Carrelli.Remove( carrelloDacanc );
+
+			mioDbContext.SaveChanges();
 		}
 
 		public void abbandonaCarrello() {
@@ -368,12 +391,28 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				//carrello.totaleAPagare <= 0 )
 				carrello.totaleAPagare = prezzoNettoTotale;
 
-			int quanti = mioDbContext.SaveChanges();
+			try {
 
-			if( quanti <= 0 ) {
-				string msg = "Il carrello non è stato aggiornato. Nessun record salvato";
-				_giornale.Error( msg );
-				throw new InvalidOperationException( msg );
+				int quanti = mioDbContext.SaveChanges();
+
+				if( quanti <= 0 ) {
+					string msg = "Il carrello non è stato aggiornato. Nessun record salvato";
+					_giornale.Error( msg );
+					throw new InvalidOperationException( msg );
+				}
+			} catch( DbEntityValidationException dbEx ) {
+				_giornale.Error( "Salvataggio carrello fallito. Entità non validata", dbEx );
+				foreach( var validationErrors in dbEx.EntityValidationErrors ) {
+					foreach( var validationError in validationErrors.ValidationErrors ) {
+						_giornale.Debug( String.Format( "Property: {0} Error: {1}",
+												validationError.PropertyName,
+												validationError.ErrorMessage ) );
+					}
+				}
+				throw dbEx;
+			} catch( Exception ex ) {
+				_giornale.Error( "Salvataggio carrello fallito.", ex );
+				throw;
 			}
 
 			string msg2 = "Registrato carrello id = " + carrello.id + " totale a pagare = " + carrello.totaleAPagare + " con " + carrello.righeCarrello.Count + " righe";
@@ -681,6 +720,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
             }
 		}
 
+		// TODO forse sarebbe più consono chiamare il clona su tutti i componenti ?? (carrello, righe, provvigioni)
 		public void clonareCarrello() {
 
 			if( possoClonareCarrello == false )
@@ -720,34 +760,51 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		}
 
+		public void spostaRigaCarrello( RigaCarrello rigaCarrello, bool remove ) {
 
-	}
+			if( remove )
+				carrello.righeCarrello.Remove( rigaCarrello );
 
-	public static class Format
-	{
-		static string[] sizeSuffixes = {
-        "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
-
-		public static string ByteSize(long size)
-		{
-			const string formatTemplate = "{0}{1:0.#} {2}";
-
-			if (size == 0)
-			{
-				return string.Format(formatTemplate, null, 0, sizeSuffixes[0]);
+			if( Carrello.TIPORIGA_STAMPA.Equals( rigaCarrello.discriminator ) ) {
+				rigaCarrello.discriminator = Carrello.TIPORIGA_MASTERIZZATA;
+				rigaCarrello.quantita = 1;
+			} else if( Carrello.TIPORIGA_MASTERIZZATA.Equals( rigaCarrello.discriminator ) ) {
+				//Quando sposto la riga setto di default i bordi bianchi a false
+				rigaCarrello.bordiBianchi = false;
+				rigaCarrello.discriminator = Carrello.TIPORIGA_STAMPA;
+			} else {
+				_giornale.Warn( "Errore è stata spostata una riga senza dicriminator" );
 			}
+			aggiungiRiga( rigaCarrello );
 
-			var absSize = Math.Abs((double)size);
-			var fpPower = Math.Log(absSize, 1000);
-			var intPower = (int)fpPower;
-			var iUnit = intPower >= sizeSuffixes.Length
-				? sizeSuffixes.Length - 1
-				: intPower;
-			var normSize = absSize / Math.Pow(1000, iUnit);
+			ricalcolaDocumento( true );
+		}
 
-			return string.Format(
-				formatTemplate,
-				size < 0 ? "-" : null, normSize, sizeSuffixes[iUnit]);
+
+
+		public static class Format {
+			static string[] sizeSuffixes = {
+		"B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+
+			public static string ByteSize( long size ) {
+				const string formatTemplate = "{0}{1:0.#} {2}";
+
+				if( size == 0 ) {
+					return string.Format( formatTemplate, null, 0, sizeSuffixes[0] );
+				}
+
+				var absSize = Math.Abs( (double)size );
+				var fpPower = Math.Log( absSize, 1000 );
+				var intPower = (int)fpPower;
+				var iUnit = intPower >= sizeSuffixes.Length
+					? sizeSuffixes.Length - 1
+					: intPower;
+				var normSize = absSize / Math.Pow( 1000, iUnit );
+
+				return string.Format(
+					formatTemplate,
+					size < 0 ? "-" : null, normSize, sizeSuffixes[iUnit] );
+			}
 		}
 	}
 }
