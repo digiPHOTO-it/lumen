@@ -110,6 +110,8 @@
     <Compile Include="src\Servizi\Stampare\StampantiAbbinateSrvImplTest.cs" />
     <Compile Include="src\Servizi\Stampare\StampantiInstallateSrvImplTest.cs" />
     <Compile Include="src\Servizi\Stampare\StampaProviniTest.cs" />
+    <Compile Include="src\Servizi\Vendere\GestoreCarrelloTest.cs" />
+    <Compile Include="src\Servizi\Vendere\VenditoreSrvImplTest.cs" />
     <Compile Include="src\Util\CompNumFotoTest.cs" />
     <Compile Include="src\Util\Costanti.cs" />
     <Compile Include="src\Util\Crc32.cs" />
@@ -167,9 +169,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="src\Servizi\Vendere\" />
-  </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

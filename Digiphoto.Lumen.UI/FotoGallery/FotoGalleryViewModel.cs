@@ -960,7 +960,9 @@ namespace Digiphoto.Lumen.UI {
 						venditoreStampaDiretta.creaNuovoCarrello();
 						venditoreStampaDiretta.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_RAPIDA;
 						venditoreStampaDiretta.aggiungereStampe(listaSelez, creaParamStampaFoto(stampanteAbbinata));
-						if (venditoreStampaDiretta.vendereCarrello())
+						string msgErrore = venditoreStampaDiretta.vendereCarrello();
+						bool esitoOk = (msgErrore == null);
+                        if( esitoOk )
 						{
 							this.trayIconProvider.showInfo( "Vendita ok", "Incassare " + venditoreStampaDiretta.carrello.totaleAPagare + " euro", 3000 );
 						}

@@ -46,6 +46,12 @@ namespace Digiphoto.Lumen.UI.Dialogs.SelezionaStampante
 			}
 		}
 
+		public string nomeStampante {
+			get {
+				return model.nomeStampante;
+			}
+		}
+
 		private bool _attenderePrego;
 		public bool attenderePrego {
 			get {

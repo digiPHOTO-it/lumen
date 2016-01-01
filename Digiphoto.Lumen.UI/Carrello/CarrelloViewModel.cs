@@ -25,6 +25,7 @@ using Digiphoto.Lumen.UI.IncassiFotografi;
 using Digiphoto.Lumen.UI.Dialogs.SelezionaStampante;
 using Digiphoto.Lumen.Servizi.Ritoccare;
 using System.Windows.Threading;
+using Digiphoto.Lumen.UI.Util;
 
 namespace Digiphoto.Lumen.UI
 {
@@ -140,22 +141,9 @@ namespace Digiphoto.Lumen.UI
 		/// <summary>
 		/// E' il carrello su cui sto aggiungendo le foto
 		/// </summary>
-		private Digiphoto.Lumen.Model.Carrello _carrelloCorrente;
 		public Digiphoto.Lumen.Model.Carrello carrelloCorrente {
 			get {
-				_carrelloCorrente = venditoreSrv.carrello;
-				_carrelloCorrente.PropertyChanged += _carrelloCorrente_PropertyChanged;
 				return venditoreSrv.carrello;
-			}
-		}
-
-		void _carrelloCorrente_PropertyChanged(object sender, PropertyChangedEventArgs e)
-		{
-			if (e.PropertyName == "prezzoDischetto" ||
-				e.PropertyName == "totaleAPagare")
-			{
-				OnPropertyChanged("prezzoNettoTotale");
-				OnPropertyChanged("ScontoApplicato");
 			}
 		}
 
@@ -612,7 +600,7 @@ namespace Digiphoto.Lumen.UI
 				// Verifico che i dati minimi siano stati indicati
 				// Elimino solo se il carrello è stato caricato in caso contrario è transiente e quindi
 				//posso fare svuota
-				if (posso && RiCaFotoStampateCv.IsEmpty )
+				if (posso && RiCaFotoStampateCv.IsEmpty && RiCaFotoMasterizzateCv.IsEmpty )
 					posso = false;
 
 				// Elimino solo i carrelli Salvati
@@ -774,8 +762,8 @@ namespace Digiphoto.Lumen.UI
 
 
 
-
-			if(venditoreSrv.vendereCarrello())
+			string msgErrore = venditoreSrv.vendereCarrello();
+            if( msgErrore == null )
 			{
 				
 				//Controllo se ci sono stati errori nella masterizzazione/copia su chiavetta
@@ -820,9 +808,9 @@ namespace Digiphoto.Lumen.UI
 				}
 			}
 			else
-			{
-				_giornale.Warn( "il carrello" + carrelloCorrente + " + non è stato salvato correttamente" );
-				dialogProvider.ShowError("Attenzione: Il carrello non è stato salvato correttamente\nsegnalare l'anomalia", "ERRORE", null);
+			{ 
+				_giornale.Warn( "carrello non è stato salvato correttamente: " + msgErrore );
+				dialogProvider.ShowError("Attenzione: Il carrello non è stato salvato correttamente\r\n" + msgErrore, "ERRORE", null);
 			}
 
         }
@@ -896,7 +884,7 @@ namespace Digiphoto.Lumen.UI
 				chiavettaPath = result == DialogResult.OK ? fBD.SelectedPath : null;
 
 			} else {
-				chiavettaPath = PathUtil.scegliCartella();
+				chiavettaPath = UtilWinForm.scegliCartella();
 			}
 
 
@@ -963,12 +951,15 @@ namespace Digiphoto.Lumen.UI
 				return;
 			}
 
-			if( venditoreSrv.salvaCarrello() ) {
+			string msgErrore = venditoreSrv.salvaCarrello();
+            if( msgErrore == null ) {
 				dialogProvider.ShowMessage( "Carrello Salvato Correttamente", "Avviso" );
 				creaNuovoCarrello();
 			} else
-				dialogProvider.ShowError( "Salvataggio carrello fallito\nsegnalare l'anomalia allegando il log", "ERRORE", null );
-		}
+				dialogProvider.ShowError( "Salvataggio carrello fallito\r\n" + msgErrore, "ERRORE", null );
+
+
+        }
 
 		private void eliminaCarrello()
 		{
@@ -981,7 +972,15 @@ namespace Digiphoto.Lumen.UI
 			if( !procediPure )
 				return;
 
-			venditoreSrv.removeCarrello( CarrelloSalvatoSelezionato );
+			Carrello carrelloDacanc = CarrelloSalvatoSelezionato;
+			bool rinfrescareLista = CarrelliSalvatiCv.Contains( carrelloDacanc );
+
+			venditoreSrv.removeCarrello( carrelloDacanc );
+
+			// aggiorno la lista rieseguendo la ricerca.
+			if( rinfrescareLista )
+				eseguireRicerca();
+
 			creaNuovoCarrello();
 		}
 
@@ -1000,10 +999,12 @@ namespace Digiphoto.Lumen.UI
 
         private bool chiediConfermaEliminazioneRiga(String discriminator)
         {
+            StringBuilder msg = new StringBuilder("Confermi rimozione riga dal carrello ?");
+			if( venditoreSrv.isStatoModifica )
+				msg.Append( "\r\nL'operazione sarà definitiva solo se verrà salvato o venduto il carrello." );
 
-            StringBuilder msg = new StringBuilder("Questa operazione rimuove la riga selezionata:\n L'operazione è irreversibile.\nConfermi");
             bool procediPure = false;
-            dialogProvider.ShowConfirmation(msg.ToString(), (discriminator == Carrello.TIPORIGA_STAMPA ? "STAMPA" : "MASTERIZZA")+" - Richiesta conferma ",
+            dialogProvider.ShowConfirmation(msg.ToString(), "Rimozione foto da " + (discriminator == Carrello.TIPORIGA_STAMPA ? "stampare" : "masterizzare") + " dal carrello",
                 (confermato) =>
                 {
                     procediPure = confermato;
@@ -1193,9 +1194,13 @@ namespace Digiphoto.Lumen.UI
 
 				if (esito == true)
 				{
-					//associo il nuovo formato carta alla riga
+					//associo il nuovo formato carta alla riga ed anche la stampante
 					rigaCarrelloMasterizzataSelezionata.formatoCarta = d.formatoCarta;
-					venditoreSrv.spostaRigaCarrello(rigaCarrelloMasterizzataSelezionata);
+					rigaCarrelloMasterizzataSelezionata.nomeStampante = d.nomeStampante;
+					rigaCarrelloMasterizzataSelezionata.quantita = 1;
+					rigaCarrelloMasterizzataSelezionata.prezzoLordoUnitario = d.formatoCarta.prezzo;
+					rigaCarrelloMasterizzataSelezionata.prezzoNettoTotale = rigaCarrelloMasterizzataSelezionata.prezzoLordoUnitario;
+                    venditoreSrv.spostaRigaCarrello(rigaCarrelloMasterizzataSelezionata);
 					rinfrescaViewRighe();
 				}
 
@@ -1233,8 +1238,17 @@ namespace Digiphoto.Lumen.UI
 
 		public void clonareCarrello() {
 
+			// Spengo le selezioni sulle righe
+			rigaCarrelloStampataSelezionata = null;
+			rigaCarrelloMasterizzataSelezionata = null;
+
 			venditoreSrv.clonareCarrello();
+
 			updateGUI();
+
+			rinfrescaViewRighe();
+
+			dialogProvider.ShowMessage( "Carrello Clonato.\nOra stai lavorando sulla copia.", "Informazione" );
 		}
 
         #endregion Metodi
@@ -1532,7 +1546,8 @@ namespace Digiphoto.Lumen.UI
 
 			// Qui cambiano soltanto gli attributi con il totale del carrello
 			if(msg.fase== Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.UpdateCarrello){
-				ricreaCV = true;
+				if( msg.descrizione == "cambiate-righe" )
+					ricreaCV = true;
 			}
 
 			if( carrelloCorrente.righeCarrello.Count() != (RiCaFotoStampateCv.Count + RiCaFotoMasterizzateCv.Count)  )
@@ -1549,7 +1564,6 @@ namespace Digiphoto.Lumen.UI
 				rinfrescaViewRighe();
 
 			updateGUI();
-
 		}
 
 		public void OnNext(StampatoMsg value)

@@ -339,7 +339,9 @@ namespace Digiphoto.Lumen.UI
 						venditoreStampaDiretta.creaNuovoCarrello();
 						venditoreStampaDiretta.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_RAPIDA;
 						venditoreStampaDiretta.aggiungereStampe(listaSelez, creaParamStampaFoto(stampanteAbbinata));
-						if (venditoreStampaDiretta.vendereCarrello())
+						string msgErrore = venditoreStampaDiretta.vendereCarrello();
+						bool esitoOk = (msgErrore == null);
+						if( esitoOk )
 						{
 							dialogProvider.ShowMessage("Carrello venduto Correttamente", "Avviso");
 						}
@@ -380,7 +382,9 @@ namespace Digiphoto.Lumen.UI
 				venditoreSpampaRapida.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_RAPIDA;
 				venditoreSpampaRapida.aggiungereStampe( fotoSelezionate, creaParamStampaFoto( stampanteAbbinata, autoZoomNoBordiBianchi) );
 
-				if (venditoreSpampaRapida.vendereCarrello())
+				string msgErrore = venditoreSpampaRapida.vendereCarrello();
+				bool esitoOk = (msgErrore == null);
+                if( esitoOk )
 				{
 					// quando tutto va bene non diciamo niente. Segnaliamo solo gli errori.
 					// dialogProvider.ShowMessage("Carrello venduto Correttamente", "Avviso");

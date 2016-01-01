@@ -105,46 +105,44 @@ namespace Digiphoto.Lumen.Core.Database {
 			/* Set the current scope to this UnitOfWorkScope object: */
 			_currentScope = this;
 		}
+
 		/// <summary>
-		/// Called on the end of the scope. Disposes the NorthwindObjectContext.
+		/// Called on the end of the scope. Disposes the ObjectContext.
 		/// </summary>
 		public void Dispose() {
 
 			if( !_isDisposed ) {
 
-				/* End of scope, so clear the thread static 
-				 * _currentScope member: */
-				_currentScope = null;
-				Thread.EndThreadAffinity();
+				try {
 
-				if( _saveAllChangesAtEndOfScope ) {
+					/* End of scope, so clear the thread static 
+					 * _currentScope member: */
+					_currentScope = null;
+					Thread.EndThreadAffinity();
 
-					try {
+					if( _saveAllChangesAtEndOfScope ) {
 						// Qui ci potrebbero essere delle eccezioni
-
 						_dbContext.SaveChanges();
-
-					} catch( Exception ee ) {
-
-						_giornale.Error( "Salvataggio sul db fallito", ee );
-
-						// TODO : non è molto mvvm. Rivedere! Magari cercare di redirigere l'applicazione in un form di errore? Leggere un pò di letteratura
-						System.Windows.Forms.MessageBox.Show( ErroriUtil.estraiMessage( ee ), "Salvataggio sul database", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
-
-						// Decido di non rilanciare l'eccezione perché effettivamente il programma si spaccherebbe.
-						// Però non sono in grado di gestirla. Quindi l'unica cosa che posso fare è loggarla ed avvisare l'utente.
 					}
+
+				} catch( Exception ee ) {
+
+					_giornale.Error( "Salvataggio sul db fallito: " + ErroriUtil.estraiMessage( ee ), ee );
+					throw ee;
+
+				} finally {
+					// In ogni caso devo chiudere tutto
+					_dbContext.Dispose();
+					_dbContext = null;
+					_isDisposed = true;
 				}
 
-				/* Dispose the scoped ObjectContext instance: */
-				_dbContext.Dispose();
-				_dbContext = null;
-
-				_isDisposed = true;
-
 			} else {
-				_giornale.Warn( "Come mai casco qui ?? Impossibile !" );
+				_giornale.Warn( "Come mai casco qui ?? Impossibile. Debuggare!" );
+				if( System.Diagnostics.Debugger.IsAttached )
+					System.Diagnostics.Debugger.Break();
 			}
+
 		}
 	}
 

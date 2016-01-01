@@ -40,7 +40,11 @@ namespace Digiphoto.Lumen.UI.Dialogs.SelezionaStampante
 			private set;
 		}
 
-	
+		public string nomeStampante {
+			get;
+			private set;
+		}
+
 		#endregion
 
 		#region Metodi
@@ -60,6 +64,7 @@ namespace Digiphoto.Lumen.UI.Dialogs.SelezionaStampante
 		{
 			StampanteAbbinata stampanteAbbinata = (StampanteAbbinata)objStampanteAbbinata;
 			formatoCarta = stampanteAbbinata.FormatoCarta;
+			nomeStampante = stampanteAbbinata.StampanteInstallata.NomeStampante;
 			_selezionaStampanteDialog.DialogResult = true;
 			_selezionaStampanteDialog.Hide();
 		}

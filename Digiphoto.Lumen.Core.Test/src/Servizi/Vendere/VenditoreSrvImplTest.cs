@@ -5,7 +5,6 @@ using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Servizi.Stampare;
-using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Collections.Generic;
 using Digiphoto.Lumen.Core.Database;
@@ -13,19 +12,16 @@ using Digiphoto.Lumen.Servizi.Masterizzare;
 using System.IO;
 using Digiphoto.Lumen.Servizi.Reports;
 using System.Diagnostics;
-using Digiphoto.Lumen.Database;
 using Digiphoto.Lumen.Config;
-using System.Transactions;
-using System.Data.Entity.Infrastructure;
+using Digiphoto.Lumen.Core.Test.Util;
 
-namespace Digiphoto.Lumen.Core.VsTest
-{
-    
-    
-    /// <summary>
-    ///This is a test class for VenditoreSrvImplTest and is intended
-    ///to contain all VenditoreSrvImplTest Unit Tests
-    ///</summary>
+namespace Digiphoto.Lumen.Core.VsTest {
+
+
+	/// <summary>
+	///This is a test class for VenditoreSrvImplTest and is intended
+	///to contain all VenditoreSrvImplTest Unit Tests
+	///</summary>
 	[TestClass()]
 	public class VenditoreSrvImplTest : IObserver<Messaggio> {
 
@@ -361,7 +357,8 @@ namespace Digiphoto.Lumen.Core.VsTest
 				_impl.aggiungereMasterizzate( fotos2 );
 				_impl.aggiungereMasterizzate( fotos3 );
 
-				bool esito = _impl.salvaCarrello();
+				string msgEsito = _impl.salvaCarrello();
+				bool esito = (msgEsito == null);
 				Assert.IsTrue( esito );
 
 				Carrello cc = _impl.carrello;

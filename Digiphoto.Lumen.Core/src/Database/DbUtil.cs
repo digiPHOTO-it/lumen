@@ -12,7 +12,6 @@ using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Config;
-using System.Windows.Forms;
 using System.Data.Common;
 using System.Security.AccessControl;
 using System.Data.Entity.Core.EntityClient;

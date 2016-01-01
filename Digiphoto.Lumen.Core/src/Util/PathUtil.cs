@@ -8,7 +8,6 @@ using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Applicazione;
 using System.Security.AccessControl;
 using Digiphoto.Lumen.Config;
-using System.Windows.Forms;
 using Digiphoto.Lumen.Imaging.Correzioni;
 
 namespace Digiphoto.Lumen.Util {
@@ -258,19 +257,6 @@ namespace Digiphoto.Lumen.Util {
 			Directory.CreateDirectory(path);
 			return path; 
 		}
-
-		public static string scegliCartella() {
-			string cartella = null;
-
-			FolderBrowserDialog dlg = new FolderBrowserDialog();
-			dlg.ShowNewFolderButton = true;
-			DialogResult result = dlg.ShowDialog();
-			if( result == System.Windows.Forms.DialogResult.OK )
-				cartella = dlg.SelectedPath;
-
-			return cartella;
-		}
-
 
 		// Adds an ACL entry on the specified file for the specified account.
 		public static void AddFileSecurity( string fileName, string account, FileSystemRights rights, AccessControlType controlType ) {
