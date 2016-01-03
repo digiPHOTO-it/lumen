@@ -851,6 +851,8 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Carrello-bloccato-48x48.png" />
+    <Resource Include="Resources\lucchetto-16x16.png" />
     <Resource Include="Resources\foto-gia-stampata-16x16.png" />
     <Resource Include="Resources\clone-32x32.png" />
     <Resource Include="Resources\clear-filter-32x32.png" />

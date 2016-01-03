@@ -7,41 +7,27 @@ using Digiphoto.Lumen.Servizi.Explorer;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Servizi.Ricerca;
 using Digiphoto.Lumen.Model;
-using Digiphoto.Lumen.UI.Diapo;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Windows.Data;
 using System.Windows.Input;
-using Digiphoto.Lumen.Servizi.Masterizzare;
 using Digiphoto.Lumen.Servizi.Vendere;
 using Digiphoto.Lumen.Servizi.Stampare;
 using Digiphoto.Lumen.Config;
-using Digiphoto.Lumen.Core;
-using PeteBrown.ScreenCapture;
 using System.Windows;
-using System.Windows.Media.Imaging;
-using Digiphoto.Lumen.UI.ScreenCapture;
 using Digiphoto.Lumen.UI.Pubblico;
 using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
 using Digiphoto.Lumen.Servizi.Ritoccare;
 using Digiphoto.Lumen.Util;
-using Digiphoto.Lumen.UI.Main;
 using Digiphoto.Lumen.UI.Dialogs;
-using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
-using Digiphoto.Lumen.Model.Util;
-using System.Collections;
-using Digiphoto.Lumen.UI.Util;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
 using Digiphoto.Lumen.Servizi.Ritoccare.Clona;
-using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.UI.SelettoreAzioniRapide;
 
 namespace Digiphoto.Lumen.UI {
 
 
 
-	public class FotoGalleryViewModel : ViewModelBase, IObserver<StampatoMsg>, IObserver<ClonaFotoMsg>, IObserver<SvuotaFiltriMsg>, IAzzioniRapide
+	public class FotoGalleryViewModel : ViewModelBase, IObserver<StampatoMsg>, IObserver<ClonaFotoMsg>, IObserver<SvuotaFiltriMsg>, IObserver<GestoreCarrelloMsg>, IAzzioniRapide
 	{
 		private BackgroundWorker _bkgIdrata;
 
@@ -56,6 +42,9 @@ namespace Digiphoto.Lumen.UI {
 
 			IObservable<ClonaFotoMsg> observableClonaFoto = LumenApplication.Instance.bus.Observe<ClonaFotoMsg>();
 			observableClonaFoto.Subscribe(this);
+
+			IObservable<GestoreCarrelloMsg> observableGesCarrello = LumenApplication.Instance.bus.Observe<GestoreCarrelloMsg>();
+			observableGesCarrello.Subscribe( this );
 
 			metadati = new MetadatiFoto();
 
@@ -186,6 +175,15 @@ namespace Digiphoto.Lumen.UI {
 		public bool possoPlayPauseSlideShow {
 			get {
 				return possoControllareSlideShow && slideShowViewModel.isLoaded;
+			}
+		}
+
+		/// <summary>
+		/// Questa proprietà mi serve per visualizzare o meno la pulsantiera della vendita con carrello
+		/// </summary>
+		public bool isCarrelloModificabile {
+			get {
+				return venditoreSrv.possoAggiungereStampe || venditoreSrv.possoAggiungereMasterizzate;
 			}
 		}
 
@@ -564,21 +562,21 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		private ModoVendita _modoVendita = Configurazione.UserConfigLumen.modoVendita;
 		public ModoVendita modoVendita
 		{
 			get
 			{
-				return _modoVendita;
+				return venditoreSrv.modoVendita;
 			}
 			set
 			{
-				if (_modoVendita != value)
+				if ( venditoreSrv.modoVendita != value)
 				{
-					_modoVendita = value;
+					venditoreSrv.modoVendita = value;
 
 					OnPropertyChanged("modoVendita");
 					OnPropertyChanged("stringModoVendita");
+					OnPropertyChanged( "isCarrelloModificabile" );
 				}
 			}
 		}
@@ -957,6 +955,7 @@ namespace Digiphoto.Lumen.UI {
 				if( stampaDiretta ){
 					using( IVenditoreSrv venditoreStampaDiretta = LumenApplication.Instance.creaServizio<IVenditoreSrv>() ) 
 					{
+						venditoreSrv.modoVendita = ModoVendita.StampaDiretta;
 						venditoreStampaDiretta.creaNuovoCarrello();
 						venditoreStampaDiretta.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_RAPIDA;
 						venditoreStampaDiretta.aggiungereStampe(listaSelez, creaParamStampaFoto(stampanteAbbinata));
@@ -1528,7 +1527,16 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-        public void OnNext(SvuotaFiltriMsg value)
+		public void OnNext( GestoreCarrelloMsg value ) {
+			
+			if( value.fase == GestoreCarrelloMsg.Fase.CreatoNuovoCarrello ||
+				value.fase == GestoreCarrelloMsg.Fase.LoadCarrelloSalvato ) {
+				OnPropertyChanged( "modoVendita" );
+				OnPropertyChanged( "isCarrelloModificabile" );
+			}
+		}
+
+		public void OnNext(SvuotaFiltriMsg value)
         {
             if (value.sender is SelettoreScaricoCardViewModel)
             {
@@ -1555,6 +1563,6 @@ namespace Digiphoto.Lumen.UI {
             }
         }
 
-        #endregion
-    }
+		#endregion
+	}
 }
