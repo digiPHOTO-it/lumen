@@ -14,21 +14,16 @@ using Digiphoto.Lumen.Servizi.Vendere;
 using System.Windows.Input;
 using Digiphoto.Lumen.Servizi.Stampare;
 using Digiphoto.Lumen.Config;
-using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
-using Digiphoto.Lumen.Core.Database;
 using System.Windows.Media.Imaging;
 using Digiphoto.Lumen.Servizi.Masterizzare;
 using Digiphoto.Lumen.Util;
-using Digiphoto.Lumen.Database;
 using System.IO;
 using Digiphoto.Lumen.UI.IncassiFotografi;
 using Digiphoto.Lumen.UI.Dialogs.SelezionaStampante;
 using Digiphoto.Lumen.Servizi.Ritoccare;
-using System.Windows.Threading;
 using Digiphoto.Lumen.UI.Util;
 
-namespace Digiphoto.Lumen.UI
-{
+namespace Digiphoto.Lumen.UI {
 	public class CarrelloViewModel : ViewModelBase, IObserver<MasterizzaMsg>, IObserver<GestoreCarrelloMsg>, IObserver<StampatoMsg>, IObserver<FotoModificateMsg>
     {
 
@@ -77,6 +72,7 @@ namespace Digiphoto.Lumen.UI
 
 				// Creo il modello anche dei componenti di cui mi servo.
 				incassiFotografiViewModel = new IncassiFotografiViewModel( "Dettaglio incassi/fotografo per il carrello" );
+
 			}
 		}
 

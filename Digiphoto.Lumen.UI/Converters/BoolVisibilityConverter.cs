@@ -13,12 +13,19 @@ namespace Digiphoto.Lumen.UI.Converters {
 	public class BoolVisibilityConverter : IValueConverter
 	{
 		public object Convert( object value, Type targetType, object parameter, CultureInfo culture ) {
+
 			if (value == null)
 			{
 				return Visibility.Collapsed;
 			}
 			if(value is bool){
-				if ((bool)value)
+
+				bool flag = (bool)value;
+				// Gestisco eventuale parametro di negazione
+				if( parameter != null && "not".Equals( parameter ) )
+					flag = !flag;
+
+				if( flag )
 				{
 					return Visibility.Visible;
 				}

@@ -112,7 +112,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public bool possoAggiungereStampe {
 			get {
-				return (carrello != null && carrello.venduto == false);
+				if( modoVendita == ModoVendita.StampaDiretta )
+					return true;
+				else
+					return (carrello != null && carrello.venduto == false);
 			}
 		}
 
@@ -145,8 +148,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			// istanzio il gestore del carrello e creo subito un carrello nuovo per iniziare a lavorare subito.
 			gestoreCarrello = new GestoreCarrello();
-
-			modoVendita = Configurazione.UserConfigLumen.modoVendita;
 
 			contaMessaggiInCoda = 0;
 		}
@@ -266,9 +267,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				gestoreCarrello = null;
 			}
 
+			modoVendita = Configurazione.UserConfigLumen.modoVendita;
+
 			gestoreCarrello = new GestoreCarrello();
 			gestoreCarrello.creaNuovo();
-
+			
 			ascoltatorePropertyChangedCrea();
 
 			GestoreCarrelloMsg msg = new GestoreCarrelloMsg( this );

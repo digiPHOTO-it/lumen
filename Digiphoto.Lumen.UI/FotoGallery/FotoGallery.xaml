@@ -184,13 +184,35 @@ Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding P
 			</ToolBar>
 
 
-                <ToolBar Band="2" BandIndex="3" Name="stampaToolBar" 
-                     Header="Vendita" Style="{StaticResource fgToolBarStyle}"
-                     ItemsSource="{Binding stampantiAbbinate}" 
-                     ItemTemplate="{StaticResource pulsanteDiStampaTemplate}" >
-                </ToolBar>
+            <ToolBar Band="2" BandIndex="3" Name="stampaToolBar" 
+						 Header="Vendita" Style="{StaticResource fgToolBarStyle}"
+						 ItemsSource="{Binding stampantiAbbinate}" 
+						 ItemTemplate="{StaticResource pulsanteDiStampaTemplate}" 
+						 Visibility="{Binding Path=isCarrelloModificabile, Converter={StaticResource boolVisibilityConverter}}" />
 
-            </ToolBarTray>
+            <ToolBar Band="2" BandIndex="4" Name="stampaToolBar2" 
+					 Header="Vendita" Style="{StaticResource fgToolBarStyle}"
+					 ItemTemplate="{StaticResource pulsanteDiStampaTemplate}" 
+					 Visibility="{Binding Path=isCarrelloModificabile, Converter={StaticResource boolVisibilityConverter}, ConverterParameter=not}">
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-bloccato-48x48.png">
+                    <Image.ToolTip>
+                        <TextBlock>
+							La vendita tramite carrello è disabilitata in quanto
+							<LineBreak /> 
+							è caricato un carrello non modificabile.
+							<LineBreak /> 
+							Andare nella pagina "Carrello"
+							<LineBreak /> 
+							quindi creare un nuovo carrello per abilitare la vendita,
+							<LineBreak />
+							oppure cambiare la modalità di vendita in "Stampa diretta".
+                        </TextBlock>
+                    </Image.ToolTip>
+                </Image>
+            </ToolBar>
+
+
+        </ToolBarTray>
  
         
         <Expander Header="Filtri per ricercare le foto nell'archivio" DockPanel.Dock="Bottom" IsExpanded="True" ExpandDirection="Up" Name="expanderFiltriRicerca" >
