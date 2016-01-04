@@ -181,9 +181,9 @@ namespace Digiphoto.Lumen.UI {
 		/// <summary>
 		/// Questa proprietà mi serve per visualizzare o meno la pulsantiera della vendita con carrello
 		/// </summary>
-		public bool isCarrelloModificabile {
+		public bool isPossibileModificareCarrello {
 			get {
-				return venditoreSrv.possoAggiungereStampe || venditoreSrv.possoAggiungereMasterizzate;
+				return venditoreSrv.isPossibileModificareCarrello;
 			}
 		}
 
@@ -576,7 +576,7 @@ namespace Digiphoto.Lumen.UI {
 
 					OnPropertyChanged("modoVendita");
 					OnPropertyChanged("stringModoVendita");
-					OnPropertyChanged( "isCarrelloModificabile" );
+					OnPropertyChanged( "isPossibileModificareCarrello" );
 				}
 			}
 		}
@@ -956,7 +956,7 @@ namespace Digiphoto.Lumen.UI {
 					using( IVenditoreSrv venditoreStampaDiretta = LumenApplication.Instance.creaServizio<IVenditoreSrv>() ) 
 					{
 						venditoreSrv.modoVendita = ModoVendita.StampaDiretta;
-						venditoreStampaDiretta.creaNuovoCarrello();
+						venditoreStampaDiretta.creareNuovoCarrello();
 						venditoreStampaDiretta.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_RAPIDA;
 						venditoreStampaDiretta.aggiungereStampe(listaSelez, creaParamStampaFoto(stampanteAbbinata));
 						string msgErrore = venditoreStampaDiretta.vendereCarrello();
@@ -1532,7 +1532,7 @@ namespace Digiphoto.Lumen.UI {
 			if( value.fase == GestoreCarrelloMsg.Fase.CreatoNuovoCarrello ||
 				value.fase == GestoreCarrelloMsg.Fase.LoadCarrelloSalvato ) {
 				OnPropertyChanged( "modoVendita" );
-				OnPropertyChanged( "isCarrelloModificabile" );
+				OnPropertyChanged( "isPossibileModificareCarrello" );
 			}
 		}
 

@@ -5,8 +5,7 @@ using Digiphoto.Lumen.Servizi.Vendere;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Model;
-using System.Data.SqlClient;
-using Digiphoto.Lumen.Database;
+using Digiphoto.Lumen.Core.Test.Util;
 
 namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Vendere {
 
@@ -75,10 +74,11 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Vendere {
 				riga3.formatoCarta = UnitOfWorkScope.currentDbContext.FormatiCarta.First();
 				riga3.discriminator = Carrello.TIPORIGA_STAMPA;
 				riga3.descrizione = "DACANC";
+				riga3.nomeStampante = Costanti.NomeStampantePdf;
 				gestoreCarrello.aggiungiRiga( riga3 );
 
 				// Prima salvo senza cambiare niente.
-				gestoreCarrello.salva();
+				gestoreCarrello.salvare();
 
 				// -----
 				// Eseguo una query sql con un altra connessione, per vedere che la riga sia stata aggiunta
@@ -98,7 +98,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Vendere {
 				Assert.IsTrue( numRigheB == numRigheA );
 
 
-				gestoreCarrello.salva();
+				gestoreCarrello.salvare();
 
 
 				// Eseguo una query sql con un altra connessione, per vedere che la riga sia stata eliminata
@@ -114,7 +114,9 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Vendere {
 
 		private Carrello recuperaCarrelloPerTest() {
 
-			Carrello carrello = UnitOfWorkScope.currentDbContext.Carrelli.FirstOrDefault( c => c.intestazione.Contains( Tag ) );
+			Carrello carrello = UnitOfWorkScope.currentDbContext.Carrelli
+				.Where( c => c.intestazione.Contains( Tag ) && c.venduto == false )
+				.FirstOrDefault();
 			if( carrello == null ) {
 				carrello = creaNuovoCarrelloPerTest();
 			} else {
@@ -140,6 +142,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Vendere {
 			riga1.formatoCarta = formatoCarta;
 			riga1.discriminator = Carrello.TIPORIGA_STAMPA;
 			riga1.descrizione = "da stampare";
+			riga1.nomeStampante = Costanti.NomeStampantePdf;
 			gestoreCarrello.aggiungiRiga( riga1 );
 
 			++i;
@@ -153,7 +156,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Vendere {
 
 			gestoreCarrello.carrello.intestazione = Tag;
 			gestoreCarrello.carrello.prezzoDischetto = 15.5m;
-			gestoreCarrello.salva();
+			gestoreCarrello.salvare();
 
 			return gestoreCarrello.carrello;
 		}
@@ -162,7 +165,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Vendere {
 		/// Con questo test verifico che il delete-cascade sulle righe funzioni.
 		/// </summary>
 		[TestMethod]
-		public void CarrelloTestCancella2() {
+		public void CarrelloTest2Cancella() {
 
 			using( new UnitOfWorkScope() ) {
 
@@ -183,5 +186,62 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Vendere {
 				Assert.IsTrue( numRigheC == 0 );
 			}
 		}
+
+		[TestMethod]
+		public void CarrelloTest3EliminaRiga() {
+
+
+#if COSI_FUNZIONA_BENE
+			Guid guid = new Guid( "625a1ed1-6e22-4de7-b8c9-2420de1bcb5e" );
+			using( LumenEntities ctx = new LumenEntities() ) {
+
+				Carrello carrello = ctx.Carrelli
+					.Include( "righeCarrello" )
+					.Single( r => r.id == guid );
+
+				int conta = 0;
+				RigaCarrello rigaDacanc = null;
+                foreach( var riga in carrello.righeCarrello ) {
+					if( ++conta == 2 ) {
+						rigaDacanc = riga;				
+					}
+				}
+
+				if( rigaDacanc != null ) {
+					carrello.righeCarrello.Remove( rigaDacanc );
+					ctx.RigheCarrelli.Remove( rigaDacanc );
+				}
+
+				ctx.SaveChanges();
+			}
+#endif
+			// Cerco un carrello che non sia venduto, con almeno due righe
+			Guid guid = Guid.Empty;
+
+			using( LumenEntities ctx = new LumenEntities() ) {
+
+				Carrello carrello = ctx.Carrelli
+					.Include( "righeCarrello" )
+					.Where( c => c.venduto == false && c.righeCarrello.Count > 1 )
+					.FirstOrDefault();
+
+				if( carrello != null )
+					guid = carrello.id;
+			}
+
+			if( guid != Guid.Empty ) {
+				// Carrello carrelloTest = recuperaCarrelloPerTest();
+				using( GestoreCarrello ges = new GestoreCarrello() ) {
+				
+					ges.caricaCarrello( guid );
+
+					RigaCarrello rigaDacanc = ges.carrello.righeCarrello.AsEnumerable().ElementAt( 1 );
+					ges.removeRiga( rigaDacanc );
+					ges.salvare();
+				}
+			}
+		}
+
+
 	}
 }

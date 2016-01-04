@@ -16,6 +16,7 @@ using System.Data.Entity.Core;
 using System.IO;
 using System.Data.Entity.Validation;
 using System.Data.Entity;
+using Digiphoto.Lumen.Servizi.Stampare;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 
@@ -91,7 +92,13 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
-		public bool isEmpty
+		public bool isPossibileModificareCarrello {
+			get {
+				return ! carrello.venduto;
+			}
+		}
+
+		public bool isCarrelloVuoto
 		{
 			get
 			{
@@ -234,11 +241,13 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		public void caricaCarrello( Guid idCarrello )
 		{
 			creaMioDbContext();
-			this.carrello = mioDbContext.Carrelli.Single( r => r.id == idCarrello );
 
-			// Questo mi serve per caricare le associazioni, fisto che sto schifo di EF non è in grado di farlo da solo.
-			mioObjContext.LoadProperty( this.carrello, c => c.righeCarrello );
-			mioObjContext.LoadProperty( this.carrello, c => c.incassiFotografi );
+			this.carrello = mioDbContext.Carrelli
+				.Include( c1 => c1.righeCarrello )
+				.Include( c2 => c2.incassiFotografi )
+				.Where( r => r.id == idCarrello )
+				.Single();
+			
 			foreach( IncassoFotografo ff in carrello.incassiFotografi ) {
 				mioObjContext.LoadProperty( ff, c => c.fotografo );
 			}
@@ -272,8 +281,25 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				errore = "Giornata vuota";
 			else if( carrello.tempo == DateTime.MinValue )
 				errore = "tempo non indicato";
-			else if( carrello.prezzoDischetto == null && sommatoriaFotoDaMasterizzare > 0 ) {
+			else if( carrello.prezzoDischetto == null && sommatoriaFotoDaMasterizzare > 0 )
 				errore = "manca il prezzo del dischetto";
+			else {
+				// Controllo che sulle righe da stampare ci sia il nome della stampante e che sia valida
+				foreach( var riga in carrello.righeCarrello ) {
+					if( riga.discriminator == Carrello.TIPORIGA_STAMPA )
+						if( String.IsNullOrEmpty( riga.nomeStampante ) ) {
+							errore = "In alcune righe non è stato indicato il formato carta o la stampante";
+							break;
+						} else {
+							// Verifico che la stampante sia ancora presente come nome nel computer
+							var stampantiInstallateSrv = LumenApplication.Instance.getServizioAvviato<IStampantiInstallateSrv>();
+							var stampanteInstallata = stampantiInstallateSrv.getStampanteInstallataByString( riga.nomeStampante );
+							if( stampanteInstallata == null ) {
+								errore = "Stampante " + riga.nomeStampante + " non esistente";
+								break;
+							}
+						}
+				}
 			}
 
 			return errore;
@@ -281,7 +307,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public void removeRiga( RigaCarrello rigaDacanc ) {
 
-			EntityState stato = OrmUtil.getEntityState( rigaDacanc );
+			EntityState stato = OrmUtil.getEntityState( rigaDacanc, mioDbContext );
 
 			// Rimuovo l'elemento dalla collezione. 
 			// Non so perché, ma essendo una relazione identificante, perché EF NON si preoccua di rimuovere anche da disco la riga da solo ??
@@ -294,14 +320,15 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			// ... per quanto sopra, se l'oggetto era persistente, devo preoccuparmi io di rimuoverlo anche dal dbcontext
 			if( isStatoModifica == true && rigaDacanc.id != Guid.Empty ) {
-				if( stato == EntityState.Detached || stato == EntityState.Modified || stato == EntityState.Unchanged )
+				if( stato == EntityState.Detached || stato == EntityState.Modified || stato == EntityState.Unchanged ) {
 					mioDbContext.RigheCarrelli.Remove( rigaDacanc );
+				}
 			}
 
 		} 
 
 		public void aggiungiRiga( RigaCarrello riga ) {
-
+			
 			if( riga.fotografia == null )
 				throw new ArgumentNullException( "nella RigaCarrello è obbligatoria la Fotografia" );
 			if( riga.fotografo == null )
@@ -339,6 +366,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				OrmUtil.forseAttacca<Carrello>( ref carrelloDacanc, mioDbContext );
 			}
 
+			if( carrelloDacanc.venduto )
+				throw new InvalidOperationException( "Carrello venduto. Impossibile cancellare" );
+
 			mioDbContext.Carrelli.Remove( carrelloDacanc );
 
 			mioDbContext.SaveChanges();
@@ -353,10 +383,24 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		 * Salvo il carrello corrente (se era transiente, viene valorizzata la Guid della chiave primaria
 		 * Se qualcosa va storto viene sollevata una eccezione.
 		 */
-		public void salva() {
+		public void salvare() {
+
+			if( carrello.venduto == true )
+				throw new InvalidOperationException( "Il carrello attuale non è modificabile" );
+
+			salvare( false );
+		}
+
+		public void vendere() {
+			salvare( true );
+		}
+
+		public void salvare( bool vendere ) {
+
+			carrello.venduto = vendere;
 
 			// Sistemo un pò di campi ma NON quelli di chiave primaria!
-			
+
 			completaAttributiMancanti( true );
 
 			if( ! isPossibileSalvare )
@@ -401,6 +445,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					throw new InvalidOperationException( msg );
 				}
 			} catch( DbEntityValidationException dbEx ) {
+
+				// Rimetto a posto lo stato
+				carrello.venduto = false;
+
 				_giornale.Error( "Salvataggio carrello fallito. Entità non validata", dbEx );
 				foreach( var validationErrors in dbEx.EntityValidationErrors ) {
 					foreach( var validationError in validationErrors.ValidationErrors ) {
@@ -410,9 +458,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					}
 				}
 				throw dbEx;
+
 			} catch( Exception ex ) {
+
+				// Rimetto a posto lo stato
+				carrello.venduto = false;
+
 				_giornale.Error( "Salvataggio carrello fallito.", ex );
-				throw;
+				throw ex;
 			}
 
 			string msg2 = "Registrato carrello id = " + carrello.id + " totale a pagare = " + carrello.totaleAPagare + " con " + carrello.righeCarrello.Count + " righe";

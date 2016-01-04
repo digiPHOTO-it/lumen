@@ -598,7 +598,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 			using( new UnitOfWorkScope() ) {
 				var context = UnitOfWorkScope.currentDbContext;
 				venditoreSrv = LumenApplication.Instance.getServizioAvviato<IVenditoreSrv>();
-				venditoreSrv.caricaCarrello( carrello );
+				venditoreSrv.caricareCarrello( carrello );
 				// Salvo le note precedenti.
 				notePrec = venditoreSrv.carrello.note;
 				if( notePrec == null )
@@ -623,7 +623,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 					var dbContext = UnitOfWorkScope.currentDbContext;
 					par = new ParamStampaFoto {
 						formatoCarta = dbContext.FormatiCarta.First(),
-						nomeStampante = "qqq"
+						nomeStampante = Costanti.NomeStampantePdf
 					};
 
 					fotos = fotoExplorerSrv.fotografie;
@@ -646,7 +646,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 			using( new UnitOfWorkScope() ) {
 				var context = UnitOfWorkScope.currentDbContext;
 
-				string msgErrore = venditoreSrv.salvaCarrello();
+				string msgErrore = venditoreSrv.salvareCarrello();
 				bool esito = (msgErrore == null);
 				Assert.IsTrue( esito );
 			}
@@ -662,14 +662,11 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 
 		[TestMethod]
 		public void rigaCarrelloNotificaPropertyChanged() {
-			// Se succede questa eccezione significa che è stato salvato il modello EDMX e quindi 
-			// ha rigenerato la classe RigaCarrello.
-			// Purtoppo questa classe l'ho dovuta personalizzare a mano.
-			// Deve implementare INotifyPropertyChanged e le 2 property
-			//  1) quantita
-			//  2) prezzoNettoTotale
-			//  devono rilanciare l'evento di property modificata.
-			// Occorre quindi sistemare a mano il sorgente (magari riprendendolo dal vcs)
+			// Se succede questa eccezione significa che è stato sbagliato il modello EDMX
+			// oppure che è stata persa la personalizzazione del template di generazione dei sorgenti.
+			// Infatti in questo template, ho sfruttato il campo "descrizione" della entità
+			// Impostando questo campo a INPC  (che sono le iniziali di INotifyPropertyChanged)
+			// quell'attributo di quella entità verrà creato con questo tipo di facoltà.
 			Assert.IsTrue( typeof( INotifyPropertyChanged ).IsAssignableFrom( typeof(RigaCarrello) ) );
 		}
 	}

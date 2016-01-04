@@ -41,7 +41,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// Prepara un nuovo carrello vuoto (da riempire).
 		/// Il carrello corrente viene "abbandonato" senza nessun salvataggio.
 		/// </summary>
-		void creaNuovoCarrello();
+		void creareNuovoCarrello();
 		
 
 		/// <summary>
@@ -56,9 +56,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// <summary>
 		/// Consente il Salvattaggio del Carrello senza effettuare ne la stampa ne la Masterizzazione
         /// </summary>
-		string salvaCarrello();
+		string salvareCarrello();
 
-		void abbandonaCarrello();
+		void abbandonareCarrello();
 
 		void clonareCarrello();
 
@@ -73,24 +73,24 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// rimuove anche dal db (senza commit).
 		/// </summary>
 		/// <param name="rigaCarrello"></param>
-		void removeRigaCarrello(RigaCarrello rigaCarrello);
+		void eliminareRigaCarrello(RigaCarrello rigaCarrello);
 
 		/// <summary>
 		/// Elimina dal carrello tutte le righe di un certo tipo
 		/// </summary>
 		/// <param name="discriminator">S=Stampe ; M=Masterizzate</param>
-		void removeRigheCarrello( string discriminator );
+		void eliminareRigheCarrello( string discriminator );
 
-		void removeCarrello(Carrello carrello);
+		void eliminareCarrello(Carrello carrello);
 
-		void spostaRigaCarrello(RigaCarrello rigaCarrello);
+		void spostareRigaCarrello(RigaCarrello rigaCarrello);
 
 		void copiaSpostaRigaCarrello(RigaCarrello rigaCarrello);
 
 		/** Lavoro con un carrello alla volta. Esiste un solo carrello "corrente". */
 		Carrello carrello { get; }
 
-		void caricaCarrello( Carrello c );
+		void caricareCarrello( Carrello c );
 
 		List<RigaReportVendite> creaReportVendite( ParamRangeGiorni param );
 		List<RigaReportProvvigioni> creaReportProvvigioni( ParamRangeGiorni paramRangeGiorni );
@@ -106,6 +106,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 		bool isPossibileSalvareCarrello {
+			get;
+		}
+
+		bool isPossibileModificareCarrello {
 			get;
 		}
 
