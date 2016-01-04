@@ -947,7 +947,7 @@ namespace Digiphoto.Lumen.UI {
 				return;
 			}
 
-			string msgErrore = venditoreSrv.salvaCarrello();
+			string msgErrore = venditoreSrv.salvareCarrello();
             if( msgErrore == null ) {
 				dialogProvider.ShowMessage( "Carrello Salvato Correttamente", "Avviso" );
 				creaNuovoCarrello();
@@ -968,10 +968,11 @@ namespace Digiphoto.Lumen.UI {
 			if( !procediPure )
 				return;
 
-			Carrello carrelloDacanc = CarrelloSalvatoSelezionato;
+			Carrello carrelloDacanc = carrelloCorrente;
+
 			bool rinfrescareLista = CarrelliSalvatiCv.Contains( carrelloDacanc );
 
-			venditoreSrv.removeCarrello( carrelloDacanc );
+			venditoreSrv.eliminareCarrello( carrelloDacanc );
 
 			// aggiorno la lista rieseguendo la ricerca.
 			if( rinfrescareLista )
@@ -988,9 +989,12 @@ namespace Digiphoto.Lumen.UI {
             }
 
 			if(discriminator == Carrello.TIPORIGA_STAMPA)
-				venditoreSrv.removeRigaCarrello(rigaCarrelloStampataSelezionata);
+				venditoreSrv.eliminareRigaCarrello(rigaCarrelloStampataSelezionata);
 			else if (discriminator == Carrello.TIPORIGA_MASTERIZZATA)
-				venditoreSrv.removeRigaCarrello(rigaCarrelloMasterizzataSelezionata);
+				venditoreSrv.eliminareRigaCarrello(rigaCarrelloMasterizzataSelezionata);
+
+			// Quando elimino una riga, deseleziono la lista. Non voglio avere foto correnti
+			rigaCarrelloStampataSelezionata = null;
 		}
 
         private bool chiediConfermaEliminazioneRiga(String discriminator)
@@ -1015,7 +1019,7 @@ namespace Digiphoto.Lumen.UI {
 				return;
 			if (chiediConfermaEliminazioneDischetto() == false)
 				return;
-			venditoreSrv.removeRigheCarrello( Carrello.TIPORIGA_MASTERIZZATA );
+			venditoreSrv.eliminareRigheCarrello( Carrello.TIPORIGA_MASTERIZZATA );
 		}
 
 		private bool chiediConfermaEliminazioneDischetto()
@@ -1036,7 +1040,7 @@ namespace Digiphoto.Lumen.UI {
         {
             if (chiediConfermaEliminazioneTutteFoto() == false)
                 return;
-            venditoreSrv.removeRigheCarrello(Carrello.TIPORIGA_STAMPA);
+            venditoreSrv.eliminareRigheCarrello(Carrello.TIPORIGA_STAMPA);
         }
 
         private bool chiediConfermaEliminazioneTutteFoto()
@@ -1059,7 +1063,7 @@ namespace Digiphoto.Lumen.UI {
 			if( _bkgIdrata.WorkerSupportsCancellation && _bkgIdrata.IsBusy )
 				_bkgIdrata.CancelAsync();
 
-			venditoreSrv.caricaCarrello( CarrelloSalvatoSelezionato );
+			venditoreSrv.caricareCarrello( CarrelloSalvatoSelezionato );
 
 			if (!_bkgIdrata.IsBusy)
 				_bkgIdrata.RunWorkerAsync();
@@ -1109,7 +1113,7 @@ namespace Digiphoto.Lumen.UI {
 				RiCaFotoMasterizzateCv = new ListCollectionView(new List<Fotografia>());
 				rinfrescaViewRighe();
 			}
-			venditoreSrv.creaNuovoCarrello();
+			venditoreSrv.creareNuovoCarrello();
 			MasterizzazionePorgress = "";
 			StatoMasterizzazione = Digiphoto.Lumen.Servizi.Masterizzare.Fase.Attesa;
 			OnPropertyChanged("StatusStatoMasterizzazioneImage");
@@ -1119,8 +1123,8 @@ namespace Digiphoto.Lumen.UI {
 		private void svuotaCarrello()
 		{
 			// ELimino tutte le righe ma tengo buona la testata
-			venditoreSrv.removeRigheCarrello( Carrello.TIPORIGA_STAMPA );
-			venditoreSrv.removeRigheCarrello( Carrello.TIPORIGA_MASTERIZZATA );
+			venditoreSrv.eliminareRigheCarrello( Carrello.TIPORIGA_STAMPA );
+			venditoreSrv.eliminareRigheCarrello( Carrello.TIPORIGA_MASTERIZZATA );
 			calcolaTotali();
 
 			MasterizzazionePorgress = "";
@@ -1181,7 +1185,7 @@ namespace Digiphoto.Lumen.UI {
 		private void spostaFotoRiga(string discriminator)
 		{
 			if (Carrello.TIPORIGA_MASTERIZZATA.Equals(discriminator))
-				venditoreSrv.spostaRigaCarrello(rigaCarrelloStampataSelezionata);
+				venditoreSrv.spostareRigaCarrello(rigaCarrelloStampataSelezionata);
 
 			if (Carrello.TIPORIGA_STAMPA.Equals(discriminator))
 			{
@@ -1196,7 +1200,7 @@ namespace Digiphoto.Lumen.UI {
 					rigaCarrelloMasterizzataSelezionata.quantita = 1;
 					rigaCarrelloMasterizzataSelezionata.prezzoLordoUnitario = d.formatoCarta.prezzo;
 					rigaCarrelloMasterizzataSelezionata.prezzoNettoTotale = rigaCarrelloMasterizzataSelezionata.prezzoLordoUnitario;
-                    venditoreSrv.spostaRigaCarrello(rigaCarrelloMasterizzataSelezionata);
+                    venditoreSrv.spostareRigaCarrello(rigaCarrelloMasterizzataSelezionata);
 					rinfrescaViewRighe();
 				}
 

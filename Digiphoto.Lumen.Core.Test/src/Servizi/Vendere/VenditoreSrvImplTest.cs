@@ -107,7 +107,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 			using( new UnitOfWorkScope( false ) ) {
 
-				_impl.creaNuovoCarrello();
+				_impl.creareNuovoCarrello();
 
 
 				ParamStampaFoto p = ricavaParamStampa();
@@ -126,6 +126,10 @@ namespace Digiphoto.Lumen.Core.VsTest {
 					_impl.setDatiDischetto( TipoDestinazione.CARTELLA, Path.GetTempPath(), 7m );
 
 					Assert.IsFalse( _impl.carrello.venduto );
+
+					Assert.IsTrue( _impl.isPossibileSalvareCarrello );
+					Assert.IsTrue( _impl.isPossibileVendereCarrello );
+					Assert.IsTrue( _impl.isPossibileModificareCarrello );
 
 					_impl.vendereCarrello();
 
@@ -327,7 +331,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 
 
-				_impl.creaNuovoCarrello();
+				_impl.creareNuovoCarrello();
 
 				_impl.carrello.prezzoDischetto = (decimal)27.9;
 
@@ -357,7 +361,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				_impl.aggiungereMasterizzate( fotos2 );
 				_impl.aggiungereMasterizzate( fotos3 );
 
-				string msgEsito = _impl.salvaCarrello();
+				string msgEsito = _impl.salvareCarrello();
 				bool esito = (msgEsito == null);
 				Assert.IsTrue( esito );
 

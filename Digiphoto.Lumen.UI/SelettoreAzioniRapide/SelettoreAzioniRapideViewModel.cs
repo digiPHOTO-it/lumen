@@ -336,7 +336,7 @@ namespace Digiphoto.Lumen.UI
 				{
 					using (IVenditoreSrv venditoreStampaDiretta = LumenApplication.Instance.creaServizio<IVenditoreSrv>())
 					{
-						venditoreStampaDiretta.creaNuovoCarrello();
+						venditoreStampaDiretta.creareNuovoCarrello();
 						venditoreStampaDiretta.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_RAPIDA;
 						venditoreStampaDiretta.aggiungereStampe(listaSelez, creaParamStampaFoto(stampanteAbbinata));
 						string msgErrore = venditoreStampaDiretta.vendereCarrello();
@@ -378,7 +378,7 @@ namespace Digiphoto.Lumen.UI
 			using (IVenditoreSrv venditoreSpampaRapida = LumenApplication.Instance.creaServizio<IVenditoreSrv>())
 			{
 
-				venditoreSpampaRapida.creaNuovoCarrello();
+				venditoreSpampaRapida.creareNuovoCarrello();
 				venditoreSpampaRapida.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_RAPIDA;
 				venditoreSpampaRapida.aggiungereStampe( fotoSelezionate, creaParamStampaFoto( stampanteAbbinata, autoZoomNoBordiBianchi) );
 

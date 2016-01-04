@@ -72,6 +72,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
+		public bool isPossibileModificareCarrello {
+			get {
+				return gestoreCarrello.isPossibileModificareCarrello;
+			}
+		}
+
 		public int sommatoriaFotoDaMasterizzare {
 			get {
 				return gestoreCarrello.sommatoriaFotoDaMasterizzare;
@@ -127,7 +133,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public override bool possoChiudere()
 		{
-			return gestoreCarrello.isEmpty;
+			return gestoreCarrello.isCarrelloVuoto;
 		}
 
 		public bool isPossibileClonareCarrello {
@@ -156,7 +162,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			base.start();
 
-			creaNuovoCarrello();
+			creareNuovoCarrello();
 
 			// TODO sostituire con la lista che è dentro il servizio spoolsrv
 			_stampantiAbbinate = StampantiAbbinateUtil.deserializza( Configurazione.UserConfigLumen.stampantiAbbinate );
@@ -190,7 +196,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			LumenApplication.Instance.bus.Publish( msg );
 		}
 
-		public void caricaCarrello( Carrello c ) {
+		public void caricareCarrello( Carrello c ) {
 
 			ascoltatorePropertyChangedElimina();
 
@@ -259,7 +265,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
-		public void creaNuovoCarrello() {
+		public void creareNuovoCarrello() {
 
 			if( gestoreCarrello != null ) {
 				ascoltatorePropertyChangedElimina();
@@ -285,7 +291,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
-		public string salvaCarrello() {
+		public string salvareCarrello() {
+			return salvareCarrello( false );
+		}
+
+        public string salvareCarrello( bool vendere ) {
 
 			string msgErrore = null;
 
@@ -297,10 +307,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			//
 
 			try {
-				// aggiornaTotFotoMasterizzate();
 
 				// Poi salvo il carrello
-				gestoreCarrello.salva();
+				gestoreCarrello.salvare( vendere );
 
 				_giornale.Debug( "salvataggio carrello " + carrello.id + " a buon fine" );
 
@@ -338,12 +347,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			try {
 
-				carrello.venduto = true;
-
-				msgErrore = salvaCarrello();
-
-				if( msgErrore != null )
-					carrello.venduto = false;
+				msgErrore = salvareCarrello( true );
 
 			} finally {
 				// Vado avanti ugualmente
@@ -363,7 +367,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 
-		public void removeRigaCarrello( RigaCarrello rigaCarrello ) {
+		public void eliminareRigaCarrello( RigaCarrello rigaCarrello ) {
 
 			gestoreCarrello.removeRiga( rigaCarrello );
 
@@ -373,7 +377,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			ricalcolaTotaleCarrello();
 		}
 
-		public void removeRigheCarrello( string discriminator ) {
+		public void eliminareRigheCarrello( string discriminator ) {
 			IEnumerable<RigaCarrello> listaDacanc = carrello.righeCarrello.Where( r => r.discriminator == discriminator );
 			foreach (RigaCarrello dacanc in listaDacanc.ToArray())
 			{
@@ -383,11 +387,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 
-		public void removeCarrello( Carrello carrello ) {
+		public void eliminareCarrello( Carrello carrello ) {
 			gestoreCarrello.elimina( carrello );
 		}
 
-		public void spostaRigaCarrello(RigaCarrello rigaCarrello)
+		public void spostareRigaCarrello(RigaCarrello rigaCarrello)
 		{
 			spostaRigaCarrello(rigaCarrello, true);
 		}
@@ -712,14 +716,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			base.stop();
 		}
 
-		public void abbandonaCarrello() {
+		public void abbandonareCarrello() {
 
 			if( gestoreCarrello != null ) {
 				ascoltatorePropertyChangedElimina();
 				gestoreCarrello.Dispose();
 			}
 
-			creaNuovoCarrello();
+			creareNuovoCarrello();
 		}
 
 		/**
@@ -1081,7 +1085,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// Elimina tutte le righe da masterizzare e azzera tutti i dati del masterizzatore.
 		/// </summary>
 		public void removeDatiDischetto() {
-			this.removeRigheCarrello( Carrello.TIPORIGA_MASTERIZZATA );
+			this.eliminareRigheCarrello( Carrello.TIPORIGA_MASTERIZZATA );
 			setDatiDischetto( TipoDestinazione.NULLA, null, null );
 		}
 

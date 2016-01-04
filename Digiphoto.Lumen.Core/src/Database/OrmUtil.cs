@@ -54,11 +54,15 @@ namespace Digiphoto.Lumen.Database {
 			return forseAttacca<TEntity>( ref entity );
 		}
 
-		public static EntityState getEntityState( object entita ) {
+		public static EntityState getEntityState( object entita  ) {
+			return getEntityState( entita, UnitOfWorkScope.currentDbContext );
+		}
+
+        public static EntityState getEntityState( object entita, DbContext dbContext ) {
 	
-			DbContext dbContext = UnitOfWorkScope.currentDbContext;
+			ObjectContext objContext = ((IObjectContextAdapter)dbContext).ObjectContext;
 			ObjectStateEntry state;
-			bool esito = UnitOfWorkScope.currentObjectContext.ObjectStateManager.TryGetObjectStateEntry( entita, out state );
+			bool esito = objContext.ObjectStateManager.TryGetObjectStateEntry( entita, out state );
 
 
 			DbEntityEntry dbEE = dbContext.Entry( entita );

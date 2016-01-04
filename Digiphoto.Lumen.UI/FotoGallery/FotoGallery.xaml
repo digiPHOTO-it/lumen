@@ -188,12 +188,12 @@ Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding P
 						 Header="Vendita" Style="{StaticResource fgToolBarStyle}"
 						 ItemsSource="{Binding stampantiAbbinate}" 
 						 ItemTemplate="{StaticResource pulsanteDiStampaTemplate}" 
-						 Visibility="{Binding Path=isCarrelloModificabile, Converter={StaticResource boolVisibilityConverter}}" />
+						 Visibility="{Binding Path=isPossibileModificareCarrello, Converter={StaticResource boolVisibilityConverter}}" />
 
             <ToolBar Band="2" BandIndex="4" Name="stampaToolBar2" 
 					 Header="Vendita" Style="{StaticResource fgToolBarStyle}"
 					 ItemTemplate="{StaticResource pulsanteDiStampaTemplate}" 
-					 Visibility="{Binding Path=isCarrelloModificabile, Converter={StaticResource boolVisibilityConverter}, ConverterParameter=not}">
+					 Visibility="{Binding Path=isPossibileModificareCarrello, Converter={StaticResource boolVisibilityConverter}, ConverterParameter=not}">
                 <Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-bloccato-48x48.png">
                     <Image.ToolTip>
                         <TextBlock>
