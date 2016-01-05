@@ -14,13 +14,8 @@ namespace Digiphoto.Lumen.UI
 {
 	public class SelettoreMetadatiViewModel : ViewModelBase
 	{
-
-		private SelettoreMetadati selettoreMetadatiView = null;
-
 		public SelettoreMetadatiViewModel(SelettoreMetadati selettoreMetadatiView):this()
 		{
-			// TODO EDI questo è un errore che va contro tutti i pattern MVVM e MVC. Il Model non deve conoscere la view. Rivedere se necessario!
-			this.selettoreMetadatiView = selettoreMetadatiView;
 		}
 
 		internal SelettoreMetadatiViewModel()
@@ -41,25 +36,33 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
-		#endregion
+        #endregion
 
-		#region Proprieta
+        #region Proprieta
+
+        /// <summary>
+        ///  Uso questa particolare collectionView perché voglio tenere traccia nel ViewModel degli N-elementi selezionati.
+        ///  Sottolineo N perché non c'è supporto nativo per questo. Vedere README.txt nel package di questa classe.
+        /// </summary>
+        private MultiSelectCollectionView<Fotografia> _fotografieMCW;
+        public MultiSelectCollectionView<Fotografia> fotografieMCW
+        {
+            get
+            {
+                return _fotografieMCW;
+            }
+            set
+            {
+                if (_fotografieMCW != value)
+                {
+                    _fotografieMCW = value;
+                    OnPropertyChanged("fotografieMCW");
+                }
+            }
+        }
 
 
-		public MultiSelectCollectionView<Fotografia> fotografieMCW
-		{
-			get
-			{
-				if(selettoreMetadatiView.MyItemsSource is MultiSelectCollectionView<Fotografia>)
-				{
-					return (MultiSelectCollectionView<Fotografia>)selettoreMetadatiView.MyItemsSource;
-				}
-
-				return null;
-			}
-		}
-
-		public IList<Fotografia> fotografieCW
+        public IList<Fotografia> fotografieCW
 		{
 			get
 			{
@@ -170,7 +173,12 @@ namespace Digiphoto.Lumen.UI
 					controllaMetadati();
 					return true;
 				}
-				return false;
+
+                DidascaliaEnabled = false;
+                GiornataEnabled = false;
+                EventoEnabled = false;
+
+                return false;
 			}
 		}
 
@@ -206,10 +214,10 @@ namespace Digiphoto.Lumen.UI
 			// Ricavo l'Evento dall'apposito componente di selezione.
 			// Tutti gli altri attributi sono bindati direttamente sulla struttura MetadatiFoto.
 			metadati.evento = selettoreEventoMetadato.eventoSelezionato;
-			metadati.didascalia = selettoreMetadatiView.didascalia.Text;
-			if (selettoreMetadatiView.fasiDelGiorno.SelectedItem != null)
+			if (this.fotografieCW.First<Fotografia>() != null)
 			{
-				metadati.faseDelGiorno = (FaseDelGiorno)selettoreMetadatiView.fasiDelGiorno.SelectedItem;
+                metadati.didascalia = this.fotografieCW.First<Fotografia>().didascalia;
+                metadati.faseDelGiorno = FaseDelGiornoUtil.getFaseDelGiorno((short)this.fotografieCW.First<Fotografia>().faseDelGiorno);
 			}
 
 			if (fotoExplorerSrv.modificaMetadatiFotografie(fotografieCW, metadati))
