@@ -31,6 +31,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 
 		IEnumerable<ScaricoCard> loadUltimiScarichiCards();
 
+		int contaFoto( ParamCercaFoto paramCercaFoto );
 	}
 
 	public class MetadatiFoto {

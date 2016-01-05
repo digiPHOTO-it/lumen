@@ -24,7 +24,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 		public bool idratareImmagini { get; set; }
 
-		public bool ordinamentoAsc { get; set; }
+		public Ordinamento? ordinamento { get; set; }
 
 		public bool evitareJoinEvento { get; set; }
 

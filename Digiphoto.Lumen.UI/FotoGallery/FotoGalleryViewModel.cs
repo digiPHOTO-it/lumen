@@ -58,6 +58,9 @@ namespace Digiphoto.Lumen.UI {
 			selettoreFotografoViewModel = new SelettoreFotografoViewModel();
 			selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel(this);
 
+			paginaAttualeRicerca = 0;
+			totPagineRicerca = 0;
+
 			azzeraParamRicerca();
 
 			dimensioneIconaFoto = 120;  // Valore di default per la grandezza dei fotogrammi da visualizzare.
@@ -511,6 +514,16 @@ namespace Digiphoto.Lumen.UI {
 					OnPropertyChanged( "stoPaginando" );
 				}
 			}
+		}
+
+		public short totPagineRicerca {
+			get;
+			private set;
+		}
+
+		public int totFotoRicerca {
+			get;
+			private set;
 		}
 
 		public float ratioAreaStampabile {
@@ -1099,6 +1112,25 @@ namespace Digiphoto.Lumen.UI {
 				if (verificaChiediConfermaRicercaSenzaParametri() == false)
 					return;
 
+			// Solo quando premo tasto di ricerca (e non durante la paginazione).
+			if( chiediConfermaSeFiltriVuoti ) {
+
+				totFotoRicerca = fotoExplorerSrv.contaFoto( paramCercaFoto );
+				OnPropertyChanged( "totFotoRicerca" );
+
+				if( totFotoRicerca == 0 ) {
+					totPagineRicerca = 0;
+					paginaAttualeRicerca = 0;  // non ho risultati. Segnalo pag 0/0
+				} else {
+					paginaAttualeRicerca = 1;  // ho dei risultati vado a pag 1
+					if( isGestitaPaginazione ) {
+						var p = Configurazione.UserConfigLumen.paginazioneRisultatiGallery;
+						totPagineRicerca = (short)(((totFotoRicerca - 1) / p) + 1);
+					} else
+						totPagineRicerca = 1;
+				}
+			}
+
 			// Eseguo la ricerca nel database
 			fotoExplorerSrv.cercaFoto( paramCercaFoto );
 
@@ -1114,6 +1146,7 @@ namespace Digiphoto.Lumen.UI {
 			if( fotografieCW.Count <= 0 )
 				dialogProvider.ShowMessage( "Nessuna fotografia trovata con questi filtri di ricerca", "AVVISO" );
 
+			OnPropertyChanged( "totPagineRicerca" );
 			OnPropertyChanged( "totFotoPaginaAttuale" );
 			OnPropertyChanged( "stoPaginando" );
 			OnPropertyChanged( "isAlmenoUnaFoto" );
@@ -1288,8 +1321,12 @@ namespace Digiphoto.Lumen.UI {
 
 			paramCercaFoto.idratareImmagini = false;
 
-			if(usaOrdinamentoAsc)
-				paramCercaFoto.ordinamentoAsc = Configurazione.UserConfigLumen.invertiRicerca;
+			if(usaOrdinamentoAsc) {
+				if( Configurazione.UserConfigLumen.invertiRicerca )
+					paramCercaFoto.ordinamento = Ordinamento.Asc;
+				else
+					paramCercaFoto.ordinamento = Ordinamento.Desc;
+			}
 
 			// Aggiungo eventuale parametro il fotografo
 			if( selettoreFotografoViewModel.fotografoSelezionato != null )
@@ -1391,8 +1428,6 @@ namespace Digiphoto.Lumen.UI {
 					take = Configurazione.UserConfigLumen.paginazioneRisultatiGallery
 				};
 			}
-
-			paginaAttualeRicerca = 1;
 		}
 
 		/// <summary>
@@ -1437,6 +1472,9 @@ namespace Digiphoto.Lumen.UI {
 			if( paginaAttualeRicerca < 1 )
 				paginaAttualeRicerca = 1;
 
+			if( paginaAttualeRicerca > totPagineRicerca )
+				paginaAttualeRicerca = totPagineRicerca;
+
 			eseguireRicerca();
 		}
 
@@ -1450,7 +1488,7 @@ namespace Digiphoto.Lumen.UI {
 
 			if( posso && delta > 0 ) {
 				// Voglio spostarmi avanti. Controllo di NON essere sull'ultimo risultato.
-				posso = (fotoExplorerSrv.fotografie.Count >= Configurazione.UserConfigLumen.paginazioneRisultatiGallery);
+				posso = paginaAttualeRicerca < totPagineRicerca;
 			}
 
 			if( posso && delta < 0 ) {
@@ -1475,7 +1513,13 @@ namespace Digiphoto.Lumen.UI {
 
 		public int countSelezionati {
 			get {
-				return this.fotografieCW.SelectedItems.Count;
+				return this.fotografieCW == null ? 0 : this.fotografieCW.SelectedItems.Count;
+			}
+		}
+
+		public int countTotali {
+			get {
+				return this.fotografieCW == null ? 0 : this.fotografieCW.Count;
 			}
 		}
 

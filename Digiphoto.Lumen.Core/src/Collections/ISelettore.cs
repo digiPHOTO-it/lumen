@@ -9,7 +9,17 @@ namespace Digiphoto.Lumen.Core.Collections {
 		/// </summary>
 		void deselezionareTutto();
 
+		/// <summary>
+		/// Ritorna il numero di elementi SELEZIONATI della collezione
+		/// </summary>
 		int countSelezionati {
+			get;
+		}
+
+		/// <summary>
+		/// Ritorna il numero di elementi TOTALE della collezione
+		/// </summary>
+		int countTotali {
 			get;
 		}
 

@@ -121,6 +121,12 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		public int countTotali {
+			get {
+				return this.scarichiCardsCW == null ? 0 : this.scarichiCardsCW.Count;
+			}
+		}
+
 		public IEnumerator<ScaricoCard> getEnumeratorSelezionati() {
 			return this.scarichiCardsCW.SelectedItems.GetEnumerator();
 		}

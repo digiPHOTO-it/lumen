@@ -209,6 +209,11 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		public int countTotali {
+			get {
+				return this.fotografi == null ? 0 : this.fotografi.Count;
+			}
+		}
 		#endregion
 
 

@@ -55,9 +55,10 @@
 
 					<TextBlock ToolTip="Gallery selezione">
 						<TextBlock.Text>
-							<MultiBinding StringFormat="Selez: {0}/{1}">
-										<Binding Path="fotoGalleryViewModel.fotografieCW.SelectedItems.Count" />
-										<Binding Path="fotoGalleryViewModel.fotografieCW.Count" />
+							<MultiBinding StringFormat="Selez: {0}/{1} (tot {2})">
+								<Binding Path="fotoGalleryViewModel.countSelezionati" />
+								<Binding Path="fotoGalleryViewModel.countTotali" />
+								<Binding Path="fotoGalleryViewModel.totFotoRicerca" />
 							</MultiBinding>
 						</TextBlock.Text>
 					</TextBlock>
