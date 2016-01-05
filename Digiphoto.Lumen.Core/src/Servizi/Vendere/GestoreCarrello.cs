@@ -415,7 +415,16 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					rigaCarrello.id = Guid.NewGuid();
 				if( rigaCarrello.carrello_id == Guid.Empty )
 					rigaCarrello.carrello_id = carrello.id;
-			}
+                if (rigaCarrello.discriminator == Carrello.TIPORIGA_STAMPA)
+                {
+                    Fotografia f = rigaCarrello.fotografia;
+                    f.contaStampata = (short)((int)f.contaStampata + (int)rigaCarrello.quantita);
+
+                    ObjectContext objContext = ((IObjectContextAdapter)mioDbContext).ObjectContext;
+                    objContext.ObjectStateManager.ChangeObjectState(f, EntityState.Modified);
+                }
+                
+            }
 
 			foreach( IncassoFotografo incassoFotografo in carrello.incassiFotografi ) {
 				if( incassoFotografo.id == Guid.Empty )
@@ -424,9 +433,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					incassoFotografo.carrello_id = carrello.id;
 			}
 
-			// Se il carrello è nuovo, lo aggiungo al set.
-			if( isStatoModifica == false )
-				mioDbContext.Carrelli.Add( carrello );
+            // Se il carrello è nuovo, lo aggiungo al set.
+            if (isStatoModifica == false)
+                mioDbContext.Carrelli.Add(carrello);
 
 			// Ora sistemo il totale a pagare. Lo valorizzo soltanto se è vuoto. 
 			// Se l'utente ha valorizzato a mano il totale a pagare, lo lascio invariato.
@@ -678,7 +687,13 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 						if( r.discriminator == Carrello.TIPORIGA_STAMPA ) {
 							r.descrizione = marca + "Storno " + r.totFogliStampati + " fogli";
 							r.totFogliStampati = 0;
-						}
+                            Fotografia f = r.fotografia;
+                            int contaStampa = (int)f.contaStampata + (int)r.quantita;
+                            f.contaStampata = (short)(contaStampa > 0 ? contaStampa : 0);
+
+                            ObjectContext objContext = ((IObjectContextAdapter)mioDbContext).ObjectContext;
+                            objContext.ObjectStateManager.ChangeObjectState(f, EntityState.Modified);
+                        }
 
 						if( r.discriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
 							r.descrizione = marca + "Storno foto masterizzate";
