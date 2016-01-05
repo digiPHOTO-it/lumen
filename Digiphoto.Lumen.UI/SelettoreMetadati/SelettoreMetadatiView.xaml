@@ -29,7 +29,7 @@
 		<StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0" >
 			<Label Content="Didascalia" />
 			<TextBox x:Name="didascalia" 
-					 Text="{Binding ElementName=LsImageGallery,Path=SelectedValue.didascalia, Mode=OneWay}" 
+					 Text="{Binding ElementName=LsImageGallery,Path=SelectedValue.didascalia, Mode=TwoWay}" 
 					 IsEnabled="{Binding DidascaliaEnabled}" 
 					 CharacterCasing="Upper" Margin="0,0,0,0" 
 					 />
@@ -45,7 +45,7 @@
 			<GroupBox Header="Fasi del giorno" >
 				<ListBox x:Name="fasiDelGiorno" 
 						 ItemsSource="{Binding fasiDelGiorno}"
-                         SelectedItem="{Binding ElementName=LsImageGallery,Path=SelectedValue.faseDelGiorno,Converter={StaticResource fasiDelGiornoConverter}, Mode=OneWay}" 
+                         SelectedItem="{Binding ElementName=LsImageGallery,Path=SelectedValue.faseDelGiorno,Converter={StaticResource fasiDelGiornoConverter}, Mode=TwoWay}" 
 						 IsEnabled="{Binding GiornataEnabled}" 
 						 ItemContainerStyle="{StaticResource ResourceKey=listBoxFasiStyle}"
 						 />

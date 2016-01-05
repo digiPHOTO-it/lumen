@@ -31,12 +31,19 @@ namespace Digiphoto.Lumen.UI
 		public static readonly DependencyProperty MyItemsSourceProperty;
 
 
-		static SelettoreMetadati()
+        public SelettoreMetadati()
         {
-			SelettoreMetadati.MyItemsSourceProperty = DependencyProperty.Register("MyItemsSource",
-																			typeof(IEnumerable), 
-																			typeof(SelettoreMetadati)
-																			);
+            InitializeComponent();
+
+            this.DataContext = new SelettoreMetadatiViewModel(this); ;
+        }
+
+        static SelettoreMetadati()
+        {
+            SelettoreMetadati.MyItemsSourceProperty = DependencyProperty.Register("MyItemsSource",
+                                                                            typeof(IEnumerable),
+                                                                            typeof(SelettoreMetadati),
+                                                                            new PropertyMetadata(new PropertyChangedCallback(MyItemSourcePropertyCallback)));
         }
 
         public IEnumerable MyItemsSource
@@ -52,16 +59,11 @@ namespace Digiphoto.Lumen.UI
             }
         }
 
-		SelettoreMetadatiViewModel _model = null;
+        private static void MyItemSourcePropertyCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var uc = d as SelettoreMetadati;
+            ((SelettoreMetadatiViewModel)uc.viewModelBase).fotografieMCW = e.NewValue as MultiSelectCollectionView<Fotografia>;
+        }
 
-		public SelettoreMetadati()
-		{
-			InitializeComponent();
-
-			_model = new SelettoreMetadatiViewModel(this);
-
-			this.DataContext = _model;
-		}
-
-	}
+    }
 }
