@@ -10,10 +10,11 @@ using System.Windows.Input;
 using Digiphoto.Lumen.Database;
 using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Servizi.Ricerca;
+using Digiphoto.Lumen.Core.Collections;
 
 namespace Digiphoto.Lumen.UI {
 
-	public class SelettoreEventoViewModel : ViewModelBase, IObserver<EntityCambiataMsg> {
+	public class SelettoreEventoViewModel : ViewModelBase, ISelettore<Evento>, IObserver<EntityCambiataMsg> {
 
 		public SelettoreEventoViewModel() {
 
@@ -49,9 +50,6 @@ namespace Digiphoto.Lumen.UI {
 				if( value != _eventoSelezionato ) {
 					_eventoSelezionato = value;
 					OnPropertyChanged( "eventoSelezionato" );
-
-                    SvuotaFiltriMsg svuotaFiltriMsg = new SvuotaFiltriMsg(this);
-                    LumenApplication.Instance.bus.Publish(svuotaFiltriMsg);
                 }
 			}
 		}
@@ -164,6 +162,12 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		public int countSelezionati {
+			get {
+				return eventoSelezionato == null ? 0 : 1;
+			}
+		}
+
 		#endregion
 
 
@@ -178,5 +182,17 @@ namespace Digiphoto.Lumen.UI {
 			if( value.type == typeof( Evento ) )
 				refreshEventiCommand.Execute( false );
 		}
+
+		#region interfaccia ISelettore
+		public void deselezionareTutto() {
+			this.eventoSelezionato = null;
+		}
+
+		public IEnumerator<Evento> getEnumeratorSelezionati() {
+			if( eventoSelezionato != null )
+				yield return eventoSelezionato;
+		}
+		#endregion interfaccia ISelettore
+
 	}
 }

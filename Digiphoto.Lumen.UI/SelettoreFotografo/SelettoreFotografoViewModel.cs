@@ -8,14 +8,14 @@ using System.Windows.Input;
 using Digiphoto.Lumen.Core.DatiDiEsempio;
 using Digiphoto.Lumen.Database;
 using System;
-using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Servizi.Ricerca;
+using Digiphoto.Lumen.Core.Collections;
 
 namespace Digiphoto.Lumen.UI {
 
-	public class SelettoreFotografoViewModel : ViewModelBase, IObserver<EntityCambiataMsg> {
+	public class SelettoreFotografoViewModel : ViewModelBase, ISelettore<Fotografo>, IObserver<EntityCambiataMsg> {
 
 		public SelettoreFotografoViewModel() {
 
@@ -67,9 +67,6 @@ namespace Digiphoto.Lumen.UI {
 				if( value != _fotografoSelezionato ) {
 					_fotografoSelezionato = value;
 					OnPropertyChanged( "fotografoSelezionato" );
-
-                    SvuotaFiltriMsg svuotaFiltriMsg = new SvuotaFiltriMsg(this);
-                    LumenApplication.Instance.bus.Publish(svuotaFiltriMsg);
                 }
 			}
 		}
@@ -206,6 +203,12 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		public int countSelezionati {
+			get {
+				return fotografoSelezionato == null ? 0 : 1;
+			}
+		}
+
 		#endregion
 
 
@@ -222,5 +225,16 @@ namespace Digiphoto.Lumen.UI {
 			if( value.type == typeof( Fotografo ) )
 				rileggereFotografiCommand.Execute( false );
 		}
+
+		#region interfaccia ISelettore
+		public void deselezionareTutto() {
+			this.fotografoSelezionato = null;
+		}
+
+		public IEnumerator<Fotografo> getEnumeratorSelezionati() {
+			if( fotografoSelezionato != null )
+				yield return fotografoSelezionato;
+		}
+		#endregion interfaccia ISelettore
 	}
 }
