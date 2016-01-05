@@ -11,9 +11,21 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 		List<Fotografia> cerca( ParamCercaFoto param );
 
+		/// <summary>
+		/// Ritorna il numero totale di elementi del risultato della query.
+		/// </summary>
+		/// <param name="param"></param>
+		/// <returns>Un numero intero positivo da 0 in poi indicante il numero di elementi selezionati dalla query</returns>
+		int conta( ParamCercaFoto param );
+
 		ICollection<Carrello> cerca(ParamCercaCarrello param);
 
 		List<string> cercaNomi( ParamCercaFoto param );
 
+	}
+
+	public enum Ordinamento {
+		Asc,
+		Desc
 	}
 }

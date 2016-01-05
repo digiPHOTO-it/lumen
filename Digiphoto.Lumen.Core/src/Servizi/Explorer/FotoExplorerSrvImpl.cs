@@ -62,9 +62,8 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			}
 			fotografie = null;
 
-			using( IRicercatoreSrv ricercaSrv = LumenApplication.Instance.creaServizio<IRicercatoreSrv>() ) {
-				fotografie = ricercaSrv.cerca( param );
-			}
+			IRicercatoreSrv ricercaSrv = LumenApplication.Instance.getServizioAvviato<IRicercatoreSrv>();
+			fotografie = ricercaSrv.cerca( param );
 
 
 			if( param.idratareImmagini ) {
@@ -219,6 +218,10 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			return UnitOfWorkScope.currentDbContext.ScarichiCards.Include( "fotografo" ).Where( sc => sc.giornata >= giornoLim ).OrderByDescending( sc => sc.tempo );
 		}
 
+		public int contaFoto( ParamCercaFoto paramCercaFoto ) {
 
+			IRicercatoreSrv ricercaSrv = LumenApplication.Instance.getServizioAvviato<IRicercatoreSrv>();
+			return ricercaSrv.conta( paramCercaFoto );
+		}
 	}
 }

@@ -9,7 +9,6 @@ using Digiphoto.Lumen.Core.DatiDiEsempio;
 using System.Windows.Input;
 using Digiphoto.Lumen.Database;
 using Digiphoto.Lumen.Eventi;
-using Digiphoto.Lumen.Servizi.Ricerca;
 using Digiphoto.Lumen.Core.Collections;
 
 namespace Digiphoto.Lumen.UI {
@@ -165,6 +164,12 @@ namespace Digiphoto.Lumen.UI {
 		public int countSelezionati {
 			get {
 				return eventoSelezionato == null ? 0 : 1;
+			}
+		}
+
+		public int countTotali {
+			get {
+				return this.eventi == null ? 0 : this.eventi.Count;
 			}
 		}
 

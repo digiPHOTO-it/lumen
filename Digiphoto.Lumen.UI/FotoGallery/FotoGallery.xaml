@@ -219,18 +219,41 @@ Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding P
             
             <StackPanel Orientation="Horizontal" MaxHeight="120">
 
-				<StackPanel Orientation="Vertical" Margin="3,0,3,0"  >
+				<StackPanel Orientation="Vertical" Margin="1,0,1,0"  >
 
 					<Button Name="eseguireRicercaButton" Command="{Binding eseguireRicercaCommand}" Style="{StaticResource buttonCercaStyle}" Click="eseguireRicercaButton_Click" />
 					<ProgressBar  Value="{Binding Path=idrataProgress,Mode=OneWay}" Style="{StaticResource idrataProgressBarStyle}" Height="{Binding Path=idrataProgress,Converter={StaticResource progressToVisibilityConverter},ConverterParameter=2:20}" Tag="Caricamento..." />
 					<Button Name="azzeraParamRicercaButton" ToolTip="Azzera i parametri di ricerca" Command="{Binding azzeraParamRicercaCommand}" Style="{StaticResource buttonAzzeraParametriStyle}" />
 
-					<StackPanel Orientation="Horizontal" Margin="2">
+					<StackPanel Orientation="Horizontal">
 						<Button Command="{Binding commandSpostarePaginazione}" CommandParameter="-999" Style="{StaticResource buttonMuoviFirstPageStyle}" />
 						<Button Command="{Binding commandSpostarePaginazione}" CommandParameter="-1" Style="{StaticResource buttonMuoviPreviousPageStyle}" />
-						<Label Content="{Binding paginaAttualeRicerca}" Width="24" HorizontalContentAlignment="Center" />
-						<Button Command="{Binding commandSpostarePaginazione}" CommandParameter="1" Style="{StaticResource buttonMuoviNextPageStyle}" />
-					</StackPanel>
+
+                        <Label MinWidth="40" FontSize="14" HorizontalContentAlignment="Center">
+                            <Label.Content>
+								<TextBlock>
+									<TextBlock.Text>
+										<MultiBinding StringFormat="{}{0}/{1}">
+											<Binding Path="paginaAttualeRicerca" />
+											<Binding Path="totPagineRicerca" />
+										</MultiBinding>
+									</TextBlock.Text>
+								</TextBlock>
+                            </Label.Content>
+                            <Label.ToolTip>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="Tot {0} foto filtrate">
+                                            <Binding Path="totFotoRicerca" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </Label.ToolTip>
+                        </Label>
+						
+                        <Button Command="{Binding commandSpostarePaginazione}" CommandParameter="1" Style="{StaticResource buttonMuoviNextPageStyle}" />
+                        <Button Command="{Binding commandSpostarePaginazione}" CommandParameter="999" Style="{StaticResource buttonMuoviLastPageStyle}" />
+                    </StackPanel>
 
 				</StackPanel>
 				<GroupBox Header="Periodo">

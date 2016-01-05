@@ -1,17 +1,12 @@
-﻿using System;
+﻿using Digiphoto.Lumen.Model;
+using Digiphoto.Lumen.UI.Util;
+using log4net;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Digiphoto.Lumen.Model;
-using  System.Data.Entity.Core.Objects;
-using Digiphoto.Lumen.Core.Database;
-using Digiphoto.Lumen.Core;
-using log4net;
-using Digiphoto.Lumen.Database;
-using Digiphoto.Lumen.UI.Util;
 
 namespace Digiphoto.Lumen.Servizi.Ricerca {
-	
+
 	internal class RicercatoreSrvImpl : ServizioImpl, IRicercatoreSrv {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( RicercatoreSrvImpl ) );
@@ -223,10 +218,12 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 				query = query.Where( ff => ff.giornata <= param.giornataFine );
 
 			// ----- Ordinamento
-			if (param.ordinamentoAsc)
-				query = query.OrderBy(ff => ff.dataOraAcquisizione).ThenBy(ff => ff.numero);
-			else
-				query = query.OrderByDescending(ff => ff.dataOraAcquisizione).ThenByDescending(ff => ff.numero);
+			if( param.ordinamento != null ) {
+				if( param.ordinamento == Ordinamento.Asc )
+					query = query.OrderBy( ff => ff.dataOraAcquisizione ).ThenBy( ff => ff.numero );
+				if( param.ordinamento == Ordinamento.Desc )
+					query = query.OrderByDescending( ff => ff.dataOraAcquisizione ).ThenByDescending( ff => ff.numero );
+			}
 
 			return query;
 		}
@@ -279,5 +276,20 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			return query;
 		}
 
+		public int conta( ParamCercaFoto param ) {
+
+			// Clono i parametri per evitare alcuni rallentamenti che nella count non hanno senso
+			ParamCercaFoto param2 = param.ShallowCopy();
+			param2.ordinamento = null;
+
+			if( param.eventi == null )
+				param2.evitareJoinEvento = true;
+
+			IQueryable<Fotografia> query = creaQueryEntita( param2 );
+			
+			int quanti = query.Count();
+
+			return quanti;
+		}
 	}
 }
