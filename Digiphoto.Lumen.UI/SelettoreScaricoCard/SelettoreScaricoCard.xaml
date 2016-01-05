@@ -1,13 +1,14 @@
 ﻿<lumM:UserControlBase x:Class="Digiphoto.Lumen.UI.SelettoreScaricoCard"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
-             xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
-             x:Name="selettoreScaricoCard"
-             mc:Ignorable="d" 
-             d:DesignHeight="200" d:DesignWidth="200">
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+					  xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+					  xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
+					  xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
+					  xmlns:lumMS="clr-namespace:Digiphoto.Lumen.UI.Mvvm.MultiSelect"
+					  x:Name="selettoreScaricoCard"
+					  mc:Ignorable="d" 
+					  d:DesignHeight="200" d:DesignWidth="200">
     
     <!-- includo il dizionario puntuale e quello globale -->
 	<UserControl.Resources>
@@ -17,7 +18,9 @@
 		<GroupBox Header="Scarichi Cards" Grid.Row="0" Grid.Column="0">
 			<ScrollViewer VerticalScrollBarVisibility="Auto" >
 				<ListBox Grid.IsSharedSizeScope="True"
-				         ItemsSource="{Binding scarichiCards,Mode=OneWay}" 
+						 SelectionMode="Multiple"
+						 lumMS:MultiSelect.IsEnabled="True" IsSynchronizedWithCurrentItem="True"
+						 ItemsSource="{Binding Path=scarichiCardsCW}" 
 				         SelectedItem="{Binding scaricoCardSelezionato}" 
 						 ItemContainerStyle="{StaticResource ResourceKey=listBoxItemEvidenziatoStyle}"
 						 >

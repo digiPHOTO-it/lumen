@@ -12,7 +12,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 		public Evento [] eventi { get; set; }
 		public Fotografo [] fotografi {	get; set; }
-		public ScaricoCard scaricoCard { get; set; }
+		public ScaricoCard [] scarichiCard { get; set; }
 
 		public string didascalia { get; set; }
 
@@ -106,7 +106,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			if (isEmpty && fotografi != null)
 				isEmpty = false;
 
-			if (isEmpty && scaricoCard != null)
+			if (isEmpty && scarichiCard != null)
 				isEmpty = false;
 
 			if (isEmpty && !didascalia.Equals("") && !didascalia.Equals("%"))

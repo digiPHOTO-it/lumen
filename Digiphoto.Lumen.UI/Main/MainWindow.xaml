@@ -136,7 +136,7 @@
 
 		<TabItem Name="tabItemCarrello">
 			<TabItem.Header>
-				<TextBlock Text="Carrello" ToolTip="Vendere stampe e CD" />
+				<TextBlock Text="Carrello" ToolTip="Vendi stampe e CD" />
 			</TabItem.Header>
 			<lum:CarrelloView x:Name="carrelloView" />
         </TabItem>

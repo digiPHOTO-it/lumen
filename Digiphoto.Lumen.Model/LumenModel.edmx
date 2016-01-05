@@ -421,7 +421,7 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Guid" Nullable="false" />
-          <Property Name="nomeFile" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="nomeFile" Type="String" MaxLength="300" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="dataOraScatto" Type="DateTime" />
           <Property Name="didascalia" Type="String" MaxLength="99" FixedLength="false" Unicode="true" ></Property>
           <Property Name="dataOraAcquisizione" Type="DateTime" Nullable="false" />

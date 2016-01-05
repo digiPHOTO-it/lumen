@@ -6,18 +6,16 @@ using System.Collections.ObjectModel;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Servizi.EntityRepository;
 using Digiphoto.Lumen.Core.DatiDiEsempio;
+using Digiphoto.Lumen.Core.Collections;
 using System.Windows.Input;
-using Digiphoto.Lumen.Database;
-using System.Linq;
 using Digiphoto.Lumen.Eventi;
-using System.Linq.Expressions;
 using Digiphoto.Lumen.Servizi.Explorer;
-using System.Windows.Threading;
+using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
 using Digiphoto.Lumen.Servizi.Ricerca;
 
 namespace Digiphoto.Lumen.UI {
 
-	public class SelettoreScaricoCardViewModel : ViewModelBase, IObserver<EntityCambiataMsg> {
+	public class SelettoreScaricoCardViewModel : ViewModelBase, ISelettore<ScaricoCard>, IObserver<EntityCambiataMsg> {
 
 		public SelettoreScaricoCardViewModel() {
 
@@ -37,19 +35,16 @@ namespace Digiphoto.Lumen.UI {
 			set;
 		}
 
-		private ScaricoCard _scaricoCardSelezionato;
-		public ScaricoCard scaricoCardSelezionato {
+		private MultiSelectCollectionView<ScaricoCard> _scarichiCardsCW;
+        public MultiSelectCollectionView<ScaricoCard> scarichiCardsCW {
 			get {
-				return _scaricoCardSelezionato;
+				return _scarichiCardsCW;
 			}
 			set {
-				if( value != _scaricoCardSelezionato ) {
-					_scaricoCardSelezionato = value;
-					OnPropertyChanged( "scaricoCardSelezionato" );
-
-                    SvuotaFiltriMsg svuotaFiltriMsg = new SvuotaFiltriMsg(this);
-                    LumenApplication.Instance.bus.Publish(svuotaFiltriMsg);
-                }
+				if( _scarichiCardsCW != value ) {
+					_scarichiCardsCW = value;
+					OnPropertyChanged( "scarichiCardsCW" );
+				}
 			}
 		}
 
@@ -94,9 +89,13 @@ namespace Digiphoto.Lumen.UI {
 			}
 
 			// Ho notato che è meglio non ri-istanziare le collezione. La pulisco e poi la ricarico
-			scarichiCards.Clear();
-			foreach( ScaricoCard ev in lista )
+			scarichiCards = new ObservableCollection<ScaricoCard>( lista );
+            scarichiCards.Clear();
+            foreach( ScaricoCard ev in lista )
 				scarichiCards.Add( ev );
+
+			// Costriusco anche la collection view per la selezione multipla
+			scarichiCardsCW = new MultiSelectCollectionView<ScaricoCard>( scarichiCards );
 
 			if( avvisami && dialogProvider != null )
 				dialogProvider.ShowMessage( "Ricaricati " + scarichiCards.Count + " elementi", "Successo" );
@@ -114,6 +113,16 @@ namespace Digiphoto.Lumen.UI {
 				}
 				return _refreshScarichiCardsCommand;
 			}
+		}
+
+		public int countSelezionati {
+			get {
+				return this.scarichiCardsCW.SelectedItems.Count;
+			}
+		}
+
+		public IEnumerator<ScaricoCard> getEnumeratorSelezionati() {
+			return this.scarichiCardsCW.SelectedItems.GetEnumerator();
 		}
 
 		#endregion
@@ -137,6 +146,11 @@ namespace Digiphoto.Lumen.UI {
 				) );
 
 			}
+		}
+		
+		public void deselezionareTutto() {
+			if( scarichiCardsCW != null )
+				scarichiCardsCW.DeselectAll();
 		}
 	}
 }

@@ -143,8 +143,9 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 
 			// ----- Filtro scarico card
-			if( param.scaricoCard != null ) {
-				query = query.Where( ff => ff.dataOraAcquisizione == param.scaricoCard.tempo );
+			if( param.scarichiCard != null ) {
+				IEnumerable<DateTime> listaDate = from le in param.scarichiCard select le.tempo;
+				query = query.Where( ff => listaDate.Contains( ff.dataOraAcquisizione ) );
 			}
 
 			// ----- Filtro fotografo

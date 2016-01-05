@@ -8,7 +8,7 @@
     <ProjectGuid>{34477397-B3B8-4DD1-8418-D7E9EED4D006}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Digiphoto.Lumen</RootNamespace>
+    <RootNamespace>Digiphoto.Lumen.Core</RootNamespace>
     <AssemblyName>Digiphoto.Lumen.Core</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -163,6 +163,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="src\Collections\ISelettore.cs" />
     <Compile Include="src\Config\ConfigSerializer.cs" />
     <Compile Include="src\Config\LastUsedConfigSerializer.cs" />
     <Compile Include="src\Config\LastUsedConfigLumen.cs" />
@@ -251,7 +252,6 @@
     <Compile Include="src\Servizi\Explorer\MetadatiMsg.cs" />
     <Compile Include="src\Servizi\Reports\ConsumoCarta\RigaReportConsumoCarta.cs" />
     <Compile Include="src\Servizi\Reports\ParamReports.cs" />
-    <Compile Include="src\Servizi\Ricerca\SvuotaFiltriMsg.cs" />
     <Compile Include="src\Servizi\Ricostruzione\IDbRebuilderSrv.cs" />
     <Compile Include="src\Servizi\Ricostruzione\DbRebuilderSrvImpl.cs" />
     <Compile Include="src\Servizi\Ritoccare\Clona\ClonaImmaginiWorker.cs" />

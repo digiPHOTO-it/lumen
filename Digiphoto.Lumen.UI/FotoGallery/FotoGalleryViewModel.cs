@@ -22,12 +22,13 @@ using System.Text.RegularExpressions;
 using System.Windows.Controls;
 using Digiphoto.Lumen.Servizi.Ritoccare.Clona;
 using Digiphoto.Lumen.UI.SelettoreAzioniRapide;
+using Digiphoto.Lumen.Core.Collections;
 
 namespace Digiphoto.Lumen.UI {
 
 
 
-	public class FotoGalleryViewModel : ViewModelBase, IObserver<StampatoMsg>, IObserver<ClonaFotoMsg>, IObserver<SvuotaFiltriMsg>, IObserver<GestoreCarrelloMsg>, IAzzioniRapide
+	public class FotoGalleryViewModel : ViewModelBase, ISelettore<Fotografia>, IObserver<StampatoMsg>, IObserver<ClonaFotoMsg>, IObserver<GestoreCarrelloMsg>, IAzzioniRapide
 	{
 		private BackgroundWorker _bkgIdrata;
 
@@ -51,6 +52,8 @@ namespace Digiphoto.Lumen.UI {
 			// Istanzio i ViewModel dei componenti di cui io sono composto
 			selettoreEventoViewModel = new SelettoreEventoViewModel();
 			selettoreScaricoCardViewModel = new SelettoreScaricoCardViewModel();
+			selettoreScaricoCardViewModel.scarichiCardsCW.SelectionChanged += scarichiCardsCW_SelectionChanged;
+
 			selettoreEventoMetadato = new SelettoreEventoViewModel();
 			selettoreFotografoViewModel = new SelettoreFotografoViewModel();
 			selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel(this);
@@ -74,6 +77,21 @@ namespace Digiphoto.Lumen.UI {
 				_bkgIdrata.ProgressChanged += new ProgressChangedEventHandler( bkgIdrata_ProgressChanged );
 				_bkgIdrata.WorkerReportsProgress = true;
 			}
+		}
+
+		protected override void OnDispose() {
+
+			selettoreScaricoCardViewModel.scarichiCardsCW.SelectionChanged -= scarichiCardsCW_SelectionChanged;
+
+			base.OnDispose();
+		}
+
+		private void scarichiCardsCW_SelectionChanged( object sender, SelectionChangedEventArgs e ) {
+
+			// Se ho selezionato uno scarico card, azzero gli altri filtri.
+			if( selettoreScaricoCardViewModel.countSelezionati > 0 )
+				azzeraParamRicerca( true );
+			
 		}
 
 		/// <summary>
@@ -903,7 +921,7 @@ namespace Digiphoto.Lumen.UI {
 			return fotografieCW.SelectedItems.ToList();
 		}
 
-		private void deselezionareTutto() {
+		public void deselezionareTutto() {
 			accendiSpegniTutto( false );
 		}
 		
@@ -1286,10 +1304,10 @@ namespace Digiphoto.Lumen.UI {
 				paramCercaFoto.eventi = null;
 
 			// Aggiungo eventuale parametro lo scarico card.
-			if( selettoreScaricoCardViewModel.scaricoCardSelezionato != null )
-				paramCercaFoto.scaricoCard = selettoreScaricoCardViewModel.scaricoCardSelezionato;
+			if( selettoreScaricoCardViewModel.scarichiCardsCW != null && selettoreScaricoCardViewModel.scarichiCardsCW.SelectedItems.Count > 0 )
+				paramCercaFoto.scarichiCard = selettoreScaricoCardViewModel.scarichiCardsCW.SelectedItems.ToArray();
 			else
-				paramCercaFoto.scaricoCard = null;
+				paramCercaFoto.scarichiCard = null;
 
 			// Gestisco la paginazione
 			if( paginaAttualeRicerca > 0 && paramCercaFoto.paginazione != null ) {
@@ -1347,8 +1365,11 @@ namespace Digiphoto.Lumen.UI {
 				slideShowViewModel.start();
 		}
 
+		private void azzeraParamRicerca() {
+			azzeraParamRicerca( false );
+		}
 
-		void azzeraParamRicerca() {
+		private void azzeraParamRicerca( bool tranneScarichi ) {
 			paramCercaFoto = new ParamCercaFoto();
 			
 			OnPropertyChanged( "paramCercaFoto" );
@@ -1358,11 +1379,11 @@ namespace Digiphoto.Lumen.UI {
 			OnPropertyChanged( "isPomeriggioChecked" );
 			OnPropertyChanged( "isSeraChecked" );
 
-
-			selettoreEventoViewModel.eventoSelezionato = null;
-			selettoreScaricoCardViewModel.scaricoCardSelezionato = null;
-			selettoreFotografoViewModel.fotografoSelezionato = null;
-
+			// Spengo tutte le eventuali selezioni
+			selettoreEventoViewModel.deselezionareTutto();
+			selettoreFotografoViewModel.deselezionareTutto();
+			if( !tranneScarichi )
+				selettoreScaricoCardViewModel.deselezionareTutto();
 
 			// Se gestita la paginazione, istanzio apposita classe
 			if( Configurazione.UserConfigLumen.paginazioneRisultatiGallery > 0 ) {
@@ -1452,6 +1473,11 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		public int countSelezionati {
+			get {
+				return this.fotografieCW.SelectedItems.Count;
+			}
+		}
 
 		private bool riportaOriginaleFotoSelezionate()
 		{
@@ -1535,33 +1561,10 @@ namespace Digiphoto.Lumen.UI {
 				OnPropertyChanged( "isPossibileModificareCarrello" );
 			}
 		}
-
-		public void OnNext(SvuotaFiltriMsg value)
-        {
-            if (value.sender is SelettoreScaricoCardViewModel)
-            {
-                paramCercaFoto = new ParamCercaFoto();
-
-                OnPropertyChanged("paramCercaFoto");
-                OnPropertyChanged("stringaNumeriFotogrammi");
-
-                OnPropertyChanged("isMattinoChecked");
-                OnPropertyChanged("isPomeriggioChecked");
-                OnPropertyChanged("isSeraChecked");
-
-
-                selettoreEventoViewModel.eventoSelezionato = null;
-                selettoreFotografoViewModel.fotografoSelezionato = null;
-            }
-            else if(value.sender is SelettoreEventoViewModel)
-            {
-                selettoreScaricoCardViewModel.scaricoCardSelezionato = null;
-            }
-            else if(value.sender is SelettoreFotografoViewModel)
-            {
-                selettoreScaricoCardViewModel.scaricoCardSelezionato = null;
-            }
-        }
+		
+		public IEnumerator<Fotografia> getEnumeratorSelezionati() {
+			return fotografieCW.SelectedItems.GetEnumerator();
+		}
 
 		#endregion
 	}
