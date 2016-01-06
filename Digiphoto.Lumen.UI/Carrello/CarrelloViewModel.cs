@@ -73,6 +73,8 @@ namespace Digiphoto.Lumen.UI {
 				// Creo il modello anche dei componenti di cui mi servo.
 				incassiFotografiViewModel = new IncassiFotografiViewModel( "Dettaglio incassi/fotografo per il carrello" );
 
+                copiaFotoRigaRadio = true;
+                spostaFotoRigaSingolaRadio = true;
 			}
 		}
 
@@ -211,6 +213,42 @@ namespace Digiphoto.Lumen.UI {
                     OnPropertyChanged("StatoMasterizzazione");
                 }
             }
+        }
+
+        private bool _copiaFotoRigaRadio;
+        public bool copiaFotoRigaRadio
+        {
+            get
+            {
+                return _copiaFotoRigaRadio;
+            }
+            set
+            {
+                if (value != _copiaFotoRigaRadio)
+                {
+                    _copiaFotoRigaRadio = value;
+                    OnPropertyChanged("copiaFotoRigaRadio");
+                }
+            }
+
+        }
+
+        private bool _spostaFotoRigaSingolaRadio;
+        public bool spostaFotoRigaSingolaRadio
+        {
+            get
+            {
+                return _spostaFotoRigaSingolaRadio;
+            }
+            set
+            {
+                if (value != _spostaFotoRigaSingolaRadio)
+                {
+                    _spostaFotoRigaSingolaRadio = value;
+                    OnPropertyChanged("spostaFotoRigaSingolaRadio");
+                }
+            }
+
         }
 
         #region Ricerca
@@ -1118,6 +1156,9 @@ namespace Digiphoto.Lumen.UI {
 			StatoMasterizzazione = Digiphoto.Lumen.Servizi.Masterizzare.Fase.Attesa;
 			OnPropertyChanged("StatusStatoMasterizzazioneImage");
 			incassiFotografiViewModel.clear();
+
+            copiaFotoRigaRadio = true;
+            spostaFotoRigaSingolaRadio = true;
 		}
 
 		private void svuotaCarrello()
@@ -1131,6 +1172,9 @@ namespace Digiphoto.Lumen.UI {
 			StatoMasterizzazione = Digiphoto.Lumen.Servizi.Masterizzare.Fase.Attesa;
 			OnPropertyChanged("StatusStatoMasterizzazioneImage");
 			incassiFotografiViewModel.incassiFotografi.Clear();
+
+            copiaFotoRigaRadio = true;
+            spostaFotoRigaSingolaRadio = true;
 		}
 
 
@@ -1182,51 +1226,108 @@ namespace Digiphoto.Lumen.UI {
 			calcolaTotali();
 		}
 
+        private void spostaFotoRigaDxSx(string discriminator)
+        {
+            bool onlySelected = spostaFotoRigaSingolaRadio;
+
+            if (copiaFotoRigaRadio)
+            {
+                copiaSpostaFotoRighe(discriminator, onlySelected);
+            }
+            else
+            {
+                spostaFotoRighe(discriminator, onlySelected);
+            }
+        }
+
+        private void spostaFotoRighe(string discriminator, bool onlySelected)
+        {
+            if (Carrello.TIPORIGA_MASTERIZZATA.Equals(discriminator)) {
+                if(onlySelected)
+                    venditoreSrv.spostareRigaCarrello(rigaCarrelloStampataSelezionata);
+                else
+                    venditoreSrv.spostareTutteRigheCarrello(Carrello.Not(discriminator), null);
+            }
+
+            if (Carrello.TIPORIGA_STAMPA.Equals(discriminator))
+            {
+                SelezionaStampanteDialog d = new SelezionaStampanteDialog();
+                bool? esito = d.ShowDialog();
+
+                if (esito == true)
+                {
+                    Carrello.ParametriDiStampa parametriDiStampa = new Carrello.ParametriDiStampa();
+                    parametriDiStampa.FormatoCarta = d.formatoCarta;
+                    parametriDiStampa.NomeStampante = d.nomeStampante;
+                    parametriDiStampa.Quantita = 1;
+                    parametriDiStampa.PrezzoLordoUnitario = d.formatoCarta.prezzo;
+                    parametriDiStampa.PrezzoNettoTotale = rigaCarrelloMasterizzataSelezionata.prezzoLordoUnitario;
+
+                    //associo il nuovo formato carta alla riga ed anche la stampante
+                    rigaCarrelloMasterizzataSelezionata.formatoCarta = parametriDiStampa.FormatoCarta;
+                    rigaCarrelloMasterizzataSelezionata.nomeStampante = parametriDiStampa.NomeStampante;
+                    rigaCarrelloMasterizzataSelezionata.quantita = parametriDiStampa.Quantita;
+                    rigaCarrelloMasterizzataSelezionata.prezzoLordoUnitario = parametriDiStampa.PrezzoLordoUnitario;
+                    rigaCarrelloMasterizzataSelezionata.prezzoNettoTotale = parametriDiStampa.PrezzoNettoTotale;
+                    if (onlySelected)
+                        venditoreSrv.spostareRigaCarrello(rigaCarrelloMasterizzataSelezionata);
+                    else
+                        venditoreSrv.spostareTutteRigheCarrello(Carrello.Not(discriminator), parametriDiStampa);
+
+                    rinfrescaViewRighe();
+                }
+
+                d.Close();
+            }
+        }
+
 		private void spostaFotoRiga(string discriminator)
 		{
-			if (Carrello.TIPORIGA_MASTERIZZATA.Equals(discriminator))
-				venditoreSrv.spostareRigaCarrello(rigaCarrelloStampataSelezionata);
+            spostaFotoRighe(discriminator, true);
+        }
 
-			if (Carrello.TIPORIGA_STAMPA.Equals(discriminator))
-			{
-				SelezionaStampanteDialog d = new SelezionaStampanteDialog();
-				bool? esito = d.ShowDialog();
+        private void copiaSpostaFotoRighe(string discriminator, bool onlySelected)
+        {
+            if (Carrello.TIPORIGA_MASTERIZZATA.Equals(discriminator)) {
+                if(onlySelected)
+                    venditoreSrv.copiaSpostaRigaCarrello(rigaCarrelloStampataSelezionata);
+                else
+                    venditoreSrv.copiaSpostaTutteRigheCarrello(Carrello.Not(discriminator), null);
+            }   
 
-				if (esito == true)
-				{
-					//associo il nuovo formato carta alla riga ed anche la stampante
-					rigaCarrelloMasterizzataSelezionata.formatoCarta = d.formatoCarta;
-					rigaCarrelloMasterizzataSelezionata.nomeStampante = d.nomeStampante;
-					rigaCarrelloMasterizzataSelezionata.quantita = 1;
-					rigaCarrelloMasterizzataSelezionata.prezzoLordoUnitario = d.formatoCarta.prezzo;
-					rigaCarrelloMasterizzataSelezionata.prezzoNettoTotale = rigaCarrelloMasterizzataSelezionata.prezzoLordoUnitario;
-                    venditoreSrv.spostareRigaCarrello(rigaCarrelloMasterizzataSelezionata);
-					rinfrescaViewRighe();
-				}
+            if (Carrello.TIPORIGA_STAMPA.Equals(discriminator))
+            {
+                SelezionaStampanteDialog d = new SelezionaStampanteDialog();
+                bool? esito = d.ShowDialog();
 
-				d.Close();
-			}
-		}
+                if (esito == true)
+                {
+                    Carrello.ParametriDiStampa parametriDiStampa = new Carrello.ParametriDiStampa();
+                    parametriDiStampa.FormatoCarta = d.formatoCarta;
+                    parametriDiStampa.NomeStampante = d.nomeStampante;
+                    parametriDiStampa.Quantita = 1;
+                    parametriDiStampa.PrezzoLordoUnitario = d.formatoCarta.prezzo;
+                    parametriDiStampa.PrezzoNettoTotale = rigaCarrelloMasterizzataSelezionata.prezzoLordoUnitario;
 
-		private void copiaSpostaFotoRiga(string discriminator)
+                    //associo il nuovo formato carta alla riga
+                    rigaCarrelloMasterizzataSelezionata.formatoCarta = parametriDiStampa.FormatoCarta;
+                    rigaCarrelloMasterizzataSelezionata.nomeStampante = parametriDiStampa.NomeStampante;
+                    rigaCarrelloMasterizzataSelezionata.quantita = parametriDiStampa.Quantita;
+                    rigaCarrelloMasterizzataSelezionata.prezzoLordoUnitario = parametriDiStampa.PrezzoLordoUnitario;
+                    rigaCarrelloMasterizzataSelezionata.prezzoNettoTotale = parametriDiStampa.PrezzoNettoTotale;
+                    if (onlySelected)
+                        venditoreSrv.copiaSpostaRigaCarrello(rigaCarrelloMasterizzataSelezionata);
+                    else
+                        venditoreSrv.copiaSpostaTutteRigheCarrello(Carrello.Not(discriminator), parametriDiStampa);
+                }
+
+                d.Close();
+            }
+        }
+
+        private void copiaSpostaFotoRiga(string discriminator)
 		{
-			if (Carrello.TIPORIGA_MASTERIZZATA.Equals(discriminator))
-				venditoreSrv.copiaSpostaRigaCarrello(rigaCarrelloStampataSelezionata);
-
-			if (Carrello.TIPORIGA_STAMPA.Equals(discriminator))
-			{
-				SelezionaStampanteDialog d = new SelezionaStampanteDialog();
-				bool? esito = d.ShowDialog();
-
-				if (esito == true)
-				{
-					//associo il nuovo formato carta alla riga
-					rigaCarrelloMasterizzataSelezionata.formatoCarta = d.formatoCarta;
-					venditoreSrv.copiaSpostaRigaCarrello(rigaCarrelloMasterizzataSelezionata);
-				}
-
-				d.Close();
-			}
+            copiaSpostaFotoRighe(discriminator, true);
 		}
 
 		private void visualizzareIncassiFotografi() {
@@ -1417,7 +1518,21 @@ namespace Digiphoto.Lumen.UI {
             }
         }
 
-		private RelayCommand _spostaFotoRigaCommand;
+        private RelayCommand _spostaFotoRigaDxSxCommand;
+        public ICommand SpostaFotoRigaDxSxCommand
+        {
+            get
+            {
+                if (_spostaFotoRigaDxSxCommand == null)
+                {
+                    _spostaFotoRigaDxSxCommand = new RelayCommand(param => spostaFotoRigaDxSx((String)param),
+                                                               param => possoSpostareFotoRiga((String)param), false);
+                }
+                return _spostaFotoRigaDxSxCommand;
+            }
+        }
+
+        private RelayCommand _spostaFotoRigaCommand;
 		public ICommand SpostaFotoRigaCommand
 		{
 			get

@@ -37,7 +37,50 @@
 
     </Style>
 
-	<Style x:Key="ImageCarrelloImageContainerStyle" TargetType="ListBoxItem">
+    <Style x:Key="spostaCopiaRadioStyle" TargetType="{x:Type RadioButton}" 
+           BasedOn="{StaticResource {x:Type RadioButton}}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RadioButton}">
+                    <BulletDecorator Background="White" Cursor="Hand">
+                        <BulletDecorator.Bullet>
+
+                            <Grid Height="18" Width="18">
+                                <!--Define size of the Bullet-->
+                                <Polygon Name="TickMark"
+                                         Points="4,9 8,15 15,3 8,11 4,9"
+                                         Stroke="#FF0092B2"
+                                         StrokeThickness="1"
+                                         Visibility="Hidden">
+                                </Polygon>
+
+                                <Border CornerRadius="3,0,0,3" BorderBrush="#FF565656" BorderThickness="2" />
+
+                            </Grid>
+                        </BulletDecorator.Bullet>
+
+                        <!--Text element-->
+                        <Border Background="#FF565656" CornerRadius="0,3,3,0" Width="50" Height="18">
+                            <TextBlock Margin="3,1,0,0" Foreground="#FFFFFFFF" FontFamily="Calibri" FontSize="12">
+                        <ContentPresenter />
+                            </TextBlock>
+                        </Border>
+                    </BulletDecorator>
+
+
+                    <!--If item is checked, trigger the visibility of the mark-->
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="true">
+                            <Setter TargetName="TickMark" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ImageCarrelloImageContainerStyle" TargetType="ListBoxItem">
 		<Style.Resources>
 			<!--SelectedItem with focus -->
 			<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Blue" />

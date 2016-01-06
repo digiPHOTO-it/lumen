@@ -396,7 +396,38 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			spostaRigaCarrello(rigaCarrello, true);
 		}
 
-		public void copiaSpostaRigaCarrello(RigaCarrello rigaCarrello)
+        public void spostareTutteRigheCarrello(string discriminator, Carrello.ParametriDiStampa parametriDiStampa)
+        {
+            IEnumerable<RigaCarrello> listaDaSpostare = carrello.righeCarrello.Where(r => r.discriminator == discriminator);
+
+            string d = Carrello.Not(discriminator);
+
+            foreach (RigaCarrello rigaDaSpostare in listaDaSpostare.ToArray())
+            {
+                if(!GestoreCarrello.isStessaFotoInCarrello(carrello, rigaDaSpostare, d))
+                {
+                    if (Carrello.TIPORIGA_STAMPA.Equals(d))
+                    {
+                        rigaDaSpostare.formatoCarta = parametriDiStampa.FormatoCarta;
+                        rigaDaSpostare.nomeStampante = parametriDiStampa.NomeStampante;
+                        rigaDaSpostare.quantita = parametriDiStampa.Quantita;
+                        rigaDaSpostare.prezzoLordoUnitario = parametriDiStampa.PrezzoLordoUnitario;
+                        rigaDaSpostare.prezzoNettoTotale = parametriDiStampa.PrezzoNettoTotale;
+                    }
+                    gestoreCarrello.spostaRigaCarrello(rigaDaSpostare, true);
+                }
+            }
+            
+            inviaMessaggioValoreCarrelloCambiato(true);
+        }
+
+        private void spostaRigaCarrello(RigaCarrello rigaCarrello, bool remove)
+        {
+            gestoreCarrello.spostaRigaCarrello(rigaCarrello, remove);
+            inviaMessaggioValoreCarrelloCambiato(true);
+        }
+
+        public void copiaSpostaRigaCarrello(RigaCarrello rigaCarrello)
 		{
 			RigaCarrello cloneRiga = new RigaCarrello();
 			if (Carrello.TIPORIGA_MASTERIZZATA.Equals(rigaCarrello.discriminator))
@@ -442,11 +473,28 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			spostaRigaCarrello(cloneRiga, false);
 		}
 
-		private void spostaRigaCarrello(RigaCarrello rigaCarrello, bool remove)
-		{
-			gestoreCarrello.spostaRigaCarrello( rigaCarrello, remove );
-			inviaMessaggioValoreCarrelloCambiato( true );
-		}
+        public void copiaSpostaTutteRigheCarrello(string discriminator, Carrello.ParametriDiStampa parametriDiStampa)
+        {
+            IEnumerable<RigaCarrello> listaDaCopiareSpostare = carrello.righeCarrello.Where(r => r.discriminator == discriminator);
+
+            string d = Carrello.Not(discriminator);
+
+            foreach (RigaCarrello rigaDaCopiareSpostare in listaDaCopiareSpostare.ToArray())
+            {
+                if (!GestoreCarrello.isStessaFotoInCarrello(carrello, rigaDaCopiareSpostare, d))
+                {
+                    if (Carrello.TIPORIGA_STAMPA.Equals(d))
+                    {
+                        rigaDaCopiareSpostare.formatoCarta = parametriDiStampa.FormatoCarta;
+                        rigaDaCopiareSpostare.nomeStampante = parametriDiStampa.NomeStampante;
+                        rigaDaCopiareSpostare.quantita = parametriDiStampa.Quantita;
+                        rigaDaCopiareSpostare.prezzoLordoUnitario = parametriDiStampa.PrezzoLordoUnitario;
+                        rigaDaCopiareSpostare.prezzoNettoTotale = parametriDiStampa.PrezzoNettoTotale;
+                    }
+                    copiaSpostaRigaCarrello(rigaDaCopiareSpostare);
+                }
+            }
+        }
 
 		private void eventualeStampa(Carrello carrello) {
 

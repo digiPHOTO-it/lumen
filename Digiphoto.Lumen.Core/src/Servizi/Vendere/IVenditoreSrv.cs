@@ -85,7 +85,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		void spostareRigaCarrello(RigaCarrello rigaCarrello);
 
-		void copiaSpostaRigaCarrello(RigaCarrello rigaCarrello);
+        void spostareTutteRigheCarrello(String discriminator, Carrello.ParametriDiStampa parametriDiStampa);
+
+        void copiaSpostaRigaCarrello(RigaCarrello rigaCarrello);
+
+        void copiaSpostaTutteRigheCarrello(String discriminator, Carrello.ParametriDiStampa parametriDiStampa);
 
 		/** Lavoro con un carrello alla volta. Esiste un solo carrello "corrente". */
 		Carrello carrello { get; }

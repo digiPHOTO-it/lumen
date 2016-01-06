@@ -225,7 +225,7 @@
 		<Grid Name="dettagliGrid">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition />
-				<ColumnDefinition Width="32"/>
+				<ColumnDefinition Width="80"/>
 				<ColumnDefinition />
 			</Grid.ColumnDefinitions>
 			<Grid.RowDefinitions>
@@ -248,11 +248,36 @@
 			<StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1" 
 						VerticalAlignment="Center"
 				        IsEnabled="{Binding Path=carrelloCorrente.venduto,Converter={StaticResource boolInverterConverter}}">
-				<Button Command="{Binding CopiaSpostaFotoRigaCommand}" CommandParameter="M" Style="{StaticResource styleSpostaCopyM}" Height="32" Width="32" />
-				<Button Command="{Binding SpostaFotoRigaCommand}" CommandParameter="M" Style="{StaticResource styleSpostaM}" Height="32" Width="32"  Margin="0,20,0,0"/>
-				<Button Command="{Binding CopiaSpostaFotoRigaCommand}" CommandParameter="S" Style="{StaticResource styleSpostaCopyS}" Height="32" Width="32"  Margin="0,20,0,0"/>
-				<Button Command="{Binding SpostaFotoRigaCommand}" CommandParameter="S" Style="{StaticResource styleSpostaS}" Height="32" Width="32"  Margin="0,20,0,0"/>
-			</StackPanel>
+                <StackPanel>
+                    <GroupBox Header="Azione">
+                        <StackPanel >
+                            <RadioButton Content="Copia" GroupName="copiaSpostaCarrelloGrp" 
+                                     IsChecked="{Binding Path=copiaFotoRigaRadio}"
+							         Style="{StaticResource spostaCopiaRadioStyle}" />
+                            <RadioButton Content="Sposta" GroupName="copiaSpostaCarrelloGrp" 
+                                     IsChecked="{Binding Path=copiaFotoRigaRadio, Converter={StaticResource boolInverterConverter}}"
+                                     Style="{StaticResource spostaCopiaRadioStyle}"/>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Header="Selezione">
+                        <StackPanel>
+                            <RadioButton Content="Singola" GroupName="copiaSpostaAllCarrelloGrp" 
+                                         IsChecked="{Binding Path=spostaFotoRigaSingolaRadio}"
+							             Style="{StaticResource spostaCopiaRadioStyle}"	/>
+                            <RadioButton Content="Tutte" GroupName="copiaSpostaAllCarrelloGrp" 
+                                         IsChecked="{Binding Path=spostaFotoRigaSingolaRadio, Converter={StaticResource boolInverterConverter}}"
+							             Style="{StaticResource spostaCopiaRadioStyle}" />
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+                <!--Button Command="{Binding CopiaSpostaFotoRigaCommand}" CommandParameter="M" Style="{StaticResource styleSpostaCopyM}" Height="32" Width="32" /-->
+				<!--Button Command="{Binding SpostaFotoRigaCommand}" CommandParameter="M" Style="{StaticResource styleSpostaM}" Height="32" Width="32"  Margin="0,20,0,0"/-->
+				<!--Button Command="{Binding CopiaSpostaFotoRigaCommand}" CommandParameter="S" Style="{StaticResource styleSpostaCopyS}" Height="32" Width="32"  Margin="0,20,0,0"/-->
+				<!--Button Command="{Binding SpostaFotoRigaCommand}" CommandParameter="S" Style="{StaticResource styleSpostaS}" Height="32" Width="32"  Margin="0,20,0,0"/-->
+                <Button Command="{Binding SpostaFotoRigaDxSxCommand}" CommandParameter="M" Style="{StaticResource styleSpostaM}" Height="32" Width="32"  Margin="0,20,0,0"/>
+                <!--Button Command="{Binding CopiaSpostaFotoRigaCommand}" CommandParameter="S" Style="{StaticResource styleSpostaCopyS}" Height="32" Width="32"  Margin="0,20,0,0"/-->
+                <Button Command="{Binding SpostaFotoRigaDxSxCommand}" CommandParameter="S" Style="{StaticResource styleSpostaS}" Height="32" Width="32"  Margin="0,20,0,0"/>
+            </StackPanel>
 				
 			<ListBox x:Name="listCarrelloMasterizzate" Grid.Row="0" Grid.Column="2" Margin="10,0,2,0"
 					 SelectionMode="Single" 

@@ -486,17 +486,23 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// </summary>
 		private static bool isStessaFotoInCarrello( Carrello carrello, RigaCarrello riga )
 		{
-			foreach( RigaCarrello r in carrello.righeCarrello ) {
-				if( r.fotografia.id == riga.fotografia.id && r.discriminator == riga.discriminator )
-					return true;
-			}
-			return false;
+			return isStessaFotoInCarrello(carrello, riga, riga.discriminator);
 		}
 
-		/// <summary>
-		/// Questo metodo pubblico per poter ricalcolare il totale durante la gestione del carrello.
-		/// </summary>
-		public void ricalcolaDocumento() {
+        public static bool isStessaFotoInCarrello(Carrello carrello, RigaCarrello riga, string discriminator)
+        {
+            foreach (RigaCarrello r in carrello.righeCarrello)
+            {
+                if (r.fotografia.id == riga.fotografia.id && r.discriminator == discriminator)
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Questo metodo pubblico per poter ricalcolare il totale durante la gestione del carrello.
+        /// </summary>
+        public void ricalcolaDocumento() {
 			completaAttributiMancanti( false );
 		}
 		public void ricalcolaDocumento( bool ancheProvvigioni ) {
