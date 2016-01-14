@@ -19,6 +19,29 @@ namespace Digiphoto.Lumen.UI.Converters {
 			{
 				return Visibility.Collapsed;
 			}
+            if (value is String)
+            {
+                if (parameter != null)
+                {
+                    if (value.Equals(parameter))
+                    {
+                        return Visibility.Visible;
+                    }
+                    else if ("MULTI".Equals(value))
+                    {
+                        return Visibility.Visible;
+                    }
+                    else
+                    {
+                        return Visibility.Collapsed;
+                    }
+                }
+                else
+				{
+                    return Visibility.Collapsed;
+                }
+            }
+
 			if (value is MultiSelectCollectionView<Fotografia>)
 			{
 				if (((MultiSelectCollectionView<Fotografia>)value).Count > 1)
