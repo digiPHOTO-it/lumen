@@ -54,7 +54,8 @@
             <CompositeCollection>
                 
                 <!--Singola foto-->
-                <MenuItem Header="Singola Foto" 
+                <MenuItem Header="Singola Foto"  
+                          Visibility="{Binding Path=visibility, Mode=OneWay, Converter={StaticResource listAzioniRapideVisibilityConverter}, ConverterParameter=SINGLE}"
                           DataContext="{Binding}">
 
                           <i:Interaction.Triggers>
@@ -151,7 +152,7 @@
 
                 <!--Tutte le Selezionate-->
                 <MenuItem Header="Tutte le Selezionate"
-                          Visibility="{Binding Path=fotografieCW, Mode=OneWay, Converter={StaticResource listAzioniRapideVisibilityConverter}}"
+                          Visibility="{Binding Path=visibility, Mode=OneWay, Converter={StaticResource listAzioniRapideVisibilityConverter}, ConverterParameter=MULTLI}"
                           DataContext="{Binding}">
                       
                           <i:Interaction.Triggers>

@@ -63,6 +63,23 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
+        private String _visibility;
+        public String visibility
+        {
+            get
+            {
+                return _visibility;
+            }
+            set
+            {
+                if (_visibility != value)
+                {
+                    _visibility = value;
+                    OnPropertyChanged("visibility");
+                }
+            }
+        }
+
 		private bool _isTuttoBloccato;
 		public bool isTuttoBloccato
 		{

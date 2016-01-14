@@ -819,9 +819,11 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			ListBoxItem listBoxItem = SelectItemOnRightClick( e );
 			if( listBoxItem != null ) {
-				((FotoRitoccoViewModel)viewModelBase).selettoreAzioniRapideViewModel.ultimaFotoSelezionata = (Fotografia)listBoxItem.Content;
-				// Questo mi evita di selezionare la foto quando clicco con il destro.
-				e.Handled = true;
+                SelettoreAzioniRapideViewModel selettoreAzioniRapideViewModel = ((FotoRitoccoViewModel)viewModelBase).selettoreAzioniRapideViewModel;
+                selettoreAzioniRapideViewModel.ultimaFotoSelezionata = (Fotografia)listBoxItem.Content;
+                selettoreAzioniRapideViewModel.visibility = "SINGLE";
+                // Questo mi evita di selezionare la foto quando clicco con il destro.
+                e.Handled = true;
 			}
 		}
 

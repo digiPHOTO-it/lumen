@@ -322,8 +322,18 @@ namespace Digiphoto.Lumen.UI {
 				return;
 
 			Fotografia foto = (Fotografia)SelectItemOnRightClick(e).Content;
-			((FotoGalleryViewModel)viewModelBase).selettoreAzioniRapideViewModel.ultimaFotoSelezionata = foto;
-			e.Handled = true;
+            SelettoreAzioniRapideViewModel selettoreAzioniRapideViewModel = ((FotoGalleryViewModel)viewModelBase).selettoreAzioniRapideViewModel;
+            selettoreAzioniRapideViewModel.ultimaFotoSelezionata = foto;
+            if(selettoreAzioniRapideViewModel.fotografieCW.SelectedItems.Count == 1)
+            {
+                selettoreAzioniRapideViewModel.visibility = "SINGLE";
+            }
+            else if(selettoreAzioniRapideViewModel.fotografieCW.SelectedItems.Count > 1)
+            {
+                selettoreAzioniRapideViewModel.visibility = "MULTI";
+            }
+            
+            e.Handled = true;
 		}
 
 		private ListBoxItem SelectItemOnRightClick(System.Windows.Input.MouseButtonEventArgs e)
