@@ -23,12 +23,14 @@ using System.Windows.Controls;
 using Digiphoto.Lumen.Servizi.Ritoccare.Clona;
 using Digiphoto.Lumen.UI.SelettoreAzioniRapide;
 using Digiphoto.Lumen.Core.Collections;
+using Digiphoto.Lumen.Servizi.Scaricatore;
+using System.Collections;
 
 namespace Digiphoto.Lumen.UI {
 
 
 
-	public class FotoGalleryViewModel : ViewModelBase, ISelettore<Fotografia>, IObserver<StampatoMsg>, IObserver<ClonaFotoMsg>, IObserver<GestoreCarrelloMsg>, IAzzioniRapide
+	public class FotoGalleryViewModel : ViewModelBase, ISelettore<Fotografia>, IObserver<NuovaFotoMsg>, IObserver<StampatoMsg>, IObserver<ClonaFotoMsg>, IObserver<GestoreCarrelloMsg>, IAzzioniRapide
 	{
 		private BackgroundWorker _bkgIdrata;
 
@@ -44,7 +46,10 @@ namespace Digiphoto.Lumen.UI {
 			IObservable<ClonaFotoMsg> observableClonaFoto = LumenApplication.Instance.bus.Observe<ClonaFotoMsg>();
 			observableClonaFoto.Subscribe(this);
 
-			IObservable<GestoreCarrelloMsg> observableGesCarrello = LumenApplication.Instance.bus.Observe<GestoreCarrelloMsg>();
+            IObservable<NuovaFotoMsg> observableNuovaFoto = LumenApplication.Instance.bus.Observe<NuovaFotoMsg>();
+            observableNuovaFoto.Subscribe(this);
+
+            IObservable<GestoreCarrelloMsg> observableGesCarrello = LumenApplication.Instance.bus.Observe<GestoreCarrelloMsg>();
 			observableGesCarrello.Subscribe( this );
 
 			metadati = new MetadatiFoto();
@@ -1555,16 +1560,34 @@ namespace Digiphoto.Lumen.UI {
 			return true;
 		}
 
-		#endregion Metodi
+        private Fotografia ricavaFotoByNumber(int numDaric)
+        {
 
-		#region Gestori Eventi
+            // Devo scorrere la lista
+            Fotografia fotoTrovata = null;
+            if (fotografieCW != null)
+                foreach (var foto in fotografieCW.SourceCollection)
+                {
+                    if (((Fotografia)foto).numero == numDaric)
+                    {
+                        fotoTrovata = (Fotografia)foto;
+                        break;
+                    }
+                }
 
-		/// <summary>
-		/// Avviso gli interessati che la schermata pubblica (snapshot) è cambiata.
-		/// Chi crede può prenderne atto.
-		/// </summary>
-		/// <param name="e"></param>
-		protected void raiseSnpashotCambiataEvent( EventArgs e ) {
+            return fotoTrovata;
+        }
+
+        #endregion Metodi
+
+        #region Gestori Eventi
+
+        /// <summary>
+        /// Avviso gli interessati che la schermata pubblica (snapshot) è cambiata.
+        /// Chi crede può prenderne atto.
+        /// </summary>
+        /// <param name="e"></param>
+        protected void raiseSnpashotCambiataEvent( EventArgs e ) {
 			if( snpashotCambiataEventHandler != null )
 				snpashotCambiataEventHandler( this, e );
 		}
@@ -1597,7 +1620,21 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		public void OnNext( GestoreCarrelloMsg value ) {
+        public void OnNext(NuovaFotoMsg value)
+        {
+            Fotografia fotoOrig = ricavaFotoByNumber(value.foto.numero);
+            // ricreo la collection-view e notifico che è cambiato il risultato. Le immagini verranno caricate poi
+
+            IList<Fotografia> fotografie = fotografieCW.SourceCollection as IList<Fotografia>;
+            List<Fotografia> fotos = fotografie.ToList();
+            int index = fotos.IndexOf(fotoOrig) + 1;
+            fotos.Insert(index, value.foto);
+            fotografieCW = new MultiSelectCollectionView<Fotografia>(fotos);
+            fotografieCW.SelectionChanged += fotografie_selezioneCambiata;
+            OnPropertyChanged("fotografieCW");
+        }
+
+        public void OnNext( GestoreCarrelloMsg value ) {
 			
 			if( value.fase == GestoreCarrelloMsg.Fase.CreatoNuovoCarrello ||
 				value.fase == GestoreCarrelloMsg.Fase.LoadCarrelloSalvato ) {
