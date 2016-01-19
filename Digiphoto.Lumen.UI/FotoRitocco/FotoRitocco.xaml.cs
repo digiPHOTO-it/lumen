@@ -335,13 +335,20 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				
 				case ModalitaEdit.GestioneMaschere:
 
+					if( Debugger.IsAttached )
+						Debug.Assert( tabItemComposizione.IsSelected );
+
 					primoPianoCanvasMask( false );
 					initGestioneMaschere();
 					break;
 
 				case ModalitaEdit.FotoRitocco:
 
-					listBoxImmaginiDaModificare.SetValue( MultiSelect.IsEnabledProperty, true );
+					if( Debugger.IsAttached )
+						Debug.Assert( tabItemRitocco.IsSelected );
+
+
+						listBoxImmaginiDaModificare.SetValue( MultiSelect.IsEnabledProperty, true );
 					listBoxImmaginiDaModificare.SetValue( MultiSelect.MaxNumSelectedItemProperty, 3 );
 
 					primoPianoCanvasMask( true );
@@ -742,9 +749,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				w.Close();
 			}
 
-			rimuoviTutteLeManigliette();
-
-			firstFotoInCanvas = null;
+			azzeraGestioneMaschere();
 		}
 
 
@@ -779,6 +784,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// Quando rifiuto la maschera, devo togliere dal video eventuali componenti grafici rimasti in mezzo ai piedi.
 		/// </summary>
 		void azzeraGestioneMaschere() {
+
+			rimuoviTutteLeManigliette();
+
 			// Elimino le foto che sono state droppate sul canvas
 			canvasMsk.Children.Clear();
 
