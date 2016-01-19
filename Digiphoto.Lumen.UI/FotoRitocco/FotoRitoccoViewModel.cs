@@ -72,6 +72,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				// Resetto collezion ed effetti
 				svuotareListaDaModificare();
 
+				// Mi posiziono in modalità foto-ritocco
+				modalitaEdit = ModalitaEdit.FotoRitocco;
+
 				salvataggioAutomatico = true;  // Per ora lo decido a tavolino. Un domani potrebbe diventare un parametro della configurazione
 			}
 
@@ -1432,7 +1435,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			mascheraAttiva = null;
 			quadroRuotato = false;
 
-			modalitaEdit = ModalitaEdit.FotoRitocco;
 			modificheInCorso = false;
 		}
 
