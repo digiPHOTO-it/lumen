@@ -48,9 +48,8 @@
 					<Image Source="{Binding Path=imgProvino,Converter={StaticResource imageSourceConverter}}" 
 						   Stretch="Uniform"  
 						   x:Name="imageFotografia"
-						   Width="{Binding ActualWidth, ElementName=fotoCanvas}"
-						   Height="{Binding ActualHeight, ElementName=fotoCanvas}" />
-           
+						   Width="{Binding ActualWidth, ElementName=fotoCanvas, FallbackValue=14}"
+						   Height="{Binding ActualHeight, ElementName=fotoCanvas, FallbackValue=14}" />
                     <Image
 						
 						Canvas.Left="2"
