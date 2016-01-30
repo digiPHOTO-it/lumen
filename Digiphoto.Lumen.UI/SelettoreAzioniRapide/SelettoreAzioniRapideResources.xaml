@@ -14,6 +14,7 @@
       ** devo distinguerli con una scritta.
       ** Quindi creo un pulsante che ha una didascalia sotto.
     -->
+    <!---
 	<DataTemplate x:Key="pulsanteDiStampaTemplateContextMenu">
 		<Button ToolTip="{Binding}" 
                 Command="{Binding Path=DataContext.stampareCommand,RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
@@ -25,6 +26,7 @@
 		</Button>
 		
 	</DataTemplate>
+    -->
 
 	<DataTemplate x:Key="stampaRapidaMenu">
 		<MenuItem Header="{Binding}"
@@ -85,9 +87,25 @@
                     </MenuItem>
 
                     <MenuItem Header="Aggiungi al Carrello"
-				              ItemsSource="{Binding Path=stampantiAbbinate}" 
-				              ItemTemplate="{StaticResource pulsanteDiStampaTemplateContextMenu}"
-				              DataContext="{Binding}">
+                              DataContext="{Binding}"
+                              ItemsSource="{Binding Path=stampantiAbbinate}" >
+                        <MenuItem.ItemContainerStyle>
+                            <Style TargetType="{x:Type MenuItem}">
+                                <Setter Property="HeaderTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <StackPanel>
+                                                <Image Width="48" Height="48" Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-48x48.png" />
+                                                <ContentPresenter Content="{Binding Path=FormatoCarta.descrizione}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Command" Value="{Binding Path=DataContext.stampareCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type MenuItem}, AncestorLevel=1}}" />
+                                    <Setter Property="CommandParameter" Value="{Binding}" />
+                                </Style>
+                        </MenuItem.ItemContainerStyle>
+                        <!-- ItemTemplate="{StaticResource pulsanteDiStampaCarrelloTemplateContextMenu}" -->
 		            </MenuItem>
 
 		            <MenuItem Header="Aggiungi al CD" 
@@ -182,8 +200,23 @@
                             
                     <MenuItem Header="Aggiungi al Carrello"
                               ItemsSource="{Binding Path=stampantiAbbinate}" 
-				              ItemTemplate="{StaticResource pulsanteDiStampaTemplateContextMenu}"
 				              DataContext="{Binding}">
+                        <MenuItem.ItemContainerStyle>
+                            <Style TargetType="{x:Type MenuItem}">
+                                <Setter Property="HeaderTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <StackPanel>
+                                                <Image Width="48" Height="48" Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-48x48.png" />
+                                                <ContentPresenter Content="{Binding Path=FormatoCarta.descrizione}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Command" Value="{Binding Path=DataContext.stampareCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type MenuItem}, AncestorLevel=1}}" />
+                                <Setter Property="CommandParameter" Value="{Binding}" />
+                            </Style>
+                        </MenuItem.ItemContainerStyle>
                     </MenuItem>
 
                     <MenuItem Header="Aggiungi al CD" 
