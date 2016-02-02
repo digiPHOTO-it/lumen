@@ -160,8 +160,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				long totalLength = 0;
 				foreach (RigaCarrello riga in carrello.righeCarrello.Where(r => r.discriminator == Carrello.TIPORIGA_MASTERIZZATA))
                 {
-                    String filePath = (Configurazione.cartellaRepositoryFoto + Path.DirectorySeparatorChar + riga.fotografia.nomeFile);
-					totalLength+= new FileInfo( filePath ).Length;
+					if( riga.fotografia != null ) {
+						String filePath = (Configurazione.cartellaRepositoryFoto + Path.DirectorySeparatorChar + riga.fotografia.nomeFile);
+						totalLength += new FileInfo( filePath ).Length;
+					}
 				}
 
 				//long size = totalLength / 1024;
