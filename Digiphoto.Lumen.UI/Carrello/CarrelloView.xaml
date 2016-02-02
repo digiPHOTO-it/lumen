@@ -234,7 +234,7 @@
 
 
 			<!-- Questo è il dettaglio delle righe con le stampe -->
-			<ListBox x:Name="listCarrello" Grid.Row="0" Grid.Column="0"
+			<ListBox x:Name="listRigheStampate" Grid.Row="0" Grid.Column="0"
 					 SelectionMode="Single" 
 					 Style="{StaticResource ListCarrelloStyle}"
 					 ItemsSource="{Binding Path=RiCaFotoStampateCv}"
@@ -243,7 +243,13 @@
 					 ItemsPanel="{DynamicResource righeCarrelloItemsPanelTemplate}" 
 					 ItemTemplate="{DynamicResource rigaCarrelloStampaDataTemplate}"
 					 ItemContainerStyle="{StaticResource ResourceKey=listBoxItemEvidenziatoStyle}"
-					 ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+					 ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+					 AllowDrop="False"
+					 Drop="listRighe_Drop"
+					 PreviewMouseLeftButtonDown="listRighe_PreviewMouseLeftButtonDown"
+					 PreviewMouseMove="listRighe_MouseMove"
+					 QueryContinueDrag="listRighe_QueryContinueDrag"
+					 />
 
 			<StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1" 
 						VerticalAlignment="Center"
@@ -270,16 +276,11 @@
                         </StackPanel>
                     </GroupBox>
                 </StackPanel>
-                <!--Button Command="{Binding CopiaSpostaFotoRigaCommand}" CommandParameter="M" Style="{StaticResource styleSpostaCopyM}" Height="32" Width="32" /-->
-				<!--Button Command="{Binding SpostaFotoRigaCommand}" CommandParameter="M" Style="{StaticResource styleSpostaM}" Height="32" Width="32"  Margin="0,20,0,0"/-->
-				<!--Button Command="{Binding CopiaSpostaFotoRigaCommand}" CommandParameter="S" Style="{StaticResource styleSpostaCopyS}" Height="32" Width="32"  Margin="0,20,0,0"/-->
-				<!--Button Command="{Binding SpostaFotoRigaCommand}" CommandParameter="S" Style="{StaticResource styleSpostaS}" Height="32" Width="32"  Margin="0,20,0,0"/-->
                 <Button Command="{Binding SpostaFotoRigaDxSxCommand}" CommandParameter="M" Style="{StaticResource styleSpostaM}" Height="32" Width="32"  Margin="0,20,0,0"/>
-                <!--Button Command="{Binding CopiaSpostaFotoRigaCommand}" CommandParameter="S" Style="{StaticResource styleSpostaCopyS}" Height="32" Width="32"  Margin="0,20,0,0"/-->
                 <Button Command="{Binding SpostaFotoRigaDxSxCommand}" CommandParameter="S" Style="{StaticResource styleSpostaS}" Height="32" Width="32"  Margin="0,20,0,0"/>
             </StackPanel>
 				
-			<ListBox x:Name="listCarrelloMasterizzate" Grid.Row="0" Grid.Column="2" Margin="10,0,2,0"
+			<ListBox x:Name="listRigheMasterizzate" Grid.Row="0" Grid.Column="2" Margin="10,0,2,0"
 					 SelectionMode="Single" 
 					 Style="{StaticResource ListCarrelloStyle}"
 					 ItemsSource="{Binding Path=RiCaFotoMasterizzateCv}"
@@ -288,7 +289,13 @@
 					 ItemsPanel="{DynamicResource righeCarrelloItemsPanelTemplate}" 
 					 ItemTemplate="{DynamicResource rigaCarrelloMasterizzataDataTemplate}"
 					 ItemContainerStyle="{StaticResource ResourceKey=listBoxItemEvidenziatoStyle}"
-					 ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+					 ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+					 AllowDrop="False"
+					 Drop="listRighe_Drop"
+					 PreviewMouseLeftButtonDown="listRighe_PreviewMouseLeftButtonDown"
+					 PreviewMouseMove="listRighe_MouseMove"
+					 QueryContinueDrag="listRighe_QueryContinueDrag"
+					 />
 
 		</Grid>
 	</DockPanel>

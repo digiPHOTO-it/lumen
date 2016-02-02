@@ -13,6 +13,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Digiphoto.Lumen.UI.Mvvm;
 using System.Collections;
+using Digiphoto.Lumen.Model;
+using Digiphoto.Lumen.UI.Util;
 
 namespace Digiphoto.Lumen.UI
 {
@@ -26,6 +28,8 @@ namespace Digiphoto.Lumen.UI
             InitializeComponent();
 
 			DataContextChanged += new DependencyPropertyChangedEventHandler(carrelloView_DataContextChanged);
+
+			annullaDragRighe();
         }
 
 		void carrelloView_DataContextChanged( object sender, DependencyPropertyChangedEventArgs e ) {
@@ -95,5 +99,108 @@ namespace Digiphoto.Lumen.UI
 			return aa > bb ? aa : bb;
 		}
 
-    }
+		private void listRighe_Drop( object sender, DragEventArgs e ) {
+
+			if( sender == this.listRigheStampate ) {
+				// Ho fatto il drop sulle righe stampate
+			} else if( sender == this.listRigheMasterizzate ) {
+				// ho fatto il drop sulle righe masterizzate
+			}
+
+			var miaVar = e.Data.GetData( "pollo" );
+			RigaCarrello rigaDroppata = (RigaCarrello)miaVar;
+
+			if( carrelloViewModel.SpostaFotoRigaDxSxCommand.CanExecute( rigaDroppata ) ) {
+				carrelloViewModel.SpostaFotoRigaDxSxCommand.Execute( rigaDroppata );
+            }
+
+
+			listRigheMasterizzate.AllowDrop = false;
+			listRigheMasterizzate.AllowDrop = false;
+		}
+
+		#region Sposta Copia Righe Drag and Drop
+
+		// Memorizzo il punto di inizio drag
+		private Point dragStartPoint;
+
+		// Con questo metodo, mi segno il punto di inizio del drag
+		private void listRighe_PreviewMouseLeftButtonDown( object sender, MouseButtonEventArgs e ) {
+
+			ListBox container = sender as ListBox;
+
+			if( sender != null ) {
+				// Store the mouse position
+				dragStartPoint = e.GetPosition( null );
+			}
+		}
+
+		private void listRighe_MouseMove( object sender, MouseEventArgs e ) {
+
+			// Questo evento viene generato di continuo. A me interessa soltanto quando è stato fissato il punto inizio drag
+			if( dragStartPoint.X == 0 && dragStartPoint.Y == 0 )
+				return;
+
+			// Get the current mouse position
+			Point mousePos = e.GetPosition( null );
+			Vector diff = dragStartPoint - mousePos;
+
+			bool annulla = false;
+
+			if( e.LeftButton == MouseButtonState.Pressed ) {
+
+				if( Math.Abs( diff.X ) > SystemParameters.MinimumHorizontalDragDistance ||
+					Math.Abs( diff.Y ) > SystemParameters.MinimumVerticalDragDistance ) {
+
+					// Ricavo la fotografia selezionata
+					ListBox listBoxSorgente = sender as ListBox;
+					RigaCarrello sel = (RigaCarrello)listBoxSorgente.SelectedItem;
+
+					if( sel != null ) {
+						if( sender == this.listRigheStampate ) {
+							this.listRigheMasterizzate.AllowDrop = true;
+							this.listRigheStampate.AllowDrop = false;
+						} else if( sender == this.listRigheMasterizzate ) {
+							this.listRigheMasterizzate.AllowDrop = false;
+							this.listRigheStampate.AllowDrop = true;
+						}
+
+						// Initialize the drag & drop operation
+						// Creo una chiave con un valore che mi in
+						DataObject dragData = new DataObject( "pollo", sel );
+
+						DragDrop.DoDragDrop( listBoxSorgente, dragData, DragDropEffects.Move );
+					} else
+						annulla = true;
+				} 
+			} else
+				annulla = true;
+
+
+			if( annulla ) {
+				annullaDragRighe();
+			}
+
+		}
+
+		void annullaDragRighe() {
+			dragStartPoint.X = 0;
+			dragStartPoint.Y = 0;
+			listRigheStampate.AllowDrop = false;
+			listRigheMasterizzate.AllowDrop = false;
+		}
+
+		private void listRighe_QueryContinueDrag( object sender, QueryContinueDragEventArgs e ) {
+
+			// Se premo ESC mentre sto facendo il drag, allora annullo tutto.
+			if( Keyboard.IsKeyDown( Key.Escape ) ||
+				( dragStartPoint.X == 0 && dragStartPoint.Y == 0 ) ) {
+				e.Action = DragAction.Cancel;
+				annullaDragRighe();
+			}
+		}
+
+		#endregion Sposta Copia Righe Drag and Drop
+
+	}
 }
