@@ -72,6 +72,19 @@ namespace Digiphoto.Lumen.UI.Util {
 			return null;
 		}
 
+		// Helper to search up the VisualTree
+		public static T FindAnchestor<T>( DependencyObject current )
+			where T : DependencyObject {
+			do {
+				if( current is T ) {
+					return (T)current;
+				}
+				current = VisualTreeHelper.GetParent( current );
+			}
+			while( current != null );
+			return null;
+		}
+
 		public static string scegliFileImmagineDialog( string cartellaIniziale ) {
 
 			string filter = "PNG Files (*.png)|*.png|JPEG Files (*.jpeg)|*.jpeg|JPG Files (*.jpg)|*.jpg|GIF Files (*.gif)|*.gif";

@@ -25,6 +25,31 @@
         <Setter Property="IsSynchronizedWithCurrentItem" Value="True" />
         <Setter Property="ItemContainerStyle" Value="{DynamicResource ImageCarrelloImageContainerStyle}" />
 		<Setter Property="Margin" Value="2,0,10,0" />
+				
+        <Style.Triggers>
+            <Trigger Property="AllowDrop" Value="true">
+                <Setter Property="Background" Value="Pink"/>
+				<Setter Property="BorderThickness" Value="3" />
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+<!--							
+                            <ColorAnimation 
+								Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
+								From="Yellow" To="Red" 
+								Duration="00:00:0.500" AutoReverse="True" 
+                                RepeatBehavior="Forever" />
+-->
+                            <ColorAnimation 
+								Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+								From="Green" To="Pink" 
+								Duration="00:00:0.500" AutoReverse="True" 
+								RepeatBehavior="Forever" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <!-- Stile della listbox che itera i Carrelli -->
@@ -183,7 +208,7 @@
 						<Popup
             				Name="popup"
 							IsOpen="{Binding IsMouseOver, ElementName=icon, Mode=OneWay}"
-							PlacementTarget="{Binding ElementName=listCarrello}"
+							PlacementTarget="{Binding ElementName=listRigheStampate}"
 							Placement="RelativePoint"
 							Width="600"
                             Height="600"
@@ -285,7 +310,7 @@
 						<Popup
             				Name="popupMasterizzata"
 							IsOpen="{Binding IsMouseOver, ElementName=iconMasterizzata, Mode=OneWay}"
-							PlacementTarget="{Binding ElementName=listCarrello}"
+							PlacementTarget="{Binding ElementName=listRigheStampate}"
 							Placement="RelativePoint"	
 							Width="600"
 							Height="600"
