@@ -235,7 +235,7 @@ namespace Digiphoto.Lumen.Config  {
 			// Setto i default
 			lastUsedConfig.slideShowNumRighe = 1;
 			lastUsedConfig.slideShowNumColonne = 2;
-			LastUsedConfigLumen.collassaFiltriInRicercaGallery = true;
+            lastUsedConfig.collassaFiltriInRicercaGallery = true;
 
 
 			return lastUsedConfig;
