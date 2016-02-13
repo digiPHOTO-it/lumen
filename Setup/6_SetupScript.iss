@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName      "Lumen"
-#define MyAppVersion   "1.1-alpha2"
+#define MyAppVersion   "2.0-rc1"
 #define MyAppPublisher "digiPHOTO.it"
 #define MyAppURL       "http://www.digiphoto.it/Lumen"
 #define MyAppExeName   "Digiphoto.Lumen.UI.exe"
@@ -62,11 +62,13 @@ Source: "..\Digiphoto.Lumen.UI\{#dirPlat}\Digiphoto.Lumen.UI.exe"; DestDir: "{ap
 Source: "..\Digiphoto.Lumen.UI\{#dirPlat}\Digiphoto.Lumen.UI.exe.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.UI\{#dirPlat}\Hardcodet.Wpf.TaskbarNotification.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.UI\{#dirPlat}\System.Windows.Interactivity.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Digiphoto.Lumen.UI\{#dirPlat}\WPFToolkit.Extended.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.UI\{#dirPlat}\Reports\*"; DestDir: "{app}\Reports"; Flags: ignoreversion 
 ; --- Configuratore ---
+Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\lib\WPFToolkit.Extended.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\Digiphoto.Lumen.GestoreConfigurazione.UI.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\Digiphoto.Lumen.GestoreConfigurazione.UI.exe.config"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\Xceed*.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\EntityFramework.SqlServer.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\Images\*"; DestDir: "{app}\Images"; Flags: recursesubdirs
 ; --- Self Service
 Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirPlat}\Digiphoto.Lumen.SelfService.Host.exe"; DestDir: "{app}"; Flags: ignoreversion
@@ -86,13 +88,11 @@ Source: "..\Digiphoto.Lumen.SelfService.WebUI\ssWebPackage.zip"; DestDir: "{app}
 Source: "..\Digiphoto.Lumen.SelfService.WebUI\images\Operator1.jpg"; DestDir: "C:\Users\Public\Pictures\Lumen\Fotografi"; Flags: ignoreversion
 
 ; --- Driver sql ---
-Source: "..\packages\System.Data.SQLite.x86.1.0.90.0\lib\net45\System.Data.SQLite.dll"; DestDir: "{app}";  Check: "not IsWin64"; Flags: ignoreversion
-Source: "..\packages\System.Data.SQLite.x64.1.0.90.0\lib\net45\System.Data.SQLite.dll"; DestDir: "{app}";  Check: "IsWin64"; Flags: ignoreversion
-; -- per sicurezza li copio anche in una cartella di appoggio
-Source: "..\packages\System.Data.SQLite.x86.1.0.90.0\lib\net45\System.Data.SQLite.dll"; DestDir: "{app}\sqlite-x86"; Flags: ignoreversion
-Source: "..\packages\System.Data.SQLite.x64.1.0.90.0\lib\net45\System.Data.SQLite.dll"; DestDir: "{app}\sqlite-x64"; Flags: ignoreversion
-Source: "..\packages\System.Data.SQLite.Linq.1.0.90.0\lib\net45\System.Data.SQLite.Linq.dll"; DestDir: "{app}";  Flags: ignoreversion
-
+Source: "..\packages\System.Data.SQLite.Core.1.0.99.0\build\net46\x86\SQLite.Interop.dll"; DestDir: "{app}"; Check: "not IsWin64"; Flags: ignoreversion
+Source: "..\packages\System.Data.SQLite.Core.1.0.99.0\build\net46\x64\SQLite.Interop.dll"; DestDir: "{app}"; Check: "IsWin64"; Flags: ignoreversion
+Source: "..\packages\System.Data.SQLite.Core.1.0.99.0\lib\net46\System.Data.SQLite.dll"; DestDir: "{app}";  Flags: ignoreversion
+Source: "..\packages\System.Data.SQLite.EF6.1.0.99.0\lib\net46\System.Data.SQLite.EF6.dll"; DestDir: "{app}";  Flags: ignoreversion
+Source: "..\packages\System.Data.SQLite.Linq.1.0.99.0\lib\net46\System.Data.SQLite.Linq.dll"; DestDir: "{app}";  Flags: ignoreversion
 
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
