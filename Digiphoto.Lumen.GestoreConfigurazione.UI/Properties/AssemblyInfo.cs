@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany("digiPHOTO.it")]
 [assembly: AssemblyProduct("Digiphoto.Lumen.GestoreConfigurazone.UI")]
-[assembly: AssemblyCopyright( "Copyright © digiPHOTO.it 2014" )]
+[assembly: AssemblyCopyright( "Copyright © digiPHOTO.it 2014-2016" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
@@ -51,7 +51,7 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion( "1.1.0.502" )]
-[assembly: AssemblyFileVersion( "1.1.0.502" )]
+[assembly: AssemblyVersion( "2.0.0.601" )]
+[assembly: AssemblyFileVersion( "2.0.0.601" )]
 
 [assembly: NeutralResourcesLanguageAttribute("it-IT")]
