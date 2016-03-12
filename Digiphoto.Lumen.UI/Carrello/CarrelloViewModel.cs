@@ -1214,18 +1214,23 @@ namespace Digiphoto.Lumen.UI {
                     parametriDiStampa.NomeStampante = d.nomeStampante;
                     parametriDiStampa.Quantita = 1;
                     parametriDiStampa.PrezzoLordoUnitario = d.formatoCarta.prezzo;
-                    parametriDiStampa.PrezzoNettoTotale = rigaCarrello.prezzoLordoUnitario;
+                    parametriDiStampa.PrezzoNettoTotale = d.formatoCarta.prezzo;
 
-					//associo il nuovo formato carta alla riga ed anche la stampante
-					rigaCarrello.formatoCarta = parametriDiStampa.FormatoCarta;
-					rigaCarrello.nomeStampante = parametriDiStampa.NomeStampante;
-					rigaCarrello.quantita = parametriDiStampa.Quantita;
-					rigaCarrello.prezzoLordoUnitario = parametriDiStampa.PrezzoLordoUnitario;
-					rigaCarrello.prezzoNettoTotale = parametriDiStampa.PrezzoNettoTotale;
-                    if ( rigaCarrello != null )
-                        venditoreSrv.spostareRigaCarrello( rigaCarrello );
+                    if ( rigaCarrello != null)
+                    {
+                        //associo il nuovo formato carta alla riga ed anche la stampante
+                        rigaCarrello.formatoCarta = parametriDiStampa.FormatoCarta;
+                        rigaCarrello.nomeStampante = parametriDiStampa.NomeStampante;
+                        rigaCarrello.quantita = parametriDiStampa.Quantita;
+                        rigaCarrello.prezzoLordoUnitario = parametriDiStampa.PrezzoLordoUnitario;
+                        rigaCarrello.prezzoNettoTotale = parametriDiStampa.PrezzoNettoTotale;
+
+                        venditoreSrv.spostareRigaCarrello(rigaCarrello);
+                    }    
                     else
+                    {
                         venditoreSrv.spostareTutteRigheCarrello(Carrello.Not(newDiscriminator), parametriDiStampa);
+                    }
 
                     rinfrescaViewRighe();
                 }
@@ -1236,13 +1241,15 @@ namespace Digiphoto.Lumen.UI {
 		
         private void copiaSpostaFotoRighe( string newDiscriminator, RigaCarrello qualeRiga )
         {
+            // CopioSposto da STAMPE -> MASTERIZZATE
             if (newDiscriminator == Carrello.TIPORIGA_MASTERIZZATA) {
                 if( qualeRiga != null )
 					venditoreSrv.copiaSpostaRigaCarrello( qualeRiga );
 				else
                     venditoreSrv.copiaSpostaTutteRigheCarrello(Carrello.Not(newDiscriminator), null);
-            }   
+            }
 
+            // CopioSposto da MASTERIZZATE -> STAMPE
             if (newDiscriminator == Carrello.TIPORIGA_STAMPA)
             {
                 SelezionaStampanteDialog d = new SelezionaStampanteDialog();
@@ -1255,18 +1262,22 @@ namespace Digiphoto.Lumen.UI {
                     parametriDiStampa.NomeStampante = d.nomeStampante;
                     parametriDiStampa.Quantita = 1;
                     parametriDiStampa.PrezzoLordoUnitario = d.formatoCarta.prezzo;
-                    parametriDiStampa.PrezzoNettoTotale = qualeRiga.prezzoLordoUnitario;
+                    parametriDiStampa.PrezzoNettoTotale = d.formatoCarta.prezzo;
 
-					//associo il nuovo formato carta alla riga
-					qualeRiga.formatoCarta = parametriDiStampa.FormatoCarta;
-					qualeRiga.nomeStampante = parametriDiStampa.NomeStampante;
-					qualeRiga.quantita = parametriDiStampa.Quantita;
-					qualeRiga.prezzoLordoUnitario = parametriDiStampa.PrezzoLordoUnitario;
-					qualeRiga.prezzoNettoTotale = parametriDiStampa.PrezzoNettoTotale;
-					if( qualeRiga != null )
-						venditoreSrv.copiaSpostaRigaCarrello( qualeRiga );
-                    else
+					if( qualeRiga != null)
+                    {
+                        //associo il nuovo formato carta alla riga
+                        qualeRiga.formatoCarta = parametriDiStampa.FormatoCarta;
+                        qualeRiga.nomeStampante = parametriDiStampa.NomeStampante;
+                        qualeRiga.quantita = parametriDiStampa.Quantita;
+                        qualeRiga.prezzoLordoUnitario = parametriDiStampa.PrezzoLordoUnitario;
+                        qualeRiga.prezzoNettoTotale = parametriDiStampa.PrezzoNettoTotale;
+
+                        venditoreSrv.copiaSpostaRigaCarrello(qualeRiga);
+                    }else
+                    {
                         venditoreSrv.copiaSpostaTutteRigheCarrello(Carrello.Not(newDiscriminator), parametriDiStampa);
+                    } 
                 }
 
                 d.Close();
