@@ -113,6 +113,55 @@ namespace Digiphoto.Lumen.UI.Util {
 			return filename;
 		}
 
+		/// <summary>
+		/// Dato un elemento grafico ed un container,
+		/// mi dice se l'elemento è attualmente (e completamente) visibile dall'utente.
+		/// Per esempio una Label in una ListBox.
+		/// <br />
+		/// Se basta anche la parziale visibilità vedere il metodo IsFullyOrPartiallyVisible
+		/// </summary>
+		/// <param name="element">esempio la label</param>
+		/// <param name="container">esempio la ListBox</param>
+		/// <returns>true se l'elemento è INTERAMENTE (attenzione) completamente visibile.
+		///               Se anche una piccola porzione non è visibile, allora ritorna false
+		/// </returns>
+		public static bool IsUserVisible( FrameworkElement element, FrameworkElement container ) {
+			if( !element.IsVisible )
+				return false;
+
+			Rect bounds = element.TransformToAncestor( container ).TransformBounds( new Rect( 0.0, 0.0, element.ActualWidth, element.ActualHeight ) );
+			var rect = new Rect( 0.0, 0.0, container.ActualWidth, container.ActualHeight );
+			return rect.Contains( bounds.TopLeft ) && rect.Contains( bounds.BottomRight );
+		}
+
+
+		public static bool IsFullyOrPartiallyVisible( FrameworkElement element, FrameworkElement container ) {
+			if( !element.IsVisible )
+				return false;
+
+			Visual parent = container.Parent as Visual;
+			var childTransform1 = container.TransformToAncestor( parent );
+
+			var childTransform = element.TransformToAncestor( container );
+			var childRectangle = childTransform.TransformBounds( new Rect( new Point( 0, 0 ), element.RenderSize ) );
+
+			// Qui devo introdurre una correzione perché quando l'elemento non è visibile, 
+			// non so perche ma per soli due pixel mi dice che è visibile.
+			// probabilmente è dato da un Border o da un Margin .. non so ...
+			bool interseca = false;
+
+			// In pratica risulta sbordante per due pixels
+			double diff = childRectangle.Top + childRectangle.Height;
+            if( childRectangle.Top < 0 && diff > 0 && diff <= 2 )
+				interseca = false;
+			else {
+				var ownerRectangle = new Rect( new Point( 0, 0 ), container.RenderSize );
+				interseca = ownerRectangle.IntersectsWith( childRectangle );
+			}
+
+			return interseca;
+		}
+
 
 	}
 }
