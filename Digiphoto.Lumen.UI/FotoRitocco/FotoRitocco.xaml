@@ -273,33 +273,32 @@
 		<DockPanel DockPanel.Dock="Right" LastChildFill="True">
 
 			<!-- Pulsantiera per paginazione -->
-			<StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Center">
-				<Button Content="|&lt;&lt;" Width="30" Command="{Binding fdmPaginareCommand}" CommandParameter="F"  />
-				<Button Content="&lt;" Width="30" Command="{Binding fdmPaginareCommand}" CommandParameter="P"  />
-				<Label Content="Pag" />
-				<Label>
-					<Binding Path="fdmPaginaCorrente" />
-					<!-- StringFormat="{}{0:000}" -->
-				</Label>
-				<Label Content="/" />
-				<Label>
-					<Binding Path="fdmTotPagine" />
-					<!-- StringFormat="{}{0:000}" -->
-				</Label>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Center">
+                <Button Content="|&lt;&lt;" Width="30" Command="{Binding fdmPaginareCommand}" CommandParameter="F"  />
+                <Button Content="&lt;" Width="30" Command="{Binding fdmPaginareCommand}" CommandParameter="P"  />
+                <Label Content="Pag" />
+                <Label>
+                    <Binding Path="fdmPaginaCorrente" />
+                    <!-- StringFormat="{}{0:000}" -->
+                </Label>
+                <Label Content="/" />
+                <Label>
+                    <Binding Path="fdmTotPagine" />
+                    <!-- StringFormat="{}{0:000}" -->
+                </Label>
 
-				<Button Content="&gt;" Width="30" Command="{Binding fdmPaginareCommand}" CommandParameter="N" />
-				<Button Content="&gt;&gt;|" Width="30" Command="{Binding fdmPaginareCommand}" CommandParameter="L" />
-			</StackPanel>
+                <Button Content="&gt;" Width="30" Command="{Binding fdmPaginareCommand}" CommandParameter="N" />
+                <Button Content="&gt;&gt;|" Width="30" Command="{Binding fdmPaginareCommand}" CommandParameter="L" />
+            </StackPanel>
 
-
-			<!-- nastro dx con tutte le foto che sono in attesa di modifica -->
+            <!-- nastro dx con tutte le foto che sono in attesa di modifica -->
 			<ListBox x:Name="listBoxImmaginiDaModificare"  
                      SelectionMode="Single"
                      SelectedValue="{Binding fotografiaInModifica,Mode=TwoWay}"
                      Style="{StaticResource listBoxImmaginiDaModificareStyle}"
                      ItemsSource="{Binding Path=fotografieDaModificareCW}" 
-                     ItemsPanel="{DynamicResource immaginiDaModificareItemsPanelTemplate}" 
-                     ItemTemplate="{DynamicResource immaginiDaModificareDataTemplate}"
+					 ItemsPanel="{DynamicResource immaginiDaModificareItemsPanelTemplate}" 
+					 ItemTemplate="{DynamicResource immaginiDaModificareDataTemplate}"
                      IsSynchronizedWithCurrentItem="True"
                      AllowDrop="True"
                      MinWidth="140"
