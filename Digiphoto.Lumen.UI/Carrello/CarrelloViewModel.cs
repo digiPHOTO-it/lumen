@@ -1063,6 +1063,21 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		private void creaNuovoCarrello() {
+
+
+			// Se ho delle righe ancora da salvare.. chiedo conferma
+			if( venditoreSrv.possoChiudere() == false ) {
+				bool procediPure = false;
+				StringBuilder msg = new StringBuilder( "Eventuali modifiche al carrello corrente\nnon saranno salvate. Confermi?" );
+				dialogProvider.ShowConfirmation( msg.ToString(), "Abbandonare il carrello",
+					( confermato ) => {
+						procediPure = confermato;
+					} );
+
+				if( !procediPure )
+					return;
+			}
+
 			//Se ho avuto un errore di masterizzazione devo rinfrescarea anche le righe!!!
 			//Mah
 			if( IsErroriMasterizzazione ) {

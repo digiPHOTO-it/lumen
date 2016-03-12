@@ -133,7 +133,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public override bool possoChiudere()
 		{
-			return gestoreCarrello.isCarrelloVuoto;
+			return gestoreCarrello.isCarrelloVuoto || isPossibileModificareCarrello == false;
 		}
 
 		public bool isPossibileClonareCarrello {

@@ -30,6 +30,17 @@ namespace Digiphoto.Lumen.UI {
 	/// </summary>
 	public partial class FotoGallery : UserControlBase {
 
+
+		private enum TestVisibilita {
+			Piena,
+			Parziale
+		};
+
+		private enum QuanteVisibilita {
+			SoloPrima,
+			Tutte
+		};
+
 		private const string GOTO_VUOTO = "GOTO_VUOTO";
 		private const string GOTO_ERRATO = "GOTO_ERRATO";
 		private const string GOTO_EDITING = "GOTO_EDITING";
@@ -103,10 +114,19 @@ namespace Digiphoto.Lumen.UI {
 				viewFoto2 = viewFotos2.First<Fotografia>();
 			*/
 
-			List<Fotografia> viewFotos3 = GetVisibleItemsFromListbox( LsImageGallery, LsImageGallery );
+			// Prima controllo la piena visibilita
+			List<Fotografia> viewFotos3 = GetVisibleItemsFromListbox( LsImageGallery, LsImageGallery, TestVisibilita.Piena, QuanteVisibilita.SoloPrima );
+
+			// Se le foto non sono perfettamente allineate nella area di visualizzazione,
+			// mi dice che non ce niente. Allora tento con la visibilità parziale
+			if( (viewFotos3 == null || viewFotos3.Count == 0) && LsImageGallery.Items.Count > 0 ) {
+				// Vado alla ricerca delle foto parzialmente visibili
+				viewFotos3 = GetVisibleItemsFromListbox( LsImageGallery, LsImageGallery, TestVisibilita.Parziale, QuanteVisibilita.SoloPrima );
+			}
+
 			Fotografia viewFoto3 = null;
 			if( viewFotos3 != null && viewFotos3.Count > 0 ) {
-				if( LsImageGallery.SelectedItems.Count > 0 ) {
+				if( 1==0 && LsImageGallery.SelectedItems.Count > 0 ) {  // Decisione del 10-03-2016 non si usano più le selezionate, ma sempre la prima della lista.
 					viewFoto3 = viewFotos3.FirstOrDefault<Fotografia>( element => LsImageGallery.SelectedItems.Contains( element ) );
 					if( viewFoto3 == null ) {
 						viewFoto3 = viewFotos3.First<Fotografia>();
@@ -138,45 +158,36 @@ namespace Digiphoto.Lumen.UI {
 			forsePrendoSnapshotPubblico();
 		}
 
-		private List<Fotografia> GetVisibleItemsFromListbox(ListBox listBox, FrameworkElement parentToTestVisibility)
-		{
+		private List<Fotografia> GetVisibleItemsFromListbox( ListBox listBox, FrameworkElement parentToTestVisibility, TestVisibilita testVedi, QuanteVisibilita quanteVedi ) {
+
 			var items = new List<Fotografia>();
 
-			foreach (var item in LsImageGallery.Items)
-			{
-				if (IsUserVisible((ListBoxItem)listBox.ItemContainerGenerator.ContainerFromItem(item), parentToTestVisibility))
-				{
-					items.Add((Fotografia)item);
-				}
-				else if (items.Any())
-				{
+			foreach( var item in LsImageGallery.Items ) {
+
+				ListBoxItem element = (ListBoxItem)listBox.ItemContainerGenerator.ContainerFromItem( item );
+
+                bool visibile;
+				if( testVedi == TestVisibilita.Piena )
+					visibile = AiutanteUI.IsUserVisible( element, parentToTestVisibility );
+				else
+					visibile = AiutanteUI.IsFullyOrPartiallyVisible( element, parentToTestVisibility );
+
+				if( visibile ) {
+					items.Add( (Fotografia)item );
+
+					if( quanteVedi == QuanteVisibilita.SoloPrima )
+						break;
+
+				} else if( items.Any() ) {
 					break;
-		}
+				}
 			}
 
 			return items;
 		}
 
-		private static bool IsUserVisible(FrameworkElement element, FrameworkElement container)
-		{
-			if (!element.IsVisible)
-				return false;
 
-			Rect bounds = element.TransformToAncestor(container).TransformBounds(new Rect(0.0, 0.0, element.ActualWidth, element.ActualHeight));
-			var rect = new Rect(0.0, 0.0, container.ActualWidth, container.ActualHeight);
-			return rect.Contains(bounds.TopLeft) && rect.Contains(bounds.BottomRight);
-		}
 
-		protected bool IsFullyOrPartiallyVisible(FrameworkElement child, FrameworkElement scrollViewer)
-		{
-			if (!child.IsVisible)
-				return false;
-
-			var childTransform = child.TransformToAncestor(scrollViewer);
-			var childRectangle = childTransform.TransformBounds(new Rect(new Point(0, 0), child.RenderSize));
-			var ownerRectangle = new Rect(new Point(0, 0), scrollViewer.RenderSize);
-			return ownerRectangle.IntersectsWith(childRectangle);
-		}
 
 		/// <summary>
 		/// Se scelgo di vedere una sola "riga" di foto, allora cerco di farci stare 
@@ -384,7 +395,12 @@ namespace Digiphoto.Lumen.UI {
 
 					_quanteRigheVedo = value;
 
-					double dimensione = (LsImageGallery.ActualHeight / _quanteRigheVedo) - 6;
+					// ogni riga ha due pixel di margine top che sembra non venire conteggiato. Lo tolgo io.
+
+					int margini = 4;
+					long dimInt = (long)	(LsImageGallery.ActualHeight-2) / _quanteRigheVedo;
+
+                    double dimensione = dimInt - margini;
 					fotoGalleryViewModel.dimensioneIconaFoto = dimensione;
 				}
 			}
@@ -510,7 +526,7 @@ namespace Digiphoto.Lumen.UI {
 			fotoGalleryViewModel.calcolaFotoCorrenteSelezionataScorrimento( direzione );
 
 			if( fotoGalleryViewModel.fotoCorrenteSelezionataScorrimento != null )
-				LsImageGallery.ScrollIntoView( fotoGalleryViewModel.fotoCorrenteSelezionataScorrimento );
+				LsImageGallery.ScrollIntoViewTop( fotoGalleryViewModel.fotoCorrenteSelezionataScorrimento );
 
 			forsePrendoSnapshotPubblico();
 		}
@@ -672,7 +688,7 @@ namespace Digiphoto.Lumen.UI {
 				if( child.Name == "fotoCanvas" ) {
 
 					// Per far prima, invece che applicarlo a tutti, la applico soltanto ai componenti visibili
-					if( IsUserVisible( ele, LsImageGallery )) {
+					if( AiutanteUI.IsUserVisible( ele, LsImageGallery )) {
 
 						Canvas canvas = (Canvas)child;
 

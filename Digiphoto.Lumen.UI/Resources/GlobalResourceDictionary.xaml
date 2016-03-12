@@ -160,28 +160,22 @@
 	<!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
     <DataTemplate x:Key="fotografiaDataTemplate" DataType="{x:Type model:Fotografia}" >
 
-		<Border BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="6" Margin="0,0,2,2">
+		<Border BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="6" Margin="0,0,2,2"
+				Height="{Binding  Path=DataContext.dimensioneIconaFoto, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
+                Width="{Binding  Path=DataContext.dimensioneIconaFoto, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+				>
 
-			<Canvas x:Name="fotoCanvas"
-                    Height="{Binding  Path=DataContext.dimensioneIconaFoto, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
-                    Width="{Binding  Path=DataContext.dimensioneIconaFoto, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" >
-
+            <Grid x:Name="fotoGrid">
+				
                 <!-- Questa è l'immagine vera con la foto -->
                 <Image Source="{Binding Path=imgProvino,Converter={StaticResource imageSourceConverter}}" Stretch="Uniform"  
-                       x:Name="imageFotografia"
-					   Width="{Binding ActualWidth, ElementName=fotoCanvas, FallbackValue=14}"
-                       Height="{Binding ActualHeight, ElementName=fotoCanvas, FallbackValue=14}" />
+                       x:Name="imageFotografia" />
 
-				<!-- TODO con questi diventa tutto lentissimo !!!!
-		  trovare una soluzione.
-			
-				<Border HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource styleBorderCopriA}" />
-				<Border HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource styleBorderCopriB}" />
--->				
-				<Image 
-                    
-                    Canvas.Left="2"
-                    Canvas.Bottom="2" >
+				<!-- Pallino "I" con le informazioni -->
+                <Image 	Width="16"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Bottom"
+					Margin="2,0,0,2">
 
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
@@ -221,8 +215,11 @@
                 </Image>
 
 				<!-- Icona per evidenziare che l'immagine è già stata stampata -->
-                <Image Canvas.Right="2" Canvas.Bottom="2" >
-
+                <Image 	Width="16"
+					HorizontalAlignment="Right"
+					VerticalAlignment="Bottom"
+					Margin="0,2,0,2"
+				>
                     <Image.ToolTip>
                         <TextBlock >
                             <TextBlock.Text>
@@ -244,17 +241,19 @@
                         </Style>
                     </Image.Style>
                 </Image>
-				
+			
 				
                 <!-- IL font con cui stampo il numero, ha grandezza proporzionale al canvas . Per ora uso 8% della grandezza del contenitore della foto -->
+
                 <Label x:Name="NumFoto"  
-                       Content="{Binding Path=etichetta}"        
-                       Canvas.Right="2"
-                       Canvas.Top="2"
-                       FontSize="{Binding ActualHeight, ElementName=fotoCanvas, FallbackValue=15, Converter={StaticResource percentualeConverter},ConverterParameter=8}"
+                       Content="{Binding Path=etichetta}"    
+					   VerticalAlignment="Top" HorizontalAlignment="Right"
+                       Margin="0,4,4,0"
+                       FontSize="{Binding ActualHeight, ElementName=fotoGrid, FallbackValue=15, Converter={StaticResource percentualeConverter},ConverterParameter=8}"
                        Background="Orange" 
                        Foreground="Black" />
-            </Canvas>
+
+            </Grid>
 
         </Border>
 

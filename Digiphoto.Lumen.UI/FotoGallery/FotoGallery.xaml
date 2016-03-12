@@ -290,7 +290,7 @@ Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding P
 						<CheckBox x:Name="checkBoxMattino" Content="Mattino" IsChecked="{Binding isMattinoChecked, Mode=TwoWay}" Margin="2" />
 						<CheckBox x:Name="checkBoxPomeriggio" Content="Pomeriggio" IsChecked="{Binding isPomeriggioChecked, Mode=TwoWay}" Margin="2" />
 						<CheckBox x:Name="checkBoxSera" Content="Sera" IsChecked="{Binding isSeraChecked, Mode=TwoWay}" Margin="2" />
-					</StackPanel>
+                    </StackPanel>
 				</GroupBox>
 
 				<GroupBox Header="Metadati" Margin="3,0,3,0"  >
