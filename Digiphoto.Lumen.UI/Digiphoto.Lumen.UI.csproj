@@ -360,7 +360,6 @@
     </Compile>
     <Compile Include="src\Util\AiutanteUI.cs" />
     <Compile Include="Pubblico\GestioneGeometria\WpfScreen.cs" />
-    <Compile Include="src\Util\ListBoxExtensions.cs" />
     <Compile Include="src\Util\UtilWinForm.cs" />
     <Compile Include="TrayIcon\ShowTrayIcon.xaml.cs">
       <DependentUpon>ShowTrayIcon.xaml</DependentUpon>
