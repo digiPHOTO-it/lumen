@@ -53,8 +53,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		#region Proprietà
 
-		public ParamSlideShowGeom pSSG
-		{
+		public ParamSlideShowGeom pSSG {
 			get;
 			set;
 		}
@@ -104,6 +103,21 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		public bool isLoaded {
 			get {
 				return !isEmpty;
+			}
+		}
+
+		public bool possoApplicareWaterMark {
+			get {
+				// Anche se non c'entra molto mi aggancio alla configurazione di macchia provini
+				// Eventualmente creare un flag di configurazione separato
+				return Configurazione.UserConfigLumen.macchiaProvini;
+			}
+		}
+
+		public string watermarkText {
+			get {
+				// Eventualmente leggere dalla configurazione.
+				return "digiPHOTO.it";
 			}
 		}
 

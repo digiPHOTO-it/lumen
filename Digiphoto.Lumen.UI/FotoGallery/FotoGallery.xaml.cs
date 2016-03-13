@@ -526,7 +526,7 @@ namespace Digiphoto.Lumen.UI {
 			fotoGalleryViewModel.calcolaFotoCorrenteSelezionataScorrimento( direzione );
 
 			if( fotoGalleryViewModel.fotoCorrenteSelezionataScorrimento != null )
-				LsImageGallery.ScrollIntoViewTop( fotoGalleryViewModel.fotoCorrenteSelezionataScorrimento );
+				LsImageGallery.ScrollIntoView( fotoGalleryViewModel.fotoCorrenteSelezionataScorrimento );
 
 			forsePrendoSnapshotPubblico();
 		}
