@@ -5,37 +5,40 @@
 
     <lumC:ImageSourceConverter x:Key="imageSourceConverter" />
     <lumC:PercentualeConverter x:Key="percentualeConverter" />
-	<lumC:BoolWindowStateConverter x:Key="boolWindowStateConverter" />
-	<lumC:BoolVisibilityConverter x:Key="boolVisibilityConverter" />
-	<lumC:BoolInverterConverter x:Key="boolInverterConverter" />
+    <lumC:BoolWindowStateConverter x:Key="boolWindowStateConverter" />
+    <lumC:BoolVisibilityConverter x:Key="boolVisibilityConverter" />
+    <lumC:BoolInverterConverter x:Key="boolInverterConverter" />
 
 
 
 
-	<!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
+    <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
     <DataTemplate x:Key="fotoShowDataTemplate" >
 
         <Border BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="8" Margin="0,0,2,2" >
 
-            <Canvas x:Name="canvasUnaFotoShow">
-
-                <Canvas.Background>
+            <Grid x:Name="gridUnaFotoShow">
+                <Grid.Background>
                     <ImageBrush ImageSource="{Binding Path=imgProvino,Converter={StaticResource imageSourceConverter}}" 
                                 Stretch="Uniform" />
-                </Canvas.Background>
+                </Grid.Background>
 
-<!--
-                Image Source="{Binding Path=imgProvino,Converter={StaticResource imageSourceConverter}}" 
--->                      
-                
                 <!-- IL font con cui stampo il numero, ha grandezza proporzionale al canvas . Per ora uso 8% della grandezza del contenitore della foto -->
-                <Label Content="{Binding Path=etichetta}"        
-                               Canvas.Right="2"
-                               Canvas.Top="2"
-                               FontSize="{Binding Converter={StaticResource percentualeConverter}, FallbackValue=15, ElementName=canvasUnaFotoShow,Path=ActualHeight,ConverterParameter=8}"
-                               Background="#FFC90E" />
-            </Canvas>
+                <Label Content="{Binding Path=etichetta}" 
+					   VerticalAlignment="Top" HorizontalAlignment="Right"
+					   Margin="0,2,2,0"
+					   FontSize="{Binding Converter={StaticResource percentualeConverter}, FallbackValue=14, ElementName=gridUnaFotoShow,Path=ActualHeight,ConverterParameter=8}"
+					   Background="Orange" />
 
+                <!-- Se richiesto, aggiungo un watermark anche allo slideshow -->
+                <Viewbox Visibility="{Binding Path=DataContext.possoApplicareWaterMark, Converter={StaticResource boolVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}">
+                    <TextBlock Opacity="0.3" FontWeight="Bold" Foreground="LightGray" Text="{Binding Path=DataContext.watermarkText, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" >
+                        <TextBlock.LayoutTransform>
+                            <RotateTransform Angle="-10" />
+                        </TextBlock.LayoutTransform>
+                    </TextBlock>
+                </Viewbox>
+            </Grid>
 
         </Border>
     </DataTemplate>
@@ -45,5 +48,5 @@
     <ItemsPanelTemplate x:Key="slideShowItemsPanelTemplate">
         <UniformGrid Rows="{Binding Path=slideShowRighe}" Columns="{Binding Path=slideShowColonne}" />
     </ItemsPanelTemplate>
-    
+
 </ResourceDictionary>
