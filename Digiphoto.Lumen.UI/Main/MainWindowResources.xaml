@@ -27,7 +27,7 @@
 				<ColumnDefinition MinWidth="50" MaxWidth="260" Width="Auto" />
 				
 				<!-- selezione gallery / paginazione -->
-				<ColumnDefinition MinWidth="100" MaxWidth="180"  Width="Auto" />
+				<ColumnDefinition MinWidth="100" MaxWidth="250"  Width="Auto" />
 				
 				<!-- scaricamento e provinatura -->
 				<ColumnDefinition MinWidth="150" MaxWidth="260" Width="Auto" />
