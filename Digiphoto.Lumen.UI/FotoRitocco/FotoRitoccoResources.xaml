@@ -52,12 +52,10 @@
 					   x:Name="imageFotografia" />
 					
 				<!-- Pallino "I" con le informazioni -->
-				<Image 	Width="16"
-					HorizontalAlignment="Left"
-					VerticalAlignment="Bottom"
-					Margin="2,0,0,2">
+				<Image 	Width="16" Margin="2,0,0,2"
+						HorizontalAlignment="Left" VerticalAlignment="Bottom" >
 
-	                <Image.Style>
+					<Image.Style>
                         <Style TargetType="{x:Type Image}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=didascalia, Converter={StaticResource boolIsNullConverter}, Mode=OneWay}" Value="True" >
