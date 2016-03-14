@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Digiphoto.Lumen.Servizi;
-using System.Collections;
+﻿using System.Collections.Generic;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Servizi.Ricerca;
-using Digiphoto.Lumen.Util;
-using Digiphoto.Lumen.Core;
 
 namespace Digiphoto.Lumen.Servizi.Explorer {
 
@@ -40,8 +33,12 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 		public Evento evento { set; get; }
 		public FaseDelGiorno? faseDelGiorno { set; get; }
 
+        public bool isDidascaliaEnabled { set; get; }
+        public bool isEventoEnabled { set; get; }
+        public bool isFaseDelGiornoEnabled { set; get; }
+
 		public bool isEmpty() {
-			return didascalia == null && evento == null && faseDelGiorno == null;
+			return didascalia == null && evento == null && faseDelGiorno == null && isDidascaliaEnabled && isEventoEnabled && isFaseDelGiornoEnabled;
 		}
 	}
 }

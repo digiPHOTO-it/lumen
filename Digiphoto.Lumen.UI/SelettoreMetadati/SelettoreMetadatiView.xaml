@@ -21,6 +21,8 @@
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
 		</Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
@@ -66,9 +68,18 @@
 							 Margin="8,0,8,0"
 							 />
 
-        <StackPanel Grid.Column="3" Grid.Row="0" Orientation="Vertical">
+        <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Vertical"  >
+            <GroupBox Header="Abilita Modifica/Elimina">
+                <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                    <CheckBox x:Name="checkDidascalia" Content="Didascalia" IsChecked="{Binding isDidascaliaChecked, Mode=TwoWay}" Margin="2" />
+                    <CheckBox x:Name="checkBoxFasidelGiorno" Content="Fasi del Giorno" IsChecked="{Binding isFasidelGiornoChecked, Mode=TwoWay}" Margin="2" />
+                    <CheckBox x:Name="checkBoxEventi" Content="Eventi" IsChecked="{Binding isEventiChecked, Mode=TwoWay}" Margin="2" />
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
 
-			<StackPanel Orientation="Horizontal">
+        <StackPanel Grid.Row="0" Grid.Column="4"  Orientation="Vertical" Margin="10,0,0,0">
+            <StackPanel Orientation="Horizontal">
 				<Label Content="N° Foto Selezionate" />
 				<Label Content="{Binding ElementName=this, Path=MyItemsSource.SelectedItems.Count}" />
 			</StackPanel>
@@ -78,6 +89,7 @@
 			<Button Command="{Binding eliminareMetadatiCommand}" Style="{StaticResource styleButtonDelTag}" />
 			<Separator />
 			<Button Command="{Binding applicareMetadatiCommand}" Style="{StaticResource styleButtonSaveTag}" />
-		</StackPanel>
-	</Grid>
+        </StackPanel>
+
+    </Grid>
 </lumM:UserControlBase>
