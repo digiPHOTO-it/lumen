@@ -187,9 +187,9 @@ namespace Digiphoto.Lumen.UI
 			get
 			{
 				return isAlmenoUnaSelezionata &&
-						DidascaliaEnabled &&
-						GiornataEnabled &&
-						EventoEnabled;
+						(DidascaliaEnabled ||
+						GiornataEnabled ||
+						EventoEnabled);
 			}
 		}
 
@@ -198,17 +198,53 @@ namespace Digiphoto.Lumen.UI
 			get
 			{
 				return isAlmenoUnaSelezionata &&
-						DidascaliaEnabled && 
-						GiornataEnabled && 
-						EventoEnabled;
+						(DidascaliaEnabled || 
+						GiornataEnabled || 
+						EventoEnabled);
 			}
 		}
 
-		#endregion Controlli
+        public bool isDidascaliaChecked
+        {
+            get
+            {
+                return metadati.isDidascaliaEnabled;
+            }
+            set
+            {
+                metadati.isDidascaliaEnabled = value;
+            }
+        }
 
-		#region Metodi
+        public bool isFasidelGiornoChecked
+        {
+            get
+            {
+                return metadati.isFaseDelGiornoEnabled;
+            }
+            set
+            {
+                metadati.isFaseDelGiornoEnabled = value;
+            }
+        }
 
-		void applicareMetadati()
+        public bool isEventiChecked
+        {
+            get
+            {
+                return metadati.isEventoEnabled;
+            }
+            set
+            {
+                metadati.isEventoEnabled = value;
+            }
+        }
+
+        #endregion Controlli
+
+        #region Metodi
+
+        void applicareMetadati()
 		{
 
 			// Ricavo l'Evento dall'apposito componente di selezione.
@@ -217,7 +253,10 @@ namespace Digiphoto.Lumen.UI
 			if (this.fotografieCW.First<Fotografia>() != null)
 			{
                 metadati.didascalia = this.fotografieCW.First<Fotografia>().didascalia;
-                metadati.faseDelGiorno = FaseDelGiornoUtil.getFaseDelGiorno((short)this.fotografieCW.First<Fotografia>().faseDelGiorno);
+                if (this.fotografieCW.First<Fotografia>().faseDelGiorno!=null)
+                {
+                    metadati.faseDelGiorno = FaseDelGiornoUtil.getFaseDelGiorno((short)this.fotografieCW.First<Fotografia>().faseDelGiorno);
+                }
 			}
 
 			if (fotoExplorerSrv.modificaMetadatiFotografie(fotografieCW, metadati))
@@ -236,14 +275,40 @@ namespace Digiphoto.Lumen.UI
 			// Svuoto ora i metadati per prossime elaborazioni
 			metadati = new MetadatiFoto();
 			selettoreEventoMetadato.eventoSelezionato = null;
+
 			OnPropertyChanged("metadati");
-			deselezionareTutto();
+            OnPropertyChanged("isDidascaliaChecked");
+            OnPropertyChanged("isFasidelGiornoChecked");
+            OnPropertyChanged("isEventiChecked");
+
+            deselezionareTutto();
 		}
 
 		void eliminareMetadati()
 		{
 			bool procediPure = false;
-			dialogProvider.ShowConfirmation("Sei sicuro di voler eliminare i metadati\ndelle " + fotografieCW.Count + " fotografie selezionate?", "Eliminazione metadati",
+
+            String metadatiToDelete = "";
+            //Verifico quali metadati devono essere eliminati
+            if (metadati.isDidascaliaEnabled)
+            {
+                metadati.didascalia = null;
+                metadatiToDelete += "\nDidascalia";
+            }
+
+            if (metadati.isEventoEnabled)
+            {
+                metadati.evento = null;
+                metadatiToDelete += "\nEvento";
+            }
+
+            if (metadati.isFaseDelGiornoEnabled)
+            {
+                metadati.faseDelGiorno = null;
+                metadatiToDelete += "\nFase del Giorno";
+            }
+
+            dialogProvider.ShowConfirmation("Sei sicuro di voler eliminare i seguenti metadati"+ metadatiToDelete+"\ndelle " + fotografieCW.Count + " fotografie selezionate?", "Eliminazione metadati",
 								  (confermato) =>
 								  {
 									  procediPure = confermato;
@@ -252,19 +317,29 @@ namespace Digiphoto.Lumen.UI
 			if (!procediPure)
 				return;
 
-			if(fotoExplorerSrv.modificaMetadatiFotografie(fotografieCW, new MetadatiFoto()))
+			if(fotoExplorerSrv.modificaMetadatiFotografie(fotografieCW, metadati))
 			{
 				dialogProvider.ShowMessage("Metadati Modificati correttamente", "AVVISO");
 			}
+            else
+            {
+                dialogProvider.ShowError("Errore modifica metadati", "ERRORE", null);
+            }
 
-			// Svuoto ora i metadati
-			metadati = new MetadatiFoto();
-			selettoreEventoMetadato.eventoSelezionato = null;
+            // Svuoto ora i metadati
+            metadati = new MetadatiFoto();
+            selettoreEventoMetadato.eventoSelezionato = null;
 			//dialogProvider.ShowMessage("Eliminati i metadati delle " + selettoreMetadatiView.FotografiaCWP.SelectedItems.Count + " fotografie selezionate!", "Operazione eseguita");
 			MetadatiMsg msg = new MetadatiMsg(this);
 			msg.fase = Fase.Completata;
 			LumenApplication.Instance.bus.Publish(msg);
-			deselezionareTutto();
+
+            OnPropertyChanged("metadati");
+            OnPropertyChanged("isDidascaliaChecked");
+            OnPropertyChanged("isFasidelGiornoChecked");
+            OnPropertyChanged("isEventiChecked");
+
+            deselezionareTutto();
 		}
 
 		private void controllaMetadati()
@@ -292,8 +367,8 @@ namespace Digiphoto.Lumen.UI
 				}
 			}
 
-			//Consento la modifica di tutto!!
-			/*
+            //Consento la modifica di tutto!!
+            /*
 			if (listDidascalie.Distinct().Count() > 1)
 			{
 				DidascaliaEnabled = false;
@@ -309,7 +384,22 @@ namespace Digiphoto.Lumen.UI
 				EventoEnabled = false;
 			}
 			 */
-		}
+
+            if (!isDidascaliaChecked)
+            {
+                DidascaliaEnabled = false;
+            }
+
+            if (!isFasidelGiornoChecked)
+            {
+                GiornataEnabled = false;
+            }
+
+            if (!isEventiChecked)
+            {
+                EventoEnabled = false;
+            }
+        }
 
 		private void deselezionareTutto()
 		{

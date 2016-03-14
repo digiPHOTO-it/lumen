@@ -138,16 +138,20 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 
 					foreach (Fotografia fotografia in fotografie)
 					{
-						StringBuilder msg = new StringBuilder();
+                        String didascaliaNew = metadati.isDidascaliaEnabled ? metadati.didascalia : fotografia.didascalia;
+                        String faseDelGiornoNew = metadati.isFaseDelGiornoEnabled ?  metadati.faseDelGiorno.ToString() : fotografia.faseDelGiornoString;
+                        String eventoNew = metadati.isEventoEnabled ? metadati.evento.ToString() : fotografia.evento.ToString();
+
+                        StringBuilder msg = new StringBuilder();
 						msg.AppendFormat("Modificati metadati: {0} da: didascalia:{1} giornata:{2} evento:{3} in didascalia:{4} giornata:{5} evento:{6}",
 							fotografia.numero + " " + fotografia.nomeFile,
 							fotografia.didascalia,
 							fotografia.faseDelGiornoString,
 							fotografia.evento,
-							metadati.didascalia,
-							metadati.faseDelGiorno,
-							metadati.evento
-							);
+                            didascaliaNew,
+                            faseDelGiornoNew,
+                            eventoNew
+                            );
 						modificaMetadatiFotografie(fotografia, metadati);
 
 						_giornale.Info(msg);
@@ -188,21 +192,33 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 
 			//Consento la modifica anche di valori nulli
 			//if( !String.IsNullOrWhiteSpace( metadati.didascalia ) )
-			if (metadati.didascalia != null)
-				foto.didascalia = metadati.didascalia.Trim();
+			if (metadati.isDidascaliaEnabled)
+            {
+                if (metadati.didascalia != null)
+                    foto.didascalia = metadati.didascalia.Trim();
+                else
+                    foto.didascalia = null;
+            }
+				
 			else {
 				if( forzaNullo )
 					foto.didascalia = null;
 			}
 
-			if( metadati.faseDelGiorno != null )
-				foto.faseDelGiorno = (short)metadati.faseDelGiorno;
+			if(metadati.isFaseDelGiornoEnabled)
+            {
+                if (metadati.faseDelGiorno != null)
+                    foto.faseDelGiorno = (short)metadati.faseDelGiorno;
+                else
+                    foto.faseDelGiorno = null;
+            }
+				
 			else {
 				if( forzaNullo )
 					foto.faseDelGiorno = null;
 			}
 
-			if( metadati.evento != null )
+			if( metadati.isEventoEnabled)
 				foto.evento = metadati.evento;
 			else {
 				if( forzaNullo )
