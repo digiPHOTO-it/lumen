@@ -15,27 +15,27 @@
              d:DesignHeight="900" d:DesignWidth="1800" FontStretch="Condensed">
 
 
-	<UserControl.Resources>
-		<ResourceDictionary Source="FotoGalleryResources.xaml" />
-	</UserControl.Resources>
-	<UserControl.CommandBindings>
-		<CommandBinding Command="{StaticResource cmdTakeSnapshotPubblico1}" Executed="buttonTakeSnapshotPubblico_Click" />
-		<CommandBinding Command="{StaticResource cmdCloseSnapshotPubblico}" Executed="closeSnapshotPubblico_Click" />
-		<CommandBinding Command="{StaticResource uicmdSelezionaTutteLeFoto}"  Executed="selezionareTutteLeFoto_Click"  />
-		<CommandBinding Command="{StaticResource uicmdDeselezionaTutteLeFoto}" Executed="deselezionareTutteLeFoto_Click" />
-		<CommandBinding Command="{StaticResource cmdGoToCurrentFotoSS}" Executed="posizionaListaSulFotogrammaSS" />
+    <UserControl.Resources>
+        <ResourceDictionary Source="FotoGalleryResources.xaml" />
+    </UserControl.Resources>
+    <UserControl.CommandBindings>
+        <CommandBinding Command="{StaticResource cmdTakeSnapshotPubblico1}" Executed="buttonTakeSnapshotPubblico_Click" />
+        <CommandBinding Command="{StaticResource cmdCloseSnapshotPubblico}" Executed="closeSnapshotPubblico_Click" />
+        <CommandBinding Command="{StaticResource uicmdSelezionaTutteLeFoto}"  Executed="selezionareTutteLeFoto_Click"  />
+        <CommandBinding Command="{StaticResource uicmdDeselezionaTutteLeFoto}" Executed="deselezionareTutteLeFoto_Click" />
+        <CommandBinding Command="{StaticResource cmdGoToCurrentFotoSS}" Executed="posizionaListaSulFotogrammaSS" />
 
-	</UserControl.CommandBindings>
-	<UserControl.InputBindings>
-		<KeyBinding  Key="F2" Command="{StaticResource cmdTakeSnapshotPubblico1}" />
-		<KeyBinding  Key="F3" Command="{StaticResource cmdCloseSnapshotPubblico}" />
-		<KeyBinding  Key="F8" Command="{StaticResource cmdGoToCurrentFotoSS}" />
-		<KeyBinding  Key="S" Modifiers="Control" Command="{StaticResource uicmdSelezionaTutteLeFoto}" />
-		<KeyBinding  Key="Q" Modifiers="Control" Command="{StaticResource uicmdDeselezionaTutteLeFoto}" />
-	</UserControl.InputBindings>
+    </UserControl.CommandBindings>
+    <UserControl.InputBindings>
+        <KeyBinding  Key="F2" Command="{StaticResource cmdTakeSnapshotPubblico1}" />
+        <KeyBinding  Key="F3" Command="{StaticResource cmdCloseSnapshotPubblico}" />
+        <KeyBinding  Key="F8" Command="{StaticResource cmdGoToCurrentFotoSS}" />
+        <KeyBinding  Key="S" Modifiers="Control" Command="{StaticResource uicmdSelezionaTutteLeFoto}" />
+        <KeyBinding  Key="Q" Modifiers="Control" Command="{StaticResource uicmdDeselezionaTutteLeFoto}" />
+    </UserControl.InputBindings>
 
 
-	<DockPanel Name="dockPanelGallery">
+    <DockPanel Name="dockPanelGallery">
 
 
         <Expander DockPanel.Dock="Top" Header="Metadati da imporre" IsExpanded="False" ExpandDirection="Down">
@@ -43,145 +43,145 @@
 								   IsEnabled="{Binding Path=MyItemsSource.isAlmenoUnaSelezionata}" Style="{StaticResource styleSelettoreMetadati}" />
         </Expander>
 
-		<Expander DockPanel.Dock="Left" IsExpanded="False" ExpandDirection="Right" >
-			<Expander.Header>
-				<TextBlock Text="Azioni Automatiche">
-					<TextBlock.LayoutTransform>
-						<RotateTransform Angle="-90"/>
-					</TextBlock.LayoutTransform>
-				</TextBlock>
-			</Expander.Header>
+        <Expander DockPanel.Dock="Left" IsExpanded="False" ExpandDirection="Right" >
+            <Expander.Header>
+                <TextBlock Text="Azioni Automatiche">
+                    <TextBlock.LayoutTransform>
+                        <RotateTransform Angle="-90"/>
+                    </TextBlock.LayoutTransform>
+                </TextBlock>
+            </Expander.Header>
 
-			<lum:SelettoreAzioniAutomatiche x:Name="selettoreAzioniAutomatiche" MyItemsSource="{Binding ElementName=this, Path=DataContext.fotografieCW}"
-                                                IsEnabled="{Binding Path=MyItemsSource.isAlmenoUnaSelezionata}" Style="{StaticResource styleSelettoreAzioniAutomatiche}"/>			
-		</Expander>
+            <lum:SelettoreAzioniAutomatiche x:Name="selettoreAzioniAutomatiche" MyItemsSource="{Binding ElementName=this, Path=DataContext.fotografieCW}"
+                                                IsEnabled="{Binding Path=MyItemsSource.isAlmenoUnaSelezionata}" Style="{StaticResource styleSelettoreAzioniAutomatiche}"/>
+        </Expander>
 
-		<ToolBarTray Name="toolBarTrayAzioniDx"  Orientation="Vertical" DockPanel.Dock="Right" Style="{StaticResource fgToolBarTrayStyle}">
+        <ToolBarTray Name="toolBarTrayAzioniDx"  Orientation="Vertical" DockPanel.Dock="Right" Style="{StaticResource fgToolBarTrayStyle}">
 
-			<ToolBar Band="1" BandIndex="1" Style="{StaticResource fgToolBarStyle}">
+            <ToolBar Band="1" BandIndex="1" Style="{StaticResource fgToolBarStyle}">
                 <Button ToolTip="Page UP" Style="{StaticResource imageButtonToolBarStyle}" Click="buttonMovePage_Click" CommandParameter="-1" IsEnabled="{Binding isAlmenoUnaFoto}">
                     <Image Width="48" Source="/Digiphoto.Lumen.UI;component/Resources/PageUp-48x48.png" />
                 </Button>
-				<Button ToolTip="Page DOWN" Style="{StaticResource imageButtonToolBarStyle}" Click="buttonMovePage_Click" CommandParameter="+1" IsEnabled="{Binding isAlmenoUnaFoto}">
+                <Button ToolTip="Page DOWN" Style="{StaticResource imageButtonToolBarStyle}" Click="buttonMovePage_Click" CommandParameter="+1" IsEnabled="{Binding isAlmenoUnaFoto}">
                     <Image Width="48" Source="/Digiphoto.Lumen.UI;component/Resources/PageDown-48x48.png" />
                 </Button>
                 <Separator />
-				<Button Command="{Binding selezionareTuttoCommand}" CommandParameter="True" Style="{StaticResource bottoneNellaToolbarStyle}" ToolTip="Seleziona/Deseleziona" IsEnabled="{Binding isAlmenoUnaFoto}" >
-					<Image Source="/Digiphoto.Lumen.UI;component/Resources/gallery-view-selez-deselez.png" Height="16" />
-				</Button>
-				<!-- <Button Content="-Deselez" Command="{Binding selezionareTuttoCommand}" CommandParameter="False" Style="{StaticResource buttonBaseStyle}" /> -->
+                <Button Command="{Binding selezionareTuttoCommand}" CommandParameter="True" Style="{StaticResource bottoneNellaToolbarStyle}" ToolTip="Seleziona/Deseleziona" IsEnabled="{Binding isAlmenoUnaFoto}" >
+                    <Image Source="/Digiphoto.Lumen.UI;component/Resources/gallery-view-selez-deselez.png" Height="16" />
+                </Button>
+                <!-- <Button Content="-Deselez" Command="{Binding selezionareTuttoCommand}" CommandParameter="False" Style="{StaticResource buttonBaseStyle}" /> -->
 
-				<Separator />
+                <Separator />
 
-<!--
+                <!--
 Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" ToolTip="Vedi solo le foto selezionate" Style="{StaticResource bottoneTestualeStyle}" 
 -->
 
-<!--
+                <!--
 						  Style="{StaticResource bottoneCheckedConImmagineStyle}" 
 
 -->
-				<CheckBox Name="chkFiltaSelez" IsChecked="{Binding flagFiltraSelezionate,Mode=TwoWay}" 
+                <CheckBox Name="chkFiltaSelez" IsChecked="{Binding flagFiltraSelezionate,Mode=TwoWay}" 
 						  ToolTip="Filtra solo le foto selezionate" Style="{StaticResource bottoneTestualeStyle}" 
 						  IsEnabled="{Binding isAlmenoUnaSelezionata}" Width="48" >
-					<!--
+                    <!--
 					<Image Source="/Digiphoto.Lumen.UI;component/Resources/gallery-view-selez.png" Height="16"  />
 					-->
-					<TextBlock TextWrapping="NoWrap">Selez</TextBlock>
-				</CheckBox>
-<!--
+                    <TextBlock TextWrapping="NoWrap">Selez</TextBlock>
+                </CheckBox>
+                <!--
 Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" 
 -->
-				<CheckBox Name="chkMuoviSuSelez" IsChecked="{Binding flagPosizionaSuSelezionate,Mode=TwoWay}"
+                <CheckBox Name="chkMuoviSuSelez" IsChecked="{Binding flagPosizionaSuSelezionate,Mode=TwoWay}"
 						  ToolTip="Abilita lo spostamento sulle foto selezionate" Style="{StaticResource bottoneTestualeStyle}" 
 						  IsEnabled="{Binding isAlmenoUnaSelezionata}" >
-					<TextBlock TextWrapping="NoWrap">Salta</TextBlock>
-				</CheckBox>
-<!--				
+                    <TextBlock TextWrapping="NoWrap">Salta</TextBlock>
+                </CheckBox>
+                <!--				
 				<Button Content="^ Prec" Click="buttonScorriFotoSelez_Click" Tag="-1" ToolTip="Posiziona sulla precendete foto selezionata" Padding="1" Style="{StaticResource bottoneTestualeStyle}" IsEnabled="{Binding isAlmenoUnaSelezionata}" />
 				<Button Content="v Succ" Click="buttonScorriFotoSelez_Click" Tag="+1" ToolTip="Posiziona sulla successiva foto selezionata" Padding="1" Style="{StaticResource bottoneTestualeStyle}" IsEnabled="{Binding isAlmenoUnaSelezionata}" />
 -->
-				<TextBox ToolTip="Vai al N° di fotogramma. Uscire dal campo con il tasto TAB" Name="textBoxGotoNumFoto" LostFocus="textBoxGotoNumFoto_LostFocus" IsEnabled="{Binding isAlmenoUnaFoto}" Style="{StaticResource tbVaiNumStyle}" GotFocus="textBoxGotoNumFoto_GotFocus" />
+                <TextBox ToolTip="Vai al N° di fotogramma. Uscire dal campo con il tasto TAB" Name="textBoxGotoNumFoto" LostFocus="textBoxGotoNumFoto_LostFocus" IsEnabled="{Binding isAlmenoUnaFoto}" Style="{StaticResource tbVaiNumStyle}" GotFocus="textBoxGotoNumFoto_GotFocus" />
 
-			</ToolBar>
+            </ToolBar>
 
-                <ToolBar Band="1" BandIndex="2" Style="{StaticResource fgToolBarStyle}">
+            <ToolBar Band="1" BandIndex="2" Style="{StaticResource fgToolBarStyle}">
 
-					<Button Tag="1" Click="buttonQuanteNeVedo_Click" Style="{StaticResource bottoneTestualeStyle}" IsEnabled="{Binding isAlmenoUnaFoto}" >
-						<Image Source="/Digiphoto.Lumen.UI;component/Resources/gallery-view-1.png" Height="16" Width="48" />
-					</Button>
-					<Button Tag="2"  Click="buttonQuanteNeVedo_Click" Style="{StaticResource bottoneTestualeStyle}" IsEnabled="{Binding isAlmenoUnaFoto}" >
-						<Image Source="/Digiphoto.Lumen.UI;component/Resources/gallery-view-2.png" Height="16" Width="48" />
-					</Button>
-					<Button Tag="4"  Click="buttonQuanteNeVedo_Click" Style="{StaticResource bottoneTestualeStyle}" IsEnabled="{Binding isAlmenoUnaFoto}" >
-						<Image Source="/Digiphoto.Lumen.UI;component/Resources/gallery-view-3.png" Height="16" Width="48" />
-					</Button>
+                <Button Tag="1" Click="buttonQuanteNeVedo_Click" Style="{StaticResource bottoneTestualeStyle}" IsEnabled="{Binding isAlmenoUnaFoto}" >
+                    <Image Source="/Digiphoto.Lumen.UI;component/Resources/gallery-view-1.png" Height="16" Width="48" />
+                </Button>
+                <Button Tag="2"  Click="buttonQuanteNeVedo_Click" Style="{StaticResource bottoneTestualeStyle}" IsEnabled="{Binding isAlmenoUnaFoto}" >
+                    <Image Source="/Digiphoto.Lumen.UI;component/Resources/gallery-view-2.png" Height="16" Width="48" />
+                </Button>
+                <Button Tag="4"  Click="buttonQuanteNeVedo_Click" Style="{StaticResource bottoneTestualeStyle}" IsEnabled="{Binding isAlmenoUnaFoto}" >
+                    <Image Source="/Digiphoto.Lumen.UI;component/Resources/gallery-view-3.png" Height="16" Width="48" />
+                </Button>
 
-					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-					<Button Width="20" Click="buttonQuanteNeVedo_Click" Tag="-" ToolTip="Riduci num. di righe" IsEnabled="{Binding isAlmenoUnaFoto}" Style="{StaticResource bottoneNellaToolbarStyle}" Padding="0" Margin="2">
-						<Image Source="/Digiphoto.Lumen.UI;component/Resources/gallery-view-minus.png" Height="16" Width="16" />
-					</Button>
-					<Button Width="20" Click="buttonQuanteNeVedo_Click" Tag="+" ToolTip="Aumenta num. di righe"  IsEnabled="{Binding isAlmenoUnaFoto}" Style="{StaticResource bottoneNellaToolbarStyle}" Padding="0" Margin="2">
-						<Image Source="/Digiphoto.Lumen.UI;component/Resources/gallery-view-plus.png" Height="16" Width="16" />
-					</Button>
-						
-					</StackPanel>
-				<Button Content="AREA" x:Name="mostraAreaStampabileButton" Click="mostraAreaStampabileButton_Click" Style="{StaticResource bottoneTestualeStyle}" ToolTip="Evidenzia area stampabile su foto visibili" 
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Width="20" Click="buttonQuanteNeVedo_Click" Tag="-" ToolTip="Riduci num. di righe" IsEnabled="{Binding isAlmenoUnaFoto}" Style="{StaticResource bottoneNellaToolbarStyle}" Padding="0" Margin="2">
+                        <Image Source="/Digiphoto.Lumen.UI;component/Resources/gallery-view-minus.png" Height="16" Width="16" />
+                    </Button>
+                    <Button Width="20" Click="buttonQuanteNeVedo_Click" Tag="+" ToolTip="Aumenta num. di righe"  IsEnabled="{Binding isAlmenoUnaFoto}" Style="{StaticResource bottoneNellaToolbarStyle}" Padding="0" Margin="2">
+                        <Image Source="/Digiphoto.Lumen.UI;component/Resources/gallery-view-plus.png" Height="16" Width="16" />
+                    </Button>
+
+                </StackPanel>
+                <Button Content="AREA" x:Name="mostraAreaStampabileButton" Click="mostraAreaStampabileButton_Click" Style="{StaticResource bottoneTestualeStyle}" ToolTip="Evidenzia area stampabile su foto visibili" 
 						Visibility="{Binding Path=possoVisualizzareAreaDiRispetto,Mode=OneTime,Converter={StaticResource booleanToVisibilityConverter}}"
 						/>
-			</ToolBar>
+            </ToolBar>
 
-				<ToolBar Band="1" BandIndex="3" Header="Pubblico" Style="{StaticResource fgToolBarStyle}">
-				<Button Command="{Binding caricareSlideShowCommand}" CommandParameter="Tutte" ToolTip="Carica tutte le foto nello show"  Style="{StaticResource imageButtonToolBarStyle}">
-						<Image Source="/Digiphoto.Lumen.UI;component/Resources/ssPlayAll-48x48.png" Height="22" Width="48" />
-					</Button>
-				<Button Command="{Binding caricareSlideShowCommand}" CommandParameter="ZeroPiuSelez" ToolTip="Carica solo le foto selezionate nello show" Style="{StaticResource imageButtonToolBarStyle}">
-						<Image Source="/Digiphoto.Lumen.UI;component/Resources/ssPlaySelected-48x48.png" Height="22" Width="48" />
-					</Button>
-				<Button Command="{Binding caricareSlideShowCommand}" CommandParameter="AddSelez" ToolTip="Aggiunge le foto selezionate nello show" Style="{StaticResource imageButtonToolBarStyle}">
-						<Image Source="/Digiphoto.Lumen.UI;component/Resources/ssAddSelected-48x48.png" Height="22" Width="48" />
-					</Button>
-					<!--
+            <ToolBar Band="1" BandIndex="3" Header="Pubblico" Style="{StaticResource fgToolBarStyle}">
+                <Button Command="{Binding caricareSlideShowCommand}" CommandParameter="Tutte" ToolTip="Carica tutte le foto nello show"  Style="{StaticResource imageButtonToolBarStyle}">
+                    <Image Source="/Digiphoto.Lumen.UI;component/Resources/ssPlayAll-48x48.png" Height="22" Width="48" />
+                </Button>
+                <Button Command="{Binding caricareSlideShowCommand}" CommandParameter="ZeroPiuSelez" ToolTip="Carica solo le foto selezionate nello show" Style="{StaticResource imageButtonToolBarStyle}">
+                    <Image Source="/Digiphoto.Lumen.UI;component/Resources/ssPlaySelected-48x48.png" Height="22" Width="48" />
+                </Button>
+                <Button Command="{Binding caricareSlideShowCommand}" CommandParameter="AddSelez" ToolTip="Aggiunge le foto selezionate nello show" Style="{StaticResource imageButtonToolBarStyle}">
+                    <Image Source="/Digiphoto.Lumen.UI;component/Resources/ssAddSelected-48x48.png" Height="22" Width="48" />
+                </Button>
+                <!--
 					<Button Content="Svuota" Command="{Binding controllareSlideShowCommand}" CommandParameter="Reset"  />
 					-->
-					<Separator />
-				
-					<Button Command="{Binding controllareSlideShowCommand}" CommandParameter="Start" Style="{StaticResource ssStartStyle}" />
-					<!--
+                <Separator />
+
+                <Button Command="{Binding controllareSlideShowCommand}" CommandParameter="Start" Style="{StaticResource ssStartStyle}" />
+                <!--
 					<Button Command="{Binding controllareSlideShowCommand}" CommandParameter="Stop"  Style="{StaticResource ssPauseStyle}" />
 					-->
-				<Button Name="buttonTakeSnapshotPubblico" Style="{StaticResource ssSnapshotStyle}" Click="buttonTakeSnapshotPubblico_Click" ToolTip="F2 mostra foto del video al pubblico" IsEnabled="{Binding isAlmenoUnaFoto}" />
-					<extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. righe Slide-Show" Value="{Binding numRigheSlideShow}" IsEnabled="{Binding possoControllareSlideShow}" />
-					<extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. colonne Slide-Show" Value="{Binding numColonneSlideShow}" IsEnabled="{Binding possoControllareSlideShow}" />
-
-				
-			</ToolBar>
+                <Button Name="buttonTakeSnapshotPubblico" Style="{StaticResource ssSnapshotStyle}" Click="buttonTakeSnapshotPubblico_Click" ToolTip="F2 mostra foto del video al pubblico" IsEnabled="{Binding isAlmenoUnaFoto}" />
+                <extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. righe Slide-Show" Value="{Binding numRigheSlideShow}" IsEnabled="{Binding possoControllareSlideShow}" />
+                <extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. colonne Slide-Show" Value="{Binding numColonneSlideShow}" IsEnabled="{Binding possoControllareSlideShow}" />
 
 
-			<ToolBar Band="2" BandIndex="1" Name="stampaProvini" IsEnabled="{Binding Path=stampantiAbbinate, Converter={StaticResource listVisibilityConverter}}" Style="{StaticResource fgToolBarStyle}">
-                    <Button Command="{Binding Path=stampareProviniCommand}" ToolTip="Stampa provini" 
+            </ToolBar>
+
+
+            <ToolBar Band="2" BandIndex="1" Name="stampaProvini" IsEnabled="{Binding Path=stampantiAbbinate, Converter={StaticResource listVisibilityConverter}}" Style="{StaticResource fgToolBarStyle}">
+                <Button Command="{Binding Path=stampareProviniCommand}" ToolTip="Stampa provini" 
 							Style="{StaticResource imageButtonToolBarStyle}" IsEnabled="{Binding isAlmenoUnaSelezionata}">
-                        <Image Source="/Digiphoto.Lumen.UI;component/Resources/Provini-48x48.png"  />
-                    </Button>
-                </ToolBar>
+                    <Image Source="/Digiphoto.Lumen.UI;component/Resources/Provini-48x48.png"  />
+                </Button>
+            </ToolBar>
 
-			<ToolBar Band="2" BandIndex="2" Style="{StaticResource fgToolBarStyle}">
+            <ToolBar Band="2" BandIndex="2" Style="{StaticResource fgToolBarStyle}">
 
-                    <Button Command="{Binding mandareInModificaCommand}" ToolTip="aggiunge alla lista delle foto da modificare" 
+                <Button Command="{Binding mandareInModificaCommand}" ToolTip="aggiunge alla lista delle foto da modificare" 
 							Style="{StaticResource imageButtonToolBarStyle}" IsEnabled="{Binding isAlmenoUnaSelezionata}" >
-                        <Image Source="/Digiphoto.Lumen.UI;component/Resources/PhotoEdit-48x48.png" />
-                    </Button>
+                    <Image Source="/Digiphoto.Lumen.UI;component/Resources/PhotoEdit-48x48.png" />
+                </Button>
 
-                    <Separator />
+                <Separator />
 
-                    <Button Command="{Binding Path=aggiungereAlMasterizzatoreCommand}" ToolTip="Aggiungi al masterizzatore" 
+                <Button Command="{Binding Path=aggiungereAlMasterizzatoreCommand}" ToolTip="Aggiungi al masterizzatore" 
 							Style="{StaticResource imageButtonToolBarStyle}" IsEnabled="{Binding isAlmenoUnaSelezionata}">
-                        <Image Source="/Digiphoto.Lumen.UI;component/Resources/DvdBurn-48x48.png"  />
-                    </Button>
+                    <Image Source="/Digiphoto.Lumen.UI;component/Resources/DvdBurn-48x48.png"  />
+                </Button>
 
-				<ToggleButton IsChecked="{Binding Path=modoVendita,Mode=TwoWay,Converter={StaticResource modoVenditaBoolConverter}}" Style="{StaticResource statusModoVenditaSwitchImage}" />
+                <ToggleButton IsChecked="{Binding Path=modoVendita,Mode=TwoWay,Converter={StaticResource modoVenditaBoolConverter}}" Style="{StaticResource statusModoVenditaSwitchImage}" />
 
-			</ToolBar>
+            </ToolBar>
 
 
             <ToolBar Band="2" BandIndex="3" Name="stampaToolBar" 
@@ -213,32 +213,32 @@ Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding P
 
 
         </ToolBarTray>
- 
-        
+
+
         <Expander Header="Filtri per ricercare le foto nell'archivio" DockPanel.Dock="Bottom" IsExpanded="True" ExpandDirection="Up" Name="expanderFiltriRicerca" >
-            
+
             <StackPanel Orientation="Horizontal" MaxHeight="120">
 
-				<StackPanel Orientation="Vertical" Margin="1,0,1,0"  >
+                <StackPanel Orientation="Vertical" Margin="1,0,1,0"  >
 
-					<Button Name="eseguireRicercaButton" Command="{Binding eseguireRicercaCommand}" Style="{StaticResource buttonCercaStyle}" Click="eseguireRicercaButton_Click" />
-					<ProgressBar  Value="{Binding Path=idrataProgress,Mode=OneWay}" Style="{StaticResource idrataProgressBarStyle}" Height="{Binding Path=idrataProgress,Converter={StaticResource progressToVisibilityConverter},ConverterParameter=2:20}" Tag="Caricamento..." />
-					<Button Name="azzeraParamRicercaButton" ToolTip="Azzera i parametri di ricerca" Command="{Binding azzeraParamRicercaCommand}" Style="{StaticResource buttonAzzeraParametriStyle}" />
+                    <Button Name="eseguireRicercaButton" Command="{Binding eseguireRicercaCommand}" Style="{StaticResource buttonCercaStyle}" Click="eseguireRicercaButton_Click" />
+                    <ProgressBar  Value="{Binding Path=idrataProgress,Mode=OneWay}" Style="{StaticResource idrataProgressBarStyle}" Height="{Binding Path=idrataProgress,Converter={StaticResource progressToVisibilityConverter},ConverterParameter=2:20}" Tag="Caricamento..." />
+                    <Button Name="azzeraParamRicercaButton" ToolTip="Azzera i parametri di ricerca" Command="{Binding azzeraParamRicercaCommand}" Style="{StaticResource buttonAzzeraParametriStyle}" />
 
-					<StackPanel Orientation="Horizontal">
-						<Button Command="{Binding commandSpostarePaginazione}" CommandParameter="-999" Style="{StaticResource buttonMuoviFirstPageStyle}" />
-						<Button Command="{Binding commandSpostarePaginazione}" CommandParameter="-1" Style="{StaticResource buttonMuoviPreviousPageStyle}" />
+                    <StackPanel Orientation="Horizontal">
+                        <Button Command="{Binding commandSpostarePaginazione}" CommandParameter="-999" Style="{StaticResource buttonMuoviFirstPageStyle}" />
+                        <Button Command="{Binding commandSpostarePaginazione}" CommandParameter="-1" Style="{StaticResource buttonMuoviPreviousPageStyle}" />
 
                         <Label MinWidth="40" FontSize="14" HorizontalContentAlignment="Center">
                             <Label.Content>
-								<TextBlock>
-									<TextBlock.Text>
-										<MultiBinding StringFormat="{}{0}/{1}">
-											<Binding Path="paginaAttualeRicerca" />
-											<Binding Path="totPagineRicerca" />
-										</MultiBinding>
-									</TextBlock.Text>
-								</TextBlock>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0}/{1}">
+                                            <Binding Path="paginaAttualeRicerca" />
+                                            <Binding Path="totPagineRicerca" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
                             </Label.Content>
                             <Label.ToolTip>
                                 <TextBlock>
@@ -250,78 +250,78 @@ Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding P
                                 </TextBlock>
                             </Label.ToolTip>
                         </Label>
-						
+
                         <Button Command="{Binding commandSpostarePaginazione}" CommandParameter="1" Style="{StaticResource buttonMuoviNextPageStyle}" />
                         <Button Command="{Binding commandSpostarePaginazione}" CommandParameter="999" Style="{StaticResource buttonMuoviLastPageStyle}" />
                     </StackPanel>
 
-				</StackPanel>
-				<GroupBox Header="Periodo">
+                </StackPanel>
+                <GroupBox Header="Periodo">
 
                     <StackPanel Orientation="Vertical">
 
-						<DatePicker SelectedDate="{Binding Path=paramCercaFoto.giornataIniz,Mode=TwoWay}"  IsTodayHighlighted="true" Name="datePickerRicercaIniz" ToolTip="Data inizio periodo" Margin="1"/>
-						<DatePicker SelectedDate="{Binding Path=paramCercaFoto.giornataFine,Mode=TwoWay}"  IsTodayHighlighted="true" Name="datePickerRicercaFine" ToolTip="Data fine periodo" Margin="1"/>
+                        <DatePicker SelectedDate="{Binding Path=paramCercaFoto.giornataIniz,Mode=TwoWay}"  IsTodayHighlighted="true" Name="datePickerRicercaIniz" ToolTip="Data inizio periodo" Margin="1"/>
+                        <DatePicker SelectedDate="{Binding Path=paramCercaFoto.giornataFine,Mode=TwoWay}"  IsTodayHighlighted="true" Name="datePickerRicercaFine" ToolTip="Data fine periodo" Margin="1"/>
 
-						<StackPanel Orientation="Horizontal" Margin="0,3,0,0" HorizontalAlignment="Center">
-							<Button Content="Oggi" Name="oggiButton" Click="oggiButton_Click" Margin="1" Padding="2,0,2,0" MinWidth="40" />
-							<Button Content="Ieri" Name="ieriButton" Click="ieriButton_Click" Margin="1" Padding="2,0,2,0" MinWidth="40" />
-							<Button Content="Ieri+Oggi" Name="ieriOggiButton" Click="ieriOggiButton_Click" Margin="1" Padding="2,0,2,0" />
-						</StackPanel>
-					</StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,3,0,0" HorizontalAlignment="Center">
+                            <Button Content="Oggi" Name="oggiButton" Click="oggiButton_Click" Margin="1" Padding="2,0,2,0" MinWidth="40" />
+                            <Button Content="Ieri" Name="ieriButton" Click="ieriButton_Click" Margin="1" Padding="2,0,2,0" MinWidth="40" />
+                            <Button Content="Ieri+Oggi" Name="ieriOggiButton" Click="ieriOggiButton_Click" Margin="1" Padding="2,0,2,0" />
+                        </StackPanel>
+                    </StackPanel>
                 </GroupBox>
 
 
-                
-                
+
+
                 <!-- eventuale filtro per fotografo -->
                 <lum:SelettoreFotografo x:Name="selettoreFotografo5" possoCreare="False"
 										Margin="3,0,0,0"
 										MaxWidth="200"
                                         DataContext="{Binding selettoreFotografoViewModel}" />
 
-                <lum:SelettoreEvento x:Name="selettoreEvento5" possoCreare="False"
-									 Margin="3,0,0,0"
-									 MaxWidth="200"
-                                 DataContext="{Binding selettoreEventoViewModel}" />
-				
-				<GroupBox Header="Fasi del giorno">
-					<StackPanel Orientation="Vertical" Margin="3,0,3,0" VerticalAlignment="Center">
-						<CheckBox x:Name="checkBoxMattino" Content="Mattino" IsChecked="{Binding isMattinoChecked, Mode=TwoWay}" Margin="2" />
-						<CheckBox x:Name="checkBoxPomeriggio" Content="Pomeriggio" IsChecked="{Binding isPomeriggioChecked, Mode=TwoWay}" Margin="2" />
-						<CheckBox x:Name="checkBoxSera" Content="Sera" IsChecked="{Binding isSeraChecked, Mode=TwoWay}" Margin="2" />
+                <GroupBox Header="Eventi">
+                    <lum:SelettoreEvento x:Name="selettoreEvento5" possoCreare="False"
+										 Margin="3,0,0,0" MaxWidth="200"
+										 DataContext="{Binding selettoreEventoViewModel}" />
+                </GroupBox>
+
+                <GroupBox Header="Fasi del giorno">
+                    <StackPanel Orientation="Vertical" Margin="3,0,3,0" VerticalAlignment="Center">
+                        <CheckBox x:Name="checkBoxMattino" Content="Mattino" IsChecked="{Binding isMattinoChecked, Mode=TwoWay}" Margin="2" />
+                        <CheckBox x:Name="checkBoxPomeriggio" Content="Pomeriggio" IsChecked="{Binding isPomeriggioChecked, Mode=TwoWay}" Margin="2" />
+                        <CheckBox x:Name="checkBoxSera" Content="Sera" IsChecked="{Binding isSeraChecked, Mode=TwoWay}" Margin="2" />
                     </StackPanel>
-				</GroupBox>
+                </GroupBox>
 
-				<GroupBox Header="Metadati" Margin="3,0,3,0"  >
-					<StackPanel Orientation="Vertical" >
-
-						<Label Content="Didascalia" FontSize="10" />
-						<TextBox Name="didascaliaTextBox" CharacterCasing="Upper" 
+                <GroupBox Header="Metadati" Margin="3,0,3,0"  >
+                    <StackPanel Orientation="Vertical" >
+                        <Label Content="Didascalia" FontSize="10" />
+                        <TextBox x:Name="didascaliaTextBox" CharacterCasing="Upper" 
 								 Margin="0,0,0,0"
-								 Text="{Binding Path=paramCercaFoto.didascalia,Mode=TwoWay}" MinWidth="80" FontSize="11"/>
+								 Text="{Binding paramCercaFoto.didascalia, Mode=TwoWay}" MinWidth="80" FontSize="11"/>
 
-						<Label Content="Numeri" FontSize="10" />
-						<TextBox  Text="{Binding Path=stringaNumeriFotogrammi}" 
-							  Name="textBoxNumFotogrammi"
+                        <Label Content="Numeri" FontSize="10" />
+                        <TextBox  Text="{Binding stringaNumeriFotogrammi}" 
+							  x:Name="textBoxNumFotogrammi"
 								  Margin="0,0,0,0"
 							  CharacterCasing="Upper" MinWidth="80" FontSize="11"
 							  ToolTip="Indicare i numeri separati da virgola , oppure range con il meno -" />
-					</StackPanel>
-				</GroupBox>
+                    </StackPanel>
+                </GroupBox>
 
-				<lum:SelettoreScaricoCard x:Name="selettoreScaricoCard1" 
+                <lum:SelettoreScaricoCard x:Name="selettoreScaricoCard1" 
 				                          Margin="3,0,0,0" FontSize="14"
 				                          DataContext="{Binding selettoreScaricoCardViewModel}" />
 
-				<CheckBox Name="checkBoxCollassaFiltri" Content="Collassa filtri in ricerca" IsChecked="True" ToolTip="Quando viene esegita la ricerca, viene nascosto atomaticamente il pannello dei filtri" />
-			</StackPanel>
+                <CheckBox Name="checkBoxCollassaFiltri" Content="Collassa filtri in ricerca" IsChecked="True" ToolTip="Quando viene esegita la ricerca, viene nascosto atomaticamente il pannello dei filtri" />
+            </StackPanel>
 
-		</Expander>
+        </Expander>
 
 
-		<lum:SelettoreAzioniRapideView Visibility="Collapsed" DataContext="{Binding Path=selettoreAzioniRapideViewModel}"/>
-        
+        <lum:SelettoreAzioniRapideView Visibility="Collapsed" DataContext="{Binding Path=selettoreAzioniRapideViewModel}"/>
+
         <!-- Questa è la lista delle immagini -->
         <ListBox x:Name="LsImageGallery"   Margin="0,0,0,0"
                  SelectionMode="Multiple" 
@@ -337,8 +337,8 @@ Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding P
                  PreviewKeyDown="LsImageGallery_PreviewKeyDown" 
 				 PreviewMouseWheel="LsImageGallery_PreviewMouseWheel">
 
-			<ListBox.ItemContainerStyle>
-				
+            <ListBox.ItemContainerStyle>
+
                 <Style TargetType="{x:Type ListBoxItem}">
                     <EventSetter Event="MouseDoubleClick" Handler="listBoxItemImageGallery_MouseDoubleClick" />
 
@@ -358,9 +358,9 @@ Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding P
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
-                </Style>				
-			</ListBox.ItemContainerStyle>
-		</ListBox>
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
 
     </DockPanel>
 
