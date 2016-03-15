@@ -138,16 +138,20 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 
 					foreach (Fotografia fotografia in fotografie)
 					{
-                        String didascaliaNew = metadati.isDidascaliaEnabled ? metadati.didascalia : fotografia.didascalia;
-                        String faseDelGiornoNew = metadati.isFaseDelGiornoEnabled ?  metadati.faseDelGiorno.ToString() : fotografia.faseDelGiornoString;
-                        String eventoNew = metadati.isEventoEnabled ? metadati.evento.ToString() : fotografia.evento.ToString();
+                        String didascaliaOld = fotografia.didascalia != null ? fotografia.didascalia : "empty";
+                        String faseDelGiornoOld =  fotografia.faseDelGiornoString != null ? fotografia.faseDelGiornoString : "empty";
+                        String eventoOld = fotografia.evento != null ? fotografia.evento.ToString() : "empty";
+
+                        String didascaliaNew = metadati.isDidascaliaEnabled ? metadati.didascaliaString : didascaliaOld;
+                        String faseDelGiornoNew = metadati.isFaseDelGiornoEnabled ? metadati.faseDelGiornoString : faseDelGiornoOld;
+                        String eventoNew = metadati.isEventoEnabled ? metadati.eventoString : eventoOld;
 
                         StringBuilder msg = new StringBuilder();
 						msg.AppendFormat("Modificati metadati: {0} da: didascalia:{1} giornata:{2} evento:{3} in didascalia:{4} giornata:{5} evento:{6}",
 							fotografia.numero + " " + fotografia.nomeFile,
-							fotografia.didascalia,
-							fotografia.faseDelGiornoString,
-							fotografia.evento,
+                            didascaliaOld,
+                            faseDelGiornoOld,
+                            eventoOld,
                             didascaliaNew,
                             faseDelGiornoNew,
                             eventoNew
