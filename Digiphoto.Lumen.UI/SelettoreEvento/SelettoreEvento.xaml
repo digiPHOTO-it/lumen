@@ -8,57 +8,54 @@
              x:Name="selettoreEvento"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="200">
-    
+
     <!-- includo il dizionario puntuale e quello globale -->
     <UserControl.Resources>
         <ResourceDictionary Source="SelettoreEventoResources.xaml" />
     </UserControl.Resources>
 
     <Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="*" />
-			<RowDefinition Height="Auto"/>
-		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition />
-		</Grid.ColumnDefinitions>
-		
-        <GroupBox Header="Eventi" Grid.Row="0" Grid.Column="0">
-            <ScrollViewer VerticalScrollBarVisibility="Auto" >
-                <ListBox Name="eventiListBox"  
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="0" Grid.Column="0">
+            <ListBox Name="eventiListBox"  
                          ItemsSource="{Binding eventi}" 
                          DisplayMemberPath="descrizione" 
                          SelectedItem="{Binding eventoSelezionato}"
 						 ItemContainerStyle="{StaticResource ResourceKey=listBoxItemEvidenziatoStyle}"
                          />
-            </ScrollViewer>
-        </GroupBox>
+        </ScrollViewer>
 
-
-		<Grid 	Grid.Row="1" Grid.Column="0" 
+        <Grid 	Grid.Row="1" Grid.Column="0" 
                 Visibility="{Binding possoCreare,ElementName=selettoreEvento,Converter={StaticResource BooleanToVisibilityConverter}}" >
-			
-			<Grid.RowDefinitions>
-					<RowDefinition Height="24"/>
-				</Grid.RowDefinitions>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" x:Name="columnTesto"/>
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-				</Grid.ColumnDefinitions>
 
-                <TextBox x:Name="newDescrizioneTextBox" Text="{Binding  Path=nuovoEvento.descrizione, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+            <Grid.RowDefinitions>
+                <RowDefinition Height="24"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" x:Name="columnTesto"/>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox x:Name="newDescrizioneTextBox" Text="{Binding  Path=nuovoEvento.descrizione, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                          Style="{StaticResource newDescrizioneTextBox}" Grid.Row="0" Grid.Column="0"/>
 
-			<Button Name="creareNuovoEventoButton" Command="{Binding Path=creareNuovoEventoCommand}" ToolTip="Crea nuovo evento" Grid.Row="0" Grid.Column="1" Style="{StaticResource styleCreareNuovoEventoButton}" >
-					<Image Source="/Digiphoto.Lumen.UI;component/Resources/add-16x16.png" Width="16" Height="16" />
-				</Button>
+            <Button Name="creareNuovoEventoButton" Command="{Binding Path=creareNuovoEventoCommand}" ToolTip="Crea nuovo evento" Grid.Row="0" Grid.Column="1" Style="{StaticResource styleCreareNuovoEventoButton}" >
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/add-16x16.png" Width="16" Height="16" />
+            </Button>
 
-				<Button Name="refreshEventiButton" ToolTip="Rileggi" Command="{Binding Path=refreshEventiCommand}" CommandParameter="True" Grid.Row="0" Grid.Column="2">
-					<Image Source="/Digiphoto.Lumen.UI;component/Resources/refresh-16x16.png" Width="16" Height="16" />
-				</Button>
-			</Grid>
+            <Button Name="refreshEventiButton" ToolTip="Rileggi" Command="{Binding Path=refreshEventiCommand}" CommandParameter="True" Grid.Row="0" Grid.Column="2">
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/refresh-16x16.png" Width="16" Height="16" />
+            </Button>
+        </Grid>
 
     </Grid>
-            
+
 </lumM:UserControlBase>
