@@ -40,5 +40,28 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 		public bool isEmpty() {
 			return didascalia == null && evento == null && faseDelGiorno == null && isDidascaliaEnabled && isEventoEnabled && isFaseDelGiornoEnabled;
 		}
-	}
+
+        public string didascaliaString
+        {
+            get
+            {
+                return didascalia != null ? didascalia : "empty";
+            }
+        }
+
+        public string eventoString
+        {
+            get{
+                return evento != null ? evento.ToString() : "empty";
+            }
+        }
+
+        public string faseDelGiornoString
+        {
+            get
+            {
+                return faseDelGiorno != null ? faseDelGiorno.ToString() : "empty";
+            }
+        }
+    }
 }
