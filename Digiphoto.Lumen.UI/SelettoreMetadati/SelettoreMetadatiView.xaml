@@ -30,7 +30,7 @@
 
             <GroupBox>
                 <GroupBox.Header>
-                    <CheckBox x:Name="checkDidascalia" Content="Didascalia" IsChecked="{Binding isDidascaliaChecked, Mode=TwoWay}" Margin="2" />
+                    <CheckBox x:Name="checkDidascalia" Content="Didascalia" IsChecked="{Binding isDidascaliaChecked, Mode=TwoWay}" Margin="2" Unchecked="checkDidascalia_Unchecked"  />
                 </GroupBox.Header>
                 <TextBox x:Name="didascalia" 
 						 Text="{Binding ElementName=LsImageGallery,Path=SelectedValue.didascalia, Mode=TwoWay}" 
@@ -47,9 +47,9 @@
 					 Visibility="Collapsed">
 			</ListBox>
 
-			<GroupBox Height="110">
+			<GroupBox Height="90">
                 <GroupBox.Header>
-                    <CheckBox x:Name="checkBoxFasidelGiorno" Content="Fasi del Giorno" IsChecked="{Binding isFasidelGiornoChecked, Mode=TwoWay}" Margin="2" />
+                    <CheckBox x:Name="checkBoxFasidelGiorno" Content="Fasi del Giorno" IsChecked="{Binding isFasidelGiornoChecked, Mode=TwoWay}" Margin="2" Unchecked="checkBoxFasidelGiorno_Unchecked" />
                 </GroupBox.Header>
                 <ListBox x:Name="fasiDelGiorno" 
 						 ItemsSource="{Binding fasiDelGiorno}"
@@ -63,10 +63,10 @@
 		</StackPanel>
 
         <GroupBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Top"
-				  Margin="8,0,8,0" MinWidth="150" MaxWidth="400" Height="180" MaxHeight="180" >
+				  Margin="8,0,8,0" MinWidth="150" MaxWidth="450" Height="140" MaxHeight="150" >
             <GroupBox.Header>
                 <StackPanel Orientation="Vertical">
-                    <CheckBox x:Name="checkBoxEventi" Content="Eventi" IsChecked="{Binding isEventiChecked, Mode=TwoWay}" Margin="2" />
+                    <CheckBox x:Name="checkBoxEventi" Content="Eventi" IsChecked="{Binding isEventiChecked, Mode=TwoWay}" Margin="2"  Unchecked="checkBoxEventi_Unchecked" />
                 </StackPanel>
 			</GroupBox.Header>
 			

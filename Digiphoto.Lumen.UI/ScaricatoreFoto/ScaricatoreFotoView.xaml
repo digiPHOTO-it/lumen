@@ -39,9 +39,9 @@
 									Style="{StaticResource selettoreFotografoStyle}"
                                     possoCreare="True" />
 
-			<lum:SelettoreEvento x:Name="selettoreEvento1" DataContext="{Binding selettoreEventoViewModel}"					 
-								 Grid.Row="0" Grid.Column="2"
-								 possoCreare="True"  />
+            <GroupBox Header="Eventi" Grid.Row="0" Grid.Column="2">
+                <lum:SelettoreEvento x:Name="selettoreEvento1" DataContext="{Binding selettoreEventoViewModel}" possoCreare="True"  />
+            </GroupBox>
 
 			<Grid Margin="10,0,10,0" Grid.Row="0" Grid.Column="3" >
 				<Grid.RowDefinitions>
