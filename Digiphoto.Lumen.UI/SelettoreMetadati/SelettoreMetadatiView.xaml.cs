@@ -65,5 +65,23 @@ namespace Digiphoto.Lumen.UI
             ((SelettoreMetadatiViewModel)uc.viewModelBase).fotografieMCW = e.NewValue as MultiSelectCollectionView<Fotografia>;
         }
 
-    }
+		/// <summary>
+		/// Quando spengo la checkbox, spengo la voce selezionata
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void checkBoxEventi_Unchecked( object sender, RoutedEventArgs e ) {
+			
+			((SelettoreMetadatiViewModel)this.DataContext).selettoreEventoMetadato.eventoSelezionato = null;
+			
+		}
+
+		private void checkBoxFasidelGiorno_Unchecked( object sender, RoutedEventArgs e ) {
+			fasiDelGiorno.SelectedItem = null;
+		}
+
+		private void checkDidascalia_Unchecked( object sender, RoutedEventArgs e ) {
+			didascalia.Text = null;
+		}
+	}
 }
