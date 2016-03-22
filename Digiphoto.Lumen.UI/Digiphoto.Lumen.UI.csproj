@@ -329,6 +329,7 @@
       <DependentUpon>PanAndZoomWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pubblico\GestoreFinestrePubbliche.cs" />
+    <Compile Include="Pubblico\SlideShowImageConverter.cs" />
     <Compile Include="Pubblico\SnapshotPubblicoViewModel.cs" />
     <Compile Include="Pubblico\SnapshotPubblicoWindow.xaml.cs">
       <DependentUpon>SnapshotPubblicoWindow.xaml</DependentUpon>
