@@ -9,6 +9,13 @@ using System.Windows.Media;
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.UI.Pubblico.GestioneGeometria;
 using Digiphoto.Lumen.UI.ScreenCapture;
+using Digiphoto.Lumen.Model;
+using Digiphoto.Lumen.Util;
+using Digiphoto.Lumen.Applicazione;
+using Digiphoto.Lumen.Servizi.Io;
+using Digiphoto.Lumen.Imaging;
+using System.Windows.Media.Imaging;
+using Digiphoto.Lumen.Imaging.Wic;
 
 namespace Digiphoto.Lumen.UI.Pubblico {
 
@@ -199,6 +206,25 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			get;
 			set;
 		}
+
+		/// <summary>
+		/// Quando lavoro con una singola foto, se vado sullo schermo del pubblico,
+		/// devo fare vedere la foto più bella che ho (cioè quella grande)
+		/// Il problema è che la foto grande, potrebbe ancora non essere stata calcolata
+		/// </summary>
+		/// <param name="fotografia"></param>
+		public void eseguiSnapshotSuFinestraPubblica( Fotografia fotografia ) {
+
+			IdrataTarget quale = AiutanteFoto.qualeImmagineDaStampare( fotografia );
+
+			AiutanteFoto.idrataImmagineDaStampare( fotografia );
+
+			IImmagine immagine = AiutanteFoto.getImmagineFoto( fotografia, quale );
+
+			forseApriSnapshotPubblicoWindow();
+			
+			snapshotPubblicoViewModel.snapshotImageSource = ((ImmagineWic)immagine).bitmapSource;
+        }
 
 		public void eseguiSnapshotSuFinestraPubblica( Visual sourceVisual, Visual targetVisual ) {
 			eseguiSnapshotSuFinestraPubblica( sourceVisual, targetVisual, true );

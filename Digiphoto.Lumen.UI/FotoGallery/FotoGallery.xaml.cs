@@ -531,9 +531,27 @@ namespace Digiphoto.Lumen.UI {
 			forsePrendoSnapshotPubblico();
 		}
 
+		private void decidiCosaMostrareAlPubblico( bool forzaAperturaWin ) {
+
+			Fotografia fotoSingola = null;
+
+			if( quanteRigheVedo == 1 ) {
+				ScrollViewer myScrollviewer = AiutanteUI.FindVisualChild<ScrollViewer>( LsImageGallery );
+				List<Fotografia> listaFoto = GetVisibleItemsFromListbox( LsImageGallery, LsImageGallery, TestVisibilita.Piena, QuanteVisibilita.SoloPrima );
+				if( listaFoto != null && listaFoto.Count == 1 ) {
+					fotoSingola = listaFoto.First();
+				}
+			}
+
+			if( fotoSingola != null )
+				((App)Application.Current).gestoreFinestrePubbliche.eseguiSnapshotSuFinestraPubblica( fotoSingola );
+			else
+				( (App)Application.Current).gestoreFinestrePubbliche.eseguiSnapshotSuFinestraPubblica( this, this.LsImageGallery, forzaAperturaWin );
+
+		}
 
 		private void buttonTakeSnapshotPubblico_Click( object sender, RoutedEventArgs e ) {
-			((App)Application.Current).gestoreFinestrePubbliche.eseguiSnapshotSuFinestraPubblica( this, this.LsImageGallery );
+			decidiCosaMostrareAlPubblico( true );
 		}
 
 		private void closeSnapshotPubblico_Click( object sender, RoutedEventArgs e ) {
@@ -562,7 +580,7 @@ namespace Digiphoto.Lumen.UI {
 			this.Dispatcher.Invoke(
 				DispatcherPriority.ApplicationIdle,
 				new Action( () => {
-					((App)Application.Current).gestoreFinestrePubbliche.eseguiSnapshotSuFinestraPubblica( this, this.LsImageGallery, false );
+					decidiCosaMostrareAlPubblico( false );
 				} ) );
 
 		}

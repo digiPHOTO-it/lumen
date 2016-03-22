@@ -88,6 +88,12 @@ namespace Digiphoto.Lumen.Util {
 			gis.idrataImmaginiFoto( foto, target, forzatamente );
 		}
 
+		public static IdrataTarget qualeImmagineDaStampare( Fotografia foto ) {
+
+			// Se ho delle correzioni, allora devo usare il file Risultante. Se non ho modifiche, allora uso l'originale.
+			IdrataTarget quale = (foto.correzioniXml == null ? IdrataTarget.Originale : IdrataTarget.Risultante);
+			return quale;
+		}
 
 		/// <summary>
 		/// Devo stampare la foto.
@@ -99,8 +105,7 @@ namespace Digiphoto.Lumen.Util {
 		/// <returns>il nome del file interessato su disco</returns>
 		public static string idrataImmagineDaStampare( Fotografia foto ) {
 
-			// Se ho delle correzioni, allora devo usare il file Risultante. Se non ho modifiche, allora uso l'originale.
-			IdrataTarget quale = (foto.correzioniXml == null ? IdrataTarget.Originale : IdrataTarget.Risultante);
+			IdrataTarget quale = qualeImmagineDaStampare( foto );
 
 			// Ho delle correzioni che non sono ancora state applicate. Lo faccio adesso.
 			if( foto.imgRisultante == null && foto.correzioniXml != null ) {
@@ -337,6 +342,24 @@ namespace Digiphoto.Lumen.Util {
 		}
 
 
+		public static IImmagine getImmagineFoto( Fotografia f, IdrataTarget quale ) {
+
+			IImmagine immagine = null;
+
+			switch( quale ) {
+				case IdrataTarget.Originale:
+					immagine = f.imgOrig;
+					break;
+				case IdrataTarget.Risultante:
+					immagine = f.imgRisultante;
+					break;
+				case IdrataTarget.Provino:
+					immagine = f.imgProvino;
+					break;
+			}
+
+			return immagine;
+		}
 
 
 	}
