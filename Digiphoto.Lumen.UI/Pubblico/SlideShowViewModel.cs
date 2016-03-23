@@ -295,7 +295,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 			stop();
 			this.slideShow = null;
-			this.slidesVisibili.Clear();
+			rilasciaEdAzzeraVisibili();
 			this.numSlideCorrente = 0;
 
 			// Rilancio messaggio di cambio stato
@@ -304,6 +304,26 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 			raiseCambioStatoProperties();
 		}
+
+		/// <summary>
+		/// Se ho delle foto visibili, rilascio la memoria delle foto più pesanti
+		/// poi svuoto la lista
+		/// </summary>
+		void rilasciaEdAzzeraVisibili() {
+			
+			if( slidesVisibili != null ) {
+
+				// Devo rilasciare la memoria delle immagini pesanti precedenti prima di pulire
+				foreach( var slideVisibile in slidesVisibili ) {
+					AiutanteFoto.disposeImmagini( slideVisibile, IdrataTarget.Risultante );
+					AiutanteFoto.disposeImmagini( slideVisibile, IdrataTarget.Originale );
+				}
+
+				slidesVisibili.Clear();
+			}
+		}
+
+
 
 		public void creaShow( ParamCercaFoto paramCercaFoto ) {
 
@@ -373,17 +393,18 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		
 			
 		private void orologio_Tick (object sender, EventArgs e) {
-
+			
 
 			if( eventualePubblicita() == true )
 				return;
-
-
+			
 			// carico la collezione delle slide visibili andando avanti di una pagina
 			if( slidesVisibili == null )
 				slidesVisibili = new ObservableCollection<Fotografia>();
-			else
-				slidesVisibili.Clear();
+			else {
+				// Prima di azzerare la lista, libero la memoria delle precedenti
+				rilasciaEdAzzeraVisibili();
+			}
 
 			int conta = 0;
 
