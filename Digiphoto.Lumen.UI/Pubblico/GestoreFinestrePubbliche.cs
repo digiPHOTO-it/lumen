@@ -207,13 +207,16 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			set;
 		}
 
-		/// <summary>
-		/// Quando lavoro con una singola foto, se vado sullo schermo del pubblico,
-		/// devo fare vedere la foto più bella che ho (cioè quella grande)
-		/// Il problema è che la foto grande, potrebbe ancora non essere stata calcolata
-		/// </summary>
-		/// <param name="fotografia"></param>
-		public void eseguiSnapshotSuFinestraPubblica( Fotografia fotografia ) {
+        /// <summary>
+        /// Quando lavoro con una singola foto, se vado sullo schermo del pubblico,
+        /// devo fare vedere la foto più bella che ho (cioè quella grande)
+        /// Il problema è che la foto grande, potrebbe ancora non essere stata calcolata
+        /// </summary>
+        /// <param name="fotografia"></param>
+        /// 
+		public void eseguiSnapshotSuFinestraPubblica( Fotografia fotografia )
+        {
+            FotoDisposeUtils.Instance().DisposeFotografia(fotografia);
 
 			IdrataTarget quale = AiutanteFoto.qualeImmagineDaStampare( fotografia );
 
@@ -264,7 +267,9 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 				_slideShowWindow.Closed -= chiusoSlideShowWindow;
 				_slideShowWindow = null;
 			}
-		}
+
+            FormuleMagiche.attendiGcFinalizers();
+        }
 
 		public void chiusoSnapshotPubblicoWindow( object sender, EventArgs e ) {
 			_snapshotPubblicoWindow.Closed -= chiusoSnapshotPubblicoWindow;
@@ -273,7 +278,46 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			// Se ho aperto lo ss, lo riporto in primo piano.
 			if( _slideShowWindow != null )
 				_slideShowWindow.Topmost = true;
+
+            FormuleMagiche.attendiGcFinalizers();
 		}
 
 	}
+
+    public class FotoDisposeUtils
+    {
+        private static FotoDisposeUtils _instance = null;
+
+        private Fotografia _fotografiaCorrente = null;
+        private FotoDisposeUtils()
+        {
+
+        }
+
+        public static FotoDisposeUtils Instance()
+        {
+            if (_instance == null)
+            {
+                _instance = new FotoDisposeUtils();
+            }
+            return _instance;
+        }
+
+        public void DisposeFotografia(Fotografia fotografia)
+        {
+            if (_fotografiaCorrente == null)
+            {
+                _fotografiaCorrente = fotografia;
+            }
+
+            if (_fotografiaCorrente != null && !_fotografiaCorrente.Equals(fotografia))
+            {
+
+                AiutanteFoto.disposeImmagini(_fotografiaCorrente, IdrataTarget.Risultante);
+                AiutanteFoto.disposeImmagini(_fotografiaCorrente, IdrataTarget.Originale);
+                _fotografiaCorrente = fotografia;
+            }
+
+        }
+    }
 }
