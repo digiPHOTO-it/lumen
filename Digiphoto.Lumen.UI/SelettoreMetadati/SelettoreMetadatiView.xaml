@@ -87,8 +87,8 @@
 
 			<Separator />
 
-			<Button Command="{Binding eliminareMetadatiCommand}" Style="{StaticResource styleButtonDelTag}" />
-			<Separator />
+			<!--Button Command="{Binding eliminareMetadatiCommand}" Style="{StaticResource styleButtonDelTag}" /-->
+			<!--Separator /-->
 			<Button Command="{Binding applicareMetadatiCommand}" Style="{StaticResource styleButtonSaveTag}" />
         </StackPanel>
 
