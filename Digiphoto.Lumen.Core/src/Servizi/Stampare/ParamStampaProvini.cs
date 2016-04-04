@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ComponentModel;
+using Digiphoto.Lumen.Core.Servizi.Stampare;
 
 namespace Digiphoto.Lumen.Servizi.Stampare
 {
@@ -41,6 +42,8 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 				}
 			}
 		}
+
+		public Margini margini { get; set; }
 
 		private int _numeroRighe;
 		public int numeroRighe
@@ -113,6 +116,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 			this.autoRuota = true;
 			this.rompePerGiorno = true;
 			this.numCopie = 1;
+			this.margini = new Margini();
 		}
 
 		public override string ToString()

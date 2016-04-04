@@ -6,12 +6,12 @@ using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Servizi.Vendere;
 using System.IO;
 using System.ComponentModel;
+using Digiphoto.Lumen.Core.Servizi.Stampare;
 
 namespace Digiphoto.Lumen.Config
 {
     public sealed class LastUsedConfigLumen : INotifyPropertyChanged
     {
-
 		public LastUsedConfigLumen() {
 		}
 
@@ -32,6 +32,11 @@ namespace Digiphoto.Lumen.Config
 			set;
 		}
 
+		public Margini marginiStampaProvini {
+			get;
+			set;
+		}
+		
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		// Create the OnPropertyChanged method to raise the event

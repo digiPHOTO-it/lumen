@@ -1368,8 +1368,14 @@ namespace Digiphoto.Lumen.UI {
 				// Azzera e fa partire le selezionate
 				slideShowViewModel.creaShow( creaListaFotoSelezionate() );
 			} else if( modo == "Tutte" ) {
+
 				completaParametriRicerca();
+
 				ParamCercaFoto copiaParam = paramCercaFoto.ShallowCopy();
+
+				// Nei parametri che mi passano, è indicata anche la paginazione. Nello ss non devo tenere conto della paginazione
+				copiaParam.paginazione = null;
+
 				slideShowViewModel.creaShow( copiaParam );
 			} else {
 				throw new ArgumentOutOfRangeException( "modo slide show" );

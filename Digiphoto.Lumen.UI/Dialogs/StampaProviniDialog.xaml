@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
         Title="StampaProviniDialog" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-		d:DesignHeight="570" d:DesignWidth="504" SizeToContent="WidthAndHeight" ResizeMode="NoResize"
+		d:DesignHeight="770" d:DesignWidth="504" SizeToContent="WidthAndHeight" ResizeMode="NoResize"
 		Background="#362A24"
 		WindowStartupLocation="CenterOwner"
 		>
@@ -22,7 +22,7 @@
                     <Label Content="{Binding Path=totaleFotoSelezionate}" HorizontalContentAlignment="Right" FontSize="18" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <RadioButton Content="Tutte le foto nella Gallery" Name="StampaTuttaLaGallery" IsChecked="{Binding Path=stampaTuttaLaGallery}" FontSize="18" Width="260" />
+                    <RadioButton Content="Tutte le foto nella Pagina" Name="StampaTuttaLaGallery" IsChecked="{Binding Path=stampaTuttaLaGallery}" FontSize="18" Width="260" />
                     <Label Content="N°" VerticalContentAlignment="Center" FontSize="18" />
                     <Label Content="{Binding Path=totoleFotoGallery}" HorizontalContentAlignment="Right" FontSize="18" />
                 </StackPanel>
@@ -31,20 +31,52 @@
         </GroupBox>
 
         <GroupBox DockPanel.Dock="Bottom" >
-            <StackPanel Margin="4">
-                <Label Content="- SELEZIONARE IL FORMATO CARTA PER STAMPARE -"  VerticalAlignment="Top" HorizontalAlignment="Center" Background="Yellow" Margin="4" Foreground="Black" />
-                <GroupBox Header="Formato Carta" >
-                    <ListBox
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="190" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Canvas Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left"  >
+                    <Label Content="Margini" Canvas.Top="38" Canvas.Left="69" Background="Gray" />
+
+                    <Label Content="&#9668; Sx" FontFamily="arial" Canvas.Left="1" Canvas.Top="40" />
+                    <TextBox Width="24" Canvas.Left="40" Canvas.Top="40"  
+							 Text="{Binding Path=paramStampaProvini.margini.left}"  />
+
+                    <Label Content="Dx &#9658;" FontFamily="arial" Canvas.Left="154" Canvas.Top="40" />
+                    <TextBox Width="24" Canvas.Left="130" Canvas.Top="40"  
+							 Text="{Binding Path=paramStampaProvini.margini.right}" />
+
+                    <Label Content="&#9650; Su" FontFamily="arial" HorizontalContentAlignment="Right" Canvas.Left="60" Canvas.Top="6" />
+                    <TextBox Width="24" Canvas.Left="105" Canvas.Top="6"  
+							 Text="{Binding Path=paramStampaProvini.margini.top}" Margin="0" />
+
+                    <Label Content="&#9660; Giu" FontFamily="arial" Canvas.Left="98" Canvas.Top="72" HorizontalContentAlignment="Right" />
+                    <TextBox Width="24" Canvas.Left="69" Canvas.Top="78"  
+							 Text="{Binding Path=paramStampaProvini.margini.bottom}" Margin="0" />
+
+                </Canvas>
+
+                <StackPanel Margin="4" Grid.Row="0" Grid.Column="1">
+                    <Label Content="- SELEZIONARE IL FORMATO CARTA PER STAMPARE -"  VerticalAlignment="Top" HorizontalAlignment="Center" Background="Yellow" Margin="4" Foreground="Black" />
+                    <GroupBox Header="Formato Carta" >
+                        <ListBox
 				        ItemsSource="{Binding stampantiAbbinate}" 
 				        ItemsPanel="{DynamicResource listaPulsantiDiStampaItemsPanelTemplate}" 
                         ItemTemplate="{StaticResource pulsanteDiStampaTemplate}"
 				        ScrollViewer.VerticalScrollBarVisibility="Disabled"
 				        ScrollViewer.HorizontalScrollBarVisibility="Auto"
 						>
-                    </ListBox>
-                </GroupBox>
-                <Button Content="ANNULLA" Command="{Binding annullaCommand}" Width="160" Margin="4" HorizontalAlignment="Center"/>
-            </StackPanel>
+                        </ListBox>
+                    </GroupBox>
+                    <Button Content="ANNULLA" Command="{Binding annullaCommand}" Width="160" Margin="4" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
         </GroupBox>
 
         <GroupBox DockPanel.Dock="Bottom" Header="Opzioni" >
@@ -62,7 +94,7 @@
                 <TextBox Text="{Binding Path=paramStampaProvini.intestazione,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" MinWidth="100" Grid.Row="1" Grid.Column="0" />
 
                 <CheckBox IsChecked="{Binding Path=paramStampaProvini.macchiaProvini}" IsEnabled="{Binding possoModificareWaterMark}" Grid.Row="0" Grid.Column="2">
-                    <TextBox Text="Applica water-mark (sporca provini)" />
+                    <TextBox Text="Applica water-mark (sporca provini)" Margin="0" />
                 </CheckBox>
                 <CheckBox IsChecked="{Binding Path=paramStampaProvini.rompePerGiorno}" Grid.Row="1" Grid.Column="2" ToolTip="Salto pagina al cambio di giornata">
                     <TextBox Text="Cambio pagina per giorno" />

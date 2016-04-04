@@ -24,9 +24,11 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( ProviniDocPaginator ) );
 
-		public ProviniDocPaginator( LavoroDiStampaProvini lsp ) : base() {
+		public ProviniDocPaginator( LavoroDiStampaProvini lsp, Size pageSize ) : base() {
 
 			this.lavoroDiStampaProvini = lsp;
+			this.pageSize = pageSize;
+
 			numFotPerPag = lavoroDiStampaProvini.param.numeroRighe * lavoroDiStampaProvini.param.numeroColonne;
 
 			pageCount = calcolaNumeroPagine();
@@ -57,7 +59,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 					// Se cambia giorno, allora salto pagina...
 					if( foto.giornata != ggPrec && ggPrec != DateTime.MinValue )
 						saltoPag = true;
-		
+
 					// Se nello stesso giorno supero il num di foto x giorno...
 					if( ++contaFotoStessoGiorno > numFotPerPag )
 						saltoPag = true;
@@ -81,16 +83,19 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 
 		private void inizializza() {
 
-			if( lavoroDiStampaProvini.param.numeroRighe > 0 && lavoroDiStampaProvini.param.numeroColonne > 0 ) {
-				sizeLatoH = (int)((this.PageSize.Height - testataH) / lavoroDiStampaProvini.param.numeroRighe);
+			larghezzaEffettiva = this.PageSize.Width - lavoroDiStampaProvini.param.margini.left - lavoroDiStampaProvini.param.margini.right;
+            altezzaEffettiva = this.PageSize.Height - lavoroDiStampaProvini.param.margini.top - lavoroDiStampaProvini.param.margini.bottom;
 
-				sizeLatoW = (int)(this.PageSize.Width / lavoroDiStampaProvini.param.numeroColonne);
+			if( lavoroDiStampaProvini.param.numeroRighe > 0 && lavoroDiStampaProvini.param.numeroColonne > 0 ) {
+				sizeLatoH = (int)((altezzaEffettiva - testataH) / lavoroDiStampaProvini.param.numeroRighe);
+
+				sizeLatoW = (int)(larghezzaEffettiva / lavoroDiStampaProvini.param.numeroColonne);
 
 				numFotPerPag = lavoroDiStampaProvini.param.numeroRighe * lavoroDiStampaProvini.param.numeroColonne;
 			} else {
-				double volume = (this.PageSize.Width) * (this.PageSize.Height - testataH);
+				double volume = (larghezzaEffettiva) * (altezzaEffettiva - testataH);
 				double volumeProvino = volume / lavoroDiStampaProvini.fotografie.Count;
-				double c = this.PageSize.Width / (this.PageSize.Height - testataH);
+				double c = larghezzaEffettiva / (altezzaEffettiva - testataH);
 
 				// Utilizzo le foto con il lato lungo
 				sizeLatoW = (int)Math.Sqrt( volumeProvino / c );
@@ -98,13 +103,13 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 				double volumeProvino2 = sizeLatoH * sizeLatoW;
 				double errore = volumeProvino - volumeProvino2;
 
-				int numFotH = (int)Math.Ceiling( (this.PageSize.Height - testataH) / sizeLatoH );
+				int numFotH = (int)Math.Ceiling( (altezzaEffettiva - testataH) / sizeLatoH );
 
-				int numFotW = (int)Math.Ceiling( this.PageSize.Width / sizeLatoW );
+				int numFotW = (int)Math.Ceiling( larghezzaEffettiva / sizeLatoW );
 
-				sizeLatoH = (int)((this.PageSize.Height - testataH) / numFotH);
+				sizeLatoH = (int)((altezzaEffettiva - testataH) / numFotH);
 
-				sizeLatoW = (int)(this.PageSize.Width / numFotW);
+				sizeLatoW = (int)(larghezzaEffettiva / numFotW);
 			}
 
 			// --
@@ -134,34 +139,28 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 		private int sizeLatoH = Configurazione.infoFissa.pixelProvino;
 		private int sizeLatoW = Configurazione.infoFissa.pixelProvino;
 		private bool inizializzato = false;
-		private bool usoGrande;  
-
-
+		private bool usoGrande;
+		private double larghezzaEffettiva;      // Questa è la larghezza del canvas che contiente le foto.
+		private double altezzaEffettiva;    // Questa è la larghezza del canvas che contiente le foto.
+	
 
 		public override DocumentPage GetPage( int pageNumber ) {
 
 			if( !inizializzato )
 				inizializza();
 
-		    rilasciaRisorsePaginaPrecendete( pageNumber );
-            /*
-			FixedPage pageContent = new FixedPage();
-			pageContent.Width = this.PageSize.Width;
-			pageContent.Height = this.PageSize.Height;
-			pageContent.Measure( this.PageSize );
-			pageContent.VerticalAlignment = VerticalAlignment.Center;
-			pageContent.HorizontalAlignment = HorizontalAlignment.Center;
-            */
+			rilasciaRisorsePaginaPrecendete( pageNumber );
 
 			// Ricavo le foto da stampare
 			var fotos = ricavaFotoDellaPagina( pageNumber );
 
-
+			// Creo il contenitore di tutte le foto
 			Canvas canvas = new Canvas();
 			canvas.Background = new SolidColorBrush( Colors.Transparent );
-			canvas.Width = this.PageSize.Width;
-            canvas.Height = this.PageSize.Height;
-            canvas.HorizontalAlignment = HorizontalAlignment.Left;
+
+			canvas.Width = larghezzaEffettiva;
+			canvas.Height = altezzaEffettiva;
+			canvas.HorizontalAlignment = HorizontalAlignment.Left;
 			canvas.VerticalAlignment = VerticalAlignment.Top;
 
 			double x = 1;
@@ -176,17 +175,15 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 				aggiungiImmagineAlCanvas( canvas, foto, x, y );
 				x++;
 			}
-			//pageContent.Children.Add( canvas );
 
-			//pageContent.Arrange( new System.Windows.Rect( new Point( 0, 0 ), PageSize ) );
+			Size sizeEffettiva = new Size( larghezzaEffettiva, altezzaEffettiva );
+			Point origine = new Point( lavoroDiStampaProvini.param.margini.left, lavoroDiStampaProvini.param.margini.top );
+            Rect rectEffettivo = new Rect( origine, sizeEffettiva );
+			canvas.Arrange( rectEffettivo );
+			canvas.UpdateLayout();
 
-            canvas.Arrange(new System.Windows.Rect(new Point(0, 0), PageSize));
-            canvas.UpdateLayout();
-            //PageContent page1Content = new PageContent();
-            //page1Content.Child = pageContent;
-
-            DocumentPage documentPage = new DocumentPage(canvas);
-            return documentPage;
+			DocumentPage documentPage = new DocumentPage( canvas, this.pageSize, Rect.Empty, rectEffettivo );
+			return documentPage;
 		}
 
 		private IEnumerable<Fotografia> ricavaFotoDellaPagina( int paginaDaStampare ) {
@@ -204,7 +201,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 				foreach( var foto in lavoroDiStampaProvini.fotografie ) {
 
 					bool saltoPag = false;
-				
+
 					// Se cambia giorno, allora salto pagina...
 					if( foto.giornata != ggPrec && ggPrec != DateTime.MinValue )
 						saltoPag = true;
@@ -260,9 +257,9 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 
 			// Qualche cabala + incantesimi
 			FormuleMagiche.rilasciaMemoria();
-// Dopo il passaggio a .net 4.6 e sqlite aggiornato, questo non funziona più e si pianta
-//			FormuleMagiche.attendiGcFinalizers();
-//			FormuleMagiche.rilasciaMemoria();
+			// Dopo il passaggio a .net 4.6 e sqlite aggiornato, questo non funziona più e si pianta
+			//			FormuleMagiche.attendiGcFinalizers();
+			//			FormuleMagiche.rilasciaMemoria();
 		}
 
 		public override int PageCount {
@@ -284,12 +281,12 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 				IImmagine provino;
 
 				if( usoGrande ) {
-					
+
 					AiutanteFoto.idrataImmagineDaStampare( foto );
 					provino = AiutanteFoto.idrataImmagineGrande( foto );
 
 					if( Configurazione.UserConfigLumen.tecSogliaStampaProvini == -3 ) {
-	
+
 						IGestoreImmagineSrv g = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
 						IImmagine provino2 = g.creaProvino( provino, 1000 );
 						provino = (IImmagine)provino2.Clone();
@@ -334,7 +331,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 				// Non rilancio l'eccezione perché voglio continuare a stampare
 				_giornale.Error( "Impossibile caricare immagime della foto: " + foto, ee );
 			}
-			 
+
 			eventualiStampigli( canvas, x, y, foto );
 		}
 
@@ -344,8 +341,8 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 		};
 		private SolidColorBrush coloreWaterMarkBg = new SolidColorBrush( Colors.White );
 		// Stampigli 
-		private SolidColorBrush coloreStampigliBg = new SolidColorBrush(Colors.White);
-		private SolidColorBrush coloreStampigliFg = new SolidColorBrush(Colors.Black);
+		private SolidColorBrush coloreStampigliBg = new SolidColorBrush( Colors.White );
+		private SolidColorBrush coloreStampigliFg = new SolidColorBrush( Colors.Black );
 		// Intestazione striscia
 		private SolidColorBrush coloreHeaderBg = new SolidColorBrush( Colors.Cyan );
 		private SolidColorBrush coloreHeaderFg = new SolidColorBrush( Colors.Black );
@@ -368,12 +365,12 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 				StringBuilder titolo = new StringBuilder();
 				if( lavoroDiStampaProvini.param.rompePerGiorno )
 					titolo.Append( foto.giornata.Date.ToString( "D" ) );
-				
-				if( titolo.Length > 0 && string.IsNullOrEmpty(this.lavoroDiStampaProvini.param.intestazione) == false )
+
+				if( titolo.Length > 0 && string.IsNullOrEmpty( this.lavoroDiStampaProvini.param.intestazione ) == false )
 					titolo.Append( " - " );
 				titolo.Append( this.lavoroDiStampaProvini.param.intestazione );
 
-				if( titolo.Length > 0 && string.IsNullOrEmpty(Configurazione.infoFissa.descrizPuntoVendita) == false )
+				if( titolo.Length > 0 && string.IsNullOrEmpty( Configurazione.infoFissa.descrizPuntoVendita ) == false )
 					titolo.Append( " - " );
 				titolo.Append( Configurazione.infoFissa.descrizPuntoVendita );
 
@@ -423,8 +420,8 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 				//textMacchiaProvini.SetValue(Canvas.LeftProperty, riquadroL + 1);
 				//Centro il water-mark su entrambi gli assi!!
 
-				textMacchiaProvini.SetValue(Canvas.TopProperty, (Double)(sizeLatoH * (y)) - ((riquadroH / 2) + (textMacchiaProvini.FontSize / 2) - testataH));
-				textMacchiaProvini.SetValue(Canvas.LeftProperty, (Double)(riquadroL + (sizeLatoW / 2 - MeasureString(textMacchiaProvini).Width / 2) + 1));
+				textMacchiaProvini.SetValue( Canvas.TopProperty, (Double)(sizeLatoH * (y)) - ((riquadroH / 2) + (textMacchiaProvini.FontSize / 2) - testataH) );
+				textMacchiaProvini.SetValue( Canvas.LeftProperty, (Double)(riquadroL + (sizeLatoW / 2 - MeasureString( textMacchiaProvini ).Width / 2) + 1) );
 				canvas.Children.Add( textMacchiaProvini );
 			}
 
@@ -432,7 +429,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 			if( true ) {
 				TextBlock textGiorno = new TextBlock();
 				textGiorno.Text = foto.giornata.ToString( "d" );
-				textGiorno.FontSize = Math.Max( 9, sizeLatoH / 30); // 30pt text
+				textGiorno.FontSize = Math.Max( 9, sizeLatoH / 30 ); // 30pt text
 				textGiorno.Foreground = coloreStampigliFg;
 				textGiorno.Background = coloreStampigliBg;
 				textGiorno.SetValue( Canvas.TopProperty, (Double)(sizeLatoH * (y)) - 2 * textGiorno.FontSize + testataH );
@@ -495,7 +492,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Documents {
 
 		public override Size PageSize {
 			get {
-				return pageSize;				
+				return pageSize;
 			}
 			set {
 				this.pageSize = value;

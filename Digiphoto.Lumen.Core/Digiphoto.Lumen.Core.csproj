@@ -260,6 +260,7 @@
     <Compile Include="src\Servizi\Stampare\IInformatore.cs" />
     <Compile Include="src\Servizi\Stampare\LavoroDiStampaFoto.cs" />
     <Compile Include="src\Servizi\Stampare\LavoroDiStampaProvini.cs" />
+    <Compile Include="src\Servizi\Stampare\Margini.cs" />
     <Compile Include="src\Servizi\Stampare\ParamStampa.cs" />
     <Compile Include="src\Servizi\Stampare\ParamStampaProvini.cs" />
     <Compile Include="src\Servizi\Stampare\StampanteAbbinata.cs" />
