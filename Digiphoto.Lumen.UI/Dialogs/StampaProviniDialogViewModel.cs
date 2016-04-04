@@ -6,6 +6,7 @@ using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Servizi.Stampare;
 using Digiphoto.Lumen.UI.Mvvm;
 using System.Windows.Input;
+using Digiphoto.Lumen.Core.Servizi.Stampare;
 
 namespace Digiphoto.Lumen.UI.Dialogs
 {
@@ -23,6 +24,12 @@ namespace Digiphoto.Lumen.UI.Dialogs
 			paramStampaProvini.numeroColonne = Configurazione.UserConfigLumen.numColoneProvini;
 			paramStampaProvini.numeroRighe = Configurazione.UserConfigLumen.numRigheProvini;
 			paramStampaProvini.macchiaProvini = Configurazione.UserConfigLumen.macchiaProvini;
+
+			// carico i margini dai Last Used (se presenti)
+			if( Configurazione.LastUsedConfigLumen.marginiStampaProvini != null )
+				paramStampaProvini.margini = Configurazione.LastUsedConfigLumen.marginiStampaProvini;
+			else
+				paramStampaProvini.margini = new Margini( 24, 24, 4, 4 );  // valori di default per la prima volta
 
 			ricreaMatriceEsempio();
 		}
@@ -142,6 +149,8 @@ namespace Digiphoto.Lumen.UI.Dialogs
 			}
 		}
 
+		public int margineSinistro { get; set; }
+
 		#endregion Proprietà
 
 		#region Metodi
@@ -177,12 +186,27 @@ namespace Digiphoto.Lumen.UI.Dialogs
 
 			if (procediPure)
 			{
+				// Salvo la configurazioneLast-Used con i margini di stampa
+				salvaLastUsedMargini( paramStampaProvini.margini );
+
 				StampanteAbbinata stampanteAbbinata = (StampanteAbbinata)objStampanteAbbinata;
 				paramStampaProvini.formatoCarta = stampanteAbbinata.FormatoCarta;
 				paramStampaProvini.nomeStampante = stampanteAbbinata.StampanteInstallata.NomeStampante;
 				stampaProviniDialog.DialogResult = true;
 				stampaProviniDialog.Hide();
 			}
+		}
+
+		private void salvaLastUsedMargini( Margini margini ) {
+
+			Configurazione.LastUsedConfigLumen.marginiStampaProvini = margini;
+
+			try {
+				Configurazione.SalvaLastUsedConfig();
+			} catch( Exception ee ) {
+				_giornale.Warn( "Salva Last Used margini provini", ee );
+			}
+
 		}
 
 		private void updateQuantitaColonneCommand(object param)

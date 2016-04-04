@@ -328,7 +328,12 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		public void creaShow( ParamCercaFoto paramCercaFoto ) {
 
 			this.slideShow = new SlideShowAutomatico( paramCercaFoto );
-			this.slideShow.sostituisciFoto( fotoExplorerSrv.fotografie );
+
+			// Quindi devo eseguire la ricerca nuovamente (appunto perché nella gallery ho un sottoinsieme paginato)
+			IRicercatoreSrv ricercaSrv = LumenApplication.Instance.getServizioAvviato<IRicercatoreSrv>();
+			var fotografie = ricercaSrv.cerca( paramCercaFoto );
+			this.slideShow.sostituisciFoto( fotografie );
+
 			creaShow();
 		}
 

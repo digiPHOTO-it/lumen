@@ -115,9 +115,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 
 
 						// Ora creo il documento che andrò a stampare.
-						using( ProviniDocPaginator documentPaginator = new ProviniDocPaginator( _lavoroDiStampa ) ) {
-
-							documentPaginator.PageSize = new Size( dialog.PrintableAreaWidth, dialog.PrintableAreaHeight );
+						using( ProviniDocPaginator documentPaginator = new ProviniDocPaginator( _lavoroDiStampa, areaStampabile ) ) {
 
 							//
 							// ----- STAMPA per davvero
