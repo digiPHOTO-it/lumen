@@ -234,7 +234,7 @@
                         <Style TargetType="{x:Type Image}">
 						<Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/foto-gia-stampata-16x16.png" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=contaStampata}" Value="0" >
+                                <DataTrigger Binding="{Binding Path=contaStampata, Mode=OneWay}" Value="0" >
                                     <Setter Property="Visibility" Value="Hidden" />
                                 </DataTrigger>
                             </Style.Triggers>

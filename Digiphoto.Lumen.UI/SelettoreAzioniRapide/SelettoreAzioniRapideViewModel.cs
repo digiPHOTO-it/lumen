@@ -405,6 +405,10 @@ namespace Digiphoto.Lumen.UI
 				{
 					// quando tutto va bene non diciamo niente. Segnaliamo solo gli errori.
 					// dialogProvider.ShowMessage("Carrello venduto Correttamente", "Avviso");
+                    foreach(Fotografia foto in fotoSelezionate)
+                    {
+                        foto.contaStampata++;
+                    }
 				}
 				else
 				{
