@@ -18,13 +18,35 @@ namespace Digiphoto.Lumen.Model
     	public System.Guid id { get; set; }
     	public string nomeFile { get; set; }
     	public Nullable<System.DateTime> dataOraScatto { get; set; }
-    	public string didascalia { get; set; }
+		private string _didascalia;
+		public string didascalia {
+			get {
+				return _didascalia;
+			}
+			set {
+				if( value != _didascalia ) {
+					_didascalia = value;
+					OnPropertyChanged( "didascalia" );
+				}
+			}
+		}
     	public System.DateTime dataOraAcquisizione { get; set; }
     	public int numero { get; set; }
     	public Nullable<short> faseDelGiorno { get; set; }
     	public System.DateTime giornata { get; set; }
     	public string correzioniXml { get; set; }
-    	public short contaStampata { get; set; }
+		private short _contaStampata;
+		public short contaStampata {
+			get {
+				return _contaStampata;
+			}
+			set {
+				if( value != _contaStampata ) {
+					_contaStampata = value;
+					OnPropertyChanged( "contaStampata" );
+				}
+			}
+		}
     	public short contaMasterizzata { get; set; }
     	public Nullable<System.Guid> evento_id { get; set; }
     	public string fotografo_id { get; set; }
