@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Digiphoto.Lumen.UI.Mvvm;
+﻿using Digiphoto.Lumen.UI.Mvvm;
 using System.Windows.Input;
 using Digiphoto.Lumen.Config;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using Digiphoto.Lumen.UI.Pubblico.GestioneGeometria;
 using System.Diagnostics;
+using System;
 
 namespace Digiphoto.Lumen.UI.Pubblico
 {
@@ -49,11 +43,11 @@ namespace Digiphoto.Lumen.UI.Pubblico
 
 			pSSG.fullScreen = cfg.fullScreen;
 
-			//pSSG.slideHeight = cfg.slideHeight;
-			//pSSG.slideWidth = cfg.slideWidth;
+			pSSG.slideHeight = cfg.slideHeight;
+			pSSG.slideWidth = cfg.slideWidth;
 
-			//pSSG.slideLeft = cfg.slideLeft;
-			//pSSG.slideTop = cfg.slideTop;
+			pSSG.slideLeft = cfg.slideLeft;
+			pSSG.slideTop = cfg.slideTop;
 		}
 
 		#endregion
@@ -134,7 +128,8 @@ namespace Digiphoto.Lumen.UI.Pubblico
 			pSSG.slideWidth = Configurazione.UserConfigLumen.slideWidth;
 
 			pSSG.fullScreen = Configurazione.UserConfigLumen.fullScreen;
-		}
+            pSSG.deviceEnum = Configurazione.UserConfigLumen.deviceEnum;
+        }
 
 		private void extendMonitor(){
 			if (pSSG.extendMonitor)
