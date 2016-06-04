@@ -64,14 +64,17 @@ if( 1 == 1 ) {  // TODO
 
 			this.WindowStartupLocation = WindowStartupLocation.Manual;
 
-			_giornale.Debug(String.Format("SlideShow Info:\n DeviceName.{0}, \n workingArea={1}, \n displayResolution={2}, \n isPrimary={3}", scrn.DeviceName, scrn.WorkingArea, scrn.DeviceBounds, scrn.IsPrimary));
+            _giornale.Debug(String.Format("SlideShow Primary Device Info:\n DeviceName.{0}, DeviceEnum.{1},\n workingArea={2}, \n displayResolution={3}", WpfScreen.Primary.DeviceName, WpfScreen.Primary.deviceEnum, WpfScreen.Primary.WorkingArea, WpfScreen.Primary.DeviceBounds));
+
+            _giornale.Debug(String.Format("SlideShow Configuration Device Info:\n DeviceName.{0}, DeviceEnum.{1},\n workingArea={2}, \n displayResolution={3}, \n isPrimary={4}", scrn.DeviceName, scrn.deviceEnum, scrn.WorkingArea, scrn.DeviceBounds, scrn.IsPrimary));
 
 			bool salvaNuoviValori = false;
 
 			if (cfg.deviceEnum != scrn.deviceEnum)
 			{
 				_giornale.Debug("Il monitor impostato non è stato trovato!!!");
-				cfg.deviceEnum = 0;
+
+                cfg.deviceEnum = WpfScreen.Primary.deviceEnum;
 
 				salvaNuoviValori = true;
 			}
@@ -85,10 +88,17 @@ if( 1 == 1 ) {  // TODO
 
 				salvaNuoviValori = true;
 			}
-
-			if (cfg.screenHeight != (int)scrn.WorkingArea.Height || cfg.screenWidth != (int)scrn.WorkingArea.Width)
+            //Se ho messo il full screen resetto i Top e Left
+            if (cfg.fullScreen)
+            {
+                Screen s = (Screen)Screen.AllScreens.GetValue(cfg.deviceEnum);
+                System.Drawing.Rectangle r = s.WorkingArea;
+                cfg.slideTop = r.Top;
+                cfg.slideLeft = r.Left;
+            }
+            else if (cfg.screenHeight != (int)scrn.WorkingArea.Height || cfg.screenWidth != (int)scrn.WorkingArea.Width)
 			{
-				_giornale.Debug("Ricalcolo la geometria dello slideShow in base al nuovo monitor");
+                _giornale.Debug("Ricalcolo la geometria dello slideShow in base al nuovo monitor");
 				_giornale.Debug("*** VALORI VECCHI ***");
 				_giornale.Debug("deviceEnum: " + cfg.deviceEnum);
 				_giornale.Debug("slideHeigth: " + cfg.slideHeight + " slideWidth: " + cfg.slideWidth);
@@ -98,14 +108,18 @@ if( 1 == 1 ) {  // TODO
 				cfg.slideHeight = (int)(cfg.slideHeight * scrn.WorkingArea.Height / cfg.screenHeight);
 				cfg.slideWidth = (int)(cfg.slideWidth * scrn.WorkingArea.Width / cfg.screenWidth);
 
-				cfg.slideTop = cfg.slideTop <= 0 ? 0 : (int)(cfg.slideTop * scrn.WorkingArea.Height / cfg.screenHeight);
-				cfg.slideLeft = cfg.slideLeft <= 0 ? 0 : (int)(cfg.slideLeft * scrn.WorkingArea.Width / cfg.screenWidth);
+                //cfg.slideTop = cfg.slideTop <= 0 ? 0 : (int)(cfg.slideTop * scrn.WorkingArea.Height / cfg.screenHeight);
+                //cfg.slideLeft = cfg.slideLeft <= 0 ? 0 : (int)(cfg.slideLeft * scrn.WorkingArea.Width / cfg.screenWidth);
+                Screen s = (Screen)Screen.AllScreens.GetValue(cfg.deviceEnum);
+                System.Drawing.Rectangle r = s.WorkingArea;
+                cfg.slideTop = r.Top;
+                cfg.slideLeft = r.Left;
 
-				cfg.screenHeight = (int)scrn.WorkingArea.Height;
+                cfg.screenHeight = (int)scrn.WorkingArea.Height;
 				cfg.screenWidth = (int)scrn.WorkingArea.Width;
 
 				_giornale.Debug("*** VALORI RICALCOLATI ***");
-				_giornale.Debug("deviceEnum: " + 0);
+				_giornale.Debug("deviceEnum: " + cfg.deviceEnum);
 				_giornale.Debug("slideHeigth: " + cfg.slideHeight + " slideWidth: " + cfg.slideWidth);
 				_giornale.Debug("screenHeight: " + cfg.screenHeight + " screenWidth: " + cfg.screenWidth);
 				_giornale.Debug("slideTop: " + cfg.slideTop + " slideLeft: " + cfg.slideLeft);
@@ -143,12 +157,12 @@ if( 1 == 1 ) {  // TODO
 				proiettabile = false;
 			}
 
-			if (proiettabile && cfg.deviceEnum == 0 && (cfg.slideHeight + cfg.slideTop > scr.WorkingArea.Height || cfg.slideWidth + cfg.slideLeft > scr.WorkingArea.Width))
+			if (proiettabile && cfg.deviceEnum == WpfScreen.Primary.deviceEnum && (cfg.slideHeight + cfg.slideTop > scr.WorkingArea.Height || cfg.slideWidth + cfg.slideLeft > scr.WorkingArea.Width))
 			{
 				proiettabile = false;
 			}
 
-			if (proiettabile && cfg.deviceEnum >= 1 && (cfg.slideHeight + cfg.slideTop - cfg.slideBoundsY > scr.WorkingArea.Height || cfg.slideWidth + cfg.slideLeft - cfg.slideBoundsX > scr.WorkingArea.Width))
+			if (proiettabile && cfg.deviceEnum != WpfScreen.Primary.deviceEnum && (cfg.slideHeight + cfg.slideTop - cfg.slideBoundsY > scr.WorkingArea.Height || cfg.slideWidth + cfg.slideLeft - cfg.slideBoundsX > scr.WorkingArea.Width))
 			{
 				proiettabile = false;
 			}
