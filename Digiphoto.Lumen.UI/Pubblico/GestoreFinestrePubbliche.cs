@@ -214,8 +214,12 @@ namespace Digiphoto.Lumen.UI.Pubblico {
         /// </summary>
         /// <param name="fotografia"></param>
         /// 
-		public void eseguiSnapshotSuFinestraPubblica( Fotografia fotografia )
-        {
+		public void eseguiSnapshotSuFinestraPubblica( Fotografia fotografia, bool forzaAperturaWin ) {
+
+			// Se la finestra è chiusa e il flag non mi forza l'apertura non faccio niente
+			if( !forzaAperturaWin && _snapshotPubblicoWindow == null )
+				return;
+			
             FotoDisposeUtils.Instance().DisposeFotografia(fotografia);
 
 			IdrataTarget quale = AiutanteFoto.qualeImmagineDaStampare( fotografia );

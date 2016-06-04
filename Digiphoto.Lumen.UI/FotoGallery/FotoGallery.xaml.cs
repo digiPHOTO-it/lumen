@@ -544,7 +544,7 @@ namespace Digiphoto.Lumen.UI {
 			}
 
 			if( fotoSingola != null )
-				((App)Application.Current).gestoreFinestrePubbliche.eseguiSnapshotSuFinestraPubblica( fotoSingola );
+				((App)Application.Current).gestoreFinestrePubbliche.eseguiSnapshotSuFinestraPubblica( fotoSingola, forzaAperturaWin );
 			else
 				( (App)Application.Current).gestoreFinestrePubbliche.eseguiSnapshotSuFinestraPubblica( this, this.LsImageGallery, forzaAperturaWin );
 
