@@ -54,7 +54,44 @@ namespace Digiphoto.Lumen.Database {
 			return forseAttacca<TEntity>( ref entity );
 		}
 
-		public static EntityState getEntityState( object entita  ) {
+		public static bool forseStacca<TEntity>( ref TEntity entity ) where TEntity : class {
+			return forseStacca( ref entity, UnitOfWorkScope.currentDbContext );
+		}
+
+		public static bool forseStacca<TEntity>( ref TEntity entity, DbContext dbContext ) where TEntity : class {
+
+			ObjectContext objContext = ((IObjectContextAdapter)dbContext).ObjectContext;
+			ObjectStateEntry entry;
+
+			// Track whether we need to perform detach
+			bool attached = false;
+			bool trovato = objContext.ObjectStateManager.TryGetObjectStateEntry( entity, out entry );
+
+			if( trovato ) {
+				// Re-attach if necessary
+				attached = entry.State != EntityState.Detached;
+				// Get the discovered entity to the ref
+				entity = (TEntity)entry.Entity;
+			} else {
+				DbEntityEntry dbEE = dbContext.Entry( entity );
+				if( dbEE.State != EntityState.Detached ) {
+					// Attach for the first time
+					attached = true;
+				}
+			}
+
+			if( attached ) {
+				objContext.Detach( entity );
+				// DbSet dbSet = dbContext.Set<TEntity>();
+				// entity = (TEntity)dbSet.Attach( entity );
+				return true;
+			}
+
+			return false;
+		}
+
+
+		public static EntityState getEntityState( object entita ) {
 			return getEntityState( entita, UnitOfWorkScope.currentDbContext );
 		}
 
@@ -70,9 +107,12 @@ namespace Digiphoto.Lumen.Database {
 		}
 
 		public static bool isStatoStaccato( Object entita ) {
-			return getEntityState( entita ) == EntityState.Detached;
+			return getEntityState( entita, UnitOfWorkScope.currentDbContext ) == EntityState.Detached;
 		}
 
+		public static bool isStatoStaccato( Object entita, DbContext dbContext ) {
+			return getEntityState( entita, dbContext ) == EntityState.Detached;
+		}
 
 		public static void Evict( DbContext ctx, Type t, string primaryKeyName, object id ) {
 
@@ -90,8 +130,10 @@ namespace Digiphoto.Lumen.Database {
 					return value.Equals( id );
 				} );
 
-			if( cachedEnt != null )
+			if( cachedEnt != null ) {
 				ctx.Entry( cachedEnt.Entity ).State = EntityState.Detached;
+				var test1 = ctx.Entry( cachedEnt.Entity ).State;
+            }
 		}
 
 

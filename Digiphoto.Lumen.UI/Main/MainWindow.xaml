@@ -23,7 +23,8 @@
 			<!-- Informazioni Utente -->
 			<StatusBarItem Grid.Column="0" Padding="0,0,4,0">
 				<StackPanel Orientation="Horizontal">
-					<Image Source="{Binding Path=ultimaInformazioneUtente.esito,Converter={StaticResource imageSourceConverter}}" Height="16" Width="16" />
+                    <Button Content="R" Command="{Binding eseguireRefreshCommand}" ToolTip="Refresh" />
+                    <Image Source="{Binding Path=ultimaInformazioneUtente.esito,Converter={StaticResource imageSourceConverter}}" Height="16" Width="16" />
 					<ComboBox IsReadOnly="True" ItemsSource="{Binding informazioniUtente,Mode=OneWay}" DisplayMemberPath="testo" SelectedValue="{Binding Path=ultimaInformazioneUtente,Mode=OneWay}" Name="comboBoxHistoryInfo" ToolTip="History messaggi" Style="{StaticResource styleComboBoxHistoryInfo}" />
 				</StackPanel>
 			</StatusBarItem>

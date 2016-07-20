@@ -167,6 +167,7 @@
     <Compile Include="src\Config\ConfigSerializer.cs" />
     <Compile Include="src\Config\LastUsedConfigSerializer.cs" />
     <Compile Include="src\Config\LastUsedConfigLumen.cs" />
+    <Compile Include="src\Eventi\RefreshMsg.cs" />
     <Compile Include="src\Imaging\CalcolatoreAreeRispetto.cs" />
     <Compile Include="src\Imaging\Correzioni\AreaRispetto.cs" />
     <Compile Include="src\Licensing\LicenseNotFoundException.cs" />

@@ -151,6 +151,10 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 				query = query.Where( ff => listaIds.Contains( ff.fotografo.id ) );
 			}
 
+			if( param.idsFotografie != null ) {
+				query = query.Where( ff => param.idsFotografie.Contains( ff.id ) );
+			}
+
 			if (param.numeriFotogrammi != null)
 			{
 				int[] range = FotoRangeUtil.rangeToString(param.numeriFotogrammi);

@@ -3,19 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Digiphoto.Lumen.Model;
-using System.ComponentModel;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Servizi.Ricerca;
-using Digiphoto.Lumen.Eventi;
 using System.Threading;
 using Digiphoto.Lumen.Util;
 using log4net;
 using Digiphoto.Lumen.Core.Database;
 using System.Transactions;
 using Digiphoto.Lumen.Database;
-using System.Data.Entity.Core.Objects;
-using System.Data;
-using MemBus;
+using Digiphoto.Lumen.Servizi.Vendere;
+using Digiphoto.Lumen.Core.src.Eventi;
 
 namespace Digiphoto.Lumen.Servizi.Explorer {
 
@@ -50,10 +47,11 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			}
 		}
 
-		/** Eseguo il caricamento delle foto richieste */
-		public void cercaFoto( ParamCercaFoto param ) {
-
-			// Per prima cosa azzero la gallery corrente e rilascio la memoria eventualmente utilizzata dalle foto
+		/// <summary>
+		//  azzero la gallery corrente e rilascio la memoria eventualmente utilizzata dalle foto
+		/// </summary>
+		private void svuotaGalleryCorrente() {
+			
 			if( fotografie != null ) {
 				foreach( Fotografia f in fotografie )
 					AiutanteFoto.disposeImmagini( f, IdrataTarget.Tutte );
@@ -61,25 +59,34 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 				FormuleMagiche.rilasciaMemoria();
 			}
 			fotografie = null;
+		}
+
+		private void idratareImmaginiGallery() {
+
+			if( fotografie != null ) {
+				bool bloccoTuttoQuindiPeggioro = false;
+				if( bloccoTuttoQuindiPeggioro ) {
+					// Idrato le foto nello stesso thread della UI
+					idrataImmaginiFoto();
+				} else {
+					// idrato le immagini in un thread separato
+					_threadIdrata = new Thread( idrataImmaginiFoto );
+					_threadIdrata.Start();
+				}
+			}
+
+		}
+
+		/** Eseguo il caricamento delle foto richieste */
+		public void cercaFoto( ParamCercaFoto param ) {
+
+			svuotaGalleryCorrente();
 
 			IRicercatoreSrv ricercaSrv = LumenApplication.Instance.getServizioAvviato<IRicercatoreSrv>();
 			fotografie = ricercaSrv.cerca( param );
 
-
-			if( param.idratareImmagini ) {
-				if( fotografie != null ) {
-					bool bloccoTuttoQuindiPeggioro = false;
-					if( bloccoTuttoQuindiPeggioro ) {
-						// Idrato le foto nello stesso thread della UI
-						idrataImmaginiFoto();
-					} else {
-						// idrato le immagini in un thread separato
-						_threadIdrata = new Thread( idrataImmaginiFoto );
-						_threadIdrata.Start();
-					}
-				}
-			}
-
+			if( param.idratareImmagini )
+				idratareImmaginiGallery();
 		}
 
 		/** Idrato in modo asincrono gli attributi delle immagini che ho caricato */
@@ -96,6 +103,9 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 
 			// Lancio un messaggio che dice che è stata portata a termine una nuova ricerca
 			LumenApplication.Instance.bus.Publish( new RicercaModificataMessaggio( this ) );
+
+			// Mando anche un messaggio di refresh per i provini che ho liberato
+			LumenApplication.Instance.bus.Publish( new RefreshMsg( this ) );
 		}
 
 		protected override void Dispose( bool disposing ) {
@@ -170,7 +180,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 					esito = true;
 				} catch( Exception eee ) {
 					esito = false;
-					_giornale.Error("Impossibile salvare il carrello", eee);
+					_giornale.Error("Impossibile modificare metadati", eee);
 				}
 			}
 			return esito;
@@ -243,5 +253,31 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			IRicercatoreSrv ricercaSrv = LumenApplication.Instance.getServizioAvviato<IRicercatoreSrv>();
 			return ricercaSrv.conta( paramCercaFoto );
 		}
+
+		public ParamCercaFoto caricaFotoDalCarrello() {
+
+			IVenditoreSrv venditoreSrv = LumenApplication.Instance.getServizioAvviato<IVenditoreSrv>();
+
+			IEnumerable<Guid> tantiIds = venditoreSrv.carrello.righeCarrello.Where( rr1 => rr1 != null ).Select( rr2 => rr2.fotografia.id );
+
+			ParamCercaFoto param = new ParamCercaFoto();
+
+			/*
+						// Siccome mi arriva una enumeration con possibilita di valori nulli, la devo convertire in un array di elementi certi NON nulli
+						int quanti = tantiIds.Count();
+						List<Guid> lista = new List<Guid>( quanti );
+						foreach( var guid in tantiIds ) {
+							if( guid != null && guid != Guid.Empty )
+								lista.Add( (Guid)guid );
+						}
+
+						param.idsFotografie = lista.ToArray();
+			*/
+			param.idsFotografie = tantiIds.ToArray();
+			cercaFoto( param );
+
+			return param;
+		}
+
 	}
 }

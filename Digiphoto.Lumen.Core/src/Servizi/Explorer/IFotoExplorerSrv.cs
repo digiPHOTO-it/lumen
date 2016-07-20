@@ -25,6 +25,11 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 		IEnumerable<ScaricoCard> loadUltimiScarichiCards();
 
 		int contaFoto( ParamCercaFoto paramCercaFoto );
+
+		/// <summary>
+		/// Carico la gallery recuperando tutte le righe presenti nel carrello (sia stampe che masterizzate)
+		/// </summary>
+		ParamCercaFoto caricaFotoDalCarrello();
 	}
 
 	public class MetadatiFoto {

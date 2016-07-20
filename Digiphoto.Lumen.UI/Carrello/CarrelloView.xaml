@@ -41,6 +41,8 @@
 				<Button Command="{Binding eliminaRigaCommand}" CommandParameter="S" Style="{StaticResource styleCartDelRigaStampate}" />
 
                 <Button Command="{Binding eliminaTutteFotoCommand}" Style="{StaticResource styleCartSvuotare}" />
+
+                <Button Command="{Binding caricareInGalleryCommand}" Style="{StaticResource loadInGalleryStyle}" />
             </ToolBar>
 		</ToolBarTray>
 

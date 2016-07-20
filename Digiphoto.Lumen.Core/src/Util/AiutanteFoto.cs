@@ -42,6 +42,10 @@ namespace Digiphoto.Lumen.Util {
 
 		public static void disposeImmagini( Fotografia foto, IdrataTarget quale ) {
 
+			// evito errori
+			if( foto == null )
+				return;
+
 			if( quale == IdrataTarget.Tutte || quale == IdrataTarget.Originale ) {
 				if( foto.imgOrig != null ) {
 					foto.imgOrig.Dispose();
