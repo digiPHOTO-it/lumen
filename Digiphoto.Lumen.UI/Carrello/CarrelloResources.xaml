@@ -504,6 +504,16 @@
 		</Setter>
 	</Style>
 
+
+    <Style x:Key="loadInGalleryStyle" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
+        <Setter Property="ToolTip" Value="Svuota la gallery&#x0a;carica solo le foto presenti nel carrello&#x0a;in modo da poterle mostrare al cliente." />
+        <Setter Property="Content">
+            <Setter.Value>
+                <Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-to-gallery-48x48.png" Width="48"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="styleCartEliminaCd" TargetType="Button" BasedOn="{StaticResource styleCartButtonGeneric}">
         <Setter Property="ToolTip" Value="Rimuove il dischetto dal carrello" />
         <Setter Property="Content">

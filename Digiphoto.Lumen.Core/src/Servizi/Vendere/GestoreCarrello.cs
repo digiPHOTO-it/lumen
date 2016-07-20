@@ -252,11 +252,20 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			
 			foreach( IncassoFotografo ff in carrello.incassiFotografi ) {
 				mioObjContext.LoadProperty( ff, c => c.fotografo );
+				mioObjContext.Detach( ff.fotografo );
 			}
+
 			foreach( RigaCarrello rr in carrello.righeCarrello ) {
-				mioObjContext.LoadProperty( rr, r => r.fotografia );
-				if( rr.formatoCarta != null )
+
+				if( rr.fotografia != null ) {
+					mioObjContext.LoadProperty( rr, r => r.fotografia );
+					mioObjContext.Detach( rr.fotografia );
+				}
+
+				if( rr.formatoCarta != null ) {
 					mioObjContext.LoadProperty( rr, r => r.formatoCarta );
+					mioObjContext.Detach( rr.formatoCarta );
+				}
 			}
 
 			// Se il prezzo del carrello non è stato cambiato a mano, lo azzero in questo modo se lo risalverò, mi verrà aggiornato il totale nuovamente.

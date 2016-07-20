@@ -25,12 +25,14 @@ using Digiphoto.Lumen.UI.SelettoreAzioniRapide;
 using Digiphoto.Lumen.Core.Collections;
 using Digiphoto.Lumen.Servizi.Scaricatore;
 using System.Collections;
+using Digiphoto.Lumen.Eventi;
+using Digiphoto.Lumen.Core.src.Eventi;
 
 namespace Digiphoto.Lumen.UI {
 
 
 
-	public class FotoGalleryViewModel : ViewModelBase, ISelettore<Fotografia>, IObserver<NuovaFotoMsg>, IObserver<StampatoMsg>, IObserver<ClonaFotoMsg>, IObserver<GestoreCarrelloMsg>, IAzzioniRapide
+	public class FotoGalleryViewModel : ViewModelBase, ISelettore<Fotografia>, IObserver<NuovaFotoMsg>, IObserver<StampatoMsg>, IObserver<ClonaFotoMsg>, IObserver<GestoreCarrelloMsg>, IObserver<RefreshMsg>, IAzzioniRapide
 	{
 		private BackgroundWorker _bkgIdrata;
 
@@ -52,6 +54,9 @@ namespace Digiphoto.Lumen.UI {
             IObservable<GestoreCarrelloMsg> observableGesCarrello = LumenApplication.Instance.bus.Observe<GestoreCarrelloMsg>();
 			observableGesCarrello.Subscribe( this );
 
+			IObservable<RefreshMsg> observableRefresh = LumenApplication.Instance.bus.Observe<RefreshMsg>();
+			observableRefresh.Subscribe( this );
+
 			metadati = new MetadatiFoto();
 
 			// Istanzio i ViewModel dei componenti di cui io sono composto
@@ -63,10 +68,7 @@ namespace Digiphoto.Lumen.UI {
 			selettoreFotografoViewModel = new SelettoreFotografoViewModel();
 			selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel(this);
 
-			paginaAttualeRicerca = 0;
-			totPagineRicerca = 0;
-
-			azzeraParamRicerca();
+			azzerareRicerca();
 
 			dimensioneIconaFoto = 120;  // Valore di default per la grandezza dei fotogrammi da visualizzare.
 
@@ -612,7 +614,6 @@ namespace Digiphoto.Lumen.UI {
 
 					OnPropertyChanged("modoVendita");
 					OnPropertyChanged("stringModoVendita");
-					OnPropertyChanged( "isPossibileModificareCarrello" );
 				}
 			}
 		}
@@ -1119,25 +1120,42 @@ namespace Digiphoto.Lumen.UI {
 
 			// Solo quando premo tasto di ricerca (e non durante la paginazione).
 			if( chiediConfermaSeFiltriVuoti ) {
-
-				totFotoRicerca = fotoExplorerSrv.contaFoto( paramCercaFoto );
-				OnPropertyChanged( "totFotoRicerca" );
-
-				if( totFotoRicerca == 0 ) {
-					totPagineRicerca = 0;
-					paginaAttualeRicerca = 0;  // non ho risultati. Segnalo pag 0/0
-				} else {
-					paginaAttualeRicerca = 1;  // ho dei risultati vado a pag 1
-					if( isGestitaPaginazione ) {
-						var p = Configurazione.UserConfigLumen.paginazioneRisultatiGallery;
-						totPagineRicerca = (short)(((totFotoRicerca - 1) / p) + 1);
-					} else
-						totPagineRicerca = 1;
-				}
+				calcolaPaginazioneIniziale();
 			}
 
 			// Eseguo la ricerca nel database
 			fotoExplorerSrv.cercaFoto( paramCercaFoto );
+
+			postRicerca();
+		}
+
+		/// <summary>
+		/// In base a quante foto ha trovato il servizio,
+		/// imposto le property di paginazione posizionandomi all'inizio.
+		/// Quindi questo avviene solo quando premo il tasto "Ricerca" e non quando sto paginando
+		/// </summary>
+		private void calcolaPaginazioneIniziale() {
+			totFotoRicerca = fotoExplorerSrv.contaFoto( paramCercaFoto );
+			OnPropertyChanged( "totFotoRicerca" );
+
+			if( totFotoRicerca == 0 ) {
+				totPagineRicerca = 0;
+				paginaAttualeRicerca = 0;  // non ho risultati. Segnalo pag 0/0
+			} else {
+				paginaAttualeRicerca = 1;  // ho dei risultati vado a pag 1
+				if( isGestitaPaginazione ) {
+					var p = Configurazione.UserConfigLumen.paginazioneRisultatiGallery;
+					totPagineRicerca = (short)(((totFotoRicerca - 1) / p) + 1);
+				} else
+					totPagineRicerca = 1;
+			}
+		}
+
+		/// <summary>
+		/// Ricreo la collectionview con le fotografie da visualizzare
+		/// lancio in background la idratazione dei provini
+		/// </summary>
+		private void postRicerca() {
 
 			// ricreo la collection-view e notifico che è cambiato il risultato. Le immagini verranno caricate poi
 			fotografieCW = new MultiSelectCollectionView<Fotografia>( fotoExplorerSrv.fotografie );
@@ -1160,6 +1178,7 @@ namespace Digiphoto.Lumen.UI {
 			if( !_bkgIdrata.IsBusy )
 				_bkgIdrata.RunWorkerAsync();
 			// Lasciare come ultima cosa l'idratazione delle foto.
+
 		}
 
 		private bool verificaChiediConfermaRicercaSenzaParametri()
@@ -1358,7 +1377,8 @@ namespace Digiphoto.Lumen.UI {
 
 		}
 
-		private void caricareSlideShow( string modo ) {
+		private void 
+			caricareSlideShow( string modo ) {
 
 			((App)Application.Current).gestoreFinestrePubbliche.forseApriSlideShowWindow();
 
@@ -1411,6 +1431,14 @@ namespace Digiphoto.Lumen.UI {
 				slideShowViewModel.stop();
 			else if( slideShowViewModel.isPaused )
 				slideShowViewModel.start();
+		}
+
+		public void azzerareRicerca() {
+
+			paginaAttualeRicerca = 0;
+			totPagineRicerca = 0;
+
+			azzeraParamRicerca();
 		}
 
 		private void azzeraParamRicerca() {
@@ -1612,6 +1640,13 @@ namespace Digiphoto.Lumen.UI {
 			throw new NotImplementedException();
 		}
 		
+		public void OnNext( RefreshMsg msg ) {
+
+			forseReidrataProvini();
+
+			OnPropertyChanged( "isPossibileModificareCarrello" );
+		}
+
 		public void OnNext(StampatoMsg value)
 		{
 			// TODO forse non serve più ascoltare questo messaggio.
@@ -1635,18 +1670,54 @@ namespace Digiphoto.Lumen.UI {
             List<Fotografia> fotos = fotografie.ToList();
             int index = fotos.IndexOf(fotoOrig) + 1;
             fotos.Insert(index, value.foto);
-            fotografieCW = new MultiSelectCollectionView<Fotografia>(fotos);
-            fotografieCW.SelectionChanged += fotografie_selezioneCambiata;
-            OnPropertyChanged("fotografieCW");
+			ricreaCollectionViewFoto( fotos );
+
+			// TODO ma non basterebbe aggiungere alla CW ???? provare
         }
 
-        public void OnNext( GestoreCarrelloMsg value ) {
+		private void ricreaCollectionViewFoto( List<Fotografia> fotos ) {
+			fotografieCW = new MultiSelectCollectionView<Fotografia>( fotos );
+			fotografieCW.SelectionChanged += fotografie_selezioneCambiata;
+			OnPropertyChanged( "fotografieCW" );
+		}
+
+		private void forseReidrataProvini() {
+
+			foreach( Fotografia f in fotoExplorerSrv.fotografie ) {
+				if( f != null )
+					try {
+						AiutanteFoto.idrataImmaginiFoto( f, IdrataTarget.Provino );
+					} catch( Exception ) {
+					}
+			}
+		}
+
+		
+
+		public void OnNext( GestoreCarrelloMsg value ) {
 			
 			if( value.fase == GestoreCarrelloMsg.Fase.CreatoNuovoCarrello ||
 				value.fase == GestoreCarrelloMsg.Fase.LoadCarrelloSalvato ) {
+
+				forseReidrataProvini();
+
 				OnPropertyChanged( "modoVendita" );
 				OnPropertyChanged( "isPossibileModificareCarrello" );
 			}
+
+			if( value.fase == GestoreCarrelloMsg.Fase.VisualizzareInGallery ) {
+
+				deselezionareTutto();
+
+				azzerareRicerca();
+
+				this.paramCercaFoto = fotoExplorerSrv.caricaFotoDalCarrello();
+
+				calcolaPaginazioneIniziale();
+
+				postRicerca();
+			}
+
 		}
 		
 		public IEnumerator<Fotografia> getEnumeratorSelezionati() {

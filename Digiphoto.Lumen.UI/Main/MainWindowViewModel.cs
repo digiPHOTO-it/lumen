@@ -311,6 +311,16 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private RelayCommand _eseguireRefreshCommand;
+		public ICommand eseguireRefreshCommand {
+			get {
+				if( _eseguireRefreshCommand == null ) {
+					_eseguireRefreshCommand = new RelayCommand( p => eseguireRefresh() );
+				}
+				return _eseguireRefreshCommand;
+			}
+		}
+
 		#endregion Comandi
 
 		#region Metodi
@@ -567,6 +577,15 @@ namespace Digiphoto.Lumen.UI {
 				Configurazione.LastUsedConfigLumen = Configurazione.creaLastUsedConfig();
 				LastUsedConfigSerializer.serializeToFile(Configurazione.LastUsedConfigLumen);
 			}
+		}
+
+		private void eseguireRefresh() {
+
+			// Pubblico un messaggio di eseguire un refesh
+			var msgRefresh = new Digiphoto.Lumen.Core.src.Eventi.RefreshMsg( this );
+			msgRefresh.descrizione = "REFRESH";
+			LumenApplication.Instance.bus.Publish( msgRefresh );
+
 		}
 
 		#endregion Metodi

@@ -13,6 +13,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 		public Evento [] eventi { get; set; }
 		public Fotografo [] fotografi {	get; set; }
 		public ScaricoCard [] scarichiCard { get; set; }
+		public Guid [] idsFotografie { get; set; }
 
 		public string didascalia { get; set; }
 

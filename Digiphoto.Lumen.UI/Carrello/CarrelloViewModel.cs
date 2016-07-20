@@ -22,9 +22,11 @@ using Digiphoto.Lumen.UI.IncassiFotografi;
 using Digiphoto.Lumen.UI.Dialogs.SelezionaStampante;
 using Digiphoto.Lumen.Servizi.Ritoccare;
 using Digiphoto.Lumen.UI.Util;
+using Digiphoto.Lumen.UI.Main;
+using Digiphoto.Lumen.Core.src.Eventi;
 
 namespace Digiphoto.Lumen.UI {
-	public class CarrelloViewModel : ViewModelBase, IObserver<MasterizzaMsg>, IObserver<GestoreCarrelloMsg>, IObserver<StampatoMsg>, IObserver<FotoModificateMsg> {
+	public class CarrelloViewModel : ViewModelBase, IObserver<MasterizzaMsg>, IObserver<GestoreCarrelloMsg>, IObserver<StampatoMsg>, IObserver<FotoModificateMsg>, IObserver<RefreshMsg> {
 
 		private BackgroundWorker _bkgIdrata = null;
 
@@ -45,6 +47,9 @@ namespace Digiphoto.Lumen.UI {
 
 				IObservable<FotoModificateMsg> observableModificate = LumenApplication.Instance.bus.Observe<FotoModificateMsg>();
 				observableModificate.Subscribe( this );
+
+				IObservable<RefreshMsg> observableRefresh = LumenApplication.Instance.bus.Observe<RefreshMsg>();
+				observableRefresh.Subscribe( this );
 
 				// Creo due view diverse per le righe del carrello
 				rinfrescaViewRighe();
@@ -278,6 +283,12 @@ namespace Digiphoto.Lumen.UI {
 		public bool possoClonareCarrello {
 			get {
 				return venditoreSrv.isPossibileClonareCarrello;
+			}
+		}
+
+		public bool possoCaricareInGallery {
+			get {
+				return venditoreSrv.carrello.righeCarrello.Count > 0;
 			}
 		}
 
@@ -1338,9 +1349,35 @@ namespace Digiphoto.Lumen.UI {
 			dialogProvider.ShowMessage( "Carrello Clonato.\nOra stai lavorando sulla copia.", "Informazione" );
 		}
 
-        #endregion Metodi
+		public void caricareInGallery() {
 
-        #region Comandi
+/*
+			bool procediPure = false;
+			String testo = "Svuotare la gallery e caricare le foto presenti nel carrello.\nConfermi?";
+			dialogProvider.ShowConfirmation( testo, "Richiesta conferma",
+				( confermato ) => {
+					procediPure = confermato;
+				} );
+
+			if( !procediPure )
+				return;
+*/
+			// L'operazione di modifica gallery deve farla la gallery stessa. Pubblico un messaggio
+			GestoreCarrelloMsg msg = new GestoreCarrelloMsg( this );
+			msg.fase = Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.VisualizzareInGallery;
+			// msg.descrizione = "Verificare il Cd e riprovare a Masterizzare";
+			LumenApplication.Instance.bus.Publish( msg );
+
+
+			// Pubblico un messaggio di richiesta cambio pagina. Voglio tornare sulla gallery
+			CambioPaginaMsg cambioPaginaMsg = new CambioPaginaMsg( this );
+			cambioPaginaMsg.nuovaPag = "GalleryPag";
+			LumenApplication.Instance.bus.Publish( cambioPaginaMsg );
+		}
+
+		#endregion Metodi
+
+		#region Comandi
 
 		private RelayCommand _visualizzareIncassiFotografiCommand;
 		public ICommand visualizzareIncassiFotografiCommand
@@ -1564,6 +1601,16 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private RelayCommand _caricareInGalleryCommand;
+		public ICommand caricareInGalleryCommand {
+			get {
+				if( _caricareInGalleryCommand == null ) {
+					_caricareInGalleryCommand = new RelayCommand( param => caricareInGallery(), p => possoCaricareInGallery );
+				}
+				return _caricareInGalleryCommand;
+			}
+		}
+
 		#endregion Comandi
 
 		#region MemBus
@@ -1672,6 +1719,11 @@ namespace Digiphoto.Lumen.UI {
 			}
 
 		}
+
+		public void OnNext( RefreshMsg value ) {
+			updateGUI();
+		}
+
 
 		#endregion
 
