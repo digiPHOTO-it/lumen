@@ -42,6 +42,10 @@ namespace Digiphoto.Lumen.UI {
 
 		public FotoGalleryViewModel() {
 
+			// Todo leggere dalla configurazione
+			this.numRighePag = 4;
+			this.numColonnePag = 6;
+
 			IObservable<StampatoMsg> observableStampato = LumenApplication.Instance.bus.Observe<StampatoMsg>();
 			observableStampato.Subscribe(this);
 
@@ -69,8 +73,6 @@ namespace Digiphoto.Lumen.UI {
 			selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel(this);
 
 			azzerareRicerca();
-
-			dimensioneIconaFoto = 120;  // Valore di default per la grandezza dei fotogrammi da visualizzare.
 
 			if( IsInDesignMode ) {
 
@@ -118,6 +120,59 @@ namespace Digiphoto.Lumen.UI {
 
 
 		#region Proprietà
+
+		public int fotoAttualeRicerca {
+			get {
+				return countTotali <= 0 ? 0 : paramCercaFoto.paginazione.skip + 1;
+			}
+		}
+
+		/// <summary>
+		/// Lavoriamo con il layout a griglia.
+		/// </summary>
+		private short _numRighePag;
+		public short numRighePag {
+			get {
+				return _numRighePag;
+			}
+			set {
+				if( _numRighePag != value ) {
+
+					if( value <= 0 )
+						throw new ArgumentException( "Num righe deve essere positivo" );
+
+					_numRighePag = value;
+					OnPropertyChanged( "numRighePag" );
+				}
+			}
+		}
+
+		private short _numColonnePag;
+		public short numColonnePag {
+			get {
+				return _numColonnePag;
+			}
+			set {
+				if( _numColonnePag != value ) {
+
+					if( value <= 0 )
+						throw new ArgumentException( "Num colonne deve essere positivo" );
+
+					_numColonnePag = value;
+					OnPropertyChanged( "numColonnePag" );
+				}
+			}
+		}
+
+
+		/// <summary>
+		/// Prima era in configurazione, ora invece lo decide l'utente al volo.
+		/// </summary>
+        public int paginazioneRisultatiGallery {
+			get {
+				return numRighePag * numColonnePag;
+			}
+		}
 
 		/// <summary>
 		///  Uso questa particolare collectionView perché voglio tenere traccia nel ViewModel degli N-elementi selezionati.
@@ -392,18 +447,6 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		double _dimensioneIconaFoto;
-		public double dimensioneIconaFoto {
-			get {
-				return _dimensioneIconaFoto;
-			}
-			set {
-				if( _dimensioneIconaFoto != value ) {
-					_dimensioneIconaFoto = value;
-					OnPropertyChanged( "dimensioneIconaFoto" );
-				}
-			}
-		}
 
 		public SelettoreEventoViewModel selettoreEventoMetadato {
 			get;
@@ -495,38 +538,14 @@ namespace Digiphoto.Lumen.UI {
 			set;
 		}
 
-		
-		public bool isGestitaPaginazione {
-			get {
-				return Configurazione.UserConfigLumen.paginazioneRisultatiGallery > 0;
-			}
-      }
 			
-		public int totFotoPaginaAttuale {
-			get {
-				return paginaAttualeRicerca * Configurazione.UserConfigLumen.paginazioneRisultatiGallery;
-			}
-		}
 
-		short _paginaAttualeRicerca;
-		public short paginaAttualeRicerca {
-			get {
-				return _paginaAttualeRicerca;
-			}
-			private set {
-				if( _paginaAttualeRicerca != value ) {
-					_paginaAttualeRicerca = value;
-					OnPropertyChanged( "paginaAttualeRicerca" );
-					OnPropertyChanged( "totFotoPaginaAttuale" );
-					OnPropertyChanged( "stoPaginando" );
-				}
-			}
-		}
 
-		public short totPagineRicerca {
-			get;
-			private set;
-		}
+
+
+
+
+
 
 		public int totFotoRicerca {
 			get;
@@ -642,12 +661,23 @@ namespace Digiphoto.Lumen.UI {
 				return ! Configurazione.UserConfigLumen.imprimereAreaDiRispetto;
 			}
 		}
-		
+
 		#endregion Proprietà
 
 
 
 		#region Comandi
+
+		private RelayCommand _cambiarePaginazioneCommand;
+		public ICommand cambiarePaginazioneCommand {
+			get {
+				if( _cambiarePaginazioneCommand == null ) {
+					_cambiarePaginazioneCommand = new RelayCommand( stelline => cambiarePaginazione( Convert.ToInt16( stelline ) ),
+																    stelline => true );
+				}
+				return _cambiarePaginazioneCommand;
+			}
+		}
 
 		private RelayCommand _selezionareTuttoCommand;
 		public ICommand selezionareTuttoCommand {
@@ -881,6 +911,31 @@ namespace Digiphoto.Lumen.UI {
 
 		#region Metodi
 
+		private void cambiarePaginazione( short stelline ) {
+
+			// TODO sostituire con valori presi dalla configurazione
+			switch( stelline ) {
+				case 1:
+					numRighePag = 1;
+					numColonnePag = 1;
+					break;
+
+				case 2:
+					numRighePag = 2;
+					numColonnePag = 4;
+					break;
+
+				case 3:
+					numRighePag = 4;
+					numColonnePag = 6;
+					break;
+
+				default:
+					_giornale.Warn( "num stelline " + stelline + " non riconosciuto" );
+					break;
+			}
+		}
+
 		private void filtrareNumFotogramma( string nnn ) {
 
 			// Alcune collezioni non sono filtrabili, per esempio la IEnumerable
@@ -1066,23 +1121,7 @@ namespace Digiphoto.Lumen.UI {
 			return p;
 		}
 		
-// non so perché l'avevo fatto. Sembra un clone !! boh ??		
-#if false
-		private ParamStampaProvini creaParamStampaProvini( ParamStampaProvini param ) {
 
-			ParamStampaProvini p = venditoreSrv.creaParamStampaProvini();
-
-			p.nomeStampante = param.nomeStampante;
-			p.formatoCarta = param.formatoCarta;
-			p.numeroColonne = param.numeroColonne;
-			p.numeroRighe = param.numeroRighe;
-			p.intestazione = param.intestazione;
-			p.macchiaProvini = param.macchiaProvini;
-			// TODO per ora il nome della Porta a cui è collegata la stampante non lo uso. Non so cosa farci.
-
-			return p;
-		}
-#endif
 
 		//public string paramGiornataIniz {
 		//    get;
@@ -1120,7 +1159,7 @@ namespace Digiphoto.Lumen.UI {
 
 			// Solo quando premo tasto di ricerca (e non durante la paginazione).
 			if( chiediConfermaSeFiltriVuoti ) {
-				calcolaPaginazioneIniziale();
+				contaTotFotoRicerca();
 			}
 
 			// Eseguo la ricerca nel database
@@ -1134,21 +1173,11 @@ namespace Digiphoto.Lumen.UI {
 		/// imposto le property di paginazione posizionandomi all'inizio.
 		/// Quindi questo avviene solo quando premo il tasto "Ricerca" e non quando sto paginando
 		/// </summary>
-		private void calcolaPaginazioneIniziale() {
-			totFotoRicerca = fotoExplorerSrv.contaFoto( paramCercaFoto );
+		private void contaTotFotoRicerca() {
+
+			totFotoRicerca = fotoExplorerSrv.contaFoto( this.paramCercaFoto );
 			OnPropertyChanged( "totFotoRicerca" );
 
-			if( totFotoRicerca == 0 ) {
-				totPagineRicerca = 0;
-				paginaAttualeRicerca = 0;  // non ho risultati. Segnalo pag 0/0
-			} else {
-				paginaAttualeRicerca = 1;  // ho dei risultati vado a pag 1
-				if( isGestitaPaginazione ) {
-					var p = Configurazione.UserConfigLumen.paginazioneRisultatiGallery;
-					totPagineRicerca = (short)(((totFotoRicerca - 1) / p) + 1);
-				} else
-					totPagineRicerca = 1;
-			}
 		}
 
 		/// <summary>
@@ -1156,6 +1185,10 @@ namespace Digiphoto.Lumen.UI {
 		/// lancio in background la idratazione dei provini
 		/// </summary>
 		private void postRicerca() {
+
+			// Mando avanti il punto di inizio della paginazione (perché può variare ad ogni ricerca)
+//			this.paramCercaFoto.paginazione.skip += this.paramCercaFoto.paginazione.take;
+
 
 			// ricreo la collection-view e notifico che è cambiato il risultato. Le immagini verranno caricate poi
 			fotografieCW = new MultiSelectCollectionView<Fotografia>( fotoExplorerSrv.fotografie );
@@ -1169,10 +1202,8 @@ namespace Digiphoto.Lumen.UI {
 			if( fotografieCW.Count <= 0 )
 				dialogProvider.ShowMessage( "Nessuna fotografia trovata con questi filtri di ricerca", "AVVISO" );
 
-			OnPropertyChanged( "totPagineRicerca" );
-			OnPropertyChanged( "totFotoPaginaAttuale" );
-			OnPropertyChanged( "stoPaginando" );
 			OnPropertyChanged( "isAlmenoUnaFoto" );
+			OnPropertyChanged( "fotoAttualeRicerca" );
 
 			// Ora ci penso io ad idratare le immagini, perchè devo fare questa operazione nello stesso thread della UI
 			if( !_bkgIdrata.IsBusy )
@@ -1250,70 +1281,72 @@ namespace Digiphoto.Lumen.UI {
 
 		private void bkgIdrata_DoWork( object sender, DoWorkEventArgs e ) {
 
-			_giornale.Debug( "Inizio a idratare le foto in background" );
 
-			BackgroundWorker worker = sender as BackgroundWorker;
+			if( fotoExplorerSrv.fotografie != null ) {
 
-			int tot = fotoExplorerSrv.fotografie.Count;
-			int percPrec = 0;
-			worker.ReportProgress( percPrec );
+				_giornale.Debug( "Inizio a idratare le foto in background" );
+				BackgroundWorker worker = sender as BackgroundWorker;
+
+				int tot = fotoExplorerSrv.fotografie.Count;
+				int percPrec = 0;
+				worker.ReportProgress( percPrec );
 
 
-			for( int ii = 0; (ii < tot); ii++ ) {
-				if( (worker.CancellationPending == true) ) {
-					e.Cancel = true;
-					break;
-				} else {
+				for( int ii = 0; (ii < tot); ii++ ) {
+					if( (worker.CancellationPending == true) ) {
+						e.Cancel = true;
+						break;
+					} else {
 
-					try {
-						// Perform a time consuming operation and report progress.
-						AiutanteFoto.idrataImmaginiFoto( fotoExplorerSrv.fotografie[ii], IdrataTarget.Provino );						
-					} catch( Exception ) {
-
-						// Provo a crearlo. Magari non c'è perché è stato cancellato per sbaglio, oppure c'è ma si è corrotto.
 						try {
+							// Perform a time consuming operation and report progress.
+							AiutanteFoto.idrataImmaginiFoto( fotoExplorerSrv.fotografie[ii], IdrataTarget.Provino );
+						} catch( Exception ) {
 
-							// Provo a dare il fuoco al mio usercontrol ma nel thread della GUI
-							Fotografia daRiProvinare = fotoExplorerSrv.fotografie[ii];
-//							bool okCiSonoRiuscito = false;
-							App.Current.Dispatcher.BeginInvoke(
-								new Action( () => {
+							// Provo a crearlo. Magari non c'è perché è stato cancellato per sbaglio, oppure c'è ma si è corrotto.
+							try {
 
-									try {
-										AiutanteFoto.creaProvinoFoto( daRiProvinare );
-//										okCiSonoRiuscito = true;
+								// Provo a dare il fuoco al mio usercontrol ma nel thread della GUI
+								Fotografia daRiProvinare = fotoExplorerSrv.fotografie[ii];
+								//							bool okCiSonoRiuscito = false;
+								App.Current.Dispatcher.BeginInvoke(
+									new Action( () => {
+
+										try {
+											AiutanteFoto.creaProvinoFoto( daRiProvinare );
+										//										okCiSonoRiuscito = true;
 									} catch( Exception ) {
 										// Se qualcosa va male, pazienza, a questo punto non posso fare altro che tirare avanti.
 										// TODO : forse dovrei togliere la foto in esame dalla collezione della gallery ....
 									}
 
-								}
-							) );
-							
+									}
+								) );
 
 
 
-						} catch( Exception ) {
-							// Se qualcosa va male, pazienza, a questo punto non posso fare altro che tirare avanti.
+
+							} catch( Exception ) {
+								// Se qualcosa va male, pazienza, a questo punto non posso fare altro che tirare avanti.
+							}
 						}
-					}
-	
-					// Aggiorno la percentuale di progressi di idratazione. Esiste una ProgressBar che si abilita all'uopo.
-					int perc = (ii + 1) * 100 / tot;
-					if( percPrec != perc ) {
-						worker.ReportProgress( perc );
-						percPrec = perc;
+
+						// Aggiorno la percentuale di progressi di idratazione. Esiste una ProgressBar che si abilita all'uopo.
+						int perc = (ii + 1) * 100 / tot;
+						if( percPrec != perc ) {
+							worker.ReportProgress( perc );
+							percPrec = perc;
+
+						}
+
 
 					}
-
-
 				}
+
+				// Se sono arrivato in fondo, comunico il progresso massimo giusto per sicurezza.
+				if( !e.Cancel )
+					worker.ReportProgress( 100 );
 			}
-
-			// Se sono arrivato in fondo, comunico il progresso massimo giusto per sicurezza.
-			if( ! e.Cancel )
-				worker.ReportProgress( 100 );
-
 		}
 
 		void bkgIdrata_RunWorkerCompleted( object sender, RunWorkerCompletedEventArgs e ) {
@@ -1339,11 +1372,11 @@ namespace Digiphoto.Lumen.UI {
 		/// <summary>
 		/// Sistemo i parametri e gestisco la paginazione
 		/// </summary>
-		/// <param name="numPagina">il numero di pagina</param>
+		/// <param name="ordinamento asc/desc">il numero di pagina</param>
 		private void completaParametriRicercaWithOrder(bool usaOrdinamentoAsc)
 		{
 
-			paramCercaFoto.idratareImmagini = false;
+			this.paramCercaFoto.idratareImmagini = false;
 
 			if(usaOrdinamentoAsc) {
 				if( Configurazione.UserConfigLumen.invertiRicerca )
@@ -1370,15 +1403,11 @@ namespace Digiphoto.Lumen.UI {
 			else
 				paramCercaFoto.scarichiCard = null;
 
-			// Gestisco la paginazione
-			if( paginaAttualeRicerca > 0 && paramCercaFoto.paginazione != null ) {
-				paramCercaFoto.paginazione.skip = ((paginaAttualeRicerca - 1) * Configurazione.UserConfigLumen.paginazioneRisultatiGallery);
-			}
-
+			// Dati di paginazione
+			paramCercaFoto.paginazione.take = paginazioneRisultatiGallery;
 		}
 
-		private void 
-			caricareSlideShow( string modo ) {
+		private void caricareSlideShow( string modo ) {
 
 			((App)Application.Current).gestoreFinestrePubbliche.forseApriSlideShowWindow();
 
@@ -1434,10 +1463,7 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		public void azzerareRicerca() {
-
-			paginaAttualeRicerca = 0;
-			totPagineRicerca = 0;
-
+		
 			azzeraParamRicerca();
 		}
 
@@ -1447,7 +1473,7 @@ namespace Digiphoto.Lumen.UI {
 
 		private void azzeraParamRicerca( bool tranneScarichi ) {
 			paramCercaFoto = new ParamCercaFoto();
-			
+
 			OnPropertyChanged( "paramCercaFoto" );
 			OnPropertyChanged( "stringaNumeriFotogrammi" );
 
@@ -1460,13 +1486,6 @@ namespace Digiphoto.Lumen.UI {
 			selettoreFotografoViewModel.deselezionareTutto();
 			if( !tranneScarichi )
 				selettoreScaricoCardViewModel.deselezionareTutto();
-
-			// Se gestita la paginazione, istanzio apposita classe
-			if( Configurazione.UserConfigLumen.paginazioneRisultatiGallery > 0 ) {
-				paramCercaFoto.paginazione = new Paginazione {
-					take = Configurazione.UserConfigLumen.paginazioneRisultatiGallery
-				};
-			}
 		}
 
 		/// <summary>
@@ -1502,17 +1521,27 @@ namespace Digiphoto.Lumen.UI {
 		/// </param>
 		void spostarePaginazione( short deltaPag ) {
 
-			if( deltaPag == -999 )
-				paginaAttualeRicerca = 1;
-			else
-				paginaAttualeRicerca += deltaPag;
-			
-			// Non posso sformare il minimo
-			if( paginaAttualeRicerca < 1 )
-				paginaAttualeRicerca = 1;
+			int maxSkip = totFotoRicerca - 1;
 
-			if( paginaAttualeRicerca > totPagineRicerca )
-				paginaAttualeRicerca = totPagineRicerca;
+			if( deltaPag == -999 )
+				paramCercaFoto.paginazione.skip = 0;  // mi riposiziono sul primo
+			else if( deltaPag == 999 ) {
+				paramCercaFoto.paginazione.skip = totFotoRicerca - paginazioneRisultatiGallery;
+            } else
+				paramCercaFoto.paginazione.skip += (deltaPag * paginazioneRisultatiGallery);
+			
+			// Non posso scendere sotto il minimo
+			if( paramCercaFoto.paginazione.skip < 0 )
+				paramCercaFoto.paginazione.skip = 0;
+
+
+
+			// Non posso salire più del massimo
+			if( paramCercaFoto.paginazione.skip > 0 ) {
+				
+				if( paramCercaFoto.paginazione.skip > maxSkip )
+					paramCercaFoto.paginazione.skip = maxSkip;
+			}
 
 			eseguireRicerca();
 		}
@@ -1523,31 +1552,23 @@ namespace Digiphoto.Lumen.UI {
 				return true;
 
 			// Se gestisco la paginazione ed ho un risultato caricato.
-			bool posso = stoPaginando;
+			bool posso = true;
 
 			if( posso && delta > 0 ) {
 				// Voglio spostarmi avanti. Controllo di NON essere sull'ultimo risultato.
-				posso = paginaAttualeRicerca < totPagineRicerca;
+				posso = paramCercaFoto.paginazione.skip < (totFotoRicerca - paginazioneRisultatiGallery);
 			}
 
 			if( posso && delta < 0 ) {
 
 				// Voglio spostarmi indietro. Controllo di avere sufficienti pagine precedenti.
-				if( delta == -999 )  // Torno alla prima pagina
-					posso = (paginaAttualeRicerca > 1);
-				else
-					posso = (paginaAttualeRicerca + delta ) > 0;
+//				if( delta == -999 )  // Torno alla prima pagina
+					posso = paramCercaFoto.paginazione.skip > 0;
+//				else
+//					posso = paramCercaFoto.paginazione.skip >= ( delta * paginazioneRisultatiGallery) > 0;
 			}
 
 			return posso;
-		}
-
-		public bool stoPaginando {
-			get {
-				return isGestitaPaginazione
-					&& fotoExplorerSrv != null && fotoExplorerSrv.fotografie != null
-					&& (paginaAttualeRicerca > 1 || (fotoExplorerSrv.fotografie.Count >= Configurazione.UserConfigLumen.paginazioneRisultatiGallery) );
-			}
 		}
 
 		public int countSelezionati {
@@ -1713,7 +1734,7 @@ namespace Digiphoto.Lumen.UI {
 
 				this.paramCercaFoto = fotoExplorerSrv.caricaFotoDalCarrello();
 
-				calcolaPaginazioneIniziale();
+				contaTotFotoRicerca();
 
 				postRicerca();
 			}

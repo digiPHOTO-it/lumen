@@ -294,16 +294,7 @@ namespace Digiphoto.Lumen.Config
 			set;
 		}
 
-		/// <summary>
-		/// Questo valore indica la dimensione della pagina dei risultati della ricerca
-		/// nel FotoExplorer (la gallery)
-		/// </summary>
-		public int paginazioneRisultatiGallery {
-			get;
-			set;
-		}
 		
-
 		string _cartellaPubblicita;
 		public string cartellaPubblicita {
 			get {

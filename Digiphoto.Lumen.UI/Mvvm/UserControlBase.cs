@@ -35,7 +35,6 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 				viewModelBase.dialogProvider = this;
 				viewModelBase.trayIconProvider = this;
 			}
-
 		}
 
 		protected Window parentWindow {

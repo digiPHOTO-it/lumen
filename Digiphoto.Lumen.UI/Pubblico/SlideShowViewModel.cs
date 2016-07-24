@@ -36,9 +36,6 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		public SlideShowViewModel() {
 
-			// La dimensione delle foto deve essere calcolata in automatico in base alle dimensione del canvas che le contiene
-			dimensioneIconaFoto = double.NaN;
-
 			pSSG = GestSlideShowViewModel.pSSG;
 
 			_elencoSpots = caricaElencoSpot();
@@ -137,18 +134,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			set;
 		}
 
-		double _dimensioneIconaFoto;
-		public double dimensioneIconaFoto {
-			get {
-				return _dimensioneIconaFoto;
-			}
-			set {
-				if( _dimensioneIconaFoto != value ) {
-					_dimensioneIconaFoto = value;
-					OnPropertyChanged( "dimensioneIconaFoto" );
-				}
-			}
-		}
+
 
 		private short _slideShowRighe;
 		public short slideShowRighe {

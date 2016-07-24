@@ -58,20 +58,9 @@ namespace Digiphoto.Lumen.UI {
 
 		void fotoGallery_DataContextChanged( object sender, DependencyPropertyChangedEventArgs e ) {
 			associaDialogProvider();
-
-			fotoGalleryViewModel.snpashotCambiataEventHandler += new FotoGalleryViewModel.SnpashotCambiataEventHandler( onSnapshotCambiata );
 		}
 
-		/// <summary>
-		///  Questo evento lo ascolto direttamente dal viewmodel perché devo eseguire questa
-		///  operazione, dopo aver terminato l'esecuzione dei Command.
-		/// </summary>
-		/// <param name="sender">il viewmodel</param>
-		/// <param name="args">vuoto</param>
-		void onSnapshotCambiata( object sender, EventArgs args ) {
-			forsePrendoSnapshotPubblico();
-		}
-
+		
 
 		#region Proprietà
 		private FotoGalleryViewModel fotoGalleryViewModel {
@@ -80,131 +69,6 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 		#endregion
-
-
-		void incrementaQuanteNeVedo( short incremento ) {
-
-			short quante = (short)(quanteRigheVedo + incremento);
-			impostaQuanteNeVedo( quante );
-		}
-
-		void impostaQuanteNeVedo( short quante ) {
-
-			if( quante <= 0 )
-				return;
-
-
-
-			// prima questo
-			//sistemaMarginePerVedereDueFotoAffiancate( quante );
-
-			/*
-			ContentPresenter myContentPresenter = AiutanteUI.FindVisualChild<ContentPresenter>(LsImageGallery);
-			
-			ScrollViewer myScrollviewer = AiutanteUI.FindVisualChild<ScrollViewer>(LsImageGallery);
-			
-			List<Fotografia> viewFotos = GetVisibleItemsFromListbox(LsImageGallery, myScrollviewer);
-			Fotografia viewFoto = null;
-			if (viewFotos != null && viewFotos.Count > 0)
-				viewFoto = viewFotos.First<Fotografia>();
-
-			List<Fotografia> viewFotos2 = GetVisibleItemsFromListbox(LsImageGallery, myContentPresenter);
-			Fotografia viewFoto2 = null;
-			if (viewFotos2 != null && viewFotos2.Count > 0)
-				viewFoto2 = viewFotos2.First<Fotografia>();
-			*/
-
-			// Prima controllo la piena visibilita
-			List<Fotografia> viewFotos3 = GetVisibleItemsFromListbox( LsImageGallery, LsImageGallery, TestVisibilita.Piena, QuanteVisibilita.SoloPrima );
-
-			// Se le foto non sono perfettamente allineate nella area di visualizzazione,
-			// mi dice che non ce niente. Allora tento con la visibilità parziale
-			if( (viewFotos3 == null || viewFotos3.Count == 0) && LsImageGallery.Items.Count > 0 ) {
-				// Vado alla ricerca delle foto parzialmente visibili
-				viewFotos3 = GetVisibleItemsFromListbox( LsImageGallery, LsImageGallery, TestVisibilita.Parziale, QuanteVisibilita.SoloPrima );
-			}
-
-			Fotografia viewFoto3 = null;
-			if( viewFotos3 != null && viewFotos3.Count > 0 ) {
-				if( 1==0 && LsImageGallery.SelectedItems.Count > 0 ) {  // Decisione del 10-03-2016 non si usano più le selezionate, ma sempre la prima della lista.
-					viewFoto3 = viewFotos3.FirstOrDefault<Fotografia>( element => LsImageGallery.SelectedItems.Contains( element ) );
-					if( viewFoto3 == null ) {
-						viewFoto3 = viewFotos3.First<Fotografia>();
-					}
-				} else {
-					viewFoto3 = viewFotos3.First<Fotografia>();
-				}
-			}
-
-			// poi questo
-			quanteRigheVedo = quante;
-
-			//Mi posiziono sulla foto su cui avevo il focus
-			if( viewFoto3 != null )
-				posizionaListaSulFotogramma( viewFoto3.numero );
-		}
-
-		private void buttonQuanteNeVedo_Click( object sender, RoutedEventArgs e ) {
-
-			String param = (String)((Control)sender).Tag;
-
-			if( param == "+" )
-				incrementaQuanteNeVedo( 1 );
-			else if( param == "-" ) {
-				incrementaQuanteNeVedo( -1 );
-			} else
-				impostaQuanteNeVedo( Convert.ToInt16( param ) );
-
-			forsePrendoSnapshotPubblico();
-		}
-
-		private List<Fotografia> GetVisibleItemsFromListbox( ListBox listBox, FrameworkElement parentToTestVisibility, TestVisibilita testVedi, QuanteVisibilita quanteVedi ) {
-
-			var items = new List<Fotografia>();
-
-			foreach( var item in LsImageGallery.Items ) {
-
-				ListBoxItem element = (ListBoxItem)listBox.ItemContainerGenerator.ContainerFromItem( item );
-
-                bool visibile;
-				if( testVedi == TestVisibilita.Piena )
-					visibile = AiutanteUI.IsUserVisible( element, parentToTestVisibility );
-				else
-					visibile = AiutanteUI.IsFullyOrPartiallyVisible( element, parentToTestVisibility );
-
-				if( visibile ) {
-					items.Add( (Fotografia)item );
-
-					if( quanteVedi == QuanteVisibilita.SoloPrima )
-						break;
-
-				} else if( items.Any() ) {
-					break;
-				}
-			}
-
-			return items;
-		}
-
-
-
-
-		/// <summary>
-		/// Se scelgo di vedere una sola "riga" di foto, allora cerco di farci stare 
-		/// due foto affiancate
-		/// </summary>
-		private void sistemaMarginePerVedereDueFotoAffiancate( short quante ) {
-
-			int quanto = 0;
-			Thickness margin = LsImageGallery.Margin;
-			if( quante == 1 && expanderFiltriRicerca.IsExpanded == false )
-				quanto = Configurazione.UserConfigLumen.correzioneAltezzaGalleryDueFoto;
-			margin.Bottom = quanto;
-			LsImageGallery.Margin = margin;
-
-			LsImageGallery.UpdateLayout();
-		}
-
 
 		private void oggiButton_Click( object sender, RoutedEventArgs e ) {
 			datePickerRicercaIniz.SelectedDate = fotoGalleryViewModel.oggi;
@@ -261,7 +125,7 @@ namespace Digiphoto.Lumen.UI {
 		private void LsImageGallery_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			// Anche se clicco sulla scrollbar mi solleva l'evento button down.
-			if( ! (e.OriginalSource is Image) )
+			if( ! (e.OriginalSource is Image) )	
 				return;
 
 			//
@@ -381,181 +245,7 @@ namespace Digiphoto.Lumen.UI {
 		private void buttonScorriFotoSelez_Click( object sender, RoutedEventArgs e ) {
 
 			int direzione = Int32.Parse( ((FrameworkElement)sender).Tag.ToString() );
-			spostamentoScrollerSoloSuSelezionate( direzione );
-		}
-
-
-		private short _quanteRigheVedo;
-		public short quanteRigheVedo {
-			get {
-				return _quanteRigheVedo;
-			}
-			set {
-				if( _quanteRigheVedo != value ) {
-
-					_quanteRigheVedo = value;
-
-					// ogni riga ha due pixel di margine top che sembra non venire conteggiato. Lo tolgo io.
-
-					int margini = 4;
-					long dimInt = (long)	(LsImageGallery.ActualHeight-2) / _quanteRigheVedo;
-
-                    double dimensione = dimInt - margini;
-					fotoGalleryViewModel.dimensioneIconaFoto = dimensione;
-				}
-			}
-		}
-
-
-		// TODO DACANC
-		private void buttonPageUp_Click___DACANC( object sender, RoutedEventArgs e ) {
-
-			ContentPresenter myContentPresenter = AiutanteUI.FindVisualChild<ContentPresenter>( LsImageGallery );
-			ListBoxItem co = (ListBoxItem)LsImageGallery.ItemContainerGenerator.ContainerFromIndex( 0 );
-
-			ScrollViewer myScrollviewer = AiutanteUI.FindVisualChild<ScrollViewer>( LsImageGallery );
-
-			double newOffset = 0;
-			if( myScrollviewer.VerticalOffset % co.ActualHeight == 0 )
-				newOffset = myScrollviewer.VerticalOffset - co.ActualHeight;	
-			else
-				newOffset = (int)(myScrollviewer.VerticalOffset / co.ActualHeight) - co.ActualHeight;
-
-			myScrollviewer.ScrollToVerticalOffset( newOffset );
-
-			forsePrendoSnapshotPubblico();
-
-			LsImageGallery.Focus();
-
-		}
-
-		private void buttonMovePage_Click( object sender, RoutedEventArgs e ) {
-
-			int direzione = Convert.ToInt32( ((Button)sender).CommandParameter );
-
-			if( fotoGalleryViewModel.flagPosizionaSuSelezionate ) {
-
-				// Spostamento solo sulle selezionate ..
-				spostamentoScrollerSoloSuSelezionate( direzione );
-
-			} else {
-				// Spostamento normale mi sposto di una pagina
-				spostamentoScrollerNormaleSuGiu( direzione );
-			}
-
-		}
-
-		/// <summary>
-		/// Posiziono lo scroller in modo da avere sempre una fila di foto "piena" 
-		/// e non posizionata a metà nel video.
-		/// </summary>
-		/// <param name="direzione">
-		///   -1 = una pagina indietro (Pg Up)
-		///    0 = risposiziono su stessa pagina
-		///   +1 = una pagina avanti (Pg Down)
-		/// </param>
-		void spostamentoScrollerNormaleSuGiu( int direzione ) {
-
-			ContentPresenter myContentPresenter = AiutanteUI.FindVisualChild<ContentPresenter>( LsImageGallery );
-			ListBoxItem co = (ListBoxItem)LsImageGallery.ItemContainerGenerator.ContainerFromIndex( 0 );
-			if( co == null )
-				return;  // Non dovrebbe succedere ma per sicurezza...
-			double elemH = co.ActualHeight;
-
-			ScrollViewer myScrollviewer = AiutanteUI.FindVisualChild<ScrollViewer>( LsImageGallery );
-
-			// Prima calcolo quante righe di foto intere ci stanno a video in questo momento
-			int quanteRighe = (int)(myContentPresenter.ActualHeight / elemH);
-			if( quanteRighe == 0 )
-				quanteRighe = 1;   // Questa correzione serve perché ci sono dei pixel del bordo che sfasano di poco il calcolo
-
-			// ora mi sposto alla prossima riga visibile (esempio se vedo adesso 4 righe, mi sposto sulla 5°)
-			double incremento = (direzione * co.ActualHeight * quanteRighe);
-			double posizioneFutura = myScrollviewer.VerticalOffset + incremento;
-			int numrighe = (int)(posizioneFutura / elemH);
-
-			if( posizioneFutura % elemH != 0 ) {
-				// Se mi andrò a posizionare in un punto che non è multiplo della altezza foto, 
-				// Significa che vedrò la fila di foto tagliata. Cerco di posizionare
-
-				// Questo dovrebbe fare al posto dello switch seguente
-				posizioneFutura = (numrighe - direzione) * elemH;
-/*
-				switch( direzione ) {
-
-					case -1:
-						// Indietro
-						posizioneFutura = (numrighe + 1) * elemH;
-						break;
-
-					case 0:
-						// non mi muovo rimango sulla pagina attuale
-						posizioneFutura = (numrighe) * elemH;
-						break;
-
-					case 1:
-						// Avanti: non so quando capita. Vediamo
-						var qq = 1;
-						posizioneFutura = (numrighe - 1) * elemH;  // TODO da testare non so se funziona
-						break;
-				}
- */
-			}
-
-			if( posizioneFutura < 0 )
-				posizioneFutura = 0;
-			// TODO : testare anche il massimo ?
-
-			// Sistemo la posizione delle foto
-			myScrollviewer.ScrollToVerticalOffset( posizioneFutura );
-
-			// Faccio vedere la schermata al cliente
-			forsePrendoSnapshotPubblico();
-
-			// Rimetto il fuoco sul componente gallery, in modo che se premo le freccie su/giu mi sposto correttamente
-			LsImageGallery.Focus();
-		}
-
-		/// <summary>
-		/// Eseguo lo spostamento della finestra dello scroller per andare a posizionarmi
-		/// sulla foto selezionata successiva.
-		/// </summary>
-		/// <param name="direzione"></param>
-		void spostamentoScrollerSoloSuSelezionate( int direzione ) {
-
-			fotoGalleryViewModel.calcolaFotoCorrenteSelezionataScorrimento( direzione );
-
-			if( fotoGalleryViewModel.fotoCorrenteSelezionataScorrimento != null )
-				LsImageGallery.ScrollIntoView( fotoGalleryViewModel.fotoCorrenteSelezionataScorrimento );
-
-			forsePrendoSnapshotPubblico();
-		}
-
-		private void decidiCosaMostrareAlPubblico( bool forzaAperturaWin ) {
-
-			Fotografia fotoSingola = null;
-
-			if( quanteRigheVedo == 1 ) {
-				ScrollViewer myScrollviewer = AiutanteUI.FindVisualChild<ScrollViewer>( LsImageGallery );
-				List<Fotografia> listaFoto = GetVisibleItemsFromListbox( LsImageGallery, LsImageGallery, TestVisibilita.Piena, QuanteVisibilita.SoloPrima );
-				if( listaFoto != null && listaFoto.Count == 1 ) {
-					fotoSingola = listaFoto.First();
-				}
-			}
-
-			if( fotoSingola != null )
-				((App)Application.Current).gestoreFinestrePubbliche.eseguiSnapshotSuFinestraPubblica( fotoSingola, forzaAperturaWin );
-			else
-				( (App)Application.Current).gestoreFinestrePubbliche.eseguiSnapshotSuFinestraPubblica( this, this.LsImageGallery, forzaAperturaWin );
-
-		}
-
-		private void buttonTakeSnapshotPubblico_Click( object sender, RoutedEventArgs e ) {
-			decidiCosaMostrareAlPubblico( true );
-		}
-
-		private void closeSnapshotPubblico_Click( object sender, RoutedEventArgs e ) {
-			((App)Application.Current).gestoreFinestrePubbliche.chiudiSnapshotPubblicoWindow();
+			// TODO da fare
 		}
 
 		void selezionareTutteLeFoto_Click( object sender, RoutedEventArgs e ) {
@@ -568,22 +258,6 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 
-		/// <summary>
-		/// Solo se la finestra dello snapshot pubblico è già apera, allora prendo la foto.
-		/// Se invece è chiusa non faccio niente.
-		/// </summary>
-		void forsePrendoSnapshotPubblico() {
-
-			// Siccome la UI non è ancora stata ridisegnata, se faccio la foto adesso, vedo 
-			// la situazione precedente.
-			// Eseguo il comando quindi dopo che la UI si è ridisegnata
-			this.Dispatcher.Invoke(
-				DispatcherPriority.ApplicationIdle,
-				new Action( () => {
-					decidiCosaMostrareAlPubblico( false );
-				} ) );
-
-		}
 
 		private void eseguireRicercaButton_Click( object sender, RoutedEventArgs e ) {
 
@@ -680,23 +354,10 @@ namespace Digiphoto.Lumen.UI {
 			iteraAlberoFigli( myContentPresenter );
 			// iteraAlberoVisibili();
 
-			// Aggiorno la vista del cliente
-			forsePrendoSnapshotPubblico();
+
 		}
 
-#if false
-		private void iteraAlberoVisibili() {
 
-			foreach( var item in LsImageGallery.Items ) {
-			
-				var listBoxItem = (ListBoxItem)LsImageGallery.ItemContainerGenerator.ContainerFromItem( item );
-
-				if( IsUserVisible( listBoxItem, LsImageGallery ) ) {
-					iteraAlberoFigli( listBoxItem );
-				}
-			}
-		}
-#endif
 
 		void iteraAlberoFigli( FrameworkElement ele ) {
 
@@ -739,21 +400,31 @@ namespace Digiphoto.Lumen.UI {
 
 		private void LsImageGallery_PreviewMouseWheel( object sender, MouseWheelEventArgs e ) {
 
+			// paginazione avanti / indietro
+			short direzione = e.Delta < 0 ? (short)+1 : (short)-1;
 
-			if( Keyboard.IsKeyDown( Key.LeftCtrl ) ) {
 
-				short increm = 0;
+			if( Keyboard.IsKeyDown( Key.LeftShift ) || Keyboard.IsKeyDown( Key.LeftCtrl ) ) {
 
-				// Eseguo lo zoom
-				if( e.Delta > 0 )
-					increm = 1;
-				if( e.Delta < 0 )
-					increm = -1;
-
-				incrementaQuanteNeVedo( increm );
-				e.Handled = true;
+				// modifico il numero di righe / colonne visibili
+				if( Keyboard.IsKeyDown( Key.LeftShift ) && Keyboard.IsKeyDown( Key.LeftCtrl ) ) {
+					// per ora non faccio niente
+				} else {
+					if( Keyboard.IsKeyDown( Key.LeftShift ) ) {
+						// Modifico il numero di righe (ammesso di stare nei limiti)
+						if( fotoGalleryViewModel.numRighePag + direzione >= updownNumRighe.Minimum && fotoGalleryViewModel.numRighePag + direzione <= updownNumRighe.Maximum )
+                            fotoGalleryViewModel.numRighePag += direzione;
+					} else if( Keyboard.IsKeyDown( Key.LeftCtrl ) ) {
+						// Modifico il numero di colonne (ammesso di stare nei limiti)
+						if( fotoGalleryViewModel.numColonnePag + direzione >= updownNumColonne.Minimum && fotoGalleryViewModel.numColonnePag + direzione <= updownNumColonne.Maximum )
+							fotoGalleryViewModel.numColonnePag += direzione;
+					}
+                }
+				
+			} else {
+				if( fotoGalleryViewModel.commandSpostarePaginazione.CanExecute( direzione ) )
+					fotoGalleryViewModel.commandSpostarePaginazione.Execute( direzione );
 			}
-
 		}
 	}
 }

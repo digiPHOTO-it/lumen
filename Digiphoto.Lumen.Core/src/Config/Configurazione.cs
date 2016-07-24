@@ -199,7 +199,6 @@ namespace Digiphoto.Lumen.Config  {
 
 			userConfig.numRigheProvini = 6;
 			userConfig.numColoneProvini = 4;
-			userConfig.paginazioneRisultatiGallery = 500;
 
 			userConfig.maxNumFotoMod = 25;
 			userConfig.lungFIFOFotoMod = 50;

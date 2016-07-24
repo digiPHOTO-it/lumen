@@ -160,10 +160,7 @@
 	<!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
     <DataTemplate x:Key="fotografiaDataTemplate" DataType="{x:Type model:Fotografia}" >
 
-		<Border BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="6" Margin="0,0,2,2"
-				Height="{Binding  Path=DataContext.dimensioneIconaFoto, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
-                Width="{Binding  Path=DataContext.dimensioneIconaFoto, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-				>
+		<Border BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="6" Margin="0,0,2,2">
 
             <Grid x:Name="fotoGrid">
 				
@@ -175,7 +172,7 @@
                 <Image 	Width="16"
 					HorizontalAlignment="Left"
 					VerticalAlignment="Bottom"
-					Margin="2,0,0,2">
+					Margin="4,0,0,4">
 
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
@@ -218,7 +215,7 @@
                 <Image 	Width="16"
 					HorizontalAlignment="Right"
 					VerticalAlignment="Bottom"
-					Margin="0,2,0,2"
+					Margin="0,4,0,4"
 				>
                     <Image.ToolTip>
                         <TextBlock >
