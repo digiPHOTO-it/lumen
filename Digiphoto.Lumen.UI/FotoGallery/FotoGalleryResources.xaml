@@ -37,23 +37,23 @@
 	<!-- Stile della listbox che itera le immagini -->
 	<Style x:Key="LsImageGalleryStyle" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
 		<Setter Property="Background" Value="#4c4c4c" />
-		<Setter Property="ItemContainerStyle" Value="{DynamicResource ImageGalleryImageContainerStyle}" />
+		<Setter Property="ItemContainerStyle" Value="{DynamicResource QQQQQQQQQQQQQQQ___DACANC____ImageGalleryImageContainerStyle}" />
 	</Style>
+	
 	<Style x:Key="textBoxNumFotogrammi" TargetType="TextBox">
 		<Setter Property="MinWidth" Value="100" />
 	</Style>
  
-
     <!-- Template per il pannello che contiene tutti gli elementi della lista -->
-    <ItemsPanelTemplate x:Key="ImageGalleryItemsPanelTemplate">
+    <ItemsPanelTemplate x:Key="LsImageGalleryItemsPanelTemplate">
 
-        <!-- Display Images on UniformGrid Panel 
-        <UniformGrid Columns="4" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
-        -->
+        <!-- Display Images on UniformGrid Panel -->
+        <UniformGrid Rows="{Binding Path=numRighePag,Mode=TwoWay}" Columns="{Binding Path=numColonnePag,Mode=TwoWay}" />
 
-        <!-- il wrappanel mi consente di sistemare al meglio le foto in funzione dello spazio disponibile ed andare a capo quando serve -->
-        <WrapPanel Orientation="Horizontal" />
-
+            <!--
+            <UniformGrid Rows="{Binding Path=slideShowRighe}" Columns="{Binding Path=slideShowColonne}" />
+-->		
+		
     </ItemsPanelTemplate>
 
     

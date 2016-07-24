@@ -67,8 +67,8 @@
 					<TextBlock Visibility="{Binding Path=fotoGalleryViewModel.stoPaginando,Converter={StaticResource booleanToVisibilityConverter}}" ToolTip="Gallery paginazione" Margin="8,0,0,0">
 						<TextBlock.Text>
 							<MultiBinding StringFormat="Pagina {0} [{1}]">
-								<Binding Path="fotoGalleryViewModel.paginaAttualeRicerca" />
-								<Binding Path="fotoGalleryViewModel.totFotoPaginaAttuale" />
+								<Binding Path="fotoGalleryViewModel.fotoAttualeRicerca" />
+								<Binding Path="fotoGalleryViewModel.totFotoRicerca" />
 							</MultiBinding>
 						</TextBlock.Text>
 					</TextBlock>

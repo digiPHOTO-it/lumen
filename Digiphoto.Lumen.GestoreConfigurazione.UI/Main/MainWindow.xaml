@@ -249,14 +249,11 @@
 								<Label Content="Fuori Standard"  Name="label12" Grid.Row="1" Grid.Column="0" />
 								<TextBox Text="{Binding Path=cfg.fuoriStandard}" Grid.Row="1" Grid.Column="1" Margin="0,0,0,0" HorizontalContentAlignment="Left" CharacterCasing="Upper" />
 
-								<Label Content="Paginazione gallery" Grid.Row="2" Grid.Column="0" />
-								<TextBox Text="{Binding Path=cfg.paginazioneRisultatiGallery}" ToolTip="Il num. massimo di risultati per pagina nella gallery" Margin="0,0,0,0" Grid.Row="2" Grid.Column="1" HorizontalContentAlignment="Right" />
+								<Label Content="Soglia conferma stampa immediata" Grid.Row="2" Grid.Column="0" />
+								<TextBox  Text="{Binding Path=cfg.sogliaNumFotoConfermaInStampaRapida}" ToolTip="In stampa rapida, se stampo troppe foto, chiedo conferma"  Margin="0,0,0,0" Grid.Row="2" Grid.Column="1" HorizontalContentAlignment="Right" />
 
-								<Label Content="Soglia conferma stampa immediata" Grid.Row="3" Grid.Column="0" />
-								<TextBox  Text="{Binding Path=cfg.sogliaNumFotoConfermaInStampaRapida}" ToolTip="In stampa rapida, se stampo troppe foto, chiedo conferma"  Margin="0,0,0,0" Grid.Row="3" Grid.Column="1" HorizontalContentAlignment="Right" />
-
-								<Label Content="Millis intervallo SlideShow" Grid.Row="4" Grid.Column="0" />
-								<TextBox  Text="{Binding Path=cfg.millisIntervalloSlideShow}" ToolTip="esempio 1500 = 1 secondo e mezzo" Margin="0,0,0,0" Grid.Row="4" Grid.Column="1" HorizontalContentAlignment="Right" />
+								<Label Content="Millis intervallo SlideShow" Grid.Row="3" Grid.Column="0" />
+								<TextBox  Text="{Binding Path=cfg.millisIntervalloSlideShow}" ToolTip="esempio 1500 = 1 secondo e mezzo" Margin="0,0,0,0" Grid.Row="3" Grid.Column="1" HorizontalContentAlignment="Right" />
 
 							</Grid>
 						</GroupBox>

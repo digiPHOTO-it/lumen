@@ -36,6 +36,9 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			idratareImmagini = true;
 			evitareJoinEvento = false;
 			didascalia = "%";
+
+			// Istanzio apposita classe per i dati di paginazione
+			paginazione = new Paginazione();
 		}
 
 		public ParamCercaFoto ShallowCopy() {
