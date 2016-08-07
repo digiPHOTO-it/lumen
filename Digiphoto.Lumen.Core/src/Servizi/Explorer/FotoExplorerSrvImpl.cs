@@ -254,29 +254,13 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			return ricercaSrv.conta( paramCercaFoto );
 		}
 
-		public ParamCercaFoto caricaFotoDalCarrello() {
+		public IEnumerable<Guid> caricaFotoDalCarrello() {
 
 			IVenditoreSrv venditoreSrv = LumenApplication.Instance.getServizioAvviato<IVenditoreSrv>();
 
 			IEnumerable<Guid> tantiIds = venditoreSrv.carrello.righeCarrello.Where( rr1 => rr1 != null ).Select( rr2 => rr2.fotografia.id );
 
-			ParamCercaFoto param = new ParamCercaFoto();
-
-			/*
-						// Siccome mi arriva una enumeration con possibilita di valori nulli, la devo convertire in un array di elementi certi NON nulli
-						int quanti = tantiIds.Count();
-						List<Guid> lista = new List<Guid>( quanti );
-						foreach( var guid in tantiIds ) {
-							if( guid != null && guid != Guid.Empty )
-								lista.Add( (Guid)guid );
-						}
-
-						param.idsFotografie = lista.ToArray();
-			*/
-			param.idsFotografie = tantiIds.ToArray();
-			cercaFoto( param );
-
-			return param;
+			return tantiIds;
 		}
 
 	}

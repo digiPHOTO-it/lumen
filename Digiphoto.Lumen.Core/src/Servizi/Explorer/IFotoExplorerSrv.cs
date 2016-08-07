@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Servizi.Ricerca;
+using System;
 
 namespace Digiphoto.Lumen.Servizi.Explorer {
 
@@ -29,7 +30,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 		/// <summary>
 		/// Carico la gallery recuperando tutte le righe presenti nel carrello (sia stampe che masterizzate)
 		/// </summary>
-		ParamCercaFoto caricaFotoDalCarrello();
+		IEnumerable<Guid> caricaFotoDalCarrello();
 	}
 
 	public class MetadatiFoto {

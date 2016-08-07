@@ -128,6 +128,9 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			if (isEmpty && giornataFine != null)
 				isEmpty = false;
 
+			if( isEmpty && idsFotografie != null )
+				isEmpty = false;
+
 			return isEmpty;
 		}
 

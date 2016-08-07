@@ -1023,10 +1023,12 @@ namespace Digiphoto.Lumen.UI {
 		/// Accendo o Spengo tutte le selezioni
 		/// </summary>
 		private void accendiSpegniTutto( bool selez ) {
-			if( selez )
-				fotografieCW.SelectAll();
-			else
-				fotografieCW.DeselectAll();
+
+			if( fotografieCW != null )
+				if( selez )
+					fotografieCW.SelectAll();
+				else
+					fotografieCW.DeselectAll();
 		}
 
 		private void stampare( object objStampanteAbbinata ) {
@@ -1743,15 +1745,17 @@ namespace Digiphoto.Lumen.UI {
 
 			if( value.fase == GestoreCarrelloMsg.Fase.VisualizzareInGallery ) {
 
-				deselezionareTutto();
+				azzeraParamRicerca();
 
-				azzerareRicerca();
+				IEnumerable<Guid> tantiIds = fotoExplorerSrv.caricaFotoDalCarrello();
+				paramCercaFoto.idsFotografie = tantiIds.ToArray();
 
-				this.paramCercaFoto = fotoExplorerSrv.caricaFotoDalCarrello();
+				paramCercaFoto.evitareJoinEvento = true;
 
-				contaTotFotoRicerca();
+				completaParametriRicerca();  // Mi serve true per eseguire anche la count dei risultati
 
-				postRicerca();
+				eseguireRicerca( true );
+
 			}
 
 		}
