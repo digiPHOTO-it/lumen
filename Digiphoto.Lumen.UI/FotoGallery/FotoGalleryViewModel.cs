@@ -42,10 +42,6 @@ namespace Digiphoto.Lumen.UI {
 
 		public FotoGalleryViewModel() {
 
-			// Todo leggere dalla configurazione
-			this.numRighePag = 4;
-			this.numColonnePag = 6;
-
 			IObservable<StampatoMsg> observableStampato = LumenApplication.Instance.bus.Observe<StampatoMsg>();
 			observableStampato.Subscribe(this);
 
@@ -89,7 +85,10 @@ namespace Digiphoto.Lumen.UI {
 				_bkgIdrata.ProgressChanged += new ProgressChangedEventHandler( bkgIdrata_ProgressChanged );
 				_bkgIdrata.WorkerReportsProgress = true;
 			}
-		}
+
+			// Imposto per default la visualizzazione a 2 stelline
+			cambiarePaginazione( 2 );
+        }
 
 		protected override void OnDispose() {
 

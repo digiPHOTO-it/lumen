@@ -404,23 +404,15 @@ namespace Digiphoto.Lumen.UI {
 			short direzione = e.Delta < 0 ? (short)+1 : (short)-1;
 
 
-			if( Keyboard.IsKeyDown( Key.LeftShift ) || Keyboard.IsKeyDown( Key.LeftCtrl ) ) {
+			if( Keyboard.IsKeyDown( Key.LeftCtrl ) ) {
 
-				// modifico il numero di righe / colonne visibili
-				if( Keyboard.IsKeyDown( Key.LeftShift ) && Keyboard.IsKeyDown( Key.LeftCtrl ) ) {
-					// per ora non faccio niente
-				} else {
-					if( Keyboard.IsKeyDown( Key.LeftShift ) ) {
-						// Modifico il numero di righe (ammesso di stare nei limiti)
-						if( fotoGalleryViewModel.numRighePag + direzione >= updownNumRighe.Minimum && fotoGalleryViewModel.numRighePag + direzione <= updownNumRighe.Maximum )
-                            fotoGalleryViewModel.numRighePag += direzione;
-					} else if( Keyboard.IsKeyDown( Key.LeftCtrl ) ) {
-						// Modifico il numero di colonne (ammesso di stare nei limiti)
-						if( fotoGalleryViewModel.numColonnePag + direzione >= updownNumColonne.Minimum && fotoGalleryViewModel.numColonnePag + direzione <= updownNumColonne.Maximum )
-							fotoGalleryViewModel.numColonnePag += direzione;
-					}
-                }
-				
+				// modifico il numero di righe visibili
+				if( fotoGalleryViewModel.numRighePag + direzione >= updownNumRighe.Minimum && fotoGalleryViewModel.numRighePag + direzione <= updownNumRighe.Maximum )
+					fotoGalleryViewModel.numRighePag += direzione;
+
+				if( fotoGalleryViewModel.numColonnePag + direzione >= updownNumColonne.Minimum && fotoGalleryViewModel.numColonnePag + direzione <= updownNumColonne.Maximum )
+					fotoGalleryViewModel.numColonnePag += direzione;
+
 			} else {
 				if( fotoGalleryViewModel.commandSpostarePaginazione.CanExecute( direzione ) )
 					fotoGalleryViewModel.commandSpostarePaginazione.Execute( direzione );
