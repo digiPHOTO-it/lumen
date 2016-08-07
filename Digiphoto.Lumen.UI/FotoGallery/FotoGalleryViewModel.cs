@@ -123,7 +123,16 @@ namespace Digiphoto.Lumen.UI {
 
 		public int fotoAttualeRicerca {
 			get {
-				return countTotali <= 0 ? 0 : paramCercaFoto.paginazione.skip + 1;
+				return countTotali <= 0 ? 0 : paramCercaFoto.paginazione.skip + countTotali;
+			}
+		}
+
+		public int percentualePosizRicerca {
+			get {
+				// attuale : totale = x : 100
+				return totFotoRicerca == 0 
+					   ? 0 
+					   : (int) (fotoAttualeRicerca * 100 / totFotoRicerca);
 			}
 		}
 
@@ -538,7 +547,6 @@ namespace Digiphoto.Lumen.UI {
 			set;
 		}
 
-			
 
 
 
@@ -547,9 +555,18 @@ namespace Digiphoto.Lumen.UI {
 
 
 
+		private int _totFotoRicerca;
 		public int totFotoRicerca {
-			get;
-			private set;
+			get {
+				return _totFotoRicerca;
+			}
+			private set {
+				if( _totFotoRicerca != value ) {
+					_totFotoRicerca = value;
+					OnPropertyChanged( "totFotoRicerca" );
+					OnPropertyChanged( "percentualePosizRicerca" );
+                }
+			}
 		}
 
 		public float ratioAreaStampabile {
@@ -1176,8 +1193,6 @@ namespace Digiphoto.Lumen.UI {
 		private void contaTotFotoRicerca() {
 
 			totFotoRicerca = fotoExplorerSrv.contaFoto( this.paramCercaFoto );
-			OnPropertyChanged( "totFotoRicerca" );
-
 		}
 
 		/// <summary>
@@ -1204,6 +1219,7 @@ namespace Digiphoto.Lumen.UI {
 
 			OnPropertyChanged( "isAlmenoUnaFoto" );
 			OnPropertyChanged( "fotoAttualeRicerca" );
+			OnPropertyChanged( "percentualePosizRicerca" );
 
 			// Ora ci penso io ad idratare le immagini, perchè devo fare questa operazione nello stesso thread della UI
 			if( !_bkgIdrata.IsBusy )

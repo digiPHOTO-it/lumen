@@ -21,19 +21,16 @@
 				<ColumnDefinition Width="280" />
 				
 				<!-- Foto: nn Pagare: yy -->
-				<ColumnDefinition Width="160" />
+				<ColumnDefinition Width="Auto" />
 				
 				<!-- esito masterizzazione -->
-				<ColumnDefinition MinWidth="50" MaxWidth="260" Width="Auto" />
+				<ColumnDefinition Width="Auto" />  <!-- min=50 max=260 -->
 				
 				<!-- selezione gallery / paginazione -->
-				<ColumnDefinition MinWidth="100" MaxWidth="250"  Width="Auto" />
+				<ColumnDefinition Width="Auto" /> <!-- min=100 max=250 -->
 				
-				<!-- scaricamento e provinatura -->
-				<ColumnDefinition MinWidth="150" MaxWidth="260" Width="Auto" />
-				
-				<!-- eject usb -->
-				<ColumnDefinition Width="114" />
+				<!-- scaricamento e provinatura ejb usb -->
+				<ColumnDefinition Width="Auto" />  <!-- min=150max=260 -->
 				
 			</Grid.ColumnDefinitions>
 		</Grid>
@@ -109,4 +106,15 @@
 		<Setter Property="FontSize" Value="16" />
 	</Style>
 
+    <Style x:Key="progressBarPaginazioneGalleryStyle" TargetType="ProgressBar">
+        <Setter Property="Minimum" Value="0" />
+		<Setter Property="Maximum" Value="100" />
+        <Setter Property="Width" Value="100" />
+	</Style>
+
+    <Style TargetType="StatusBarItem">
+        <Setter Property="BorderBrush" Value="DarkGreen"  />
+        <Setter Property="BorderThickness" Value="0 0 1 0" />
+		<Setter Property="Margin" Value="2,0,2,0" />
+    </Style>
 </ResourceDictionary>
