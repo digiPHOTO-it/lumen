@@ -21,17 +21,17 @@
 		<StatusBar Name="statusBarMain" DockPanel.Dock="Bottom" ItemsPanel="{DynamicResource itemsPanelTemplateStatusBarMain}">
 
 			<!-- Informazioni Utente -->
-			<StatusBarItem Grid.Column="0" Padding="0,0,4,0">
+			<StatusBarItem Grid.Column="0">
 				<StackPanel Orientation="Horizontal">
-                    <Button Content="R" Command="{Binding eseguireRefreshCommand}" ToolTip="Refresh" />
-                    <Image Source="{Binding Path=ultimaInformazioneUtente.esito,Converter={StaticResource imageSourceConverter}}" Height="16" Width="16" />
+                    <Button Content="R" Command="{Binding eseguireRefreshCommand}" ToolTip="Refresh immagini" />
+                    <Image Source="{Binding Path=ultimaInformazioneUtente.esito,Converter={StaticResource imageSourceConverter}}" Height="16" Width="16" ToolTip="{Binding Path=ultimaInformazioneUtente.esito}"/>
 					<ComboBox IsReadOnly="True" ItemsSource="{Binding informazioniUtente,Mode=OneWay}" DisplayMemberPath="testo" SelectedValue="{Binding Path=ultimaInformazioneUtente,Mode=OneWay}" Name="comboBoxHistoryInfo" ToolTip="History messaggi" Style="{StaticResource styleComboBoxHistoryInfo}" />
 				</StackPanel>
 			</StatusBarItem>
 
 			<!-- Carrello -->
-			<StatusBarItem Grid.Column="1" Padding="4,0,4,0">
-				<TextBlock ToolTip="Stato carrello" MinWidth="60" >
+            <StatusBarItem Grid.Column="1" ToolTip="Stato carrello">
+				<TextBlock MinWidth="60" >
 					<TextBlock.Text>
 						<MultiBinding StringFormat="Foto: {0} Pagare: {1}">
 							<Binding Path="carrelloViewModel.sommatoriaQtaFotoDaStampare" />
@@ -42,21 +42,20 @@
 			</StatusBarItem>
 
 			<!-- Masterizzazione -->
-			<StatusBarItem Grid.Column="2" Padding="4,0,4,0" >
+			<StatusBarItem Grid.Column="2" ToolTip="Progresso Masterizzatore">
 				<StackPanel Orientation="Horizontal">
 					<Image Source="{Binding Path=carrelloViewModel.StatusStatoMasterizzazioneImage}" Width="16" Height="16" ToolTip="Stato della Masterizzazione" />
-                    <ProgressBar Name="progressBarMasterizzazione" IsIndeterminate="True" Background="White" Foreground="Blue" Width="40" Height="16" Visibility="{Binding Path=carrelloViewModel.StatoMasterizzazione, Converter={StaticResource statoMasterizzazioneVisibilityConverter}}"/>
-                    <!--TextBlock Text="{Binding Path=carrelloViewModel.MasterizzazionePorgress}" ToolTip="{Binding Path=carrelloViewModel.MasterizzazionePorgress}" /-->
+                    <ProgressBar Name="progressBarMasterizzazione" IsIndeterminate="True" Background="White" Foreground="Blue" Width="40" Visibility="{Binding Path=carrelloViewModel.StatoMasterizzazione, Converter={StaticResource statoMasterizzazioneVisibilityConverter}}"/>
 				</StackPanel>
 			</StatusBarItem>
 
-			<StatusBarItem Grid.Column="3" Padding="4,0,4,0" >
+			<!-- Info Gallery -->
+			<StatusBarItem Grid.Column="3">
 
-				<StackPanel Orientation="Horizontal">
-
-					<TextBlock ToolTip="Gallery selezione">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock ToolTip="Gallery selezione" FontFamily="Courier New" FontSize="12">
 						<TextBlock.Text>
-							<MultiBinding StringFormat="Selez: {0}/{1} (tot {2})">
+                            <MultiBinding StringFormat="{} Selez: {0,3}/{1,3} (tot {2,4})">
 								<Binding Path="fotoGalleryViewModel.fotografieCW.SelectedItems.Count" />
 								<Binding Path="fotoGalleryViewModel.fotografieCW.Count" />
 								<Binding Path="fotoGalleryViewModel.totFotoRicerca" />
@@ -64,15 +63,14 @@
 						</TextBlock.Text>
 					</TextBlock>
 
-					<TextBlock Visibility="{Binding Path=fotoGalleryViewModel.stoPaginando,Converter={StaticResource booleanToVisibilityConverter}}" ToolTip="Gallery paginazione" Margin="8,0,0,0">
-						<TextBlock.Text>
-							<MultiBinding StringFormat="Pagina {0} [{1}]">
-								<Binding Path="fotoGalleryViewModel.fotoAttualeRicerca" />
-								<Binding Path="fotoGalleryViewModel.totFotoRicerca" />
-							</MultiBinding>
-						</TextBlock.Text>
-					</TextBlock>
-
+					<!-- posizione attuale gallery -->
+                    <Grid>
+						<ProgressBar Value="{Binding Path=fotoGalleryViewModel.percentualePosizRicerca,Mode=OneWay}" Name="progressBarPaginazioneGallery" Style="{StaticResource progressBarPaginazioneGalleryStyle}" />
+                        <TextBlock Text="{Binding ElementName=progressBarPaginazioneGallery, Path=Value, StringFormat={}{0:0}%}" 
+								   HorizontalAlignment="Center" VerticalAlignment="Center"  />
+                    </Grid>
+					
+					<!-- Stato dello slide-show -->
                     <Image Source="{Binding Path=statusSlideShowImage}" Width="16" Height="16" 
                            ToolTip="Cliccare per vedere stato slide show oppure premi F8" Margin="4,0,0,0">
                         <i:Interaction.Triggers>
@@ -82,23 +80,16 @@
                         </i:Interaction.Triggers>
                     </Image>
 
-                        <!--
-                    <Label ToolTip="Num. foto nello show" Content="{Binding numFotoCorrenteSlideShow}" />
--->                    
 				</StackPanel>
 			</StatusBarItem>
 
             <!-- Scaricamento e Provinatura -->
-			<StatusBarItem Grid.Column="4" Visibility="{Binding Path=numFotoFaseVisibility,Converter={StaticResource booleanToVisibilityConverter}}" Padding="4,0,4,0" >
+			<StatusBarItem Grid.Column="4" Visibility="{Binding Path=numFotoFaseVisibility,Converter={StaticResource booleanToVisibilityConverter}}"  >
                 <StackPanel Orientation="Horizontal" >
                     <ProgressBar Name="progressBar" IsIndeterminate="True" Background="White" Foreground="Blue" Width="40" Height="16"/>
-                    <TextBlock ToolTip="Stato scaricamento" Text="{Binding numFotoFase}" MaxWidth="200" Margin="15,0"></TextBlock>
-                </StackPanel>
-            </StatusBarItem>
+                    <TextBlock ToolTip="Stato scaricamento" Text="{Binding numFotoFase}" MaxWidth="200" />
 
-            <!-- Eject Usb -->
-			<StatusBarItem Grid.Column="5" Padding="4,0,4,0" >
-                <StackPanel Orientation="Horizontal">
+		            <!-- Eject Usb -->
                     <ComboBox Width="80" ItemsSource="{Binding dischiRimovibili,Mode=OneWay}" Name="comboBoxDischiRemovibili" SelectedItem="{Binding ejectUsbItem,Mode=TwoWay}" ToolTip="Dischi Removibili" />
                     <Button Name="creareNuovoButton" Command="{Binding Path=ejectUsbCommand}" ToolTip="Eject Usb" Margin="5,0,0,0">
                         <Image Source="/Digiphoto.Lumen.UI;component/Resources/usbPendrive-16x16.png" Width="16" Height="16" />
