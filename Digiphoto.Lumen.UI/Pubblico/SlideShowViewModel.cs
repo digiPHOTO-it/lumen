@@ -29,7 +29,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 	};
 
 
-	public class SlideShowViewModel : ClosableWiewModel, IObserver<ScaricoFotoMsg>, IObserver<FotoModificateMsg> {
+	public class SlideShowViewModel : ClosableWiewModel, IContenitoreGriglia, IObserver<ScaricoFotoMsg>, IObserver<FotoModificateMsg> {
 
 		private DispatcherTimer _orologio;
 
@@ -520,6 +520,22 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 				return (Configurazione.UserConfigLumen.intervalliPubblicita > 0 && _elencoSpots != null && _elencoSpots.Count > 0);
 			}
 		}
+
+		#region Interfaccia IContenitoreGriglia
+
+		public short numRighe {
+			get {
+				return slideShowRighe;
+			}
+		}
+
+		public short numColonne {
+			get {
+				return slideShowColonne;
+			}
+		}
+
+		#endregion Interfaccia IContenitoreGriglia
 
 		public void OnCompleted() {
 		}
