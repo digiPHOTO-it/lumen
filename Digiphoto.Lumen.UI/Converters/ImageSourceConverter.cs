@@ -21,8 +21,18 @@ namespace Digiphoto.Lumen.UI.Converters {
 
 			ImageSource imageSource = null;
 
+
+
 			if( value is IImmagine ) {
 				imageSource = ((ImmagineWic)value).bitmapSource as ImageSource;
+			} else if( value is Digiphoto.Lumen.Model.Fotografia ) {
+
+				// Prendo il provino
+				IImmagine immagine = ((Digiphoto.Lumen.Model.Fotografia)value).imgProvino;
+				if( immagine != null ) {
+					imageSource = ((ImmagineWic)immagine).bitmapSource as ImageSource;
+				}
+
 			} else if( value is Digiphoto.Lumen.Eventi.Esito ) {
 				// Carico una icona dal file delle risorse
 				Esito esito = (Esito)value;

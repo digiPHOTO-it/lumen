@@ -32,7 +32,7 @@ namespace Digiphoto.Lumen.UI {
 
 
 
-	public class FotoGalleryViewModel : ViewModelBase, ISelettore<Fotografia>, IObserver<NuovaFotoMsg>, IObserver<StampatoMsg>, IObserver<ClonaFotoMsg>, IObserver<GestoreCarrelloMsg>, IObserver<RefreshMsg>, IAzzioniRapide
+	public class FotoGalleryViewModel : ViewModelBase, IContenitoreGriglia, ISelettore<Fotografia>, IObserver<NuovaFotoMsg>, IObserver<StampatoMsg>, IObserver<ClonaFotoMsg>, IObserver<GestoreCarrelloMsg>, IObserver<RefreshMsg>, IAzzioniRapide
 	{
 		private BackgroundWorker _bkgIdrata;
 
@@ -1159,7 +1159,7 @@ namespace Digiphoto.Lumen.UI {
 			if( _bkgIdrata.WorkerSupportsCancellation == true && _bkgIdrata.IsBusy ) {
 				_giornale.Debug( "idratatore impegnato. Lo stoppo" );
 				_bkgIdrata.CancelAsync();
-				return;
+				// return;
 			}
 
 			idrataProgress = 0;
@@ -1169,8 +1169,8 @@ namespace Digiphoto.Lumen.UI {
 
 			completaParametriRicercaWithOrder(true);
 
-			//Dopo aver completato tutti i parametri di ricerca...
-			//verifico se ho impostato almeno un parametro
+			// Dopo aver completato tutti i parametri di ricerca...
+			// verifico se ho impostato almeno un parametro
 			if( chiediConfermaSeFiltriVuoti )
 				if (verificaChiediConfermaRicercaSenzaParametri() == false)
 					return;
@@ -1183,7 +1183,7 @@ namespace Digiphoto.Lumen.UI {
 			// Eseguo la ricerca nel database
 			fotoExplorerSrv.cercaFoto( paramCercaFoto );
 
-			postRicerca();
+			azioniPostRicerca();
 		}
 
 		/// <summary>
@@ -1196,11 +1196,12 @@ namespace Digiphoto.Lumen.UI {
 			totFotoRicerca = fotoExplorerSrv.contaFoto( this.paramCercaFoto );
 		}
 
+
 		/// <summary>
 		/// Ricreo la collectionview con le fotografie da visualizzare
 		/// lancio in background la idratazione dei provini
 		/// </summary>
-		private void postRicerca() {
+		private void azioniPostRicerca() {
 
 			// Mando avanti il punto di inizio della paginazione (perché può variare ad ogni ricerca)
 //			this.paramCercaFoto.paginazione.skip += this.paramCercaFoto.paginazione.take;
@@ -1597,6 +1598,18 @@ namespace Digiphoto.Lumen.UI {
 		public int countTotali {
 			get {
 				return this.fotografieCW == null ? 0 : this.fotografieCW.Count;
+			}
+		}
+
+		public short numRighe {
+			get {
+				return numRighePag;
+			}
+		}
+
+		public short numColonne {
+			get {
+				return numColonnePag;
 			}
 		}
 
