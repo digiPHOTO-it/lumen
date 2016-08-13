@@ -79,8 +79,14 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 
 				esegui( parameter );
 
-                if(_afterExecute != null)
-                    _afterExecute.Invoke(parameter);
+				if( _afterExecute != null ) {
+
+					_giornale.Debug( "RelayCommad invoco after execute" );
+
+					_afterExecute.Invoke( parameter );
+				}
+
+				_giornale.Debug( "Esecuzione RelayCommad completata: " + _execute.Method.ToString() + " parametro=" + parameter );
 
 			} catch( OutOfMemoryException ofm ) {
 
