@@ -1,0 +1,91 @@
+﻿<Window x:Class="Digiphoto.Lumen.UI.Preferenze.PreferenzeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Digiphoto.Lumen.UI.Preferenze"
+        mc:Ignorable="d"
+		xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+		WindowStartupLocation="CenterScreen"
+        Title="Preferenze Utente"  Style="{DynamicResource preferenzeWindowStyle}" 
+		>
+
+    <Window.Resources>
+        <ResourceDictionary Source="PreferenzeResources.xaml" />
+    </Window.Resources>
+
+
+
+    <DockPanel LastChildFill="True" >
+
+        <Border DockPanel.Dock="Bottom" Margin="0 10 0 0 " BorderThickness="0 1 0 0" BorderBrush="Cyan" Padding="2">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                <Button Content="Salva" Command="{Binding uscireCommand}" CommandParameter="true" Margin="0 0 10 0" Height="30" Width="80" />
+                <Button Content="Annulla" Command="{Binding uscireCommand}" CommandParameter="false" Margin="10 0 0 0 " Height="30" Width="80"  />
+            </StackPanel>
+        </Border>
+
+        <DockPanel >
+
+            <Button Content="Impostazioni schermo ..." Name="proprietaMonitorButton" 
+			        Margin="10 0 0 0" Width="200" Height="60" 
+			        Style="{StaticResource buttonBaseStyle}" 
+					Click="proprietaMonitorButton_Click" DockPanel.Dock="Left" />
+
+            <GroupBox DockPanel.Dock="Right" Width="350" Height="220">
+                <GroupBox.Header>
+                    <TextBlock Style="{StaticResource gbhConfVisteStyle}" Text="Gallery configurazione viste" />
+                </GroupBox.Header>
+
+                <Grid Name="prefStellineGrid" DockPanel.Dock="Top" >
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="56" />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+
+                    <Label Grid.Row="0" Grid.Column="1" Content="N° Righe" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                    <Label Grid.Row="0" Grid.Column="2" Content="N° Colonne" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+
+
+
+                    <!-- UNA STELLINA -->
+                    <Image Grid.Row="1" Grid.Column="0"
+						   Source="/Digiphoto.Lumen.UI;component/Resources/gallery-view-1.png" Height="16"  />
+                    <xctk:IntegerUpDown Grid.Row="1" Grid.Column="1" Style="{StaticResource intUpDwStyle}"
+										Minimum="1" Maximum="10" Value="{Binding Path=prefGalleryViste[0].numRighe, Mode=TwoWay}" />
+                    <xctk:IntegerUpDown Grid.Row="1" Grid.Column="2" Style="{StaticResource intUpDwStyle}"
+										Minimum="1" Maximum="10" Value="{Binding Path=prefGalleryViste[0].numColonne, Mode=TwoWay}" />
+
+
+                    <!-- DUE STELLINE -->
+                    <Image Grid.Row="2" Grid.Column="0"
+						   Source="/Digiphoto.Lumen.UI;component/Resources/gallery-view-2.png" Height="16"  />
+                    <xctk:IntegerUpDown Grid.Row="2" Grid.Column="1" Style="{StaticResource intUpDwStyle}"
+										Minimum="1" Maximum="10" Value="{Binding Path=prefGalleryViste[1].numRighe, Mode=TwoWay}" />
+                    <xctk:IntegerUpDown Grid.Row="2" Grid.Column="2" Style="{StaticResource intUpDwStyle}"
+										Minimum="1" Maximum="10" Value="{Binding Path=prefGalleryViste[1].numColonne, Mode=TwoWay}" />
+
+
+                    <!-- TRE STELLINE -->
+                    <Image Grid.Row="3" Grid.Column="0"
+						   Source="/Digiphoto.Lumen.UI;component/Resources/gallery-view-3.png" Height="16"  />
+                    <xctk:IntegerUpDown Grid.Row="3" Grid.Column="1" Style="{StaticResource intUpDwStyle}"
+										Minimum="1" Maximum="10" Value="{Binding Path=prefGalleryViste[2].numRighe, Mode=TwoWay}" />
+                    <xctk:IntegerUpDown Grid.Row="3" Grid.Column="2" Style="{StaticResource intUpDwStyle}"
+										Minimum="1" Maximum="10" Value="{Binding Path=prefGalleryViste[2].numColonne, Mode=TwoWay}" />
+
+                </Grid>
+            </GroupBox>
+        </DockPanel>
+    </DockPanel>
+</Window>

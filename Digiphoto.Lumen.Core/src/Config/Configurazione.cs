@@ -224,6 +224,18 @@ namespace Digiphoto.Lumen.Config  {
 			// Grandezza del font per stampare gli stampigli sulla foto.
 			userConfig.fontSizeStampaFoto = 10;
 
+			// Configurazione delle righe/colonne per ogni stellina della gallery
+			userConfig.prefGalleryViste = new Griglia[MAX_STELLINE];
+			// 1 stellina
+			userConfig.prefGalleryViste[0].numRighe = 1;
+			userConfig.prefGalleryViste[0].numColonne = 1;
+			// 2 stelline
+			userConfig.prefGalleryViste[0].numRighe = 2;
+			userConfig.prefGalleryViste[0].numColonne = 4;
+			// 3 stelline
+			userConfig.prefGalleryViste[0].numRighe = 4;
+			userConfig.prefGalleryViste[0].numColonne = 6;
+
 			return userConfig;
 		}
 
@@ -331,6 +343,8 @@ namespace Digiphoto.Lumen.Config  {
 		}
 
 		private EditorEsternoConfig _editorEsternoConfig;
+		public static readonly int MAX_STELLINE = 3;
+
 		public EditorEsternoConfig editorEsternoConfig {
 			get {
 

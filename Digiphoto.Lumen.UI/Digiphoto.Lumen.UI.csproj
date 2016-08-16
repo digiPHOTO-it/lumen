@@ -328,6 +328,10 @@
     <Compile Include="PanAndZoom\PanAndZoomWindow.xaml.cs">
       <DependentUpon>PanAndZoomWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Preferenze\PreferenzeViewModel.cs" />
+    <Compile Include="Preferenze\PreferenzeWindow.xaml.cs">
+      <DependentUpon>PreferenzeWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pubblico\IContenitoreGriglia.cs" />
     <Compile Include="Pubblico\GestoreFinestrePubbliche.cs" />
     <Compile Include="Converters\GrigliaImageConverter.cs" />
@@ -463,6 +467,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PanAndZoom\PanAndZoomWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Preferenze\PreferenzeResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Preferenze\PreferenzeWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

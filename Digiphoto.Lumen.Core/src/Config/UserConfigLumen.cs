@@ -15,6 +15,11 @@ namespace Digiphoto.Lumen.Config
 		public bool giornata;
 	}
 
+	public class Griglia {
+		public short numRighe { get; set; }
+		public short numColonne { get; set; }
+	}
+
 	public enum ModoVendita : short {
 		[Description( "Con Carrello" )]
 		Carrello = 0,
@@ -27,6 +32,7 @@ namespace Digiphoto.Lumen.Config
 		SqLite = 1,
 		SqlServer = 2
 	}
+
 
 
     public sealed class UserConfigLumen : INotifyPropertyChanged
@@ -399,8 +405,12 @@ namespace Digiphoto.Lumen.Config
 			set;
 		}
 
+		public Griglia [] prefGalleryViste {
+			get;
+			set;
+		}
 
-		# region SlideShowParam
+		#region SlideShowParam
 
 		public short deviceEnum
 		{

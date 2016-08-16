@@ -929,27 +929,9 @@ namespace Digiphoto.Lumen.UI {
 
 		private void cambiarePaginazione( short stelline ) {
 
-			// TODO sostituire con valori presi dalla configurazione
-			switch( stelline ) {
-				case 1:
-					numRighePag = 1;
-					numColonnePag = 1;
-					break;
-
-				case 2:
-					numRighePag = 2;
-					numColonnePag = 4;
-					break;
-
-				case 3:
-					numRighePag = 4;
-					numColonnePag = 6;
-					break;
-
-				default:
-					_giornale.Warn( "num stelline " + stelline + " non riconosciuto" );
-					break;
-			}
+			int idx = stelline - 1;
+			numRighePag = Configurazione.UserConfigLumen.prefGalleryViste[idx].numRighe;
+			numColonnePag = Configurazione.UserConfigLumen.prefGalleryViste[idx].numColonne;
 		}
 
 		private void filtrareNumFotogramma( string nnn ) {
