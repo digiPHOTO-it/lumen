@@ -32,12 +32,9 @@
             </StackPanel>
         </GroupBox>
 
-        <GroupBox Header="Preferenze" DockPanel.Dock="Top" Margin="0,40,0,0">
-            <StackPanel Orientation="Horizontal">
-				<Label Content="Impostazione monitor e schermo" />
-                <Button Content="Proprietà..." Name="proprietaMonitorButton" Style="{StaticResource finestraPubblicaButtonStyle}" Click="proprietaMonitorButton_Click" />
-			</StackPanel>	
-		</GroupBox>
+        
+	
+
 		
 		
 	</DockPanel>

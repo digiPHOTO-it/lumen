@@ -1,0 +1,41 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Digiphoto.Lumen.UI.Preferenze"
+					xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+					>
+
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Digiphoto.Lumen.UI;component/Resources/GlobalResourceDictionary.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+
+    <Style x:Key="preferenzeWindowStyle" TargetType="Window">
+        <Setter Property="Background" Value="Gray" />
+		<Setter Property="Foreground" Value="Cyan" />
+		<Setter Property="Width" Value="640" />
+		<Setter Property="Height" Value="480" />
+		<Setter Property="ResizeMode" Value="NoResize" />
+
+    </Style>
+
+    <Style TargetType="{x:Type Label}">
+        <Setter Property="Foreground" Value="Cyan" />
+    </Style>
+    <Style TargetType="{x:Type GroupBox}">
+        <Setter Property="Foreground" Value="Cyan" />
+    </Style>
+
+    <Style x:Key="intUpDwStyle" TargetType="xctk:IntegerUpDown">
+		<Setter Property="Width" Value="110" />
+        <Setter Property="Height" Value="34" />
+		<Setter Property="FontSize" Value="24" />
+        <Setter Property="Foreground" Value="DarkBlue" />
+    </Style>
+
+    <Style x:Key="gbhConfVisteStyle" TargetType="TextBlock">
+		<Setter Property="FontSize" Value="24" />
+        <Setter Property="Foreground" Value="Cyan" />
+	</Style>
+
+</ResourceDictionary>

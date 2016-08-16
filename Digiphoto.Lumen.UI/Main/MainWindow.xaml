@@ -142,9 +142,12 @@
 						Style="{DynamicResource tabControlProspettiveStyle}"
 						ItemContainerStyle="{StaticResource tabItemProspettiveStyle}">
 
-				<TabItem Header="Preferenze" ToolTip="Preferenze del monitor e della finestra del pubblico">
-					<lumGS:GestSlideShowView/>
-				</TabItem>
+                    <TabItem Header="Preferenze" ToolTip="Preferenze del monitor e della finestra del pubblico">
+                        <Button Content="Preferenze Utente" Width="140" Height="40" Command="{Binding modificarePreferenzeCommand}" />
+                    </TabItem>
+                    <TabItem Header="Slide Show" ToolTip="Gestione Slide Show e form pubblico">
+						<lumGS:GestSlideShowView/>
+					</TabItem>
 
 			</TabControl>
         </TabItem>

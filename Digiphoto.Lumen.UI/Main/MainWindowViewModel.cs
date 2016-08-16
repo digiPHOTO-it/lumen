@@ -35,6 +35,7 @@ using Digiphoto.Lumen.Servizi.VolumeCambiato;
 using System.IO;
 using Digiphoto.Lumen.Servizi.Scaricatore;
 using Digiphoto.Lumen.Servizi;
+using Digiphoto.Lumen.UI.Preferenze;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -321,6 +322,16 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private RelayCommand _modificarePreferenzeCommand;
+		public ICommand modificarePreferenzeCommand {
+			get {
+				if( _modificarePreferenzeCommand == null ) {
+					_modificarePreferenzeCommand = new RelayCommand( nn => modificarePreferenze(), nn => true, false );
+				}
+				return _modificarePreferenzeCommand;
+			}
+		}
+
 		#endregion Comandi
 
 		#region Metodi
@@ -586,6 +597,12 @@ namespace Digiphoto.Lumen.UI {
 			msgRefresh.descrizione = "REFRESH";
 			LumenApplication.Instance.bus.Publish( msgRefresh );
 
+		}
+
+		private void modificarePreferenze() {
+			PreferenzeWindow window = new PreferenzeWindow();
+			window.DataContext = new PreferenzeViewModel();
+			window.ShowDialog();
 		}
 
 		#endregion Metodi
