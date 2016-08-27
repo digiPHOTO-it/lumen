@@ -107,7 +107,7 @@ namespace Digiphoto.Lumen.UI {
 
 			// Creo il gestore delle finestre pubbliche e quindi apro la main.
 			gestoreFinestrePubbliche = new GestoreFinestrePubbliche();
-			gestoreFinestrePubbliche.apriWindowMain();
+			gestoreFinestrePubbliche.aprireFinestraMain();
 
         }
 
@@ -115,7 +115,7 @@ namespace Digiphoto.Lumen.UI {
 
 			_giornale.Info( "Uscita dall'applicazione" );
 
-			gestoreFinestrePubbliche.chiudiTutto();
+			gestoreFinestrePubbliche.chiudereTutteLeFinestre();
 
 			avvisoScadenzaLicenza( 1 );
 

@@ -108,7 +108,6 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			}
 		}
 
-
 		IFotoExplorerSrv fotoExplorerSrv {
 			get {
 				return LumenApplication.Instance.getServizioAvviato<IFotoExplorerSrv>();
@@ -223,9 +222,20 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 
 			// Se fosse aperta l'altra finestra pubblica, allora la chiudo
-			((App)Application.Current).gestoreFinestrePubbliche.chiudiSnapshotPubblicoWindow();
+			gestoreFinestrePubbliche.chiudereFinestraSnapshotPubblico();
 
 			raiseCambioStatoProperties();
+		}
+
+		public void memorizzarePosizioneFinestra() {
+			gestoreFinestrePubbliche.memorizzaGeometriaFinestraSlideShow();
+		}
+		
+
+		private GestoreFinestrePubbliche gestoreFinestrePubbliche {
+			get {
+				return ((App)Application.Current).gestoreFinestrePubbliche;
+            }
 		}
 
 		private void raiseCambioStatoProperties() {

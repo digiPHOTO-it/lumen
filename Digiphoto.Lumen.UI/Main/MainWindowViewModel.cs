@@ -361,7 +361,7 @@ namespace Digiphoto.Lumen.UI {
 				this.abilitoShutdown = false;		// mi ha già detto che NON vuole spegnere
 
 
-			((App)App.Current).gestoreFinestrePubbliche.chiudiTutto();
+			((App)App.Current).gestoreFinestrePubbliche.chiudereTutteLeFinestre();
 
 		}
 

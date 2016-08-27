@@ -66,11 +66,11 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		// Posiziono la finestra rileggendo i valori dalla configurazione memorizzata
 		internal void ripristinaFinestraSlideShow() {
 
-			chiudiFinestraSlideShow();
+			chiudereFinestraSlideShow();
 
 			this.geomSS = (GeometriaFinestra) Configurazione.UserConfigLumen.geometriaFinestraSlideShow.Clone();
 
-			forseApriFinestraSlideShow();
+			aprireFinestraSlideShow();
 		}
 
 		public bool isSlideShowVisible { 
@@ -100,7 +100,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			private set; 
 		}
 
-		public void apriWindowMain() {
+		public void aprireFinestraMain() {
 			_mainWindow = new MainWindow();
 			_mainWindow.Show();			
 		}
@@ -108,11 +108,11 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		/// <summary>
 		/// Stiamo per uscire. chiudo tutto
 		/// </summary>
-		public void chiudiTutto() {
+		public void chiudereTutteLeFinestre() {
 
-			chiudiFinestraSlideShow();
-			chiudiSnapshotPubblicoWindow();
-			chiudiMainWindow();
+			chiudereFinestraSlideShow();
+			chiudereFinestraSnapshotPubblico();
+			chiuidereFinestraMain();
 
 			System.Windows.Application.Current.Shutdown();
 		}
@@ -124,7 +124,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		}
 
 		public void massimizzareFinestraSlideShow() {
-			massimizzareFinestraSlideShow( _slideShowWindow );
+			massimizzareFinestra( _slideShowWindow );
 		}
 
 
@@ -136,7 +136,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		internal void normalizzareFinestraSlideShowSulMonitor1() {
 
 			// Per prima cosa apro la finestra se questa è chiusa
-			forseApriFinestraSlideShow();
+			aprireFinestraSlideShow();
 			
 			// Creo una geometria dalle dimensioni del monitor.
 			GeometriaFinestra geo = Configurazione.creaGeometriaSlideShowDefault();
@@ -149,27 +149,30 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		/// </summary>
 		internal void massimizzareFinestraSlideShowSulMonitor2() {
 
-			// Per prima cosa apro la finestra se questa è chiusa
-			forseApriFinestraSlideShow();
-
 			// Adesso calcolo la posizione del monitor 2
 			WpfScreen scrn = WpfScreen.AllScreens().Where( s => s.IsPrimary == false ).FirstOrDefault();
 			if( scrn != null ) {
+
+				// Per prima cosa apro la finestra se questa è chiusa
+				aprireFinestraSlideShow();
 
 				// Creo una geometria dalle dimensioni del monitor.
 				GeometriaFinestra geo = creaGeometriaDaScreen( scrn );
 				posizionaFinestra( _slideShowWindow, geo );
 
 				massimizzareFinestraSlideShow();
+			} else {
+				_giornale.Warn( "E' stato chiesto di usare il monitor secondario ma questo non è presente" );
 			}
 
 		}
 
-		internal static void massimizzareFinestraSlideShow( SlideShowWindow ssWindow ) {
-			ssWindow.WindowState = WindowState.Maximized;
+		internal static void massimizzareFinestra( Window window ) {
+			window.WindowState = WindowState.Maximized;
 		}
 
-		public void chiudiFinestraSlideShow() {
+		public void chiudereFinestraSlideShow() {
+
 			if( _slideShowWindow != null ) {
 
 				ClosableWiewModel cvm = (ClosableWiewModel)slideShowViewModel;
@@ -188,7 +191,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			stavaGirandoLoSlideShow = false;
 		}
 
-		private void chiudiMainWindow() {
+		private void chiuidereFinestraMain() {
 			if( _mainWindow != null ) {
 
 				ClosableWiewModel cvm = (ClosableWiewModel)_mainWindow.DataContext;
@@ -199,7 +202,8 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			}
 		}
 
-		public void chiudiSnapshotPubblicoWindow() {
+		public void chiudereFinestraSnapshotPubblico() {
+
 			if( _snapshotPubblicoWindow != null ) {
 				ClosableWiewModel cvm = (ClosableWiewModel)snapshotPubblicoViewModel;
 				Object param = null;
@@ -222,7 +226,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		/// Se la finestra del pubblico non è aperta (o non è istanziata)
 		/// la creo sul momento
 		/// </summary>
-		public bool apriWindowPubblico() {
+		public bool aprireFinestraPubblico() {
 
 			// Se è già aperta, non faccio niente
 			if( _pubblicoWindow != null )
@@ -230,11 +234,17 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 			IInputElement elementoKeyboardInfuocato = Keyboard.FocusedElement;
 
-			// Apro la finestra modeless
-			// Create a window and make this window its owner
+			// Creo
 			_pubblicoWindow = new PubblicoWindow();
+
+			// Posiziono
+			posizionaFinestraPubblico();
+
+			// Gestisco la chiusura per il rilascio del vm
 			_pubblicoWindow.Closed += chiusoPubblicoWindow;
-            _pubblicoWindow.Show();
+
+			// Visualizzo modeless
+			_pubblicoWindow.Show();
 			_pubblicoWindow.Topmost = true;
 
 			// Devo rimenttere il fuoco sul componente che lo deteneva prima
@@ -250,7 +260,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		/// Se la finestra dello slide show non è aperta (o non è istanziata)
 		/// la creo sul momento
 		/// </summary>
-		public bool forseApriFinestraSlideShow() {
+		public bool aprireFinestraSlideShow() {
 
 			// Se è già aperta, non faccio niente
 			if( _slideShowWindow != null )
@@ -503,7 +513,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			bool savePos = ssWindow.posizionamentoInCorso;
 			ssWindow.posizionamentoInCorso = true;
 
-			massimizzareFinestraSlideShow( ssWindow );
+			massimizzareFinestra( ssWindow );
 
 			ssWindow.posizionamentoInCorso = savePos;
         }
@@ -528,6 +538,30 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			}
 
 			_slideShowWindow.posizionamentoInCorso = false;
+
+			return esito;
+		}
+
+		public bool posizionaFinestraPubblico() {
+
+			// carico la eventuale geometria salvata nella configurazione
+			// _pubblicoWindow.posizionamentoInCorso = true;
+
+			// Come concordato con Ciccio, la finestra pubblico deve avere la stessa posizione di quella dello Slide Show
+			// Quindi non ha una sua propria configurazione.
+			GeometriaFinestra geomPub = (geomSS == null || geomSS.isEmpty()) ? Configurazione.creaGeometriaSlideShowDefault() : geomSS;
+
+			// Primo tentativo
+			bool esito;
+			esito = posizionaFinestra( _pubblicoWindow, geomPub );
+
+			// Secondo tentativo con default
+			if( !esito ) {
+				geomPub = Configurazione.creaGeometriaSlideShowDefault();
+				esito = posizionaFinestra( _pubblicoWindow, geomPub );
+			}
+
+			// _pubblicoWindow.posizionamentoInCorso = false;
 
 			return esito;
 		}
@@ -560,6 +594,24 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 			geo.Left = (int)window.Left;
 			geo.Top = (int)window.Top;
+
+
+			// In certi casi il valore è NaN
+			// http://stackoverflow.com/questions/11013316/get-the-height-width-of-window-wpf
+			if( Double.IsNaN( window.Width ) )
+				geo.Width = (int)window.ActualWidth;
+			else
+				geo.Width = (int)window.Width;
+
+			// In certi casi il valore è NaN
+			// http://stackoverflow.com/questions/11013316/get-the-height-width-of-window-wpf
+			if( Double.IsNaN( window.Height ) )
+				geo.Height = (int)window.ActualHeight;
+			else
+				geo.Height = (int)window.Height;
+
+
+
 			geo.Height = (int)window.Height;
 			geo.Width = (int)window.Width;
 
@@ -571,8 +623,18 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 
 		/// <summary>
+		/// Aggiorno solo in memoria (non persisto sulla configurazione)
+		/// </summary>
+		internal void memorizzaGeometriaFinestraSlideShow() {
+
+			WpfScreen scrn = WpfScreen.GetScreenFrom( _slideShowWindow );
+
+			this.geomSS = creaGeometriaDaWindow( _slideShowWindow );
+		}
+
+		/// <summary>
 		/// Salvo la posizione e la dimensione della finestra dello SlideShow.
-		/// I dati vengono memorizzati nella configurazione utente.
+		/// I dati vengono persistiti nella configurazione utente.
 		/// </summary>
 		public bool salvaGeometriaFinestraSlideShow() {
 
@@ -583,16 +645,15 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 			} else {
 
-				// Questo fa si che le modifiche di posizione vengano memorizzate in geomSS
-				chiudiFinestraSlideShow();
+				// Questo modifica geomSS ...
+				memorizzaGeometriaFinestraSlideShow();
 
+				// ... Questo lo persiste
 				Configurazione.UserConfigLumen.geometriaFinestraSlideShow = this.geomSS;
 
 				_giornale.Debug( "Devo salvare la configurazione utente su file xml" );
 				UserConfigSerializer.serializeToFile( Configurazione.UserConfigLumen );
 				_giornale.Info( "Salvata la configurazione utente su file xml" );
-
-				forseApriFinestraSlideShow();
 
 				esito = true;
 			}

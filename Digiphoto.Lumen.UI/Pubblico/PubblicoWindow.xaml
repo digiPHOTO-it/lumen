@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
         mc:Ignorable="d"
-        WindowStartupLocation="Manual" Title="{Binding titoloFinestraGallery,Mode=OneTime}">
+        WindowStartupLocation="Manual" Title="lo setto dopo">
 
 
     <!-- faccio il merge di due dizionari -->

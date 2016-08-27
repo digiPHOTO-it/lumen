@@ -90,11 +90,11 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 
 		private void aprire() {
-			gestoreFinestrePubbliche.forseApriFinestraSlideShow();
+			gestoreFinestrePubbliche.aprireFinestraSlideShow();
 		}
 
 		private void chiudere() {
-			gestoreFinestrePubbliche.chiudiFinestraSlideShow();
+			gestoreFinestrePubbliche.chiudereFinestraSlideShow();
 		}
 
 		private void refreshCampi() {

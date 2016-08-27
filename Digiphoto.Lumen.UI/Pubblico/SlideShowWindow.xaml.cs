@@ -30,6 +30,13 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 			InitializeComponent();
 
+			// Titolo della finestra
+			if( String.IsNullOrEmpty( Configurazione.infoFissa.descrizPuntoVendita ) )
+				this.Title = "Slide Show - digiPHOTO Lumen";
+			else
+				this.Title = "Slide Show - " + Configurazione.infoFissa.descrizPuntoVendita;
+
+
 			// creo ed associo il datacontext 
 			this.DataContext = new SlideShowViewModel();
 
@@ -60,12 +67,6 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			}
 		}
 
-		private GestoreFinestrePubbliche gestoreFinestrePubbliche {
-			get {
-				return ((App)System.Windows.Application.Current).gestoreFinestrePubbliche;
-			}
-		}
-
 		#endregion Proprieta
 
 		#region Eventi
@@ -93,7 +94,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 			// Memorizzo la geometria per la prossima apertura
 			if( spostata ) {
-				memorizzaPosizione();
+				_slideShowViewModel.memorizzarePosizioneFinestra();
 				spostata = false;
 			}
 
@@ -103,36 +104,8 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 				_slideShowViewModel.Dispose();
 				DataContext = null;
 			}
-
 		}
-
-		public void memorizzaPosizione() {
-
-			WpfScreen scrn = WpfScreen.GetScreenFrom( this );
-			gestoreFinestrePubbliche.geomSS.deviceEnum = scrn.deviceEnum;
-
-			// flag sono massimizzato
-			bool max = this.WindowState == WindowState.Maximized;
-            gestoreFinestrePubbliche.geomSS.fullScreen = max;
-
-			gestoreFinestrePubbliche.geomSS.Left = (int)this.Left;
-			gestoreFinestrePubbliche.geomSS.Top = (int)this.Top;
-
-			// In certi casi il valore è NaN
-			// http://stackoverflow.com/questions/11013316/get-the-height-width-of-window-wpf
-			if( Double.IsNaN( this.Width ) )
-				gestoreFinestrePubbliche.geomSS.Width = (int)this.ActualWidth;
-			else
-				gestoreFinestrePubbliche.geomSS.Width = (int)this.Width;
-
-			// In certi casi il valore è NaN
-			// http://stackoverflow.com/questions/11013316/get-the-height-width-of-window-wpf
-			if( Double.IsNaN( this.Height ) )
-				gestoreFinestrePubbliche.geomSS.Height = (int)this.ActualHeight;
-			else
-				gestoreFinestrePubbliche.geomSS.Height = (int)this.Height;
-
-		}
+		
 
 		private void windowSlideShow_SizeChanged( object sender, SizeChangedEventArgs e ) {
 			if( IsLoaded && posizionamentoInCorso == false && DataContext != null )

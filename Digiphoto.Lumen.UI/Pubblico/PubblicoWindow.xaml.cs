@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Digiphoto.Lumen.Config;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,6 +20,12 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 	public partial class PubblicoWindow : Window {
 		public PubblicoWindow() {
 			InitializeComponent();
+
+			if( String.IsNullOrEmpty( Configurazione.infoFissa.descrizPuntoVendita ) )
+				this.Title = "Photo Gallery - digiPHOTO Lumen";
+			else
+				this.Title = "Photo Gallery - " + Configurazione.infoFissa.descrizPuntoVendita;
+			
 		}
 	}
 }

@@ -18,6 +18,12 @@ namespace Digiphoto.Lumen.UI.Converters {
 	/// 
 	public class GrigliaImageConverter : IMultiValueConverter {
 
+
+		public static bool richiedeAltaQualita( short numRighe, short numColonne ) {
+			return (numRighe == 1 && (numColonne == 1 || numColonne == 2));
+		}
+
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -31,29 +37,37 @@ namespace Digiphoto.Lumen.UI.Converters {
 		/// <returns>una ImageSource</returns>
 		public object Convert( object[] values, Type targetType, object parameter, CultureInfo culture ) {
 
-			Fotografia fotografia = (Fotografia)values[0];
-			IContenitoreGriglia vmContenitoreGriglia = (IContenitoreGriglia)values[1];
-
-			IdrataTarget quale;
-
-			// Se sto visualizzando una sola foto, oppure due affiancate su di una riga .... scelgo alta qualita
-			if( vmContenitoreGriglia != null 
-				&& vmContenitoreGriglia.numRighe == 1 
-				&& (vmContenitoreGriglia.numColonne == 1 || vmContenitoreGriglia.numColonne == 2) ) {
-
-				// ALTA QUALITA (più lento)
-				quale = AiutanteFoto.qualeImmagineDaStampare( fotografia );
-				AiutanteFoto.idrataImmagineDaStampare( fotografia );
-
-			} else {
-				// BASSA QUALITA (più veloce)
-				quale = IdrataTarget.Provino;
-			}
-
 			ImageSource imageSource = null;
-            IImmagine immagine = AiutanteFoto.getImmagineFoto( fotografia, quale );
-			if( immagine != null )
-				imageSource = ((ImmagineWic)immagine).bitmapSource as ImageSource; 
+
+			try {
+
+				Fotografia fotografia = (Fotografia)values[0];
+				IContenitoreGriglia vmContenitoreGriglia = (IContenitoreGriglia)values[1];
+
+				IdrataTarget quale;
+
+				// Se sto visualizzando una sola foto, oppure due affiancate su di una riga .... scelgo alta qualita
+				if( vmContenitoreGriglia != null
+					&& richiedeAltaQualita( vmContenitoreGriglia.numRighe, vmContenitoreGriglia.numColonne ) ) { 
+
+					// ALTA QUALITA (più lento)
+					quale = AiutanteFoto.qualeImmagineDaStampare( fotografia );
+					AiutanteFoto.idrataImmagineDaStampare( fotografia );
+
+				} else {
+					// BASSA QUALITA (più veloce)
+					quale = IdrataTarget.Provino;
+				}
+
+
+				IImmagine immagine = AiutanteFoto.getImmagineFoto( fotografia, quale );
+				if( immagine != null )
+					imageSource = ((ImmagineWic)immagine).bitmapSource as ImageSource;
+
+			} catch( Exception ee ) {
+				// Alcune immagini possono essere rovinate o mancanti. Devo proseguire
+				imageSource = null;
+			}
 
 			return imageSource;
 		}
