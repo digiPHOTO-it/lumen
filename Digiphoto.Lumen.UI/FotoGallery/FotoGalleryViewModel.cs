@@ -27,12 +27,13 @@ using Digiphoto.Lumen.Servizi.Scaricatore;
 using System.Collections;
 using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Core.src.Eventi;
+using Digiphoto.Lumen.UI.Converters;
 
 namespace Digiphoto.Lumen.UI {
 
 
 
-	public class FotoGalleryViewModel : ViewModelBase, IContenitoreGriglia, ISelettore<Fotografia>, IObserver<NuovaFotoMsg>, IObserver<StampatoMsg>, IObserver<ClonaFotoMsg>, IObserver<GestoreCarrelloMsg>, IObserver<RefreshMsg>, IAzzioniRapide
+	public class FotoGalleryViewModel : ViewModelBase, IContenitoreGriglia, ISelettore<Fotografia>, IObserver<FotoModificateMsg>, IObserver<NuovaFotoMsg>, IObserver<StampatoMsg>, IObserver<ClonaFotoMsg>, IObserver<GestoreCarrelloMsg>, IObserver<RefreshMsg>, IAzzioniRapide
 	{
 		private BackgroundWorker _bkgIdrata;
 
@@ -41,6 +42,10 @@ namespace Digiphoto.Lumen.UI {
 		public event SnpashotCambiataEventHandler snpashotCambiataEventHandler;
 
 		public FotoGalleryViewModel() {
+
+			// Devo ascoltare sempre se qualche foto viene modificata
+			IObservable<FotoModificateMsg> observableFM = LumenApplication.Instance.bus.Observe<FotoModificateMsg>();
+			observableFM.Subscribe( this );
 
 			IObservable<StampatoMsg> observableStampato = LumenApplication.Instance.bus.Observe<StampatoMsg>();
 			observableStampato.Subscribe(this);
@@ -78,12 +83,11 @@ namespace Digiphoto.Lumen.UI {
 				caricaStampantiAbbinate();
 
 				_bkgIdrata = new BackgroundWorker();
-				_bkgIdrata.WorkerReportsProgress = false;  // per ora non mi complico la vita
-				_bkgIdrata.WorkerSupportsCancellation = true; // per ora non mi complico la vita
 				_bkgIdrata.DoWork += new DoWorkEventHandler( bkgIdrata_DoWork );
 				_bkgIdrata.RunWorkerCompleted += new RunWorkerCompletedEventHandler( bkgIdrata_RunWorkerCompleted );
 				_bkgIdrata.ProgressChanged += new ProgressChangedEventHandler( bkgIdrata_ProgressChanged );
 				_bkgIdrata.WorkerReportsProgress = true;
+				_bkgIdrata.WorkerSupportsCancellation = true;
 			}
 
 			// Imposto per default la visualizzazione a 2 stelline
@@ -678,15 +682,6 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		public String titoloFinestraGallery {
-			get {
-				if( String.IsNullOrEmpty( Configurazione.infoFissa.descrizPuntoVendita ) )
-					return "Gallery - digiPHOTO Lumen";
-				else
-					return "Gallery - " + Configurazione.infoFissa.descrizPuntoVendita;
-			}
-		}
-
 		#endregion Proprietà
 
 
@@ -979,7 +974,6 @@ namespace Digiphoto.Lumen.UI {
 				fotografieCW.Filter = null;
 			}
 
-			raiseSnpashotCambiataEvent( EventArgs.Empty );
 		}
 
 		private void posizionareSuSelezionate( bool attivare ) {
@@ -1146,13 +1140,6 @@ namespace Digiphoto.Lumen.UI {
 
 		private void eseguireRicerca( bool chiediConfermaSeFiltriVuoti ) {
 
-			// Se avevo un worker già attivo, allora provo a cancellarlo.
-			if( _bkgIdrata.WorkerSupportsCancellation == true && _bkgIdrata.IsBusy ) {
-				_giornale.Debug( "idratatore impegnato. Lo stoppo" );
-				_bkgIdrata.CancelAsync();
-				// return;
-			}
-
 			idrataProgress = 0;
 
 			// while( _bkgIdrata.IsBusy )
@@ -1175,6 +1162,8 @@ namespace Digiphoto.Lumen.UI {
 			fotoExplorerSrv.cercaFoto( paramCercaFoto );
 
 			azioniPostRicerca();
+
+			// Non mettere piu niente qui perché sta idratando le foto in background (o cmq fare attenzione)
 		}
 
 		/// <summary>
@@ -1195,9 +1184,20 @@ namespace Digiphoto.Lumen.UI {
 		private void azioniPostRicerca() {
 
 			// Mando avanti il punto di inizio della paginazione (perché può variare ad ogni ricerca)
-//			this.paramCercaFoto.paginazione.skip += this.paramCercaFoto.paginazione.take;
+			//			this.paramCercaFoto.paginazione.skip += this.paramCercaFoto.paginazione.take;
+			// Se avevo un worker già attivo, allora provo a cancellarlo.
+			if( _bkgIdrata.IsBusy ) {
 
+				_bkgIdrata.CancelAsync();
+				_giornale.Debug( "idratatore impegnato. Lo stoppo" );
+			}
 
+			while( _bkgIdrata.IsBusy ) {
+				System.Windows.Forms.Application.DoEvents();
+				System.Threading.Thread.Sleep( 50 );
+			}
+
+			
 			// ricreo la collection-view e notifico che è cambiato il risultato. Le immagini verranno caricate poi
 			fotografieCW = new MultiSelectCollectionView<Fotografia>( fotoExplorerSrv.fotografie );
 			fotografieCW.SelectionChanged += fotografie_selezioneCambiata;
@@ -1217,6 +1217,10 @@ namespace Digiphoto.Lumen.UI {
 			// Ora ci penso io ad idratare le immagini, perchè devo fare questa operazione nello stesso thread della UI
 			if( !_bkgIdrata.IsBusy )
 				_bkgIdrata.RunWorkerAsync();
+			else {
+				int debug = 1;
+				debug++;
+			}
 			// Lasciare come ultima cosa l'idratazione delle foto.
 
 		}
@@ -1288,17 +1292,25 @@ namespace Digiphoto.Lumen.UI {
 
 		}
 
+		/// <summary>
+		/// In questa routine non si deve usare la collezione di foto presente nel servizio,
+		/// ma occorre usare la collectionview mia interna.
+		/// Questo perché durante le ricerche, il servizio può azzerare la collezione, mentre inveve la mia cw è gestita 
+		/// per tenere conto delle operazioni in background
+		/// </summary>
+		/// <param name="sender">il background worker</param>
+		/// <param name="e"></param>
 		private void bkgIdrata_DoWork( object sender, DoWorkEventArgs e ) {
 
+		
+			BackgroundWorker worker = sender as BackgroundWorker;
+			_giornale.Debug( "Inizio a idratare le foto in background" );
 
-			if( fotoExplorerSrv.fotografie != null ) {
 
-				_giornale.Debug( "Inizio a idratare le foto in background" );
-				BackgroundWorker worker = sender as BackgroundWorker;
 
-				int tot = fotoExplorerSrv.fotografie.Count;
-				int percPrec = 0;
-				worker.ReportProgress( percPrec );
+			int tot = fotografieCW.Count;
+			int percPrec = 0;
+			worker.ReportProgress( percPrec );
 
 
 				for( int ii = 0; (ii < tot); ii++ ) {
@@ -1307,33 +1319,30 @@ namespace Digiphoto.Lumen.UI {
 						break;
 					} else {
 
+						Fotografia foto = (Fotografia) fotografieCW.GetItemAt( ii );
+
 						try {
 							// Perform a time consuming operation and report progress.
-							AiutanteFoto.idrataImmaginiFoto( fotoExplorerSrv.fotografie[ii], IdrataTarget.Provino );
+							AiutanteFoto.idrataImmaginiFoto( foto, IdrataTarget.Provino );
 						} catch( Exception ) {
 
 							// Provo a crearlo. Magari non c'è perché è stato cancellato per sbaglio, oppure c'è ma si è corrotto.
 							try {
 
-								// Provo a dare il fuoco al mio usercontrol ma nel thread della GUI
-								Fotografia daRiProvinare = fotoExplorerSrv.fotografie[ii];
-								//							bool okCiSonoRiuscito = false;
 								App.Current.Dispatcher.BeginInvoke(
 									new Action( () => {
 
 										try {
-											AiutanteFoto.creaProvinoFoto( daRiProvinare );
-										//										okCiSonoRiuscito = true;
-									} catch( Exception ) {
-										// Se qualcosa va male, pazienza, a questo punto non posso fare altro che tirare avanti.
-										// TODO : forse dovrei togliere la foto in esame dalla collezione della gallery ....
-									}
+											AiutanteFoto.creaProvinoFoto( foto );
+										} catch( Exception ) {
 
+											_giornale.Debug( "Problemi nel provinare la foto: " + foto );
+
+											// Se qualcosa va male, pazienza, a questo punto non posso fare altro che tirare avanti.
+											// TODO : forse dovrei togliere la foto in esame dalla collezione della gallery ....
+										}
 									}
 								) );
-
-
-
 
 							} catch( Exception ) {
 								// Se qualcosa va male, pazienza, a questo punto non posso fare altro che tirare avanti.
@@ -1345,28 +1354,26 @@ namespace Digiphoto.Lumen.UI {
 						if( percPrec != perc ) {
 							worker.ReportProgress( perc );
 							percPrec = perc;
-
 						}
-
-
 					}
 				}
 
 				// Se sono arrivato in fondo, comunico il progresso massimo giusto per sicurezza.
 				if( !e.Cancel )
 					worker.ReportProgress( 100 );
-			}
+			
 		}
 
 		void bkgIdrata_RunWorkerCompleted( object sender, RunWorkerCompletedEventArgs e ) {
 
 			_giornale.Debug( "Terminato di idratare le foto in background: abortito = " + e.Cancelled );
 
-			RicercaModificataMessaggio msg = new RicercaModificataMessaggio( this );
-			msg.abortito = e.Cancelled;
-			LumenApplication.Instance.bus.Publish( msg );
+			if( ! e.Cancelled ) {
+				RicercaModificataMessaggio msg = new RicercaModificataMessaggio( this );
+				msg.abortito = e.Cancelled;
+				LumenApplication.Instance.bus.Publish( msg );
+			}
 
-			raiseSnpashotCambiataEvent( EventArgs.Empty );
 		}
 
 		void bkgIdrata_ProgressChanged( object sender, ProgressChangedEventArgs e ) {
@@ -1418,7 +1425,7 @@ namespace Digiphoto.Lumen.UI {
 
 		private void caricareSlideShow( string modo ) {
 
-			((App)Application.Current).gestoreFinestrePubbliche.forseApriFinestraSlideShow();
+			((App)Application.Current).gestoreFinestrePubbliche.aprireFinestraSlideShow();
 
 			if( modo == "AddSelez" )
 				slideShowViewModel.add( creaListaFotoSelezionate() );
@@ -1658,16 +1665,6 @@ namespace Digiphoto.Lumen.UI {
 
         #region Gestori Eventi
 
-        /// <summary>
-        /// Avviso gli interessati che la schermata pubblica (snapshot) è cambiata.
-        /// Chi crede può prenderne atto.
-        /// </summary>
-        /// <param name="e"></param>
-        protected void raiseSnpashotCambiataEvent( EventArgs e ) {
-			if( snpashotCambiataEventHandler != null )
-				snpashotCambiataEventHandler( this, e );
-		}
-
 		#endregion
 
 		#region MemBus
@@ -1693,6 +1690,45 @@ namespace Digiphoto.Lumen.UI {
 		{
 			// TODO forse non serve più ascoltare questo messaggio.
 			//      Ora il messaggio lo ascolta il MainWindow per dare avviso all'utente
+		}
+
+		public void OnNext( FotoModificateMsg fmMsg ) {
+
+			bool almenoUna = false;
+
+			foreach( Fotografia modificata in fmMsg.fotos ) {
+
+				int pos = fotografieCW.IndexOf( modificata );
+				if( pos > 0 ) {
+					almenoUna = true;
+					Fotografia f = (Fotografia)fotografieCW.GetItemAt( pos );
+                    AiutanteFoto.disposeImmagini( f, IdrataTarget.Provino );
+
+					// Se la foto è stata modificata, allora mi copio le correzioni.
+					f.correzioniXml = modificata.correzioniXml;
+					// Se ho a  disposizione l'immagine del provino, me la copio, altrimenti me la rileggo da disco.
+					if( modificata.imgProvino != null )
+						f.imgProvino = (Digiphoto.Lumen.Imaging.IImmagine)modificata.imgProvino;
+					else
+						AiutanteFoto.idrataImmaginiFoto( f, IdrataTarget.Provino, true );
+
+
+					// Controllo se per caso sto lavorando in alta qualita allora devo aggiornare anche la foto grande
+					if( GrigliaImageConverter.richiedeAltaQualita( numRighePag, numColonnePag ) ) {
+
+						AiutanteFoto.disposeImmagini( f, IdrataTarget.Risultante );
+
+						// Se ho a  disposizione l'immagine del provino, me la copio, altrimenti me la rileggo da disco.
+						if( modificata.imgRisultante != null )
+							f.imgProvino = (Digiphoto.Lumen.Imaging.IImmagine)modificata.imgRisultante;
+						else
+							AiutanteFoto.idrataImmagineDaStampare( f );
+					}
+				}
+			}
+
+			if( almenoUna )
+				fotografieCW.Refresh();
 		}
 
 		public void OnNext(ClonaFotoMsg value)

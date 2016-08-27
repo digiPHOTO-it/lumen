@@ -1289,7 +1289,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		private void closeSnapshotPubblico_Click( object sender, RoutedEventArgs e ) {
-			((App)Application.Current).gestoreFinestrePubbliche.chiudiSnapshotPubblicoWindow();
+			((App)Application.Current).gestoreFinestrePubbliche.chiudereFinestraSnapshotPubblico();
 		}
 
 		private void borderCornice_SizeChanged( object sender, SizeChangedEventArgs e ) {
