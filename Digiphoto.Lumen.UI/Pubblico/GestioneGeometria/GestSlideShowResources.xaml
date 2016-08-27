@@ -1,15 +1,108 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:lumG="clr-namespace:Digiphoto.Lumen.UI.Pubblico.GestioneGeometria"
 					xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters">
 
-	<lumC:PercentualeConverter x:Key="percentualeConverter" />
-    <lumC:PercentualeConverterSlideX x:Key="percentualeConverterSlideX" />
-    <lumC:PercentualeConverterSlideY x:Key="percentualeConverterSlideY" />
+    <lumC:PercentualeConverter x:Key="percentualeConverter" />
+<!--
+    <lumC:ProiettoreAreaConverter x:Key="pac" />
+-->
 
     <Style x:Key="finestraPubblicaButtonStyle" TargetType="Button">
-		<Setter Property="Margin" Value="10,0,5,0" />
-		<Setter Property="Width" Value="150" />
-		<Setter Property="Height" Value="40" />
-				
-	</Style> 
+        <Setter Property="Margin" Value="10,0,5,0" />
+        <Setter Property="Width" Value="150" />
+        <Setter Property="Height" Value="40" />
+
+    </Style>
+
+    <!-- Template per il pannello che contiene tutti gli elementi della lista
+    <ItemsPanelTemplate x:Key="schermiItemsPanelTemplate">
+
+        <StackPanel Orientation="Horizontal" Margin="5"/>
+
+    </ItemsPanelTemplate>
+
+    Template per visualizzare ogni elemento della lista. In pratica ogni entità WpfScreen
+    <DataTemplate x:Key="schermoDataTemplate" DataType="{x:Type lumG:WpfScreen}" >
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="200" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+				<ColumnDefinition Width="200" />
+			</Grid.ColumnDefinitions>
+
+
+            <Canvas Background="Blue" Grid.Row="0" Grid.Column="0"  >
+
+                <Border  BorderBrush="Red" BorderThickness="1" Background="Pink">
+                    <Border.Height>
+                        <MultiBinding Converter="{StaticResource pac}" ConverterParameter="H">
+                            <Binding Path="." />
+                        </MultiBinding>
+                    </Border.Height>
+                    <Border.Width>
+                        <MultiBinding Converter="{StaticResource pac}" ConverterParameter="W">
+                            <Binding Path="." />
+                        </MultiBinding>
+                    </Border.Width>
+                    <Canvas.Left>
+                        <MultiBinding Converter="{StaticResource pac}" ConverterParameter="L">
+                            <Binding Path="." />
+                        </MultiBinding>
+                    </Canvas.Left>
+                    <Canvas.Top>
+                        <MultiBinding Converter="{StaticResource pac}" ConverterParameter="T">
+                            <Binding Path="." />
+                        </MultiBinding>
+                    </Canvas.Top>
+                </Border>
+
+                <Border BorderBrush="Yellow" BorderThickness="1" Background="Green" >
+                    <Border.Height>
+                        <MultiBinding Converter="{StaticResource pac}" ConverterParameter="h">
+                            <Binding Path="." />
+                            <Binding Path="DataContext.gestoreFinestrePubbliche" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=UserControl}" />
+                        </MultiBinding>
+                    </Border.Height>
+                    <Border.Width>
+                        <MultiBinding Converter="{StaticResource pac}" ConverterParameter="w">
+                            <Binding Path="." />
+                            <Binding Path="DataContext.gestoreFinestrePubbliche" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=UserControl}" />
+                        </MultiBinding>
+                    </Border.Width>
+                    <Canvas.Left>
+                        <MultiBinding Converter="{StaticResource pac}" ConverterParameter="l">
+                            <Binding Path="." />
+                            <Binding Path="DataContext.gestoreFinestrePubbliche" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=UserControl}" />
+                        </MultiBinding>
+                    </Canvas.Left>
+                    <Canvas.Top>
+                        <MultiBinding Converter="{StaticResource pac}" ConverterParameter="t">
+                            <Binding Path="." />
+                            <Binding Path="DataContext.gestoreFinestrePubbliche" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=UserControl}" />
+                        </MultiBinding>
+                    </Canvas.Top>
+                </Border>
+	 
+            </Canvas>
+
+
+            <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" >
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="N° {0} - {1}">
+                        <Binding Path="deviceEnum" />
+                        <Binding Path="DeviceName" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+
+        </Grid>
+
+    </DataTemplate>
+
+	-->
+
 </ResourceDictionary>

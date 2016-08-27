@@ -678,6 +678,15 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		public String titoloFinestraGallery {
+			get {
+				if( String.IsNullOrEmpty( Configurazione.infoFissa.descrizPuntoVendita ) )
+					return "Gallery - digiPHOTO Lumen";
+				else
+					return "Gallery - " + Configurazione.infoFissa.descrizPuntoVendita;
+			}
+		}
+
 		#endregion Proprietà
 
 
@@ -1409,7 +1418,7 @@ namespace Digiphoto.Lumen.UI {
 
 		private void caricareSlideShow( string modo ) {
 
-			((App)Application.Current).gestoreFinestrePubbliche.forseApriSlideShowWindow();
+			((App)Application.Current).gestoreFinestrePubbliche.forseApriFinestraSlideShow();
 
 			if( modo == "AddSelez" )
 				slideShowViewModel.add( creaListaFotoSelezionate() );

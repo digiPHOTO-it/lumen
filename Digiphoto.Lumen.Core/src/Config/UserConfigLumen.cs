@@ -39,6 +39,9 @@ namespace Digiphoto.Lumen.Config
     {
 
 		public UserConfigLumen() {
+
+			// Questo oggetto deve sempre essere istanziato
+			this.geometriaFinestraSlideShow = new GeometriaFinestra();
 		}
 
 
@@ -288,11 +291,23 @@ namespace Digiphoto.Lumen.Config
 			set; 
 		}
 
+		/// <summary>
+		/// Applico un watermark sulla stampa dei provini si/no
+		/// </summary>
 		public bool macchiaProvini
 		{
 			get;
 			set;
 		}
+
+		/// <summary>
+		/// Applica un watermark sullo slide show si/no
+		/// </summary>
+		public bool macchiaSlideShow {
+			get;
+			set;
+		}
+
 
 		public bool compNumFoto
 		{
@@ -410,67 +425,15 @@ namespace Digiphoto.Lumen.Config
 			set;
 		}
 
-		#region SlideShowParam
 
-		public short deviceEnum
-		{
-			get;
+		/// <summary>
+		/// Tutti i dati di posizionamento della finestra dello slide show
+		/// </summary>
+		public GeometriaFinestra geometriaFinestraSlideShow {
 			set;
+			get;
 		}
 
-		public int screenHeight
-		{
-			get;
-			set;
-		}
-
-		public int screenWidth
-		{
-			get;
-			set;
-		}
-
-		public bool fullScreen
-		{
-			get;
-			set;
-		}
-
-		public int slideHeight
-		{
-			get;
-			set;
-		}
-
-		public int slideWidth
-		{
-			get;
-			set;
-		}
-
-		public int slideTop
-		{
-			get;
-			set;
-		}
-
-		public int slideLeft
-		{
-			get;
-			set;
-		}
-
-		public int slideBoundsX
-		{
-			get;
-			set;
-		}
-
-		public int slideBoundsY
-		{
-			get;
-			set;
-		}
 
 		/// <summary>
 		/// Se impostato a true, quando si scaricano le foto, se queste sono verticali,
@@ -485,8 +448,6 @@ namespace Digiphoto.Lumen.Config
 			get;
 			set;
 		}
-
-		#endregion
 
 	}
 }

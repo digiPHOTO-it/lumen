@@ -547,7 +547,7 @@ fotoRitoccoSrv.applicareAzioneAutomatica( fotoSelezionate.AsEnumerable(), azione
 
 		private void caricareSlideShow(string modo)
 		{
-			((App)Application.Current).gestoreFinestrePubbliche.forseApriSlideShowWindow();
+			((App)Application.Current).gestoreFinestrePubbliche.forseApriFinestraSlideShow();
 
 			if (modo.Equals("Manual", StringComparison.CurrentCultureIgnoreCase))
 				slideShowViewModel.creaShow(fotoSelezionate);

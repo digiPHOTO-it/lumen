@@ -1,0 +1,38 @@
+﻿<Window x:Class="Digiphoto.Lumen.UI.Pubblico.PubblicoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
+        mc:Ignorable="d"
+        WindowStartupLocation="Manual" Title="{Binding titoloFinestraGallery,Mode=OneTime}">
+
+
+    <!-- faccio il merge di due dizionari -->
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/GlobalResourceDictionary.xaml" />
+                <ResourceDictionary Source="PubblicoResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Name="gridWinPub">
+
+		
+
+        <!-- Questo è l'iteratore della collezione di Slide -->
+        <ItemsControl ItemsSource="{Binding Path=fotografieCW}" 
+		              ItemTemplate="{DynamicResource pubblicoDataTemplate}"
+		              ItemsPanel="{DynamicResource pubblicoItemsPanelTemplate}" 
+					  Visibility="{Binding Path=isAlmenoUnaFoto,Converter={StaticResource boolVisibilityConverter}}"
+					  />
+
+
+        <TextBox Text="digiPHOTO.it&#x0a;Gallery" FontSize="80" Width="{Binding ElementName=gridWinPub,Path=Width}"
+		 BorderBrush="Beige" BorderThickness="1"
+		         HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+		         Visibility="{Binding Path=isAlmenoUnaFoto,Converter={StaticResource boolVisibilityConverter}, ConverterParameter=not}" />
+    </Grid>
+</Window>

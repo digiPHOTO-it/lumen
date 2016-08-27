@@ -193,7 +193,8 @@
 								<CheckBox Content="Operatore" IsChecked="{Binding cfg.stampiglioOperatore}" />
 								<CheckBox Content="Giornata" IsChecked="{Binding cfg.stampiglioGiornata}" />
 								<CheckBox Content="N° foto" IsChecked="{Binding cfg.stampiglioNumFoto}" />
-								<CheckBox Content="Macchia Provini" IsChecked="{Binding cfg.macchiaProvini}" />
+								<CheckBox Content="Macchia Provini" IsChecked="{Binding cfg.macchiaProvini}" ToolTip="Applica un watermark alla stampa provini su carta" />
+								<CheckBox Content="Macchia Slide Show" IsChecked="{Binding cfg.macchiaSlideShow}" ToolTip="Applica un watermark allo slide show nel monitor secondario" />
 								<StackPanel Orientation="Horizontal">
 									<Label Content="Margine su/giu" Name="stampigliMarginBottom" Width="90" />
 									<TextBox HorizontalAlignment="Left" Margin="5,0,0,0" Text="{Binding cfg.stampigliMarginBottom}" ToolTip="Offset di rientro dello stampiglio dal lato orizzontale della foto"  Width="30" HorizontalContentAlignment="Right" />

@@ -18,24 +18,39 @@
 
     <DockPanel LastChildFill="False">
 
-        <GroupBox Header="Posizione dello Slide Show sul Monitor" DockPanel.Dock="Top" Margin="0,20,0,0">
+	    <GroupBox Header="Posizione dello Slide Show" DockPanel.Dock="Top" Margin="0,20,0,0">
 
             <StackPanel Orientation="Horizontal">
-                <Label Content="Sul monitor" FontSize="16" />
-                <TextBox Width="30" Height="26" Text="{Binding Path= pSSG.deviceEnum,Mode=TwoWay}" IsEnabled="False"/>
-				
-                <CheckBox Content="Schermo Intero" IsChecked="{Binding Path=pSSG.fullScreen,Mode=TwoWay}" Margin="30,0,0,0"  VerticalAlignment="Center" FontSize="18" />
-                
-				<Button Content="Salva" Command="{Binding salvaCommand}" Style="{StaticResource finestraPubblicaButtonStyle}" />
-                <Button Content="Ripristina" Command="{Binding ripristinaCommand}" Style="{StaticResource finestraPubblicaButtonStyle}" />
-                <Button Content="Reset" Command="{Binding resetCommand}" Style="{StaticResource finestraPubblicaButtonStyle}" />
+
+                <Label Content="Sul monitor n°" FontSize="16" />
+                <TextBox Width="30" Height="26" Text="{Binding Path=deviceEnum,Mode=OneWay}" IsReadOnly="True" />
+
+                <CheckBox IsEnabled="False" Content="Schermo Intero" IsChecked="{Binding Path=fullScreen,Mode=OneWay}" Margin="30,0,0,0"  VerticalAlignment="Center" FontSize="18" />
+
+                <Separator Margin="20 0 20 0" Width="20" BorderThickness="1" BorderBrush="Red" />
+
+                <Button Content="Apri" Command="{Binding aprireCommand}" Style="{StaticResource finestraPubblicaButtonStyle}" />
+                <Button Content="Chiudi" Command="{Binding chiudereCommand}" Style="{StaticResource finestraPubblicaButtonStyle}" />
+
+
+                <Button Content="Salva" Command="{Binding salvaCommand}" Style="{StaticResource finestraPubblicaButtonStyle}" />
+<!--
+                <Button Content="Ripristina" Command="{Binding ripristinaCommand}" Style="{StaticResource finestraPubblicaButtonStyle}" ToolTip="Carica la ultima posizione salvata" />
+-->
+                <Button Content="Massimizza sul&#10;monitor secondario" Command="{Binding massimizzareSulMonitor2Command}" Style="{StaticResource finestraPubblicaButtonStyle}" ToolTip="Posiziona la finestra dello Slide Show&#10;sul monitor secondario&#10;in modalità tutto schermo" Visibility="{Binding isPossibileMassimizzareSulMonitor2}" />
+
+                <Button Content="Reset" Command="{Binding resetCommand}" Style="{StaticResource finestraPubblicaButtonStyle}" ToolTip="Resetta posizione sul monitor principale" />
+
             </StackPanel>
         </GroupBox>
 
-        
-	
+<!--
+        <ListBox Name="listaSchermi" ItemsSource="{Binding schermiCV}" 
+		         ItemsPanel="{DynamicResource schermiItemsPanelTemplate}" 
+                 ItemTemplate="{DynamicResource schermoDataTemplate}">
 
-		
+        </ListBox>
+-->	
 		
 	</DockPanel>
 	

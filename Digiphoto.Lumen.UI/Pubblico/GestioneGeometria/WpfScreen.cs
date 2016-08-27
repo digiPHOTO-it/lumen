@@ -38,29 +38,47 @@ namespace Digiphoto.Lumen.UI.Pubblico.GestioneGeometria
 			return wpfScreen;
 		}
 
+		/// <summary>
+		/// Se trovo un device con lo stesso nome bene.
+		/// Altrimenti torno null
+		/// </summary>
+		/// <param name="deviceName">Nome del device esempio: \\.\DEVICE1</param>
+		/// <returns>null se non lo trovo</returns>
 		public static WpfScreen GetScreenFrom(string deviceName)
 		{
-			WpfScreen wpfScreen = new WpfScreen(System.Windows.Forms.Screen.AllScreens.First());
+			WpfScreen wpfScreen = null;
 			
 			foreach (Screen screen in System.Windows.Forms.Screen.AllScreens)
 			{
 				if(screen.DeviceName.Equals(deviceName)){
-					return new WpfScreen(screen);
+					wpfScreen = new WpfScreen(screen);
+					break;
 				}
 			}
 			return wpfScreen;
 		}
 
-		public static WpfScreen GetScreenFrom(short deviceEnum)
+		/// Cerco nel vettore degli schermi alla posizione indicata.
+		/// Se l'indice è fuori dal vettore non viene sollevata eccezione, ma ritorno NULL
+		/// </summary>
+		/// <param name="deviceEnum">indice intero nel vettore degli schermi</param>
+		/// <returns>null se non lo trovo</returns>
+		public static WpfScreen GetScreenFrom( short deviceEnum )
 		{
-			WpfScreen wpfScreen = new WpfScreen(System.Windows.Forms.Screen.AllScreens.First());
+			WpfScreen wpfScreen = null;
 
-			if (deviceEnum != 0 && deviceEnum < System.Windows.Forms.Screen.AllScreens.Count<Screen>())
-			{
-				wpfScreen = new WpfScreen(System.Windows.Forms.Screen.AllScreens.ElementAt(deviceEnum));
-			}
-
+            if( deviceEnum >= 0 && deviceEnum < Screen.AllScreens.Count<Screen>() )
+				wpfScreen = new WpfScreen( Screen.AllScreens.ElementAt(deviceEnum) );
+				
 			return wpfScreen;
+		}
+
+		/// <summary>
+		/// Prende il primo schermo dal vettore di tutti gli schermi
+		/// </summary>
+		/// <returns>il primo schermo del vettore (alla posizione 0)</returns>
+		public static WpfScreen GetFirstScreen() {
+			return new WpfScreen( Screen.AllScreens.First() );
 		}
 
 		public static WpfScreen Primary
@@ -138,5 +156,13 @@ namespace Digiphoto.Lumen.UI.Pubblico.GestioneGeometria
 				return this.screen.DeviceName;
 			}
 		}
+
+		public string ToDebugString() {
+			StringBuilder sb = new StringBuilder();
+			sb.AppendFormat( "DeviceName={0}, DeviceEnum={1}, IsPrimary={2}\n", DeviceName, deviceEnum, IsPrimary );
+			sb.AppendFormat( "WorkingArea={0}, displayResolution={1}", WorkingArea, DeviceBounds );
+			return sb.ToString();
+		}
+
 	}
 }

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -11,29 +8,52 @@ using Digiphoto.Lumen.UI.Pubblico.GestioneGeometria;
 using Digiphoto.Lumen.UI.ScreenCapture;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Util;
-using Digiphoto.Lumen.Applicazione;
-using Digiphoto.Lumen.Servizi.Io;
 using Digiphoto.Lumen.Imaging;
-using System.Windows.Media.Imaging;
 using Digiphoto.Lumen.Imaging.Wic;
+using log4net;
+using System.Windows.Forms;
 
 namespace Digiphoto.Lumen.UI.Pubblico {
 
 
 	/// <summary>
-	/// Questa classe si occupa di mantenere lo stato delle finestre pubbliche, e si sollevare eventi
+	/// Questa classe si occupa di mantenere lo stato delle finestre pubbliche, e di sollevare eventi
 	/// quando queste vengono aperte o chiuse
 	/// </summary>
 	public class GestoreFinestrePubbliche {
 
+		protected static readonly ILog _giornale = LogManager.GetLogger( typeof( GestoreFinestrePubbliche ) );
+
+		/// <summary>
+		/// Finestra modale in cui gira lo slide show
+		/// </summary>
 		private SlideShowWindow _slideShowWindow;
+
+		/// <summary>
+		/// Finestra modale dove si vedono replicate le foto della gallery per la vendita al pubblico
+		/// </summary>
+		private PubblicoWindow _pubblicoWindow;
+
 		private SnapshotPubblicoWindow _snapshotPubblicoWindow;
 		private MainWindow _mainWindow;
 		
+		
+		public GestoreFinestrePubbliche() {
+
+			// Assegno geometria iniziale
+			this.geomSS = Configurazione.UserConfigLumen.geometriaFinestraSlideShow;
+		}
+
 
 		public SlideShowViewModel slideShowViewModel {
 			get {
 				return _slideShowWindow == null ? null : (SlideShowViewModel)_slideShowWindow.DataContext;
+			}
+		}
+
+		public FotoGalleryViewModel fotoGalleryViewModel {
+			get {
+				return _mainWindow == null ? null : (FotoGalleryViewModel)_mainWindow.fotoGallery.DataContext;
 			}
 		}
 
@@ -43,7 +63,44 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			}
 		}
 
-		public void creaMainWindow() {
+		// Posiziono la finestra rileggendo i valori dalla configurazione memorizzata
+		internal void ripristinaFinestraSlideShow() {
+
+			chiudiFinestraSlideShow();
+
+			this.geomSS = (GeometriaFinestra) Configurazione.UserConfigLumen.geometriaFinestraSlideShow.Clone();
+
+			forseApriFinestraSlideShow();
+		}
+
+		public bool isSlideShowVisible { 
+			get {
+				return _slideShowWindow != null && _slideShowWindow.WindowState != WindowState.Minimized;
+			}
+		}
+
+		/// <summary>
+		///  Se lo SS è visibile, mi indica in quale schermo è posizionato
+		/// </summary>
+		/// <returns>-1 se non è visibile, altrimenti il numero dello schermo</returns>
+		public WpfScreen getScreenSlideShow() {
+			if( isSlideShowVisible ) {
+				return WpfScreen.GetScreenFrom( _slideShowWindow );
+			} else
+				return null;
+		}
+
+		/// <summary>
+		/// Questa è la posizione della finestra SS.
+		/// Inizialmente viene presa dalla configurazione, ma poi può essere modificata
+		/// dallo spostamento della finestra, oppure dalle operazioni dell'utente nel menu preferenze.
+		/// </summary>
+		public GeometriaFinestra geomSS { 
+			get; 
+			private set; 
+		}
+
+		public void apriWindowMain() {
 			_mainWindow = new MainWindow();
 			_mainWindow.Show();			
 		}
@@ -53,14 +110,66 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		/// </summary>
 		public void chiudiTutto() {
 
-			chiudiSlideShowWindow();
+			chiudiFinestraSlideShow();
 			chiudiSnapshotPubblicoWindow();
 			chiudiMainWindow();
 
-			Application.Current.Shutdown();
+			System.Windows.Application.Current.Shutdown();
 		}
 
-		public void chiudiSlideShowWindow() {
+		public bool possoMassimizzareSlideShow { 
+			get {
+				return isSlideShowVisible && _slideShowWindow.WindowState != WindowState.Maximized;
+			}
+		}
+
+		public void massimizzareFinestraSlideShow() {
+			massimizzareFinestraSlideShow( _slideShowWindow );
+		}
+
+
+
+		/// <summary>
+		/// Posiziono la finestra dello slide show sul monitor primario,
+		/// con una dimensione che sicuramente è visibile (cioè con una geometria di default)
+		/// </summary>
+		internal void normalizzareFinestraSlideShowSulMonitor1() {
+
+			// Per prima cosa apro la finestra se questa è chiusa
+			forseApriFinestraSlideShow();
+			
+			// Creo una geometria dalle dimensioni del monitor.
+			GeometriaFinestra geo = Configurazione.creaGeometriaSlideShowDefault();
+			posizionaFinestra( _slideShowWindow, geo );
+		}
+
+
+		/// <summary>
+		/// Massimizzo la finestra indicata sul monitor secondario
+		/// </summary>
+		internal void massimizzareFinestraSlideShowSulMonitor2() {
+
+			// Per prima cosa apro la finestra se questa è chiusa
+			forseApriFinestraSlideShow();
+
+			// Adesso calcolo la posizione del monitor 2
+			WpfScreen scrn = WpfScreen.AllScreens().Where( s => s.IsPrimary == false ).FirstOrDefault();
+			if( scrn != null ) {
+
+				// Creo una geometria dalle dimensioni del monitor.
+				GeometriaFinestra geo = creaGeometriaDaScreen( scrn );
+				posizionaFinestra( _slideShowWindow, geo );
+
+				massimizzareFinestraSlideShow();
+			}
+
+		}
+
+		internal static void massimizzareFinestraSlideShow( SlideShowWindow ssWindow ) {
+			ssWindow.WindowState = WindowState.Maximized;
+		}
+
+		public void chiudiFinestraSlideShow() {
 			if( _slideShowWindow != null ) {
 
 				ClosableWiewModel cvm = (ClosableWiewModel)slideShowViewModel;
@@ -108,11 +217,40 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			}
 		}
 
+
+		/// <summary>
+		/// Se la finestra del pubblico non è aperta (o non è istanziata)
+		/// la creo sul momento
+		/// </summary>
+		public bool apriWindowPubblico() {
+
+			// Se è già aperta, non faccio niente
+			if( _pubblicoWindow != null )
+				return false;
+
+			IInputElement elementoKeyboardInfuocato = Keyboard.FocusedElement;
+
+			// Apro la finestra modeless
+			// Create a window and make this window its owner
+			_pubblicoWindow = new PubblicoWindow();
+			_pubblicoWindow.Closed += chiusoPubblicoWindow;
+            _pubblicoWindow.Show();
+			_pubblicoWindow.Topmost = true;
+
+			// Devo rimenttere il fuoco sul componente che lo deteneva prima
+			Keyboard.Focus( elementoKeyboardInfuocato );
+
+			// Uso lo stesso viewmodel della gallery perché deve lavorare identico
+			_pubblicoWindow.DataContext = fotoGalleryViewModel;
+
+			return true;
+		}
+
 		/// <summary>
 		/// Se la finestra dello slide show non è aperta (o non è istanziata)
 		/// la creo sul momento
 		/// </summary>
-		public bool forseApriSlideShowWindow() {
+		public bool forseApriFinestraSlideShow() {
 
 			// Se è già aperta, non faccio niente
 			if( _slideShowWindow != null )
@@ -120,10 +258,16 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 			IInputElement elementoKeyboardInfuocato = Keyboard.FocusedElement;
 
-			// Apro la finestra modeless
-			// Create a window and make this window its owner
+			// Creo
 			_slideShowWindow = new SlideShowWindow();
+
+			// Posiziono
+			posizionaFinestraSlideShow();
+
+			// Gestisco la chiusura per il rilascio del vm
 			_slideShowWindow.Closed += chiusoSlideShowWindow;
+
+			// Visualizzo modeless
 			_slideShowWindow.Show();
 
 			// Devo rimenttere il fuoco sul componente che lo deteneva prima
@@ -172,10 +316,10 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			} else {
 
 				// valorizzo la geometria del form = a quella del form slide show (praticamente lo ricopro)
-				_snapshotPubblicoWindow.Height = Configurazione.UserConfigLumen.slideHeight;
-				_snapshotPubblicoWindow.Width = Configurazione.UserConfigLumen.slideWidth;
-				_snapshotPubblicoWindow.Top = Configurazione.UserConfigLumen.slideTop;
-				_snapshotPubblicoWindow.Left = Configurazione.UserConfigLumen.slideLeft;
+				_snapshotPubblicoWindow.Height = Configurazione.UserConfigLumen.geometriaFinestraSlideShow.Height;
+				_snapshotPubblicoWindow.Width = Configurazione.UserConfigLumen.geometriaFinestraSlideShow.Width;
+				_snapshotPubblicoWindow.Top = Configurazione.UserConfigLumen.geometriaFinestraSlideShow.Top;
+				_snapshotPubblicoWindow.Left = Configurazione.UserConfigLumen.geometriaFinestraSlideShow.Left;
 				/*
 				if( Configurazione.UserConfigLumen.fullScreen )
 					_snapshotPubblicoWindow.WindowState = WindowState.Maximized;
@@ -190,7 +334,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			// Riposiziono il fuoco sul componente che lo deteneva prima di aprire la finestra
 			Keyboard.Focus( elementoKeyboardInfuocato );
 			
-			if( Configurazione.UserConfigLumen.fullScreen )
+			if( Configurazione.UserConfigLumen.geometriaFinestraSlideShow.fullScreen )
 				_snapshotPubblicoWindow.WindowState = WindowState.Maximized;
 			else
 				_snapshotPubblicoWindow.WindowState = WindowState.Normal;
@@ -275,6 +419,16 @@ namespace Digiphoto.Lumen.UI.Pubblico {
             FormuleMagiche.attendiGcFinalizers();
         }
 
+		public void chiusoPubblicoWindow( object sender, EventArgs e ) {
+			if( _pubblicoWindow != null ) {
+				_pubblicoWindow.Closed -= chiusoPubblicoWindow;
+				_pubblicoWindow = null;
+			}
+
+			FormuleMagiche.attendiGcFinalizers();
+		}
+
+
 		public void chiusoSnapshotPubblicoWindow( object sender, EventArgs e ) {
 			_snapshotPubblicoWindow.Closed -= chiusoSnapshotPubblicoWindow;
 			_snapshotPubblicoWindow = null;
@@ -286,9 +440,222 @@ namespace Digiphoto.Lumen.UI.Pubblico {
             FormuleMagiche.attendiGcFinalizers();
 		}
 
+
+		/// <summary>
+		/// Posiziono la finestra e la ridimensiono, per come indicato nella nuova geometria desiderata.
+		/// Verifico anche che la geometria indicata sia proiettabile nello schermo (quindi che si interna)
+		/// Per gestire lo stato di massimizzato, vedere descrizione qui:
+		/// https://social.msdn.microsoft.com/Forums/vstudio/en-US/2ca2fab6-b349-4c08-915f-373c71bd636a/show-and-maximize-wpf-window-on-a-specific-screen?forum=wpf
+		/// In pratica: 
+		/// in prima battuta visualizzo la finestra in stato normal. Poi dopo che questa si è caricata e visualizzata,
+		/// tramite un evento, faccio chiamare una routine che la rende massimizzata.
+		/// </summary>
+		/// <param name="window">La finestra da ridimensionare/spostare</param>
+		/// <param name="newGoem">La nuova posizione e dimensione desiderata</param>
+		/// <returns>true se operazione a buon fine. false se condizioni errate</returns>
+
+		public static bool posizionaFinestra( Window window, GeometriaFinestra newGoem ) {
+
+			bool esito = verificaProiettabile( newGoem );
+
+			if( esito ) {
+
+				try {
+
+					// In prima battuta, devo visualizzare la finestra in stato normal
+					window.WindowState = WindowState.Normal;
+
+					// Nessun intervento di centratura automatico. Faccio tutto io manualmente su tutti i parametri
+					window.WindowStartupLocation = WindowStartupLocation.Manual;
+
+					// Screen[] _screens = Screen.AllScreens;
+					// System.Drawing.Rectangle rectangle1 = _screens[newGoem.deviceEnum].Bounds;
+					// System.Drawing.Rectangle rectangle2 = _screens[newGoem.deviceEnum].WorkingArea;
+
+					window.Left = newGoem.Left;
+					window.Top = newGoem.Top;
+					window.Width = newGoem.Width;
+					window.Height = newGoem.Height;
+
+					if( newGoem.fullScreen )
+						window.Loaded += Window_Loaded_posizionaFinestraFullScreen;
+
+					esito = true;
+
+				} catch( Exception ) {
+					esito = false;
+				}
+			}
+
+			return esito;
+		}
+
+		/// <summary>
+		/// Massimizzo la finestra solo dopo che questa è stata caricata
+		/// </summary>
+		/// <param name="sender">la finestra sorgente</param>
+		/// <param name="e">evento di loaded</param>
+		private static void Window_Loaded_posizionaFinestraFullScreen( object sender, RoutedEventArgs e ) {
+
+			SlideShowWindow ssWindow = sender as SlideShowWindow;
+
+			// Salvo il flag
+			bool savePos = ssWindow.posizionamentoInCorso;
+			ssWindow.posizionamentoInCorso = true;
+
+			massimizzareFinestraSlideShow( ssWindow );
+
+			ssWindow.posizionamentoInCorso = savePos;
+        }
+
+		public bool posizionaFinestraSlideShow() {
+
+			// carico la eventuale geometria salvata nella configurazione
+			_slideShowWindow.posizionamentoInCorso = true;
+
+			// Non ho ancora salvato una geometria. Ne creo una che va sicuramente bene
+			if( geomSS == null || geomSS.isEmpty() )
+				geomSS = Configurazione.creaGeometriaSlideShowDefault();
+
+			// Primo tentativo
+			bool esito;
+			esito = posizionaFinestra( _slideShowWindow, geomSS );
+
+			// Secondo tentativo con default
+			if( !esito ) {
+				geomSS = Configurazione.creaGeometriaSlideShowDefault();
+				esito = posizionaFinestra( _slideShowWindow, geomSS );
+			}
+
+			_slideShowWindow.posizionamentoInCorso = false;
+
+			return esito;
+		}
+
+
+		public static GeometriaFinestra creaGeometriaDaScreen( WpfScreen wpfScreen ) {
+
+			// Creo una geometria dalle dimensioni del monitor.
+			return new GeometriaFinestra() {
+				Left = (int)wpfScreen.WorkingArea.Left,
+				Top = (int)wpfScreen.WorkingArea.Top,
+				Width = (int)wpfScreen.WorkingArea.Width,
+				Height = (int)wpfScreen.WorkingArea.Height,
+
+				fullScreen = false,  // ?? questo effettivamente non è un valore dello schermo ma della finestra
+				deviceEnum = wpfScreen.deviceEnum
+			};
+		}
+
+		/// <summary>
+		/// Data una Window, estraggo i dati del suo posizionamento.
+		/// </summary>
+		/// <param name="window">La finestra da analizzare</param>
+		/// <returns>La Geometria che rappresenta la sua posizione</returns>
+		public static GeometriaFinestra creaGeometriaDaWindow( Window window ) {
+
+			WpfScreen scr = WpfScreen.GetScreenFrom( window );
+
+			GeometriaFinestra geo = new GeometriaFinestra();
+
+			geo.Left = (int)window.Left;
+			geo.Top = (int)window.Top;
+			geo.Height = (int)window.Height;
+			geo.Width = (int)window.Width;
+
+			geo.fullScreen = window.WindowState == WindowState.Maximized;
+			geo.deviceEnum = scr.deviceEnum;
+
+			return geo;
+        }
+
+
+		/// <summary>
+		/// Salvo la posizione e la dimensione della finestra dello SlideShow.
+		/// I dati vengono memorizzati nella configurazione utente.
+		/// </summary>
+		public bool salvaGeometriaFinestraSlideShow() {
+
+			bool esito;
+
+			if( this.geomSS == null || this.geomSS.isEmpty() ) {
+				esito = false;
+
+			} else {
+
+				// Questo fa si che le modifiche di posizione vengano memorizzate in geomSS
+				chiudiFinestraSlideShow();
+
+				Configurazione.UserConfigLumen.geometriaFinestraSlideShow = this.geomSS;
+
+				_giornale.Debug( "Devo salvare la configurazione utente su file xml" );
+				UserConfigSerializer.serializeToFile( Configurazione.UserConfigLumen );
+				_giornale.Info( "Salvata la configurazione utente su file xml" );
+
+				forseApriFinestraSlideShow();
+
+				esito = true;
+			}
+
+			return esito;
+		}
+
+		/// <summary>
+		/// Uso lo schermo indicato nella geometria stessa
+		/// </summary>
+		/// <param name="geom"></param>
+		/// <returns></returns>
+		public static bool verificaProiettabile( GeometriaFinestra geom ) {
+
+			// Verifico se lo schermo indicato esiste ancora. Potrebbe essere stato scollegato
+			if( geom.deviceEnum >= 0 && geom.deviceEnum < Screen.AllScreens.Count() )
+				return verificaProiettabile( WpfScreen.GetScreenFrom( geom.deviceEnum ), geom );
+			else
+				return false;
+		}
+
+		/// <summary>
+		/// Controllo se la geometria indicata è "interna" allo schermo indicato.
+		/// 
+		/// </summary>
+		/// <param name="scr">Schermo su cui disegnare. Esiste di sicuro</param>
+		/// <param name="gf">Geometria della finestra da aprire nello schermo</param>
+		/// <returns>true se la finestra è interna allo schermo (quindi ci sta)</returns>
+		public static bool verificaProiettabile( WpfScreen scr, GeometriaFinestra gf ) {
+
+			bool proiettabile = true;
+			
+			if( gf.fullScreen ) {
+				return true;
+			}
+
+			if( proiettabile && gf.isEmpty() )
+				proiettabile = false;
+
+			if( proiettabile && gf.Left < 0 )
+				proiettabile = false;
+
+			if( proiettabile && gf.Top < 0 )
+				proiettabile = false;
+
+			if( proiettabile && gf.Width <= 10 )
+				proiettabile = false;
+
+			if( proiettabile && gf.Height <= 10 )
+				proiettabile = false;
+
+			if( proiettabile && gf.deviceEnum == WpfScreen.Primary.deviceEnum && (gf.Height + gf.Top > scr.WorkingArea.Height || gf.Width + gf.Left > scr.WorkingArea.Width) )
+				proiettabile = false;
+
+			if( proiettabile && gf.deviceEnum != WpfScreen.Primary.deviceEnum && (gf.Height + gf.Top - scr.DeviceBounds.Y > scr.WorkingArea.Height || gf.Width + gf.Left - scr.DeviceBounds.X > scr.WorkingArea.Width) )
+				proiettabile = false;
+
+			return proiettabile;
+		}
+
 	}
 
-    public class FotoDisposeUtils
+	public class FotoDisposeUtils
     {
         private static FotoDisposeUtils _instance = null;
 

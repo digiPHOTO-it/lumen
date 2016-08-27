@@ -1,0 +1,51 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+
+    <lumC:PercentualeConverter x:Key="percentualeConverter" />
+    <lumC:BoolWindowStateConverter x:Key="boolWindowStateConverter" />
+    <lumC:BoolVisibilityConverter x:Key="boolVisibilityConverter" />
+    <lumC:BoolInverterConverter x:Key="boolInverterConverter" />
+    <lumC:GrigliaImageConverter x:Key="grigliaImageConverter" />
+
+
+
+    <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Fotografia" -->
+    <DataTemplate x:Key="pubblicoDataTemplate" >
+
+        <Border BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="8" Margin="0,0,2,2" >
+			
+            <Grid x:Name="gridUnaFotoPub">
+                <Grid.Background>
+					
+                    <ImageBrush Stretch="Uniform">
+                        <ImageBrush.ImageSource>
+                            <MultiBinding Converter="{StaticResource grigliaImageConverter}" Mode="OneWay">
+                                <Binding Path="." />
+                                <Binding Path="DataContext" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}"/>
+                            </MultiBinding>
+                        </ImageBrush.ImageSource>
+					</ImageBrush> 
+                </Grid.Background>
+
+                <!-- IL font con cui stampo il numero, ha grandezza proporzionale al canvas . Per ora uso 8% della grandezza del contenitore della foto -->
+                <Label Content="{Binding Path=etichetta}" 
+					   VerticalAlignment="Top" HorizontalAlignment="Right"
+					   Margin="0,2,2,0"
+					   FontSize="{Binding Converter={StaticResource percentualeConverter}, FallbackValue=14, ElementName=gridUnaFotoPub,Path=ActualHeight,ConverterParameter=8}"
+					   Background="Orange" />
+
+            </Grid>
+
+        </Border>
+    </DataTemplate>
+
+
+    <!-- Template per il pannello che contiene tutti gli elementi della lista -->
+    <ItemsPanelTemplate x:Key="pubblicoItemsPanelTemplate">
+        <UniformGrid Rows="{Binding Path=numRighePag,Mode=OneWay}" Columns="{Binding Path=numColonnePag,Mode=OneWay}" />
+    </ItemsPanelTemplate>
+
+</ResourceDictionary>
