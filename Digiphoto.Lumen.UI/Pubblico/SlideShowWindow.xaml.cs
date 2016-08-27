@@ -1,20 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Digiphoto.Lumen.Config;
 using log4net;
 using System.Windows.Forms;
 using Digiphoto.Lumen.UI.Pubblico.GestioneGeometria;
-using System.Configuration;
 
 namespace Digiphoto.Lumen.UI.Pubblico {
 	/// <summary>
@@ -24,111 +13,213 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		private static readonly ILog _giornale = LogManager.GetLogger(typeof(SlideShowWindow));
 
-		private UserConfigLumen cfg = Configurazione.UserConfigLumen;
-
-		SlideShowViewModel _slideShowViewModel;
+		/// <summary>
+		/// Questa proprieta mi dice se la finestra è stata spostata o ridimensionata.
+		/// Mi servirà in chiusura per memorizzare la posizione nella geometria corrente
+		/// (non quella della configurazione ma quella corrente)
+		/// </summary>
+		public bool posizionamentoInCorso {
+			get; set;
+		}
+		
+		private bool spostata { 
+			get; set; 
+		}
 
 		public SlideShowWindow() {
 
 			InitializeComponent();
 
-if( 1 == 1 ) {  // TODO
-			// creo ed associo il datacontext
-			_slideShowViewModel = new SlideShowViewModel();
-			this.DataContext = _slideShowViewModel;
+			// creo ed associo il datacontext 
+			this.DataContext = new SlideShowViewModel();
 
-				// verifico che lo slideShow sia proiettabile in una zona visibile.
-				gestisciPosizione();
-}
+			// Eventi di spostameto e ridimensionamento della finestra
+			LocationChanged += windowSlideShow_LocationChanged;
+			SizeChanged += windowSlideShow_SizeChanged;
+
+			// Evento di chiusura innescato dal viewmodel
+			EventHandler handler = null;
+			handler = delegate {
+				_slideShowViewModel.RequestClose -= handler;
+		
+				this.Close();
+				
+				this.DataContext = null;
+			};
+
+			_slideShowViewModel.RequestClose += handler;
+
+			spostata = false;
+        }
+
+		#region Proprieta
+
+		private SlideShowViewModel _slideShowViewModel {
+			get {
+				return (SlideShowViewModel)this.DataContext;
+			}
 		}
+
+		private GestoreFinestrePubbliche gestoreFinestrePubbliche {
+			get {
+				return ((App)System.Windows.Application.Current).gestoreFinestrePubbliche;
+			}
+		}
+
+		#endregion Proprieta
+
+		#region Eventi
 
 		protected override void OnClosed( EventArgs e ) {
-			if(_slideShowViewModel!=null)
+
+			if( _slideShowViewModel != null ) {
 				_slideShowViewModel.Dispose();
+				DataContext = null;
+			}
+
+
+
 			base.OnClosed( e );
 		}
+		
+		private void windowSlideShow_Closing( object sender, System.ComponentModel.CancelEventArgs e ) {
 
-		private void windowSlideShow_LocationChanged(object sender, EventArgs e)
-		{	
-			cfg.deviceEnum = WpfScreen.GetScreenFrom(this).deviceEnum;
+			// Rimuovo listener per pulizia
+			LocationChanged -= windowSlideShow_LocationChanged;
+			SizeChanged -= windowSlideShow_SizeChanged;
 
-			GestSlideShowViewModel.pSSG.deviceEnum = WpfScreen.GetScreenFrom(this).deviceEnum;
-			WpfScreen scrn = WpfScreen.GetScreenFrom(cfg.deviceEnum);
-			cfg.slideBoundsX = (int)scrn.DeviceBounds.Location.X;
-			cfg.slideBoundsY = (int)scrn.DeviceBounds.Location.Y;
+			// evito di incappare in loop di ridimensionamenti di chiusura finestra
+			this.posizionamentoInCorso = true;
+
+			// Memorizzo la geometria per la prossima apertura
+			if( spostata ) {
+				memorizzaPosizione();
+				spostata = false;
+			}
+
+			// Se mi hanno premuto X per chiudere la finestra, fermo lo show
+			if( _slideShowViewModel != null ) {
+				_slideShowViewModel.stop();
+				_slideShowViewModel.Dispose();
+				DataContext = null;
+			}
+
 		}
 
+		public void memorizzaPosizione() {
+
+			WpfScreen scrn = WpfScreen.GetScreenFrom( this );
+			gestoreFinestrePubbliche.geomSS.deviceEnum = scrn.deviceEnum;
+
+			// flag sono massimizzato
+			bool max = this.WindowState == WindowState.Maximized;
+            gestoreFinestrePubbliche.geomSS.fullScreen = max;
+
+			gestoreFinestrePubbliche.geomSS.Left = (int)this.Left;
+			gestoreFinestrePubbliche.geomSS.Top = (int)this.Top;
+
+			// In certi casi il valore è NaN
+			// http://stackoverflow.com/questions/11013316/get-the-height-width-of-window-wpf
+			if( Double.IsNaN( this.Width ) )
+				gestoreFinestrePubbliche.geomSS.Width = (int)this.ActualWidth;
+			else
+				gestoreFinestrePubbliche.geomSS.Width = (int)this.Width;
+
+			// In certi casi il valore è NaN
+			// http://stackoverflow.com/questions/11013316/get-the-height-width-of-window-wpf
+			if( Double.IsNaN( this.Height ) )
+				gestoreFinestrePubbliche.geomSS.Height = (int)this.ActualHeight;
+			else
+				gestoreFinestrePubbliche.geomSS.Height = (int)this.Height;
+
+		}
+
+		private void windowSlideShow_SizeChanged( object sender, SizeChangedEventArgs e ) {
+			if( IsLoaded && posizionamentoInCorso == false && DataContext != null )
+				spostata = true;
+		}
+
+		private void windowSlideShow_LocationChanged(object sender, EventArgs e) {
+			if( IsLoaded && posizionamentoInCorso == false && DataContext != null )
+				spostata = true;
+		}
+
+		#endregion Eventi
+
+
+#if false
+
+		/// <summary>
+		/// Controllo che la geometria della finestra sia posizionabile in un monitor.
+		/// </summary>
 		private void gestisciPosizione()
 		{
-			WpfScreen scrn = WpfScreen.GetScreenFrom(cfg.deviceEnum);
+			// Per prima cosa, provo a posizionare la finestra nella posizione indicata in configurazione
+			// Mi copio in locale la geometria della finestra per poterla modificare con lo spostamento
+			geoCurrent = (GeometriaFinestra)Configurazione.UserConfigLumen.geometriaFinestraSlideShow.Clone();
 
-			this.WindowStartupLocation = WindowStartupLocation.Manual;
 
-            _giornale.Debug(String.Format("SlideShow Primary Device Info:\n DeviceName.{0}, DeviceEnum.{1},\n workingArea={2}, \n displayResolution={3}", WpfScreen.Primary.DeviceName, WpfScreen.Primary.deviceEnum, WpfScreen.Primary.WorkingArea, WpfScreen.Primary.DeviceBounds));
+			WpfScreen scrn = WpfScreen.GetScreenFrom( geoCurrent.deviceEnum );
+			if( scrn == null )
+				scrn = WpfScreen.GetFirstScreen();  // Prendo quello di default
 
-            _giornale.Debug(String.Format("SlideShow Configuration Device Info:\n DeviceName.{0}, DeviceEnum.{1},\n workingArea={2}, \n displayResolution={3}, \n isPrimary={4}", scrn.DeviceName, scrn.deviceEnum, scrn.WorkingArea, scrn.DeviceBounds, scrn.IsPrimary));
+			// this.WindowStartupLocation = WindowStartupLocation.Manual;
 
-			bool salvaNuoviValori = false;
+            _giornale.Debug( "SlideShow Primary Device Info:\n " + WpfScreen.Primary.ToDebugString() );
 
-			if (cfg.deviceEnum != scrn.deviceEnum)
+			_giornale.Debug( "SlideShow Configuration Device Info:\n " + scrn.ToDebugString() );
+
+			
+			
+			if ( geoCurrent.deviceEnum != scrn.deviceEnum )
 			{
 				_giornale.Debug("Il monitor impostato non è stato trovato!!!");
 
-                cfg.deviceEnum = WpfScreen.Primary.deviceEnum;
-
-				salvaNuoviValori = true;
+				geoCurrent.deviceEnum = WpfScreen.Primary.deviceEnum;
 			}
 
-			if (!verificaProiettabile(scrn, cfg))
+			if (!verificaProiettabile( scrn, geoCurrent ) )
 			{
 				_giornale.Debug("I valori calcolati non sono ammissibili utilizzo quelli di default");
 
-				Configurazione.creaGeometriaSlideShowSDefault(Configurazione.UserConfigLumen);
-				cfg = Configurazione.UserConfigLumen;
+				this.geoCurrent = Configurazione.creaGeometriaSlideShowDefault();
 
-				salvaNuoviValori = true;
 			}
+
             //Se ho messo il full screen resetto i Top e Left
-            if (cfg.fullScreen)
+            if ( geoCurrent.fullScreen )
             {
-                Screen s = (Screen)Screen.AllScreens.GetValue(cfg.deviceEnum);
+                Screen s = (Screen)Screen.AllScreens.GetValue( geoCurrent.deviceEnum );
                 System.Drawing.Rectangle r = s.WorkingArea;
-                cfg.slideTop = r.Top;
-                cfg.slideLeft = r.Left;
+				geoCurrent.Top = r.Top;
+				geoCurrent.Left = r.Left;
             }
-            else if (cfg.screenHeight != (int)scrn.WorkingArea.Height || cfg.screenWidth != (int)scrn.WorkingArea.Width)
+            else if ( geoCurrent.screenHeight != (int)scrn.WorkingArea.Height || geoCurrent.screenWidth != (int)scrn.WorkingArea.Width)
 			{
                 _giornale.Debug("Ricalcolo la geometria dello slideShow in base al nuovo monitor");
 				_giornale.Debug("*** VALORI VECCHI ***");
-				_giornale.Debug("deviceEnum: " + cfg.deviceEnum);
-				_giornale.Debug("slideHeigth: " + cfg.slideHeight + " slideWidth: " + cfg.slideWidth);
-				_giornale.Debug("screenHeight: " + cfg.screenHeight + " screenWidth: " + cfg.screenWidth);
-				_giornale.Debug("slideTop: " + cfg.slideTop + " slideLeft: " + cfg.slideLeft);
+				_giornale.Debug( geoCurrent.ToDebugString() );
 
-				cfg.slideHeight = (int)(cfg.slideHeight * scrn.WorkingArea.Height / cfg.screenHeight);
-				cfg.slideWidth = (int)(cfg.slideWidth * scrn.WorkingArea.Width / cfg.screenWidth);
+				geoCurrent.Top = geoCurrent.Top <= 0 ? 0 : (int)(geoCurrent.Top * scrn.WorkingArea.Height / geoCurrent.screenHeight);
+				geoCurrent.Left = geoCurrent.Left <= 0 ? 0 : (int)(geoCurrent.Left * scrn.WorkingArea.Width / geoCurrent.screenWidth);
 
-                //cfg.slideTop = cfg.slideTop <= 0 ? 0 : (int)(cfg.slideTop * scrn.WorkingArea.Height / cfg.screenHeight);
-                //cfg.slideLeft = cfg.slideLeft <= 0 ? 0 : (int)(cfg.slideLeft * scrn.WorkingArea.Width / cfg.screenWidth);
-                Screen s = (Screen)Screen.AllScreens.GetValue(cfg.deviceEnum);
+				geoCurrent.Height = (int)(geoCurrent.Height * scrn.WorkingArea.Height / geoCurrent.screenHeight);
+				geoCurrent.Width = (int)(geoCurrent.Width * scrn.WorkingArea.Width / geoCurrent.screenWidth);
+
+                Screen s = (Screen)Screen.AllScreens.GetValue(geoCurrent.deviceEnum);
                 System.Drawing.Rectangle r = s.WorkingArea;
-                cfg.slideTop = r.Top;
-                cfg.slideLeft = r.Left;
 
-                cfg.screenHeight = (int)scrn.WorkingArea.Height;
-				cfg.screenWidth = (int)scrn.WorkingArea.Width;
+				geoCurrent.screenHeight = (int)scrn.WorkingArea.Height;
+				geoCurrent.screenWidth = (int)scrn.WorkingArea.Width;
 
 				_giornale.Debug("*** VALORI RICALCOLATI ***");
-				_giornale.Debug("deviceEnum: " + cfg.deviceEnum);
-				_giornale.Debug("slideHeigth: " + cfg.slideHeight + " slideWidth: " + cfg.slideWidth);
-				_giornale.Debug("screenHeight: " + cfg.screenHeight + " screenWidth: " + cfg.screenWidth);
-				_giornale.Debug("slideTop: " + cfg.slideTop + " slideLeft: " + cfg.slideLeft);
-
-				salvaNuoviValori = true;
+				_giornale.Debug( geoCurrent.ToDebugString() );
 			}
 
-			GestSlideShowViewModel.riposiziona();
+			GestoreFinestrePubbliche.risposizionaFinestra( this, geoCurrent );
 
+			// Il salvataggio della posizione, lo farei solo su richiesta esplicita dell'utente
+			
 			if (salvaNuoviValori)
 			{
 				_giornale.Debug("Devo salvare i nuovi valori ricalcolati");
@@ -137,48 +228,7 @@ if( 1 == 1 ) {  // TODO
 				_giornale.Info("Salvata la configurazione utente su file xml");
 			}
 		}
+#endif
 
-		private bool verificaProiettabile(WpfScreen scr, UserConfigLumen cfg)
-		{
-			bool proiettabile = true;
-
-			if(cfg.fullScreen)
-			{
-				return true;
-			}
-
-			if (proiettabile && cfg.slideLeft < 0)
-			{
-				proiettabile = false;
-			}
-
-			if (proiettabile && cfg.slideTop < 0)
-			{
-				proiettabile = false;
-			}
-
-			if (proiettabile && cfg.deviceEnum == WpfScreen.Primary.deviceEnum && (cfg.slideHeight + cfg.slideTop > scr.WorkingArea.Height || cfg.slideWidth + cfg.slideLeft > scr.WorkingArea.Width))
-			{
-				proiettabile = false;
-			}
-
-			if (proiettabile && cfg.deviceEnum != WpfScreen.Primary.deviceEnum && (cfg.slideHeight + cfg.slideTop - cfg.slideBoundsY > scr.WorkingArea.Height || cfg.slideWidth + cfg.slideLeft - cfg.slideBoundsX > scr.WorkingArea.Width))
-			{
-				proiettabile = false;
-			}
-
-			return proiettabile;
-		}
-
-		private void windowSlideShow_Closing( object sender, System.ComponentModel.CancelEventArgs e ) {
-
-			// Se mi hanno premuto X per chiudere la finestra, fermo lo show
-			if( _slideShowViewModel != null ) {
-				_slideShowViewModel.stop();
-				_slideShowViewModel.Dispose();
-				_slideShowViewModel = null;
-			}
-
-		}
 	}
 }

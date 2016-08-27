@@ -107,9 +107,9 @@ namespace Digiphoto.Lumen.UI {
 
 			// Creo il gestore delle finestre pubbliche e quindi apro la main.
 			gestoreFinestrePubbliche = new GestoreFinestrePubbliche();
-			gestoreFinestrePubbliche.creaMainWindow();
+			gestoreFinestrePubbliche.apriWindowMain();
 
-		}
+        }
 
 		protected override void OnExit( ExitEventArgs e ) {
 

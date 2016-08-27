@@ -13,7 +13,7 @@
 		Left="{Binding Path=pSSG.slideLeft,Mode=TwoWay}" 
 		Closing="windowSlideShow_Closing"
         WindowStartupLocation="Manual"
-		LocationChanged="windowSlideShow_LocationChanged">
+		>
 
 		<Window.WindowState>
 			<Binding Path="pSSG.fullScreen">

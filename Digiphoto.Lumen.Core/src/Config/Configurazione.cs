@@ -211,7 +211,7 @@ namespace Digiphoto.Lumen.Config  {
 			userConfig.sogliaNumFotoConfermaInStampaRapida = 3;  // Se stampo almeno 3 foto chiedo conferma
 
 			// Geometria di default per lo slideShow
-			creaGeometriaSlideShowSDefault(userConfig);
+			userConfig.geometriaFinestraSlideShow = creaGeometriaSlideShowDefault();
 
 			userConfig.correzioneAltezzaGalleryDueFoto = 50;
 			userConfig.tecSogliaStampaProvini = -3;
@@ -252,20 +252,24 @@ namespace Digiphoto.Lumen.Config  {
 			return lastUsedConfig;
 		}
 
-		public static void creaGeometriaSlideShowSDefault(UserConfigLumen userConfig)
-		{
-			userConfig.deviceEnum = 0;
+		/// <summary>
+		/// La prima volta che apro lo S.S. l'utente non ha ancora configurato
+		/// la geometria 
+		/// </summary>
+		/// <returns></returns>
+		public static GeometriaFinestra creaGeometriaSlideShowDefault() {
+			
+			return new GeometriaFinestra() {
 
-			userConfig.screenHeight = 1024;
-			userConfig.screenWidth = 1280;
+				// Imposto dei valori tali per cui ogni monitor di questo mondo può visualizzarli
+				deviceEnum = 0,
+				fullScreen = false,
+				Width = 600,
+				Height = 400,
+				Left = 20,
+				Top = 20
+			};
 
-			userConfig.slideHeight = 400;
-			userConfig.slideWidth = 400;
-			userConfig.slideLeft = (userConfig.screenWidth - userConfig.slideWidth) / 2; // 312
-			userConfig.slideTop = (userConfig.screenHeight - userConfig.slideHeight) / 2; // 440
-
-			userConfig.slideBoundsX = 0;
-			userConfig.slideBoundsY = 0;
 		}
 
 		bool isValida() {

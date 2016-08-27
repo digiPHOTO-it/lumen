@@ -9,6 +9,7 @@
 		xmlns:lumCF="clr-namespace:Digiphoto.Lumen.UI.ComNumFoto"
 		xmlns:lumGS="clr-namespace:Digiphoto.Lumen.UI.Pubblico"
         Title="Lumen" WindowStyle="None" WindowState="Maximized"
+		ContentRendered="mainWindow_ContentRendered"
 		Name="mainWindow" Style="{DynamicResource mainWindowStyle}"
         >
 

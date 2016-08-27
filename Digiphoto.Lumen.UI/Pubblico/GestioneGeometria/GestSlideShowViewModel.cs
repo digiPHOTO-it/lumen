@@ -1,69 +1,32 @@
 ﻿using Digiphoto.Lumen.UI.Mvvm;
 using System.Windows.Input;
 using Digiphoto.Lumen.Config;
-using System.Windows;
 using Digiphoto.Lumen.UI.Pubblico.GestioneGeometria;
-using System.Diagnostics;
-using System;
+using System.ComponentModel;
+using System.Windows.Data;
+using System.Windows.Forms;
 
-namespace Digiphoto.Lumen.UI.Pubblico
-{
+namespace Digiphoto.Lumen.UI.Pubblico {
 	public class GestSlideShowViewModel : ViewModelBase
 	{
 
-		private Process DisplayChangerExtend = new Process
-		{
-			StartInfo =
-			{
-				CreateNoWindow = true,
-				WindowStyle = ProcessWindowStyle.Hidden,
-				FileName = "DisplaySwitch.exe",
-				Arguments = "/extend"
-			}
-		};
-
-		private Process DisplayChangerClone = new Process
-		{
-			StartInfo =
-			{
-				CreateNoWindow = true,
-				WindowStyle = ProcessWindowStyle.Hidden,
-				FileName = "DisplaySwitch.exe",
-				Arguments = "/clone"
-			}
-		};
-
-		#region CostruttoreStatico
-
-		static GestSlideShowViewModel()
-		{
-			cfg = Configurazione.UserConfigLumen;
-
-			pSSG = new ParamSlideShowGeom();
-
-			pSSG.fullScreen = cfg.fullScreen;
-
-			pSSG.slideHeight = cfg.slideHeight;
-			pSSG.slideWidth = cfg.slideWidth;
-
-			pSSG.slideLeft = cfg.slideLeft;
-			pSSG.slideTop = cfg.slideTop;
+		public GestSlideShowViewModel() {
+			caricaSchermi();
 		}
 
-		#endregion
 
 		#region Proprietà
 
-		public static ParamSlideShowGeom pSSG
-		{
+		public ICollectionView schermiCV {
 			get;
-			set;
+			private set;
 		}
 
-		public static UserConfigLumen cfg
-		{
-			get;
-			set;
+
+		private GestoreFinestrePubbliche gestoreFinestrePubbliche {
+			get {
+				return ((App)System.Windows.Application.Current).gestoreFinestrePubbliche;
+			}
 		}
 
 		private SlideShowViewModel slideShowViewModel
@@ -73,78 +36,157 @@ namespace Digiphoto.Lumen.UI.Pubblico
 				if (IsInDesignMode)
 					return null;
 
-				App myApp = (App)Application.Current;
-				return myApp.gestoreFinestrePubbliche.slideShowViewModel;
+				return gestoreFinestrePubbliche.slideShowViewModel;
 			}
 		}
 
-		#endregion
+		public short deviceEnum { 
+			get {
+				return gestoreFinestrePubbliche.geomSS.deviceEnum;
+			}
+		}
+
+		public bool fullScreen {
+			get {
+				return gestoreFinestrePubbliche.geomSS.fullScreen;
+			}
+		}
+
+		public bool possoAprire {
+			get {
+				if( IsInDesignMode )
+					return true;
+				else
+					return !gestoreFinestrePubbliche.isSlideShowVisible;
+			}
+		}
+
+		public bool possoMassimizzare {
+			get {
+				if( IsInDesignMode )
+					return true;
+				else
+					return gestoreFinestrePubbliche.isSlideShowVisible;
+			}
+		}
+
+		public bool isPossibileMassimizzareSulMonitor2 { 
+			get {
+				return (Screen.AllScreens.Length > 1);
+            }
+		}
+
+
+		#endregion Proprieta
 
 		#region Metodi
 
+		void caricaSchermi() {
+
+			schermiCV = CollectionViewSource.GetDefaultView( WpfScreen.AllScreens() );
+			OnPropertyChanged( "schermiCV" );
+
+		}
+
+
+		private void aprire() {
+			gestoreFinestrePubbliche.forseApriFinestraSlideShow();
+		}
+
+		private void chiudere() {
+			gestoreFinestrePubbliche.chiudiFinestraSlideShow();
+		}
+
+		private void refreshCampi() {
+			// Aggiorno i dati visibili a video
+			OnPropertyChanged( "fullScreen" );
+			OnPropertyChanged( "deviceEnum" );
+		}
+
+		/// <summary>
+		/// Devo memorizzare la geometria attuale della finestra dello SS
+		/// nel file di configurazione
+		/// </summary>
 		private void salva()
 		{
-			cfg = Configurazione.UserConfigLumen;
+			if( gestoreFinestrePubbliche.salvaGeometriaFinestraSlideShow() ) {
 
-			//cfg.slideHeight = pSSG.slideHeight;
-			//cfg.slideWidth = pSSG.slideWidth;
+				refreshCampi();
 
-			//cfg.slideTop = pSSG.slideTop;
-			//cfg.slideLeft = pSSG.slideLeft;
-
-			cfg.deviceEnum = pSSG.deviceEnum;
-
-			cfg.fullScreen = pSSG.fullScreen;
-
-			_giornale.Debug("Devo salvare la configurazione utente su file xml");
-			UserConfigSerializer.serializeToFile(Configurazione.UserConfigLumen);
-			LastUsedConfigSerializer.serializeToFile(Configurazione.LastUsedConfigLumen);
-			_giornale.Info("Salvata la configurazione utente su file xml");
-
-			dialogProvider.ShowMessage("Posizione salvata Correttamente", "Avviso");
+				dialogProvider.ShowMessage( "La posizione della finestra dello Slide Show\nè stata salvata correttamente", "Avviso" );
+			} else {
+				dialogProvider.ShowError( "La posizione della finestra dello Slide Show\nè stata salvata correttamente", "Errore", null );
+			}
 		}
 
 		private void ripristina()
 		{
-			Configurazione.UserConfigLumen = UserConfigSerializer.deserialize();
-			riposiziona();
+			gestoreFinestrePubbliche.ripristinaFinestraSlideShow();
+			refreshCampi();
+
 			dialogProvider.ShowMessage("La posizione dello slideShow è stata ripristinata\nPremere salva per confermare","Avviso");
 		}
 
-		private void reset()
+		/// <summary>
+		/// Resetto la posizione della finestra alla geometria di default
+		/// </summary>
+		private void normalizzareSulMonitor1()
 		{
-			Configurazione.creaGeometriaSlideShowSDefault(Configurazione.UserConfigLumen);
-			riposiziona();
-			dialogProvider.ShowMessage("Modifica Applicata", "Avviso");
-			dialogProvider.ShowMessage("La posizione dello slideShow è stata ripristinata\nPremere salva per confermare", "Avviso");
+			gestoreFinestrePubbliche.normalizzareFinestraSlideShowSulMonitor1();
 		}
 
-		public static void riposiziona()
+		private void massimizzare() {
+			gestoreFinestrePubbliche.massimizzareFinestraSlideShow();
+		}
+
+		private void massimizzareSulMonitor2() {
+
+			// Per prima cosa apro la finestra (se non è aperta)
+			gestoreFinestrePubbliche.massimizzareFinestraSlideShowSulMonitor2();
+
+		}
+
+		/// <summary>
+		/// Riposiziono la finestra dello SS usando la geometria corrente
+		/// </summary>
+		public void riposiziona()
 		{
-			pSSG.slideTop = Configurazione.UserConfigLumen.slideTop;
-			pSSG.slideLeft = Configurazione.UserConfigLumen.slideLeft;
-
-			pSSG.slideHeight = Configurazione.UserConfigLumen.slideHeight;
-			pSSG.slideWidth = Configurazione.UserConfigLumen.slideWidth;
-
-			pSSG.fullScreen = Configurazione.UserConfigLumen.fullScreen;
-            pSSG.deviceEnum = Configurazione.UserConfigLumen.deviceEnum;
+			gestoreFinestrePubbliche.posizionaFinestraSlideShow();
         }
 
-		private void extendMonitor(){
-			if (pSSG.extendMonitor)
-			{
-				DisplayChangerExtend.Start();
-			}
-			else
-			{
-				DisplayChangerClone.Start();
+		#endregion Metodi
+
+		#region Comandi
+		
+		private RelayCommand _aprireCommand;
+		public ICommand aprireCommand {
+			get {
+				if( _aprireCommand == null ) {
+					_aprireCommand = new RelayCommand( param => aprire(), param => possoAprire );
+				}
+				return _aprireCommand;
 			}
 		}
 
-		#endregion
+		private RelayCommand _chiudereCommand;
+		public ICommand chiudereCommand {
+			get {
+				if( _chiudereCommand == null ) {
+					_chiudereCommand = new RelayCommand( param => chiudere() );
+				}
+				return _chiudereCommand;
+			}
+		}
 
-		#region Comandi
+		private RelayCommand _massimizzareCommand;
+		public ICommand massimizzareCommand {
+			get {
+				if( _massimizzareCommand == null ) {
+					_massimizzareCommand = new RelayCommand( param => massimizzare(), p => possoMassimizzare );
+				}
+				return _massimizzareCommand;
+			}
+		}
 
 		private RelayCommand _salvaCommand;
 		public ICommand salvaCommand
@@ -179,25 +221,23 @@ namespace Digiphoto.Lumen.UI.Pubblico
 			{
 				if (_resetCommand == null)
 				{
-					_resetCommand = new RelayCommand(param => reset());
+					_resetCommand = new RelayCommand(param => normalizzareSulMonitor1());
 				}
 				return _resetCommand;
 			}
 		}
 
-		private RelayCommand _extendMonitorCommand;
-		public ICommand extendMonitorCommand
-		{
-			get
-			{
-				if (_extendMonitorCommand == null)
-				{
-					_extendMonitorCommand = new RelayCommand(param => extendMonitor());
+		private RelayCommand _massimizzareSulMonitor2Command;
+		public ICommand massimizzareSulMonitor2Command {
+			get {
+				if( _massimizzareSulMonitor2Command == null ) {
+					_massimizzareSulMonitor2Command = new RelayCommand( param => massimizzareSulMonitor2() );
 				}
-				return _extendMonitorCommand;
+				return _massimizzareSulMonitor2Command;
 			}
 		}
 
-		#endregion
+
+		#endregion Comandi
 	}
 }

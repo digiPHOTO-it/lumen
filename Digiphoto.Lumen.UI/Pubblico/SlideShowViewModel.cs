@@ -14,8 +14,6 @@ using Digiphoto.Lumen.Servizi.Ricerca;
 using Digiphoto.Lumen.Servizi.Explorer;
 using Digiphoto.Lumen.Servizi.Scaricatore;
 using Digiphoto.Lumen.Config;
-using Digiphoto.Lumen.UI.Pubblico.GestioneGeometria;
-using System.Configuration;
 using System.Windows;
 using Digiphoto.Lumen.Servizi.Ritoccare;
 using Digiphoto.Lumen.Servizi;
@@ -36,8 +34,6 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		public SlideShowViewModel() {
 
-			pSSG = GestSlideShowViewModel.pSSG;
-
 			_elencoSpots = caricaElencoSpot();
 
 			slideShowRighe = Configurazione.LastUsedConfigLumen.slideShowNumRighe;
@@ -50,10 +46,6 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		#region Proprietà
 
-		public ParamSlideShowGeom pSSG {
-			get;
-			set;
-		}
 
 		private int numSlideCorrente {
 			get;
@@ -105,9 +97,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		public bool possoApplicareWaterMark {
 			get {
-				// Anche se non c'entra molto mi aggancio alla configurazione di macchia provini
-				// Eventualmente creare un flag di configurazione separato
-				return Configurazione.UserConfigLumen.macchiaProvini;
+				return Configurazione.UserConfigLumen.macchiaSlideShow;
 			}
 		}
 
@@ -202,6 +192,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 				if( _orologio != null ) {
 					_orologio.Stop();
 					_orologio.Tick -= orologio_Tick;
+					_orologio = null;
 				}				
 			} finally {
 				base.OnDispose();
@@ -257,7 +248,8 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 				};
 			}
 
-			_orologio.Stop();
+			if( _orologio != null )
+				_orologio.Stop();
 
 			// Rilancio messaggio di cambio stato
 			if( msg != null )

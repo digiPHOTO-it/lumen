@@ -33,6 +33,7 @@ namespace Digiphoto.Lumen.UI {
 
 				carrelloView.DataContext = _mainWindowViewModel.carrelloViewModel;
 				fotoGallery.DataContext = _mainWindowViewModel.fotoGalleryViewModel;
+
 			}
 
 
@@ -185,6 +186,11 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private void mainWindow_ContentRendered( object sender, EventArgs e ) {
 
+			// Apro il form pubblico, ed associo il datacontext prendendolo da quello della foto.gallery
+			((App)App.Current).gestoreFinestrePubbliche.apriWindowPubblico();
+
+		}
 	}
 }
