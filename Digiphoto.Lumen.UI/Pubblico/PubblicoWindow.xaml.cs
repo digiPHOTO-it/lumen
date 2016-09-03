@@ -19,13 +19,15 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 	/// </summary>
 	public partial class PubblicoWindow : Window {
 		public PubblicoWindow() {
+
 			InitializeComponent();
 
 			if( String.IsNullOrEmpty( Configurazione.infoFissa.descrizPuntoVendita ) )
 				this.Title = "Photo Gallery - digiPHOTO Lumen";
 			else
 				this.Title = "Photo Gallery - " + Configurazione.infoFissa.descrizPuntoVendita;
-			
+
+			this.galleryVuotaText.Text = "digiPHOTO.it\r\nLumen";
 		}
 	}
 }

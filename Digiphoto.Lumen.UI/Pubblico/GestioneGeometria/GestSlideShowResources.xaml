@@ -3,17 +3,19 @@
 					xmlns:lumG="clr-namespace:Digiphoto.Lumen.UI.Pubblico.GestioneGeometria"
 					xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters">
 
-    <lumC:PercentualeConverter x:Key="percentualeConverter" />
-<!--
-    <lumC:ProiettoreAreaConverter x:Key="pac" />
--->
+    <!-- faccio il merge di due dizionari -->
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Digiphoto.Lumen.UI;component/Resources/GlobalResourceDictionary.xaml" />
+    </ResourceDictionary.MergedDictionaries>
 
-    <Style x:Key="finestraPubblicaButtonStyle" TargetType="Button">
+
+    <Style TargetType="Button" BasedOn="{StaticResource buttonBaseStyle}">
         <Setter Property="Margin" Value="10,0,5,0" />
-        <Setter Property="Width" Value="150" />
+        <Setter Property="Width" Value="120" />
         <Setter Property="Height" Value="40" />
 
     </Style>
+
 
     <!-- Template per il pannello che contiene tutti gli elementi della lista
     <ItemsPanelTemplate x:Key="schermiItemsPanelTemplate">

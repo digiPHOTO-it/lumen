@@ -48,4 +48,13 @@
         <UniformGrid Rows="{Binding Path=numRighePag,Mode=OneWay}" Columns="{Binding Path=numColonnePag,Mode=OneWay}" />
     </ItemsPanelTemplate>
 
+    <Style x:Key="galleryVuotaTextStyle" TargetType="TextBox">
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="80" />
+		<Setter Property="Background" Value="Black" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+    
+	
 </ResourceDictionary>

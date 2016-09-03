@@ -79,6 +79,12 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			}
 		}
 
+		public bool isPubblicoVisible {
+			get {
+				return _pubblicoWindow != null && _pubblicoWindow.WindowState != WindowState.Minimized;
+			}
+		}
+
 		/// <summary>
 		///  Se lo SS è visibile, mi indica in quale schermo è posizionato
 		/// </summary>
@@ -111,6 +117,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		public void chiudereTutteLeFinestre() {
 
 			chiudereFinestraSlideShow();
+			chiudereFinestraPubblico();
 			chiudereFinestraSnapshotPubblico();
 			chiuidereFinestraMain();
 
@@ -127,7 +134,15 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			massimizzareFinestra( _slideShowWindow );
 		}
 
-
+		/// <summary>
+		/// Mi serve per capire se la chiusura di una finestra è dovuta ad una azione che
+		/// sto facendo da qui,
+		/// oppure uno ha proprio chiuso la finestra con la "X"
+		/// </summary>
+		private bool azioneInCorso {
+			get;
+			set;
+		}
 
 		/// <summary>
 		/// Posiziono la finestra dello slide show sul monitor primario,
@@ -182,13 +197,6 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 				_slideShowWindow = null;
 			}
 
-			if( stavaGirandoLoSlideShow ) {
-				// Probabilmente quando ho aperto questa finestra ho stoppato lo ss. Ora lo riattivo.
-				if( slideShowViewModel != null )
-					slideShowViewModel.start();
-			}
-
-			stavaGirandoLoSlideShow = false;
 		}
 
 		private void chiuidereFinestraMain() {
@@ -200,6 +208,71 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 					cvm.CloseCommand.Execute( param );
 				_mainWindow = null;
 			}
+		}
+
+		public void azionePosizionamentoIniziale() {
+
+			// Apro la finestra della gallery pubblica, e mi memorizzo il flag che mi dice se era aperta.
+			aprireFinestraPubblico();
+			stavaGirandoPubblico = true;
+
+		}
+
+		/// <summary>
+		/// Avvio il carosello
+		/// </summary>
+		public void azioneAvvioSlideShow() {
+
+			try {
+				azioneInCorso = true;
+
+				// Se la finestra pubblica è aperta, la chiudo perché tanto parte lo show
+				// siccome le foto sotto non si vedrebbero, chiudo la finestra così risparmio un pò di risorse di sistema (cpu,ram,hd)
+				if( stavaGirandoPubblico )
+					chiudereFinestraPubblico();
+
+				// avvio carosello
+				slideShowViewModel.start();
+
+				// porto in primo piano la finestra perché non si sa mai
+				_slideShowWindow.Topmost = true;
+
+				stavaGirandoLoSlideShow = true;
+
+			} catch( Exception ) {
+				throw;
+			} finally {
+				azioneInCorso = false;
+            }
+		}
+		
+		/// <summary>
+		/// Fermo il carosello, e mi rimetto in modalità gallery con il form Pubblico
+		/// </summary>
+		public void azioneFermaSlideShow() {
+
+			try {
+				azioneInCorso = true;
+
+				slideShowViewModel.stop();
+				_slideShowWindow.Topmost = false;
+				stavaGirandoLoSlideShow = false;
+
+				if( stavaGirandoPubblico ) {
+					aprireFinestraPubblico();
+					_pubblicoWindow.Topmost = true;
+				}
+
+			} catch( Exception ) {
+
+				throw;
+			} finally {
+				azioneInCorso = false;
+			}
+
+
+
+
 		}
 
 		public void chiudereFinestraSnapshotPubblico() {
@@ -221,6 +294,17 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			}
 		}
 
+		public void chiudereFinestraPubblico() {
+
+			if( _pubblicoWindow != null ) {
+
+				// Il viewmodel della finestra pubblica è quello della gallery quindi non posso chiuderlo.
+				// Chiudo solo la finestra
+				_pubblicoWindow.Close();
+				_pubblicoWindow = null;
+			}
+
+		}
 
 		/// <summary>
 		/// Se la finestra del pubblico non è aperta (o non è istanziata)
@@ -361,13 +445,18 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			set;
 		}
 
-        /// <summary>
-        /// Quando lavoro con una singola foto, se vado sullo schermo del pubblico,
-        /// devo fare vedere la foto più bella che ho (cioè quella grande)
-        /// Il problema è che la foto grande, potrebbe ancora non essere stata calcolata
-        /// </summary>
-        /// <param name="fotografia"></param>
-        /// 
+		private bool stavaGirandoPubblico {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Quando lavoro con una singola foto, se vado sullo schermo del pubblico,
+		/// devo fare vedere la foto più bella che ho (cioè quella grande)
+		/// Il problema è che la foto grande, potrebbe ancora non essere stata calcolata
+		/// </summary>
+		/// <param name="fotografia"></param>
+		/// 
 		public void eseguiSnapshotSuFinestraPubblica( Fotografia fotografia, bool forzaAperturaWin ) {
 
 			// Se la finestra è chiusa e il flag non mi forza l'apertura non faccio niente
@@ -426,14 +515,20 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 				_slideShowWindow = null;
 			}
 
-            FormuleMagiche.attendiGcFinalizers();
+			if( !azioneInCorso )
+				stavaGirandoLoSlideShow = false;
+
+			FormuleMagiche.attendiGcFinalizers();
         }
 
 		public void chiusoPubblicoWindow( object sender, EventArgs e ) {
 			if( _pubblicoWindow != null ) {
 				_pubblicoWindow.Closed -= chiusoPubblicoWindow;
 				_pubblicoWindow = null;
+
 			}
+			if( !azioneInCorso )
+				stavaGirandoPubblico = false;
 
 			FormuleMagiche.attendiGcFinalizers();
 		}
@@ -712,6 +807,14 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 				proiettabile = false;
 
 			return proiettabile;
+		}
+
+		public void azioneResetSlideShow() {
+
+			slideShowViewModel.reset();
+
+			if( stavaGirandoPubblico )
+				aprireFinestraPubblico();
 		}
 
 	}

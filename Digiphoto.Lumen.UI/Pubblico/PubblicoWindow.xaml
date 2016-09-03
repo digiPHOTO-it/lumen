@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
         mc:Ignorable="d"
+		Background="Black" 
         WindowStartupLocation="Manual" Title="lo setto dopo">
 
 
@@ -30,9 +31,9 @@
 					  />
 
 
-        <TextBox Text="digiPHOTO.it&#x0a;Gallery" FontSize="80" Width="{Binding ElementName=gridWinPub,Path=Width}"
-		 BorderBrush="Beige" BorderThickness="1"
-		         HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+        <TextBox Text="lo assegno dopo" Width="{Binding ElementName=gridWinPub,Path=Width}" 
+		         Style="{StaticResource galleryVuotaTextStyle}" Name="galleryVuotaText"
+		         FontSize="20"
 		         Visibility="{Binding Path=isAlmenoUnaFoto,Converter={StaticResource boolVisibilityConverter}, ConverterParameter=not}" />
     </Grid>
 </Window>

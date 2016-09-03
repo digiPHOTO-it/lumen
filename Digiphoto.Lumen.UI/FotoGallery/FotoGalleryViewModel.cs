@@ -28,12 +28,15 @@ using System.Collections;
 using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Core.src.Eventi;
 using Digiphoto.Lumen.UI.Converters;
+using Digiphoto.Lumen.Servizi;
 
 namespace Digiphoto.Lumen.UI {
 
 
 
-	public class FotoGalleryViewModel : ViewModelBase, IContenitoreGriglia, ISelettore<Fotografia>, IObserver<FotoModificateMsg>, IObserver<NuovaFotoMsg>, IObserver<StampatoMsg>, IObserver<ClonaFotoMsg>, IObserver<GestoreCarrelloMsg>, IObserver<RefreshMsg>, IAzzioniRapide
+	public class FotoGalleryViewModel : ViewModelBase, IContenitoreGriglia, ISelettore<Fotografia>, 
+	                                    IObserver<FotoModificateMsg>, IObserver<NuovaFotoMsg>, IObserver<StampatoMsg>, IObserver<ClonaFotoMsg>, IObserver<GestoreCarrelloMsg>, IObserver<RefreshMsg>, IObserver<CambioStatoMsg>,
+										IAzzioniRapide
 	{
 		private BackgroundWorker _bkgIdrata;
 
@@ -61,6 +64,9 @@ namespace Digiphoto.Lumen.UI {
 
 			IObservable<RefreshMsg> observableRefresh = LumenApplication.Instance.bus.Observe<RefreshMsg>();
 			observableRefresh.Subscribe( this );
+
+			IObservable<CambioStatoMsg> observableCambioStato = LumenApplication.Instance.bus.Observe<CambioStatoMsg>();
+			observableCambioStato.Subscribe( this );
 
 			metadati = new MetadatiFoto();
 
@@ -124,6 +130,13 @@ namespace Digiphoto.Lumen.UI {
 
 		#region Proprietà
 
+		private GestoreFinestrePubbliche gestoreFinestrePubbliche {
+			get {
+				return ((App)Application.Current).gestoreFinestrePubbliche;
+            }
+		}
+
+
 		public int fotoAttualeRicerca {
 			get {
 				return countTotali <= 0 ? 0 : paramCercaFoto.paginazione.skip + countTotali;
@@ -184,6 +197,16 @@ namespace Digiphoto.Lumen.UI {
 			get {
 				return numRighePag * numColonnePag;
 			}
+		}
+
+		/// <summary>
+		/// Questa collezione mantiene la lista di tutte le foto selezionate, comprese quelle che non
+		/// sono visibili perchè si trovato in pagine diverse da quella corrente.
+		/// Tramite questa collezione sono in grado di accendere le foto quando mi sposto con la paginazione.
+		/// </summary>
+		private List<Guid> idsFotografieSelez {
+			get;
+			set;
 		}
 
 		/// <summary>
@@ -551,11 +574,26 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 
+		/// <summary>
+		/// Ritorno il totale delle foto selezionate comprese quelle che non sono al momento visibili
+		/// nella paginata attuale.
+		/// </summary>
+		public int countSelezionati {
+			get {
+				return idsFotografieSelez == null ? 0 : idsFotografieSelez.Count();
 
+			}
+		}
 
-
-
-
+		/// <summary>
+		/// Ritorno il totale delle foto estratte dalla ricerca
+		/// (non soltanto quelle che sono a video nella paginata corrente. Tutte quante)
+		/// </summary>
+		public int countTotali {
+			get {
+				return totFotoRicerca;
+			}
+		}
 
 
 		private int _totFotoRicerca;
@@ -567,6 +605,7 @@ namespace Digiphoto.Lumen.UI {
 				if( _totFotoRicerca != value ) {
 					_totFotoRicerca = value;
 					OnPropertyChanged( "totFotoRicerca" );
+					OnPropertyChanged( "countTotali" );
 					OnPropertyChanged( "percentualePosizRicerca" );
                 }
 			}
@@ -829,7 +868,7 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand controllareSlideShowCommand {
 			get {
 				if( _controllareSlideShowCommand == null ) {
-					_controllareSlideShowCommand = new RelayCommand( azione => controllareSlideShow( (string)azione ),
+					_controllareSlideShowCommand = new RelayCommand( azione => controllareSlideShow( azione ),
 					                                                 azione => possoControllareSlideShow);
 				}
 				return _controllareSlideShowCommand;
@@ -1009,11 +1048,24 @@ namespace Digiphoto.Lumen.UI {
 		/// </summary>
 		private void accendiSpegniTutto( bool selez ) {
 
-			if( fotografieCW != null )
+			// Prima lavoro sulla collezione globale
+			if( idsFotografieSelez != null ) {
+
+				if( selez ) {
+					// Devo caricare tutti gli ID risultato della riceca
+					// TODO : non è facile. devo rieseguire la query che mi torni tutti gli ID (ma senza paginazione questa volta)
+				} else
+					idsFotografieSelez.Clear();
+			}
+
+			// Poi lavoro sulla collezione visuale della pagina
+			if( fotografieCW != null ) {
 				if( selez )
-					fotografieCW.SelectAll();
+					fotografieCW.selezionaTutto();
 				else
-					fotografieCW.DeselectAll();
+					fotografieCW.deselezionaTutto();
+			}
+
 		}
 
 		private void stampare( object objStampanteAbbinata ) {
@@ -1124,44 +1176,41 @@ namespace Digiphoto.Lumen.UI {
 			return p;
 		}
 		
-
-
-		//public string paramGiornataIniz {
-		//    get;
-		//    set;
-		//}
-
 		/// <summary>
-		/// Chiamo il servizio che esegue la query sul database
+		/// Eseguo una ricerca sul database. Quindi aggiorno la UI
 		/// </summary>
-		private void eseguireRicerca() {
-			eseguireRicerca( false );
-		}
+		/// <param name="nuovaRicerca">Se true significa che ho premuto il tasto RICERCA e quindi devo ripartire da capo.
+		/// Se invece è FALSE significa che sto paginando su di una ricerca già effettuata in precedenza
+		/// </param>
+		private void eseguireRicerca( bool nuovaRicerca ) {
 
-		private void eseguireRicerca( bool chiediConfermaSeFiltriVuoti ) {
 
 			idrataProgress = 0;
 
-			// while( _bkgIdrata.IsBusy )
-			//	System.Threading.Thread.Sleep( 2000 );
 
-			completaParametriRicercaWithOrder(true);
+			completaParametriRicercaWithOrder( true, nuovaRicerca );
 
 			// Dopo aver completato tutti i parametri di ricerca...
 			// verifico se ho impostato almeno un parametro
+			bool chiediConfermaSeFiltriVuoti = (nuovaRicerca == true);
 			if( chiediConfermaSeFiltriVuoti )
 				if (verificaChiediConfermaRicercaSenzaParametri() == false)
 					return;
 
 			// Solo quando premo tasto di ricerca (e non durante la paginazione).
-			if( chiediConfermaSeFiltriVuoti ) {
+			if( nuovaRicerca ) {
 				contaTotFotoRicerca();
+			} else {
+				// STO PAGINANDO una ricerca precedente
+				salvaSelezionePagCorrente();
 			}
+
+
 
 			// Eseguo la ricerca nel database
 			fotoExplorerSrv.cercaFoto( paramCercaFoto );
 
-			azioniPostRicerca();
+			azioniPostRicerca( nuovaRicerca );
 
 			// Non mettere piu niente qui perché sta idratando le foto in background (o cmq fare attenzione)
 		}
@@ -1181,30 +1230,32 @@ namespace Digiphoto.Lumen.UI {
 		/// Ricreo la collectionview con le fotografie da visualizzare
 		/// lancio in background la idratazione dei provini
 		/// </summary>
-		private void azioniPostRicerca() {
+		private void azioniPostRicerca( bool nuovaRicerca ) {
 
-			// Mando avanti il punto di inizio della paginazione (perché può variare ad ogni ricerca)
-			//			this.paramCercaFoto.paginazione.skip += this.paramCercaFoto.paginazione.take;
 			// Se avevo un worker già attivo, allora provo a cancellarlo.
 			if( _bkgIdrata.IsBusy ) {
-
+				
 				_bkgIdrata.CancelAsync();
 				_giornale.Debug( "idratatore impegnato. Lo stoppo" );
+
+				int antiloop = 0;
+				while( _bkgIdrata.IsBusy && antiloop < 200 ) {  // dopo 10 secondi esco comunque altrimenti mi si ferma tutto
+					System.Windows.Forms.Application.DoEvents();
+					System.Threading.Thread.Sleep( 50 );
+					++antiloop;
+				}
 			}
 
-			while( _bkgIdrata.IsBusy ) {
-				System.Windows.Forms.Application.DoEvents();
-				System.Threading.Thread.Sleep( 50 );
-			}
-
-			
 			// ricreo la collection-view e notifico che è cambiato il risultato. Le immagini verranno caricate poi
-			fotografieCW = new MultiSelectCollectionView<Fotografia>( fotoExplorerSrv.fotografie );
-			fotografieCW.SelectionChanged += fotografie_selezioneCambiata;
-
+			ricreaCollectionViewFoto( fotoExplorerSrv.fotografie );
 
 			// spengo tutte le selezioni eventualmente rimaste da prima
-			deselezionareTutto();
+			if( nuovaRicerca )
+				deselezionareTutto();
+			else {
+				selezionareElementiPaginaCorrente();
+			}
+				
 
 			// Se non ho trovato nulla, allora avviso l'utente
 			if( fotografieCW.Count <= 0 )
@@ -1217,12 +1268,26 @@ namespace Digiphoto.Lumen.UI {
 			// Ora ci penso io ad idratare le immagini, perchè devo fare questa operazione nello stesso thread della UI
 			if( !_bkgIdrata.IsBusy )
 				_bkgIdrata.RunWorkerAsync();
-			else {
-				int debug = 1;
-				debug++;
-			}
 			// Lasciare come ultima cosa l'idratazione delle foto.
 
+		}
+
+		private void selezionareElementiPaginaCorrente() {
+
+			// illumino gli elementi eventualmente selezionati in precedenza
+			bool eseguito = false;
+            foreach( Guid id in idsFotografieSelez ) {
+
+				Fotografia fotoSelezionata = fotografieCW.SourceCollection.OfType<Fotografia>().SingleOrDefault( f => f.id == id );
+				if( fotoSelezionata != null ) {
+					if( fotografieCW.seleziona( fotoSelezionata ) )
+						eseguito = true;
+				}
+			}
+
+
+			if( eseguito )
+				fotografieCW.Refresh();
 		}
 
 		private bool verificaChiediConfermaRicercaSenzaParametri()
@@ -1307,60 +1372,59 @@ namespace Digiphoto.Lumen.UI {
 			_giornale.Debug( "Inizio a idratare le foto in background" );
 
 
-
 			int tot = fotografieCW.Count;
 			int percPrec = 0;
 			worker.ReportProgress( percPrec );
 
 
-				for( int ii = 0; (ii < tot); ii++ ) {
-					if( (worker.CancellationPending == true) ) {
-						e.Cancel = true;
-						break;
-					} else {
+			for( int ii = 0; (ii < tot); ii++ ) {
+				if( (worker.CancellationPending == true) ) {
+					e.Cancel = true;
+					break;
+				} else {
 
-						Fotografia foto = (Fotografia) fotografieCW.GetItemAt( ii );
+					Fotografia foto = (Fotografia) fotografieCW.GetItemAt( ii );
 
+					try {
+						// Perform a time consuming operation and report progress.
+						AiutanteFoto.idrataImmaginiFoto( foto, IdrataTarget.Provino );
+					} catch( Exception ) {
+
+						// Provo a crearlo. Magari non c'è perché è stato cancellato per sbaglio, oppure c'è ma si è corrotto.
 						try {
-							// Perform a time consuming operation and report progress.
-							AiutanteFoto.idrataImmaginiFoto( foto, IdrataTarget.Provino );
-						} catch( Exception ) {
 
-							// Provo a crearlo. Magari non c'è perché è stato cancellato per sbaglio, oppure c'è ma si è corrotto.
-							try {
+							App.Current.Dispatcher.BeginInvoke(
+								new Action( () => {
 
-								App.Current.Dispatcher.BeginInvoke(
-									new Action( () => {
+									try {
+										AiutanteFoto.creaProvinoFoto( foto );
+									} catch( Exception ) {
 
-										try {
-											AiutanteFoto.creaProvinoFoto( foto );
-										} catch( Exception ) {
+										_giornale.Debug( "Problemi nel provinare la foto: " + foto );
 
-											_giornale.Debug( "Problemi nel provinare la foto: " + foto );
-
-											// Se qualcosa va male, pazienza, a questo punto non posso fare altro che tirare avanti.
-											// TODO : forse dovrei togliere la foto in esame dalla collezione della gallery ....
-										}
+										// Se qualcosa va male, pazienza, a questo punto non posso fare altro che tirare avanti.
+										// TODO : forse dovrei togliere la foto in esame dalla collezione della gallery ....
 									}
-								) );
+								}
+							) );
 
-							} catch( Exception ) {
-								// Se qualcosa va male, pazienza, a questo punto non posso fare altro che tirare avanti.
-							}
-						}
-
-						// Aggiorno la percentuale di progressi di idratazione. Esiste una ProgressBar che si abilita all'uopo.
-						int perc = (ii + 1) * 100 / tot;
-						if( percPrec != perc ) {
-							worker.ReportProgress( perc );
-							percPrec = perc;
+						} catch( Exception ) {
+							// Se qualcosa va male, pazienza, a questo punto non posso fare altro che tirare avanti.
 						}
 					}
-				}
 
-				// Se sono arrivato in fondo, comunico il progresso massimo giusto per sicurezza.
-				if( !e.Cancel )
-					worker.ReportProgress( 100 );
+					// Aggiorno la percentuale di progressi di idratazione. Esiste una ProgressBar che si abilita all'uopo.
+					int perc = (ii + 1) * 100 / tot;
+					if( percPrec != perc ) {
+						worker.ReportProgress( perc );
+						percPrec = perc;
+					}
+				}
+			}
+
+			// Se sono arrivato in fondo, comunico il progresso massimo giusto per sicurezza.
+			if( !e.Cancel )
+				worker.ReportProgress( 100 );
 			
 		}
 
@@ -1382,14 +1446,14 @@ namespace Digiphoto.Lumen.UI {
 
 		private void completaParametriRicerca()
 		{
-			completaParametriRicercaWithOrder(false);
+			completaParametriRicercaWithOrder(false,false);
 		}
 
 		/// <summary>
 		/// Sistemo i parametri e gestisco la paginazione
 		/// </summary>
 		/// <param name="ordinamento asc/desc">il numero di pagina</param>
-		private void completaParametriRicercaWithOrder(bool usaOrdinamentoAsc)
+		private void completaParametriRicercaWithOrder(bool usaOrdinamentoAsc, bool nuovaRicerca )
 		{
 
 			this.paramCercaFoto.idratareImmagini = false;
@@ -1421,11 +1485,14 @@ namespace Digiphoto.Lumen.UI {
 
 			// Dati di paginazione
 			paramCercaFoto.paginazione.take = paginazioneRisultatiGallery;
+			if( nuovaRicerca )
+				paramCercaFoto.paginazione.skip = 0;
 		}
 
 		private void caricareSlideShow( string modo ) {
 
-			((App)Application.Current).gestoreFinestrePubbliche.aprireFinestraSlideShow();
+			// se per caso fosse chiuso, lo apro ed istanzio il ViewModel
+			gestoreFinestrePubbliche.aprireFinestraSlideShow();
 
 			if( modo == "AddSelez" )
 				slideShowViewModel.add( creaListaFotoSelezionate() );
@@ -1447,29 +1514,54 @@ namespace Digiphoto.Lumen.UI {
 			}
 
 			// L'azione di play deve essere automatica (ipse dixit)
-			slideShowViewModel.start();
+			gestoreFinestrePubbliche.azioneAvvioSlideShow();
 
 			OnPropertyChanged( "possoControllareSlideShow" );
 		}
 
-		private void controllareSlideShow( string operaz ) {
+		private void controllareSlideShow( object param ) {
 
-			switch( operaz.ToUpper() ) {
+			if( param is string ) {
 
-				case "START":
-					slideShowViewModel.start();
-					break;
-				
-				case "STOP":
-					slideShowViewModel.stop();
-					break;
+				string operaz = (string)param;
 
-				case "RESET":
-					slideShowViewModel.reset();
-					break;
+				switch( operaz.ToUpper() ) {
+
+					case "START":
+						gestoreFinestrePubbliche.azioneAvvioSlideShow();
+						break;
+
+					case "STOP":
+						gestoreFinestrePubbliche.azioneFermaSlideShow();
+						break;
+
+					case "RESET":
+						gestoreFinestrePubbliche.azioneResetSlideShow();
+						break;
+				}
+			} else if( param is bool ) {
+
+				// toggle button start/stop
+				// il booleano indica la proprietà IsChecked del botton
+				bool isChecked = (bool)param;
+
+				if( isChecked )
+					gestoreFinestrePubbliche.azioneFermaSlideShow();  // era acceso lo spengo
+				else
+					gestoreFinestrePubbliche.azioneAvvioSlideShow(); // era spento lo accendo
 			}
+
+			OnPropertyChanged( "isSlideShowRunning" );
 		}
 
+		public bool isSlideShowRunning { 
+			get {
+				return slideShowViewModel == null ? false : slideShowViewModel.isRunning;
+            }
+			set {
+				// non faccio niente perché il command di toggle avrà già mosso lo stato
+			}
+		}
 
 		private void playPauseSlideShow() {
 			if( slideShowViewModel.isRunning )
@@ -1478,10 +1570,13 @@ namespace Digiphoto.Lumen.UI {
 				slideShowViewModel.start();
 		}
 
-		public void azzerareRicerca() {
-		
+		private void azzerareRicerca() {
+
 			azzeraParamRicerca();
-		}
+
+			// creo la collezione delle foto selezionate
+			idsFotografieSelez = new List<Guid>();
+        }
 
 		private void azzeraParamRicerca() {
 			azzeraParamRicerca( false );
@@ -1559,7 +1654,7 @@ namespace Digiphoto.Lumen.UI {
 					paramCercaFoto.paginazione.skip = maxSkip;
 			}
 
-			eseguireRicerca();
+			eseguireRicerca( false );
 		}
 
 		bool possoSpostarePaginazione( short delta ) {
@@ -1585,18 +1680,6 @@ namespace Digiphoto.Lumen.UI {
 			}
 
 			return posso;
-		}
-
-		public int countSelezionati {
-			get {
-				return this.fotografieCW == null ? 0 : this.fotografieCW.SelectedItems.Count;
-			}
-		}
-
-		public int countTotali {
-			get {
-				return this.fotografieCW == null ? 0 : this.fotografieCW.Count;
-			}
 		}
 
 		public short numRighe {
@@ -1661,9 +1744,22 @@ namespace Digiphoto.Lumen.UI {
             return fotoTrovata;
         }
 
-        #endregion Metodi
 
-        #region Gestori Eventi
+		/// <summary>
+		/// Mi salvo gli id delle fotografie selezionate nella pagina corrente, nella collezione che le mantiene tutte 
+		/// </summary>
+		private void salvaSelezionePagCorrente() {
+
+			foreach( var fotoSelez in fotografieCW.SelectedItems ) {
+				if( !idsFotografieSelez.Contains( fotoSelez.id ) )
+					idsFotografieSelez.Add( fotoSelez.id );
+            }
+
+		}
+
+		#endregion Metodi
+
+		#region Gestori Eventi
 
 		#endregion
 
@@ -1735,7 +1831,7 @@ namespace Digiphoto.Lumen.UI {
 		{
 			if (value.fase == FaseClone.FineClone)
 			{
-				this.eseguireRicerca();
+				eseguireRicerca( false );
 			}
 		}
 
@@ -1753,10 +1849,29 @@ namespace Digiphoto.Lumen.UI {
 			// TODO ma non basterebbe aggiungere alla CW ???? provare
         }
 
+		public void OnNext( CambioStatoMsg csm ) {
+
+			if( csm.sender is SlideShowViewModel )
+				OnPropertyChanged( "isSlideShowRunning" );
+		}
+
 		private void ricreaCollectionViewFoto( List<Fotografia> fotos ) {
+
+			// Non so se possa servire, ma prima di abbandonare al suo destino la vecchia collection view, libero i listener
+			// Penso che questo possa dare una mano al Garbage Collector per recuperare la memoria
+			if( fotografieCW != null ) {
+				fotografieCW.SelectionChanged -= fotografie_selezioneCambiata;
+			}
+
+			// Creo la nuova collection view
 			fotografieCW = new MultiSelectCollectionView<Fotografia>( fotos );
+
+			// Associo ascoltatore di selezione cambiata
 			fotografieCW.SelectionChanged += fotografie_selezioneCambiata;
-			OnPropertyChanged( "fotografieCW" );
+
+			// notifico avvenuto cambiamento 
+			// non ce ne è bisogno perché lo fa gia il set due righe sopra
+			// OnPropertyChanged( "fotografieCW" );
 		}
 
 		private void forseReidrataProvini() {

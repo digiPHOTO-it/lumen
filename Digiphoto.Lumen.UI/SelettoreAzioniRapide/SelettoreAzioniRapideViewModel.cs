@@ -320,9 +320,9 @@ namespace Digiphoto.Lumen.UI
 				return;
 			
 			if (selez)
-				fotografieCW.SelectAll();
+				fotografieCW.selezionaTutto();
 			else
-				fotografieCW.DeselectAll();
+				fotografieCW.deselezionaTutto();
 			
 		}
 
@@ -630,7 +630,7 @@ fotoRitoccoSrv.applicareAzioneAutomatica( fotoSelezionate.AsEnumerable(), azione
             {
                 if(fotografieCW != null && fotografieCW.SelectedItems != null)
                 {
-                    fotografieCW.Deselect(ultimaFotoSelezionata);
+                    fotografieCW.deseleziona(ultimaFotoSelezionata);
                 }
             }
         }

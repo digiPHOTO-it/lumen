@@ -54,12 +54,11 @@
 			<StatusBarItem Grid.Column="3">
 
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock ToolTip="Gallery selezione" FontFamily="Courier New" FontSize="12">
+                    <TextBlock ToolTip="Gallery selezione" FontFamily="Courier New" FontSize="12" Background="Pink">
 						<TextBlock.Text>
-                            <MultiBinding StringFormat="{} Selez: {0,3}/{1,3} (tot {2,4})">
-								<Binding Path="fotoGalleryViewModel.fotografieCW.SelectedItems.Count" />
-								<Binding Path="fotoGalleryViewModel.fotografieCW.Count" />
-								<Binding Path="fotoGalleryViewModel.totFotoRicerca" />
+                            <MultiBinding StringFormat="{} Selez: {0,3}/{1,4}">
+                                <Binding Path="fotoGalleryViewModel.countSelezionati" />
+                                <Binding Path="fotoGalleryViewModel.countTotali" />
 							</MultiBinding>
 						</TextBlock.Text>
 					</TextBlock>
@@ -143,12 +142,19 @@
 						Style="{DynamicResource tabControlProspettiveStyle}"
 						ItemContainerStyle="{StaticResource tabItemProspettiveStyle}">
 
-                    <TabItem Header="Preferenze" ToolTip="Preferenze del monitor e della finestra del pubblico">
-                        <Button Content="Preferenze Utente" Width="140" Height="40" Command="{Binding modificarePreferenzeCommand}" />
+                    <TabItem Header="Schermo" ToolTip="Configurazione del monitor&#x0a;e dello Slide Show">
+
+                        <lumGS:GestSlideShowView/>
+                        
                     </TabItem>
-                    <TabItem Header="Slide Show" ToolTip="Gestione Slide Show e form pubblico">
-						<lumGS:GestSlideShowView/>
-					</TabItem>
+
+                    <TabItem Header="Preferenze" ToolTip="Preferenze utente">
+
+                        <Button Content="Preferenze Utente" Width="140" Height="40" Command="{Binding modificarePreferenzeCommand}" />
+
+                    </TabItem>
+
+
 
 			</TabControl>
         </TabItem>

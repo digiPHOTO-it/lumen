@@ -43,13 +43,6 @@ namespace Digiphoto.Lumen.UI.Preferenze {
 		}
 
 
-		private void proprietaMonitorButton_Click( object sender, RoutedEventArgs e ) {
-
-			// String path = Environment.GetFolderPath( Environment.SpecialFolder.System );
-			String exe = "rundll32.exe";
-			String arguments = "shell32.dll,Control_RunDLL desk.cpl,,3";
-			Process.Start( exe, arguments );
-		}
 
 	}
 }

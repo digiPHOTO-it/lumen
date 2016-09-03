@@ -113,7 +113,7 @@
 		<Setter Property="Content">
 			<Setter.Value>
 				<StackPanel Orientation="Horizontal" >
-					<Image Source="/Digiphoto.Lumen.UI;component/Resources/start-search-24x24.png" Height="24" />
+					<Image Source="/Digiphoto.Lumen.UI;component/Resources/start-search-24x24.png" Height="32" />
 					<Label Content="ESEGUI RICERCA" Foreground="DarkBlue" />
 				</StackPanel>
 			</Setter.Value>
@@ -231,7 +231,7 @@
 	</Style>
 
 
-	<Style x:Key="tbuttonSSPlayPauseStyle" TargetType="ToggleButton">
+    <Style x:Key="ssStartStopStyle" TargetType="ToggleButton">
 		<Setter Property="Content">
 			<Setter.Value>
 				<Image Width="32" Height="32" >

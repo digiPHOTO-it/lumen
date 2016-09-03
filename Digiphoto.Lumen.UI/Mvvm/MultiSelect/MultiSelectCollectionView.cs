@@ -50,6 +50,13 @@ namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 			private set;
 		}
 
+
+		/// <summary>
+		/// Questo metodo scorre la collezione in memoria this->SelectedItems
+		/// e setta nel componente grafico che rappresenta il selettore i relativi elementi selezionati
+		/// (in pratica travasa lo stato dalla memoria al componente UI)
+		/// </summary>
+		/// <param name="selector">Il componente grafico che funge da selettore (es: ListBox)</param>
 		void SetSelection( Selector selector ) {
 			MultiSelector multiSelector = selector as MultiSelector;
 			ListBox listBox = selector as ListBox;
@@ -69,46 +76,60 @@ namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 			}
 		}
 
+		/// <summary>
+		/// Seleziono l'elemento indicato nel parametro (che ovviamente deve essere 
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns></returns>
+
+		public bool seleziona( T item ) {
+
+			bool eseguito = false;
+
+			if( !SelectedItems.Contains( item ) ) {
+
+				// ok l'elemento è spento. Lo accendo.
+				if( maxSelectedItem > 0 && SelectedItems.Count >= maxSelectedItem ) {
+
+					deseleziona( item );
+
+					UpdateUiControls();
+
+				} else {
+					SelectedItems.Add( item );
+					eseguito = true;
+				}
+			}
+		
+			return eseguito;
+		}
+
 		void control_SelectionChanged( object sender, SelectionChangedEventArgs e ) {
-			if( !this.ignoreSelectionChanged ) {
+		
+			if( ! ignoreSelectionChanged ) {
 				bool changed = false;
 
-				this.ignoreSelectionChanged = true;
+				ignoreSelectionChanged = true;
 
 				try {
+
 					foreach( T item in e.AddedItems ) {
-						if (!SelectedItems.Contains(item) )
-						{
-							if (SelectedItems.Count >= maxSelectedItem &&
-								maxSelectedItem > 0)
-							{
-								Deselect(item);
-								
-								// Update the UI control.
-								foreach (Control control in controls)
-									SetSelection((Selector)control);
 
-								if (sender != null)
-								{
-									SelectionFailedEventArgs args = new SelectionFailedEventArgs(maxSelectedItem);
+						bool eseguito = seleziona( item );
 
-									args.RoutedEvent = MultiSelect.SelectionFailedEvent;
-
-									if (sender is UIElement)
-									{
-										(sender as UIElement).RaiseEvent(args);
-									}
-									else if (sender is ContentElement)
-									{
-										(sender as ContentElement).RaiseEvent(args);
-									}
-								}
-
-							}
-							else
-							{
-							SelectedItems.Add( item );
+						if( eseguito ) { 
 							changed = true;
+						} else {
+							if( eseguito == false && maxSelectedItem > 0 && sender != null ) {
+								SelectionFailedEventArgs args = new SelectionFailedEventArgs( maxSelectedItem );
+
+								args.RoutedEvent = MultiSelect.SelectionFailedEvent;
+
+								if( sender is UIElement ) {
+									(sender as UIElement).RaiseEvent( args );
+								} else if( sender is ContentElement ) {
+									(sender as ContentElement).RaiseEvent( args );
+								}
 							}
 						}
 					}
@@ -141,17 +162,21 @@ namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 		bool ignoreSelectionChanged;
 		List<Selector> controls = new List<Selector>();
 
-		public void DeselectAll() {
+		public void deselezionaTutto() {
 
 			// Remove all the selected items
 			SelectedItems.Clear();
 
+			UpdateUiControls();
+		}
+
+		public void UpdateUiControls() {
 			// Update the UI control.
 			foreach( Control control in controls )
 				SetSelection( (Selector)control );
 		}
 
-		public void Deselect( T elem ) {
+		public void deseleziona( T elem ) {
 
 			if( SelectedItems.Contains( elem ) ) {
 
@@ -161,16 +186,13 @@ namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 
 					this.SelectedItems.Remove( elem );
 
-					// Update the UI control.
-					foreach( Selector control in this.controls )
-							SetSelection( control );
+					UpdateUiControls();
 
 				} finally {
 					this.ignoreSelectionChanged = false;
 				}
 
 			}
-
 		}
 
 		/*
@@ -190,29 +212,23 @@ namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 				SelectedItems.Add(item);
 			}
 
-			// Update the UI control.
-			foreach (Control control in controls)
-				SetSelection(control as Selector);
+			UpdateUiControls();
 		}
-
-		public void SelectAll() {
+		
+		public void selezionaTutto() {
 
 			// Reload all the elements in the selected collection
 			SelectedItems.Clear();
 			foreach( T item in SourceCollection )
 				SelectedItems.Add( item );
 
-			// Update the UI control.
-			foreach( Control control in controls )
-				SetSelection( control as Selector );
+			UpdateUiControls();
 		}
 
 		protected override void RefreshOverride() {
 			base.RefreshOverride();
 
-			// Update the UI control.
-			foreach( Control control in controls )
-				SetSelection( control as Selector );
+			UpdateUiControls();
 		}
 
 		/// <summary>

@@ -189,8 +189,11 @@ namespace Digiphoto.Lumen.UI {
 		private void mainWindow_ContentRendered( object sender, EventArgs e ) {
 
 			// Apro il form pubblico, ed associo il datacontext prendendolo da quello della foto.gallery
-			((App)App.Current).gestoreFinestrePubbliche.aprireFinestraPubblico();
+			((App)App.Current).gestoreFinestrePubbliche.azionePosizionamentoIniziale();
 
 		}
+
+
+
 	}
 }

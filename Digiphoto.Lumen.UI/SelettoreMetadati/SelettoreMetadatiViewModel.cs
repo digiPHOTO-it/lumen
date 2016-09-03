@@ -420,9 +420,9 @@ namespace Digiphoto.Lumen.UI
 				return;
 
 			if (selez)
-				fotografieMCW.SelectAll();
+				fotografieMCW.selezionaTutto();
 			else
-				fotografieMCW.DeselectAll();
+				fotografieMCW.deselezionaTutto();
 
 		}
 
