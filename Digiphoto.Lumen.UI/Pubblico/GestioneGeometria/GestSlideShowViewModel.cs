@@ -52,7 +52,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			}
 		}
 
-		public bool possoAprire {
+		public bool possoAprireSlideShow {
 			get {
 				if( IsInDesignMode )
 					return true;
@@ -60,6 +60,44 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 					return !gestoreFinestrePubbliche.isSlideShowVisible;
 			}
 		}
+		
+		public bool possoChiudereSlideShow {
+			get {
+				if( IsInDesignMode )
+					return true;
+				else
+					return gestoreFinestrePubbliche.isSlideShowVisible;
+			}
+		}
+
+		public bool possoSalvarePosizioneSlideShow {
+			get {
+				if( IsInDesignMode )
+					return true;
+				else
+					return gestoreFinestrePubbliche.isSlideShowVisible;
+			}
+		}
+
+
+		public bool possoAprirePubblico {
+			get {
+				if( IsInDesignMode )
+					return true;
+				else
+					return !gestoreFinestrePubbliche.isPubblicoVisible;
+			}
+		}
+
+		public bool possoChiuderePubblico {
+			get {
+				if( IsInDesignMode )
+					return true;
+				else
+					return gestoreFinestrePubbliche.isPubblicoVisible;
+			}
+		}
+
 
 		public bool possoMassimizzare {
 			get {
@@ -89,12 +127,21 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		}
 
 
-		private void aprire() {
+
+		private void aprireSlideShow() {
 			gestoreFinestrePubbliche.aprireFinestraSlideShow();
 		}
 
-		private void chiudere() {
+		private void chiudereSlideShow() {
 			gestoreFinestrePubbliche.chiudereFinestraSlideShow();
+		}
+
+		private void aprirePubblico() {
+			gestoreFinestrePubbliche.aprireFinestraPubblico();
+		}
+
+		private void chiuderePubblico() {
+			gestoreFinestrePubbliche.chiudereFinestraPubblico();
 		}
 
 		private void refreshCampi() {
@@ -107,7 +154,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		/// Devo memorizzare la geometria attuale della finestra dello SS
 		/// nel file di configurazione
 		/// </summary>
-		private void salva()
+		private void salvarePosizioneSlideShow()
 		{
 			if( gestoreFinestrePubbliche.salvaGeometriaFinestraSlideShow() ) {
 
@@ -158,23 +205,43 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		#region Comandi
 		
-		private RelayCommand _aprireCommand;
-		public ICommand aprireCommand {
+		private RelayCommand _aprireSlideShowCommand;
+		public ICommand aprireSlideShowCommand {
 			get {
-				if( _aprireCommand == null ) {
-					_aprireCommand = new RelayCommand( param => aprire(), param => possoAprire );
+				if( _aprireSlideShowCommand == null ) {
+					_aprireSlideShowCommand = new RelayCommand( param => aprireSlideShow(), param => possoAprireSlideShow );
 				}
-				return _aprireCommand;
+				return _aprireSlideShowCommand;
 			}
 		}
 
-		private RelayCommand _chiudereCommand;
-		public ICommand chiudereCommand {
+		private RelayCommand _chiudereSlideShowCommand;
+		public ICommand chiudereSlideShowCommand {
 			get {
-				if( _chiudereCommand == null ) {
-					_chiudereCommand = new RelayCommand( param => chiudere() );
+				if( _chiudereSlideShowCommand == null ) {
+					_chiudereSlideShowCommand = new RelayCommand( param => chiudereSlideShow(), param => possoChiudereSlideShow );
 				}
-				return _chiudereCommand;
+				return _chiudereSlideShowCommand;
+			}
+		}
+
+		private RelayCommand _aprirePubblicoCommand;
+		public ICommand aprirePubblicoCommand {
+			get {
+				if( _aprirePubblicoCommand == null ) {
+					_aprirePubblicoCommand = new RelayCommand( param => aprirePubblico(), param => possoAprirePubblico );
+				}
+				return _aprirePubblicoCommand;
+			}
+		}
+
+		private RelayCommand _chiuderePubblicoCommand;
+		public ICommand chiuderePubblicoCommand {
+			get {
+				if( _chiuderePubblicoCommand == null ) {
+					_chiuderePubblicoCommand = new RelayCommand( param => chiuderePubblico(), param => possoChiuderePubblico );
+				}
+				return _chiuderePubblicoCommand;
 			}
 		}
 
@@ -188,16 +255,16 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			}
 		}
 
-		private RelayCommand _salvaCommand;
-		public ICommand salvaCommand
+		private RelayCommand _salvarePosizioneSlideShowCommand;
+		public ICommand salvarePosizioneSlideShowCommand
 		{
 			get
 			{
-				if (_salvaCommand == null)
+				if (_salvarePosizioneSlideShowCommand == null)
 				{
-					_salvaCommand = new RelayCommand(param => salva());
+					_salvarePosizioneSlideShowCommand = new RelayCommand(param => salvarePosizioneSlideShow(), p => possoSalvarePosizioneSlideShow );
 				}
-				return _salvaCommand;
+				return _salvarePosizioneSlideShowCommand;
 			}
 		}
 

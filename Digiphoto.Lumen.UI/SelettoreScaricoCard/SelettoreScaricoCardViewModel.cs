@@ -156,7 +156,7 @@ namespace Digiphoto.Lumen.UI {
 		
 		public void deselezionareTutto() {
 			if( scarichiCardsCW != null )
-				scarichiCardsCW.DeselectAll();
+				scarichiCardsCW.deselezionaTutto();
 		}
 	}
 }

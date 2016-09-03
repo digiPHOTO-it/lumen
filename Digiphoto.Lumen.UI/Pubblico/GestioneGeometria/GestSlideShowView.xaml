@@ -6,19 +6,23 @@
 					  xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
 					  xmlns:lum="clr-namespace:Digiphoto.Lumen.UI.Pubblico"
 					  mc:Ignorable="d" 
-					  d:DesignHeight="500" d:DesignWidth="800">
+					  d:DesignHeight="500" d:DesignWidth="900">
 
 	<lumM:UserControlBase.DataContext>
 		<lum:GestSlideShowViewModel />
 	</lumM:UserControlBase.DataContext>
 
-	<UserControl.Resources>
-		<ResourceDictionary Source="GestSlideShowResources.xaml" />
-	</UserControl.Resources>
+    <UserControl.Resources>
+        <ResourceDictionary Source="GestSlideShowResources.xaml" />
+
+    </UserControl.Resources>
+
+
+
 
     <DockPanel LastChildFill="False">
 
-	    <GroupBox Header="Posizione dello Slide Show" DockPanel.Dock="Top" Margin="0,20,0,0">
+        <GroupBox Header="Finestra Slide Show" DockPanel.Dock="Top" Margin="0,20,0,0">
 
             <StackPanel Orientation="Horizontal">
 
@@ -27,31 +31,37 @@
 
                 <CheckBox IsEnabled="False" Content="Schermo Intero" IsChecked="{Binding Path=fullScreen,Mode=OneWay}" Margin="30,0,0,0"  VerticalAlignment="Center" FontSize="18" />
 
-                <Separator Margin="20 0 20 0" Width="20" BorderThickness="1" BorderBrush="Red" />
 
-                <Button Content="Apri" Command="{Binding aprireCommand}" Style="{StaticResource finestraPubblicaButtonStyle}" />
-                <Button Content="Chiudi" Command="{Binding chiudereCommand}" Style="{StaticResource finestraPubblicaButtonStyle}" />
+                <Button Content="Apri" Command="{Binding aprireSlideShowCommand}" />
+                <Button Content="Chiudi" Command="{Binding chiudereSlideShowCommand}" />
 
-
-                <Button Content="Salva" Command="{Binding salvaCommand}" Style="{StaticResource finestraPubblicaButtonStyle}" />
 <!--
                 <Button Content="Ripristina" Command="{Binding ripristinaCommand}" Style="{StaticResource finestraPubblicaButtonStyle}" ToolTip="Carica la ultima posizione salvata" />
 -->
-                <Button Content="Massimizza sul&#10;monitor secondario" Command="{Binding massimizzareSulMonitor2Command}" Style="{StaticResource finestraPubblicaButtonStyle}" ToolTip="Posiziona la finestra dello Slide Show&#10;sul monitor secondario&#10;in modalità tutto schermo" Visibility="{Binding isPossibileMassimizzareSulMonitor2}" />
+                <Button Content="Massimizza sul&#10;monitor secondario" Command="{Binding massimizzareSulMonitor2Command}" ToolTip="Posiziona la finestra dello Slide Show&#10;sul monitor secondario&#10;in modalità tutto schermo" IsEnabled="{Binding isPossibileMassimizzareSulMonitor2,Converter={StaticResource booleanToVisibilityConverter}}" />
 
-                <Button Content="Reset" Command="{Binding resetCommand}" Style="{StaticResource finestraPubblicaButtonStyle}" ToolTip="Resetta posizione sul monitor principale" />
+                <Button Content="Reset" Command="{Binding resetCommand}" ToolTip="Resetta posizione sul monitor principale" />
+
+                <Button Content="Salva" Command="{Binding salvarePosizioneSlideShowCommand}" />
 
             </StackPanel>
         </GroupBox>
+        <GroupBox Header="Finestra Pubblico" DockPanel.Dock="Top" Margin="0,20,0,0">
 
-<!--
-        <ListBox Name="listaSchermi" ItemsSource="{Binding schermiCV}" 
-		         ItemsPanel="{DynamicResource schermiItemsPanelTemplate}" 
-                 ItemTemplate="{DynamicResource schermoDataTemplate}">
+            <StackPanel Orientation="Horizontal" Margin="356,0,0,0">
+                <Button Content="Apri" Command="{Binding aprirePubblicoCommand}"  />
+                <Button Content="Chiudi" Command="{Binding chiuderePubblicoCommand}"  />
+            </StackPanel>
 
-        </ListBox>
--->	
-		
-	</DockPanel>
+        </GroupBox>
+
+        <GroupBox Header="Monitor" DockPanel.Dock="Top" Margin="0 50 0 0">
+            <Button Content="Impostazioni schermo ..." Name="proprietaMonitorButton" 
+							     Width="200" Height="60" 
+								 Click="proprietaMonitorButton_Click" DockPanel.Dock="Left" />
+        </GroupBox>
+
+
+    </DockPanel>
 	
 </lumM:UserControlBase>

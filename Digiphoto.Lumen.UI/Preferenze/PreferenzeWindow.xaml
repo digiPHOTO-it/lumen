@@ -27,10 +27,7 @@
 
         <DockPanel >
 
-            <Button Content="Impostazioni schermo ..." Name="proprietaMonitorButton" 
-			        Margin="10 0 0 0" Width="200" Height="60" 
-			        Style="{StaticResource buttonBaseStyle}" 
-					Click="proprietaMonitorButton_Click" DockPanel.Dock="Left" />
+
 
             <GroupBox DockPanel.Dock="Right" Width="350" Height="220">
                 <GroupBox.Header>

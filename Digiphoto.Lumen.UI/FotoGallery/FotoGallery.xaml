@@ -169,8 +169,13 @@ Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding P
 					-->
                 <Separator />
 
-                <Button Command="{Binding controllareSlideShowCommand}" CommandParameter="Start" Style="{StaticResource ssStartStyle}" />
+                <ToggleButton x:Name="togglePlayPauseSlideShow" Command="{Binding controllareSlideShowCommand}" 
+				              CommandParameter="{Binding IsChecked,RelativeSource={RelativeSource Self}}"
+							  IsChecked="{Binding Path=isSlideShowRunning}"
+							  Style="{StaticResource ssStartStopStyle}" />
+
                 <!--
+					<Button Command="{Binding controllareSlideShowCommand}" CommandParameter="Start" Style="{StaticResource ssStartStyle}" />
 					<Button Command="{Binding controllareSlideShowCommand}" CommandParameter="Stop"  Style="{StaticResource ssPauseStyle}" />
 	                <Button Name="buttonTakeSnapshotPubblico" Style="{StaticResource ssSnapshotStyle}" Click="buttonTakeSnapshotPubblico_Click" ToolTip="F2 mostra foto del video al pubblico" IsEnabled="{Binding isAlmenoUnaFoto}" />
 				-->
@@ -245,8 +250,11 @@ Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding P
                 <StackPanel Orientation="Vertical" Margin="1,0,1,0"  >
 
                     <Button Name="eseguireRicercaButton" Command="{Binding eseguireRicercaCommand}" Style="{StaticResource buttonCercaStyle}" Click="eseguireRicercaButton_Click" />
+					<!--
+					ora è veloce questa non serve più
                     <ProgressBar  Value="{Binding Path=idrataProgress,Mode=OneWay}" Style="{StaticResource idrataProgressBarStyle}" Height="{Binding Path=idrataProgress,Converter={StaticResource progressToVisibilityConverter},ConverterParameter=2:20}" Tag="Caricamento..." />
-                    <Button Name="azzeraParamRicercaButton" ToolTip="Azzera i parametri di ricerca" Command="{Binding azzeraParamRicercaCommand}" Style="{StaticResource buttonAzzeraParametriStyle}" />
+                    -->
+					<Button Name="azzeraParamRicercaButton" ToolTip="Azzera i parametri di ricerca" Command="{Binding azzeraParamRicercaCommand}" Style="{StaticResource buttonAzzeraParametriStyle}" />
 				
                 </StackPanel>
                 <GroupBox Header="Periodo">

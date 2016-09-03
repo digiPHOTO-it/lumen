@@ -220,10 +220,6 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			if( msg != null )
 				LumenApplication.Instance.bus.Publish( msg );
 
-
-			// Se fosse aperta l'altra finestra pubblica, allora la chiudo
-			gestoreFinestrePubbliche.chiudereFinestraSnapshotPubblico();
-
 			raiseCambioStatoProperties();
 		}
 

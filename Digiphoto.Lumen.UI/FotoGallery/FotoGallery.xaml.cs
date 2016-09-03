@@ -171,7 +171,7 @@ namespace Digiphoto.Lumen.UI {
 				LsImageGallery.SelectedItems.Count > 0)
 			{
 				fotoGalleryViewModel.riportaOriginaleFotoSelezionateCommand.Execute(null);
-				fotoGalleryViewModel.fotografieCW.DeselectAll();
+				fotoGalleryViewModel.fotografieCW.deselezionaTutto();
 			}
 		}
 
