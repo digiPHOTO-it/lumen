@@ -227,14 +227,11 @@ namespace Digiphoto.Lumen.Config  {
 			// Configurazione delle righe/colonne per ogni stellina della gallery
 			userConfig.prefGalleryViste = new Griglia[MAX_STELLINE];
 			// 1 stellina
-			userConfig.prefGalleryViste[0].numRighe = 1;
-			userConfig.prefGalleryViste[0].numColonne = 1;
+			userConfig.prefGalleryViste[0] = new Griglia { numRighe = 1, numColonne = 1 };
 			// 2 stelline
-			userConfig.prefGalleryViste[0].numRighe = 2;
-			userConfig.prefGalleryViste[0].numColonne = 4;
+			userConfig.prefGalleryViste[1] = new Griglia { numRighe = 2, numColonne = 4 };
 			// 3 stelline
-			userConfig.prefGalleryViste[0].numRighe = 4;
-			userConfig.prefGalleryViste[0].numColonne = 6;
+			userConfig.prefGalleryViste[2] = new Griglia { numRighe = 4, numColonne = 6 };
 
 			return userConfig;
 		}
