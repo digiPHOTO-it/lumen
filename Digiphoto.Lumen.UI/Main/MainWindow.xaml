@@ -54,9 +54,10 @@
 			<StatusBarItem Grid.Column="3">
 
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock ToolTip="Gallery selezione" FontFamily="Courier New" FontSize="12" Background="Pink">
+
+                    <TextBlock ToolTip="Gallery selezione" FontFamily="Courier New" FontSize="12" Background="Pink" MinWidth="50">
 						<TextBlock.Text>
-                            <MultiBinding StringFormat="{} Selez: {0,3}/{1,4}">
+                            <MultiBinding StringFormat="Selez: {0,3}/{1,4}">
                                 <Binding Path="fotoGalleryViewModel.countSelezionati" />
                                 <Binding Path="fotoGalleryViewModel.countTotali" />
 							</MultiBinding>
@@ -64,7 +65,7 @@
 					</TextBlock>
 
 					<!-- posizione attuale gallery -->
-                    <Grid>
+                    <Grid Margin="4 0 0 0">
 						<ProgressBar Value="{Binding Path=fotoGalleryViewModel.percentualePosizRicerca,Mode=OneWay}" Name="progressBarPaginazioneGallery" Style="{StaticResource progressBarPaginazioneGalleryStyle}" />
                         <TextBlock Text="{Binding ElementName=progressBarPaginazioneGallery, Path=Value, StringFormat={}{0:0}%}" 
 								   HorizontalAlignment="Center" VerticalAlignment="Center"  />
