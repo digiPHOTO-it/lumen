@@ -89,6 +89,7 @@ Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding P
 						  Style="{StaticResource bottoneCheckedConImmagineStyle}" 
 
 -->
+
                 <CheckBox Name="chkFiltaSelez" IsChecked="{Binding flagFiltraSelezionate,Mode=TwoWay}" 
 						  ToolTip="Filtra solo le foto selezionate" Style="{StaticResource bottoneTestualeStyle}" 
 						  IsEnabled="{Binding isAlmenoUnaSelezionata}" Width="48" >

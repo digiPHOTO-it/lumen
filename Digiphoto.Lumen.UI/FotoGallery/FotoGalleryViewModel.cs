@@ -139,7 +139,7 @@ namespace Digiphoto.Lumen.UI {
 
 		public int fotoAttualeRicerca {
 			get {
-				return countTotali <= 0 ? 0 : paramCercaFoto.paginazione.skip + countTotali;
+				return countTotali <= 0 ? 0 : paramCercaFoto.paginazione.skip + paginazioneRisultatiGallery;
 			}
 		}
 
@@ -204,7 +204,7 @@ namespace Digiphoto.Lumen.UI {
 		/// sono visibili perchè si trovato in pagine diverse da quella corrente.
 		/// Tramite questa collezione sono in grado di accendere le foto quando mi sposto con la paginazione.
 		/// </summary>
-		private List<Guid> idsFotografieSelez {
+		private ObservableCollectionEx<Guid> idsFotografieSelez {
 			get;
 			set;
 		}
@@ -252,14 +252,18 @@ namespace Digiphoto.Lumen.UI {
 
 		public bool isAlmenoUnaSelezionata {
 			get {
-				bool result = fotografieCW != null && fotografieCW.SelectedItems != null && fotografieCW.SelectedItems.Count > 0;
-				if (!result && flagPosizionaSuSelezionate)
-					flagPosizionaSuSelezionate = false;
 
-				if (!result && flagFiltraSelezionate)
-					flagFiltraSelezionate = false;
+				return idsFotografieSelez == null ? false : idsFotografieSelez.Count > 0;
+				/*
+								bool result = fotografieCW != null && fotografieCW.SelectedItems != null && fotografieCW.SelectedItems.Count > 0;
+								if (!result && flagPosizionaSuSelezionate)
+									flagPosizionaSuSelezionate = false;
 
-				return result;
+								if (!result && flagFiltraSelezionate)
+									flagFiltraSelezionate = false;
+
+								return result;
+				*/
 			}
 		}
 
@@ -581,8 +585,7 @@ namespace Digiphoto.Lumen.UI {
 		public int countSelezionati {
 			get {
 				return idsFotografieSelez == null ? 0 : idsFotografieSelez.Count();
-
-			}
+            }
 		}
 
 		/// <summary>
@@ -1202,7 +1205,8 @@ namespace Digiphoto.Lumen.UI {
 				contaTotFotoRicerca();
 			} else {
 				// STO PAGINANDO una ricerca precedente
-				salvaSelezionePagCorrente();
+				// Questo salvataggio non serve piu perché lo faccio ad ogni selezione
+				// salvaSelezionePagCorrente();
 			}
 
 
@@ -1328,8 +1332,23 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		void fotografie_selezioneCambiata( object sender, SelectionChangedEventArgs e ) {
-			OnPropertyChanged( "isAlmenoUnaSelezionata" );
+
+			// Eventuali aggiunte
+			foreach( var fa in e.AddedItems )
+				addSelezionata( fa as Fotografia );
+			
+			// Eventuali rimozioni
+			foreach( var fr in e.RemovedItems )
+				removeSelezionata( fr as Fotografia );
+
+			raisePropertyChangeSelezionate();
 		}
+
+		void raisePropertyChangeSelezionate() {
+			OnPropertyChanged( "isAlmenoUnaSelezionata" );
+			OnPropertyChanged( "countSelezionati" );
+		}
+
 
 		public void calcolaFotoCorrenteSelezionataScorrimento( int direzione ) {
 
@@ -1575,7 +1594,7 @@ namespace Digiphoto.Lumen.UI {
 			azzeraParamRicerca();
 
 			// creo la collezione delle foto selezionate
-			idsFotografieSelez = new List<Guid>();
+			idsFotografieSelez = new ObservableCollectionEx<Guid>();
         }
 
 		private void azzeraParamRicerca() {
@@ -1655,6 +1674,8 @@ namespace Digiphoto.Lumen.UI {
 			}
 
 			eseguireRicerca( false );
+
+			OnPropertyChanged( "percentualePosizRicerca" );
 		}
 
 		bool possoSpostarePaginazione( short delta ) {
@@ -1750,11 +1771,18 @@ namespace Digiphoto.Lumen.UI {
 		/// </summary>
 		private void salvaSelezionePagCorrente() {
 
-			foreach( var fotoSelez in fotografieCW.SelectedItems ) {
-				if( !idsFotografieSelez.Contains( fotoSelez.id ) )
-					idsFotografieSelez.Add( fotoSelez.id );
-            }
+			foreach( var fotoSelez in fotografieCW.SelectedItems )
+				addSelezionata( fotoSelez );
+		}
 
+		private void addSelezionata( Fotografia f ) {
+			if( !idsFotografieSelez.Contains( f.id ) )
+				idsFotografieSelez.Add( f.id );
+		}
+
+		private void removeSelezionata( Fotografia f ) {
+			if( idsFotografieSelez.Contains( f.id ) )
+				idsFotografieSelez.Remove( f.id );
 		}
 
 		#endregion Metodi
