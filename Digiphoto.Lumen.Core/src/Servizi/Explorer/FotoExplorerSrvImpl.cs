@@ -89,6 +89,18 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 				idratareImmaginiGallery();
 		}
 
+		/// <summary>
+		/// Occhio questo metodo non idrata le foto.
+		/// </summary>
+		/// <param name="param"></param>
+		/// <returns></returns>
+		public IList<Fotografia> cercaFotoTutte( ParamCercaFoto param ) {
+
+			IRicercatoreSrv ricercaSrv = LumenApplication.Instance.getServizioAvviato<IRicercatoreSrv>();
+			return ricercaSrv.cerca( param );
+		}
+
+
 		/** Idrato in modo asincrono gli attributi delle immagini che ho caricato */
 		private void idrataImmaginiFoto() {
 
@@ -263,5 +275,16 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			return tantiIds;
 		}
 
+		public Fotografia get( Guid id ) {
+
+			Fotografia foto = null;	
+			
+			// Prima guardo se ce l'ho in pancia io
+			foto = fotografie.FirstOrDefault( ff => ff.id == id );
+			if( foto == null )
+				foto = UnitOfWorkScope.currentDbContext.Fotografie.SingleOrDefault( f => f.id == id );
+
+			return foto;
+		} 
 	}
 }

@@ -63,10 +63,10 @@ ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBar
                     <Image Width="48" Source="/Digiphoto.Lumen.UI;component/Resources/PageUp-48x48.png" />
                 </Button>
                 <StackPanel Orientation="Horizontal">
-                    <Button Command="{Binding commandSpostarePaginazione}" CommandParameter="-999" >
+                    <Button Command="{Binding commandSpostarePaginazione}" CommandParameter="-999"  IsEnabled="{Binding isAlmenoUnaFoto}">
                         <Image Width="20" Source="/Digiphoto.Lumen.UI;component/Resources/PageFirst-20x20.png" />
                     </Button>
-                    <Button Command="{Binding commandSpostarePaginazione}" CommandParameter="+999" >
+                    <Button Command="{Binding commandSpostarePaginazione}" CommandParameter="+999"  IsEnabled="{Binding isAlmenoUnaFoto}">
                         <Image Width="20" Source="/Digiphoto.Lumen.UI;component/Resources/PageLast-20x20.png" />
                     </Button>
 				</StackPanel>
@@ -74,42 +74,28 @@ ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBar
                     <Image Width="48" Source="/Digiphoto.Lumen.UI;component/Resources/PageDown-48x48.png" />
                 </Button>
                 <Separator />
+<!--
                 <Button Command="{Binding selezionareTuttoCommand}" CommandParameter="True" Style="{StaticResource bottoneNellaToolbarStyle}" ToolTip="Seleziona/Deseleziona" IsEnabled="{Binding isAlmenoUnaFoto}" >
                     <Image Source="/Digiphoto.Lumen.UI;component/Resources/gallery-view-selez-deselez.png" Height="16" />
                 </Button>
-                <!-- <Button Content="-Deselez" Command="{Binding selezionareTuttoCommand}" CommandParameter="False" Style="{StaticResource buttonBaseStyle}" /> -->
+-->
+                <Button Content="-Deselez" Command="{Binding selezionareTuttoCommand}" CommandParameter="False" Style="{StaticResource buttonBaseStyle}" />
 
                 <Separator />
 
-                <!--
-Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" ToolTip="Vedi solo le foto selezionate" Style="{StaticResource bottoneTestualeStyle}" 
--->
-
-                <!--
-						  Style="{StaticResource bottoneCheckedConImmagineStyle}" 
-
--->
-
+ <!--
                 <CheckBox Name="chkFiltaSelez" IsChecked="{Binding flagFiltraSelezionate,Mode=TwoWay}" 
 						  ToolTip="Filtra solo le foto selezionate" Style="{StaticResource bottoneTestualeStyle}" 
 						  IsEnabled="{Binding isAlmenoUnaSelezionata}" Width="48" >
-                    <!--
-					<Image Source="/Digiphoto.Lumen.UI;component/Resources/gallery-view-selez.png" Height="16"  />
-					-->
                     <TextBlock TextWrapping="NoWrap">Selez</TextBlock>
                 </CheckBox>
-                <!--
-Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" 
 -->
-                <CheckBox Name="chkMuoviSuSelez" IsChecked="{Binding flagPosizionaSuSelezionate,Mode=TwoWay}"
-						  ToolTip="Abilita lo spostamento sulle foto selezionate" Style="{StaticResource bottoneTestualeStyle}" 
-						  IsEnabled="{Binding isAlmenoUnaSelezionata}" >
-                    <TextBlock TextWrapping="NoWrap">Salta</TextBlock>
-                </CheckBox>
-                <!--				
-				<Button Content="^ Prec" Click="buttonScorriFotoSelez_Click" Tag="-1" ToolTip="Posiziona sulla precendete foto selezionata" Padding="1" Style="{StaticResource bottoneTestualeStyle}" IsEnabled="{Binding isAlmenoUnaSelezionata}" />
-				<Button Content="v Succ" Click="buttonScorriFotoSelez_Click" Tag="+1" ToolTip="Posiziona sulla successiva foto selezionata" Padding="1" Style="{StaticResource bottoneTestualeStyle}" IsEnabled="{Binding isAlmenoUnaSelezionata}" />
--->
+                <ToggleButton Command="{Binding filtrareSelezionateCommand}"
+				              Content="solo&#10;selez"
+							  IsChecked="{Binding Path=modalitaFiltroSelez,Converter={StaticResource filtroSelezConverter}}"
+							  />
+
+
                 <TextBox ToolTip="Vai al N° di fotogramma. Uscire dal campo con il tasto TAB" Name="textBoxGotoNumFoto" LostFocus="textBoxGotoNumFoto_LostFocus" IsEnabled="{Binding isAlmenoUnaFoto}" Style="{StaticResource tbVaiNumStyle}" GotFocus="textBoxGotoNumFoto_GotFocus" />
 
             </ToolBar>
@@ -250,11 +236,8 @@ Command="{Binding Path=filtrareSelezionateCommand}" CommandParameter="{Binding P
 
                 <StackPanel Orientation="Vertical" Margin="1,0,1,0"  >
 
-                    <Button Name="eseguireRicercaButton" Command="{Binding eseguireRicercaCommand}" Style="{StaticResource buttonCercaStyle}" Click="eseguireRicercaButton_Click" />
-					<!--
-					ora è veloce questa non serve più
-                    <ProgressBar  Value="{Binding Path=idrataProgress,Mode=OneWay}" Style="{StaticResource idrataProgressBarStyle}" Height="{Binding Path=idrataProgress,Converter={StaticResource progressToVisibilityConverter},ConverterParameter=2:20}" Tag="Caricamento..." />
-                    -->
+                    <Button Name="eseguireRicercaButton" Command="{Binding eseguireRicercaCommand}" CommandParameter="UI" Style="{StaticResource buttonCercaStyle}" Click="eseguireRicercaButton_Click" />
+
 					<Button Name="azzeraParamRicercaButton" ToolTip="Azzera i parametri di ricerca" Command="{Binding azzeraParamRicercaCommand}" Style="{StaticResource buttonAzzeraParametriStyle}" />
 				
                 </StackPanel>

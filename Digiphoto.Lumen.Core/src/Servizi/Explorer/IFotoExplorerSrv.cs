@@ -14,8 +14,13 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 		/** Questa è la fotografia corrente */
 		Fotografia fotoCorrente { get; set; }
 
-		// Cerca le foto nell'archivio e le carica in memoria.
+		// Cerca le foto nell'archivio e le carica in memoria nella proprietà "fotografie"
 		void cercaFoto( ParamCercaFoto param );
+
+		/// <summary>
+		/// Cerca le foto nell'archivio e le ritorna, senza tenerle in memoria e senza idratarle
+		/// </summary>
+		IList<Fotografia> cercaFotoTutte( ParamCercaFoto param );
 
 		// Questa funzionalità sarebbe utile anche in altri servizi.
 		// Forse andrebbe messo nel servizio FotografiaEntityRepository, che però attualmente non esiste. 
@@ -31,6 +36,13 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 		/// Carico la gallery recuperando tutte le righe presenti nel carrello (sia stampe che masterizzate)
 		/// </summary>
 		IEnumerable<Guid> caricaFotoDalCarrello();
+
+		/// <summary>
+		/// Ricavo l'entità dato il suo identificativo
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		Fotografia get( Guid id );
 	}
 
 	public class MetadatiFoto {
