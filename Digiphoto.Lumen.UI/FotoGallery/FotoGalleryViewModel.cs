@@ -115,20 +115,28 @@ namespace Digiphoto.Lumen.UI {
 			
 		}
 
+
+		#region Proprietà
+		
+		
+		private ModalitaFiltroSelez _modalitaFiltroSelez;
 		/// <summary>
-		/// Carico tutti i formati carta che sono abbinati alle stampanti installate
-		/// Per ognuno di questi elementi, dovrò visualizzare un pulsante per la stampa
+		/// Modalita di visualizzazione dei risultati.
+		/// Quando uso SoloSelez, allora creo un parametro con tutti gli ID
 		/// </summary>
-		private void caricaStampantiAbbinate() {
-
-			string ss = Configurazione.UserConfigLumen.stampantiAbbinate;
-
-			// TODO sostituire con la lista presa da spoolsrv
-			this.stampantiAbbinate = StampantiAbbinateUtil.deserializza( ss );
+		public ModalitaFiltroSelez modalitaFiltroSelez {
+			get {
+				return _modalitaFiltroSelez;
+			}
+			set {
+				if( modalitaFiltroSelez != value ) {
+					_modalitaFiltroSelez = value;
+					OnPropertyChanged( "modalitaFiltroSelez" );
+				}
+			} 
 		}
 
 
-		#region Proprietà
 
 		private GestoreFinestrePubbliche gestoreFinestrePubbliche {
 			get {
@@ -230,9 +238,17 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		/// <summary>
+		/// Parametri di ricerca inseriti dall'utente
+		/// </summary>
 		public ParamCercaFoto paramCercaFoto {
 			get;
 			private set;
+		}
+
+		private ParamCercaFoto paramCercaFotoSave {
+			get;
+			set;
 		}
 
 		IFotoExplorerSrv fotoExplorerSrv {
@@ -253,7 +269,7 @@ namespace Digiphoto.Lumen.UI {
 		public bool isAlmenoUnaSelezionata {
 			get {
 
-				return idsFotografieSelez == null ? false : idsFotografieSelez.Count > 0;
+				return countSelezionati > 0;
 				/*
 								bool result = fotografieCW != null && fotografieCW.SelectedItems != null && fotografieCW.SelectedItems.Count > 0;
 								if (!result && flagPosizionaSuSelezionate)
@@ -278,7 +294,7 @@ namespace Digiphoto.Lumen.UI {
 			bool posso = false;
 			if( modoAutoManuale == "AddSelez" || modoAutoManuale == "ZeroPiuSelez" )
 				// Deve esserci almeno una foto selezionata
-				posso = fotografieCW != null && fotografieCW.SelectedItems.Count > 0;
+				posso = countSelezionati > 0;
 			else if( modoAutoManuale.Equals( "Tutte", StringComparison.CurrentCultureIgnoreCase ) ) {
 				// Qui basta che ho eseguito una ricerca qualsiasi
 				posso = isAlmenoUnaFoto;
@@ -482,7 +498,7 @@ namespace Digiphoto.Lumen.UI {
 
 		public bool possoDeselezionareTutto {
 			get {
-				return fotografieCW != null && fotografieCW.SelectedItems.Count > 0;   // Se ho almeno una foto selezionata
+				return countSelezionati > 0;   // Se ho almeno una foto selezionata
 			}
 		}
 
@@ -647,39 +663,8 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		private bool _flagPosizionaSuSelezionate;
-		public bool flagPosizionaSuSelezionate {
-			get {
-				return _flagPosizionaSuSelezionate;
-			}
-			set {
-				if( _flagPosizionaSuSelezionate != value ) {
-					_flagPosizionaSuSelezionate = value;
-					OnPropertyChanged( "flagPosizionaSuSelezionate" );
 
-					posizionareSuSelezionate( value );
-					if( value )
-						flagFiltraSelezionate = false;
-				}
-			}
-		}
 
-		private bool _flagFiltraSelezionate;
-		public bool flagFiltraSelezionate {
-			get {
-				return _flagFiltraSelezionate;
-			}
-			set {
-				if( _flagFiltraSelezionate != value ) {
-					_flagFiltraSelezionate = value;
-					OnPropertyChanged( "flagFiltraSelezionate" );
-
-					filtrareSelezionate( value );
-					if( value )
-						flagPosizionaSuSelezionate = false; // Spengo l'altro (sono esclusivi)
-				}
-			}
-		}
 
 		public ModoVendita modoVendita
 		{
@@ -803,8 +788,9 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand filtrareSelezionateCommand {
 			get {
 				if( _filtrareSelezionateCommand == null ) {
-					_filtrareSelezionateCommand = new RelayCommand( param => filtrareSelezionate( Convert.ToBoolean(param) ),
-																	param => possoFiltrareSelezionate( Convert.ToBoolean( param ) ) );
+					_filtrareSelezionateCommand = new RelayCommand( param => filtrareSelezionate(),
+																	param => possoFiltrareSelezionate() );
+																	/* possoFiltrareSelezionate( param ) */
 				}
 				return _filtrareSelezionateCommand;
 			}
@@ -829,12 +815,14 @@ namespace Digiphoto.Lumen.UI {
 			return true;
 		}
 
-		private bool possoFiltrareSelezionate( bool soloSelez ) {
+		private bool possoFiltrareSelezionate() {
 
+			// non ho neanche una foto nella gallery esco subito
 			if( isAlmenoUnaFoto == false )
 				return false;
 
-			if( soloSelez == false ) // attulamente il pulsante NON è premuto. Quindi sto vedento tutte le foto. Devo dire se posso premere per filtrare solo le selezionate
+			// Ora sono posizionato su tutte, quindi mi chiedo se posso passare alle selezionate
+			if( modalitaFiltroSelez == ModalitaFiltroSelez.Tutte )
 				if( isAlmenoUnaSelezionata == false )
 					return false;
 
@@ -847,7 +835,7 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand eseguireRicercaCommand {
 			get {
 				if( _eseguireRicercaCommand == null ) {
-					_eseguireRicercaCommand = new RelayCommand( numPag => eseguireRicerca( true ), p => possoEseguireRicercaCommand, false );
+					_eseguireRicercaCommand = new RelayCommand( param => eseguireRicerca( param as string ), p => possoEseguireRicercaCommand, false );
 				}
 				return _eseguireRicercaCommand;
 			}
@@ -973,6 +961,18 @@ namespace Digiphoto.Lumen.UI {
 
 		#region Metodi
 
+		/// <summary>
+		/// Carico tutti i formati carta che sono abbinati alle stampanti installate
+		/// Per ognuno di questi elementi, dovrò visualizzare un pulsante per la stampa
+		/// </summary>
+		private void caricaStampantiAbbinate() {
+
+			string ss = Configurazione.UserConfigLumen.stampantiAbbinate;
+
+			// TODO sostituire con la lista presa da spoolsrv
+			this.stampantiAbbinate = StampantiAbbinateUtil.deserializza( ss );
+		}
+
 		private void cambiarePaginazione( short stelline ) {
 
 			int idx = stelline - 1;
@@ -999,21 +999,39 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		private void filtrareSelezionate( bool attivareFiltro ) {
+		private void filtrareSelezionate() {
 
-			// Alcune collezioni non sono filtrabili, per esempio la IEnumerable
-			if( fotografieCW.CanFilter == false )
-				return;
+			if( modalitaFiltroSelez == ModalitaFiltroSelez.SoloSelezionate ) {
 
-			if( attivareFiltro ) {
+				// Mi metto in modalita di "solo selezionate"
 
-				// Creo un oggetto Predicate al volo.
-				fotografieCW.Filter = obj => {
-					return fotografieCW.SelectedItems.Contains( obj );
-				};
+				paramCercaFotoSave = paramCercaFoto.ShallowCopy();
 
-			} else {
-				fotografieCW.Filter = null;
+				// Devo rieseguire la query con dei parametri opportunamente creati per lo scopo
+				paramCercaFoto = new ParamCercaFoto();
+				paramCercaFoto.idsFotografie = idsFotografieSelez.ToArray<Guid>();
+
+				eseguireRicerca( true );
+
+				selezionareTutto();
+
+			} else if( modalitaFiltroSelez == ModalitaFiltroSelez.Tutte ) {
+
+				// Mi metto in modalita di "tutte"
+
+				// Questi erano gli id selezionati prima di entrare in modalita solo selez
+				var saveIds = paramCercaFoto.idsFotografie;
+
+				// Rimetto a posto i parametri e ricerco di nuovo
+				paramCercaFoto = paramCercaFotoSave.ShallowCopy();
+				
+				eseguireRicerca( true, false );
+
+				// Ricarico la lista dei selezionati che nel frattempo si è svuotata
+				idsFotografieSelez = new ObservableCollectionEx<Guid>( saveIds );
+
+				// TODO ora devo riselezionare tutte quelle che erano selezionate prima di cambiare modo
+				selezionareElementiPaginaCorrente();
 			}
 
 		}
@@ -1034,8 +1052,31 @@ namespace Digiphoto.Lumen.UI {
 			deselezionareTutto();
 		}
 
+
+		/// <summary>
+		/// Crea una lista con tutte le fotografie della query, senza paginazione. Occhio che possono essere tante.
+		/// </summary>
+		/// <returns></returns>
+		private IList<Fotografia> creaListaTutteFotoRicerca() {
+
+			ParamCercaFoto paramAperti = paramCercaFoto.ShallowCopy();
+			paramAperti.paginazione = null;
+			paramAperti.idratareImmagini = false;
+			return fotoExplorerSrv.cercaFotoTutte( paramAperti );
+        }
+
+		/// <summary>
+		/// Crea una lista con tutte le Fotografie selezionate
+		/// </summary>
+		/// <returns></returns>
 		private IList<Fotografia> creaListaFotoSelezionate() {
-			return fotografieCW.SelectedItems.ToList();
+
+			List<Fotografia> lista = new List<Fotografia>( idsFotografieSelez.Count );
+
+			foreach( Guid guid in idsFotografieSelez )
+				lista.Add( getFotoById( guid ) );
+
+			return lista;
 		}
 
 		public void deselezionareTutto() {
@@ -1131,27 +1172,27 @@ namespace Digiphoto.Lumen.UI {
 		private void stampareProvini()
 		{
 			StampaProviniDialog d = new StampaProviniDialog();
-			d.totaleFotoSelezionate = fotografieCW.SelectedItems.Count;
-			d.totoleFotoGallery = fotografieCW.Count;
+			d.totaleFotoSelezionate = countSelezionati;
+			d.totoleFotoGallery = countTotali;
 			bool? esito = d.ShowDialog();
 
 			if (esito == true)
 			{
-				if (!d.stampaSoloSelezionate)
-				{
-					deselezionareTutto();
-					selezionareTutto();
-				}
+				IList<Fotografia> listaFotos;
 
-				IList<Fotografia> listaSelez = creaListaFotoSelezionate();
+				if( d.stampaSoloSelezionate )
+					listaFotos = creaListaFotoSelezionate();
+				else
+					listaFotos = creaListaTutteFotoRicerca();
+
 
 				// Riordino i Provini per data acquisizione foto + numero foto (Prima quelli più vecchi)
-				IEnumerable<Fotografia> sortedEnum = listaSelez.OrderBy(f => f.dataOraAcquisizione).OrderBy(f => f.numero);
-				listaSelez = sortedEnum.ToList();
+				IEnumerable<Fotografia> sortedEnum = listaFotos.OrderBy(f => f.dataOraAcquisizione).OrderBy(f => f.numero);
+				listaFotos = sortedEnum.ToList();
 	
 // non capisco a cosa servisse clonare i parametri			
 //				venditoreSrv.aggiungereStampe(listaSelez, creaParamStampaProvini(d.paramStampaProvini));
-				venditoreSrv.aggiungereStampe( listaSelez, d.paramStampaProvini );
+				venditoreSrv.aggiungereStampe( listaFotos, d.paramStampaProvini );
 
 			}
 
@@ -1178,14 +1219,32 @@ namespace Digiphoto.Lumen.UI {
 
 			return p;
 		}
-		
+
+		private void eseguireRicerca( string param ) {
+
+			if( "UI".Equals( param ) ) {
+				// Quando chiamo dalla UI svuoto gli ID delle foto selezionate perché è un parametro non visibile.
+				// Voglio evitare di incepparmi con il toggle delle selezionate
+				paramCercaFoto.idsFotografie = null;
+				modalitaFiltroSelez = ModalitaFiltroSelez.Tutte;
+			}
+
+			eseguireRicerca( true );
+        }
+
+		private void eseguireRicerca( bool nuovaRicerca ) {
+			bool chiediConfermaSeFiltriVuoti = (nuovaRicerca == true);
+			eseguireRicerca( nuovaRicerca, chiediConfermaSeFiltriVuoti );
+
+		}
+
 		/// <summary>
 		/// Eseguo una ricerca sul database. Quindi aggiorno la UI
 		/// </summary>
 		/// <param name="nuovaRicerca">Se true significa che ho premuto il tasto RICERCA e quindi devo ripartire da capo.
 		/// Se invece è FALSE significa che sto paginando su di una ricerca già effettuata in precedenza
 		/// </param>
-		private void eseguireRicerca( bool nuovaRicerca ) {
+		private void eseguireRicerca( bool nuovaRicerca, bool chiediConfermaSeFiltriVuoti ) {
 
 
 			idrataProgress = 0;
@@ -1195,7 +1254,6 @@ namespace Digiphoto.Lumen.UI {
 
 			// Dopo aver completato tutti i parametri di ricerca...
 			// verifico se ho impostato almeno un parametro
-			bool chiediConfermaSeFiltriVuoti = (nuovaRicerca == true);
 			if( chiediConfermaSeFiltriVuoti )
 				if (verificaChiediConfermaRicercaSenzaParametri() == false)
 					return;
@@ -1351,6 +1409,8 @@ namespace Digiphoto.Lumen.UI {
 
 
 		public void calcolaFotoCorrenteSelezionataScorrimento( int direzione ) {
+
+throw new NotImplementedException( "TODO da rivedere");
 
 			int posiz = -1;
 			if( fotoCorrenteSelezionataScorrimento != null )
@@ -1595,10 +1655,14 @@ namespace Digiphoto.Lumen.UI {
 
 			// creo la collezione delle foto selezionate
 			idsFotografieSelez = new ObservableCollectionEx<Guid>();
-        }
+
+			// Per default lavoro con tutti i risultati
+			modalitaFiltroSelez = ModalitaFiltroSelez.Tutte;
+		}
 
 		private void azzeraParamRicerca() {
 			azzeraParamRicerca( false );
+			paramCercaFotoSave = null;
 		}
 
 		private void azzeraParamRicerca( bool tranneScarichi ) {
@@ -1719,13 +1783,13 @@ namespace Digiphoto.Lumen.UI {
 		{
 			bool procediPure = true;
 
-			if (!fotografieCW.SelectedItems.Any())
+			if( countSelezionati <= 0 )
 				return false;
 
-			if (fotografieCW.SelectedItems.Count > 10)
+			if (countSelezionati > 10)
 			{
 				procediPure = false;
-				StringBuilder msg = new StringBuilder("Attenzione: stai per far tornare a Originale più di 10 Fotografie!!!");
+				StringBuilder msg = new StringBuilder("Attenzione: stai per far tornare Originale più di 10 Fotografie!!!");
 				dialogProvider.ShowConfirmation(msg.ToString(), "Richiesta conferma",
 					(confermato) =>
 					{
@@ -1735,19 +1799,30 @@ namespace Digiphoto.Lumen.UI {
 
 			if (procediPure)
 			{
+				foreach( Fotografia foto in creaListaFotoSelezionate() )
+					fotoRitoccoSrv.tornaOriginale( foto );
 
-				foreach (Fotografia f in fotografieCW.SelectedItems)
-				{
-					fotoRitoccoSrv.tornaOriginale(f);
-				}
-
-				dialogProvider.ShowMessage("Operazione Terminata", "Info");
+				// dialogProvider.ShowMessage("Operazione Terminata", "Info");
 			}
 
 			return true;
 		}
 
-        private Fotografia ricavaFotoByNumber(int numDaric)
+		private Fotografia getFotoById( Guid guid ) {
+
+			// Prima guardo se ce l'ho in pancia io
+			Fotografia foto = null;
+			if( fotografieCW != null && fotografieCW.Count > 0 ) {
+				foto = ((IEnumerable<Fotografia>)fotografieCW.SourceCollection).SingleOrDefault( f => f.id == guid );
+            } else {
+				// Me la faccio ritornare dal servizio
+				foto = fotoExplorerSrv.get( guid );
+			}
+
+			return foto;
+		}
+
+		private Fotografia ricavaFotoByNumber(int numDaric)
         {
 
             // Devo scorrere la lista
@@ -1764,16 +1839,6 @@ namespace Digiphoto.Lumen.UI {
 
             return fotoTrovata;
         }
-
-
-		/// <summary>
-		/// Mi salvo gli id delle fotografie selezionate nella pagina corrente, nella collezione che le mantiene tutte 
-		/// </summary>
-		private void salvaSelezionePagCorrente() {
-
-			foreach( var fotoSelez in fotografieCW.SelectedItems )
-				addSelezionata( fotoSelez );
-		}
 
 		private void addSelezionata( Fotografia f ) {
 			if( !idsFotografieSelez.Contains( f.id ) )
@@ -1944,9 +2009,15 @@ namespace Digiphoto.Lumen.UI {
 		}
 		
 		public IEnumerator<Fotografia> getEnumeratorSelezionati() {
-			return fotografieCW.SelectedItems.GetEnumerator();
+			return creaListaFotoSelezionate().GetEnumerator();
 		}
 
 		#endregion
 	}
+
+	public enum ModalitaFiltroSelez {
+		Tutte,
+		SoloSelezionate
+	}
+
 }

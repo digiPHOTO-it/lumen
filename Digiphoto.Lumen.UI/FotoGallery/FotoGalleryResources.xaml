@@ -14,8 +14,9 @@
 	<lumC:ProgressToVisibilityConverter x:Key="progressToVisibilityConverter" />
     <lumC:ModoVenditaImageSourceConverter x:Key="modoVenditaImageSourceConverter" />
 	<lumC:ModoVenditaBoolConverter x:Key="modoVenditaBoolConverter" />
-	
-	<Style x:Key="imageButtonToolBarStyle" TargetType="ButtonBase">
+    <lumC:FiltroSelezConverter x:Key="filtroSelezConverter" />
+
+    <Style x:Key="imageButtonToolBarStyle" TargetType="ButtonBase">
 		<Setter Property="MinWidth" Value="48" />
 		<Setter Property="Margin" Value="0,1,0,0" />
 		<Style.Triggers>
