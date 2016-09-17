@@ -793,7 +793,8 @@ namespace Digiphoto.Lumen.UI {
 			get {
 				if( _filtrareSelezionateCommand == null ) {
 					_filtrareSelezionateCommand = new RelayCommand( param => filtrareSelezionate(),
-																	param => possoFiltrareSelezionate() );
+																	param => possoFiltrareSelezionate(),
+																	false );
 				}
 				return _filtrareSelezionateCommand;
 			}
@@ -830,7 +831,7 @@ namespace Digiphoto.Lumen.UI {
 					return false;
 
 			// if( soloSelez == true ) // Attualmente il pulsante E' premuto. Quindi sto vedendo solo le selezionate. Devo dire se posso premere per vedere tutto.
-
+			// posso sempre tornare in modalità : Tutte
 			return true;
 		}
 

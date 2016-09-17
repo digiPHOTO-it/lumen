@@ -79,7 +79,7 @@ ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBar
                     <Image Source="/Digiphoto.Lumen.UI;component/Resources/gallery-view-selez-deselez.png" Height="16" />
                 </Button>
 -->
-                <Button Content="-Deselez" Command="{Binding selezionareTuttoCommand}" CommandParameter="False" Style="{StaticResource buttonBaseStyle}" />
+                <Button Content="-Deselez" Command="{Binding selezionareTuttoCommand}" CommandParameter="False" Style="{StaticResource buttonBaseStyle}" ToolTip="Deseleziona tutte le foto" />
 
                 <Separator />
 
@@ -91,8 +91,9 @@ ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBar
                 </CheckBox>
 -->
                 <ToggleButton Command="{Binding filtrareSelezionateCommand}"
-				              Content="solo&#10;selez"
-							  IsChecked="{Binding Path=modalitaFiltroSelez,Converter={StaticResource filtroSelezConverter}}"
+				              Content="Solo&#10;Selez"
+							  IsChecked="{Binding Mode=TwoWay, Path=modalitaFiltroSelez, Converter={StaticResource filtroSelezConverter}}"
+							  Name="toggleButtonSelezTutte" Style="{StaticResource toggleButtonSelezTutteStyle}"
 							  />
 
 
