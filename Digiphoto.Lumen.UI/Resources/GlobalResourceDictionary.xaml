@@ -315,9 +315,11 @@
                 <Setter Property="BorderThickness" Value="1" />
                 <Setter Property="Background">
                     <Setter.Value>
-                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                            <GradientStop Color="#FFF3F3F3" Offset="1"/>
-                            <GradientStop Color="YellowGreen" Offset="0.307"/>
+                        <LinearGradientBrush EndPoint="0,0" StartPoint="0,1">
+                            <GradientStop Color="AntiqueWhite" Offset="0"/>
+                            <GradientStop Color="Red" Offset="0.2"/>
+                            <GradientStop Color="#FFFFC934" Offset="0.84"/>
+                            <GradientStop Color="AntiqueWhite" Offset="0.92"/>
                         </LinearGradientBrush>
                     </Setter.Value>
                 </Setter>
