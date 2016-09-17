@@ -522,19 +522,18 @@ namespace Digiphoto.Lumen.UI
 		/// <param name="posiz"></param>
 		private void aggiungereLogo( String posiz ) {
 
-#if DEBUG
-// TODO eliminare: solo per prova !! ! ! !
-Digiphoto.Lumen.Servizi.EntityRepository.IEntityRepositorySrv<AzioneAuto> repo = LumenApplication.Instance.getServizioAvviato<Digiphoto.Lumen.Servizi.EntityRepository.IEntityRepositorySrv<AzioneAuto>>();
-string id = "42662270-CB0D-40A1-A179-EB753F955DE2";
-id = "aac63718-b23d-4d33-8371-a10dee7c67a0";
-id = "6cbd4017-ce5c-4231-9735-ab0f62f517f1";
-AzioneAuto azioneAuto = repo.getById( new Guid( id ) );
-fotoRitoccoSrv.applicareAzioneAutomatica( fotoSelezionate.AsEnumerable(), azioneAuto );
-#else
-			foreach( Fotografia f in fotoSelezionate ) {
-				fotoRitoccoSrv.addLogoDefault( f, posiz, true );
-			}
-#endif
+			IEnumerable<Fotografia> lista = null;
+
+			if( visibility == "ALL" ) {
+				// TODO ricavare tutte le foto dalla gallery
+			} else {
+				lista = fotoSelezionate;
+            }
+			
+			// Itero la lista ed aggiungo il logo
+			if( lista != null )
+				foreach( Fotografia f in lista )
+					fotoRitoccoSrv.addLogoDefault( f, posiz, true );
 			
 		}
 

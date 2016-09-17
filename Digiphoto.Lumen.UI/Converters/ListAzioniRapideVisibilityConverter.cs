@@ -23,18 +23,15 @@ namespace Digiphoto.Lumen.UI.Converters {
             {
                 if (parameter != null)
                 {
-                    if (value.Equals(parameter))
-                    {
+                    if (value.Equals(parameter)) {
                         return Visibility.Visible;
-                    }
-                    else if ("MULTI".Equals(value))
-                    {
+                    } else if ("MULTI".Equals(value)) {
                         return Visibility.Visible;
-                    }
-                    else
-                    {
+                    } else if( "ALL".Equals( value ) ) {
+						return Visibility.Visible;
+					} else
                         return Visibility.Collapsed;
-                    }
+                    
                 }
                 else
 				{

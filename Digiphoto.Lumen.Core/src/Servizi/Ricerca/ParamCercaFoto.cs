@@ -5,9 +5,12 @@ using System.Text;
 using Digiphoto.Lumen.Core;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Util;
+using System.Security.Permissions;
+using System.Runtime.Serialization;
 
 namespace Digiphoto.Lumen.Servizi.Ricerca {
 
+	[Serializable]
 	public class ParamCercaFoto : ParamCerca {
 
 		public Evento [] eventi { get; set; }
@@ -39,10 +42,6 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 			// Istanzio apposita classe per i dati di paginazione
 			paginazione = new Paginazione();
-		}
-
-		public ParamCercaFoto ShallowCopy() {
-			return (ParamCercaFoto)this.MemberwiseClone();
 		}
 
 		public override string ToString() {
@@ -133,7 +132,6 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 			return isEmpty;
 		}
-
 
 	}
 }

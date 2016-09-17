@@ -29,9 +29,11 @@ namespace Digiphoto.Lumen.Model
     	public bool umano { get; set; }
     	public string note { get; set; }
     	public byte[] immagine { get; set; }
-    
-    	#region INotifyPropertyChanged
-    	public event PropertyChangedEventHandler PropertyChanged;
+
+		#region INotifyPropertyChanged
+
+		[field: NonSerialized]
+		public event PropertyChangedEventHandler PropertyChanged;
     
     	protected void OnPropertyChanged(string propertyName)
     	{

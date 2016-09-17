@@ -169,7 +169,7 @@
                 </MenuItem>
 
                 <!--Tutte le Selezionate-->
-                <MenuItem Header="Tutte le Selezionate"
+                <MenuItem Header="Solo le Selezionate"
                           Visibility="{Binding Path=visibility, Mode=OneWay, Converter={StaticResource listAzioniRapideVisibilityConverter}, ConverterParameter=MULTLI}"
                           DataContext="{Binding}">
                       
@@ -276,6 +276,38 @@
                     <MenuItem Header="Elimina" 
                               Command="{Binding eliminareFotoCommand}"
                               DataContext="{Binding}"/>
+                </MenuItem>
+
+
+                <MenuItem Header="Tutte le foto"
+                        Visibility="{Binding Path=visibility, Mode=OneWay, Converter={StaticResource listAzioniRapideVisibilityConverter}, ConverterParameter=ALL}"
+                        DataContext="{Binding}">
+
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseMove">
+                            <i:InvokeCommandAction Command="{Binding setSingolaFotoWorkCommand}" 
+                                                           CommandParameter="TUTTE"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+
+                    <MenuItem Header="Aggiungi Logo...">
+                        <MenuItem Header="Nord-Est"
+								  Command="{Binding Path=aggiungereLogoCommand}"
+								  CommandParameter="NordEst"
+								  DataContext="{Binding}" />
+                        <MenuItem Header="Sud-Est"
+								  Command="{Binding Path=aggiungereLogoCommand}"
+								  CommandParameter="SudEst"
+								  DataContext="{Binding}" />
+                        <MenuItem Header="Sud-Ovest"
+								  Command="{Binding Path=aggiungereLogoCommand}"
+								  CommandParameter="SudOvest"
+								  DataContext="{Binding}" />
+                        <MenuItem Header="Nord-Ovest"
+								  Command="{Binding Path=aggiungereLogoCommand}"
+								  CommandParameter="NordOvest"
+								  DataContext="{Binding}" />
+                    </MenuItem>
                 </MenuItem>
 
             </CompositeCollection>

@@ -6,7 +6,9 @@ using System.Linq;
 
 namespace Digiphoto.Lumen.Model {
 
+	
 	[MetadataType( typeof( Evento ) )]
+	[Serializable]
 	public partial class Evento : IValidatableObject, IDataErrorInfo
 	{
 		public IEnumerable<ValidationResult> Validate( ValidationContext validationContext ) {

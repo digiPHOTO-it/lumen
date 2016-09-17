@@ -22,9 +22,11 @@ namespace Digiphoto.Lumen.Model
     	public string fotografo_id { get; set; }
     
         public virtual Fotografo fotografo { get; set; }
-    
-    	#region INotifyPropertyChanged
-    	public event PropertyChangedEventHandler PropertyChanged;
+
+		#region INotifyPropertyChanged
+		
+		[field: NonSerialized]
+		public event PropertyChangedEventHandler PropertyChanged;
     
     	protected void OnPropertyChanged(string propertyName)
     	{

@@ -1,30 +1,18 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Digiphoto.Lumen.Servizi.Stampare;
 using Digiphoto.Lumen.UI.Mvvm;
-using Digiphoto.Lumen.UI.ScreenCapture;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.UI.Util;
-using System.Windows.Threading;
 using Digiphoto.Lumen.Config;
-using System.Collections.Generic;
-using Digiphoto.Lumen.Servizi.Ritoccare;
-using Digiphoto.Lumen.Applicazione;
 
 namespace Digiphoto.Lumen.UI {
 
-	
+
 	/// <summary>
 	/// Interaction logic for FotoGallery.xaml
 	/// </summary>
@@ -203,12 +191,15 @@ namespace Digiphoto.Lumen.UI {
             {
                 selettoreAzioniRapideViewModel.visibility = "SINGLE";
             }
-            else if(selettoreAzioniRapideViewModel.fotografieCW.SelectedItems.Count > 1)
+            else if( this.fotoGalleryViewModel.countSelezionati > 1)
             {
                 selettoreAzioniRapideViewModel.visibility = "MULTI";
             }
-            
-            e.Handled = true;
+			if( this.fotoGalleryViewModel.countTotali > 0 ) {
+				selettoreAzioniRapideViewModel.visibility = "ALL";
+			}
+
+			e.Handled = true;
 		}
 
 		private ListBoxItem SelectItemOnRightClick(System.Windows.Input.MouseButtonEventArgs e)

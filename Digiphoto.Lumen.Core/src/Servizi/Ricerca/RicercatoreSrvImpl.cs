@@ -1,5 +1,6 @@
 ﻿using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.UI.Util;
+using Digiphoto.Lumen.Util;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -283,7 +284,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 		public int conta( ParamCercaFoto param ) {
 
 			// Clono i parametri per evitare alcuni rallentamenti che nella count non hanno senso
-			ParamCercaFoto param2 = param.ShallowCopy();
+			ParamCercaFoto param2 = param.deepCopy<ParamCercaFoto>();
 			param2.ordinamento = null;
 
 			if( param.eventi == null )

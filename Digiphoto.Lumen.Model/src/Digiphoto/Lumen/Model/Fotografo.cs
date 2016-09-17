@@ -8,6 +8,7 @@ using System.ComponentModel;
 namespace Digiphoto.Lumen.Model {
 
 	[MetadataType( typeof( Fotografo ) )]
+	[Serializable]
 	public partial class Fotografo : IValidatableObject, IDataErrorInfo
 
 	{
