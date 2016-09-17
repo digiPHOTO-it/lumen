@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace Digiphoto.Lumen.Util {
-	
-	public class Paginazione {
 
+	[Serializable]
+	public class Paginazione {
+		
 		public int skip {
 			get;
 			set;
@@ -28,5 +30,6 @@ namespace Digiphoto.Lumen.Util {
 			sb.Append( "\r\nTake: " + take );
 			return sb.ToString();
 		}
+
 	}
 }

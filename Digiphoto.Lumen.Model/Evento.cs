@@ -25,9 +25,11 @@ namespace Digiphoto.Lumen.Model
     	public string descrizione { get; set; }
     	public bool attivo { get; set; }
     	public Nullable<short> ordinamento { get; set; }
-    
-    	#region INotifyPropertyChanged
-    	public event PropertyChangedEventHandler PropertyChanged;
+
+		#region INotifyPropertyChanged
+
+		[field: NonSerialized]
+		public event PropertyChangedEventHandler PropertyChanged;
     
     	protected void OnPropertyChanged(string propertyName)
     	{

@@ -281,8 +281,14 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			
 			// Prima guardo se ce l'ho in pancia io
 			foto = fotografie.FirstOrDefault( ff => ff.id == id );
-			if( foto == null )
+
+			if( foto == null ) {
 				foto = UnitOfWorkScope.currentDbContext.Fotografie.SingleOrDefault( f => f.id == id );
+
+				// Stacco l'oggetto altrimenti sarebbe a carico del chiamante.
+				if( foto != null )
+					OrmUtil.forseStacca<Fotografia>( ref foto );
+			}
 
 			return foto;
 		} 

@@ -243,14 +243,25 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			if( ! possoAggiungereStampe )
 				throw new InvalidOperationException( "Impossibile aggiungere stampe a questo carrello" );
 
+			Exception laPrimaEccezione = null;
+
 			if (param is ParamStampaFoto)
 			{
 				foreach (Fotografia foto in fotografie)
 				{
-					// Non so perchè me devo fare la versione forzata perchè se no non mi idrata i provini del carrello. 
-					// Nel caso in cui ricarico una foto che è già stata stampata precedentemente. 
-					AiutanteFoto.idrataImmaginiFoto( foto , IdrataTarget.Provino, true);
-					gestoreCarrello.aggiungiRiga(creaRiCaFotoStampata(foto, param as ParamStampaFoto));
+					try {
+
+						// Non so perchè me devo fare la versione forzata perchè se no non mi idrata i provini del carrello. 
+						// Nel caso in cui ricarico una foto che è già stata stampata precedentemente. 
+						AiutanteFoto.idrataImmaginiFoto( foto , IdrataTarget.Provino, true);
+						gestoreCarrello.aggiungiRiga(creaRiCaFotoStampata(foto, param as ParamStampaFoto));
+
+					} catch( Exception ee ) {
+						_giornale.Error( "Aggingi stampe al carrello", ee );
+						if( laPrimaEccezione == null )
+							laPrimaEccezione = ee;
+					}
+
 				}
 				// Notifico al carrello l'evento
 				ricalcolaTotaleCarrello();
@@ -263,6 +274,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				paramStampaProvini.stampigli = configurazione.stampigli;
 				spoolStampeSrv.accodaStampaProvini(fotografie.ToList<Fotografia>(), paramStampaProvini);
 			}
+
+
+			if( laPrimaEccezione != null )
+				throw laPrimaEccezione;
 		}
 
 		public void creareNuovoCarrello() {
@@ -800,10 +815,22 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			if( ! possoAggiungereMasterizzate )
 				throw new InvalidOperationException( "Impossibile aggiungere foto da masterizzare a questo carrello" );
 
+			Exception laPrimaEccezione = null;
+
 			foreach( Fotografia foto in fotografie ) {
 
-				// Aggiungo le foto al carrello
-				gestoreCarrello.aggiungiRiga( creaRigaFotoMasterizzata( foto ) );
+				try {
+
+					// Aggiungo le foto al carrello
+					gestoreCarrello.aggiungiRiga( creaRigaFotoMasterizzata( foto ) );
+
+				} catch( Exception ee ) {
+
+					_giornale.Error( "Aggingi stampe al carrello", ee );
+
+					if( laPrimaEccezione == null )
+						laPrimaEccezione = ee;
+				}
 
 			}
 
@@ -811,6 +838,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 // TODO da fare alla fine			_masterizzaSrvImpl.addFotografie( fotografie );
 			// Notifico al carrello l'evento
 			ricalcolaTotaleCarrello();
+
+			if( laPrimaEccezione != null )
+				throw laPrimaEccezione;
 		}
 
 

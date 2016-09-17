@@ -79,7 +79,13 @@ namespace Digiphoto.Lumen.UI {
 			selettoreFotografoViewModel = new SelettoreFotografoViewModel();
 			selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel(this);
 
-			azzerareRicerca();
+
+			azzeraParamRicerca();       // Svuoto i parametri
+			azzeraFotoSelez();          // creo la collezione vuota delle foto selezionate
+
+			// Per default lavoro con tutti i risultati
+			modalitaFiltroSelez = ModalitaFiltroSelez.Tutte;
+
 
 			if( IsInDesignMode ) {
 
@@ -246,10 +252,8 @@ namespace Digiphoto.Lumen.UI {
 			private set;
 		}
 
-		private ParamCercaFoto paramCercaFotoSave {
-			get;
-			set;
-		}
+		// Salvo informazioni per cambio modalità
+		private SaveDataCambioSelezMode saveDataCambioSelezMode { get; set; }
 
 		IFotoExplorerSrv fotoExplorerSrv {
 			get {
@@ -790,7 +794,6 @@ namespace Digiphoto.Lumen.UI {
 				if( _filtrareSelezionateCommand == null ) {
 					_filtrareSelezionateCommand = new RelayCommand( param => filtrareSelezionate(),
 																	param => possoFiltrareSelezionate() );
-																	/* possoFiltrareSelezionate( param ) */
 				}
 				return _filtrareSelezionateCommand;
 			}
@@ -1004,8 +1007,10 @@ namespace Digiphoto.Lumen.UI {
 			if( modalitaFiltroSelez == ModalitaFiltroSelez.SoloSelezionate ) {
 
 				// Mi metto in modalita di "solo selezionate"
+				saveDataCambioSelezMode = new SaveDataCambioSelezMode( paramCercaFoto.deepCopy<ParamCercaFoto>() );  //Vedi formule magiche
+				saveDataCambioSelezMode.numRighePag = numRighePag;
+				saveDataCambioSelezMode.numColonnePag = numColonnePag;
 
-				paramCercaFotoSave = paramCercaFoto.ShallowCopy();
 
 				// Devo rieseguire la query con dei parametri opportunamente creati per lo scopo
 				paramCercaFoto = new ParamCercaFoto();
@@ -1013,18 +1018,27 @@ namespace Digiphoto.Lumen.UI {
 
 				eseguireRicerca( true );
 
-				selezionareTutto();
+				// Ricarico la collezione delle selezionate che durante la ricerca viene spenta
+				idsFotografieSelez = new ObservableCollectionEx<Guid>( paramCercaFoto.idsFotografie );
+
+				selezionareElementiPaginaCorrente();
 
 			} else if( modalitaFiltroSelez == ModalitaFiltroSelez.Tutte ) {
 
 				// Mi metto in modalita di "tutte"
 
 				// Questi erano gli id selezionati prima di entrare in modalita solo selez
-				var saveIds = paramCercaFoto.idsFotografie;
+				// var saveIds = paramCercaFoto.idsFotografie;
+				// Questi sono invece gli id delle foto selezionate adesso
+				Guid[] saveIds = new Guid[idsFotografieSelez.Count];
+				idsFotografieSelez.CopyTo( saveIds, 0 );
 
 				// Rimetto a posto i parametri e ricerco di nuovo
-				paramCercaFoto = paramCercaFotoSave.ShallowCopy();
-				
+				paramCercaFoto = saveDataCambioSelezMode.paramCercaFoto.deepCopy();
+
+				numRighePag = saveDataCambioSelezMode.numRighePag;
+				numColonnePag = saveDataCambioSelezMode.numColonnePag;
+
 				eseguireRicerca( true, false );
 
 				// Ricarico la lista dei selezionati che nel frattempo si è svuotata
@@ -1032,6 +1046,11 @@ namespace Digiphoto.Lumen.UI {
 
 				// TODO ora devo riselezionare tutte quelle che erano selezionate prima di cambiare modo
 				selezionareElementiPaginaCorrente();
+
+
+				// Mi sposto sulla pagina da cui ero partito
+				short deltaPagine = (short) (saveDataCambioSelezMode.paramCercaFoto.paginazione.skip / saveDataCambioSelezMode.paramCercaFoto.paginazione.take);
+                spostarePaginazione( deltaPagine );
 			}
 
 		}
@@ -1059,7 +1078,7 @@ namespace Digiphoto.Lumen.UI {
 		/// <returns></returns>
 		private IList<Fotografia> creaListaTutteFotoRicerca() {
 
-			ParamCercaFoto paramAperti = paramCercaFoto.ShallowCopy();
+			ParamCercaFoto paramAperti = paramCercaFoto.deepCopy();
 			paramAperti.paginazione = null;
 			paramAperti.idratareImmagini = false;
 			return fotoExplorerSrv.cercaFotoTutte( paramAperti );
@@ -1073,8 +1092,12 @@ namespace Digiphoto.Lumen.UI {
 
 			List<Fotografia> lista = new List<Fotografia>( idsFotografieSelez.Count );
 
-			foreach( Guid guid in idsFotografieSelez )
-				lista.Add( getFotoById( guid ) );
+			foreach( Guid guid in idsFotografieSelez ) {
+
+				Fotografia f = getFotoById( guid );
+				AiutanteFoto.idrataImmaginiFoto( f, IdrataTarget.Provino );
+				lista.Add( f );
+            }
 
 			return lista;
 		}
@@ -1099,7 +1122,7 @@ namespace Digiphoto.Lumen.UI {
 					// Devo caricare tutti gli ID risultato della riceca
 					// TODO : non è facile. devo rieseguire la query che mi torni tutti gli ID (ma senza paginazione questa volta)
 				} else
-					idsFotografieSelez.Clear();
+					azzeraFotoSelez();
 			}
 
 			// Poi lavoro sulla collezione visuale della pagina
@@ -1260,13 +1283,9 @@ namespace Digiphoto.Lumen.UI {
 
 			// Solo quando premo tasto di ricerca (e non durante la paginazione).
 			if( nuovaRicerca ) {
+				azzeraFotoSelez();
 				contaTotFotoRicerca();
-			} else {
-				// STO PAGINANDO una ricerca precedente
-				// Questo salvataggio non serve piu perché lo faccio ad ogni selezione
-				// salvaSelezionePagCorrente();
 			}
-
 
 
 			// Eseguo la ricerca nel database
@@ -1582,7 +1601,7 @@ throw new NotImplementedException( "TODO da rivedere");
 
 				completaParametriRicerca();
 
-				ParamCercaFoto copiaParam = paramCercaFoto.ShallowCopy();
+				ParamCercaFoto copiaParam = paramCercaFoto.deepCopy();
 
 				// Nei parametri che mi passano, è indicata anche la paginazione. Nello ss non devo tenere conto della paginazione
 				copiaParam.paginazione = null;
@@ -1649,20 +1668,21 @@ throw new NotImplementedException( "TODO da rivedere");
 				slideShowViewModel.start();
 		}
 
-		private void azzerareRicerca() {
-
-			azzeraParamRicerca();
-
-			// creo la collezione delle foto selezionate
-			idsFotografieSelez = new ObservableCollectionEx<Guid>();
-
-			// Per default lavoro con tutti i risultati
-			modalitaFiltroSelez = ModalitaFiltroSelez.Tutte;
-		}
+		/// <summary>
+		/// Svuoto la collezione delle foto selezionate.
+		/// Se non esiste la creo.
+		/// </summary>
+		void azzeraFotoSelez() {
+			if( idsFotografieSelez == null )
+				idsFotografieSelez = new ObservableCollectionEx<Guid>();
+			else
+				idsFotografieSelez.Clear();
+			OnPropertyChanged( "countSelezionati" );
+        }
 
 		private void azzeraParamRicerca() {
 			azzeraParamRicerca( false );
-			paramCercaFotoSave = null;
+			saveDataCambioSelezMode = null;
 		}
 
 		private void azzeraParamRicerca( bool tranneScarichi ) {
@@ -1814,7 +1834,10 @@ throw new NotImplementedException( "TODO da rivedere");
 			Fotografia foto = null;
 			if( fotografieCW != null && fotografieCW.Count > 0 ) {
 				foto = ((IEnumerable<Fotografia>)fotografieCW.SourceCollection).SingleOrDefault( f => f.id == guid );
-            } else {
+            }
+
+			// Se non l'ho trovata in cache
+			if( foto == null ) { 
 				// Me la faccio ritornare dal servizio
 				foto = fotoExplorerSrv.get( guid );
 			}
@@ -2013,8 +2036,27 @@ throw new NotImplementedException( "TODO da rivedere");
 		}
 
 		#endregion
+
+
+		/// <summary> 
+		/// Questaa inner-class mi serve per racchiudere tutte le info da salvare durante il cambio di modalità ModalitaFiltroSelez
+		/// 
+		/// </summary>
+		private class SaveDataCambioSelezMode {
+
+			public SaveDataCambioSelezMode( ParamCercaFoto param ) {
+				this.paramCercaFoto = param;
+			}
+
+			public short numColonnePag { get; internal set; }
+			public short numRighePag { get; internal set; }
+			public ParamCercaFoto paramCercaFoto { get; set;  }
+
+		}
+
 	}
 
+	// La gallery può funzionare in queste modalità
 	public enum ModalitaFiltroSelez {
 		Tutte,
 		SoloSelezionate

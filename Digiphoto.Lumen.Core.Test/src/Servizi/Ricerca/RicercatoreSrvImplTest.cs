@@ -6,6 +6,7 @@ using System.Linq;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Servizi.Ricerca;
 using System.Collections.Generic;
+using Digiphoto.Lumen.Util;
 
 namespace Digiphoto.Lumen.Core.Test.Servizi.Ricerca {
 
@@ -83,7 +84,7 @@ namespace Digiphoto.Lumen.Core.Test.Servizi.Ricerca {
 				const int max = 17;  // Ampiezza della pagina uso un numero primo
 
 				// Ora faccio dei cicli di paginazione da 5 alla volta
-				ParamCercaFoto param2 = param.ShallowCopy();
+				ParamCercaFoto param2 = param.deepCopy();
 				param2.paginazione = new Lumen.Util.Paginazione {
 					take = max
 				};
