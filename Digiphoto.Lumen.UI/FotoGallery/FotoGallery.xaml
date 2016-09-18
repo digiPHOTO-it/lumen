@@ -83,18 +83,20 @@ ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBar
 
                 <Separator />
 
- <!--
-                <CheckBox Name="chkFiltaSelez" IsChecked="{Binding flagFiltraSelezionate,Mode=TwoWay}" 
-						  ToolTip="Filtra solo le foto selezionate" Style="{StaticResource bottoneTestualeStyle}" 
-						  IsEnabled="{Binding isAlmenoUnaSelezionata}" Width="48" >
-                    <TextBlock TextWrapping="NoWrap">Selez</TextBlock>
-                </CheckBox>
--->
-                <ToggleButton Command="{Binding filtrareSelezionateCommand}"
-				              Content="Solo&#10;Selez"
-							  IsChecked="{Binding Mode=TwoWay, Path=modalitaFiltroSelez, Converter={StaticResource filtroSelezConverter}}"
-							  Name="toggleButtonSelezTutte" Style="{StaticResource toggleButtonSelezTutteStyle}"
-							  />
+                <ToggleButton Content="Solo&#10;Selez" 
+				              IsEnabled="{Binding possoFiltrareSelezionate,Mode=OneWay}"
+				              IsChecked="{Binding Mode=OneWay, Path=modalitaFiltroSelez, Converter={StaticResource filtroSelezConverter}}"
+							  Name="toggleButtonSelezTutte" Style="{StaticResource toggleButtonSelezTutteStyle}">
+
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Checked">
+                            <i:InvokeCommandAction Command="{Binding Path=filtrareSelezionateCommand}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="Unchecked">
+                            <i:InvokeCommandAction Command="{Binding Path=filtrareTutteCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ToggleButton>
 
 
                 <TextBox ToolTip="Vai al N° di fotogramma. Uscire dal campo con il tasto TAB" Name="textBoxGotoNumFoto" LostFocus="textBoxGotoNumFoto_LostFocus" IsEnabled="{Binding isAlmenoUnaFoto}" Style="{StaticResource tbVaiNumStyle}" GotFocus="textBoxGotoNumFoto_GotFocus" />

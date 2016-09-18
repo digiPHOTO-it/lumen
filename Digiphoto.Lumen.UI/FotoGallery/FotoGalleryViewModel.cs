@@ -123,8 +123,7 @@ namespace Digiphoto.Lumen.UI {
 
 
 		#region Proprietà
-		
-		
+
 		private ModalitaFiltroSelez _modalitaFiltroSelez;
 		/// <summary>
 		/// Modalita di visualizzazione dei risultati.
@@ -793,10 +792,22 @@ namespace Digiphoto.Lumen.UI {
 			get {
 				if( _filtrareSelezionateCommand == null ) {
 					_filtrareSelezionateCommand = new RelayCommand( param => filtrareSelezionate(),
-																	param => possoFiltrareSelezionate(),
+																	param => possoFiltrareSelezionate,
 																	false );
 				}
 				return _filtrareSelezionateCommand;
+			}
+		}
+
+		private RelayCommand _filtrareTutteCommand;
+		public ICommand filtrareTutteCommand {
+			get {
+				if( _filtrareTutteCommand == null ) {
+					_filtrareTutteCommand = new RelayCommand( param => filtrareTutte(),
+																	param => possoFiltrareTutte(),
+																	false );
+				}
+				return _filtrareTutteCommand;
 			}
 		}
 
@@ -819,18 +830,32 @@ namespace Digiphoto.Lumen.UI {
 			return true;
 		}
 
-		private bool possoFiltrareSelezionate() {
+		public bool possoFiltrareSelezionate {
+
+			get {
+
+				// non ho neanche una foto nella gallery esco subito
+				if( isAlmenoUnaFoto == false )
+					return false;
+
+				// Ora sono posizionato su tutte, quindi mi chiedo se posso passare alle selezionate
+				if( modalitaFiltroSelez == ModalitaFiltroSelez.Tutte )
+					if( isAlmenoUnaSelezionata == false )
+						return false;
+
+				// if( soloSelez == true ) // Attualmente il pulsante E' premuto. Quindi sto vedendo solo le selezionate. Devo dire se posso premere per vedere tutto.
+				// posso sempre tornare in modalità : Tutte
+				return true;
+			}
+
+		}
+
+		private bool possoFiltrareTutte() {
 
 			// non ho neanche una foto nella gallery esco subito
 			if( isAlmenoUnaFoto == false )
 				return false;
 
-			// Ora sono posizionato su tutte, quindi mi chiedo se posso passare alle selezionate
-			if( modalitaFiltroSelez == ModalitaFiltroSelez.Tutte )
-				if( isAlmenoUnaSelezionata == false )
-					return false;
-
-			// if( soloSelez == true ) // Attualmente il pulsante E' premuto. Quindi sto vedendo solo le selezionate. Devo dire se posso premere per vedere tutto.
 			// posso sempre tornare in modalità : Tutte
 			return true;
 		}
@@ -1003,61 +1028,65 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		/// <summary>
+		/// E' il contrario di filtrareTutte()
+		/// </summary>
 		private void filtrareSelezionate() {
 
-			if( modalitaFiltroSelez == ModalitaFiltroSelez.SoloSelezionate ) {
+			modalitaFiltroSelez = ModalitaFiltroSelez.SoloSelezionate;
 
-				// Mi metto in modalita di "solo selezionate"
-				saveDataCambioSelezMode = new SaveDataCambioSelezMode( paramCercaFoto.deepCopy<ParamCercaFoto>() );  //Vedi formule magiche
-				saveDataCambioSelezMode.numRighePag = numRighePag;
-				saveDataCambioSelezMode.numColonnePag = numColonnePag;
+			// Mi metto in modalita di "solo selezionate"
+			saveDataCambioSelezMode = new SaveDataCambioSelezMode( paramCercaFoto.deepCopy<ParamCercaFoto>() );  //Vedi formule magiche
+			saveDataCambioSelezMode.numRighePag = numRighePag;
+			saveDataCambioSelezMode.numColonnePag = numColonnePag;
 
+			// Devo rieseguire la query con dei parametri opportunamente creati per lo scopo
+			paramCercaFoto = new ParamCercaFoto();
+			paramCercaFoto.idsFotografie = idsFotografieSelez.ToArray<Guid>();
 
-				// Devo rieseguire la query con dei parametri opportunamente creati per lo scopo
-				paramCercaFoto = new ParamCercaFoto();
-				paramCercaFoto.idsFotografie = idsFotografieSelez.ToArray<Guid>();
+			eseguireRicerca( true );
 
-				eseguireRicerca( true );
+			// Ricarico la collezione delle selezionate che durante la ricerca viene spenta
+			idsFotografieSelez = new ObservableCollectionEx<Guid>( paramCercaFoto.idsFotografie );
 
-				// Ricarico la collezione delle selezionate che durante la ricerca viene spenta
-				idsFotografieSelez = new ObservableCollectionEx<Guid>( paramCercaFoto.idsFotografie );
-
-				selezionareElementiPaginaCorrente();
-
-			} else if( modalitaFiltroSelez == ModalitaFiltroSelez.Tutte ) {
-
-				// Mi metto in modalita di "tutte"
-
-				// Questi erano gli id selezionati prima di entrare in modalita solo selez
-				// var saveIds = paramCercaFoto.idsFotografie;
-				// Questi sono invece gli id delle foto selezionate adesso
-				Guid[] saveIds = new Guid[idsFotografieSelez.Count];
-				idsFotografieSelez.CopyTo( saveIds, 0 );
-
-				// Rimetto a posto i parametri e ricerco di nuovo
-				paramCercaFoto = saveDataCambioSelezMode.paramCercaFoto.deepCopy();
-
-				numRighePag = saveDataCambioSelezMode.numRighePag;
-				numColonnePag = saveDataCambioSelezMode.numColonnePag;
-
-				eseguireRicerca( true, false );
-
-				// Ricarico la lista dei selezionati che nel frattempo si è svuotata
-				idsFotografieSelez = new ObservableCollectionEx<Guid>( saveIds );
-
-				// TODO ora devo riselezionare tutte quelle che erano selezionate prima di cambiare modo
-				selezionareElementiPaginaCorrente();
-
-
-				// Mi sposto sulla pagina da cui ero partito
-				short deltaPagine = (short) (saveDataCambioSelezMode.paramCercaFoto.paginazione.skip / saveDataCambioSelezMode.paramCercaFoto.paginazione.take);
-                spostarePaginazione( deltaPagine );
-			}
-
+			selezionareElementiPaginaCorrente();
 		}
 
-		private void posizionareSuSelezionate( bool attivare ) {
-			// per ora niente
+		/// <summary>
+		/// E' il contrario di filtrareSelezionate()
+		/// </summary>
+		void filtrareTutte() {
+
+			// Se non ho i dati per tornare indietro, esco, perché significa che è già partita un'altra ricerca che sta resettando tutto.
+			if( saveDataCambioSelezMode == null )
+				return;
+
+			// Mi metto in modalita di "tutte"
+			modalitaFiltroSelez = ModalitaFiltroSelez.Tutte;
+
+			// Questi erano gli id selezionati prima di entrare in modalita solo selez
+			// var saveIds = paramCercaFoto.idsFotografie;
+			// Questi sono invece gli id delle foto selezionate adesso
+			Guid[] saveIds = new Guid[idsFotografieSelez.Count];
+			idsFotografieSelez.CopyTo( saveIds, 0 );
+
+			// Rimetto a posto i parametri e ricerco di nuovo
+			paramCercaFoto = saveDataCambioSelezMode.paramCercaFoto.deepCopy();
+
+			numRighePag = saveDataCambioSelezMode.numRighePag;
+			numColonnePag = saveDataCambioSelezMode.numColonnePag;
+
+			eseguireRicerca( true, false );
+
+			// Ricarico la lista dei selezionati che nel frattempo si è svuotata
+			idsFotografieSelez = new ObservableCollectionEx<Guid>( saveIds );
+
+			selezionareElementiPaginaCorrente();
+
+			// Mi sposto sulla pagina da cui ero partito
+			short deltaPagine = (short)(saveDataCambioSelezMode.paramCercaFoto.paginazione.skip / saveDataCambioSelezMode.paramCercaFoto.paginazione.take);
+			spostarePaginazione( deltaPagine );
+
 		}
 
 
@@ -1246,20 +1275,17 @@ namespace Digiphoto.Lumen.UI {
 
 		private void eseguireRicerca( string param ) {
 
-			if( "UI".Equals( param ) ) {
-				// Quando chiamo dalla UI svuoto gli ID delle foto selezionate perché è un parametro non visibile.
-				// Voglio evitare di incepparmi con il toggle delle selezionate
-				paramCercaFoto.idsFotografie = null;
-				modalitaFiltroSelez = ModalitaFiltroSelez.Tutte;
-			}
+			// Prima cambio modalità ...
+			modalitaFiltroSelez = ModalitaFiltroSelez.Tutte;
 
+			// ... poi eseguo la ricerca
 			eseguireRicerca( true );
-        }
+		}
 
 		private void eseguireRicerca( bool nuovaRicerca ) {
-			bool chiediConfermaSeFiltriVuoti = (nuovaRicerca == true);
-			eseguireRicerca( nuovaRicerca, chiediConfermaSeFiltriVuoti );
 
+			bool chiediConfermaSeFiltriVuoti = (nuovaRicerca == true && modalitaFiltroSelez == ModalitaFiltroSelez.Tutte);
+			eseguireRicerca( nuovaRicerca, chiediConfermaSeFiltriVuoti );
 		}
 
 		/// <summary>
@@ -1274,7 +1300,12 @@ namespace Digiphoto.Lumen.UI {
 			idrataProgress = 0;
 
 
-			completaParametriRicercaWithOrder( true, nuovaRicerca );
+			completaParametriRicercaWithOrder( true );
+
+			// Se eseguo una nuova ricerca, parto la paginazione da zero
+			if( nuovaRicerca )
+				paramCercaFoto.paginazione.skip = 0;
+
 
 			// Dopo aver completato tutti i parametri di ricerca...
 			// verifico se ho impostato almeno un parametro
@@ -1284,7 +1315,13 @@ namespace Digiphoto.Lumen.UI {
 
 			// Solo quando premo tasto di ricerca (e non durante la paginazione).
 			if( nuovaRicerca ) {
+
 				azzeraFotoSelez();
+
+				// Queste sono le foto selezionate
+				if( modalitaFiltroSelez == ModalitaFiltroSelez.Tutte )
+					paramCercaFoto.idsFotografie = null;
+
 				contaTotFotoRicerca();
 			}
 
@@ -1346,6 +1383,8 @@ namespace Digiphoto.Lumen.UI {
 			OnPropertyChanged( "isAlmenoUnaFoto" );
 			OnPropertyChanged( "fotoAttualeRicerca" );
 			OnPropertyChanged( "percentualePosizRicerca" );
+
+			raisePropertyChangeSelezionate();
 
 			// Ora ci penso io ad idratare le immagini, perchè devo fare questa operazione nello stesso thread della UI
 			if( !_bkgIdrata.IsBusy )
@@ -1425,6 +1464,7 @@ namespace Digiphoto.Lumen.UI {
 		void raisePropertyChangeSelezionate() {
 			OnPropertyChanged( "isAlmenoUnaSelezionata" );
 			OnPropertyChanged( "countSelezionati" );
+			OnPropertyChanged( "possoFiltrareSelezionate" );
 		}
 
 
@@ -1545,17 +1585,17 @@ throw new NotImplementedException( "TODO da rivedere");
 
 		private void completaParametriRicerca()
 		{
-			completaParametriRicercaWithOrder(false,false);
+			completaParametriRicercaWithOrder( false );
 		}
 
 		/// <summary>
 		/// Sistemo i parametri e gestisco la paginazione
 		/// </summary>
 		/// <param name="ordinamento asc/desc">il numero di pagina</param>
-		private void completaParametriRicercaWithOrder(bool usaOrdinamentoAsc, bool nuovaRicerca )
+		private void completaParametriRicercaWithOrder( bool usaOrdinamentoAsc )
 		{
 
-			this.paramCercaFoto.idratareImmagini = false;
+			paramCercaFoto.idratareImmagini = false;
 
 			if(usaOrdinamentoAsc) {
 				if( Configurazione.UserConfigLumen.invertiRicerca )
@@ -1582,10 +1622,8 @@ throw new NotImplementedException( "TODO da rivedere");
 			else
 				paramCercaFoto.scarichiCard = null;
 
-			// Dati di paginazione
+			// Ampiezza finestra di paginazione
 			paramCercaFoto.paginazione.take = paginazioneRisultatiGallery;
-			if( nuovaRicerca )
-				paramCercaFoto.paginazione.skip = 0;
 		}
 
 		private void caricareSlideShow( string modo ) {
