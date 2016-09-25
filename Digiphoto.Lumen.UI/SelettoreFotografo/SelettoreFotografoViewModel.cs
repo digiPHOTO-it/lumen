@@ -203,17 +203,6 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		public int countSelezionati {
-			get {
-				return fotografoSelezionato == null ? 0 : 1;
-			}
-		}
-
-		public int countTotali {
-			get {
-				return this.fotografi == null ? 0 : this.fotografi.Count;
-			}
-		}
 		#endregion
 
 
@@ -232,13 +221,58 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		#region interfaccia ISelettore
+		
 		public void deselezionareTutto() {
 			this.fotografoSelezionato = null;
 		}
 
-		public IEnumerator<Fotografo> getEnumeratorSelezionati() {
+		public IEnumerator<Fotografo> getEnumeratorElementiSelezionati() {
 			if( fotografoSelezionato != null )
 				yield return fotografoSelezionato;
+		}
+
+		public void deselezionare( Fotografo elem ) {
+			if( fotografoSelezionato != null && fotografoSelezionato.Equals( elem ) )
+				fotografoSelezionato = null;
+		}
+
+		public IEnumerable<Fotografo> getElementiSelezionati() {
+			if( fotografoSelezionato == null )
+				return null;
+			else
+				return new Fotografo[] { fotografoSelezionato };
+		}
+
+		public int countElementiSelezionati {
+			get {
+				return fotografoSelezionato == null ? 0 : 1;
+			}
+		}
+
+		public IEnumerator<Fotografo> getEnumeratorElementiTutti() {
+			return fotografi.GetEnumerator();
+		}
+
+		public IEnumerable<Fotografo> getElementiTutti() {
+			return fotografi;
+		}
+
+		public int countElementiTotali {
+			get {
+				return this.fotografi == null ? 0 : this.fotografi.Count;
+			}
+		}
+
+		public bool isAlmenoUnElementoSelezionato {
+			get {
+				return countElementiSelezionati > 0;
+			}
+		}
+
+		public Fotografo ultimoElementoSelezionato {
+			get {
+				return fotografoSelezionato;
+			}
 		}
 		#endregion interfaccia ISelettore
 	}

@@ -27,6 +27,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		///  Aggiungere foto da vendere come stampe
 		/// </summary>
 		void aggiungereStampe( IEnumerable<Fotografia> fotografie, ParamStampa param );
+		void aggiungereStampe( Fotografia fotografia, ParamStampa param );
 
 		void removeDatiDischetto();
 		void setDatiDischetto( TipoDestinazione tipoDest, String nomeCartella );

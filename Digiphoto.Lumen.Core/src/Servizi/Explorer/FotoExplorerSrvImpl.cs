@@ -12,7 +12,7 @@ using Digiphoto.Lumen.Core.Database;
 using System.Transactions;
 using Digiphoto.Lumen.Database;
 using Digiphoto.Lumen.Servizi.Vendere;
-using Digiphoto.Lumen.Core.src.Eventi;
+using Digiphoto.Lumen.Core.Eventi;
 
 namespace Digiphoto.Lumen.Servizi.Explorer {
 
@@ -147,54 +147,66 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 
 		public bool  modificaMetadatiFotografie( IEnumerable<Fotografia> fotografie, MetadatiFoto metadati ) {
 			bool esito = false;
-			using (TransactionScope transaction = new TransactionScope()) {
-				try
+
+			try
+			{
+				// riattacco l'entità che non si sa mai
+				if (metadati.evento != null)
 				{
-					// riattacco l'entità che non si sa mai
-					if (metadati.evento != null)
-					{
-						//UnitOfWorkScope.CurrentObjectContext.Eventi.Attach(metadati.evento);
+					try {
 						Evento e = metadati.evento;
 						OrmUtil.forseAttacca<Evento>( ref e );
+					} catch( Exception ee ) {
+						_giornale.Debug( "Potenziale errore", ee );
 					}
-
-					foreach (Fotografia fotografia in fotografie)
-					{
-                        String didascaliaOld = fotografia.didascalia != null ? fotografia.didascalia : "empty";
-                        String faseDelGiornoOld =  fotografia.faseDelGiornoString != null ? fotografia.faseDelGiornoString : "empty";
-                        String eventoOld = fotografia.evento != null ? fotografia.evento.ToString() : "empty";
-
-                        String didascaliaNew = metadati.isDidascaliaEnabled ? metadati.didascaliaString : didascaliaOld;
-                        String faseDelGiornoNew = metadati.isFaseDelGiornoEnabled ? metadati.faseDelGiornoString : faseDelGiornoOld;
-                        String eventoNew = metadati.isEventoEnabled ? metadati.eventoString : eventoOld;
-
-                        StringBuilder msg = new StringBuilder();
-						msg.AppendFormat("Modificati metadati: {0} da: didascalia:{1} giornata:{2} evento:{3} in didascalia:{4} giornata:{5} evento:{6}",
-							fotografia.numero + " " + fotografia.nomeFile,
-                            didascaliaOld,
-                            faseDelGiornoOld,
-                            eventoOld,
-                            didascaliaNew,
-                            faseDelGiornoNew,
-                            eventoNew
-                            );
-						modificaMetadatiFotografie(fotografia, metadati);
-
-						_giornale.Info(msg);
-					}
-
-					UnitOfWorkScope.currentDbContext.SaveChanges();
-					_giornale.Debug("Modifica metadati salvataggio eseguito. Ora committo la transazione");
-
-					transaction.Complete();
-					_giornale.Info("Commit metadati andato a buon fine");
-
-					esito = true;
-				} catch( Exception eee ) {
-					esito = false;
-					_giornale.Error("Impossibile modificare metadati", eee);
 				}
+
+				foreach (Fotografia f in fotografie)
+				{
+
+					Fotografia fotografia = f;
+                    try {
+						OrmUtil.forseAttacca( ref fotografia );
+					} catch( Exception ee ) {
+						_giornale.Debug( "Potenziale errore", ee );
+						fotografia = UnitOfWorkScope.currentDbContext.Fotografie.Single( f2 => f2.id == f.id );
+					}
+
+					String didascaliaOld = fotografia.didascalia != null ? fotografia.didascalia : "empty";
+                    String faseDelGiornoOld =  fotografia.faseDelGiornoString != null ? fotografia.faseDelGiornoString : "empty";
+                    String eventoOld = fotografia.evento != null ? fotografia.evento.ToString() : "empty";
+
+                    String didascaliaNew = metadati.isDidascaliaEnabled ? metadati.didascaliaString : didascaliaOld;
+                    String faseDelGiornoNew = metadati.isFaseDelGiornoEnabled ? metadati.faseDelGiornoString : faseDelGiornoOld;
+                    String eventoNew = metadati.isEventoEnabled ? metadati.eventoString : eventoOld;
+
+                    StringBuilder msg = new StringBuilder();
+					msg.AppendFormat("Modificati metadati: {0} da: didascalia:{1} giornata:{2} evento:{3} in didascalia:{4} giornata:{5} evento:{6}",
+						fotografia.numero + " " + fotografia.nomeFile,
+                        didascaliaOld,
+                        faseDelGiornoOld,
+                        eventoOld,
+                        didascaliaNew,
+                        faseDelGiornoNew,
+                        eventoNew
+                        );
+					modificaMetadatiFotografie(fotografia, metadati);
+
+					_giornale.Info(msg);
+				}
+
+				UnitOfWorkScope.currentDbContext.SaveChanges();
+				_giornale.Debug("Modifica metadati salvataggio eseguito. Ora committo la transazione");
+
+				_giornale.Info("Commit metadati andato a buon fine");
+
+				esito = true;
+			} catch( Exception eee ) {
+				_giornale.Error( "Modifica metadati", eee );
+				esito = false;
+				_giornale.Error("Impossibile modificare metadati", eee);
 			}
+
 			return esito;
 		}
 
@@ -214,7 +226,10 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			//UnitOfWorkScope.CurrentObjectContext.Fotografie.Attach( foto );
 
 			Fotografia f = foto;
-			OrmUtil.forseAttacca<Fotografia>( ref f );
+			try {
+				OrmUtil.forseAttacca<Fotografia>( ref f );
+			} catch( Exception ) {
+			}
 
 			//Consento la modifica anche di valori nulli
 			//if( !String.IsNullOrWhiteSpace( metadati.didascalia ) )

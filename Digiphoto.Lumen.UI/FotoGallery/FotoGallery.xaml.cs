@@ -181,24 +181,12 @@ namespace Digiphoto.Lumen.UI {
 
 		private void LsImageGallery_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
 		{
+
 			if( !(e.OriginalSource is Image) )
 				return;
 
-			Fotografia foto = (Fotografia)SelectItemOnRightClick(e).Content;
-            SelettoreAzioniRapideViewModel selettoreAzioniRapideViewModel = ((FotoGalleryViewModel)viewModelBase).selettoreAzioniRapideViewModel;
-            selettoreAzioniRapideViewModel.ultimaFotoSelezionata = foto;
-            if(selettoreAzioniRapideViewModel.fotografieCW.SelectedItems.Count == 1)
-            {
-                selettoreAzioniRapideViewModel.visibility = "SINGLE";
-            }
-            else if( this.fotoGalleryViewModel.countSelezionati > 1)
-            {
-                selettoreAzioniRapideViewModel.visibility = "MULTI";
-            }
-			if( this.fotoGalleryViewModel.countTotali > 0 ) {
-				selettoreAzioniRapideViewModel.visibility = "ALL";
-			}
-
+			Fotografia foto = (Fotografia)SelectItemOnRightClick( e ).Content;
+			fotoGalleryViewModel.setModalitaSingolaFoto( foto );
 			e.Handled = true;
 		}
 

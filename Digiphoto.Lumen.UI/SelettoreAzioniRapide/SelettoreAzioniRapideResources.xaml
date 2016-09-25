@@ -170,7 +170,7 @@
 
                 <!--Tutte le Selezionate-->
                 <MenuItem Header="Solo le Selezionate"
-                          Visibility="{Binding Path=visibility, Mode=OneWay, Converter={StaticResource listAzioniRapideVisibilityConverter}, ConverterParameter=MULTLI}"
+                          Visibility="{Binding Path=visibility, Mode=OneWay, Converter={StaticResource listAzioniRapideVisibilityConverter}, ConverterParameter=MULTI}"
                           DataContext="{Binding}">
                       
                           <i:Interaction.Triggers>
@@ -265,9 +265,11 @@
                               CommandParameter="Manual" 
                               DataContext="{Binding}"/>
 
+					<!--
                     <MenuItem Header="Vedi a tutto schermo"
                               Command="{Binding Path=viewFotoFullScreenCommand}" 
                               DataContext="{Binding}"/>
+					-->
 
                     <MenuItem Header="Clona" 
                               Command="{Binding Path=clonaFotografieCommand}"
@@ -278,7 +280,7 @@
                               DataContext="{Binding}"/>
                 </MenuItem>
 
-
+				<!-- TUTTE -->
                 <MenuItem Header="Tutte le foto"
                         Visibility="{Binding Path=visibility, Mode=OneWay, Converter={StaticResource listAzioniRapideVisibilityConverter}, ConverterParameter=ALL}"
                         DataContext="{Binding}">
@@ -289,6 +291,15 @@
                                                            CommandParameter="TUTTE"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
+
+                    <MenuItem Header="Torna originale" 
+                              Command="{Binding Path=tornareOriginaleCommand}"
+                              DataContext="{Binding}" />
+
+                    <MenuItem Header="Aggiungi allo slide show" 
+                              Command="{Binding caricareSlideShowCommand}" 
+                              CommandParameter="Manual" 
+                              DataContext="{Binding}" />
 
                     <MenuItem Header="Aggiungi Logo...">
                         <MenuItem Header="Nord-Est"

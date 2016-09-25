@@ -161,15 +161,21 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		public int countSelezionati {
+		public int countElementiSelezionati {
 			get {
 				return eventoSelezionato == null ? 0 : 1;
 			}
 		}
 
-		public int countTotali {
+		public int countElementiTotali {
 			get {
 				return this.eventi == null ? 0 : this.eventi.Count;
+			}
+		}
+
+		public bool isAlmenoUnElementoSelezionato {
+			get {
+				return countElementiSelezionati > 0;
 			}
 		}
 
@@ -189,14 +195,36 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		#region interfaccia ISelettore
+
 		public void deselezionareTutto() {
 			this.eventoSelezionato = null;
 		}
 
-		public IEnumerator<Evento> getEnumeratorSelezionati() {
+		public IEnumerator<Evento> getEnumeratorElementiSelezionati() {
 			if( eventoSelezionato != null )
 				yield return eventoSelezionato;
 		}
+
+		public void deselezionare( Evento elem ) {
+			if( eventoSelezionato != null && eventoSelezionato.Equals( elem ) )
+				this.eventoSelezionato = null;
+		}
+
+		public IEnumerable<Evento> getElementiSelezionati() {
+			if( eventoSelezionato == null )
+				return null;
+			else
+				return new Evento [] { eventoSelezionato };
+		}
+
+		public IEnumerator<Evento> getEnumeratorElementiTutti() {
+			return eventi.GetEnumerator();
+		}
+
+		public IEnumerable<Evento> getElementiTutti() {
+			return eventi;
+		}
+		
 		#endregion interfaccia ISelettore
 
 	}

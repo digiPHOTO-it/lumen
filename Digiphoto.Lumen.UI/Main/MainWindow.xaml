@@ -58,8 +58,8 @@
                     <TextBlock ToolTip="Gallery selezione" FontFamily="Courier New" FontSize="12" Background="Pink" MinWidth="50">
 						<TextBlock.Text>
                             <MultiBinding StringFormat="Selez: {0,3}/{1,4}">
-                                <Binding Path="fotoGalleryViewModel.countSelezionati" />
-                                <Binding Path="fotoGalleryViewModel.countTotali" />
+                                <Binding Path="fotoGalleryViewModel.countElementiSelezionati" />
+                                <Binding Path="fotoGalleryViewModel.countElementiTotali" />
 							</MultiBinding>
 						</TextBlock.Text>
 					</TextBlock>

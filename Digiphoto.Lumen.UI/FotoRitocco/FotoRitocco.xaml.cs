@@ -827,9 +827,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			ListBoxItem listBoxItem = SelectItemOnRightClick( e );
 			if( listBoxItem != null ) {
-                SelettoreAzioniRapideViewModel selettoreAzioniRapideViewModel = ((FotoRitoccoViewModel)viewModelBase).selettoreAzioniRapideViewModel;
-                selettoreAzioniRapideViewModel.ultimaFotoSelezionata = (Fotografia)listBoxItem.Content;
-                selettoreAzioniRapideViewModel.visibility = "SINGLE";
+
+				_viewModel.setModalitaSingolaFoto( (Fotografia)listBoxItem.Content );
+
                 // Questo mi evita di selezionare la foto quando clicco con il destro.
                 e.Handled = true;
 			}
