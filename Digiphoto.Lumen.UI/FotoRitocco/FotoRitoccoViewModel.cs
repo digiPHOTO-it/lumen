@@ -13,13 +13,10 @@ using System.Windows.Media.Effects;
 using Digiphoto.Lumen.Windows.Media.Effects;
 using System.Windows.Media;
 using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
-using Digiphoto.Lumen.UI.Adorners;
 using System.Windows;
-using System.Windows.Documents;
 using System.IO;
 using Digiphoto.Lumen.Config;
 using System.Windows.Media.Imaging;
-using System.Windows.Controls;
 using Digiphoto.Lumen.UI.Main;
 using System.Collections.ObjectModel;
 using Digiphoto.Lumen.Eventi;
@@ -30,15 +27,15 @@ using Digiphoto.Lumen.Servizi.Stampare;
 using Digiphoto.Lumen.Servizi.Io;
 using Digiphoto.Lumen.Imaging;
 using Digiphoto.Lumen.Imaging.Wic.Correzioni;
-using Digiphoto.Lumen.UI.SelettoreAzioniRapide;
 using Digiphoto.Lumen.UI.Dialogs;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Servizi.EntityRepository;
+using Digiphoto.Lumen.Core.Collections;
 
 namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 
-	public class FotoRitoccoViewModel : ViewModelBase, IObserver<Messaggio>, IAzzioniRapide {
+	public class FotoRitoccoViewModel : ViewModelBase, IObserver<Messaggio>, ISelettore<Fotografia> {
 
 		public delegate void EditorModeChangedEventHandler( object sender, EditorModeEventArgs args );
 		public event EditorModeChangedEventHandler editorModeChangedEvent;
@@ -59,7 +56,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 				fotografieDaModificare = new ObservableCollectionEx<Fotografia>();
 				fotografieDaModificareCW = new ListCollectionView( fotografieDaModificare );
-	//			selettoreAzioniRapideViewModel.fotografieCW = 
 				fotografieDaModificareCW.Filter += fdmViewFilter;
 
 				// Carico le maschere e mi setto in modalità fotoritocco
@@ -99,13 +95,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 
 #region Proprietà
-
-		//Non ho la selezione multipla nel foto ritocco
-		public MultiSelectCollectionView<Fotografia> fotografieCW {
-			get {
-				return null;
-			}
-		}
 
 		private Transform _trasformazioneCorrente;
 		public Transform trasformazioneCorrente {
@@ -197,7 +186,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		public bool possoModificareLaFoto {
 			get {
-				return modalitaEdit == ModalitaEdit.FotoRitocco && isAlmenoUnaFotoSelezionata;
+				return modalitaEdit == ModalitaEdit.FotoRitocco && isAlmenoUnElementoSelezionato;
 			}
 		}
 
@@ -210,17 +199,17 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		public bool possoApplicareCorrezione {
 			get {
-				return isAlmenoUnaFotoSelezionata;
+				return isAlmenoUnElementoSelezionato;
 			}
 		}
 
 		public bool possoTornareOriginale {
 			get {
-				return isAlmenoUnaFotoSelezionata;
+				return isAlmenoUnElementoSelezionato;
 			}
 		}
 
-		public bool isAlmenoUnaFotoSelezionata { 
+		public bool isAlmenoUnElementoSelezionato { 
 			get {
 				return fotografiaInModifica != null;
 			}
@@ -511,7 +500,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		{
 			get
 			{
-				return isAlmenoUnaFotoSelezionata;
+				return isAlmenoUnElementoSelezionato;
 			}
 		}
 
@@ -586,7 +575,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				return String.IsNullOrEmpty( Configurazione.UserConfigLumen.editorImmagini ) == false &&
 					   modalitaEdit == ModalitaEdit.FotoRitocco &&
 					   (!modificheInCorso) &&
-					   isAlmenoUnaFotoSelezionata;
+					   isAlmenoUnElementoSelezionato;
 			}
 		}
 
@@ -751,7 +740,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		public bool possoScegliereMaschera {
 			get {
-				return (modalitaEdit == ModalitaEdit.GestioneMaschere || isAlmenoUnaFotoSelezionata);
+				return (modalitaEdit == ModalitaEdit.GestioneMaschere || isAlmenoUnElementoSelezionato);
 			}
 		}
 
@@ -1011,12 +1000,34 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-#endregion Comandi
+		public int countElementiSelezionati {
+			get {
+				return fotografieDaModificareCW.CurrentItem != null ? 1 : 0;
+            }
+		}
+
+		public int countElementiTotali {
+			get {
+				return fotografieDaModificareCW.Count;
+            }
+		}
+
+		#endregion Comandi
 
 		// ******************************************************************************************************
 		// ******************************************************************************************************
 
-#region Metodi
+		#region Metodi
+
+		public void setModalitaSingolaFoto( Fotografia foto ) {
+
+			// Ho cliccato con il destro sulla singola foto.
+			// Memorizzo la foto per eventuali operazioni da lanciare
+			if( selettoreAzioniRapideViewModel.setSingolaFotoWorkCommand.CanExecute( foto ) )
+				selettoreAzioniRapideViewModel.setSingolaFotoWorkCommand.Execute( foto );
+			else
+				dialogProvider.ShowError( "comando setSingolaFotoWorkCommand non utilizzabile", "Stato invalido", null );
+		}
 
 		/// <summary>
 		/// La prima volta che inizio a toccare una foto,
@@ -2311,13 +2322,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			if( msg is NuovaFotoMsg )
 				gestisciNuovaFotoMsg( msg as NuovaFotoMsg );
 
-			if( msg is EliminateFotoMsg )
-				gestisciFotoEliminate( msg as EliminateFotoMsg );
+			if( msg is FotoEliminateMsg )
+				gestisciFotoEliminate( msg as FotoEliminateMsg );
 
 		}
 
 		// Sono state eliminate delle foto. Se per caso le avevo in modifica, le devo togliere
-		private void gestisciFotoEliminate( EliminateFotoMsg eliminateFotoMsg ) {
+		private void gestisciFotoEliminate( FotoEliminateMsg eliminateFotoMsg ) {
 			foreach( Fotografia ff in eliminateFotoMsg.listaFotoEliminate ) {
 				rifiutareCorrezioni( ff, true );
 				fotografieDaModificare.Remove( ff );
@@ -2426,7 +2437,40 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-#endregion Gestori Eventi
+		public void deselezionareTutto() {
+			// TODO
+		}
+
+		public void deselezionare( Fotografia foto ) {
+	// TODO
+		}
+
+		public IEnumerator<Fotografia> getEnumeratorElementiSelezionati() {
+			// TODO
+			return null;
+        }
+
+
+		public IEnumerable<Fotografia> getElementiSelezionati() {
+		// TODO	
+		return null;
+        }
+
+		public IEnumerator<Fotografia> getEnumeratorElementiTutti() {
+			// TODO 
+			return null;	
+		// return (IEnumerator<Fotografia>)fotografieCW.SourceCollection.AsQueryable().GetEnumerator();
+		}
+
+		public IEnumerable<Fotografia> getElementiTutti() {
+			// TODO
+			return null;	
+		
+		// foreach( var item in fotografieCW.SourceCollection )
+			//	yield return item as Fotografia;
+		}
+
+		#endregion Gestori Eventi
 
 	}
 }

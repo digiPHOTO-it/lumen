@@ -229,6 +229,7 @@
     </Compile>
     <Compile Include="src\Servizi\BarCode\BarCodeSrvImpl.cs" />
     <Compile Include="src\Servizi\BarCode\IBarCodeSrv.cs" />
+    <Compile Include="src\Servizi\EliminaFotoVecchie\FotoEliminateMsg.cs" />
     <Compile Include="src\Servizi\EntityRepository\AzioniAutoRepositorySrvImpl.cs" />
     <Compile Include="src\Servizi\EntityRepository\FotografieRepositorySrvImpl.cs" />
     <Compile Include="src\Servizi\EntityRepository\ScarichiCardsRepositorySrvImpl.cs" />
@@ -339,6 +340,7 @@
     <Compile Include="src\Threading\WorkerThreadBase.cs" />
     <Compile Include="src\Util\AiutanteFoto.cs" />
     <Compile Include="src\Licensing\LicenseUtil.cs" />
+    <Compile Include="src\Util\ExtensionMethods.cs" />
     <Compile Include="src\Util\FileUtil.cs" />
     <Compile Include="src\Util\CoreUtil.cs" />
     <Compile Include="src\Util\FormuleMagiche.cs" />

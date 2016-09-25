@@ -234,6 +234,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
             }
 		}
 
+		public void aggiungereStampe( Fotografia fotografia, Stampare.ParamStampa param ) {
+			Fotografia [] fotos = { fotografia };
+			aggiungereStampe( fotos, param );
+		}
 
 		/** 
 		 * Per ogni foto indicata, creo una nuova riga di carrello
@@ -557,11 +561,24 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			r.id = Guid.Empty;  // Lascio intenzionalmente vuoto. Lo valorizzo alla fine prima di salvare
 
 			// Riattacco un pò di roba altrimenti si incacchia
-			OrmUtil.forseAttacca<Fotografia>( ref fotografia );
-			FormatoCarta fc = param.formatoCarta;
-			OrmUtil.forseAttacca<FormatoCarta>( ref fc );
-			Fotografo fo = fotografia.fotografo;
-			OrmUtil.forseAttacca<Fotografo>( ref fo );
+			// A volte possono esserci degli errori durante il riattacco. Cerco di evitarli
+
+			try {
+				OrmUtil.forseAttacca<Fotografia>( ref fotografia );
+			} catch( Exception ) {
+			}
+
+			try {
+				FormatoCarta fc = param.formatoCarta;
+				OrmUtil.forseAttacca<FormatoCarta>( ref fc );
+			} catch( Exception ) {
+			}
+
+			try {
+				Fotografo fo = fotografia.fotografo;
+				OrmUtil.forseAttacca<Fotografo>( ref fo );
+			} catch( Exception ) {
+			}
 
 			r.fotografia = fotografia;
 			r.fotografo = fotografia.fotografo;
@@ -854,14 +871,21 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			r.id = Guid.Empty;  // Lascio intenzionalmente vuoto. Lo valorizzo alla fine prima di salvare
 			r.quantita = 1;
 			r.descrizione = "Foto masterizzata";
-			
-			// Riattacco un pò di roba altrimenti si incacchia
-			OrmUtil.forseAttacca<Fotografia>( ref fotografia );
-			Fotografo fo = fotografia.fotografo;
-			OrmUtil.forseAttacca<Fotografo>( ref fo );
 
+			// Riattacco un pò di roba altrimenti si incacchia
+			try {
+				OrmUtil.forseAttacca<Fotografia>( ref fotografia );
+			} catch( Exception ) {
+			}
 			r.fotografia = fotografia;
-			r.fotografo = fo;
+
+			try {
+				Fotografo fo = fotografia.fotografo;
+				OrmUtil.forseAttacca<Fotografo>( ref fo );
+				r.fotografo = fo;
+			} catch( Exception ) {
+				r.fotografo = fotografia.fotografo;
+			}
 
 			return r;
 		}

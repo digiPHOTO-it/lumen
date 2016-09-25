@@ -23,7 +23,7 @@ using Digiphoto.Lumen.UI.Dialogs.SelezionaStampante;
 using Digiphoto.Lumen.Servizi.Ritoccare;
 using Digiphoto.Lumen.UI.Util;
 using Digiphoto.Lumen.UI.Main;
-using Digiphoto.Lumen.Core.src.Eventi;
+using Digiphoto.Lumen.Core.Eventi;
 
 namespace Digiphoto.Lumen.UI {
 	public class CarrelloViewModel : ViewModelBase, IObserver<MasterizzaMsg>, IObserver<GestoreCarrelloMsg>, IObserver<StampatoMsg>, IObserver<FotoModificateMsg>, IObserver<RefreshMsg> {

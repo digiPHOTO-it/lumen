@@ -344,7 +344,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		/// <summary>
 		/// creo uno slide show Manuale, con le immagini indicate
 		/// </summary>
-		public void creaShow( IList<Fotografia> newSlides )  {
+		public void creaShow( IEnumerable<Fotografia> newSlides )  {
 
 			slideShow = new SlideShow( newSlides );
 			creaShow();

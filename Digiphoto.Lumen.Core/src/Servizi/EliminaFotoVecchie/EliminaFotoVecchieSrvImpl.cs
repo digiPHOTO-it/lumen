@@ -162,7 +162,7 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
 
 			if( test3 > 0 ) {
 				// Rilancio un messaggio in modo che tutta l'applicazione (e tutti i componenti) vengano notificati 
-				EliminateFotoMsg msg = new EliminateFotoMsg( this as IEliminaFotoVecchieSrv );
+				FotoEliminateMsg msg = new FotoEliminateMsg( this as IEliminaFotoVecchieSrv );
 				msg.listaFotoEliminate = fotosDaCanc;
 				pubblicaMessaggio( msg );
 			}

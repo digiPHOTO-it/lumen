@@ -21,45 +21,42 @@ using Digiphoto.Lumen.UI.Dialogs;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
 using Digiphoto.Lumen.Servizi.Ritoccare.Clona;
-using Digiphoto.Lumen.UI.SelettoreAzioniRapide;
-using Digiphoto.Lumen.Core.Collections;
 using Digiphoto.Lumen.Servizi.Scaricatore;
-using System.Collections;
-using Digiphoto.Lumen.Eventi;
-using Digiphoto.Lumen.Core.src.Eventi;
 using Digiphoto.Lumen.UI.Converters;
 using Digiphoto.Lumen.Servizi;
+using Digiphoto.Lumen.Core.Collections;
+using Digiphoto.Lumen.Eventi;
+using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
+using Digiphoto.Lumen.Core.Eventi;
 
 namespace Digiphoto.Lumen.UI {
 
 
 
-	public class FotoGalleryViewModel : ViewModelBase, IContenitoreGriglia, ISelettore<Fotografia>, 
-	                                    IObserver<FotoModificateMsg>, IObserver<NuovaFotoMsg>, IObserver<StampatoMsg>, IObserver<ClonaFotoMsg>, IObserver<GestoreCarrelloMsg>, IObserver<RefreshMsg>, IObserver<CambioStatoMsg>,
-										IAzzioniRapide
+	public class FotoGalleryViewModel : ViewModelBase, IContenitoreGriglia, ISelettore<Fotografia>,
+	                                    IObserver<FotoModificateMsg>, IObserver<NuovaFotoMsg>, IObserver<ClonaFotoMsg>, IObserver<GestoreCarrelloMsg>, IObserver<RefreshMsg>, IObserver<CambioStatoMsg>
+
 	{
+
+		#region Campi
+
 		private BackgroundWorker _bkgIdrata;
 
-		// Quando viene eseguito un comando che potenzialmente modifica la visuale della finestra pubblica, lo segnalo con un evento
-		public delegate void SnpashotCambiataEventHandler( object sender, EventArgs args );
-		public event SnpashotCambiataEventHandler snpashotCambiataEventHandler;
+		#endregion
 
 		public FotoGalleryViewModel() {
 
-			// Devo ascoltare sempre se qualche foto viene modificata
+			// Devo ascoltare tutti i messaggi applicativi che girano
 			IObservable<FotoModificateMsg> observableFM = LumenApplication.Instance.bus.Observe<FotoModificateMsg>();
 			observableFM.Subscribe( this );
 
-			IObservable<StampatoMsg> observableStampato = LumenApplication.Instance.bus.Observe<StampatoMsg>();
-			observableStampato.Subscribe(this);
-
 			IObservable<ClonaFotoMsg> observableClonaFoto = LumenApplication.Instance.bus.Observe<ClonaFotoMsg>();
-			observableClonaFoto.Subscribe(this);
+			observableClonaFoto.Subscribe( this );
 
-            IObservable<NuovaFotoMsg> observableNuovaFoto = LumenApplication.Instance.bus.Observe<NuovaFotoMsg>();
-            observableNuovaFoto.Subscribe(this);
+			IObservable<NuovaFotoMsg> observableNuovaFoto = LumenApplication.Instance.bus.Observe<NuovaFotoMsg>();
+			observableNuovaFoto.Subscribe( this );
 
-            IObservable<GestoreCarrelloMsg> observableGesCarrello = LumenApplication.Instance.bus.Observe<GestoreCarrelloMsg>();
+			IObservable<GestoreCarrelloMsg> observableGesCarrello = LumenApplication.Instance.bus.Observe<GestoreCarrelloMsg>();
 			observableGesCarrello.Subscribe( this );
 
 			IObservable<RefreshMsg> observableRefresh = LumenApplication.Instance.bus.Observe<RefreshMsg>();
@@ -67,6 +64,7 @@ namespace Digiphoto.Lumen.UI {
 
 			IObservable<CambioStatoMsg> observableCambioStato = LumenApplication.Instance.bus.Observe<CambioStatoMsg>();
 			observableCambioStato.Subscribe( this );
+
 
 			metadati = new MetadatiFoto();
 
@@ -77,7 +75,7 @@ namespace Digiphoto.Lumen.UI {
 
 			selettoreEventoMetadato = new SelettoreEventoViewModel();
 			selettoreFotografoViewModel = new SelettoreFotografoViewModel();
-			selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel(this);
+			selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel( this );
 
 
 			azzeraParamRicerca();       // Svuoto i parametri
@@ -106,23 +104,32 @@ namespace Digiphoto.Lumen.UI {
 			cambiarePaginazione( 2 );
         }
 
-		protected override void OnDispose() {
-
-			selettoreScaricoCardViewModel.scarichiCardsCW.SelectionChanged -= scarichiCardsCW_SelectionChanged;
-
-			base.OnDispose();
-		}
-
-		private void scarichiCardsCW_SelectionChanged( object sender, SelectionChangedEventArgs e ) {
-
-			// Se ho selezionato uno scarico card, azzero gli altri filtri.
-			if( selettoreScaricoCardViewModel.countSelezionati > 0 )
-				azzeraParamRicerca( true );
-			
-		}
 
 
 		#region Proprietà
+
+
+		public bool possoFiltrareSelezionate {
+
+			get {
+
+				// non ho neanche una foto nella gallery esco subito
+				if( isAlmenoUnaFoto == false )
+					return false;
+
+				// Ora sono posizionato su tutte, quindi mi chiedo se posso passare alle selezionate
+				if( modalitaFiltroSelez == ModalitaFiltroSelez.Tutte )
+					if( isAlmenoUnElementoSelezionato == false )
+						return false;
+
+				// if( soloSelez == true ) // Attualmente il pulsante E' premuto. Quindi sto vedendo solo le selezionate. Devo dire se posso premere per vedere tutto.
+				// posso sempre tornare in modalità : Tutte
+				return true;
+			}
+
+		}
+
+
 
 		private ModalitaFiltroSelez _modalitaFiltroSelez;
 		/// <summary>
@@ -152,7 +159,7 @@ namespace Digiphoto.Lumen.UI {
 
 		public int fotoAttualeRicerca {
 			get {
-				return countTotali <= 0 ? 0 : paramCercaFoto.paginazione.skip + paginazioneRisultatiGallery;
+				return countElementiTotali <= 0 ? 0 : paramCercaFoto.paginazione.skip + paginazioneRisultatiGallery;
 			}
 		}
 
@@ -269,20 +276,9 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 
-		public bool isAlmenoUnaSelezionata {
+		public bool isAlmenoUnElementoSelezionato {
 			get {
-
-				return countSelezionati > 0;
-				/*
-								bool result = fotografieCW != null && fotografieCW.SelectedItems != null && fotografieCW.SelectedItems.Count > 0;
-								if (!result && flagPosizionaSuSelezionate)
-									flagPosizionaSuSelezionate = false;
-
-								if (!result && flagFiltraSelezionate)
-									flagFiltraSelezionate = false;
-
-								return result;
-				*/
+				return countElementiSelezionati > 0;
 			}
 		}
 
@@ -297,7 +293,7 @@ namespace Digiphoto.Lumen.UI {
 			bool posso = false;
 			if( modoAutoManuale == "AddSelez" || modoAutoManuale == "ZeroPiuSelez" )
 				// Deve esserci almeno una foto selezionata
-				posso = countSelezionati > 0;
+				posso = countElementiSelezionati > 0;
 			else if( modoAutoManuale.Equals( "Tutte", StringComparison.CurrentCultureIgnoreCase ) ) {
 				// Qui basta che ho eseguito una ricerca qualsiasi
 				posso = isAlmenoUnaFoto;
@@ -335,7 +331,7 @@ namespace Digiphoto.Lumen.UI {
 
 				if( !IsInDesignMode ) {
 
-					if( posso && !isAlmenoUnaSelezionata )
+					if( posso && !isAlmenoUnElementoSelezionato )
 						posso = false;
 
 					// Verifico che non abbia fatto nel carrello operazioni di 
@@ -354,7 +350,7 @@ namespace Digiphoto.Lumen.UI {
 
 				if( !IsInDesignMode ) {
 
-					if( posso && !isAlmenoUnaSelezionata )
+					if( posso && !isAlmenoUnElementoSelezionato )
 						posso = false;
 
 					// Verifico che non abbia fatto nel carrello operazioni di 
@@ -370,20 +366,20 @@ namespace Digiphoto.Lumen.UI {
 
 		public bool possoApplicareMetadati {
 			get {
-				return isAlmenoUnaSelezionata;
+				return isAlmenoUnElementoSelezionato;
 			}
 		}
 
 		public bool possoMandareInModifica
 		{
 			get {
-				return isAlmenoUnaSelezionata;
+				return isAlmenoUnElementoSelezionato;
 			}
 		}
 		
 		public bool possoEliminareMetadati {
 			get {
-				return isAlmenoUnaSelezionata;
+				return isAlmenoUnElementoSelezionato;
 			}
 		}
 
@@ -501,7 +497,7 @@ namespace Digiphoto.Lumen.UI {
 
 		public bool possoDeselezionareTutto {
 			get {
-				return countSelezionati > 0;   // Se ho almeno una foto selezionata
+				return countElementiSelezionati > 0;   // Se ho almeno una foto selezionata
 			}
 		}
 
@@ -601,7 +597,7 @@ namespace Digiphoto.Lumen.UI {
 		/// Ritorno il totale delle foto selezionate comprese quelle che non sono al momento visibili
 		/// nella paginata attuale.
 		/// </summary>
-		public int countSelezionati {
+		public int countElementiSelezionati {
 			get {
 				return idsFotografieSelez == null ? 0 : idsFotografieSelez.Count();
             }
@@ -611,7 +607,7 @@ namespace Digiphoto.Lumen.UI {
 		/// Ritorno il totale delle foto estratte dalla ricerca
 		/// (non soltanto quelle che sono a video nella paginata corrente. Tutte quante)
 		/// </summary>
-		public int countTotali {
+		public int countElementiTotali {
 			get {
 				return totFotoRicerca;
 			}
@@ -627,7 +623,7 @@ namespace Digiphoto.Lumen.UI {
 				if( _totFotoRicerca != value ) {
 					_totFotoRicerca = value;
 					OnPropertyChanged( "totFotoRicerca" );
-					OnPropertyChanged( "countTotali" );
+					OnPropertyChanged( "countElementiTotali" );
 					OnPropertyChanged( "percentualePosizRicerca" );
                 }
 			}
@@ -822,34 +818,6 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		private bool possoFiltrareNumFotogramma( object numero ) {
-
-			if( isAlmenoUnaFoto == false )
-				return false;
-
-			return true;
-		}
-
-		public bool possoFiltrareSelezionate {
-
-			get {
-
-				// non ho neanche una foto nella gallery esco subito
-				if( isAlmenoUnaFoto == false )
-					return false;
-
-				// Ora sono posizionato su tutte, quindi mi chiedo se posso passare alle selezionate
-				if( modalitaFiltroSelez == ModalitaFiltroSelez.Tutte )
-					if( isAlmenoUnaSelezionata == false )
-						return false;
-
-				// if( soloSelez == true ) // Attualmente il pulsante E' premuto. Quindi sto vedendo solo le selezionate. Devo dire se posso premere per vedere tutto.
-				// posso sempre tornare in modalità : Tutte
-				return true;
-			}
-
-		}
-
 		private bool possoFiltrareTutte() {
 
 			// non ho neanche una foto nella gallery esco subito
@@ -906,25 +874,6 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-
-/*
-		private RelayCommand _screenShotPubblicaCommand;
-		public ICommand screenShotPubblicaCommand {
-			get {
-				if( _screenShotPubblicaCommand == null ) {
-					_screenShotPubblicaCommand = new RelayCommand( param => screenShotPubblica( param ) );
-				}
-				return _screenShotPubblicaCommand;
-			}
-		}
-
-
-		private void screenShotPubblica( object param ) {
-			FrameworkElement fwkElem = (FrameworkElement)param;
-			BitmapSource screenShot = SnapshotUtil.CreateBitmap( fwkElem, true );
-			windowPubblicaViewModel.screenShot = screenShot;
-		}
-*/
 		private RelayCommand _azzeraParamRicercaCommand;
 		public ICommand azzeraParamRicercaCommand {
 			get {
@@ -989,6 +938,39 @@ namespace Digiphoto.Lumen.UI {
 
 
 		#region Metodi
+
+		public void setModalitaSingolaFoto( Fotografia foto ) {
+
+			// Ho cliccato con il destro sulla singola foto.
+			// Memorizzo la foto per eventuali operazioni da lanciare
+			if( selettoreAzioniRapideViewModel.setSingolaFotoWorkCommand.CanExecute( foto ) )
+				selettoreAzioniRapideViewModel.setSingolaFotoWorkCommand.Execute( foto );
+			else
+				dialogProvider.ShowError( "comando non utilizzabile", "setSingolaFotoWorkCommand", null );
+		}
+
+		private bool possoFiltrareNumFotogramma( object numero ) {
+
+			if( isAlmenoUnaFoto == false )
+				return false;
+
+			return true;
+		}
+
+		protected override void OnDispose() {
+
+			selettoreScaricoCardViewModel.scarichiCardsCW.SelectionChanged -= scarichiCardsCW_SelectionChanged;
+
+			base.OnDispose();
+		}
+
+		private void scarichiCardsCW_SelectionChanged( object sender, SelectionChangedEventArgs e ) {
+
+			// Se ho selezionato uno scarico card, azzero gli altri filtri.
+			if( selettoreScaricoCardViewModel.countElementiSelezionati > 0 )
+				azzeraParamRicerca( true );
+
+		}
 
 		/// <summary>
 		/// Carico tutti i formati carta che sono abbinati alle stampanti installate
@@ -1132,10 +1114,38 @@ namespace Digiphoto.Lumen.UI {
 			return lista;
 		}
 
+		private IEnumerable<Fotografia> creaListaFotoTutte() {
+
+			List<Fotografia> lista = null;
+
+			using( IFotoExplorerSrv fotoExplorerSrv2 = LumenApplication.Instance.creaServizio<IFotoExplorerSrv>() ) {
+
+				// Devo rieseguire la query completa : tolto la paginazione
+				ParamCercaFoto paramTutti = paramCercaFoto.deepCopy();
+				paramTutti.paginazione = null;
+
+				fotoExplorerSrv2.cercaFoto( paramTutti );
+				lista = fotoExplorerSrv2.fotografie;
+			}
+
+			return lista;
+		}
+
 		public void deselezionareTutto() {
 			accendiSpegniTutto( false );
 		}
-		
+		 
+		public void deselezionare( Fotografia foto ) {
+
+			if( idsFotografieSelez != null && idsFotografieSelez.Contains( foto.id ) )
+				idsFotografieSelez.Remove( foto.id );
+
+			// Poi lavoro sulla collezione visuale della pagina
+			if( fotografieCW != null && fotografieCW.SelectedItems.Contains( foto ) )
+				fotografieCW.SelectedItems.Remove( foto );
+
+		}
+
 		private void selezionareTutto() {
 			accendiSpegniTutto( true );
 		}
@@ -1225,8 +1235,8 @@ namespace Digiphoto.Lumen.UI {
 		private void stampareProvini()
 		{
 			StampaProviniDialog d = new StampaProviniDialog();
-			d.totaleFotoSelezionate = countSelezionati;
-			d.totoleFotoGallery = countTotali;
+			d.totaleFotoSelezionate = countElementiSelezionati;
+			d.totoleFotoGallery = countElementiTotali;
 			bool? esito = d.ShowDialog();
 
 			if (esito == true)
@@ -1451,9 +1461,10 @@ namespace Digiphoto.Lumen.UI {
 		void fotografie_selezioneCambiata( object sender, SelectionChangedEventArgs e ) {
 
 			// Eventuali aggiunte
-			foreach( var fa in e.AddedItems )
+			foreach( var fa in e.AddedItems ) {
 				addSelezionata( fa as Fotografia );
-			
+			}
+						
 			// Eventuali rimozioni
 			foreach( var fr in e.RemovedItems )
 				removeSelezionata( fr as Fotografia );
@@ -1462,8 +1473,8 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		void raisePropertyChangeSelezionate() {
-			OnPropertyChanged( "isAlmenoUnaSelezionata" );
-			OnPropertyChanged( "countSelezionati" );
+			OnPropertyChanged( "isAlmenoUnElementoSelezionato" );
+			OnPropertyChanged( "countElementiSelezionati" );
 			OnPropertyChanged( "possoFiltrareSelezionate" );
 		}
 
@@ -1716,7 +1727,7 @@ throw new NotImplementedException( "TODO da rivedere");
 				idsFotografieSelez = new ObservableCollectionEx<Guid>();
 			else
 				idsFotografieSelez.Clear();
-			OnPropertyChanged( "countSelezionati" );
+			OnPropertyChanged( "countElementiSelezionati" );
         }
 
 		private void azzeraParamRicerca() {
@@ -1842,10 +1853,10 @@ throw new NotImplementedException( "TODO da rivedere");
 		{
 			bool procediPure = true;
 
-			if( countSelezionati <= 0 )
+			if( countElementiSelezionati <= 0 )
 				return false;
 
-			if (countSelezionati > 10)
+			if (countElementiSelezionati > 10)
 			{
 				procediPure = false;
 				StringBuilder msg = new StringBuilder("Attenzione: stai per far tornare Originale più di 10 Fotografie!!!");
@@ -1914,10 +1925,6 @@ throw new NotImplementedException( "TODO da rivedere");
 
 		#endregion Metodi
 
-		#region Gestori Eventi
-
-		#endregion
-
 		#region MemBus
 
 		public void OnCompleted()
@@ -1937,12 +1944,6 @@ throw new NotImplementedException( "TODO da rivedere");
 			OnPropertyChanged( "isPossibileModificareCarrello" );
 		}
 
-		public void OnNext(StampatoMsg value)
-		{
-			// TODO forse non serve più ascoltare questo messaggio.
-			//      Ora il messaggio lo ascolta il MainWindow per dare avviso all'utente
-		}
-
 		public void OnNext( FotoModificateMsg fmMsg ) {
 
 			bool almenoUna = false;
@@ -1950,7 +1951,7 @@ throw new NotImplementedException( "TODO da rivedere");
 			foreach( Fotografia modificata in fmMsg.fotos ) {
 
 				int pos = fotografieCW.IndexOf( modificata );
-				if( pos > 0 ) {
+				if( pos >= 0 ) {
 					almenoUna = true;
 					Fotografia f = (Fotografia)fotografieCW.GetItemAt( pos );
                     AiutanteFoto.disposeImmagini( f, IdrataTarget.Provino );
@@ -1990,7 +1991,24 @@ throw new NotImplementedException( "TODO da rivedere");
 			}
 		}
 
-        public void OnNext(NuovaFotoMsg value)
+		public void OnNext( FotoEliminateMsg msg ) {
+
+			if( this.fotografieCW != null ) {
+
+				// Conto se ci sono delle foto a video che sono state eliminate
+				// In tal caso rilancio la ricerca (per farle sparire)
+				Fotografia[] fotos = new Fotografia[this.fotografieCW.Count];
+				int ii = 0;
+				foreach( var foto in fotografieCW.SourceCollection )
+					fotos[ii++] = (Fotografia)foto;
+
+				int quanteFotoSonoVisualizzate = fotos.Intersect( msg.listaFotoEliminate ).Count();
+				if( quanteFotoSonoVisualizzate > 0 )
+					eseguireRicerca( false );
+			}
+		}
+
+		public void OnNext(NuovaFotoMsg value)
         {
             Fotografia fotoOrig = ricavaFotoByNumber(value.foto.numero);
             // ricreo la collection-view e notifico che è cambiato il risultato. Le immagini verranno caricate poi
@@ -2009,6 +2027,35 @@ throw new NotImplementedException( "TODO da rivedere");
 			if( csm.sender is SlideShowViewModel )
 				OnPropertyChanged( "isSlideShowRunning" );
 		}
+
+		public void OnNext( GestoreCarrelloMsg value ) {
+
+			if( value.fase == GestoreCarrelloMsg.Fase.CreatoNuovoCarrello ||
+				value.fase == GestoreCarrelloMsg.Fase.LoadCarrelloSalvato ) {
+
+				forseReidrataProvini();
+
+				OnPropertyChanged( "modoVendita" );
+				OnPropertyChanged( "isPossibileModificareCarrello" );
+			}
+
+			if( value.fase == GestoreCarrelloMsg.Fase.VisualizzareInGallery ) {
+
+				azzeraParamRicerca();
+
+				IEnumerable<Guid> tantiIds = fotoExplorerSrv.caricaFotoDalCarrello();
+				paramCercaFoto.idsFotografie = tantiIds.ToArray();
+
+				paramCercaFoto.evitareJoinEvento = true;
+
+				completaParametriRicerca();  // Mi serve true per eseguire anche la count dei risultati
+
+				eseguireRicerca( true );
+
+			}
+		}
+
+		#endregion MemBus
 
 		private void ricreaCollectionViewFoto( List<Fotografia> fotos ) {
 
@@ -2040,42 +2087,21 @@ throw new NotImplementedException( "TODO da rivedere");
 			}
 		}
 
-		
-
-		public void OnNext( GestoreCarrelloMsg value ) {
-			
-			if( value.fase == GestoreCarrelloMsg.Fase.CreatoNuovoCarrello ||
-				value.fase == GestoreCarrelloMsg.Fase.LoadCarrelloSalvato ) {
-
-				forseReidrataProvini();
-
-				OnPropertyChanged( "modoVendita" );
-				OnPropertyChanged( "isPossibileModificareCarrello" );
-			}
-
-			if( value.fase == GestoreCarrelloMsg.Fase.VisualizzareInGallery ) {
-
-				azzeraParamRicerca();
-
-				IEnumerable<Guid> tantiIds = fotoExplorerSrv.caricaFotoDalCarrello();
-				paramCercaFoto.idsFotografie = tantiIds.ToArray();
-
-				paramCercaFoto.evitareJoinEvento = true;
-
-				completaParametriRicerca();  // Mi serve true per eseguire anche la count dei risultati
-
-				eseguireRicerca( true );
-
-			}
-
-		}
-		
-		public IEnumerator<Fotografia> getEnumeratorSelezionati() {
-			return creaListaFotoSelezionate().GetEnumerator();
+		public IEnumerator<Fotografia> getEnumeratorElementiSelezionati() {
+			return getElementiSelezionati().GetEnumerator();
 		}
 
-		#endregion
+		public IEnumerator<Fotografia> getEnumeratorElementiTutti() {
+			return getElementiTutti().GetEnumerator();
+		}
 
+		public IEnumerable<Fotografia> getElementiSelezionati() {
+			return creaListaFotoSelezionate();
+		}
+
+		public IEnumerable<Fotografia> getElementiTutti() {
+			return creaListaFotoTutte();
+		}
 
 		/// <summary> 
 		/// Questaa inner-class mi serve per racchiudere tutte le info da salvare durante il cambio di modalità ModalitaFiltroSelez

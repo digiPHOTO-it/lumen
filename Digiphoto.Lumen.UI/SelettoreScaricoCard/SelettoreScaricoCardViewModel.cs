@@ -115,22 +115,6 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		public int countSelezionati {
-			get {
-				return this.scarichiCardsCW.SelectedItems.Count;
-			}
-		}
-
-		public int countTotali {
-			get {
-				return this.scarichiCardsCW == null ? 0 : this.scarichiCardsCW.Count;
-			}
-		}
-
-		public IEnumerator<ScaricoCard> getEnumeratorSelezionati() {
-			return this.scarichiCardsCW.SelectedItems.GetEnumerator();
-		}
-
 		#endregion
 
 
@@ -153,10 +137,49 @@ namespace Digiphoto.Lumen.UI {
 
 			}
 		}
-		
+
+		public int countElementiSelezionati {
+			get {
+				return this.scarichiCardsCW.SelectedItems.Count;
+			}
+		}
+
+		public int countElementiTotali {
+			get {
+				return this.scarichiCardsCW == null ? 0 : this.scarichiCardsCW.Count;
+			}
+		}
+
+		public bool isAlmenoUnElementoSelezionato {
+			get {
+				return countElementiSelezionati > 0;
+			}
+		}
+
 		public void deselezionareTutto() {
 			if( scarichiCardsCW != null )
 				scarichiCardsCW.deselezionaTutto();
 		}
+
+		public void deselezionare( ScaricoCard elem ) {
+	        scarichiCardsCW.SelectedItems.Clear();
+		}
+
+		public IEnumerator<ScaricoCard> getEnumeratorElementiSelezionati() {
+			return this.scarichiCardsCW.SelectedItems.GetEnumerator();
+		}
+
+		public IEnumerable<ScaricoCard> getElementiSelezionati() {
+			return scarichiCardsCW.SelectedItems;
+		}
+
+		public IEnumerator<ScaricoCard> getEnumeratorElementiTutti() {
+			return this.scarichiCards.GetEnumerator();
+		}
+
+		public IEnumerable<ScaricoCard> getElementiTutti() {
+			return scarichiCards;
+		}
+
 	}
 }

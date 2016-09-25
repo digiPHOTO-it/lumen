@@ -602,16 +602,21 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		/// <param name="e">evento di loaded</param>
 		private static void Window_Loaded_posizionaFinestraFullScreen( object sender, RoutedEventArgs e ) {
 
-			SlideShowWindow ssWindow = sender as SlideShowWindow;
+			if( sender is SlideShowWindow ) {
 
-			// Salvo il flag
-			bool savePos = ssWindow.posizionamentoInCorso;
-			ssWindow.posizionamentoInCorso = true;
+				SlideShowWindow ssWindow = sender as SlideShowWindow;
 
-			massimizzareFinestra( ssWindow );
+				// Salvo il flag
+				bool savePos = ssWindow.posizionamentoInCorso;
+				ssWindow.posizionamentoInCorso = true;
 
-			ssWindow.posizionamentoInCorso = savePos;
-        }
+				massimizzareFinestra( ssWindow );
+
+				ssWindow.posizionamentoInCorso = savePos;
+			} else
+				massimizzareFinestra( sender as Window );
+
+		}
 
 		public bool posizionaFinestraSlideShow() {
 
