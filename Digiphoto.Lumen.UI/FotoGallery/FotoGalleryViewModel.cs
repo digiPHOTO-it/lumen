@@ -75,7 +75,9 @@ namespace Digiphoto.Lumen.UI {
 
 			selettoreEventoMetadato = new SelettoreEventoViewModel();
 			selettoreFotografoViewModel = new SelettoreFotografoViewModel();
+
 			selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel( this );
+			selettoreAzioniRapideViewModel.gestitaSelezioneMultipla = true;
 
 
 			azzeraParamRicerca();       // Svuoto i parametri
@@ -889,7 +891,8 @@ namespace Digiphoto.Lumen.UI {
 			get {
 				if( _mandareInModificaCommand == null ) {
 					_mandareInModificaCommand = new RelayCommand( param => mandareInModifica(),
-																  param => possoMandareInModifica	);
+																  param => possoMandareInModifica,
+																  false	);
 				}
 				return _mandareInModificaCommand;
 			}

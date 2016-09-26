@@ -170,7 +170,7 @@
 
                 <!--Tutte le Selezionate-->
                 <MenuItem Header="Solo le Selezionate"
-                          Visibility="{Binding Path=visibility, Mode=OneWay, Converter={StaticResource listAzioniRapideVisibilityConverter}, ConverterParameter=MULTI}"
+                          Visibility="{Binding Path=gestitaSelezioneMultipla, Mode=OneWay, Converter={StaticResource boolVisibilityConverter}, ConverterParameter=MULTI}"
                           DataContext="{Binding}">
                       
                           <i:Interaction.Triggers>

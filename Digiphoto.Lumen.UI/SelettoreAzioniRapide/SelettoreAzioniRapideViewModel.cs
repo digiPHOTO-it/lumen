@@ -28,7 +28,7 @@ namespace Digiphoto.Lumen.UI {
 		Selezionate,
 		Tutte
 	}
-	
+
 
 	public class SelettoreAzioniRapideViewModel : ViewModelBase, IObserver<GestoreCarrelloMsg> {
 
@@ -55,7 +55,7 @@ namespace Digiphoto.Lumen.UI {
 			get;
 			private set;
 		}
-		
+
 		private bool _isTuttoBloccato;
 		public bool isTuttoBloccato {
 			get {
@@ -80,7 +80,9 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-
+		public bool gestitaSelezioneMultipla {
+			get; set;
+		}
 		
 		private bool _visualizzaEliminaFoto = true;
 		public bool visualizzaEliminaFoto {

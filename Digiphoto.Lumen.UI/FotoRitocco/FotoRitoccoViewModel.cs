@@ -2438,36 +2438,31 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		public void deselezionareTutto() {
-			// TODO
-		}
+			fotografiaInModifica = null;
+        }
 
 		public void deselezionare( Fotografia foto ) {
-	// TODO
+			if( foto.Equals( fotografiaInModifica ) )
+				fotografiaInModifica = null;
 		}
 
 		public IEnumerator<Fotografia> getEnumeratorElementiSelezionati() {
-			// TODO
-			return null;
+			return getElementiSelezionati().GetEnumerator();
         }
-
-
+		
 		public IEnumerable<Fotografia> getElementiSelezionati() {
-		// TODO	
-		return null;
+			if( fotografiaInModifica == null )
+				return new Fotografia[0];
+			else
+				return new Fotografia[] { fotografiaInModifica };
         }
 
 		public IEnumerator<Fotografia> getEnumeratorElementiTutti() {
-			// TODO 
-			return null;	
-		// return (IEnumerator<Fotografia>)fotografieCW.SourceCollection.AsQueryable().GetEnumerator();
+			return fotografieDaModificare.GetEnumerator();
 		}
 
 		public IEnumerable<Fotografia> getElementiTutti() {
-			// TODO
-			return null;	
-		
-		// foreach( var item in fotografieCW.SourceCollection )
-			//	yield return item as Fotografia;
+			return fotografieDaModificare;
 		}
 
 		#endregion Gestori Eventi
