@@ -822,16 +822,21 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 
-		private void listBoxImmaginiDaModificare_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
-		{
-
+		private void listBoxImmaginiDaModificare_PreviewMouseRightButtonDown( object sender, MouseButtonEventArgs e ) {
+		
+			// Se ci sono modifiche in corso, non permetto di modificare la selezione
+			if( _viewModel.modificheInCorso || _viewModel.modalitaEdit ==  ModalitaEdit.GestioneMaschere ) {
+				e.Handled = false;
+				return;
+			}
+			
 			ListBoxItem listBoxItem = SelectItemOnRightClick( e );
 			if( listBoxItem != null ) {
 
 				_viewModel.setModalitaSingolaFoto( (Fotografia)listBoxItem.Content );
 
                 // Questo mi evita di selezionare la foto quando clicco con il destro.
-                e.Handled = true;
+                // e.Handled = true;
 			}
 		}
 
@@ -1382,5 +1387,11 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		private void listBoxImmaginiDaModificare_ContextMenuOpening( object sender, ContextMenuEventArgs e ) {
+
+			// Se sto modificando, non permetto il tasto destro
+			if( _viewModel.modificheInCorso || _viewModel.modalitaEdit == ModalitaEdit.GestioneMaschere )
+				e.Handled = true;
+		}
 	}
 }
