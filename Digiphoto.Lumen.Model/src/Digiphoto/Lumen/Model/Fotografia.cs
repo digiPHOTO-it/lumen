@@ -75,11 +75,6 @@ namespace Digiphoto.Lumen.Model {
 			return errors;
 		}
 
-		public string faseDelGiornoString {
-			get {
-				return FaseDelGiornoUtil.valoreToString( faseDelGiorno );
-			}
-		}
 
 		public override bool Equals( object altro ) {
 			bool uguali = false;

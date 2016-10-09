@@ -39,8 +39,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		public delegate void EditorModeChangedEventHandler( object sender, EditorModeEventArgs args );
 		public event EditorModeChangedEventHandler editorModeChangedEvent;
+		public event SelezioneCambiataEventHandler selezioneCambiata;
 
-		
 		public FotoRitoccoViewModel() {
 
 			if( IsInDesignMode ) {

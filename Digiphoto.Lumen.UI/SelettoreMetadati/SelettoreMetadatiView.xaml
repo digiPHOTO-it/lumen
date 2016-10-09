@@ -7,6 +7,7 @@
 			 xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
 			 xmlns:lumMS="clr-namespace:Digiphoto.Lumen.UI.Mvvm.MultiSelect"
 			 xmlns:model="clr-namespace:Digiphoto.Lumen.Model;assembly=Digiphoto.Lumen.Model"
+             xmlns:cc="clr-namespace:Digiphoto.Lumen.Core.Collections;assembly=Digiphoto.Lumen.Core"
              mc:Ignorable="d" 
 			 x:Name="this"
              d:DesignHeight="180" d:DesignWidth="700"
@@ -26,35 +27,27 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0" Height="220">
+		<StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0" >
 
             <GroupBox>
                 <GroupBox.Header>
-                    <CheckBox x:Name="checkDidascalia" Content="Didascalia" IsChecked="{Binding isDidascaliaChecked, Mode=TwoWay}" Margin="2" Unchecked="checkDidascalia_Unchecked"  />
+                    <CheckBox x:Name="checkDidascalia" Content="Didascalia" IsChecked="{Binding Path=metadati.usoDidascalia, Mode=TwoWay}" Margin="2" Unchecked="checkDidascalia_Unchecked"  />
                 </GroupBox.Header>
                 <TextBox x:Name="didascalia" 
-						 Text="{Binding ElementName=LsImageGallery,Path=SelectedValue.didascalia, Mode=TwoWay}" 
-						 IsEnabled="{Binding DidascaliaEnabled}" 
+						 Text="{Binding Path=metadati.didascalia, Mode=TwoWay}" 
+						 IsEnabled="{Binding ElementName=checkDidascalia,Path=IsChecked}" 
 						 CharacterCasing="Upper" Margin="0,4,0,0"  MinWidth="150"
 						 />
             </GroupBox>
 
-            <ListBox x:Name="LsImageGallery"
-					 Height="10"
-					 SelectionMode="Extended" 
-					 lumMS:MultiSelect.IsEnabled="True" 
-					 ItemsSource="{Binding ElementName=this, Path=MyItemsSource}"
-					 Visibility="Collapsed">
-			</ListBox>
-
-			<GroupBox Height="90">
+            <GroupBox Height="90">
                 <GroupBox.Header>
-                    <CheckBox x:Name="checkBoxFasidelGiorno" Content="Fasi del Giorno" IsChecked="{Binding isFasidelGiornoChecked, Mode=TwoWay}" Margin="2" Unchecked="checkBoxFasidelGiorno_Unchecked" />
+                    <CheckBox x:Name="checkBoxFasidelGiorno" Content="Fasi del Giorno" IsChecked="{Binding Path=metadati.usoFaseDelGiorno, Mode=TwoWay}" Margin="2" Unchecked="checkBoxFasidelGiorno_Unchecked" />
                 </GroupBox.Header>
                 <ListBox x:Name="fasiDelGiorno" 
 						 ItemsSource="{Binding fasiDelGiorno}"
-                         SelectedItem="{Binding ElementName=LsImageGallery,Path=SelectedValue.faseDelGiorno,Converter={StaticResource fasiDelGiornoConverter}, Mode=TwoWay}" 
-						 IsEnabled="{Binding GiornataEnabled}" 
+                         SelectedItem="{Binding Path=metadati.faseDelGiorno, Mode=TwoWay}" 
+						 IsEnabled="{Binding ElementName=checkBoxFasidelGiorno, Path=IsChecked}" 
 						 ItemContainerStyle="{StaticResource ResourceKey=listBoxFasiStyle}"
 						 />
                 
@@ -66,26 +59,26 @@
 				  Margin="8,0,8,0" MinWidth="150" MaxWidth="450" Height="140" MaxHeight="150" >
             <GroupBox.Header>
                 <StackPanel Orientation="Vertical">
-                    <CheckBox x:Name="checkBoxEventi" Content="Eventi" IsChecked="{Binding isEventiChecked, Mode=TwoWay}" Margin="2"  Unchecked="checkBoxEventi_Unchecked" />
+                    <CheckBox x:Name="checkBoxEventi" Content="Eventi" IsChecked="{Binding Path=metadati.usoEvento, Mode=TwoWay}" Margin="2"  Unchecked="checkBoxEventi_Unchecked" />
                 </StackPanel>
 			</GroupBox.Header>
 			
             <lum:SelettoreEvento x:Name="selettoreEventoMetadatoName" 
-								 DataContext="{Binding Path=selettoreEventoMetadato, Mode=OneWay}" 
-								 MySelectedItem="{Binding ElementName=LsImageGallery, Path=SelectedValue.evento, Mode=OneWay}"
-								 IsEnabled="{Binding Path=DataContext.EventoEnabled, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
-								 possoCreare="True"				 
+								 DataContext="{Binding Path=selettoreEventoViewModel, Mode=OneWay}"
+								 IsEnabled="{Binding ElementName=checkBoxEventi, Path=IsChecked}" 
+								 possoCreare="True"	
+								 MySelectedItem="{Binding Path=eventoSelezionato,Mode=TwoWay}"
 								 ScrollViewer.CanContentScroll="true" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Hidden"
 								 />
         </GroupBox>
 		
         <StackPanel Grid.Row="0" Grid.Column="2"  Orientation="Vertical" Margin="10,0,0,0">
             <StackPanel Orientation="Horizontal">
-				<Label Content="N° Foto Selezionate" />
-				<Label Content="{Binding ElementName=this, Path=MyItemsSource.SelectedItems.Count}" />
-			</StackPanel>
-
-			<Separator />
+                <Button Content="L" Command="{Binding caricareStatoMetadatiCommand}" ToolTip="Carica i metadati in comune dalle foto selezionate."/>
+                <Label Content="Tot. selezionate:" />
+                <Label Content="{Binding Path=countFotografieSelezionate}" />
+            </StackPanel>
+            <Separator />
 
 			<!--Button Command="{Binding eliminareMetadatiCommand}" Style="{StaticResource styleButtonDelTag}" /-->
 			<!--Separator /-->

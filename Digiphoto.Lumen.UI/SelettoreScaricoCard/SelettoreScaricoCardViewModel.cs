@@ -106,6 +106,9 @@ namespace Digiphoto.Lumen.UI {
 		#region Comandi
 
 		private RelayCommand _refreshScarichiCardsCommand;
+
+		public event SelezioneCambiataEventHandler selezioneCambiata;
+
 		public ICommand refreshScarichiCardsCommand {
 			get {
 				if( _refreshScarichiCardsCommand == null ) {

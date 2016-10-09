@@ -35,12 +35,22 @@
 
 
         <Expander DockPanel.Dock="Top" Header="Metadati da imporre" IsExpanded="False" ExpandDirection="Down" HorizontalAlignment="Left" Padding="0,0,6,0"
-ScrollViewer.CanContentScroll="true" 
-ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Hidden"
->
-            <lum:SelettoreMetadati x:Name="selettoreMetadati" MyItemsSource="{Binding ElementName=this, Path=DataContext.fotografieCW}"
-								   IsEnabled="{Binding Path=MyItemsSource.isAlmenoUnElementoSelezionato}" Style="{StaticResource styleSelettoreMetadati}" 
-								   />
+		          ScrollViewer.CanContentScroll="true" Name="expanderMetadati"
+		          ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Expanded" >
+                    <i:InvokeCommandAction Command="{Binding Path=selettoreMetadatiViewModel.cambiareModalitaOperativaCommand}" CommandParameter="A" />
+                </i:EventTrigger>
+                <i:EventTrigger EventName="Collapsed" >
+                    <i:InvokeCommandAction Command="{Binding Path=selettoreMetadatiViewModel.cambiareModalitaOperativaCommand}" CommandParameter="P" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            
+			<DockPanel IsEnabled="{Binding Path=isAlmenoUnElementoSelezionato,Mode=OneWay}">
+                <lum:SelettoreMetadati x:Name="selettoreMetadati" Style="{StaticResource styleSelettoreMetadati}" />
+            </DockPanel>
+								   
         </Expander>
 
         <Expander DockPanel.Dock="Left" IsExpanded="False" ExpandDirection="Right" >
