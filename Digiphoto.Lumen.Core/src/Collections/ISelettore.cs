@@ -3,7 +3,14 @@ using System.Collections.Generic;
 
 namespace Digiphoto.Lumen.Core.Collections {
 
+
 	public interface ISelettore<T> {
+
+		/// <summary>
+		/// Questo evento mi indica che la selezione è cambiata
+		/// </summary>
+		event SelezioneCambiataEventHandler selezioneCambiata;
+		
 
 		/// <summary>
 		/// Serve per spegnere la selezione. L'elemento o gli elementi selezionati vengono spenti
@@ -42,6 +49,9 @@ namespace Digiphoto.Lumen.Core.Collections {
 		IEnumerator<T> getEnumeratorElementiSelezionati();
 		IEnumerable<T> getElementiSelezionati();
 
+
+
 		#endregion
 	}
+
 }

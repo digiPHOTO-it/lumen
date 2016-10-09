@@ -45,7 +45,11 @@ namespace Digiphoto.Lumen.UI {
         }
 
 		void fotoGallery_DataContextChanged( object sender, DependencyPropertyChangedEventArgs e ) {
+			
 			associaDialogProvider();
+			
+			// Associo i ViewModel dei componenti interni
+			this.selettoreMetadati.DataContext = this.fotoGalleryViewModel.selettoreMetadatiViewModel;
 		}
 
 		
@@ -397,5 +401,17 @@ namespace Digiphoto.Lumen.UI {
 					fotoGalleryViewModel.commandSpostarePaginazione.Execute( direzione );
 			}
 		}
+
+/*
+		private void expanderMetadati_Collapsed( object sender, RoutedEventArgs e ) {
+			// Quando chiudo l'expander, smetto di ascoltare gli eventi di selezione cambiata
+			this.fotoGalleryViewModel.selettoreMetadatiViewModel.cambiareModalitaOperativaCommand.Execute( "P" );
+        }
+
+		private void expanderMetadati_Expanded( object sender, RoutedEventArgs e ) {
+			// Quando apro l'expander, inizio ad ascoltare gli eventi di selezione cambiata
+			this.fotoGalleryViewModel.selettoreMetadatiViewModel.cambiareModalitaOperativaCommand.Execute( "A" );
+		}
+*/
 	}
 }

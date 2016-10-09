@@ -187,6 +187,9 @@ namespace Digiphoto.Lumen.UI {
 
 
 		private RelayCommand _rileggereFotografiCommand;
+
+		public event SelezioneCambiataEventHandler selezioneCambiata;
+
 		public ICommand rileggereFotografiCommand {
 			get {
 				if( _rileggereFotografiCommand == null ) {

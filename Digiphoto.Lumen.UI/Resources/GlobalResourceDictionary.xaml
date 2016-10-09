@@ -16,6 +16,7 @@
     <lumC:BoolIsNullConverter x:Key="boolIsNullConverter" />
     <lumC:StatoMasterizzazioneVisibilityConverter x:Key="statoMasterizzazioneVisibilityConverter" />
     <lumC:GrigliaImageConverter x:Key="grigliaImageConverter" />
+	<lumC:FasiDelGiornoConverter x:Key="fasiDelGiornoConverter" />
 
     <eff:GrayscaleEffect x:Key="grayscaleEffect" Factor="0.1" />
 
@@ -62,7 +63,7 @@
                                     <Binding Path="numero" />
                                     <Binding Path="giornata" />
                                     <Binding Path="fotografo.id" />
-                                    <Binding Path="faseDelGiornoString" />
+                                    <Binding Path="faseDelGiorno" Converter="{StaticResource fasiDelGiornoConverter}" />
                                     <Binding Path="didascalia" />
                                     <Binding Path="evento.descrizione" FallbackValue="" />
                                     <Binding Path="dataOraAcquisizione" />
@@ -209,8 +210,8 @@
 
 		<Style.Triggers>
 			<Trigger Property="IsEnabled" Value="False">
-				<Setter Property="Background" Value="DarkGray" />
-				<Setter Property="Opacity" Value="0.3" />
+				<Setter Property="Background" Value="Gray" />
+				<Setter Property="Opacity" Value="0.5" />
 			</Trigger>
 			<Trigger Property="IsEnabled" Value="True">
 				<Setter Property="BorderBrush" Value="Green" />

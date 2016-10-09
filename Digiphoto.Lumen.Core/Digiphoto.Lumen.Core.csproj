@@ -164,6 +164,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="src\Collections\ISelettore.cs" />
+    <Compile Include="src\Collections\SelezioneCambiataEventHandler.cs" />
     <Compile Include="src\Config\ConfigSerializer.cs" />
     <Compile Include="src\Config\LastUsedConfigSerializer.cs" />
     <Compile Include="src\Config\LastUsedConfigLumen.cs" />

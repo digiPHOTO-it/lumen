@@ -172,27 +172,37 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 						fotografia = UnitOfWorkScope.currentDbContext.Fotografie.Single( f2 => f2.id == f.id );
 					}
 
-					String didascaliaOld = fotografia.didascalia != null ? fotografia.didascalia : "empty";
-                    String faseDelGiornoOld =  fotografia.faseDelGiornoString != null ? fotografia.faseDelGiornoString : "empty";
-                    String eventoOld = fotografia.evento != null ? fotografia.evento.ToString() : "empty";
+#if DEBUG
+					String didascaliaNew = null;
+					if( metadati.usoDidascalia ) {
+						if( ! String.IsNullOrWhiteSpace( metadati.didascalia ) )
+							didascaliaNew = metadati.didascalia.TrimEnd().ToUpper();
+                    }
 
-                    String didascaliaNew = metadati.isDidascaliaEnabled ? metadati.didascaliaString : didascaliaOld;
-                    String faseDelGiornoNew = metadati.isFaseDelGiornoEnabled ? metadati.faseDelGiornoString : faseDelGiornoOld;
-                    String eventoNew = metadati.isEventoEnabled ? metadati.eventoString : eventoOld;
+					string strDidascaliaOld = fotografia.didascalia;
+					string strFaseDelGiornoOld = fotografia.faseDelGiorno == null ? "empty" : FaseDelGiornoUtil.valoreToString( fotografia.faseDelGiorno );
+					string strEventoOld = fotografia.evento == null ? "empty" : fotografia.evento.descrizione;
 
-                    StringBuilder msg = new StringBuilder();
-					msg.AppendFormat("Modificati metadati: {0} da: didascalia:{1} giornata:{2} evento:{3} in didascalia:{4} giornata:{5} evento:{6}",
-						fotografia.numero + " " + fotografia.nomeFile,
-                        didascaliaOld,
-                        faseDelGiornoOld,
-                        eventoOld,
-                        didascaliaNew,
-                        faseDelGiornoNew,
-                        eventoNew
-                        );
+					string strFaseDelGiornoNew = metadati.faseDelGiorno == null ? "empty" : metadati.faseDelGiorno.ToString();
+					string strEventoNew = metadati.evento == null ? "empty" : metadati.evento.descrizione;
+
+					String msg = String.Format( "Modificati metadati: {0} da: dida:{1} faseGG:{2} evento:{3} in dida:{4} faseGG:{5} evento:{6}",
+							fotografia.ToString(),
+							strDidascaliaOld,
+							strFaseDelGiornoOld,
+							strEventoOld,
+							didascaliaNew,
+							strFaseDelGiornoNew,
+							strEventoNew
+					);
+#endif
+
 					modificaMetadatiFotografie(fotografia, metadati);
 
-					_giornale.Info(msg);
+#if DEBUG
+					_giornale.Debug( msg );
+#endif
+
 				}
 
 				UnitOfWorkScope.currentDbContext.SaveChanges();
@@ -233,20 +243,18 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 
 			//Consento la modifica anche di valori nulli
 			//if( !String.IsNullOrWhiteSpace( metadati.didascalia ) )
-			if (metadati.isDidascaliaEnabled)
+			if (metadati.usoDidascalia)
             {
-                if (metadati.didascalia != null)
-                    foto.didascalia = metadati.didascalia.Trim();
+                if( String.IsNullOrWhiteSpace( metadati.didascalia ) )
+					foto.didascalia = null;
                 else
-                    foto.didascalia = null;
-            }
-				
-			else {
+					foto.didascalia = metadati.didascalia.Trim().ToUpper();  // pulisco spazi e converto in maiuscolo
+			} else {
 				if( forzaNullo )
 					foto.didascalia = null;
 			}
 
-			if(metadati.isFaseDelGiornoEnabled)
+			if(metadati.usoFaseDelGiorno)
             {
                 if (metadati.faseDelGiorno != null)
                     foto.faseDelGiorno = (short)metadati.faseDelGiorno;
@@ -259,7 +267,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 					foto.faseDelGiorno = null;
 			}
 
-			if( metadati.isEventoEnabled)
+			if( metadati.usoEvento)
 				foto.evento = metadati.evento;
 			else {
 				if( forzaNullo )

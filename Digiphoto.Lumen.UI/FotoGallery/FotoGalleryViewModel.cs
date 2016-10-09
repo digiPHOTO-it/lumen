@@ -66,8 +66,6 @@ namespace Digiphoto.Lumen.UI {
 			observableCambioStato.Subscribe( this );
 
 
-			metadati = new MetadatiFoto();
-
 			// Istanzio i ViewModel dei componenti di cui io sono composto
 			selettoreEventoViewModel = new SelettoreEventoViewModel();
 			selettoreScaricoCardViewModel = new SelettoreScaricoCardViewModel();
@@ -78,6 +76,8 @@ namespace Digiphoto.Lumen.UI {
 
 			selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel( this );
 			selettoreAzioniRapideViewModel.gestitaSelezioneMultipla = true;
+
+			selettoreMetadatiViewModel = new SelettoreMetadatiViewModel( this );
 
 
 			azzeraParamRicerca();       // Svuoto i parametri
@@ -437,6 +437,12 @@ namespace Digiphoto.Lumen.UI {
 			private set;
 		}
 
+		public SelettoreMetadatiViewModel selettoreMetadatiViewModel {
+			get;
+			private set;
+		}
+
+
 		public IList<StampanteAbbinata> stampantiAbbinate {
 			get;
 			private set;
@@ -583,10 +589,6 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		public MetadatiFoto metadati {
-			get;
-			private set;
-		}
 
 		public SelettoreAzioniRapideViewModel selettoreAzioniRapideViewModel
 		{
@@ -923,6 +925,9 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		private RelayCommand _riportaOriginaleFotoSelezionateCommand;
+
+		public event SelezioneCambiataEventHandler selezioneCambiata;
+
 		public ICommand riportaOriginaleFotoSelezionateCommand
 		{
 			get
@@ -1176,6 +1181,8 @@ namespace Digiphoto.Lumen.UI {
 					fotografieCW.deselezionaTutto();
 			}
 
+			// Avviso del cambio di selezione
+			raiseSelezioneCambiataEvent();
 		}
 
 		private void stampare( object objStampanteAbbinata ) {
@@ -1472,7 +1479,18 @@ namespace Digiphoto.Lumen.UI {
 			foreach( var fr in e.RemovedItems )
 				removeSelezionata( fr as Fotografia );
 
+			raiseSelezioneCambiataEvent();
+
 			raisePropertyChangeSelezionate();
+		}
+
+		/// <summary>
+		///   Avviso eventuali ascoltatori esterni
+		/// </summary>
+		private void raiseSelezioneCambiataEvent() {
+
+			if( selezioneCambiata != null )
+				selezioneCambiata( this, EventArgs.Empty );
 		}
 
 		void raisePropertyChangeSelezionate() {

@@ -6,6 +6,9 @@
         Title="SelettoreMetadatiDialog" Height="342" Width="644">
 	
     <Grid>
-		<lum:SelettoreMetadati x:Name="selettoreMetadati" MyItemsSource="{Binding ElementName=SelettoreMetadatiDialogName, Path=DataContext.fotografieCW, Mode=TwoWay}" />
+        <lum:SelettoreMetadati x:Name="selettoreMetadati" />
+<!--
+        MyItemsSource="{Binding ElementName=SelettoreMetadatiDialogName, Path=DataContext.fotografieCW, Mode=TwoWay}" 
+-->
 	</Grid>
 </Window>

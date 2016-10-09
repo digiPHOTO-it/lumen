@@ -23,10 +23,10 @@
 		</Setter>
 	</Style>
 	
-	<Style x:Key="styleButtonSaveTag" TargetType="Button">
+	<Style x:Key="styleButtonSaveTag" TargetType="Button" BasedOn="{StaticResource buttonBaseStyle}">
 		<Setter Property="Margin" Value="0,10,0,0" />
 		<Setter Property="Height" Value="40" />
-		<Setter Property="ToolTip" Value="Salva metadati fotografie selezionate" />
+		<Setter Property="ToolTip" Value="Applica i metadati alle fotografie selezionate" />
 
 		<Setter Property="Content">
 			<Setter.Value>

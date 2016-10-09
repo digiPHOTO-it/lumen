@@ -146,6 +146,9 @@ namespace Digiphoto.Lumen.UI {
 
 
 		private RelayCommand _refreshEventiCommand;
+
+		public event SelezioneCambiataEventHandler selezioneCambiata;
+
 		public ICommand refreshEventiCommand {
 			get {
 				if( _refreshEventiCommand == null ) {

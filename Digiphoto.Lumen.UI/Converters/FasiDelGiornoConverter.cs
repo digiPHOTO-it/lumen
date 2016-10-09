@@ -10,8 +10,8 @@ using Digiphoto.Lumen.Model;
 
 namespace Digiphoto.Lumen.UI.Converters {
 
-	public class FasiDelGiornoConverter : IValueConverter
-	{
+	public class FasiDelGiornoConverter : IValueConverter {
+
 		public object Convert( object value, Type targetType, object parameter, CultureInfo culture ) {
 			if (value != null)
 			{
