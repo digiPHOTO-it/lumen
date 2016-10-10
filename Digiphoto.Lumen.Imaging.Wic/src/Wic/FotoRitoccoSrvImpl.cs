@@ -197,11 +197,47 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			}
 		}
 
+
+		/// <summary>
+		/// Quando lavoro su di una collezione, devo essere ottimizzato per visualizzare la progressione del lavoro
+		/// </summary>
+		/// <param name="fotografie"></param>
+		public void tornaOriginale( IEnumerable<Fotografia> fotografie ) {
+			tornaOriginale( fotografie, true );
+		}
+
+		public void tornaOriginale( IEnumerable<Fotografia> fotografie, bool salvare ) {
+
+			foreach( Fotografia fotografia in fotografie ) {
+				
+				fotografia.correzioniXml = null;
+
+				// Rimuovo anche eventuale file su disco
+				string nomeFileRis = PathUtil.nomeCompletoRisultante( fotografia );
+				if( File.Exists( nomeFileRis ) )
+					File.Delete( nomeFileRis );
+
+				// Rilascio memoria
+				AiutanteFoto.disposeImmagini( fotografia, IdrataTarget.Tutte );
+
+				if( salvare ) {
+					Fotografia f = fotografia;
+					fotografieRepositorySrv.update( ref f, true );
+					fotografieRepositorySrv.saveChanges();  // Persisto nel db le modifiche
+				}
+			}
+
+			// Rifaccio tutti i provini in background
+			provinare( fotografie );
+		}
+
 		/// <summary>
 		/// Elimina tutte le Correzioni da una foto e quindi ricrea il provino
 		/// </summary>
 		public void tornaOriginale( Fotografia fotografia ) {
+			
 			tornaOriginale( fotografia, true );
+
 		}
 
 		/// <summary>
@@ -925,11 +961,23 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		public void provinare( IEnumerable<Fotografia> fotografie ) {
 
 			BackgroundWorker provinatore = new BackgroundWorker();
-			provinatore.WorkerReportsProgress = true;
+            provinatore.WorkerReportsProgress = true;
 			provinatore.WorkerSupportsCancellation = false;
+			provinatore.RunWorkerCompleted += Provinatore_RunWorkerCompleted;
 			provinatore.DoWork += provinatore_DoWork;  // Questo non viene eseguito nel thread della UI e quindi mi da problemi
 			provinatore.ProgressChanged += provinatore_ProgressChanged;
 			provinatore.RunWorkerAsync( fotografie );
+		}
+
+		private DateTime _cronoInizio;
+		private DateTime _cronoFine;
+
+        private void Provinatore_RunWorkerCompleted( object sender, RunWorkerCompletedEventArgs e ) {
+
+			_cronoFine = DateTime.Now;
+
+			var tempo = _cronoFine - _cronoInizio;
+			_giornale.Debug( "Crono = " + tempo.TotalSeconds );
 		}
 
 		void provinatore_ProgressChanged( object sender, ProgressChangedEventArgs e ) {
@@ -948,9 +996,16 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 				// Significa che l'ho idratata io in questo momento
 				AiutanteFoto.disposeImmagini( foto, IdrataTarget.Risultante );
 			}
+
+			// Avviso tutti che questa foto è cambiata
+			FotoModificateMsg msg = new FotoModificateMsg( this, foto );
+			pubblicaMessaggio( msg );
 		}
 
 		void provinatore_DoWork( object sender, DoWorkEventArgs e ) {
+
+			_cronoInizio = DateTime.Now;
+
 			BackgroundWorker worker = sender as BackgroundWorker;
 			IEnumerable<Fotografia> fotografie = (IEnumerable<Fotografia>) e.Argument;
 			
@@ -961,26 +1016,35 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			//   se imposto oltre 1000 sarebbe l'effetto più bello, ma ri rallenta di brutto. Su 100 foto si perdono 100 secondi (una enormità).
 			// per ora scelgo la strada di tenere un minimo per rinfrescale le foto
 			// Cmq non è un buon compromesso.
-			const int attesaPiccola = 250;
-			const int attesaGrande = 1500;
+			const int attesaPiccola = 100;
+			const int attesaGrande = 1000;
+			int perc;
 			int conta = 0;
+			int tot = fotografie.Count();
+			const int baseSoglia = 25;
+			int soglia = baseSoglia;
+			int attesa = 0;
 
 			foreach( Fotografia foto in fotografie ) {
 
-				// Eseguo il lavoro nel ReportProgess perché questo metodo viene eseguito nel thread della UI
-				worker.ReportProgress( 0, foto );
+				perc = (100 * (++conta)) / tot ;
 
-				// Avviso tutti che questa foto è cambiata
-				FotoModificateMsg msg = new FotoModificateMsg( this, foto );
-				pubblicaMessaggio( msg );
+				// Eseguo il lavoro nel ReportProgess perché questo metodo viene eseguito nel thread della UI
+				worker.ReportProgress( perc, foto );
 
 				// Devo dare respiro alla UI altrimenti non mi sente i click del mouse dell'utente
 				// e l'effetto sarebbe quello che NON lavora in background
-				if( 1 == 0 && ++conta >= 10 ) {
-					Thread.Sleep( attesaGrande );
-					conta = 0;
-				}  else
-					Thread.Sleep( attesaPiccola );
+				if( perc >= soglia ) {
+					// attesa = attesaGrande;
+					soglia += baseSoglia;
+				} else {
+					// attesa = attesaPiccola;
+				}
+					
+
+				if( attesa > 0 )
+					Thread.Sleep( attesa );
+				
 			}
 		}
 

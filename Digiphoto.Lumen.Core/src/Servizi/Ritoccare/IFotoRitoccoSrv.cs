@@ -37,6 +37,9 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 
 		void tornaOriginale( Fotografia fotografia, bool salvare );
 		void tornaOriginale( Fotografia fotografia );
+		void tornaOriginale( IEnumerable<Fotografia> fotografie );
+		void tornaOriginale( IEnumerable<Fotografia> fotografie, bool salvare );
+
 
 		/// <summary>
 		/// Se ho iniziato a correggere la foto, ma poi mi accorgo che il risultato non mi

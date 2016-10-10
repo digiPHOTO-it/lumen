@@ -49,7 +49,9 @@ namespace Digiphoto.Lumen.UI {
 			associaDialogProvider();
 			
 			// Associo i ViewModel dei componenti interni
-			this.selettoreMetadati.DataContext = this.fotoGalleryViewModel.selettoreMetadatiViewModel;
+			selettoreMetadati.DataContext = fotoGalleryViewModel.selettoreMetadatiViewModel;
+
+			selettoreAzioniAutomatiche.DataContext = fotoGalleryViewModel.selettoreAzioniAutomaticheViewModel;
 		}
 
 		

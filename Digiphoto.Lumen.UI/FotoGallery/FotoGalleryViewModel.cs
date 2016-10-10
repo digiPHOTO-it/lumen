@@ -79,6 +79,8 @@ namespace Digiphoto.Lumen.UI {
 
 			selettoreMetadatiViewModel = new SelettoreMetadatiViewModel1( this );
 
+			selettoreAzioniAutomaticheViewModel = new SelettoreAzioniAutomaticheViewModel( this );
+
 
 			azzeraParamRicerca();       // Svuoto i parametri
 			azzeraFotoSelez();          // creo la collezione vuota delle foto selezionate
@@ -438,6 +440,11 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		public SelettoreMetadatiViewModel selettoreMetadatiViewModel {
+			get;
+			private set;
+		}
+
+		public SelettoreAzioniAutomaticheViewModel selettoreAzioniAutomaticheViewModel {
 			get;
 			private set;
 		}
@@ -2000,8 +2007,10 @@ throw new NotImplementedException( "TODO da rivedere");
 				}
 			}
 
-			if( almenoUna )
+			if( almenoUna ) {
 				fotografieCW.Refresh();
+				// OnPropertyChanged( "fotografieCW" );
+			}
 		}
 
 		public void OnNext(ClonaFotoMsg value)
