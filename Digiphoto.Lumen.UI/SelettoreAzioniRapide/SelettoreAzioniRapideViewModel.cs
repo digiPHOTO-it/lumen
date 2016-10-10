@@ -472,16 +472,16 @@ namespace Digiphoto.Lumen.UI {
 				if( !chiedereConfermaPerProseguire( "Confermi torna originale" ) )
 					return;
 
-				// per ogni foto elimino le correzioni e ricreo il provino partendo dall'originale.
-				// Uso l'iteratore per essere più performante
-				IEnumerator<Fotografia> enumera = null;
-				if( targetMode == TargetMode.Selezionate )
-					enumera = fotografieSelector.getEnumeratorElementiSelezionati();
-				if( targetMode == TargetMode.Tutte )
-					enumera = fotografieSelector.getEnumeratorElementiTutti();
 
-				while( enumera.MoveNext() )
-					fotoRitoccoSrv.tornaOriginale( enumera.Current );
+				// Uso metodo specifico che lavora su tutta la collezione
+				IEnumerable<Fotografia> lista = null;
+
+				if( targetMode == TargetMode.Selezionate )
+					lista = fotografieSelector.getElementiSelezionati();
+				if( targetMode == TargetMode.Tutte )
+					lista = fotografieSelector.getElementiTutti();
+
+				fotoRitoccoSrv.tornaOriginale( lista );
 			}
 
 		}

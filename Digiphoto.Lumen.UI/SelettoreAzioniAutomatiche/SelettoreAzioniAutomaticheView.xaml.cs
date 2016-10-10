@@ -23,39 +23,16 @@ namespace Digiphoto.Lumen.UI
     /// </summary>
     public partial class SelettoreAzioniAutomatiche : UserControlBase
     {
-		public static readonly DependencyProperty MyItemsSourceProperty;
 
 		public SelettoreAzioniAutomatiche()
 		{
 			InitializeComponent();
-			this.DataContext = new SelettoreAzioniAutomaticheViewModel();
+
+			this.DataContextChanged += SelettoreAzioniAutomatiche_DataContextChanged;
 		}
 
-		static SelettoreAzioniAutomatiche()
-        {
-			SelettoreAzioniAutomatiche.MyItemsSourceProperty = DependencyProperty.Register("MyItemsSource",
-																			typeof(IEnumerable),
-																			typeof(SelettoreAzioniAutomatiche),
-																			new PropertyMetadata(new PropertyChangedCallback(MyItemSourcePropertyCallback)));
-        }
-
-        public IEnumerable MyItemsSource
-        {
-            get
-            {
-				return (IEnumerable)GetValue(SelettoreAzioniAutomatiche.MyItemsSourceProperty);
-            }
-
-            set
-            {
-				SetValue(SelettoreAzioniAutomatiche.MyItemsSourceProperty, value);
-            }
-        }
-
-		private static void MyItemSourcePropertyCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
-		{
-			var uc = d as SelettoreAzioniAutomatiche;
-			((SelettoreAzioniAutomaticheViewModel)uc.viewModelBase).fotografieMCW = e.NewValue as MultiSelectCollectionView<Fotografia>;
+		private void SelettoreAzioniAutomatiche_DataContextChanged( object sender, DependencyPropertyChangedEventArgs e ) {
+			associaDialogProvider();
 		}
-    }
+	}
 }

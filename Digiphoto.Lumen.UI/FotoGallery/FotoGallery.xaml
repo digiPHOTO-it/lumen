@@ -62,8 +62,8 @@
                 </TextBlock>
             </Expander.Header>
 
-            <lum:SelettoreAzioniAutomatiche x:Name="selettoreAzioniAutomatiche" MyItemsSource="{Binding ElementName=this, Path=DataContext.fotografieCW}"
-                                                IsEnabled="{Binding Path=MyItemsSource.isAlmenoUnElementoSelezionato}" Style="{StaticResource styleSelettoreAzioniAutomatiche}"/>
+            <lum:SelettoreAzioniAutomatiche x:Name="selettoreAzioniAutomatiche" Style="{StaticResource styleSelettoreAzioniAutomatiche}"
+			                                IsEnabled="{Binding Path=isAlmenoUnElementoSelezionato,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
         </Expander>
 
         <ToolBarTray Name="toolBarTrayAzioniDx"  Orientation="Vertical" DockPanel.Dock="Right" Style="{StaticResource fgToolBarTrayStyle}">

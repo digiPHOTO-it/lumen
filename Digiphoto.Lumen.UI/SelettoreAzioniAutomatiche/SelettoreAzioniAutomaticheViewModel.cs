@@ -17,15 +17,18 @@ using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Servizi.Ritoccare;
 using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
 using Digiphoto.Lumen.UI.Dialogs;
+using Digiphoto.Lumen.Core.Collections;
 
 namespace Digiphoto.Lumen.UI
 {
     public class SelettoreAzioniAutomaticheViewModel : ViewModelBase, IObserver<EntityCambiataMsg>
     {
 
-		public SelettoreAzioniAutomaticheViewModel()
-		{
+		public SelettoreAzioniAutomaticheViewModel( ISelettore<Fotografia> fotografieSelector )
+        {
 			this.DisplayName = "Selettore Azioni Automatiche";
+
+			this.fotografieSelector = fotografieSelector;
 
 			// istanzio la lista vuota
 			azioniAutomatiche = new ObservableCollection<AzioneAuto>();
@@ -38,39 +41,8 @@ namespace Digiphoto.Lumen.UI
 
 		#region Proprietà
 
-		/// <summary>
-		///  Uso questa particolare collectionView perché voglio tenere traccia nel ViewModel degli N-elementi selezionati.
-		///  Sottolineo N perché non c'è supporto nativo per questo. Vedere README.txt nel package di questa classe.
-		/// </summary>
-		private MultiSelectCollectionView<Fotografia> _fotografieMCW;
-		public MultiSelectCollectionView<Fotografia> fotografieMCW
-		{
-			get
-			{
-				return _fotografieMCW;
-			}
-			set
-			{
-				if (_fotografieMCW != value)
-				{
-					_fotografieMCW = value;
-					OnPropertyChanged("fotografieMCW");
-				}
-			}
-		}
+		public ISelettore<Fotografia> fotografieSelector;
 
-		public IList<Fotografia> fotografieCW
-		{
-			get
-			{
-				if (fotografieMCW != null)
-				{
-					return fotografieMCW.SelectedItems.ToList<Fotografia>();
-				}
-
-				return null;
-			}
-		}
 
 		/// <summary>
 		/// Tutti i formatiCarta da visualizzare
@@ -166,12 +138,12 @@ namespace Digiphoto.Lumen.UI
 				const int max = 3;
 				bool conferma = false;
 
-				if( fotografieCW.Count <= max )
+				if( fotografieSelector.countElementiSelezionati <= max )
 					conferma = true;
 				else {
 					dialogProvider.ShowConfirmation( "Sei sicuro di voler applicare questa Azione Automatica? \n\n(" +
 						azioneAutomaticaSelezionata.nome +
-						")\n\nn° " + fotografieCW.Count +
+						")\n\nn° " + fotografieSelector.countElementiSelezionati +
 						" foto", "Elimina",
 						( confermato ) => {
 							conferma = confermato;
@@ -183,7 +155,7 @@ namespace Digiphoto.Lumen.UI
 					return;
 				}
 
-				fotoRitoccoSrv.applicareAzioneAutomatica(fotografieCW, azioneAutomaticaSelezionata);
+				fotoRitoccoSrv.applicareAzioneAutomatica( fotografieSelector.getElementiSelezionati(), azioneAutomaticaSelezionata );
 			}
 		}
 
@@ -241,10 +213,7 @@ namespace Digiphoto.Lumen.UI
 		{
 			get
 			{
-				bool result = fotografieCW != null 
-					&& fotografieCW.Count > 0;
-
-				return result;
+				return fotografieSelector.isAlmenoUnElementoSelezionato;
 			}
 		}
 		#endregion 
