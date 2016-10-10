@@ -77,7 +77,7 @@ namespace Digiphoto.Lumen.UI {
 			selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel( this );
 			selettoreAzioniRapideViewModel.gestitaSelezioneMultipla = true;
 
-			selettoreMetadatiViewModel = new SelettoreMetadatiViewModel( this );
+			selettoreMetadatiViewModel = new SelettoreMetadatiViewModel1( this );
 
 
 			azzeraParamRicerca();       // Svuoto i parametri

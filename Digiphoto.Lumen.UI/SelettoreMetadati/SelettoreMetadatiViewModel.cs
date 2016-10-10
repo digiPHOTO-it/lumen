@@ -11,14 +11,12 @@ using System.Windows;
 using Digiphoto.Lumen.Core.Collections;
 using Digiphoto.Lumen.Servizi.EntityRepository;
 
-namespace Digiphoto.Lumen.UI
-{
-	public class SelettoreMetadatiViewModel : ViewModelBase
-	{
-		public SelettoreMetadatiViewModel( ISelettore<Fotografia> fotografieSelector )
-		{
-			this.fotografieSelector = fotografieSelector;
-			
+namespace Digiphoto.Lumen.UI {
+
+	public abstract class SelettoreMetadatiViewModel : ViewModelBase {
+
+		public SelettoreMetadatiViewModel() {
+
 			// Questo è l'oggetto che contiene le proprietà che vado ad editare
 			metadati = new MetadatiFoto();
 
@@ -27,50 +25,30 @@ namespace Digiphoto.Lumen.UI
 		}
 
 
-		/// <summary>
-		/// Io avrei voluto bindare nella view il componente che visualizza il numero delle foto selezionate, direttamente a "fotografieSelector.countElementiSelezionati".
-		/// Ma questo non è possibile, perché fotografieSelector è un interfaccia.
-		/// Pare che non si possono bindare le interfacce (se non con strani artifici incomprensibili).
-		/// Allora ho optato per gestire un evento nella interfaccia di selezione cambiata. Quando la gallery mi solleva l'evento, allora
-		/// rilancio a mia volta il change di una property locale.
-		/// E' un pò esagerata come cosa, ma non ho trovato altro modo.
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void FotografieSelector_selezioneCambiata( object sender, EventArgs e ) {
+		#region Astratti
 
-			// Sistemo le spille
-			caricareStatoMetadatiCommand.Execute( null );
+		protected abstract IEnumerable<Fotografia> getElementiSelezionati();
 
-			OnPropertyChanged( "countFotografieSelezionate" );
-		}
+		protected abstract IEnumerator<Fotografia> getEnumeratorElementiSelezionati();
 
-		#region Servizi
-
-		IFotoExplorerSrv fotoExplorerSrv
-		{
-			get
-			{
-				return LumenApplication.Instance.getServizioAvviato<IFotoExplorerSrv>();
-			}
-		}
-
-		#endregion
-		
-		#region Proprieta
-
-
-		private ISelettore<Fotografia> fotografieSelector {
-			set;
+		public abstract int countFotografieSelezionate {
 			get;
 		}
+
+		public abstract bool isAlmenoUnaFotoSelezionata {
+			get;
+		}
+
+		#endregion Astratti
+
+
+		#region Proprieta
 
 		/// <summary>
 		/// In questa proprietà ci sono i 3 valori che l'utente può modificare con anche i flag per dire queli sono interessati
 		/// </summary>
 		private MetadatiFoto _metadati;
-		public MetadatiFoto metadati
-		{
+		public MetadatiFoto metadati {
 			get {
 				return _metadati;
 			}
@@ -82,33 +60,25 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
-		public FaseDelGiorno[] fasiDelGiorno
-		{
-			get
-			{
+		public FaseDelGiorno[] fasiDelGiorno {
+			get {
 				return FaseDelGiornoUtil.fasiDelGiorno;
 			}
 		}
 
-		public SelettoreEventoViewModel selettoreEventoViewModel
-		{
+		public SelettoreEventoViewModel selettoreEventoViewModel {
 			get;
 			private set;
 		}
 
-
 		private bool _faseDelgiornoEnabled;
-		public bool FaseDelGiornoEnabled
-		{
-			get
-			{
+		public bool FaseDelGiornoEnabled {
+			get {
 				return _faseDelgiornoEnabled;
 			}
 
-			set
-			{
-				if (_faseDelgiornoEnabled != value)
-				{
+			set {
+				if( _faseDelgiornoEnabled != value ) {
 					_faseDelgiornoEnabled = value;
 					OnPropertyChanged( "FaseDelGiornoEnabled" );
 				}
@@ -116,54 +86,29 @@ namespace Digiphoto.Lumen.UI
 		}
 
 		private bool _eventoEnabled;
-		public bool EventoEnabled
-		{
-			get
-			{
+		public bool EventoEnabled {
+			get {
 				return _eventoEnabled;
 			}
 
-			set
-			{
-				if (_eventoEnabled != value)
-				{
+			set {
+				if( _eventoEnabled != value ) {
 					_eventoEnabled = value;
-					OnPropertyChanged("EventoEnabled");
-
-#if NONCAPISCO
-					foreach (Fotografia fot in fotografieCW)
-					{
-						if (fot.evento != null)
-						{
-							//Serve a selezzionare l'evento dal menu rapido
-							selettoreEventoViewModel.eventoSelezionato = fot.evento;
-						}
-					}
-#endif
+					OnPropertyChanged( "EventoEnabled" );
 				}
 			}
 		}
 
-		public bool possoCaricareStatoMetadati { 
+		IFotoExplorerSrv fotoExplorerSrv {
 			get {
-				return true;
+				return LumenApplication.Instance.getServizioAvviato<IFotoExplorerSrv>();
 			}
 		}
 
-		public int countFotografieSelezionate {
+		public bool possoCaricareStatoMetadati {
 			get {
-				return fotografieSelector.countElementiSelezionati;
-            }
-		}
-
-		#endregion
-
-		#region Controlli
-
-		public bool isAlmenoUnaFotoSelezionata {
-			get {
-				return fotografieSelector.isAlmenoUnElementoSelezionato;
-            }
+				return true;
+			}
 		}
 
 		/// <summary>
@@ -171,30 +116,27 @@ namespace Digiphoto.Lumen.UI
 		/// allora posso applicare.
 		/// Amche se il dato da imporre è vuoto, va bene lo stesso, perché signigica che voglio eliminare la didascalia.
 		/// </summary>
-		public bool possoApplicareMetadati
-		{
-			get
-			{
-				return     isAlmenoUnaFotoSelezionata 
-				        && metadati != null 
+		public bool possoApplicareMetadati {
+			get {
+				return isAlmenoUnaFotoSelezionata
+						&& metadati != null
 						&& metadati.isAlmenoUnoUsato;
 			}
 		}
 
-		public bool possoEliminareMetadati
-		{
-			get
-			{
+		public bool possoEliminareMetadati {
+			get {
 				return possoApplicareMetadati;
 			}
 		}
 
-        #endregion Controlli
+		#endregion Proprieta
 
-        #region Metodi
 
-        void applicareMetadati()
-		{
+		#region Metodi
+
+		protected virtual void applicareMetadati() {
+
 			// Questo attributo, non riesco a puntarlo direttamente nei metadati, ma risiede nel vm del suo componente.
 			// Lo copio qui adesso.
 			metadati.evento = selettoreEventoViewModel.eventoSelezionato;
@@ -202,88 +144,70 @@ namespace Digiphoto.Lumen.UI
 
 			// Ricavo l'Evento dall'apposito componente di selezione.
 			// Tutti gli altri attributi sono bindati direttamente sulla struttura MetadatiFoto.
-			if (fotoExplorerSrv.modificaMetadatiFotografie( fotografieSelector.getElementiSelezionati(), metadati))
-			{
-				dialogProvider.ShowMessage("Metadati Modificati correttamente","AVVISO");
-			}
-			else
-			{
-				dialogProvider.ShowError("Errore modifica metadati", "ERRORE",null);
+			if( fotoExplorerSrv.modificaMetadatiFotografie( getElementiSelezionati(), metadati ) ) {
+				dialogProvider.ShowMessage( "Metadati Modificati correttamente", "AVVISO" );
+			} else {
+				dialogProvider.ShowError( "Errore modifica metadati", "ERRORE", null );
 			}
 
-			MetadatiMsg msg = new MetadatiMsg(this);
+			MetadatiMsg msg = new MetadatiMsg( this );
 			msg.fase = Fase.Completata;
-			LumenApplication.Instance.bus.Publish(msg);
+			LumenApplication.Instance.bus.Publish( msg );
 
 			// Svuoto ora i metadati per prossime elaborazioni
 			metadati = new MetadatiFoto();
-
-            deselezionareTutto();
 		}
 
-		void eliminareMetadati()
-		{
+
+
+		protected virtual void eliminareMetadati() {
 			bool procediPure = false;
 
-            String metadatiToDelete = "";
-            //Verifico quali metadati devono essere eliminati
-            if (metadati.usoDidascalia)
-            {
-                metadati.didascalia = null;
-                metadatiToDelete += "\nDidascalia";
-            }
+			String metadatiToDelete = "";
+			//Verifico quali metadati devono essere eliminati
+			if( metadati.usoDidascalia ) {
+				metadati.didascalia = null;
+				metadatiToDelete += "\nDidascalia";
+			}
 
-            if (metadati.usoEvento)
-            {
-                metadati.evento = null;
-                metadatiToDelete += "\nEvento";
-            }
+			if( metadati.usoEvento ) {
+				metadati.evento = null;
+				metadatiToDelete += "\nEvento";
+			}
 
-            if (metadati.usoFaseDelGiorno)
-            {
-                metadati.faseDelGiorno = null;
-                metadatiToDelete += "\nFase del Giorno";
-            }
+			if( metadati.usoFaseDelGiorno ) {
+				metadati.faseDelGiorno = null;
+				metadatiToDelete += "\nFase del Giorno";
+			}
 
-            dialogProvider.ShowConfirmation("Sei sicuro di voler eliminare i seguenti metadati"+ metadatiToDelete+"\ndelle " + fotografieSelector.countElementiSelezionati + " fotografie selezionate?", "Eliminazione metadati",
-								  (confermato) =>
-								  {
+			dialogProvider.ShowConfirmation( "Sei sicuro di voler eliminare i seguenti metadati" + metadatiToDelete + "\ndelle " + countFotografieSelezionate + " fotografie selezionate?", "Eliminazione metadati",
+								  ( confermato ) => {
 									  procediPure = confermato;
-								  });
+								  } );
 
-			if (!procediPure)
+			if( !procediPure )
 				return;
 
-			if(fotoExplorerSrv.modificaMetadatiFotografie(fotografieSelector.getElementiSelezionati(), metadati))
-			{
-				dialogProvider.ShowMessage("Metadati Modificati correttamente", "AVVISO");
+			if( fotoExplorerSrv.modificaMetadatiFotografie( getElementiSelezionati(), metadati ) ) {
+				dialogProvider.ShowMessage( "Metadati Modificati correttamente", "AVVISO" );
+			} else {
+				dialogProvider.ShowError( "Errore modifica metadati", "ERRORE", null );
 			}
-            else
-            {
-                dialogProvider.ShowError("Errore modifica metadati", "ERRORE", null);
-            }
 
-            // Svuoto ora i metadati
-            metadati = new MetadatiFoto();
+			// Svuoto ora i metadati
+			metadati = new MetadatiFoto();
 
 			//dialogProvider.ShowMessage("Eliminati i metadati delle " + selettoreMetadatiView.FotografiaCWP.SelectedItems.Count + " fotografie selezionate!", "Operazione eseguita");
-			MetadatiMsg msg = new MetadatiMsg(this);
+			MetadatiMsg msg = new MetadatiMsg( this );
 			msg.fase = Fase.Completata;
-			LumenApplication.Instance.bus.Publish(msg);
-
-            deselezionareTutto();
+			LumenApplication.Instance.bus.Publish( msg );
 		}
 
-
-		private void deselezionareTutto()
-		{
-			fotografieSelector.deselezionareTutto();
-		}
 
 		/// <summary>
 		/// Carico lo stato dei metadati prendendolo dalle foto selezionate
 		/// </summary>
-		private void caricareStatoMetadati() {
+		protected void caricareStatoMetadati() {
 
 			bool didascalieDiscordanti = false;
 			string didascaliaNew = null;
@@ -293,9 +217,9 @@ namespace Digiphoto.Lumen.UI
 			Evento eventoNew = null;
 
 			bool fasiDelGiornoDiscordanti = false;
-            short? faseDelGiornoNew = null;
+			short? faseDelGiornoNew = null;
 
-			IEnumerator<Fotografia> itera = fotografieSelector.getEnumeratorElementiSelezionati();
+			IEnumerator<Fotografia> itera = getEnumeratorElementiSelezionati();
 			int conta = 0;
 			while( itera.MoveNext() ) {
 
@@ -351,7 +275,7 @@ namespace Digiphoto.Lumen.UI
 				metadatiNew.didascalia = String.IsNullOrWhiteSpace( didascaliaNew ) ? null : didascaliaNew;
 				metadatiNew.usoDidascalia = (metadatiNew.didascalia != null);
 			}
-			
+
 			if( eventiDiscordanti ) {
 				metadatiNew.evento = null;
 				metadatiNew.usoEvento = false;
@@ -381,60 +305,27 @@ namespace Digiphoto.Lumen.UI
 			this.metadati = metadatiNew;
 		}
 
-		void cambiareModalitaOperativa( string modo ) {
-			if( modo == "A" )
-				attiavazione();
-			if( modo == "P" )
-				passivazione();
-		}
-
-		/// <summary>
-		/// Inizio ad ascoltare gli eventi di selezione cambiata
-		/// </summary>
-		public void attiavazione() {
-
-			caricareStatoMetadati();
-			OnPropertyChanged( "countFotografieSelezionate" );
-
-			fotografieSelector.selezioneCambiata += FotografieSelector_selezioneCambiata;
-		}
-
-		/// <summary>
-		/// Smetto di ascoltare gli eventi di selezione cambiata
-		/// </summary>
-		public void passivazione() {
-			fotografieSelector.selezioneCambiata -= FotografieSelector_selezioneCambiata;
-		}
-
-
-
-		#endregion
+		#endregion Metodi
 
 		#region Comandi
 
 		private RelayCommand _applicareMetadatiCommand;
-		public ICommand applicareMetadatiCommand
-		{
-			get
-			{
-				if (_applicareMetadatiCommand == null)
-				{
-					_applicareMetadatiCommand = new RelayCommand(p => applicareMetadati(),
-																  p => possoApplicareMetadati, false);
+		public ICommand applicareMetadatiCommand {
+			get {
+				if( _applicareMetadatiCommand == null ) {
+					_applicareMetadatiCommand = new RelayCommand( p => applicareMetadati(),
+																  p => possoApplicareMetadati, false );
 				}
 				return _applicareMetadatiCommand;
 			}
 		}
 
 		private RelayCommand _eliminareMetadatiCommand;
-		public ICommand eliminareMetadatiCommand
-		{
-			get
-			{
-				if (_eliminareMetadatiCommand == null)
-				{
-					_eliminareMetadatiCommand = new RelayCommand(p => eliminareMetadati(),
-																  p => possoEliminareMetadati, false);
+		public ICommand eliminareMetadatiCommand {
+			get {
+				if( _eliminareMetadatiCommand == null ) {
+					_eliminareMetadatiCommand = new RelayCommand( p => eliminareMetadati(),
+																  p => possoEliminareMetadati, false );
 				}
 				return _eliminareMetadatiCommand;
 			}
@@ -445,22 +336,12 @@ namespace Digiphoto.Lumen.UI
 			get {
 				if( _caricareStatoMetadatiCommand == null ) {
 					_caricareStatoMetadatiCommand = new RelayCommand( p => caricareStatoMetadati(),
-					                                                 p => possoCaricareStatoMetadati, false );
+																	  p => true, false );
 				}
 				return _caricareStatoMetadatiCommand;
 			}
 		}
 
-		private RelayCommand _cambiareModalitaOperativaCommand;
-		public ICommand cambiareModalitaOperativaCommand {
-			get {
-				if( _cambiareModalitaOperativaCommand == null ) {
-					_cambiareModalitaOperativaCommand = new RelayCommand( p => cambiareModalitaOperativa( p as string ),
-					                                                      p => true, false );
-				}
-				return _cambiareModalitaOperativaCommand;
-			}
-		}
 		#endregion Comandi
 	}
 }
