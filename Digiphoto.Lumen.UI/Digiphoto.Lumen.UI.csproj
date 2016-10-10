@@ -360,6 +360,8 @@
     <Compile Include="SelettoreMetadati\SelettoreMetadatiView.xaml.cs">
       <DependentUpon>SelettoreMetadatiView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SelettoreMetadati\SelettoreMetadatiViewModel1.cs" />
+    <Compile Include="SelettoreMetadati\SelettoreMetadatiViewModel2.cs" />
     <Compile Include="SelettoreMetadati\SelettoreMetadatiViewModel.cs" />
     <Compile Include="SelettoreScaricoCard\SelettoreScaricoCardViewModel.cs" />
     <Compile Include="SelettoreScaricoCard\SelettoreScaricoCard.xaml.cs">

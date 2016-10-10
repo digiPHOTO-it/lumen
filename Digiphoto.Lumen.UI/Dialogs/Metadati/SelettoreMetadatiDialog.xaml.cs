@@ -15,58 +15,26 @@ using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
 using Digiphoto.Lumen.Servizi.Explorer;
 using Digiphoto.Lumen.Applicazione;
+using Digiphoto.Lumen.Core.Collections;
 
 namespace Digiphoto.Lumen.UI.Dialogs
 {
 	/// <summary>
 	/// Interaction logic for SelettoreMetadatiDialog.xaml
 	/// </summary>
-	public partial class SelettoreMetadatiDialog : Window, IObserver<MetadatiMsg>
+	public partial class SelettoreMetadatiDialog : Window
 	{
-		public SelettoreMetadatiDialog(MultiSelectCollectionView<Fotografia> fotografieCW)
-		{
+		private IEnumerable<Fotografia> listaFoto;
+
+		public SelettoreMetadatiDialog( IEnumerable<Fotografia> listaFoto ) {
+
 			InitializeComponent();
 
-			this.fotografieCW = fotografieCW;
+			this.listaFoto = listaFoto;
 
-			this.DataContext = this;
-
-			IObservable<MetadatiMsg> observableMetadati = LumenApplication.Instance.bus.Observe<MetadatiMsg>();
-			observableMetadati.Subscribe(this);
+			SelettoreMetadatiViewModel selettoreMetadatiViewModel = new SelettoreMetadatiViewModel2( listaFoto );
+			this.selettoreMetadati.DataContext = selettoreMetadatiViewModel;
 		}
 
-		#region Proprieta
-
-		public MultiSelectCollectionView<Fotografia> fotografieCW
-		{
-			get;
-			set;
-		}
-
-		#endregion
-		
-		#region MemBus
-
-		public void OnCompleted()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void OnError(Exception error)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void OnNext(MetadatiMsg msg)
-		{
-			if (msg.sender is SelettoreMetadatiViewModel)
-			{
-				msg.fase = Digiphoto.Lumen.Servizi.Explorer.Fase.Completata;
-				this.Hide();
-			}
-
-		}
-
-		#endregion
 	}
 }

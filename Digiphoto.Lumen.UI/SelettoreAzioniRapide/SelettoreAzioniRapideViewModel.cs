@@ -379,13 +379,14 @@ namespace Digiphoto.Lumen.UI {
 
 		void modificaMetadati() {
 
+/*
 			var lista = getListaFotoTarget().ToList();
 			MultiSelectCollectionView<Fotografia> fotoSel = new MultiSelectCollectionView<Fotografia>( lista );
 			foreach( Fotografia fS in lista ) {
 				fotoSel.SelectedItems.Add( fS );
 			}
-
-			SelettoreMetadatiDialog s = new SelettoreMetadatiDialog( fotoSel );
+*/
+			SelettoreMetadatiDialog s = new SelettoreMetadatiDialog( getListaFotoTarget() );
 
 			bool? esito = s.ShowDialog();
 
