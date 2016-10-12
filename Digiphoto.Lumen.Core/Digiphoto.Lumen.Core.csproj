@@ -346,11 +346,10 @@
     <Compile Include="src\Util\CoreUtil.cs" />
     <Compile Include="src\Util\FormuleMagiche.cs" />
     <Compile Include="src\Util\LumenException.cs" />
+    <Compile Include="src\Util\MailUtil.cs" />
     <Compile Include="src\Util\UsbEjectWithExe.cs" />
     <Compile Include="src\Util\ErroriUtil.cs" />
     <Compile Include="src\Util\FotoRangeUtil.cs" />
-    <Compile Include="src\Util\Logging\Log.cs" />
-    <Compile Include="src\Util\Logging\NotifyAppender.cs" />
     <Compile Include="src\Util\SpecialFolderPatternConverter.cs" />
     <Compile Include="src\Util\Target.cs" />
     <Compile Include="src\Util\Paginazione.cs" />
