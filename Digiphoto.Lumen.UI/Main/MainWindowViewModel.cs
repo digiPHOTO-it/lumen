@@ -1,9 +1,4 @@
-﻿
-using Digiphoto.Lumen.Model;
-using Digiphoto.Lumen.Applicazione;
-using Digiphoto.Lumen.Servizi.Explorer;
-using Digiphoto.Lumen.Imaging.Wic;
-using System.Windows.Media;
+﻿using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Util;
 using System.Windows.Media.Imaging;
 using System;
@@ -16,15 +11,10 @@ using System.Collections.Generic;
 using Digiphoto.Lumen.UI.Reports;
 using Microsoft.Reporting.WinForms;
 using Digiphoto.Lumen.Config;
-using Digiphoto.Lumen.UI.Logging;
-using Digiphoto.Lumen.UI.EliminaVecchiRullini;
 using Digiphoto.Lumen.Servizi.Reports.ConsumoCarta;
 using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Servizi.Stampare;
 using Digiphoto.Lumen.UI.DataEntry.DEGiornata;
-using Digiphoto.Lumen.UI.DataEntry;
-using Digiphoto.Lumen.Core.Database;
-using Digiphoto.Lumen.UI.Main;
 using Digiphoto.Lumen.Core.Collections;
 using Digiphoto.Lumen.UI.DataEntry.DEFotografo;
 using Digiphoto.Lumen.UI.DataEntry.DEEvento;
@@ -36,6 +26,9 @@ using System.IO;
 using Digiphoto.Lumen.Servizi.Scaricatore;
 using Digiphoto.Lumen.Servizi;
 using Digiphoto.Lumen.UI.Preferenze;
+using static System.Environment;
+using System.Net.Mail;
+using Digiphoto.Lumen.Core.Util;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -57,31 +50,30 @@ namespace Digiphoto.Lumen.UI {
 			// Ascolto i messaggi
 			IObservable<Messaggio> observable = LumenApplication.Instance.bus.Observe<Messaggio>();
 			observable.Subscribe( this );
-			
-			Messaggio msgInit = new Messaggio(this);
+
+			Messaggio msgInit = new Messaggio( this );
 			msgInit.showInStatusBar = true;
 			msgInit.descrizione = "Nessun messaggio";
 			msgInit.esito = 0;
 
-			LumenApplication.Instance.bus.Publish(msgInit);
-			
+			LumenApplication.Instance.bus.Publish( msgInit );
+
 			caricaElencoDischiRimovibili();
 
 			this.abilitoShutdown = true;  // permetto all'utente di scegliere se spegnere il computer.
-        }
+		}
 
-		private void ejectUsb()
-		{
+		private void ejectUsb() {
 			//Recupero solo la lettera...
 			char letter = ejectUsbItem.Name.ToCharArray()[0];
 
-			if(UsbEjectWithExe.usbEject(letter))
-				dialogProvider.ShowMessage("Chiavetta rimossa con successo", "Eject Usb");
+			if( UsbEjectWithExe.usbEject( letter ) )
+				dialogProvider.ShowMessage( "Chiavetta rimossa con successo", "Eject Usb" );
 			else
-				dialogProvider.ShowMessage("Errore rimozione chiavetta","Eject Usb Errore");		
+				dialogProvider.ShowMessage( "Errore rimozione chiavetta", "Eject Usb Errore" );
 
 			//caricaElencoDischiRimovibili();
-        }
+		}
 
 		#region Proprietà
 
@@ -129,8 +121,7 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		private String _numFotoFase;
-		public String numFotoFase
-		{
+		public String numFotoFase {
 			get {
 				return _numFotoFase;
 			}
@@ -143,8 +134,7 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		private bool _numFotoFaseVisibility;
-		public bool numFotoFaseVisibility
-		{
+		public bool numFotoFaseVisibility {
 			get {
 				return _numFotoFaseVisibility;
 			}
@@ -156,10 +146,8 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		public Boolean compNumFotoVisibility
-		{
-			get
-			{
+		public Boolean compNumFotoVisibility {
+			get {
 				return Configurazione.UserConfigLumen.compNumFoto;
 			}
 		}
@@ -176,36 +164,29 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		public ObservableCollectionEx<DriveInfo> dischiRimovibili
-		{
+		public ObservableCollectionEx<DriveInfo> dischiRimovibili {
 			get;
 			private set;
 		}
 
 		private DriveInfo _ejectUsbItem;
-		public DriveInfo ejectUsbItem
-		{
-			get
-			{
+		public DriveInfo ejectUsbItem {
+			get {
 				return _ejectUsbItem;
 			}
-			set
-			{
-				if (_ejectUsbItem != value)
-				{
+			set {
+				if( _ejectUsbItem != value ) {
 					_ejectUsbItem = value;
-					OnPropertyChanged("ejectUsbItem");
+					OnPropertyChanged( "ejectUsbItem" );
 				}
 			}
 		}
 
-		public bool possoEjectUsb
-		{
-			get
-			{
+		public bool possoEjectUsb {
+			get {
 				bool posso = true;
 
-				if (posso && ejectUsbItem == null)
+				if( posso && ejectUsbItem == null )
 					posso = false;
 
 				return posso;
@@ -220,7 +201,7 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand uscireCommand {
 			get {
 				if( _uscireCommand == null ) {
-					_uscireCommand = new RelayCommand( param => uscire( "SHUTDOWN".Equals(param) ),  param => true, false );
+					_uscireCommand = new RelayCommand( param => uscire( "SHUTDOWN".Equals( param ) ), param => true, false );
 				}
 				return _uscireCommand;
 			}
@@ -232,22 +213,30 @@ namespace Digiphoto.Lumen.UI {
 			get {
 				if( _reportVenditeCommand == null ) {
 					_reportVenditeCommand = new RelayCommand( param => reportVendite(),
-						                                      param => true,
+															  param => true,
 															  false );
 				}
 				return _reportVenditeCommand;
 			}
 		}
 
-		private RelayCommand _logCommand;
-		public ICommand LogCommand {
+		private RelayCommand _visualizzareLogCommand;
+		public ICommand visualizzareLogCommand {
 			get {
-				if( _logCommand == null ) {
-					_logCommand = new RelayCommand( param => log(),
-															  param => true,
-															  false );
+				if( _visualizzareLogCommand == null ) {
+					_visualizzareLogCommand = new RelayCommand( param => visualizzareLog(), param => true );
 				}
-				return _logCommand;
+				return _visualizzareLogCommand;
+			}
+		}
+
+		private RelayCommand _spedireLogCommand;
+		public ICommand spedireLogCommand {
+			get {
+				if( _spedireLogCommand == null ) {
+					_spedireLogCommand = new RelayCommand( param => MailUtil.spedireLog(), param => true );
+				}
+				return _spedireLogCommand;
 			}
 		}
 
@@ -256,8 +245,8 @@ namespace Digiphoto.Lumen.UI {
 			get {
 				if( _commandDataEntry == null ) {
 					_commandDataEntry = new RelayCommand( param => dataEntry( param as string ),
-					                                      param => true,
-				                                          false );
+														  param => true,
+														  false );
 				}
 				return _commandDataEntry;
 			}
@@ -299,12 +288,10 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		private RelayCommand _ejectUsbCommand;
-		public ICommand ejectUsbCommand
-		{
+		public ICommand ejectUsbCommand {
 			get {
-				if (_ejectUsbCommand == null)
-				{
-					_ejectUsbCommand = new RelayCommand(param => ejectUsb(),
+				if( _ejectUsbCommand == null ) {
+					_ejectUsbCommand = new RelayCommand( param => ejectUsb(),
 															  param => possoEjectUsb,
 															  false );
 				}
@@ -338,8 +325,7 @@ namespace Digiphoto.Lumen.UI {
 
 		private void uscire( bool eseguiShutdown ) {
 			//Controllo se posso fermare l'applicazione
-			if (!LumenApplication.Instance.possoFermare)
-			{
+			if( !LumenApplication.Instance.possoFermare ) {
 				bool procediPure = false;
 				string msg = "Attenzione:" +
 					"\nCi sono delle operazioni che non sono concluse." +
@@ -347,18 +333,17 @@ namespace Digiphoto.Lumen.UI {
 					"\nSi consiglia di chiudere correttamante i servizi rimasti in sospeso." +
 					"\nSei sicuro che vuoi forzare l'uscita dal programma ?";
 
-				dialogProvider.ShowConfirmation(msg, "Avviso", (sino) =>
-				{
+				dialogProvider.ShowConfirmation( msg, "Avviso", ( sino ) => {
 					procediPure = sino;
-				});
-				if (!procediPure)
+				} );
+				if( !procediPure )
 					return;
 			}
 
 			if( eseguiShutdown )
-				this.shutdownConfermato = true;		// mi ha già detto che vuole spegnere
+				this.shutdownConfermato = true;     // mi ha già detto che vuole spegnere
 			else
-				this.abilitoShutdown = false;		// mi ha già detto che NON vuole spegnere
+				this.abilitoShutdown = false;       // mi ha già detto che NON vuole spegnere
 
 
 			((App)App.Current).gestoreFinestrePubbliche.chiudereTutteLeFinestre();
@@ -390,7 +375,7 @@ namespace Digiphoto.Lumen.UI {
 			string appo = String.IsNullOrEmpty( Configurazione.infoFissa.descrizPuntoVendita ) ? "pdv " + Configurazione.infoFissa.idPuntoVendita : Configurazione.infoFissa.descrizPuntoVendita;
 			ReportParameter p3 = new ReportParameter( "nomePdv", appo );
 
-			ReportParameter [] repoParam = { p1, p2, p3 };
+			ReportParameter[] repoParam = { p1, p2, p3 };
 			rhw.viewerInstance.LocalReport.SetParameters( repoParam );
 
 			_giornale.Debug( "Impostati i parametri del report: " + paramRangeGiorni.dataIniz + " -> " + paramRangeGiorni.dataFine );
@@ -402,10 +387,19 @@ namespace Digiphoto.Lumen.UI {
 
 			_giornale.Info( "Completato il report delle vendite DAL" + paramRangeGiorni.dataIniz + " -> " + paramRangeGiorni.dataFine );
 		}
+		
 
-		private void log(){
-			LoggingShowWindows loggingShowWindows = new LoggingShowWindows();
-			loggingShowWindows.Show();
+		private void visualizzareLog(){
+
+			// Per adesso apro con l'editor di default del sistema
+			// TODO bisognerebbe fare una lista dei file 
+			String nomeFileLog = MailUtil.getNomeFileLog();
+
+			if( File.Exists( nomeFileLog ) )
+				System.Diagnostics.Process.Start( nomeFileLog );
+			else
+				dialogProvider.ShowError( nomeFileLog, "File non esistente!", null );
+
 		}
 
 		ParamRangeGiorni richiediParametriRangeGiorni() {

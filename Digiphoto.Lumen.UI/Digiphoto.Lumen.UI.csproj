@@ -307,9 +307,6 @@
       <DependentUpon>IncassiFotografiView.xaml</DependentUpon>
     </Compile>
     <Compile Include="IncassiFotografi\IncassiFotografiViewModel.cs" />
-    <Compile Include="Logging\LoggingShowWindowl.xaml.cs">
-      <DependentUpon>LoggingShowWindowl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Main\CambioPaginaMsg.cs" />
     <Compile Include="Mvvm\Event\SelectionFailedEventArgs.cs" />
     <Compile Include="Mvvm\Event\SelectionFailedEventHandler.cs" />
@@ -319,9 +316,6 @@
     <Compile Include="Mvvm\MultiSelect\MultiSelect.cs" />
     <Compile Include="Mvvm\MultiSelect\MultiSelectCollectionView.cs" />
     <Compile Include="Mvvm\UserControlBase.cs" />
-    <Compile Include="Logging\NotificationView.xaml.cs">
-      <DependentUpon>NotificationView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="PanAndZoom\PanAndZoom.cs" />
     <Compile Include="PanAndZoom\PanAndZoomViewModel.cs" />
     <Compile Include="PanAndZoom\PanAndZoomWindow.xaml.cs">
@@ -456,14 +450,6 @@
     <Page Include="IncassiFotografi\IncassiFotografiView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Logging\LoggingShowWindowl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Logging\NotificationView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Main\MainWindowResources.xaml">
       <SubType>Designer</SubType>
