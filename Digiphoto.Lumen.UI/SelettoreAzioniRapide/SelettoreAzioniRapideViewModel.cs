@@ -336,13 +336,6 @@ namespace Digiphoto.Lumen.UI {
 				bool esitoOk = (msgErrore == null);
                 if( esitoOk )
 				{
-					if( targetMode == TargetMode.Selezionate ) {
-						foreach( Fotografia foto in fotoSelezionate )
-							foto.contaStampata++;
-					} else if( targetMode == TargetMode.Singola ) {
-						singolaFotoTarget.contaStampata++;
-					}
-
 					// Spengo le foto che ormai sono andate
 					deselezionaFoto();
 

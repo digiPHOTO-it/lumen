@@ -34,7 +34,7 @@ namespace Digiphoto.Lumen.UI {
 
 
 	public class FotoGalleryViewModel : ViewModelBase, IContenitoreGriglia, ISelettore<Fotografia>,
-	                                    IObserver<FotoModificateMsg>, IObserver<NuovaFotoMsg>, IObserver<ClonaFotoMsg>, IObserver<GestoreCarrelloMsg>, IObserver<RefreshMsg>, IObserver<CambioStatoMsg>
+	                                    IObserver<FotoModificateMsg>, IObserver<NuovaFotoMsg>, IObserver<ClonaFotoMsg>, IObserver<GestoreCarrelloMsg>, IObserver<RefreshMsg>, IObserver<CambioStatoMsg>, IObserver<StampatoMsg>
 
 	{
 
@@ -65,6 +65,8 @@ namespace Digiphoto.Lumen.UI {
 			IObservable<CambioStatoMsg> observableCambioStato = LumenApplication.Instance.bus.Observe<CambioStatoMsg>();
 			observableCambioStato.Subscribe( this );
 
+			IObservable<StampatoMsg> observableStampato = LumenApplication.Instance.bus.Observe<StampatoMsg>();
+			observableStampato.Subscribe( this );
 
 			// Istanzio i ViewModel dei componenti di cui io sono composto
 			selettoreEventoViewModel = new SelettoreEventoViewModel();
@@ -1029,6 +1031,13 @@ namespace Digiphoto.Lumen.UI {
 		/// E' il contrario di filtrareTutte()
 		/// </summary>
 		private void filtrareSelezionate() {
+
+
+// Fotografia f = (Fotografia)this.fotografieCW.GetItemAt( 0 );
+// f.contaStampata++;
+// return;
+
+
 
 			modalitaFiltroSelez = ModalitaFiltroSelez.SoloSelezionate;
 
@@ -2082,6 +2091,20 @@ throw new NotImplementedException( "TODO da rivedere");
 
 				eseguireRicerca( true );
 
+			}
+		}
+
+
+		public void OnNext( StampatoMsg msg ) {
+
+			if( msg.esito == Esito.Ok && msg.lavoroDiStampa is LavoroDiStampaFoto ) {
+
+				Fotografia fotoStampata = ((LavoroDiStampaFoto)msg.lavoroDiStampa).fotografia;
+				int pos = fotografieCW.IndexOf( fotoStampata );
+				if( pos >= 0 ) { // Ok la foto è visibile
+					Fotografia fotoGallery = (Fotografia)fotografieCW.GetItemAt( pos );
+					fotoGallery.contaStampata += ((LavoroDiStampaFoto)msg.lavoroDiStampa).param.numCopie;
+				}
 			}
 		}
 
