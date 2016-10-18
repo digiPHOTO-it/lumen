@@ -13,6 +13,9 @@ using Digiphoto.Lumen.Database;
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Servizi.Reports;
 using System.ComponentModel;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 
@@ -133,7 +136,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public override bool possoChiudere()
 		{
-			return gestoreCarrello.isCarrelloVuoto || isPossibileModificareCarrello == false;
+			return gestoreCarrello.isCarrelloVuoto || gestoreCarrello.isCarrelloModificato == false;
 		}
 
 		public bool isPossibileClonareCarrello {
@@ -156,6 +159,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			gestoreCarrello = new GestoreCarrello();
 
 			contaMessaggiInCoda = 0;
+		}
+
+		protected override void Dispose( bool disposing ) {
+
+			gestoreCarrello.Dispose(); // Importante: mi serve per rilasciare il DbContext (che altrimenti rimane aperto e tiene sotto scacco le entità)
 		}
 
 		public override void start() {
@@ -311,10 +319,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 		public string salvareCarrello() {
-			return salvareCarrello( false );
+			return salvareCarrello( false  );
 		}
 
-        public string salvareCarrello( bool vendere ) {
+        private string salvareCarrello( bool vendere ) {
 
 			string msgErrore = null;
 
@@ -338,6 +346,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					descrizione = "Carrello salvato ok"
 				} );
 
+
 			} catch( Exception eee ) {
 
 				msgErrore = ErroriUtil.estraiMessage(eee);
@@ -358,7 +367,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			gestoreCarrello.clonareCarrello();
 		}
 
-		public string vendereCarrello() {
+
+        public string vendereCarrello() {
 
 			_giornale.Debug( "carrello valido. Inizio operazioni di produzione" );
 
@@ -542,9 +552,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 					++conta;
 
+
 					// Creo nuovamente i parametri di stampa perché potrebbero essere cambiati nell GUI
 					ParamStampaFoto paramStampaFoto = creaParamStampaFoto( riga );
 					spoolStampeSrv.accodaStampaFoto( riga.fotografia, paramStampaFoto );
+
 				}
 			}
 		}
@@ -698,12 +710,15 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			
 			if (lavoroDiStampa is LavoroDiStampaFoto)
 			{
+
 				lavoroDiStampaFoto = lavoroDiStampa as LavoroDiStampaFoto;
 
-
+#if FALSE
 				bool provaRisparmio = false;
 				if (provaRisparmio && lavoroDiStampaFoto.fotografia != null)
 				{
+					// Ora che so che è andata bene la stampa, devo incrementare il numero di volte che è stata stampata
+					
 					try {
 						// Rilascio un pò di memoria
 						AiutanteFoto.disposeImmagini( lavoroDiStampaFoto.fotografia, IdrataTarget.Originale );
@@ -715,8 +730,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 						// Devo andare avanti lo stesso perché devo notificare tutti
 					}
 				}
-			}
-			else if (lavoroDiStampa is LavoroDiStampaProvini)
+#endif
+			} else if (lavoroDiStampa is LavoroDiStampaProvini)
 			{
 				lavoroDiStampaProvini = lavoroDiStampa as LavoroDiStampaProvini;
 				foreach(Fotografia foto in lavoroDiStampaProvini.fotografie){
@@ -737,52 +752,64 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				}
 			}
 
-			// Se la stampa è stata completata correttamente, non faccio niente. Sono già a posto.
-			if( lavoroDiStampa.esitostampa == EsitoStampa.Ok )
-			{
-				if (lavoroDiStampaProvini != null)
-				{
-					using (new UnitOfWorkScope(true))
-					{
+			// Se la stampa è stata completata correttamente, aggiorno alcuni dati di consumo
+			if( lavoroDiStampa.esitostampa == EsitoStampa.Ok ) {
+
+				if( lavoroDiStampaFoto != null ) {
+
+					Fotografia foto = lavoroDiStampaFoto.fotografia;
+
+					// Devo aggiornare la fotografia sul db.
+
+					using( new UnitOfWorkScope() ) {
+
+						LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
+						Fotografia foto1 = dbContext.Fotografie.Single( f => f.id == lavoroDiStampaFoto.fotografia.id );
+						foto1.contaStampata += lavoroDiStampaFoto.param.numCopie;
+						dbContext.SaveChanges();
+                    }
+
+				}
+
+				if( lavoroDiStampaProvini != null ) {
+					using( new UnitOfWorkScope() ) {
 						LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 
 						DateTime giornata = DateTime.Today;
 						FormatoCarta formatoCarta = lavoroDiStampaProvini.param.formatoCarta;
 						OrmUtil.forseAttacca<FormatoCarta>( ref formatoCarta );
 						//Verifico se sono già stati stampati dei provini all'interno della giornata.
-						ConsumoCartaGiornaliero consumoCarta = dbContext.ConsumiCartaGiornalieri.FirstOrDefault(cC => System.DateTime.Equals(cC.giornata,giornata) && cC.formatoCarta.id == formatoCarta.id);
-						
-						if (consumoCarta != null)
-						{
+						ConsumoCartaGiornaliero consumoCarta = dbContext.ConsumiCartaGiornalieri.FirstOrDefault( cC => System.DateTime.Equals( cC.giornata, giornata ) && cC.formatoCarta.id == formatoCarta.id );
+
+						if( consumoCarta != null ) {
 							consumoCarta.diCuiProvini += lavoroDiStampaProvini.param.numPag;
-						}
-						else
-						{
+						} else {
 							consumoCarta = new ConsumoCartaGiornaliero();
 							consumoCarta.id = Guid.NewGuid();
 							consumoCarta.diCuiProvini = lavoroDiStampaProvini.param.numPag;
 							consumoCarta.formatoCarta = formatoCarta;
 							consumoCarta.giornata = giornata;
-							dbContext.ConsumiCartaGiornalieri.Add(consumoCarta);
+							dbContext.ConsumiCartaGiornalieri.Add( consumoCarta );
 						}
 						dbContext.SaveChanges();
 					}
 				}
-				return;
-			}
-			_giornale.Error( "il lavoro di stampa non è andato a buon fine: " + lavoroDiStampa.ToString() );
 
-			// Vado a correggere questa riga
-			if(lavoroDiStampaFoto != null){
-				using( GestoreCarrello altroGestoreCarrello = new GestoreCarrello() ) {
-					ParamStampaFoto psf = lavoroDiStampa.param as ParamStampaFoto;
-					altroGestoreCarrello.stornoRiga( psf.idRigaCarrello );
+			} else {
+
+				_giornale.Error( "il lavoro di stampa non è andato a buon fine: " + lavoroDiStampa.ToString() );
+
+				// Vado a correggere questa riga
+				if(lavoroDiStampaFoto != null){
+					using( GestoreCarrello altroGestoreCarrello = new GestoreCarrello() ) {
+						ParamStampaFoto psf = lavoroDiStampa.param as ParamStampaFoto;
+						altroGestoreCarrello.stornoRiga( psf.idRigaCarrello );
+					}
 				}
-			}
-			// TODO Fare storno errore provini
-			if (lavoroDiStampaProvini != null)
-			{
-				
+				if (lavoroDiStampaProvini != null)
+				{
+					// TODO Fare storno errore provini
+				}
 			}
 
 		}

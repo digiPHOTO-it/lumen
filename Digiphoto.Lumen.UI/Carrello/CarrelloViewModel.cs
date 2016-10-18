@@ -781,6 +781,7 @@ namespace Digiphoto.Lumen.UI {
 												"\nN° ErroriUtil: " + totoleErrori;
 
 					dialogProvider.ShowMessage( msg, "Avviso" );
+
 					_giornale.Info( msg );
 
 					//Creo un nuovo carrello
@@ -930,9 +931,9 @@ namespace Digiphoto.Lumen.UI {
 			}
 
 			string msgErrore = venditoreSrv.salvareCarrello();
+
 			if( msgErrore == null ) {
 				dialogProvider.ShowMessage( "Carrello Salvato Correttamente", "Avviso" );
-				creaNuovoCarrello();
 			} else
 				dialogProvider.ShowError( "Salvataggio carrello fallito\r\n" + msgErrore, "ERRORE", null );
 

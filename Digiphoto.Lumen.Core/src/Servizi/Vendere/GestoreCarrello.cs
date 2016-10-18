@@ -80,6 +80,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
+		public bool isCarrelloModificato { 
+			get; 
+			private set; 
+		}
+
 		public bool isCarrelloTransient {
 			get {
 				return isStatoModifica == false && (carrello.id == null || carrello.id.Equals( Guid.Empty ));
@@ -234,6 +239,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			//Metto un'intestazione automatica per distinguere il carrello autogenerato dagli altri
 			// scarrello.intestazione = "Auto";
 			isStatoModifica = false;
+			isCarrelloModificato = false;
 		}
 
 		/// <summary>
@@ -273,6 +279,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				carrello.totaleAPagare = null;
 
 			isStatoModifica = true;
+			isCarrelloModificato = false;
 		}
 
 		/**
@@ -336,6 +343,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				}
 			}
 
+			isCarrelloModificato = true;
 		} 
 
 		public void aggiungiRiga( RigaCarrello riga ) {
@@ -366,7 +374,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 				carrello.righeCarrello.Add( riga );
 
-			} else {
+				isCarrelloModificato = true;
+
+            } else {
 				throw new ArgumentException( "La fotografia è già stata caricata nel carrello\r\nModificare la quantità\r\nRiga non aggiunta" );
 			}	
 		}
@@ -383,6 +393,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			mioDbContext.Carrelli.Remove( carrelloDacanc );
 
 			mioDbContext.SaveChanges();
+
+			isCarrelloModificato = false;
 		}
 
 		public void abbandonaCarrello() {
@@ -422,19 +434,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				carrello.id = Guid.NewGuid();
 
 			foreach(RigaCarrello rigaCarrello in carrello.righeCarrello){
+
 				if( rigaCarrello.id == Guid.Empty )
 					rigaCarrello.id = Guid.NewGuid();
 				if( rigaCarrello.carrello_id == Guid.Empty )
-					rigaCarrello.carrello_id = carrello.id;
-                if (rigaCarrello.discriminator == Carrello.TIPORIGA_STAMPA)
-                {
-                    Fotografia f = rigaCarrello.fotografia;
-                    f.contaStampata = (short)((int)f.contaStampata + (int)rigaCarrello.quantita);
-
-                    ObjectContext objContext = ((IObjectContextAdapter)mioDbContext).ObjectContext;
-                    objContext.ObjectStateManager.ChangeObjectState(f, EntityState.Modified);
-                }
-                
+					rigaCarrello.carrello_id = carrello.id;           
             }
 
 			foreach( IncassoFotografo incassoFotografo in carrello.incassiFotografi ) {
@@ -464,6 +468,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					_giornale.Error( msg );
 					throw new InvalidOperationException( msg );
 				}
+
+
+				isCarrelloModificato = false;
+
 			} catch( DbEntityValidationException dbEx ) {
 
 				// Rimetto a posto lo stato
@@ -642,25 +650,35 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			return valore;
 		}
 
+		/// <summary>
+		/// Uso tutti try-catch perché è importante che io arrivi a fare la dispose del DbContext,
+		/// altrimenti mi rimangono le entità tracciate.
+		/// </summary>
 		public void Dispose() {
 
 			// Se ho delle fotografie caricate, rilascio le immagini
 			if( carrello != null && carrello.righeCarrello != null ) {
 				foreach( RigaCarrello riga in carrello.righeCarrello )
-					AiutanteFoto.disposeImmagini( riga.fotografia );
+					try {
+						AiutanteFoto.disposeImmagini( riga.fotografia );
+					} catch( Exception ) {
+					}
 			}
 
 			// Se il carrello è stato modificato nel db o aggiunto al db ma non ancora committato, allora devo "tornare indietro"
 			if( carrello != null && isCarrelloTransient == false ) {
 
-				OrmUtil.rinuncioAlleModifiche( carrello, mioDbContext );
+				try {
+					OrmUtil.rinuncioAlleModifiche( carrello, mioDbContext );
+				} catch( Exception ) {
+				}
 
 				carrello = null;
 			}
 
+			isCarrelloModificato = false;
 
-
-			// Distruggo anche il contesto. In questo modo riparto pulito per il prossimo carrello.
+			// Distruggo anche il contesto. In questo modo riparto pulito per il prossimo carrello, ma sopattutto devo rilasciare le entità che sono "tracciate" da questo context
 			this.mioDbContext.Dispose();
 			this.mioDbContext = null;
 		}
@@ -795,6 +813,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			if( riga != null ) {
 				((IObjectContextAdapter)mioDbContext).ObjectContext.Refresh( RefreshMode.StoreWins, riga.fotografia );
 			}
+
+			isCarrelloModificato = true;
 		}
 
 
@@ -842,7 +862,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			carrello = c;
 
 			isStatoModifica = false;
-
+			isCarrelloModificato = true;
 		}
 
 		public void spostaRigaCarrello( RigaCarrello rigaCarrello, bool remove ) {
