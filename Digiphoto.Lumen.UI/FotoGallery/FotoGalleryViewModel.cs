@@ -649,18 +649,6 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		int _idrataProgress;
-		public int idrataProgress {
-			get {
-				return _idrataProgress;
-			}
-			private set {
-				if( _idrataProgress != value ) {
-					_idrataProgress = value;
-					OnPropertyChanged( "idrataProgress" );
-				}
-			}
-		}
 
 		public int numFotoCorrenteInSlideShow {
 			get {
@@ -1333,7 +1321,6 @@ namespace Digiphoto.Lumen.UI {
 		private void eseguireRicerca( bool nuovaRicerca, bool chiediConfermaSeFiltriVuoti ) {
 
 
-			idrataProgress = 0;
 
 
 			completaParametriRicercaWithOrder( true );
@@ -1560,11 +1547,11 @@ throw new NotImplementedException( "TODO da rivedere");
 
 
 			int tot = fotografieCW.Count;
-			int percPrec = 0;
-			worker.ReportProgress( percPrec );
+			worker.ReportProgress( 0 );
 
 
 			for( int ii = 0; (ii < tot); ii++ ) {
+
 				if( (worker.CancellationPending == true) ) {
 					e.Cancel = true;
 					break;
@@ -1572,41 +1559,12 @@ throw new NotImplementedException( "TODO da rivedere");
 
 					Fotografia foto = (Fotografia) fotografieCW.GetItemAt( ii );
 
-					try {
-						// Perform a time consuming operation and report progress.
-						AiutanteFoto.idrataImmaginiFoto( foto, IdrataTarget.Provino );
-					} catch( Exception ) {
-
-						// Provo a crearlo. Magari non c'è perché è stato cancellato per sbaglio, oppure c'è ma si è corrotto.
-						try {
-
-							App.Current.Dispatcher.BeginInvoke(
-								new Action( () => {
-
-									try {
-										AiutanteFoto.creaProvinoFoto( foto );
-									} catch( Exception ) {
-
-										_giornale.Debug( "Problemi nel provinare la foto: " + foto );
-
-										// Se qualcosa va male, pazienza, a questo punto non posso fare altro che tirare avanti.
-										// TODO : forse dovrei togliere la foto in esame dalla collezione della gallery ....
-									}
-								}
-							) );
-
-						} catch( Exception ) {
-							// Se qualcosa va male, pazienza, a questo punto non posso fare altro che tirare avanti.
-						}
-					}
-
 					// Aggiorno la percentuale di progressi di idratazione. Esiste una ProgressBar che si abilita all'uopo.
 					int perc = (ii + 1) * 100 / tot;
-					if( percPrec != perc ) {
-						worker.ReportProgress( perc );
-						percPrec = perc;
-					}
-				}
+					worker.ReportProgress( perc, foto );
+
+			//		System.Threading.Thread.Sleep( 200 );
+                }
 			}
 
 			// Se sono arrivato in fondo, comunico il progresso massimo giusto per sicurezza.
@@ -1627,8 +1585,65 @@ throw new NotImplementedException( "TODO da rivedere");
 
 		}
 
+
+		private const int SLOT_REFRESH = 20;
+		private int _percRefresh = 0;
+
+		/// <summary>
+		/// Eseguo le operazioni di idratazione immagini direttamente in questo metodo perché solo questo metodo del background worker
+		/// viene eseguito nel thread della UI. In questo modo posso far visualizzare le foto man mano che vengono idratate
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		void bkgIdrata_ProgressChanged( object sender, ProgressChangedEventArgs e ) {
-			idrataProgress = e.ProgressPercentage;
+
+			if( e.UserState == null ) {
+
+				// Azzeramento : inizio un nuovo ciclo di idratazione
+				_percRefresh = SLOT_REFRESH;
+
+			} else {
+
+				Fotografia foto = (Fotografia)e.UserState;
+
+				try {
+
+					// Perform a time consuming operation and report progress.
+					AiutanteFoto.idrataImmaginiFoto( foto, IdrataTarget.Provino );
+
+				} catch( Exception ) {
+
+					// Provo a crearlo. Magari non c'è perché è stato cancellato per sbaglio, oppure c'è ma si è corrotto.
+					try {
+
+						AiutanteFoto.creaProvinoFoto( foto );
+					} catch( Exception ) {
+
+						_giornale.Debug( "Problemi nel provinare la foto: " + foto );
+
+						// Se qualcosa va male, pazienza, a questo punto non posso fare altro che tirare avanti.
+						// TODO : forse dovrei togliere la foto in esame dalla collezione della gallery ....
+					}
+				}
+
+			}
+
+			// Non so perché ma senza questo refresh, a volte ma non sempre,
+			// le foto pur venendo idratate, non vengono visualizzate. Succede spesso all'inizio nella prima ricerca che faccio.
+			// Per non sovraccaricare troppo, effettuo il refresh ogni tot.
+			// Diciamo che lo faccio
+			bool eseguiRefresh = (e.ProgressPercentage >= 100); // lo faccio solo alla fine, perché durante il loop non c'è il feedback visivo (in pratica non serve)
+#if FALSE
+			bool eseguiRefresh = false;
+			if( e.ProgressPercentage > _percRefresh ) {
+				eseguiRefresh = true;
+				_percRefresh += SLOT_REFRESH;
+			}
+#endif
+
+			if( eseguiRefresh )
+				fotografieCW.Refresh();
+				
 		}
 
 		private void completaParametriRicerca()

@@ -216,21 +216,6 @@
 -->
     </Style>
 
-    <Style x:Key="idrataProgressBarStyle" TargetType="{x:Type ProgressBar}">
-		
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="ProgressBar">
-					<Border BorderBrush="#D9DCE1" BorderThickness="1" Background="#E8E8E8" CornerRadius="0" Padding="0">
-						<Grid x:Name="PART_Track">
-							<Rectangle x:Name="PART_Indicator" HorizontalAlignment="Left" Fill="#FF49A3E1" />
-						</Grid>
-					</Border>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</Style>
-
 
     <Style x:Key="ssStartStopStyle" TargetType="ToggleButton">
 		<Setter Property="Content">
