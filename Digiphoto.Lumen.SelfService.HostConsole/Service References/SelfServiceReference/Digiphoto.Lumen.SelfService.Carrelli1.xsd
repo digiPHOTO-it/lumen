@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.datacontract.org/2004/07/Digiphoto.Lumen.SelfService.Carrelli" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Digiphoto.Lumen.SelfService.Carrelli" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="ArrayOfCarrelloDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="CarrelloDto" nillable="true" type="tns:CarrelloDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfCarrelloDto" nillable="true" type="tns:ArrayOfCarrelloDto" />
+  <xs:complexType name="CarrelloDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="id" type="ser:guid" />
+      <xs:element minOccurs="0" name="titolo" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="CarrelloDto" nillable="true" type="tns:CarrelloDto" />
+  <xs:complexType name="ArrayOfFotografiaDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="FotografiaDto" nillable="true" type="tns:FotografiaDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfFotografiaDto" nillable="true" type="tns:ArrayOfFotografiaDto" />
+  <xs:complexType name="FotografiaDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="id" type="ser:guid" />
+      <xs:element minOccurs="0" name="miPiace" nillable="true" type="xs:boolean" />
+      <xs:element minOccurs="0" name="numero" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="FotografiaDto" nillable="true" type="tns:FotografiaDto" />
+</xs:schema>

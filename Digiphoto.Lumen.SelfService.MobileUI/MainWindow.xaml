@@ -1,0 +1,22 @@
+﻿<Window x:Class="Digiphoto.Lumen.SelfService.MobileUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Digiphoto.Lumen.SelfService.MobileUI"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="825" Loaded="Window_Loaded" Closed="Window_Closed">
+    <Grid>
+        <ListBox Name="listBoxCarrelli" BorderBrush="Red" BorderThickness="1"	 Margin="22,86,0,29" ItemsSource="{Binding Path=listaCarrelli}" DisplayMemberPath="titolo" HorizontalAlignment="Left" Width="137" />
+        <Button x:Name="buttonGetCarrelli" Content="Get Carrelli" Margin="0,0,658,256" Click="buttonGetCarrelli_Click" Height="44" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="137"/>
+        <ListBox x:Name="listBoxFotografie" BorderBrush="Red" BorderThickness="1"	 Margin="236,86,0,29" ItemsSource="{Binding listaFotografie}" DisplayMemberPath="numero" HorizontalAlignment="Left" Width="112" />
+        <Button x:Name="buttonGetFotografie" Content="Get Fotografie" HorizontalAlignment="Left" Height="44" Margin="236,19,0,0" VerticalAlignment="Top" Width="112" Click="buttonGetFotografie_Click"/>
+
+        <Border BorderBrush="Green" BorderThickness="1" Margin="384,86,147,29">
+            <Image x:Name="imageFoto"  />
+        </Border>
+
+
+        <Button x:Name="buttonGetImage" Content="Get Image" HorizontalAlignment="Left" Margin="511,38,0,0" VerticalAlignment="Top" Width="82" Height="40" Click="buttonGetImage_Click"/>
+    </Grid>
+</Window>

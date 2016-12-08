@@ -1,8 +1,0 @@
-            <site name="SelfService" id="2" serverAutoStart="true">
-                <application path="/">
-                    <virtualDirectory path="/" physicalPath="%IIS_SITES_HOME%\SelfService" />
-                </application>
-                <bindings>
-                    <binding protocol="http" bindingInformation=":8080:lumenserver" />
-                </bindings>
-            </site>
