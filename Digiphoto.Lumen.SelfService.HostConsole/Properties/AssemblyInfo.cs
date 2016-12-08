@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle( "Digiphoto.Lumen.SelfService" )]
+[assembly: AssemblyTitle( "Digiphoto.Lumen.Remote.HostConsole" )]
 [assembly: AssemblyDescription( "" )]
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "" )]
-[assembly: AssemblyProduct( "Digiphoto.Lumen.SelfService" )]
+[assembly: AssemblyProduct( "Digiphoto.Lumen.Remote.HostConsole" )]
 [assembly: AssemblyCopyright( "Copyright ©  2016" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible( false )]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid( "041db5f1-c9bb-4152-bd4f-6fc23bfb4b38" )]
+[assembly: Guid( "2c41fa59-6c97-48a2-a5ef-bbe711b92456" )]
 
 // Version information for an assembly consists of the following four values:
 //
