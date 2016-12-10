@@ -28,6 +28,11 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			private set;
 		}
 
+		public void setCarrelloCorrente( Guid id ) {
+
+			carrelloCorrente = carrelli.Single( c => c.id == id );
+		}
+
 		public Carrello carrelloCorrente { get; set; }
 
 		#endregion

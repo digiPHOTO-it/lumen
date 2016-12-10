@@ -16,6 +16,13 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 		public bool? isVenduto { get; set; }
 
+		/// <summary>
+		/// true = solo SelfService
+		/// false = solo normali
+		/// null = entrambi (nessun filtro)
+		/// </summary>
+		public bool? soloSelfService { get; set; }
+
 		public IList<FaseDelGiorno>  fasiDelGiorno { get; set; }
 
 		public DateTime? giornataIniz {	get; set; }

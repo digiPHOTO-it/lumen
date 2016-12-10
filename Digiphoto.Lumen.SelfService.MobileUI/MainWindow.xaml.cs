@@ -71,7 +71,11 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
 		/// <param name="e"></param>
 		private void buttonGetFotografie_Click( object sender, RoutedEventArgs e ) {
 
-			var lista = ssClient.getListaFotografie( Guid.NewGuid() );
+			// Ricavo il carrello selezionato
+			Guid carrelloId = ((CarrelloDto)listBoxCarrelli.SelectedItem).id;
+
+			// Chiamo il servizio che mi ritorna tutte le fotografie di quel carrello
+			var lista = ssClient.getListaFotografie( carrelloId );
 			listaFotografie.Clear();
 			foreach( var fotografiaDto in lista ) {
 				listaFotografie.Add( fotografiaDto );
@@ -81,7 +85,9 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
 
 		private void buttonGetImage_Click( object sender, RoutedEventArgs e ) {
 
-			byte[] bytes = ssClient.getImage( Guid.NewGuid() );
+			Guid fotografiaId = ((FotografiaDto)listBoxFotografie.SelectedItem).id;
+
+			byte[] bytes = ssClient.getImage( fotografiaId );
 
 			// Salvo il file su disco
 			string filename = Path.ChangeExtension( Path.GetTempFileName(), ".jpg" );

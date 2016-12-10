@@ -84,13 +84,13 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string etichettaField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Guid idField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Nullable<bool> miPiaceField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string numeroField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -99,6 +99,19 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference {
             }
             set {
                 this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string etichetta {
+            get {
+                return this.etichettaField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.etichettaField, value) != true)) {
+                    this.etichettaField = value;
+                    this.RaisePropertyChanged("etichetta");
+                }
             }
         }
         
@@ -124,19 +137,6 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference {
                 if ((this.miPiaceField.Equals(value) != true)) {
                     this.miPiaceField = value;
                     this.RaisePropertyChanged("miPiace");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string numero {
-            get {
-                return this.numeroField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.numeroField, value) != true)) {
-                    this.numeroField = value;
-                    this.RaisePropertyChanged("numero");
                 }
             }
         }
