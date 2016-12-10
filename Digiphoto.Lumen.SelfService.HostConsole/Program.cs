@@ -22,8 +22,11 @@ namespace Digiphoto.Lumen.SelfService.HostConsole {
 			myServiceHost.Open();
 
 			//
-			Console.Out.WriteLine( "Step=3 : Servizio in esecuzione. Premere INVIO per terminare" );
-			Console.In.ReadLine();
+			string line;
+			do {
+				Console.Out.WriteLine( "Step=3 : Servizio in esecuzione. Digitare 'stop' + INVIO per terminare" );
+				line = Console.In.ReadLine();
+			} while( line.ToUpper() != "STOP" );
 
 			//
 			Console.Out.WriteLine( "Step=4 : Richiesta l'uscita" );

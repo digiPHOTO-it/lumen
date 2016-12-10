@@ -3,6 +3,13 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using Digiphoto.Lumen.Applicazione;
+using Digiphoto.Lumen.Servizi.Explorer;
+using Digiphoto.Lumen.Servizi.Ricerca;
+using Digiphoto.Lumen.Model;
+using Digiphoto.Lumen.Servizi.EntityRepository;
+using Digiphoto.Lumen.Util;
+using Digiphoto.Lumen.Core.Database;
 
 namespace Digiphoto.Lumen.SelfService {
 
@@ -10,82 +17,107 @@ namespace Digiphoto.Lumen.SelfService {
 
 		public SelfService() {
 
-			creaListaCarrelli();
-			creaListaFotografie();
+
+#if DEBUG
+				// Siccome in debug mi avvalgo del truschino di Visual Studio per avviare il servizio, faccio questo trucco solo per il debug.
+				// Normalmente deve essere l'applicazione Host che avvia e termina l'infrastruttura di Lumen
+
+				LumenApplication.Instance.avvia();
+#endif
+
 		}
 
-		private List<CarrelloDto> listaCarrelli;
 
 		public List<CarrelloDto> getListaCarrelli() {
+
+			List<CarrelloDto> listaCarrelli = new List<CarrelloDto>();
+
+			// Ricavo il servizio per estrarre i carrelli
+			ICarrelloExplorerSrv srv = LumenApplication.Instance.getServizioAvviato<ICarrelloExplorerSrv>();
+
+			// TODO decidere quanti carrelli al massimo. Per ora ne fisso 10.
+			ParamCercaCarrello param = new ParamCercaCarrello {
+			    soloSelfService = true,
+				isVenduto = false,
+				paginazione = new Util.Paginazione {
+					skip = 0,
+					take = 10
+				}
+			};
+
+			srv.cercaCarrelli( param );
+
+			// Creo la lista contenente gli oggetti di trasporto leggeri che ho ricavato dal servizio core.
+			foreach( var carrello in srv.carrelli ) {
+				CarrelloDto dto = new CarrelloDto();
+				dto.id = carrello.id;
+				dto.titolo = carrello.intestazione;
+				listaCarrelli.Add( dto );
+			}
+
+			// ritorno gli oggetti di trasporto al client
 			return listaCarrelli;
 		}
 
-		public void creaListaCarrelli() {
-
-			listaCarrelli = new List<CarrelloDto>();
-
-			listaCarrelli.Add( new CarrelloDto {
-				id = Guid.NewGuid(),
-				titolo = "carrello1"
-			} );
-
-			listaCarrelli.Add( new CarrelloDto {
-				id = Guid.NewGuid(),
-				titolo = "carrello2"
-			} );
-
-			listaCarrelli.Add( new CarrelloDto {
-				id = Guid.NewGuid(),
-				titolo = "carrello3"
-			} );
-
-		}
-
-		
-		private List<FotografiaDto> listaFotografie;
 
 		public List<FotografiaDto> getListaFotografie( Guid carrelloId ) {
+
+			// ricavo il servizio dei carrelli e imposto quello corrente
+			ICarrelloExplorerSrv srv = LumenApplication.Instance.getServizioAvviato<ICarrelloExplorerSrv>();
+			srv.setCarrelloCorrente( carrelloId );
+
+			List<FotografiaDto> listaFotografie = new List<FotografiaDto>();
+			
+			foreach( RigaCarrello riga in srv.carrelloCorrente.righeCarrello ) {
+
+
+				if( riga.fotografia_id != null ) {
+
+					FotografiaDto dto = new FotografiaDto();
+					dto.id = riga.fotografia.id;
+					dto.etichetta = riga.fotografia.etichetta;
+					dto.miPiace = false; // TODO aggiungere nuovo flag su Fotografia
+
+					listaFotografie.Add( dto );
+				}
+
+
+			}
+
+
 			return listaFotografie;
 		}
 
-		void creaListaFotografie() {
-
-			listaFotografie = new List<FotografiaDto>();
-
-			listaFotografie.Add( new FotografiaDto {
-				id = Guid.NewGuid(),
-				numero = "A1",
-				miPiace = true
-			} );
-
-			listaFotografie.Add( new FotografiaDto {
-				id = Guid.NewGuid(),
-				numero = "B2",
-				miPiace = true
-			} );
-
-			listaFotografie.Add( new FotografiaDto {
-				id = Guid.NewGuid(),
-				numero = "C3",
-				miPiace = true
-			} );
-
-		}
 
 		public void setMiPiace( Guid fotografiaId, bool miPiace ) {
-			listaFotografie.Single( f => f.id == fotografiaId ).miPiace = miPiace;
+			
+			// TODO		
+//		listaFotografie.Single( f => f.id == fotografiaId ).miPiace = miPiace;
 		}
 
+		/// <summary>
+		/// Ritorna lo stream di byte di cui è composto il jpeg della foto
+		/// </summary>
+		/// <param name="fotografiaId"></param>
+		/// <returns></returns>
 		public byte[] getImage( Guid fotografiaId ) {
 
-			// prendo un file a caso
-			var files = Directory.GetFiles( @"C:\Users\bluca\Pictures\Battesimo Emanuele", "*.jpg" );
-			int quanti = files.Count();
+			byte[] bytes = null;
 
-			Random rnd = new Random();
-			int pos = rnd.Next( 0, quanti - 1 );
+            using( new UnitOfWorkScope() ) { 
 
-			return System.IO.File.ReadAllBytes( files[pos] );
+				var srv = LumenApplication.Instance.getServizioAvviato<IEntityRepositorySrv<Fotografia>>();
+
+				Fotografia fotografia = srv.getById( fotografiaId );
+
+				string nomeFileImg = AiutanteFoto.idrataImmagineDaStampare( fotografia );
+
+				bytes = File.ReadAllBytes( nomeFileImg );
+
+				AiutanteFoto.disposeImmagini( fotografia, IdrataTarget.Tutte );
+			}
+
+			return bytes;
 		}
 	}
 }

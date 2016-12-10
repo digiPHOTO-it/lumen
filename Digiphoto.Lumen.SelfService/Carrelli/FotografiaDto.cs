@@ -8,7 +8,7 @@ namespace Digiphoto.Lumen.SelfService.Carrelli {
 
 		private Guid _id;
 		private bool? _miPiace;
-		private string _numero;
+		private string _etichetta;
 
 		[DataMember]
 		public Guid id {
@@ -23,9 +23,9 @@ namespace Digiphoto.Lumen.SelfService.Carrelli {
 		}
 
 		[DataMember]
-		public string numero {
-			get { return _numero; }
-			set { _numero = value; }
+		public string etichetta {
+			get { return _etichetta; }
+			set { _etichetta = value; }
 		}
 
 	}

@@ -22,9 +22,9 @@
   <xs:element name="ArrayOfFotografiaDto" nillable="true" type="tns:ArrayOfFotografiaDto" />
   <xs:complexType name="FotografiaDto">
     <xs:sequence>
+      <xs:element minOccurs="0" name="etichetta" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="id" type="ser:guid" />
       <xs:element minOccurs="0" name="miPiace" nillable="true" type="xs:boolean" />
-      <xs:element minOccurs="0" name="numero" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="FotografiaDto" nillable="true" type="tns:FotografiaDto" />
