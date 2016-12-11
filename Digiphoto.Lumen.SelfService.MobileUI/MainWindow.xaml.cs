@@ -62,6 +62,8 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
 			foreach( var carrelloDto in lista ) {
 				listaCarrelli.Add( carrelloDto );
 			}
+
+			MessageBox.Show( "Recuperati " + listaCarrelli.Count + " carrelli." );
 		}
 
 		/// <summary>
@@ -80,6 +82,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
 			foreach( var fotografiaDto in lista ) {
 				listaFotografie.Add( fotografiaDto );
 			}
+			MessageBox.Show( "Recuperate " + listaFotografie.Count + " foto." );
 		}
 
 
@@ -102,11 +105,14 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
 		private void buttonMiPiace_Click( object sender, RoutedEventArgs e ) {
 			Guid fotografiaId = ((FotografiaDto)listBoxFotografie.SelectedItem).id;
 			ssClient.setMiPiace( fotografiaId, true );
+			MessageBox.Show( "Impostazione eseguita" );
 		}
 
 		private void buttonNonMiPiace_Click( object sender, RoutedEventArgs e ) {
 			Guid fotografiaId = ((FotografiaDto)listBoxFotografie.SelectedItem).id;
 			ssClient.setMiPiace( fotografiaId, false );
+			MessageBox.Show( "Impostazione eseguita" );
 		}
+
 	}
 }
