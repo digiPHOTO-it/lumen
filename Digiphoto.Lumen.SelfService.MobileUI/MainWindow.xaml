@@ -12,11 +12,13 @@
         <ListBox x:Name="listBoxFotografie" BorderBrush="Red" BorderThickness="1"	 Margin="236,86,0,29" ItemsSource="{Binding listaFotografie}" DisplayMemberPath="etichetta" HorizontalAlignment="Left" Width="112" />
         <Button x:Name="buttonGetFotografie" Content="Get Fotografie" HorizontalAlignment="Left" Height="44" Margin="236,19,0,0" VerticalAlignment="Top" Width="112" Click="buttonGetFotografie_Click"/>
 
-        <Border BorderBrush="Green" BorderThickness="1" Margin="384,86,147,29">
+        <Border BorderBrush="Green" BorderThickness="1" Margin="460,86,147,74">
             <Image x:Name="imageFoto"  />
         </Border>
 
 
         <Button x:Name="buttonGetImage" Content="Get Image" HorizontalAlignment="Left" Margin="511,38,0,0" VerticalAlignment="Top" Width="82" Height="40" Click="buttonGetImage_Click"/>
+        <Button x:Name="buttonMiPiace" Content="Mi Piace" HorizontalAlignment="Left" Height="31" Margin="353,101,0,0" VerticalAlignment="Top" Width="93" Click="buttonMiPiace_Click"/>
+        <Button x:Name="buttonNonMiPiace" Content="NON mi Piace" HorizontalAlignment="Left" Height="31" Margin="353,157,0,0" VerticalAlignment="Top" Width="93" Click="buttonNonMiPiace_Click"/>
     </Grid>
 </Window>

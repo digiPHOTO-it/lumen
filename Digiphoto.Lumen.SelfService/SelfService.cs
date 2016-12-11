@@ -90,9 +90,18 @@ namespace Digiphoto.Lumen.SelfService {
 
 
 		public void setMiPiace( Guid fotografiaId, bool miPiace ) {
-			
-			// TODO		
-//		listaFotografie.Single( f => f.id == fotografiaId ).miPiace = miPiace;
+
+			using( new UnitOfWorkScope( true ) ) {
+
+				var srv = LumenApplication.Instance.getServizioAvviato<IEntityRepositorySrv<Fotografia>>();
+				Fotografia foto = srv.getById( fotografiaId );
+
+				// TODO per il momento non ho a disposizione il nuovo flag. Lo scrivo nella didascalia, giusto per fare una prova.
+				foto.miPiace = miPiace;
+
+				srv.update( ref foto );
+			}
+
 		}
 
 		/// <summary>

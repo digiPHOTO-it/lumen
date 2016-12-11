@@ -53,9 +53,9 @@ namespace Digiphoto.Lumen.Model
     
         public virtual Evento evento { get; set; }
         public virtual Fotografo fotografo { get; set; }
-    
-    	#region INotifyPropertyChanged
-    	public event PropertyChangedEventHandler PropertyChanged;
+		public Nullable<bool> miPiace { get; set; }
+		#region INotifyPropertyChanged
+		public event PropertyChangedEventHandler PropertyChanged;
     
     	protected void OnPropertyChanged(string propertyName)
     	{

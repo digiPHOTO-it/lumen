@@ -19,6 +19,7 @@ namespace Digiphoto.Lumen.Model
         public Carrello()
         {
             this.venduto = false;
+            this.visibileSelfService = true;
             this.incassiFotografi = new HashSet<IncassoFotografo>();
             this.righeCarrello = new HashSet<RigaCarrello>();
         }
@@ -58,6 +59,7 @@ namespace Digiphoto.Lumen.Model
     		}
     	}
     
+    	public bool visibileSelfService { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<IncassoFotografo> incassiFotografi { get; set; }
