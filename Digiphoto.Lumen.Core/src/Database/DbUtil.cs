@@ -15,13 +15,14 @@ using Digiphoto.Lumen.Config;
 using System.Data.Common;
 using System.Security.AccessControl;
 using System.Data.Entity.Core.EntityClient;
+using System.Globalization;
 
 namespace Digiphoto.Lumen.Core.Database {
 
 	public class DbUtil {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof(DbUtil) );
-
+		public const string VERSIONE_DB_COMPATIBILE = "1.3";
 
 		public string nomeFileDbVuoto;
 		public string nomeFileDbPieno;
@@ -88,13 +89,20 @@ namespace Digiphoto.Lumen.Core.Database {
 
 					conn.Open();
 
-					string sql = "select count(*) from Fotografi";
+					string sql = "select versioneDbCompatibile from InfosFisse";
 					using( DbCommand comm = conn.CreateCommand() ) {
 						comm.CommandText = sql;
 						using( DbDataReader rdr = comm.ExecuteReader() ) {
 							while( rdr.Read() ) {
-								int quanti = rdr.GetInt32( 0 );
-								usabile = true;
+
+								string versioneAttuale = rdr.GetString( 0 );
+								_giornale.Info( "Controllo versione DB: Attuale=" + versioneAttuale + " ; Richiesta=" + VERSIONE_DB_COMPATIBILE );
+								decimal dVerAttuale = decimal.Parse( versioneAttuale, CultureInfo.InvariantCulture );
+								decimal dVerRichiesta = decimal.Parse( VERSIONE_DB_COMPATIBILE, CultureInfo.InvariantCulture );
+								if( dVerAttuale < dVerRichiesta ) {
+									msgErrore = "Schema del Database non aggiornato. Richiesta aggiornamento alla versione " + VERSIONE_DB_COMPATIBILE;
+								} else
+									usabile = true;
 							}
 						}
 					}

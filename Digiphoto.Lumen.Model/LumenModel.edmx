@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="LumenModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=&quot;C:\Users\bluca\Documents\Visual Studio 2015\Projects\lumen\Digiphoto.Lumen.Model\dbVuoto.sqlite&quot;" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="LumenModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=&quot;C:\Users\bluca\Documents\Visual Studio 2015\Projects\lumen\Digiphoto.Lumen.Model\dbVuoto.sqlite&quot;" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AzioniAutomatiche">
           <Key>
             <PropertyRef Name="id" />
@@ -27,6 +27,7 @@
           <Property Name="note" Type="nvarchar" MaxLength="2147483647" />
           <Property Name="totMasterizzate" Type="smallint" Nullable="false" />
           <Property Name="prezzoDischetto" Type="decimal" Precision="6" Scale="2" />
+          <Property Name="visibileSelfService" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="ConsumiCartaGiornalieri">
           <Key>
@@ -87,6 +88,7 @@
           <Property Name="contaMasterizzata" Type="smallint" Nullable="false" />
           <Property Name="evento_id" Type="uniqueidentifier" />
           <Property Name="fotografo_id" Type="nvarchar" MaxLength="16" Nullable="false" />
+          <Property Name="miPiace" Type="bit" />
         </EntityType>
         <EntityType Name="Giornate">
           <Key>
@@ -335,8 +337,7 @@
             <End Role="ScarichiCards" EntitySet="ScarichiCards" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="Digiphoto.Lumen.Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -372,6 +373,7 @@
           </Property>
           <NavigationProperty Name="incassiFotografi" Relationship="Digiphoto.Lumen.Model.FK_IncassiFotografi_Carrello" FromRole="Carrelli" ToRole="IncassiFotografi" />
           <NavigationProperty Name="righeCarrello" Relationship="Digiphoto.Lumen.Model.FK_RigheCarrelli_Carrelli" FromRole="Carrelli" ToRole="RigheCarrelli" />
+          <Property Name="visibileSelfService" Type="Boolean" Nullable="false" DefaultValue="true" />
         </EntityType>
         <EntityType Name="ConsumoCartaGiornaliero">
           <Key>
@@ -435,6 +437,7 @@
           <Property Name="fotografo_id" Nullable="false" MaxLength="16" FixedLength="false" Unicode="true" Type="String" />
           <NavigationProperty Name="evento" Relationship="Self.FK_Fotografie_1_0" FromRole="Fotografie" ToRole="Eventi" />
           <NavigationProperty Name="fotografo" Relationship="Self.FK_Fotografie_0_0" FromRole="Fotografie" ToRole="Fotografi" />
+          <Property Name="miPiace" Type="Boolean" Nullable="true" />
         </EntityType>
         <EntityType Name="Giornata">
           <Key>
@@ -482,7 +485,7 @@
           <Property Name="id" Type="String" MaxLength="1" FixedLength="false" Unicode="true" Nullable="false" DefaultValue="K" />
           <Property Name="ultimoNumFotogramma" Type="Int32" Nullable="false" />
           <Property Name="dataUltimoScarico" Type="DateTime" />
-          <Property Name="versioneDbCompatibile" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" DefaultValue="1.1" />
+          <Property Name="versioneDbCompatibile" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" DefaultValue="1.3" />
           <Property Name="modoNumerazFoto" Type="String" MaxLength="1" FixedLength="false" Unicode="true" Nullable="false" DefaultValue="X" />
           <Property Name="pixelProvino" Type="Int16" Nullable="false" />
           <Property Name="idPuntoVendita" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
@@ -729,6 +732,7 @@
           <EntitySetMapping Name="Carrelli">
             <EntityTypeMapping TypeName="Digiphoto.Lumen.Model.Carrello">
               <MappingFragment StoreEntitySet="Carrelli">
+                <ScalarProperty Name="visibileSelfService" ColumnName="visibileSelfService" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="giornata" ColumnName="giornata" />
                 <ScalarProperty Name="tempo" ColumnName="tempo" />
@@ -790,6 +794,7 @@
           <EntitySetMapping Name="Fotografie">
             <EntityTypeMapping TypeName="Digiphoto.Lumen.Model.Fotografia">
               <MappingFragment StoreEntitySet="Fotografie">
+                <ScalarProperty Name="miPiace" ColumnName="miPiace" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="nomeFile" ColumnName="nomeFile" />
                 <ScalarProperty Name="dataOraScatto" ColumnName="dataOraScatto" />

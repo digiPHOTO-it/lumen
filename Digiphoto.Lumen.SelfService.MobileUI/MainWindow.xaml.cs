@@ -99,6 +99,14 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
 			imageFoto.Source = imageSource;
 		}
 
+		private void buttonMiPiace_Click( object sender, RoutedEventArgs e ) {
+			Guid fotografiaId = ((FotografiaDto)listBoxFotografie.SelectedItem).id;
+			ssClient.setMiPiace( fotografiaId, true );
+		}
 
+		private void buttonNonMiPiace_Click( object sender, RoutedEventArgs e ) {
+			Guid fotografiaId = ((FotografiaDto)listBoxFotografie.SelectedItem).id;
+			ssClient.setMiPiace( fotografiaId, false );
+		}
 	}
 }
