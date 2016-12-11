@@ -247,6 +247,11 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 				}
 			}
 
+			// Filtro solo i carrelli visibili per il self service
+			if( param.soloSelfService != null ) {
+				query = query.Where( cc => cc.visibileSelfService == param.soloSelfService );
+			}
+
 			// ----- Filtro fotografo
 			if (param.fotografi != null)
 			{
