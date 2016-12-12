@@ -34,7 +34,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
@@ -58,6 +67,7 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\DataSources\Digiphoto.Lumen.SelfService.Carrelli.CarrelloDto.datasource" />
     <None Include="Properties\DataSources\Digiphoto.Lumen.SelfService.Carrelli.FotografiaDto.datasource" />
     <None Include="Service References\SelfServiceReference\Digiphoto.Lumen.SelfService.Carrelli1.xsd">
@@ -90,12 +100,33 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Digiphoto.Lumen.Core\Digiphoto.Lumen.Core.csproj">
+      <Project>{34477397-b3b8-4dd1-8418-d7e9eed4d006}</Project>
+      <Name>Digiphoto.Lumen.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Digiphoto.Lumen.Imaging.Wic\Digiphoto.Lumen.Imaging.Wic.csproj">
+      <Project>{3ec29a25-fd9d-4593-ba20-60a9f7917e50}</Project>
+      <Name>Digiphoto.Lumen.Imaging.Wic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Digiphoto.Lumen.Model\Digiphoto.Lumen.Model.csproj">
+      <Project>{83d8301e-7999-4179-962c-1bfa507f5396}</Project>
+      <Name>Digiphoto.Lumen.Model</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Digiphoto.Lumen.SelfService\Digiphoto.Lumen.SelfService.csproj">
       <Project>{041db5f1-c9bb-4152-bd4f-6fc23bfb4b38}</Project>
       <Name>Digiphoto.Lumen.SelfService</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(SolutionDir)packages\System.Data.SQLite.Core.1.0.99.0\lib\net46\System.Data.SQLite.dll"  "$(TargetDir)" /y
+
+copy "$(SolutionDir)packages\System.Data.SQLite.Core.1.0.99.0\build\net46\x64\SQLite.Interop.dll"  "$(TargetDir)" /y
+
+copy "$(SolutionDir)packages\System.Data.SQLite.Linq.1.0.99.0\lib\net46\System.Data.SQLite.Linq.dll"  "$(TargetDir)" /y
+
+copy "$(SolutionDir)packages\System.Data.SQLite.EF6.1.0.99.0\lib\net46\System.Data.SQLite.EF6.dll"  "$(TargetDir)" /y</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
