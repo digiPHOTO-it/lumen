@@ -362,7 +362,9 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\DataSources\Digiphoto.Lumen.Servizi.Reports.ConsumoCarta.RigaReportConsumoCarta.datasource" />
     <None Include="Properties\DataSources\Digiphoto.Lumen.Servizi.Reports.ReportVenditeDettaglio.datasource" />
     <None Include="Properties\DataSources\Digiphoto.Lumen.Servizi.Reports.RigaReportProvvigioni.datasource" />

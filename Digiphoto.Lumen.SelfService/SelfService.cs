@@ -19,10 +19,11 @@ namespace Digiphoto.Lumen.SelfService {
 
 
 #if DEBUG
-				// Siccome in debug mi avvalgo del truschino di Visual Studio per avviare il servizio, faccio questo trucco solo per il debug.
-				// Normalmente deve essere l'applicazione Host che avvia e termina l'infrastruttura di Lumen
-
+			// Siccome in debug mi avvalgo del truschino di Visual Studio per avviare il servizio, faccio questo trucco solo per il debug.
+			// Normalmente deve essere l'applicazione Host che avvia e termina l'infrastruttura di Lumen
+            if( LumenApplication.Instance.avviata == false ) {
 				LumenApplication.Instance.avvia();
+            }
 #endif
 
 		}

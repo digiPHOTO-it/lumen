@@ -5,20 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Digiphoto.Lumen.SelfService.MobileUI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="825" Loaded="Window_Loaded" Closed="Window_Closed">
+        Title="Prova Mobile UI" Height="350" Width="574.5" Loaded="Window_Loaded" Closed="Window_Closed">
     <Grid>
-        <ListBox Name="listBoxCarrelli" BorderBrush="Red" BorderThickness="1"	 Margin="22,86,0,29" ItemsSource="{Binding Path=listaCarrelli}" DisplayMemberPath="titolo" HorizontalAlignment="Left" Width="137" />
-        <Button x:Name="buttonGetCarrelli" Content="Get Carrelli" Margin="0,0,658,256" Click="buttonGetCarrelli_Click" Height="44" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="137"/>
-        <ListBox x:Name="listBoxFotografie" BorderBrush="Red" BorderThickness="1"	 Margin="236,86,0,29" ItemsSource="{Binding listaFotografie}" DisplayMemberPath="etichetta" HorizontalAlignment="Left" Width="112" />
-        <Button x:Name="buttonGetFotografie" Content="Get Fotografie" HorizontalAlignment="Left" Height="44" Margin="236,19,0,0" VerticalAlignment="Top" Width="112" Click="buttonGetFotografie_Click"/>
+        <ListBox Name="listBoxCarrelli" BorderBrush="Red" BorderThickness="1"	 Margin="22,86,0,0" ItemsSource="{Binding Path=listaCarrelli}" DisplayMemberPath="titolo" HorizontalAlignment="Left" Width="155" Height="204" VerticalAlignment="Top" />
+        <Button x:Name="buttonGetCarrelli" Content="Get Carrelli" Margin="22,21,0,0" Click="buttonGetCarrelli_Click" HorizontalAlignment="Left" Width="155" Height="44" VerticalAlignment="Top"/>
+        <ListBox x:Name="listBoxFotografie" BorderBrush="Red" BorderThickness="1"	 Margin="198,86,0,0" ItemsSource="{Binding listaFotografie}" DisplayMemberPath="etichetta" HorizontalAlignment="Left" Width="112" Height="204" VerticalAlignment="Top" />
+        <Button x:Name="buttonGetFotografie" Content="Get Fotografie" Margin="198,21,0,0" Click="buttonGetFotografie_Click" HorizontalAlignment="Left" Width="112" Height="44" VerticalAlignment="Top"/>
 
-        <Border BorderBrush="Green" BorderThickness="1" Margin="382,86,225,74">
+        <Border BorderBrush="Green" BorderThickness="1" Margin="337,86,0,0" HorizontalAlignment="Left" Width="210" Height="159" VerticalAlignment="Top">
             <Image x:Name="imageFoto"  />
         </Border>
 
 
-        <Button x:Name="buttonGetImage" Content="Get Image" HorizontalAlignment="Left" Margin="409,23,0,0" VerticalAlignment="Top" Width="82" Height="40" Click="buttonGetImage_Click"/>
-        <Button x:Name="buttonMiPiace" Content="Mi Piace" HorizontalAlignment="Left" Height="31" Margin="609,108,0,0" VerticalAlignment="Top" Width="93" Click="buttonMiPiace_Click"/>
-        <Button x:Name="buttonNonMiPiace" Content="NON mi Piace" HorizontalAlignment="Left" Height="31" Margin="609,156,0,0" VerticalAlignment="Top" Width="93" Click="buttonNonMiPiace_Click"/>
+        <Button x:Name="buttonGetImage" Content="Get Image" Margin="337,25,0,0" Click="buttonGetImage_Click" HorizontalAlignment="Left" Width="210" Height="40" VerticalAlignment="Top"/>
+        <Button x:Name="buttonMiPiace" Content="Mi Piace" Margin="337,259,0,0" Click="buttonMiPiace_Click" HorizontalAlignment="Left" Width="93" Height="31" VerticalAlignment="Top"/>
+        <Button x:Name="buttonNonMiPiace" Content="NON mi Piace" Margin="454,259,0,0" Click="buttonNonMiPiace_Click" HorizontalAlignment="Left" Width="93" Height="31" VerticalAlignment="Top"/>
     </Grid>
 </Window>
