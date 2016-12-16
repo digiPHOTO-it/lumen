@@ -175,6 +175,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
 
@@ -250,6 +251,33 @@
                 <Label Content="Oper" Grid.Row="0" Grid.Column="7" Style="{StaticResource styleLabelRigaCarrello}" />
                 <Label Content="{Binding Path=fotografo.iniziali}" Grid.Row="1" Grid.Column="7" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{StaticResource styleLabelRigaCarrello}" ToolTip="{Binding Path=fotografo.cognomeNome}" />
 
+                <!-- Icona Mi Piace / Non mi piace -->
+                <Label Content="Like" Grid.Row="0" Grid.Column="8" Style="{StaticResource styleLabelRigaCarrello}" ToolTip="Like" />
+                <Image Grid.Row="1" Grid.Column="8" Height="18">
+                    <Image.ToolTip >
+                        <TextBlock >
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="Mi piace {0}">
+                                    <Binding Path="fotografia.miPiace" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </Image.ToolTip>
+
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=fotografia.miPiace, Mode=OneWay}" Value="True" >
+                                    <Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/foto-mi-piace-16x16.png" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=fotografia.miPiace, Mode=OneWay}" Value="False" >
+                                    <Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/foto-non-mi-piace-16x16.png" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+
             </Grid>
 		</GroupBox>
     </DataTemplate>
@@ -273,14 +301,14 @@
 					<RowDefinition />
 					<RowDefinition />
 				</Grid.RowDefinitions>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto"/>
-					<ColumnDefinition Width="Auto"/>
-					<ColumnDefinition Width="Auto"/>
-				</Grid.ColumnDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-
-				<Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" 
+                <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" 
                         BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="4" Margin="2,2,2,2">
 					<Canvas	Height="50" Width="50">
 						<Image 
@@ -338,7 +366,34 @@
 				<Label Content="Oper" Grid.Row="0" Grid.Column="2" Style="{StaticResource styleLabelRigaCarrello}" />
 				<Label Content="{Binding Path=fotografo.iniziali}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{StaticResource styleLabelRigaCarrello}" ToolTip="{Binding Path=fotografo.cognomeNome}" />
 
-			</Grid>
+                <!-- Icona Mi Piace / Non mi piace -->
+                <Label Content="Like" Grid.Row="0" Grid.Column="3" Style="{StaticResource styleLabelRigaCarrello}" ToolTip="Like" />
+                <Image Grid.Row="1" Grid.Column="3" Width="16">
+                    <Image.ToolTip >
+                        <TextBlock >
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="Mi piace {0}">
+                                    <Binding Path="fotografia.miPiace" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </Image.ToolTip>
+
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=fotografia.miPiace, Mode=OneWay}" Value="True" >
+                                    <Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/foto-mi-piace-16x16.png" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=fotografia.miPiace, Mode=OneWay}" Value="False" >
+                                    <Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/foto-non-mi-piace-16x16.png" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+
+            </Grid>
 		</GroupBox>
 	</DataTemplate>
 

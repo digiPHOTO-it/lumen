@@ -111,16 +111,30 @@ namespace Digiphoto.Lumen.SelfService {
 		/// <param name="fotografiaId"></param>
 		/// <returns></returns>
 		public byte[] getImage( Guid fotografiaId ) {
+			return getImage( fotografiaId, IdrataTarget.Risultante );
+		}
+
+		public byte[] getImageProvino( Guid fotografiaId ) {
+			return getImage( fotografiaId, IdrataTarget.Provino );
+		}
+
+		private byte[] getImage( Guid fotografiaId, IdrataTarget quale ) {
 
 			byte[] bytes = null;
 
-            using( new UnitOfWorkScope() ) { 
+			using( new UnitOfWorkScope() ) {
 
 				var srv = LumenApplication.Instance.getServizioAvviato<IEntityRepositorySrv<Fotografia>>();
 
 				Fotografia fotografia = srv.getById( fotografiaId );
 
-				string nomeFileImg = AiutanteFoto.idrataImmagineDaStampare( fotografia );
+				string nomeFileImg;
+
+				// Qui faccio una piccola miglioria: Se l'immagine risultante ha delle correzioni non ancora applicate, le applico adesso.
+                if( quale == IdrataTarget.Risultante )
+					nomeFileImg = AiutanteFoto.idrataImmagineDaStampare( fotografia );
+				else
+					nomeFileImg = AiutanteFoto.idrataImmaginiFoto( fotografia, quale );
 
 				bytes = File.ReadAllBytes( nomeFileImg );
 
@@ -128,6 +142,10 @@ namespace Digiphoto.Lumen.SelfService {
 			}
 
 			return bytes;
+		}
+
+		public byte[] getImageLogo() {
+			throw new NotImplementedException();
 		}
 	}
 }

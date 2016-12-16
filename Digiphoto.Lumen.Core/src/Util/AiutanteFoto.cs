@@ -73,23 +73,25 @@ namespace Digiphoto.Lumen.Util {
 		/// Idrato tutte le immagini associate alla foto.
 		/// Per decidere più puntualmente usare l'altro overload dove si indica il target
 		/// </summary>
-		public static void idrataImmaginiFoto( Fotografia foto ) {
-			idrataImmaginiFoto( foto, IdrataTarget.Tutte );
+		public static string idrataImmaginiFoto( Fotografia foto ) {
+			return idrataImmaginiFoto( foto, IdrataTarget.Tutte );
 		}
 
 		/** 
 		 * Devo caricare gli attributi transienti della fotografia 
 		 */
-		public static void idrataImmaginiFoto( Fotografia foto, IdrataTarget target ) {
-			idrataImmaginiFoto( foto, target, false );
+		public static string idrataImmaginiFoto( Fotografia foto, IdrataTarget target ) {
+			return idrataImmaginiFoto( foto, target, false );
 		}
 
-		public static void idrataImmaginiFoto( Fotografia foto, IdrataTarget target, bool forzatamente ) {
+		public static string idrataImmaginiFoto( Fotografia foto, IdrataTarget target, bool forzatamente ) {
 
 			System.Diagnostics.Debug.Assert( foto != null );  // Non deve succedere. Punto e basta.
 
 			IGestoreImmagineSrv gis = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
 			gis.idrataImmaginiFoto( foto, target, forzatamente );
+
+			return PathUtil.nomeCompletoFile( foto, target );
 		}
 
 		public static IdrataTarget qualeImmagineDaStampare( Fotografia foto ) {
