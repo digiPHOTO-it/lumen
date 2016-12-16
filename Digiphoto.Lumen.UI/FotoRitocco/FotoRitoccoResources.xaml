@@ -111,7 +111,37 @@
 					</Image.Style>
 				</Image>
 
-            <!-- IL font con cui stampo il numero, ha grandezza proporzionale al canvas . Per ora uso 8% della grandezza del contenitore della foto -->
+                <!-- Icona Mi Piace / Non mi piace -->
+                <Image 	Width="16"
+					HorizontalAlignment="Right"
+					VerticalAlignment="Bottom"
+					Margin="0,0,24,4"
+				>
+                    <Image.ToolTip >
+                        <TextBlock >
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="Mi piace {0}">
+                                    <Binding Path="miPiace" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </Image.ToolTip>
+
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=miPiace, Mode=OneWay}" Value="True" >
+                                    <Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/foto-mi-piace-16x16.png" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=miPiace, Mode=OneWay}" Value="False" >
+                                    <Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/foto-non-mi-piace-16x16.png" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+
+                <!-- IL font con cui stampo il numero, ha grandezza proporzionale al canvas . Per ora uso 8% della grandezza del contenitore della foto -->
             <Label x:Name="NumFoto"  
                     Content="{Binding Path=etichetta}"    
 					VerticalAlignment="Top" HorizontalAlignment="Right"

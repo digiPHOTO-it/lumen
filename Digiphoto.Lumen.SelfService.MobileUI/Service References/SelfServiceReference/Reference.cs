@@ -173,6 +173,18 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISelfService/getImage", ReplyAction="http://tempuri.org/ISelfService/getImageResponse")]
         System.Threading.Tasks.Task<byte[]> getImageAsync(System.Guid fotografiaId);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISelfService/getImageProvino", ReplyAction="http://tempuri.org/ISelfService/getImageProvinoResponse")]
+        byte[] getImageProvino(System.Guid fotografiaId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISelfService/getImageProvino", ReplyAction="http://tempuri.org/ISelfService/getImageProvinoResponse")]
+        System.Threading.Tasks.Task<byte[]> getImageProvinoAsync(System.Guid fotografiaId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISelfService/getImageLogo", ReplyAction="http://tempuri.org/ISelfService/getImageLogoResponse")]
+        byte[] getImageLogo();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISelfService/getImageLogo", ReplyAction="http://tempuri.org/ISelfService/getImageLogoResponse")]
+        System.Threading.Tasks.Task<byte[]> getImageLogoAsync();
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISelfService/setMiPiace", ReplyAction="http://tempuri.org/ISelfService/setMiPiaceResponse")]
         void setMiPiace(System.Guid fotografiaId, bool miPiace);
         
@@ -229,6 +241,22 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference {
         
         public System.Threading.Tasks.Task<byte[]> getImageAsync(System.Guid fotografiaId) {
             return base.Channel.getImageAsync(fotografiaId);
+        }
+        
+        public byte[] getImageProvino(System.Guid fotografiaId) {
+            return base.Channel.getImageProvino(fotografiaId);
+        }
+        
+        public System.Threading.Tasks.Task<byte[]> getImageProvinoAsync(System.Guid fotografiaId) {
+            return base.Channel.getImageProvinoAsync(fotografiaId);
+        }
+        
+        public byte[] getImageLogo() {
+            return base.Channel.getImageLogo();
+        }
+        
+        public System.Threading.Tasks.Task<byte[]> getImageLogoAsync() {
+            return base.Channel.getImageLogoAsync();
         }
         
         public void setMiPiace(System.Guid fotografiaId, bool miPiace) {

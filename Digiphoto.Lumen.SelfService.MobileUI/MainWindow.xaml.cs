@@ -3,6 +3,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -90,8 +91,15 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
 
 			Guid fotografiaId = ((FotografiaDto)listBoxFotografie.SelectedItem).id;
 
-			byte[] bytes = ssClient.getImage( fotografiaId );
-
+			byte[] bytes = null;
+            string quale = (String) ((Button)sender).Tag;
+			if( quale == "Provino" )
+				bytes = ssClient.getImageProvino( fotografiaId );
+			else if( quale == "Logo" )
+				bytes = ssClient.getImageLogo();
+			else if( quale == "Risultante" )
+				bytes = ssClient.getImage( fotografiaId );
+				
 			// Salvo il file su disco
 			string filename = Path.ChangeExtension( Path.GetTempFileName(), ".jpg" );
 
@@ -100,6 +108,8 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
 			ImageSource imageSource = new BitmapImage( new Uri( filename ) );
 			imageSource.Freeze();
 			imageFoto.Source = imageSource;
+
+			MessageBox.Show( "size immagine = " + bytes.Length + " bytes" );
 		}
 
 		private void buttonMiPiace_Click( object sender, RoutedEventArgs e ) {

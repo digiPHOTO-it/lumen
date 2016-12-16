@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Digiphoto.Lumen.SelfService.MobileUI"
         mc:Ignorable="d"
-        Title="Prova Mobile UI" Height="350" Width="574.5" Loaded="Window_Loaded" Closed="Window_Closed">
+        Title="Prova Mobile UI" Height="337" Width="574.5" Loaded="Window_Loaded" Closed="Window_Closed">
     <Grid>
         <ListBox Name="listBoxCarrelli" BorderBrush="Red" BorderThickness="1"	 Margin="22,86,0,0" ItemsSource="{Binding Path=listaCarrelli}" DisplayMemberPath="titolo" HorizontalAlignment="Left" Width="155" Height="204" VerticalAlignment="Top" />
         <Button x:Name="buttonGetCarrelli" Content="Get Carrelli" Margin="22,21,0,0" Click="buttonGetCarrelli_Click" HorizontalAlignment="Left" Width="155" Height="44" VerticalAlignment="Top"/>
@@ -17,8 +17,10 @@
         </Border>
 
 
-        <Button x:Name="buttonGetImage" Content="Get Image" Margin="337,25,0,0" Click="buttonGetImage_Click" HorizontalAlignment="Left" Width="210" Height="40" VerticalAlignment="Top"/>
+        <Button x:Name="buttonGetImage" Content="Image" Margin="337,25,0,0" Click="buttonGetImage_Click" Tag="Risultante" HorizontalAlignment="Left" Width="48" Height="40" VerticalAlignment="Top"/>
         <Button x:Name="buttonMiPiace" Content="Mi Piace" Margin="337,259,0,0" Click="buttonMiPiace_Click" HorizontalAlignment="Left" Width="93" Height="31" VerticalAlignment="Top"/>
         <Button x:Name="buttonNonMiPiace" Content="NON mi Piace" Margin="454,259,0,0" Click="buttonNonMiPiace_Click" HorizontalAlignment="Left" Width="93" Height="31" VerticalAlignment="Top"/>
+        <Button x:Name="buttonGetProvino" Content="Provino" Margin="416,25,0,0" Click="buttonGetImage_Click" Tag="Provino" HorizontalAlignment="Left" Width="51" Height="40" VerticalAlignment="Top"/>
+        <Button x:Name="buttonGetLogo" Content="Logo" Margin="496,25,0,0" Click="buttonGetImage_Click" Tag="Logo" HorizontalAlignment="Left" Width="51" Height="40" VerticalAlignment="Top"/>
     </Grid>
 </Window>
