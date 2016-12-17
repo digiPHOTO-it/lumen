@@ -240,6 +240,23 @@ namespace Digiphoto.Lumen.Config
 		}
 
 		/// <summary>
+		/// Il nome del file di default per i loghi.
+		/// </summary>
+		string _logoNomeFileSelfService;
+		public string logoNomeFileSelfService {
+			get {
+				return _logoNomeFileSelfService;
+			}
+			set {
+				if( _logoNomeFileSelfService != value ) {
+					_logoNomeFileSelfService = value;
+					OnPropertyChanged( "logoNomeFileSelfService" );
+				}
+			}
+		}
+
+
+		/// <summary>
 		/// La percentuale di copertura della foto originale da parte del logo.
 		/// </summary>
 		public short logoPercentualeCopertura {
