@@ -444,6 +444,15 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 					cfg.logoNomeFile = f.Name;  // Senza path !
 				}
 			}
+			if( quale == "logoSS" ) {
+				string nomeFileLogoSelfService = AiutanteUI.scegliFileImmagineDialog( cfg.cartellaLoghi );
+				if( nomeFileLogoSelfService == null )
+					cfg.logoNomeFileSelfService = null;
+				else {
+					FileInfo f = new FileInfo( nomeFileLogoSelfService );
+					cfg.logoNomeFileSelfService = f.Name;  // Senza path !
+				}
+			}
 
 		}
 

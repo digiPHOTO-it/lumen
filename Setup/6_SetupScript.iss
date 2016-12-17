@@ -85,7 +85,8 @@ Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirPlat}\System.Net.Http.Formatti
 Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirPlat}\System.Web.Http.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.SelfService.WebUI\ssWebPackage.zip"; DestDir: "{app}"; Flags: ignoreversion
 
-Source: "..\Digiphoto.Lumen.SelfService.WebUI\images\Operator1.jpg"; DestDir: "C:\Users\Public\Pictures\Lumen\Fotografi"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\Images\Operator1.jpg"; DestDir: "{PUBLIC|C:\Users\Public}\Pictures\Lumen\Fotografi"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\Images\Lumen-selfservice-logo.png"; DestDir: "{PUBLIC|C:\Users\Public}\Pictures\Lumen\Loghi"; Flags: ignoreversion
 
 ; --- Driver sql ---
 Source: "..\packages\System.Data.SQLite.Core.1.0.99.0\build\net46\x86\SQLite.Interop.dll"; DestDir: "{app}"; Check: "not IsWin64"; Flags: ignoreversion
@@ -93,6 +94,10 @@ Source: "..\packages\System.Data.SQLite.Core.1.0.99.0\build\net46\x64\SQLite.Int
 Source: "..\packages\System.Data.SQLite.Core.1.0.99.0\lib\net46\System.Data.SQLite.dll"; DestDir: "{app}";  Flags: ignoreversion
 Source: "..\packages\System.Data.SQLite.EF6.1.0.99.0\lib\net46\System.Data.SQLite.EF6.dll"; DestDir: "{app}";  Flags: ignoreversion
 Source: "..\packages\System.Data.SQLite.Linq.1.0.99.0\lib\net46\System.Data.SQLite.Linq.dll"; DestDir: "{app}";  Flags: ignoreversion
+
+; --- logo di default per il self service
+Source: "..\packages\System.Data.SQLite.Linq.1.0.99.0\lib\net46\System.Data.SQLite.Linq.dll"; DestDir: "{app}";  Flags: ignoreversion
+
 
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 

@@ -10,6 +10,7 @@ using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Servizi.EntityRepository;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Core.Database;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.SelfService {
 
@@ -145,7 +146,12 @@ namespace Digiphoto.Lumen.SelfService {
 		}
 
 		public byte[] getImageLogo() {
-			throw new NotImplementedException();
+		
+			if( !String.IsNullOrWhiteSpace( Configurazione.UserConfigLumen.logoNomeFileSelfService ) ) {
+				string nomeLogo = Path.Combine( Configurazione.UserConfigLumen.cartellaLoghi, Configurazione.UserConfigLumen.logoNomeFileSelfService );
+				return File.ReadAllBytes( nomeLogo );
+			} else
+				return null;
 		}
 	}
 }

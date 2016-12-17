@@ -89,17 +89,19 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
 
 		private void buttonGetImage_Click( object sender, RoutedEventArgs e ) {
 
-			Guid fotografiaId = ((FotografiaDto)listBoxFotografie.SelectedItem).id;
 
 			byte[] bytes = null;
-            string quale = (String) ((Button)sender).Tag;
-			if( quale == "Provino" )
+			string quale = (String)((Button)sender).Tag;
+			if( quale == "Provino" ) {
+				Guid fotografiaId = ((FotografiaDto)listBoxFotografie.SelectedItem).id;
 				bytes = ssClient.getImageProvino( fotografiaId );
-			else if( quale == "Logo" )
+			} else if( quale == "Logo" ) {
 				bytes = ssClient.getImageLogo();
-			else if( quale == "Risultante" )
+			} else if( quale == "Risultante" ) {
+				Guid fotografiaId = ((FotografiaDto)listBoxFotografie.SelectedItem).id;
 				bytes = ssClient.getImage( fotografiaId );
-				
+			}
+
 			// Salvo il file su disco
 			string filename = Path.ChangeExtension( Path.GetTempFileName(), ".jpg" );
 

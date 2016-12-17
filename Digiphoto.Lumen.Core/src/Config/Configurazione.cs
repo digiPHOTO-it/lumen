@@ -25,6 +25,7 @@ namespace Digiphoto.Lumen.Config  {
 		public static readonly string applicationName = "Lumen";     // si potrebbero leggere dall'Assembly Info
 		public static readonly string pathBaseRegLumen = "Software\\" + Configurazione.companyName + "\\" + Configurazione.applicationName;
 		public static readonly string nomeLogoDefault = "digiPHOTO-logo.png";
+		public static readonly string nomeLogoSSDefault = "Lumen-selfservice-logo.png";
 
 
 		DbUtil _dbUtil;
@@ -190,7 +191,8 @@ namespace Digiphoto.Lumen.Config  {
 			userConfig.cartellaMaschere = Path.Combine( pp, applicationName, "Maschere" );
 			userConfig.cartellaLoghi = Path.Combine( pp, applicationName, "Loghi" );
 			userConfig.cartellaPubblicita = Path.Combine( pp, applicationName, "Pubblicita" );
-			
+
+
 			userConfig.estensioniGrafiche = ".jpg;.jpeg;.png;.tif;.tiff";
 			userConfig.editorImmagini = "MSPAINT.EXE";
 			userConfig.masterizzaDirettamente = false;
@@ -207,6 +209,8 @@ namespace Digiphoto.Lumen.Config  {
 			// Questo è il logo di esempio che verrà distribuito nel pacchetto di installazione.
 			userConfig.logoNomeFile = nomeLogoDefault;
 			userConfig.logoPercentualeCopertura = 15;
+			// Logo per il self service
+			userConfig.logoNomeFileSelfService = nomeLogoSSDefault;
 
 			userConfig.sogliaNumFotoConfermaInStampaRapida = 3;  // Se stampo almeno 3 foto chiedo conferma
 
