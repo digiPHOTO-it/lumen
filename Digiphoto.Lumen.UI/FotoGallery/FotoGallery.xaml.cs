@@ -36,8 +36,6 @@ namespace Digiphoto.Lumen.UI {
 		public FotoGallery() {
 			InitializeComponent();
 
-			textBoxGotoNumFoto.Tag = GOTO_VUOTO;
-
 			DataContextChanged += new DependencyPropertyChangedEventHandler(fotoGallery_DataContextChanged);
 
 			// Carico lo stato della checkbox di collasso filtri, prendendolo dal file di last-used
@@ -283,34 +281,6 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 
-		private void textBoxGotoNumFoto_GotFocus( object sender, RoutedEventArgs e ) {
-			if( (string)textBoxGotoNumFoto.Tag == GOTO_VUOTO ) {
-				textBoxGotoNumFoto.Text = "";
-				textBoxGotoNumFoto.Tag = GOTO_EDITING;
-			}
-		}
-
-		private void textBoxGotoNumFoto_LostFocus( object sender, RoutedEventArgs e ) {
-
-			// Caso particolare: se svuoto la cella, allora rimetto la scritta "goto"
-			if( textBoxGotoNumFoto.Text == null || textBoxGotoNumFoto.Text.Trim() == String.Empty ) {
-				textBoxGotoNumFoto.Tag = GOTO_VUOTO;
-				textBoxGotoNumFoto.Text = "N°foto..."; // occhio che questa scritta c'è anche in FotoGallery.xaml
-				return;
-			}
-
-			bool posizionato = false;
-			int numDaric;
-			if( Int32.TryParse( textBoxGotoNumFoto.Text, out numDaric ) )
-				posizionato = posizionaListaSulFotogramma( numDaric );
-
-			if( posizionato ) {
-				textBoxGotoNumFoto.Tag = GOTO_VUOTO;
-				textBoxGotoNumFoto.Text = "N°foto..."; // occhio che questa scritta c'è anche in FotoGallery.xaml
-			} else
-				textBoxGotoNumFoto.Tag = GOTO_ERRATO;
-		}
-
 		private bool posizionaListaSulFotogramma( int numDaric ) { 
 
 			Fotografia daric = ricavaFotoByNumber( numDaric );
@@ -320,18 +290,7 @@ namespace Digiphoto.Lumen.UI {
 			return daric != null;
 		}
 
-		private void posizionaListaSulFotogrammaSS( object sender, RoutedEventArgs e ) {
-	
-			int nn = fotoGalleryViewModel.numFotoCorrenteInSlideShow;
-			if( nn > 0 ) {
-				posizionaListaSulFotogramma( nn );
-				textBoxGotoNumFoto.Text = nn.ToString();
-			} else
-				textBoxGotoNumFoto.Text = "";
-		}
-
 		private void mostraAreaStampabileButton_Click( object sender, RoutedEventArgs e ) {
-
 
 			ContentPresenter myContentPresenter = AiutanteUI.FindVisualChild<ContentPresenter>( LsImageGallery );
 			// ListBoxItem co = (ListBoxItem)LsImageGallery.ItemContainerGenerator.ContainerFromIndex( 0 );

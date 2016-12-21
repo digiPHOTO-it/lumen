@@ -37,6 +37,14 @@ namespace Digiphoto.Lumen.UI {
 	                                    IObserver<FotoModificateMsg>, IObserver<NuovaFotoMsg>, IObserver<ClonaFotoMsg>, IObserver<GestoreCarrelloMsg>, IObserver<RefreshMsg>, IObserver<CambioStatoMsg>, IObserver<StampatoMsg>
 
 	{
+		[Flags]
+		private enum RicercaFlags {
+
+			Niente					= 0,
+			NuovaRicerca			= 1,       // parte una nuova ricerca con posizionamento all'inizio dei risultati
+			ConfermaSeFiltriVuoti	= 2,
+			MantenereSelezionate	= 4			// non vengono azzerate le foto selezionate
+		}
 
 		#region Campi
 
@@ -846,7 +854,7 @@ namespace Digiphoto.Lumen.UI {
 					_caricareSlideShowCommand =
 						new RelayCommand( autoManual => caricareSlideShow( (string)autoManual ),
 										  autoManual => possoCaricareSlideShow( (string)autoManual ),
-                                          null,
+                                          false,
                                           autoManual => deselezionareTutto());
 				}
 				return _caricareSlideShowCommand;
@@ -1020,13 +1028,6 @@ namespace Digiphoto.Lumen.UI {
 		/// </summary>
 		private void filtrareSelezionate() {
 
-
-// Fotografia f = (Fotografia)this.fotografieCW.GetItemAt( 0 );
-// f.contaStampata++;
-// return;
-
-
-
 			modalitaFiltroSelez = ModalitaFiltroSelez.SoloSelezionate;
 
 			// Mi metto in modalita di "solo selezionate"
@@ -1038,12 +1039,11 @@ namespace Digiphoto.Lumen.UI {
 			paramCercaFoto = new ParamCercaFoto();
 			paramCercaFoto.idsFotografie = idsFotografieSelez.ToArray<Guid>();
 
-			eseguireRicerca( true );
-
-			// Ricarico la collezione delle selezionate che durante la ricerca viene spenta
 			idsFotografieSelez = new ObservableCollectionEx<Guid>( paramCercaFoto.idsFotografie );
 
-			selezionareElementiPaginaCorrente();
+			RicercaFlags flags = RicercaFlags.NuovaRicerca | RicercaFlags.MantenereSelezionate;
+			eseguireRicerca( flags );
+
 		}
 
 		/// <summary>
@@ -1070,12 +1070,11 @@ namespace Digiphoto.Lumen.UI {
 			numRighePag = saveDataCambioSelezMode.numRighePag;
 			numColonnePag = saveDataCambioSelezMode.numColonnePag;
 
-			eseguireRicerca( true, false );
-
-			// Ricarico la lista dei selezionati che nel frattempo si è svuotata
+			// Ricarico la lista dei selezionati --------------------------------------che nel frattempo si è svuotata
 			idsFotografieSelez = new ObservableCollectionEx<Guid>( saveIds );
 
-			selezionareElementiPaginaCorrente();
+			eseguireRicerca( RicercaFlags.NuovaRicerca | RicercaFlags.MantenereSelezionate );
+
 
 			// Mi sposto sulla pagina da cui ero partito
 			short deltaPagine = (short)(saveDataCambioSelezMode.paramCercaFoto.paginazione.skip / saveDataCambioSelezMode.paramCercaFoto.paginazione.take);
@@ -1303,14 +1302,10 @@ namespace Digiphoto.Lumen.UI {
 			modalitaFiltroSelez = ModalitaFiltroSelez.Tutte;
 
 			// ... poi eseguo la ricerca
-			eseguireRicerca( true );
+			RicercaFlags flags = RicercaFlags.NuovaRicerca | RicercaFlags.ConfermaSeFiltriVuoti;
+			eseguireRicerca( flags );
 		}
 
-		private void eseguireRicerca( bool nuovaRicerca ) {
-
-			bool chiediConfermaSeFiltriVuoti = (nuovaRicerca == true && modalitaFiltroSelez == ModalitaFiltroSelez.Tutte);
-			eseguireRicerca( nuovaRicerca, chiediConfermaSeFiltriVuoti );
-		}
 
 		/// <summary>
 		/// Eseguo una ricerca sul database. Quindi aggiorno la UI
@@ -1318,10 +1313,10 @@ namespace Digiphoto.Lumen.UI {
 		/// <param name="nuovaRicerca">Se true significa che ho premuto il tasto RICERCA e quindi devo ripartire da capo.
 		/// Se invece è FALSE significa che sto paginando su di una ricerca già effettuata in precedenza
 		/// </param>
-		private void eseguireRicerca( bool nuovaRicerca, bool chiediConfermaSeFiltriVuoti ) {
+		private void eseguireRicerca( RicercaFlags flags ) {
 
-
-
+			bool nuovaRicerca = flags.HasFlag( RicercaFlags.NuovaRicerca );
+			bool chiediConfermaSeFiltriVuoti = flags.HasFlag( RicercaFlags.ConfermaSeFiltriVuoti );
 
 			completaParametriRicercaWithOrder( true );
 
@@ -1339,7 +1334,10 @@ namespace Digiphoto.Lumen.UI {
 			// Solo quando premo tasto di ricerca (e non durante la paginazione).
 			if( nuovaRicerca ) {
 
-				azzeraFotoSelez();
+				// Di norma, in una nuova ricerca, devo azzerare le selezionate.
+				// Però in caso che sto filtrando solo le selezionate, allora non devo azzerarle
+				if( flags.HasFlag( RicercaFlags.MantenereSelezionate ) == false )
+					azzeraFotoSelez();
 
 				// Queste sono le foto selezionate
 				if( modalitaFiltroSelez == ModalitaFiltroSelez.Tutte )
@@ -1348,11 +1346,10 @@ namespace Digiphoto.Lumen.UI {
 				contaTotFotoRicerca();
 			}
 
-
 			// Eseguo la ricerca nel database
 			fotoExplorerSrv.cercaFoto( paramCercaFoto );
 
-			azioniPostRicerca( nuovaRicerca );
+			azioniPostRicerca( flags );
 
 			// Non mettere piu niente qui perché sta idratando le foto in background (o cmq fare attenzione)
 		}
@@ -1372,7 +1369,7 @@ namespace Digiphoto.Lumen.UI {
 		/// Ricreo la collectionview con le fotografie da visualizzare
 		/// lancio in background la idratazione dei provini
 		/// </summary>
-		private void azioniPostRicerca( bool nuovaRicerca ) {
+		private void azioniPostRicerca( RicercaFlags flags) {
 
 			// Se avevo un worker già attivo, allora provo a cancellarlo.
 			if( _bkgIdrata.IsBusy ) {
@@ -1391,13 +1388,14 @@ namespace Digiphoto.Lumen.UI {
 			// ricreo la collection-view e notifico che è cambiato il risultato. Le immagini verranno caricate poi
 			ricreaCollectionViewFoto( fotoExplorerSrv.fotografie );
 
-			// spengo tutte le selezioni eventualmente rimaste da prima
-			if( nuovaRicerca )
-				deselezionareTutto();
-			else {
-				selezionareElementiPaginaCorrente();
+			// Se è una nuova ricerca....
+			if( flags.HasFlag( RicercaFlags.NuovaRicerca ) ) {
+
+				// ... e se non mi è stato indicato il contrario, ... deseleziono tutte le foto
+				if( flags.HasFlag( RicercaFlags.MantenereSelezionate ) == false )
+					deselezionareTutto();
+
 			}
-				
 
 			// Se non ho trovato nulla, allora avviso l'utente
 			if( fotografieCW.Count <= 0 )
@@ -1416,7 +1414,7 @@ namespace Digiphoto.Lumen.UI {
 
 		}
 
-		private void selezionareElementiPaginaCorrente() {
+		private bool selezionareElementiPaginaCorrente() {
 
 			// illumino gli elementi eventualmente selezionati in precedenza
 			bool eseguito = false;
@@ -1432,6 +1430,8 @@ namespace Digiphoto.Lumen.UI {
 
 			if( eseguito )
 				fotografieCW.Refresh();
+
+			return eseguito;
 		}
 
 		private bool verificaChiediConfermaRicercaSenzaParametri()
@@ -1578,6 +1578,11 @@ throw new NotImplementedException( "TODO da rivedere");
 			_giornale.Debug( "Terminato di idratare le foto in background: abortito = " + e.Cancelled );
 
 			if( ! e.Cancelled ) {
+
+				// Illumino le foto eventualmente selezionate nella pagina corrente
+				if( selezionareElementiPaginaCorrente() == false )
+					fotografieCW.Refresh();
+
 				RicercaModificataMessaggio msg = new RicercaModificataMessaggio( this );
 				msg.abortito = e.Cancelled;
 				LumenApplication.Instance.bus.Publish( msg );
@@ -1626,23 +1631,8 @@ throw new NotImplementedException( "TODO da rivedere");
 					}
 				}
 
+				
 			}
-
-			// Non so perché ma senza questo refresh, a volte ma non sempre,
-			// le foto pur venendo idratate, non vengono visualizzate. Succede spesso all'inizio nella prima ricerca che faccio.
-			// Per non sovraccaricare troppo, effettuo il refresh ogni tot.
-			// Diciamo che lo faccio
-			bool eseguiRefresh = (e.ProgressPercentage >= 100); // lo faccio solo alla fine, perché durante il loop non c'è il feedback visivo (in pratica non serve)
-#if FALSE
-			bool eseguiRefresh = false;
-			if( e.ProgressPercentage > _percRefresh ) {
-				eseguiRefresh = true;
-				_percRefresh += SLOT_REFRESH;
-			}
-#endif
-
-			if( eseguiRefresh )
-				fotografieCW.Refresh();
 				
 		}
 
@@ -1859,7 +1849,7 @@ throw new NotImplementedException( "TODO da rivedere");
 					paramCercaFoto.paginazione.skip = maxSkip;
 			}
 
-			eseguireRicerca( false );
+			eseguireRicerca( RicercaFlags.Niente );
 
 			OnPropertyChanged( "percentualePosizRicerca" );
 		}
@@ -2041,7 +2031,7 @@ throw new NotImplementedException( "TODO da rivedere");
 		{
 			if (value.fase == FaseClone.FineClone)
 			{
-				eseguireRicerca( false );
+				eseguireRicerca( RicercaFlags.Niente );
 			}
 		}
 
@@ -2058,7 +2048,7 @@ throw new NotImplementedException( "TODO da rivedere");
 
 				int quanteFotoSonoVisualizzate = fotos.Intersect( msg.listaFotoEliminate ).Count();
 				if( quanteFotoSonoVisualizzate > 0 )
-					eseguireRicerca( false );
+					eseguireRicerca( RicercaFlags.Niente );
 			}
 		}
 
@@ -2104,7 +2094,7 @@ throw new NotImplementedException( "TODO da rivedere");
 
 				completaParametriRicerca();  // Mi serve true per eseguire anche la count dei risultati
 
-				eseguireRicerca( true );
+				eseguireRicerca( RicercaFlags.NuovaRicerca );
 
 			}
 		}

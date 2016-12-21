@@ -292,7 +292,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Resource Include="Images\Lumen-selfservice-logo.jpg" />
+    <Resource Include="Images\Lumen-selfservice-logo.png" />
     <Content Include="Images\Lumen-spot.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
