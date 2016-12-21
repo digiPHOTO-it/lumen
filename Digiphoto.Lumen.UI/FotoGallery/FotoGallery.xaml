@@ -21,8 +21,6 @@
     <UserControl.CommandBindings>
         <CommandBinding Command="{StaticResource uicmdSelezionaTutteLeFoto}"  Executed="selezionareTutteLeFoto_Click"  />
         <CommandBinding Command="{StaticResource uicmdDeselezionaTutteLeFoto}" Executed="deselezionareTutteLeFoto_Click" />
-        <CommandBinding Command="{StaticResource cmdGoToCurrentFotoSS}" Executed="posizionaListaSulFotogrammaSS" />
-
     </UserControl.CommandBindings>
     <UserControl.InputBindings>
         <KeyBinding  Key="F8" Command="{StaticResource cmdGoToCurrentFotoSS}" />
@@ -108,9 +106,6 @@
                     </i:Interaction.Triggers>
                 </ToggleButton>
 
-
-                <TextBox ToolTip="Vai al N° di fotogramma. Uscire dal campo con il tasto TAB" Name="textBoxGotoNumFoto" LostFocus="textBoxGotoNumFoto_LostFocus" IsEnabled="{Binding isAlmenoUnaFoto}" Style="{StaticResource tbVaiNumStyle}" GotFocus="textBoxGotoNumFoto_GotFocus" />
-
             </ToolBar>
 
             <ToolBar Band="1" BandIndex="2" Style="{StaticResource fgToolBarStyle}">
@@ -129,7 +124,7 @@
                     <extToolkit:IntegerUpDown.ToolTip>
                         <TextBlock>
                             <TextBlock.Text>
-                                <MultiBinding StringFormat="{}{0} righe gallery (SHIFT + rotella mouse)">
+                                <MultiBinding StringFormat="{}{0} righe gallery (CTRL + rotella mouse)">
                                     <Binding Path="numRighePag" />
                                 </MultiBinding>
                             </TextBlock.Text>
