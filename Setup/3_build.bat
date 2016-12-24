@@ -1,17 +1,20 @@
 @echo off
 rem call "C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\vcvarsall.bat" x86
-call "C:\Program Files\Microsoft Visual Studio 11.0\Common7\Tools\VsDevCmd.bat"
+rem call "C:\Program Files\Microsoft Visual Studio 11.0\Common7\Tools\VsDevCmd.bat"
+
+call "C:\Program Files\Microsoft Visual Studio 14.0\Common7\Tools\VsMSBuildCmd.bat"
+
+
 
 set EnableNuGetPackageRestore=true
 
 rem scarico eventuali pacchetti necessari
-echo "disabilito nuget perche' necessario intervento manuale"
-rem ..\.nuget\nuget install packages.config -o ..\packages
+..\.nuget\nuget install packages.config -o ..\packages
 
 
 set GIORNALE=%TEMP%\build.out.txt
-rmdir /S ..\Digiphoto.Lumen.SelfService.WebUI\ssWebPackage
 msbuild ..\Digiphoto.Lumen.sln /property:Configuration=Release /property:Platform="Any CPU" /target:Clean
+echo clean completato. Inizio la compilazione
 msbuild ..\Digiphoto.Lumen.sln /property:Configuration=Release /property:Platform="Any CPU" > %GIORNALE%
 IF %ERRORLEVEL% NEQ 0 goto GesErrore
 echo build OK: verificare il log %GIORNALE%
@@ -25,6 +28,7 @@ goto Fine
 :GesErrore
 echo Ci sono stati degli errori
 pause
+notepad %GIORNALE%
 exit 1
 
 
