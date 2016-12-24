@@ -7,7 +7,7 @@
 #define MyAppURL       "http://www.digiphoto.it/Lumen"
 #define MyAppExeName   "Digiphoto.Lumen.UI.exe"
 #define MyConfExeName  "Digiphoto.Lumen.GestoreConfigurazione.UI.exe"
-#define SSHostExeName  "Digiphoto.Lumen.SelfService.Host.exe" 
+#define SSHostExeName  "Digiphoto.Lumen.SelfService.HostConsole.exe" 
 #define dirPLat        "bin\Release"
 
 
@@ -71,22 +71,11 @@ Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\Xceed*.dll"; Des
 Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\EntityFramework.SqlServer.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\Images\*"; DestDir: "{app}\Images"; Flags: recursesubdirs
 ; --- Self Service
-Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirPlat}\Digiphoto.Lumen.SelfService.Host.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirPlat}\Digiphoto.Lumen.SelfService.Host.exe.config"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.SelfService.HostConsole\{#dirPlat}\Digiphoto.Lumen.SelfService.HostConsole.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.SelfService.HostConsole\{#dirPlat}\Digiphoto.Lumen.SelfService.HostConsole.exe.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.SelfService\{#dirPlat}\Digiphoto.Lumen.SelfService.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirPlat}\System.Net.Http.Formatting.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirPlat}\Microsoft.Owin.Hosting.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirPlat}\Microsoft.Owin.Host.HttpListener.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirPlat}\Owin.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirPlat}\Microsoft.Owin.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirPlat}\System.Web.Http.Owin.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirPlat}\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirPlat}\System.Net.Http.Formatting.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Digiphoto.Lumen.SelfService.Host\{#dirPlat}\System.Web.Http.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Digiphoto.Lumen.SelfService.WebUI\ssWebPackage.zip"; DestDir: "{app}"; Flags: ignoreversion
-
-Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\Images\Operator1.jpg"; DestDir: "{PUBLIC|C:\Users\Public}\Pictures\Lumen\Fotografi"; Flags: ignoreversion
-Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\{#dirPlat}\Images\Lumen-selfservice-logo.png"; DestDir: "{PUBLIC|C:\Users\Public}\Pictures\Lumen\Loghi"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\Images\Operator1.jpg"; DestDir: "{%PUBLIC|C:\Users\Public}\Pictures\Lumen\Fotografi"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\Images\Lumen-selfservice-logo.png"; DestDir: "{%PUBLIC|C:\Users\Public}\Pictures\Lumen\Loghi"; Flags: ignoreversion
 
 ; --- Driver sql ---
 Source: "..\packages\System.Data.SQLite.Core.1.0.99.0\build\net46\x86\SQLite.Interop.dll"; DestDir: "{app}"; Check: "not IsWin64"; Flags: ignoreversion
@@ -94,10 +83,6 @@ Source: "..\packages\System.Data.SQLite.Core.1.0.99.0\build\net46\x64\SQLite.Int
 Source: "..\packages\System.Data.SQLite.Core.1.0.99.0\lib\net46\System.Data.SQLite.dll"; DestDir: "{app}";  Flags: ignoreversion
 Source: "..\packages\System.Data.SQLite.EF6.1.0.99.0\lib\net46\System.Data.SQLite.EF6.dll"; DestDir: "{app}";  Flags: ignoreversion
 Source: "..\packages\System.Data.SQLite.Linq.1.0.99.0\lib\net46\System.Data.SQLite.Linq.dll"; DestDir: "{app}";  Flags: ignoreversion
-
-; --- logo di default per il self service
-Source: "..\packages\System.Data.SQLite.Linq.1.0.99.0\lib\net46\System.Data.SQLite.Linq.dll"; DestDir: "{app}";  Flags: ignoreversion
-
 
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 

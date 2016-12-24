@@ -144,9 +144,11 @@
                     </extToolkit:IntegerUpDown.ToolTip>
                 </extToolkit:IntegerUpDown>
                 
+				<!--
                 <Button Content="AREA" x:Name="mostraAreaStampabileButton" Click="mostraAreaStampabileButton_Click" Style="{StaticResource bottoneTestualeStyle}" ToolTip="Evidenzia area stampabile su foto visibili" 
 						Visibility="{Binding Path=possoVisualizzareAreaDiRispetto,Mode=OneTime,Converter={StaticResource booleanToVisibilityConverter}}"
 						/>
+				-->
             </ToolBar>
 
             <ToolBar Band="1" BandIndex="3" Header="Pubblico" Style="{StaticResource fgToolBarStyle}">
