@@ -1016,8 +1016,8 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			//   se imposto oltre 1000 sarebbe l'effetto più bello, ma ri rallenta di brutto. Su 100 foto si perdono 100 secondi (una enormità).
 			// per ora scelgo la strada di tenere un minimo per rinfrescale le foto
 			// Cmq non è un buon compromesso.
-			const int attesaPiccola = 100;
-			const int attesaGrande = 1000;
+			// const int attesaPiccola = 100;
+			// const int attesaGrande = 1000;
 			int perc;
 			int conta = 0;
 			int tot = fotografie.Count();
