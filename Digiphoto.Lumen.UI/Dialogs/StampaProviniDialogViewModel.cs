@@ -73,8 +73,12 @@ namespace Digiphoto.Lumen.UI.Dialogs
 				return _stampaTuttaLaGallery;
 			}
 			set {
-				_stampaTuttaLaGallery = value;
-				ricreaMatriceEsempio();
+				if( _stampaTuttaLaGallery != value ) {
+					_stampaTuttaLaGallery = value;
+					OnPropertyChanged( "stampaTuttaLaGallery" );
+					OnPropertyChanged( "stampaSoloSelezionate" );
+					ricreaMatriceEsempio();
+				}
             }
 		}
 

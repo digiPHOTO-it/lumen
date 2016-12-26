@@ -17,12 +17,12 @@
         <GroupBox DockPanel.Dock="Top" Header="Foto da Stampare">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
-                    <RadioButton Content="Solo le Selezionate" Name="StampaSoloSelezionate" IsChecked="{Binding Path=stampaSoloSelezionate}" FontSize="18" Width="260" />
+                    <RadioButton Content="Solo le Selezionate" Name="StampaSoloSelezionate" IsChecked="{Binding Path=stampaSoloSelezionate,Mode=TwoWay}" FontSize="18" Width="260" />
                     <Label Content="N°" FontSize="18" />
                     <Label Content="{Binding Path=totaleFotoSelezionate}" HorizontalContentAlignment="Right" FontSize="18" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <RadioButton Content="Tutte le foto nella Pagina" Name="StampaTuttaLaGallery" IsChecked="{Binding Path=stampaTuttaLaGallery}" FontSize="18" Width="260" />
+                    <RadioButton Content="Tutte le foto nella Pagina" Name="StampaTuttaLaGallery" IsChecked="{Binding Path=stampaTuttaLaGallery,Mode=TwoWay}" FontSize="18" Width="260" />
                     <Label Content="N°" VerticalContentAlignment="Center" FontSize="18" />
                     <Label Content="{Binding Path=totoleFotoGallery}" HorizontalContentAlignment="Right" FontSize="18" />
                 </StackPanel>
