@@ -74,7 +74,9 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="app.manifest" />
+    <None Include="app.manifest">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\DataSources\Digiphoto.Lumen.SelfService.Carrelli.CarrelloDto.datasource" />
     <None Include="Properties\DataSources\Digiphoto.Lumen.SelfService.Carrelli.FotografiaDto.datasource" />

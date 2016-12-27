@@ -41,9 +41,10 @@ namespace Digiphoto.Lumen.UI {
 		private enum RicercaFlags {
 
 			Niente					= 0,
-			NuovaRicerca			= 1,       // parte una nuova ricerca con posizionamento all'inizio dei risultati
+			NuovaRicerca			= 1,		// parte una nuova ricerca con posizionamento all'inizio dei risultati
 			ConfermaSeFiltriVuoti	= 2,
-			MantenereSelezionate	= 4			// non vengono azzerate le foto selezionate
+			MantenereSelezionate	= 4,		// non vengono azzerate le foto selezionate
+			MantenereListaIds       = 8			// non viene azzerata la lista degli ids (quando proviene dal carrello)
 		}
 
 		#region Campi
@@ -1334,13 +1335,12 @@ namespace Digiphoto.Lumen.UI {
 			// Solo quando premo tasto di ricerca (e non durante la paginazione).
 			if( nuovaRicerca ) {
 
-				// Di norma, in una nuova ricerca, devo azzerare le selezionate.
-				// Però in caso che sto filtrando solo le selezionate, allora non devo azzerarle
+				// Se non mi viene proibito esplicitamente, in una nuova ricerca devo azzerare la lista delle foto selezionate
 				if( flags.HasFlag( RicercaFlags.MantenereSelezionate ) == false )
 					azzeraFotoSelez();
 
-				// Queste sono le foto selezionate
-				if( modalitaFiltroSelez == ModalitaFiltroSelez.Tutte )
+				// Se non mi viene proibito esplicitamente, in una nuova ricerca devo azzerare la lista degli ids perché non è modificabile dall'utente
+				if( flags.HasFlag( RicercaFlags.MantenereListaIds ) == false )
 					paramCercaFoto.idsFotografie = null;
 
 				contaTotFotoRicerca();
@@ -2094,8 +2094,7 @@ throw new NotImplementedException( "TODO da rivedere");
 
 				completaParametriRicerca();  // Mi serve true per eseguire anche la count dei risultati
 
-				eseguireRicerca( RicercaFlags.NuovaRicerca );
-
+				eseguireRicerca( RicercaFlags.NuovaRicerca | RicercaFlags.MantenereListaIds );
 			}
 		}
 
