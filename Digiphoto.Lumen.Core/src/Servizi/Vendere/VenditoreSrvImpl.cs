@@ -13,9 +13,6 @@ using Digiphoto.Lumen.Database;
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Servizi.Reports;
 using System.ComponentModel;
-using System.Data.Entity.Core.Objects;
-using System.Data.Entity.Infrastructure;
-using System.Data.Entity;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 
@@ -425,7 +422,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			spostaRigaCarrello(rigaCarrello, true);
 		}
 
-        public void spostareTutteRigheCarrello(string discriminator, Carrello.ParametriDiStampa parametriDiStampa)
+        public void spostareTutteRigheCarrello(string discriminator, ParametriDiStampa parametriDiStampa)
         {
             IEnumerable<RigaCarrello> listaDaSpostare = carrello.righeCarrello.Where(r => r.discriminator == discriminator);
 			
@@ -456,7 +453,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
             inviaMessaggioValoreCarrelloCambiato(true);
         }
 
-        public void copiaSpostaRigaCarrello( RigaCarrello rigaSorgente, Carrello.ParametriDiStampa parametriDiStampa )
+        public void copiaSpostaRigaCarrello( RigaCarrello rigaSorgente, ParametriDiStampa parametriDiStampa )
 		{
 			RigaCarrello cloneRiga = new RigaCarrello();
 
@@ -484,7 +481,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			spostaRigaCarrello( cloneRiga, false );
 		}
 
-        public void copiaSpostaTutteRigheCarrello(string discriminaSorg, Carrello.ParametriDiStampa parametriDiStampa)
+        public void copiaSpostaTutteRigheCarrello(string discriminaSorg, ParametriDiStampa parametriDiStampa)
         {
             IEnumerable<RigaCarrello> listaDaCopiareSpostare = carrello.righeCarrello.Where(r => r.discriminator == discriminaSorg);
 

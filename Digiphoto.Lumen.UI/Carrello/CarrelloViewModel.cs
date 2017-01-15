@@ -1236,7 +1236,7 @@ namespace Digiphoto.Lumen.UI {
 
                 if (esito == true)
                 {
-                    Carrello.ParametriDiStampa parametriDiStampa = new Carrello.ParametriDiStampa();
+                    ParametriDiStampa parametriDiStampa = new ParametriDiStampa();
                     parametriDiStampa.FormatoCarta = d.formatoCarta;
                     parametriDiStampa.NomeStampante = d.nomeStampante;
                     parametriDiStampa.Quantita = 1;
@@ -1284,7 +1284,7 @@ namespace Digiphoto.Lumen.UI {
 
                 if (esito == true)
                 {
-                    Carrello.ParametriDiStampa parametriDiStampa = new Carrello.ParametriDiStampa();
+                    ParametriDiStampa parametriDiStampa = new ParametriDiStampa();
                     parametriDiStampa.FormatoCarta = d.formatoCarta;
                     parametriDiStampa.NomeStampante = d.nomeStampante;
                     parametriDiStampa.Quantita = 1;

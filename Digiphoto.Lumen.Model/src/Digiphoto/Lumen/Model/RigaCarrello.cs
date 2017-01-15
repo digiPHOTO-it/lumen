@@ -11,6 +11,22 @@ namespace Digiphoto.Lumen.Model {
 		public const string TIPORIGA_STAMPA       = "S";
 		public const string TIPORIGA_MASTERIZZATA = "M";
 
+
+		public override bool Equals( object altro ) {
+			bool uguali = false;
+			if( altro != null && altro is RigaCarrello ) {
+				uguali = this.id.Equals( ((RigaCarrello)altro).id );
+			}
+
+			return uguali;
+		}
+
+		public override int GetHashCode() {
+			int hash = 7;
+			hash = 31 * hash + (null == this.id ? 0 : this.id.GetHashCode());
+			return hash;
+		}
+
 		public bool isTipoStampa {
 			get {
 				return TIPORIGA_STAMPA == this.discriminator;

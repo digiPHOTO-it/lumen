@@ -270,6 +270,7 @@
     <Compile Include="src\Servizi\Stampare\StampanteAbbinata.cs" />
     <Compile Include="src\Servizi\Stampare\StampantiAbbinateUtil.cs" />
     <Compile Include="src\Servizi\Reports\RigaReportProvvigioni.cs" />
+    <Compile Include="src\Servizi\Vendere\ParametriDiStampa.cs" />
     <Compile Include="src\Servizi\Vendere\RigaReportVendite.cs" />
     <Compile Include="src\Servizi\Ricerca\ParamCercaCarrello.cs" />
     <Compile Include="src\Servizi\Ritoccare\FotoDaModificareMsg.cs" />
