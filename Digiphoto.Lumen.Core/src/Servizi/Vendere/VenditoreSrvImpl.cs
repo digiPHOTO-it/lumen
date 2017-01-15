@@ -428,14 +428,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
         public void spostareTutteRigheCarrello(string discriminator, Carrello.ParametriDiStampa parametriDiStampa)
         {
             IEnumerable<RigaCarrello> listaDaSpostare = carrello.righeCarrello.Where(r => r.discriminator == discriminator);
-
-            string d = Carrello.Not(discriminator);
+			
+            string d = RigaCarrello.getDiscriminatorOpposto(discriminator);
 
             foreach (RigaCarrello rigaDaSpostare in listaDaSpostare.ToArray())
             {
                 if(!GestoreCarrello.isStessaFotoInCarrello(carrello, rigaDaSpostare, d))
                 {
-                    if (Carrello.TIPORIGA_STAMPA.Equals(d))
+                    if (RigaCarrello.TIPORIGA_STAMPA.Equals(d))
                     {
                         rigaDaSpostare.formatoCarta = parametriDiStampa.FormatoCarta;
                         rigaDaSpostare.nomeStampante = parametriDiStampa.NomeStampante;
@@ -488,7 +488,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
         {
             IEnumerable<RigaCarrello> listaDaCopiareSpostare = carrello.righeCarrello.Where(r => r.discriminator == discriminaSorg);
 
-            string discriminaDest = Carrello.Not(discriminaSorg);
+            string discriminaDest = RigaCarrello.getDiscriminatorOpposto(discriminaSorg);
 
             foreach ( RigaCarrello rigaDaCopiareSpostare in listaDaCopiareSpostare.ToArray() )
             {
@@ -512,7 +512,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			int conta = 0;
 			foreach( RigaCarrello riga in carrello.righeCarrello ) {
 
-				if( riga.discriminator == Carrello.TIPORIGA_STAMPA ) {
+				if( riga.isTipoStampa ) {
 
 					// Siccome il nome della stampante è un attributo transiente,
 					// eventualmente lo assegno. Potrebbe essere null, quando carico un carrello dal db.
@@ -541,7 +541,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		private RigaCarrello creaRiCaFotoStampata( Fotografia fotografia, ParamStampaFoto param ) {
 
 			RigaCarrello r = new RigaCarrello() {
-				discriminator = Carrello.TIPORIGA_STAMPA
+				discriminator = RigaCarrello.TIPORIGA_STAMPA
 			};
 
 			r.id = Guid.Empty;  // Lascio intenzionalmente vuoto. Lo valorizzo alla fine prima di salvare
@@ -608,7 +608,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			if (carrello == null || carrello.righeCarrello.Count == 0)
 				return;
 
-			IEnumerable<RigaCarrello> listaDaMast = carrello.righeCarrello.Where(r => r.discriminator == Carrello.TIPORIGA_MASTERIZZATA);
+			IEnumerable<RigaCarrello> listaDaMast = carrello.righeCarrello.Where(r => r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA);
 			IList<Fotografia> fotoDaMast = new List<Fotografia>();
 			foreach(RigaCarrello riga in listaDaMast){
 				fotoDaMast.Add(riga.fotografia);
@@ -866,7 +866,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		private RigaCarrello creaRigaFotoMasterizzata( Fotografia fotografia ) {
 
 			RigaCarrello r = new RigaCarrello {
-				discriminator = Carrello.TIPORIGA_MASTERIZZATA
+				discriminator = RigaCarrello.TIPORIGA_MASTERIZZATA
 			};
 
 			r.id = Guid.Empty;  // Lascio intenzionalmente vuoto. Lo valorizzo alla fine prima di salvare
@@ -987,7 +987,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			// Qui ho necessità di fare una join tra il carrello e le righe di tipo FotoScattata
 			var querya = from cc in UnitOfWorkScope.currentDbContext.Carrelli.Include( "righeCarrello" )
-						 from rr in cc.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_STAMPA )
+						 from rr in cc.righeCarrello.Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA )
 						 where cc.giornata >= p.dataIniz && cc.giornata <= p.dataFine
 						       && cc.venduto == true
 						 select new {
@@ -1034,7 +1034,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			// Estraggo le righe carrello di tipo disco masterizzato
 			var queryc = from cc in UnitOfWorkScope.currentDbContext.Carrelli.Include( "righeCarrello" )
-						 from rr in cc.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_MASTERIZZATA )
+						 from rr in cc.righeCarrello.Where( r => r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA )
 						 where cc.giornata >= p.dataIniz && cc.giornata <= p.dataFine
 						       && cc.venduto == true
 						 select new {
@@ -1188,7 +1188,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// Elimina tutte le righe da masterizzare e azzera tutti i dati del masterizzatore.
 		/// </summary>
 		public void removeDatiDischetto() {
-			this.eliminareRigheCarrello( Carrello.TIPORIGA_MASTERIZZATA );
+			this.eliminareRigheCarrello( RigaCarrello.TIPORIGA_MASTERIZZATA );
 			setDatiDischetto( TipoDestinazione.NULLA, null, null );
 		}
 

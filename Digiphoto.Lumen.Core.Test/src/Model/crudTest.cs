@@ -78,7 +78,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 				r.prezzoNettoTotale = r.prezzoLordoUnitario;
 				r.fotografia = context.Fotografie.FirstOrDefault();
 				r.fotografo = r.fotografia.fotografo;
-				r.discriminator = Carrello.TIPORIGA_MASTERIZZATA;
+				r.discriminator = RigaCarrello.TIPORIGA_MASTERIZZATA;
 
 				c.righeCarrello = new List<RigaCarrello>();
 				c.righeCarrello.Add( r );

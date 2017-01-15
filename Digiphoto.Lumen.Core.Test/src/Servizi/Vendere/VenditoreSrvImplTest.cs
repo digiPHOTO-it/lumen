@@ -250,7 +250,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 
 				var porc = from c in dbContext.Carrelli.Include( "righeCarrello" )
-						   from r in c.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_STAMPA )
+						   from r in c.righeCarrello.Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA )
 						   select new { c, r }
 						   ;
 
@@ -292,15 +292,15 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 					foreach( RigaCarrello rc in carrello.righeCarrello ) {
 
-						if( rc.discriminator == Carrello.TIPORIGA_STAMPA ) {
+						if( rc.isTipoStampa ) {
 						}
 
-						if( rc.discriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
+						if( rc.isTipoMasterizzata ) {
 						}
 
 					}
 
-					var qq = carrello.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_STAMPA )
+					var qq = carrello.righeCarrello.Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA )
 							 .GroupBy( t => t.formatoCarta.descrizione )
 							 .Select( r => new {
 								 ff = r.Key,

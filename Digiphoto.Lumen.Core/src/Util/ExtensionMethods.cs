@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Digiphoto.Lumen.Model;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -97,6 +98,23 @@ namespace Digiphoto.Lumen.Util {
 			}
 		}
 
+		/// <summary>
+		/// Data una riga di un carrelllo, ritorno il discriminatore invertito
+		/// es.
+		/// se Masterizzata -> torno Stampata
+		/// se Stampata     -> torno Masterizzata
+		/// </summary>
+		/// <param name="riga"></param>
+		/// <returns></returns>
+		public static string InverteDiscriminator( this Model.RigaCarrello riga ) {
+
+			if( riga.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA )
+				return RigaCarrello.TIPORIGA_STAMPA;
+			if( riga.discriminator == RigaCarrello.TIPORIGA_STAMPA )
+				return RigaCarrello.TIPORIGA_MASTERIZZATA;
+
+			throw new Exception( "tipo riga non ricosciuta: " + riga.discriminator );
+		}
 
 	}
 }

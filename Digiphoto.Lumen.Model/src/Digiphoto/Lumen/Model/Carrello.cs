@@ -7,9 +7,6 @@ namespace Digiphoto.Lumen.Model {
 
 	public partial class Carrello {
 
-		public const string TIPORIGA_STAMPA = "S";
-		public const string TIPORIGA_MASTERIZZATA = "M";
-
 		public override bool Equals( object altro ) {
 			bool uguali = false;
 			if( altro != null && altro is Carrello ) {
@@ -25,10 +22,6 @@ namespace Digiphoto.Lumen.Model {
 			return hash;
 		}
 
-        public static string Not(string d)
-        {
-            return d.Equals(Carrello.TIPORIGA_MASTERIZZATA) ? Carrello.TIPORIGA_STAMPA : Carrello.TIPORIGA_MASTERIZZATA;
-        }
 
 		// TODO spostare da qui questa classe perché non c'entra niente !!!!
         public class ParametriDiStampa

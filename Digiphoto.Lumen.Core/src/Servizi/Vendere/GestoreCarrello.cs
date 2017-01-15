@@ -139,7 +139,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// </summary>
 		public int sommatoriaFotoDaMasterizzare {
 			get {
-				return carrello.righeCarrello.Count( r => r.discriminator == Carrello.TIPORIGA_MASTERIZZATA );
+				return carrello.righeCarrello.Count( r => r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA );
 			}
 		}
 
@@ -148,13 +148,13 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// </summary>
 		public int sommatoriaQtaFotoDaStampare {
 			get {
-				return carrello.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_STAMPA ).Sum( rfs => rfs.quantita );
+				return carrello.righeCarrello.Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA ).Sum( rfs => rfs.quantita );
 			}
 		}
 
 		public decimal sommatoraPrezziFotoDaStampare {
 			get {
-				return carrello.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_STAMPA ).Sum( rfs => rfs.prezzoNettoTotale );
+				return carrello.righeCarrello.Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA ).Sum( rfs => rfs.prezzoNettoTotale );
 			}
 		}
 
@@ -163,7 +163,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			get
 			{
 				long totalLength = 0;
-				foreach (RigaCarrello riga in carrello.righeCarrello.Where(r => r.discriminator == Carrello.TIPORIGA_MASTERIZZATA))
+				foreach (RigaCarrello riga in carrello.righeCarrello.Where(r => r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA))
                 {
 					if( riga.fotografia != null ) {
 						String filePath = (Configurazione.cartellaRepositoryFoto + Path.DirectorySeparatorChar + riga.fotografia.nomeFile);
@@ -187,7 +187,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		public Decimal prezzoNettoTotale {
 
 			get {
-				return carrello.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_STAMPA ).Sum( r => r.prezzoNettoTotale ) + (carrello.prezzoDischetto != null ? (decimal)carrello.prezzoDischetto : (decimal)0);
+				return carrello.righeCarrello.Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA ).Sum( r => r.prezzoNettoTotale ) + (carrello.prezzoDischetto != null ? (decimal)carrello.prezzoDischetto : (decimal)0);
 			}
 		}
 
@@ -304,7 +304,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			else {
 				// Controllo che sulle righe da stampare ci sia il nome della stampante e che sia valida
 				foreach( var riga in carrello.righeCarrello ) {
-					if( riga.discriminator == Carrello.TIPORIGA_STAMPA )
+					if( riga.discriminator == RigaCarrello.TIPORIGA_STAMPA )
 						if( String.IsNullOrEmpty( riga.nomeStampante ) ) {
 							errore = "In alcune righe non è stato indicato il formato carta o la stampante";
 							break;
@@ -352,7 +352,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				throw new ArgumentNullException( "nella RigaCarrello è obbligatoria la Fotografia" );
 			if( riga.fotografo == null )
 				throw new ArgumentNullException( "nella RigaCarrello è obbligatorio il Fotografo" );
-			if( riga.discriminator == Carrello.TIPORIGA_STAMPA )
+			if( riga.discriminator == RigaCarrello.TIPORIGA_STAMPA )
 				if( riga.formatoCarta == null )
 					throw new ArgumentNullException( "nella RigaCarrello da stampare è obbligatorio il FormatoCarta" );
 
@@ -571,10 +571,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 				// Se ho venduto il carrello, valorizzo i fogli stampati con la quantità
 				if( carrello.venduto ) {
-					if( r.discriminator == Carrello.TIPORIGA_STAMPA ) {
+					if( r.discriminator == RigaCarrello.TIPORIGA_STAMPA ) {
 						r.totFogliStampati = r.quantita;
 					}
-					if( r.discriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
+					if( r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA ) {
 						carrello.totMasterizzate += r.quantita; // Sarà sempre = 1 per forza;
 					}
 				}
@@ -591,17 +591,17 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					}
 
 
-					if( r.discriminator == Carrello.TIPORIGA_STAMPA ) {
+					if( r.discriminator == RigaCarrello.TIPORIGA_STAMPA ) {
 						inca.incasso += r.prezzoNettoTotale;
 						inca.incassoStampe += r.prezzoNettoTotale;
 						inca.contaStampe += r.quantita;
-					} else if( r.discriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
+					} else if( r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA ) {
 						// Il prezzo di queste righe è zero. Calcolo tutto alla fine sul totale
 						inca.contaMasterizzate += r.quantita;  // fisso = 1
 					}
 				}
 
-				if( r.discriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
+				if( r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA ) {
 					carrello.totMasterizzate += r.quantita;
 				}
 			}
@@ -645,7 +645,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			decimal valore = 0;
 
 			// Le righe masterizzate non le conteggio. Sono a valore 0
-			if( riga.discriminator == Carrello.TIPORIGA_STAMPA ) {
+			if( riga.isTipoStampa ) {
 
 				decimal _localSconto = riga.sconto != null ? (decimal)riga.sconto : 0;
 
@@ -724,7 +724,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 						r.quantita = 0;
 
-						if( r.discriminator == Carrello.TIPORIGA_STAMPA ) {
+						if( r.isTipoStampa ) {
 							r.descrizione = marca + "Storno " + r.totFogliStampati + " fogli";
 							r.totFogliStampati = 0;
                             Fotografia f = r.fotografia;
@@ -735,7 +735,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
                             objContext.ObjectStateManager.ChangeObjectState(f, EntityState.Modified);
                         }
 
-						if( r.discriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
+						if( r.isTipoMasterizzata ) {
 							r.descrizione = marca + "Storno foto masterizzate";
 							r.quantita = 0;
 						}
@@ -777,7 +777,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				// Devo individuare qual'è la riga da modificare
 				foreach( RigaCarrello r in carrello.righeCarrello ) {
 
-					if( r.discriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
+					if( r.isTipoMasterizzata ) {
 						// Se non ho masterizzato nulla, azzero il totale riga e poi abbasso il totale documento
 						r.descrizione = marca + "Storno foto masterizzate";
 						r.quantita = 0;
@@ -876,8 +876,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			if( remove )
 				carrello.righeCarrello.Remove( rigaCarrello );
 
-			if( Carrello.TIPORIGA_STAMPA.Equals( rigaCarrello.discriminator ) ) {
-				rigaCarrello.discriminator = Carrello.TIPORIGA_MASTERIZZATA;
+			if( rigaCarrello.isTipoStampa ) {
+				rigaCarrello.discriminator = RigaCarrello.TIPORIGA_MASTERIZZATA;
 				rigaCarrello.quantita = 1;
 				rigaCarrello.formatoCarta = null;
 				rigaCarrello.totFogliStampati = 0;
@@ -886,10 +886,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				rigaCarrello.prezzoNettoTotale = 0;
 				rigaCarrello.nomeStampante = null;
 				rigaCarrello.sconto = null;
-			} else if( Carrello.TIPORIGA_MASTERIZZATA.Equals( rigaCarrello.discriminator ) ) {
+			} else if( rigaCarrello.isTipoMasterizzata ) {
 				//Quando sposto la riga setto di default i bordi bianchi a false
 				rigaCarrello.bordiBianchi = false;
-				rigaCarrello.discriminator = Carrello.TIPORIGA_STAMPA;
+				rigaCarrello.discriminator = RigaCarrello.TIPORIGA_STAMPA;
 			} else {
 				_giornale.Warn( "Errore è stata spostata una riga senza dicriminator" );
 			}
