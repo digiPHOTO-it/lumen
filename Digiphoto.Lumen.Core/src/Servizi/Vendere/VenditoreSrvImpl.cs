@@ -456,71 +456,45 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
             inviaMessaggioValoreCarrelloCambiato(true);
         }
 
-        public void copiaSpostaRigaCarrello(RigaCarrello rigaCarrello)
+        public void copiaSpostaRigaCarrello( RigaCarrello rigaSorgente, Carrello.ParametriDiStampa parametriDiStampa )
 		{
 			RigaCarrello cloneRiga = new RigaCarrello();
-			if (Carrello.TIPORIGA_MASTERIZZATA.Equals(rigaCarrello.discriminator))
-			{
-				cloneRiga.id = Guid.NewGuid();
-				cloneRiga.bordiBianchi = rigaCarrello.bordiBianchi;
-				cloneRiga.carrello = rigaCarrello.carrello;
-				cloneRiga.carrello_id = rigaCarrello.carrello_id;
-				cloneRiga.descrizione = rigaCarrello.descrizione;
-				cloneRiga.discriminator = rigaCarrello.discriminator;
-				cloneRiga.formatoCarta = rigaCarrello.formatoCarta;
-				cloneRiga.fotografia = rigaCarrello.fotografia;
-				cloneRiga.fotografo = rigaCarrello.fotografo;
-				cloneRiga.id = rigaCarrello.id;
-				cloneRiga.nomeStampante = rigaCarrello.nomeStampante;
-				cloneRiga.prezzoLordoUnitario = rigaCarrello.prezzoLordoUnitario;
-				cloneRiga.prezzoNettoTotale = rigaCarrello.prezzoNettoTotale;
-				cloneRiga.quantita = rigaCarrello.quantita;
-				cloneRiga.sconto = rigaCarrello.sconto;
-				cloneRiga.totFogliStampati = rigaCarrello.totFogliStampati;
 
-			}
+			cloneRiga.id = Guid.Empty;
 			
-			if (Carrello.TIPORIGA_STAMPA.Equals(rigaCarrello.discriminator))
-			{
-				cloneRiga.id = Guid.NewGuid();
-				cloneRiga.bordiBianchi = rigaCarrello.bordiBianchi;
-				cloneRiga.carrello = rigaCarrello.carrello;
-				cloneRiga.carrello_id = rigaCarrello.carrello_id;
-				cloneRiga.descrizione = rigaCarrello.descrizione;
-				cloneRiga.discriminator = rigaCarrello.discriminator;
-				cloneRiga.formatoCarta = rigaCarrello.formatoCarta;
-				cloneRiga.fotografia = rigaCarrello.fotografia;
-				cloneRiga.fotografo = rigaCarrello.fotografo;
-				cloneRiga.id = rigaCarrello.id;
-				cloneRiga.nomeStampante = rigaCarrello.nomeStampante;
-				cloneRiga.prezzoLordoUnitario = rigaCarrello.prezzoLordoUnitario;
-				cloneRiga.prezzoNettoTotale = rigaCarrello.prezzoNettoTotale;
-				cloneRiga.quantita = rigaCarrello.quantita;
-				cloneRiga.sconto = rigaCarrello.sconto;
-				cloneRiga.totFogliStampati = rigaCarrello.totFogliStampati;
+			cloneRiga.carrello = rigaSorgente.carrello;
+			cloneRiga.descrizione = rigaSorgente.descrizione;
+			cloneRiga.discriminator = rigaSorgente.discriminator;
+
+			cloneRiga.fotografia = rigaSorgente.fotografia;
+			cloneRiga.fotografo = rigaSorgente.fotografo;
+			cloneRiga.sconto = rigaSorgente.sconto;
+			cloneRiga.totFogliStampati = rigaSorgente.totFogliStampati;
+
+			//associo il nuovo formato carta alla riga
+			if( parametriDiStampa != null ) {
+				cloneRiga.bordiBianchi = parametriDiStampa.BordiBianchi;
+				cloneRiga.formatoCarta = parametriDiStampa.FormatoCarta;
+				cloneRiga.nomeStampante = parametriDiStampa.NomeStampante;
+				cloneRiga.quantita = parametriDiStampa.Quantita;
+				cloneRiga.prezzoLordoUnitario = parametriDiStampa.PrezzoLordoUnitario;
+				cloneRiga.prezzoNettoTotale = parametriDiStampa.PrezzoNettoTotale;
 			}
-			spostaRigaCarrello(cloneRiga, false);
+
+			spostaRigaCarrello( cloneRiga, false );
 		}
 
-        public void copiaSpostaTutteRigheCarrello(string discriminator, Carrello.ParametriDiStampa parametriDiStampa)
+        public void copiaSpostaTutteRigheCarrello(string discriminaSorg, Carrello.ParametriDiStampa parametriDiStampa)
         {
-            IEnumerable<RigaCarrello> listaDaCopiareSpostare = carrello.righeCarrello.Where(r => r.discriminator == discriminator);
+            IEnumerable<RigaCarrello> listaDaCopiareSpostare = carrello.righeCarrello.Where(r => r.discriminator == discriminaSorg);
 
-            string d = Carrello.Not(discriminator);
+            string discriminaDest = Carrello.Not(discriminaSorg);
 
-            foreach (RigaCarrello rigaDaCopiareSpostare in listaDaCopiareSpostare.ToArray())
+            foreach ( RigaCarrello rigaDaCopiareSpostare in listaDaCopiareSpostare.ToArray() )
             {
-                if (!GestoreCarrello.isStessaFotoInCarrello(carrello, rigaDaCopiareSpostare, d))
+                if (!GestoreCarrello.isStessaFotoInCarrello(carrello, rigaDaCopiareSpostare, discriminaDest))
                 {
-                    if (Carrello.TIPORIGA_STAMPA.Equals(d))
-                    {
-                        rigaDaCopiareSpostare.formatoCarta = parametriDiStampa.FormatoCarta;
-                        rigaDaCopiareSpostare.nomeStampante = parametriDiStampa.NomeStampante;
-                        rigaDaCopiareSpostare.quantita = parametriDiStampa.Quantita;
-                        rigaDaCopiareSpostare.prezzoLordoUnitario = parametriDiStampa.PrezzoLordoUnitario;
-                        rigaDaCopiareSpostare.prezzoNettoTotale = parametriDiStampa.PrezzoNettoTotale;
-                    }
-                    copiaSpostaRigaCarrello(rigaDaCopiareSpostare);
+                    copiaSpostaRigaCarrello( rigaDaCopiareSpostare, parametriDiStampa );
                 }
             }
         }

@@ -30,6 +30,7 @@ namespace Digiphoto.Lumen.Model {
             return d.Equals(Carrello.TIPORIGA_MASTERIZZATA) ? Carrello.TIPORIGA_STAMPA : Carrello.TIPORIGA_MASTERIZZATA;
         }
 
+		// TODO spostare da qui questa classe perché non c'entra niente !!!!
         public class ParametriDiStampa
         {
             private FormatoCarta _formatoCarta;
@@ -113,6 +114,17 @@ namespace Digiphoto.Lumen.Model {
                 }
             }
 
+			private bool _bordiBianchi;
+			public bool BordiBianchi {
+				get {
+					return _bordiBianchi;
+				}
+				set {
+					if( _bordiBianchi != value ) {
+						_bordiBianchi = value;
+					}
+				}
+			}
         }
     }
 }

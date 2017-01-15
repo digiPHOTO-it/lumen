@@ -88,7 +88,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
         void spostareTutteRigheCarrello(String discriminator, Carrello.ParametriDiStampa parametriDiStampa);
 
-        void copiaSpostaRigaCarrello(RigaCarrello rigaCarrello);
+        void copiaSpostaRigaCarrello(RigaCarrello rigaCarrello, Carrello.ParametriDiStampa parametriDiStampa );
 
         void copiaSpostaTutteRigheCarrello(String discriminator, Carrello.ParametriDiStampa parametriDiStampa);
 
