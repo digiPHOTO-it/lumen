@@ -130,8 +130,14 @@ namespace Digiphoto.Lumen.UI
 			ListBox container = sender as ListBox;
 
 			if( sender != null ) {
-				// Store the mouse position
-				dragStartPoint = e.GetPosition( null );
+
+				var item = ItemsControl.ContainerFromElement( sender as ItemsControl, (DependencyObject)e.OriginalSource ) as ListBoxItem;
+
+				// Se non faccio questo test, mi viene intercettato anche il Click sulla ScrollBar.
+				if( item != null ) {
+					// Store the mouse position
+					dragStartPoint = e.GetPosition( null );
+				}
 			}
 		}
 
