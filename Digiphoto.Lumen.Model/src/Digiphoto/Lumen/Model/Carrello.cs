@@ -57,7 +57,7 @@ namespace Digiphoto.Lumen.Model {
                 }
                 set
                 {
-                    if(_nomeStampante != null)
+                    if(_nomeStampante != value)
                     {
                         _nomeStampante = value;
                     }
