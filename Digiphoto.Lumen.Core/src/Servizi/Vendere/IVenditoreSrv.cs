@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Servizi.Stampare;
 using Digiphoto.Lumen.Servizi.Masterizzare;
@@ -86,11 +84,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		void spostareRigaCarrello(RigaCarrello rigaCarrello);
 
-        void spostareTutteRigheCarrello(String discriminator, Carrello.ParametriDiStampa parametriDiStampa);
+        void spostareTutteRigheCarrello(String discriminator, ParametriDiStampa parametriDiStampa);
 
-        void copiaSpostaRigaCarrello(RigaCarrello rigaCarrello, Carrello.ParametriDiStampa parametriDiStampa );
+        void copiaSpostaRigaCarrello(RigaCarrello rigaCarrello, ParametriDiStampa parametriDiStampa );
 
-        void copiaSpostaTutteRigheCarrello(String discriminator, Carrello.ParametriDiStampa parametriDiStampa);
+        void copiaSpostaTutteRigheCarrello(String discriminator, ParametriDiStampa parametriDiStampa);
 
 		/** Lavoro con un carrello alla volta. Esiste un solo carrello "corrente". */
 		Carrello carrello { get; }
