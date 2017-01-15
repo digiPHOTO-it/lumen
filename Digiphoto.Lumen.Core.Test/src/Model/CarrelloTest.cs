@@ -72,10 +72,10 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 						if( r.fotografia != null )
 							Debug.WriteLine( "\t\tDataOra = " + r.fotografia.dataOraAcquisizione );
 
-						if( r.discriminator == Carrello.TIPORIGA_STAMPA ) {
+						if( r.isTipoStampa ) {
 							Debug.WriteLine( "\t\tFormato Carta = " + r.formatoCarta );
 						}
-						if( r.discriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
+						if( r.isTipoMasterizzata ) {
 							Debug.WriteLine( "\t\tTot. foto masterizzate = " + c.totMasterizzate );
 						}
 					}
@@ -103,7 +103,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 				RigaCarrello r1 = new RigaCarrello();
 				r1.fotografia = Costanti.findUnaFotografiaRandom( dbContext );
 				r1.fotografo = r1.fotografia.fotografo;
-				r1.discriminator = Carrello.TIPORIGA_MASTERIZZATA;
+				r1.discriminator = RigaCarrello.TIPORIGA_MASTERIZZATA;
 				r1.id = Guid.NewGuid();
 				r1.prezzoLordoUnitario = new Decimal( 20 );
 				r1.quantita = 2;
@@ -116,7 +116,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 
 				RigaCarrello r2 = new RigaCarrello();
 				r2.fotografia = Costanti.findUnaFotografiaRandom( dbContext );
-				r2.discriminator = Carrello.TIPORIGA_STAMPA;
+				r2.discriminator = RigaCarrello.TIPORIGA_STAMPA;
 				r2.id = Guid.NewGuid();
 				r2.prezzoLordoUnitario = new Decimal( 5 );
 				r2.quantita = 3;
@@ -133,7 +133,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 	
 				RigaCarrello r3 = new RigaCarrello();
 				r3.fotografia = Costanti.findUnaFotografiaRandom( dbContext );
-				r3.discriminator = Carrello.TIPORIGA_STAMPA;
+				r3.discriminator = RigaCarrello.TIPORIGA_STAMPA;
 				r3.id = Guid.NewGuid();
 				r3.prezzoLordoUnitario = new Decimal( 5 );
 				r3.quantita = 2;
@@ -198,7 +198,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 				dbContext.Fotografie.Attach( fotografia );
 
 				RigaCarrello rr = new RigaCarrello();
-				rr.discriminator = Carrello.TIPORIGA_STAMPA;
+				rr.discriminator = RigaCarrello.TIPORIGA_STAMPA;
 				rr.formatoCarta =  formato;
 				rr.fotografo = fotografo;
 				rr.fotografia = fotografia;
@@ -217,7 +217,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 
 			using( LumenEntities dbContext = new LumenEntities() ) {
 				foreach( RigaCarrello riCaFotoStampata in 
-					dbContext.RigheCarrelli.Include( "fotografo" ).Include( "fotografia" ).Where( r => r.discriminator == Carrello.TIPORIGA_STAMPA ) ) {
+					dbContext.RigheCarrelli.Include( "fotografo" ).Include( "fotografia" ).Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA ) ) {
 					Trace.WriteLine ( "Riga Carrello foto stampata: " + riCaFotoStampata.fotografo.id + " totFoto=" + riCaFotoStampata.totFogliStampati );
 				}
 			}
@@ -232,7 +232,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 				IQueryable<RigaCarrello> esito =
 					from c in dbContext.Carrelli.Include( "righeCarrelli" )
 					from r in c.righeCarrello
-					where (c.id == _carrelloInserito.id && r.discriminator == Carrello.TIPORIGA_STAMPA )
+					where (c.id == _carrelloInserito.id && r.discriminator == RigaCarrello.TIPORIGA_STAMPA )
 					select r;
 
 
@@ -311,7 +311,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 			using( LumenEntities dbContext = new LumenEntities() ) {
 
 				RigaCarrello r1 = new RigaCarrello();
-				r1.discriminator = Carrello.TIPORIGA_STAMPA;
+				r1.discriminator = RigaCarrello.TIPORIGA_STAMPA;
 				r1.id = Guid.NewGuid();
 				r1.prezzoLordoUnitario = new Decimal( 5 );
 				r1.quantita = 3;
@@ -385,7 +385,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 
 				// Creo la riga con gli attributi scalari
 				RigaCarrello r1 = new RigaCarrello {
-					discriminator = Carrello.TIPORIGA_STAMPA,
+					discriminator = RigaCarrello.TIPORIGA_STAMPA,
 					id = Guid.NewGuid(),
 					prezzoLordoUnitario = 5,
 					quantita = 3,
@@ -473,7 +473,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 
 				RigaCarrello riga = objectContext.CreateObject<RigaCarrello>();
 				riga.id = Guid.NewGuid();
-				riga.discriminator = Carrello.TIPORIGA_STAMPA;
+				riga.discriminator = RigaCarrello.TIPORIGA_STAMPA;
 				riga.prezzoLordoUnitario = new Decimal( 5 );
 				riga.quantita = 3;
 				riga.prezzoNettoTotale = Decimal.Multiply( riga.prezzoLordoUnitario, riga.quantita );

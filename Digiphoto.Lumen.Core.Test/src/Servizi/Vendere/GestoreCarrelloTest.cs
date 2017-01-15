@@ -72,7 +72,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Vendere {
 				riga3.quantita = 1;
 				riga3.fotografo = riga3.fotografia.fotografo;
 				riga3.formatoCarta = UnitOfWorkScope.currentDbContext.FormatiCarta.First();
-				riga3.discriminator = Carrello.TIPORIGA_STAMPA;
+				riga3.discriminator = RigaCarrello.TIPORIGA_STAMPA;
 				riga3.descrizione = "DACANC";
 				riga3.nomeStampante = Costanti.NomeStampantePdf;
 				gestoreCarrello.aggiungiRiga( riga3 );
@@ -140,7 +140,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Vendere {
 			riga1.quantita = 2;
 			riga1.fotografo = fotografie[i].fotografo;
 			riga1.formatoCarta = formatoCarta;
-			riga1.discriminator = Carrello.TIPORIGA_STAMPA;
+			riga1.discriminator = RigaCarrello.TIPORIGA_STAMPA;
 			riga1.descrizione = "da stampare";
 			riga1.nomeStampante = Costanti.NomeStampantePdf;
 			gestoreCarrello.aggiungiRiga( riga1 );
@@ -150,7 +150,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Vendere {
 			riga2.fotografia = fotografie[i];
 			riga2.quantita = 1;
 			riga2.fotografo = fotografie[i].fotografo;
-			riga2.discriminator = Carrello.TIPORIGA_MASTERIZZATA;
+			riga2.discriminator = RigaCarrello.TIPORIGA_MASTERIZZATA;
 			riga2.descrizione = "da masterizzare";
 			gestoreCarrello.aggiungiRiga( riga2 );
 

@@ -61,11 +61,11 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 					if( r.fotografia != null )
 						System.Diagnostics.Trace.WriteLine( "\t\tDataOra = " + r.fotografia.dataOraAcquisizione );
 
-					if (r.discriminator == Carrello.TIPORIGA_STAMPA )
+					if (r.discriminator == RigaCarrello.TIPORIGA_STAMPA )
 					{
 						System.Diagnostics.Trace.WriteLine("\t\tFormato Carta = " + r.formatoCarta);
 					}
-					if( r.discriminator == Carrello.TIPORIGA_MASTERIZZATA )
+					if( r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA )
 					{
 					}
 				}
@@ -259,7 +259,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 				var listaIds = from le in param.fotografi
 							   select le.id;
 
-				query = query.Where(ff => listaIds.Equals(ff.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_STAMPA ).First<RigaCarrello>().fotografo));
+				query = query.Where(ff => listaIds.Equals(ff.righeCarrello.Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA ).First<RigaCarrello>().fotografo));
 			}
 
 			// ----- fasi del giorno (la Enum non prevede il Contains. Devo trasformarla in una array di interi
@@ -268,7 +268,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 				IEnumerable<short> fasiInt = from p in param.fasiDelGiorno
 											 select Convert.ToInt16(p);
 
-				query = query.Where(ff => fasiInt.Equals(ff.righeCarrello.Where( r => r.discriminator == Carrello.TIPORIGA_STAMPA ).First<RigaCarrello>().fotografia.faseDelGiorno));
+				query = query.Where(ff => fasiInt.Equals(ff.righeCarrello.Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA ).First<RigaCarrello>().fotografia.faseDelGiorno));
 			}
 
 			// ----- Intestazione 

@@ -101,7 +101,7 @@ namespace Digiphoto.Lumen.UI {
 				// Creo la CollectionView delle rige stampate
 				RiCaFotoStampateCv = new ListCollectionView( carrelloCorrente.righeCarrello.ToList() );
 				RiCaFotoStampateCv.Filter = f => {
-					return ((RigaCarrello)f).discriminator == Carrello.TIPORIGA_STAMPA;
+					return ((RigaCarrello)f).isTipoStampa;
 				};
 				if( indexStampate > -1 && RiCaFotoStampateCv.Count > indexStampate )
 					rigaCarrelloStampataSelezionata = (RigaCarrello)RiCaFotoStampateCv.GetItemAt( indexStampate );
@@ -114,7 +114,7 @@ namespace Digiphoto.Lumen.UI {
 			// Creo la CollectionView delle rige masterizzate
 			RiCaFotoMasterizzateCv = new ListCollectionView( carrelloCorrente.righeCarrello.ToList() );
 			RiCaFotoMasterizzateCv.Filter = f => {
-				return ((RigaCarrello)f).discriminator == Carrello.TIPORIGA_MASTERIZZATA;
+				return ((RigaCarrello)f).discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA;
 			};
 			if( indexMasterizzate > -1 && RiCaFotoMasterizzateCv.Count > indexMasterizzate )
 				rigaCarrelloMasterizzataSelezionata = (RigaCarrello)RiCaFotoMasterizzateCv.GetItemAt( indexMasterizzate );
@@ -454,7 +454,7 @@ namespace Digiphoto.Lumen.UI {
 
 		public bool possoAggiornareQuantitaRiga( short delta ) {
 
-			if( !abilitaEliminaRigaFoto( Carrello.TIPORIGA_STAMPA ) )
+			if( !abilitaEliminaRigaFoto( RigaCarrello.TIPORIGA_STAMPA ) )
 				return false;
 
 			if( rigaCarrelloStampataSelezionata.quantita + delta > 0 )
@@ -482,12 +482,12 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		public bool possoSpostareFotoRiga( string discriminator ) {
-			if( Carrello.TIPORIGA_MASTERIZZATA.Equals( discriminator ) ) {
+			if( RigaCarrello.TIPORIGA_MASTERIZZATA.Equals( discriminator ) ) {
 				//Se voglio spostare le foto nelle masterizzate devo avere qualcosa nelle stampate
 				return rigaCarrelloStampataSelezionata != null;
 			}
 
-			if( Carrello.TIPORIGA_STAMPA.Equals( discriminator ) ) {
+			if( RigaCarrello.TIPORIGA_STAMPA.Equals( discriminator ) ) {
 				//Se voglio spostare le foto nelle stampate devo avere qualcosa nelle masterizzate
 				return rigaCarrelloMasterizzataSelezionata != null;
 			}
@@ -543,7 +543,7 @@ namespace Digiphoto.Lumen.UI {
 			if( posso && carrelloCorrente.venduto && !IsErroriMasterizzazione )
 				posso = false;
 
-			if( posso && discriminator == Carrello.TIPORIGA_STAMPA ) {
+			if( posso && discriminator == RigaCarrello.TIPORIGA_STAMPA ) {
 				// Verifico che i dati minimi siano stati indicati
 				if( posso && RiCaFotoStampateCv.IsEmpty )
 					posso = false;
@@ -552,7 +552,7 @@ namespace Digiphoto.Lumen.UI {
 					posso = false;
 			}
 
-			if( posso && discriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
+			if( posso && discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA ) {
 				if( posso && RiCaFotoMasterizzateCv.IsEmpty )
 					posso = false;
 
@@ -765,11 +765,11 @@ namespace Digiphoto.Lumen.UI {
 
 					foreach( RigaCarrello r in carrelloCorrente.righeCarrello ) {
 
-						if( r.discriminator == Carrello.TIPORIGA_STAMPA ) {
+						if( r.discriminator == RigaCarrello.TIPORIGA_STAMPA ) {
 							totoleFotoStampate += (short)r.quantita;
 						}
 
-						if( r.discriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
+						if( r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA ) {
 							totaleFotoMasterizzate += (short)r.quantita;  // Deve essere sempre 1.
 						}
 					}
@@ -968,9 +968,9 @@ namespace Digiphoto.Lumen.UI {
 				return;
 			}
 
-			if( discriminator == Carrello.TIPORIGA_STAMPA )
+			if( discriminator == RigaCarrello.TIPORIGA_STAMPA )
 				venditoreSrv.eliminareRigaCarrello( rigaCarrelloStampataSelezionata );
-			else if( discriminator == Carrello.TIPORIGA_MASTERIZZATA )
+			else if( discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA )
 				venditoreSrv.eliminareRigaCarrello( rigaCarrelloMasterizzataSelezionata );
 
 			// Quando elimino una riga, deseleziono la lista. Non voglio avere foto correnti
@@ -983,7 +983,7 @@ namespace Digiphoto.Lumen.UI {
 				msg.Append( "\r\nL'operazione sarà definitiva solo se verrà salvato o venduto il carrello." );
 
 			bool procediPure = false;
-			dialogProvider.ShowConfirmation( msg.ToString(), "Rimozione foto da " + (discriminator == Carrello.TIPORIGA_STAMPA ? "stampare" : "masterizzare") + " dal carrello",
+			dialogProvider.ShowConfirmation( msg.ToString(), "Rimozione foto da " + (discriminator == RigaCarrello.TIPORIGA_STAMPA ? "stampare" : "masterizzare") + " dal carrello",
 				( confermato ) => {
 					procediPure = confermato;
 				} );
@@ -996,7 +996,7 @@ namespace Digiphoto.Lumen.UI {
 				return;
 			if( chiediConfermaEliminazioneDischetto() == false )
 				return;
-			venditoreSrv.eliminareRigheCarrello( Carrello.TIPORIGA_MASTERIZZATA );
+			venditoreSrv.eliminareRigheCarrello( RigaCarrello.TIPORIGA_MASTERIZZATA );
 		}
 
 		private bool chiediConfermaEliminazioneDischetto() {
@@ -1014,7 +1014,7 @@ namespace Digiphoto.Lumen.UI {
 		private void eliminaTutteFotoCarrello() {
 			if( chiediConfermaEliminazioneTutteFoto() == false )
 				return;
-			venditoreSrv.eliminareRigheCarrello( Carrello.TIPORIGA_STAMPA );
+			venditoreSrv.eliminareRigheCarrello( RigaCarrello.TIPORIGA_STAMPA );
 		}
 
 		private bool chiediConfermaEliminazioneTutteFoto() {
@@ -1109,8 +1109,8 @@ namespace Digiphoto.Lumen.UI {
 
 		private void svuotaCarrello() {
 			// ELimino tutte le righe ma tengo buona la testata
-			venditoreSrv.eliminareRigheCarrello( Carrello.TIPORIGA_STAMPA );
-			venditoreSrv.eliminareRigheCarrello( Carrello.TIPORIGA_MASTERIZZATA );
+			venditoreSrv.eliminareRigheCarrello( RigaCarrello.TIPORIGA_STAMPA );
+			venditoreSrv.eliminareRigheCarrello( RigaCarrello.TIPORIGA_MASTERIZZATA );
 			calcolaTotali();
 
 			MasterizzazionePorgress = "";
@@ -1186,7 +1186,7 @@ namespace Digiphoto.Lumen.UI {
 			bool onlySelected = spostaFotoRigaSingolaRadio;
 			RigaCarrello qualeRiga = null;
 			if( onlySelected )
-				qualeRiga = discriminator == Carrello.TIPORIGA_STAMPA ? rigaCarrelloMasterizzataSelezionata : rigaCarrelloStampataSelezionata;
+				qualeRiga = discriminator == RigaCarrello.TIPORIGA_STAMPA ? rigaCarrelloMasterizzataSelezionata : rigaCarrelloStampataSelezionata;
 
 			if( copiaFotoRigaRadio ) {
 				copiaSpostaFotoRighe( discriminator, qualeRiga );
@@ -1206,7 +1206,7 @@ namespace Digiphoto.Lumen.UI {
 				Type rType = typeof( RigaCarrello );
 				if( pType == rType || rType.IsAssignableFrom( pType ) ) {
 					RigaCarrello r = (RigaCarrello)paramGenerico;
-					var newDiscrim = Carrello.Not( r.discriminator );
+					var newDiscrim = r.getDiscriminatorOpposto();
 					spostaFotoRighe( newDiscrim, r );
 				}
 			}
@@ -1221,15 +1221,15 @@ namespace Digiphoto.Lumen.UI {
 		private void spostaFotoRighe( string newDiscriminator, RigaCarrello rigaCarrello )
         {
 			// Sposto da STAMPE -> MASTERIZZATE
-            if( newDiscriminator == Carrello.TIPORIGA_MASTERIZZATA ) {
+            if( newDiscriminator == RigaCarrello.TIPORIGA_MASTERIZZATA ) {
                 if( rigaCarrello != null )
 					venditoreSrv.spostareRigaCarrello( rigaCarrello );
 				else
-					venditoreSrv.spostareTutteRigheCarrello(Carrello.Not(newDiscriminator), null);
+					venditoreSrv.spostareTutteRigheCarrello( RigaCarrello.getDiscriminatorOpposto(newDiscriminator), null);
             }
 
 			// Sposto da MASTERIZZATE -> STAMPE
-			if( newDiscriminator == Carrello.TIPORIGA_STAMPA )
+			if( newDiscriminator == RigaCarrello.TIPORIGA_STAMPA )
             {
                 SelezionaStampanteDialog d = new SelezionaStampanteDialog();
                 bool? esito = d.ShowDialog();
@@ -1256,7 +1256,7 @@ namespace Digiphoto.Lumen.UI {
                     }    
                     else
                     {
-                        venditoreSrv.spostareTutteRigheCarrello(Carrello.Not(newDiscriminator), parametriDiStampa);
+                        venditoreSrv.spostareTutteRigheCarrello( RigaCarrello.getDiscriminatorOpposto(newDiscriminator), parametriDiStampa);
                     }
 
                     rinfrescaViewRighe();
@@ -1269,15 +1269,15 @@ namespace Digiphoto.Lumen.UI {
         private void copiaSpostaFotoRighe( string newDiscriminator, RigaCarrello qualeRiga )
         {
             // CopioSposto da STAMPE -> MASTERIZZATE
-            if (newDiscriminator == Carrello.TIPORIGA_MASTERIZZATA) {
+            if (newDiscriminator == RigaCarrello.TIPORIGA_MASTERIZZATA) {
                 if( qualeRiga != null )
 					venditoreSrv.copiaSpostaRigaCarrello( qualeRiga, null );
 				else
-                    venditoreSrv.copiaSpostaTutteRigheCarrello(Carrello.Not(newDiscriminator), null);
+                    venditoreSrv.copiaSpostaTutteRigheCarrello( RigaCarrello.getDiscriminatorOpposto(newDiscriminator), null);
             }
 
             // CopioSposto da MASTERIZZATE -> STAMPE
-            if (newDiscriminator == Carrello.TIPORIGA_STAMPA)
+            if (newDiscriminator == RigaCarrello.TIPORIGA_STAMPA)
             {
                 SelezionaStampanteDialog d = new SelezionaStampanteDialog();
                 bool? esito = d.ShowDialog();
@@ -1297,7 +1297,7 @@ namespace Digiphoto.Lumen.UI {
                         venditoreSrv.copiaSpostaRigaCarrello( qualeRiga, parametriDiStampa );
                     }else
                     {
-                        venditoreSrv.copiaSpostaTutteRigheCarrello(Carrello.Not(newDiscriminator), parametriDiStampa);
+                        venditoreSrv.copiaSpostaTutteRigheCarrello( RigaCarrello.getDiscriminatorOpposto(newDiscriminator), parametriDiStampa);
                     } 
                 }
 
@@ -1316,7 +1316,7 @@ namespace Digiphoto.Lumen.UI {
 				Type rType = typeof( RigaCarrello );
 				if( pType == rType || rType.IsAssignableFrom( pType ) ) {
 					RigaCarrello riga = (RigaCarrello)paramGenerico;
-					String newDiscriminator = Carrello.Not( riga.discriminator );
+					String newDiscriminator = RigaCarrello.getDiscriminatorOpposto( riga.discriminator );
 					copiaSpostaFotoRighe( newDiscriminator, riga );
 				}
 			}

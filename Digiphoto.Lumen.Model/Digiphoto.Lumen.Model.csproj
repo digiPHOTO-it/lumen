@@ -200,6 +200,7 @@
     <Compile Include="src\Digiphoto\Lumen\Imaging\IImmagine.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\Evento.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\Fotografia.cs" />
+    <Compile Include="src\Digiphoto\Lumen\Model\RigaCarrello.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\ScaricoCard.cs" />
     <Compile Include="src\Digiphoto\Lumen\Util\CompNumFoto.cs" />
   </ItemGroup>
