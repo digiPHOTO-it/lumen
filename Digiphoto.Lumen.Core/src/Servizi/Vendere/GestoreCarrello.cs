@@ -370,7 +370,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				// Se non ci credi leggi qui:
 				// http://jamesheppinstall.wordpress.com/2013/06/08/managing-parent-and-child-collection-relationships-in-entity-framework-what-is-an-identifying-relationship-anyway/
 				riga.carrello = this.carrello;
-				riga.carrello_id = this.carrello.id;
+//				riga.carrello_id = this.carrello.id;
+				// Però se faccio cosi, non mi funziona piu l'aggiunta di righe ad un carrello esistente !!
 
 				carrello.righeCarrello.Add( riga );
 
@@ -437,15 +438,19 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 				if( rigaCarrello.id == Guid.Empty )
 					rigaCarrello.id = Guid.NewGuid();
+				/* ERRATO !!!!
 				if( rigaCarrello.carrello_id == Guid.Empty )
 					rigaCarrello.carrello_id = carrello.id;           
+				*/
             }
 
 			foreach( IncassoFotografo incassoFotografo in carrello.incassiFotografi ) {
 				if( incassoFotografo.id == Guid.Empty )
 					incassoFotografo.id = Guid.NewGuid();
+				/* ERRATO
 				if( incassoFotografo.carrello_id == Guid.Empty )
 					incassoFotografo.carrello_id = carrello.id;
+				*/
 			}
 
             // Se il carrello è nuovo, lo aggiungo al set.
@@ -839,6 +844,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			c.prezzoDischetto = carrello.prezzoDischetto;
 			c.totaleAPagare = carrello.totaleAPagare;
 			c.totMasterizzate = carrello.totMasterizzate;
+			c.visibileSelfService = carrello.visibileSelfService;
 
 			c.righeCarrello = new List<RigaCarrello>();
 			foreach( RigaCarrello r in carrello.righeCarrello ) {
@@ -873,6 +879,13 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			if( Carrello.TIPORIGA_STAMPA.Equals( rigaCarrello.discriminator ) ) {
 				rigaCarrello.discriminator = Carrello.TIPORIGA_MASTERIZZATA;
 				rigaCarrello.quantita = 1;
+				rigaCarrello.formatoCarta = null;
+				rigaCarrello.totFogliStampati = 0;
+				rigaCarrello.bordiBianchi = null;
+				rigaCarrello.prezzoLordoUnitario = 0;
+				rigaCarrello.prezzoNettoTotale = 0;
+				rigaCarrello.nomeStampante = null;
+				rigaCarrello.sconto = null;
 			} else if( Carrello.TIPORIGA_MASTERIZZATA.Equals( rigaCarrello.discriminator ) ) {
 				//Quando sposto la riga setto di default i bordi bianchi a false
 				rigaCarrello.bordiBianchi = false;

@@ -1271,7 +1271,7 @@ namespace Digiphoto.Lumen.UI {
             // CopioSposto da STAMPE -> MASTERIZZATE
             if (newDiscriminator == Carrello.TIPORIGA_MASTERIZZATA) {
                 if( qualeRiga != null )
-					venditoreSrv.copiaSpostaRigaCarrello( qualeRiga );
+					venditoreSrv.copiaSpostaRigaCarrello( qualeRiga, null );
 				else
                     venditoreSrv.copiaSpostaTutteRigheCarrello(Carrello.Not(newDiscriminator), null);
             }
@@ -1290,17 +1290,11 @@ namespace Digiphoto.Lumen.UI {
                     parametriDiStampa.Quantita = 1;
                     parametriDiStampa.PrezzoLordoUnitario = d.formatoCarta.prezzo;
                     parametriDiStampa.PrezzoNettoTotale = d.formatoCarta.prezzo;
+					parametriDiStampa.BordiBianchi = (!Configurazione.UserConfigLumen.autoZoomNoBordiBianchi);
 
 					if( qualeRiga != null)
                     {
-                        //associo il nuovo formato carta alla riga
-                        qualeRiga.formatoCarta = parametriDiStampa.FormatoCarta;
-                        qualeRiga.nomeStampante = parametriDiStampa.NomeStampante;
-                        qualeRiga.quantita = parametriDiStampa.Quantita;
-                        qualeRiga.prezzoLordoUnitario = parametriDiStampa.PrezzoLordoUnitario;
-                        qualeRiga.prezzoNettoTotale = parametriDiStampa.PrezzoNettoTotale;
-
-                        venditoreSrv.copiaSpostaRigaCarrello(qualeRiga);
+                        venditoreSrv.copiaSpostaRigaCarrello( qualeRiga, parametriDiStampa );
                     }else
                     {
                         venditoreSrv.copiaSpostaTutteRigheCarrello(Carrello.Not(newDiscriminator), parametriDiStampa);
@@ -1352,6 +1346,7 @@ namespace Digiphoto.Lumen.UI {
 
 		public void caricareInGallery() {
 
+			// TODO migliorare qui. Se la gallery è vuota, non chiedere conferma.			
 /*
 			bool procediPure = false;
 			String testo = "Svuotare la gallery e caricare le foto presenti nel carrello.\nConfermi?";
