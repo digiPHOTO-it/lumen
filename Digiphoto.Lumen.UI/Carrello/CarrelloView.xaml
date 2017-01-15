@@ -95,14 +95,13 @@
 						   Margin="45,2,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="9" Height="21"/>
                     <Label Content="{Binding Path=sommatoriaFotoDaMasterizzare,Mode=OneWay}" Style="{StaticResource labelRiepilogoStyle}"
 						   Width="56" Height="21" Margin="0,2,52,0" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="24" VerticalContentAlignment="Top" HorizontalContentAlignment="Right" />
-                    <TextBox Text="{Binding Path=carrelloCorrente.prezzoDischetto, UpdateSourceTrigger=PropertyChanged,StringFormat=\{0:c0\},TargetNullValue=''}" 
-							 Width="74" Height="40" Margin="0,50,52,0" HorizontalAlignment="Right" VerticalAlignment="Top" BorderThickness="1" BorderBrush="Gray" FontSize="24" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Right" />
+                    <TextBox Text="{Binding Path=carrelloCorrente.prezzoDischetto, UpdateSourceTrigger=PropertyChanged,StringFormat=\{0:c0\},TargetNullValue=''}" Height="40" Margin="79,50,52,0" VerticalAlignment="Top" BorderThickness="1" BorderBrush="Gray" FontSize="24" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Right" />
 
                     <Button  Command="{Binding eliminaDischettoCommand}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="167,3,2,0" Style="{StaticResource styleCartEliminaCd}" ToolTip="Rimuove tutte le foto da masterizzate dal carrello" />
                     <Button  Command="{Binding eliminaRigaCommand}" CommandParameter="M" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,2,8" Style="{StaticResource styleCartDelRigaMasterizzate}" ToolTip="Rimuove la riga selezionata da masterizzate dal carrello" />
 
                     <Label Content="Spazio" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontSize="9" Margin="45,23,0,0" HorizontalAlignment="Left" Width="38" Height="21" VerticalAlignment="Top" />
-                    <Label Content="{Binding Path=spazioFotoDaMasterizzate, Mode=OneWay}" Style="{StaticResource labelRiepilogoStyle}" Margin="97,24,0,55" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="56" />
+                    <Label Content="{Binding Path=spazioFotoDaMasterizzate, Mode=OneWay}" Style="{StaticResource labelRiepilogoStyle}" Margin="97,24,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="56" Height="19" VerticalAlignment="Top" />
 
                 </Grid>
 
@@ -126,7 +125,7 @@
                 <Label Content="VENDUTO" VerticalContentAlignment="Center"  HorizontalContentAlignment="Center" FontSize="20" Background="Crimson" Height="50" Margin="2,0,0,0"
 					   Visibility="{Binding Path=carrelloCorrente.venduto, Converter={StaticResource boolVisibilityConverter}}" 
 					   />
-                
+
 
             </StackPanel>
 
