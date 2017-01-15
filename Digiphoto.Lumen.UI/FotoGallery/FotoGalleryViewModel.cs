@@ -1042,7 +1042,7 @@ namespace Digiphoto.Lumen.UI {
 
 			idsFotografieSelez = new ObservableCollectionEx<Guid>( paramCercaFoto.idsFotografie );
 
-			RicercaFlags flags = RicercaFlags.NuovaRicerca | RicercaFlags.MantenereSelezionate;
+			RicercaFlags flags = RicercaFlags.NuovaRicerca | RicercaFlags.MantenereSelezionate | RicercaFlags.MantenereListaIds;
 			eseguireRicerca( flags );
 
 		}
@@ -1336,6 +1336,7 @@ namespace Digiphoto.Lumen.UI {
 			if( nuovaRicerca ) {
 
 				// Se non mi viene proibito esplicitamente, in una nuova ricerca devo azzerare la lista delle foto selezionate
+
 				if( flags.HasFlag( RicercaFlags.MantenereSelezionate ) == false )
 					azzeraFotoSelez();
 
