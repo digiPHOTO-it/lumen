@@ -58,11 +58,41 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Carrelli\Carrelli.xaml.cs">
+      <DependentUpon>Carrelli.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Control\UserControlBase.cs" />
+    <Compile Include="Logo\Logo.xaml.cs">
+      <DependentUpon>Logo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\SelfMainWindow.xaml.cs">
+      <DependentUpon>SelfMainWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Service References\SelfServiceReference\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Servizi\FotoSrv.cs" />
+    <Compile Include="SlideShow\SlideShow.xaml.cs">
+      <DependentUpon>SlideShow.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Carrelli\Carrelli.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Logo\Logo.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Main\SelfMainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Default.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -75,6 +105,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="SlideShow\SlideShow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -139,6 +173,23 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Carrello-48x48.png" />
+    <Resource Include="Resources\Folder.png" />
+    <Resource Include="Resources\Folder1.png" />
+    <Resource Include="Resources\Folder2.png" />
+    <Resource Include="Resources\Folder_old.png" />
+    <Resource Include="Resources\Home.png" />
+    <Resource Include="Resources\Left.png" />
+    <Resource Include="Resources\Loading.png" />
+    <Resource Include="Resources\MiPiace.png" />
+    <Resource Include="Resources\MiPiaceSmile.png" />
+    <Resource Include="Resources\NonMiPiace.png" />
+    <Resource Include="Resources\NonMiPiaceSmile.png" />
+    <Resource Include="Resources\Rigth.png" />
+    <Resource Include="Resources\Star.png" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
