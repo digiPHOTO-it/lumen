@@ -1,0 +1,91 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Template per il pannello che contiene tutti gli elementi della lista -->
+    <ItemsPanelTemplate x:Key="righeCarrelloItemsPanelTemplate">
+        <!-- il wrappanel mi consente di sistemare al meglio le foto in funzione dello spazio disponibile ed andare a capo quando serve -->
+        <WrapPanel Orientation="Horizontal" />
+    </ItemsPanelTemplate>
+
+    <!-- Template per il pannello che contiene tutti gli elementi della lista -->
+    <ItemsPanelTemplate x:Key="ListaCarrelliItemsPanelTemplate">
+        <StackPanel Orientation="Horizontal"></StackPanel>
+    </ItemsPanelTemplate>
+
+    <!-- Stile della listbox che itera i Carrelli -->
+    <Style x:Key="ListaCarrelliStyle" TargetType="ListBox">
+        <Setter Property="Background" Value="LightGray" />
+        <Setter Property="IsSynchronizedWithCurrentItem" Value="True" />
+    </Style>
+
+    <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Carrello" -->
+    <DataTemplate x:Key="ListaCarrelliDataTemplate">
+        <StackPanel Orientation="Horizontal">
+            <Border BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="10" Margin="0,0,2,2">
+                <Canvas x:Name="carrelloCanvas" Width="500" Height="500">
+                    <Image Source="/Digiphoto.Lumen.SelfService.MobileUI;component/Resources/Folder.png" Width="500" Margin="50,50,50,50">
+                    </Image>
+                    <Label x:Name="NumFoto"  
+                       Content="{Binding Path=titolo}"    
+					   VerticalAlignment="Top" HorizontalAlignment="Center"
+                       Margin="0,10,4,0"
+                       FontSize="35"
+                       Background="Orange" 
+                       Foreground="Black" />
+                </Canvas>
+            </Border>
+        </StackPanel>
+    </DataTemplate>
+
+    <Style x:Key="styleHome" TargetType="Button">
+        <Setter Property="ToolTip" Value="Home" />
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Content">
+            <Setter.Value>
+                <Image Source="/Digiphoto.Lumen.SelfService.MobileUI;component/Resources/Home.png" Width="60" Height="60"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="styleMiPiace" TargetType="Button">
+        <Setter Property="ToolTip" Value="Like" />
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Content">
+            <Setter.Value>
+                <Image Source="/Digiphoto.Lumen.SelfService.MobileUI;component/Resources/MiPiace.png" Width="60" Height="60"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="styleNonMiPiace" TargetType="Button">
+        <Setter Property="ToolTip" Value="NotLike" />
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Content">
+            <Setter.Value>
+                <Image Source="/Digiphoto.Lumen.SelfService.MobileUI;component/Resources/NonMiPiace.png" Width="60" Height="60"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="styleLeft" TargetType="Button">
+        <Setter Property="ToolTip" Value="Left Move" />
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Content">
+            <Setter.Value>
+                <Image Source="/Digiphoto.Lumen.SelfService.MobileUI;component/Resources/Left.png" Width="55" Height="55"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="styleRigth" TargetType="Button">
+        <Setter Property="ToolTip" Value="Rigth Move" />
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Content">
+            <Setter.Value>
+                <Image Source="/Digiphoto.Lumen.SelfService.MobileUI;component/Resources/Rigth.png" Width="55" Height="55"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>
