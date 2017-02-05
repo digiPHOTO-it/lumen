@@ -1,4 +1,5 @@
 ﻿using Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference;
+using Digiphoto.Lumen.SelfService.MobileUI.Servizi;
 using System;
 using System.Windows;
 using System.Windows.Input;
@@ -23,15 +24,13 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
 			InitializeComponent();
             this.DataContext = this;
 
-            this.TouchMove += new EventHandler<TouchEventArgs>(TouchableThing_TouchMove);
-
             // Mi connetto con il servizio SelfService.
             ssClient = new SelfServiceClient();
             ssClient.Open();
 
             // AutoExit
             _MouseTicker.Tick += new EventHandler(dispatcherTimer_MouseTicker);
-            _MouseTicker.Interval = new TimeSpan(0, 0, 0, 10);
+            _MouseTicker.Interval = new TimeSpan(0, 0, 0, 60);
             _MouseTicker.Start();
 
         }
@@ -39,12 +38,6 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             ShowLogo();
-        }
-
-        private void TouchableThing_TouchMove(object sender, TouchEventArgs e)
-        {
-            if(!isShowCarrelli)
-                ShowCarrelli();
         }
 
         private void OnKeyDownHandler(object sender, KeyEventArgs e)
@@ -66,13 +59,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
 
         private void dispatcherTimer_MouseTicker(object sender, EventArgs e)
         {
-            if (_mousePoint != Mouse.GetPosition(this))
-            {
-                _mousePoint.X = Mouse.GetPosition(this).X;
-                _mousePoint.Y = Mouse.GetPosition(this).Y;
-            }
-            else
-            {
+            if(!MoveTimeCounter.Instance.evaluateTime()){
                 ShowLogo();
             }
         }
@@ -83,12 +70,14 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
 
         private void ShowLogo()
         {
-            this.Content = new Logo(ssClient);
+            if(!isShowLogo)
+                ContentArea.Content = new Logo(this, ssClient);
         }
 
         private void ShowCarrelli()
         {
-            this.Content = new Carrelli(ssClient);
+            if(!isShowCarrelli)
+                ContentArea.Content = new Carrelli(this, ssClient);
         }
 
         #endregion

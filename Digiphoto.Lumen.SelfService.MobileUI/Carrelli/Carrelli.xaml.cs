@@ -17,7 +17,9 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
     /// </summary>
     public partial class Carrelli : UserControl
     {
-       
+
+        private SelfMainWindow main;
+
         public static bool _slideShowRun = false;
 
         private SelfServiceClient ssClient;
@@ -34,12 +36,13 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             private set;
         }
 
-        public Carrelli(SelfServiceClient ssClient)
+        public Carrelli(SelfMainWindow main, SelfServiceClient ssClient)
         {
             InitializeComponent();
 
             this.DataContext = this;
             this.ssClient = ssClient;
+            this.main = main;
 
             SelfMainWindow.isShowLogo = false;
             SelfMainWindow.isShowSlideShow = false;
@@ -83,11 +86,15 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
         private void ListView_Selected(object sender)
         {
-            var item = (sender as ListView).SelectedItem;
-            if (item != null)
+            if (!SelfMainWindow.isShowSlideShow)
             {
-                CarrelloDto c = (CarrelloDto)item;
-                this.Content = new SlideShow(ssClient, c);
+                var item = (sender as ListView).SelectedItem;
+                if (item != null)
+                {
+                    CarrelloDto c = (CarrelloDto)item;
+                    main.ContentArea.Content = new SlideShow(main, ssClient, c);
+                    MoveTimeCounter.Instance.updateLastTime();
+                }
             }
         }
 
@@ -103,6 +110,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
                     else
                     {
                         myScrollViewer.ScrollToLeftEnd();
+                        MoveTimeCounter.Instance.updateLastTime();
                     }
                 }
                 else //wheel up
@@ -114,6 +122,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
                     else
                     {
                         myScrollViewer.ScrollToRightEnd();
+                        MoveTimeCounter.Instance.updateLastTime();
                     }
                 }
 
@@ -126,17 +135,32 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
         private void ScrollUp(object sender, RoutedEventArgs e)
         {
             myScrollViewer.PageLeft();
+            MoveTimeCounter.Instance.updateLastTime();
         }
 
         private void ScrollDown(object sender, RoutedEventArgs e)
         {
             myScrollViewer.PageRight();
+            MoveTimeCounter.Instance.updateLastTime();
         }
 
-        private void Home_Click(object sender, RoutedEventArgs e)
+        private void Home_Click(object sender, EventArgs e)
         {
-            this.Content = new Logo(ssClient);
+            Home();
         }
 
+        
+        private void Home_Click(object sender, TouchEventArgs e)
+        {
+            Home();
+        }
+        
+        private void Home()
+        {
+            if (!SelfMainWindow.isShowLogo)
+            {
+                main.ContentArea.Content = new Logo(main, ssClient);
+            }
+        }
     }
 }

@@ -8,8 +8,11 @@
         mc:Ignorable="d"
         d:DesignHeight="900" d:DesignWidth="1800"
         Background="WhiteSmoke"
-        IsManipulationEnabled="True"
         Title="Prova Mobile UI" Loaded="Window_Loaded" Closed="Window_Closed"
         KeyDown="OnKeyDownHandler">
+
+    <DockPanel>
+            <ContentControl x:Name="ContentArea" />
+        </DockPanel>
 
 </Window>

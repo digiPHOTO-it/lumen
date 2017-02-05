@@ -23,8 +23,8 @@
     <DataTemplate x:Key="ListaCarrelliDataTemplate">
         <StackPanel Orientation="Horizontal">
             <Border BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="10" Margin="0,0,2,2">
-                <Canvas x:Name="carrelloCanvas" Width="500" Height="500">
-                    <Image Source="/Digiphoto.Lumen.SelfService.MobileUI;component/Resources/Folder.png" Width="500" Margin="50,50,50,50">
+                <Canvas x:Name="carrelloCanvas" Width="300" Height="300">
+                    <Image Source="/Digiphoto.Lumen.SelfService.MobileUI;component/Resources/Folder.png" Width="300" Margin="50,50,50,50">
                     </Image>
                     <Label x:Name="NumFoto"  
                        Content="{Binding Path=titolo}"    

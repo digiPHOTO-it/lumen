@@ -15,6 +15,8 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
     /// </summary>
     public partial class SlideShow : UserControlBase
     {
+        private SelfMainWindow main;
+
         private SelfServiceClient ssClient;
 
         private bool isControlliUtenteAttivi = false;
@@ -53,12 +55,13 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
         private FotografiaDto[] listaFotografie;
 
-        public SlideShow(SelfServiceClient ssClient, CarrelloDto carrello)
+        public SlideShow(SelfMainWindow main, SelfServiceClient ssClient, CarrelloDto carrello)
         {
             InitializeComponent();
 
             this.DataContext = this;
             this.ssClient = ssClient;
+            this.main = main;
 
             SelfMainWindow.isShowLogo = false;
             SelfMainWindow.isShowSlideShow = true;
@@ -90,7 +93,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
         {
             this.MiPiaceFeedback.Visibility = Visibility.Hidden;
             this.NonMiPiaceFeedback.Visibility = Visibility.Hidden;
-            this.LoadingFeedback.Visibility = Visibility.Hidden;
+            //this.LoadingFeedback.Visibility = Visibility.Hidden;
             this.SlideShowImage.Opacity = 1;
             _FeedbackTicker.Stop();
         }
@@ -117,7 +120,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
         {
             isLoadingRisultante = true;
             _FeedbackTicker.Start();
-            this.LoadingFeedback.Visibility = Visibility.Visible;
+           // this.LoadingFeedback.Visibility = Visibility.Visible;
             Image = FotoSrv.Instance.loadPhoto(ssClient, "Risultante", listaFotografie[_currentIndex].id);
             isLoadingRisultante = false;
         }
@@ -195,6 +198,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
             _RisultantePanelTicker.Start();
             Image = FotoSrv.Instance.loadPhoto(ssClient, "Provino", listaFotografie[_currentIndex].id);
+            MoveTimeCounter.Instance.updateLastTime();
         }
 
         private void Next()
@@ -210,12 +214,14 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
             _RisultantePanelTicker.Start();
             Image = FotoSrv.Instance.loadPhoto(ssClient, "Provino", listaFotografie[_currentIndex].id);
+            MoveTimeCounter.Instance.updateLastTime();
         }
 
         private void Home()
         {
-            this.Content = new Logo(ssClient);
+            main.ContentArea.Content = new Logo(main, ssClient);
             SelfMainWindow.isShowSlideShow = false;
+            MoveTimeCounter.Instance.updateLastTime();
         }
 
         private void NonMiPiace()
@@ -224,6 +230,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             ssClient.setMiPiace(listaFotografie[_currentIndex].id, false);
             this.SlideShowImage.Opacity = 0.1;
             this.NonMiPiaceFeedback.Visibility = Visibility.Visible;
+            MoveTimeCounter.Instance.updateLastTime();
         }
 
         private void MiPiace()
@@ -232,6 +239,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             ssClient.setMiPiace(listaFotografie[_currentIndex].id, true);
             this.SlideShowImage.Opacity = 0.1;
             this.MiPiaceFeedback.Visibility = Visibility.Visible;
+            MoveTimeCounter.Instance.updateLastTime();
         }
         
         private void attivaControlliUtente()
@@ -254,7 +262,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             }
         }
         
-        private void MouseWheel(object sender, MouseWheelEventArgs e)
+        private void EventMouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (e.Delta < 0)
             {

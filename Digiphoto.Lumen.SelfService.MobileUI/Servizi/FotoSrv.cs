@@ -108,6 +108,8 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.Servizi
             {
                 tempImage.BeginInit();
                 tempImage.UriSource = new Uri(_path);
+                //tempImage.DecodePixelWidth = 1800;
+                //tempImage.DecodePixelWidth = 600;
                 tempImage.CacheOption = BitmapCacheOption.OnLoad;
                 tempImage.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
                 tempImage.EndInit();
