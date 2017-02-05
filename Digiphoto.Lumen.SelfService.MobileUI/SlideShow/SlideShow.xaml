@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="900" d:DesignWidth="1800"
              IsManipulationEnabled="True"
-             Mouse.PreviewMouseWheel="MouseWheel">
+             Mouse.PreviewMouseWheel="EventMouseWheel">
 
     <Grid Background="Aqua">
         <Grid.RowDefinitions>

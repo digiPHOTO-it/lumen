@@ -6,7 +6,7 @@
              xmlns:lum="clr-namespace:Digiphoto.Lumen.SelfService.MobileUI"
              mc:Ignorable="d" 
              d:DesignHeight="900" d:DesignWidth="1800">
-    
+
     <Grid Name="LogoPanel" >
         
         <Border x:Name="BorderLogo" BorderBrush="Green" BorderThickness="1"  HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="250" >
@@ -18,7 +18,7 @@
                     <TranslateTransform/>
                 </TransformGroup>
             </Border.RenderTransform>
-            <Image x:Name="imageFoto"  />
+            <Image x:Name="imageFoto" TouchDown="Go" />
         </Border>
 
         <Grid Name="ControlliOrizzontali">
@@ -30,7 +30,7 @@
 
             <Border Name="BorderHome" Grid.Row="0" Background="#55FFFFFF" >
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Button Name="Close" TouchDown="Home_Click" Click="Home_Click" ToolTip="Home" VerticalAlignment="Center" Style="{StaticResource styleHome}" IsTabStop="False"/>
+                    <Button Name="Close" TouchDown="Home_Click" Click="Home_Click" ToolTip="Home" VerticalAlignment="Center" Style="{StaticResource styleHome}" IsTabStop="False" Stylus.IsPressAndHoldEnabled="False"/>
                 </StackPanel>
             </Border>
 

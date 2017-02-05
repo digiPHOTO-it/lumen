@@ -74,6 +74,7 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="Servizi\FotoSrv.cs" />
+    <Compile Include="Servizi\MoveTimeCounter.cs" />
     <Compile Include="SlideShow\SlideShow.xaml.cs">
       <DependentUpon>SlideShow.xaml</DependentUpon>
     </Compile>
