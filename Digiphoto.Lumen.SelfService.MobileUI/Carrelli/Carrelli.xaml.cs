@@ -100,6 +100,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
         private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
+
             {
                 if (e.Delta < 0) // wheel down
                 {
@@ -125,6 +126,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
                         MoveTimeCounter.Instance.updateLastTime();
                     }
                 }
+                myScrollViewer.Focus();
 
                 //myScrollViewer.ScrollToVerticalOffset(myScrollViewer.ScrollableHeight / 2);
                 //myScrollViewer.ScrollToHorizontalOffset(myScrollViewer.ScrollableWidth / 2);
