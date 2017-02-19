@@ -1,22 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
 using System.Windows;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.UI.Pubblico;
 using log4net;
 using Digiphoto.Lumen.Config;
 using System.Threading;
-using Digiphoto.Lumen.Util;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Windows.Markup;
 using System.Globalization;
-using System.ComponentModel;
-using System.Windows.Media;
-using Digiphoto.Lumen.UI.ScreenCapture;
 using Digiphoto.Lumen.Licensing;
 
 namespace Digiphoto.Lumen.UI {

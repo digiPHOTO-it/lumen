@@ -602,6 +602,29 @@ namespace Digiphoto.Lumen.UI {
 		#endregion Metodi
 
 		#region Eventi
+
+		protected override void OnRequestClose() {
+			
+			// Faccio la dispose di tutti i viewmodel che ho istanziato io.
+
+			if( selettoreStampantiInstallateViewModel != null ) {
+				selettoreStampantiInstallateViewModel.Dispose();
+				selettoreStampantiInstallateViewModel = null;
+            }
+
+			if( fotoGalleryViewModel != null ) {
+				fotoGalleryViewModel.Dispose();
+				fotoGalleryViewModel = null;
+			}
+
+			if( carrelloViewModel != null ) {
+				carrelloViewModel.Dispose();
+				carrelloViewModel = null;
+			}
+
+			base.OnRequestClose();
+		}
+
 		public void OnCompleted() {
 			// throw new NotImplementedException();
 		}

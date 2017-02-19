@@ -233,7 +233,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			creaMioDbContext();
 
 			carrello = new Carrello();
-			carrello.giornata = DateTime.Today;
+			carrello.giornata = LumenApplication.Instance.stato.giornataLavorativa;
 
 			carrello.righeCarrello = new EntityCollection<RigaCarrello>();
 			//Metto un'intestazione automatica per distinguere il carrello autogenerato dagli altri
@@ -535,14 +535,13 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		private void completaAttributiMancanti( bool ancheProvvigioni ) {
 
-			if( isCarrelloTransient ) {
+			// Tempo di creazione o ultima modifica: lo aggiorno sempre.
+			// In questo modo, nella gestione del selfservice, il carrello passerà in cima alla lista.
+			carrello.tempo = DateTime.Now;
 
-				// Giornata lavorativa
-				carrello.giornata = LumenApplication.Instance.stato.giornataLavorativa;
-
-				// Tempo di creazione
-				carrello.tempo = DateTime.Now;
-			}
+			// La giornata contabile la impongo sempre
+			// anche perché se sto vendendo un carrello vecchio, deve andare a finire nella cassa di oggi.
+			carrello.giornata = LumenApplication.Instance.stato.giornataLavorativa;
 
 			if( ancheProvvigioni ) {
 				// Gestico lo spaccato degli incassi per singolo fotografo
@@ -837,8 +836,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				throw new InvalidOperationException("nessun carrello caricato");
 
 			Carrello c = new Carrello();
-			c.giornata = DateTime.Today;
-			c.tempo = DateTime.Now;
+//			c.giornata = DateTime.Today;
+//			c.tempo = DateTime.Now;
 			c.intestazione = carrello.intestazione;
 			c.note = carrello.note;
 			c.prezzoDischetto = carrello.prezzoDischetto;
