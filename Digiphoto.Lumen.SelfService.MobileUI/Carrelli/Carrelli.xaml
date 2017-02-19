@@ -38,9 +38,9 @@
 	                ItemsPanel="{DynamicResource ListaCarrelliItemsPanelTemplate}" 
 	                ItemTemplate="{DynamicResource ListaCarrelliDataTemplate}"
 	                ScrollViewer.VerticalScrollBarVisibility="Disabled"
-	                ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+	                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                     VerticalAlignment="Center"
-                    ScrollViewer.PanningMode="HorizontalOnly"
+                    ScrollViewer.CanContentScroll="False"
                     MouseDoubleClick="ListView_MouseDoubleClick"
                     TouchDown="ListView_TouchDown">
                 </ListView>
