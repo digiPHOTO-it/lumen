@@ -39,13 +39,10 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 		public ICollection<Carrello> cerca(ParamCercaCarrello param)
 		{
-			//IQueryable<Carrello> query = from ff in this.objectContext.Carrelli.Include("righeCarrello")
-			//							   select ff;
 
+			_giornale.Debug( "Parametri di ricerca:\n" + param );
 
-			_giornale.Debug("Parametri di ricerca:\n" + param);
-
-			IQueryable<Carrello> query = creaQueryEntita(param);
+			IQueryable<Carrello> query = creaQueryEntita( param );
 
 			// Devo usare prima tutto se no dopo non me lo ricollega più!!! Perchè ho chiuso la connessione?!?!?!?!?!!?
 			foreach (Carrello c in query.ToList())

@@ -567,6 +567,22 @@ namespace Digiphoto.Lumen.UI {
 			return posso;
 		}
 
+		/// <summary>
+		/// Il carrello corrente deve essere modificabile,
+		/// ed inoltre deve avere almeno una foto senza il cuore. 
+		/// </summary>
+		public bool possoeliminareRigheSenzaCuore {
+			get {
+			
+				bool posso = true;
+			
+				if( ! IsInDesignMode )
+					posso = (possoEditareCarrello && carrelloCorrente.righeCarrello.Any( r => r.isTipoStampa && r.fotografia.miPiace != true ));
+
+				return posso;
+			}
+		}
+
 		public bool abilitaEliminaTutteFoto {
 			get {
 				if( IsInDesignMode )
@@ -987,6 +1003,52 @@ namespace Digiphoto.Lumen.UI {
 				( confermato ) => {
 					procediPure = confermato;
 				} );
+
+			return procediPure;
+		}
+
+		/// <summary>
+		/// Dal carrello corrente, elimino tutte le righe di tipo STAMPA che non sono marcate con il cuore del LIKE (che ha messo il cliente con il tablet)
+		/// </summary>
+		private void eliminareRigheSenzaCuore() {
+
+			if( chiediConfermaEliminazioneRigheSenzaCuore() == false )
+				return;
+
+			bool restaQui = true;
+			int quante = 0;
+			do {
+
+				var rigaDacanc = carrelloCorrente.righeCarrello.FirstOrDefault( r => r.isTipoStampa && r.fotografia.miPiace != true );
+				restaQui = rigaDacanc != null;
+				if( rigaDacanc != null ) {
+					venditoreSrv.eliminareRigaCarrello( rigaDacanc );
+					++quante;
+				}
+
+			} while( restaQui );
+
+			if( quante > 0 )
+				dialogProvider.ShowMessage( "Rimosse " + quante + " foto dal carrello.\nRicordarsi di salvare il carrello", "Informazione" );
+		}
+
+
+		private bool chiediConfermaEliminazioneRigheSenzaCuore() {
+
+			bool procediPure = false;
+			int quante = carrelloCorrente.righeCarrello.Count( r => r.isTipoStampa && r.fotografia.miPiace != true );
+			if( quante > 0 ) {
+
+				StringBuilder msg = new StringBuilder( "Confermi rimozione di " + quante + " righe senza LIKE dal carrello ?" );
+				if( venditoreSrv.isStatoModifica )
+					msg.Append( "\r\nL'operazione sarà definitiva solo se verrà salvato o venduto il carrello." );
+
+				dialogProvider.ShowConfirmation( msg.ToString(), "Rimozione foto da stampare dal carrello",
+					( confermato ) => {
+						procediPure = confermato;
+					} );
+			}
+
 
 			return procediPure;
 		}
@@ -1457,7 +1519,18 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-        private RelayCommand _eliminaTutteFotoCommand;
+		private RelayCommand _eliminareRigheSenzaCuoreCommand;
+		public ICommand eliminareRigheSenzaCuoreCommand {
+			get {
+				if( _eliminareRigheSenzaCuoreCommand == null ) {
+					_eliminareRigheSenzaCuoreCommand = new RelayCommand( param => eliminareRigheSenzaCuore(),
+																		 param => possoeliminareRigheSenzaCuore );
+				}
+				return _eliminareRigheSenzaCuoreCommand;
+			}
+		}
+
+		private RelayCommand _eliminaTutteFotoCommand;
         public ICommand eliminaTutteFotoCommand
         {
             get
@@ -1720,6 +1793,13 @@ namespace Digiphoto.Lumen.UI {
 			updateGUI();
 		}
 
+		protected override void OnDispose() {
+
+			this._bkgIdrata.CancelAsync();
+			this._bkgIdrata.Dispose();
+
+			base.OnDispose();
+		}
 
 		#endregion
 

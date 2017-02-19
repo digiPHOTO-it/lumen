@@ -29,13 +29,12 @@
             
             <ScrollViewer x:Name="myScrollViewer" Grid.Column="1" 
                           VerticalScrollBarVisibility="Disabled"
-                          HorizontalScrollBarVisibility="Hidden" 
+                          HorizontalScrollBarVisibility="Visible" 
                           Mouse.PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" >
                 <ListView
 	                x:Name="listCarrelli" SelectionMode="Single"
 	                Style="{StaticResource ListaCarrelliStyle}"
 	                ItemsSource="{Binding Path=CarrelliSalvatiCv}" 
-	                SelectedItem="{Binding SelectedItem,Mode=TwoWay}"
 	                ItemsPanel="{DynamicResource ListaCarrelliItemsPanelTemplate}" 
 	                ItemTemplate="{DynamicResource ListaCarrelliDataTemplate}"
 	                ScrollViewer.VerticalScrollBarVisibility="Disabled"

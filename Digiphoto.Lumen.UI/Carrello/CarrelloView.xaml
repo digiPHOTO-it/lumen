@@ -39,6 +39,7 @@
                 <Button Command="{Binding UpdateQuantitaCommand}" CommandParameter="-1" Style="{StaticResource styleCartQtaDown}" />
                 <Separator />
                 <Button Command="{Binding eliminaRigaCommand}" CommandParameter="S" Style="{StaticResource styleCartDelRigaStampate}" />
+                <Button Command="{Binding eliminareRigheSenzaCuoreCommand}" Style="{StaticResource styleEliminareStampeSenzaCuore}" />
 
                 <Button Command="{Binding eliminaTutteFotoCommand}" Style="{StaticResource styleCartSvuotare}" />
 
@@ -180,6 +181,8 @@
 					AlternatingRowBackground="LightGray"  AlternationCount="2"
 				>
                     <DataGrid.Columns>
+                        
+						<DataGridTextColumn Header="Tempo" Binding="{Binding tempo,StringFormat=s}" IsReadOnly="True" />
                         <DataGridTextColumn Header="Giornata" Binding="{Binding giornata,StringFormat=D}" IsReadOnly="True" />
                         <DataGridCheckBoxColumn Header="Venduto" Binding="{Binding venduto}" IsReadOnly="True" />
                         <DataGridTextColumn Header="Prezzo" Binding="{Binding totaleAPagare,StringFormat=C}" IsReadOnly="True" >

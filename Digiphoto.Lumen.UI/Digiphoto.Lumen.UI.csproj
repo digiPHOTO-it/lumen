@@ -861,6 +861,7 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\keep-print-like-48x48.png" />
     <Resource Include="Resources\foto-non-mi-piace-16x16.png" />
     <Resource Include="Resources\foto-mi-piace-16x16.png" />
     <Resource Include="Resources\PageLast-20x20.png" />

@@ -16,7 +16,7 @@
     <!-- Stile della listbox che itera i Carrelli -->
     <Style x:Key="ListaCarrelliStyle" TargetType="ListBox">
         <Setter Property="Background" Value="LightGray" />
-        <Setter Property="IsSynchronizedWithCurrentItem" Value="True" />
+
     </Style>
 
     <!-- Template per visualizzare ogni elemento della lista. In pratica ogni entità "Carrello" -->
