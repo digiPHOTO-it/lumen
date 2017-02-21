@@ -1,5 +1,6 @@
 ﻿using Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference;
 using Digiphoto.Lumen.SelfService.MobileUI.Servizi;
+using Digiphoto.Lumen.SelfService.MobileUI.Servizi.Event;
 using System;
 using System.Windows;
 using System.Windows.Input;
@@ -7,7 +8,8 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
-	public partial class SelfMainWindow : Window {
+	public partial class SelfMainWindow : Window, IEventManager
+    {
 
         SelfServiceClient ssClient;
 
@@ -23,6 +25,8 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
 			
 			InitializeComponent();
             this.DataContext = this;
+
+            Servizi.Event.EventManager.Instance.setIEventManager(this);
 
             // Mi connetto con il servizio SelfService.
             ssClient = new SelfServiceClient();
@@ -40,12 +44,9 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
             ShowLogo();
         }
 
-        private void OnKeyDownHandler(object sender, KeyEventArgs e)
+        private void Window_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if (e.Key == Key.Return)
-            {
-                ShowCarrelli();
-            }
+            Go();
         }
 
         private void Window_Closed( object sender, EventArgs e ) {
@@ -54,6 +55,26 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
 				ssClient = null;
 			}
 		}
+
+        private void ArrowKey_Press(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter || e.Key == Key.Space)
+            {
+                Servizi.Event.EventManager.Instance.Go();
+            }
+            if (e.Key == Key.Right || e.Key == Key.Down)
+            {
+                Servizi.Event.EventManager.Instance.Next();
+            }
+            else if (e.Key == Key.Left || e.Key == Key.Up)
+            {
+                Servizi.Event.EventManager.Instance.Previous();
+            }
+            else if (e.Key == Key.Escape)
+            {
+                Servizi.Event.EventManager.Instance.Home();
+            }
+        }
 
         #region dispatcherTimer
 
@@ -82,5 +103,24 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
 
         #endregion
 
+        public void Go()
+        {
+            if (isShowLogo)
+            {
+                ShowCarrelli();
+            }
+        }
+
+        public void Home()
+        {
+        }
+
+        public void Next()
+        {
+        }
+
+        public void Previous()
+        {
+        }
     }
 }

@@ -23,7 +23,7 @@
             <!--RepeatButton Click="ScrollUp" Grid.Column="0">Scroll Up</-->
             <Border Grid.Column="0" Name="BorderPrevius" Background="#55FFFFFF" >
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Button Name="Previous" TouchDown="ScrollUp" Click="ScrollUp" Style="{StaticResource styleLeft}" IsTabStop="False" />
+                    <Button Name="ButtonPrevious" TouchDown="ScrollUp" Click="ScrollUp" Style="{StaticResource styleLeft}" IsTabStop="False" />
                 </StackPanel>
             </Border>
             
@@ -48,7 +48,7 @@
             
             <Border Name="BoderNext" Grid.Column="2" Background="#55FFFFFF" >
                 <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <Button Name="Next" TouchDown="ScrollDown" Click="ScrollDown" VerticalAlignment="Center" Style="{StaticResource styleRigth}" IsTabStop="False" />
+                    <Button Name="ButtonNext" TouchDown="ScrollDown" Click="ScrollDown" VerticalAlignment="Center" Style="{StaticResource styleRigth}" IsTabStop="False" />
                 </StackPanel>
             </Border>
             <!--RepeatButton Click="ScrollDown" Grid.Column="2">Scroll Down</RepeatButton-->
