@@ -25,6 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -73,7 +74,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Servizi\Event\EventManager.cs" />
     <Compile Include="Servizi\FotoSrv.cs" />
+    <Compile Include="Servizi\Event\IEventManager.cs" />
     <Compile Include="Servizi\MoveTimeCounter.cs" />
     <Compile Include="SlideShow\SlideShow.xaml.cs">
       <DependentUpon>SlideShow.xaml</DependentUpon>

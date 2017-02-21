@@ -1,5 +1,6 @@
 ﻿using Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference;
 using Digiphoto.Lumen.SelfService.MobileUI.Servizi;
+using Digiphoto.Lumen.SelfService.MobileUI.Servizi.Event;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,7 +11,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
     /// <summary>
     /// Interaction logic for Logo.xaml
     /// </summary>
-    public partial class Logo : UserControl
+    public partial class Logo : UserControl, IEventManager
     {
         private SelfMainWindow main;
 
@@ -22,6 +23,8 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
             this.ssClient = ssClient;
             this.main = main;
+
+            Servizi.Event.EventManager.Instance.setIEventManager(this);
 
             imageFoto.Source = FotoSrv.Instance.loadPhoto(ssClient, "Logo", Guid.Empty);
 
@@ -40,7 +43,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             Home();
         }
 
-        private void Home()
+        public void Home()
         {
             if (ssClient != null)
             {
@@ -56,11 +59,18 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             Go();
         }
 
-        private void Go()
+        public void Go()
         {
             if (!SelfMainWindow.isShowCarrelli)
                 main.ContentArea.Content = new Carrelli(main, ssClient);
         }
-    
+
+        public void Next()
+        {
+        }
+
+        public void Previous()
+        {
+        }
     }
 }

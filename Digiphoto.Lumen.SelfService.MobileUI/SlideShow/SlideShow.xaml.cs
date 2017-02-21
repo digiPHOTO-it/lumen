@@ -1,6 +1,7 @@
 ﻿using Digiphoto.Lumen.SelfService.MobileUI.Control;
 using Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference;
 using Digiphoto.Lumen.SelfService.MobileUI.Servizi;
+using Digiphoto.Lumen.SelfService.MobileUI.Servizi.Event;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,7 +14,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
     /// <summary>
     /// Interaction logic for SlideShow.xaml
     /// </summary>
-    public partial class SlideShow : UserControlBase
+    public partial class SlideShow : UserControlBase, IEventManager
     {
         private SelfMainWindow main;
 
@@ -66,6 +67,8 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             SelfMainWindow.isShowLogo = false;
             SelfMainWindow.isShowSlideShow = true;
             SelfMainWindow.isShowCarrelli = false;
+
+            Servizi.Event.EventManager.Instance.setIEventManager(this);
 
             _FeedbackTicker.Tick += new EventHandler(dispatcherTimer_FeedbackTicker);
             _FeedbackTicker.Interval = new TimeSpan(0, 0, 0, 1);
@@ -185,7 +188,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
         #region Command
 
-        private void Previous()
+        public void Previous()
         {
             _RisultantePanelTicker.Stop();
             // This is for Fade In
@@ -201,7 +204,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             MoveTimeCounter.Instance.updateLastTime();
         }
 
-        private void Next()
+        public void Next()
         {
             _RisultantePanelTicker.Stop();
             // This is for Fade In
@@ -217,11 +220,16 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             MoveTimeCounter.Instance.updateLastTime();
         }
 
-        private void Home()
+        public void Home()
         {
             main.ContentArea.Content = new Logo(main, ssClient);
             SelfMainWindow.isShowSlideShow = false;
             MoveTimeCounter.Instance.updateLastTime();
+        }
+
+        public void Go()
+        {
+
         }
 
         private void NonMiPiace()
@@ -322,7 +330,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
                 disattivaControlliUtente();
             }
         }
-        
+
         #endregion
 
     }

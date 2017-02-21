@@ -1,5 +1,6 @@
 ﻿using Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference;
 using Digiphoto.Lumen.SelfService.MobileUI.Servizi;
+using Digiphoto.Lumen.SelfService.MobileUI.Servizi.Event;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -15,7 +16,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
     /// <summary>
     /// Interaction logic for Carrelli.xaml
     /// </summary>
-    public partial class Carrelli : UserControl
+    public partial class Carrelli : UserControl , IEventManager
     {
 
         private SelfMainWindow main;
@@ -43,6 +44,8 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             this.DataContext = this;
             this.ssClient = ssClient;
             this.main = main;
+
+            Servizi.Event.EventManager.Instance.setIEventManager(this);
 
             SelfMainWindow.isShowLogo = false;
             SelfMainWindow.isShowSlideShow = false;
@@ -100,7 +103,6 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
         private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-
             {
                 if (e.Delta < 0) // wheel down
                 {
@@ -136,33 +138,48 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
         private void ScrollUp(object sender, RoutedEventArgs e)
         {
-            myScrollViewer.PageLeft();
-            MoveTimeCounter.Instance.updateLastTime();
+            Previous();
         }
 
         private void ScrollDown(object sender, RoutedEventArgs e)
         {
-            myScrollViewer.PageRight();
-            MoveTimeCounter.Instance.updateLastTime();
+            Next();
         }
 
         private void Home_Click(object sender, EventArgs e)
         {
             Home();
         }
-
-        
+    
         private void Home_Click(object sender, TouchEventArgs e)
         {
             Home();
         }
         
-        private void Home()
+        public void Home()
         {
             if (!SelfMainWindow.isShowLogo)
             {
                 main.ContentArea.Content = new Logo(main, ssClient);
             }
         }
+
+        public void Go()
+        {
+
+        }
+
+        public void Next()
+        {
+            myScrollViewer.PageRight();
+            MoveTimeCounter.Instance.updateLastTime();
+        }
+
+        public void Previous()
+        {
+            myScrollViewer.PageLeft();
+            MoveTimeCounter.Instance.updateLastTime();
+        }
+
     }
 }
