@@ -63,6 +63,7 @@
       <DependentUpon>Carrelli.xaml</DependentUpon>
     </Compile>
     <Compile Include="Control\UserControlBase.cs" />
+    <Compile Include="Converters\PercentualeConverter.cs" />
     <Compile Include="Logo\Logo.xaml.cs">
       <DependentUpon>Logo.xaml</DependentUpon>
     </Compile>
