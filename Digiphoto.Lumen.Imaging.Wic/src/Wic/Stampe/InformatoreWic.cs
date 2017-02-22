@@ -5,6 +5,7 @@ using System.Text;
 using Digiphoto.Lumen.Servizi.Stampare;
 using System.Printing;
 using System.Windows.Controls;
+using System.Text.RegularExpressions;
 
 namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 
@@ -21,10 +22,18 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 		}
 
 		public void load( string nomeStampante ) {
+            //http://stackoverflow.com/questions/1018001/is-there-a-net-way-to-enumerate-all-available-network-printers
+            var match = Regex.Match(nomeStampante, @"(?<machine>\\\\.*?)\\(?<queue>.*)");
+            if (match.Success)
+            {
+                _printQueue = new PrintServer(match.Groups["machine"].Value).GetPrintQueue(match.Groups["queue"].Value);
+            }
+            else
+            {
+                _printQueue = _printServer.GetPrintQueue( nomeStampante );
+            }
 
-			_printQueue = _printServer.GetPrintQueue( nomeStampante );
-
-			_printCapabilities = _printQueue.GetPrintCapabilities();
+            _printCapabilities = _printQueue.GetPrintCapabilities();
 
 			_printDialog = new PrintDialog();
 			_printDialog.PrintQueue = _printQueue;
