@@ -23,6 +23,7 @@ using System.Collections;
 using Digiphoto.Lumen.Util;
 using System.Globalization;
 using Digiphoto.Lumen.Imaging.Wic.Documents;
+using System.Text.RegularExpressions;
 
 namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 
@@ -51,11 +52,31 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 			_conta++;
 
 			try {
-				// Come print-server uso me stesso
-				using( PrintServer ps1 = new PrintServer() ) {
+                var match = Regex.Match(lavoroDiStampa.param.nomeStampante, @"(?<machine>\\\\.*?)\\(?<queue>.*)");
+                PrintServer ps1 = null;
+                if (match.Success)
+                {
+                    // Come print-server uso il server di rete
+                    ps1 = new PrintServer(match.Groups["machine"].Value);
+                }
+                else
+                {
+                    // Come print-server uso me stesso
+                    ps1 = new PrintServer();
+                }
+                using ( ps1) {
+                    PrintQueue coda = null;
+                    if (match.Success)
+                    {
+                        coda = ps1.GetPrintQueue(match.Groups["queue"].Value);
+                    }
+                    else
+                    {
+                        coda = ps1.GetPrintQueue(lavoroDiStampa.param.nomeStampante);
+                    }
 
-					// Ricavo la coda di stampa (cioè la stampante) e le sue capacità.
-					using( PrintQueue coda = ps1.GetPrintQueue( lavoroDiStampa.param.nomeStampante ) ) {
+                    // Ricavo la coda di stampa (cioè la stampante) e le sue capacità.
+                    using (coda ) {
 
 						PrintCapabilities capabilities = coda.GetPrintCapabilities();
 
