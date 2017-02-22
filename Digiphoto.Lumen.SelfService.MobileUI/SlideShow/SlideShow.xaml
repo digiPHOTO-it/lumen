@@ -5,10 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:lum="clr-namespace:Digiphoto.Lumen.SelfService.MobileUI"
              xmlns:lumC="clr-namespace:Digiphoto.Lumen.SelfService.MobileUI.Control"
+             xmlns:lumCon="clr-namespace:Digiphoto.Lumen.SelfService.MobileUI.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="900" d:DesignWidth="1800"
              IsManipulationEnabled="True"
              Mouse.PreviewMouseWheel="EventMouseWheel">
+    
+    <UserControl.Resources>
+        <lumCon:PercentualeConverter x:Key="percentualeConverter" />
+    </UserControl.Resources>
 
     <Grid Background="Aqua">
         <Grid.RowDefinitions>
@@ -16,8 +21,17 @@
         </Grid.RowDefinitions>
 
         <Border Padding="4" Margin="4" >
-            <Image Name="SlideShowImage" Source="{Binding Path=Image, Mode=OneWay, IsAsync=True}" Stretch="Uniform" />
-        </Border>
+            <Grid x:Name="fotoGrid">
+                <Image Name="SlideShowImage" Source="{Binding Path=Image, Mode=OneWay, IsAsync=True}" Stretch="Uniform" />
+                <Label x:Name="NumFoto"  
+                           Content="{Binding Path=Etichetta}"    
+					       VerticalAlignment="Top" HorizontalAlignment="Right"
+                           Margin="0,4,4,0"
+                           FontSize="{Binding ActualHeight, ElementName=fotoGrid, FallbackValue=4, Converter={StaticResource percentualeConverter},ConverterParameter=4}"
+                           Background="Orange" 
+                           Foreground="Black" />
+            </Grid>
+    </Border>
 
         <Grid Name="PlaybackPanel">
             <Grid.ColumnDefinitions>

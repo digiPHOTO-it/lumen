@@ -52,6 +52,24 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             }
         }
 
+        private String _etichetta;
+        public String Etichetta
+        {
+            get
+            {
+                return _etichetta;
+            }
+            set
+            {
+
+                if (_etichetta != value)
+                {
+                    _etichetta = value;
+                    this.OnPropertyChanged("Etichetta");
+                }
+            }
+        }
+
         private int _currentIndex = 0;
 
         private FotografiaDto[] listaFotografie;
@@ -108,6 +126,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             _RisultantePanelTicker.Stop();
             // Add to display
             Image = FotoSrv.Instance.loadPhoto(ssClient, "Provino", listaFotografie[0].id);
+            Etichetta = listaFotografie[_currentIndex].etichetta;
             _RisultantePanelTicker.Start();
         }
 
@@ -125,6 +144,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             _FeedbackTicker.Start();
            // this.LoadingFeedback.Visibility = Visibility.Visible;
             Image = FotoSrv.Instance.loadPhoto(ssClient, "Risultante", listaFotografie[_currentIndex].id);
+            Etichetta = listaFotografie[_currentIndex].etichetta;
             isLoadingRisultante = false;
         }
 
@@ -201,6 +221,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
             _RisultantePanelTicker.Start();
             Image = FotoSrv.Instance.loadPhoto(ssClient, "Provino", listaFotografie[_currentIndex].id);
+            Etichetta = listaFotografie[_currentIndex].etichetta;
             MoveTimeCounter.Instance.updateLastTime();
         }
 
@@ -217,6 +238,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
             _RisultantePanelTicker.Start();
             Image = FotoSrv.Instance.loadPhoto(ssClient, "Provino", listaFotografie[_currentIndex].id);
+            Etichetta = listaFotografie[_currentIndex].etichetta;
             MoveTimeCounter.Instance.updateLastTime();
         }
 
