@@ -78,7 +78,7 @@ namespace Digiphoto.Lumen.SelfService {
 					FotografiaDto dto = new FotografiaDto();
 					dto.id = riga.fotografia.id;
 					dto.etichetta = riga.fotografia.etichetta;
-					dto.miPiace = false; // TODO aggiungere nuovo flag su Fotografia
+					dto.miPiace = riga.fotografia.miPiace; // TODO aggiungere nuovo flag su Fotografia
 
 					listaFotografie.Add( dto );
 				}
