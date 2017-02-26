@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Digiphoto.Lumen.SelfService.MobileUI.Servizi
 {
     public class MoveTimeCounter
     {
-        private long _DEFAULT_MAX_ELASPED_TIME = 3600;
+        private long _DEFAULT_MAX_ELASPED_TIME_SECONDS = 60;
 
        Stopwatch sw;
 
@@ -43,11 +38,12 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.Servizi
         public bool evaluateTime()
         {
             sw.Stop();
-            if (sw.ElapsedMilliseconds < _DEFAULT_MAX_ELASPED_TIME)
+            if (sw.ElapsedMilliseconds < (_DEFAULT_MAX_ELASPED_TIME_SECONDS * 1000))
             {
+                sw.Start();
                 return true;
             }
-
+            sw.Start();
             return false;
         }
     }

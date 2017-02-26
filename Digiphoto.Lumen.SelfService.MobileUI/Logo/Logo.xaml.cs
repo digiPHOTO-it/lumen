@@ -62,7 +62,10 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
         public void Go()
         {
             if (!SelfMainWindow.isShowCarrelli)
+            {
                 main.ContentArea.Content = new Carrelli(main, ssClient);
+                MoveTimeCounter.Instance.updateLastTime();
+            }
         }
 
         public void Next()
