@@ -63,6 +63,7 @@
       <DependentUpon>Carrelli.xaml</DependentUpon>
     </Compile>
     <Compile Include="Control\UserControlBase.cs" />
+    <Compile Include="Converters\MiPiaceBollConverter.cs" />
     <Compile Include="Converters\PercentualeConverter.cs" />
     <Compile Include="Logo\Logo.xaml.cs">
       <DependentUpon>Logo.xaml</DependentUpon>
@@ -194,7 +195,9 @@
     <Resource Include="Resources\Rigth.png" />
     <Resource Include="Resources\Star.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\Cuore.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
