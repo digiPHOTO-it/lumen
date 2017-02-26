@@ -70,7 +70,25 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             }
         }
 
-        private int _currentIndex = 0;
+		private bool? _miPiaceStatus;
+		public bool? MiPiaceStatus
+		{
+			get
+			{
+				return _miPiaceStatus;
+			}
+			set
+			{
+
+				if (_miPiaceStatus != value)
+				{
+					_miPiaceStatus = value;
+					this.OnPropertyChanged("MiPiaceStatus");
+				}
+			}
+		}
+
+		private int _currentIndex = 0;
 
         private FotografiaDto[] listaFotografie;
 
@@ -127,6 +145,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             // Add to display
             Image = FotoSrv.Instance.loadPhoto(ssClient, "Provino", listaFotografie[0].id);
             Etichetta = listaFotografie[_currentIndex].etichetta;
+			MiPiaceStatus = listaFotografie[_currentIndex].miPiace;
             _RisultantePanelTicker.Start();
         }
 
@@ -145,7 +164,8 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
            // this.LoadingFeedback.Visibility = Visibility.Visible;
             Image = FotoSrv.Instance.loadPhoto(ssClient, "Risultante", listaFotografie[_currentIndex].id);
             Etichetta = listaFotografie[_currentIndex].etichetta;
-            isLoadingRisultante = false;
+            MiPiaceStatus = listaFotografie[_currentIndex].miPiace;
+			isLoadingRisultante = false;
         }
 
         #region Click
@@ -222,7 +242,8 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             _RisultantePanelTicker.Start();
             Image = FotoSrv.Instance.loadPhoto(ssClient, "Provino", listaFotografie[_currentIndex].id);
             Etichetta = listaFotografie[_currentIndex].etichetta;
-            MoveTimeCounter.Instance.updateLastTime();
+			MiPiaceStatus = listaFotografie[_currentIndex].miPiace;
+			MoveTimeCounter.Instance.updateLastTime();
         }
 
         public void Next()
@@ -239,7 +260,8 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             _RisultantePanelTicker.Start();
             Image = FotoSrv.Instance.loadPhoto(ssClient, "Provino", listaFotografie[_currentIndex].id);
             Etichetta = listaFotografie[_currentIndex].etichetta;
-            MoveTimeCounter.Instance.updateLastTime();
+			MiPiaceStatus = listaFotografie[_currentIndex].miPiace;
+			MoveTimeCounter.Instance.updateLastTime();
         }
 
         public void Home()
@@ -265,10 +287,18 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
         private void MiPiace()
         {
+			bool miPiace = MiPiaceStatus == true ? true : false;
             _FeedbackTicker.Start();
-            ssClient.setMiPiace(listaFotografie[_currentIndex].id, true);
+            ssClient.setMiPiace(listaFotografie[_currentIndex].id, miPiace);
             this.SlideShowImage.Opacity = 0.1;
-            this.MiPiaceFeedback.Visibility = Visibility.Visible;
+			if (miPiace)
+			{
+				this.MiPiaceFeedback.Visibility = Visibility.Visible;
+			}
+			else
+			{
+				this.NonMiPiaceFeedback.Visibility = Visibility.Visible;
+			}
             MoveTimeCounter.Instance.updateLastTime();
         }
         

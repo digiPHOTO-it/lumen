@@ -13,6 +13,7 @@
     
     <UserControl.Resources>
         <lumCon:PercentualeConverter x:Key="percentualeConverter" />
+        <lumCon:MiPiaceBoolConverter x:Key="miPiaceBoolConverter" />
     </UserControl.Resources>
 
     <Grid Background="Aqua">
@@ -25,7 +26,7 @@
                 <Image Name="SlideShowImage" Source="{Binding Path=Image, Mode=OneWay, IsAsync=True}" Stretch="Uniform" />
                 <Label x:Name="NumFoto"  
                            Content="{Binding Path=Etichetta}"    
-					       VerticalAlignment="Top" HorizontalAlignment="Right"
+					       VerticalAlignment="Bottom" HorizontalAlignment="Right"
                            Margin="0,4,4,0"
                            FontSize="{Binding ActualHeight, ElementName=fotoGrid, FallbackValue=4, Converter={StaticResource percentualeConverter},ConverterParameter=4}"
                            Background="Orange" 
@@ -62,16 +63,22 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="65" />
             </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="65" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="65" />
+            </Grid.ColumnDefinitions>
 
-            <Border Name="BorderMiPiace" Grid.Row="0" Background="#55FFFFFF" >
+            <Border Name="BorderMiPiace" Grid.Row="0" Grid.Column="0" Background="#55FFFFFF" >
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Button Name="HomeButton" TouchDown="Home" Click="Home" ToolTip="Home" VerticalAlignment="Center" Style="{StaticResource styleHome}" IsTabStop="False"/>
                 </StackPanel>
             </Border>
-            <Border Name="BoderNonMiPiace" Grid.Row="3" Background="#55FFFFFF" >
+            <Border Name="BoderNonMiPiace" Grid.Row="0" Grid.Column="2" Background="#55FFFFFF" >
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Button Name="MiPiaceButton" TouchDown="MiPiace" Click="MiPiace" ToolTip="Like" VerticalAlignment="Center" Style="{StaticResource styleMiPiace}" IsTabStop="False" Margin="0,0,20,0"/>
-                    <Button Name="NonMiPiaceButton" TouchDown="NonMiPiace" Click="NonMiPiace" ToolTip="Not Like" VerticalAlignment="Center" Style="{StaticResource styleNonMiPiace}" IsTabStop="False" Margin="20,0,0,0"/>
+                    <ToggleButton TouchDown="MiPiace" Click="MiPiace" IsChecked="{Binding Path=MiPiaceStatus,Mode=TwoWay,Converter={StaticResource miPiaceBoolConverter}}" Style="{StaticResource styleMiPiaceSwitchImage}" />
+                    <!--Button Name="MiPiaceButton" TouchDown="MiPiace" Click="MiPiace" ToolTip="Like" VerticalAlignment="Center" Style="{StaticResource styleMiPiace}" IsTabStop="False" Margin="20,0,0,0"/-->
+                    <!--Button Name="NonMiPiaceButton" TouchDown="NonMiPiace" Click="NonMiPiace" ToolTip="Not Like" VerticalAlignment="Center" Style="{StaticResource styleNonMiPiace}" IsTabStop="False" Margin="20,0,0,0"/-->
                 </StackPanel>
             </Border>
         </Grid>

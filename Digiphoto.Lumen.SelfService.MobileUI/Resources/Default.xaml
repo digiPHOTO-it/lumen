@@ -88,4 +88,25 @@
         </Setter>
     </Style>
 
+    <Style x:Key="styleMiPiaceSwitchImage" TargetType="ToggleButton"  >
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="False">
+                <Setter Property="Content">
+                    <Setter.Value>
+                        <Image Source="/Digiphoto.Lumen.SelfService.MobileUI;component/Resources/MiPiace.png" />
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="ToolTip" Value="Vendita con stampa diretta" />
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Content">
+                    <Setter.Value>
+                        <Image Source="/Digiphoto.Lumen.SelfService.MobileUI;component/Resources/Cuore.png"/>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="ToolTip" Value="Vendita tramite carrello" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
 </ResourceDictionary>
