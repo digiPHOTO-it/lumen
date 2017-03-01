@@ -3,14 +3,34 @@ using System.Collections.Generic;
 using System;
 using System.ComponentModel;
 using System.Linq;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Digiphoto.Lumen.Model {
 
 	
 	[MetadataType( typeof( Evento ) )]
 	[Serializable]
-	public partial class Evento : IValidatableObject, IDataErrorInfo
-	{
+	[Table( "Eventi" )]
+	public partial class Evento : IValidatableObject, IDataErrorInfo, INotifyPropertyChanged {
+
+		public Evento() {
+			this.attivo = true;
+		}
+
+		#region Attributi
+
+		public System.Guid id { get; set; }
+
+		[Required]
+		public string descrizione { get; set; }
+
+		public bool attivo { get; set; }
+
+		public Nullable<short> ordinamento { get; set; }
+
+		#endregion Attributi
+
+		#region IValidatableObject
 		public IEnumerable<ValidationResult> Validate( ValidationContext validationContext ) {
 
 			List<ValidationResult> errors = new List<ValidationResult>();
@@ -22,6 +42,9 @@ namespace Digiphoto.Lumen.Model {
 
 			return errors;
 		}
+		#endregion IValidatableObject
+
+		#region Uguaglianza
 
 		public override int GetHashCode() {
 			return 17 + 31 * id.GetHashCode();
@@ -43,7 +66,9 @@ namespace Digiphoto.Lumen.Model {
 			return sonoUguali;
 		}
 
-		//IDataErrorInfo - you can copy this code to each class
+		#endregion Uguaglianza
+
+		#region IDataErrorInfo
 
 		public string Error
 		{
@@ -77,6 +102,24 @@ namespace Digiphoto.Lumen.Model {
 			}
 
 		}
+
+		#endregion IDataErrorInfo
+
+		#region INotifyPropertyChanged
+
+		[field: NonSerialized]
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		protected void OnPropertyChanged( string propertyName ) {
+			OnPropertyChanged( new PropertyChangedEventArgs( propertyName ) );
+		}
+
+		protected virtual void OnPropertyChanged( PropertyChangedEventArgs e ) {
+			if( PropertyChanged != null )
+				PropertyChanged( this, e );
+		}
+
+		#endregion INotifyPropertyChanged	
 
 	}
 }

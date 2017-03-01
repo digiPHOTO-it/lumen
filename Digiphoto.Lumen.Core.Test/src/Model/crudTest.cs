@@ -28,6 +28,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 		#endregion
 
 
+
 		[TestMethod]
 		public void crudFotografia() {
 

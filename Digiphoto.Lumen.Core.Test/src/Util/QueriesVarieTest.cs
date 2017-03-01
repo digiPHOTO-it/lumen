@@ -244,6 +244,7 @@ namespace Digiphoto.Lumen.Core.Test.Util {
 			}
 		}
 
+
 	}
 }
 

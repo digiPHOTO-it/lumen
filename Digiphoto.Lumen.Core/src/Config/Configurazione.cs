@@ -105,7 +105,7 @@ namespace Digiphoto.Lumen.Config  {
 		private void verificheConfruenza() {
 			String motivoErrore = getMotivoErrore();
 			if( motivoErrore != null ) {
-				_giornale.Warn( motivoErrore );
+				_giornale.Error( motivoErrore );
 				throw new ConfigurazioneNonValidaException( "Mancano dati fondamentali per l'avvio del programma:\n" + motivoErrore );
 			}
 		}
@@ -424,7 +424,7 @@ namespace Digiphoto.Lumen.Config  {
 			// Controllo che esista e che sia valido anche il database vero di lavoro
 			string msgErrore;
 			if( ! mioDbUtil.verificaSeDatabaseUtilizzabile( out msgErrore ) )
-				return "Database di lavoro\n" + mioDbUtil.nomeFileDbPieno + "\n" + msgErrore;
+				return msgErrore;
 
 			// Controllo che la cartella contenente le foto esista e sia scrivibile
 			if( !Directory.Exists( userConfig.cartellaFoto ) ) {
