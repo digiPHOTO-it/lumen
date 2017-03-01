@@ -942,7 +942,11 @@ copy "$(SolutionDir)packages\System.Data.SQLite.Core.1.0.99.0\build\net46\x64\SQ
 
 copy "$(SolutionDir)packages\System.Data.SQLite.Linq.1.0.99.0\lib\net46\System.Data.SQLite.Linq.dll"  "$(TargetDir)" /y
 
-copy "$(SolutionDir)packages\System.Data.SQLite.EF6.1.0.99.0\lib\net46\System.Data.SQLite.EF6.dll"  "$(TargetDir)" /y</PostBuildEvent>
+copy "$(SolutionDir)packages\System.Data.SQLite.EF6.1.0.99.0\lib\net46\System.Data.SQLite.EF6.dll"  "$(TargetDir)" /y
+
+
+copy "$(SolutionDir)packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll"  "$(TargetDir)" /y
+copy "$(SolutionDir)packages\MySql.Data.Entity.6.9.9\lib\net45\MySql.Data.Entity.EF6.dll"  "$(TargetDir)" /y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

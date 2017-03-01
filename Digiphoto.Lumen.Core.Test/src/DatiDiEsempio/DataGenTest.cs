@@ -115,8 +115,6 @@ namespace Digiphoto.Lumen.Core.Test.DatiDiEsempio
 				// -- carico anche le informazioni fisse che possono essere modificate
 				InfoFissa infoFissa = repo.getById( "K" );
 
-				infoFissa.varie = DateTime.Now.ToString();
-
 				repo.update( ref infoFissa );
 			}
 			LumenApplication.Instance.ferma();

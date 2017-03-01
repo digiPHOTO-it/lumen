@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using log4net;
 using Digiphoto.Lumen.Servizi;
 using MemBus;
@@ -8,20 +7,11 @@ using MemBus.Configurators;
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Servizi.VolumeCambiato;
 using Digiphoto.Lumen.Eventi;
-using Digiphoto.Lumen.Imaging;
-using log4net.Config;
-using Digiphoto.Lumen.Servizi.Explorer;
 using Digiphoto.Lumen.Servizi.Stampare;
-using Digiphoto.Lumen.Servizi.Vendere;
 using Digiphoto.Lumen.Servizi.EntityRepository;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Core.Database;
-using Digiphoto.Lumen.Servizi.Scaricatore;
-using Digiphoto.Lumen.Servizi.Ritoccare;
-using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
 using Digiphoto.Lumen.Licensing;
-using Digiphoto.Lumen.Servizi.Io;
-using Digiphoto.Lumen.Applicazione;
 
 namespace Digiphoto.Lumen.Applicazione {
 

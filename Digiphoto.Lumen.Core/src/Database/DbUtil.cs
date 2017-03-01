@@ -93,7 +93,7 @@ namespace Digiphoto.Lumen.Core.Database {
 					using( DbCommand comm = conn.CreateCommand() ) {
 						comm.CommandText = sql;
 						using( DbDataReader rdr = comm.ExecuteReader() ) {
-							while( rdr.Read() ) {
+							if( rdr.Read() ) {
 
 								string versioneAttuale = rdr.GetString( 0 );
 								_giornale.Info( "Controllo versione DB: Attuale=" + versioneAttuale + " ; Richiesta=" + VERSIONE_DB_COMPATIBILE );
@@ -103,6 +103,8 @@ namespace Digiphoto.Lumen.Core.Database {
 									msgErrore = "Schema del Database non aggiornato. Richiesta aggiornamento alla versione " + VERSIONE_DB_COMPATIBILE;
 								} else
 									usabile = true;
+							} else {
+								msgErrore = "Mancano informazioni fisse. Lanciare il Configuratore";
 							}
 						}
 					}
@@ -159,15 +161,24 @@ namespace Digiphoto.Lumen.Core.Database {
 		 */
 		public String providerConnectionString {
 			get {
+
+
 				string entityConnectionString = ConfigurationManager.ConnectionStrings ["LumenEntities"].ConnectionString;
-				return ExtractConnectionStringFromEntityConnectionString( entityConnectionString );
-			}
+				/*
+								return ExtractConnectionStringFromEntityConnectionString( entityConnectionString );
+				*/
+				return entityConnectionString; // TODO MYSQL sistemare qui
+            }
 		}
 
 		public String provider {
 			get {
-				string entityConnectionString = ConfigurationManager.ConnectionStrings ["LumenEntities"].ConnectionString;
-				return ExtractProviderStringFromEntityConnectionString( entityConnectionString );
+
+				/*
+								string entityConnectionString = ConfigurationManager.ConnectionStrings ["LumenEntities"].ConnectionString;
+								return ExtractProviderStringFromEntityConnectionString( entityConnectionString );
+				*/
+				return "MySql.Data.MySqlClient";    // TODO MYSQL qui da sistemare:
 			}
 		}
 
