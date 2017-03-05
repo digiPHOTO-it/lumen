@@ -5,18 +5,345 @@ using log4net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 	internal class RicercatoreSrvImpl : ServizioImpl, IRicercatoreSrv {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( RicercatoreSrvImpl ) );
-
+		private static string SEPAR = "\r\n";
 
 		public RicercatoreSrvImpl() {
 		}
 
 		public List<Fotografia> cerca( ParamCercaFoto param ) {
+
+			if( 1 == 1 )
+				return cercaVeloceSQL( param );
+			else
+				return cercaLentoEF__DACANC( param );
+		}
+
+		private List<Fotografia> cercaVeloceSQL( ParamCercaFoto param ) {
+
+			_giornale.Debug( "Parametri di ricerca:\n" + param );
+
+			List<object> sqlParam = null;
+			String sql = creaQuerySQL( param, false, ref sqlParam );
+
+			var query = objectContext.Database.SqlQuery<Guid>( sql, sqlParam.ToArray() );
+
+			System.Diagnostics.Debug.WriteLine( "Tempo2: " + DateTime.Now.ToString( "mm:ss:fff" ) );
+
+			var listaIds = query.ToList();
+
+			System.Diagnostics.Debug.WriteLine( "Tempo3: " + DateTime.Now.ToString( "mm:ss:fff" ) );
+
+			// 
+			// -----
+			//       Adesso carico gli oggetti per davvero
+			// -----
+			//
+
+			var listaFoto = caricaFotografieDaIds( listaIds, param );
+
+			return listaFoto;
+		}
+
+		private String creaQuerySQL( ParamCercaFoto param, bool soloCount, ref List<Object> paramOut ) {
+
+			// Creo la lista vuota dei parametri. Poi la andrò a riempire
+			paramOut = new List<object>();
+
+			StringBuilder sql = new StringBuilder();
+			
+			#region Select
+
+			sql.Append( "SELECT " );
+			if( soloCount )
+				sql.Append( "count( f.id )" );
+			else
+				sql.Append( "f.id" );
+			sql.Append( SEPAR );
+
+			#endregion Select
+
+			#region From
+
+			sql.Append( "FROM Fotografie f " );
+			sql.Append( SEPAR );
+
+			#endregion From
+
+			/*
+				Le join probabilmente non servono in questa prima fase
+
+						sql.Append( "inner join Fotografi o \n" );
+						sql.Append( "        on o.id = f.fotografo_id \n" );
+
+						if( !param.evitareJoinEvento ) {
+							sql.Append( "inner join Eventi e \n" );
+							sql.Append( "        on e.id = f.evento_id \n" );
+						}
+			*/
+
+			#region Where
+
+			sql.Append( "where 1=1" );
+			sql.Append( SEPAR );
+
+			#region Where - Eventi
+
+			// Eventi
+			if( param.eventi != null ) {
+				if( param.eventi.Length == 1 ) {
+					sql.Append( "AND f.evento_id = {" + paramOut.Count + "}" );
+                    paramOut.Add( (string) param.eventi.ElementAt( 0 ).id.ToString() );  // Forzatura: devo convertirlo in stringa
+				} else {
+					sql.Append( "AND f.evento_id in ( " );
+					foreach( var p in param.eventi ) {
+						sql.Append( "{" + paramOut.Count + "}," );
+						paramOut.Add( (string) p.ToString() );	// Forzatura: devo convertirlo in stringa
+					}
+					sql.Replace( ',', ')', sql.Length - 1, 1 );  // Rimuovo l'ultima virgola di troppo e la sostituisco con la parentesi chiusa
+				}
+				sql.Append( SEPAR );
+			}
+			
+			#endregion Where - Eventi
+
+
+			#region Where - ScaricoCard
+
+			// ----- Filtro scarico card
+			if( param.scarichiCard != null ) {
+				IEnumerable<DateTime> listaDate = from le in param.scarichiCard select le.tempo;
+				if( listaDate.Count() == 1 ) {
+					sql.Append( "AND f.dataOraAcquisizione = {" + paramOut.Count + "}" );
+					paramOut.Add( listaDate.ElementAt( 0 ) );
+				} else {
+					sql.Append( "AND dataOraAcquisizione in ( " );
+					foreach( var d in listaDate ) {
+						sql.Append( "{" + paramOut.Count + "}," );
+						paramOut.Add( d );
+					}
+					sql.Replace( ',', ')', sql.Length - 1, 1 );  // Rimuovo l'ultima virgola di troppo e la sostituisco con la parentesi chiusa
+				}
+				sql.Append( SEPAR );
+			}
+
+			#endregion Where - ScaricoCard
+
+			#region Where - Fotografo
+
+			// ----- Filtro fotografo
+			if( param.fotografi != null ) {
+				if( param.fotografi.Length == 1 ) {
+					sql.Append( "AND f.fotografo_id = {" + paramOut.Count + "}" );
+					paramOut.Add( param.fotografi.ElementAt( 0 ).id );
+				} else {
+					sql.Append( "AND f.fotografo_id in ( '" );
+					foreach( var oo in param.fotografi ) {
+						sql.Append( "{" + paramOut.Count + "}," );
+						paramOut.Add( oo.ToString() );
+					}
+					sql.Replace( ',', ')', sql.Length - 1, 1 );  // Rimuovo l'ultima virgola di troppo e la sostituisco con la parentesi chiusa
+				}
+				sql.Append( SEPAR );
+			}
+
+			#endregion Where - Fotografo
+
+			#region Where - ids Foto
+
+			// --- id delle fotografie
+			if( param.idsFotografie != null ) {
+				sql.Append( "AND f.id in ( " );
+				foreach( var id in param.idsFotografie ) {
+					sql.Append( "{" + paramOut.Count + "}," );
+					paramOut.Add( (string) id.ToString() );
+				}
+				sql.Replace( ',', ')', sql.Length - 1, 1 );  // Rimuovo l'ultima virgola di troppo e la sostituisco con la parentesi chiusa
+				sql.Append( SEPAR );
+			}
+
+			#endregion Where - ids Foto
+
+			#region Where - numerifotogrammi
+
+			// --- numeri di fotogrammi
+			if( param.numeriFotogrammi != null ) {
+				int[] range = FotoRangeUtil.rangeToString( param.numeriFotogrammi );
+
+				// Testo se ho un range o una lista
+				if( param.numeriFotogrammi.Contains( '-' ) ) {
+					int estInf = range[0];
+					int estSup = range[1];
+
+					// ----- RANGE di fotogramma
+					sql.Append( "AND f.numero >= {" + paramOut.Count + "}" );
+					sql.Append( SEPAR );
+					paramOut.Add( estInf );
+
+					if( range[1] > 0 ) {
+						sql.Append( "AND f.numero <= {" + paramOut.Count + "}" );
+						paramOut.Add( estSup );
+						sql.Append( SEPAR );
+					}
+				} else {
+					// ----- numeri di fotogramma
+					sql.Append( "AND f.numero in ( " );
+					foreach( var nn in range ) {
+						sql.Append( "{" + paramOut.Count + "}," );
+						paramOut.Add( nn );
+					}
+					sql.Replace( ',', ')', sql.Length - 1, 1 );  // Rimuovo l'ultima virgola di troppo e la sostituisco con la parentesi chiusa
+					sql.Append( SEPAR );
+				}
+			}
+
+			#endregion Where - numerifotogrammi
+
+			#region Where - Fasi del giorno
+
+			// ----- fasi del giorno (la Enum non prevede il Contains. Devo trasformarla in una array di interi
+			if( param.fasiDelGiorno != null && param.fasiDelGiorno.Count > 0 ) {
+				IEnumerable<short> fasiInt = from p in param.fasiDelGiorno
+											 select Convert.ToInt16( p );
+				sql.Append( "AND f.faseDelGiorno in ( " );
+				foreach( var nn in fasiInt ) {
+					sql.Append( "{" + paramOut.Count + "}," );
+					paramOut.Add( nn );
+				}
+				sql.Replace( ',', ')', sql.Length - 1, 1 );  // Rimuovo l'ultima virgola di troppo e la sostituisco con la parentesi chiusa
+				sql.Append( SEPAR );
+			}
+
+			#endregion Where - Fasi del giorno
+
+
+			#region Where - Didascalia
+
+			// ----- Didascalia (le didascalie le memorizziamo solo in maiuscolo)
+			if( !String.IsNullOrWhiteSpace( param.didascalia ) && param.didascalia != "%" ) {
+
+				sql.Append( "AND f.didascalia like " );
+				sql.Append( "{" + paramOut.Count + "}" );
+				paramOut.Add( param.didascalia );
+				sql.Append( SEPAR );
+			}
+
+			#endregion Where - Didascalia
+
+			#region Date
+
+			// ----- Giornata Inizio
+			if( param.giornataIniz != null ) {
+				sql.Append( "AND f.giornata >= " );
+				sql.Append( "{" + paramOut.Count + "}" );
+				paramOut.Add( param.giornataIniz );
+				sql.Append( SEPAR );
+			}
+
+			// ----- Giornata Fine
+			if( param.giornataFine != null ) {
+				sql.Append( "AND f.giornata <= " );
+				sql.Append( "{" + paramOut.Count + "}" );
+				paramOut.Add( param.giornataFine );
+				sql.Append( SEPAR );
+			}
+
+			#endregion Date
+
+			// TODO
+
+			// TODO ..... altri parametri mancanti
+
+
+			#endregion Where
+
+			// Nella query normale devo ordinare e paginare, mentre invece se sto solo facendo la conta dei record mi risparmio questa fatica cosi vado piu veloce
+			if( ! soloCount ) {
+
+				#region Order-By
+
+				// ----- Ordinamento
+				if( param.ordinamento != null ) {
+					sql.Append( "ORDER BY f.dataOraAcquisizione " );
+					if( param.ordinamento == Ordinamento.Desc )
+						sql.Append( " DESC " );
+					sql.Append( ", f.numero " );
+					if( param.ordinamento == Ordinamento.Desc )
+						sql.Append( " DESC " );
+					// forse non serve. provo a far risparmiare tempo
+					// sql.Append( ", f.id " );
+					sql.Append( SEPAR );
+				}
+
+				#endregion Order-By
+
+				#region Paginazione
+
+				// Paginazione
+				sql.Append( " LIMIT " );
+				sql.Append( param.paginazione.skip );
+				sql.Append( " , " );
+				sql.Append( param.paginazione.take );
+				sql.Append( SEPAR );
+
+				#endregion Paginazione
+			}
+
+#if DEBUG
+			// Eventuale debug della query
+			if( _giornale.IsDebugEnabled ) {
+				_giornale.Debug( sql.ToString() );
+			}
+#endif
+
+			return sql.ToString();
+		}
+
+
+
+		/// <summary>
+		/// Data una lista di Id che sono stati ritornati dalla query,
+		/// adesso carico gli oggetti Fotografia con le associazioni necessarie
+		/// </summary>
+		/// <param name="listaIds"></param>
+		/// <returns></returns>
+		private List<Fotografia> caricaFotografieDaIds( List<Guid> idsFotografie, ParamCercaFoto param ) {
+
+			// Porto in join il fotografo tanto mi servirà per visualizzarne i dati nelle tooltip delle foto
+			var qq2 = this.objectContext.Fotografie.Include( "fotografo" );
+
+			// Porto in join gli eventi solo se richiesto esplicitamente
+			if( ! param.evitareJoinEvento )
+				qq2 = qq2.Include( "evento" );
+
+			// Eseguo la query solo con gli ID e spero cosi di essere più veloce
+			IQueryable<Fotografia> query2 = qq2.AsQueryable();
+			query2 = query2.Where( ff => idsFotografie.Contains( ff.id ) );
+
+			// ----- Ordinamento
+			if( param.ordinamento != null ) {
+				if( param.ordinamento == Ordinamento.Asc )
+					query2 = query2.OrderBy( ff => ff.dataOraAcquisizione ).ThenBy( ff => ff.numero );
+				if( param.ordinamento == Ordinamento.Desc )
+					query2 = query2.OrderByDescending( ff => ff.dataOraAcquisizione ).ThenByDescending( ff => ff.numero );
+			}
+
+			_giornale.Debug( "Sto per eseguire la query EF per oggetti completi Fotografia" );
+
+			var lista = query2.ToList(); ;
+
+			_giornale.Debug( "Eseguita la query EF per oggetti completi Fotografia" );
+
+			return lista;
+		}
+
+		private List<Fotografia> cercaLentoEF__DACANC( ParamCercaFoto param ) {
 			
 			_giornale.Debug( "Parametri di ricerca:\n" + param );
 
@@ -33,7 +360,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			}
 #endif
 
-			_giornale.Debug( "Eseguita query di ricerca foto." );
+			_giornale.Debug( "Eseguita query di ricerca foto. Idrato lista risultati" );
 			return query.ToList();
 		}
 
@@ -285,16 +612,16 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 		public int conta( ParamCercaFoto param ) {
 
-			// Clono i parametri per evitare alcuni rallentamenti che nella count non hanno senso
-			ParamCercaFoto param2 = param.deepCopy<ParamCercaFoto>();
-			param2.ordinamento = null;
+			List<object> sqlParam = null;
+			String sql = creaQuerySQL( param, true, ref sqlParam );
 
-			if( param.eventi == null )
-				param2.evitareJoinEvento = true;
+			var query = objectContext.Database.SqlQuery<int>( sql, sqlParam.ToArray() );
 
-			IQueryable<Fotografia> query = creaQueryEntita( param2 );
-			
-			int quanti = query.Count();
+			_giornale.Debug( "Conta1: " + DateTime.Now.ToString( "mm:ss:fff" ) );
+
+			var quanti = query.Single();
+
+			_giornale.Debug( "Conta2: " + DateTime.Now.ToString( "mm:ss:fff" ) );
 
 			return quanti;
 		}
