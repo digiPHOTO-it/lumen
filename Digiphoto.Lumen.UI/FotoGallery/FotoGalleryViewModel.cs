@@ -1000,6 +1000,10 @@ namespace Digiphoto.Lumen.UI {
 
 		private void cambiarePaginazione( short stelline ) {
 
+			// Mi salvo le righe per capire se sto passando da una risoluziona bassa (tante foto) ad una risoluziona alta (una foto)	
+			// var saveRig = numRighePag;
+			// var savePag = numColonnePag;
+
 			int idx = stelline - 1;
 			numRighePag = Configurazione.UserConfigLumen.prefGalleryViste[idx].numRighe;
 			numColonnePag = Configurazione.UserConfigLumen.prefGalleryViste[idx].numColonne;
@@ -1044,6 +1048,11 @@ namespace Digiphoto.Lumen.UI {
 
 			RicercaFlags flags = RicercaFlags.NuovaRicerca | RicercaFlags.MantenereSelezionate | RicercaFlags.MantenereListaIds;
 			eseguireRicerca( flags );
+
+			// Controllo se ho un solo risultato, allora mi posiziono con una sola stellina (alta risoluzione)
+			if( idsFotografieSelez.Count == 1 ) {
+				cambiarePaginazione( 1 );
+			}
 
 		}
 
