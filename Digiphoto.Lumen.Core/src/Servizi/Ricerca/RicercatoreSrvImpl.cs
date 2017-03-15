@@ -286,11 +286,13 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 				#region Paginazione
 
 				// Paginazione
-				sql.Append( " LIMIT " );
-				sql.Append( param.paginazione.skip );
-				sql.Append( " , " );
-				sql.Append( param.paginazione.take );
-				sql.Append( SEPAR );
+				if( param.paginazione != null ) {
+					sql.Append( " LIMIT " );
+					sql.Append( param.paginazione.skip );
+					sql.Append( " , " );
+					sql.Append( param.paginazione.take );
+					sql.Append( SEPAR );
+				}
 
 				#endregion Paginazione
 			}
