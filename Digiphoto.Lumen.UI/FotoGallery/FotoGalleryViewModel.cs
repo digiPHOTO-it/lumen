@@ -1001,12 +1001,27 @@ namespace Digiphoto.Lumen.UI {
 		private void cambiarePaginazione( short stelline ) {
 
 			// Mi salvo le righe per capire se sto passando da una risoluziona bassa (tante foto) ad una risoluziona alta (una foto)	
-			// var saveRig = numRighePag;
-			// var savePag = numColonnePag;
+			var saveRig = numRighePag;
+			var saveCol = numColonnePag;
 
 			int idx = stelline - 1;
 			numRighePag = Configurazione.UserConfigLumen.prefGalleryViste[idx].numRighe;
 			numColonnePag = Configurazione.UserConfigLumen.prefGalleryViste[idx].numColonne;
+
+			bool cambioInHQ = false;
+			if( stelline == 1 )
+				if( saveRig > 1 || saveCol > 1 )
+					cambioInHQ = true;
+
+			// Prima ero in bassa qualità perché vedevo molte foto, ... adesso ne vedo solo una quindi passo in HQ
+			if( cambioInHQ ) {
+				// Ho provato diversi trucchi ma non c'è modo di farlo lato UI. 
+				// Rieseguo la ricerca qui nel viewmodel
+				// 			RicercaFlags flags = RicercaFlags.NuovaRicerca | RicercaFlags.MantenereSelezionate | RicercaFlags.MantenereListaIds;
+				eseguireRicerca( RicercaFlags.Niente );
+
+			}
+			
 		}
 
 		private void filtrareNumFotogramma( string nnn ) {
