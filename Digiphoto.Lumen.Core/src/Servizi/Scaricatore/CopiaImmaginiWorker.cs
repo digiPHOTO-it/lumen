@@ -169,8 +169,15 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			FileInfo fileInfoSrc = new FileInfo( nomeFileSrc );
 			string nomeOrig = fileInfoSrc.Name;
-			string nomeFileDest = Path.Combine( nomeDirDest, nomeOrig );
 
+			string nomeFileDest;
+			int tenta = 0;
+			do {
+				nomeFileDest = Path.Combine( nomeDirDest, nomeOrig );
+				if( tenta++ > 0 )
+					nomeFileDest += "_" + tenta;
+			} while( System.IO.File.Exists( nomeFileDest ) );
+			
 
 			// TODO : il file potrebbe esistere con lo stesso nome, ma essere differente.
 			//        andrebbe gestita una opzione di sovrascrittura. Per ora non mi preoccupo
