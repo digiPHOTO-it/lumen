@@ -2054,9 +2054,13 @@ throw new NotImplementedException( "TODO da rivedere");
 
 		public void OnNext(ClonaFotoMsg value)
 		{
-			if (value.fase == FaseClone.FineClone)
-			{
-				eseguireRicerca( RicercaFlags.Niente );
+			if( value.fase == FaseClone.FineClone ) {
+
+				Digiphoto.Lumen.UI.App.Current.Dispatcher.BeginInvoke(
+					new Action( () => {
+					eseguireRicerca( RicercaFlags.Niente );
+					}
+				) );
 			}
 		}
 

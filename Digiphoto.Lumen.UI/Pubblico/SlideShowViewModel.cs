@@ -17,6 +17,7 @@ using Digiphoto.Lumen.Config;
 using System.Windows;
 using Digiphoto.Lumen.Servizi.Ritoccare;
 using Digiphoto.Lumen.Servizi;
+using log4net;
 
 namespace Digiphoto.Lumen.UI.Pubblico {
 
@@ -31,10 +32,12 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		private DispatcherTimer _orologio;
 
+		protected static readonly new ILog _giornale = LogManager.GetLogger( typeof( SlideShowViewModel ) );
 
 		public SlideShowViewModel() {
 
 			_elencoSpots = caricaElencoSpot();
+			_giornale.Info( "Caricato elenco spot pubblicità: totale " + _elencoSpots.Count + " spot" );
 
 			slideShowRighe = Configurazione.LastUsedConfigLumen.slideShowNumRighe;
 			slideShowColonne = Configurazione.LastUsedConfigLumen.slideShowNumColonne;
@@ -458,8 +461,18 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 			try {
 
-				if( Configurazione.UserConfigLumen.intervalliPubblicita > 0 )
-					elenco = Directory.EnumerateFiles( Configurazione.UserConfigLumen.cartellaPubblicita ).ToList();
+				if( Configurazione.UserConfigLumen.intervalliPubblicita > 0 ) {
+					
+					elenco = new List<string>();
+
+					// Prendo le estensioni ammesse dalla configurazione
+					string[] estensioni = Configurazione.UserConfigLumen.estensioniGrafiche.Split( ';' );
+					foreach( string estensione in estensioni ) {
+						string[] files = Directory.GetFiles( Configurazione.UserConfigLumen.cartellaPubblicita, searchPattern: "*" + estensione, searchOption: SearchOption.TopDirectoryOnly );
+						_giornale.Debug( "caricati " + files.Count() + " spot con estensione: " + estensione );
+						elenco.AddRange( files );
+					}
+				}
 
 			} catch (Exception ee )	{
 				_giornale.Warn( "Impossibile caricare spot pubblicitari", ee );
@@ -484,6 +497,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			if( !devoGestirePubblicita )
 				return false;
 
+
 			if( ++_contaSchermate > Configurazione.UserConfigLumen.intervalliPubblicita ) {
 
 				pubblicitaInCorso = true;
@@ -491,10 +505,20 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 				if( _indexSpotAttuale >= _elencoSpots.Count )
 					_indexSpotAttuale = 0;
 
-				nomeFileSpotAttuale = _elencoSpots.ElementAt( _indexSpotAttuale++ );
+				try {
+					string appo = _elencoSpots.ElementAt( _indexSpotAttuale++ );
 
-				_contaSchermate = 0;
-				visualizzato = true;
+					_giornale.Debug( "Sto per caricare pubblicità: " + appo + ". Indice = " + _indexSpotAttuale + "/" + _elencoSpots.Count );
+					nomeFileSpotAttuale = appo;
+
+				} catch( Exception ee ) {
+					_giornale.Warn( "Problemi nel caricare la pubblicità. Salto e passo avanti" );					
+				} finally {
+
+					_contaSchermate = 0;
+					visualizzato = true;
+				}
+
 			} else
 				pubblicitaInCorso = false;
 

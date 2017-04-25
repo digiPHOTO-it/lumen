@@ -16,7 +16,7 @@ namespace Digiphoto.Lumen.UI.Mvvm
     /// </summary>
 	public abstract class ViewModelBase : INotifyPropertyChanged, IDisposable {
 
-		protected static readonly ILog _giornale = LogManager.GetLogger( typeof( MainWindowViewModel ) );
+		protected static readonly ILog _giornale = LogManager.GetLogger( typeof( ViewModelBase ) );
 
 
 		public IDialogProvider dialogProvider {
