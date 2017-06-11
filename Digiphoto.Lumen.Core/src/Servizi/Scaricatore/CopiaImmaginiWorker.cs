@@ -174,8 +174,14 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			int tenta = 0;
 			do {
 				nomeFileDest = Path.Combine( nomeDirDest, nomeOrig );
-				if( tenta++ > 0 )
-					nomeFileDest += "_" + tenta;
+				if( tenta++ > 0 ) {
+
+					int pos = nomeFileDest.LastIndexOf( "." );
+					if( pos >= 0 ) {
+						nomeFileDest = nomeFileDest.Insert( pos, "_" + tenta );
+					} else
+						throw new Exception( "nome file senza estensione" );
+				}
 			} while( System.IO.File.Exists( nomeFileDest ) );
 			
 
