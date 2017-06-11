@@ -34,7 +34,8 @@ namespace Digiphoto.Lumen.UI {
 
 
 	public class FotoGalleryViewModel : ViewModelBase, IContenitoreGriglia, ISelettore<Fotografia>,
-	                                    IObserver<FotoModificateMsg>, IObserver<NuovaFotoMsg>, IObserver<ClonaFotoMsg>, IObserver<GestoreCarrelloMsg>, IObserver<RefreshMsg>, IObserver<CambioStatoMsg>, IObserver<StampatoMsg>
+	                                    IObserver<FotoModificateMsg>, IObserver<NuovaFotoMsg>, IObserver<ClonaFotoMsg>, IObserver<FotoEliminateMsg>,
+										IObserver<GestoreCarrelloMsg>, IObserver<RefreshMsg>, IObserver<CambioStatoMsg>, IObserver<StampatoMsg>
 
 	{
 		[Flags]
@@ -64,6 +65,9 @@ namespace Digiphoto.Lumen.UI {
 
 			IObservable<NuovaFotoMsg> observableNuovaFoto = LumenApplication.Instance.bus.Observe<NuovaFotoMsg>();
 			observableNuovaFoto.Subscribe( this );
+
+			IObservable<FotoEliminateMsg> observableFotoEliminate = LumenApplication.Instance.bus.Observe<FotoEliminateMsg>();
+			observableFotoEliminate.Subscribe( this );
 
 			IObservable<GestoreCarrelloMsg> observableGesCarrello = LumenApplication.Instance.bus.Observe<GestoreCarrelloMsg>();
 			observableGesCarrello.Subscribe( this );

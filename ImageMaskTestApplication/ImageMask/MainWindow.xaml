@@ -52,7 +52,7 @@
 
 
         <Canvas  Background="Transparent" Name="fondoCanvas" >
-                    <Image HorizontalAlignment="Left" VerticalAlignment="top"  Name="imgMaschera" Width="300" Height="300" Source="/ImageMask;component/maschere/msk1.png" />
+                    <Image HorizontalAlignment="Left" VerticalAlignment="top"  Name="imgMaschera" Width="300" Height="300" Source="./ImageMask;component/maschere/msk1.png" />
             </Canvas>
 
         <Canvas  Background="Transparent" Name="MyCanvas" AllowDrop="True" MouseDown="MyCanvas_MouseDown" Drop="MyCanvas_Drop" >
