@@ -28,7 +28,7 @@ using Digiphoto.Lumen.Servizi;
 using Digiphoto.Lumen.UI.Preferenze;
 using static System.Environment;
 using System.Net.Mail;
-using Digiphoto.Lumen.Core.Util;
+using Digiphoto.Lumen.Core.Servizi.Utilita;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -234,7 +234,7 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand spedireLogCommand {
 			get {
 				if( _spedireLogCommand == null ) {
-					_spedireLogCommand = new RelayCommand( param => MailUtil.spedireLog(), param => true );
+					_spedireLogCommand = new RelayCommand( param => spedireLog(), param => true );
 				}
 				return _spedireLogCommand;
 			}
@@ -357,7 +357,7 @@ namespace Digiphoto.Lumen.UI {
 			if( paramRangeGiorni == null )
 				return;
 
-			IVenditoreSrv srv = LumenApplication.Instance.getServizioAvviato<IVenditoreSrv>();
+			Servizi.Vendere.IVenditoreSrv srv = LumenApplication.Instance.getServizioAvviato<Servizi.Vendere.IVenditoreSrv>();
 
 			List<RigaReportVendite> righe = srv.creaReportVendite( paramRangeGiorni );
 
@@ -393,14 +393,39 @@ namespace Digiphoto.Lumen.UI {
 
 			// Per adesso apro con l'editor di default del sistema
 			// TODO bisognerebbe fare una lista dei file 
-			String nomeFileLog = MailUtil.getNomeFileLog();
-
+			// TODO questo è solo uno dei file di log che si possono configurare in log4net. possono essercene altri oppure cambiare nome. Per ora ok cosi
+			String nomeFileLog = Path.Combine( Environment.GetFolderPath( SpecialFolder.LocalApplicationData ), "digiPHOTO.it", "Lumen", "Log", "lumenUI-log.txt" );
 			if( File.Exists( nomeFileLog ) )
 				System.Diagnostics.Process.Start( nomeFileLog );
 			else
 				dialogProvider.ShowError( nomeFileLog, "File non esistente!", null );
 
 		}
+
+		private void spedireLog() {
+
+			bool procediPure = true;
+
+			dialogProvider.ShowConfirmation( "Assicurarsi di avere la connessione alla rete.\nVuoi inviare il giornale al team di assistenza ?",
+				"Richiesta conferma",
+				  ( confermato ) => {
+					  procediPure = confermato;
+				  } );
+
+			if( !procediPure )
+				return;
+
+			// Siccome questo servizio non è sempre indispensabile (anzi quasi mai), lo istanzio solo alla necessità
+			using( IUtilitaSrv utilitaSrv = LumenApplication.Instance.creaServizio<IUtilitaSrv>() ) {
+
+				bool esitoOk = utilitaSrv.inviaLog();
+				if( esitoOk ) {
+					this.trayIconProvider.showInfo( "Ok", "Log inviato", 5000 );
+				} else {
+					dialogProvider.ShowError( "Invio log fallito.\nControllare connessione di rete ", "Errore", null );
+				}
+			}
+		}			
 
 		ParamRangeGiorni richiediParametriRangeGiorni() {
 
@@ -449,8 +474,8 @@ namespace Digiphoto.Lumen.UI {
 			ParamRangeGiorni paramRangeGiorni = richiediParametriRangeGiorni();
 			if( paramRangeGiorni == null )
 				return;
-			
-			IVenditoreSrv srv = LumenApplication.Instance.getServizioAvviato<IVenditoreSrv>();
+
+			Servizi.Vendere.IVenditoreSrv srv = LumenApplication.Instance.getServizioAvviato<Servizi.Vendere.IVenditoreSrv>();
 			List<RigaReportProvvigioni> righe = srv.creaReportProvvigioni( paramRangeGiorni );
 
 			ReportHostWindow rhw = new ReportHostWindow();
