@@ -27,6 +27,14 @@ namespace Digiphoto.Lumen.Config  {
 		public static readonly string nomeLogoDefault = "digiPHOTO-logo.png";
 		public static readonly string nomeLogoSSDefault = "Lumen-selfservice-logo.png";
 
+		public static String configPath
+		{
+			get
+			{
+				return Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ), Configurazione.companyName, Configurazione.applicationName );
+			}
+		}
+
 
 		DbUtil _dbUtil;
 

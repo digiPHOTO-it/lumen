@@ -110,6 +110,7 @@
     <Compile Include="src\Servizi\Stampare\StampantiAbbinateSrvImplTest.cs" />
     <Compile Include="src\Servizi\Stampare\StampantiInstallateSrvImplTest.cs" />
     <Compile Include="src\Servizi\Stampare\StampaProviniTest.cs" />
+    <Compile Include="src\Servizi\Utilita\UtilitaSrvImplTests.cs" />
     <Compile Include="src\Servizi\Vendere\GestoreCarrelloTest.cs" />
     <Compile Include="src\Servizi\Vendere\VenditoreSrvImplTest.cs" />
     <Compile Include="src\Util\CompNumFotoTest.cs" />
