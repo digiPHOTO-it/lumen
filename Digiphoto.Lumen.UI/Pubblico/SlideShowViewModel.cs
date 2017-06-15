@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Digiphoto.Lumen.UI.Mvvm;
 using Digiphoto.Lumen.Model;
 using System.IO;
 using Digiphoto.Lumen.Applicazione;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
 using Digiphoto.Lumen.Util;
-using Digiphoto.Lumen.Imaging.Wic;
 using Digiphoto.Lumen.Servizi.Ricerca;
 using Digiphoto.Lumen.Servizi.Explorer;
-using Digiphoto.Lumen.Servizi.Scaricatore;
 using Digiphoto.Lumen.Config;
 using System.Windows;
 using Digiphoto.Lumen.Servizi.Ritoccare;
@@ -28,7 +24,11 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 	};
 
 
-	public class SlideShowViewModel : ClosableWiewModel, IContenitoreGriglia, IObserver<ScaricoFotoMsg>, IObserver<FotoModificateMsg> {
+	public class SlideShowViewModel : ClosableWiewModel, IContenitoreGriglia, IObserver<FotoModificateMsg>
+#if SLIDESHOWAUTOMATICODARIPENSARE
+	,IObserver<ScaricoFotoMsg> 
+#endif
+	{
 
 		private DispatcherTimer _orologio;
 
@@ -47,7 +47,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		private int _contaSchermate = 0;
 		private int _indexSpotAttuale = 0;
 
-		#region Proprietà
+#region Proprietà
 
 
 		private int numSlideCorrente {
@@ -117,6 +117,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			}
 		}
 
+#if SLIDESHOWAUTOMATICODARIPENSARE
 		/// <summary>
 		/// Questo flag mi dice se intanto che sta girando lo show, se si sono acquisite 
 		/// delle nuove foto che potenzialmente devo andare a visualizzare.
@@ -125,7 +126,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			get;
 			set;
 		}
-
+#endif
 
 
 		private short _slideShowRighe;
@@ -182,11 +183,11 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			}
 		}
 
-		#endregion   // Proprietà
+#endregion   // Proprietà
 
 
 
-		#region Metodi
+#region Metodi
 
 		protected override void OnDispose() {
 
@@ -311,15 +312,13 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		}
 
 
-
 		public void creaShow( ParamCercaFoto paramCercaFoto ) {
-
-			this.slideShow = new SlideShowAutomatico( paramCercaFoto );
 
 			// Quindi devo eseguire la ricerca nuovamente (appunto perché nella gallery ho un sottoinsieme paginato)
 			IRicercatoreSrv ricercaSrv = LumenApplication.Instance.getServizioAvviato<IRicercatoreSrv>();
 			var fotografie = ricercaSrv.cerca( paramCercaFoto );
-			this.slideShow.sostituisciFoto( fotografie );
+
+			this.slideShow = new SlideShow( fotografie );
 
 			creaShow();
 		}
@@ -331,11 +330,13 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			// Avvio il timer che serve a far girare le foto
 			creaNuovoTimer();
 
+#if SLIDESHOWAUTOMATICODARIPENSARE
 			// Se lo show è automatico, devo ascoltare se arrivano nuove foto.
 			if( slideShow is SlideShowAutomatico ) {
 				IObservable<ScaricoFotoMsg> observable = LumenApplication.Instance.bus.Observe<ScaricoFotoMsg>();
 				observable.Subscribe( this );
 			}
+#endif
 
 			// Devo ascoltare sempre se qualche foto viene modificata
 			IObservable<FotoModificateMsg> observableFM = LumenApplication.Instance.bus.Observe<FotoModificateMsg>();
@@ -379,7 +380,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			_orologio.Tick += new EventHandler( orologio_Tick );
 		}
 
-		#endregion
+#endregion
 
 
 		
@@ -442,6 +443,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			// Se arrivo al massimo, torno all'inizio
 			if( numSlideCorrente >= slideShow.slides.Count ) {
 
+#if SLIDESHOWAUTOMATICODARIPENSARE
 				if( sonoEntrateNuoveFotoNelFrattempo && slideShow is SlideShowAutomatico ) {
 					// Devo rieseguire la query
 					ParamCercaFoto param = ((SlideShowAutomatico)slideShow).paramCercaFoto;
@@ -449,6 +451,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 					// Riazzero per prossimo test
 					sonoEntrateNuoveFotoNelFrattempo = false;
 				}
+#endif
 
 				numSlideCorrente = 0;
 			}
@@ -543,7 +546,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			}
 		}
 
-		#region Interfaccia IContenitoreGriglia
+#region Interfaccia IContenitoreGriglia
 
 		public short numRighe {
 			get {
@@ -557,7 +560,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			}
 		}
 
-		#endregion Interfaccia IContenitoreGriglia
+#endregion Interfaccia IContenitoreGriglia
 
 		public void OnCompleted() {
 		}
@@ -565,6 +568,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		public void OnError( Exception error ) {
 		}
 
+#if SLIDESHOWAUTOMATICODARIPENSARE
 		public void OnNext( ScaricoFotoMsg value ) {
 
 			// Qualcuno ha appena scaricato delle nuove foto nell'archivio.
@@ -576,7 +580,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 					if( isRunning == false )
 						start();
 		}
-
+#endif
 
 		public void OnNext( FotoModificateMsg fmMsg ) {
 
