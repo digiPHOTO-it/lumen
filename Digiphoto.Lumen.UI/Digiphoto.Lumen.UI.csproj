@@ -492,7 +492,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="Pubblico\SlideShowAutomatico.cs" />
     <Compile Include="Pubblico\SlideShowViewModel.cs" />
     <Compile Include="Pubblico\SlideShowWindow.xaml.cs">
       <DependentUpon>SlideShowWindow.xaml</DependentUpon>
