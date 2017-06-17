@@ -238,6 +238,16 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+
+		/// <summary>
+		/// Questo attributo mi serve quando sto per passare dalla vista di molte foto alla vista di una sola foto.
+		/// Se nella pagina c'è una foto selezionata, per esempio la 3za, mi devo spostare nella prossima ricerca di 3.
+		/// </summary>
+		private int offsetProssimoSkip {
+			set;
+			get;
+		}
+
 		/// <summary>
 		/// Questa collezione mantiene la lista di tutte le foto selezionate, comprese quelle che non
 		/// sono visibili perchè si trovato in pagine diverse da quella corrente.
@@ -1007,25 +1017,49 @@ namespace Digiphoto.Lumen.UI {
 			// Mi salvo le righe per capire se sto passando da una risoluziona bassa (tante foto) ad una risoluziona alta (una foto)	
 			var saveRig = numRighePag;
 			var saveCol = numColonnePag;
+			int saveTot = saveRig * saveCol;
 
 			int idx = stelline - 1;
 			numRighePag = Configurazione.UserConfigLumen.prefGalleryViste[idx].numRighe;
 			numColonnePag = Configurazione.UserConfigLumen.prefGalleryViste[idx].numColonne;
+			int newTot = numRighePag * numColonnePag;
 
 			bool cambioInHQ = false;
 			if( stelline == 1 )
-				if( saveRig > 1 || saveCol > 1 )
+				if( saveRig > 1 || saveCol > 1 ) {
+
 					cambioInHQ = true;
 
+					// Mi salvo la prima foto selezionata della pagina (se esiste)
+					Fotografia primaFotoSelez = fotografieCW == null ? null : fotografieCW.SelectedItems.FirstOrDefault();
+
+					if( primaFotoSelez != null ) {
+						int index = fotografieCW.IndexOf( primaFotoSelez );
+						if( Configurazione.UserConfigLumen.invertiRicerca )
+							offsetProssimoSkip = index;
+						else {
+							
+							offsetProssimoSkip = ( -1 * (saveTot - index) ) + saveTot;
+						}
+							
+					}
+					
+				}
+
+			// Se aumento il numero di foto, devo per forza andare a rileggerle (perché in memoria non ci sono)
+			bool incrementoVisibilita = saveTot > 0 && saveTot < newTot;
+
+			bool lancioRicerca = (cambioInHQ || incrementoVisibilita);
+
 			// Prima ero in bassa qualità perché vedevo molte foto, ... adesso ne vedo solo una quindi passo in HQ
-			if( cambioInHQ ) {
+			if( lancioRicerca ) {
 				// Ho provato diversi trucchi ma non c'è modo di farlo lato UI. 
 				// Rieseguo la ricerca qui nel viewmodel
 				// 			RicercaFlags flags = RicercaFlags.NuovaRicerca | RicercaFlags.MantenereSelezionate | RicercaFlags.MantenereListaIds;
 				eseguireRicerca( RicercaFlags.Niente );
-
 			}
 			
+
 		}
 
 		private void filtrareNumFotogramma( string nnn ) {
@@ -1706,6 +1740,12 @@ throw new NotImplementedException( "TODO da rivedere");
 
 			// Ampiezza finestra di paginazione
 			paramCercaFoto.paginazione.take = paginazioneRisultatiGallery;
+
+			// Gestisco eventuale offset personalizzato per spostarmi ulteriormente.
+			// Poi lo azzero perché deve ritornare la paginazione normale
+			paramCercaFoto.paginazione.skip += offsetProssimoSkip;
+			offsetProssimoSkip = 0;
+
 		}
 
 		private void caricareSlideShow( string modo ) {
