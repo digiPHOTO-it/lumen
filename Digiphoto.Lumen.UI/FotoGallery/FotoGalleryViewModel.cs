@@ -1017,10 +1017,12 @@ namespace Digiphoto.Lumen.UI {
 			// Mi salvo le righe per capire se sto passando da una risoluziona bassa (tante foto) ad una risoluziona alta (una foto)	
 			var saveRig = numRighePag;
 			var saveCol = numColonnePag;
+			int saveTot = saveRig * saveCol;
 
 			int idx = stelline - 1;
 			numRighePag = Configurazione.UserConfigLumen.prefGalleryViste[idx].numRighe;
 			numColonnePag = Configurazione.UserConfigLumen.prefGalleryViste[idx].numColonne;
+			int newTot = numRighePag * numColonnePag;
 
 			bool cambioInHQ = false;
 			if( stelline == 1 )
@@ -1036,21 +1038,25 @@ namespace Digiphoto.Lumen.UI {
 						if( Configurazione.UserConfigLumen.invertiRicerca )
 							offsetProssimoSkip = index;
 						else {
-							int tot = saveRig * saveCol;
-							offsetProssimoSkip = ( -1 * (tot - index) ) + tot;
+							
+							offsetProssimoSkip = ( -1 * (saveTot - index) ) + saveTot;
 						}
 							
 					}
 					
 				}
 
+			// Se aumento il numero di foto, devo per forza andare a rileggerle (perché in memoria non ci sono)
+			bool incrementoVisibilita = saveTot > 0 && saveTot < newTot;
+
+			bool lancioRicerca = (cambioInHQ || incrementoVisibilita);
+
 			// Prima ero in bassa qualità perché vedevo molte foto, ... adesso ne vedo solo una quindi passo in HQ
-			if( cambioInHQ ) {
+			if( lancioRicerca ) {
 				// Ho provato diversi trucchi ma non c'è modo di farlo lato UI. 
 				// Rieseguo la ricerca qui nel viewmodel
 				// 			RicercaFlags flags = RicercaFlags.NuovaRicerca | RicercaFlags.MantenereSelezionate | RicercaFlags.MantenereListaIds;
 				eseguireRicerca( RicercaFlags.Niente );
-
 			}
 			
 
