@@ -238,6 +238,16 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+
+		/// <summary>
+		/// Questo attributo mi serve quando sto per passare dalla vista di molte foto alla vista di una sola foto.
+		/// Se nella pagina c'è una foto selezionata, per esempio la 3za, mi devo spostare nella prossima ricerca di 3.
+		/// </summary>
+		private int offsetProssimoSkip {
+			set;
+			get;
+		}
+
 		/// <summary>
 		/// Questa collezione mantiene la lista di tutte le foto selezionate, comprese quelle che non
 		/// sono visibili perchè si trovato in pagine diverse da quella corrente.
@@ -1014,8 +1024,25 @@ namespace Digiphoto.Lumen.UI {
 
 			bool cambioInHQ = false;
 			if( stelline == 1 )
-				if( saveRig > 1 || saveCol > 1 )
+				if( saveRig > 1 || saveCol > 1 ) {
+
 					cambioInHQ = true;
+
+					// Mi salvo la prima foto selezionata della pagina (se esiste)
+					Fotografia primaFotoSelez = fotografieCW == null ? null : fotografieCW.SelectedItems.FirstOrDefault();
+
+					if( primaFotoSelez != null ) {
+						int index = fotografieCW.IndexOf( primaFotoSelez );
+						if( Configurazione.UserConfigLumen.invertiRicerca )
+							offsetProssimoSkip = index;
+						else {
+							int tot = saveRig * saveCol;
+							offsetProssimoSkip = ( -1 * (tot - index) ) + tot;
+						}
+							
+					}
+					
+				}
 
 			// Prima ero in bassa qualità perché vedevo molte foto, ... adesso ne vedo solo una quindi passo in HQ
 			if( cambioInHQ ) {
@@ -1026,6 +1053,7 @@ namespace Digiphoto.Lumen.UI {
 
 			}
 			
+
 		}
 
 		private void filtrareNumFotogramma( string nnn ) {
@@ -1706,6 +1734,12 @@ throw new NotImplementedException( "TODO da rivedere");
 
 			// Ampiezza finestra di paginazione
 			paramCercaFoto.paginazione.take = paginazioneRisultatiGallery;
+
+			// Gestisco eventuale offset personalizzato per spostarmi ulteriormente.
+			// Poi lo azzero perché deve ritornare la paginazione normale
+			paramCercaFoto.paginazione.skip += offsetProssimoSkip;
+			offsetProssimoSkip = 0;
+
 		}
 
 		private void caricareSlideShow( string modo ) {
