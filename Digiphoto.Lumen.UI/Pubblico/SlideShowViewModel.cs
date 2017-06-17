@@ -460,14 +460,12 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		List<string> caricaElencoSpot() {
 			
-			List<string> elenco = null;
+			List<string> elenco = new List<string>();
 
 			try {
 
 				if( Configurazione.UserConfigLumen.intervalliPubblicita > 0 ) {
 					
-					elenco = new List<string>();
-
 					// Prendo le estensioni ammesse dalla configurazione
 					string[] estensioni = Configurazione.UserConfigLumen.estensioniGrafiche.Split( ';' );
 					foreach( string estensione in estensioni ) {
