@@ -348,6 +348,7 @@
       <DependentUpon>SelettoreAzioniAutomaticheView.xaml</DependentUpon>
     </Compile>
     <Compile Include="SelettoreAzioniAutomatiche\SelettoreAzioniAutomaticheViewModel.cs" />
+    <Compile Include="SelettoreAzioniRapide\SelettoreAzioniRapideResources.cs" />
     <Compile Include="SelettoreAzioniRapide\SelettoreAzioniRapideView.xaml.cs">
       <DependentUpon>SelettoreAzioniRapideView.xaml</DependentUpon>
     </Compile>
@@ -861,6 +862,24 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Ruota-16x16.png" />
+    <Resource Include="Resources\Carrello-16x16.png" />
+    <Resource Include="Resources\GrandezzaReale-16x16.png" />
+    <Resource Include="Resources\SlideShow-16x16.png" />
+    <Resource Include="Resources\BottomLeft-16x16.png" />
+    <Resource Include="Resources\BottomRight-16x16.png" />
+    <Resource Include="Resources\TopLeft-16x16.png" />
+    <Resource Include="Resources\TopRight-16x16.png" />
+    <Resource Include="Resources\Logo-16x16.png" />
+    <Resource Include="Resources\RotateCCW-16x16.png" />
+    <Resource Include="Resources\RotateCW-16x16.png" />
+    <Resource Include="Resources\Tag-16x16.png" />
+    <Resource Include="Resources\Clone-16x16.png" />
+    <Resource Include="Resources\Delete-16x16.png" />
+    <Resource Include="Resources\Masterizza-16x16.png" />
+    <Resource Include="Resources\TornaOriginale-16x16.png" />
+    <Resource Include="Resources\Printer-16x16.ico" />
+    <Resource Include="Resources\Printer-16x16.png" />
     <Resource Include="Resources\keep-print-like-48x48.png" />
     <Resource Include="Resources\foto-non-mi-piace-16x16.png" />
     <Resource Include="Resources\foto-mi-piace-16x16.png" />

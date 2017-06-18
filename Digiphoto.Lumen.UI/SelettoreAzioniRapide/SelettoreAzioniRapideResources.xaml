@@ -2,7 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
 					xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI"
-                    xmlns:lumCC="clr-namespace:Digiphoto.Lumen.UI.Converters">
+                    xmlns:lumCC="clr-namespace:Digiphoto.Lumen.UI.Converters"
+					x:Class="Digiphoto.Lumen.UI.SelettoreAzioniRapideResources">
 
 
     <lumCC:ListAzioniRapideVisibilityConverter x:Key="listAzioniRapideVisibilityConverter" />
@@ -39,7 +40,7 @@
 	</DataTemplate>
     
     <DataTemplate x:Key="stampaRapidBordiBianchiaMenu">
-        <MenuItem Header="{Binding}"
+        <MenuItem x:Name="azioniRapideMenu" Header="{Binding}"
 					Command="{Binding Path=DataContext.stampaRapidaBordiBianchiCommand, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}" 
 					CommandParameter="{Binding}">
             <MenuItem.Icon>
@@ -50,13 +51,15 @@
     
     <ContextMenu x:Key="azioniRapideMenu" 
                  x:Shared="true" 
-                 DataContext="{Binding Path=selettoreAzioniRapideViewModel}">
+                 DataContext="{Binding Path=selettoreAzioniRapideViewModel}"
+				 >
 
         <ContextMenu.ItemsSource>
             <CompositeCollection>
                 
+
                 <!--Singola foto-->
-                <MenuItem Header="Singola Foto"  
+                <MenuItem Header="Singola Foto" x:Name="menuItemSingolaFoto"
                           Visibility="{Binding Path=visibility, Mode=OneWay, Converter={StaticResource listAzioniRapideVisibilityConverter}, ConverterParameter=SINGLE}"
                           DataContext="{Binding}">
 
@@ -66,17 +69,24 @@
                                                            CommandParameter="SINGOLA"/>
                                 </i:EventTrigger>
                           </i:Interaction.Triggers>
-                    
-                    <MenuItem Header="Torna originale" 
+					
+					<!-- Questo segnaposto è voluto perché a runtime vengono inserite delle voci SOPRA a questo separatore -->
+					<Separator />
+
+					<MenuItem Header="Torna originale" 
                               Command="{Binding Path=tornareOriginaleCommand}"
-                              DataContext="{Binding}"	/>
-                    
-                    <Separator />
-                    
-                    <MenuItem Header="Stampa a Formato Pieno"
-                              ItemsSource="{Binding Path=stampantiAbbinate}"
-                              ItemTemplate="{StaticResource stampaRapidaMenu}"
                               DataContext="{Binding}">
+						<MenuItem.Icon>
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/TornaOriginale-16x16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
+					
+                    <Separator />
+
+					<MenuItem Name="menuItemStampePiene" Header="Stampa a Formato Pieno"
+                              ItemsSource="{Binding Path=stampantiAbbinate, NotifyOnTargetUpdated=True}"
+                              ItemTemplate="{StaticResource stampaRapidaMenu}"
+                              DataContext="{Binding}" TargetUpdated="onMenuItemStampePieneUpdated">
                         
                     </MenuItem>
                     
@@ -106,67 +116,122 @@
                                 </Style>
                         </MenuItem.ItemContainerStyle>
                         <!-- ItemTemplate="{StaticResource pulsanteDiStampaCarrelloTemplateContextMenu}" -->
-		            </MenuItem>
+						<MenuItem.Icon>
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-16x16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
 
-		            <MenuItem Header="Aggiungi al CD" 
+					<MenuItem Header="Aggiungi al CD" 
                               Command="{Binding Path=aggiungereAlMasterizzatoreCommand}" 
-                              DataContext="{Binding}"/>
+                              DataContext="{Binding}">
+						<MenuItem.Icon>
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/Masterizza-16x16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
 
 		            <MenuItem Header="Ruota" >
 			            <MenuItem Header="-90°"
 					              Command="{Binding Path=ruotareCommand}" 
 					              CommandParameter="-90"
 					              DataContext="{Binding}">
-			            </MenuItem>
+							<MenuItem.Icon>
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/RotateCCW-16x16.png" />
+							</MenuItem.Icon>
+						</MenuItem>
 			            <MenuItem Header="+90°"
 					              Command="{Binding Path=ruotareCommand}" 
 					              CommandParameter="+90"
 					              DataContext="{Binding}">
-			            </MenuItem>
-		            </MenuItem>
+							<MenuItem.Icon>
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/RotateCW-16x16.png" />
+							</MenuItem.Icon>
+						</MenuItem>
+						<MenuItem.Icon>
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/Ruota-16x16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
 
 		            <MenuItem Header="Aggiungi Logo...">
-			            <MenuItem Header="Nord-Est"
-                                  Command="{Binding Path=aggiungereLogoCommand}"
-                                  CommandParameter="NordEst"
-                                  DataContext="{Binding}" />
-			            <MenuItem Header="Sud-Est"
-						          Command="{Binding Path=aggiungereLogoCommand}"
-                                  CommandParameter="SudEst"
-                                  DataContext="{Binding}" />
-			            <MenuItem Header="Sud-Ovest"
-                                  Command="{Binding Path=aggiungereLogoCommand}"
-                                  CommandParameter="SudOvest"
-                                  DataContext="{Binding}" />
-			            <MenuItem Header="Nord-Ovest"
-                                  Command="{Binding Path=aggiungereLogoCommand}"
-                                  CommandParameter="NordOvest"
-                                  DataContext="{Binding}" />
-                    </MenuItem>
+						<MenuItem Header="Nord-Est"
+								  Command="{Binding Path=aggiungereLogoCommand}"
+								  CommandParameter="NordEst"
+								  DataContext="{Binding}" >
+							<MenuItem.Icon>
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/TopRight-16x16.png" />
+							</MenuItem.Icon>
+						</MenuItem>
+						<MenuItem Header="Sud-Est"
+								  Command="{Binding Path=aggiungereLogoCommand}"
+								  CommandParameter="SudEst"
+								  DataContext="{Binding}" >
+							<MenuItem.Icon>
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/BottomRight-16x16.png" />
+							</MenuItem.Icon>
+						</MenuItem>
+						<MenuItem Header="Sud-Ovest"
+								  Command="{Binding Path=aggiungereLogoCommand}"
+								  CommandParameter="SudOvest"
+								  DataContext="{Binding}" >
+							<MenuItem.Icon>
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/BottomLeft-16x16.png" />
+							</MenuItem.Icon>
+						</MenuItem>
+						<MenuItem Header="Nord-Ovest"
+								  Command="{Binding Path=aggiungereLogoCommand}"
+								  CommandParameter="NordOvest"
+								  DataContext="{Binding}" >
+							<MenuItem.Icon>
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/TopLeft-16x16.png" />
+							</MenuItem.Icon>
+						</MenuItem>
+						<MenuItem.Icon>
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/Logo-16x16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
 
 		            <MenuItem Header="Modifica Metadati" 
                               Command="{Binding Path=modificaMetadatiCommand}"
                               CommandParameter="SEL" 
-                              DataContext="{Binding}"/>
+                              DataContext="{Binding}">
+						<MenuItem.Icon>
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/Tag-16x16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
 
-		            <MenuItem Header="Aggiungi allo slide show" 
+					<MenuItem Header="Aggiungi allo slide show" 
                               Command="{Binding caricareSlideShowCommand}" 
                               CommandParameter="Manual" 
-                              DataContext="{Binding}"/>
+                              DataContext="{Binding}">
+						<MenuItem.Icon>
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/SlideShow-16x16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
 
-		            <MenuItem Header="Vedi a tutto schermo"
+					<MenuItem Header="Vedi a tutto schermo"
                               Command="{Binding Path=viewFotoFullScreenCommand}" 
-                              DataContext="{Binding}"/>
-		
-		            <MenuItem Header="Clona" 
-                              Command="{Binding Path=clonaFotografieCommand}"
-                              DataContext="{Binding}"	/>
+                              DataContext="{Binding}">
+						<MenuItem.Icon>
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/GrandezzaReale-16x16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
 
-		            <MenuItem Header="Elimina" 
+					<MenuItem Header="Clona" 
+                              Command="{Binding Path=clonaFotografieCommand}"
+                              DataContext="{Binding}">
+						<MenuItem.Icon>
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/Clone-16x16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
+
+					<MenuItem Header="Elimina" 
                               Visibility="{Binding Path=visualizzaEliminaFoto, Mode=OneWay, Converter={StaticResource boolVisibilityConverter}}"
                               Command="{Binding eliminareFotoCommand}"
-                              DataContext="{Binding}"/>
-                </MenuItem>
+                              DataContext="{Binding}">
+						<MenuItem.Icon>
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/Delete-16x16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
+				</MenuItem>
 
                 <!--Tutte le Selezionate-->
                 <MenuItem Header="Solo le Selezionate"
@@ -179,17 +244,24 @@
                                                            CommandParameter="MULTI"/>
                                 </i:EventTrigger>
                           </i:Interaction.Triggers>
-                    
-                    <MenuItem Header="Torna originale" 
+
+					<!-- Questo segnaposto è voluto perché a runtime vengono inserite delle voci SOPRA a questo separatore -->
+					<Separator />
+
+					<MenuItem Header="Torna originale" 
                               Command="{Binding Path=tornareOriginaleCommand}"
-                              DataContext="{Binding}"	/>
-                    
-                    <Separator />
+                              DataContext="{Binding}" >
+						<MenuItem.Icon>
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/TornaOriginale-16x16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
+
+					<Separator />
                     
                     <MenuItem Header="Stampa Formato Pieno"
-                              ItemsSource="{Binding Path=stampantiAbbinate}"
+                              ItemsSource="{Binding Path=stampantiAbbinate, NotifyOnTargetUpdated=True}"
                               ItemTemplate="{StaticResource stampaRapidaMenu}"
-                              DataContext="{Binding}">
+                              DataContext="{Binding}" TargetUpdated="onMenuItemStampePieneUpdated">
                     </MenuItem>
 
                     <MenuItem Header="Stampa con Bordi Bianchi"
@@ -217,53 +289,96 @@
                                 <Setter Property="CommandParameter" Value="{Binding}" />
                             </Style>
                         </MenuItem.ItemContainerStyle>
-                    </MenuItem>
+						<MenuItem.Icon>
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/Carrello-16x16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
 
-                    <MenuItem Header="Aggiungi al CD" 
+					<MenuItem Header="Aggiungi al CD" 
                               Command="{Binding Path=aggiungereAlMasterizzatoreCommand}" 
-                              DataContext="{Binding}"/>
+                              DataContext="{Binding}">
+						<MenuItem.Icon>
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/Masterizza-16x16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
 
-                    <MenuItem Header="Ruota" >
+					<MenuItem Header="Ruota" >
                         <MenuItem Header="-90°"
 					          Command="{Binding Path=ruotareCommand}" 
 					          CommandParameter="-90"
 					          DataContext="{Binding}">
-                        </MenuItem>
+							<MenuItem.Icon>
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/RotateCCW-16x16.png" />
+							</MenuItem.Icon>
+						</MenuItem>
                         <MenuItem Header="+90°"
 					          Command="{Binding Path=ruotareCommand}" 
 					          CommandParameter="+90"
 					          DataContext="{Binding}">
-                        </MenuItem>
-                    </MenuItem>
+							<MenuItem.Icon>
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/RotateCW-16x16.png" />
+							</MenuItem.Icon>
+						</MenuItem>
+						<MenuItem.Icon>
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/Ruota-16x16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
 
 					<MenuItem Header="Aggiungi Logo...">
 						<MenuItem Header="Nord-Est"
 								  Command="{Binding Path=aggiungereLogoCommand}"
 								  CommandParameter="NordEst"
-								  DataContext="{Binding}" />
+								  DataContext="{Binding}" >
+							<MenuItem.Icon>
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/TopRight-16x16.png" />
+							</MenuItem.Icon>
+						</MenuItem>
 						<MenuItem Header="Sud-Est"
 								  Command="{Binding Path=aggiungereLogoCommand}"
 								  CommandParameter="SudEst"
-								  DataContext="{Binding}" />
+								  DataContext="{Binding}" >
+							<MenuItem.Icon>
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/BottomRight-16x16.png" />
+							</MenuItem.Icon>
+						</MenuItem>
 						<MenuItem Header="Sud-Ovest"
 								  Command="{Binding Path=aggiungereLogoCommand}"
 								  CommandParameter="SudOvest"
-								  DataContext="{Binding}" />
+								  DataContext="{Binding}" >
+							<MenuItem.Icon>
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/BottomLeft-16x16.png" />
+							</MenuItem.Icon>
+						</MenuItem>
 						<MenuItem Header="Nord-Ovest"
 								  Command="{Binding Path=aggiungereLogoCommand}"
 								  CommandParameter="NordOvest"
-								  DataContext="{Binding}" />
+								  DataContext="{Binding}" >
+							<MenuItem.Icon>
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/TopLeft-16x16.png" />
+							</MenuItem.Icon>
+						</MenuItem>
+						<MenuItem.Icon>
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/Logo-16x16.png" />
+						</MenuItem.Icon>
 					</MenuItem>
 
 					<MenuItem Header="Modifica Metadati" 
                               Command="{Binding Path=modificaMetadatiCommand}"
                               CommandParameter="SEL" 
-                              DataContext="{Binding}"/>
+                              DataContext="{Binding}">
+						<MenuItem.Icon>
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/Tag-16x16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
 
-                    <MenuItem Header="Aggiungi allo slide show" 
+					<MenuItem Header="Aggiungi allo slide show" 
                               Command="{Binding caricareSlideShowCommand}" 
                               CommandParameter="Manual" 
-                              DataContext="{Binding}"/>
+                              DataContext="{Binding}">
+						<MenuItem.Icon>
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/SlideShow-16x16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
 
 					<!--
                     <MenuItem Header="Vedi a tutto schermo"
@@ -273,12 +388,20 @@
 
                     <MenuItem Header="Clona" 
                               Command="{Binding Path=clonaFotografieCommand}"
-                              DataContext="{Binding}"	/>
+                              DataContext="{Binding}">
+						<MenuItem.Icon>
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/Clone-16x16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
 
-                    <MenuItem Header="Elimina" 
+					<MenuItem Header="Elimina" 
                               Command="{Binding eliminareFotoCommand}"
-                              DataContext="{Binding}"/>
-                </MenuItem>
+                              DataContext="{Binding}">
+						<MenuItem.Icon>
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/Delete-16x16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
+				</MenuItem>
 
 				<!-- TUTTE -->
                 <MenuItem Header="Tutte le foto"
@@ -294,31 +417,58 @@
 
                     <MenuItem Header="Torna originale" 
                               Command="{Binding Path=tornareOriginaleCommand}"
-                              DataContext="{Binding}" />
+                              DataContext="{Binding}" >
+						<MenuItem.Icon>
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/TornaOriginale-16x16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
 
-                    <MenuItem Header="Aggiungi allo slide show" 
+					<MenuItem Header="Aggiungi allo slide show" 
                               Command="{Binding caricareSlideShowCommand}" 
                               CommandParameter="Manual" 
-                              DataContext="{Binding}" />
+                              DataContext="{Binding}" >
+						<MenuItem.Icon>
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/SlideShow-16x16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
 
-                    <MenuItem Header="Aggiungi Logo...">
-                        <MenuItem Header="Nord-Est"
+					<MenuItem Header="Aggiungi Logo...">
+						<MenuItem Header="Nord-Est"
 								  Command="{Binding Path=aggiungereLogoCommand}"
 								  CommandParameter="NordEst"
-								  DataContext="{Binding}" />
-                        <MenuItem Header="Sud-Est"
+								  DataContext="{Binding}" >
+							<MenuItem.Icon>
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/TopRight-16x16.png" />
+							</MenuItem.Icon>
+						</MenuItem>
+						<MenuItem Header="Sud-Est"
 								  Command="{Binding Path=aggiungereLogoCommand}"
 								  CommandParameter="SudEst"
-								  DataContext="{Binding}" />
-                        <MenuItem Header="Sud-Ovest"
+								  DataContext="{Binding}" >
+							<MenuItem.Icon>
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/BottomRight-16x16.png" />
+							</MenuItem.Icon>
+						</MenuItem>
+						<MenuItem Header="Sud-Ovest"
 								  Command="{Binding Path=aggiungereLogoCommand}"
 								  CommandParameter="SudOvest"
-								  DataContext="{Binding}" />
-                        <MenuItem Header="Nord-Ovest"
+								  DataContext="{Binding}" >
+							<MenuItem.Icon>
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/BottomLeft-16x16.png" />
+							</MenuItem.Icon>
+						</MenuItem>
+						<MenuItem Header="Nord-Ovest"
 								  Command="{Binding Path=aggiungereLogoCommand}"
 								  CommandParameter="NordOvest"
-								  DataContext="{Binding}" />
-                    </MenuItem>
+								  DataContext="{Binding}" >
+							<MenuItem.Icon>
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/TopLeft-16x16.png" />
+							</MenuItem.Icon>
+						</MenuItem>
+						<MenuItem.Icon>
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/Logo-16x16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
                 </MenuItem>
 
             </CompositeCollection>
