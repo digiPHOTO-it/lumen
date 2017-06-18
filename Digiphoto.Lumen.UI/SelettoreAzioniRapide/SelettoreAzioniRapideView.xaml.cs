@@ -32,5 +32,6 @@ namespace Digiphoto.Lumen.UI
 		{
 			associaDialogProvider();
 		}
+
 	}
 }
