@@ -109,7 +109,7 @@ namespace Digiphoto.Lumen.UI.EliminaVecchiRullini
 			{
 				if (_cleanCommand == null)
 				{
-					_cleanCommand = new RelayCommand(param => clean(), param => abilitaClean, false);
+					_cleanCommand = new RelayCommand(param => clean(), param => abilitaClean ); // La unit-of-work la gestisco dentro.
 				}
 				return _cleanCommand;
 			}
