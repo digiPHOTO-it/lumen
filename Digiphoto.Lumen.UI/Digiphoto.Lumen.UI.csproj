@@ -862,6 +862,9 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\AzioniSelezionate-16x16.png" />
+    <Resource Include="Resources\AzioniSingola-16x16.png" />
+    <Resource Include="Resources\AzioniTutte-16x16.png" />
     <Resource Include="Resources\Ruota-16x16.png" />
     <Resource Include="Resources\Carrello-16x16.png" />
     <Resource Include="Resources\GrandezzaReale-16x16.png" />

@@ -59,7 +59,7 @@ namespace Digiphoto.Lumen.Core.Servizi.Utilita {
 
 					mail.From = new MailAddress( from );
 					mail.To.Add( "assistenzalumen@digiphoto.it" );
-					mail.Subject = "Invio Log " + Configurazione.infoFissa.descrizPuntoVendita;
+					mail.Subject = "Invio Log " + Configurazione.infoFissa.descrizPuntoVendita + ". Host=" + System.Environment.MachineName;
 					mail.Body = "In allegato";
 					System.Net.Mail.Attachment attachment = new System.Net.Mail.Attachment( nomeFileZip );
 					mail.Attachments.Add( attachment );
