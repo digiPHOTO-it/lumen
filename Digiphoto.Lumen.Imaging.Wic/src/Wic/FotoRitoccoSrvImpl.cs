@@ -530,8 +530,11 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 				Correttore correttore = gestoreImmaginiSrv.getCorrettore( correzione );
 				if( correttore.CanConvertTo( typeof( T ) ) )
 					convertiti.Add( (T)correttore.ConvertTo( correzione, typeof( T ) ) );
-				else
-					_giornale.Error( "Impossibile convertire " + typeof( T ) + " in una correzione" );
+				else {
+					// non do errore, perché è la prassi che venga chiamato questo metodo per estrarre soltanto i tipi gestiti
+					// _giornale.Error( "Impossibile convertire " + typeof( T ) + " in una correzione" );
+				}
+					
 			}
 
 			return convertiti;
