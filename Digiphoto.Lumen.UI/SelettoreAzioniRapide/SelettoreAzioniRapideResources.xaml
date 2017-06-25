@@ -10,25 +10,6 @@
     <lumCC:BoolVisibilityConverter x:Key="boolVisibilityConverter" />
 
 
-    <!--
-      ** I pulsanti di stampa, siccome sono tutti uguali,
-      ** devo distinguerli con una scritta.
-      ** Quindi creo un pulsante che ha una didascalia sotto.
-    -->
-    <!---
-	<DataTemplate x:Key="pulsanteDiStampaTemplateContextMenu">
-		<Button ToolTip="{Binding}" 
-                Command="{Binding Path=DataContext.stampareCommand,RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
-				CommandParameter="{Binding}">
-			<StackPanel Orientation="Vertical" >
-				<Image Source="/Digiphoto.Lumen.UI;component/Resources/Printer-48x48.png" Width="48" />
-				<Label Content="{Binding FormatoCarta.descrizione}" Width="48" HorizontalAlignment="Center" />
-			</StackPanel>
-		</Button>
-		
-	</DataTemplate>
-    -->
-
 	<DataTemplate x:Key="stampaRapidaMenu">
 		<MenuItem Header="{Binding}"
 					Command="{Binding Path=DataContext.stampaRapidaCommand, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}" 
@@ -51,29 +32,25 @@
     
     <ContextMenu x:Key="azioniRapideMenu" 
                  x:Shared="true" 
-                 DataContext="{Binding Path=selettoreAzioniRapideViewModel}"
-				 >
+                 DataContext="{Binding Path=selettoreAzioniRapideViewModel}" >
 
         <ContextMenu.ItemsSource>
             <CompositeCollection>
                 
-
                 <!--Singola foto-->
-                <MenuItem Header="Singola Foto" x:Name="menuItemSingolaFoto"
+				<MenuItem Header="Singola Foto" x:Name="menuItemSingolaFoto" 
                           Visibility="{Binding Path=visibility, Mode=OneWay, Converter={StaticResource listAzioniRapideVisibilityConverter}, ConverterParameter=SINGLE}"
-                          DataContext="{Binding}">
+                          DataContext="{Binding}" 
+						  SubmenuOpened="onSubmenuOpened" Tag="Singola" >
 
-                          <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="MouseMove">
-                                    <i:InvokeCommandAction Command="{Binding setSingolaFotoWorkCommand}" 
-                                                           CommandParameter="SINGOLA"/>
-                                </i:EventTrigger>
-                          </i:Interaction.Triggers>
-					
+					<MenuItem.Icon>
+						<Image Source="/Digiphoto.Lumen.UI;component/Resources/AzioniSingola-16x16.png" />
+					</MenuItem.Icon>
+
 					<!-- Questo segnaposto è voluto perché a runtime vengono inserite delle voci SOPRA a questo separatore -->
 					<Separator />
 
-					<MenuItem Header="Torna originale" 
+					<MenuItem Header="Torna originale"
                               Command="{Binding Path=tornareOriginaleCommand}"
                               DataContext="{Binding}">
 						<MenuItem.Icon>
@@ -234,16 +211,14 @@
 				</MenuItem>
 
                 <!--Tutte le Selezionate-->
-                <MenuItem Header="Solo le Selezionate"
+				<MenuItem Header="Solo le Selezionate"
                           Visibility="{Binding Path=gestitaSelezioneMultipla, Mode=OneWay, Converter={StaticResource boolVisibilityConverter}, ConverterParameter=MULTI}"
-                          DataContext="{Binding}">
-                      
-                          <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="MouseMove">
-                                    <i:InvokeCommandAction Command="{Binding setSingolaFotoWorkCommand}" 
-                                                           CommandParameter="MULTI"/>
-                                </i:EventTrigger>
-                          </i:Interaction.Triggers>
+                          DataContext="{Binding}" 
+						  SubmenuOpened="onSubmenuOpened" Tag="Selezionate" >
+
+					<MenuItem.Icon>
+						<Image Source="/Digiphoto.Lumen.UI;component/Resources/AzioniSelezionate-16x16.png" />
+					</MenuItem.Icon>
 
 					<!-- Questo segnaposto è voluto perché a runtime vengono inserite delle voci SOPRA a questo separatore -->
 					<Separator />
@@ -404,18 +379,16 @@
 				</MenuItem>
 
 				<!-- TUTTE -->
-                <MenuItem Header="Tutte le foto"
+				<MenuItem Header="Tutte le foto"
                         Visibility="{Binding Path=visibility, Mode=OneWay, Converter={StaticResource listAzioniRapideVisibilityConverter}, ConverterParameter=ALL}"
-                        DataContext="{Binding}">
+                        DataContext="{Binding}" 
+						SubmenuOpened="onSubmenuOpened" Tag="Tutte" >
 
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="MouseMove">
-                            <i:InvokeCommandAction Command="{Binding setSingolaFotoWorkCommand}" 
-                                                           CommandParameter="TUTTE"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
+					<MenuItem.Icon>
+						<Image Source="/Digiphoto.Lumen.UI;component/Resources/AzioniTutte-16x16.png" />
+					</MenuItem.Icon>
 
-                    <MenuItem Header="Torna originale" 
+					<MenuItem Header="Torna originale" 
                               Command="{Binding Path=tornareOriginaleCommand}"
                               DataContext="{Binding}" >
 						<MenuItem.Icon>

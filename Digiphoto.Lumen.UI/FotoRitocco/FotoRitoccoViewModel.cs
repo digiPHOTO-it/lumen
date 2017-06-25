@@ -1023,10 +1023,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			// Ho cliccato con il destro sulla singola foto.
 			// Memorizzo la foto per eventuali operazioni da lanciare
-			if( selettoreAzioniRapideViewModel.setSingolaFotoWorkCommand.CanExecute( foto ) )
-				selettoreAzioniRapideViewModel.setSingolaFotoWorkCommand.Execute( foto );
-			else
-				dialogProvider.ShowError( "comando setSingolaFotoWorkCommand non utilizzabile", "Stato invalido", null );
+			selettoreAzioniRapideViewModel.setTarget( foto );
 		}
 
 		/// <summary>

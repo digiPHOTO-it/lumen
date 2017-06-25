@@ -6,16 +6,10 @@
 			 xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
              xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
              mc:Ignorable="d"
-			 x:Name="Pluto"
              d:DesignHeight="300" d:DesignWidth="300">
 
 	<UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/Digiphoto.Lumen.UI;component/SelettoreAzioniRapide/SelettoreAzioniRapideResources.xaml" />
-    </UserControl.Resources>
-
-	<!--istanzio ed associo il mio rispettivo ViewModel -->
-    <!--UserControl.DataContext>
-        <lum:SelettoreAzioniRapideViewModel />
-    </UserControl.DataContext-->
+		<ResourceDictionary Source="pack://application:,,,/Digiphoto.Lumen.UI;component/SelettoreAzioniRapide/SelettoreAzioniRapideResources.xaml" />
+	</UserControl.Resources>
 
 </lumM:UserControlBase >
