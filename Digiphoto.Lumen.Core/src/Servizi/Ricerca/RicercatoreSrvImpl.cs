@@ -34,11 +34,13 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 			var query = objectContext.Database.SqlQuery<Guid>( sql, sqlParam.ToArray() );
 
-			System.Diagnostics.Debug.WriteLine( "Tempo2: " + DateTime.Now.ToString( "mm:ss:fff" ) );
+			DateTime t1 = DateTime.Now;
+			_giornale.Debug( "Tempo1: " + t1.ToString( "mm:ss:fff" ) );
 
 			var listaIds = query.ToList();
 
-			System.Diagnostics.Debug.WriteLine( "Tempo3: " + DateTime.Now.ToString( "mm:ss:fff" ) );
+			DateTime t2 = DateTime.Now;
+			_giornale.Debug( "Tempo2: " + t2.ToString( "mm:ss:fff" ) );
 
 			// 
 			// -----
@@ -47,6 +49,12 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			//
 
 			var listaFoto = caricaFotografieDaIds( listaIds, param );
+
+			DateTime t3 = DateTime.Now;
+			TimeSpan elapsed = t3.Subtract( t1 );
+			_giornale.Debug( "Tempo3: " + t3.ToString( "mm:ss:fff" ) + " tot millis=" + elapsed.TotalMilliseconds);
+
+
 
 			return listaFoto;
 		}
