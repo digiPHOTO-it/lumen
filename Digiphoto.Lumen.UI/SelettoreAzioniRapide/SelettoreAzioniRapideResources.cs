@@ -54,9 +54,13 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		private void tornaOriginaleItem1_Click( object sender, RoutedEventArgs e ) {
-			Console.WriteLine( "Eccomi qui !" );
+		private void onSubmenuOpened( object sender, RoutedEventArgs e ) {
+
+			MenuItem curr = (MenuItem)sender;
+			SelettoreAzioniRapideViewModel vm = (SelettoreAzioniRapideViewModel)curr.DataContext;
+			vm.setTarget( (string)curr.Tag );
+
 		}
-		
+
 	}
 }

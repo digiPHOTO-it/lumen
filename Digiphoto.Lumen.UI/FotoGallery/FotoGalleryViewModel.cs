@@ -971,10 +971,7 @@ namespace Digiphoto.Lumen.UI {
 
 			// Ho cliccato con il destro sulla singola foto.
 			// Memorizzo la foto per eventuali operazioni da lanciare
-			if( selettoreAzioniRapideViewModel.setSingolaFotoWorkCommand.CanExecute( foto ) )
-				selettoreAzioniRapideViewModel.setSingolaFotoWorkCommand.Execute( foto );
-			else
-				dialogProvider.ShowError( "comando non utilizzabile", "setSingolaFotoWorkCommand", null );
+			selettoreAzioniRapideViewModel.setTarget( foto );
 		}
 
 		private bool possoFiltrareNumFotogramma( object numero ) {
