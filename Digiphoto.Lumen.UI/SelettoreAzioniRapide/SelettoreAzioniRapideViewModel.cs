@@ -407,6 +407,12 @@ namespace Digiphoto.Lumen.UI {
 			if( !procediPure )
 				return;
 
+			if( itemsToDelete.Count() > 5 )
+				procediPure = chiedereConfermaPerProseguire( msg, "Eliminazione definitiva foto, 2^ conferma" );
+
+			if( !procediPure )
+				return;
+
 			// chiamo il servizio che mi elimina fisicamente i files immagini, e le Fotografie dal db.
 			int quanti = 0;
 			using( IEliminaFotoVecchieSrv srv = LumenApplication.Instance.creaServizio<IEliminaFotoVecchieSrv>() ) {
@@ -569,29 +575,19 @@ namespace Digiphoto.Lumen.UI {
 		/// Imposto il target su cui sto lavorando
 		/// </summary>
 		/// <param name="param"></param>
-		private void setSingolaFotoWork( object param )
+		public void setTarget( string param )
 		{
-
-			if( param is Fotografia ) {
-
-				// Setto sia la foto che la modalità. Qui arrivo quando catturo l'evento di mouse down sulla foto
-				targetMode = TargetMode.Singola;
-				singolaFotoTarget = (Fotografia) param;
-
-			} else if( param is string ) {
-
-				// Setto solo la modalità
-				if( "SINGOLA".Equals( param ) )
-					targetMode = TargetMode.Singola;
-				else if( "MULTI".Equals( param ) )
-					targetMode = TargetMode.Selezionate;
-				else if( "TUTTE".Equals( param ) )
-					targetMode = TargetMode.Tutte;
-			}
-			
+			// Setto solo la modalità
+			targetMode = (TargetMode) Enum.Parse( typeof( TargetMode ), param );
 		}
 
-        public void deselezionaFoto()
+		public void setTarget( Fotografia foto ) {
+			// Setto sia la foto che la modalità. Qui arrivo quando catturo l'evento di mouse down sulla foto
+			targetMode = TargetMode.Singola;
+			singolaFotoTarget = foto;
+		}
+
+		public void deselezionaFoto()
         {
 			if( targetMode == TargetMode.Singola )
 				fotografieSelector.deselezionare( singolaFotoTarget );
@@ -796,19 +792,6 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		private RelayCommand _setSingolaFotoWorkCommand;
-		public ICommand setSingolaFotoWorkCommand
-		{
-			get
-			{
-				if (_setSingolaFotoWorkCommand == null)
-				{
-					_setSingolaFotoWorkCommand = new RelayCommand( param => setSingolaFotoWork( param ), 
-                                                                   param => true);
-				}
-				return _setSingolaFotoWorkCommand;
-			}
-		}
 
 		#endregion
 
