@@ -21,7 +21,6 @@
 						 SelectionMode="Multiple"
 						 lumMS:MultiSelect.IsEnabled="True" IsSynchronizedWithCurrentItem="True"
 						 ItemsSource="{Binding Path=scarichiCardsCW}" 
-				         SelectedItem="{Binding scaricoCardSelezionato}" 
 						 ItemContainerStyle="{StaticResource ResourceKey=listBoxItemEvidenziatoStyle}"
 						 >
 					<ListBox.ItemTemplate>

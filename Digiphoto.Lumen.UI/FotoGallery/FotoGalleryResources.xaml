@@ -293,19 +293,19 @@
 
 	</Style>
 
-	<Style x:Key="bottoneTestualeStyle" BasedOn="{StaticResource buttonBaseStyle}" TargetType="Control">
+	<Style x:Key="bottoneTestualeStyle" BasedOn="{StaticResource buttonBaseStyle}" TargetType="Button">
 		<Setter Property="MinWidth" Value="48" />
 		<Setter Property="Margin" Value="0,1,0,0" />
 		<Style.Triggers>
 
-			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="True">
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self},Path=IsPressed}" Value="True">
 				<Setter Property="BorderBrush" Value="Red" />
 				<Setter Property="BorderThickness" Value="1" />
 				<Setter Property="Background" Value="Yellow" />
-			</DataTrigger>
-			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="False">
-				<Setter Property="Background" Value="DarkGray" />
-			</DataTrigger>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsPressed}" Value="False">
+                <Setter Property="Background" Value="DarkGray" />
+            </DataTrigger>
 
 		</Style.Triggers>
 	</Style>

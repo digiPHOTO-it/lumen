@@ -146,7 +146,7 @@
                     Content="{Binding Path=etichetta}"    
 					VerticalAlignment="Top" HorizontalAlignment="Right"
                     Margin="0,4,4,0"
-                    FontSize="{Binding ActualHeight, ElementName=fotoGrid, FallbackValue=15, Converter={StaticResource percentualeConverter},ConverterParameter=8}"
+                    FontSize="{Binding ActualHeight, ElementName=fotoGrid, FallbackValue=15, Converter={StaticResource percentualeConverter},ConverterParameter=8;15}"
                     Background="Orange" 
                     Foreground="Black" />
 
