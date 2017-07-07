@@ -1298,7 +1298,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		private void borderCornice_SizeChanged( object sender, SizeChangedEventArgs e ) {
-			if( reticoloVisibile )
+			if( reticoloVisibile == true )
 				creaReticoloPerpendicolare();
 
 			dimensionaBordiPerAreaDiRispetto();
@@ -1372,13 +1372,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		private bool _reticoloVisibile;
-		public bool reticoloVisibile {
+		private bool? _reticoloVisibile;
+		public bool? reticoloVisibile {
 			get {
 				return _reticoloVisibile;
 			}
 			set {
-				_reticoloVisibile = value;
+				_reticoloVisibile = value.Value;
 				if( value == true ) {
 					creaReticoloPerpendicolare();
 				} else {

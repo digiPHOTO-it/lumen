@@ -216,7 +216,7 @@
 -->
 			<Button Content="Svuota lista" ToolTip="Svuota la lista delle foto in attesa di essere modificate" Command="{Binding svuotareListaDaModificareCommand}"  />
 			<Button x:Name="buttonTakeSnapshotPubblico" Content="Snapshot pubblico" ToolTip="F2 mostra foto del video al pubblico" Click="buttonTakeSnapshotPubblico_Click"   />
-			<ToggleButton x:Name="toggleButtonReticolo" Content="Reticolo" ToolTip="Attiva/Disattiva il reticolo perpendicolare" IsChecked="{Binding reticoloVisibile}" />
+            <ToggleButton x:Name="toggleButtonReticolo" Content="Reticolo" ToolTip="Attiva/Disattiva il reticolo perpendicolare" IsChecked="{Binding ElementName=fotoRitoccoUserControl, Path=reticoloVisibile}" />
             
         </StackPanel>
 
@@ -376,8 +376,8 @@
 					</Border>
 
 					<!-- TODO creare un border interno per delineare l'area stampabile. Questo bordo ha ratio fisso, definito come costante -->
-					<Border Name="bordoRispettoA" BorderBrush="Red" BorderThickness="2" Canvas.ZIndex="60" HorizontalAlignment="Left"  VerticalAlignment="Top"  Visibility="{Binding esisteRatioAreaRispetto}" />
-					<Border Name="bordoRispettoB" BorderBrush="Red" BorderThickness="2" Canvas.ZIndex="60" HorizontalAlignment="Left"  VerticalAlignment="Top"  Visibility="{Binding esisteRatioAreaRispetto}" />
+                    <Border Name="bordoRispettoA" BorderBrush="Red" BorderThickness="2" Canvas.ZIndex="60" HorizontalAlignment="Left"  VerticalAlignment="Top"  Visibility="{Binding esisteRatioAreaRispetto, Converter={StaticResource boolVisibilityConverter}}" />
+                    <Border Name="bordoRispettoB" BorderBrush="Red" BorderThickness="2" Canvas.ZIndex="60" HorizontalAlignment="Left"  VerticalAlignment="Top"  Visibility="{Binding esisteRatioAreaRispetto, Converter={StaticResource boolVisibilityConverter}}" />
 
 					<!-- Visto che la classe EffectGroup è deprecata, per creare una composizione, utilizzo 3 Border innestati -->
 					<Border Effect="{Binding Path=effetto3}"  BorderThickness="0" >

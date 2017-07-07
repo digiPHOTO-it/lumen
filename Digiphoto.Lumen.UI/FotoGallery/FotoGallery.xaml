@@ -45,7 +45,7 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
             
-			<DockPanel IsEnabled="{Binding Path=isAlmenoUnElementoSelezionato,Mode=OneWay}">
+			<DockPanel IsEnabled="{Binding isAlmenoUnElementoSelezionato,Mode=OneWay}">
                 <lum:SelettoreMetadati x:Name="selettoreMetadati" Style="{StaticResource styleSelettoreMetadati}" />
             </DockPanel>
 								   
@@ -60,8 +60,14 @@
                 </TextBlock>
             </Expander.Header>
 
-            <lum:SelettoreAzioniAutomatiche x:Name="selettoreAzioniAutomatiche" Style="{StaticResource styleSelettoreAzioniAutomatiche}"
-			                                IsEnabled="{Binding Path=isAlmenoUnElementoSelezionato,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
+            <!-- 
+            <DockPanel IsEnabled="{Binding isAlmenoUnElementoSelezionato,Mode=OneWay}"
+                <lum:SelettoreAzioniAutomatiche x:Name="selettoreAzioniAutomatiche" Style="{StaticResource styleSelettoreAzioniAutomatiche}" />
+            </DockPanel>
+            -->
+
+            <lum:SelettoreAzioniAutomatiche x:Name="selettoreAzioniAutomatiche" Style="{StaticResource styleSelettoreAzioniAutomatiche}" />
+
         </Expander>
 
         <ToolBarTray Name="toolBarTrayAzioniDx"  Orientation="Vertical" DockPanel.Dock="Right" Style="{StaticResource fgToolBarTrayStyle}">

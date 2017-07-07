@@ -34,7 +34,7 @@
                 <Label Content="{Binding Path=etichetta}" 
 					   VerticalAlignment="Top" HorizontalAlignment="Right"
 					   Margin="0,2,2,0"
-					   FontSize="{Binding Converter={StaticResource percentualeConverter}, FallbackValue=14, ElementName=gridUnaFotoPub,Path=ActualHeight,ConverterParameter=8}"
+					   FontSize="{Binding Converter={StaticResource percentualeConverter}, FallbackValue=14, ElementName=gridUnaFotoPub,Path=ActualHeight,ConverterParameter=8;14}"
 					   Background="Orange" />
 
             </Grid>
