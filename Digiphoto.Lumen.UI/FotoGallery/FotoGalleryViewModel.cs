@@ -1178,9 +1178,19 @@ namespace Digiphoto.Lumen.UI {
 			foreach( Guid guid in idsFotografieSelez ) {
 
 				Fotografia f = getFotoById( guid );
-				AiutanteFoto.idrataImmaginiFoto( f, IdrataTarget.Provino );
-				lista.Add( f );
-            }
+				if( f != null ) {
+
+					try {
+						AiutanteFoto.idrataImmaginiFoto( f, IdrataTarget.Provino );
+					} catch( Exception ee ) {
+						_giornale.Warn( "Ho fallito di idratare il provino: " + guid, ee );
+					}
+
+					lista.Add( f );
+				} else {
+					_giornale.Warn( "foto non trovata: " + guid + " . Come mai?" );
+				}
+			}
 
 			return lista;
 		}

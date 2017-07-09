@@ -1674,7 +1674,7 @@ namespace Digiphoto.Lumen.UI {
 		public ICommand caricareInGalleryCommand {
 			get {
 				if( _caricareInGalleryCommand == null ) {
-					_caricareInGalleryCommand = new RelayCommand( param => caricareInGallery(), p => possoCaricareInGallery );
+					_caricareInGalleryCommand = new RelayCommand( param => caricareInGallery(), p => possoCaricareInGallery, false );
 				}
 				return _caricareInGalleryCommand;
 			}
