@@ -1208,7 +1208,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		private void applicareCorrezioni() {
 
 			fotografiaInModifica.correzioniXml = null;
-			fotografiaInModifica.imgProvino.Dispose();
+			if( fotografiaInModifica.imgProvino != null )
+				fotografiaInModifica.imgProvino.Dispose();
 			fotografiaInModifica.imgProvino = null;
 			// TODO forse devo anche eliminare da disco il file con la risultante !!!
 
