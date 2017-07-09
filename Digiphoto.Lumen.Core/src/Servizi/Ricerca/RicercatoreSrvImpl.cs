@@ -294,7 +294,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 				#region Paginazione
 
 				// Paginazione
-				if( param.paginazione != null ) {
+				if( param.paginazione != null && param.paginazione.isEmpty == false ) {
 					sql.Append( " LIMIT " );
 					sql.Append( param.paginazione.skip );
 					sql.Append( " , " );

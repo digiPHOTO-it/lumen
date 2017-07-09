@@ -265,7 +265,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 				if( rr.fotografia != null ) {
 					mioObjContext.LoadProperty( rr, r => r.fotografia );
+
+
+
 					mioObjContext.Detach( rr.fotografia );
+
 				}
 
 				if( rr.formatoCarta != null ) {
@@ -280,6 +284,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			isStatoModifica = true;
 			isCarrelloModificato = false;
+
+			_giornale.Debug( "Caricato carrello : " + carrello.id );
 		}
 
 		/**
@@ -378,7 +384,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				isCarrelloModificato = true;
 
             } else {
-				throw new ArgumentException( "La fotografia è già stata caricata nel carrello\r\nModificare la quantità\r\nRiga non aggiunta" );
+				throw new LumenException( "La fotografia è già stata caricata nel carrello\r\nModificare la quantità\r\nRiga non aggiunta" );
 			}	
 		}
 
@@ -836,8 +842,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				throw new InvalidOperationException("nessun carrello caricato");
 
 			Carrello c = new Carrello();
-//			c.giornata = DateTime.Today;
-//			c.tempo = DateTime.Now;
+			c.giornata = DateTime.Today;
+			c.tempo = DateTime.Now;
 			c.intestazione = carrello.intestazione;
 			c.note = carrello.note;
 			c.prezzoDischetto = carrello.prezzoDischetto;

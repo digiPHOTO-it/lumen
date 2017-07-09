@@ -148,8 +148,8 @@ namespace Digiphoto.Lumen.Servizi.EliminaFotoVecchie
 				seEsisteCancella( PathUtil.nomeCompletoOrig( ff2 ) );
 
 				// Poi dal database
-
 				lumenEntities.Fotografie.Remove( ff2 );
+				_giornale.Debug( "Eliminata Fotogarfia dal db: id=" + ff2.id + " num=" + ff2.numero );
 				++conta;
 			}
 

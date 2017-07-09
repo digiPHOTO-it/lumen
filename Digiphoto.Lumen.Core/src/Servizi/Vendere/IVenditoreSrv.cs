@@ -98,6 +98,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		List<RigaReportVendite> creaReportVendite( ParamRangeGiorni param );
 		List<RigaReportProvvigioni> creaReportProvvigioni( ParamRangeGiorni paramRangeGiorni );
 
+		/// <summary>
+		/// ottendo la lista degli ID delle foto che sono nel carrello
+		/// </summary>
+		/// <returns></returns>
+		IEnumerable<Guid> enumeraIdsFoto();
 
 
 		bool isStatoModifica {
