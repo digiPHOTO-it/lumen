@@ -292,10 +292,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 		public IEnumerable<Guid> caricaFotoDalCarrello() {
 
 			IVenditoreSrv venditoreSrv = LumenApplication.Instance.getServizioAvviato<IVenditoreSrv>();
-
-			IEnumerable<Guid> tantiIds = venditoreSrv.carrello.righeCarrello.Where( rr1 => rr1 != null ).Select( rr2 => rr2.fotografia.id );
-
-			return tantiIds;
+			return venditoreSrv.enumeraIdsFoto();
 		}
 
 		public Fotografia get( Guid id ) {

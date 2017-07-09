@@ -1217,5 +1217,17 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			AiutanteFoto.idrataImmaginiFoto( riga.fotografia, IdrataTarget.Provino );
 		}
 
+		/// <summary>
+		/// Ritorno la lista degli ID delle foto che sono nel carrello
+		/// </summary>
+		/// <returns></returns>
+		public IEnumerable<Guid> enumeraIdsFoto() {
+
+			if( this.carrello == null )
+				return null;
+			else
+				return this.carrello.righeCarrello.Where( rr1 => rr1 != null && rr1.fotografia != null ).Select( rr2 => rr2.fotografia.id );
+
+		}
 	}
 }

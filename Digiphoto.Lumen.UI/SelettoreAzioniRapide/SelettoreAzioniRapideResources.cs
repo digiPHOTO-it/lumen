@@ -1,4 +1,5 @@
 ﻿using Digiphoto.Lumen.Servizi.Stampare;
+using log4net;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -8,6 +9,8 @@ using System.Windows.Media.Imaging;
 namespace Digiphoto.Lumen.UI {
 
 	public partial class SelettoreAzioniRapideResources {
+
+		protected static readonly ILog _giornale = LogManager.GetLogger( typeof( SelettoreAzioniRapideResources ) );
 
 		/// <summary>
 		/// Quando viene disegnato il menu contestuale per la prima volta,
@@ -21,36 +24,40 @@ namespace Digiphoto.Lumen.UI {
 
 			MenuItem menuItemStampePiene = (MenuItem) sender;
 			MenuItem menuItemSingolaFoto = (MenuItem) menuItemStampePiene.Parent;
-			
-			if( menuItemStampePiene.HasItems ) {
-				int conta = 0;
-				foreach( var item in menuItemStampePiene.Items ) {
+			SelettoreAzioniRapideViewModel vm = (SelettoreAzioniRapideViewModel)menuItemStampePiene.DataContext;
+			if( vm == null )
+				_giornale.Warn( "data context vuoto per menu contestuale. Come mai ?" );
+			else {
+				if( menuItemStampePiene.HasItems ) {
+					int conta = 0;
+					foreach( var item in menuItemStampePiene.Items ) {
 
-					// Creo una nuova voce di menu
-					MenuItem newItem = new MenuItem();
-					SelettoreAzioniRapideViewModel vm = (SelettoreAzioniRapideViewModel) menuItemStampePiene.DataContext;
-					newItem.DataContext = vm;
+						// Creo una nuova voce di menu
+						MenuItem newItem = new MenuItem();
 
-					StampanteAbbinata cartaStampabile = (StampanteAbbinata)item;
+						newItem.DataContext = vm;
 
-					// bindo il comando di stampa
-					newItem.Command = vm.stampaRapidaCommand;
-					newItem.CommandParameter = cartaStampabile;
+						StampanteAbbinata cartaStampabile = (StampanteAbbinata)item;
 
-					newItem.Header = cartaStampabile.ToString();
+						// bindo il comando di stampa
+						newItem.Command = vm.stampaRapidaCommand;
+						newItem.CommandParameter = cartaStampabile;
 
-					Uri uri = new Uri( "/Resources/Printer-16x16.ico", UriKind.Relative );
-					newItem.Icon = new System.Windows.Controls.Image {
-						Source = new BitmapImage( uri ),
-						ToolTip = "Stampa immediata a formato pieno"
-					};
+						newItem.Header = cartaStampabile.ToString();
 
-					// Inserisco l'elemento appena creato, nel menu superiore.
-					( (MenuItem)menuItemStampePiene.Parent).Items.Insert( conta++, newItem );
+						Uri uri = new Uri( "/Resources/Printer-16x16.ico", UriKind.Relative );
+						newItem.Icon = new System.Windows.Controls.Image {
+							Source = new BitmapImage( uri ),
+							ToolTip = "Stampa immediata a formato pieno"
+						};
+
+						// Inserisco l'elemento appena creato, nel menu superiore.
+						((MenuItem)menuItemStampePiene.Parent).Items.Insert( conta++, newItem );
+					}
+
+					// Ora che ho aggiunto tutte le voci al menu superiore, rimuovo il sottomenu che risulterebbe un doppione.	
+					menuItemSingolaFoto.Items.Remove( menuItemStampePiene );
 				}
-
-				// Ora che ho aggiunto tutte le voci al menu superiore, rimuovo il sottomenu che risulterebbe un doppione.	
-				menuItemSingolaFoto.Items.Remove( menuItemStampePiene );
 			}
 		}
 
@@ -58,8 +65,14 @@ namespace Digiphoto.Lumen.UI {
 
 			MenuItem curr = (MenuItem)sender;
 			SelettoreAzioniRapideViewModel vm = (SelettoreAzioniRapideViewModel)curr.DataContext;
-			vm.setTarget( (string)curr.Tag );
-
+			if( vm != null )
+				vm.setTarget( (string)curr.Tag );
+			else {
+				// Impossibile !!!     QUI NON DOVREBBE MAI CADERE (invece succede)
+				// Non so perché ma il menu contestuale che appare con il tasto destro, a volte
+				// perde il datacontext e quindi non sono più in grado di eseguire l'azione corrispondente.
+				Console.WriteLine( "Assert failed : il ContextMenu ha perso il DataContext !" );
+			}		
 		}
 
 	}

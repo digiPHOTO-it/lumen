@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName      "Lumen"
-#define MyAppVersion   "2.1-20170620"
+#define MyAppVersion   "2.1-20170709"
 #define MyAppPublisher "digiPHOTO.it"
 #define MyAppURL       "http://www.digiphoto.it/Lumen"
 #define MyAppExeName   "Digiphoto.Lumen.UI.exe"

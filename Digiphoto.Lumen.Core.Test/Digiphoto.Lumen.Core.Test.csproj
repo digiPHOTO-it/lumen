@@ -104,6 +104,7 @@
     <Compile Include="src\Servizi\Numeratore\NumeratoreFotogrammiTest.cs" />
     <Compile Include="src\Servizi\Ricerca\RicercatoreSrvImplTest.cs" />
     <Compile Include="src\Servizi\Ricostruire\DbRebuilderSrvImplTest.cs" />
+    <Compile Include="src\Servizi\Ritoccare\CarrelloGalleryRitoccoTest.cs" />
     <Compile Include="src\Servizi\Ritoccare\FotoRitoccoSrvImplTest.cs" />
     <Compile Include="src\Servizi\Scaricatore\ScaricaFotoSrvImplTest.cs" />
     <Compile Include="src\Servizi\Stampare\SpoolStampeSrvImplTest.cs" />

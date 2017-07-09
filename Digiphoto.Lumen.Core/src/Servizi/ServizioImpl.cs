@@ -156,9 +156,24 @@ namespace Digiphoto.Lumen.Servizi {
 				if( UnitOfWorkScope.hasCurrent )
 					return UnitOfWorkScope.currentDbContext;
 				else {
-					if( _objectContext == null )
+
+
+#if DEBUG
+					// Questa funzionalità mi causa delle complicazioni.
+					// Vorrei escluderla
+					// Siccome però abbiamo una relase aperta, non posso spaccare tutto.
+					// Per ora mi spacco solo in debug.
+					//
+					// Il problema è che un servizio non dovrebbe crearsi una unit-of-work
+					// perché non conosce il contesto fuori di se (cosa sta succedendo agli altri servizi ?)
+					throw new InvalidOperationException( "Non è stata aperta una Unit-Of-Work" );
+#else
+					if( _objectContext == null ) {
+						_giornale.Warn( "Manca la Unit-of-Work !!! Risolvere il problema a monte (probabilmente nella esecuzione del Command)" );
 						_objectContext = new LumenEntities();
+					}
 					return _objectContext;
+#endif
 				}
 			}
 		}
