@@ -110,6 +110,22 @@ namespace Digiphoto.Lumen.Util {
 			return Path.Combine( decidiCartellaRisultanti( fotoInfo ), fotoInfo.Name );
 		}
 
+		/** 
+		 * Data una foto recupero il percorso della foto che sara venduta.
+		 */
+		public static string nomeCompletoVendita(Fotografia foto)
+		{
+			// Ho delle correzioni che non sono ancora state applicate. Lo faccio adesso.
+			if (AiutanteFoto.esisteFileRisultante(foto))
+			{
+				return nomeCompletoRisultante(foto);
+			}
+			else
+			{
+				return nomeCompletoOrig(foto);
+			}
+		}
+
 
 		/// <summary>
 		/// Calcolo il giusto percorso delle foto originali.
