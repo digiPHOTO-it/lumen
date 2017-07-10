@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Core.Database;
 using log4net;
@@ -127,7 +126,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                     _burner.start();
                     foreach (Fotografia fot in _fotografie)
                     {
-                        _burner.addFileToBurner(Configurazione.cartellaRepositoryFoto + Path.DirectorySeparatorChar + fot.nomeFile);
+                        _burner.addFileToBurner(PathUtil.nomeCompletoVendita(fot));
                     }
                     _burner.setDiscRecorder(_driverLetter);
 
@@ -196,7 +195,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                     try
                     {  
                         nomeFileDest = Path.Combine(_destinazione, Path.GetFileName(fot.nomeFile));
-						String nomeFileSorgente = PathUtil.nomeCompletoFoto( fot );
+                        String nomeFileSorgente = PathUtil.nomeCompletoVendita( fot );
                         File.Copy(@nomeFileSorgente, nomeFileDest, true);
                         //Elimino gli attributi solo lettura                                
                         File.SetAttributes(nomeFileDest, File.GetAttributes(nomeFileDest) & ~(FileAttributes.Archive | FileAttributes.ReadOnly));
@@ -273,7 +272,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                     try
                     {
                         nomeFileDest = Path.Combine(_destinazione, Path.GetFileName(fot.nomeFile));
-                        String nomeFileSorgente = Configurazione.cartellaRepositoryFoto + Path.DirectorySeparatorChar + fot.nomeFile;
+                        String nomeFileSorgente = PathUtil.nomeCompletoVendita(fot);
                         File.Copy(@nomeFileSorgente, nomeFileDest, false);
                         //Elimino gli attributi solo lettura                                
                         File.SetAttributes(nomeFileDest, File.GetAttributes(nomeFileDest) & ~(FileAttributes.Archive | FileAttributes.ReadOnly));
