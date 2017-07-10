@@ -608,6 +608,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			IEnumerable<RigaCarrello> listaDaMast = carrello.righeCarrello.Where(r => r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA);
 			IList<Fotografia> fotoDaMast = new List<Fotografia>();
 			foreach(RigaCarrello riga in listaDaMast){
+				//Aggiungo l'idratazione della foto per avere la risulatante anche per le masterizzate
+				AiutanteFoto.idrataImmagineDaStampare(riga.fotografia);
 				fotoDaMast.Add(riga.fotografia);
 			}
 
