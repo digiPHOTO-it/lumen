@@ -48,6 +48,18 @@
         </Setter>
     </Style>
 
+    <Style x:Key="styleStart" TargetType="Button">
+        <Setter Property="ToolTip" Value="Start" />
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Content">
+            <Setter.Value>
+                <Image Source="/Digiphoto.Lumen.SelfService.MobileUI;component/Resources/Start.png" Width="400" Height="150"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="styleMiPiace" TargetType="Button">
         <Setter Property="ToolTip" Value="Like" />
         <Setter Property="Foreground" Value="White"/>
