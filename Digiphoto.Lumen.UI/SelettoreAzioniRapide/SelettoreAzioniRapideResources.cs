@@ -11,6 +11,28 @@ namespace Digiphoto.Lumen.UI {
 	public partial class SelettoreAzioniRapideResources {
 
 		protected static readonly ILog _giornale = LogManager.GetLogger( typeof( SelettoreAzioniRapideResources ) );
+		
+		private SelettoreAzioniRapideViewModel azioniRapideViewModel {
+			get;
+			set;
+		}
+
+
+		public void azioniRapideMenu_DataContextChanged( object sender, DependencyPropertyChangedEventArgs e ) {
+
+			// Questa operazione non dovrebbe servire
+			ContextMenu menu = (ContextMenu)sender;
+			azioniRapideViewModel = (SelettoreAzioniRapideViewModel)menu.DataContext;
+			if( azioniRapideViewModel == null ) {
+
+				_giornale.Warn( "DataContext nullo" );
+
+#if DEBUG
+				if( System.Diagnostics.Debugger.IsAttached )
+					System.Diagnostics.Debugger.Break();
+#endif
+			}
+		}
 
 		/// <summary>
 		/// Quando viene disegnato il menu contestuale per la prima volta,
@@ -25,6 +47,18 @@ namespace Digiphoto.Lumen.UI {
 			MenuItem menuItemStampePiene = (MenuItem) sender;
 			MenuItem menuItemSingolaFoto = (MenuItem) menuItemStampePiene.Parent;
 			SelettoreAzioniRapideViewModel vm = (SelettoreAzioniRapideViewModel)menuItemStampePiene.DataContext;
+			
+			if( vm == null ) {
+				// Questa cosa non ha senso, perché il VM dovrebbe essere sempre valorizzato
+
+#if DEBUG
+				if( System.Diagnostics.Debugger.IsAttached )
+					System.Diagnostics.Debugger.Break();
+#endif
+				vm = azioniRapideViewModel;
+
+			}
+
 			if( vm == null )
 				_giornale.Warn( "data context vuoto per menu contestuale. Come mai ?" );
 			else {
@@ -71,7 +105,8 @@ namespace Digiphoto.Lumen.UI {
 				// Impossibile !!!     QUI NON DOVREBBE MAI CADERE (invece succede)
 				// Non so perché ma il menu contestuale che appare con il tasto destro, a volte
 				// perde il datacontext e quindi non sono più in grado di eseguire l'azione corrispondente.
-				Console.WriteLine( "Assert failed : il ContextMenu ha perso il DataContext !" );
+				// In questo caso, occorre uscire dal programma
+				_giornale.Error( "ContextMenu ha perso il DataContext. Non riesco bindare il datacontext" );
 			}		
 		}
 

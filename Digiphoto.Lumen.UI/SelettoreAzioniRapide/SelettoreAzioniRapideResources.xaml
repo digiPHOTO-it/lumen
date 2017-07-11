@@ -32,6 +32,7 @@
     
     <ContextMenu x:Key="azioniRapideMenu" 
                  x:Shared="true" 
+                 DataContextChanged="azioniRapideMenu_DataContextChanged"
                  DataContext="{Binding Path=selettoreAzioniRapideViewModel}" >
 
         <ContextMenu.ItemsSource>
@@ -61,9 +62,11 @@
                     <Separator />
 
 					<MenuItem Name="menuItemStampePiene" Header="Stampa a Formato Pieno"
-                              ItemsSource="{Binding Path=stampantiAbbinate, NotifyOnTargetUpdated=True}"
+                              ItemsSource="{Binding Path=stampantiAbbinate, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True}"
                               ItemTemplate="{StaticResource stampaRapidaMenu}"
-                              DataContext="{Binding}" TargetUpdated="onMenuItemStampePieneUpdated">
+							  TargetUpdated="onMenuItemStampePieneUpdated"
+							  SourceUpdated="onMenuItemStampePieneUpdated"
+                              DataContext="{Binding}" >
                         
                     </MenuItem>
                     
@@ -234,9 +237,10 @@
 					<Separator />
                     
                     <MenuItem Header="Stampa Formato Pieno"
-                              ItemsSource="{Binding Path=stampantiAbbinate, NotifyOnTargetUpdated=True}"
+                              ItemsSource="{Binding Path=stampantiAbbinate}"
                               ItemTemplate="{StaticResource stampaRapidaMenu}"
-                              DataContext="{Binding}" TargetUpdated="onMenuItemStampePieneUpdated">
+							  TargetUpdated="onMenuItemStampePieneUpdated"
+                              DataContext="{Binding}">
                     </MenuItem>
 
                     <MenuItem Header="Stampa con Bordi Bianchi"
