@@ -280,7 +280,8 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
         {
             _FeedbackTicker.Start();
             ssClient.setMiPiace(listaFotografie[_currentIndex].id, false);
-            this.SlideShowImage.Opacity = 0.1;
+			listaFotografie[_currentIndex].miPiace = false;
+			this.SlideShowImage.Opacity = 0.1;
             this.NonMiPiaceFeedback.Visibility = Visibility.Visible;
             MoveTimeCounter.Instance.updateLastTime();
         }
@@ -290,6 +291,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 			bool miPiace = MiPiaceStatus == true ? true : false;
             _FeedbackTicker.Start();
             ssClient.setMiPiace(listaFotografie[_currentIndex].id, miPiace);
+			listaFotografie[_currentIndex].miPiace = miPiace;
             this.SlideShowImage.Opacity = 0.1;
 			if (miPiace)
 			{

@@ -18,23 +18,32 @@
                     <TranslateTransform/>
                 </TransformGroup>
             </Border.RenderTransform>
-            <Image x:Name="imageFoto" TouchDown="Go" />
+            <Image x:Name="imageFoto"/>
         </Border>
 
         <Grid Name="ControlliOrizzontali">
             <Grid.RowDefinitions>
                 <RowDefinition Height="65" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="65" />
+                <RowDefinition Height="200" />
             </Grid.RowDefinitions>
 
+            <!--
             <Border Name="BorderHome" Grid.Row="0" Background="#55FFFFFF" >
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Button Name="Close" TouchDown="Home_Click" Click="Home_Click" ToolTip="Home" VerticalAlignment="Center" Style="{StaticResource styleHome}" IsTabStop="False" Stylus.IsPressAndHoldEnabled="False"/>
                 </StackPanel>
             </Border>
+            -->
+
+            <Border Name="BorderHome" Grid.Row="2" Background="AliceBlue">
+                <StackPanel Grid.Row="2" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top">
+                    <Button x:Name="Start" TouchDown="Go_Click" Click="Go_Click" ToolTip="Start" VerticalAlignment="Center" Style="{StaticResource styleStart}" IsTabStop="False" Stylus.IsPressAndHoldEnabled="False"/>
+                </StackPanel>
+            </Border>
 
         </Grid>
-
+		
+     
     </Grid>
 </UserControl>
