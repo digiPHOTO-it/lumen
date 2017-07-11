@@ -743,7 +743,8 @@ namespace Digiphoto.Lumen.UI {
 			get {
 				if( _cambiarePaginazioneCommand == null ) {
 					_cambiarePaginazioneCommand = new RelayCommand( stelline => cambiarePaginazione( Convert.ToInt16( stelline ) ),
-																    stelline => true );
+																    stelline => true,
+																	false );
 				}
 				return _cambiarePaginazioneCommand;
 			}
