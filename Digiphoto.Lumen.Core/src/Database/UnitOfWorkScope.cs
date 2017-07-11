@@ -87,6 +87,9 @@ namespace Digiphoto.Lumen.Core.Database {
 			if( _currentScope != null && !_currentScope._isDisposed )
 				throw new InvalidOperationException( "ObjectContextScope instances " +
 																"cannot be nested." );
+
+			_giornale.Debug( "+Apro Unit-Of-Work" );													
+																
 			_saveAllChangesAtEndOfScope = saveAllChangesAtEndOfScope;
 
 
@@ -113,6 +116,7 @@ namespace Digiphoto.Lumen.Core.Database {
 
 			if( !_isDisposed ) {
 
+
 				try {
 
 					/* End of scope, so clear the thread static 
@@ -125,6 +129,7 @@ namespace Digiphoto.Lumen.Core.Database {
 						_dbContext.SaveChanges();
 					}
 
+
 				} catch( Exception ee ) {
 
 					_giornale.Error( "Salvataggio sul db fallito: " + ErroriUtil.estraiMessage( ee ), ee );
@@ -135,6 +140,9 @@ namespace Digiphoto.Lumen.Core.Database {
 					_dbContext.Dispose();
 					_dbContext = null;
 					_isDisposed = true;
+
+					_giornale.Debug( "-Chiudo Unit-Of-Work" );
+
 				}
 
 			} else {
