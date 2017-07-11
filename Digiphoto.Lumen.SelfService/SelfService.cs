@@ -34,27 +34,30 @@ namespace Digiphoto.Lumen.SelfService {
 
 			List<CarrelloDto> listaCarrelli = new List<CarrelloDto>();
 
-			// Ricavo il servizio per estrarre i carrelli
-			ICarrelloExplorerSrv srv = LumenApplication.Instance.getServizioAvviato<ICarrelloExplorerSrv>();
+			using( new UnitOfWorkScope() ) {
 
-			// TODO decidere quanti carrelli al massimo. Per ora ne fisso 10.
-			ParamCercaCarrello param = new ParamCercaCarrello {
-			    soloSelfService = true,
-				isVenduto = false,
-				paginazione = new Util.Paginazione {
-					skip = 0,
-					take = 10
+				// Ricavo il servizio per estrarre i carrelli
+				ICarrelloExplorerSrv srv = LumenApplication.Instance.getServizioAvviato<ICarrelloExplorerSrv>();
+
+				// TODO decidere quanti carrelli al massimo. Per ora ne fisso 10.
+				ParamCercaCarrello param = new ParamCercaCarrello {
+					soloSelfService = true,
+					isVenduto = false,
+					paginazione = new Util.Paginazione {
+						skip = 0,
+						take = 10
+					}
+				};
+
+				srv.cercaCarrelli( param );
+
+				// Creo la lista contenente gli oggetti di trasporto leggeri che ho ricavato dal servizio core.
+				foreach( var carrello in srv.carrelli ) {
+					CarrelloDto dto = new CarrelloDto();
+					dto.id = carrello.id;
+					dto.titolo = carrello.intestazione;
+					listaCarrelli.Add( dto );
 				}
-			};
-
-			srv.cercaCarrelli( param );
-
-			// Creo la lista contenente gli oggetti di trasporto leggeri che ho ricavato dal servizio core.
-			foreach( var carrello in srv.carrelli ) {
-				CarrelloDto dto = new CarrelloDto();
-				dto.id = carrello.id;
-				dto.titolo = carrello.intestazione;
-				listaCarrelli.Add( dto );
 			}
 
 			// ritorno gli oggetti di trasporto al client
@@ -64,28 +67,27 @@ namespace Digiphoto.Lumen.SelfService {
 
 		public List<FotografiaDto> getListaFotografie( Guid carrelloId ) {
 
-			// ricavo il servizio dei carrelli e imposto quello corrente
-			ICarrelloExplorerSrv srv = LumenApplication.Instance.getServizioAvviato<ICarrelloExplorerSrv>();
-			srv.setCarrelloCorrente( carrelloId );
-
 			List<FotografiaDto> listaFotografie = new List<FotografiaDto>();
-			
-			foreach( RigaCarrello riga in srv.carrelloCorrente.righeCarrello ) {
 
+			using( new UnitOfWorkScope() ) {
 
-				if( riga.fotografia_id != null ) {
+				// ricavo il servizio dei carrelli e imposto quello corrente
+				ICarrelloExplorerSrv srv = LumenApplication.Instance.getServizioAvviato<ICarrelloExplorerSrv>();
+				srv.setCarrelloCorrente( carrelloId );
 
-					FotografiaDto dto = new FotografiaDto();
-					dto.id = riga.fotografia.id;
-					dto.etichetta = riga.fotografia.etichetta;
-					dto.miPiace = riga.fotografia.miPiace; // TODO aggiungere nuovo flag su Fotografia
+				foreach( RigaCarrello riga in srv.carrelloCorrente.righeCarrello ) {
 
-					listaFotografie.Add( dto );
+					if( riga.fotografia_id != null ) {
+
+						FotografiaDto dto = new FotografiaDto();
+						dto.id = riga.fotografia.id;
+						dto.etichetta = riga.fotografia.etichetta;
+						dto.miPiace = riga.fotografia.miPiace; // TODO aggiungere nuovo flag su Fotografia
+
+						listaFotografie.Add( dto );
+					}
 				}
-
-
 			}
-
 
 			return listaFotografie;
 		}
@@ -98,12 +100,10 @@ namespace Digiphoto.Lumen.SelfService {
 				var srv = LumenApplication.Instance.getServizioAvviato<IEntityRepositorySrv<Fotografia>>();
 				Fotografia foto = srv.getById( fotografiaId );
 
-				// TODO per il momento non ho a disposizione il nuovo flag. Lo scrivo nella didascalia, giusto per fare una prova.
 				foto.miPiace = miPiace;
 
 				srv.update( ref foto );
 			}
-
 		}
 
 		/// <summary>
