@@ -54,12 +54,22 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             Application.Current.Shutdown();
         }
 
-        private void Go(object sender, System.Windows.Input.TouchEventArgs e)
+        private void Go_Click(object sender, System.Windows.Input.TouchEventArgs e)
         {
             Go();
         }
 
-        public void Go()
+		private void Go_Click(object sender, System.Windows.RoutedEventArgs e)
+		{
+			Go();
+		}
+
+		private void Go(object sender, System.Windows.RoutedEventArgs e)
+		{
+			Go();
+		}
+
+		public void Go()
         {
             if (!SelfMainWindow.isShowCarrelli)
             {
