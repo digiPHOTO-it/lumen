@@ -173,7 +173,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			private set {
 				if( _modificheInCorso != value ) {
 					_modificheInCorso = value;
-					 OnPropertyChanged( "modificheInCorso" );
+					OnPropertyChanged( "modificheInCorso" );
+					OnPropertyChanged( "listBoxImmaginiDaModificareEnabled" );
 				}
 			}
 		}
@@ -517,6 +518,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					OnPropertyChanged( "isMascheraAttiva" );
 					OnPropertyChanged( "isMascheraInattiva" );
 					OnPropertyChanged( "possoSalvareMaschera" );
+					OnPropertyChanged( "listBoxImmaginiDaModificareEnabled" );
 				}
 			}
 		}
@@ -534,7 +536,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					OnPropertyChanged( "possoSalvareMaschera" );
 					OnPropertyChanged( "fotografiaInModifica" );
 					OnPropertyChanged( "possoScegliereMaschera" );
-					
+					OnPropertyChanged( "listBoxImmaginiDaModificareEnabled" );
+
 					forzaRefreshStato();
 					
 					onEditorModeChanged( new EditorModeEventArgs( modalitaEdit ) );
@@ -566,7 +569,20 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		public bool listBoxImmaginiDaModificareEnabled {
 			get {
-				return modificheInCorso || modalitaEdit == ModalitaEdit.GestioneMaschere;
+
+				// Non ci sono foto quindi nisba
+				if( fotografieDaModificareCW.Count <= 0 )
+					return false;
+
+				// Sono in gestione delle maschere, ma non ho ancora selezionato una
+				if( modalitaEdit == ModalitaEdit.GestioneMaschere && mascheraAttiva == null )
+					return false;
+
+				// Sto modificando la foto ed è una sola. Infatti se ce ne sono di piu devo poter cliccare sulla prossima
+				if( modalitaEdit == ModalitaEdit.FotoRitocco && modificheInCorso == true && fotografieDaModificareCW.Count <= 1 )
+					return false;
+
+				return true;
 			}
 		}
 
@@ -627,7 +643,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		public SelettoreAzioniRapideViewModel selettoreAzioniRapideViewModel
 		{
 			get;
-			set;
+			private set;
 		}
 
 		public float ratioAreaStampabile {
@@ -1396,6 +1412,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			// TODO sul torna originale, questo mi fa sparire la foto da modificare e non so perché !!
 			OnPropertyChanged( "fotografiaInModifica" );
+			OnPropertyChanged( "listBoxImmaginiDaModificareEnabled" );
 		}
 
 		public static bool isTrasformazioneNulla( Transform t ) {

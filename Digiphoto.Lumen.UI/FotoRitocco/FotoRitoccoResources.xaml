@@ -26,8 +26,15 @@
         <Setter Property="BorderBrush" Value="Blue" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="MinHeight" Value="60" />
--->	
+-->
 
+		<!-- se la listbox è disabilitata, rendo il contenuto grigino -->
+		<Style.Triggers>
+			<Trigger Property="IsEnabled" Value="False">
+				<Setter Property="Background" Value="DarkGray" />
+				<Setter Property="Opacity" Value="0.3" />
+			</Trigger>
+		</Style.Triggers>
 	</Style>
 
     <!-- Style per ogni elemento della collection. Setto il colore selezionato  -->

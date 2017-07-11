@@ -625,7 +625,7 @@ namespace Digiphoto.Lumen.UI {
 		public SelettoreAzioniRapideViewModel selettoreAzioniRapideViewModel
 		{
 			get;
-			set;
+			private set;
 		}
 
 
