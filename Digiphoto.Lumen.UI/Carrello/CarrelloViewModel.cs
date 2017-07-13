@@ -24,9 +24,10 @@ using Digiphoto.Lumen.Servizi.Ritoccare;
 using Digiphoto.Lumen.UI.Util;
 using Digiphoto.Lumen.UI.Main;
 using Digiphoto.Lumen.Core.Eventi;
+using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
 
 namespace Digiphoto.Lumen.UI {
-	public class CarrelloViewModel : ViewModelBase, IObserver<MasterizzaMsg>, IObserver<GestoreCarrelloMsg>, IObserver<StampatoMsg>, IObserver<FotoModificateMsg>, IObserver<RefreshMsg> {
+	public class CarrelloViewModel : ViewModelBase, IObserver<MasterizzaMsg>, IObserver<GestoreCarrelloMsg>, IObserver<StampatoMsg>, IObserver<FotoModificateMsg>, IObserver<FotoEliminateMsg>, IObserver<RefreshMsg> {
 
 		private BackgroundWorker _bkgIdrata = null;
 
@@ -50,6 +51,10 @@ namespace Digiphoto.Lumen.UI {
 
 				IObservable<RefreshMsg> observableRefresh = LumenApplication.Instance.bus.Observe<RefreshMsg>();
 				observableRefresh.Subscribe( this );
+
+				IObservable<FotoEliminateMsg> observableCancellate = LumenApplication.Instance.bus.Observe<FotoEliminateMsg>();
+				observableCancellate.Subscribe( this );
+
 
 				// Creo due view diverse per le righe del carrello
 				rinfrescaViewRighe();
@@ -1763,6 +1768,39 @@ namespace Digiphoto.Lumen.UI {
 			// TODO capire chi deve stornare l'importo dal carrello
 		}
 
+		public void OnNext( FotoEliminateMsg msg ) {
+
+			// Se non ho un carrello, non devo fare niente.
+			if( carrelloCorrente == null )
+				return;
+
+			if( carrelloCorrente.venduto ) {
+
+				// Siccome il carrello è venduto e quindi non si può modificare, lo rileggo.
+				bool trovata = false;
+				// venditoreSrv.caricareCarrello( carrelloCorrente );
+				foreach( Fotografia fDel in msg.listaFotoEliminate ) {
+					trovata = carrelloCorrente.righeCarrello.Any( r => fDel.Equals( r.fotografia ) );
+					if( trovata )
+						break;
+				}
+
+				if( trovata )
+					venditoreSrv.caricareCarrello( carrelloCorrente );
+
+			} else {
+
+				foreach( Fotografia fDel in msg.listaFotoEliminate ) {
+
+					// Faccio il controllo con l'id numerico perché l'equals non mi da sicurezze
+					RigaCarrello riga = carrelloCorrente.righeCarrello.SingleOrDefault( r => fDel.Equals( r.fotografia ) );
+					if( riga != null )
+						venditoreSrv.eliminareRigaCarrello( riga );
+				}
+			}
+		}
+	
+
 		// E' stata modificata una o più foto
 		public void OnNext( FotoModificateMsg msg ) {
 			
@@ -1772,8 +1810,7 @@ namespace Digiphoto.Lumen.UI {
 			// In tal caso devo aggiornarmi
 			foreach( Fotografia fMod in msg.fotos ) {
 
-				// Faccio il controllo con l'id numerico perché l'equals non mi da sicurezze
-				RigaCarrello riga = carrelloCorrente.righeCarrello.SingleOrDefault( r => r.fotografia.id == fMod.id );
+				RigaCarrello riga = carrelloCorrente.righeCarrello.SingleOrDefault( r => fMod.Equals( r.fotografia ) );
 				if( riga != null ) {
 
 					// rimpiazzo la fotografia dentro la riga carrello. Lo faccio nel thread della UI altrimenti non mi si rinfresca il carrello.
