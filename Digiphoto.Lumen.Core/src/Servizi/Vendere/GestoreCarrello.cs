@@ -519,14 +519,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			return isStessaFotoInCarrello(carrello, riga, riga.discriminator);
 		}
 
-        public static bool isStessaFotoInCarrello(Carrello carrello, RigaCarrello riga, string discriminator)
+        public static bool isStessaFotoInCarrello(Carrello carrello, RigaCarrello rigaNew, string discriminator)
         {
-            foreach (RigaCarrello r in carrello.righeCarrello)
-            {
-                if (r.fotografia.id == riga.fotografia.id && r.discriminator == discriminator)
-                    return true;
-            }
-            return false;
+			bool esisteGia = carrello.righeCarrello.Any( r =>  rigaNew.discriminator == r.discriminator && rigaNew.fotografia.Equals( r.fotografia )  );
+
+            return esisteGia;
         }
 
         /// <summary>
