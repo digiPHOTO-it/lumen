@@ -97,6 +97,10 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		/// <summary>
+		/// Questo metodo ritorna tutte le foto selezionate, anche in pagine diverse.
+		/// </summary>
+		/// <returns></returns>
 		private IEnumerable<Fotografia> getFotoSelezionate() {
 			return fotografieSelector.getElementiSelezionati();
 		}
@@ -219,7 +223,7 @@ namespace Digiphoto.Lumen.UI {
 		/// <returns></returns>
 		public void aggiungereAlMasterizzatore() {
 			if( venditoreSrv.possoAggiungereMasterizzate ) {
-				venditoreSrv.aggiungereMasterizzate( getFotoSelezionate() );
+				venditoreSrv.aggiungereMasterizzate( getListaFotoTarget() );
 				deselezionareTutto();
 			}
 
@@ -281,7 +285,7 @@ namespace Digiphoto.Lumen.UI {
 					{
 						venditoreStampaDiretta.creareNuovoCarrello();
 						venditoreStampaDiretta.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_RAPIDA;
-						venditoreStampaDiretta.aggiungereStampe( getFotoSelezionate(), creaParamStampaFoto(stampanteAbbinata));
+						venditoreStampaDiretta.aggiungereStampe( getListaFotoTarget(), creaParamStampaFoto(stampanteAbbinata));
 						string msgErrore = venditoreStampaDiretta.vendereCarrello();
 						bool esitoOk = (msgErrore == null);
 						if( esitoOk )
@@ -296,7 +300,7 @@ namespace Digiphoto.Lumen.UI {
 				}
 				else
 				{
-					venditoreSrv.aggiungereStampe( getFotoSelezionate(), creaParamStampaFoto(stampanteAbbinata));
+					venditoreSrv.aggiungereStampe( getListaFotoTarget(), creaParamStampaFoto(stampanteAbbinata));
 				}
 
 				deselezionaFoto();
@@ -323,14 +327,10 @@ namespace Digiphoto.Lumen.UI {
 
 				venditoreSpampaRapida.creareNuovoCarrello();
 				venditoreSpampaRapida.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_RAPIDA;
-				var fotoSelezionate = getFotoSelezionate();
+				var listaFoto = getListaFotoTarget();
 				var param = creaParamStampaFoto( stampanteAbbinata, autoZoomNoBordiBianchi );
 
-				if( targetMode == TargetMode.Selezionate ) {
-					venditoreSpampaRapida.aggiungereStampe( fotoSelezionate, param );
-				} else if( targetMode == TargetMode.Singola ) {
-                    venditoreSpampaRapida.aggiungereStampe( singolaFotoTarget, param );
-				}
+				venditoreSpampaRapida.aggiungereStampe( listaFoto, param );
 				
 				string msgErrore = venditoreSpampaRapida.vendereCarrello();
 				bool esitoOk = (msgErrore == null);
@@ -399,7 +399,7 @@ namespace Digiphoto.Lumen.UI {
 		/// <param name="param">Se param è una stringa e contiene il valore "SEL" allora elimino le foto selezionate.</param>
 		void eliminareFoto() {
 
-			IEnumerable<Fotografia> itemsToDelete = getFotoSelezionate();
+			IEnumerable<Fotografia> itemsToDelete = getListaFotoTarget();
 
 			string msg = "Sei sicuro di voler eliminare definitivamente\nle " + itemsToDelete.Count() + " fotografie selezionate?\nL'operazione non è recuperabile !";
 			bool procediPure = chiedereConfermaPerProseguire( msg, "Eliminazione definitiva foto" );
@@ -518,7 +518,7 @@ namespace Digiphoto.Lumen.UI {
 
 		private void clonaFotografie() {
 
-			var vettore = getFotoSelezionate().ToArray<Fotografia>();
+			var vettore = getListaFotoTarget().ToArray<Fotografia>();
 			
 			if( vettore.Count() > 3 )
 				if( ! chiedereConfermaPerProseguire( "Sei sicuro di voler clonare " + vettore.Count() + " foto ?", "Conferma Clone Multiplo" ) )
