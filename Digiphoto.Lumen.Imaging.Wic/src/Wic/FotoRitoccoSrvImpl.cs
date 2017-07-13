@@ -420,9 +420,11 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			_clonaImmaginiWorker = new ClonaImmaginiWorker(fotografie, fineClone);
 
 			if (fotografie.Count()==1)
-				_clonaImmaginiWorker.Start();
-			else
 				_clonaImmaginiWorker.StartSingleThread();
+			else {
+				// _clonaImmaginiWorker.Start();
+				throw new NotSupportedException( "clonare in multithread causa problemi con la Unit-Of-Work" );
+			}
 		}
 
 		private void fineClone(EsitoClone esitoScarico)

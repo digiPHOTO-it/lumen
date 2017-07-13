@@ -785,7 +785,7 @@ namespace Digiphoto.Lumen.UI {
 				if( _clonaFotografieCommand == null ) {
 					_clonaFotografieCommand = new RelayCommand( param => clonaFotografie(),
 															   p => isAlmenoUnElementoSelezionato,
-															   null,
+															   false,
 															   param => deselezionaFoto() );
 				}
 				return _clonaFotografieCommand;

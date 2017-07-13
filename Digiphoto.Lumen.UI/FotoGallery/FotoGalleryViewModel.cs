@@ -28,6 +28,7 @@ using Digiphoto.Lumen.Core.Collections;
 using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
 using Digiphoto.Lumen.Core.Eventi;
+using Digiphoto.Lumen.Core.Database;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -2108,11 +2109,23 @@ throw new NotImplementedException( "TODO da rivedere");
 		{
 			if( value.fase == FaseClone.FineClone ) {
 
+				eseguireRicerca( RicercaFlags.Niente );
+
+#if POLLO
 				Digiphoto.Lumen.UI.App.Current.Dispatcher.BeginInvoke(
 					new Action( () => {
-					eseguireRicerca( RicercaFlags.Niente );
+
+						// Siccome lavoro nel thread della ui, probabilmente non ho la UoW
+						if( UnitOfWorkScope.hasCurrent )
+							eseguireRicerca( RicercaFlags.Niente );
+						else {
+							using( new UnitOfWorkScope() ) {
+								eseguireRicerca( RicercaFlags.Niente );
+							}
+						}
 					}
 				) );
+#endif
 			}
 		}
 

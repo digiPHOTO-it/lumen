@@ -41,6 +41,7 @@
 					   VerticalAlignment="Top" HorizontalAlignment="Right"
 					   Margin="0,2,2,0"
 					   FontSize="{Binding Converter={StaticResource percentualeConverter}, FallbackValue=14, ElementName=gridUnaFotoShow,Path=ActualHeight,ConverterParameter=8}"
+					   Foreground="Black"
 					   Background="Orange" />
 
                 <!-- Se richiesto, aggiungo un watermark anche allo slideshow -->
