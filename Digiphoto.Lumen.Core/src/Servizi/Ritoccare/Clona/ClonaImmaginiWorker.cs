@@ -174,7 +174,8 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare.Clona {
 				File.Copy(srcFileOrig, destFileClone, sovrascrivi);
 
 				// Copio il suo provino
-				File.Copy(srcFileProvinoOrig, destFileProvinoClone, sovrascrivi);
+				if( File.Exists( srcFileProvinoOrig ) )
+					File.Copy(srcFileProvinoOrig, destFileProvinoClone, sovrascrivi);
 
 				// Copio la sua risultante
 				if (File.Exists(srcFileRisultOrig))
