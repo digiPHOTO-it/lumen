@@ -1290,7 +1290,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		private void buttonTakeSnapshotPubblico_Click( object sender, RoutedEventArgs e ) {
+			
 			((App)Application.Current).gestoreFinestrePubbliche.eseguiSnapshotSuFinestraPubblica( this, this.tabControlRitoccoComposizione );
+
+			// L'utente deve per forza chiudere la finestra
+			ShowMessage( "Quando il cliente ha finito di vedere la foto\nclicca su OK per chiudere la finestra pubblica\ncon la snapshot del video", "Attendere che il cliente abbia visto" );
+
+			( (App)Application.Current).gestoreFinestrePubbliche.chiudereFinestraSnapshotPubblico();
 		}
 
 		private void closeSnapshotPubblico_Click( object sender, RoutedEventArgs e ) {

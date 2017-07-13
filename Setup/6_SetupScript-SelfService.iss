@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName      "Lumen Self-Service"
-#define MyAppVersion   "0.1"
+#define MyAppVersion   "0.2"
 #define MyAppPublisher "digiPHOTO.it"
 #define MyAppURL       "http://www.digiphoto.it/lumen-self-service"
 #define MyAppExeName   "Digiphoto.Lumen.SelfService.MobileUI.exe"
@@ -22,7 +22,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\Digiphoto.Lumen.SelfService.MobileUI
+DefaultDirName={pf}\digiPHOTO\Lumen.SelfService
 DefaultGroupName=digiPHOTO
 DisableProgramGroupPage=yes
 LicenseFile=..\Digiphoto.Lumen.UI\{#dirPlat}\License_it.txt

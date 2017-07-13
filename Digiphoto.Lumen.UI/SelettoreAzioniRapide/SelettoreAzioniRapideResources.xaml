@@ -365,7 +365,8 @@
                               DataContext="{Binding}"/>
 					-->
 
-                    <MenuItem Header="Clona" 
+					<!-- disabilito la clonazione di molte foto, perché lavorano in background e mi da problemi con la Unit-Of-Work in diversi thread. -->
+						<MenuItem Header="Clona"  IsEnabled="False"
                               Command="{Binding Path=clonaFotografieCommand}"
                               DataContext="{Binding}">
 						<MenuItem.Icon>

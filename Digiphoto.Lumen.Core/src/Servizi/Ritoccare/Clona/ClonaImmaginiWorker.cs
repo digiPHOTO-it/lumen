@@ -77,7 +77,7 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare.Clona {
 			clonaFotoMsg.showInStatusBar = true;
 			LumenApplication.Instance.bus.Publish(clonaFotoMsg);
 
-			using(new UnitOfWorkScope(true))
+//			using(new UnitOfWorkScope(true)) 
 			{
 				// trasferisco tutti i files elencati
 				foreach (Fotografia foto in fotografie)
@@ -86,16 +86,19 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare.Clona {
 						++conta;
 				}
 			}
+			UnitOfWorkScope.currentObjectContext.SaveChanges();
+
 			// Nel log scrivo anche il tempo che ci ho messo a scaricare le foto. Mi servirà per profilare
 			TimeSpan tempoImpiegato = DateTime.Now.Subtract( oraInizio );
 			_giornale.Info( "Terminato trasferimento di " + conta + " foto. Tempo impiegato = " + tempoImpiegato );
 			
 			// Deve essere già aperto
-			using( new UnitOfWorkScope( true ) ) {
+//			using( new UnitOfWorkScope( true ) ) 
+			{
 					// ::: Ultima fase eleboro le foto memorizzando nel db e creando le dovute cache
 				_elaboraImmaginiAcquisiteCallback.Invoke( _esitoClone );
 			}
-			
+			UnitOfWorkScope.currentObjectContext.SaveChanges();
 		}
 
 		/**
