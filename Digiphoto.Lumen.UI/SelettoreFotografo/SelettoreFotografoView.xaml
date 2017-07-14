@@ -1,12 +1,13 @@
 ﻿<lumM:UserControlBase x:Class="Digiphoto.Lumen.UI.SelettoreFotografo"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="200"
-             x:Name="selFotografo">
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+					  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+					  xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
+					  xmlns:lumMS="clr-namespace:Digiphoto.Lumen.UI.Mvvm.MultiSelect"
+					  mc:Ignorable="d"
+					  d:DesignHeight="300" d:DesignWidth="200"
+					  x:Name="selFotografo">
 
     <UserControl.Resources>
         <ResourceDictionary Source="SelettoreFotografoResources.xaml" />
@@ -25,15 +26,16 @@
 		ItemTemplate="{StaticResource fotografiListBoxTemplate}"
 		-->
 		<GroupBox Header="Fotografi"  Grid.Row="0" Grid.Column="0">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">  
-                <ListBox Name="fotografiListBox" MinHeight="30" 
-                         ItemsSource="{Binding Path=fotografi}" 
+			<ScrollViewer VerticalScrollBarVisibility="Auto">
+				<ListBox Name="fotografiListBox" MinHeight="30" 
+				         SelectionMode="{Binding selezioneMultipla,ElementName=selFotografo,Converter={StaticResource ResourceKey=booleanToSelectionModeConverter}}"
+						 lumMS:MultiSelect.IsEnabled="{Binding selezioneMultipla,ElementName=selFotografo}" IsSynchronizedWithCurrentItem="False"
+                         ItemsSource="{Binding Path=fotografiCW}" 
 						 DisplayMemberPath="cognomeNome" 
-                         SelectedItem="{Binding Path=fotografoSelezionato}" 
-						 ItemContainerStyle="{StaticResource ResourceKey=listBoxItemEvidenziatoStyle}"
-						 />
-            </ScrollViewer>
-        </GroupBox>
+						 SelectionChanged="fotografiListBox_SelectionChanged"
+						 ItemContainerStyle="{StaticResource ResourceKey=listBoxItemEvidenziatoStyle}" />
+			</ScrollViewer>
+		</GroupBox>
 
 
 		<Grid	Grid.Row="1" Grid.Column="0" 

@@ -165,17 +165,17 @@ namespace Digiphoto.Lumen.UI {
 					return true;
 
 				bool posso = true;
-
-				// Verifico che i dati minimi siano stati indicati
-				if( posso && selettoreFotografoViewModel.fotografoSelezionato == null )
-					posso = false;
-
+				
 				if( posso && String.IsNullOrEmpty( cartellaSorgente ) )
 					posso = false;
 
 				if( posso && Directory.Exists( cartellaSorgente ) == false )
 					posso = false;
 
+				// Verifico che i dati minimi siano stati indicati
+				if( posso && selettoreFotografoViewModel.countElementiSelezionati < 1 )
+					posso = false;
+					
 				if( posso && isScaricatoreBusy )
 					posso = false;
 	
@@ -322,7 +322,7 @@ namespace Digiphoto.Lumen.UI {
 
 				// Fotografo
 				if( param.flashCardConfig.idFotografo != null )
-					selettoreFotografoViewModel.fotografoSelezionato = selettoreFotografoViewModel.fotografi.Where( fo => fo.id == param.flashCardConfig.idFotografo ).SingleOrDefault();
+					selettoreFotografoViewModel .fotografoSelezionato = selettoreFotografoViewModel.fotografi.Where( fo => fo.id == param.flashCardConfig.idFotografo ).SingleOrDefault();
 
 				// Evento
 				if( param.flashCardConfig.idEvento != Guid.Empty )

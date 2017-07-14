@@ -1,4 +1,5 @@
-﻿using Digiphoto.Lumen.Model;
+﻿using Digiphoto.Lumen.Core.Database;
+using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.UI.Util;
 using Digiphoto.Lumen.Util;
 using log4net;
@@ -151,10 +152,10 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 					sql.Append( "AND f.fotografo_id = {" + paramOut.Count + "}" );
 					paramOut.Add( param.fotografi.ElementAt( 0 ).id );
 				} else {
-					sql.Append( "AND f.fotografo_id in ( '" );
+					sql.Append( "AND f.fotografo_id in ( " );
 					foreach( var oo in param.fotografi ) {
 						sql.Append( "{" + paramOut.Count + "}," );
-						paramOut.Add( oo.ToString() );
+						paramOut.Add( oo.id );
 					}
 					sql.Replace( ',', ')', sql.Length - 1, 1 );  // Rimuovo l'ultima virgola di troppo e la sostituisco con la parentesi chiusa
 				}
@@ -384,6 +385,10 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			// Devo usare prima tutto se no dopo non me lo ricollega più!!! Perchè ho chiuso la connessione?!?!?!?!?!!?
 			foreach (Carrello c in query.ToList())
 			{
+				// Per caricare una collezione sarebbe più figo cosi:
+				// UnitOfWorkScope.currentDbContext.Entry( c ).Collection( k => k.righeCarrello ).Load();
+
+
 				System.Diagnostics.Trace.WriteLine("\n\n*** Carrello = " + c.id + " " + c.giornata);
 
 				foreach (RigaCarrello r in c.righeCarrello)
