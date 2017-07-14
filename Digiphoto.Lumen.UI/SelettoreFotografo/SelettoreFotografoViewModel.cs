@@ -12,6 +12,7 @@ using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Servizi.Ricerca;
 using Digiphoto.Lumen.Core.Collections;
+using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -55,22 +56,45 @@ namespace Digiphoto.Lumen.UI {
 			set;
 		}
 
-		/// <summary>
-		/// Il fotografo attualmente selezionato
-		/// </summary>
-		Fotografo _fotografoSelezionato;
-		public Fotografo fotografoSelezionato {
-			get {
-				return _fotografoSelezionato;
+		private MultiSelectCollectionView<Fotografo> _fotografiCW;
+		public MultiSelectCollectionView<Fotografo> fotografiCW
+		{
+			get
+			{
+				return _fotografiCW;
 			}
-			set {
-				if( value != _fotografoSelezionato ) {
-					_fotografoSelezionato = value;
-					OnPropertyChanged( "fotografoSelezionato" );
-                }
+			set
+			{
+				if( _fotografiCW != value ) {
+					_fotografiCW = value;
+					OnPropertyChanged( "fotografiCW" );
+				}
 			}
 		}
 
+		/// <summary>
+		/// Il fotografo attualmente selezionato
+		/// </summary>
+		public IEnumerable<Fotografo> fotografiSelezionati {
+			get {
+				return fotografiCW == null ? null : fotografiCW.SelectedItems;
+			}
+		}
+
+		public Fotografo fotografoSelezionato {
+			get {
+				if( fotografiCW == null || fotografiCW.SelectedItems.Count == 0 )
+					return null;
+				if( fotografiCW.SelectedItems.Count > 1 )
+					throw new InvalidOperationException( "Usare la selezione singola, oppure usare fotografiSelezionati" );
+
+				return fotografiCW.SelectedItems[0];
+			}
+
+			set {
+				fotografiCW.seleziona( value );
+			}
+		}
 
 		public IEntityRepositorySrv<Fotografo> fotografiReporitorySrv {
 			get {
@@ -119,6 +143,8 @@ namespace Digiphoto.Lumen.UI {
 				fotografi.Add( f );
 				}
 			}
+			// Costriusco anche la collection view per la selezione multipla
+			fotografiCW = new MultiSelectCollectionView<Fotografo>( fotografi );
 
 			if( avvisami && dialogProvider != null )
 				dialogProvider.ShowMessage( "Riletti " + fotografi.Count + " fotografi", "Successo" );
@@ -219,36 +245,39 @@ namespace Digiphoto.Lumen.UI {
 		public void OnNext( EntityCambiataMsg value ) {
 
 			// Qualcuno ha spataccato nella tabella dei fotografi. Rileggo tutto
-			if( value.type == typeof( Fotografo ) )
-				rileggereFotografiCommand.Execute( false );
+			if( value.type == typeof( Fotografo ) ) {
+
+//				App.Current.Dispatcher.BeginInvoke(
+//					new Action( () => {
+						rileggereFotografiCommand.Execute( false );
+//					}
+//				) );
+
+			}
 		}
 
 		#region interfaccia ISelettore
 		
 		public void deselezionareTutto() {
-			this.fotografoSelezionato = null;
+			if( fotografiCW != null )
+				fotografiCW.deselezionaTutto();
 		}
 
 		public IEnumerator<Fotografo> getEnumeratorElementiSelezionati() {
-			if( fotografoSelezionato != null )
-				yield return fotografoSelezionato;
+			return this.fotografiCW.SelectedItems.GetEnumerator();
 		}
 
 		public void deselezionare( Fotografo elem ) {
-			if( fotografoSelezionato != null && fotografoSelezionato.Equals( elem ) )
-				fotografoSelezionato = null;
+			fotografiCW.SelectedItems.Clear();
 		}
 
 		public IEnumerable<Fotografo> getElementiSelezionati() {
-			if( fotografoSelezionato == null )
-				return null;
-			else
-				return new Fotografo[] { fotografoSelezionato };
+			return fotografiCW.SelectedItems;
 		}
 
 		public int countElementiSelezionati {
 			get {
-				return fotografoSelezionato == null ? 0 : 1;
+				return fotografiCW == null ? 0 : fotografiCW.SelectedItems.Count;
 			}
 		}
 

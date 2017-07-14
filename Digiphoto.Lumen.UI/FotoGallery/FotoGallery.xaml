@@ -276,7 +276,7 @@
 
 
                 <!-- eventuale filtro per fotografo -->
-                <lum:SelettoreFotografo x:Name="selettoreFotografo5" possoCreare="False"
+                <lum:SelettoreFotografo x:Name="selettoreFotografo5" possoCreare="False" selezioneMultipla="True"
 										Margin="3,0,0,0"
 										MaxWidth="200"
                                         DataContext="{Binding selettoreFotografoViewModel}" />

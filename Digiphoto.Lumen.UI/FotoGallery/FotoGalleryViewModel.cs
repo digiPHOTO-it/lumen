@@ -1730,8 +1730,8 @@ throw new NotImplementedException( "TODO da rivedere");
 			}
 
 			// Aggiungo eventuale parametro il fotografo
-			if( selettoreFotografoViewModel.fotografoSelezionato != null )
-				paramCercaFoto.fotografi = new Fotografo [] { selettoreFotografoViewModel.fotografoSelezionato };
+			if( selettoreFotografoViewModel.countElementiSelezionati > 0 )
+				paramCercaFoto.fotografi = selettoreFotografoViewModel.fotografiSelezionati.ToArray();
 			else
 				paramCercaFoto.fotografi = null;
 
