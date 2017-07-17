@@ -20,10 +20,8 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 		public List<Fotografia> cerca( ParamCercaFoto param ) {
 
-			if( 1 == 1 )
-				return cercaVeloceSQL( param );
-			else
-				return cercaLentoEF__DACANC( param );
+			return cercaVeloceSQL( param );
+			// return cercaLentoEF__DACANC( param );
 		}
 
 		private List<Fotografia> cercaVeloceSQL( ParamCercaFoto param ) {

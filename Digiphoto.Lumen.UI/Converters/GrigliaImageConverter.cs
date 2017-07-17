@@ -64,7 +64,7 @@ namespace Digiphoto.Lumen.UI.Converters {
 				if( immagine != null )
 					imageSource = ((ImmagineWic)immagine).bitmapSource as ImageSource;
 
-			} catch( Exception ee ) {
+			} catch( Exception ) {
 				// Alcune immagini possono essere rovinate o mancanti. Devo proseguire
 				imageSource = null;
 			}
