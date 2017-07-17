@@ -7,13 +7,13 @@ using System.Windows.Data;
 using System;
 using System.Windows;
 using Digiphoto.Lumen.UI.Mvvm.Event;
+using Digiphoto.Lumen.Model;
 
 namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 
 	public class MultiSelectCollectionView<T> : ListCollectionView, IMultiSelectCollectionView {
 
-		public MultiSelectCollectionView( IList list )
-			: base( list ) {
+		public MultiSelectCollectionView( IList list ) : base( list ) {
 			SelectedItems = new ObservableCollection<T>();
 		}
 		
@@ -226,9 +226,22 @@ namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 		}
 
 		protected override void RefreshOverride() {
-			base.RefreshOverride();
 
-			UpdateUiControls();
+			var save = ignoreSelectionChanged;
+			try {
+
+				ignoreSelectionChanged = true;
+
+				// Non so perché ma questa chiamata si perde le foto selezionate.
+				base.RefreshOverride();
+
+				// sincronizzo la memoria con il componente grafico
+				UpdateUiControls();
+
+			} finally {
+				ignoreSelectionChanged = save;
+			}
+
 		}
 
 		/// <summary>

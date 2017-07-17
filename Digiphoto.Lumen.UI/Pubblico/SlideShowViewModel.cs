@@ -512,7 +512,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 					_giornale.Debug( "Sto per caricare pubblicità: " + appo + ". Indice = " + _indexSpotAttuale + "/" + _elencoSpots.Count );
 					nomeFileSpotAttuale = appo;
 
-				} catch( Exception ee ) {
+				} catch( Exception ) {
 					_giornale.Warn( "Problemi nel caricare la pubblicità. Salto e passo avanti" );					
 				} finally {
 
