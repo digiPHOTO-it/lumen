@@ -30,8 +30,7 @@ using Digiphoto.Lumen.UI.Main;
 using System.Windows.Threading;
 using Digiphoto.Lumen.Imaging.Wic.Correzioni;
 using System.Windows.Shapes;
-
-
+using Digiphoto.Lumen.PresentationFramework;
 
 namespace Digiphoto.Lumen.UI.FotoRitocco {
 
@@ -71,15 +70,38 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		void _viewModel_PropertyChanged( object sender, PropertyChangedEventArgs e ) {
+
 			if( e.PropertyName == "logo" ) {
 				// cambiato il logo.
 				this.Dispatcher.BeginInvoke( creaImmaginettaLogoAction );
 			}
 
+
+			if( e.PropertyName == "scritta" ) {
+				// cambiata la scritta di testo
+				if( _viewModel.scritta == null )
+					rimuovereManiglietteScritta();
+				else
+					creareManiglietteScritta();
+
+			//		this.Dispatcher.BeginInvoke( creaManiglietteScrittaAction );
+			}
+
+
 			if( e.PropertyName == "fotografiaInModifica" ) {
 
 				// Se la nuova fotografia ha la ratio diversa da quella prima...
 				eliminaReticoloPerpendicolare();
+
+				if( _viewModel.fotografiaInModifica == null ) {
+					azzeraGestioneRitocco();
+				}
+			}
+
+
+			if( e.PropertyName == "modificheInCorso" ) {
+
+
 			}
 		}
 
@@ -338,7 +360,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					if( Debugger.IsAttached )
 						Debug.Assert( tabItemComposizione.IsSelected );
 
-					primoPianoCanvasMask( false );
 					initGestioneMaschere();
 					break;
 
@@ -347,12 +368,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					if( Debugger.IsAttached )
 						Debug.Assert( tabItemRitocco.IsSelected );
 
-
-						listBoxImmaginiDaModificare.SetValue( MultiSelect.IsEnabledProperty, true );
-					listBoxImmaginiDaModificare.SetValue( MultiSelect.MaxNumSelectedItemProperty, 3 );
-
-					primoPianoCanvasMask( true );
-					azzeraGestioneMaschere();
+					initGestioneRitocco();
 					break;
 			}
 		}
@@ -414,7 +430,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// <summary>
 		/// Elimina tutti gli Adornes da tutte le immagini che sono state aggiunte
 		/// </summary>
-		void rimuoviTutteLeManigliette() {
+		private void rimuoviTutteLeManiglietteMsk() {
 
 			// Rimuove tutti gli adorner (toglie le manigliette)
 			foreach( UIElement element in canvasMsk.Children ) {
@@ -426,6 +442,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					}
 				}
 			}
+
+		}
+
+		private void rimuoviTutteLeManiglietteRit() {
+
+			rimuovereManiglietteScritta();
 		}
 
 		/// <summary>
@@ -777,7 +799,31 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			return rtb;
 		}
 
+		private void initGestioneRitocco() {
+
+			azzeraGestioneMaschere();
+
+			// ---
+
+			listBoxImmaginiDaModificare.SetValue( MultiSelect.IsEnabledProperty, true );
+			listBoxImmaginiDaModificare.SetValue( MultiSelect.MaxNumSelectedItemProperty, 3 );
+
+			primoPianoCanvasMask( true );
+		}
+
 		void initGestioneMaschere() {
+
+			azzeraGestioneRitocco();
+
+			// Porto il canvas di gestione delle maschere in primo piano
+			primoPianoCanvasMask( false );
+
+		}
+
+		void azzeraGestioneRitocco() {
+
+			rimuoviTutteLeManiglietteRit();
+
 		}
 
 		/// <summary>
@@ -785,7 +831,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// </summary>
 		void azzeraGestioneMaschere() {
 
-			rimuoviTutteLeManigliette();
+			rimuoviTutteLeManiglietteMsk();
 
 			// Elimino le foto che sono state droppate sul canvas
 			canvasMsk.Children.Clear();
@@ -980,12 +1026,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			bindaSliderZoom( true );
 			bindaSliderTrasla( true );
 
-			// ---
-
-			// Crea immaginetta logo : devo farlo dopo che la UI si è ridisegnata per avere le dimensioni corrette della foto nel suo contenitore.
-			// Se lo faccio subito, non ho a disposizione le dimensioni reali (ActualW e ActualH).
-//			this.Dispatcher.BeginInvoke( creaImmaginettaLogoAction );
-
 			// Devo dare il fuoco allo UserControl del fotoritocco, altrimenti non mi sente l'evento KeyDown per salvare le correzioni.
 			spostareIlFocus( fotoRitoccoUserControl );
 		}
@@ -1049,6 +1089,28 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			// portaInPrimoPianoFotina( imageLogino );
 
+		}
+		
+		/// <summary>
+		/// Creo adorner con le menigliette per gestire la scritta
+		/// </summary>
+		void creareManiglietteScritta() {
+
+			// Cerco la viewbox per agganciare le manigliette
+			var viewbox = AiutanteUI.FindVisualChild<Viewbox>( gridRitocco, "viewBoxScritta" );
+			AddAdorner( viewbox );
+
+		}
+
+		void rimuovereManiglietteScritta() {
+			// Rimuovo eventuale adorner dalla scritta
+			AdornerLayer adornerlayer = AdornerLayer.GetAdornerLayer( viewBoxScritta );
+			var adorners = adornerlayer.GetAdorners( viewBoxScritta );
+			if( adorners != null ) {
+				for( int i = adorners.Length - 1; i >= 0; i-- ) {
+					adornerlayer.Remove( adorners[i] );
+				}
+			}
 		}
 
 		private Thickness calcolaCoordinateLogo( int wl, int hl, ref Image imageLogino ) {
@@ -1180,6 +1242,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			// Applicare le correzioni con il tasto SPAZIO
 			if( e.Key == Key.Space ) {
+
+				// Se premo lo spazio nella text box della scritta, non devo fare nulla: sto solo scrivere
+				if( ((FrameworkElement)e.OriginalSource).Name == "textBoxScritta" )
+					return;
 
 				if( _viewModel.modalitaEdit == ModalitaEdit.GestioneMaschere && _viewModel.possoSalvareMaschera ) {
 					salvareMascheraButton_Click( null, null );
@@ -1398,6 +1464,59 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			// Se sto modificando, non permetto il tasto destro
 			if( _viewModel.modificheInCorso || _viewModel.modalitaEdit == ModalitaEdit.GestioneMaschere )
 				e.Handled = true;
+		}
+
+		private void aggiungereTestoButton_Click( object sender, RoutedEventArgs e ) {
+		
+			TextPath testo99 = new TextPath();
+			testo99.Name = "Testo99";
+			testo99.Text = "Prova ciao mare\nVado a capo";
+			testo99.FontSize = 50;
+			testo99.FontFamily = new FontFamily( "Consolas,Courier New" );
+			testo99.StrokeThickness = 2;
+			testo99.Fill = Brushes.Blue;
+			testo99.Stroke = Brushes.Red;
+//			testo99.Height = 60;
+//			testo99.Width = 200;
+
+			Viewbox vb = new Viewbox();
+			vb.Name = "ViewBox99";
+			vb.Child = testo99;
+
+//			gridRitocco.Children.Add( testo99 );
+//			AddAdorner( testo99 );
+			gridRitocco.Children.Add( vb );
+			AddAdorner( vb );
+
+			/*
+						TextPath testo2 = new TextPath();
+						testo2.Text = "Sassolini belli";
+						testo2.FontFamily = new FontFamily( "Balloon" );
+						testo2.StrokeThickness = 3;
+						testo2.Stroke = Brushes.Green;
+						testo2.FontSize = 18;
+						testo2.Fill = new ImageBrush( new BitmapImage( new Uri( @"pack://application:,,,/Digiphoto.Lumen.UI;component/Resources/riempimenti/rocks.jpg" ) ) );
+						testo2.Height = 60;
+						testo2.Width = 150;
+						Canvas.SetLeft( testo2, 200 );
+						Canvas.SetTop( testo2, 100 );
+
+						this.gridRitocco.Children.Add( testo1 );
+						this.gridRitocco.Children.Add( testo2 );
+			*/
+
+			//			AddAdorner( testo2 );
+
+			//
+			/*
+
+						Label l = new Label();
+						l.Content = "Prova di una bella scritta";
+						vb.Child = l;
+						vb.Width = 100;
+
+						this.gridRitocco.Children.Add( vb );
+			*/
 		}
 	}
 }

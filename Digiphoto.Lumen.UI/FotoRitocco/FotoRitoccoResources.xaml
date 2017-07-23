@@ -196,6 +196,10 @@
 
     </DataTemplate>
 
+	<Style x:Key="panelTestoStyle" TargetType="Panel" BasedOn="{StaticResource globalPanelGradientStyle}">
+		<Setter Property="Width" Value="190" />
+	</Style>
+
 	<Style x:Key="panelLeveRitoccoStyle" TargetType="Panel" BasedOn="{StaticResource globalPanelGradientStyle}">
 		<Setter Property="Width" Value="190" />
 		

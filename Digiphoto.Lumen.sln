@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{32CE8606-F9DB-44D9-85C0-DD3BD21DBB9D}"
 	ProjectSection(SolutionItems) = preProject
@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.SelfService
 		{041DB5F1-C9BB-4152-BD4F-6FC23BFB4B38} = {041DB5F1-C9BB-4152-BD4F-6FC23BFB4B38}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.PresentationFramework", "Digiphoto.Lumen.PresentationFramework\Digiphoto.Lumen.PresentationFramework.csproj", "{8803E78F-A9AD-479C-9316-463E7218334D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{1A69FF97-734B-4BFF-9ED0-926362C1C48B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A69FF97-734B-4BFF-9ED0-926362C1C48B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A69FF97-734B-4BFF-9ED0-926362C1C48B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8803E78F-A9AD-479C-9316-463E7218334D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8803E78F-A9AD-479C-9316-463E7218334D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8803E78F-A9AD-479C-9316-463E7218334D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8803E78F-A9AD-479C-9316-463E7218334D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
