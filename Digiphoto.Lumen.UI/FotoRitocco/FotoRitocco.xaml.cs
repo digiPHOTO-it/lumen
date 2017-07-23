@@ -746,30 +746,14 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			// salvaCanvasSuFile( canvasDefinitivo, @"c:\temp\definitivo.jpg" );
 
-			// Non ho capito perchè, ma se non assegno questo canvas ad una finestra, 
-			// allora quando lo andrò a salvare su disco, l'immagine apparirà tutta nera.
-			// boh!...   Con questo trucco tutto si sistema.
-			Window w = new Window();
-			try {
+			// Devo "Arrangiare" il canvas altrimenti non ha dimensione (e la foto viene nera)
+			var size = new Size( canvasDefinitivo.Width, canvasDefinitivo.Height );
+			canvasDefinitivo.Measure( size );
+			canvasDefinitivo.Arrange( new Rect( size ) );
 
-				w.Content = canvasDefinitivo;
-				bool voglioDebuggare = false;
-				if( ! voglioDebuggare ) {
-					w.Visibility = Visibility.Hidden;
-					w.Show();
-				} else {
-					// per debug si può anche visualizzare il risultato
-					w.Visibility = Visibility.Visible;
-					w.ShowDialog();
-				}
+			RenderTargetBitmap bitmapIncorniciata = componiBitmapDaMaschera( canvasDefinitivo );
 
-				RenderTargetBitmap bitmapIncorniciata = componiBitmapDaMaschera( canvasDefinitivo );
-
-				_viewModel.salvareImmagineIncorniciata(firstFotoInCanvas ,bitmapIncorniciata );
-
-			} finally {
-				w.Close();
-			}
+			_viewModel.salvareImmagineIncorniciata(firstFotoInCanvas ,bitmapIncorniciata );
 
 			azzeraGestioneMaschere();
 		}
@@ -1105,10 +1089,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		void rimuovereManiglietteScritta() {
 			// Rimuovo eventuale adorner dalla scritta
 			AdornerLayer adornerlayer = AdornerLayer.GetAdornerLayer( viewBoxScritta );
-			var adorners = adornerlayer.GetAdorners( viewBoxScritta );
-			if( adorners != null ) {
-				for( int i = adorners.Length - 1; i >= 0; i-- ) {
-					adornerlayer.Remove( adorners[i] );
+			if( adornerlayer != null ) { 
+				var adorners = adornerlayer.GetAdorners( viewBoxScritta );
+				if( adorners != null ) {
+					for( int i = adorners.Length - 1; i >= 0; i-- ) {
+						adornerlayer.Remove( adorners[i] );
+					}
 				}
 			}
 		}
