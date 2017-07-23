@@ -1575,34 +1575,6 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 
-		public void calcolaFotoCorrenteSelezionataScorrimento( int direzione ) {
-
-throw new NotImplementedException( "TODO da rivedere");
-
-			int posiz = -1;
-			if( fotoCorrenteSelezionataScorrimento != null )
-				posiz = fotografieCW.SelectedItems.IndexOf( fotoCorrenteSelezionataScorrimento );
-
-			if( posiz < 0 )
-				posiz = fotografieCW.SelectedItems.IndexOf( fotoCorrente );
-			
-			
-			// Ho già un valore memorizzato. Vediamo se ho un elenco su cui iterare.
-			if( posiz >= 0 ) {
-				posiz += direzione;
-				if( posiz < 0 )
-					posiz = fotografieCW.SelectedItems.Count - 1;  // fondo
-				else if( posiz >= fotografieCW.SelectedItems.Count )
-					posiz = 0;
-			}
-
-			if( posiz >= 0 ) {
-				fotoCorrenteSelezionataScorrimento = fotografieCW.SelectedItems.ElementAt( posiz );
-			} else
-				fotoCorrenteSelezionataScorrimento = null;  // non ho rimediato nulla.
-
-		}
-
 		/// <summary>
 		/// In questa routine non si deve usare la collezione di foto presente nel servizio,
 		/// ma occorre usare la collectionview mia interna.
@@ -1662,10 +1634,6 @@ throw new NotImplementedException( "TODO da rivedere");
 
 		}
 
-
-		private const int SLOT_REFRESH = 20;
-		private int _percRefresh = 0;
-
 		/// <summary>
 		/// Eseguo le operazioni di idratazione immagini direttamente in questo metodo perché solo questo metodo del background worker
 		/// viene eseguito nel thread della UI. In questo modo posso far visualizzare le foto man mano che vengono idratate
@@ -1675,9 +1643,6 @@ throw new NotImplementedException( "TODO da rivedere");
 		void bkgIdrata_ProgressChanged( object sender, ProgressChangedEventArgs e ) {
 
 			if( e.UserState == null ) {
-
-				// Azzeramento : inizio un nuovo ciclo di idratazione
-				_percRefresh = SLOT_REFRESH;
 
 			} else {
 
@@ -1886,7 +1851,8 @@ throw new NotImplementedException( "TODO da rivedere");
 
 			LumenApplication.Instance.bus.Publish( msg );
 
-			deselezionareTutto();
+			// Lascio selezionato
+			// deselezionareTutto();
 		
 		}
 
@@ -2066,15 +2032,47 @@ throw new NotImplementedException( "TODO da rivedere");
 
 		public void OnNext( FotoModificateMsg fmMsg ) {
 
+			DateTime prima = DateTime.Now;
+		
+			// In un mondo bello ,
+			// quando vado a rileggere i provini, dovrei farlo nel thread della UI per poter vedere i cambiamenti
+			// Purtroppo però il binding non avviene sull'attributo "imgProvino" che cambia, ma il binding è sulla intera Fotografia
+			// che però non cambia. 
+			// Quindi non seve. Sarò costretto a fare il refresh della CW
+//			Application.Current.Dispatcher.BeginInvoke(
+//				new Action( () => {
+					rinfrescaFotoModificate( fmMsg.fotos );
+//							}
+//						) );
+
+
+			TimeSpan elapsed = DateTime.Now.Subtract( prima );
+			_giornale.Debug( "rinfresco foto modificate gallery tempo durata ms = " + elapsed.TotalMilliseconds );
+		}
+
+		private void rinfrescaFotoModificate( List<Fotografia> fotos ) {
+			
 			bool almenoUna = false;
 
-			foreach( Fotografia modificata in fmMsg.fotos ) {
+
+			foreach( Fotografia modificata in fotos ) {
+
+				// List<Fotografia> lista = (List < Fotografia > )fotografieCW.SourceCollection;
+
 
 				int pos = fotografieCW.IndexOf( modificata );
 				if( pos >= 0 ) {
 					almenoUna = true;
+
+					// Estraggo l'oggetto
 					Fotografia f = (Fotografia)fotografieCW.GetItemAt( pos );
-                    AiutanteFoto.disposeImmagini( f, IdrataTarget.Provino );
+
+					// TODO
+					// Per evitare di chiamare il metodo refresh che è molto lento, tolgo e rimetto l'elemento dalla collezione
+					// lista.RemoveAt( pos );
+					// fotografieCW.RemoveAt( pos );
+
+					AiutanteFoto.disposeImmagini( f, IdrataTarget.Provino );
 
 					// Se la foto è stata modificata, allora mi copio le correzioni.
 					f.correzioniXml = modificata.correzioniXml;
@@ -2096,14 +2094,20 @@ throw new NotImplementedException( "TODO da rivedere");
 						else
 							AiutanteFoto.idrataImmagineDaStampare( f );
 					}
+
+
 				}
 			}
 
 			if( almenoUna ) {
+				// Sono costretto a fare il refresh perché il ProperyChange su imgProvino non sortisce effetto alcuno.
+				// Infatti il binding è sulla intera Fotografia che non cambia. (questo è dovuto al fatto che dobbiamo scegliere il provino o la risultante tramite un converter.
 				fotografieCW.Refresh();
 				// OnPropertyChanged( "fotografieCW" );
 			}
+
 		}
+
 
 		public void OnNext(ClonaFotoMsg value)
 		{
@@ -2207,7 +2211,7 @@ throw new NotImplementedException( "TODO da rivedere");
 		}
 
 		#endregion MemBus
-
+		
 		private void ricreaCollectionViewFoto( List<Fotografia> fotos ) {
 
 			// Non so se possa servire, ma prima di abbandonare al suo destino la vecchia collection view, libero i listener

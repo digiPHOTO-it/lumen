@@ -753,6 +753,10 @@
       <Project>{83D8301E-7999-4179-962C-1BFA507F5396}</Project>
       <Name>Digiphoto.Lumen.Model</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Digiphoto.Lumen.PresentationFramework\Digiphoto.Lumen.PresentationFramework.csproj">
+      <Project>{8803e78f-a9ad-479c-9316-463e7218334d}</Project>
+      <Name>Digiphoto.Lumen.PresentationFramework</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <SplashScreen Include="SplashScreen1.png" />
@@ -863,6 +867,7 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\riempimenti\rocks.jpg" />
     <Resource Include="Resources\AzioniSelezionate-16x16.png" />
     <Resource Include="Resources\AzioniSingola-16x16.png" />
     <Resource Include="Resources\AzioniTutte-16x16.png" />

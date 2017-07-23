@@ -61,7 +61,7 @@ namespace Digiphoto.Lumen.UI.Converters {
 			try
 			{
 				image.BeginInit();
-				image.UriSource =  new Uri(@"pack://application:,,,/Digiphoto.Lumen.UI;component/Resources/cornice_empty-48x48.png");;
+				image.UriSource =  new Uri(@"pack://application:,,,/Digiphoto.Lumen.UI;component/Resources/cornice_empty-48x48.png");
 				image.EndInit();
 			}
 			catch

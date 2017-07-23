@@ -32,6 +32,7 @@ using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Servizi.EntityRepository;
 using Digiphoto.Lumen.Core.Collections;
 
+
 namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 
@@ -377,6 +378,27 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		/// <summary>
+		/// Al momento gestisco un solo logo. In futuro potrei gestirne anche più di uno, 
+		/// oppure delle ImgOverlay in genere.
+		/// </summary>
+		private Scritta _scritta;
+		public Scritta scritta
+		{
+			get
+			{
+				return _scritta;
+			}
+			set
+			{
+				if( _scritta != value ) {
+					_scritta = value;
+					OnPropertyChanged( "scritta" );
+					OnPropertyChanged( "isScrittaVisibile" );
+				}
+			}
+		}
+
 		public LuminositaContrastoEffect luminositaContrastoEffect {
 
 			get {
@@ -453,6 +475,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		public bool isGrayscaleChecked {
 			get {
 				return (effetti != null && effetti.Exists( e => e is GrayscaleEffect ));
+			}
+		}
+
+		public bool isScrittaVisibile {
+			get {
+				return modalitaEdit == ModalitaEdit.FotoRitocco && scritta != null;
 			}
 		}
 
@@ -1028,6 +1056,18 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
             }
 		}
 
+		private RelayCommand _aggiungereScrittaCommand;
+		public ICommand aggiungereScrittaCommand
+		{
+			get
+			{
+				if( _aggiungereScrittaCommand == null ) {
+					_aggiungereScrittaCommand = new RelayCommand( p => aggiungereScritta(), p => possoModificareLaFoto );
+				}
+				return _aggiungereScrittaCommand;
+			}
+		}
+
 		#endregion Comandi
 
 		// ******************************************************************************************************
@@ -1260,6 +1300,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			addCorrezione( TipoCorrezione.Zoom,     trasformazioni.Children[TFXPOS_ZOOM]      );
 			addCorrezione( TipoCorrezione.Trasla,   trasformazioni.Children[TFXPOS_TRANSLATE] );
 
+			// La scritta la metto per ultimo perché potrebbe andare su di una immagine traslata o zoomata
+			if( scritta != null )
+				addCorrezione( scritta );
+
 			// IL logo lo metto per ultimo perché potrebbe andare su di una immagine traslata o zoomata
 			if( logo != null ) {
 				addCorrezione( logo );
@@ -1454,6 +1498,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			trasformazioni.Children.Add( tfxNulla );
 
 			logo = null;
+			scritta = null;
 
 			// Spengo le proprietà che indicano elementi correnti.
 			effettoCorrente = null;
@@ -1921,6 +1966,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 							logo = (Logo)c;  // Per ora ne gestisco solo uno.
 						}
 
+						if( c is Scritta ) {
+							scritta = (Scritta)c;  // Per ora ne gestisco solo uno.
+						}
+
 						if( c is Zoom )
 							this.quadroRuotato = ((Zoom)c).quadroRuotato;
 					}
@@ -2252,8 +2301,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			addCorrezione(correzioni, TipoCorrezione.Zoom, trasformazioni.Children[TFXPOS_ZOOM]);
 			addCorrezione(correzioni, TipoCorrezione.Trasla, trasformazioni.Children[TFXPOS_TRANSLATE]);
 
+			// La scritta lo metto per ultimo perché potrebbe andare su di una immagine traslata o zoomata
+			if( scritta != null ) {
+				addCorrezione( correzioni, scritta );
+			}
+
 			// IL logo lo metto per ultimo perché potrebbe andare su di una immagine traslata o zoomata
-			if (logo != null)
+			if( logo != null)
 			{
 				addCorrezione(correzioni, logo);
 			}
@@ -2310,13 +2364,33 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			return azioneAuto;
 		}
 
+		/// <summary>
+		/// Aggiunge una correzione di tipo Testo
+		/// </summary>
+		void aggiungereScritta() {
 
-#endregion Metodi
+			if( scritta == null ) {
+				scritta = ScrittaCorrettore.creaScrittaDefault();
+			} else {
+
+#if TODO_VEDIAMO_SE_SERVE
+				// Devo provocare il property change perché la UI si aggiorni. Clono quindi il logo per riassegnarlo.
+				Scritta clone = (Scritta) scritta.Clone();
+
+				scritta = clone; // Provoca il propertychanged
+#endif
+			}
+
+			forseInizioModifiche();
+
+		}
+
+		#endregion Metodi
 
 		// **********************************************************************************************
 		// **********************************************************************************************
 
-#region Gestori Eventi
+		#region Gestori Eventi
 
 		protected void onEditorModeChanged( EditorModeEventArgs e ) {
 			if( editorModeChangedEvent != null )

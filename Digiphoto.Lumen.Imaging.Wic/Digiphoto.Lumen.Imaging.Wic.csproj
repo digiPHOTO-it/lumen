@@ -136,6 +136,7 @@
     <Compile Include="src\Wic\Correzioni\CropCorrettore.cs" />
     <Compile Include="src\Wic\Correzioni\LogoCorrettore.cs" />
     <Compile Include="src\Wic\Correzioni\MascheraCorrettore.cs" />
+    <Compile Include="src\Wic\Correzioni\ScrittaCorrettore.cs" />
     <Compile Include="src\Wic\FotoRitoccoSrvImpl.cs" />
     <Compile Include="src\Wic\Correzioni\GimpCorrettore.cs" />
     <Compile Include="src\Wic\Correzioni\LuminositaContrastoCorrettore.cs" />
@@ -171,6 +172,10 @@
       <Project>{83D8301E-7999-4179-962C-1BFA507F5396}</Project>
       <Name>Digiphoto.Lumen.Model</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Digiphoto.Lumen.PresentationFramework\Digiphoto.Lumen.PresentationFramework.csproj">
+      <Project>{8803e78f-a9ad-479c-9316-463e7218334d}</Project>
+      <Name>Digiphoto.Lumen.PresentationFramework</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

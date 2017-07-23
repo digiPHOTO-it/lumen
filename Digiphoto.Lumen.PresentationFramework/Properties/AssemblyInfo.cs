@@ -1,17 +1,16 @@
-﻿using System.Resources;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle( "Digiphoto.Lumen.Imaging.Text" )]
-[assembly: AssemblyDescription( "" )]
+[assembly: AssemblyTitle("Digiphoto.Lumen.PresentationFramework")]
+[assembly: AssemblyDescription( "Estensioni del framework grafico .net" )]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany( "" )]
-[assembly: AssemblyProduct("Digiphoto.Lumen.Imaging.Text")]
-[assembly: AssemblyCopyright( "Copyright ©  2017" )]
+[assembly: AssemblyCompany( "digiPHOTO.it" )]
+[assembly: AssemblyProduct("Digiphoto.Lumen.PresentationFramework")]
+[assembly: AssemblyCopyright( "Copyright © digiPHOTO 2014-2017" )]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -21,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("e0aa9317-c048-497a-a8e8-cdb8289cb54f")]
+[assembly: Guid("8803e78f-a9ad-479c-9316-463e7218334d")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -33,7 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion( "1.0.0.0" )]
-[assembly: AssemblyFileVersion( "1.0.0.0" )]
-[assembly: NeutralResourcesLanguage( "it" )]
-
+[assembly: AssemblyVersion( "2.1.0.*" )]
+[assembly: AssemblyFileVersion( "2.1.0.99" )]

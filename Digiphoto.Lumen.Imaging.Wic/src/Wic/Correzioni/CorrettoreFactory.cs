@@ -68,6 +68,8 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 					correttore = new LogoCorrettore();
 				else if( tipo == typeof( AreaRispetto ) )
 					correttore = new AreaRispettoCorrettore();
+				else if( tipo == typeof( Scritta ) )
+					correttore = new ScrittaCorrettore();
 
 				if( correttore != null ) {
 					_cache.Add( tipo, correttore );  // Metto in cache

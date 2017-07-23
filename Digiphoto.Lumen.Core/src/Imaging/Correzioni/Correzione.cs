@@ -32,6 +32,7 @@ namespace Digiphoto.Lumen.Imaging.Correzioni {
 	[XmlInclude(typeof(Trasla))]
 	[XmlInclude(typeof(Maschera))]
 	[XmlInclude( typeof( Logo ) )]
+	[XmlInclude( typeof( Scritta ) )]
 	public abstract class Correzione {
 
 		public virtual bool isSommabile( Correzione altra ) {
