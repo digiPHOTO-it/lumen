@@ -682,7 +682,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 
 
-
+			#region Correzioni
 			// ::: Gestisco le correzioni
 			TransformGroup traGroup = new TransformGroup();
 			IList<ShaderEffect> effetti = null;
@@ -719,6 +719,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 				}
 			}
+			#endregion Correzioni
 
 
 			if( effetti != null && effetti.Count > 0 )
@@ -762,35 +763,21 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 				canvas.Children.Add( imageMaschera );
 			}
 
-			// Non ho capito perchè, ma se NON assegno questo canvas ad una finestra, 
-			// allora quando lo andrò a salvare su disco, l'immagine apparirà tutta nera.
-			// In questo modo forzo l'immagine ad essere rivisualizzata e quindi il salvataggio funziona
-			Window w = new Window();
+			// Devo "Arrangiare" il canvas altrimenti non ha dimensione (e la foto viene nera)
+			var size = new Size( wwDest, hhDest );
+			canvas.Measure( size );
+			canvas.Arrange( new Rect( size ) );
+
 			IImmagine immagineMod = null;
-			try {
 
-				w.Content = canvas;
-				bool voglioDebuggare = false;
-				if( !voglioDebuggare ) {
-					w.Visibility = Visibility.Hidden;
-					w.Show();
-				} else {
-					// per debug si può anche visualizzare il risultato
-					w.Visibility = Visibility.Visible;
-					w.ShowDialog();
-				}
 
-				// Creo la bitmap di ritorno
-				RenderTargetBitmap rtb = new RenderTargetBitmap( (int)canvas.Width, (int)canvas.Height, 96d, 96d, PixelFormats.Pbgra32 );
-				rtb.Render( canvas );
-				if( rtb.CanFreeze )
-					rtb.Freeze();
+			// Creo la bitmap di ritorno
+			RenderTargetBitmap rtb = new RenderTargetBitmap( (int)canvas.Width, (int)canvas.Height, 96d, 96d, PixelFormats.Pbgra32 );
+			rtb.Render( canvas );
+			if( rtb.CanFreeze )
+				rtb.Freeze();
 
-				immagineMod = new ImmagineWic( rtb );
-
-			} finally {
-				w.Close();
-			}
+			immagineMod = new ImmagineWic( rtb );
 
 
 			// Per ultima cosa, mi rimane fuori un evenuale logo ...
