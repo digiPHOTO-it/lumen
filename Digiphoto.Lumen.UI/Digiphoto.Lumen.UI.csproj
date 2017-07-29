@@ -226,6 +226,7 @@
     </Compile>
     <Compile Include="Converters\BoolInverterConverter.cs" />
     <Compile Include="Converters\BooleanToSelectionModeConverter.cs" />
+    <Compile Include="Converters\ColorHexConverter.cs" />
     <Compile Include="Converters\FiltroSelezConverter.cs" />
     <Compile Include="Converters\StatoMasterizzazioneVisibilityConverter.cs" />
     <Compile Include="Converters\CollectionViewVisibilityConverter.cs" />

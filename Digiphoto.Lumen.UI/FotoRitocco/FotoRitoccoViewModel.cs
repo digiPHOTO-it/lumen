@@ -241,6 +241,15 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		public bool possoAggiungereScritta
+		{
+			get
+			{
+				return scritta == null && possoModificareLaFoto;
+			}
+		}
+
+
 		public List<ShaderEffectBase> effetti {
 			get;
 			set;
@@ -1062,7 +1071,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			get
 			{
 				if( _aggiungereScrittaCommand == null ) {
-					_aggiungereScrittaCommand = new RelayCommand( p => aggiungereScritta(), p => possoModificareLaFoto );
+					_aggiungereScrittaCommand = new RelayCommand( p => aggiungereScritta(), p => possoAggiungereScritta );
 				}
 				return _aggiungereScrittaCommand;
 			}
@@ -2369,18 +2378,17 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// </summary>
 		void aggiungereScritta() {
 
-			if( scritta == null ) {
-				scritta = ScrittaCorrettore.creaScrittaDefault();
-			} else {
+			if( scritta != null )
+				throw new InvalidOperationException( "Scritta già presente" );
 
-#if TODO_VEDIAMO_SE_SERVE
-				// Devo provocare il property change perché la UI si aggiorni. Clono quindi il logo per riassegnarlo.
-				Scritta clone = (Scritta) scritta.Clone();
+				
+			scritta = ScrittaCorrettore.creaScrittaDefault();
 
-				scritta = clone; // Provoca il propertychanged
-#endif
-			}
+			// Questi due valori mi servono per poter riproporzionare in uscita.
+			scritta.rifContenitoreW = Convert.ToInt32( this.frpContenitoreW );
+			scritta.rifContenitoreH = Convert.ToInt32( this.frpContenitoreH );
 
+			
 			forseInizioModifiche();
 
 		}

@@ -81,10 +81,11 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				// cambiata la scritta di testo
 				if( _viewModel.scritta == null )
 					rimuovereManiglietteScritta();
-				else
+				else {
 					creareManiglietteScritta();
 
-			//		this.Dispatcher.BeginInvoke( creaManiglietteScrittaAction );
+					riposizionaViewBoxScritta();
+				}
 			}
 
 
@@ -475,12 +476,15 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		}
 
-		private void AddAdorner( UIElement element ) {
+		private ComposingAdorner AddAdorner( UIElement element ) {
+			ComposingAdorner adorner = null;
 			AdornerLayer adornerlayer = AdornerLayer.GetAdornerLayer( element );
 			if( adornerlayer.GetAdorners( element ) == null || adornerlayer.GetAdorners( element ).Length == 0 ) {
-				ComposingAdorner adorner = new ComposingAdorner( element );
+				adorner = new ComposingAdorner( element );
 				adornerlayer.Add( adorner );
 			}
+
+			return adorner;
 		}
 
 		private void menuItemBringToFront_Click( object sender, RoutedEventArgs e ) {
@@ -697,6 +701,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			// Non so se serve, ma dovrebbe provocare un ricalcolo delle posizioni dei componenti all'interno del canvas.
 			c.InvalidateMeasure();
 			c.InvalidateArrange();
+
+			// Devo "Arrangiare" il canvas altrimenti non ha dimensione (e la foto viene nera)
+			var size = new Size( newWidth, newHeight );
+			c.Measure( size );
+			c.Arrange( new Rect( size ) );
+			
 			return c;
 		}
 
@@ -745,11 +755,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			Canvas canvasDefinitivo = trasformaCanvasDefinitivo();
 
 			// salvaCanvasSuFile( canvasDefinitivo, @"c:\temp\definitivo.jpg" );
-
-			// Devo "Arrangiare" il canvas altrimenti non ha dimensione (e la foto viene nera)
-			var size = new Size( canvasDefinitivo.Width, canvasDefinitivo.Height );
-			canvasDefinitivo.Measure( size );
-			canvasDefinitivo.Arrange( new Rect( size ) );
 
 			RenderTargetBitmap bitmapIncorniciata = componiBitmapDaMaschera( canvasDefinitivo );
 
@@ -1075,6 +1080,29 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		}
 		
+
+		/// <summary>
+		/// TODO bisognerebbe gestirla correttamente in base alle posizioni memorizzate
+		/// </summary>
+		void riposizionaViewBoxScritta() {
+
+			if( _viewModel.scritta.isPosizioneOriginaria ) {
+				// E' una scritta che è appena stata creata. 
+				// Riposiziono il controllo al centro
+				viewBoxScritta.Width = double.NaN;
+				viewBoxScritta.Height = double.NaN;
+
+				// Se ho degli elementi nel gruppo, li pulisco.
+				if( viewBoxScritta.RenderTransform != null && viewBoxScritta.RenderTransform is TransformGroup )
+					(viewBoxScritta.RenderTransform as TransformGroup).Children.Clear();
+
+				Canvas.SetLeft( viewBoxScritta, double.NaN );
+				Canvas.SetTop( viewBoxScritta, double.NaN );
+			}
+
+
+		}
+
 		/// <summary>
 		/// Creo adorner con le menigliette per gestire la scritta
 		/// </summary>
@@ -1082,7 +1110,105 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			// Cerco la viewbox per agganciare le manigliette
 			var viewbox = AiutanteUI.FindVisualChild<Viewbox>( gridRitocco, "viewBoxScritta" );
-			AddAdorner( viewbox );
+			
+			// Centro e posiziono rispetto alla immagine della foto
+			viewbox.Width = borderCornice.ActualWidth;
+			Canvas.SetLeft( viewbox, Canvas.GetLeft( borderCornice ) );
+			
+
+			var adorner = AddAdorner( viewbox );
+
+			adorner.CambiatoQualcosa += Adorner_CambiatoQualcosa;
+		}
+
+		private void Adorner_CambiatoQualcosa( object sender, EventArgs e ) {
+			_viewModel.forseInizioModifiche();
+		}
+
+
+
+
+
+
+		/// <summary>
+		/// Dagli oggetti video (UI), creo i valori per la Scritta
+		/// in modo che sia poi riproducibile sui vari formati della foto
+		/// 
+		/// l'oggetto Scritta che è un oggetto particolarmente complesso
+		/// perché ha lui stesso le trasformazioni
+		/// </summary>
+		void uiToScritta() {
+
+			if( _viewModel == null || _viewModel.scritta == null )
+				return;
+
+#if false
+			// La scritta ha come contenitore la "gridRitocco"
+			Vector offsetScritta = VisualTreeHelper.GetOffset( viewBoxScritta );
+			// Mentre invece la immagine ha come contenitore "borderImage1"
+			Vector offsetBorderImage = VisualTreeHelper.GetOffset( borderImage1 );
+#endif
+
+
+
+			// Gia che si sono setto anche le dimensioni del contenitore
+	//		var tt = (viewBoxScritta.RenderTransform as TransformGroup).Children;
+
+			var qq = textPathScritta.PointToScreen( new Point( textPathScritta.ActualWidth, textPathScritta.ActualHeight ) ) - textPathScritta.PointToScreen( new Point( 0, 0 ) );
+			_viewModel.scritta.width = Convert.ToInt32( qq.X );
+			_viewModel.scritta.height = Convert.ToInt32( qq.Y );
+
+
+
+			GeneralTransform generalTransform1 = viewBoxScritta.TransformToAncestor( gridRitocco );
+			Point currentPoint1 = generalTransform1.Transform( new Point( 0, 0 ) );
+#if true
+			_viewModel.scritta.rifContenitoreW = Convert.ToInt32( imageRitoccata.ActualWidth );
+			_viewModel.scritta.rifContenitoreH = Convert.ToInt32( imageRitoccata.ActualHeight );
+
+			GeneralTransform generalTransform2 = viewBoxScritta.TransformToVisual( imageRitoccata );
+			Point currentPoint2 = generalTransform2.Transform( new Point( 0, 0 ) );
+
+			_viewModel.scritta.left = Convert.ToInt32( currentPoint2.X );
+			_viewModel.scritta.top = Convert.ToInt32( currentPoint2.Y );
+#else
+			_viewModel.scritta.rifContenitoreW = borderImage1.ActualWidth;
+			_viewModel.scritta.rifContenitoreH = borderImage1.ActualHeight;
+
+			// La differenza con il caso precedente è di un solo pixel dovuto al riquadro del bordo.
+			GeneralTransform generalTransform3 = viewBoxScritta.TransformToVisual( borderImage1 );
+			Point currentPoint3 = generalTransform3.Transform( new Point( 0, 0 ) );
+
+			_viewModel.scritta.left = currentPoint3.X;
+			_viewModel.scritta.top = currentPoint3.Y;
+#endif
+
+			var transform = viewBoxScritta.RenderTransform;
+			if( transform is TransformGroup ) {
+
+			} 
+
+
+#if false
+			// Cerco di capire se ha subito una traslazione
+			AdornerLayer adornerlayer = AdornerLayer.GetAdornerLayer( viewBoxScritta );
+			if( adornerlayer != null ) {
+				var adorners = adornerlayer.GetAdorners( viewBoxScritta );
+				if( adorners != null ) {
+					foreach( Adorner adorner in adorners ) {
+
+						if( adorner.RenderTransform != null ) {
+
+							if( adorner.RenderTransform is MatrixTransform ) {
+								// Solo spostamento (traslazione)
+							} else {
+								var qq = adorner.LayoutTransform.Transform;
+							}
+
+						}
+
+					}
+#endif
 
 		}
 
@@ -1093,6 +1219,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				var adorners = adornerlayer.GetAdorners( viewBoxScritta );
 				if( adorners != null ) {
 					for( int i = adorners.Length - 1; i >= 0; i-- ) {
+						ComposingAdorner ca = (adorners[i] as ComposingAdorner);
+						ca.CambiatoQualcosa -= Adorner_CambiatoQualcosa;
 						adornerlayer.Remove( adorners[i] );
 					}
 				}
@@ -1452,57 +1580,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				e.Handled = true;
 		}
 
-		private void aggiungereTestoButton_Click( object sender, RoutedEventArgs e ) {
-		
-			TextPath testo99 = new TextPath();
-			testo99.Name = "Testo99";
-			testo99.Text = "Prova ciao mare\nVado a capo";
-			testo99.FontSize = 50;
-			testo99.FontFamily = new FontFamily( "Consolas,Courier New" );
-			testo99.StrokeThickness = 2;
-			testo99.Fill = Brushes.Blue;
-			testo99.Stroke = Brushes.Red;
-//			testo99.Height = 60;
-//			testo99.Width = 200;
-
-			Viewbox vb = new Viewbox();
-			vb.Name = "ViewBox99";
-			vb.Child = testo99;
-
-//			gridRitocco.Children.Add( testo99 );
-//			AddAdorner( testo99 );
-			gridRitocco.Children.Add( vb );
-			AddAdorner( vb );
-
-			/*
-						TextPath testo2 = new TextPath();
-						testo2.Text = "Sassolini belli";
-						testo2.FontFamily = new FontFamily( "Balloon" );
-						testo2.StrokeThickness = 3;
-						testo2.Stroke = Brushes.Green;
-						testo2.FontSize = 18;
-						testo2.Fill = new ImageBrush( new BitmapImage( new Uri( @"pack://application:,,,/Digiphoto.Lumen.UI;component/Resources/riempimenti/rocks.jpg" ) ) );
-						testo2.Height = 60;
-						testo2.Width = 150;
-						Canvas.SetLeft( testo2, 200 );
-						Canvas.SetTop( testo2, 100 );
-
-						this.gridRitocco.Children.Add( testo1 );
-						this.gridRitocco.Children.Add( testo2 );
-			*/
-
-			//			AddAdorner( testo2 );
-
-			//
-			/*
-
-						Label l = new Label();
-						l.Content = "Prova di una bella scritta";
-						vb.Child = l;
-						vb.Width = 100;
-
-						this.gridRitocco.Children.Add( vb );
-			*/
+		private void applicareCorrezioniButton_Click( object sender, RoutedEventArgs e ) {
+			uiToScritta();
 		}
+
 	}
 }

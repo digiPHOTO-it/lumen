@@ -14,7 +14,6 @@ using System.Windows.Data;
 
 namespace Digiphoto.Lumen.UI.Adorners {
 
-
 	/// <summary>
 	/// Questo tipo di Adorner, mi serve per gestire la composizione delle foto
 	/// (gestione delle maschere).
@@ -23,6 +22,8 @@ namespace Digiphoto.Lumen.UI.Adorners {
 	/// rotate - scale - flip - move (traslare)
 	/// </summary>
 	public class ComposingAdorner : Adorner {
+
+		public event EventHandler<EventArgs> CambiatoQualcosa;
 
 		Thumb rotateHandle;
 		Thumb moveHandle;
@@ -387,6 +388,11 @@ namespace Digiphoto.Lumen.UI.Adorners {
 
 			outline.RenderTransform = Transform.Identity;
 			this.InvalidateArrange();
+
+			// Se qalcuno vuole essere notificato della avvenuta modifica
+			if( CambiatoQualcosa != null )
+				CambiatoQualcosa( this, EventArgs.Empty );
+
 		}
 
 
