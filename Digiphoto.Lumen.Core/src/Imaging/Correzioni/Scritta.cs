@@ -42,5 +42,45 @@ namespace Digiphoto.Lumen.Imaging.Correzioni {
 		public string fillImage { get; set; }
 
 		#endregion Corpo del font
+
+
+		/// <summary>
+		/// Posizione X della scritta rispetto alla immagine che la contiene
+		/// </summary>
+		public int left { set; get; }
+
+		/// <summary>
+		/// Posizione Y della scritta rispetto alla immagine che la contiene
+		/// </summary>
+		public int top { set; get; }
+
+		/// <summary>
+		/// Larghezza della scrittta comprensiva delle trasformazioni di zoom
+		/// </summary>
+		public int width { set; get; }
+
+		/// <summary>
+		/// Altezza della scrittta comprensiva delle trasformazioni di zoom
+		/// </summary>
+		public int height { set; get; }
+
+		/// <summary>
+		/// Dimensione x della immagine di riferimento che contiene la scritta
+		/// </summary>
+		public int rifContenitoreW { set; get; }
+
+		/// <summary>
+		/// Dimensione y della immagine di riferimento che contiene la scritta
+		/// </summary>
+		public int rifContenitoreH { set; get; }
+
+		/// <summary>
+		/// Questo attributo mi dice se la posizione è vuota (ovvero non ho nessuna trasformazione)
+		/// </summary>
+		public bool isPosizioneOriginaria {
+			get {
+				return( zoom == null && rotazione == null && traslazione == null ) ;
+			}
+		}
 	}
 }

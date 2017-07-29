@@ -9,6 +9,7 @@
              xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
              xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
              xmlns:extToolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+			 xmlns:med="clr-namespace:System.Windows.Media;assembly=PresentationCore"
 			 xmlns:lumP="clr-namespace:Digiphoto.Lumen.PresentationFramework;assembly=Digiphoto.Lumen.PresentationFramework"
              mc:Ignorable="d" 
              x:Name="fotoRitoccoUserControl"
@@ -42,205 +43,251 @@
 
 	<DockPanel LastChildFill="True" >
 
+		<StackPanel Orientation="Vertical" DockPanel.Dock="Right" >
+
+			<TabControl MinHeight="380">
+				<TabItem Header="ToolBox">
+					<!-- pulsantiera e levette dx -->
+					<StackPanel Name="panelLeveRitocco" Style="{StaticResource panelLeveRitoccoStyle}">
+
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="24" />
+								<ColumnDefinition />
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition MinHeight="30" />
+								<RowDefinition MinHeight="30"/>
+								<RowDefinition MinHeight="30"/>
+								<RowDefinition MinHeight="30"/>
+								<RowDefinition Height="20" />
+							</Grid.RowDefinitions>
+
+							<Button Name="buttonAbilitaLuminosita"  Grid.Row="0" Grid.Column="0" Command="{Binding resettareValoreEffettoCommand}" CommandParameter="Brightness" Style="{StaticResource stileBottoniResetSliders}" ToolTip="Luminosità reimposta" >
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/brightness-16x16.png" Grid.Row="0" Grid.Column="1" Style="{StaticResource stileIconaBottoniSliders}" />
+							</Button>
+
+							<Slider Name="sliderLuminosita" Minimum="-0.6" Maximum="0.6" Value="0" ValueChanged="sliderLuminosita_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.02" SmallChange="0.005" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="0.15" TickPlacement="TopLeft" Grid.Row="0" Grid.Column="2"  />
+
+							<Button Name="buttonAbilitaContrasto"  Grid.Row="1" Grid.Column="0" Command="{Binding resettareValoreEffettoCommand}" CommandParameter="Contrast" Style="{StaticResource stileBottoniResetSliders}" ToolTip="Contrasto reimposta">
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/contrast-16x16.png" Grid.Row="1" Grid.Column="1" Style="{StaticResource stileIconaBottoniSliders}" />
+							</Button>
+							<Slider Name="sliderContrasto" Minimum="0.5" Maximum="1.5" Value="1" ValueChanged="sliderContrasto_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.02" SmallChange="0.005" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="0.15" TickPlacement="TopLeft" Grid.Row="1" Grid.Column="2" />
+
+							<Button Name="buttonAbilitaRotate"  Grid.Row="2" Grid.Column="0" Command="{Binding ruotareCommand}" CommandParameter="0" Style="{StaticResource stileBottoniResetSliders}" ToolTip="Rotazione reimposta">
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/rotate-16x16.png" Grid.Row="2" Grid.Column="1" Style="{StaticResource stileIconaBottoniSliders}" />
+							</Button>
+							<Slider Name="sliderRuota" Minimum="-90" Maximum="90" Value="0" ValueChanged="sliderRuota_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" Grid.Row="2" Grid.Column="2" TickFrequency="30" TickPlacement="TopLeft"/>
 
 
-		<TabControl DockPanel.Dock="Right" >
+							<Button Name="buttonAbilitaZoom"  Grid.Row="3" Grid.Column="0" Command="{Binding zoomareCommand}" CommandParameter="1" ToolTip="Zoom reimposta" Style="{StaticResource stileBottoniResetSliders}" >
+								<Image  Grid.Row="3" Grid.Column="1" Source="/Digiphoto.Lumen.UI;component/Resources/zoom-16x16.png" Style="{StaticResource stileIconaBottoniSliders}" />
+							</Button>
+							<Slider Name="sliderZoom"
+							Minimum="0.2" Maximum="5" Value="1"
+							SmallChange="0.02"
+							ValueChanged="sliderZoom_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" 
+							ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" 
+							TickPlacement="TopLeft" Grid.Row="3" Grid.Column="2" />
 
-			<TabItem Header="ToolBox">
-				<!-- pulsantiera e levette dx -->
-				<StackPanel Name="panelLeveRitocco" Style="{StaticResource panelLeveRitoccoStyle}">
+							<Button Grid.Row="4" Grid.Column="0" Command="{Binding traslareCommand}" CommandParameter="0" Name="buttonResetTrasla" ToolTip="Traslazione reimposta" Style="{StaticResource stileBottoniResetSliders}" >
+								<Image  Grid.Row="4" Grid.Column="1" Source="/Digiphoto.Lumen.UI;component/Resources/move-16x16.png" Style="{StaticResource stileIconaBottoniSliders}" />
+							</Button>
+							<StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="2"  >
+								<Slider Name="sliderTraslaX" 
+								Value="0" 
+								ValueChanged="sliderTrasla_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" 
+								ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" 
+								MinWidth="60"
+								>
+									<Slider.Minimum>
+										<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="-1 * (y + ((x-1) * (y/2)))">
+											<Binding ElementName="sliderZoom" Path="Value" />
+											<!-- x -->
+											<Binding ElementName="borderImage1" Path="Width" />
+											<!-- y -->
+										</MultiBinding>
+									</Slider.Minimum>
+									<Slider.Maximum>
+										<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="1 * (y + ((x-1) * (y/2)))">
+											<Binding ElementName="sliderZoom" Path="Value" />
+											<!-- x -->
+											<Binding ElementName="borderImage1" Path="Width" />
+											<!-- y -->
+										</MultiBinding>
+									</Slider.Maximum>
+									<Slider.SmallChange>
+										<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/400">
+											<!-- x -->
+											<Binding ElementName="sliderTraslaX" Path="Maximum" />
+										</MultiBinding>
+									</Slider.SmallChange>
+									<Slider.LargeChange>
+										<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/200">
+											<!-- x -->
+											<Binding ElementName="sliderTraslaX" Path="Maximum" />
+										</MultiBinding>
+									</Slider.LargeChange>
+								</Slider>
 
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="24" />
-							<ColumnDefinition />
-						</Grid.ColumnDefinitions>
-						<Grid.RowDefinitions>
-							<RowDefinition MinHeight="30" />
-							<RowDefinition MinHeight="30"/>
-							<RowDefinition MinHeight="30"/>
-							<RowDefinition MinHeight="30"/>
-							<RowDefinition Height="20" />
-						</Grid.RowDefinitions>
-
-						<Button Name="buttonAbilitaLuminosita"  Grid.Row="0" Grid.Column="0" Command="{Binding resettareValoreEffettoCommand}" CommandParameter="Brightness" Style="{StaticResource stileBottoniResetSliders}" ToolTip="Luminosità reimposta" >
-							<Image Source="/Digiphoto.Lumen.UI;component/Resources/brightness-16x16.png" Grid.Row="0" Grid.Column="1" Style="{StaticResource stileIconaBottoniSliders}" />
-						</Button>
-
-						<Slider Name="sliderLuminosita" Minimum="-0.6" Maximum="0.6" Value="0" ValueChanged="sliderLuminosita_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.02" SmallChange="0.005" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="0.15" TickPlacement="TopLeft" Grid.Row="0" Grid.Column="2"  />
-
-						<Button Name="buttonAbilitaContrasto"  Grid.Row="1" Grid.Column="0" Command="{Binding resettareValoreEffettoCommand}" CommandParameter="Contrast" Style="{StaticResource stileBottoniResetSliders}" ToolTip="Contrasto reimposta">
-							<Image Source="/Digiphoto.Lumen.UI;component/Resources/contrast-16x16.png" Grid.Row="1" Grid.Column="1" Style="{StaticResource stileIconaBottoniSliders}" />
-						</Button>
-						<Slider Name="sliderContrasto" Minimum="0.5" Maximum="1.5" Value="1" ValueChanged="sliderContrasto_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.02" SmallChange="0.005" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" TickFrequency="0.15" TickPlacement="TopLeft" Grid.Row="1" Grid.Column="2" />
-
-						<Button Name="buttonAbilitaRotate"  Grid.Row="2" Grid.Column="0" Command="{Binding ruotareCommand}" CommandParameter="0" Style="{StaticResource stileBottoniResetSliders}" ToolTip="Rotazione reimposta">
-							<Image Source="/Digiphoto.Lumen.UI;component/Resources/rotate-16x16.png" Grid.Row="2" Grid.Column="1" Style="{StaticResource stileIconaBottoniSliders}" />
-						</Button>
-						<Slider Name="sliderRuota" Minimum="-90" Maximum="90" Value="0" ValueChanged="sliderRuota_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" Grid.Row="2" Grid.Column="2" TickFrequency="30" TickPlacement="TopLeft"/>
-
-
-						<Button Name="buttonAbilitaZoom"  Grid.Row="3" Grid.Column="0" Command="{Binding zoomareCommand}" CommandParameter="1" ToolTip="Zoom reimposta" Style="{StaticResource stileBottoniResetSliders}" >
-							<Image  Grid.Row="3" Grid.Column="1" Source="/Digiphoto.Lumen.UI;component/Resources/zoom-16x16.png" Style="{StaticResource stileIconaBottoniSliders}" />
-						</Button>
-						<Slider Name="sliderZoom"
-                        Minimum="0.2" Maximum="5" Value="1"
-                        SmallChange="0.02"
-                        ValueChanged="sliderZoom_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" 
-                        ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" 
-                        TickPlacement="TopLeft" Grid.Row="3" Grid.Column="2" />
-
-						<Button Grid.Row="4" Grid.Column="0" Command="{Binding traslareCommand}" CommandParameter="0" Name="buttonResetTrasla" ToolTip="Traslazione reimposta" Style="{StaticResource stileBottoniResetSliders}" >
-							<Image  Grid.Row="4" Grid.Column="1" Source="/Digiphoto.Lumen.UI;component/Resources/move-16x16.png" Style="{StaticResource stileIconaBottoniSliders}" />
-						</Button>
-						<StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="2"  >
-							<Slider Name="sliderTraslaX" 
-                            Value="0" 
-                            ValueChanged="sliderTrasla_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" 
-                            ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" 
-                            MinWidth="60"
-                            >
-								<Slider.Minimum>
-									<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="-1 * (y + ((x-1) * (y/2)))">
-										<Binding ElementName="sliderZoom" Path="Value" />
-										<!-- x -->
-										<Binding ElementName="borderImage1" Path="Width" />
-										<!-- y -->
-									</MultiBinding>
-								</Slider.Minimum>
-								<Slider.Maximum>
-									<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="1 * (y + ((x-1) * (y/2)))">
-										<Binding ElementName="sliderZoom" Path="Value" />
-										<!-- x -->
-										<Binding ElementName="borderImage1" Path="Width" />
-										<!-- y -->
-									</MultiBinding>
-								</Slider.Maximum>
-								<Slider.SmallChange>
-									<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/400">
-										<!-- x -->
-										<Binding ElementName="sliderTraslaX" Path="Maximum" />
-									</MultiBinding>
-								</Slider.SmallChange>
-								<Slider.LargeChange>
-									<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/200">
-										<!-- x -->
-										<Binding ElementName="sliderTraslaX" Path="Maximum" />
-									</MultiBinding>
-								</Slider.LargeChange>
-							</Slider>
-
-							<Slider Name="sliderTraslaY" 
-                            Value="0"
-                            ValueChanged="sliderTrasla_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" 
-                            ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" 
-                            MinWidth="60"
-                            >
-								<Slider.Minimum>
-									<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="-1 * (y + ((x-1) * (y/2)))">
-										<Binding ElementName="sliderZoom" Path="Value" />
-										<!-- x -->
-										<Binding ElementName="borderImage1" Path="Height" />
-										<!-- y -->
-									</MultiBinding>
-								</Slider.Minimum>
-								<Slider.Maximum>
-									<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="1 * (y + ((x-1) * (y/2)))">
-										<Binding ElementName="sliderZoom" Path="Value" />
-										<!-- x -->
-										<Binding ElementName="borderImage1" Path="Height" />
-										<!-- y -->
-									</MultiBinding>
-								</Slider.Maximum>
-								<Slider.SmallChange>
-									<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/400">
-										<!-- x -->
-										<Binding ElementName="sliderTraslaY" Path="Maximum" />
-									</MultiBinding>
-								</Slider.SmallChange>
-								<Slider.LargeChange>
-									<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/200">
-										<!-- x -->
-										<Binding ElementName="sliderTraslaY" Path="Maximum" />
-									</MultiBinding>
-								</Slider.LargeChange>
-							</Slider>
-						</StackPanel>
-
-					</Grid>
-
-					<UniformGrid Rows="2" Columns="4" Style="{StaticResource gridOneShotRitoccoStyle}">
-
-						<ToggleButton Content="-90°"  Command="{Binding ruotareCommand}"   IsChecked="{Binding Path=isRotateMeno90Checked,Mode=OneWay}" Style="{StaticResource mioToggleButtonStyle}" CommandParameter="-90" ToolTip="Ruota foto antiorario" Margin="0,0,1,1" />
-						<ToggleButton Content="+90°"  Command="{Binding ruotareCommand}"   IsChecked="{Binding Path=isRotatePiu90Checked,Mode=OneWay}"  Style="{StaticResource mioToggleButtonStyle}" CommandParameter="90"  ToolTip="Ruota foto orario" Margin="0,0,1,1" />
-						<ToggleButton Content="R.Q."  Command="{Binding ruotareQuadroCommand}"   IsChecked="{Binding Path=quadroRuotato,Mode=OneWay}"  Style="{StaticResource mioToggleButtonStyle}" ToolTip="Ruota quadro Oriz/Vert" Margin="0,0,1,1" />
-						<ToggleButton Content="Flip"  Command="{Binding flipCommand}"      IsChecked="{Binding Path=isFlipChecked,Mode=OneWay}"         Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" Margin="0,0,0,1" />
-
-						<ToggleButton Content="B/N"   Command="{Binding grayScaleCommand}" IsChecked="{Binding Path=isGrayscaleChecked,Mode=OneWay}"    Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" ToolTip="Bianco/Nero" Margin="0,0,1,0" />
-						<ToggleButton Content="Sepia" Command="{Binding sepiaCommand}"     IsChecked="{Binding Path=isSepiaChecked,Mode=OneWay}"        Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" ToolTip="Effetto invecchiato" Margin="0,0,1,0" />
-						<Button Content="Logo" ToolTip="Attiva disattiva sposta logo" Command="{Binding aggiungereLogoCommand}" Margin="0,0,1,0" />
-						<!--            
-                <Button Name="buttonModificaConPrgEsterno" Content="Gimp" ToolTip="Modifica le foto con un programma esterno" Command="{Binding modificareConEditorEsternoCommand}"  />
--->
-					</UniformGrid>
-
-					<GroupBox DockPanel.Dock="Right">
-
-						<GroupBox.Header>
-							<StackPanel Orientation="Horizontal" Margin="3,0,0,0">
-								<Button VerticalAlignment="Center"  Command="{Binding resettareValoreEffettoCommand}" CommandParameter="Red;Green;Blue" Style="{StaticResource stileBottoniResetSliders}" ToolTip="Dominandi reimposta" >
-									<Image Source="/Digiphoto.Lumen.UI;component/Resources/dominanti-16x16.png" Style="{StaticResource stileIconaBottoniSliders}" />
-								</Button>
-								<Label Content="Dominanti" />
+								<Slider Name="sliderTraslaY" 
+								Value="0"
+								ValueChanged="sliderTrasla_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" 
+								ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" 
+								MinWidth="60"
+								>
+									<Slider.Minimum>
+										<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="-1 * (y + ((x-1) * (y/2)))">
+											<Binding ElementName="sliderZoom" Path="Value" />
+											<!-- x -->
+											<Binding ElementName="borderImage1" Path="Height" />
+											<!-- y -->
+										</MultiBinding>
+									</Slider.Minimum>
+									<Slider.Maximum>
+										<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="1 * (y + ((x-1) * (y/2)))">
+											<Binding ElementName="sliderZoom" Path="Value" />
+											<!-- x -->
+											<Binding ElementName="borderImage1" Path="Height" />
+											<!-- y -->
+										</MultiBinding>
+									</Slider.Maximum>
+									<Slider.SmallChange>
+										<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/400">
+											<!-- x -->
+											<Binding ElementName="sliderTraslaY" Path="Maximum" />
+										</MultiBinding>
+									</Slider.SmallChange>
+									<Slider.LargeChange>
+										<MultiBinding Converter="{StaticResource mathConverter}" ConverterParameter="x/200">
+											<!-- x -->
+											<Binding ElementName="sliderTraslaY" Path="Maximum" />
+										</MultiBinding>
+									</Slider.LargeChange>
+								</Slider>
 							</StackPanel>
-						</GroupBox.Header>
 
-						<StackPanel>
-							<Slider Name="sliderDominanteRed"   Minimum="-0.5" Maximum="0.5" Value="0" ValueChanged="sliderDominanti_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.08" SmallChange="0.02" Style="{StaticResource styleSliderDominanteRed}"   ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" />
-							<Slider Name="sliderDominanteGreen" Minimum="-0.5" Maximum="0.5" Value="0" ValueChanged="sliderDominanti_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.08" SmallChange="0.02" Style="{StaticResource styleSliderDominanteGreen}" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" Margin="0,4,0,4" />
-							<Slider Name="sliderDominanteBlue"  Minimum="-0.5" Maximum="0.5" Value="0" ValueChanged="sliderDominanti_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.08" SmallChange="0.02" Style="{StaticResource styleSliderDominanteBlue}"  ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" />
-						</StackPanel>
-					</GroupBox>
+						</Grid>
 
-					<Separator Height="25" />
+						<UniformGrid Rows="2" Columns="4" Style="{StaticResource gridOneShotRitoccoStyle}">
 
-					<Button Content="Torna Originale" Command="{Binding tornareOriginaleCommand}"  />
+							<ToggleButton Content="-90°"  Command="{Binding ruotareCommand}"   IsChecked="{Binding Path=isRotateMeno90Checked,Mode=OneWay}" Style="{StaticResource mioToggleButtonStyle}" CommandParameter="-90" ToolTip="Ruota foto antiorario" Margin="0,0,1,1" />
+							<ToggleButton Content="+90°"  Command="{Binding ruotareCommand}"   IsChecked="{Binding Path=isRotatePiu90Checked,Mode=OneWay}"  Style="{StaticResource mioToggleButtonStyle}" CommandParameter="90"  ToolTip="Ruota foto orario" Margin="0,0,1,1" />
+							<ToggleButton Content="R.Q."  Command="{Binding ruotareQuadroCommand}"   IsChecked="{Binding Path=quadroRuotato,Mode=OneWay}"  Style="{StaticResource mioToggleButtonStyle}" ToolTip="Ruota quadro Oriz/Vert" Margin="0,0,1,1" />
+							<ToggleButton Content="Flip"  Command="{Binding flipCommand}"      IsChecked="{Binding Path=isFlipChecked,Mode=OneWay}"         Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" Margin="0,0,0,1" />
 
-					<Separator Height="20" />
-					<Button x:Name="applicareCorrezioniButton" Content="Applica" ToolTip="Applica le correzioni (tasto rapido = SPAZIO)" Command="{Binding applicareCorrezioniCommand}" FontSize="20" />
+							<ToggleButton Content="B/N"   Command="{Binding grayScaleCommand}" IsChecked="{Binding Path=isGrayscaleChecked,Mode=OneWay}"    Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" ToolTip="Bianco/Nero" Margin="0,0,1,0" />
+							<ToggleButton Content="Sepia" Command="{Binding sepiaCommand}"     IsChecked="{Binding Path=isSepiaChecked,Mode=OneWay}"        Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" ToolTip="Effetto invecchiato" Margin="0,0,1,0" />
+							<Button Content="Logo" ToolTip="Attiva disattiva sposta logo" Command="{Binding aggiungereLogoCommand}" Margin="0,0,1,0" />
+							<!--            
+					<Button Name="buttonModificaConPrgEsterno" Content="Gimp" ToolTip="Modifica le foto con un programma esterno" Command="{Binding modificareConEditorEsternoCommand}"  />
+	-->
+						</UniformGrid>
 
-					<Button Name="rifiutareCorrezioniButton" Content="Rifiuta" ToolTip="Annulla le correzioni (tasto rapido = ESC)" Command="{Binding rifiutareCorrezioniCommand}" />
-					<Button Name="salvareMascheraButton" Content="Salva Maschera" ToolTip="Salva una nuova foto con cornice (tasto rapido = SPAZIO)" Click="salvareMascheraButton_Click" IsEnabled="{Binding possoSalvareMaschera}" />
-					<Button Name="creaAzioniAutoButton" Content="Crea Azioni Auto" ToolTip="Crea una Azione Auto"  Command="{Binding creaAzioniAutoCommand}" />
-					<Separator Height="25" />
+						<GroupBox DockPanel.Dock="Right">
 
-					<Button Content="Svuota lista" ToolTip="Svuota la lista delle foto in attesa di essere modificate" Command="{Binding svuotareListaDaModificareCommand}"  />
-					<Button x:Name="buttonTakeSnapshotPubblico" Content="Snapshot pubblico" ToolTip="F2 mostra foto del video al pubblico" Click="buttonTakeSnapshotPubblico_Click"   />
-					<ToggleButton x:Name="toggleButtonReticolo" Content="Reticolo" ToolTip="Attiva/Disattiva il reticolo perpendicolare" IsChecked="{Binding ElementName=fotoRitoccoUserControl, Path=reticoloVisibile}" />
+							<GroupBox.Header>
+								<StackPanel Orientation="Horizontal" Margin="3,0,0,0">
+									<Button VerticalAlignment="Center"  Command="{Binding resettareValoreEffettoCommand}" CommandParameter="Red;Green;Blue" Style="{StaticResource stileBottoniResetSliders}" ToolTip="Dominandi reimposta" >
+										<Image Source="/Digiphoto.Lumen.UI;component/Resources/dominanti-16x16.png" Style="{StaticResource stileIconaBottoniSliders}" />
+									</Button>
+									<Label Content="Dominanti" />
+								</StackPanel>
+							</GroupBox.Header>
 
-				</StackPanel>
-			</TabItem>
+							<StackPanel>
+								<Slider Name="sliderDominanteRed"   Minimum="-0.5" Maximum="0.5" Value="0" ValueChanged="sliderDominanti_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.08" SmallChange="0.02" Style="{StaticResource styleSliderDominanteRed}"   ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" />
+								<Slider Name="sliderDominanteGreen" Minimum="-0.5" Maximum="0.5" Value="0" ValueChanged="sliderDominanti_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.08" SmallChange="0.02" Style="{StaticResource styleSliderDominanteGreen}" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" Margin="0,4,0,4" />
+								<Slider Name="sliderDominanteBlue"  Minimum="-0.5" Maximum="0.5" Value="0" ValueChanged="sliderDominanti_ValueChanged" IsEnabled="{Binding possoApplicareCorrezione}" LargeChange="0.08" SmallChange="0.02" Style="{StaticResource styleSliderDominanteBlue}"  ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Value}" />
+							</StackPanel>
+						</GroupBox>
 
-			<TabItem Header="Testo">
-				<StackPanel Name="panelTestoRitocco" Style="{StaticResource panelTestoStyle}">
-					<!--
-					<Button Name="aggiungereTestoButton" Content="+ Testo" ToolTip="Aggiungere un testo alla immagine" Click="aggiungereTestoButton_Click" />
--->
-					<Button Content="+ Testo" ToolTip="Aggiungere un testo alla immagine" Command="{Binding aggiungereScrittaCommand}" Margin="0,0,0,0" />
-					<StackPanel Orientation="Horizontal">
-						<Label Content="Size" />
-						<extToolkit:IntegerUpDown ToolTip="Font Size" Value="{Binding Path=scritta.fontSize,Mode=TwoWay}" />
-						<Label Content="Bordo" />
-						<extToolkit:IntegerUpDown ToolTip="Spessore Bordo" Value="{Binding Path=scritta.strokeThickness,Mode=TwoWay}" />
 					</StackPanel>
+				</TabItem>
+				<TabItem Header="Testo">
+					<StackPanel Name="panelTestoRitocco" Style="{StaticResource panelTestoStyle}">
 
-					<TextBox AcceptsReturn="True" Text="{Binding Path=scritta.testo,Mode=TwoWay}" MinHeight="40" Name="textBoxScritta" />
+						<Button Content="Crea Testo" ToolTip="Aggiungere un testo alla immagine" Command="{Binding aggiungereScrittaCommand}" Margin="0,0,0,0" />
 
-				</StackPanel>
-			</TabItem>
+						<GroupBox Header="Testo" 
+						          IsEnabled="{Binding scritta, Converter={StaticResource boolIsNullConverter}, ConverterParameter=Not}">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition />
+									<ColumnDefinition />
+									<ColumnDefinition />
+									<ColumnDefinition />
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition />
+									<RowDefinition />
+								</Grid.RowDefinitions>
 
-		</TabControl>
+								<Label Content="Size" Grid.Column="0" Grid.Row="0" />
+								<extToolkit:IntegerUpDown Grid.Column="1" Grid.Row="0"
+								                          ToolTip="Font Size" Value="{Binding Path=scritta.fontSize,Mode=TwoWay}" />
 
+								<Label Content="Color" Grid.Column="2" Grid.Row="0" />
+								<extToolkit:ColorPicker Grid.Column="3" Grid.Row="0"
+								            SelectedColor="{Binding Path=scritta.fillColor,Converter={StaticResource ResourceKey=colorHexConverter},Mode=TwoWay}" />
+
+								<Label Content="Family" Grid.Column="0" Grid.Row="1" />
+								<ComboBox Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="1" 
+								          ItemsSource="{Binding Source={x:Static Member=med:Fonts.SystemFontFamilies}}"
+								          SelectedItem="{Binding scritta.fontFamily,Mode=TwoWay}" />
+							</Grid>
+						</GroupBox>
+
+						<GroupBox Header="Bordo"
+						          IsEnabled="{Binding scritta, Converter={StaticResource boolIsNullConverter}, ConverterParameter=Not}">
+
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition />
+									<ColumnDefinition />
+									<ColumnDefinition />
+									<ColumnDefinition />
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition />
+								</Grid.RowDefinitions>
+								<Label Content="Size" Grid.Column="0" Grid.Row="0" />
+								<extToolkit:IntegerUpDown Grid.Column="1" Grid.Row="0"
+								            ToolTip="Spessore Bordo" Value="{Binding Path=scritta.strokeThickness,Mode=TwoWay}" />
+
+								<Label Content="Color" Grid.Column="2" Grid.Row="0" />
+
+								<extToolkit:ColorPicker Grid.Column="3" Grid.Row="0"
+								                        SelectedColor="{Binding Path=scritta.strokeColor,Converter={StaticResource ResourceKey=colorHexConverter},Mode=TwoWay}" />
+							</Grid>
+						</GroupBox>
+
+						<TextBox AcceptsReturn="True" Text="{Binding Path=scritta.testo,Mode=TwoWay}" MinHeight="40" Name="textBoxScritta" 
+						         IsEnabled="{Binding scritta, Converter={StaticResource boolIsNullConverter}, ConverterParameter=Not}" />
+						
+					</StackPanel>
+				</TabItem>
+			</TabControl>
+
+			<StackPanel Orientation="Vertical" Name="panelBottoniRitocco" Style="{StaticResource panelLeveRitoccoStyle}">
+				<Button Content="Torna Originale" Command="{Binding tornareOriginaleCommand}"  />
+
+				<Separator Height="20" />
+				<Button x:Name="applicareCorrezioniButton" Content="Applica" ToolTip="Applica le correzioni (tasto rapido = SPAZIO)" 
+								Click="applicareCorrezioniButton_Click"
+								Command="{Binding applicareCorrezioniCommand}" FontSize="20" />
+
+				<Button Name="rifiutareCorrezioniButton" Content="Rifiuta" ToolTip="Annulla le correzioni (tasto rapido = ESC)" Command="{Binding rifiutareCorrezioniCommand}" />
+				<Button Name="salvareMascheraButton" Content="Salva Maschera" ToolTip="Salva una nuova foto con cornice (tasto rapido = SPAZIO)" Click="salvareMascheraButton_Click" IsEnabled="{Binding possoSalvareMaschera}" />
+				<Button Name="creaAzioniAutoButton" Content="Crea Azioni Auto" ToolTip="Crea una Azione Auto"  Command="{Binding creaAzioniAutoCommand}" />
+				<Separator Height="25" />
+
+				<Button Content="Svuota lista" ToolTip="Svuota la lista delle foto in attesa di essere modificate" Command="{Binding svuotareListaDaModificareCommand}"  />
+				<Button x:Name="buttonTakeSnapshotPubblico" Content="Snapshot pubblico" ToolTip="F2 mostra foto del video al pubblico" Click="buttonTakeSnapshotPubblico_Click"   />
+				<ToggleButton x:Name="toggleButtonReticolo" Content="Reticolo" ToolTip="Attiva/Disattiva il reticolo perpendicolare" IsChecked="{Binding ElementName=fotoRitoccoUserControl, Path=reticoloVisibile}" />
+			</StackPanel>
+
+		</StackPanel>
 		<!-- elenco maschere sx -->
 		<Border DockPanel.Dock="Left" BorderBrush="LightGray" BorderThickness="0 1 1 1">
 			<Grid>
@@ -396,17 +443,26 @@
 
 					</Border>
 
+
+
+					<!--
+							Width="{Binding scritta.width,Mode=OneWayToSource}"
+							 Height="{Binding scritta.height,Mode=OneWayToSource}"
+					         Canvas.Left="{Binding Path=scritta.left,Mode=OneWayToSource}"
+						     Canvas.Top="{Binding Path=scritta.top,Mode=OneWayToSource}"
+					-->
 					<!-- eventuale testo per scritta -->
 					<Viewbox Name="viewBoxScritta"  
-					         Canvas.ZIndex="30" 
+					         Canvas.ZIndex="30"
 					         Visibility="{Binding Path=isScrittaVisibile,Converter={StaticResource booleanToVisibilityConverter}}" >
+							 
 						<lumP:TextPath Name="textPathScritta" 
 					               Text="{Binding Path=scritta.testo}"
 								   FontSize="{Binding Path=scritta.fontSize}" 
 								   StrokeThickness="{Binding Path=scritta.strokeThickness}"
-								   Fill="LightGreen" 
-								   Stroke="Red" 
-								   FontFamily="Roman"  />
+								   Fill="{Binding Path=scritta.fillColor}" 
+								   Stroke="{Binding Path=scritta.strokeColor}" 
+								   FontFamily="{Binding scritta.fontFamily}"  />
 					</Viewbox>
 
 

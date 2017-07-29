@@ -15,8 +15,9 @@
     <lumC:MathConverter             x:Key="mathConverter" />
     <BooleanToVisibilityConverter   x:Key="booleanToVisibilityConverter"/>
     <lumC:BoolIsNullConverter       x:Key="boolIsNullConverter" />
+	<lumC:ColorHexConverter			x:Key="colorHexConverter" />
 
-    <!-- Stile della listbox che itera le immagini -->
+	<!-- Stile della listbox che itera le immagini -->
     <Style x:Key="listBoxImmaginiDaModificareStyle" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
 <!--
         <Setter Property="IsSynchronizedWithCurrentItem" Value="True" />
@@ -196,10 +197,6 @@
 
     </DataTemplate>
 
-	<Style x:Key="panelTestoStyle" TargetType="Panel" BasedOn="{StaticResource globalPanelGradientStyle}">
-		<Setter Property="Width" Value="190" />
-	</Style>
-
 	<Style x:Key="panelLeveRitoccoStyle" TargetType="Panel" BasedOn="{StaticResource globalPanelGradientStyle}">
 		<Setter Property="Width" Value="190" />
 		
@@ -210,6 +207,13 @@
 			</Style>
 		</Style.Resources>
 		
+	</Style>
+
+
+	<Style x:Key="panelTestoStyle" TargetType="Panel" BasedOn="{StaticResource panelLeveRitoccoStyle}">
+		<!--
+		<Setter Property="Width" Value="190" />
+-->
 	</Style>
 
 	<Style x:Key="gridOneShotRitoccoStyle" TargetType="UniformGrid" BasedOn="{StaticResource {x:Type Panel}}">

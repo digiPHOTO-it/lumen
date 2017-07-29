@@ -14,16 +14,23 @@ namespace Digiphoto.Lumen.UI.Converters {
 	public class BoolIsNullConverter : IValueConverter
 	{
 		public object Convert( object value, Type targetType, object parameter, CultureInfo culture ) {
+
+			bool esito = false;
+
+
 			if (value == null)
 			{
-				return true;
+				esito = true;
 			}
 			else if (value.Equals(""))
 			{
-				return true;
+				esito = true;
 			}
 
-			return false;
+			if( "Not".Equals( parameter ) )
+				esito = !esito;
+
+			return esito;
 		}
 
 		public object ConvertBack( object value, Type targetType, object parameter,	CultureInfo culture ) {
