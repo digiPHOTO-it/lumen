@@ -52,8 +52,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				IObservable<Messaggio> observable = LumenApplication.Instance.bus.Observe<Messaggio>();
 				observable.Subscribe( this );
 
-				selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel(this);
-                selettoreAzioniRapideViewModel.visualizzaEliminaFoto = false;
+				selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel( this );
+				selettoreAzioniRapideViewModel.visualizzaEliminaFoto = false;
 
 				fotografieDaModificare = new ObservableCollectionEx<Fotografia>();
 				fotografieDaModificareCW = new ListCollectionView( fotografieDaModificare );
@@ -65,7 +65,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 				cfg = Configurazione.UserConfigLumen;
 
-	
+
 				// Resetto collezion ed effetti
 				svuotareListaDaModificare();
 
@@ -77,7 +77,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		}
 
-#region Fields
+		#region Fields
 
 		/// <summary>
 		/// Rappresenta l'ordine puntuale delle trasformazioni nella lista
@@ -92,10 +92,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		bool _faseRipristinoFoto = false;
 
-#endregion Fields
+		#endregion Fields
 
 
-#region Proprietà
+		#region Proprietà
 
 		private Transform _trasformazioneCorrente;
 		public Transform trasformazioneCorrente {
@@ -107,7 +107,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 					_trasformazioneCorrente = value;
 					OnPropertyChanged( "trasformazioneCorrente" );
-					
+
 					// notifico anche le singole trasformazioni tutte : TODO dovrei segnalare solo quella precedente cambiata e quella corrente
 					OnPropertyChanged( "trasformazioneFlip" );
 					OnPropertyChanged( "trasformazioneRotate" );
@@ -115,9 +115,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					OnPropertyChanged( "trasformazioneZoom" );
 
 					// Se non è nulla la trasformazione che mi stanno settando, allora dichiaro che sto iniziando le modifiche alla foto.
-					if( ! isTrasformazioneNulla(_trasformazioneCorrente) )
+					if( !isTrasformazioneNulla( _trasformazioneCorrente ) )
 						forseInizioModifiche();
-				}	
+				}
 			}
 		}
 
@@ -211,14 +211,14 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		public bool isAlmenoUnElementoSelezionato { 
+		public bool isAlmenoUnElementoSelezionato {
 			get {
 				return fotografiaInModifica != null;
 			}
 		}
 
 
-		public FaseDelGiorno [] fasiDelGiorno {
+		public FaseDelGiorno[] fasiDelGiorno {
 			get {
 				return FaseDelGiornoUtil.fasiDelGiorno;
 			}
@@ -241,12 +241,15 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		public bool possoAggiungereScritta
-		{
-			get
-			{
+		public bool possoAggiungereScritta( char segno ) {
+			
+			if( segno == '+' )
 				return scritta == null && possoModificareLaFoto;
-			}
+
+			if( segno == '-' )
+				return scritta != null;
+
+			return false;
 		}
 
 
@@ -286,17 +289,17 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		public ShaderEffect effetto1 {
 			get {
-				return effetti != null && effetti.Count > 0 ? effetti [0] : null;
+				return effetti != null && effetti.Count > 0 ? effetti[0] : null;
 			}
 		}
 		public ShaderEffect effetto2 {
 			get {
-				return effetti != null && effetti.Count > 1 ? effetti [1] : null;
+				return effetti != null && effetti.Count > 1 ? effetti[1] : null;
 			}
 		}
 		public ShaderEffect effetto3 {
 			get {
-				return effetti != null && effetti.Count > 2 ? effetti [2] : null;
+				return effetti != null && effetti.Count > 2 ? effetti[2] : null;
 			}
 		}
 
@@ -441,13 +444,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		public bool isSepiaChecked {
 			get {
-				return  (effetti != null && effetti.Exists( e => e is SepiaEffect ));
+				return (effetti != null && effetti.Exists( e => e is SepiaEffect ));
 			}
 		}
 
 		public bool isFlipChecked {
 			get {
-				return (trasformazioni != null && trasformazioni.Children.Count > TFXPOS_FLIP && trasformazioni.Children[TFXPOS_FLIP] is ScaleTransform );
+				return (trasformazioni != null && trasformazioni.Children.Count > TFXPOS_FLIP && trasformazioni.Children[TFXPOS_FLIP] is ScaleTransform);
 			}
 		}
 
@@ -576,27 +579,27 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					OnPropertyChanged( "listBoxImmaginiDaModificareEnabled" );
 
 					forzaRefreshStato();
-					
+
 					onEditorModeChanged( new EditorModeEventArgs( modalitaEdit ) );
 				}
 			}
 		}
-		
+
 		// gestione paginazione lista foto da modificare
 		public int fdmPaginaCorrente {
 			get;
 			private set;
 		}
 
-		public const int fdmFotoPerPagina = 2*4;
+		public const int fdmFotoPerPagina = 2 * 4;
 
 		private int _fdmTotPagine;
-		public int fdmTotPagine { 
+		public int fdmTotPagine {
 			get {
 				return _fdmTotPagine;
 			}
-			
-			private set { 
+
+			private set {
 				if( _fdmTotPagine != value ) {
 					_fdmTotPagine = value;
 					OnPropertyChanged( "fdmTotPagine" );
@@ -695,7 +698,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// </summary>
 		public bool isCropClassicoVisibile {
 			get {
-				return ! Configurazione.isFuoriStandardCiccio;
+				return !Configurazione.isFuoriStandardCiccio;
 			}
 		}
 
@@ -797,10 +800,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-#endregion Proprietà
+		#endregion Proprietà
 
 
-#region Comandi
+		#region Comandi
 
 		private RelayCommand _grayScaleCommand;
 		public ICommand grayScaleCommand {
@@ -818,7 +821,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		public ICommand ruotareCommand {
 			get {
 				if( _ruotareCommand == null ) {
-					_ruotareCommand = new RelayCommand( sGradi => this.ruotare( Convert.ToInt16(sGradi) ),
+					_ruotareCommand = new RelayCommand( sGradi => this.ruotare( Convert.ToInt16( sGradi ) ),
 														sGradi => this.possoApplicareCorrezione,
 														true );
 				}
@@ -831,8 +834,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			get {
 				if( _tornareOriginaleCommand == null ) {
 					_tornareOriginaleCommand = new RelayCommand( param => this.tornareOriginale(),
-				                                                 param => possoTornareOriginale,
-				                                                 true );
+																 param => possoTornareOriginale,
+																 true );
 				}
 				return _tornareOriginaleCommand;
 			}
@@ -864,7 +867,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		public ICommand zoomareCommand {
 			get {
 				if( _zoomareCommand == null ) {
-					_zoomareCommand = new RelayCommand( sFactor => this.zoomare( Convert.ToDouble(sFactor) ),
+					_zoomareCommand = new RelayCommand( sFactor => this.zoomare( Convert.ToDouble( sFactor ) ),
 														sFactor => this.possoApplicareCorrezione,
 														true );
 				}
@@ -877,8 +880,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			get {
 				if( _traslareCommand == null ) {
 					_traslareCommand = new RelayCommand( sFactor => this.traslare( Convert.ToDouble( sFactor ) ),
-														 sFactor => Convert.ToDouble(sFactor) == 0 ? true : possoApplicareCorrezione,
-					                                     true );
+														 sFactor => Convert.ToDouble( sFactor ) == 0 ? true : possoApplicareCorrezione,
+														 true );
 				}
 				return _traslareCommand;
 			}
@@ -924,7 +927,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			get {
 				if( _caricareMaschereCommand == null ) {
 					_caricareMaschereCommand = new RelayCommand( param => caricareMaschere( (string)param ),
-						                                         param => possoCaricareMaschere( (string)param ) );
+																 param => possoCaricareMaschere( (string)param ) );
 				}
 				return _caricareMaschereCommand;
 			}
@@ -995,7 +998,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		private RelayCommand _aggiungereLogoCommand;
-		public ICommand  aggiungereLogoCommand {
+		public ICommand aggiungereLogoCommand {
 			get {
 				if( _aggiungereLogoCommand == null ) {
 					_aggiungereLogoCommand = new RelayCommand( p => aggiungereLogo(),
@@ -1031,7 +1034,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		public ICommand forzareRatioMascheraCommand {
 			get {
 				if( _forzareRatioMascheraCommand == null ) {
-					_forzareRatioMascheraCommand = new RelayCommand( param => this.forzareRatioMaschera( (string) param ),
+					_forzareRatioMascheraCommand = new RelayCommand( param => this.forzareRatioMaschera( (string)param ),
 						param => modalitaEdit == ModalitaEdit.GestioneMaschere );
 				}
 				return _forzareRatioMascheraCommand;
@@ -1043,11 +1046,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		{
 			get
 			{
-				if (_creaAzioniAutoCommand == null)
-				{
-					_creaAzioniAutoCommand = new RelayCommand(param => creaAzioneAuto(),
+				if( _creaAzioniAutoCommand == null ) {
+					_creaAzioniAutoCommand = new RelayCommand( param => creaAzioneAuto(),
 													  param => this.possoRifiutareCorrezioni,
-													  true);
+													  true );
 				}
 				return _creaAzioniAutoCommand;
 			}
@@ -1056,13 +1058,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		public int countElementiSelezionati {
 			get {
 				return fotografieDaModificareCW.CurrentItem != null ? 1 : 0;
-            }
+			}
 		}
 
 		public int countElementiTotali {
 			get {
 				return fotografieDaModificareCW.Count;
-            }
+			}
 		}
 
 		private RelayCommand _aggiungereScrittaCommand;
@@ -1071,7 +1073,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			get
 			{
 				if( _aggiungereScrittaCommand == null ) {
-					_aggiungereScrittaCommand = new RelayCommand( p => aggiungereScritta(), p => possoAggiungereScritta );
+					_aggiungereScrittaCommand = new RelayCommand( p => aggiungereRimuovereScritta( Convert.ToChar( p ) ), 
+					                                              p => possoAggiungereScritta( Convert.ToChar( p) ) );
 				}
 				return _aggiungereScrittaCommand;
 			}
@@ -1098,7 +1101,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// </summary>
 		public void forseInizioModifiche() {
 
-			if( ! _faseRipristinoFoto ) 
+			if( !_faseRipristinoFoto )
 				modificheInCorso = true;
 		}
 
@@ -1177,7 +1180,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			// elimino tutti gli effetti creati
 			resetEffettiAndTrasformazioni();
-			
+
 			// per ogni foto elimino le correzioni e ricreo il provino partendo dall'originale.
 			fotoRitoccoSrv.tornaOriginale( fotografiaInModifica );
 
@@ -1192,7 +1195,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			if( addRemove ) {
 				grayScale( false );
 				forseCambioEffettoCorrente( typeof( SepiaEffect ) );
-			}  else
+			} else
 				removeEffetto( typeof( SepiaEffect ) );
 
 			forseInizioModifiche();
@@ -1203,7 +1206,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		private void forzareRatioMaschera( string expRatio ) {
 			forzauraRatioMaschera = String.IsNullOrWhiteSpace( expRatio ) ? null : expRatio;
 		}
-		
+
 
 		private void removeEffetto( Type effettoType ) {
 
@@ -1219,10 +1222,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			ShaderEffectBase effetto = null;
 
-			string [] propertiesNameArray = propertiesName.Split( ';' );
+			string[] propertiesNameArray = propertiesName.Split( ';' );
 
 			foreach( var propertyName in propertiesNameArray ) {
-		 
+
 				if( propertyName == "Brightness" || propertyName == "Contrast" )
 					effetto = effetti.FirstOrDefault( t => t is LuminositaContrastoEffect );
 				else if( propertyName == "Red" || propertyName == "Green" || propertyName == "Blue" )
@@ -1235,7 +1238,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 
 		private void removeCorrezione( Type type ) {
-						
+
 			forseInizioModifiche();
 
 			fotoRitoccoSrv.removeCorrezione( fotografiaInModifica, type );
@@ -1247,7 +1250,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				forseCambioTrasformazioneCorrente( TFXPOS_FLIP );
 				((ScaleTransform)trasformazioneCorrente).ScaleX = -1;
 			} else {
-				removeTrasformazione( TFXPOS_FLIP );	
+				removeTrasformazione( TFXPOS_FLIP );
 			}
 
 			forseInizioModifiche();
@@ -1281,7 +1284,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			// Nel fotoritocco, la maschera viene gestita come una correzione
 			if( mascheraAttiva != null ) {
-				
+
 				string nomeFile = Path.GetFileName( mascheraAttiva.UriSource.LocalPath );
 
 				// Uso la maschera nella sua dimensione naturale
@@ -1290,7 +1293,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					width = mascheraAttiva.PixelWidth,
 					height = mascheraAttiva.PixelHeight
 				};
-			
+
 				addCorrezione( maschera );
 			}
 
@@ -1304,10 +1307,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 
 			// Poi tratto le trasformazioni : occhio sono posizionali
-			addCorrezione( TipoCorrezione.Specchio, trasformazioni.Children[TFXPOS_FLIP]      );
-			addCorrezione( TipoCorrezione.Ruota,    trasformazioni.Children[TFXPOS_ROTATE]    );
-			addCorrezione( TipoCorrezione.Zoom,     trasformazioni.Children[TFXPOS_ZOOM]      );
-			addCorrezione( TipoCorrezione.Trasla,   trasformazioni.Children[TFXPOS_TRANSLATE] );
+			addCorrezione( TipoCorrezione.Specchio, trasformazioni.Children[TFXPOS_FLIP] );
+			addCorrezione( TipoCorrezione.Ruota, trasformazioni.Children[TFXPOS_ROTATE] );
+			addCorrezione( TipoCorrezione.Zoom, trasformazioni.Children[TFXPOS_ZOOM] );
+			addCorrezione( TipoCorrezione.Trasla, trasformazioni.Children[TFXPOS_TRANSLATE] );
 
 			// La scritta la metto per ultimo perché potrebbe andare su di una immagine traslata o zoomata
 			if( scritta != null )
@@ -1352,7 +1355,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		void addCorrezione( TipoCorrezione qualeTipo, Transform trasformazione ) {
 
-			if( ! isTrasformazioneNulla(trasformazione) ) {
+			if( !isTrasformazioneNulla( trasformazione ) ) {
 				Correzione ccc = fotoRitoccoSrv.converteInCorrezione( qualeTipo, trasformazione );
 				if( ccc != null )
 					addCorrezione( ccc );
@@ -1362,31 +1365,27 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// <summary>
 		/// Aggiungo la correzione a tutte le foto selezionate
 		/// </summary>
-		private void addCorrezione(CorrezioniList correzioni, Correzione correzione)
-		{
+		private void addCorrezione( CorrezioniList correzioni, Correzione correzione ) {
 
 			// Sul correzione di traslazione, devo riportare due proprietà di front-end
 			// Mi serviranno per riproporzionare durante la provinatura, oppure la risultante.
-			if (correzione is Trasla && modalitaEdit == ModalitaEdit.FotoRitocco)
-			{
+			if( correzione is Trasla && modalitaEdit == ModalitaEdit.FotoRitocco ) {
 				((Trasla)correzione).rifW = frpContenitoreW;
 				((Trasla)correzione).rifH = frpContenitoreH;
 			}
 
-			if (correzione is Zoom)
+			if( correzione is Zoom )
 				((Zoom)correzione).quadroRuotato = this.quadroRuotato;
 
-			fotoRitoccoSrv.addCorrezione(ref correzioni, correzione);
+			fotoRitoccoSrv.addCorrezione( ref correzioni, correzione );
 		}
 
-		void addCorrezione(CorrezioniList correzioni, TipoCorrezione qualeTipo, Transform trasformazione)
-		{
+		void addCorrezione( CorrezioniList correzioni, TipoCorrezione qualeTipo, Transform trasformazione ) {
 
-			if (!isTrasformazioneNulla(trasformazione))
-			{
-				Correzione ccc = fotoRitoccoSrv.converteInCorrezione(qualeTipo, trasformazione);
-				if (ccc != null)
-					addCorrezione(correzioni, ccc);
+			if( !isTrasformazioneNulla( trasformazione ) ) {
+				Correzione ccc = fotoRitoccoSrv.converteInCorrezione( qualeTipo, trasformazione );
+				if( ccc != null )
+					addCorrezione( correzioni, ccc );
 			}
 		}
 
@@ -1433,7 +1432,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// modo l'aggiornamento dello stato dei pulsanti.
 		/// </summary>
 		public void forzaRefreshStato() {
-			
+
 			OnPropertyChanged( "possoTornareOriginale" );
 			OnPropertyChanged( "possoApplicareCorrezione" );
 			OnPropertyChanged( "possoApplicareCorrezioni" );
@@ -1447,7 +1446,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			OnPropertyChanged( "isRotatePiu90Checked" );
 			OnPropertyChanged( "isRotateMeno90Checked" );
 			OnPropertyChanged( "isFlipChecked" );
-			
+
 			OnPropertyChanged( "isLuminositaChecked" );
 			OnPropertyChanged( "isContrastoChecked" );
 
@@ -1463,13 +1462,16 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			OnPropertyChanged( "trasformazioneTranslate" );
 			OnPropertyChanged( "trasformazioneCorrente" );
 
+			// Questo a volte mi causa dei problemi. Vediamo se riesco a toglierlo
+			// OnPropertyChanged( "scritta" );
+
 			// TODO sul torna originale, questo mi fa sparire la foto da modificare e non so perché !!
 			OnPropertyChanged( "fotografiaInModifica" );
 			OnPropertyChanged( "listBoxImmaginiDaModificareEnabled" );
 		}
 
 		public static bool isTrasformazioneNulla( Transform t ) {
-			return (t == null || tfxNulla.Equals(t) );
+			return (t == null || tfxNulla.Equals( t ));
 		}
 
 		/// <summary>
@@ -1495,7 +1497,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			} else {
 				// Rimuovo tutti i bindings
 				foreach( Transform t in trasformazioni.Children )
-					if( isTrasformazioneNulla(t) == false )
+					if( isTrasformazioneNulla( t ) == false )
 						BindingOperations.ClearAllBindings( t );
 				// poi pulisco
 				trasformazioni.Children.Clear();
@@ -1532,7 +1534,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			if( trasformazioneCorrente == null || !trasformazioneCorrente.Equals( trasformazioni.Children[quale] ) ) {
 
 				// Se non l'ho trovata, allora la creo
-				if( isTrasformazioneNulla(trasformazioni.Children[quale] ) ) {
+				if( isTrasformazioneNulla( trasformazioni.Children[quale] ) ) {
 					trasformazioni.Children[quale] = creaTrasformazione( quale );
 					creatoNuovo = true;
 				}
@@ -1542,7 +1544,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			return creatoNuovo;
 		}
-		
+
 		private Transform creaTrasformazione( int quale ) {
 
 			Transform tx;
@@ -1556,12 +1558,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			else if( quale == TFXPOS_TRANSLATE )
 				tx = new TranslateTransform();
 			else
-				throw new NotSupportedException( "indice di trasformazione non supportato: " + quale );	
+				throw new NotSupportedException( "indice di trasformazione non supportato: " + quale );
 
 			return tx;
-		}	
+		}
 
-		
+
 		/// <summary>
 		///  Imposto un eventuale nuovo effetto.
 		/// </summary>
@@ -1591,7 +1593,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		void addFotoDaModificare( Fotografia f ) {
 
 			// Se la foto è già in lista non faccio nulla.
-			if( fotografieDaModificare.Contains( f )  )
+			if( fotografieDaModificare.Contains( f ) )
 				return;
 
 			// Per visualizzare la foto devo caricare il provino da disco
@@ -1606,13 +1608,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			// Ricalcolo il totale pagine per la paginazione
 			int totalPages = fotografieDaModificare.Count / fdmFotoPerPagina;
-			if (fotografieDaModificare.Count % fdmFotoPerPagina != 0) {
+			if( fotografieDaModificare.Count % fdmFotoPerPagina != 0 ) {
 				totalPages += 1;
 			}
 			fdmTotPagine = totalPages;
 
 
-			
+
 		}
 
 
@@ -1631,7 +1633,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		private ObservableCollection<BitmapImage> loadMascheraDaDisco2( FiltroMask filtro ) {
-				
+
 			ObservableCollection<BitmapImage> maschere = new ObservableCollection<BitmapImage>();
 
 			string[] nomiMiniature = fotoRitoccoSrv.caricaMiniatureMaschere( filtro );
@@ -1743,7 +1745,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					}
 				}
 			}
-	
+
 			// Le maschere quelle aggiunte al volo, non sono trattate come le altre che hanno una miniatura.
 			if( File.Exists( nomeMaschera ) )
 				uriMaschera = new Uri( nomeMaschera );
@@ -1790,7 +1792,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			// Vediamo se il file esiste già e se è più nuovo dell'immagine originale, altrimento lo rigenero
 			bool rigenerare = true;
 			string nomeFileCache = Path.Combine( pathCompleto, fileInfoMaschera.Name );
-			
+
 			FileInfo fileInfoCache = new FileInfo( nomeFileCache );
 
 			if( fileInfoCache.Exists && fileInfoCache.CreationTime > fileInfoMaschera.CreationTime )
@@ -1828,25 +1830,23 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 
 		// Devo creare una immagine modificata in base
-		internal void salvareImmagineIncorniciata(Fotografia fotoOrig, RenderTargetBitmap bitmapIncorniciata)
-		{
+		internal void salvareImmagineIncorniciata( Fotografia fotoOrig, RenderTargetBitmap bitmapIncorniciata ) {
 
-			BitmapFrame frame = BitmapFrame.Create(bitmapIncorniciata);
+			BitmapFrame frame = BitmapFrame.Create( bitmapIncorniciata );
 
 			PngBitmapEncoder encoder = new PngBitmapEncoder();
-			encoder.Frames.Add(frame);
+			encoder.Frames.Add( frame );
 
-			string tempFile = PathUtil.dammiTempFileConEstesione("png");
+			string tempFile = PathUtil.dammiTempFileConEstesione( "png" );
 
 			// ----- scrivo su disco
-			using (FileStream fs = FileUtil.waitForFile( tempFile ))
-			{
-				encoder.Save(fs);
+			using( FileStream fs = FileUtil.waitForFile( tempFile ) ) {
+				encoder.Save( fs );
 				fs.Flush();
 			}
 
 			// Ora che il file su disco, devo portarlo dentro il database ed acquisirlo come una normale fotografia.
-			fotoRitoccoSrv.clonaImmagineIncorniciata(fotoOrig, tempFile);
+			fotoRitoccoSrv.clonaImmagineIncorniciata( fotoOrig, tempFile );
 
 			// spengo tutto
 			resetEffettiAndTrasformazioni();
@@ -1876,17 +1876,17 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				AiutanteFoto.disposeImmagini( foto, IdrataTarget.Risultante );
 			}
 
-			fotografiaInModifica = null;
-
 			fotografieDaModificare.Clear();
 			fdmPaginaCorrente = 1;
+
 			resetEffettiAndTrasformazioni();
+
+			fotografiaInModifica = null;
 
 			// Pubblico un messaggio di richiesta cambio pagina. Voglio tornare sulla gallery
 			CambioPaginaMsg cambioPaginaMsg = new CambioPaginaMsg( this );
 			cambioPaginaMsg.nuovaPag = "GalleryPag";
 			LumenApplication.Instance.bus.Publish( cambioPaginaMsg );
-
 		}
 
 		private void sfogliarePerFileCornice() {
@@ -1902,14 +1902,14 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				extWithStar.Append( ';' );
 			}
 
-			extWithStar.Remove( extWithStar.Length-1, 1 );  // tolgo l'ultimo punto e virgola
+			extWithStar.Remove( extWithStar.Length - 1, 1 );  // tolgo l'ultimo punto e virgola
 
 			dlg.DefaultExt = ".png";
 			dlg.Filter = "Images |" + extWithStar;
 
 			// Display OpenFileDialog by calling ShowDialog method
 			Nullable<bool> result = dlg.ShowDialog();
- 
+
 			// Get the selected file name and display in a TextBox
 			if( result == true ) {
 
@@ -1927,7 +1927,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		private void riposizionaControlliFotoritocco() {
 
 			if( modalitaEdit == ModalitaEdit.GestioneMaschere ) {
-//				frpCalcolaDimensioniContenitore( 0f );
+				//				frpCalcolaDimensioniContenitore( 0f );
 				return;
 			}
 
@@ -1936,10 +1936,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				return;
 
 			quadroRuotato = false;
-//			bool saveFaseRipristinoFoto = _faseRipristinoFoto; // salvo
+			//			bool saveFaseRipristinoFoto = _faseRipristinoFoto; // salvo
 			try {
-//				_faseRipristinoFoto = true;
-			
+				//				_faseRipristinoFoto = true;
+
 
 				// resetto tutti gli effetti e trasformazioni precedenti per resettare i controlli ui.
 				resetEffettiAndTrasformazioni();
@@ -1962,7 +1962,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					IList<Transform> carTrasformazioni = fotoRitoccoSrv.converteCorrezioni<Transform>( correzioni );
 					caricaTrasformazioni( carTrasformazioni );
 
-					
+
 					// La maschera e il logo devo gestirli in modo separato.
 					foreach( Correzione c in correzioni ) {
 
@@ -1997,7 +1997,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				}
 
 			} finally {
-//				_faseRipristinoFoto = saveFaseRipristinoFoto;
+				//				_faseRipristinoFoto = saveFaseRipristinoFoto;
 			}
 
 		}
@@ -2009,7 +2009,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			//			ritoccoPuntualeMsg.senderTag = puntuale;
 			LumenApplication.Instance.bus.Publish( ritoccoPuntualeMsg );
 		}
-		
+
 
 		/// <summary>
 		///  Le trasformazioni devono essere nella posizione giusta
@@ -2052,13 +2052,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			return ret;
 		}
 
-		
+
 		// TODO questa operazione dovrebbe essere fatta dalla UI e non da qui!!! spostarla
 		//      Inoltre adesso non c'è più tanto spazio, quindi potrebbe cambiare la logica.
 		private void frpCalcolaDimensioniContenitore( float ratio ) {
 
 			if( modalitaEdit == ModalitaEdit.FotoRitocco && ratio != 0f ) {
-			
+
 				const int MARG = 20;
 				Size ris;
 				Size s1 = new Size();
@@ -2084,7 +2084,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					// Scelgo l'area più grande
 					ris = ProiettoreArea.max( s1, s2 );
 				}
-				
+
 				frpContenitoreW = ris.Width;
 				frpContenitoreH = ris.Height;
 			} else {
@@ -2104,12 +2104,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// </param>
 		void fdmPaginare( string direzione ) {
 
-			int iniz = (fdmPaginaCorrente-1) * fdmFotoPerPagina;
+			int iniz = (fdmPaginaCorrente - 1) * fdmFotoPerPagina;
 			int fine = fdmPaginaCorrente * fdmFotoPerPagina;
 			if( fine > fotografieDaModificare.Count )
 				fine = fotografieDaModificare.Count;
 
-			for( int pos=iniz; pos<fine; pos++ ) {
+			for( int pos = iniz; pos < fine; pos++ ) {
 				AiutanteFoto.disposeImmagini( fotografieDaModificare[pos], IdrataTarget.Originale );
 				AiutanteFoto.disposeImmagini( fotografieDaModificare[pos], IdrataTarget.Risultante );
 			}
@@ -2142,7 +2142,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			} else if( direzione == "N" ) { // Next
 				return (fdmPaginaCorrente < fdmTotPagine);
 			} else if( direzione == "L" ) { // Last
-				return( fdmPaginaCorrente < fdmTotPagine);
+				return (fdmPaginaCorrente < fdmTotPagine);
 			}
 
 			return true;
@@ -2192,8 +2192,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			if( esito == false ) {
 				// Quando arrivo sull'ultima foto a video, se posso vado alla pagina seguente
 
-				if( fdmPaginareCommand.CanExecute("N") ) {
-									
+				if( fdmPaginareCommand.CanExecute( "N" ) ) {
+
 					int pagPrec = fdmPaginaCorrente;
 
 					fdmPaginareCommand.Execute( "N" );
@@ -2219,7 +2219,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 				// Devo provocare il property change perché la UI si aggiorni. Clono quindi il logo per riassegnarlo.
 				Logo clone = (Logo)this.logo.Clone();
-				 
+
 				if( logo.posiz == Logo.PosizLogo.SudEst ) {
 					clone.posiz = Logo.PosizLogo.SudOvest;
 				} else if( logo.posiz == Logo.PosizLogo.SudOvest ) {
@@ -2245,7 +2245,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				frpCalcolaDimensioniContenitore( ratio );
 			} else {
 				// rovescio
-				frpCalcolaDimensioniContenitore( 1f/ratio );
+				frpCalcolaDimensioniContenitore( 1f / ratio );
 			}
 
 			quadroRuotato = (!quadroRuotato);
@@ -2261,54 +2261,51 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// <summary>
 		/// Creo un Azione Auto
 		/// </summary>
-		private void creaAzioneAuto()
-		{
+		private void creaAzioneAuto() {
 			CorrezioniList correzioni = new CorrezioniList();
 
 			InputBoxDialog d = new InputBoxDialog();
 			d.Title = "Inserire il nome dell'azione";
 			bool? esito = d.ShowDialog();
 
-			if (esito != true)
+			if( esito != true )
 				return;
 
 			//Verifico se c'e' già un azione con lo stesso nome
 			//nel caso modifico quella
-			AzioneAuto azioneAuto = searchOrCreateAzione(d.inputValue.Text);
+			AzioneAuto azioneAuto = searchOrCreateAzione( d.inputValue.Text );
 
-			if (azioneAuto == null)
+			if( azioneAuto == null )
 				return;
 
 			// Nel fotoritocco, la maschera viene gestita come una correzione
-			if (mascheraAttiva != null)
-			{
+			if( mascheraAttiva != null ) {
 
-				string nomeFile = Path.GetFileName(mascheraAttiva.UriSource.LocalPath);
+				string nomeFile = Path.GetFileName( mascheraAttiva.UriSource.LocalPath );
 
 				// Uso la maschera nella sua dimensione naturale
-				Maschera maschera = new Maschera
-				{
+				Maschera maschera = new Maschera {
 					nome = nomeFile,
 					width = mascheraAttiva.PixelWidth,
 					height = mascheraAttiva.PixelHeight
 				};
 
-				addCorrezione(correzioni, maschera);
+				addCorrezione( correzioni, maschera );
 			}
 
 
 			// Vado ad aggiungerli solo al momento di applicare per davvero
 			// Prima tratto gli effetti
 
-			CorrezioniList lista1 = fotoRitoccoSrv.converteInCorrezioni(effetti.AsEnumerable<Object>());
-			foreach (Correzione correz in lista1)
-				addCorrezione(correzioni, correz);
+			CorrezioniList lista1 = fotoRitoccoSrv.converteInCorrezioni( effetti.AsEnumerable<Object>() );
+			foreach( Correzione correz in lista1 )
+				addCorrezione( correzioni, correz );
 
 			// Poi tratto le trasformazioni : occhio sono posizionali
-			addCorrezione(correzioni, TipoCorrezione.Specchio, trasformazioni.Children[TFXPOS_FLIP]);
-			addCorrezione(correzioni, TipoCorrezione.Ruota, trasformazioni.Children[TFXPOS_ROTATE]);
-			addCorrezione(correzioni, TipoCorrezione.Zoom, trasformazioni.Children[TFXPOS_ZOOM]);
-			addCorrezione(correzioni, TipoCorrezione.Trasla, trasformazioni.Children[TFXPOS_TRANSLATE]);
+			addCorrezione( correzioni, TipoCorrezione.Specchio, trasformazioni.Children[TFXPOS_FLIP] );
+			addCorrezione( correzioni, TipoCorrezione.Ruota, trasformazioni.Children[TFXPOS_ROTATE] );
+			addCorrezione( correzioni, TipoCorrezione.Zoom, trasformazioni.Children[TFXPOS_ZOOM] );
+			addCorrezione( correzioni, TipoCorrezione.Trasla, trasformazioni.Children[TFXPOS_TRANSLATE] );
 
 			// La scritta lo metto per ultimo perché potrebbe andare su di una immagine traslata o zoomata
 			if( scritta != null ) {
@@ -2316,61 +2313,63 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 
 			// IL logo lo metto per ultimo perché potrebbe andare su di una immagine traslata o zoomata
-			if( logo != null)
-			{
-				addCorrezione(correzioni, logo);
+			if( logo != null ) {
+				addCorrezione( correzioni, logo );
 			}
 
 			LumenEntities objContext = UnitOfWorkScope.currentDbContext;
 
 			azioneAuto.nome = d.inputValue.Text;
 			azioneAuto.attivo = true;
-			azioneAuto.correzioniXml = SerializzaUtil.objectToString(correzioni);
+			azioneAuto.correzioniXml = SerializzaUtil.objectToString( correzioni );
 
-			if (azioneAuto.id == Guid.Empty)
-			{
+			if( azioneAuto.id == Guid.Empty ) {
 				azioneAuto.id = Guid.NewGuid();
-				azioniAutomaticheRepositorySrv.addNew(azioneAuto);
+				azioniAutomaticheRepositorySrv.addNew( azioneAuto );
 			}
 
-			if (azioniAutomaticheRepositorySrv.saveChanges() > 0)
-				dialogProvider.ShowMessage(d.inputValue.Text, "Azione Creata Correttamente");
+			if( azioniAutomaticheRepositorySrv.saveChanges() > 0 )
+				dialogProvider.ShowMessage( d.inputValue.Text, "Azione Creata Correttamente" );
 			else
-				_giornale.Error("Non ho salvato nessun record!!!");
+				_giornale.Error( "Non ho salvato nessun record!!!" );
 
 		}
 
-		public AzioneAuto searchOrCreateAzione(String nomeAzione)
-		{
-			AzioneAuto azioneAuto = azioniAutomaticheRepositorySrv.getAll().Where(a => a.nome.ToUpper().Equals(nomeAzione.ToUpper())).FirstOrDefault<AzioneAuto>();
+		public AzioneAuto searchOrCreateAzione( String nomeAzione ) {
+			AzioneAuto azioneAuto = azioniAutomaticheRepositorySrv.getAll().Where( a => a.nome.ToUpper().Equals( nomeAzione.ToUpper() ) ).FirstOrDefault<AzioneAuto>();
 
-			if (azioneAuto != null)
-			{
+			if( azioneAuto != null ) {
 				bool procediPure = false;
-				dialogProvider.ShowConfirmation("E' gia presente un azione con lo stesso nome!!\nSovrascriverla", "Richiesta conferma",
-					(confermato) =>
-					{
+				dialogProvider.ShowConfirmation( "E' gia presente un azione con lo stesso nome!!\nSovrascriverla", "Richiesta conferma",
+					( confermato ) => {
 						procediPure = confermato;
 
-					});
+					} );
 
 				azioneAuto.nome = nomeAzione;
 
-				if (!procediPure)
-				{
+				if( !procediPure ) {
 					azioneAuto = null;
 				}
 
 				return azioneAuto;
-			}
-			else if (azioneAuto == null)
-			{
+			} else if( azioneAuto == null ) {
 				azioneAuto = new AzioneAuto();
 				azioneAuto.nome = nomeAzione;
 				azioneAuto.attivo = true;
 			}
-			
+
 			return azioneAuto;
+		}
+
+		void aggiungereRimuovereScritta( char segno ) {
+			if( segno == '+' )
+				aggiungereScritta();
+			if( segno == '-' ) {
+
+				scritta = null;
+				forseInizioModifiche();
+			}
 		}
 
 		/// <summary>
@@ -2380,18 +2379,16 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			if( scritta != null )
 				throw new InvalidOperationException( "Scritta già presente" );
-
-				
+	
 			scritta = ScrittaCorrettore.creaScrittaDefault();
 
 			// Questi due valori mi servono per poter riproporzionare in uscita.
 			scritta.rifContenitoreW = Convert.ToInt32( this.frpContenitoreW );
 			scritta.rifContenitoreH = Convert.ToInt32( this.frpContenitoreH );
-
 			
 			forseInizioModifiche();
-
 		}
+
 
 		#endregion Metodi
 
@@ -2525,8 +2522,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 					pubblicaMessaggioEffettiCambiati();  //  **  3 **
 
-				} catch( Exception ) {
+				} catch( Exception ee ) {
 					fotografiaInModifica = null;
+					_giornale.Error( ee );
 				} finally {
 					_faseRipristinoFoto = saveFaseRipristinoFoto;
 				}

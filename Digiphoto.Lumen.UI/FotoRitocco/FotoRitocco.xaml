@@ -207,7 +207,7 @@
 				<TabItem Header="Testo">
 					<StackPanel Name="panelTestoRitocco" Style="{StaticResource panelTestoStyle}">
 
-						<Button Content="Crea Testo" ToolTip="Aggiungere un testo alla immagine" Command="{Binding aggiungereScrittaCommand}" Margin="0,0,0,0" />
+						<Button Content="Crea Scritta" ToolTip="Aggiungere una scritta alla immagine" Command="{Binding aggiungereScrittaCommand}" CommandParameter="+" Margin="2,4,2,0" />
 
 						<GroupBox Header="Testo" 
 						          IsEnabled="{Binding scritta, Converter={StaticResource boolIsNullConverter}, ConverterParameter=Not}">
@@ -234,7 +234,7 @@
 								<Label Content="Family" Grid.Column="0" Grid.Row="1" />
 								<ComboBox Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="1" 
 								          ItemsSource="{Binding Source={x:Static Member=med:Fonts.SystemFontFamilies}}"
-								          SelectedItem="{Binding scritta.fontFamily,Mode=TwoWay}" />
+								          SelectedItem="{Binding Path=scritta.fontFamily,Mode=TwoWay}" />
 							</Grid>
 						</GroupBox>
 
@@ -262,8 +262,8 @@
 							</Grid>
 						</GroupBox>
 
-						<TextBox AcceptsReturn="True" Text="{Binding Path=scritta.testo,Mode=TwoWay}" MinHeight="40" Name="textBoxScritta" 
-						         IsEnabled="{Binding scritta, Converter={StaticResource boolIsNullConverter}, ConverterParameter=Not}" />
+						<TextBox AcceptsReturn="True" Text="{Binding Path=scritta.testo,Mode=TwoWay}" MinHeight="70" MinWidth="140" Name="textBoxScritta" 
+						         IsEnabled="{Binding scritta, Converter={StaticResource boolIsNullConverter}, ConverterParameter=Not}" HorizontalAlignment="Left"  />
 						
 					</StackPanel>
 				</TabItem>
@@ -429,48 +429,46 @@
                       Questo bordo è quello di riferimento : o contiene la maschera, oppure è vuoto ma con il ratio = a quello della foto originale. 
                       Tutti gli offset verranno riparametrati a questa area. Le dimensioni W,H sono importanti e di riferimento.
                     -->
+					<Grid x:Name="gridImage" VerticalAlignment="Center" HorizontalAlignment="Center" Canvas.ZIndex="50"
+					        Height="{Binding Path=frpContenitoreH}" 
+                            Width="{Binding Path=frpContenitoreW}" >
 
-					<Border BorderBrush="Yellow" BorderThickness="2" 
-                            Name="borderCornice"
-                            HorizontalAlignment="Center" VerticalAlignment="Center" 
-                            Height="{Binding Path=frpContenitoreH}" 
-                            Width="{Binding Path=frpContenitoreW}" 
-                            Canvas.ZIndex="50" SizeChanged="borderCornice_SizeChanged">
+						<Border BorderBrush="Yellow" BorderThickness="2" 
+								Height="{Binding Path=frpContenitoreH}" 
+								Width="{Binding Path=frpContenitoreW}"
+								Name="borderCornice"
+								HorizontalAlignment="Center" 
+								SizeChanged="borderCornice_SizeChanged">
 
-						<Image x:Name="imageMaschera" 
-                               IsHitTestVisible="False"
-                               Source="{Binding Path=mascheraAttiva}" />
+							<Image x:Name="imageMaschera" 
+								   IsHitTestVisible="False"
+								   Source="{Binding Path=mascheraAttiva}" />
 
-					</Border>
-
-
-
-					<!--
-							Width="{Binding scritta.width,Mode=OneWayToSource}"
-							 Height="{Binding scritta.height,Mode=OneWayToSource}"
-					         Canvas.Left="{Binding Path=scritta.left,Mode=OneWayToSource}"
-						     Canvas.Top="{Binding Path=scritta.top,Mode=OneWayToSource}"
-					-->
-					<!-- eventuale testo per scritta -->
-					<Viewbox Name="viewBoxScritta"  
-					         Canvas.ZIndex="30"
-					         Visibility="{Binding Path=isScrittaVisibile,Converter={StaticResource booleanToVisibilityConverter}}" >
-							 
-						<lumP:TextPath Name="textPathScritta" 
-					               Text="{Binding Path=scritta.testo}"
-								   FontSize="{Binding Path=scritta.fontSize}" 
-								   StrokeThickness="{Binding Path=scritta.strokeThickness}"
-								   Fill="{Binding Path=scritta.fillColor}" 
-								   Stroke="{Binding Path=scritta.strokeColor}" 
-								   FontFamily="{Binding scritta.fontFamily}"  />
-					</Viewbox>
+						</Border>
 
 
-					<!--
-					Visibility="{Binding isScrittaVisibile,Converter={StaticResource booleanToVisibilityConverter}}" 
-					               FontSize="{Binding Path=scritta.fontSize,Mode=OneWayToSource}"
-								   Text="{Binding Path=scritta.testo}"
--->
+						<!-- eventuale testo per scritta -->
+						<Viewbox Name="viewBoxScritta"  
+								 Canvas.ZIndex="30"
+								 Visibility="{Binding Path=isScrittaVisibile,Converter={StaticResource booleanToVisibilityConverter}}" >
+
+							<lumP:TextPath Name="textPathScritta" 
+										   Text="{Binding Path=scritta.testo}"
+										   FontSize="{Binding Path=scritta.fontSize}" 
+										   StrokeThickness="{Binding Path=scritta.strokeThickness}"
+										   Fill="{Binding Path=scritta.fillColor}" 
+										   Stroke="{Binding Path=scritta.strokeColor}"
+										   FontFamily="{Binding scritta.fontFamily}"  />
+
+							<Viewbox.ContextMenu>
+								<ContextMenu>
+									<MenuItem Header="Rimuovi scritta" Command="{Binding aggiungereScrittaCommand}" CommandParameter="-" />
+								</ContextMenu>
+							</Viewbox.ContextMenu>
+
+
+						</Viewbox>
+					</Grid>
 
 					<!-- TODO creare un border interno per delineare l'area stampabile. Questo bordo ha ratio fisso, definito come costante -->
 					<Border Name="bordoRispettoA" BorderBrush="Red" BorderThickness="2" Canvas.ZIndex="60" HorizontalAlignment="Left"  VerticalAlignment="Top"  Visibility="{Binding esisteRatioAreaRispetto, Converter={StaticResource boolVisibilityConverter}}" />
