@@ -72,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Carrelli\CarrelloDto.cs" />
+    <Compile Include="Carrelli\FotografoDto.cs" />
     <Compile Include="Carrelli\FotografiaDto.cs" />
     <Compile Include="ISelfService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

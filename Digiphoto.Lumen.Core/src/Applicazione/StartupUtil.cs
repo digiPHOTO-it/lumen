@@ -9,7 +9,7 @@ using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.Applicazione {
 	
-	internal static class StartupUtil {
+	public static class StartupUtil {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( StartupUtil ) );
 
