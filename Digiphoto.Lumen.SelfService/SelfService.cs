@@ -153,5 +153,70 @@ namespace Digiphoto.Lumen.SelfService {
 			} else
 				return null;
 		}
+
+		/// <summary>
+		/// Ritorno la lista dei fotografi attivi
+		/// </summary>
+		/// <returns></returns>
+		public List<FotografoDto> getListaFotografi() {
+
+			List<FotografoDto> listaDto = new List<FotografoDto>();
+
+			using( new UnitOfWorkScope() ) {
+
+				var fotografi = UnitOfWorkScope.currentDbContext.Fotografi.Where( f => f.attivo == true ).OrderBy( f => f.cognomeNome );
+
+		
+				// Creo la lista contenente gli oggetti di trasporto leggeri che ho ricavato dal servizio core.
+				foreach( var fotografo in fotografi ) {
+					FotografoDto dto = new FotografoDto();
+					dto.id = fotografo.id;
+					dto.nome = fotografo.cognomeNome;
+					dto.immagine = fotografo.immagine;
+					listaDto.Add( dto );
+				}
+			}
+
+			// ritorno gli oggetti di trasporto al client
+			return listaDto;
+		}
+
+		public List<FotografiaDto> getListaFotografieDelFotografo( string fotografoId, int skip, int take ) {
+
+			List<FotografiaDto> listaDto = new List<FotografiaDto>();
+
+			using( new UnitOfWorkScope() ) {
+				
+				// uso apposito servizio di ricerca foto
+				IRicercatoreSrv ricercaSrv = LumenApplication.Instance.getServizioAvviato<IRicercatoreSrv>();
+				
+				// preparo parametri
+				ParamCercaFoto param = new ParamCercaFoto();
+				
+				var fotografo = UnitOfWorkScope.currentDbContext.Fotografi.Single( f => f.id == fotografoId );
+				param.fotografi = new Fotografo [] { fotografo };
+				param.evitareJoinEvento = true;
+				param.paginazione = new Paginazione { skip = skip, take = take };
+				param.idratareImmagini = false;
+				DateTime giornata = StartupUtil.calcolaGiornataLavorativa();
+				param.ordinamento = Ordinamento.Asc;
+				param.giornataIniz = giornata;
+				param.giornataFine = giornata;
+
+				var fotografie = ricercaSrv.cerca( param );
+				foreach( var foto in fotografie ) {
+					FotografiaDto dto = new FotografiaDto();
+					dto.etichetta = foto.etichetta;
+					dto.id = foto.id;
+
+					// da vedere se conviene 
+					// dto.imgProvino = .... 
+
+					listaDto.Add( dto );
+				}
+			}
+
+			return listaDto;
+		}
 	}
 }

@@ -59,6 +59,20 @@ namespace Digiphoto.Lumen.SelfService {
 		[OperationContract]
 		void setMiPiace( Guid fotografiaId, bool miPiace );
 
+		/// <summary>
+		/// Ottiene la lista dei fotografi attivi.
+		/// </summary>
+		/// <returns></returns>
+		[OperationContract]
+		List<FotografoDto> getListaFotografi();
+
+		/// <summary>
+		/// Ricava la lista delle foto di un determinato fotografo nella giornata odierna
+		/// </summary>
+		/// <param name="carrelloId"></param>
+		/// <returns>Una lista di oggetti di trasporto leggeri, con solo i dati necessari</returns>
+		[OperationContract]
+		List<FotografiaDto> getListaFotografieDelFotografo( string fotografoId, int skip, int take );
 	}
 
 
