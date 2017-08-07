@@ -221,13 +221,7 @@ namespace Digiphoto.Lumen.UI.Adorners {
 
 		~ComposingAdorner2() {
 
-			// Si rompe perché gli oggetti grafici sono stati creati nel thread della UI
-			// rilasciaTuttiBindings();
-
-			rilasciaTuttiListener();
-		}
-
-		private void rilasciaTuttiListener() {
+			rilasciaTuttiBindings();
 
 			// Rilascio qualche ascoltatore. Non so se serve davvero ma non si sa mai.
 			if( rotateHandle != null ) {
@@ -247,6 +241,7 @@ namespace Digiphoto.Lumen.UI.Adorners {
 				scaleHandle.DragDelta -= scaleHandle_DragDelta;
 				scaleHandle.DragCompleted -= scaleHandle_DragCompleted;
 			}
+
 		}
 
 		#endregion Costruttori
@@ -663,7 +658,6 @@ namespace Digiphoto.Lumen.UI.Adorners {
 			return transform;
 		}
 
-
 		void rilasciaTuttiBindings() {
 
 			BindingOperations.ClearAllBindings( rotateTfx ); 
@@ -673,24 +667,5 @@ namespace Digiphoto.Lumen.UI.Adorners {
 		}
 
 		#endregion Binding val trasformazioni
-
-
-		public void impostaRotazioneDefault( double gradi ) {
-
-			center = new Point( AdornedElement.RenderSize.Width / 2, AdornedElement.RenderSize.Height / 2 );
-			rotateTfx.CenterX = center.X;
-			rotateTfx.CenterY = center.Y;
-			ruotaAngle = gradi;
-		}
-
-		public void impostaTraslazioneDefault( double x, double y ) {
-			traslaX = x;
-			traslaY = y;
-		}
-
-		public void impostaZoomDefault( double factor ) {
-			scaleFactor = factor;
-		}
-
 	}
 }

@@ -58,17 +58,10 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 
 			Viewbox viewBox = new Viewbox();
 			viewBox.Child = textPath;
-			Canvas.SetZIndex( viewBox, 40 );
+			Canvas.SetZIndex( viewBox, 10 );
 
-			/*
-						viewBox.Width = newRect.Width;
-						viewBox.Height = newRect.Height;
-						viewBox.SetValue( Canvas.LeftProperty, newRect.Left );
-						viewBox.SetValue( Canvas.TopProperty, newRect.Top );
-			*/
 
 			contenitore.Children.Add( viewBox );
-
 
 
 			var size = new Size( ww, hh );

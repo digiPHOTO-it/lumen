@@ -1,0 +1,9 @@
+﻿<Application x:Class="WpProva1.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Digiphoto.Lumen.UI.Test"
+             StartupUri="src/Adorner/AdornerProva1.xaml">
+    <Application.Resources>
+         
+    </Application.Resources>
+</Application>
