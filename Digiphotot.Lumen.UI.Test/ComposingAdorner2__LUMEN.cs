@@ -688,9 +688,5 @@ namespace Digiphoto.Lumen.UI.Adorners {
 			traslaY = y;
 		}
 
-		public void impostaZoomDefault( double factor ) {
-			scaleFactor = factor;
-		}
-
 	}
 }

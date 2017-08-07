@@ -71,6 +71,7 @@ namespace Digiphoto.Lumen.UI.Adorners {
 
 
 		#region Binding Properties
+
 		public static readonly DependencyProperty traslaXProperty = DependencyProperty.Register(
 				"traslaX", typeof( double ), typeof( ComposingAdorner2 ), new PropertyMetadata( default( double ) ) );
 
@@ -381,8 +382,6 @@ namespace Digiphoto.Lumen.UI.Adorners {
 
 			posizInizioMove = Mouse.GetPosition( this );
 
-//			rotellaStavoRuotando = false;
-//			rotellaStavoScalando = false;
 		}
 
 		void moveHandle_DragDelta( object sender, DragDeltaEventArgs e ) {
@@ -391,28 +390,6 @@ namespace Digiphoto.Lumen.UI.Adorners {
 
 			double deltaX = newPosiz.X - posizInizioMove.X;
 			double deltaY = newPosiz.Y - posizInizioMove.Y;
-
-
-#if false
-			// Per adesso non ci penso. Tanto chi è che si metterebbe a spostare una immagine capovolta ?
-
-			// Se ho già ruotato l'elemento, mi muovo di un pixel alla volta, altrimenti l'effetto è amplificato (non so perchè)
-			if( ruotaAngle != 0 ) {
-				if( deltaX > 1 )
-					deltaX = 1;
-				if( deltaX < -1 )
-					deltaX = -1;
-				if( deltaY > 1 )
-					deltaY = 1;
-				if( deltaY < -1 )
-					deltaY = -1;
-			}
-
-			// Se la scritta è ribaltata, i movimenti cambiano di segno
-			if( (ruotaAngle > 90 && ruotaAngle < 270) || ( ruotaAngle < -90 && ruotaAngle > -270 ) ) {
-				deltaY = deltaY * -1;
-			}
-#endif
 
 
 			traslaX += deltaX;
@@ -688,9 +665,8 @@ namespace Digiphoto.Lumen.UI.Adorners {
 			traslaY = y;
 		}
 
-		public void impostaZoomDefault( double factor ) {
-			scaleFactor = factor;
-		}
+
+		//
 
 	}
 }

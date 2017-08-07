@@ -1,0 +1,39 @@
+﻿<Window x:Class="Digiphoto.Lumen.UI.Test.Adorner.AdornerProva2"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Digiphoto.Lumen.UI.Test.Adorner"
+		xmlns:pf="clr-namespace:Digiphoto.Lumen.PresentationFramework;assembly=Digiphoto.Lumen.PresentationFramework"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="580">
+
+	<DockPanel LastChildFill="True">
+
+		<StackPanel DockPanel.Dock="Right" >
+			<Slider x:Name="slider1" Minimum="-180" Maximum="180" Width="160" Height="50"  Value="0" ToolTip="Ruota" />
+			<Slider x:Name="sliderX" Minimum="-400" Maximum="400" Width="160" Height="50"  Value="0" ToolTip="Move X" />
+			<Slider x:Name="sliderY" Minimum="-400" Maximum="400" Width="160" Height="50"  Value="0" ToolTip="Move Y" />
+			<Slider x:Name="sliderZ" Minimum="0.1"  Maximum="2"   Width="160" Height="50"  Value="1" ToolTip="Zoom" />
+		</StackPanel>
+
+		<Grid>
+			<Viewbox x:Name="vb" >
+				<Label Content="Ciao Mare" FontSize="40"/>
+
+				<Viewbox.RenderTransform>
+					<TransformGroup>
+						<RotateTransform Angle="{Binding ElementName=slider1,Path=Value}" />
+						<TranslateTransform X="{Binding ElementName=sliderX,Path=Value}" Y="{Binding ElementName=sliderY,Path=Value}" />
+						<ScaleTransform ScaleX="{Binding ElementName=sliderZ,Path=Value}" ScaleY="{Binding ElementName=sliderZ,Path=Value}" />
+					</TransformGroup>
+				</Viewbox.RenderTransform>
+
+			</Viewbox>
+
+		</Grid>
+
+	</DockPanel>
+
+
+</Window>

@@ -47,7 +47,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.SelfService
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.PresentationFramework", "Digiphoto.Lumen.PresentationFramework\Digiphoto.Lumen.PresentationFramework.csproj", "{8803E78F-A9AD-479C-9316-463E7218334D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdornerProva1", "WpProva1\AdornerProva1.csproj", "{6BE93BCE-B38D-4C9B-9A1E-1DCA366E8FDE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.UI.Test", "Digiphotot.Lumen.UI.test\Digiphoto.Lumen.UI.Test.csproj", "{6BE93BCE-B38D-4C9B-9A1E-1DCA366E8FDE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

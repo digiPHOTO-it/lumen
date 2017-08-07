@@ -360,16 +360,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				
 				case ModalitaEdit.GestioneMaschere:
 
-					if( Debugger.IsAttached )
-						Debug.Assert( tabItemComposizione.IsSelected );
-
 					initGestioneMaschere();
 					break;
 
 				case ModalitaEdit.FotoRitocco:
-
-					if( Debugger.IsAttached )
-						Debug.Assert( tabItemRitocco.IsSelected );
 
 					initGestioneRitocco();
 					break;
@@ -1149,10 +1143,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 						al1.Remove( toRemove );
 				}
 			}
-			
+
 			// Pulisco tutte le eventuali trasformazioni precedenti
-			if( viewBoxScritta.RenderTransform  is TransformGroup )
-				((TransformGroup)viewBoxScritta.RenderTransform).Children.Clear();
+			viewBoxScritta.RenderTransform = new TransformGroup();
 
 				
 			var q = this.gridRitocco.ActualWidth == 0 || imageRitoccata.ActualWidth == 0;
@@ -1235,30 +1228,25 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 						// memorizzo la rotazione
 						RotateTransform rot = (RotateTransform)tr;
-						if( ruota == null )
-							ruota = new Ruota();
-						ruota.gradi += (float)rot.Angle;
+						ruota = new Ruota();
+						ruota.gradi = (float)rot.Angle;
 					}
 
 					if( tr is TranslateTransform ) {
 
 						// memorizzo la traslazione (spostamento)
-						if( trasla == null ) {
-							trasla = new Trasla();
-							trasla.rifW = _viewModel.scritta.rifContenitoreW;
-							trasla.rifH = _viewModel.scritta.rifContenitoreH;
-						}
+						trasla = new Trasla();
+						trasla.rifW = _viewModel.scritta.rifContenitoreW;
+						trasla.rifH = _viewModel.scritta.rifContenitoreH;
 
 						TranslateTransform tra = (TranslateTransform)tr;
-						trasla.offsetX += tra.X;
-						trasla.offsetY += tra.Y;
+						trasla.offsetX = tra.X;
+						trasla.offsetY = tra.Y;
 					}
 
 					if( tr is ScaleTransform ) {
 						ScaleTransform stx = (ScaleTransform)tr;
-
-						if( zoom == null )
-							zoom = new Zoom();
+						zoom = new Zoom();
 						zoom.fattore = stx.ScaleX;  // X o Y sono uguali
 					}
 
@@ -1278,7 +1266,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		void creareManiglietteScritta() {
 
 			// Centro e posiziono rispetto alla immagine della foto
-//			viewBoxScritta.Width = borderCornice.ActualWidth;
+			//			viewBoxScritta.Width = borderCornice.ActualWidth;
 			viewBoxScritta.Width = double.NaN;
 			viewBoxScritta.Height = double.NaN;
 			if( viewBoxScritta.Width == 0 && Debugger.IsAttached )
@@ -1311,6 +1299,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 					adorner.impostaTraslazioneDefault( x, y );
 				}
+
+				if( _viewModel.scritta.zoom != null && _viewModel.scritta.zoom.isInutile == false ) {
+					adorner.impostaZoomDefault( _viewModel.scritta.zoom.fattore );
+				}
 			}
 		}
 
@@ -1329,8 +1321,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			} else {
 				// Come mai ?? Indagare ! Possiblile che non abbia già il suo adornerlayer ?
 				// Significa che ancora quel componente non è stato ancora renderizzato neanche una volta ???
-				if( Debugger.IsAttached )
-					Debugger.Break();
+				// Oppure NON è visible.
 			}
 		}
 
