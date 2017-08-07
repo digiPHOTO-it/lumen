@@ -216,6 +216,7 @@
       <DependentUpon>AboutBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Adorners\ComposingAdorner.cs" />
+    <Compile Include="Adorners\ComposingAdorner2.cs" />
     <Compile Include="Adorners\ResizingAdorner.cs" />
     <Compile Include="Carrello\CarrelloView.xaml.cs">
       <DependentUpon>CarrelloView.xaml</DependentUpon>

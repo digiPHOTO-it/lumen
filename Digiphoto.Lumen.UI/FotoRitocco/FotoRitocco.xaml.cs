@@ -31,6 +31,10 @@ using System.Windows.Threading;
 using Digiphoto.Lumen.Imaging.Wic.Correzioni;
 using System.Windows.Shapes;
 using Digiphoto.Lumen.PresentationFramework;
+using log4net;
+using static Digiphoto.Lumen.UI.Adorners.ComposingAdorner;
+using Digiphoto.Lumen.Imaging.Correzioni;
+using static Digiphoto.Lumen.UI.Adorners.ComposingAdorner2;
 
 namespace Digiphoto.Lumen.UI.FotoRitocco {
 
@@ -38,6 +42,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 	/// Interaction logic for FotoRitocco.xaml
 	/// </summary>
 	public partial class FotoRitocco : UserControlBase, IObserver<RitoccoPuntualeMsg> {
+
+		protected static readonly ILog _giornale = LogManager.GetLogger( typeof( ViewModelBase ) );
 
 		FotoRitoccoViewModel _viewModel;
 
@@ -77,15 +83,11 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 
 
-			if( e.PropertyName == "scritta" ) {
-				// cambiata la scritta di testo
-				if( _viewModel.scritta == null )
-					rimuovereManiglietteScritta();
-				else {
-					creareManiglietteScritta();
+			if( e.PropertyName == "scritta" ) {	
 
-					riposizionaViewBoxScritta();
-				}
+				// Devo eseguirlo nel thread della UI perché mi servono le dimensioni dei componenti già renderizzati
+				this.Dispatcher.BeginInvoke( scrittaToUIAction );
+	
 			}
 
 
@@ -477,15 +479,51 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		private ComposingAdorner AddAdorner( UIElement element ) {
+
 			ComposingAdorner adorner = null;
+
 			AdornerLayer adornerlayer = AdornerLayer.GetAdornerLayer( element );
-			if( adornerlayer.GetAdorners( element ) == null || adornerlayer.GetAdorners( element ).Length == 0 ) {
-				adorner = new ComposingAdorner( element );
-				adornerlayer.Add( adorner );
+			if( adornerlayer == null ) {
+				element.UpdateLayout();
+				adornerlayer = AdornerLayer.GetAdornerLayer( element );
+			}
+
+			if( adornerlayer != null ) {
+				if( adornerlayer.GetAdorners( element ) == null || adornerlayer.GetAdorners( element ).Length == 0 ) {
+					adorner = new ComposingAdorner( element );
+					adornerlayer.Add( adorner );
+				}
+			} else {
+				if( Debugger.IsAttached )
+					Debugger.Break();  // Strano: non dovrebbe : Indagare
 			}
 
 			return adorner;
 		}
+
+		private ComposingAdorner2 AddAdorner2( UIElement element, Maniglie qualiManiglie ) {
+
+			ComposingAdorner2 adorner = null;
+			
+			AdornerLayer adornerlayer = AdornerLayer.GetAdornerLayer( element );
+			if( adornerlayer == null ) {
+				element.UpdateLayout();
+				adornerlayer = AdornerLayer.GetAdornerLayer( element );
+			}
+
+			if( adornerlayer != null ) { 
+				if( adornerlayer.GetAdorners( element ) == null || adornerlayer.GetAdorners( element ).Length == 0 ) {
+					adorner = new ComposingAdorner2( element, qualiManiglie );
+					adornerlayer.Add( adorner );
+				}
+			} else {
+				if( Debugger.IsAttached )
+					Debugger.Break();  // Strano: non dovrebbe : Indagare
+			}
+
+			return adorner;
+		}
+
 
 		private void menuItemBringToFront_Click( object sender, RoutedEventArgs e ) {
 
@@ -994,6 +1032,17 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		public void OnError( Exception error ) {
 		}
 
+		Action _scrittaToUIAction;
+		Action scrittaToUIAction
+		{
+			get
+			{
+				if( _scrittaToUIAction == null )
+					_scrittaToUIAction = new Action( scrittaToUI );
+				return _scrittaToUIAction;
+			}
+		}
+
 		Action _creaImmaginettaLogoAction;
 		Action creaImmaginettaLogoAction {
 			get {
@@ -1026,6 +1075,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				this.Dispatcher.BeginInvoke( focusAction, DispatcherPriority.ApplicationIdle );
 			}
 		}
+	
 
 		void creaImmaginettaLogo() {
 
@@ -1081,53 +1131,48 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 		
 
-		/// <summary>
-		/// TODO bisognerebbe gestirla correttamente in base alle posizioni memorizzate
-		/// </summary>
-		void riposizionaViewBoxScritta() {
 
-			if( _viewModel.scritta.isPosizioneOriginaria ) {
-				// E' una scritta che è appena stata creata. 
-				// Riposiziono il controllo al centro
-				viewBoxScritta.Width = double.NaN;
-				viewBoxScritta.Height = double.NaN;
-
-				// Se ho degli elementi nel gruppo, li pulisco.
-				if( viewBoxScritta.RenderTransform != null && viewBoxScritta.RenderTransform is TransformGroup )
-					(viewBoxScritta.RenderTransform as TransformGroup).Children.Clear();
-
-				Canvas.SetLeft( viewBoxScritta, double.NaN );
-				Canvas.SetTop( viewBoxScritta, double.NaN );
-			}
-
-
-		}
-
-		/// <summary>
-		/// Creo adorner con le menigliette per gestire la scritta
-		/// </summary>
-		void creareManiglietteScritta() {
-
-			// Cerco la viewbox per agganciare le manigliette
-			var viewbox = AiutanteUI.FindVisualChild<Viewbox>( gridRitocco, "viewBoxScritta" );
-			
-			// Centro e posiziono rispetto alla immagine della foto
-			viewbox.Width = borderCornice.ActualWidth;
-			Canvas.SetLeft( viewbox, Canvas.GetLeft( borderCornice ) );
-			
-
-			var adorner = AddAdorner( viewbox );
-
-			adorner.CambiatoQualcosa += Adorner_CambiatoQualcosa;
-		}
 
 		private void Adorner_CambiatoQualcosa( object sender, EventArgs e ) {
 			_viewModel.forseInizioModifiche();
 		}
 
+		void scrittaToUI() {
 
+			// Elimmino eventuale adorner precedente
+			var al1 = AdornerLayer.GetAdornerLayer( viewBoxScritta );
+				if( al1 != null ) { 
+					Adorner[] toRemoveArray = al1.GetAdorners( viewBoxScritta );
+					Adorner toRemove;
+					if( toRemoveArray != null ) {
+						toRemove = toRemoveArray[0];
+						al1.Remove( toRemove );
+				}
+			}
+			
+			// Pulisco tutte le eventuali trasformazioni precedenti
+			if( viewBoxScritta.RenderTransform  is TransformGroup )
+				((TransformGroup)viewBoxScritta.RenderTransform).Children.Clear();
 
+				
+			var q = this.gridRitocco.ActualWidth == 0 || imageRitoccata.ActualWidth == 0;
+			if( q ) {
+				// Se arrivo qui, significa che la videata, ancora non è mai stata renderizzata, e quindi i componenti sono nulli.
+				// Succede quando chiamo in modifica una foto dalla gallery per la prima volta,
+				// e questa ha la scritta da decorare
+				this.InvalidateMeasure();
+				this.InvalidateVisual();
+				this.UpdateLayout();
+			}
+			
+			// Se la scritta è nulla, ho già spento tutto ed esco.
+			if( _viewModel.scritta == null )
+				return;
 
+				
+			creareManiglietteScritta();
+			
+		}
 
 
 		/// <summary>
@@ -1142,29 +1187,19 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			if( _viewModel == null || _viewModel.scritta == null )
 				return;
 
-#if false
-			// La scritta ha come contenitore la "gridRitocco"
-			Vector offsetScritta = VisualTreeHelper.GetOffset( viewBoxScritta );
-			// Mentre invece la immagine ha come contenitore "borderImage1"
-			Vector offsetBorderImage = VisualTreeHelper.GetOffset( borderImage1 );
-#endif
-
-
-
-			// Gia che si sono setto anche le dimensioni del contenitore
-	//		var tt = (viewBoxScritta.RenderTransform as TransformGroup).Children;
 
 			var qq = textPathScritta.PointToScreen( new Point( textPathScritta.ActualWidth, textPathScritta.ActualHeight ) ) - textPathScritta.PointToScreen( new Point( 0, 0 ) );
 			_viewModel.scritta.width = Convert.ToInt32( qq.X );
 			_viewModel.scritta.height = Convert.ToInt32( qq.Y );
 
-
+			Vector offset = VisualTreeHelper.GetOffset( viewBoxScritta );
 
 			GeneralTransform generalTransform1 = viewBoxScritta.TransformToAncestor( gridRitocco );
 			Point currentPoint1 = generalTransform1.Transform( new Point( 0, 0 ) );
 #if true
 			_viewModel.scritta.rifContenitoreW = Convert.ToInt32( imageRitoccata.ActualWidth );
 			_viewModel.scritta.rifContenitoreH = Convert.ToInt32( imageRitoccata.ActualHeight );
+
 
 			GeneralTransform generalTransform2 = viewBoxScritta.TransformToVisual( imageRitoccata );
 			Point currentPoint2 = generalTransform2.Transform( new Point( 0, 0 ) );
@@ -1183,33 +1218,100 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			_viewModel.scritta.top = currentPoint3.Y;
 #endif
 
-			var transform = viewBoxScritta.RenderTransform;
-			if( transform is TransformGroup ) {
 
-			} 
+			// Creo le trasformazioni
+			Trasla trasla = null;
+			Ruota ruota = null;
+			Zoom zoom = null;
 
 
-#if false
-			// Cerco di capire se ha subito una traslazione
-			AdornerLayer adornerlayer = AdornerLayer.GetAdornerLayer( viewBoxScritta );
-			if( adornerlayer != null ) {
-				var adorners = adornerlayer.GetAdorners( viewBoxScritta );
-				if( adorners != null ) {
-					foreach( Adorner adorner in adorners ) {
 
-						if( adorner.RenderTransform != null ) {
+			var transformGrp = viewBoxScritta.RenderTransform;
+			if( transformGrp is TransformGroup ) {
 
-							if( adorner.RenderTransform is MatrixTransform ) {
-								// Solo spostamento (traslazione)
-							} else {
-								var qq = adorner.LayoutTransform.Transform;
-							}
+				foreach( Transform tr in (transformGrp as TransformGroup).Children ) {
 
+					if( tr is RotateTransform ) {
+
+						// memorizzo la rotazione
+						RotateTransform rot = (RotateTransform)tr;
+						if( ruota == null )
+							ruota = new Ruota();
+						ruota.gradi += (float)rot.Angle;
+					}
+
+					if( tr is TranslateTransform ) {
+
+						// memorizzo la traslazione (spostamento)
+						if( trasla == null ) {
+							trasla = new Trasla();
+							trasla.rifW = _viewModel.scritta.rifContenitoreW;
+							trasla.rifH = _viewModel.scritta.rifContenitoreH;
 						}
 
+						TranslateTransform tra = (TranslateTransform)tr;
+						trasla.offsetX += tra.X;
+						trasla.offsetY += tra.Y;
 					}
-#endif
 
+					if( tr is ScaleTransform ) {
+						ScaleTransform stx = (ScaleTransform)tr;
+
+						if( zoom == null )
+							zoom = new Zoom();
+						zoom.fattore = stx.ScaleX;  // X o Y sono uguali
+					}
+
+				}
+
+				// scarico
+				_viewModel.scritta.traslazione = (trasla == null || trasla.isInutile) ? null : trasla ;
+				_viewModel.scritta.rotazione = (ruota == null || ruota.isInutile) ? null : ruota;
+				_viewModel.scritta.zoom = (zoom == null || zoom.isInutile) ? null : zoom;
+			} 
+
+		}
+
+		/// <summary>
+		/// Creo adorner con le menigliette per gestire la scritta
+		/// </summary>
+		void creareManiglietteScritta() {
+
+			// Centro e posiziono rispetto alla immagine della foto
+//			viewBoxScritta.Width = borderCornice.ActualWidth;
+			viewBoxScritta.Width = double.NaN;
+			viewBoxScritta.Height = double.NaN;
+			if( viewBoxScritta.Width == 0 && Debugger.IsAttached )
+				Debugger.Break();
+			Canvas.SetLeft( viewBoxScritta, double.NaN );
+			Canvas.SetTop( viewBoxScritta, double.NaN );
+
+			var quali = Maniglie.All ^ Maniglie.Flip;
+			ComposingAdorner2 adorner = AddAdorner2( viewBoxScritta, quali );
+			if( adorner != null )
+				adorner.CambiatoQualcosa += Adorner_CambiatoQualcosa;
+			else
+				_giornale.Error( "Impossibile che adorner sia nullo" );
+
+			// ---
+			// ---
+
+			if( _viewModel.scritta != null ) {
+
+				// Applico eventuali valori di trasformazione precedenti
+
+				if( _viewModel.scritta.rotazione != null && _viewModel.scritta.rotazione.isInutile == false ) {
+					adorner.impostaRotazioneDefault( _viewModel.scritta.rotazione.gradi );
+				}
+
+				if( _viewModel.scritta.traslazione != null && _viewModel.scritta.traslazione.isInutile == false ) {
+
+					var x = _viewModel.scritta.traslazione.offsetX * imageRitoccata.ActualWidth / _viewModel.scritta.traslazione.rifW;
+					var y = _viewModel.scritta.traslazione.offsetY * imageRitoccata.ActualHeight / _viewModel.scritta.traslazione.rifH;
+
+					adorner.impostaTraslazioneDefault( x, y );
+				}
+			}
 		}
 
 		void rimuovereManiglietteScritta() {
@@ -1219,11 +1321,16 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				var adorners = adornerlayer.GetAdorners( viewBoxScritta );
 				if( adorners != null ) {
 					for( int i = adorners.Length - 1; i >= 0; i-- ) {
-						ComposingAdorner ca = (adorners[i] as ComposingAdorner);
+						ComposingAdorner2 ca = (adorners[i] as ComposingAdorner2);
 						ca.CambiatoQualcosa -= Adorner_CambiatoQualcosa;
 						adornerlayer.Remove( adorners[i] );
 					}
 				}
+			} else {
+				// Come mai ?? Indagare ! Possiblile che non abbia già il suo adornerlayer ?
+				// Significa che ancora quel componente non è stato ancora renderizzato neanche una volta ???
+				if( Debugger.IsAttached )
+					Debugger.Break();
 			}
 		}
 
@@ -1580,6 +1687,11 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				e.Handled = true;
 		}
 
+		/// <summary>
+		/// Questo metodo viene eseguito prima del command nel ViewModel
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void applicareCorrezioniButton_Click( object sender, RoutedEventArgs e ) {
 			uiToScritta();
 		}
