@@ -217,8 +217,13 @@ namespace Digiphoto.Lumen.Config  {
 			// Questo è il logo di esempio che verrà distribuito nel pacchetto di installazione.
 			userConfig.logoNomeFile = nomeLogoDefault;
 			userConfig.logoPercentualeCopertura = 15;
-			// Logo per il self service
+
+			#region Settagggi per Self-Service
+
 			userConfig.logoNomeFileSelfService = nomeLogoSSDefault;
+			userConfig.modoRicercaSS = "fotografi";
+
+			#endregion Settagggi per Self-Service
 
 			userConfig.sogliaNumFotoConfermaInStampaRapida = 3;  // Se stampo almeno 3 foto chiedo conferma
 
