@@ -11,6 +11,7 @@ using Digiphoto.Lumen.Servizi.EntityRepository;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Config;
+using System.Collections.Specialized;
 
 namespace Digiphoto.Lumen.SelfService {
 
@@ -217,6 +218,22 @@ namespace Digiphoto.Lumen.SelfService {
 			}
 
 			return listaDto;
+		}
+
+		/**
+		 * Preparo i settaggi per il self-service.
+		 * Il client cerchiamo di farlo girare senza configurazione. Plug-and-Play
+		 * I settaggi li passiamo dal server
+		 */
+		public Dictionary<string, string> getSettings() {
+
+			Dictionary<string, string> settings = new Dictionary<string, string>();
+#if true
+			settings.Add( "tipo-ricerca", "fotografi" );
+#else
+			settings.Add( "tipo-ricerca", "carrelli" );
+#endif
+			return settings;
 		}
 	}
 }
