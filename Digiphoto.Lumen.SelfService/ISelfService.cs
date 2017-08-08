@@ -73,6 +73,9 @@ namespace Digiphoto.Lumen.SelfService {
 		/// <returns>Una lista di oggetti di trasporto leggeri, con solo i dati necessari</returns>
 		[OperationContract]
 		List<FotografiaDto> getListaFotografieDelFotografo( string fotografoId, int skip, int take );
+
+		[OperationContract]
+		Dictionary<string, string> getSettings();
 	}
 
 
