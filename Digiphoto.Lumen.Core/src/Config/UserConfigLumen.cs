@@ -255,6 +255,25 @@ namespace Digiphoto.Lumen.Config
 			}
 		}
 
+		/// <summary>
+		/// Il nome del file di default per i loghi.
+		/// </summary>
+		string _modoRicercaSS;
+		public string modoRicercaSS
+		{
+			get
+			{
+				return _modoRicercaSS;
+			}
+			set
+			{
+				if( _modoRicercaSS != value ) {
+					_modoRicercaSS = value;
+					OnPropertyChanged( "modoRicercaSS" );
+				}
+			}
+		}
+
 
 		/// <summary>
 		/// La percentuale di copertura della foto originale da parte del logo.

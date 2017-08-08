@@ -228,11 +228,10 @@ namespace Digiphoto.Lumen.SelfService {
 		public Dictionary<string, string> getSettings() {
 
 			Dictionary<string, string> settings = new Dictionary<string, string>();
-#if true
-			settings.Add( "tipo-ricerca", "fotografi" );
-#else
-			settings.Add( "tipo-ricerca", "carrelli" );
-#endif
+			
+			var tipric = Configurazione.UserConfigLumen.modoRicercaSS ?? "fotografi";
+			settings.Add( "tipo-ricerca", tipric );
+
 			return settings;
 		}
 	}
