@@ -14,6 +14,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.Servizi
         private String proviniPath = "Provini";
         private String risultantePath;
         private Guid idCarrello;
+        private String idFotografo=Guid.Empty.ToString();
 
         private FotoSrv()
         {
@@ -57,6 +58,26 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.Servizi
 
                 risultantePath = pathCarrelloNew;
                 idCarrello = id;
+            }
+        }
+
+        public void setFotografo(String id)
+        {
+            if (!idFotografo.Equals(id))
+            {
+                if (!idFotografo.Equals(Guid.Empty.ToString()))
+                {
+                    String pathCarrelloOld = Path.Combine(selfPath, idFotografo.ToString());
+                    deleteDirectory(pathCarrelloOld);
+                }
+                String pathCarrelloNew = Path.Combine(selfPath, id.ToString());
+                String pathProvini = Path.Combine(pathCarrelloNew, proviniPath);
+
+                Directory.CreateDirectory(pathCarrelloNew);
+                Directory.CreateDirectory(pathProvini);
+
+                risultantePath = pathCarrelloNew;
+                idFotografo = id;
             }
         }
 

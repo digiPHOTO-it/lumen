@@ -28,4 +28,18 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="FotografiaDto" nillable="true" type="tns:FotografiaDto" />
+  <xs:complexType name="ArrayOfFotografoDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="FotografoDto" nillable="true" type="tns:FotografoDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfFotografoDto" nillable="true" type="tns:ArrayOfFotografoDto" />
+  <xs:complexType name="FotografoDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="id" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="immagine" nillable="true" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="nome" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="FotografoDto" nillable="true" type="tns:FotografoDto" />
 </xs:schema>

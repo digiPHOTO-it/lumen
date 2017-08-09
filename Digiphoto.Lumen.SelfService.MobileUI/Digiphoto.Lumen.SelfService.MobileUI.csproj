@@ -63,8 +63,12 @@
       <DependentUpon>Carrelli.xaml</DependentUpon>
     </Compile>
     <Compile Include="Control\UserControlBase.cs" />
+    <Compile Include="Converters\ImageSourceConverter.cs" />
     <Compile Include="Converters\MiPiaceBollConverter.cs" />
     <Compile Include="Converters\PercentualeConverter.cs" />
+    <Compile Include="Fotografi\Fotografi.xaml.cs">
+      <DependentUpon>Fotografi.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Logo\Logo.xaml.cs">
       <DependentUpon>Logo.xaml</DependentUpon>
     </Compile>
@@ -80,10 +84,17 @@
     <Compile Include="Servizi\FotoSrv.cs" />
     <Compile Include="Servizi\Event\IEventManager.cs" />
     <Compile Include="Servizi\MoveTimeCounter.cs" />
+    <Compile Include="SlideShowNxM\SlideShowNxM.xaml.cs">
+      <DependentUpon>SlideShowNxM.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SlideShow\SlideShow.xaml.cs">
       <DependentUpon>SlideShow.xaml</DependentUpon>
     </Compile>
     <Page Include="Carrelli\Carrelli.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Fotografi\Fotografi.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -96,6 +107,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Resources\Default.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SlideShowNxM\SlideShowNxM.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -139,6 +154,9 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Service References\SelfServiceReference\Arrays.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\SelfServiceReference\Digiphoto.Lumen.SelfService.Carrelli.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -146,6 +164,9 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\SelfServiceReference\Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference.FotografiaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\SelfServiceReference\Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference.FotografoDto.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\SelfServiceReference\service.wsdl" />
@@ -201,6 +222,7 @@
   <ItemGroup>
     <Resource Include="Resources\Start.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

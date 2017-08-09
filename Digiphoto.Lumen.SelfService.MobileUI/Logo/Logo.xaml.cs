@@ -73,7 +73,20 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
         {
             if (!SelfMainWindow.isShowCarrelli)
             {
-                main.ContentArea.Content = new Carrelli(main, ssClient);
+                String setting = ssClient.getSettings()["tipo-ricerca"];
+                switch (setting)
+                {
+                    case "carrelli":
+                        main.ContentArea.Content = new Carrelli(main, ssClient);
+                        break;
+                    case "fotografi":
+                        main.ContentArea.Content = new Fotografi(main, ssClient);
+                        break;
+                    default:
+                        main.ContentArea.Content = new Fotografi(main, ssClient);
+                        break;
+                }
+
                 MoveTimeCounter.Instance.updateLastTime();
             }
         }

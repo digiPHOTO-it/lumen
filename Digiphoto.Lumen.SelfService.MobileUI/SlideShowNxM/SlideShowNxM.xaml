@@ -1,0 +1,57 @@
+﻿<lumC:UserControlBase x:Class="Digiphoto.Lumen.SelfService.MobileUI.SlideShowNxM"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:lum="clr-namespace:Digiphoto.Lumen.SelfService.MobileUI"
+             xmlns:lumC="clr-namespace:Digiphoto.Lumen.SelfService.MobileUI.Control"
+             xmlns:lumCon="clr-namespace:Digiphoto.Lumen.SelfService.MobileUI.Converters"
+             mc:Ignorable="d"
+             d:DesignHeight="900" d:DesignWidth="1800"
+             IsManipulationEnabled="True"
+             Mouse.PreviewMouseWheel="EventMouseWheel">
+    
+    <UserControl.Resources>
+        <lumCon:PercentualeConverter x:Key="percentualeConverter" />
+        <lumCon:MiPiaceBoolConverter x:Key="miPiaceBoolConverter" />
+    </UserControl.Resources>
+
+    <Grid Background="Aqua">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Questa è la lista delle immagini -->
+        <ListBox x:Name="LsImageGallery"   Margin="0,0,0,0"
+				 ScrollViewer.VerticalScrollBarVisibility="Disabled" 
+                 SelectionMode="Single" 
+                 IsSynchronizedWithCurrentItem="True"
+                 ItemsSource="{Binding Path=fotografieCW}" 
+                 ItemsPanel="{DynamicResource LsImageGalleryItemsPanelTemplate}" 
+                 ItemTemplate="{DynamicResource fotografiaDataTemplate}"
+				 ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+        </ListBox>
+
+        <Grid Name="PlaybackPanel">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="60" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="60" />
+            </Grid.ColumnDefinitions>
+
+            <Border Name="BorderPrevius" Grid.Column="0" Background="#55FFFFFF" >
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button Name="PreviousButton" TouchDown="Previous" Click="Previous" ToolTip="Back (Left/Up Arrow Key)" Style="{StaticResource styleLeft}" IsTabStop="False"/>
+                </StackPanel>
+            </Border>
+            <Border Name="BoderNext" Grid.Column="2" Background="#55FFFFFF" >
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Button Name="NextButton" TouchDown="Next" Click="Next" ToolTip="Next (Right/Down Arrow Key)" VerticalAlignment="Center" Style="{StaticResource styleRigth}" IsTabStop="False"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Image Name="LoadingFeedback" Visibility="Hidden" Source="/Digiphoto.Lumen.SelfService.MobileUI;component/Resources/Loading.png" Width="250" Height="250"/>
+
+    </Grid>
+</lumC:UserControlBase>

@@ -32,6 +32,8 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
             ssClient = new SelfServiceClient();
             ssClient.Open();
 
+            //ssClient.getPartenza;
+
             // AutoExit
             _MouseTicker.Tick += new EventHandler(dispatcherTimer_MouseTicker);
             _MouseTicker.Interval = new TimeSpan(0, 0, 0, 60);
@@ -97,8 +99,23 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
 
         private void ShowCarrelli()
         {
-            if(!isShowCarrelli)
-                ContentArea.Content = new Carrelli(this, ssClient);
+            if (!isShowCarrelli)
+            {
+                String setting = ssClient.getSettings()["tipo-ricerca"];
+                switch (setting)
+                {
+                    case "carrelli":
+                        ContentArea.Content = new Carrelli(this, ssClient);
+                        break;
+                    case "fotografi":
+                        ContentArea.Content = new Fotografi(this, ssClient);
+                        break;
+                    default:
+                        ContentArea.Content = new Fotografi(this, ssClient);
+                        break;
+                }
+            }
+                
         }
 
         #endregion
