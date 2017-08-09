@@ -12,6 +12,7 @@ using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Config;
 using System.Collections.Specialized;
+using Digiphoto.Lumen.Servizi.Io;
 
 namespace Digiphoto.Lumen.SelfService {
 
@@ -173,7 +174,7 @@ namespace Digiphoto.Lumen.SelfService {
 					FotografoDto dto = new FotografoDto();
 					dto.id = fotografo.id;
 					dto.nome = fotografo.cognomeNome;
-					dto.immagine = fotografo.immagine;
+					dto.immagine = getImmagineFotografo( fotografo );
 					listaDto.Add( dto );
 				}
 			}
@@ -181,6 +182,17 @@ namespace Digiphoto.Lumen.SelfService {
 			// ritorno gli oggetti di trasporto al client
 			return listaDto;
 		}
+
+		private byte [] getImmagineFotografo( Fotografo f ) {
+
+			string nomeFile = AiutanteFoto.nomeFileImgFotografo( f );
+			if( nomeFile != null && File.Exists( nomeFile ) ) {
+				IGestoreImmagineSrv g = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
+				return g.load( nomeFile ).getBytes(); ;
+			} else
+				return  null;
+		}
+	
 
 		public List<FotografiaDto> getListaFotografieDelFotografo( string fotografoId, int skip, int take ) {
 
