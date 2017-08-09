@@ -26,6 +26,7 @@
     <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="eb07ab09-579b-41a5-97b7-2b8b2723b1ab" SourceId="1" SourceUrl="net.tcp://localhost:8523/Digiphoto.Lumen.SelfService/SelfService/mex" />
     <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="5caf5c43-1aac-4d66-a128-340a810ab011" SourceId="1" SourceUrl="net.tcp://localhost:8523/Digiphoto.Lumen.SelfService/SelfService/mex" />
     <MetadataFile FileName="Digiphoto.Lumen.SelfService.Carrelli.xsd" MetadataType="Schema" ID="c9785559-afea-47a1-900b-1d788655cccc" SourceId="1" SourceUrl="net.tcp://localhost:8523/Digiphoto.Lumen.SelfService/SelfService/mex" />
+    <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="b5074f13-2755-43ef-b7d7-a4bdf9186bec" SourceId="1" SourceUrl="net.tcp://localhost:8523/Digiphoto.Lumen.SelfService/SelfService/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

@@ -15,6 +15,7 @@
       <xsd:import namespace="http://tempuri.org/" />
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/Digiphoto.Lumen.SelfService.Carrelli" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="ISelfService_getListaCarrelli_InputMessage">
@@ -53,6 +54,24 @@
   <wsdl:message name="ISelfService_setMiPiace_OutputMessage">
     <wsdl:part name="parameters" element="tns:setMiPiaceResponse" />
   </wsdl:message>
+  <wsdl:message name="ISelfService_getListaFotografi_InputMessage">
+    <wsdl:part name="parameters" element="tns:getListaFotografi" />
+  </wsdl:message>
+  <wsdl:message name="ISelfService_getListaFotografi_OutputMessage">
+    <wsdl:part name="parameters" element="tns:getListaFotografiResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISelfService_getListaFotografieDelFotografo_InputMessage">
+    <wsdl:part name="parameters" element="tns:getListaFotografieDelFotografo" />
+  </wsdl:message>
+  <wsdl:message name="ISelfService_getListaFotografieDelFotografo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:getListaFotografieDelFotografoResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISelfService_getSettings_InputMessage">
+    <wsdl:part name="parameters" element="tns:getSettings" />
+  </wsdl:message>
+  <wsdl:message name="ISelfService_getSettings_OutputMessage">
+    <wsdl:part name="parameters" element="tns:getSettingsResponse" />
+  </wsdl:message>
   <wsdl:portType name="ISelfService">
     <wsdl:operation name="getListaCarrelli">
       <wsdl:input wsaw:Action="http://tempuri.org/ISelfService/getListaCarrelli" message="tns:ISelfService_getListaCarrelli_InputMessage" />
@@ -77,6 +96,18 @@
     <wsdl:operation name="setMiPiace">
       <wsdl:input wsaw:Action="http://tempuri.org/ISelfService/setMiPiace" message="tns:ISelfService_setMiPiace_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ISelfService/setMiPiaceResponse" message="tns:ISelfService_setMiPiace_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="getListaFotografi">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISelfService/getListaFotografi" message="tns:ISelfService_getListaFotografi_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISelfService/getListaFotografiResponse" message="tns:ISelfService_getListaFotografi_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="getListaFotografieDelFotografo">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISelfService/getListaFotografieDelFotografo" message="tns:ISelfService_getListaFotografieDelFotografo_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISelfService/getListaFotografieDelFotografoResponse" message="tns:ISelfService_getListaFotografieDelFotografo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="getSettings">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISelfService/getSettings" message="tns:ISelfService_getSettings_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISelfService/getSettingsResponse" message="tns:ISelfService_getSettings_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="myNetTcpEndPoint" type="tns:ISelfService">
@@ -130,6 +161,33 @@
     </wsdl:operation>
     <wsdl:operation name="setMiPiace">
       <soap12:operation soapAction="http://tempuri.org/ISelfService/setMiPiace" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getListaFotografi">
+      <soap12:operation soapAction="http://tempuri.org/ISelfService/getListaFotografi" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getListaFotografieDelFotografo">
+      <soap12:operation soapAction="http://tempuri.org/ISelfService/getListaFotografieDelFotografo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSettings">
+      <soap12:operation soapAction="http://tempuri.org/ISelfService/getSettings" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

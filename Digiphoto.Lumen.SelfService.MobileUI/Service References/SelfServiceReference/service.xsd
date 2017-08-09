@@ -2,6 +2,7 @@
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import namespace="http://schemas.datacontract.org/2004/07/Digiphoto.Lumen.SelfService.Carrelli" />
   <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
   <xs:element name="getListaCarrelli">
     <xs:complexType>
       <xs:sequence />
@@ -79,6 +80,46 @@
   <xs:element name="setMiPiaceResponse">
     <xs:complexType>
       <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getListaFotografi">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getListaFotografiResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/Digiphoto.Lumen.SelfService.Carrelli" minOccurs="0" name="getListaFotografiResult" nillable="true" type="q7:ArrayOfFotografoDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getListaFotografieDelFotografo">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="fotografoId" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="skip" type="xs:int" />
+        <xs:element minOccurs="0" name="take" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getListaFotografieDelFotografoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/Digiphoto.Lumen.SelfService.Carrelli" minOccurs="0" name="getListaFotografieDelFotografoResult" nillable="true" type="q8:ArrayOfFotografiaDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getSettings">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getSettingsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q9="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="getSettingsResult" nillable="true" type="q9:ArrayOfKeyValueOfstringstring" />
+      </xs:sequence>
     </xs:complexType>
   </xs:element>
 </xs:schema>
