@@ -968,6 +968,8 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 			_cronoFine = DateTime.Now;
 
+			FormuleMagiche.rilasciaMemoria();
+
 			var tempo = _cronoFine - _cronoInizio;
 			_giornale.Debug( "Crono = " + tempo.TotalSeconds );
 		}
@@ -978,7 +980,16 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 			bool esistevaRisultante = foto.imgRisultante != null;
 
+
+			// Rilascio memoria
+			AiutanteFoto.disposeImmagini( foto, IdrataTarget.Tutte );
+
 			AiutanteFoto.creaProvinoFoto( foto );
+
+			// Le due foto grandi le rilascio per non intasare la memoria qualora questo metodo è chiamato più volte
+			AiutanteFoto.disposeImmagini( foto, IdrataTarget.Originale );
+			AiutanteFoto.disposeImmagini( foto, IdrataTarget.Risultante );
+
 			
 			bool esisteRisultante = foto.imgRisultante != null;
 
@@ -988,6 +999,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 				// Significa che l'ho idratata io in questo momento
 				AiutanteFoto.disposeImmagini( foto, IdrataTarget.Risultante );
 			}
+
 
 			// Avviso tutti che questa foto è cambiata
 			FotoModificateMsg msg = new FotoModificateMsg( this, foto );
@@ -1000,7 +1012,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 			BackgroundWorker worker = sender as BackgroundWorker;
 			IEnumerable<Fotografia> fotografie = (IEnumerable<Fotografia>) e.Argument;
-			
+
 			// TODO 
 			// qui abbiamo un problema da risolvere:
 			//   se imposto   0 = il programma è veloce ma la UI è bloccatissima (niente refresh, niente mouse)
@@ -1008,14 +1020,12 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			//   se imposto oltre 1000 sarebbe l'effetto più bello, ma ri rallenta di brutto. Su 100 foto si perdono 100 secondi (una enormità).
 			// per ora scelgo la strada di tenere un minimo per rinfrescale le foto
 			// Cmq non è un buon compromesso.
-			// const int attesaPiccola = 100;
-			// const int attesaGrande = 1000;
+			int finestraPrec = 0;
+
 			int perc;
 			int conta = 0;
 			int tot = fotografie.Count();
-			const int baseSoglia = 25;
-			int soglia = baseSoglia;
-			int attesa = 0;
+
 
 			foreach( Fotografia foto in fotografie ) {
 
@@ -1024,19 +1034,12 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 				// Eseguo il lavoro nel ReportProgess perché questo metodo viene eseguito nel thread della UI
 				worker.ReportProgress( perc, foto );
 
-				// Devo dare respiro alla UI altrimenti non mi sente i click del mouse dell'utente
-				// e l'effetto sarebbe quello che NON lavora in background
-				if( perc >= soglia ) {
-					// attesa = attesaGrande;
-					soglia += baseSoglia;
-				} else {
-					// attesa = attesaPiccola;
+				// Vediamo quanto tempo è passato. Faccio degli sleep proporzionali
+				if( (perc % 10) == 0 ) {
+					Thread.Sleep( 200 );
 				}
-					
-
-				if( attesa > 0 )
-					Thread.Sleep( attesa );
 				
+
 			}
 		}
 

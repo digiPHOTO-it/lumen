@@ -188,7 +188,7 @@ namespace Digiphoto.Lumen.SelfService {
 			string nomeFile = AiutanteFoto.nomeFileImgFotografo( f );
 			if( nomeFile != null && File.Exists( nomeFile ) ) {
 				IGestoreImmagineSrv g = LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
-				return g.load( nomeFile ).getBytes(); ;
+				return g.load( nomeFile ).getBytes();
 			} else
 				return  null;
 		}
