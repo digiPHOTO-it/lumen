@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName      "Lumen"
-#define MyAppVersion   "2.1-20170713"
+#define MyAppVersion   "2.1-20170812"
 #define MyAppPublisher "digiPHOTO.it"
 #define MyAppURL       "http://www.digiphoto.it/Lumen"
 #define MyAppExeName   "Digiphoto.Lumen.UI.exe"
@@ -57,6 +57,8 @@ Source: "..\Digiphoto.Lumen.Core\{#dirPlat}\skgl.dll"; DestDir: "{app}"; Flags: 
 Source: "..\Digiphoto.Lumen.Core\{#dirPlat}\Resources\*"; DestDir: "{app}\Resources"; Flags: recursesubdirs
 ; --- Imaging ---                                                            
 Source: "..\Digiphoto.Lumen.Imaging.Wic\{#dirPlat}\Digiphoto.Lumen.Imaging.Wic.dll"; DestDir: "{app}"; Flags: ignoreversion
+; --- Presentation Framework ---                                                            
+Source: "..\Digiphoto.Lumen.PresentationFramework\{#dirPlat}\Digiphoto.Lumen.PresentationFramework.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; --- Lumen ---
 Source: "..\Digiphoto.Lumen.UI\{#dirPlat}\Digiphoto.Lumen.UI.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.UI\{#dirPlat}\Digiphoto.Lumen.UI.exe.config"; DestDir: "{app}"; Flags: ignoreversion

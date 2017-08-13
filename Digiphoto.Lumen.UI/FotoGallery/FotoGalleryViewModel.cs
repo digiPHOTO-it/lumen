@@ -1678,16 +1678,19 @@ namespace Digiphoto.Lumen.UI {
 			completaParametriRicercaWithOrder( false );
 		}
 
+
+		private static readonly Regex regexNumIntorno1 = new Regex( @"^\*([0-9]+)\*([0-9]+)$" );
+		private static readonly Regex regexNumIntorno2 = new Regex( @"^\*([0-9]+)\*$" );
+
 		/// <summary>
 		/// Sistemo i parametri e gestisco la paginazione
 		/// </summary>
 		/// <param name="ordinamento asc/desc">il numero di pagina</param>
-		private void completaParametriRicercaWithOrder( bool usaOrdinamentoAsc )
-		{
+		private void completaParametriRicercaWithOrder( bool usaOrdinamentoAsc ) {
 
 			paramCercaFoto.idratareImmagini = false;
 
-			if(usaOrdinamentoAsc) {
+			if( usaOrdinamentoAsc ) {
 				if( Configurazione.UserConfigLumen.invertiRicerca )
 					paramCercaFoto.ordinamento = Ordinamento.Asc;
 				else
@@ -1702,7 +1705,7 @@ namespace Digiphoto.Lumen.UI {
 
 			// Aggiungo eventuale parametro l'evento
 			if( selettoreEventoViewModel.eventoSelezionato != null )
-				paramCercaFoto.eventi = new Evento [] { selettoreEventoViewModel.eventoSelezionato };
+				paramCercaFoto.eventi = new Evento[] { selettoreEventoViewModel.eventoSelezionato };
 			else
 				paramCercaFoto.eventi = null;
 
@@ -1720,6 +1723,35 @@ namespace Digiphoto.Lumen.UI {
 			paramCercaFoto.paginazione.skip += offsetProssimoSkip;
 			offsetProssimoSkip = 0;
 
+
+			// Questa espressione :     *120*  significa che devo cercare la foto 120 con anche delle foto prima e dopo
+			if( paramCercaFoto.numeriFotogrammi != null ) {
+
+				int numPosiz = 0;
+				int intorno = 0;
+
+				// Vediamo se l'utente mi ha inserito si il numero che la finestra
+				Match m1 = regexNumIntorno1.Match( paramCercaFoto.numeriFotogrammi );
+				if( m1.Success ) {
+					numPosiz = int.Parse( m1.Groups[1].Value );
+					intorno = int.Parse( m1.Groups[2].Value );
+				} else { 
+					Match m2 = regexNumIntorno2.Match( paramCercaFoto.numeriFotogrammi );
+					if( m2.Success ) {
+						numPosiz = int.Parse( m2.Groups[1].Value );
+						intorno = 100;
+					}
+				}
+
+				if( numPosiz > 0 ) {
+					int dalNum = Math.Max( numPosiz - intorno, 1 );
+					int alNum = numPosiz + intorno;
+
+					paramCercaFoto.numeriFotogrammi = dalNum + "-" + alNum;
+					paramCercaFoto.primoPosizionaSulNumero = numPosiz;
+				}
+
+			}
 		}
 
 		private void caricareSlideShow( string modo ) {
