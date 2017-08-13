@@ -12,7 +12,7 @@
 			 xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              mc:Ignorable="d" 
              x:Name="this"
-             d:DesignHeight="900" d:DesignWidth="1800" FontStretch="Condensed">
+             d:DesignHeight="700" d:DesignWidth="1300" FontStretch="Condensed">
 
 
     <UserControl.Resources>

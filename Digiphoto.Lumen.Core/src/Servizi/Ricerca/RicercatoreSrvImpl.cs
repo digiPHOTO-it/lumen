@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Digiphoto.Lumen.Servizi.Ricerca {
 
@@ -20,8 +21,15 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 		public List<Fotografia> cerca( ParamCercaFoto param ) {
 
+			// è stato chiesto un numero specifico di foto ma con intorno prima e dopo
+			int pagina = gestisciRicercaPuntualePerNumeroEdIntorno( param );
+			if( pagina > 0 )
+				param.paginazione.skip = (pagina -1) * param.paginazione.take;
+			// in ogni caso devo pulire il numerino perché al prossmo giro diventa una ricerca paginata normale	
+			param.primoPosizionaSulNumero = 0;
+
+
 			return cercaVeloceSQL( param );
-			// return cercaLentoEF__DACANC( param );
 		}
 
 		private List<Fotografia> cercaVeloceSQL( ParamCercaFoto param ) {
@@ -29,6 +37,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			_giornale.Debug( "Parametri di ricerca:\n" + param );
 
 			List<object> sqlParam = null;
+			
 			String sql = creaQuerySQL( param, false, ref sqlParam );
 
 			var query = objectContext.Database.SqlQuery<Guid>( sql, sqlParam.ToArray() );
@@ -198,6 +207,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 						paramOut.Add( estSup );
 						sql.Append( SEPAR );
 					}
+
 				} else {
 					// ----- numeri di fotogramma
 					sql.Append( "AND f.numero in ( " );
@@ -284,7 +294,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 					if( param.ordinamento == Ordinamento.Desc )
 						sql.Append( " DESC " );
 					// forse non serve. provo a far risparmiare tempo
-					// sql.Append( ", f.id " );
+					sql.Append( ", f.id " );
 					sql.Append( SEPAR );
 				}
 
@@ -351,6 +361,126 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 			return lista;
 		}
+
+		private static readonly Regex regexNumIntorno = new Regex( @"\*([0-9]+)\*" );
+
+		int gestisciRicercaPuntualePerNumeroEdIntorno( ParamCercaFoto param ) {
+
+			if( param.primoPosizionaSulNumero <= 0 )
+				return -1;
+
+			var v = param.numeriFotogrammi.Split( '-' );
+			int dalNum = Convert.ToInt32( v[0] );
+			int alNum = Convert.ToInt32( v[1] );
+
+
+			
+			// ---
+
+			List<object> sqlParam = new List<object>();
+			sqlParam.Add( param.primoPosizionaSulNumero );
+
+			string sql = "Select count(*) from fotografie f where f.numero = {0}";
+
+			var query = objectContext.Database.SqlQuery<int>( sql, sqlParam.ToArray() );
+
+			var quanti = (long) query.Single();
+
+			// Se non esiste la foto che sto cercando, allora esco
+			if( quanti == 0 )
+				return -1;
+
+
+
+			// Ora devo scoprire a quale pagina si trova la foto interessata. Probabilmente è nel mezzo
+			// parto dal mezzo con una ricerca dicotomica
+
+			sql = "Select count(*) from fotografie f where f.numero between {0} and {1}";
+
+			sqlParam = new List<object>();
+			sqlParam.Add( dalNum.ToString() );
+			sqlParam.Add( alNum.ToString() );
+
+			query = objectContext.Database.SqlQuery<int>( sql, sqlParam.ToArray() );
+
+			int totale = (int)query.Single();
+
+			int totPagine = (totale / param.paginazione.take) ;
+			if( (totale % param.paginazione.take) != 0 )
+				++totPagine;
+
+
+			var pag = ricercaPaginaDicotomica( 1, totPagine, sqlParam, param );
+
+			return pag;
+		}
+
+		private int ricercaPaginaDicotomica( int limiteInf, int limiteSup, List<object> sqlParam, ParamCercaFoto param ) {
+
+			StringBuilder sql = new StringBuilder();
+
+			int middlePage = (limiteInf + limiteSup) / 2;
+
+			if( middlePage < limiteInf || limiteSup < 0 )
+				throw new InvalidOperationException( "impossibile" );
+
+			sql.Append( "Select min(q.numero) minimo, max(q.numero) massimo" );
+			sql.Append( SEPAR );
+			sql.Append( "from (" );
+			sql.Append( SEPAR );
+			sql.Append( "\tselect f.numero" );
+			sql.Append( SEPAR );
+			sql.Append( "\tfrom fotografie f" );
+			sql.Append( SEPAR );
+			sql.Append( "\twhere 1=1" );
+			sql.Append( SEPAR );
+			sql.Append( "\t\tand f.numero between {0} and {1}" );
+			sql.Append( SEPAR );
+
+			if( param.ordinamento != null ) {
+				sql.Append( "\tORDER BY f.dataOraAcquisizione " );
+				if( param.ordinamento == Ordinamento.Desc )
+					sql.Append( " DESC " );
+				sql.Append( ", f.numero " );
+				if( param.ordinamento == Ordinamento.Desc )
+					sql.Append( " DESC " );
+				// forse non serve. provo a far risparmiare tempo
+				sql.Append( ", f.id " );
+				sql.Append( SEPAR );
+			}
+
+			sql.Append( "\tLIMIT " );
+			var skip = param.paginazione.take * (middlePage - 1);
+			sql.Append( Convert.ToString( skip ) );
+			sql.Append( " , " );
+			sql.Append( param.paginazione.take );
+			sql.Append( SEPAR );
+			sql.Append( ") q" );
+
+			var query = objectContext.Database.SqlQuery<AppoNumNum>( sql.ToString(), sqlParam.ToArray() );
+			AppoNumNum appo = query.ToList()[0];
+
+			//  Vediamo se nella pagina attuale ho trovato il numero di foto che sto cercando
+			if( appo.minimo <= param.primoPosizionaSulNumero && appo.massimo >= param.primoPosizionaSulNumero )
+				// Trovato
+				return middlePage;
+			else {
+				
+				if( appo.massimo < param.primoPosizionaSulNumero ) {
+					// salgo
+					limiteInf = middlePage + 1;
+				} else {
+					// Scendo
+					limiteSup = middlePage - 1;
+				}
+
+				return ricercaPaginaDicotomica( limiteInf, limiteSup, sqlParam, param );
+			}
+
+
+			return -1;
+		}
+
 
 		private List<Fotografia> cercaLentoEF__DACANC( ParamCercaFoto param ) {
 			
