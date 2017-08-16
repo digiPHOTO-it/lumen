@@ -20,7 +20,7 @@ namespace Digiphoto.Lumen.UI.Converters {
 
 
 		public static bool richiedeAltaQualita( short numRighe, short numColonne ) {
-			return (numRighe == 1 && (numColonne == 1 || numColonne == 2));
+			return FotoGalleryViewModel.vediAltaQualita( numRighe, numColonne );
 		}
 
 

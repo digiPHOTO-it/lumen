@@ -9,6 +9,9 @@ using Digiphoto.Lumen.UI.Mvvm;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.UI.Util;
 using Digiphoto.Lumen.Config;
+using System.Windows.Shapes;
+using Digiphoto.Lumen.Imaging;
+using Digiphoto.Lumen.Util;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -34,27 +37,32 @@ namespace Digiphoto.Lumen.UI {
 		private const string GOTO_EDITING = "GOTO_EDITING";
 
 		public FotoGallery() {
+
 			InitializeComponent();
 
 			DataContextChanged += new DependencyPropertyChangedEventHandler(fotoGallery_DataContextChanged);
 
 			// Carico lo stato della checkbox di collasso filtri, prendendolo dal file di last-used
 			checkBoxCollassaFiltri.IsChecked = Configurazione.LastUsedConfigLumen.collassaFiltriInRicercaGallery;
-        }
+		}
 
 		void fotoGallery_DataContextChanged( object sender, DependencyPropertyChangedEventArgs e ) {
-			
+
 			associaDialogProvider();
-			
+
 			// Associo i ViewModel dei componenti interni
 			selettoreMetadati.DataContext = fotoGalleryViewModel.selettoreMetadatiViewModel;
 
 			selettoreAzioniAutomatiche.DataContext = fotoGalleryViewModel.selettoreAzioniAutomaticheViewModel;
+
 		}
 
-		
+
+
+
 
 		#region Proprietà
+		
 		private FotoGalleryViewModel fotoGalleryViewModel {
 			get {
 				return (FotoGalleryViewModel)base.viewModelBase;
@@ -68,7 +76,7 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		private void ieriButton_Click( object sender, RoutedEventArgs e ) {
-			TimeSpan unGiorno = new TimeSpan(1,0,0,0);
+			TimeSpan unGiorno = new TimeSpan( 1, 0, 0, 0 );
 			DateTime ieri = fotoGalleryViewModel.oggi.Subtract( unGiorno );
 			datePickerRicercaIniz.SelectedDate = ieri;
 			datePickerRicercaFine.SelectedDate = ieri;
@@ -84,13 +92,13 @@ namespace Digiphoto.Lumen.UI {
 
 		private void calendario_SelectedDatesChanged( object sender, SelectionChangedEventArgs e ) {
 			IList giorni = e.AddedItems;
-			
+
 			if( giorni.Count > 0 ) {
 
 				// A seconda di come si esegue la selezione, il range può essere ascendente o discendente.
 				// A me serve sempre prima la più piccola poi la più grande
-				DateTime aa = (DateTime) giorni[0];
-				DateTime bb = (DateTime) giorni[giorni.Count-1];
+				DateTime aa = (DateTime)giorni[0];
+				DateTime bb = (DateTime)giorni[giorni.Count - 1];
 
 				// Metto sempre per prima la data più piccola
 				fotoGalleryViewModel.paramCercaFoto.giornataIniz = minDate( aa, bb );
@@ -110,46 +118,40 @@ namespace Digiphoto.Lumen.UI {
 		/// </summary>
 		private void listBoxItemImageGallery_MouseDoubleClick( object sender, RoutedEventArgs e ) {
 
-			ListBoxItem lbItem = (ListBoxItem) sender;
+			ListBoxItem lbItem = (ListBoxItem)sender;
 			fotoGalleryViewModel.mandareInModificaImmediata( lbItem.Content as Fotografia );
 		}
 
-		private void LsImageGallery_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-		{
+		private void LsImageGallery_PreviewMouseLeftButtonDown( object sender, MouseButtonEventArgs e ) {
 			// Anche se clicco sulla scrollbar mi solleva l'evento button down.
-			if( ! (e.OriginalSource is Image) )	
+			if( !(e.OriginalSource is Image) )
 				return;
 
 			//
 			ListBoxItem lbi = SelectItemOnLeftClick( e );
-			if (lbi == null)
+			if( lbi == null )
 				return;
 
 			Fotografia foto = (Fotografia)lbi.Content;
-			
-			if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
-			{
-				if (fotoGalleryViewModel.fotografieCW.SelectedItems.Count > 0)
-				{
+
+			if( Keyboard.IsKeyDown( Key.LeftShift ) || Keyboard.IsKeyDown( Key.RightShift ) ) {
+				if( fotoGalleryViewModel.fotografieCW.SelectedItems.Count > 0 ) {
 					Fotografia lastSelectedFoto = fotoGalleryViewModel.fotografieCW.SelectedItems.Last<Fotografia>();
-					int firstIndex = fotoGalleryViewModel.fotografieCW.IndexOf(lastSelectedFoto);
-					int lastIndex = fotoGalleryViewModel.fotografieCW.IndexOf(foto);
+					int firstIndex = fotoGalleryViewModel.fotografieCW.IndexOf( lastSelectedFoto );
+					int lastIndex = fotoGalleryViewModel.fotografieCW.IndexOf( foto );
 
 					//se ho selezionato dal più alto al più basso inverto gli indici
-					if (firstIndex > lastIndex)
-					{
+					if( firstIndex > lastIndex ) {
 						int appoggio = firstIndex;
 						//faccio +1 perche se no non riesco a selezionare l'ultima foto
 						firstIndex = lastIndex + 1;
 						lastIndex = appoggio;
 					}
 
-					for (int i = firstIndex; i < lastIndex; i++)
-					{
-						Fotografia f = (Fotografia)fotoGalleryViewModel.fotografieCW.GetItemAt(i);
-						if (!fotoGalleryViewModel.fotografieCW.SelectedItems.Contains(f))
-						{
-							fotoGalleryViewModel.fotografieCW.SelectedItems.Add(f);
+					for( int i = firstIndex; i < lastIndex; i++ ) {
+						Fotografia f = (Fotografia)fotoGalleryViewModel.fotografieCW.GetItemAt( i );
+						if( !fotoGalleryViewModel.fotografieCW.SelectedItems.Contains( f ) ) {
+							fotoGalleryViewModel.fotografieCW.SelectedItems.Add( f );
 							fotoGalleryViewModel.fotografieCW.RefreshSelectedItemWithMemory();
 						}
 					}
@@ -157,34 +159,28 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		private void LsImageGallery_PreviewKeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.Key == Key.Z && Keyboard.Modifiers == ModifierKeys.Control && 
-				LsImageGallery.SelectedItems.Count > 0)
-			{
-				fotoGalleryViewModel.riportaOriginaleFotoSelezionateCommand.Execute(null);
+		private void LsImageGallery_PreviewKeyDown( object sender, KeyEventArgs e ) {
+			if( e.Key == Key.Z && Keyboard.Modifiers == ModifierKeys.Control &&
+				LsImageGallery.SelectedItems.Count > 0 ) {
+				fotoGalleryViewModel.riportaOriginaleFotoSelezionateCommand.Execute( null );
 				fotoGalleryViewModel.fotografieCW.deselezionaTutto();
 			}
 		}
 
-		private ListBoxItem SelectItemOnLeftClick(System.Windows.Input.MouseButtonEventArgs e)
-		{
-			Point clickPoint = e.GetPosition(LsImageGallery);
-			object element = LsImageGallery.InputHitTest(clickPoint);
+		private ListBoxItem SelectItemOnLeftClick( System.Windows.Input.MouseButtonEventArgs e ) {
+			Point clickPoint = e.GetPosition( LsImageGallery );
+			object element = LsImageGallery.InputHitTest( clickPoint );
 			ListBoxItem clickedListBoxItem = null;
-			if (element != null)
-			{
-				clickedListBoxItem = GetVisualParent<ListBoxItem>(element);
-				if (clickedListBoxItem != null)
-				{
+			if( element != null ) {
+				clickedListBoxItem = GetVisualParent<ListBoxItem>( element );
+				if( clickedListBoxItem != null ) {
 					Fotografia f = (Fotografia)clickedListBoxItem.Content;
 				}
 			}
 			return clickedListBoxItem;
 		}
 
-		private void LsImageGallery_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
-		{
+		private void LsImageGallery_PreviewMouseRightButtonDown( object sender, MouseButtonEventArgs e ) {
 
 			if( !(e.OriginalSource is Image) )
 				return;
@@ -194,20 +190,16 @@ namespace Digiphoto.Lumen.UI {
 			e.Handled = true;
 		}
 
-		private ListBoxItem SelectItemOnRightClick(System.Windows.Input.MouseButtonEventArgs e)
-		{
-			Point clickPoint = e.GetPosition(LsImageGallery);
-			object element = LsImageGallery.InputHitTest(clickPoint);
+		private ListBoxItem SelectItemOnRightClick( System.Windows.Input.MouseButtonEventArgs e ) {
+			Point clickPoint = e.GetPosition( LsImageGallery );
+			object element = LsImageGallery.InputHitTest( clickPoint );
 			ListBoxItem clickedListBoxItem = null;
-			if (element != null)
-			{
-				clickedListBoxItem = GetVisualParent<ListBoxItem>(element);
-				if( clickedListBoxItem != null ) 
-				{
+			if( element != null ) {
+				clickedListBoxItem = GetVisualParent<ListBoxItem>( element );
+				if( clickedListBoxItem != null ) {
 					Fotografia f = (Fotografia)clickedListBoxItem.Content;
-					if (!fotoGalleryViewModel.fotografieCW.SelectedItems.Contains(f))
-					{
-						fotoGalleryViewModel.fotografieCW.SelectedItems.Add(f);
+					if( !fotoGalleryViewModel.fotografieCW.SelectedItems.Contains( f ) ) {
+						fotoGalleryViewModel.fotografieCW.SelectedItems.Add( f );
 						fotoGalleryViewModel.fotografieCW.RefreshSelectedItemWithMemory();
 					}
 				}
@@ -215,12 +207,10 @@ namespace Digiphoto.Lumen.UI {
 			return clickedListBoxItem;
 		}
 
-		public T GetVisualParent<T>(object childObject) where T : Visual
-		{
+		public T GetVisualParent<T>( object childObject ) where T : Visual {
 			DependencyObject child = childObject as DependencyObject;
-			while ((child != null) && !(child is T))
-			{
-				child = VisualTreeHelper.GetParent(child);
+			while( (child != null) && !(child is T) ) {
+				child = VisualTreeHelper.GetParent( child );
 			}
 			return child as T;
 		}
@@ -232,7 +222,7 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		void selezionareTutteLeFoto_Click( object sender, RoutedEventArgs e ) {
-			if( fotoGalleryViewModel.selezionareTuttoCommand.CanExecute( "true" ) ) 
+			if( fotoGalleryViewModel.selezionareTuttoCommand.CanExecute( "true" ) )
 				fotoGalleryViewModel.selezionareTuttoCommand.Execute( "true" );
 		}
 		void deselezionareTutteLeFoto_Click( object sender, RoutedEventArgs e ) {
@@ -246,7 +236,7 @@ namespace Digiphoto.Lumen.UI {
 
 			// Se è cambiato lo stato del flag di ricerca, lo memorizzo nei last-used
 			if( checkBoxCollassaFiltri.IsChecked != Configurazione.LastUsedConfigLumen.collassaFiltriInRicercaGallery ) {
-				Configurazione.LastUsedConfigLumen.collassaFiltriInRicercaGallery = (bool) checkBoxCollassaFiltri.IsChecked;
+				Configurazione.LastUsedConfigLumen.collassaFiltriInRicercaGallery = (bool)checkBoxCollassaFiltri.IsChecked;
 				try {
 					Configurazione.SalvaLastUsedConfig();
 				} catch( Exception ) {
@@ -281,7 +271,7 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 
-		private bool posizionaListaSulFotogramma( int numDaric ) { 
+		private bool posizionaListaSulFotogramma( int numDaric ) {
 
 			Fotografia daric = ricavaFotoByNumber( numDaric );
 			if( daric != null )
@@ -311,7 +301,7 @@ namespace Digiphoto.Lumen.UI {
 				if( child.Name == "fotoCanvas" ) {
 
 					// Per far prima, invece che applicarlo a tutti, la applico soltanto ai componenti visibili
-					if( AiutanteUI.IsUserVisible( ele, LsImageGallery )) {
+					if( AiutanteUI.IsUserVisible( ele, LsImageGallery ) ) {
 
 						Canvas canvas = (Canvas)child;
 
@@ -363,16 +353,225 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-/*
-		private void expanderMetadati_Collapsed( object sender, RoutedEventArgs e ) {
-			// Quando chiudo l'expander, smetto di ascoltare gli eventi di selezione cambiata
-			this.fotoGalleryViewModel.selettoreMetadatiViewModel.cambiareModalitaOperativaCommand.Execute( "P" );
-        }
 
-		private void expanderMetadati_Expanded( object sender, RoutedEventArgs e ) {
-			// Quando apro l'expander, inizio ad ascoltare gli eventi di selezione cambiata
-			this.fotoGalleryViewModel.selettoreMetadatiViewModel.cambiareModalitaOperativaCommand.Execute( "A" );
+		private void FotoGalleryViewModel_PropertyChanged( object sender, System.ComponentModel.PropertyChangedEventArgs e ) {
+
+			bool cambiaAreaStampabile = false;
+
+			// Significa che ho cambiato le impostazioni di visualizzazione
+			if( e.PropertyName == "devoVisualizzareAreaDiRispettoHQ" )
+				cambiaAreaStampabile = true;
+
+			if( fotoGalleryViewModel.isAltaQualita ) {
+				// Significa che mi sono spostato alla foto successiva in HQ
+				if( e.PropertyName == "fotografieCW" || 
+				    e.PropertyName == "numRighe" || e.PropertyName == "numColonne" ||
+					e.PropertyName == "numRighePag" || e.PropertyName == "numColonnePag" )
+						cambiaAreaStampabile = true;
+			}
+
+			if( cambiaAreaStampabile ) {
+				// Devo farlo nel thread della UI altrimenti non si sono ancora disposti i componenti grafici correttamente
+				this.Dispatcher.BeginInvoke( gestioneAreaStampabileHQAction );
+			}
+
 		}
-*/
+
+
+		Action _gestioneAreaStampabileHQAction;
+		Action gestioneAreaStampabileHQAction
+		{
+			get
+			{
+				if( _gestioneAreaStampabileHQAction == null )
+					_gestioneAreaStampabileHQAction = new Action( gestioneAreaStampabileHQ );
+				return _gestioneAreaStampabileHQAction;
+			}
+		}
+
+		
+		private void gestioneAreaStampabileHQ() {
+			gestioneAreaStampabileHQ( false );
+		}
+
+		// Questo è lo style per decorare i rettangoli
+		Style coperturaRispettoStyle;
+
+		private void gestioneAreaStampabileHQ( bool spegniForzatamente ) {
+
+			// Se non so il ratio dell'area stampabile, esco subito
+			if( fotoGalleryViewModel.ratioAreaStampabile == 0f )
+				return;
+
+			if( spegniForzatamente == false && checkBoxAreaRispetto.IsChecked == false )
+				return;
+				
+			if( spegniForzatamente == false && fotoGalleryViewModel.isAltaQualita ) {
+
+				if( fotoGalleryViewModel.fotografieCW.Count > 2 )
+					return;
+				
+				LsImageGallery.UpdateLayout();
+				
+
+				if( coperturaRispettoStyle == null )
+					coperturaRispettoStyle = this.FindResource( "coperturaRispettoStyle" ) as Style;
+					
+				// Le foto in alta qualità possono essere 1 oppure 2 affiancate
+				foreach( Fotografia foto in fotoGalleryViewModel.fotografieCW ) { 
+
+					Rectangle[] rettangoli = new Rectangle[2];
+					bool esiste = false;
+
+					Grid fotoGrid = findFotoGrid( foto );
+
+					for( char ab = 'A'; ab <= 'B'; ab++ ) {
+
+						// -- areaStampabileA - areaStampabileB
+						int pos = ab - 'A';
+						string nome = string.Format( "areaStampabile{0}", ab );
+						
+						rettangoli[pos] = (Rectangle)AiutanteUI.FindChild( fotoGrid, nome, typeof( Rectangle ) );
+						
+						esiste = rettangoli[pos] != null;
+						if( !esiste ) {
+							rettangoli[pos] = new Rectangle();
+							rettangoli[pos].Name = nome;
+							rettangoli[pos].Style = coperturaRispettoStyle;
+						}
+
+						Panel.SetZIndex( rettangoli[pos], 25 );
+					}
+
+					dimensionaRettangoloPerAreaDiRispetto( rettangoli, fotoGrid );
+
+
+					if( ! esiste ) {
+						fotoGrid.Children.Add( rettangoli[0] );
+						fotoGrid.Children.Add( rettangoli[1] );
+					}
+				}
+
+			} else {
+
+				// Elimino tutti i rettangoli. Possono essere 2 o 4
+				for( int rr = 1; rr <= 2; rr++ )
+					for( char ab = 'A'; ab <= 'B'; ab++ ) {
+						string nome = string.Format( "areaStampabile{0}", ab );
+						Rectangle rettangolo = (Rectangle)AiutanteUI.FindChild( gridImges, nome, typeof( Rectangle ) );
+						if( rettangolo != null )
+							gridImges.Children.Remove( rettangolo );
+					}
+			}
+		}
+
+		static float ratioRispetto = (float)CoreUtil.evaluateExpression( Configurazione.UserConfigLumen.expRatioAreaDiRispetto );
+
+		/// <summary>
+		/// Questa grid viene creata a runtime per ogni foto che viene iterata dalla listbox.
+		/// </summary>
+		/// <param name="f"></param>
+		/// <returns></returns>
+		Grid findFotoGrid( Fotografia f ) {
+			return findComponentFromTemplate<Grid>( f, "fotoGrid" );
+		}
+
+		Image findFotoImage( Fotografia f ) {
+			return findComponentFromTemplate<Image>( f, "fotoImage" );
+		}
+
+		T findComponentFromTemplate<T>( Fotografia f, string nomeComponente ) {
+
+			// Per ricavare il componente desiderato, devo fare diversi passaggi
+
+			// 2. dalla foto ricavo il ListBoxItem che la contiene
+			ListBoxItem listBoxItem = (ListBoxItem)(LsImageGallery.ItemContainerGenerator.ContainerFromItem( f ));
+			// 3. dal ListBoxItem ricavo il suo ContentPresenter
+			ContentPresenter contentPresenter = AiutanteUI.FindVisualChild<ContentPresenter>( listBoxItem );
+			// 4. con il ContentPresenter ricavo il DataTemplate (del singolo elemento)
+			DataTemplate dataTemplate = contentPresenter.ContentTemplate;
+			// 5. con il DataTemplate ricavo l'Image contenuta
+
+			return (T) dataTemplate.FindName( nomeComponente, contentPresenter );
+		}
+
+		void dimensionaRettangoloPerAreaDiRispetto( Rectangle [] rettangoli, Grid fotoGrid ) {
+
+			try {
+				Rectangle rectA = rettangoli[0];
+				Rectangle rectB = rettangoli[1];
+
+				// Ora ricalcolo la dimensione dell'area di rispetto
+				// float ratio = fotoGalleryViewModel.ratioAreaStampabile;
+				if( fotoGalleryViewModel.ratioAreaStampabile == 0f )
+					return;
+
+				
+
+				Image fotoImage = (Image) fotoGrid.FindName( "fotoImage" );
+				
+				CalcolatoreAreeRispetto.Geo imageGeo = new CalcolatoreAreeRispetto.Geo();
+
+				imageGeo.w = fotoImage.ActualWidth;
+				imageGeo.h = fotoImage.ActualHeight;
+
+				// Calcolo la fascia A
+				Rect rettangoloA = CalcolatoreAreeRispetto.calcolaDimensioni( CalcolatoreAreeRispetto.Fascia.FasciaA, ratioRispetto, imageGeo );
+				CalcolatoreAreeRispetto.Bordi bordiA = CalcolatoreAreeRispetto.calcolcaLatiBordo( CalcolatoreAreeRispetto.Fascia.FasciaA, ratioRispetto, imageGeo, imageGeo );
+
+				// Calcolo la fascia B
+				Rect rettangoloB = CalcolatoreAreeRispetto.calcolaDimensioni( CalcolatoreAreeRispetto.Fascia.FasciaB, ratioRispetto, imageGeo );
+				CalcolatoreAreeRispetto.Bordi bordiB = CalcolatoreAreeRispetto.calcolcaLatiBordo( CalcolatoreAreeRispetto.Fascia.FasciaB, ratioRispetto, imageGeo, imageGeo );
+
+				// Calcolo left e top in base alla posizione della immagine rispetto alla grid che la contiene
+				var qq = fotoImage.TransformToAncestor( fotoGrid );
+				Point relativePoint = qq.Transform( new Point( 0, 0 ) );
+				double currentLeft = relativePoint.X;
+				double currentTop = relativePoint.Y;
+
+				// Setto fascia A
+				rectA.Width = rettangoloA.Width;
+				rectA.Height = rettangoloA.Height;
+				var left = currentLeft + rettangoloA.Left;
+				var top = currentTop + rettangoloA.Top;
+				var right = 0;
+				var bottom = 0;
+
+				Thickness ticA = new Thickness( left, top, right, bottom );
+				rectA.Margin = ticA;
+
+				// ---
+
+				// Setto fascia B
+				rectB.Width = rettangoloB.Width;
+				rectB.Height = rettangoloB.Height;
+				left = currentLeft + rettangoloB.Left;
+				top = currentTop + rettangoloB.Top;
+				right = 0;
+				bottom = 0;
+
+				Thickness ticB = new Thickness( left, top, right, bottom );
+				rectB.Margin = ticB;
+
+			} catch( Exception ee ) {
+				// pazienza : dovrei loggare l'errore
+				int a = 3;
+			}
+		}
+
+		private void checkBoxAreaRispetto_Click( object sender, RoutedEventArgs e ) {
+
+			bool spegniForzatamente = checkBoxAreaRispetto.IsChecked == false;
+
+			gestioneAreaStampabileHQ( spegniForzatamente );
+
+			// Abilito / Disabilito l'ascolto dei cambi di property
+			if( checkBoxAreaRispetto.IsChecked == true ) {
+				// Metto un ascoltatore su tutte le property. perché devo sentire i cambi della AltaQualità
+				fotoGalleryViewModel.PropertyChanged += FotoGalleryViewModel_PropertyChanged;
+			} else {
+				fotoGalleryViewModel.PropertyChanged -= FotoGalleryViewModel_PropertyChanged;
+			}
+		}
 	}
 }

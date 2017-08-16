@@ -150,11 +150,6 @@
                     </extToolkit:IntegerUpDown.ToolTip>
                 </extToolkit:IntegerUpDown>
                 
-				<!--
-                <Button Content="AREA" x:Name="mostraAreaStampabileButton" Click="mostraAreaStampabileButton_Click" Style="{StaticResource bottoneTestualeStyle}" ToolTip="Evidenzia area stampabile su foto visibili" 
-						Visibility="{Binding Path=possoVisualizzareAreaDiRispetto,Mode=OneTime,Converter={StaticResource booleanToVisibilityConverter}}"
-						/>
-				-->
             </ToolBar>
 
             <ToolBar Band="1" BandIndex="3" Header="Pubblico" Style="{StaticResource fgToolBarStyle}">
@@ -314,8 +309,11 @@
                 <lum:SelettoreScaricoCard x:Name="selettoreScaricoCard1" 
 				                          Margin="3,0,0,0" FontSize="14"
 				                          DataContext="{Binding selettoreScaricoCardViewModel}" />
+				<StackPanel Orientation="Vertical">
+					<CheckBox Name="checkBoxCollassaFiltri" Content="Collassa filtri in ricerca" IsChecked="True" ToolTip="Quando viene esegita la ricerca, viene nascosto atomaticamente il pannello dei filtri" />
+					<CheckBox Name="checkBoxAreaRispetto" Content="Area di stampa" IsChecked="{Binding Path=vorreiVisualizzareAreaDiRispettoHQ,Mode=OneWay}" ToolTip="Visualizza area di stampa nelle immagini ad alta qualità" Click="checkBoxAreaRispetto_Click" />
+				</StackPanel>
 
-                <CheckBox Name="checkBoxCollassaFiltri" Content="Collassa filtri in ricerca" IsChecked="True" ToolTip="Quando viene esegita la ricerca, viene nascosto atomaticamente il pannello dei filtri" />
             </StackPanel>
 
         </Expander>
@@ -324,45 +322,47 @@
         <lum:SelettoreAzioniRapideView Visibility="Collapsed" DataContext="{Binding Path=selettoreAzioniRapideViewModel}"/>
 
         <!-- Questa è la lista delle immagini -->
-        <ListBox x:Name="LsImageGallery"   Margin="0,0,0,0"
-				 ScrollViewer.VerticalScrollBarVisibility="Disabled" 
-                 SelectionMode="Multiple" 
-                 lumMS:MultiSelect.IsEnabled="True" IsSynchronizedWithCurrentItem="True"
-                 Style="{StaticResource LsImageGalleryStyle}"
-                 ItemsSource="{Binding Path=fotografieCW}" 
-                 ItemsPanel="{DynamicResource LsImageGalleryItemsPanelTemplate}" 
-                 ItemTemplate="{DynamicResource fotografiaDataTemplate}"
-				 ContextMenu="{DynamicResource azioniRapideMenu}"
-				 ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-                 PreviewMouseLeftButtonDown="LsImageGallery_PreviewMouseLeftButtonDown"
-                 PreviewMouseRightButtonDown="LsImageGallery_PreviewMouseRightButtonDown"
-                 PreviewKeyDown="LsImageGallery_PreviewKeyDown" 
-				 PreviewMouseWheel="LsImageGallery_PreviewMouseWheel">
+		<Grid x:Name="gridImges">
+			<ListBox x:Name="LsImageGallery"   Margin="0,0,0,0"
+					 ScrollViewer.VerticalScrollBarVisibility="Disabled" 
+					 SelectionMode="Multiple" 
+					 lumMS:MultiSelect.IsEnabled="True" IsSynchronizedWithCurrentItem="True"
+					 Style="{StaticResource LsImageGalleryStyle}"
+					 ItemsSource="{Binding Path=fotografieCW}" 
+					 ItemsPanel="{DynamicResource LsImageGalleryItemsPanelTemplate}" 
+					 ItemTemplate="{DynamicResource fotografiaDataTemplate}"
+					 ContextMenu="{DynamicResource azioniRapideMenu}"
+					 ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+					 PreviewMouseLeftButtonDown="LsImageGallery_PreviewMouseLeftButtonDown"
+					 PreviewMouseRightButtonDown="LsImageGallery_PreviewMouseRightButtonDown"
+					 PreviewKeyDown="LsImageGallery_PreviewKeyDown" 
+					 PreviewMouseWheel="LsImageGallery_PreviewMouseWheel">
 
-            <ListBox.ItemContainerStyle>
+				<ListBox.ItemContainerStyle>
 
-                <Style TargetType="{x:Type ListBoxItem}">
-                    <EventSetter Event="MouseDoubleClick" Handler="listBoxItemImageGallery_MouseDoubleClick" />
+					<Style TargetType="{x:Type ListBoxItem}">
+						<EventSetter Event="MouseDoubleClick" Handler="listBoxItemImageGallery_MouseDoubleClick" />
 
-                    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="ListBoxItem">
-                                <Border Name="Border" Padding="1" SnapsToDevicePixels="true">
-                                    <ContentPresenter />
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsSelected" Value="true">
-                                        <Setter TargetName="Border" Property="Background" Value="Yellow"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
+						<Setter Property="FocusVisualStyle" Value="{x:Null}" />
+						<Setter Property="Template">
+							<Setter.Value>
+								<ControlTemplate TargetType="ListBoxItem">
+									<Border Name="Border" Padding="1" SnapsToDevicePixels="true">
+										<ContentPresenter />
+									</Border>
+									<ControlTemplate.Triggers>
+										<Trigger Property="IsSelected" Value="true">
+											<Setter TargetName="Border" Property="Background" Value="Yellow"/>
+										</Trigger>
+									</ControlTemplate.Triggers>
 
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ListBox.ItemContainerStyle>
-        </ListBox>
+								</ControlTemplate>
+							</Setter.Value>
+						</Setter>
+					</Style>
+				</ListBox.ItemContainerStyle>
+			</ListBox>
+		</Grid>
 
     </DockPanel>
 

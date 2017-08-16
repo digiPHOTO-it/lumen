@@ -28,11 +28,15 @@ using Digiphoto.Lumen.Core.Collections;
 using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
 using Digiphoto.Lumen.Core.Eventi;
-using Digiphoto.Lumen.Core.Database;
 
 namespace Digiphoto.Lumen.UI {
 
 
+	// La gallery può funzionare in queste modalità
+	public enum ModalitaFiltroSelez {
+		Tutte,
+		SoloSelezionate
+	}
 
 	public class FotoGalleryViewModel : ViewModelBase, IContenitoreGriglia, ISelettore<Fotografia>,
 	                                    IObserver<FotoModificateMsg>, IObserver<NuovaFotoMsg>, IObserver<ClonaFotoMsg>, IObserver<FotoEliminateMsg>,
@@ -49,11 +53,15 @@ namespace Digiphoto.Lumen.UI {
 			MantenereListaIds       = 8			// non viene azzerata la lista degli ids (quando proviene dal carrello)
 		}
 
+
 		#region Campi
 
 		private BackgroundWorker _bkgIdrata;
 
 		#endregion
+
+
+		#region Costruttori
 
 		public FotoGalleryViewModel() {
 
@@ -122,8 +130,10 @@ namespace Digiphoto.Lumen.UI {
 
 			// Imposto per default la visualizzazione a 2 stelline
 			cambiarePaginazione( 2 );
-        }
 
+		}
+
+		#endregion Costruttori
 
 
 		#region Proprietà
@@ -206,8 +216,18 @@ namespace Digiphoto.Lumen.UI {
 					if( value <= 0 )
 						throw new ArgumentException( "Num righe deve essere positivo" );
 
+					// -- stato precedente HQ
+					bool primaAltaQualita = isAltaQualita;
+
 					_numRighePag = value;
 					OnPropertyChanged( "numRighePag" );
+
+					// -- stato attuale HQ
+					bool dopoAltaQualita = isAltaQualita;
+					if( primaAltaQualita != dopoAltaQualita ) {
+						OnPropertyChanged( "isAltaQualita" );
+						OnPropertyChanged( "devoVisualizzareAreaDiRispettoHQ" );
+					}
 				}
 			}
 		}
@@ -223,8 +243,18 @@ namespace Digiphoto.Lumen.UI {
 					if( value <= 0 )
 						throw new ArgumentException( "Num colonne deve essere positivo" );
 
+					// -- stato precedente HQ
+					bool primaAltaQualita = isAltaQualita;
+
 					_numColonnePag = value;
 					OnPropertyChanged( "numColonnePag" );
+
+					// -- stato attuale HQ
+					bool dopoAltaQualita = isAltaQualita;
+					if( primaAltaQualita != dopoAltaQualita ) {
+						OnPropertyChanged( "isAltaQualita" );
+						OnPropertyChanged( "devoVisualizzareAreaDiRispettoHQ" );
+					}
 				}
 			}
 		}
@@ -239,6 +269,18 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		/// <summary>
+		/// Mi dice se la visualizzazione corrente prevede alta qualità
+		/// </summary>
+		public bool isAltaQualita {
+			get {
+				return FotoGalleryViewModel.vediAltaQualita( numRighePag, numColonnePag );
+			}
+		}
+
+		public static bool vediAltaQualita( short numRighe, short numColonne ) {
+			return (numRighe == 1 && (numColonne == 1 || numColonne == 2));
+		}
 
 		/// <summary>
 		/// Questo attributo mi serve quando sto per passare dalla vista di molte foto alla vista di una sola foto.
@@ -666,10 +708,23 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private float _ratioAreaStampabile = 0f;
 		public float ratioAreaStampabile {
 			get {
-				ISpoolStampeSrv srv = LumenApplication.Instance.getServizioAvviato<ISpoolStampeSrv>();
-				return srv == null ? 0f : srv.ratioAreaStampabile;
+
+				if( _ratioAreaStampabile != 0f )
+					return _ratioAreaStampabile;
+
+				// Se indicata una frazione in configurazione uso quella ...
+				if( Configurazione.UserConfigLumen.imprimereAreaDiRispetto ) {
+					_ratioAreaStampabile = Convert.ToSingle( CoreUtil.evaluateExpression( Configurazione.UserConfigLumen.expRatioAreaDiRispetto ) );
+				} else {
+					// ... altrimenti uso la prima stampante disponibile
+					ISpoolStampeSrv srv = LumenApplication.Instance.getServizioAvviato<ISpoolStampeSrv>();
+					_ratioAreaStampabile = (srv == null ? 0f : srv.ratioAreaStampabile);
+				}
+
+				return _ratioAreaStampabile;
 			}
 		}
 
@@ -724,17 +779,35 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		/// <summary>
-		/// Se imprimo l'area di rispetto sul jpg del provino,
-		/// allora il bottone per visualizzare i controlli grafici sopra la foto, lo tengo spento.
+		/// Mi dice se devo ritagliare l'area stampabile sulle immagini ad alta qualità
+		/// 
 		/// </summary>
-		public bool possoVisualizzareAreaDiRispetto {
+		public bool devoVisualizzareAreaDiRispettoHQ {
 			get {
-				return ! Configurazione.UserConfigLumen.imprimereAreaDiRispetto;
+				return vorreiVisualizzareAreaDiRispettoHQ && isAltaQualita;
+			}
+		}
+
+		/// <summary>
+		/// Questa è la preferenza espressa dall'utente tramite la ui
+		/// </summary>
+		private bool _vorreiVisualizzareAreaDiRispettoHQ;
+		public bool vorreiVisualizzareAreaDiRispettoHQ {
+			get {
+				return _vorreiVisualizzareAreaDiRispettoHQ;
+			}
+			set {
+				if( _vorreiVisualizzareAreaDiRispettoHQ != value ) {
+					_vorreiVisualizzareAreaDiRispettoHQ = value;
+					OnPropertyChanged( "voglioVisualizzareAreaDiRispettoHQ" );
+
+					// rilancio anche la property che viene usata per davvero
+					OnPropertyChanged( "devoVisualizzareAreaDiRispettoHQ" );
+				}
 			}
 		}
 
 		#endregion Proprietà
-
 
 
 		#region Comandi
@@ -1018,13 +1091,15 @@ namespace Digiphoto.Lumen.UI {
 			var saveCol = numColonnePag;
 			int saveTot = saveRig * saveCol;
 
+
 			int idx = stelline - 1;
 			numRighePag = Configurazione.UserConfigLumen.prefGalleryViste[idx].numRighe;
 			numColonnePag = Configurazione.UserConfigLumen.prefGalleryViste[idx].numColonne;
 			int newTot = numRighePag * numColonnePag;
 
+
 			bool cambioInHQ = false;
-			if( stelline == 1 )
+			if( stelline == 1 ) {
 				if( saveRig > 1 || saveCol > 1 ) {
 
 					cambioInHQ = true;
@@ -1037,13 +1112,11 @@ namespace Digiphoto.Lumen.UI {
 						if( Configurazione.UserConfigLumen.invertiRicerca )
 							offsetProssimoSkip = index;
 						else {
-							
 							offsetProssimoSkip = ( -1 * (saveTot - index) ) + saveTot;
-						}
-							
+						}		
 					}
-					
 				}
+			}
 
 			// Se aumento il numero di foto, devo per forza andare a rileggerle (perché in memoria non ci sono)
 			bool incrementoVisibilita = saveTot > 0 && saveTot < newTot;
@@ -1057,7 +1130,6 @@ namespace Digiphoto.Lumen.UI {
 				// 			RicercaFlags flags = RicercaFlags.NuovaRicerca | RicercaFlags.MantenereSelezionate | RicercaFlags.MantenereListaIds;
 				eseguireRicerca( RicercaFlags.Niente );
 			}
-			
 
 		}
 
@@ -2041,7 +2113,70 @@ namespace Digiphoto.Lumen.UI {
 				idsFotografieSelez.Remove( f.id );
 		}
 
+		private void ricreaCollectionViewFoto( List<Fotografia> fotos ) {
+
+			// Non so se possa servire, ma prima di abbandonare al suo destino la vecchia collection view, libero i listener
+			// Penso che questo possa dare una mano al Garbage Collector per recuperare la memoria
+			if( fotografieCW != null ) {
+				fotografieCW.SelectionChanged -= fotografie_selezioneCambiata;
+			}
+
+			// Creo la nuova collection view
+			fotografieCW = new MultiSelectCollectionView<Fotografia>( fotos );
+
+			// Associo ascoltatore di selezione cambiata
+			fotografieCW.SelectionChanged += fotografie_selezioneCambiata;
+
+			// notifico avvenuto cambiamento 
+			// non ce ne è bisogno perché lo fa gia il set due righe sopra
+			// OnPropertyChanged( "fotografieCW" );
+		}
+
+		private void forseReidrataProvini() {
+
+			foreach( Fotografia f in fotoExplorerSrv.fotografie ) {
+				if( f != null )
+					try {
+						AiutanteFoto.idrataImmaginiFoto( f, IdrataTarget.Provino );
+					} catch( Exception ) {
+					}
+			}
+		}
+
+		public IEnumerator<Fotografia> getEnumeratorElementiSelezionati() {
+			return getElementiSelezionati().GetEnumerator();
+		}
+
+		public IEnumerator<Fotografia> getEnumeratorElementiTutti() {
+			return getElementiTutti().GetEnumerator();
+		}
+
+		public IEnumerable<Fotografia> getElementiSelezionati() {
+			return creaListaFotoSelezionate();
+		}
+
+		public IEnumerable<Fotografia> getElementiTutti() {
+			return creaListaFotoTutte();
+		}
+
+		/// <summary> 
+		/// Questaa inner-class mi serve per racchiudere tutte le info da salvare durante il cambio di modalità ModalitaFiltroSelez
+		/// 
+		/// </summary>
+		private class SaveDataCambioSelezMode {
+
+			public SaveDataCambioSelezMode( ParamCercaFoto param ) {
+				this.paramCercaFoto = param;
+			}
+
+			public short numColonnePag { get; internal set; }
+			public short numRighePag { get; internal set; }
+			public ParamCercaFoto paramCercaFoto { get; set; }
+
+		}
+
 		#endregion Metodi
+
 
 		#region MemBus
 
@@ -2244,74 +2379,8 @@ namespace Digiphoto.Lumen.UI {
 
 		#endregion MemBus
 		
-		private void ricreaCollectionViewFoto( List<Fotografia> fotos ) {
-
-			// Non so se possa servire, ma prima di abbandonare al suo destino la vecchia collection view, libero i listener
-			// Penso che questo possa dare una mano al Garbage Collector per recuperare la memoria
-			if( fotografieCW != null ) {
-				fotografieCW.SelectionChanged -= fotografie_selezioneCambiata;
-			}
-
-			// Creo la nuova collection view
-			fotografieCW = new MultiSelectCollectionView<Fotografia>( fotos );
-
-			// Associo ascoltatore di selezione cambiata
-			fotografieCW.SelectionChanged += fotografie_selezioneCambiata;
-
-			// notifico avvenuto cambiamento 
-			// non ce ne è bisogno perché lo fa gia il set due righe sopra
-			// OnPropertyChanged( "fotografieCW" );
-		}
-
-		private void forseReidrataProvini() {
-
-			foreach( Fotografia f in fotoExplorerSrv.fotografie ) {
-				if( f != null )
-					try {
-						AiutanteFoto.idrataImmaginiFoto( f, IdrataTarget.Provino );
-					} catch( Exception ) {
-					}
-			}
-		}
-
-		public IEnumerator<Fotografia> getEnumeratorElementiSelezionati() {
-			return getElementiSelezionati().GetEnumerator();
-		}
-
-		public IEnumerator<Fotografia> getEnumeratorElementiTutti() {
-			return getElementiTutti().GetEnumerator();
-		}
-
-		public IEnumerable<Fotografia> getElementiSelezionati() {
-			return creaListaFotoSelezionate();
-		}
-
-		public IEnumerable<Fotografia> getElementiTutti() {
-			return creaListaFotoTutte();
-		}
-
-		/// <summary> 
-		/// Questaa inner-class mi serve per racchiudere tutte le info da salvare durante il cambio di modalità ModalitaFiltroSelez
-		/// 
-		/// </summary>
-		private class SaveDataCambioSelezMode {
-
-			public SaveDataCambioSelezMode( ParamCercaFoto param ) {
-				this.paramCercaFoto = param;
-			}
-
-			public short numColonnePag { get; internal set; }
-			public short numRighePag { get; internal set; }
-			public ParamCercaFoto paramCercaFoto { get; set;  }
-
-		}
 
 	}
 
-	// La gallery può funzionare in queste modalità
-	public enum ModalitaFiltroSelez {
-		Tutte,
-		SoloSelezionate
-	}
 
 }
