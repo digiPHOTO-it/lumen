@@ -25,9 +25,6 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 
 	public class SlideShowViewModel : ClosableWiewModel, IContenitoreGriglia, IObserver<FotoModificateMsg>
-#if SLIDESHOWAUTOMATICODARIPENSARE
-	,IObserver<ScaricoFotoMsg> 
-#endif
 	{
 
 		private DispatcherTimer _orologio;
@@ -47,9 +44,27 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		private int _contaSchermate = 0;
 		private int _indexSpotAttuale = 0;
 
-#region Proprietà
+		#region Proprietà
 
+		#region Interfaccia IContenitoreGriglia
 
+		public short numRighe
+		{
+			get
+			{
+				return slideShowRighe;
+			}
+		}
+
+		public short numColonne
+		{
+			get
+			{
+				return slideShowColonne;
+			}
+		}
+
+		#endregion Interfaccia IContenitoreGriglia
 		private int numSlideCorrente {
 			get;
 			set;
@@ -117,18 +132,6 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			}
 		}
 
-#if SLIDESHOWAUTOMATICODARIPENSARE
-		/// <summary>
-		/// Questo flag mi dice se intanto che sta girando lo show, se si sono acquisite 
-		/// delle nuove foto che potenzialmente devo andare a visualizzare.
-		/// </summary>
-		private bool sonoEntrateNuoveFotoNelFrattempo {
-			get;
-			set;
-		}
-#endif
-
-
 		private short _slideShowRighe;
 		public short slideShowRighe {
 			get {
@@ -183,11 +186,34 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			}
 		}
 
-#endregion   // Proprietà
+		string _nomeFileSpotAttuale;
+		public string nomeFileSpotAttuale
+		{
+			get
+			{
+				return _nomeFileSpotAttuale;
+			}
+			set
+			{
+				if( _nomeFileSpotAttuale != value ) {
+					_nomeFileSpotAttuale = value;
+					OnPropertyChanged( "nomeFileSpotAttuale" );
+				}
+			}
+		}
+
+		public bool devoGestirePubblicita
+		{
+			get
+			{
+				return (Configurazione.UserConfigLumen.intervalliPubblicita > 0 && _elencoSpots != null && _elencoSpots.Count > 0);
+			}
+		}
+
+		#endregion   // Proprietà
 
 
-
-#region Metodi
+		#region Metodi
 
 		protected override void OnDispose() {
 
@@ -330,14 +356,6 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			// Avvio il timer che serve a far girare le foto
 			creaNuovoTimer();
 
-#if SLIDESHOWAUTOMATICODARIPENSARE
-			// Se lo show è automatico, devo ascoltare se arrivano nuove foto.
-			if( slideShow is SlideShowAutomatico ) {
-				IObservable<ScaricoFotoMsg> observable = LumenApplication.Instance.bus.Observe<ScaricoFotoMsg>();
-				observable.Subscribe( this );
-			}
-#endif
-
 			// Devo ascoltare sempre se qualche foto viene modificata
 			IObservable<FotoModificateMsg> observableFM = LumenApplication.Instance.bus.Observe<FotoModificateMsg>();
 			observableFM.Subscribe( this );
@@ -380,11 +398,90 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			_orologio.Tick += new EventHandler( orologio_Tick );
 		}
 
-#endregion
+		private void gestisciFineShow() {
+			// Se arrivo al massimo, torno all'inizio
+			if( numSlideCorrente >= slideShow.slides.Count ) {
+
+				numSlideCorrente = 0;
+			}
+
+		}
+
+		List<string> caricaElencoSpot() {
+
+			List<string> elenco = new List<string>();
+
+			try {
+
+				if( Configurazione.UserConfigLumen.intervalliPubblicita > 0 ) {
+
+					// Prendo le estensioni ammesse dalla configurazione
+					string[] estensioni = Configurazione.UserConfigLumen.estensioniGrafiche.Split( ';' );
+					foreach( string estensione in estensioni ) {
+						string[] files = Directory.GetFiles( Configurazione.UserConfigLumen.cartellaPubblicita, searchPattern: "*" + estensione, searchOption: SearchOption.TopDirectoryOnly );
+						_giornale.Debug( "caricati " + files.Count() + " spot con estensione: " + estensione );
+						elenco.AddRange( files );
+					}
+				}
+
+			} catch( Exception ee ) {
+				_giornale.Warn( "Impossibile caricare spot pubblicitari", ee );
+			}
+
+			return elenco;
+		}
 
 
-		
-			
+
+
+		/// <summary>
+		/// Controllo se devo gestire la pubblicita.
+		/// Se si, allora devo controllare che ad ogni intervallo prefissato, devo far partire uno spot.
+		/// </summary>
+		/// <returns>true se ho fatto lo spot</returns>
+		private bool eventualePubblicita() {
+
+			bool visualizzato = false;
+			nomeFileSpotAttuale = null;
+
+			if( !devoGestirePubblicita )
+				return false;
+
+
+			if( ++_contaSchermate > Configurazione.UserConfigLumen.intervalliPubblicita ) {
+
+				pubblicitaInCorso = true;
+
+				if( _indexSpotAttuale >= _elencoSpots.Count )
+					_indexSpotAttuale = 0;
+
+				try {
+					string appo = _elencoSpots.ElementAt( _indexSpotAttuale++ );
+
+					_giornale.Debug( "Sto per caricare pubblicità: " + appo + ". Indice = " + _indexSpotAttuale + "/" + _elencoSpots.Count );
+					nomeFileSpotAttuale = appo;
+
+				} catch( Exception ) {
+					_giornale.Warn( "Problemi nel caricare la pubblicità. Salto e passo avanti" );
+				} finally {
+
+					_contaSchermate = 0;
+					visualizzato = true;
+				}
+
+			} else
+				pubblicitaInCorso = false;
+
+			return visualizzato;
+		}
+
+
+		#endregion
+
+
+
+	
+
 		private void orologio_Tick (object sender, EventArgs e) {
 			
 
@@ -439,126 +536,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 				stop();
 		}
 
-		private void gestisciFineShow() {
-			// Se arrivo al massimo, torno all'inizio
-			if( numSlideCorrente >= slideShow.slides.Count ) {
-
-#if SLIDESHOWAUTOMATICODARIPENSARE
-				if( sonoEntrateNuoveFotoNelFrattempo && slideShow is SlideShowAutomatico ) {
-					// Devo rieseguire la query
-					ParamCercaFoto param = ((SlideShowAutomatico)slideShow).paramCercaFoto;
-					creaShow( param );
-					// Riazzero per prossimo test
-					sonoEntrateNuoveFotoNelFrattempo = false;
-				}
-#endif
-
-				numSlideCorrente = 0;
-			}
-
-		}
-
-		List<string> caricaElencoSpot() {
-			
-			List<string> elenco = new List<string>();
-
-			try {
-
-				if( Configurazione.UserConfigLumen.intervalliPubblicita > 0 ) {
-					
-					// Prendo le estensioni ammesse dalla configurazione
-					string[] estensioni = Configurazione.UserConfigLumen.estensioniGrafiche.Split( ';' );
-					foreach( string estensione in estensioni ) {
-						string[] files = Directory.GetFiles( Configurazione.UserConfigLumen.cartellaPubblicita, searchPattern: "*" + estensione, searchOption: SearchOption.TopDirectoryOnly );
-						_giornale.Debug( "caricati " + files.Count() + " spot con estensione: " + estensione );
-						elenco.AddRange( files );
-					}
-				}
-
-			} catch (Exception ee )	{
-				_giornale.Warn( "Impossibile caricare spot pubblicitari", ee );
-			}
-
-			return elenco;
-		}
-
-
-
-
-		/// <summary>
-		/// Controllo se devo gestire la pubblicita.
-		/// Se si, allora devo controllare che ad ogni intervallo prefissato, devo far partire uno spot.
-		/// </summary>
-		/// <returns>true se ho fatto lo spot</returns>
-		private bool eventualePubblicita() {
-
-			bool visualizzato = false;
-			nomeFileSpotAttuale = null;
-
-			if( !devoGestirePubblicita )
-				return false;
-
-
-			if( ++_contaSchermate > Configurazione.UserConfigLumen.intervalliPubblicita ) {
-
-				pubblicitaInCorso = true;
-
-				if( _indexSpotAttuale >= _elencoSpots.Count )
-					_indexSpotAttuale = 0;
-
-				try {
-					string appo = _elencoSpots.ElementAt( _indexSpotAttuale++ );
-
-					_giornale.Debug( "Sto per caricare pubblicità: " + appo + ". Indice = " + _indexSpotAttuale + "/" + _elencoSpots.Count );
-					nomeFileSpotAttuale = appo;
-
-				} catch( Exception ) {
-					_giornale.Warn( "Problemi nel caricare la pubblicità. Salto e passo avanti" );					
-				} finally {
-
-					_contaSchermate = 0;
-					visualizzato = true;
-				}
-
-			} else
-				pubblicitaInCorso = false;
-
-			return visualizzato;
-		}
-
-		string _nomeFileSpotAttuale;
-		public string nomeFileSpotAttuale {
-			get {
-				return _nomeFileSpotAttuale;
-			}
-			set {
-				if( _nomeFileSpotAttuale != value ) {
-					_nomeFileSpotAttuale = value;
-					OnPropertyChanged( "nomeFileSpotAttuale" );
-				}
-			}
-		}
-		public bool devoGestirePubblicita {
-			get {
-				return (Configurazione.UserConfigLumen.intervalliPubblicita > 0 && _elencoSpots != null && _elencoSpots.Count > 0);
-			}
-		}
-
-#region Interfaccia IContenitoreGriglia
-
-		public short numRighe {
-			get {
-				return slideShowRighe;
-			}
-		}
-
-		public short numColonne {
-			get {
-				return slideShowColonne;
-			}
-		}
-
-#endregion Interfaccia IContenitoreGriglia
+		#region Messaggi Eventi
 
 		public void OnCompleted() {
 		}
@@ -566,19 +544,6 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		public void OnError( Exception error ) {
 		}
 
-#if SLIDESHOWAUTOMATICODARIPENSARE
-		public void OnNext( ScaricoFotoMsg value ) {
-
-			// Qualcuno ha appena scaricato delle nuove foto nell'archivio.
-			sonoEntrateNuoveFotoNelFrattempo = true;
-
-			// Se avevo lo show fermo perchè foto non sufficienti, allora lo riaccendo
-			if( slideShow is SlideShowAutomatico ) 
-				if( slideShow != null && slideShow.slides != null && slideShow.slides.Count <= totSlidesPerPagina )
-					if( isRunning == false )
-						start();
-		}
-#endif
 
 		public void OnNext( FotoModificateMsg fmMsg ) {
 
@@ -602,6 +567,6 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			}
 		}
 
-
+		#endregion Messaggi Eventi
 	}
 }

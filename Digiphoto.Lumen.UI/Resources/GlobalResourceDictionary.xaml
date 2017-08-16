@@ -28,7 +28,7 @@
             <Grid x:Name="fotoGrid">
 
                 <!-- Questa è l'immagine vera con la foto -->
-				<Image Stretch="Uniform">
+				<Image Stretch="Uniform" x:Name="fotoImage" Panel.ZIndex="4">
 					<Image.Source>
 						<MultiBinding Converter="{StaticResource grigliaImageConverter}" Mode="OneWay">
 							<Binding Path="." />
@@ -38,7 +38,7 @@
 				</Image>
 
 				<!-- Pallino "I" con le informazioni -->
-				<Image 	Width="16"
+				<Image 	Width="16" Panel.ZIndex="50"
 				        HorizontalAlignment="Left"
 						VerticalAlignment="Bottom"
 						Margin="4,0,0,4">
@@ -81,7 +81,7 @@
                 </Image>
 
                 <!-- Icona Mi Piace / Non mi piace -->
-                <Image 	Width="16"
+				<Image 	Width="16" Panel.ZIndex="50"
 					HorizontalAlignment="Right"
 					VerticalAlignment="Bottom"
 					Margin="0,0,24,4"
@@ -111,7 +111,7 @@
                 </Image>
 
                 <!-- Icona per evidenziare che l'immagine è già stata stampata -->
-                <Image 	Width="16"
+				<Image 	Width="16" Panel.ZIndex="50"
 					HorizontalAlignment="Right"
 					VerticalAlignment="Bottom"
 					Margin="0,0,4,4"
@@ -138,10 +138,8 @@
                     </Image.Style>
                 </Image>
 			
-				
                 <!-- IL font con cui stampo il numero, ha grandezza proporzionale al canvas . Per ora uso 8% della grandezza del contenitore della foto -->
-
-                <Label x:Name="NumFoto"  
+				<Label x:Name="NumFoto"  Panel.ZIndex="50"
                        Content="{Binding Path=etichetta}"    
 					   VerticalAlignment="Top" HorizontalAlignment="Right"
                        Margin="0,4,4,0"

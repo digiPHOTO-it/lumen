@@ -334,6 +334,17 @@
 		<Setter Property="ToolTip" Value="Visualizza solo le foto selezionate&#10;oppure tutte le foto" />
     </Style>
 
+	<Style x:Key="coperturaRispettoStyle" TargetType="Rectangle">
+		<Setter Property="StrokeThickness" Value="2" />
+		<Setter Property="Stroke" Value="White" />
+		<Setter Property="Fill" Value="Black" />
+		<Setter Property="Opacity" Value="0.8" />
+		<Setter Property="HorizontalAlignment" Value="Left" />
+		<Setter Property="VerticalAlignment" Value="Top" />
+		<Setter Property="StrokeDashArray" Value="2 2" />
+		<Setter Property="Panel.ZIndex" Value="25" />
+	</Style>
+
     <RoutedUICommand x:Key="cmdTakeSnapshotPubblico1" />
 	<RoutedUICommand x:Key="cmdCloseSnapshotPubblico" />
 	<RoutedUICommand x:Key="uicmdSelezionaTutteLeFoto" />
