@@ -799,7 +799,7 @@ namespace Digiphoto.Lumen.UI {
 			set {
 				if( _vorreiVisualizzareAreaDiRispettoHQ != value ) {
 					_vorreiVisualizzareAreaDiRispettoHQ = value;
-					OnPropertyChanged( "voglioVisualizzareAreaDiRispettoHQ" );
+					OnPropertyChanged( "vorreiVisualizzareAreaDiRispettoHQ" );
 
 					// rilancio anche la property che viene usata per davvero
 					OnPropertyChanged( "devoVisualizzareAreaDiRispettoHQ" );

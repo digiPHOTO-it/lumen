@@ -329,6 +329,7 @@
     <Compile Include="Preferenze\PreferenzeWindow.xaml.cs">
       <DependentUpon>PreferenzeWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pubblico\GalleryUIRispetto.cs" />
     <Compile Include="Pubblico\IContenitoreGriglia.cs" />
     <Compile Include="Pubblico\GestoreFinestrePubbliche.cs" />
     <Compile Include="Converters\GrigliaImageConverter.cs" />

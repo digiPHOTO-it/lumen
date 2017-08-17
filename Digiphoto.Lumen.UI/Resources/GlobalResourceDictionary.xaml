@@ -368,4 +368,16 @@
         </Style.Resources>
     </Style>
 
+
+	<Style x:Key="coperturaRispettoStyle" TargetType="Rectangle">
+		<Setter Property="StrokeThickness" Value="2" />
+		<Setter Property="Stroke" Value="White" />
+		<Setter Property="Fill" Value="Black" />
+		<Setter Property="Opacity" Value="0.8" />
+		<Setter Property="HorizontalAlignment" Value="Left" />
+		<Setter Property="VerticalAlignment" Value="Top" />
+		<Setter Property="StrokeDashArray" Value="2 2" />
+		<Setter Property="Panel.ZIndex" Value="25" />  <!-- deve stare sopra l'immagine ma sotto alla label del numero -->
+	</Style>
+
 </ResourceDictionary>
