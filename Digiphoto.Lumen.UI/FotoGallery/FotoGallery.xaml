@@ -311,7 +311,7 @@
 				                          DataContext="{Binding selettoreScaricoCardViewModel}" />
 				<StackPanel Orientation="Vertical">
 					<CheckBox Name="checkBoxCollassaFiltri" Content="Collassa filtri in ricerca" IsChecked="True" ToolTip="Quando viene esegita la ricerca, viene nascosto atomaticamente il pannello dei filtri" />
-					<CheckBox Name="checkBoxAreaRispetto" Content="Area di stampa" IsChecked="{Binding Path=vorreiVisualizzareAreaDiRispettoHQ,Mode=OneWay}" ToolTip="Visualizza area di stampa nelle immagini ad alta qualità" Click="checkBoxAreaRispetto_Click" />
+					<CheckBox Name="checkBoxAreaRispetto" Content="Area di stampa" IsChecked="{Binding Path=vorreiVisualizzareAreaDiRispettoHQ}" ToolTip="Visualizza area di stampa nelle immagini ad alta qualità" Click="checkBoxAreaRispetto_Click" />
 				</StackPanel>
 
             </StackPanel>

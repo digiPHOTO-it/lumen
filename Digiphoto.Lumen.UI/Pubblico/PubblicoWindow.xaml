@@ -21,13 +21,12 @@
 
     <Grid Name="gridWinPub">
 
-		
-
         <!-- Questo è l'iteratore della collezione di Slide -->
         <ItemsControl ItemsSource="{Binding Path=fotografieCW}" 
 		              ItemTemplate="{DynamicResource pubblicoDataTemplate}"
 		              ItemsPanel="{DynamicResource pubblicoItemsPanelTemplate}" 
 					  Visibility="{Binding Path=isAlmenoUnaFoto,Converter={StaticResource boolVisibilityConverter}}"
+					  x:Name="galleryItemsControl"
 					  />
 
 

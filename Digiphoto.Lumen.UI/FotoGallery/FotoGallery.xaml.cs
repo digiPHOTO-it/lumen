@@ -12,6 +12,7 @@ using Digiphoto.Lumen.Config;
 using System.Windows.Shapes;
 using Digiphoto.Lumen.Imaging;
 using Digiphoto.Lumen.Util;
+using Digiphoto.Lumen.UI.Pubblico;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -40,12 +41,14 @@ namespace Digiphoto.Lumen.UI {
 
 			InitializeComponent();
 
-			DataContextChanged += new DependencyPropertyChangedEventHandler(fotoGallery_DataContextChanged);
+			// Ascolto l'associazione del viewmodel
+			DataContextChanged += new DependencyPropertyChangedEventHandler( fotoGallery_DataContextChanged );
 
 			// Carico lo stato della checkbox di collasso filtri, prendendolo dal file di last-used
 			checkBoxCollassaFiltri.IsChecked = Configurazione.LastUsedConfigLumen.collassaFiltriInRicercaGallery;
 		}
 
+		GalleryUIRispetto galleryUIRispetto;
 		void fotoGallery_DataContextChanged( object sender, DependencyPropertyChangedEventArgs e ) {
 
 			associaDialogProvider();
@@ -54,6 +57,8 @@ namespace Digiphoto.Lumen.UI {
 			selettoreMetadati.DataContext = fotoGalleryViewModel.selettoreMetadatiViewModel;
 
 			selettoreAzioniAutomatiche.DataContext = fotoGalleryViewModel.selettoreAzioniAutomaticheViewModel;
+ 
+			galleryUIRispetto = new GalleryUIRispetto( LsImageGallery, this );
 
 		}
 
@@ -61,14 +66,14 @@ namespace Digiphoto.Lumen.UI {
 
 
 
-		#region Proprietà
+#region Proprietà
 		
 		private FotoGalleryViewModel fotoGalleryViewModel {
 			get {
 				return (FotoGalleryViewModel)base.viewModelBase;
 			}
 		}
-		#endregion
+#endregion
 
 		private void oggiButton_Click( object sender, RoutedEventArgs e ) {
 			datePickerRicercaIniz.SelectedDate = fotoGalleryViewModel.oggi;
@@ -354,224 +359,17 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 
-		private void FotoGalleryViewModel_PropertyChanged( object sender, System.ComponentModel.PropertyChangedEventArgs e ) {
-
-			bool cambiaAreaStampabile = false;
-
-			// Significa che ho cambiato le impostazioni di visualizzazione
-			if( e.PropertyName == "devoVisualizzareAreaDiRispettoHQ" )
-				cambiaAreaStampabile = true;
-
-			if( fotoGalleryViewModel.isAltaQualita ) {
-				// Significa che mi sono spostato alla foto successiva in HQ
-				if( e.PropertyName == "fotografieCW" || 
-				    e.PropertyName == "numRighe" || e.PropertyName == "numColonne" ||
-					e.PropertyName == "numRighePag" || e.PropertyName == "numColonnePag" )
-						cambiaAreaStampabile = true;
-			}
-
-			if( cambiaAreaStampabile ) {
-				// Devo farlo nel thread della UI altrimenti non si sono ancora disposti i componenti grafici correttamente
-				this.Dispatcher.BeginInvoke( gestioneAreaStampabileHQAction );
-			}
-
-		}
 
 
-		Action _gestioneAreaStampabileHQAction;
-		Action gestioneAreaStampabileHQAction
-		{
-			get
-			{
-				if( _gestioneAreaStampabileHQAction == null )
-					_gestioneAreaStampabileHQAction = new Action( gestioneAreaStampabileHQ );
-				return _gestioneAreaStampabileHQAction;
-			}
-		}
-
-		
-		private void gestioneAreaStampabileHQ() {
-			gestioneAreaStampabileHQ( false );
-		}
-
-		// Questo è lo style per decorare i rettangoli
-		Style coperturaRispettoStyle;
-
-		private void gestioneAreaStampabileHQ( bool spegniForzatamente ) {
-
-			// Se non so il ratio dell'area stampabile, esco subito
-			if( fotoGalleryViewModel.ratioAreaStampabile == 0f )
-				return;
-
-			if( spegniForzatamente == false && checkBoxAreaRispetto.IsChecked == false )
-				return;
-				
-			if( spegniForzatamente == false && fotoGalleryViewModel.isAltaQualita ) {
-
-				if( fotoGalleryViewModel.fotografieCW.Count > 2 )
-					return;
-				
-				LsImageGallery.UpdateLayout();
-				
-
-				if( coperturaRispettoStyle == null )
-					coperturaRispettoStyle = this.FindResource( "coperturaRispettoStyle" ) as Style;
-					
-				// Le foto in alta qualità possono essere 1 oppure 2 affiancate
-				foreach( Fotografia foto in fotoGalleryViewModel.fotografieCW ) { 
-
-					Rectangle[] rettangoli = new Rectangle[2];
-					bool esiste = false;
-
-					Grid fotoGrid = findFotoGrid( foto );
-
-					for( char ab = 'A'; ab <= 'B'; ab++ ) {
-
-						// -- areaStampabileA - areaStampabileB
-						int pos = ab - 'A';
-						string nome = string.Format( "areaStampabile{0}", ab );
-						
-						rettangoli[pos] = (Rectangle)AiutanteUI.FindChild( fotoGrid, nome, typeof( Rectangle ) );
-						
-						esiste = rettangoli[pos] != null;
-						if( !esiste ) {
-							rettangoli[pos] = new Rectangle();
-							rettangoli[pos].Name = nome;
-							rettangoli[pos].Style = coperturaRispettoStyle;
-						}
-
-						Panel.SetZIndex( rettangoli[pos], 25 );
-					}
-
-					dimensionaRettangoloPerAreaDiRispetto( rettangoli, fotoGrid );
-
-
-					if( ! esiste ) {
-						fotoGrid.Children.Add( rettangoli[0] );
-						fotoGrid.Children.Add( rettangoli[1] );
-					}
-				}
-
-			} else {
-
-				// Elimino tutti i rettangoli. Possono essere 2 o 4
-				for( int rr = 1; rr <= 2; rr++ )
-					for( char ab = 'A'; ab <= 'B'; ab++ ) {
-						string nome = string.Format( "areaStampabile{0}", ab );
-						Rectangle rettangolo = (Rectangle)AiutanteUI.FindChild( gridImges, nome, typeof( Rectangle ) );
-						if( rettangolo != null )
-							gridImges.Children.Remove( rettangolo );
-					}
-			}
-		}
-
-		static float ratioRispetto = (float)CoreUtil.evaluateExpression( Configurazione.UserConfigLumen.expRatioAreaDiRispetto );
-
-		/// <summary>
-		/// Questa grid viene creata a runtime per ogni foto che viene iterata dalla listbox.
-		/// </summary>
-		/// <param name="f"></param>
-		/// <returns></returns>
-		Grid findFotoGrid( Fotografia f ) {
-			return findComponentFromTemplate<Grid>( f, "fotoGrid" );
-		}
-
-		Image findFotoImage( Fotografia f ) {
-			return findComponentFromTemplate<Image>( f, "fotoImage" );
-		}
-
-		T findComponentFromTemplate<T>( Fotografia f, string nomeComponente ) {
-
-			// Per ricavare il componente desiderato, devo fare diversi passaggi
-
-			// 2. dalla foto ricavo il ListBoxItem che la contiene
-			ListBoxItem listBoxItem = (ListBoxItem)(LsImageGallery.ItemContainerGenerator.ContainerFromItem( f ));
-			// 3. dal ListBoxItem ricavo il suo ContentPresenter
-			ContentPresenter contentPresenter = AiutanteUI.FindVisualChild<ContentPresenter>( listBoxItem );
-			// 4. con il ContentPresenter ricavo il DataTemplate (del singolo elemento)
-			DataTemplate dataTemplate = contentPresenter.ContentTemplate;
-			// 5. con il DataTemplate ricavo l'Image contenuta
-
-			return (T) dataTemplate.FindName( nomeComponente, contentPresenter );
-		}
-
-		void dimensionaRettangoloPerAreaDiRispetto( Rectangle [] rettangoli, Grid fotoGrid ) {
-
-			try {
-				Rectangle rectA = rettangoli[0];
-				Rectangle rectB = rettangoli[1];
-
-				// Ora ricalcolo la dimensione dell'area di rispetto
-				// float ratio = fotoGalleryViewModel.ratioAreaStampabile;
-				if( fotoGalleryViewModel.ratioAreaStampabile == 0f )
-					return;
-
-				
-
-				Image fotoImage = (Image) fotoGrid.FindName( "fotoImage" );
-				
-				CalcolatoreAreeRispetto.Geo imageGeo = new CalcolatoreAreeRispetto.Geo();
-
-				imageGeo.w = fotoImage.ActualWidth;
-				imageGeo.h = fotoImage.ActualHeight;
-
-				// Calcolo la fascia A
-				Rect rettangoloA = CalcolatoreAreeRispetto.calcolaDimensioni( CalcolatoreAreeRispetto.Fascia.FasciaA, ratioRispetto, imageGeo );
-				CalcolatoreAreeRispetto.Bordi bordiA = CalcolatoreAreeRispetto.calcolcaLatiBordo( CalcolatoreAreeRispetto.Fascia.FasciaA, ratioRispetto, imageGeo, imageGeo );
-
-				// Calcolo la fascia B
-				Rect rettangoloB = CalcolatoreAreeRispetto.calcolaDimensioni( CalcolatoreAreeRispetto.Fascia.FasciaB, ratioRispetto, imageGeo );
-				CalcolatoreAreeRispetto.Bordi bordiB = CalcolatoreAreeRispetto.calcolcaLatiBordo( CalcolatoreAreeRispetto.Fascia.FasciaB, ratioRispetto, imageGeo, imageGeo );
-
-				// Calcolo left e top in base alla posizione della immagine rispetto alla grid che la contiene
-				var qq = fotoImage.TransformToAncestor( fotoGrid );
-				Point relativePoint = qq.Transform( new Point( 0, 0 ) );
-				double currentLeft = relativePoint.X;
-				double currentTop = relativePoint.Y;
-
-				// Setto fascia A
-				rectA.Width = rettangoloA.Width;
-				rectA.Height = rettangoloA.Height;
-				var left = currentLeft + rettangoloA.Left;
-				var top = currentTop + rettangoloA.Top;
-				var right = 0;
-				var bottom = 0;
-
-				Thickness ticA = new Thickness( left, top, right, bottom );
-				rectA.Margin = ticA;
-
-				// ---
-
-				// Setto fascia B
-				rectB.Width = rettangoloB.Width;
-				rectB.Height = rettangoloB.Height;
-				left = currentLeft + rettangoloB.Left;
-				top = currentTop + rettangoloB.Top;
-				right = 0;
-				bottom = 0;
-
-				Thickness ticB = new Thickness( left, top, right, bottom );
-				rectB.Margin = ticB;
-
-			} catch( Exception ee ) {
-				// pazienza : dovrei loggare l'errore
-				int a = 3;
-			}
-		}
 
 		private void checkBoxAreaRispetto_Click( object sender, RoutedEventArgs e ) {
 
 			bool spegniForzatamente = checkBoxAreaRispetto.IsChecked == false;
 
-			gestioneAreaStampabileHQ( spegniForzatamente );
+			galleryUIRispetto.gestioneAreaStampabileHQ( spegniForzatamente );
 
-			// Abilito / Disabilito l'ascolto dei cambi di property
-			if( checkBoxAreaRispetto.IsChecked == true ) {
-				// Metto un ascoltatore su tutte le property. perché devo sentire i cambi della AltaQualità
-				fotoGalleryViewModel.PropertyChanged += FotoGalleryViewModel_PropertyChanged;
-			} else {
-				fotoGalleryViewModel.PropertyChanged -= FotoGalleryViewModel_PropertyChanged;
-			}
+			galleryUIRispetto.ascolta( checkBoxAreaRispetto.IsChecked == true );
+
 		}
 	}
 }

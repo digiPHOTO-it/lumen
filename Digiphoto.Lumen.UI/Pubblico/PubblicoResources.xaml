@@ -16,26 +16,25 @@
     <DataTemplate x:Key="pubblicoDataTemplate" >
 
         <Border BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="8" Margin="0,0,2,2" >
-			
-            <Grid x:Name="gridUnaFotoPub">
-                <Grid.Background>
-					
-                    <ImageBrush Stretch="Uniform">
-                        <ImageBrush.ImageSource>
-                            <MultiBinding Converter="{StaticResource grigliaImageConverter}" Mode="OneWay">
-                                <Binding Path="." />
-                                <Binding Path="DataContext" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}"/>
-                            </MultiBinding>
-                        </ImageBrush.ImageSource>
-					</ImageBrush> 
-                </Grid.Background>
+
+			<Grid x:Name="fotoGrid">
+
+				<Image Stretch="Uniform" x:Name="fotoImage" Panel.ZIndex="4">
+					<Image.Source>
+						<MultiBinding Converter="{StaticResource grigliaImageConverter}" Mode="OneWay">
+							<Binding Path="." />
+							<Binding Path="DataContext" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}"/>
+						</MultiBinding>
+					</Image.Source>
+				</Image>
+
 
                 <!-- IL font con cui stampo il numero, ha grandezza proporzionale al canvas . Per ora uso 8% della grandezza del contenitore della foto -->
-                <Label Content="{Binding Path=etichetta}" 
+                <Label Content="{Binding Path=etichetta}" Panel.ZIndex="50"
 					   VerticalAlignment="Top" HorizontalAlignment="Right"
 					   Margin="0,2,2,0"
-					   FontSize="{Binding Converter={StaticResource percentualeConverter}, FallbackValue=14, ElementName=gridUnaFotoPub,Path=ActualHeight,ConverterParameter=8;14}"
-					   Background="Orange" />
+					   FontSize="{Binding Converter={StaticResource percentualeConverter}, FallbackValue=14, ElementName=fotoGrid,Path=ActualHeight,ConverterParameter=8;14}"
+					   Foreground="Black" Background="Orange" />
 
             </Grid>
 
