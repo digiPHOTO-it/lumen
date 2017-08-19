@@ -47,11 +47,15 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		private void PubblicoWindow_DataContextChanged( object sender, DependencyPropertyChangedEventArgs e ) {
 
-			// Creo la classe che gestisce le aree di rispetto per ritaglio
-			galleryUICommon = new GalleryUIRispetto( galleryItemsControl, this );
+			if( this.DataContext != null ) {
 
-			// Purtroppo qui devo sempre ascoltare perché non ho indicazione sulla checkbox indicata dall'utente nella gallery
-			galleryUICommon.ascolta( true );
+				// Creo la classe che gestisce le aree di rispetto per ritaglio
+				galleryUICommon = new GalleryUIRispetto( galleryItemsControl, this );
+
+				// Purtroppo qui devo sempre ascoltare perché non ho indicazione sulla checkbox indicata dall'utente nella gallery
+				galleryUICommon.ascolta( true );
+			}
+
 		}
 
 		FotoGalleryViewModel fotoGalleryViewModel {
@@ -62,10 +66,11 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		protected override void OnClosing( CancelEventArgs e ) {
 
-			if( fotoGalleryViewModel != null ) {
-				// rilascio eventuali componenti aggiunti durante l'ascolto
-				galleryUICommon.gestioneAreaStampabileHQ( true );
-				galleryUICommon.ascolta( false );
+			if( galleryUICommon != null ) {
+				galleryUICommon.Dispose();
+				galleryUICommon = null;
+
+				this.DataContext = null;
 			}
 
 			base.OnClosing( e );

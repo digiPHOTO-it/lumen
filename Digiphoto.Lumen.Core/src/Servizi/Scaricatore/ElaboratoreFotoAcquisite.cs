@@ -106,6 +106,10 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 						// Libero la memoria occupata dalle immagini, altrimenti esplode.
 						AiutanteFoto.disposeImmagini( foto, IdrataTarget.Tutte );
 
+						if( _paramScarica.ricercaBarCode ) {
+							fotoDaEsaminare.Add( foto );
+						}
+
 						// Se lavoro con una singola foto, allora lancio l'evento che mi dice che è pronta.
 						if( String.IsNullOrEmpty( _paramScarica.nomeFileSingolo ) == false ) {
 							// Quando sono a posto con la foto, sollevo un evento per avvisare tutti
@@ -129,7 +133,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			}
 
 			if (_paramScarica.ricercaBarCode){
-				barCodeSrv.applicaBarCodeDidascalia(fotoDaEsaminare);
+				barCodeSrv.scan( fotoDaEsaminare );
 			}
 
 			if (conta != 0)

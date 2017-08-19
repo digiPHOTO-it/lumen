@@ -26,7 +26,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 	/// 
 	///	</summary>
 	/// 
-	public class GalleryUIRispetto {
+	public class GalleryUIRispetto : IDisposable {
 
 		/// <summary>
 		/// Questo è il viemodel che pilota entrambe le finestre (gallery e pubblico)
@@ -181,6 +181,9 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			if( fotoGalleryViewModel.ratioAreaStampabile == 0f )
 				return;
 
+			if( fotoGalleryViewModel.fotografieCW == null )
+				return;
+
 			if( spegniForzatamente == false && fotoGalleryViewModel.vorreiVisualizzareAreaDiRispettoHQ == false )
 				return;
 
@@ -294,5 +297,18 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			}
 		}
 
+		public void Dispose() {
+			
+			// Forzo eliminazione fasce
+			gestioneAreaStampabileHQ( true );
+			
+			// Smetto di ascoltare i cambiamenti delle propery della gallery
+			this.ascolta( false );
+
+			// riascio i reference agli oggetti di interesse altrimenti rischio di creare una dipendenza circolare e il GC non libera più memoria
+			contentControl = null;
+			itemsControl = null;
+
+		}
 	}
 }

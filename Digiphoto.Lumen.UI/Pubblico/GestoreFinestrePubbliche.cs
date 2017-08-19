@@ -300,7 +300,9 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 				// Il viewmodel della finestra pubblica è quello della gallery quindi non posso chiuderlo.
 				// Chiudo solo la finestra
+
 				_pubblicoWindow.Close();
+				
 				_pubblicoWindow = null;
 			}
 
@@ -522,10 +524,10 @@ namespace Digiphoto.Lumen.UI.Pubblico {
         }
 
 		public void chiusoPubblicoWindow( object sender, EventArgs e ) {
+
 			if( _pubblicoWindow != null ) {
 				_pubblicoWindow.Closed -= chiusoPubblicoWindow;
 				_pubblicoWindow = null;
-
 			}
 			if( !azioneInCorso )
 				stavaGirandoPubblico = false;

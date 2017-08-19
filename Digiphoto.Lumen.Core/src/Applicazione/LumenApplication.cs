@@ -22,6 +22,7 @@ using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
 using Digiphoto.Lumen.Licensing;
 using Digiphoto.Lumen.Servizi.Io;
 using Digiphoto.Lumen.Applicazione;
+using Digiphoto.Lumen.Servizi.BarCode;
 
 namespace Digiphoto.Lumen.Applicazione {
 
@@ -233,6 +234,11 @@ namespace Digiphoto.Lumen.Applicazione {
 				vcs.attesaBloccante = false;
 				vcs.attesaEventi();
 			}
+
+			// IL servizio dei barcodes lo tengo spento. Lo accendo solo alla necessità
+			IBarCodeSrv bcs = getServizioAvviato<IBarCodeSrv>();
+			if( bcs != null )
+				bcs.stop();
 
 		}
 
