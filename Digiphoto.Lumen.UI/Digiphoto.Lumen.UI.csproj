@@ -218,6 +218,10 @@
     <Compile Include="Adorners\ComposingAdorner.cs" />
     <Compile Include="Adorners\ComposingAdorner2.cs" />
     <Compile Include="Adorners\ResizingAdorner.cs" />
+    <Compile Include="BarcodeScanner\BarcodeScanner.xaml.cs">
+      <DependentUpon>BarcodeScanner.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BarcodeScanner\BarcodeScannerViewModel.cs" />
     <Compile Include="Carrello\CarrelloView.xaml.cs">
       <DependentUpon>CarrelloView.xaml</DependentUpon>
     </Compile>
@@ -374,6 +378,14 @@
       <DependentUpon>ShowTrayIcon.xaml</DependentUpon>
     </Compile>
     <Page Include="About\AboutBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="BarcodeScanner\BarcodeScanner.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="BarcodeScanner\BarcodeScannerResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

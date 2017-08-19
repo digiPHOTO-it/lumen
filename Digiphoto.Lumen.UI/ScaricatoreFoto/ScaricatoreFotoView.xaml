@@ -60,18 +60,17 @@
 				</GroupBox>
 
 				<GroupBox Header="Foto sorgenti" Grid.Row="1" Grid.Column="0" 
-						  VerticalAlignment="Center" HorizontalAlignment="Center" 
-                          IsEnabled="{Binding possoModificareSpostaCopia,Mode=OneTime}">
+						  VerticalAlignment="Center" HorizontalAlignment="Center" >
                     <StackPanel>
-						<RadioButton Content="SPOSTA files" GroupName="copiaSpostaGrp" 
-                                 IsChecked="{Binding Path=eraseFotoMemoryCard}"
-							 Style="{StaticResource spostaCopiaRadioStyle}"
-							   />
+						<RadioButton Content="SPOSTA files" GroupName="copiaSpostaGrp"
+						             IsChecked="{Binding Path=eraseFotoMemoryCard}"
+									 Style="{StaticResource spostaCopiaRadioStyle}"
+									 IsEnabled="{Binding possoModificareSpostaCopia,Mode=OneTime}" />
 						<RadioButton Content="COPIA files"  GroupName="copiaSpostaGrp" 
-                                 IsChecked="{Binding Path=eraseFotoMemoryCard, Converter={StaticResource boolInverterConverter}}"
-							 Style="{StaticResource spostaCopiaRadioStyle}" />
-                        
-                            <CheckBox x:Name="checkBoxRicercaBarCode" Content="Ricerca Codici a Barre" IsChecked="{Binding Path=ricercaBarCode, Mode=TwoWay}" />
+						             IsChecked="{Binding Path=eraseFotoMemoryCard, Converter={StaticResource boolInverterConverter}}"
+									 Style="{StaticResource spostaCopiaRadioStyle}"
+									 IsEnabled="{Binding possoModificareSpostaCopia,Mode=OneTime}" />
+						<CheckBox x:Name="checkBoxRicercaBarCode" Content="Ricerca Codici a Barre" IsChecked="{Binding ricercaBarCode, Mode=TwoWay}" />
 					</StackPanel>
 				</GroupBox>
 

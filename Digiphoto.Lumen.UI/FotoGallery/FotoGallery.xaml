@@ -294,7 +294,7 @@
                     <StackPanel Orientation="Vertical" >
                         <Label Content="Didascalia" FontSize="10" />
                         <TextBox x:Name="didascaliaTextBox" CharacterCasing="Upper" 
-								 Margin="0,0,0,0"
+								 Margin="0,0,0,0" ToolTip="Valori speciali: &lt;ISNULL&gt; oppure &lt;ISNOTNULL&gt;"
 								 Text="{Binding paramCercaFoto.didascalia, Mode=TwoWay}" MinWidth="80" FontSize="11"/>
 
                         <Label Content="Numeri" FontSize="10" />

@@ -119,16 +119,13 @@ namespace Digiphoto.Lumen.Core.Test.Servizi.BarCode {
         public void applicaBarCodeDidascalia()
         {
 
-            int trovati = 0;
             using (new UnitOfWorkScope(false))
             {
                 LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
                 List<Fotografia> fotos = dbContext.Fotografie.ToList<Fotografia>();
 
-                trovati = _barCodeimpl.applicaBarCodeDidascalia(fotos);
+                _barCodeimpl.scan(fotos);
             }
-
-            Assert.IsTrue(trovati >= 1);
 
         }
 

@@ -245,10 +245,18 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			// ----- Didascalia (le didascalie le memorizziamo solo in maiuscolo)
 			if( !String.IsNullOrWhiteSpace( param.didascalia ) && param.didascalia != "%" ) {
 
-				sql.Append( "AND f.didascalia like " );
-				sql.Append( "{" + paramOut.Count + "}" );
-				paramOut.Add( param.didascalia );
-				sql.Append( SEPAR );
+				if( "<IsNull>".Equals( param.didascalia, StringComparison.CurrentCultureIgnoreCase ) ) {
+					// Caso particolare : voglio solo i nulli.
+					sql.Append( "AND f.didascalia is null " );
+				} else if( "<IsNotNull>".Equals( param.didascalia, StringComparison.CurrentCultureIgnoreCase ) ) {
+					// Caso particolare : voglio solo i NON nulli.
+					sql.Append( "AND f.didascalia is not null " );
+				} else {
+					sql.Append( "AND f.didascalia like " );
+					sql.Append( "{" + paramOut.Count + "}" );
+					paramOut.Add( param.didascalia );
+					sql.Append( SEPAR );
+				}
 			}
 
 			#endregion Where - Didascalia

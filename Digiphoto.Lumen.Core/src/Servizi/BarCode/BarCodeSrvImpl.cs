@@ -15,6 +15,8 @@ using Digiphoto.Lumen.Servizi;
 using Digiphoto.Lumen.Servizi.Explorer;
 using Digiphoto.Lumen.Util;
 using log4net;
+using System.ComponentModel;
+using Digiphoto.Lumen.Servizi.Ricerca;
 
 namespace Digiphoto.Lumen.Servizi.BarCode
 {
@@ -22,65 +24,89 @@ namespace Digiphoto.Lumen.Servizi.BarCode
 	{
 		private static readonly ILog _giornale = LogManager.GetLogger(typeof(BarCodeSrvImpl));
 
-		private bool _possoChiudere;
+		private BackgroundWorker scansionatore {
+			get; 
+			set;
+		}
+		public IEnumerable<Fotografia> fotografie { get; private set; }
+
 		public override bool possoChiudere()
 		{
-			return _possoChiudere;
+			return scansionatore == null || scansionatore.IsBusy == false;
 		}
 
 		public BarCodeSrvImpl()
         {
-			_possoChiudere = true;
-        }
+		}
 
+		/// <summary>
+		/// Questo provoca l'inizio della scansione tramite background worker
+		/// </summary>
 		public override void start()
 		{
 			base.start();
+
+			if( scansionatore != null ) {
+				scansionatore.RunWorkerAsync( fotografie );
+			}
 		}
 
 		public override void stop()
 		{
 			if (isRunning)
 			{
-				base.stop();
 				try
 				{
+					scansionatore.CancelAsync();
 				}
 				catch (Exception ee)
 				{
-					_giornale.Warn("Non riesco a stoppare questo servizio. Porca paletta", ee);
+					_giornale.Warn("Non riesco a stoppare lo scansionatore. Porca paletta", ee);
+				} finally {
+					base.stop();
 				}
+
 			}
 		}
 
-		protected override void Dispose(bool disposing)
-		{
-			base.Dispose(disposing);  // se mi chiama lo stop mi da dei problemi. Evito e faccio solo la dispose
-		}
-
+		/// <summary>
+		/// Questo metodo si può usare spot anche se il servizio non è avviato
+		/// </summary>
+		/// <param name="foto"></param>
+		/// <returns></returns>
 		public String searchBarCode(Fotografia foto)
 		{
-			_possoChiudere = false;
-
 			FileInfo fotoInfo = PathUtil.fileInfoFoto(foto);
 
-			_giornale.Info("E' stata richiesta la ricerca del codice a carre sulla foto " + fotoInfo.Name + " Inizio ricerca codici a barre");
+			_giornale.Debug("E' stata richiesta la ricerca del codice a carre sulla foto " + fotoInfo.Name + " Inizio ricerca codici a barre");
 
-			String path = Path.Combine(Configurazione.cartellaRepositoryFoto, PathUtil.decidiCartellaProvini(foto), fotoInfo.Name);
+			String provinoFileName = Path.Combine(Configurazione.cartellaRepositoryFoto, PathUtil.decidiCartellaProvini(foto), fotoInfo.Name);
 			
-			String findBarCode = searchBarCodeExecutable(path, fotoInfo.Name);
+			// Prima provo sul provino (che è più veloce)
+			String findBarCode = searchBarCodeExecutable( provinoFileName );
+
+			// Poi provo anche sulla foto grande originale
+			if( findBarCode == null )
+				findBarCode = searchBarCodeExecutable( fotoInfo.FullName );
+
 			if (findBarCode != null)
 			{
 				_giornale.Info("E' stato trovato il codice a barre sulla foto " + fotoInfo.Name + " BAR_CODE: " + findBarCode);
 			}
 			else
 			{
-				_giornale.Info("Non è stato trovato alcun codice a basse sulla foto " + fotoInfo.Name);
+				_giornale.Debug("Non è stato trovato alcun codice a basse sulla foto " + fotoInfo.Name);
 			}
 
-			_possoChiudere = true;
-
 			return findBarCode;
+		}
+
+		public void prepareToScan( ParamCercaFoto param, ProgressChangedEventHandler progressChanged, RunWorkerCompletedEventHandler runWorkerCompleted ) {
+
+			var ricercatoreSrv = LumenApplication.Instance.getServizioAvviato<IRicercatoreSrv>();
+			fotografie = ricercatoreSrv.cerca( param );
+
+			prepareToScan( fotografie, progressChanged, runWorkerCompleted );
 		}
 
 		/// <summary>
@@ -88,42 +114,94 @@ namespace Digiphoto.Lumen.Servizi.BarCode
 		/// </summary>
 		/// <param name="fotosDaEsaminare"></param>
 		/// <returns></returns>
-		public int applicaBarCodeDidascalia(IEnumerable<Fotografia> fotos)
-		{
-			_possoChiudere = false;
-			int conta = 0;
-			_giornale.Info("E' stata richiesta la ricerca di " + fotos.Count() + " fotografie. Inizio ricerca codici a barre");
+		public void scan( IEnumerable<Fotografia> fotos ) {
+			prepareToScan( fotos, null, null );
+			start();
+		}
 
-			using (TransactionScope transaction = new TransactionScope()) {
-				try
-				{
-					foreach (Fotografia ff in fotos)
-					{
-						FileInfo fotoInfo = PathUtil.fileInfoFoto(ff);
-						String path = Path.Combine(Configurazione.cartellaRepositoryFoto, PathUtil.decidiCartellaProvini(ff), fotoInfo.Name);
+		public void prepareToScan( IEnumerable<Fotografia> fotos, ProgressChangedEventHandler progressChanged, RunWorkerCompletedEventHandler runWorkerCompleted ) {
 
-						String findBarCode = searchBarCodeExecutable(path, fotoInfo.Name);
-						if (findBarCode != null)
-						{
-							modificaDidascaliaFotografie(ff, findBarCode);
-							_giornale.Info("E' stato trovato il codice a barre sulla foto " + fotoInfo.Name + " BAR_CODE: " + findBarCode);
-							++conta;
+			if( scansionatore != null && scansionatore.IsBusy )
+				throw new InvalidOperationException( "scansionatore già in esecuzione" );
+
+			// Rilascio eventuale scansionatore precedente
+			if( scansionatore != null )
+				scansionatore.Dispose();
+
+			scansionatore = new BackgroundWorker();
+			scansionatore.WorkerReportsProgress = true;
+			scansionatore.WorkerSupportsCancellation = true;
+			scansionatore.DoWork += scansionatore_DoWork;
+
+			// Progresso
+			if( progressChanged != null )
+				scansionatore.ProgressChanged += progressChanged;
+
+			// Finale
+			if( runWorkerCompleted != null )
+				scansionatore.RunWorkerCompleted += runWorkerCompleted;
+			scansionatore.RunWorkerCompleted += scansionatore_RunWorkerCompleted;
+
+			this.fotografie = fotos;
+
+		}
+
+		private void scansionatore_RunWorkerCompleted( object sender, RunWorkerCompletedEventArgs e ) {
+
+			scansionatore.Dispose();
+			scansionatore = null;
+			base.stop();			// fermo il servizio
+		}
+
+		/// <summary>
+		/// In questo metodo eseguo effettivamente il lavoro di lanciare l'eseguibile ZSCAN che si occupa 
+		/// di cercare il codice a barre e applicarlo eventualmente alla Fotografia.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		void scansionatore_DoWork( object sender, DoWorkEventArgs e ) {
+
+			BackgroundWorker worker = sender as BackgroundWorker;
+			IEnumerable<Fotografia> fotografie = (IEnumerable<Fotografia>)e.Argument;
+
+			StatoScansione statoScansione = new StatoScansione();
+			statoScansione.totale = fotografie.Count();
+
+			_giornale.Info( "E' stata richiesta la scansione di " + statoScansione.totale + " fotografie. Inizio ricerca codici a barre" );
+
+			using( new UnitOfWorkScope() ) {
+
+				foreach( Fotografia fotografia in fotografie ) {
+
+					// Se mi è stato chiesto di uscire, allora mi interrompo
+					if( worker.CancellationPending )
+						break;
+
+					// Calcolo percentuale progressione
+					statoScansione.percentuale = (100 * (++statoScansione.attuale)) / statoScansione.totale;
+
+					try {
+
+						String findBarCode = searchBarCode( fotografia );
+
+						if( findBarCode != null ) {
+							modificaDidascaliaFotografie( fotografia, findBarCode );
+							++statoScansione.barcodeTrovati;
+
+							UnitOfWorkScope.currentDbContext.SaveChanges();
 						}
+						
+					} catch( Exception eee ) {
+						_giornale.Error( "Impossibile salvare la didascalia", eee );
 					}
 
-					UnitOfWorkScope.currentDbContext.SaveChanges();
-					_giornale.Debug("Modifica metadati salvataggio eseguito. Ora committo la transazione");
-
-					transaction.Complete();
-					_giornale.Info("Commit metadati andato a buon fine");
-
-				} catch( Exception eee ) {
-					_giornale.Error("Impossibile salvare la didascalia", eee);
+					worker.ReportProgress( statoScansione.percentuale, statoScansione );
 				}
 			}
 
-			_possoChiudere = true;
-			return conta;
+			e.Result = statoScansione;
+
+			_giornale.Info( "Scansionamento per ricerca codici a barre completato. Trovati " + statoScansione.barcodeTrovati + " barcode su " + statoScansione.totale + " foto" );
 		}
 
 		private void modificaDidascaliaFotografie(Fotografia ff, String findBarCode)
@@ -133,13 +211,10 @@ namespace Digiphoto.Lumen.Servizi.BarCode
 			OrmUtil.cambiaStatoModificato(ff);
 		}
 
-		private String searchBarCodeExecutable(String path, string pathProvino)
+		private String searchBarCodeExecutable( String path )
 		{
-			String outputCodiceBarre = UsbEjectWithExe.RunExecutable(@"Resources\ZBar\zbarimg.exe",
-																	" --xml " +
-																	path,
-																	null).Output.ToString();
-			return findBarCodeString(outputCodiceBarre);	
+			String outputCodiceBarre = UsbEjectWithExe.RunExecutable( @"Resources\ZBar\zbarimg.exe", " --xml " + path, null ).Output.ToString();
+			return findBarCodeString(outputCodiceBarre);
 		}
 
 		/**
@@ -153,18 +228,19 @@ namespace Digiphoto.Lumen.Servizi.BarCode
 
 			int init = inputString.LastIndexOf("[CDATA[");
 			//Testo se la stringa contiene il codice a barre
-			if (init == -1)
-				return findBarCode;
+			if( init > 0 ) {
 
-			init+="[CDATA[".Length;
+				init += "[CDATA[".Length;
 
-			String subString = inputString.Substring(init);
-			int fine = subString.IndexOf("]");
-			
-			findBarCode = subString.Substring(0, fine);
+				String subString = inputString.Substring( init );
+				int fine = subString.IndexOf( "]" );
+
+				findBarCode = subString.Substring( 0, fine );
+			}
 
 			return findBarCode;
 		}
-	
+
+
 	}
 }

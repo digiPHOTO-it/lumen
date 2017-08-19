@@ -8,6 +8,7 @@
 		xmlns:lumE="clr-namespace:Digiphoto.Lumen.UI.EliminaVecchiRullini"
 		xmlns:lumCF="clr-namespace:Digiphoto.Lumen.UI.ComNumFoto"
 		xmlns:lumGS="clr-namespace:Digiphoto.Lumen.UI.Pubblico"
+		xmlns:lumBS="clr-namespace:Digiphoto.Lumen.UI.BarcodeScanner"
         Title="Lumen" WindowStyle="None" WindowState="Maximized"
 		ContentRendered="mainWindow_ContentRendered"
 		Name="mainWindow" Style="{DynamicResource mainWindowStyle}"
@@ -202,6 +203,10 @@
 						<lum:SelettoreStampanteInstallata DataContext="{Binding Path=DataContextStampantiInstallate}" 
 														  Width="600" Height="300" 
 														  aprireCoda="True" />
+					</TabItem>
+
+					<TabItem Header="Codici a barre" ToolTip="Scansiona foto alla ricerca di codici a barre" VerticalAlignment="Center">
+						<lumBS:BarcodeScanner Width="320" Height="480"/>
 					</TabItem>
 
 					<TabItem ToolTip="Cancella foto vecchie">
