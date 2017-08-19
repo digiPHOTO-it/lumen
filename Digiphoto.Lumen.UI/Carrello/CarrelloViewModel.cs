@@ -143,7 +143,7 @@ namespace Digiphoto.Lumen.UI {
 		/// </summary>
 		public Digiphoto.Lumen.Model.Carrello carrelloCorrente {
 			get {
-				return venditoreSrv.carrello;
+				return venditoreSrv == null ? null : venditoreSrv.carrello;
 			}
 		}
 
