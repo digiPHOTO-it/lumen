@@ -151,7 +151,10 @@ namespace Digiphoto.Lumen.SelfService {
 		
 			if( !String.IsNullOrWhiteSpace( Configurazione.UserConfigLumen.logoNomeFileSelfService ) ) {
 				string nomeLogo = Path.Combine( Configurazione.UserConfigLumen.cartellaLoghi, Configurazione.UserConfigLumen.logoNomeFileSelfService );
-				return File.ReadAllBytes( nomeLogo );
+				if( File.Exists( nomeLogo ) )
+					return File.ReadAllBytes( nomeLogo );
+				else
+					return null;
 			} else
 				return null;
 		}

@@ -106,6 +106,11 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.Servizi
                 if (!System.IO.File.Exists(_path))
                 {
                     bytes = ssClient.getImageLogo();
+
+					// Se non mi arriva l'immagine del logo, esco con null
+					if( bytes == null )
+						return null;
+
                     scriviFile = true;
                 }
             }
