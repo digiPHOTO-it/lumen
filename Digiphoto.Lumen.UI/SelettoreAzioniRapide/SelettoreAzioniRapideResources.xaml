@@ -3,6 +3,7 @@
                     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
 					xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI"
                     xmlns:lumCC="clr-namespace:Digiphoto.Lumen.UI.Converters"
+					
 					x:Class="Digiphoto.Lumen.UI.SelettoreAzioniRapideResources">
 
 
@@ -184,6 +185,14 @@
                               DataContext="{Binding}">
 						<MenuItem.Icon>
 							<Image Source="/Digiphoto.Lumen.UI;component/Resources/SlideShow-16x16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
+
+					<MenuItem Header="Assegna faccia fotografo"
+                              Command="{Binding Path=openAssociaFacciaFotografoPopupCommand}" 
+                              DataContext="{Binding}">
+						<MenuItem.Icon>
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/ritratto-16x16.png" />
 						</MenuItem.Icon>
 					</MenuItem>
 
@@ -453,5 +462,9 @@
         </ContextMenu.ItemsSource>
         
 	</ContextMenu>
+
+
+
+
 
 </ResourceDictionary>

@@ -1,15 +1,44 @@
-﻿<lumM:UserControlBase  x:Class="Digiphoto.Lumen.UI.SelettoreAzioniRapideView"
+﻿<lumM:UserControlBase  x:Class="Digiphoto.Lumen.UI.SelettoreAzioniRapide"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
 			 xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
              xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
+			 xmlns:pop="clr-namespace:Digiphoto.Lumen.PresentationFramework.Popup;assembly=Digiphoto.Lumen.PresentationFramework"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
 
 	<UserControl.Resources>
 		<ResourceDictionary Source="pack://application:,,,/Digiphoto.Lumen.UI;component/SelettoreAzioniRapide/SelettoreAzioniRapideResources.xaml" />
 	</UserControl.Resources>
+
+
+
+
+	<pop:ModalDialogPopup x:Name="sceltaFotografoPopup" IsOpen="{Binding associaFacciaFotografoPopupIsOpen, Mode=TwoWay}" Title="Seleziona il fotografo" ButtonOKText="Associa faccia" >
+
+		<i:Interaction.Triggers>
+			<i:EventTrigger EventName="Ok">
+				<i:InvokeCommandAction Command="{Binding associareFacciaFotografoCommand}"/>
+			</i:EventTrigger>
+		</i:Interaction.Triggers>
+
+
+		<pop:ModalDialogPopup.HostedContent>
+			<ContentControl>
+				<Grid Width="400" Height="500">
+					<lum:SelettoreFotografo x:Name="selettoreFotografoFaccia" possoCreare="true" selezioneMultipla="False"
+					                        Margin="3" DataContext="{Binding selettoreFotografoViewModelFaccia}" />
+				</Grid>
+			</ContentControl>
+		</pop:ModalDialogPopup.HostedContent>
+	</pop:ModalDialogPopup>
+
+
+
+
+
 
 </lumM:UserControlBase >

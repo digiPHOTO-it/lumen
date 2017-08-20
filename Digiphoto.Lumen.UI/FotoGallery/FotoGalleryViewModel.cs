@@ -1922,6 +1922,7 @@ namespace Digiphoto.Lumen.UI {
 		private void azzeraParamRicerca() {
 			azzeraParamRicerca( false );
 			saveDataCambioSelezMode = null;
+
 		}
 
 		private void azzeraParamRicerca( bool tranneScarichi ) {
@@ -2378,7 +2379,8 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		#endregion MemBus
-		
+
+
 
 	}
 

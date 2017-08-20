@@ -89,17 +89,13 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEFotografo {
 		}
 
 		private void uploadNuovaImmagine() {
-			
-			string nomeImmagine = AiutanteUI.scegliFileImmagineDialog( null );
-			if( nomeImmagine != null ) {
-				string nomeFileDest = AiutanteFoto.nomeFileImgFotografo(entitaCorrente);
-				DirectoryInfo dInfo = new DirectoryInfo(nomeFileDest).Parent;
-				if (!dInfo.Exists)
-					Directory.CreateDirectory( dInfo.FullName );
-                File.Copy( nomeImmagine, nomeFileDest, true );
+
+			string nomeFile = AiutanteUI.scegliFileImmagineDialog( null );
+
+			if( nomeFile != null ) {
+				AiutanteFoto.setImmagineFotografo( nomeFile, entitaCorrente );
 				caricaImmagineEsistente();
 			}
-
 		}
 
 		#endregion

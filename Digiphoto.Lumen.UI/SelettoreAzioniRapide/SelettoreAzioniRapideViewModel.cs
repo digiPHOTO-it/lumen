@@ -37,11 +37,20 @@ namespace Digiphoto.Lumen.UI {
 		public event Digiphoto.Lumen.UI.FotoRitocco.FotoRitoccoViewModel.EditorModeChangedEventHandler editorModeChangedEvent;
 
 		public ISelettore<Fotografia> fotografieSelector;
+		
+		public SelettoreFotografoViewModel selettoreFotografoViewModelFaccia {
+			get;
+			private set;
+		}
+
 
 		public SelettoreAzioniRapideViewModel( ISelettore<Fotografia> fotografieSelector ) {
 			this.fotografieSelector = fotografieSelector;
 			IObservable<GestoreCarrelloMsg> observableCarrello = LumenApplication.Instance.bus.Observe<GestoreCarrelloMsg>();
 			observableCarrello.Subscribe( this );
+
+			selettoreFotografoViewModelFaccia = new SelettoreFotografoViewModel();
+
 
 			if( IsInDesignMode ) {
 			} else {
@@ -109,6 +118,22 @@ namespace Digiphoto.Lumen.UI {
 			return fotografieSelector.getElementiTutti();
 		}
 
+
+		private bool _sceltaFotografoPopupIsOpen;
+		public bool sceltaFotografoPopupIsOpen
+		{
+			get
+			{
+				return _sceltaFotografoPopupIsOpen;
+			}
+			set
+			{
+				if( _sceltaFotografoPopupIsOpen != value ) {
+					_sceltaFotografoPopupIsOpen = value;
+					OnPropertyChanged( "sceltaFotografoPopupIsOpen" );
+				}
+			}
+		}
 
 		#endregion Proprieta
 
@@ -601,6 +626,11 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		void sceltaFotografoPopup() {
+			sceltaFotografoPopupIsOpen = true;
+		}
+	
+
 		#endregion Metodi
 
 
@@ -792,6 +822,20 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private RelayCommand _sceltaFotografoPopupCommand;
+		public ICommand sceltaFotografoPopupCommand
+		{
+			get
+			{
+				if( _sceltaFotografoPopupCommand == null ) {
+					_sceltaFotografoPopupCommand = new RelayCommand( param => sceltaFotografoPopup(),
+					                                                 p => isAlmenoUnElementoSelezionato,
+																	 false );
+				}
+				return _sceltaFotografoPopupCommand;
+			}
+		}
+
 
 		#endregion
 
@@ -832,5 +876,77 @@ namespace Digiphoto.Lumen.UI {
 		#endregion Gestori Eventi
 
 		#endregion
+
+
+
+
+
+
+		// ------------------
+
+		private bool _associaFacciaFotografoPopupIsOpen;
+		public bool associaFacciaFotografoPopupIsOpen
+		{
+			get { return _associaFacciaFotografoPopupIsOpen; }
+			set
+			{
+				_associaFacciaFotografoPopupIsOpen = value;
+				OnPropertyChanged( "associaFacciaFotografoPopupIsOpen" );
+			}
+		}
+
+		private RelayCommand _openAssociaFacciaFotografoPopupCommand;
+		public ICommand openAssociaFacciaFotografoPopupCommand
+		{
+			get
+			{
+				if( _openAssociaFacciaFotografoPopupCommand == null ) {
+					_openAssociaFacciaFotografoPopupCommand = new RelayCommand( param => openAssociaFacciaFotografoPopup(), param => true, false );
+				}
+				return _openAssociaFacciaFotografoPopupCommand;
+			}
+		}
+
+
+		private void openAssociaFacciaFotografoPopup() {
+			associaFacciaFotografoPopupIsOpen = true;
+		}
+
+		void associareFacciaFotografo() {
+
+			// La foto la prendo da quella selezionata
+			if( targetMode != TargetMode.Singola )
+				throw new InvalidOperationException( "Operazione solo su singola foto" );
+
+			if( selettoreFotografoViewModelFaccia.countElementiSelezionati != 1 )
+				throw new InvalidOperationException( "Non è stato selezionato un Fotografo" );
+
+			Fotografia fotografia = getListaFotoTarget().Single();
+
+			Fotografo fotografo = selettoreFotografoViewModelFaccia.fotografoSelezionato;
+
+			AiutanteFoto.setImmagineFotografo( fotografia, fotografo );
+
+			// Spengo la selezione per la prossima volta
+			selettoreFotografoViewModelFaccia.fotografiCW.deselezionaTutto();
+
+			string msg = string.Format( "OK : impostata immagine per il fotografo {0}\nCon la foto numero {1}", fotografo.cognomeNome, fotografia.numero );
+			dialogProvider.ShowMessage( msg, "Operazione riuscita" );
+		}
+
+
+		private RelayCommand _associareFacciaFotografoCommand;
+		public ICommand associareFacciaFotografoCommand
+		{
+			get
+			{
+				if( _associareFacciaFotografoCommand == null ) {
+					_associareFacciaFotografoCommand = new RelayCommand( param => associareFacciaFotografo(), param => true, false );
+				}
+				return _associareFacciaFotografoCommand;
+			}
+		}
+		
+
 	}
 }
