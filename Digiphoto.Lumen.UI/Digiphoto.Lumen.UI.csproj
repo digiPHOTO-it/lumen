@@ -301,8 +301,8 @@
       <DependentUpon>EliminaVecchiRulliniView.xaml</DependentUpon>
     </Compile>
     <Compile Include="EliminaVecchiRullini\EliminaVecchiRulliniViewModel.cs" />
-    <Compile Include="FotoGallery\FotoGallery.xaml.cs">
-      <DependentUpon>FotoGallery.xaml</DependentUpon>
+    <Compile Include="FotoGallery\FotoGalleryView.xaml.cs">
+      <DependentUpon>FotoGalleryView.xaml</DependentUpon>
     </Compile>
     <Compile Include="FotoGallery\FotoGalleryViewModel.cs" />
     <Compile Include="FotoRitocco\EditorModeEventArgs.cs" />
@@ -619,7 +619,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="FotoGallery\FotoGallery.xaml">
+    <Page Include="FotoGallery\FotoGalleryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -882,6 +882,7 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\ritratto-16x16.png" />
     <Resource Include="Resources\riempimenti\rocks.jpg" />
     <Resource Include="Resources\AzioniSelezionate-16x16.png" />
     <Resource Include="Resources\AzioniSingola-16x16.png" />

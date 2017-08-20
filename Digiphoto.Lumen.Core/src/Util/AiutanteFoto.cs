@@ -347,6 +347,51 @@ namespace Digiphoto.Lumen.Util {
 			}
 		}
 
+		public static void setImmagineFotografo( Fotografia fotografia, Fotografo fotografo ) {
+
+			string nomeFile = AiutanteFoto.idrataImmagineDaStampare( fotografia );
+			
+			setImmagineFotografo( nomeFile, fotografo );
+		}
+
+		/// <summary>
+		/// Imposta una immagine per il fotografo (con la sua faccia)
+		/// </summary>
+		/// <param name="nomeFileImmagine">path completo. Se nullo, elimino la foto attuale</param>
+		/// <param name="fotografo">il fotografo da ritrarre</param>
+		public static void setImmagineFotografo( string nomeFileImmagine, Fotografo fotografo ) {
+
+			string nomeFileDest = AiutanteFoto.nomeFileImgFotografo( fotografo );
+
+
+			if( nomeFileImmagine != null ) {
+				DirectoryInfo dInfo = new DirectoryInfo( nomeFileDest ).Parent;
+				if( !dInfo.Exists )
+					Directory.CreateDirectory( dInfo.FullName );
+
+				if( File.Exists( nomeFileDest ) ) {
+					// Potrebbe avere il flag di readonly
+					// Elimino gli attributi solo lettura                                
+					File.SetAttributes( nomeFileDest, File.GetAttributes( nomeFileDest ) & ~(FileAttributes.ReadOnly) );
+				}
+
+				// copio con sovrascrittura
+				File.Copy( nomeFileImmagine, nomeFileDest, true );
+
+				// Potrebbe avere il flag di readonly
+				// Elimino gli attributi solo lettura                                
+				File.SetAttributes( nomeFileDest, File.GetAttributes( nomeFileDest ) & ~(FileAttributes.ReadOnly) | FileAttributes.Archive );
+
+				string msg = string.Format( "Impostata immagine fotografo: {0} immagine: {1}", fotografo.cognomeNome, nomeFileImmagine );
+				_giornale.Info( msg );
+
+			} else {
+				if( File.Exists( nomeFileDest ) ) {
+					File.Delete( nomeFileDest );
+					_giornale.Info( "Eliminata immagine per il fotografo " + fotografo.cognomeNome );
+				}
+			}
+		}
 
 		public static IImmagine getImmagineFoto( Fotografia f, IdrataTarget quale ) {
 

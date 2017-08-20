@@ -19,9 +19,9 @@ namespace Digiphoto.Lumen.UI
 	/// <summary>
 	/// Interaction logic for AzioniRapideView.xaml
 	/// </summary>
-	public partial class SelettoreAzioniRapideView : UserControlBase
+	public partial class SelettoreAzioniRapide : UserControlBase
 	{
-		public SelettoreAzioniRapideView()
+		public SelettoreAzioniRapide()
 		{
 			InitializeComponent();
 
@@ -31,6 +31,12 @@ namespace Digiphoto.Lumen.UI
 		void selettoreAzioniRapideView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
 			associaDialogProvider();
+		}
+
+		SelettoreAzioniRapideViewModel viewModel {
+			get {
+				return (SelettoreAzioniRapideViewModel) this.DataContext;
+			}
 		}
 
 	}

@@ -10,6 +10,7 @@
              xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
              xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo"         
 			 xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+
              mc:Ignorable="d" 
              x:Name="this"
              d:DesignHeight="700" d:DesignWidth="1300" FontStretch="Condensed">
@@ -270,7 +271,7 @@
 
 
 
-                <!-- eventuale filtro per fotografo -->
+				<!-- eventuale filtro per fotografo -->
                 <lum:SelettoreFotografo x:Name="selettoreFotografo5" possoCreare="False" selezioneMultipla="True"
 										Margin="3,0,0,0"
 										MaxWidth="200"
@@ -319,10 +320,13 @@
         </Expander>
 
 
-        <lum:SelettoreAzioniRapideView Visibility="Collapsed" DataContext="{Binding Path=selettoreAzioniRapideViewModel}"/>
 
-        <!-- Questa è la lista delle immagini -->
+
+		<!-- Questa è la lista delle immagini -->
 		<Grid x:Name="gridImges">
+
+			<lum:SelettoreAzioniRapide Visibility="Hidden" DataContext="{Binding Path=selettoreAzioniRapideViewModel}"/>
+
 			<ListBox x:Name="LsImageGallery"   Margin="0,0,0,0"
 					 ScrollViewer.VerticalScrollBarVisibility="Disabled" 
 					 SelectionMode="Multiple" 
