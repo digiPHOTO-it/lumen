@@ -77,7 +77,7 @@
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Content">
             <Setter.Value>
-                <Image Source="/Digiphoto.Lumen.SelfService.MobileUI;component/Resources/Home.png" Width="60" Height="60"/>
+                <Image Source="/Digiphoto.Lumen.SelfService.MobileUI;component/Resources/Home.png" Width="55" Height="55"/>
             </Setter.Value>
         </Setter>
     </Style>
