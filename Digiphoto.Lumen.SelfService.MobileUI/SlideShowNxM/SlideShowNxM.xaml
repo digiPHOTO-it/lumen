@@ -33,18 +33,29 @@
         </ListBox>
 
         <Grid Name="PlaybackPanel">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="65" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="65" />
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="60" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="60" />
             </Grid.ColumnDefinitions>
 
-            <Border Name="BorderPrevius" Grid.Column="0" Background="#55FFFFFF" >
+            <Border Name="BorderHome" Grid.Row="0" Grid.Column="0" Background="#55FFFFFF" >
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button Name="HomeButtonNxM" TouchDown="Home" Click="Home" ToolTip="Home" VerticalAlignment="Center" Style="{StaticResource styleHome}" IsTabStop="False"/>
+                </StackPanel>
+            </Border>
+
+            <Border Name="BorderPrevius" Grid.Row="1" Grid.Column="0" Background="#55FFFFFF" >
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Button Name="PreviousButton" TouchDown="Previous" Click="Previous" ToolTip="Back (Left/Up Arrow Key)" Style="{StaticResource styleLeft}" IsTabStop="False"/>
                 </StackPanel>
             </Border>
-            <Border Name="BoderNext" Grid.Column="2" Background="#55FFFFFF" >
+            <Border Name="BoderNext" Grid.Row="1" Grid.Column="2" Background="#55FFFFFF" >
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                     <Button Name="NextButton" TouchDown="Next" Click="Next" ToolTip="Next (Right/Down Arrow Key)" VerticalAlignment="Center" Style="{StaticResource styleRigth}" IsTabStop="False"/>
                 </StackPanel>
@@ -53,5 +64,10 @@
 
         <Image Name="LoadingFeedback" Visibility="Hidden" Source="/Digiphoto.Lumen.SelfService.MobileUI;component/Resources/Loading.png" Width="250" Height="250"/>
 
+        <StackPanel Name="BorderEmptyFeedback" Visibility="Hidden" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Image Name="EmptyFeedback" Source="/Digiphoto.Lumen.SelfService.MobileUI;component/Resources/Empty.png" Width="250" Height="250"/>
+            <Label HorizontalAlignment="Center" FontSize="20" Margin="10" Background="Orange" Foreground="Black">NON CI SONO FOTO !!!</Label>
+        </StackPanel>
+        
     </Grid>
 </lumC:UserControlBase>

@@ -36,12 +36,6 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
         private static int _PAGE_SIZE = 6;
 
-        // Risultante
-        private System.Windows.Threading.DispatcherTimer _RisultantePanelTicker = new System.Windows.Threading.DispatcherTimer();
-
-        // Feedback
-        private System.Windows.Threading.DispatcherTimer _FeedbackTicker = new System.Windows.Threading.DispatcherTimer();
-
         //Controllo Movimento Mouse
         private Point _mousePoint = new Point(0, 0);
         private System.Windows.Threading.DispatcherTimer _MouseTicker = new System.Windows.Threading.DispatcherTimer();
@@ -61,9 +55,14 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             }
             set
             {
-                if (_fotografieCW != value)
+				this.BorderEmptyFeedback.Visibility = Visibility.Hidden;
+				if (_fotografieCW != value)
                 {
                     _fotografieCW = value;
+					if (_fotografieCW.IsEmpty)
+					{
+						this.BorderEmptyFeedback.Visibility = Visibility.Visible;
+					}
                     OnPropertyChanged("fotografieCW");
                 }
             }
@@ -84,13 +83,6 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
             Servizi.Event.EventManager.Instance.setIEventManager(this);
 
-            _FeedbackTicker.Tick += new EventHandler(dispatcherTimer_FeedbackTicker);
-            _FeedbackTicker.Interval = new TimeSpan(0, 0, 0, 1);
-
-            // For Risultante
-            _RisultantePanelTicker.Tick += new EventHandler(dispatcherTimer_PanelTicker);
-            _RisultantePanelTicker.Interval = new TimeSpan(0, 0, 1);
-
             //Controllo Mouse
             _MouseTicker.Tick += new EventHandler(dispatcherTimer_MouseTicker);
             _MouseTicker.Interval = new TimeSpan(0, 0, 0, 0, 100);
@@ -103,35 +95,11 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
             FotoSrv.Instance.setFotografo(fotografo.id);
 
-            Load();
-        }
-
-        private void dispatcherTimer_FeedbackTicker(object sender, EventArgs e)
-        {
-            //this.LoadingFeedback.Visibility = Visibility.Hidden;
-            _FeedbackTicker.Stop();
-        }
-
-        #region Image Loaders
-
-        private void Load()
-        {
-            _RisultantePanelTicker.Stop();
-            _RisultantePanelTicker.Start();
-        }
-
-        #endregion
-
-        private void dispatcherTimer_PanelTicker(object sender, EventArgs e)
-        {
-            loadRisultante();
-            _RisultantePanelTicker.Stop();
-        }
+		}
 
         private void loadRisultante()
         {
             isLoadingRisultante = true;
-            _FeedbackTicker.Start();
 			isLoadingRisultante = false;
         }
 
@@ -177,8 +145,6 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
         public void Previous()
         {
-            _RisultantePanelTicker.Stop();
-
             currentPageIndex--;
             if (currentPageIndex < 0)
             {
@@ -187,32 +153,30 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
             ShowCurrentPageIndex();
 
-            _RisultantePanelTicker.Start();
 			MoveTimeCounter.Instance.updateLastTime();
         }
 
         public void Next()
         {
-            _RisultantePanelTicker.Stop();
             // This is for Fade In
             currentPageIndex++;
             
             ShowCurrentPageIndex();
 
-            _RisultantePanelTicker.Start();
 			MoveTimeCounter.Instance.updateLastTime();
         }
 
         private void ShowCurrentPageIndex()
         {
-            IList fotografie = ssClient.getListaFotografieDelFotografo(fotografo.id, currentPageIndex * _PAGE_SIZE, _PAGE_SIZE);
+
+			IList fotografie = ssClient.getListaFotografieDelFotografo(fotografo.id, currentPageIndex * _PAGE_SIZE, _PAGE_SIZE);
             if (fotografie.Count==0)
             {
                 currentPageIndex = 0;
                 fotografie = ssClient.getListaFotografieDelFotografo(fotografo.id, currentPageIndex * _PAGE_SIZE, _PAGE_SIZE);
-            }
+			}
             fotografieCW = CollectionViewSource.GetDefaultView(fotografie);
-        }
+		}
     
         public void Home()
         {

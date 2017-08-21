@@ -64,7 +64,6 @@
             <Border Name="BorderHome" Grid.Row="0" Background="#55FFFFFF" >
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Button Name="HomeButton" TouchDown="Home_Click" Click="Home_Click" ToolTip="Home" VerticalAlignment="Center" Style="{StaticResource styleHome}" IsTabStop="False"/>
-                    <TextBlock>  Prova</TextBlock>
                 </StackPanel>
             </Border>
 
