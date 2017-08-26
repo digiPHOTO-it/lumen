@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Digiphoto.Lumen.UI.Gallery;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;

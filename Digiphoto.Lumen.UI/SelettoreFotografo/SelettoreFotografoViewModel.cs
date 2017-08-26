@@ -267,7 +267,7 @@ namespace Digiphoto.Lumen.UI {
 			return this.fotografiCW.SelectedItems.GetEnumerator();
 		}
 
-		public void deselezionare( Fotografo elem ) {
+		public void deselezionareSingola( Fotografo elem ) {
 			fotografiCW.SelectedItems.Clear();
 		}
 

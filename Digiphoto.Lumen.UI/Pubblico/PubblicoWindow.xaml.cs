@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.ComponentModel;
+using Digiphoto.Lumen.UI.Gallery;
 
 namespace Digiphoto.Lumen.UI.Pubblico {
 	/// <summary>

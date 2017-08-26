@@ -9,12 +9,10 @@ using Digiphoto.Lumen.UI.Mvvm;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.UI.Util;
 using Digiphoto.Lumen.Config;
-using System.Windows.Shapes;
-using Digiphoto.Lumen.Imaging;
-using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.UI.Pubblico;
+using Digiphoto.Lumen.UI.Gallery;
 
-namespace Digiphoto.Lumen.UI {
+namespace Digiphoto.Lumen.UI.Gallery {
 
 
 	/// <summary>
@@ -127,41 +125,34 @@ namespace Digiphoto.Lumen.UI {
 			fotoGalleryViewModel.mandareInModificaImmediata( lbItem.Content as Fotografia );
 		}
 
+		/// <summary>
+		/// Devo gestire la selezione consecutiva quando avviene l'evento SHIFT + CLICK
+		/// Problema da risolvere, è che adesso la selezione può avvenire anche a cavallo di pagine diverse
+		/// Devo spostare tutta questa logica, lato viewModel, non è più compito di questo metodo
+		/// </summary>
+		/// <param name="sender">la ListBox che ha generato l'evento</param>
+		/// <param name="e">evento del bottone del mouse</param>
 		private void LsImageGallery_PreviewMouseLeftButtonDown( object sender, MouseButtonEventArgs e ) {
-			// Anche se clicco sulla scrollbar mi solleva l'evento button down.
-			if( !(e.OriginalSource is Image) )
+
+			// Se non ho il tasto SHIFT premuto, allora non devo fare niente.
+			// Faccio subito questo controllo per evitare altre operazioni più lente e costose.
+			// La stragrande maggioranza dei click, infatti, avviene senza lo shift premuto.
+			// Il limiteA della selezione estesa (quello senza SHIFT), in questo caso, viene gestito dal ViewModel del metodo: fotografie_selezioneCambiata
+
+			if( Keyboard.IsKeyDown( Key.LeftShift ) == false && Keyboard.IsKeyDown( Key.RightShift ) == false )
 				return;
 
-			//
-			ListBoxItem lbi = SelectItemOnLeftClick( e );
-			if( lbi == null )
+			// -- prendo la fotografia su cui ho cliccato
+			Fotografia fotoLimiteB = getSelectedFotografiaOnMouseClick( e );
+			if( fotoLimiteB == null )
 				return;
 
-			Fotografia foto = (Fotografia)lbi.Content;
+			// Ok ho cliccato con lo shift, identificando quindi il secondo limite. Lo setto nel viewModel per avare una selezione completa (2 limiti)
+			fotoGalleryViewModel.eseguireSelezioneEstesa( fotoLimiteB );
 
-			if( Keyboard.IsKeyDown( Key.LeftShift ) || Keyboard.IsKeyDown( Key.RightShift ) ) {
-				if( fotoGalleryViewModel.fotografieCW.SelectedItems.Count > 0 ) {
-					Fotografia lastSelectedFoto = fotoGalleryViewModel.fotografieCW.SelectedItems.Last<Fotografia>();
-					int firstIndex = fotoGalleryViewModel.fotografieCW.IndexOf( lastSelectedFoto );
-					int lastIndex = fotoGalleryViewModel.fotografieCW.IndexOf( foto );
-
-					//se ho selezionato dal più alto al più basso inverto gli indici
-					if( firstIndex > lastIndex ) {
-						int appoggio = firstIndex;
-						//faccio +1 perche se no non riesco a selezionare l'ultima foto
-						firstIndex = lastIndex + 1;
-						lastIndex = appoggio;
-					}
-
-					for( int i = firstIndex; i < lastIndex; i++ ) {
-						Fotografia f = (Fotografia)fotoGalleryViewModel.fotografieCW.GetItemAt( i );
-						if( !fotoGalleryViewModel.fotografieCW.SelectedItems.Contains( f ) ) {
-							fotoGalleryViewModel.fotografieCW.SelectedItems.Add( f );
-							fotoGalleryViewModel.fotografieCW.RefreshSelectedItemWithMemory();
-						}
-					}
-				}
-			}
+			// Questo evento non è più da gestire perché ci ho già pensato prima nel ViewModel
+			// viceversa, l'ultima foto cliccata riceverebbe un ulteriore click che la spegnerebbe (io invece sto accendendo)
+			e.Handled = true;
 		}
 
 		private void LsImageGallery_PreviewKeyDown( object sender, KeyEventArgs e ) {
@@ -172,16 +163,38 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		private ListBoxItem SelectItemOnLeftClick( System.Windows.Input.MouseButtonEventArgs e ) {
+		/// <summary>
+		/// Quando viene cliccata la lista delle foto, voglio stabilire quale foto è stata selezionata,
+		/// o per meglio dire voglio stabilire l'elemento della ListBox.
+		/// </summary>
+		/// <param name="e"></param>
+		/// <returns></returns>
+		private Fotografia getSelectedFotografiaOnMouseClick( System.Windows.Input.MouseButtonEventArgs e ) {
+
+			// Anche se clicco sulla scrollbar mi solleva l'evento button down.
+			if( !(e.OriginalSource is Image) )
+				return null;
+
+			var lbi = getSelectedItemOnLeftClick( e );
+			return lbi == null ? null : (Fotografia)lbi.Content;
+		}
+	
+		/// <summary>
+		/// L'evento click avviene su tutta la ListBox (comprese aree vuote e anche scrollbar)
+		/// Invece voglio isolare soltanto i click sulle immagini delle foto.
+		/// Se il click è stato fatto su di una immagine, allora torno l'elemento della lista 
+		/// interessato : il ListBoxItem .
+		/// In tutti gli altri casi torno NULL
+		/// </summary>
+		/// <param name="e">l'evento click del mouse</param>
+		/// <returns></returns>
+		private ListBoxItem getSelectedItemOnLeftClick( System.Windows.Input.MouseButtonEventArgs e ) {
 			Point clickPoint = e.GetPosition( LsImageGallery );
 			object element = LsImageGallery.InputHitTest( clickPoint );
 			ListBoxItem clickedListBoxItem = null;
-			if( element != null ) {
+			if( element != null )
 				clickedListBoxItem = GetVisualParent<ListBoxItem>( element );
-				if( clickedListBoxItem != null ) {
-					Fotografia f = (Fotografia)clickedListBoxItem.Content;
-				}
-			}
+			
 			return clickedListBoxItem;
 		}
 
@@ -190,26 +203,26 @@ namespace Digiphoto.Lumen.UI {
 			if( !(e.OriginalSource is Image) )
 				return;
 
-			Fotografia foto = (Fotografia)SelectItemOnRightClick( e ).Content;
-			fotoGalleryViewModel.setModalitaSingolaFoto( foto );
+			var foto = SelectItemOnRightClick( e );
+			fotoGalleryViewModel.setRapideTargetSingolaFoto( foto );
+
 			e.Handled = true;
 		}
 
-		private ListBoxItem SelectItemOnRightClick( System.Windows.Input.MouseButtonEventArgs e ) {
-			Point clickPoint = e.GetPosition( LsImageGallery );
-			object element = LsImageGallery.InputHitTest( clickPoint );
-			ListBoxItem clickedListBoxItem = null;
-			if( element != null ) {
-				clickedListBoxItem = GetVisualParent<ListBoxItem>( element );
-				if( clickedListBoxItem != null ) {
-					Fotografia f = (Fotografia)clickedListBoxItem.Content;
-					if( !fotoGalleryViewModel.fotografieCW.SelectedItems.Contains( f ) ) {
-						fotoGalleryViewModel.fotografieCW.SelectedItems.Add( f );
-						fotoGalleryViewModel.fotografieCW.RefreshSelectedItemWithMemory();
-					}
-				}
-			}
-			return clickedListBoxItem;
+		/// <summary>
+		/// Quando clicco con il destro, prima di aprire il menu contestuale,
+		/// seleziono di giallo la foto che sta sotto il puntatore del mouse.
+		/// Mi servirà poi per eseguire le azioni rapide, per esempio per stampare.
+		/// </summary>
+		/// <param name="e">evento click destro del mouse</param>
+		/// <returns>la Fotografia che è stata cliccata e selezionata</returns>
+		private Fotografia SelectItemOnRightClick( System.Windows.Input.MouseButtonEventArgs e ) {
+
+			Fotografia foto = getSelectedFotografiaOnMouseClick( e );
+
+			fotoGalleryViewModel.selezionareSingola( foto, true );
+
+			return foto;
 		}
 
 		public T GetVisualParent<T>( object childObject ) where T : Visual {

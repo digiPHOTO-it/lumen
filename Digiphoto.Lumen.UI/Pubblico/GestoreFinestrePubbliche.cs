@@ -12,6 +12,7 @@ using Digiphoto.Lumen.Imaging;
 using Digiphoto.Lumen.Imaging.Wic;
 using log4net;
 using System.Windows.Forms;
+using Digiphoto.Lumen.UI.Gallery;
 
 namespace Digiphoto.Lumen.UI.Pubblico {
 

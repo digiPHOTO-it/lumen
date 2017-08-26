@@ -301,10 +301,11 @@
       <DependentUpon>EliminaVecchiRulliniView.xaml</DependentUpon>
     </Compile>
     <Compile Include="EliminaVecchiRullini\EliminaVecchiRulliniViewModel.cs" />
-    <Compile Include="FotoGallery\FotoGalleryView.xaml.cs">
+    <Compile Include="Gallery\FotoGalleryView.xaml.cs">
       <DependentUpon>FotoGalleryView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FotoGallery\FotoGalleryViewModel.cs" />
+    <Compile Include="Gallery\FotoGalleryViewModel.cs" />
+    <Compile Include="Gallery\SelezioneEstesa.cs" />
     <Compile Include="FotoRitocco\EditorModeEventArgs.cs" />
     <Compile Include="FotoRitocco\FotoRitocco.xaml.cs">
       <DependentUpon>FotoRitocco.xaml</DependentUpon>
@@ -619,11 +620,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="FotoGallery\FotoGalleryView.xaml">
+    <Page Include="Gallery\FotoGalleryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="FotoGallery\FotoGalleryResources.xaml">
+    <Page Include="Gallery\FotoGalleryResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

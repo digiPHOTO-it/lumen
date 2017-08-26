@@ -164,7 +164,7 @@ namespace Digiphoto.Lumen.UI {
 				scarichiCardsCW.deselezionaTutto();
 		}
 
-		public void deselezionare( ScaricoCard elem ) {
+		public void deselezionareSingola( ScaricoCard elem ) {
 	        scarichiCardsCW.SelectedItems.Clear();
 		}
 

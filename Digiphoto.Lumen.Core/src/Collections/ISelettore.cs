@@ -17,7 +17,7 @@ namespace Digiphoto.Lumen.Core.Collections {
 		/// </summary>
 		void deselezionareTutto();
 
-		void deselezionare( T elem );
+		void deselezionareSingola( T elem );
 
 
 		#region Tutti
