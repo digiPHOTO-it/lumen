@@ -160,57 +160,6 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 		}
 
-		/// <summary>
-		/// Il limiteA lo setto dinamicamente ad ogni click del mouse con il metodo fotografie_selezioneCambiata
-		/// </summary>
-		/// <param name="fotoLimiteB">Se NON specificato, allora uso la selezioneEstesa corrente così come sta</param>
-		public void eseguireSelezioneEstesa( Fotografia fotoLimiteB = null ) {
-
-			// Spengo l'ascoltatore della selezione cambiata perché senno lo faccio impazzire
-			fotografieCW.SelectionChanged -= fotografie_selezioneCambiata;
-
-			try {
-
-				if( fotoLimiteB != null )
-					selezioneEstesa.limiteB = fotoLimiteB;
-
-				if( selezioneEstesa.isIncompleta )
-					return;
-				
-				// Per prima cosa, controllo se i limiti della selezione estesa sono già presenti nella pagina attuale.
-				// In questo caso, non sto a rieseguire la query, ma la risolvo velocemente in memoria
-				var fotos = fotografieCW.SourceCollection.OfType<Fotografia>();
-				if( fotos.Any( f => f.Equals( selezioneEstesa.limiteA ) ) && fotos.Any( f => f.Equals( selezioneEstesa.limiteB ) ) ) {
-
-					// ok entrambi i limiti sono presenti prendo i numeri
-					bool iniziato = false;
-
-					foreach( var foto in fotos ) {
-
-						bool trovata = selezioneEstesa.contains( foto );
-
-						if( iniziato || trovata )
-							selezionareSingola( foto );
-
-						if( trovata ) {
-							if( iniziato || selezioneEstesa.isSingola )
-								break;
-							else
-								iniziato = true;
-						}
-
-					}
-
-					// Se non eseguo questo refresh, non mi viene illuminato nulla nella maschera.
-					if( iniziato )
-						fotografieCW.RefreshSelectedItemWithMemory();
-				}
-			} finally {
-				// Spengo l'ascoltatore della selezione cambiata perché senno lo faccio impazzire
-				fotografieCW.SelectionChanged += fotografie_selezioneCambiata;
-			}
-		}
-
 		private ModalitaFiltroSelez _modalitaFiltroSelez;
 		/// <summary>
 		/// Modalita di visualizzazione dei risultati.
@@ -227,7 +176,6 @@ namespace Digiphoto.Lumen.UI.Gallery {
 				}
 			} 
 		}
-
 
 
 		private GestoreFinestrePubbliche gestoreFinestrePubbliche {
@@ -992,6 +940,19 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			}
 		}
 
+
+		private RelayCommand _eseguireSelezioneEstesaCommand;
+		public ICommand eseguireSelezioneEstesaCommand {
+			get {
+				if( _eseguireSelezioneEstesaCommand == null ) {
+					_eseguireSelezioneEstesaCommand = new RelayCommand( param => eseguireSelezioneEstesa( param as Fotografia ),
+															  param => true,
+															  false );
+				}
+				return _eseguireSelezioneEstesaCommand;
+			}
+		}
+
 		private RelayCommand _caricareSlideShowCommand;
 		public ICommand caricareSlideShowCommand {
 			get {
@@ -1074,10 +1035,9 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			}
 		}
 
-		private RelayCommand _riportaOriginaleFotoSelezionateCommand;
-
 		public event SelezioneCambiataEventHandler selezioneCambiata;
 
+		private RelayCommand _riportaOriginaleFotoSelezionateCommand;
 		public ICommand riportaOriginaleFotoSelezionateCommand
 		{
 			get
@@ -1340,8 +1300,24 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 			return lista;
 		}
-		 
-		public void selezionareSingola( Fotografia foto, bool forzaRefreshMem = false ) {
+		
+		public void selezionareMolte( IEnumerable<Fotografia> listaFoto ) {
+
+			foreach( var foto in listaFoto )
+				selezionareSingola( foto, false, false );
+
+			// Aggiorno la UI				
+			fotografieCW.RefreshSelectedItemWithMemory();
+
+			// Notifico eventuali altri componenti della applicazione
+			notificaSelezioneCambiata();
+		}
+
+		public void selezionareSingola( Fotografia foto ) {
+			selezionareSingola( foto, true, true );
+		}
+
+		public void selezionareSingola( Fotografia foto, bool forzareRefreshMem, bool notificareSelezioneCambiata ) {
 
 			if( foto == null ) {
 				_giornale.Warn( "selezionare foto nulla" );
@@ -1357,23 +1333,30 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			}
 				
 			// Poi lavoro sulla collezione visuale della pagina
-			if( fotografieCW != null && ! fotografieCW.SelectedItems.Contains( foto ) ) {
-				fotografieCW.SelectedItems.Add( foto );
-				cambiata = true;
+			if( fotografieCW != null ) {
+				if( fotografieCW.SourceCollection.OfType<Fotografia>().Contains( foto ) ) {
+					if( ! fotografieCW.SelectedItems.Contains( foto ) ) {
+						fotografieCW.SelectedItems.Add( foto );
+						cambiata = true;
 
-				// Questo metodo non dovrebbe essere pubblico
-				// Inoltre non ci dovrebbe essere il bisogno di chiamarlo
-				// Ma senza di questo, non funziona la selezione con il tasto destro dalla gallery
-				// TODO vedere se si può eliminare
-				if( forzaRefreshMem )
-					fotografieCW.RefreshSelectedItemWithMemory();
+						// Questo metodo non dovrebbe essere pubblico
+						// Inoltre non ci dovrebbe essere il bisogno di chiamarlo
+						// Ma senza di questo, non funziona la selezione con il tasto destro dalla gallery
+						// TODO vedere se si può eliminare
+						if( forzareRefreshMem )
+							fotografieCW.RefreshSelectedItemWithMemory();
+					}
+				}
 			}
 
-			if( cambiata ) {
-				raiseSelezioneCambiataEvent();
-				raisePropertyChangeSelezionate();
-			}
-				
+			if( cambiata && notificareSelezioneCambiata )
+				notificaSelezioneCambiata();
+
+		}
+
+		private void notificaSelezioneCambiata() {
+			raiseSelezioneCambiataEvent();
+			raisePropertyChangeSelezionate();
 		}
 
 		public void deselezionareSingola( Fotografia foto ) {
@@ -1393,7 +1376,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			}
 
 			if( cambiata )
-				raiseSelezioneCambiataEvent();
+				notificaSelezioneCambiata();
 		}
 
 		private void selezionareTutto() {
@@ -1428,7 +1411,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			}
 
 			// Avviso del cambio di selezione
-			raiseSelezioneCambiataEvent();
+			notificaSelezioneCambiata();
 		}
 
 		private void stampare( object objStampanteAbbinata ) {
@@ -1725,7 +1708,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 				// --
 
 				// Gestisco la selezione estesa
-				if( selezioneEstesa != null )
+				if( selezioneEstesa == null )
 					selezioneEstesa = new SelezioneEstesa();
 				else
 					selezioneEstesa.azzera();
@@ -1746,9 +1729,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 					selezioneEstesa.remove( fr );
 			}
 
-			raiseSelezioneCambiataEvent();
-
-			raisePropertyChangeSelezionate();
+			notificaSelezioneCambiata();
 		}
 
 		/// <summary>
@@ -2302,6 +2283,94 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			public ParamCercaFoto paramCercaFoto { get; set; }
 
 		}
+
+		/// <summary>
+		/// Il limiteA lo setto dinamicamente ad ogni click del mouse con il metodo fotografie_selezioneCambiata
+		/// </summary>
+		/// <param name="fotoLimiteB">Se NON specificato, allora uso la selezioneEstesa corrente così come sta</param>
+		public void eseguireSelezioneEstesa( Fotografia fotoLimiteB = null ) {
+
+			// Spengo l'ascoltatore della selezione cambiata perché senno lo faccio impazzire
+			fotografieCW.SelectionChanged -= fotografie_selezioneCambiata;
+
+			try {
+
+				if( fotoLimiteB != null )
+					selezioneEstesa.limiteB = fotoLimiteB;
+
+				if( ! selezioneEstesa.isCompleta )
+					return;
+
+				// Per prima cosa, controllo se i limiti della selezione estesa sono già presenti nella pagina attuale.
+				// In questo caso, non sto a rieseguire la query, ma la risolvo velocemente in memoria
+				var fotos = fotografieCW.SourceCollection.OfType<Fotografia>();
+				if( fotos.Any( f => f.Equals( selezioneEstesa.limiteA ) ) && fotos.Any( f => f.Equals( selezioneEstesa.limiteB ) ) ) {
+
+					// ok entrambi i limiti sono presenti prendo i numeri
+					bool iniziato = false;
+
+					foreach( var foto in fotos ) {
+
+						bool trovata = selezioneEstesa.contains( foto );
+
+						if( iniziato || trovata )
+							selezionareSingola( foto, false, false );
+
+						if( trovata ) {
+							if( iniziato || selezioneEstesa.isSingola )
+								break;
+							else
+								iniziato = true;
+						}
+
+					}
+
+					// Se non eseguo questo refresh, non mi viene illuminato nulla nella maschera.
+					if( iniziato ) {
+						fotografieCW.RefreshSelectedItemWithMemory();
+						notificaSelezioneCambiata();
+					}
+
+				} else {
+
+					// Se i due limiti non sono nella stessa pagina corrente, allora le cose si complicano
+					// perché per sapere quante e quali foto sono "comprese" nei limiti devo andare sul database.
+					eseguireSelezioneEstesaConRicercaSulDb();
+
+				}
+			} finally {
+				// Riaccendo l'ascoltatore della selezione cambiata che avevo spento all'inizio del metodo
+				fotografieCW.SelectionChanged += fotografie_selezioneCambiata;
+			}
+		}
+
+		/// <summary>
+		/// A parità di filtri di ricerca correnti,
+		/// devo cercare sul db quali sono le foto comprese tra i due estremi indicati
+		/// </summary>
+		void eseguireSelezioneEstesaConRicercaSulDb() {
+
+			// Per prima cosa mi clono i parametri perchè devo mantenere quasi tutti i filtri esistenti
+			ParamCercaFoto param2 = paramCercaFoto.deepCopy();
+
+			// elimino la paginazione perché mi servono tutte le foto
+			param2.paginazione = null;
+			
+			// Aggiungo però solo il range di numeri specificato
+			String range = String.Format( "{0}-{1}", selezioneEstesa.numeroMinore, selezioneEstesa.numeroMaggiore );
+			param2.numeriFotogrammi = range;
+			// TODO
+			// purtroppo questo sistema ha un piccolo bug.
+			// Se uno dei numeri estremi ha dei doppi, vengono presi su per forza !!!!
+
+
+			var ricercatoreSrv = LumenApplication.Instance.getServizioAvviato<IRicercatoreSrv>();
+			var fotografieDaSelez = ricercatoreSrv.cerca( param2 );
+
+			selezionareMolte( fotografieDaSelez );
+
+		}
+
 
 		#endregion Metodi
 

@@ -28,9 +28,9 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			return foto.Equals( limiteA ) || foto.Equals( limiteB );
 		}
 
-		public bool isIncompleta {
+		public bool isCompleta {
 			get {
-				return limiteA == null || limiteB == null;
+				return limiteA != null && limiteB != null;
 			}
 		}
 
@@ -40,10 +40,21 @@ namespace Digiphoto.Lumen.UI.Gallery {
 		/// </summary>
 		public bool isSingola {
 			get {
-				return isIncompleta == false && limiteA.Equals( limiteB );
+				return isCompleta && limiteA.Equals( limiteB );
 			}
 		}
 
+		public int numeroMinore {
+			get {
+				return isCompleta ? Math.Min( limiteA.numero, limiteB.numero ) : -1;
+			}
+		}
+
+		public int numeroMaggiore {
+			get {
+				return isCompleta ? Math.Max( limiteA.numero, limiteB.numero ) : -1;
+			}
+		}
 
 	}
 }

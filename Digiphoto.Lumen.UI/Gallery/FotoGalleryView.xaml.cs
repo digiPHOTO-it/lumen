@@ -148,7 +148,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 				return;
 
 			// Ok ho cliccato con lo shift, identificando quindi il secondo limite. Lo setto nel viewModel per avare una selezione completa (2 limiti)
-			fotoGalleryViewModel.eseguireSelezioneEstesa( fotoLimiteB );
+			fotoGalleryViewModel.eseguireSelezioneEstesaCommand.Execute( fotoLimiteB );
 
 			// Questo evento non è più da gestire perché ci ho già pensato prima nel ViewModel
 			// viceversa, l'ultima foto cliccata riceverebbe un ulteriore click che la spegnerebbe (io invece sto accendendo)
@@ -220,7 +220,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 			Fotografia foto = getSelectedFotografiaOnMouseClick( e );
 
-			fotoGalleryViewModel.selezionareSingola( foto, true );
+			fotoGalleryViewModel.selezionareSingola( foto );
 
 			return foto;
 		}
