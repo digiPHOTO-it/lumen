@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
+		xmlns:lumG="clr-namespace:Digiphoto.Lumen.UI.Gallery"
         xmlns:lumFR="clr-namespace:Digiphoto.Lumen.UI.FotoRitocco"
         xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
 		xmlns:lumE="clr-namespace:Digiphoto.Lumen.UI.EliminaVecchiRullini"
@@ -119,7 +120,7 @@
 				<TabItem.Header>
 					<TextBlock Text="Gallery" ToolTip="Esplora archivio foto" />
 				</TabItem.Header>
-            <lum:FotoGallery x:Name="fotoGallery" />
+            <lumG:FotoGallery x:Name="fotoGallery" />
         </TabItem>
 
 		<TabItem Name="tabItemAggiusta">

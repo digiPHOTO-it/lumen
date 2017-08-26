@@ -1,6 +1,7 @@
 ﻿using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Imaging;
 using Digiphoto.Lumen.Model;
+using Digiphoto.Lumen.UI.Gallery;
 using Digiphoto.Lumen.UI.Util;
 using Digiphoto.Lumen.Util;
 using System;

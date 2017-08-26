@@ -615,7 +615,7 @@ namespace Digiphoto.Lumen.UI {
 		public void deselezionaFoto()
         {
 			if( targetMode == TargetMode.Singola )
-				fotografieSelector.deselezionare( singolaFotoTarget );
+				fotografieSelector.deselezionareSingola( singolaFotoTarget );
 			else 
 				deselezionareTutto();
         }

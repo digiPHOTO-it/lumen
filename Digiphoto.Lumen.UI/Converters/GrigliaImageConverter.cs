@@ -1,6 +1,7 @@
 ﻿using Digiphoto.Lumen.Imaging;
 using Digiphoto.Lumen.Imaging.Wic;
 using Digiphoto.Lumen.Model;
+using Digiphoto.Lumen.UI.Gallery;
 using Digiphoto.Lumen.UI.Pubblico;
 using Digiphoto.Lumen.Util;
 using System;

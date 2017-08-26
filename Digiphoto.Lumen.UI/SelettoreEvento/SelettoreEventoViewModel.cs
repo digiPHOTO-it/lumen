@@ -208,7 +208,7 @@ namespace Digiphoto.Lumen.UI {
 				yield return eventoSelezionato;
 		}
 
-		public void deselezionare( Evento elem ) {
+		public void deselezionareSingola( Evento elem ) {
 			if( eventoSelezionato != null && eventoSelezionato.Equals( elem ) )
 				this.eventoSelezionato = null;
 		}

@@ -2536,7 +2536,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			fotografiaInModifica = null;
         }
 
-		public void deselezionare( Fotografia foto ) {
+		public void deselezionareSingola( Fotografia foto ) {
 			if( foto.Equals( fotografiaInModifica ) )
 				fotografiaInModifica = null;
 		}

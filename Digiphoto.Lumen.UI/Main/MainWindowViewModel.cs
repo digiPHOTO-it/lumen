@@ -4,7 +4,6 @@ using System.Windows.Media.Imaging;
 using System;
 using Digiphoto.Lumen.UI.Mvvm;
 using System.Windows.Input;
-using Digiphoto.Lumen.Servizi.Vendere;
 using Digiphoto.Lumen.UI.Dialogs;
 using Digiphoto.Lumen.Servizi.Reports;
 using System.Collections.Generic;
@@ -27,8 +26,8 @@ using Digiphoto.Lumen.Servizi.Scaricatore;
 using Digiphoto.Lumen.Servizi;
 using Digiphoto.Lumen.UI.Preferenze;
 using static System.Environment;
-using System.Net.Mail;
 using Digiphoto.Lumen.Core.Servizi.Utilita;
+using Digiphoto.Lumen.UI.Gallery;
 
 namespace Digiphoto.Lumen.UI {
 
