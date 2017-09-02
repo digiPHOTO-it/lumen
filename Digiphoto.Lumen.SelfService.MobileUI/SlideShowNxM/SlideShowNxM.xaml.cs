@@ -24,8 +24,6 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
     {
         private SelfMainWindow main;
 
-        private SelfServiceClient ssClient;
-
         private FotografoDto fotografo;
 
         private bool isControlliUtenteAttivi = false;
@@ -68,12 +66,11 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             }
         }
 
-        public SlideShowNxM(SelfMainWindow main, SelfServiceClient ssClient, FotografoDto fotografo)
+        public SlideShowNxM(SelfMainWindow main, FotografoDto fotografo)
         {
             InitializeComponent();
 
             this.DataContext = this;
-            this.ssClient = ssClient;
             this.main = main;
             this.fotografo = fotografo;
 
@@ -169,18 +166,18 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
         private void ShowCurrentPageIndex()
         {
 
-			IList fotografie = ssClient.getListaFotografieDelFotografo(fotografo.id, currentPageIndex * _PAGE_SIZE, _PAGE_SIZE);
+			IList fotografie = SSClientSingleton.Instance.getListaFotografieDelFotografo(fotografo.id, currentPageIndex * _PAGE_SIZE, _PAGE_SIZE);
             if (fotografie.Count==0)
             {
                 currentPageIndex = 0;
-                fotografie = ssClient.getListaFotografieDelFotografo(fotografo.id, currentPageIndex * _PAGE_SIZE, _PAGE_SIZE);
+                fotografie = SSClientSingleton.Instance.getListaFotografieDelFotografo(fotografo.id, currentPageIndex * _PAGE_SIZE, _PAGE_SIZE);
 			}
             fotografieCW = CollectionViewSource.GetDefaultView(fotografie);
 		}
     
         public void Home()
         {
-            main.ContentArea.Content = new Logo(main, ssClient);
+            main.ContentArea.Content = new Logo(main);
             SelfMainWindow.isShowSlideShow = false;
             MoveTimeCounter.Instance.updateLastTime();
         }

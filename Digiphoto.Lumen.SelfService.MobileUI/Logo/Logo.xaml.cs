@@ -15,18 +15,14 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
     {
         private SelfMainWindow main;
 
-        private SelfServiceClient ssClient;
-
-        public Logo(SelfMainWindow main, SelfServiceClient ssClient)
+        public Logo(SelfMainWindow main)
         {
             InitializeComponent();
-
-            this.ssClient = ssClient;
             this.main = main;
 
             Servizi.Event.EventManager.Instance.setIEventManager(this);
 
-            imageFoto.Source = FotoSrv.Instance.loadPhoto(ssClient, "Logo", Guid.Empty);
+            imageFoto.Source = FotoSrv.Instance.loadPhoto("Logo", Guid.Empty);
 
             SelfMainWindow.isShowLogo = true;
             SelfMainWindow.isShowSlideShow = false;
@@ -45,12 +41,8 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
         public void Home()
         {
-            if (ssClient != null)
-            {
-                ssClient.Close();
-                ssClient = null;
-            }
-
+			SSClientSingleton.Instance.Close();
+         
             Application.Current.Shutdown();
         }
 
@@ -73,17 +65,17 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
         {
             if (!SelfMainWindow.isShowCarrelli)
             {
-                String setting = ssClient.getSettings()["tipo-ricerca"];
+                String setting = SSClientSingleton.Instance.getSettings()["tipo-ricerca"];
                 switch (setting)
                 {
                     case "carrelli":
-                        main.ContentArea.Content = new Carrelli(main, ssClient);
+                        main.ContentArea.Content = new Carrelli(main);
                         break;
                     case "fotografi":
-                        main.ContentArea.Content = new Fotografi(main, ssClient);
+                        main.ContentArea.Content = new Fotografi(main);
                         break;
                     default:
-                        main.ContentArea.Content = new Fotografi(main, ssClient);
+                        main.ContentArea.Content = new Fotografi(main);
                         break;
                 }
 

@@ -23,8 +23,6 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
         public static bool _slideShowRun = false;
 
-        private SelfServiceClient ssClient;
-
         public ObservableCollection<FotografoDto> listaFotografi
         {
             get;
@@ -37,12 +35,11 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             private set;
         }
 
-        public Fotografi(SelfMainWindow main, SelfServiceClient ssClient)
+        public Fotografi(SelfMainWindow main)
         {
             InitializeComponent();
 
             this.DataContext = this;
-            this.ssClient = ssClient;
             this.main = main;
 
             Servizi.Event.EventManager.Instance.setIEventManager(this);
@@ -53,7 +50,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
             listaFotografi = new ObservableCollection<FotografoDto>();
 
-            var lista = ssClient.getListaFotografi();
+            FotografoDto[] lista = SSClientSingleton.Instance.getListaFotografi();
             Console.WriteLine("Lista Carrelli " + lista.Count());
             listaFotografi.Clear();
             foreach (var fotografoDto in lista)
@@ -73,7 +70,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
         {
             get
             {
-                return FotoSrv.Instance.loadPhoto(ssClient, "Logo", Guid.Empty);
+                return FotoSrv.Instance.loadPhoto("Logo", Guid.Empty);
             }
         }
 
@@ -95,7 +92,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
                 if (item != null)
                 {
                     FotografoDto c = (FotografoDto)item;
-                    main.ContentArea.Content = new SlideShowNxM(main, ssClient, c);
+                    main.ContentArea.Content = new SlideShowNxM(main, c);
                     MoveTimeCounter.Instance.updateLastTime();
                 }
             }
@@ -160,7 +157,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
         {
             if (!SelfMainWindow.isShowLogo)
             {
-                main.ContentArea.Content = new Logo(main, ssClient);
+                main.ContentArea.Content = new Logo(main);
             }
         }
 
