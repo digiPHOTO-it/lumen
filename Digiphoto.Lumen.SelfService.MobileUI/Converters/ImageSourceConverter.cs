@@ -33,7 +33,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.Converters
 
                 FotografiaDto fotografia = (FotografiaDto)value;
 
-                imageSource = FotoSrv.Instance.loadPhoto(ssClient, "Provino", fotografia.id);
+                imageSource = FotoSrv.Instance.loadPhoto("Provino", fotografia.id);
             }
 
             if(value.GetType() == typeof(byte[]))

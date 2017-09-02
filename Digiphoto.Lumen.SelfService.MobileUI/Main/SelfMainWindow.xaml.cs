@@ -11,8 +11,6 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
 	public partial class SelfMainWindow : Window, IEventManager
     {
 
-        SelfServiceClient ssClient;
-
         // Gestisco l'autoExit dalle schermate
         private Point _mousePoint = new Point(0, 0);
         private System.Windows.Threading.DispatcherTimer _MouseTicker = new System.Windows.Threading.DispatcherTimer();
@@ -21,18 +19,15 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
         public static bool isShowCarrelli = false;
         public static bool isShowSlideShow = false;
 
-        public SelfMainWindow() {
+		public SelfMainWindow() {
 			
 			InitializeComponent();
             this.DataContext = this;
 
             Servizi.Event.EventManager.Instance.setIEventManager(this);
 
-            // Mi connetto con il servizio SelfService.
-            ssClient = new SelfServiceClient();
-            ssClient.Open();
-
-            //ssClient.getPartenza;
+			// Mi connetto con il servizio SelfService.
+			SSClientSingleton.Instance.Open();
 
             // AutoExit
             _MouseTicker.Tick += new EventHandler(dispatcherTimer_MouseTicker);
@@ -41,7 +36,8 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
 
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+
+		private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             ShowLogo();
         }
@@ -52,10 +48,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
         }
 
         private void Window_Closed( object sender, EventArgs e ) {
-			if( ssClient != null ) {
-				ssClient.Close();
-				ssClient = null;
-			}
+			SSClientSingleton.Instance.Close();
 		}
 
         private void ArrowKey_Press(object sender, KeyEventArgs e)
@@ -94,24 +87,24 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
         private void ShowLogo()
         {
             if(!isShowLogo)
-                ContentArea.Content = new Logo(this, ssClient);
+                ContentArea.Content = new Logo(this);
         }
 
         private void ShowCarrelli()
         {
             if (!isShowCarrelli)
             {
-                String setting = ssClient.getSettings()["tipo-ricerca"];
+                String setting = SSClientSingleton.Instance.getSettings()["tipo-ricerca"];
                 switch (setting)
                 {
                     case "carrelli":
-                        ContentArea.Content = new Carrelli(this, ssClient);
+                        ContentArea.Content = new Carrelli(this);
                         break;
                     case "fotografi":
-                        ContentArea.Content = new Fotografi(this, ssClient);
+                        ContentArea.Content = new Fotografi(this);
                         break;
                     default:
-                        ContentArea.Content = new Fotografi(this, ssClient);
+                        ContentArea.Content = new Fotografi(this);
                         break;
                 }
             }

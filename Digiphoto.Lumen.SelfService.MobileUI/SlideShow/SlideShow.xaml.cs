@@ -18,8 +18,6 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
     {
         private SelfMainWindow main;
 
-        private SelfServiceClient ssClient;
-
         private bool isControlliUtenteAttivi = false;
 
         private bool isLoadingRisultante = false;
@@ -92,12 +90,11 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
         private FotografiaDto[] listaFotografie;
 
-        public SlideShow(SelfMainWindow main, SelfServiceClient ssClient, CarrelloDto carrello)
+        public SlideShow(SelfMainWindow main, CarrelloDto carrello)
         {
             InitializeComponent();
 
             this.DataContext = this;
-            this.ssClient = ssClient;
             this.main = main;
 
             SelfMainWindow.isShowLogo = false;
@@ -121,7 +118,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             SetMyImagePopStoryBoards();
             isControlliUtenteAttivi = true;
 
-            listaFotografie = ssClient.getListaFotografie(carrello.id);
+            listaFotografie = SSClientSingleton.Instance.getListaFotografie(carrello.id);
 
             FotoSrv.Instance.setCarello(carrello.id);
 
@@ -143,7 +140,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
         {
             _RisultantePanelTicker.Stop();
             // Add to display
-            Image = FotoSrv.Instance.loadPhoto(ssClient, "Provino", listaFotografie[0].id);
+            Image = FotoSrv.Instance.loadPhoto("Provino", listaFotografie[0].id);
             Etichetta = listaFotografie[_currentIndex].etichetta;
 			MiPiaceStatus = listaFotografie[_currentIndex].miPiace;
             _RisultantePanelTicker.Start();
@@ -162,7 +159,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             isLoadingRisultante = true;
             _FeedbackTicker.Start();
            // this.LoadingFeedback.Visibility = Visibility.Visible;
-            Image = FotoSrv.Instance.loadPhoto(ssClient, "Risultante", listaFotografie[_currentIndex].id);
+            Image = FotoSrv.Instance.loadPhoto("Risultante", listaFotografie[_currentIndex].id);
             Etichetta = listaFotografie[_currentIndex].etichetta;
             MiPiaceStatus = listaFotografie[_currentIndex].miPiace;
 			isLoadingRisultante = false;
@@ -240,7 +237,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             }
 
             _RisultantePanelTicker.Start();
-            Image = FotoSrv.Instance.loadPhoto(ssClient, "Provino", listaFotografie[_currentIndex].id);
+            Image = FotoSrv.Instance.loadPhoto("Provino", listaFotografie[_currentIndex].id);
             Etichetta = listaFotografie[_currentIndex].etichetta;
 			MiPiaceStatus = listaFotografie[_currentIndex].miPiace;
 			MoveTimeCounter.Instance.updateLastTime();
@@ -258,7 +255,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             }
 
             _RisultantePanelTicker.Start();
-            Image = FotoSrv.Instance.loadPhoto(ssClient, "Provino", listaFotografie[_currentIndex].id);
+            Image = FotoSrv.Instance.loadPhoto("Provino", listaFotografie[_currentIndex].id);
             Etichetta = listaFotografie[_currentIndex].etichetta;
 			MiPiaceStatus = listaFotografie[_currentIndex].miPiace;
 			MoveTimeCounter.Instance.updateLastTime();
@@ -266,7 +263,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
         public void Home()
         {
-            main.ContentArea.Content = new Logo(main, ssClient);
+            main.ContentArea.Content = new Logo(main);
             SelfMainWindow.isShowSlideShow = false;
             MoveTimeCounter.Instance.updateLastTime();
         }
@@ -279,7 +276,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
         private void NonMiPiace()
         {
             _FeedbackTicker.Start();
-            ssClient.setMiPiace(listaFotografie[_currentIndex].id, false);
+			SSClientSingleton.Instance.setMiPiace(listaFotografie[_currentIndex].id, false);
 			listaFotografie[_currentIndex].miPiace = false;
 			this.SlideShowImage.Opacity = 0.1;
             this.NonMiPiaceFeedback.Visibility = Visibility.Visible;
@@ -290,7 +287,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
         {
 			bool miPiace = MiPiaceStatus == true ? true : false;
             _FeedbackTicker.Start();
-            ssClient.setMiPiace(listaFotografie[_currentIndex].id, miPiace);
+			SSClientSingleton.Instance.setMiPiace(listaFotografie[_currentIndex].id, miPiace);
 			listaFotografie[_currentIndex].miPiace = miPiace;
             this.SlideShowImage.Opacity = 0.1;
 			if (miPiace)
