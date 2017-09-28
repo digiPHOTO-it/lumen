@@ -200,5 +200,49 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			}
 		}
 
+
+		public Model.Maschera caricaMaschera( string nomeFileMaschera, FiltroMask tipoMaschera, bool ancheOriginale ) {
+	
+			Model.Maschera maschera = new Model.Maschera();
+			maschera.nomeFile = nomeFileMaschera;
+			maschera.tipo = tipoMaschera;
+
+			// Provino (carico solo per 80 pixel)
+			var bmp1 = loadBitmapConDimensione( nomeFileMaschera, 80 );
+			maschera.imgProvino = new ImmagineWic( bmp1 );
+
+			// Originale (più pesante)
+			if( ancheOriginale ) {
+				// uso la funzione standard
+				// var bmp2 = loadMascheraDaDisco( nomeFileMaschera );
+				// maschera.imgOriginale = new ImmagineWic( bmp2 );
+				maschera.imgOriginale = load( nomeFileMaschera );
+			}
+
+			return maschera;
+		}
+
+
+		/// <summary>
+		/// Questo metodo mi consente di caricare una immagine e di specificare la dimensione che avrà a video
+		/// In questo modo il carimento avviene in modo intelligent e veloce.
+		/// Se devo mettere una immagine di 5000 pixel in una miniatura da 100 pixel, non ha senso caricare tutto
+		/// e poi perdere tempo a rimpicciolire; tanto vale caricare meno roba da subito.
+		/// </summary>
+		/// <param name="nomeFileSrc">Il nome completo della maschera da caricare</param>
+		/// <returns>una BitmapImage piccolina</returns>
+		private BitmapImage loadBitmapConDimensione( string nomeFileSrc, int pixelWidth = -1 ) {
+			BitmapImage bmp = new BitmapImage();
+			bmp.BeginInit();
+			bmp.CacheOption = BitmapCacheOption.OnLoad;
+			//						msk.CreateOptions = BitmapCreateOptions.DelayCreation;
+			if( pixelWidth > 0 )
+				bmp.DecodePixelWidth = pixelWidth;
+			bmp.UriSource = new Uri( nomeFileSrc );
+			bmp.EndInit();
+			bmp.Freeze();
+			return bmp;
+		}
+
 	}
 }

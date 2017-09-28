@@ -12,7 +12,6 @@ using System;
 using System.Windows.Media.Effects;
 using Digiphoto.Lumen.Windows.Media.Effects;
 using System.Windows.Media;
-using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
 using System.Windows;
 using System.IO;
 using Digiphoto.Lumen.Config;
@@ -31,7 +30,6 @@ using Digiphoto.Lumen.UI.Dialogs;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Servizi.EntityRepository;
 using Digiphoto.Lumen.Core.Collections;
-
 
 namespace Digiphoto.Lumen.UI.FotoRitocco {
 
@@ -61,7 +59,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 				// Carico le maschere e mi setto in modalità fotoritocco
 				this.modalitaEdit = ModalitaEdit.FotoRitocco;
-				caricareMaschere( "S" );
+				selettoreMascheraViewModel = new Digiphoto.Lumen.UI.SelettoreMaschera.SelettoreMascheraViewModel();
+				selettoreMascheraViewModel.filtro = FiltroMask.MskSingole;
+				
 
 				cfg = Configurazione.UserConfigLumen;
 
@@ -127,7 +127,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			set;
 		}
 
-		public IFotoRitoccoSrv fotoRitoccoSrv {
+		private IFotoRitoccoSrv fotoRitoccoSrv {
 			get {
 				return LumenApplication.Instance.getServizioAvviato<IFotoRitoccoSrv>();
 			}
@@ -235,11 +235,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		public bool possoSfogliarePerFileCornice {
-			get {
-				return modalitaEdit == ModalitaEdit.GestioneMaschere;
-			}
-		}
 
 		public bool possoAggiungereScritta( char segno ) {
 			
@@ -511,19 +506,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		private ObservableCollection<BitmapImage> maschereSingole {
-			get;
-			set;
-		}
-		private ObservableCollection<BitmapImage> maschereMultiple {
-			get;
-			set;
-		}
 
-		public ListCollectionView maschereCW {
-			private set;
-			get;
-		}
 
 		public bool isMascheraAttiva {
 			get {
@@ -666,13 +649,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		public bool possoCaricareMaschere( string param ) {
 
-			if( param == "V" || param == "H" )
-				return maschereCW != null && maschereCW.IsEmpty == false;
-			else
-				return true;  // T=tutto ; N=Niente
-		}
 
 		public bool possoSalvareMaschera {
 			get {
@@ -680,11 +657,15 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		public SelettoreAzioniRapideViewModel selettoreAzioniRapideViewModel
-		{
+		public SelettoreAzioniRapideViewModel selettoreAzioniRapideViewModel {
 			get;
 			private set;
 		}
+
+		public Digiphoto.Lumen.UI.SelettoreMaschera.SelettoreMascheraViewModel selettoreMascheraViewModel {
+			get;
+			private set;
+		}	
 
 		public float ratioAreaStampabile {
 			get {
@@ -922,17 +903,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		private RelayCommand _caricareMaschereCommand;
-		public ICommand caricareMaschereCommand {
-			get {
-				if( _caricareMaschereCommand == null ) {
-					_caricareMaschereCommand = new RelayCommand( param => caricareMaschere( (string)param ),
-																 param => possoCaricareMaschere( (string)param ) );
-				}
-				return _caricareMaschereCommand;
-			}
-		}
-
 		private RelayCommand _attivareMascheraCommand;
 		public ICommand attivareMascheraCommand {
 			get {
@@ -962,17 +932,6 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 																		  p => possoSvuotareListaDaModificare );
 				}
 				return _svuotareListaDaModificareCommand;
-			}
-		}
-
-		private RelayCommand _commandSfogliarePerFileCornice;
-		public ICommand commandSfogliarePerFileCornice {
-			get {
-				if( _commandSfogliarePerFileCornice == null ) {
-					_commandSfogliarePerFileCornice = new RelayCommand( p => sfogliarePerFileCornice(),
-																		p => possoSfogliarePerFileCornice );
-				}
-				return _commandSfogliarePerFileCornice;
 			}
 		}
 
@@ -1288,7 +1247,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				string nomeFile = Path.GetFileName( mascheraAttiva.UriSource.LocalPath );
 
 				// Uso la maschera nella sua dimensione naturale
-				Maschera maschera = new Maschera {
+				Imaging.Correzioni.Maschera maschera = new Imaging.Correzioni.Maschera {
 					nome = nomeFile,
 					width = mascheraAttiva.PixelWidth,
 					height = mascheraAttiva.PixelHeight
@@ -1613,98 +1572,23 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 			fdmTotPagine = totalPages;
 
-
-
-		}
-
-
-		/// <summary>
-		/// Carico la collezione con le maschere
-		/// </summary>
-		void loadMaschereDaDisco( FiltroMask filtro ) {
-
-			if( filtro == FiltroMask.MskSingole ) {
-				if( maschereSingole == null )
-					maschereSingole = loadMascheraDaDisco2( filtro );
-			} else {
-				if( maschereMultiple == null )
-					maschereMultiple = loadMascheraDaDisco2( filtro );
-			}
-		}
-
-		private ObservableCollection<BitmapImage> loadMascheraDaDisco2( FiltroMask filtro ) {
-
-			ObservableCollection<BitmapImage> maschere = new ObservableCollection<BitmapImage>();
-
-			string[] nomiMiniature = fotoRitoccoSrv.caricaMiniatureMaschere( filtro );
-			if( nomiMiniature != null ) {
-				foreach( string nomeMiniatura in nomiMiniature ) {
-
-					try {
-						maschere.Add( loadMascheraDaDisco( nomeMiniatura ) );
-
-					} catch( Exception ee ) {
-						_giornale.Error( "Maschera non caricata", ee );
-					}
-				}
-			}
-
-			return maschere;
-		}
-
-
-
-
-		/// <summary>
-		/// Ne carica una sola e la ritorna
-		/// </summary>
-		/// <param name="nomeFileSrc">Il nome completo della maschera da caricare</param>
-		/// <returns>una BitmapImage piccolina</returns>
-		BitmapImage loadMascheraDaDisco( string nomeFileSrc ) {
-			BitmapImage msk = new BitmapImage();
-			msk.BeginInit();
-			msk.CacheOption = BitmapCacheOption.OnLoad;
-			//						msk.CreateOptions = BitmapCreateOptions.DelayCreation;
-			msk.DecodePixelWidth = 80;
-			msk.UriSource = new Uri( nomeFileSrc );
-			msk.EndInit();
-			msk.Freeze();
-			return msk;
 		}
 
 		private void cambiareModalitaEdit( string nuovoModo ) {
 			if( nuovoModo == "R" ) {
 				this.modalitaEdit = ModalitaEdit.FotoRitocco;
-				caricareMaschere( "S" );
+				selettoreMascheraViewModel.caricareMaschere( "S" );
 			}
 			if( nuovoModo == "M" ) {
 				this.modalitaEdit = ModalitaEdit.GestioneMaschere;
-				caricareMaschere( "M" );
+				selettoreMascheraViewModel.caricareMaschere( "M" );
 			}
 			fotografiaInModifica = null;
 			mascheraAttiva = null;
 		}
 
 
-		/// <summary>
-		///  verso:   S = Maschere singole
-		///           M = Maschere multiple (Composizione)
-		///           N = nessuna (svuota)
-		/// </summary>
-		/// <param name="verso"></param>
-		private void caricareMaschere( string verso ) {
 
-			if( verso == "S" ) {
-				loadMaschereDaDisco( FiltroMask.MskSingole );
-				maschereCW = new ListCollectionView( maschereSingole );
-			} else if( verso == "M" ) {
-				loadMaschereDaDisco( FiltroMask.MskMultiple );
-				maschereCW = new ListCollectionView( maschereMultiple );
-			} else {
-				maschereCW = null;
-			}
-			OnPropertyChanged( "maschereCW" );
-		}
 
 		void attivareMaschera( object p ) {
 
@@ -1715,11 +1599,11 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			BitmapImage bi = null;
 
 
-			if( p is Maschera ) {
+			if( p is Imaging.Correzioni.Maschera ) {
 				if( p == null ) {
 					mascheraAttiva = null;
 				} else {
-					nomeFile = ((Maschera)p).nome;
+					nomeFile = ((Imaging.Correzioni.Maschera)p).nome;
 				}
 
 				subFolder = fotoRitoccoSrv.getCartellaMaschera( modalitaEdit == ModalitaEdit.FotoRitocco ? FiltroMask.MskSingole : FiltroMask.MskMultiple );
@@ -1889,40 +1773,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			LumenApplication.Instance.bus.Publish( cambioPaginaMsg );
 		}
 
-		private void sfogliarePerFileCornice() {
-
-			Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-
-			// Devo aggiungere gli asterischi
-			string testo = Configurazione.UserConfigLumen.estensioniGrafiche;
-			StringBuilder extWithStar = new StringBuilder();
-			foreach( string ext in Configurazione.estensioniGraficheAmmesse ) {
-				extWithStar.Append( '*' );
-				extWithStar.Append( ext );
-				extWithStar.Append( ';' );
-			}
-
-			extWithStar.Remove( extWithStar.Length - 1, 1 );  // tolgo l'ultimo punto e virgola
-
-			dlg.DefaultExt = ".png";
-			dlg.Filter = "Images |" + extWithStar;
-
-			// Display OpenFileDialog by calling ShowDialog method
-			Nullable<bool> result = dlg.ShowDialog();
-
-			// Get the selected file name and display in a TextBox
-			if( result == true ) {
-
-				try {
-					// Carico la immagine e la aggiungo alla lista che sta a video
-					BitmapImage bmp = loadMascheraDaDisco( dlg.FileName );
-					maschereMultiple.Add( bmp );
-				} catch( Exception ee ) {
-					_giornale.Warn( "Errore in caricamento maschera : " + dlg.FileName, ee );
-					dialogProvider.ShowError( ee.Message, "Imposssibile caricare cornice", null );
-				}
-			}
-		}
+		
 
 		private void riposizionaControlliFotoritocco() {
 
@@ -1966,7 +1817,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					// La maschera e il logo devo gestirli in modo separato.
 					foreach( Correzione c in correzioni ) {
 
-						if( c is Maschera ) {
+						if( c is Imaging.Correzioni.Maschera ) {
 							maschera = c;
 							attivareMaschera( maschera );   // Questa chiamata già ridimensiona il contenitore giallo.
 						}
@@ -2284,7 +2135,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				string nomeFile = Path.GetFileName( mascheraAttiva.UriSource.LocalPath );
 
 				// Uso la maschera nella sua dimensione naturale
-				Maschera maschera = new Maschera {
+				Imaging.Correzioni.Maschera maschera = new Imaging.Correzioni.Maschera {
 					nome = nomeFile,
 					width = mascheraAttiva.PixelWidth,
 					height = mascheraAttiva.PixelHeight

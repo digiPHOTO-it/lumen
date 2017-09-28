@@ -53,6 +53,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			_viewModel = (FotoRitoccoViewModel) this.DataContext;
 
+			selettoreMaschera.DataContext = _viewModel.selettoreMascheraViewModel;
+
 			_viewModel.editorModeChangedEvent += cambiareModoEditor;
 
 			_viewModel.PropertyChanged += _viewModel_PropertyChanged;

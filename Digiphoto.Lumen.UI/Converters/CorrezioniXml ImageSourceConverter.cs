@@ -11,6 +11,7 @@ using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Imaging.Correzioni;
 using Digiphoto.Lumen.Util;
 using System.IO;
+using Digiphoto.Lumen.Model;
 
 namespace Digiphoto.Lumen.UI.Converters {
 
@@ -36,10 +37,10 @@ namespace Digiphoto.Lumen.UI.Converters {
 		{
 			ImageSource imageSource = caricaImmagineDefault();
 			CorrezioniList correzioni = SerializzaUtil.stringToObject<CorrezioniList>((String)correzioneXml);
-			if (correzioni != null && correzioni.Contains(typeof(Maschera)))
+			if (correzioni != null && correzioni.Contains(typeof( Imaging.Correzioni.Maschera ) ))
 			{
 				ImmagineWic immagineMaschera = null;
-				Maschera maschera = (Maschera)correzioni.FirstOrDefault(c => c is Maschera);
+				Imaging.Correzioni.Maschera maschera = (Imaging.Correzioni.Maschera)correzioni.FirstOrDefault(c => c is Imaging.Correzioni.Maschera );
 				if (maschera != null)
 				{
 					immagineMaschera = new ImmagineWic(Path.Combine(PathUtil.getCartellaMaschera(FiltroMask.MskSingole), maschera.nome));

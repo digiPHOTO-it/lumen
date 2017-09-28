@@ -124,9 +124,8 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 				Thickness ticB = new Thickness( left, top, right, bottom );
 				rectB.Margin = ticB;
 
-			} catch( Exception ee ) {
+			} catch( Exception ) {
 				// pazienza : dovrei loggare l'errore
-				int a = 3;
 			}
 		}
 

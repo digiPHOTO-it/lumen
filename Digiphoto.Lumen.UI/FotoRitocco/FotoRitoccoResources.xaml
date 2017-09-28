@@ -171,31 +171,8 @@
         <UniformGrid Width="290" Columns="2"  />
     </ItemsPanelTemplate>
 
-    
-    <!-- 
-         MASCHERE 
-    -->
-    
-    <ItemsPanelTemplate x:Key="itemsPanelTemplateMaschere">
-		<UniformGrid  Columns="3" Height="Auto" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
-	</ItemsPanelTemplate>
+ 
 
-    <DataTemplate x:Key="itemTemplateThumbMaschera">
-
-        <Image Height="80"  Width="80" Name="thumbMaschera" Source="{Binding}" >
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseUp">
-                    <i:InvokeCommandAction Command="{Binding Path=DataContext.attivareMascheraCommand,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-<!--            
-            <Image.ToolTip>
-                <Label Content="{Binding Name}" />
-            </Image.ToolTip>
--->
-        </Image>
-
-    </DataTemplate>
 
 	<Style x:Key="panelLeveRitoccoStyle" TargetType="Panel" BasedOn="{StaticResource globalPanelGradientStyle}">
 		<Setter Property="Width" Value="190" />
@@ -218,7 +195,7 @@
 
 	<Style x:Key="gridOneShotRitoccoStyle" TargetType="UniformGrid" BasedOn="{StaticResource {x:Type Panel}}">
 		
-		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="Background" Value="#030A03" />
 		<Setter Property="HorizontalAlignment" Value="Stretch" />
 		<Setter Property="VerticalAlignment" Value="Center" />
 		<Setter Property="Margin" Value="2,14,2,2" />
@@ -326,15 +303,13 @@
 	<RoutedUICommand x:Key="cmdCloseSnapshotPubblico" />
 	<RoutedUICommand x:Key="cmdGoToCurrentFotoSS" />
 
-	<!-- Quando le maschere sono disabilitate, rendo tutto il pannello girigietto -->
-	
-	<Style x:Key="styleItemsControlMaschere" TargetType="ItemsControl">
-		<Style.Triggers>
-			<Trigger Property="IsEnabled" Value="False">
-				<Setter Property="Effect" Value="{StaticResource grayscaleEffect}" />
-			</Trigger>
-		</Style.Triggers>
-	</Style>
+
 	<!-- -->
+
+
+	<Style x:Key="toggleButtonRatioStyle" TargetType="ToggleButton" BasedOn="{StaticResource mioToggleButtonStyle}">
+		<Setter Property="Margin" Value="1 3 1 3" />
+		<!-- sembra non funzionare. non ha effeto -->
+	</Style>
 
 </ResourceDictionary>

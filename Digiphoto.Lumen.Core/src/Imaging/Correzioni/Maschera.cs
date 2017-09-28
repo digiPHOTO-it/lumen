@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Digiphoto.Lumen.Imaging.Correzioni {
 
+	// TODO appena possibile rinominare in Mascheratura
 	public class Maschera : Correzione {
 
 		/// <summary>

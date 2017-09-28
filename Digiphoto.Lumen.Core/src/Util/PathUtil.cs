@@ -319,9 +319,6 @@ namespace Digiphoto.Lumen.Util {
 
 	}
 
-	public enum FiltroMask {
-		MskSingole,
-		MskMultiple
-	}
+
 
 }
