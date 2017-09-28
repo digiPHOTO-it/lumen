@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Media.Imaging;
+using System.Windows.Media;
 
 namespace Digiphoto.Lumen.SelfService.MobileUI.Servizi
 {
@@ -61,7 +62,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.Servizi
             }
         }
 
-        public void setFotografo(String id)
+		public void setFotografo(String id)
         {
             if (!idFotografo.Equals(id))
             {
@@ -81,7 +82,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.Servizi
             }
         }
 
-        public BitmapImage loadPhoto(SelfServiceClient ssClient, string quale, Guid fotografiaId)
+        public BitmapImage loadPhoto(string quale, Guid fotografiaId)
         {
             byte[] bytes = null;
             bool scriviFile = false;
@@ -96,7 +97,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.Servizi
                 _path = Path.Combine(risultantePath, proviniPath, System.IO.Path.ChangeExtension(photoName, ".jpg"));
                 if (!System.IO.File.Exists(_path))
                 {
-                    bytes = ssClient.getImageProvino(fotografiaId);
+                    bytes = SSClientSingleton.Instance.getImageProvino(fotografiaId);
                     scriviFile = true;
                 }
             }
@@ -105,7 +106,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.Servizi
                 _path = Path.Combine(selfPath, System.IO.Path.ChangeExtension("Logo", ".jpg"));
                 if (!System.IO.File.Exists(_path))
                 {
-                    bytes = ssClient.getImageLogo();
+                    bytes = SSClientSingleton.Instance.getImageLogo();
 
 					// Se non mi arriva l'immagine del logo, esco con null
 					if( bytes == null )
@@ -119,7 +120,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.Servizi
                 _path = Path.Combine(risultantePath, System.IO.Path.ChangeExtension(photoName, ".jpg"));
                 if (!System.IO.File.Exists(_path))
                 {
-                    bytes = ssClient.getImage(fotografiaId);
+                    bytes = SSClientSingleton.Instance.getImage(fotografiaId);
                     scriviFile = true;
                 }
             }

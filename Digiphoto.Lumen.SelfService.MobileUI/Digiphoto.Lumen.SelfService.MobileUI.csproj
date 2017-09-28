@@ -59,6 +59,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AutoCloseWindow\AutoClosingMessageBox.cs" />
     <Compile Include="Carrelli\Carrelli.xaml.cs">
       <DependentUpon>Carrelli.xaml</DependentUpon>
     </Compile>
@@ -80,6 +81,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Servizi\Client\SSClientSingleton.cs" />
     <Compile Include="Servizi\Event\EventManager.cs" />
     <Compile Include="Servizi\FotoSrv.cs" />
     <Compile Include="Servizi\Event\IEventManager.cs" />
@@ -225,6 +227,7 @@
   <ItemGroup>
     <Resource Include="Resources\Empty.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

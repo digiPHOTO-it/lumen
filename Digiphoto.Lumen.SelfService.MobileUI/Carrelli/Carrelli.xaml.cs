@@ -37,12 +37,11 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             private set;
         }
 
-        public Carrelli(SelfMainWindow main, SelfServiceClient ssClient)
+        public Carrelli(SelfMainWindow main)
         {
             InitializeComponent();
 
             this.DataContext = this;
-            this.ssClient = ssClient;
             this.main = main;
 
             Servizi.Event.EventManager.Instance.setIEventManager(this);
@@ -73,7 +72,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
         {
             get
             {
-                return FotoSrv.Instance.loadPhoto(ssClient, "Logo", Guid.Empty);
+                return FotoSrv.Instance.loadPhoto("Logo", Guid.Empty);
             }
         }
 
@@ -95,7 +94,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
                 if (item != null)
                 {
                     CarrelloDto c = (CarrelloDto)item;
-                    main.ContentArea.Content = new SlideShow(main, ssClient, c);
+                    main.ContentArea.Content = new SlideShow(main, c);
                     MoveTimeCounter.Instance.updateLastTime();
                 }
             }
@@ -160,7 +159,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
         {
             if (!SelfMainWindow.isShowLogo)
             {
-                main.ContentArea.Content = new Logo(main, ssClient);
+                main.ContentArea.Content = new Logo(main);
             }
         }
 
