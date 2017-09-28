@@ -307,8 +307,8 @@
     <Compile Include="Gallery\FotoGalleryViewModel.cs" />
     <Compile Include="Gallery\SelezioneEstesa.cs" />
     <Compile Include="FotoRitocco\EditorModeEventArgs.cs" />
-    <Compile Include="FotoRitocco\FotoRitocco.xaml.cs">
-      <DependentUpon>FotoRitocco.xaml</DependentUpon>
+    <Compile Include="FotoRitocco\FotoRitoccoView.xaml.cs">
+      <DependentUpon>FotoRitoccoView.xaml</DependentUpon>
     </Compile>
     <Compile Include="FotoRitocco\FotoRitoccoViewModel.cs" />
     <Compile Include="FotoRitocco\RitoccoPuntualeMsg.cs" />
@@ -362,6 +362,10 @@
       <DependentUpon>SelettoreAzioniRapideView.xaml</DependentUpon>
     </Compile>
     <Compile Include="SelettoreAzioniRapide\SelettoreAzioniRapideViewModel.cs" />
+    <Compile Include="SelettoreMaschera\SelettoreMascheraView.xaml.cs">
+      <DependentUpon>SelettoreMascheraView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SelettoreMaschera\SelettoreMascheraViewModel.cs" />
     <Compile Include="SelettoreMetadati\SelettoreMetadatiView.xaml.cs">
       <DependentUpon>SelettoreMetadatiView.xaml</DependentUpon>
     </Compile>
@@ -544,7 +548,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="FotoRitocco\FotoRitocco.xaml">
+    <Page Include="FotoRitocco\FotoRitoccoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -589,6 +593,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="SelettoreFormatoCartaAbbinato\SelettoreFormatoCartaAbbinatoResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SelettoreMaschera\SelettoreMascheraResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SelettoreMaschera\SelettoreMascheraView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

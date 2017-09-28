@@ -485,8 +485,6 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 				return ricercaPaginaDicotomica( limiteInf, limiteSup, sqlParam, param );
 			}
 
-
-			return -1;
 		}
 
 

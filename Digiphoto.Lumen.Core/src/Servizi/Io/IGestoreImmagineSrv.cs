@@ -46,5 +46,7 @@ namespace Digiphoto.Lumen.Servizi.Io {
 		void salvaCorrezioniAutomatiche( IEnumerable<Fotografia> fotografie, AzioneAuto azioneAuto );
 
 		void idrataImmaginiFoto( Fotografia foto, IdrataTarget target, bool forzatamente );
+
+		Model.Maschera caricaMaschera( string nomeFileMaschera, FiltroMask tipoMaschera, bool ancheOriginale );
 	}
 }

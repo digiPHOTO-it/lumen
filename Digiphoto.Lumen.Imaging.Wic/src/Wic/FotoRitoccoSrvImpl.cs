@@ -599,7 +599,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			// ma devo gestire nell'insieme in modo efficiente.
 			// In questo caso devo cambiare strategia.
 			bool complicato = false;
-			if( correzioni.SingleOrDefault( c => c is Maschera ) != null ||
+			if( correzioni.SingleOrDefault( c => c is Imaging.Correzioni.Maschera ) != null ||
 				correzioni.SingleOrDefault( c => c is Ruota && ((Ruota)c).isAngoloRetto == false ) != null ||
 				correzioni.SingleOrDefault( c => c is Trasla ) != null ||
 				correzioni.SingleOrDefault( c => c is Zoom ) != null )
@@ -642,7 +642,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 			// ::: Per prima cosa calcolo la dimensione che deve avere l'immagine di uscita (il canvas)
 			//     Verifico quindi se c'è una maschera. In tal caso comanda lei
-			Maschera maschera = (Maschera)correzioni.FirstOrDefault( c => c is Maschera );
+			Imaging.Correzioni.Maschera maschera = (Imaging.Correzioni.Maschera)correzioni.FirstOrDefault( c => c is Imaging.Correzioni.Maschera );
 			if( maschera != null ) {
 
 
@@ -1020,7 +1020,6 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			//   se imposto oltre 1000 sarebbe l'effetto più bello, ma ri rallenta di brutto. Su 100 foto si perdono 100 secondi (una enormità).
 			// per ora scelgo la strada di tenere un minimo per rinfrescale le foto
 			// Cmq non è un buon compromesso.
-			int finestraPrec = 0;
 
 			int perc;
 			int conta = 0;

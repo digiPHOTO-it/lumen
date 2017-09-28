@@ -8,12 +8,13 @@
              xmlns:lumFR="clr-namespace:Digiphoto.Lumen.UI.FotoRitocco"
              xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
              xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
+			 xmlns:lumSM="clr-namespace:Digiphoto.Lumen.UI.SelettoreMaschera"
              xmlns:extToolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
 			 xmlns:med="clr-namespace:System.Windows.Media;assembly=PresentationCore"
 			 xmlns:lumP="clr-namespace:Digiphoto.Lumen.PresentationFramework;assembly=Digiphoto.Lumen.PresentationFramework"
              mc:Ignorable="d" 
              x:Name="fotoRitoccoUserControl"
-             d:DesignHeight="600" d:DesignWidth="800" 
+             d:DesignHeight="800" d:DesignWidth="900" 
              Focusable="True" PreviewKeyDown="onFotoRitoccoUserControl_KeyDown" >
 
 	<!-- Istanzio il controllore -->
@@ -169,7 +170,7 @@
 
 						</Grid>
 
-						<UniformGrid Rows="2" Columns="4" Style="{StaticResource gridOneShotRitoccoStyle}">
+						<UniformGrid Rows="2" Columns="4" Style="{StaticResource gridOneShotRitoccoStyle}" >
 
 							<ToggleButton Content="-90°"  Command="{Binding ruotareCommand}"   IsChecked="{Binding Path=isRotateMeno90Checked,Mode=OneWay}" Style="{StaticResource mioToggleButtonStyle}" CommandParameter="-90" ToolTip="Ruota foto antiorario" Margin="0,0,1,1" />
 							<ToggleButton Content="+90°"  Command="{Binding ruotareCommand}"   IsChecked="{Binding Path=isRotatePiu90Checked,Mode=OneWay}"  Style="{StaticResource mioToggleButtonStyle}" CommandParameter="90"  ToolTip="Ruota foto orario" Margin="0,0,1,1" />
@@ -288,8 +289,9 @@
 			</StackPanel>
 
 		</StackPanel>
+
 		<!-- elenco maschere sx -->
-		<Border DockPanel.Dock="Left" BorderBrush="LightGray" BorderThickness="0 1 1 1">
+		<Border DockPanel.Dock="Left" BorderBrush="LightGray" BorderThickness="0 1 1 1" Width="184" >
 			<Grid>
 				<!-- Maschere -->
 				<Grid.RowDefinitions>
@@ -301,7 +303,7 @@
 					<ColumnDefinition />
 				</Grid.ColumnDefinitions>
 
-				<Button Grid.Row="0" Grid.Column="0" Content="Carica da disco ..." ToolTip="Carica maschera da un'altra cartella" Command="{Binding commandSfogliarePerFileCornice}" Margin="2" />
+				<Button Grid.Row="0" Grid.Column="0" Content="Carica da disco ..." ToolTip="Carica maschera da un'altra cartella" Command="{Binding commandSfogliarePerFileCornice}" Margin="2"  Style="{StaticResource buttonBaseStyle}" />
 
 				<Grid Grid.Row="1" Grid.Column="0" Margin="2"  Visibility="{Binding ElementName=tabItemComposizione,Path=IsSelected,Converter={StaticResource booleanToVisibilityConverter}}">
 					<Grid.RowDefinitions>
@@ -313,28 +315,19 @@
 						<ColumnDefinition />
 					</Grid.ColumnDefinitions>
 
-					<RadioButton Content="x"   Grid.Row="0" Grid.Column="0" Style="{StaticResource {x:Type ToggleButton}}" Command="{Binding forzareRatioMascheraCommand}" CommandParameter=""    ToolTip="Nessuna forzatura sul formato mashera. Usa la maschera originale" />
-					<RadioButton Content="4/3" Grid.Row="0" Grid.Column="1" Style="{StaticResource {x:Type ToggleButton}}" Command="{Binding forzareRatioMascheraCommand}" CommandParameter="4/3" ToolTip="Il formato maschera viene forzato al rapporto 4/3" />
-					<RadioButton Content="3/2" Grid.Row="0" Grid.Column="2" Style="{StaticResource {x:Type ToggleButton}}" Command="{Binding forzareRatioMascheraCommand}" CommandParameter="3/2" ToolTip="Il formato maschera viene forzato al rapporto 3/2" />
+					<RadioButton Content="x"   Grid.Row="0" Grid.Column="0" Style="{StaticResource toggleButtonRatioStyle}" Command="{Binding forzareRatioMascheraCommand}" CommandParameter=""    ToolTip="Nessuna forzatura sul formato mashera. Usa la maschera originale" />
+					<RadioButton Content="4/3" Grid.Row="0" Grid.Column="1" Style="{StaticResource toggleButtonRatioStyle}" Command="{Binding forzareRatioMascheraCommand}" CommandParameter="4/3" ToolTip="Il formato maschera viene forzato al rapporto 4/3" />
+					<RadioButton Content="3/2" Grid.Row="0" Grid.Column="2" Style="{StaticResource toggleButtonRatioStyle}" Command="{Binding forzareRatioMascheraCommand}" CommandParameter="3/2" ToolTip="Il formato maschera viene forzato al rapporto 3/2" />
 				</Grid>
 
-
-
-
-				<ScrollViewer Grid.Row="2" Grid.Column="0">
-					<ItemsControl Name="itemsControlMaschere"
-					                IsEnabled="{Binding possoScegliereMaschera}"
-								    Style="{StaticResource styleItemsControlMaschere}"
-								    ItemsSource="{Binding maschereCW}" 
-								    ItemsPanel="{DynamicResource itemsPanelTemplateMaschere}" 
-								    ItemTemplate="{DynamicResource itemTemplateThumbMaschera}" />
-				</ScrollViewer>
-
+				<lumSM:SelettoreMaschera x:Name="selettoreMaschera" 
+										 Grid.Row="2" Grid.Column="0"
+										 IsEnabled="{Binding possoScegliereMaschera}"  />
 			</Grid>
 		</Border>
 
 
-		<lum:SelettoreAzioniRapide Visibility="Collapsed" DataContext="{Binding Path=selettoreAzioniRapideViewModel}"/>
+		<lum:SelettoreAzioniRapide Visibility="Collapsed" DataContext="{Binding Path=selettoreAzioniRapideViewModel}" />
 
 		<!-- Pannello con la lista foto in attesa di modifica e pulsanti per paginazione risultati -->
 		<DockPanel DockPanel.Dock="Right" LastChildFill="True">

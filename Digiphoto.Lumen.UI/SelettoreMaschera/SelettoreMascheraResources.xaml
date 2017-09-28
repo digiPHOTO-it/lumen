@@ -1,0 +1,55 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                    xmlns:local="clr-namespace:Digiphoto.Lumen.UI">
+
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="pack://application:,,,/Digiphoto.Lumen.UI;component/Resources/GlobalResourceDictionary.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+
+	<Style x:Key="selettoreMascheraUserControlStyle" TargetType="UserControl">
+		<Setter Property="Background"  Value="#1d1d26" />
+	</Style>
+
+
+	<!-- Quando le maschere sono disabilitate, rendo tutto il pannello girigietto -->
+	<Style x:Key="maschereListBoxStyle" TargetType="ListBox">
+		<Setter Property="Background"  Value="#1d1d26" />
+		<Style.Triggers>
+			<Trigger Property="IsEnabled" Value="False">
+				<Setter Property="Effect" Value="{StaticResource grayscaleEffect}" />
+			</Trigger>
+		</Style.Triggers>
+	</Style>
+
+	<ItemsPanelTemplate x:Key="itemsPanelTemplateMaschere">
+
+			<!--
+			<UniformGrid  Columns="3" Height="Auto" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+	-->
+		<WrapPanel Height="Auto" Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}"
+			       ScrollViewer.CanContentScroll="True" 
+				   ScrollViewer.VerticalScrollBarVisibility="Visible" 
+				   ScrollViewer.HorizontalScrollBarVisibility="Hidden" />
+
+	</ItemsPanelTemplate>
+
+
+	<DataTemplate x:Key="itemTemplateThumbMaschera">
+
+		<Image Height="70"  Width="70" Name="thumbMaschera" Source="{Binding Path=imgProvino,Converter={StaticResource imageSourceConverter}}" >
+			<i:Interaction.Triggers>
+				<i:EventTrigger EventName="MouseUp">
+					<i:InvokeCommandAction Command="{Binding Path=DataContext.attivareMascheraCommand,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"/>
+				</i:EventTrigger>
+			</i:Interaction.Triggers>
+<!--
+            <Image.ToolTip>
+                <Label Content="{Binding Path=nomeFile}" Foreground="Black" />
+            </Image.ToolTip>
+-->
+		</Image>
+
+	</DataTemplate>
+
+</ResourceDictionary>

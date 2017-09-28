@@ -425,11 +425,12 @@ namespace Digiphoto.Lumen.UI.Adorners {
 
 			
 				return true;
-
+#if PROVA
 			if( ruotaAngle < -90 && ruotaAngle > -270 )
 				return true;
 
 			return false;
+#endif
 		}
 
 		/// <summary>
