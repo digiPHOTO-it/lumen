@@ -17,7 +17,8 @@
 	<Grid>
 
 		<ListBox x:Name="maschereListBox" 
-		         SelectedItem="{Binding mascheraSelezionatao,Mode=TwoWay}"
+		         IsSynchronizedWithCurrentItem="False"
+		         SelectedItem="{Binding mascheraSelezionata,Mode=TwoWay}"
 		         Style="{StaticResource maschereListBoxStyle}"
 				 ItemsSource="{Binding Path=maschereCW}"
 				 ItemsPanel="{DynamicResource itemsPanelTemplateMaschere}"

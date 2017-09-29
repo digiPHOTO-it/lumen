@@ -438,6 +438,55 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		
 		}
 
+		/// <summary>
+		/// Ricavo la lista di tutte le maschere (senza idratare le immagini, solo i nomi)
+		/// </summary>
+		/// <param name="filtro"></param>
+		/// <returns></returns>
+		public List<Digiphoto.Lumen.Model.Maschera> caricaListaMaschere( FiltroMask filtro ) {
+
+			string dirMaschere = getCartellaMaschera( filtro );
+			if( !Directory.Exists( dirMaschere ) )
+				return null;
+
+			List<Digiphoto.Lumen.Model.Maschera> maschere = new List<Digiphoto.Lumen.Model.Maschera>();
+
+			// preparo la cartella per le miniature
+			string dirMiniature = Path.Combine( dirMaschere, PathUtil.THUMB );
+			if( !Directory.Exists( dirMiniature ) )
+				Directory.CreateDirectory( dirMiniature );
+
+			// Faccio giri diversi per i vari formati grafici che sono indicati nella configurazione (jpg, tif)
+			foreach( string estensione in Configurazione.estensioniGraficheAmmesse ) {
+
+				// Questa è la lista dei files di dimensioni grandi.
+				string [] nomiFilesMaschere = Directory.GetFiles( dirMaschere, searchPattern: "*" + estensione, searchOption: SearchOption.TopDirectoryOnly );
+
+				// Adesso controllo che per ogni file grande, esista la sua miniatura.
+				foreach( string nomeFileMaschera in nomiFilesMaschere ) {
+
+					FileInfo fi = new FileInfo( nomeFileMaschera );
+
+					string nomeFileMiniatura = Path.Combine( dirMiniature, fi.Name );
+
+					if( creaMiniaturaMaschera( nomeFileMaschera, nomeFileMiniatura ) ) {
+
+						Digiphoto.Lumen.Model.Maschera msk = new Model.Maschera();
+
+						// Metto solo il nome del file senza path
+						msk.nomeFile = fi.Name;
+						msk.tipo = filtro;
+
+						maschere.Add( msk );
+
+					}
+				}
+			}
+
+			return maschere;
+		}
+
+#if false
 		public string [] caricaMiniatureMaschere( FiltroMask filtro ) {
 
 			List<string> nomiFileMiniature = new List<string>();
@@ -471,7 +520,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 			return nomiFileMiniature.ToArray();
 		}
-
+#endif
 
 		public string getCartellaMaschera( FiltroMask filtro ) {
 			return PathUtil.getCartellaMaschera( filtro );

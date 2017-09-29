@@ -435,7 +435,7 @@
 
 							<Image x:Name="imageMaschera" 
 								   IsHitTestVisible="False"
-								   Source="{Binding Path=mascheraAttiva}" />
+								   Source="{Binding Path=bmpMascheraAttiva}" />
 
 						</Border>
 
@@ -512,7 +512,7 @@
 						<Grid Name="canvasMskCopertura" >
 							<Image Name="imageMask"
 										   Width="500" Height="500" 
-										   Source="{Binding mascheraAttiva}" />
+										   Source="{Binding bmpMascheraAttiva}" />
 
 							<Rectangle Stroke="Pink" StrokeThickness="1"
 									   Width="{Binding ElementName=imageMask,Path=Width}"

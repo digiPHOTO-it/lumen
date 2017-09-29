@@ -41,6 +41,7 @@ namespace Digiphoto.Lumen.UI.SelettoreMaschera {
 			} else {
 				maschereCW = null;
 			}
+
 			OnPropertyChanged( "maschereCW" );
 		}
 
@@ -62,23 +63,19 @@ namespace Digiphoto.Lumen.UI.SelettoreMaschera {
 
 		private ObservableCollection<Maschera> caricaMaschere( FiltroMask filtro ) {
 
-			ObservableCollection<Maschera> maschere = new ObservableCollection<Maschera>();
-
-			string [] nomiMiniature = fotoRitoccoSrv.caricaMiniatureMaschere( filtro );
-			if( nomiMiniature != null ) {
-				foreach( string nomeMiniatura in nomiMiniature ) {
-
+			List<Maschera> maschere = fotoRitoccoSrv.caricaListaMaschere( filtro );
+			if( maschere != null ) {
+				foreach( var msk in maschere ) {
 					try {
-					
-						maschere.Add( gestoreImmagineSrv.caricaMaschera( nomeMiniatura, filtro, false ) );
-
+						// idrato solo l'immaginetta del provino
+						gestoreImmagineSrv.idrataMaschera( msk, false );
 					} catch( Exception ee ) {
 						_giornale.Error( "Maschera non caricata", ee );
 					}
 				}
 			}
 
-			return maschere;
+			return new ObservableCollection<Maschera>( maschere );
 		}
 
 
@@ -93,6 +90,8 @@ namespace Digiphoto.Lumen.UI.SelettoreMaschera {
 
 		private void sfogliarePerFile() {
 
+			throw new NotImplementedException( "funzionalità da sistemare" );
+#if false
 			Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
 
 			// Devo aggiungere gli asterischi
@@ -124,6 +123,7 @@ namespace Digiphoto.Lumen.UI.SelettoreMaschera {
 					dialogProvider.ShowError( ee.Message, "Imposssibile caricare cornice", null );
 				}
 			}
+#endif
 		}
 
 		public void deselezionareTutto() {
@@ -206,8 +206,8 @@ namespace Digiphoto.Lumen.UI.SelettoreMaschera {
 			}
 		}
 
-		private string _mascheraSelezionata;
-		public string mascheraSelezionata {
+		private Maschera _mascheraSelezionata;
+		public Maschera mascheraSelezionata {
 			get {
 				return _mascheraSelezionata;
 			}
@@ -215,6 +215,8 @@ namespace Digiphoto.Lumen.UI.SelettoreMaschera {
 				if( _mascheraSelezionata != value ) {
 					_mascheraSelezionata = value;
 					OnPropertyChanged( "mascheraSelezionata" );
+
+					raiseSelezioneCambiataEvent();
 				}
 			}
 		}
@@ -270,7 +272,19 @@ namespace Digiphoto.Lumen.UI.SelettoreMaschera {
 
 
 		#region Eventi
+		
 		public event SelezioneCambiataEventHandler selezioneCambiata;
+
+
+		/// <summary>
+		///   Avviso eventuali ascoltatori esterni
+		/// </summary>
+		private void raiseSelezioneCambiataEvent() {
+
+			if( selezioneCambiata != null )
+				selezioneCambiata( this, EventArgs.Empty );
+		}
+
 		#endregion Eventi
 
 	}

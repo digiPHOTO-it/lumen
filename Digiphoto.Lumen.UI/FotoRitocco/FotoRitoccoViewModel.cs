@@ -61,7 +61,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				this.modalitaEdit = ModalitaEdit.FotoRitocco;
 				selettoreMascheraViewModel = new Digiphoto.Lumen.UI.SelettoreMaschera.SelettoreMascheraViewModel();
 				selettoreMascheraViewModel.filtro = FiltroMask.MskSingole;
-				
+				selettoreMascheraViewModel.selezioneCambiata += selettoreMascheraViewModel_selezioneCambiata;
+
 
 				cfg = Configurazione.UserConfigLumen;
 
@@ -73,6 +74,20 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				modalitaEdit = ModalitaEdit.FotoRitocco;
 
 				salvataggioAutomatico = true;  // Per ora lo decido a tavolino. Un domani potrebbe diventare un parametro della configurazione
+			}
+
+		}
+
+		private void selettoreMascheraViewModel_selezioneCambiata( object sender, EventArgs e ) {
+
+			if( possoScegliereMaschera ) {
+
+				var msk = selettoreMascheraViewModel.mascheraSelezionata;
+
+				attivareMascheraCommand.Execute( msk );
+
+			} else {
+				_giornale.Warn( "Il SelettoreMaschera dovrebbe essere disabilitto. Capire perché" );
 			}
 
 		}
@@ -510,7 +525,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		public bool isMascheraAttiva {
 			get {
-				return mascheraAttiva != null;
+				return bmpMascheraAttiva != null;
 			}
 		}
 
@@ -528,16 +543,16 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
-		BitmapImage _mascheraAttiva;
-		public BitmapImage mascheraAttiva {
+		BitmapImage _bmpMascheraAttiva;
+		public BitmapImage bmpMascheraAttiva {
 			get {
-				return _mascheraAttiva;
+				return _bmpMascheraAttiva;
 			}
 			set {
 
-				if( _mascheraAttiva != value ) {
-					_mascheraAttiva = value;
-					OnPropertyChanged( "mascheraAttiva" );
+				if( _bmpMascheraAttiva != value ) {
+					_bmpMascheraAttiva = value;
+					OnPropertyChanged( "bmpMascheraAttiva" );
 					OnPropertyChanged( "isMascheraAttiva" );
 					OnPropertyChanged( "isMascheraInattiva" );
 					OnPropertyChanged( "possoSalvareMaschera" );
@@ -598,7 +613,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					return false;
 
 				// Sono in gestione delle maschere, ma non ho ancora selezionato una
-				if( modalitaEdit == ModalitaEdit.GestioneMaschere && mascheraAttiva == null )
+				if( modalitaEdit == ModalitaEdit.GestioneMaschere && bmpMascheraAttiva == null )
 					return false;
 
 				// Sto modificando la foto ed è una sola. Infatti se ce ne sono di piu devo poter cliccare sulla prossima
@@ -653,7 +668,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		public bool possoSalvareMaschera {
 			get {
-				return modalitaEdit == ModalitaEdit.GestioneMaschere && mascheraAttiva != null;
+				return modalitaEdit == ModalitaEdit.GestioneMaschere && bmpMascheraAttiva != null;
 			}
 		}
 
@@ -1242,15 +1257,15 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 
 			// Nel fotoritocco, la maschera viene gestita come una correzione
-			if( mascheraAttiva != null ) {
+			if( bmpMascheraAttiva != null ) {
 
-				string nomeFile = Path.GetFileName( mascheraAttiva.UriSource.LocalPath );
+				string nomeFile = Path.GetFileName( bmpMascheraAttiva.UriSource.LocalPath );
 
 				// Uso la maschera nella sua dimensione naturale
 				Imaging.Correzioni.Maschera maschera = new Imaging.Correzioni.Maschera {
 					nome = nomeFile,
-					width = mascheraAttiva.PixelWidth,
-					height = mascheraAttiva.PixelHeight
+					width = bmpMascheraAttiva.PixelWidth,
+					height = bmpMascheraAttiva.PixelHeight
 				};
 
 				addCorrezione( maschera );
@@ -1473,7 +1488,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			// Spengo le proprietà che indicano elementi correnti.
 			effettoCorrente = null;
 			trasformazioneCorrente = null;
-			mascheraAttiva = null;
+			bmpMascheraAttiva = null;
 			quadroRuotato = false;
 
 			modificheInCorso = false;
@@ -1584,7 +1599,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				selettoreMascheraViewModel.caricareMaschere( "M" );
 			}
 			fotografiaInModifica = null;
-			mascheraAttiva = null;
+			bmpMascheraAttiva = null;
 		}
 
 
@@ -1599,17 +1614,29 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			BitmapImage bi = null;
 
 
-			if( p is Imaging.Correzioni.Maschera ) {
-				if( p == null ) {
-					mascheraAttiva = null;
+			if( p is Digiphoto.Lumen.Imaging.Correzioni.Maschera ) {
+				Digiphoto.Lumen.Imaging.Correzioni.Maschera mascheratura = (Digiphoto.Lumen.Imaging.Correzioni.Maschera)p;
+				if( mascheratura == null ) {
+					bmpMascheraAttiva = null;
 				} else {
-					nomeFile = ((Imaging.Correzioni.Maschera)p).nome;
+					nomeFile = mascheratura.nome;
 				}
 
 				subFolder = fotoRitoccoSrv.getCartellaMaschera( modalitaEdit == ModalitaEdit.FotoRitocco ? FiltroMask.MskSingole : FiltroMask.MskMultiple );
 				nomeMaschera = Path.Combine( subFolder, nomeFile );
 
-			} else {
+			} else if( p is Digiphoto.Lumen.Model.Maschera ) {
+
+				// Ricavo il nome del file completo grande
+				Digiphoto.Lumen.Model.Maschera maschera = (Digiphoto.Lumen.Model.Maschera)p;
+				if( maschera == null )
+					bmpMascheraAttiva = null;
+				else {
+					subFolder = PathUtil.getCartellaMaschera( maschera.tipo );
+					nomeMaschera = Path.Combine( subFolder, maschera.nomeFile );
+				}
+
+			} else if( p is BitmapImage ) {
 				bi = (BitmapImage)p;
 				nomeFile = Path.GetFileName( bi.UriSource.LocalPath );
 
@@ -1628,6 +1655,11 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 						nomeMaschera = gestisciCacheMascheraForzata( nomeMaschera, forzauraRatioMaschera );
 					}
 				}
+			} else if( p == null ) {
+				bmpMascheraAttiva = null;
+				return;
+			} else {
+				throw new InvalidOperationException( "Tipo non gestito: " + p.GetType() );
 			}
 
 			// Le maschere quelle aggiunte al volo, non sono trattate come le altre che hanno una miniatura.
@@ -1638,19 +1670,19 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				return;
 			}
 
-			BitmapImage msk = new BitmapImage( uriMaschera );
+			BitmapImage bmpMask = new BitmapImage( uriMaschera );
 
 			if( modalitaEdit == ModalitaEdit.FotoRitocco ) {
 
 				// Se sto abilitando una cornice, allora significa che sto facendo una modifica e devo poter subito salvare.
-				if( msk != null && fotografiaInModifica != null )
+				if( bmpMask != null && fotografiaInModifica != null )
 					forseInizioModifiche();
 
 				// Devo modificare le dimensioni del contenitore.
-				frpCalcolaDimensioniContenitore( (float)(msk.Width / msk.Height) );
+				frpCalcolaDimensioniContenitore( (float)(bmpMask.Width / bmpMask.Height) );
 			}
 
-			mascheraAttiva = msk;
+			bmpMascheraAttiva = bmpMask;
 		}
 
 		/// <summary>
@@ -2130,15 +2162,15 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				return;
 
 			// Nel fotoritocco, la maschera viene gestita come una correzione
-			if( mascheraAttiva != null ) {
+			if( bmpMascheraAttiva != null ) {
 
-				string nomeFile = Path.GetFileName( mascheraAttiva.UriSource.LocalPath );
+				string nomeFile = Path.GetFileName( bmpMascheraAttiva.UriSource.LocalPath );
 
 				// Uso la maschera nella sua dimensione naturale
 				Imaging.Correzioni.Maschera maschera = new Imaging.Correzioni.Maschera {
 					nome = nomeFile,
-					width = mascheraAttiva.PixelWidth,
-					height = mascheraAttiva.PixelHeight
+					width = bmpMascheraAttiva.PixelWidth,
+					height = bmpMascheraAttiva.PixelHeight
 				};
 
 				addCorrezione( correzioni, maschera );
@@ -2365,7 +2397,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					// Se ho spento la fotografia, allora spengo anche una eventuale maschera
 					if( fotografiaInModifica == null && modalitaEdit == ModalitaEdit.FotoRitocco ) {
 						modificheInCorso = false;
-						mascheraAttiva = null;
+						bmpMascheraAttiva = null;
 					}
 
 					// Provoco la rilettura delle property che determinano lo stato dei pulsanti.
