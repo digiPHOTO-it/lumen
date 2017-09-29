@@ -320,9 +320,15 @@
 					<RadioButton Content="3/2" Grid.Row="0" Grid.Column="2" Style="{StaticResource toggleButtonRatioStyle}" Command="{Binding forzareRatioMascheraCommand}" CommandParameter="3/2" ToolTip="Il formato maschera viene forzato al rapporto 3/2" />
 				</Grid>
 
+				<!--
+				   il binding sul IsSelected, pare non funzionare su di uno UserControl direttamente.
+				   Occorre appoggiarsi ad un altro componente. Non so se è voluto oppure è un bug però è cosi.
+				   http://jonsblogat.blogspot.it/2009/11/wpf-usercontrol-binding-of-isenabled.html
+				-->
+				<Label Name="componenteInutileDiAppoggio"  IsEnabled="{Binding Path=possoScegliereMaschera}" />
 				<lumSM:SelettoreMaschera x:Name="selettoreMaschera" 
 										 Grid.Row="2" Grid.Column="0"
-										 IsEnabled="{Binding possoScegliereMaschera}"  />
+										 IsEnabled="{Binding ElementName=componenteInutileDiAppoggio, Path=IsEnabled}"  />
 			</Grid>
 		</Border>
 
