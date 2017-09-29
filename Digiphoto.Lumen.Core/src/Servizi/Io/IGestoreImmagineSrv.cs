@@ -47,6 +47,6 @@ namespace Digiphoto.Lumen.Servizi.Io {
 
 		void idrataImmaginiFoto( Fotografia foto, IdrataTarget target, bool forzatamente );
 
-		Model.Maschera caricaMaschera( string nomeFileMaschera, FiltroMask tipoMaschera, bool ancheOriginale );
+		void idrataMaschera( Model.Maschera maschera, bool ancheOriginale );
 	}
 }

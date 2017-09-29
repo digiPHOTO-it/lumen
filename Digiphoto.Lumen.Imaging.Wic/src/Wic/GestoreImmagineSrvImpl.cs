@@ -201,25 +201,26 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		}
 
 
-		public Model.Maschera caricaMaschera( string nomeFileMaschera, FiltroMask tipoMaschera, bool ancheOriginale ) {
-	
-			Model.Maschera maschera = new Model.Maschera();
-			maschera.nomeFile = nomeFileMaschera;
-			maschera.tipo = tipoMaschera;
+		public void idrataMaschera( Model.Maschera maschera, bool ancheOriginale ) {
+
+			string dirMaschere = PathUtil.getCartellaMaschera( maschera.tipo );
+			string dirMiniature = Path.Combine( dirMaschere, PathUtil.THUMB );
+
+			string nomeFileMiniatura = Path.Combine( dirMiniature, maschera.nomeFile );
 
 			// Provino (carico solo per 80 pixel)
-			var bmp1 = loadBitmapConDimensione( nomeFileMaschera, 80 );
+			var bmp1 = loadBitmapConDimensione( nomeFileMiniatura, 80 );
 			maschera.imgProvino = new ImmagineWic( bmp1 );
 
 			// Originale (più pesante)
 			if( ancheOriginale ) {
+				string nomeFileOriginale = Path.Combine( dirMaschere, maschera.nomeFile );
 				// uso la funzione standard
 				// var bmp2 = loadMascheraDaDisco( nomeFileMaschera );
 				// maschera.imgOriginale = new ImmagineWic( bmp2 );
-				maschera.imgOriginale = load( nomeFileMaschera );
+				maschera.imgOriginale = load( nomeFileOriginale );
 			}
 
-			return maschera;
 		}
 
 

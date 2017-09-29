@@ -66,10 +66,11 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		void clonaImmagineIncorniciata(Fotografia fotoOrig, string nomeFileImg);
 
 		/// <summary>
-		/// Ritorno l'elenco delle miniature delle maschere.
+		/// Ritorno l'elenco delle maschere valorizzando solo il nome.
 		/// Se le miniature non esistono, allora le creo.
 		/// </summary>
-		String [] caricaMiniatureMaschere( FiltroMask filtro );
+		List<Model.Maschera> caricaListaMaschere( FiltroMask filtro );
+		
 
 		void clonaFotografie(Fotografia[] fotografie);
 
