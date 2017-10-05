@@ -1,4 +1,4 @@
-﻿<lumM:UserControlBase  x:Class="Digiphoto.Lumen.UI.SelettoreAzioniRapide"
+﻿<lumM:UserControlBase  x:Class="Digiphoto.Lumen.UI.SelettoreAzioniRapide.SelettoreAzioniRapide"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -14,7 +14,10 @@
 		<ResourceDictionary Source="pack://application:,,,/Digiphoto.Lumen.UI;component/SelettoreAzioniRapide/SelettoreAzioniRapideResources.xaml" />
 	</UserControl.Resources>
 
+	<!--
 
+	TODO questa modifica causa un problema alla correzione di tipo "Scritta"
+			non compaiono più le manigliette (Adorner)
 
 
 	<pop:ModalDialogPopup x:Name="sceltaFotografoPopup" IsOpen="{Binding associaFacciaFotografoPopupIsOpen, Mode=TwoWay}" Title="Seleziona il fotografo" ButtonOKText="Associa faccia" >
@@ -37,8 +40,7 @@
 	</pop:ModalDialogPopup>
 
 
-
-
+	-->
 
 
 </lumM:UserControlBase >

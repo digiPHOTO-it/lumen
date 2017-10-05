@@ -30,6 +30,7 @@ using Digiphoto.Lumen.UI.Dialogs;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Servizi.EntityRepository;
 using Digiphoto.Lumen.Core.Collections;
+using Digiphoto.Lumen.UI.SelettoreAzioniRapide;
 
 namespace Digiphoto.Lumen.UI.FotoRitocco {
 

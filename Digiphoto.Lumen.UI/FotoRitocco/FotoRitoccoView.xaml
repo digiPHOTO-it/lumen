@@ -8,6 +8,7 @@
              xmlns:lumFR="clr-namespace:Digiphoto.Lumen.UI.FotoRitocco"
              xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
              xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
+			 xmlns:lumS="clr-namespace:Digiphoto.Lumen.UI.SelettoreAzioniRapide" 
 			 xmlns:lumSM="clr-namespace:Digiphoto.Lumen.UI.SelettoreMaschera"
              xmlns:extToolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
 			 xmlns:med="clr-namespace:System.Windows.Media;assembly=PresentationCore"
@@ -333,7 +334,7 @@
 		</Border>
 
 
-		<lum:SelettoreAzioniRapide Visibility="Collapsed" DataContext="{Binding Path=selettoreAzioniRapideViewModel}" />
+		<lumS:SelettoreAzioniRapide Visibility="Collapsed" DataContext="{Binding Path=selettoreAzioniRapideViewModel}" />
 
 		<!-- Pannello con la lista foto in attesa di modifica e pulsanti per paginazione risultati -->
 		<DockPanel DockPanel.Dock="Right" LastChildFill="True">

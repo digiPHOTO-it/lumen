@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
 
-namespace Digiphoto.Lumen.UI {
+namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 
 	public partial class SelettoreAzioniRapideResources {
 

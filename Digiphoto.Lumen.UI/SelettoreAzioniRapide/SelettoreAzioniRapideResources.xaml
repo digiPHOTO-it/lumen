@@ -4,7 +4,7 @@
 					xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI"
                     xmlns:lumCC="clr-namespace:Digiphoto.Lumen.UI.Converters"
 					
-					x:Class="Digiphoto.Lumen.UI.SelettoreAzioniRapideResources">
+					x:Class="Digiphoto.Lumen.UI.SelettoreAzioniRapide.SelettoreAzioniRapideResources">
 
 
     <lumCC:ListAzioniRapideVisibilityConverter x:Key="listAzioniRapideVisibilityConverter" />

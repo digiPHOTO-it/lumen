@@ -8,7 +8,8 @@
              xmlns:lumMS="clr-namespace:Digiphoto.Lumen.UI.Mvvm.MultiSelect"
              xmlns:extToolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
-             xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo"         
+             xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo"   
+			 xmlns:lumS="clr-namespace:Digiphoto.Lumen.UI.SelettoreAzioniRapide"      
 			 xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
 
              mc:Ignorable="d" 
@@ -325,7 +326,7 @@
 		<!-- Questa è la lista delle immagini -->
 		<Grid x:Name="gridImges">
 
-			<lum:SelettoreAzioniRapide Visibility="Hidden" DataContext="{Binding Path=selettoreAzioniRapideViewModel}"/>
+			<lumS:SelettoreAzioniRapide Visibility="Hidden" DataContext="{Binding Path=selettoreAzioniRapideViewModel}"/>
 
 			<ListBox x:Name="LsImageGallery"   Margin="0,0,0,0"
 					 ScrollViewer.VerticalScrollBarVisibility="Disabled" 

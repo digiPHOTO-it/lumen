@@ -28,6 +28,7 @@ using Digiphoto.Lumen.Core.Collections;
 using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
 using Digiphoto.Lumen.Core.Eventi;
+using Digiphoto.Lumen.UI.SelettoreAzioniRapide;
 
 namespace Digiphoto.Lumen.UI.Gallery {
 
