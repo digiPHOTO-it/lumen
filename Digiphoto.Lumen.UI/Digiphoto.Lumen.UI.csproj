@@ -362,6 +362,11 @@
       <DependentUpon>SelettoreAzioniRapideView.xaml</DependentUpon>
     </Compile>
     <Compile Include="SelettoreAzioniRapide\SelettoreAzioniRapideViewModel.cs" />
+    <Compile Include="SelettoreAzioniRapide\SelezioneFotografoPopupRequestEventArgs.cs" />
+    <Compile Include="SelettoreFotografo\SelettoreFotografoPopupViewModel.cs" />
+    <Compile Include="SelettoreFotografo\SelettoreFotografoPopup.xaml.cs">
+      <DependentUpon>SelettoreFotografoPopup.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SelettoreMaschera\SelettoreMascheraView.xaml.cs">
       <DependentUpon>SelettoreMascheraView.xaml</DependentUpon>
     </Compile>
@@ -595,6 +600,14 @@
     <Page Include="SelettoreFormatoCartaAbbinato\SelettoreFormatoCartaAbbinatoResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SelettoreFotografo\SelettoreFotografoPopup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SelettoreFotografo\SelettoreFotografoPopupResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SelettoreMaschera\SelettoreMascheraResources.xaml">
       <Generator>MSBuild:Compile</Generator>

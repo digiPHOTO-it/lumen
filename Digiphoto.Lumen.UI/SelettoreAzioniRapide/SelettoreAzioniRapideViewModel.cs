@@ -21,7 +21,7 @@ using Digiphoto.Lumen.Core.Collections;
 using Digiphoto.Lumen.UI.Dialogs;
 using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
 
-namespace Digiphoto.Lumen.UI {
+namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 
 	public enum TargetMode {
 		Singola,
@@ -35,6 +35,9 @@ namespace Digiphoto.Lumen.UI {
 		private Boolean operazioniCarrelloBloccanti = false;
 
 		public event Digiphoto.Lumen.UI.FotoRitocco.FotoRitoccoViewModel.EditorModeChangedEventHandler editorModeChangedEvent;
+
+		public event EventHandler openPopupDialogRequest;
+
 
 		public ISelettore<Fotografia> fotografieSelector;
 		
@@ -116,23 +119,6 @@ namespace Digiphoto.Lumen.UI {
 
 		private IEnumerable<Fotografia> getFotoTutte() {
 			return fotografieSelector.getElementiTutti();
-		}
-
-
-		private bool _sceltaFotografoPopupIsOpen;
-		public bool sceltaFotografoPopupIsOpen
-		{
-			get
-			{
-				return _sceltaFotografoPopupIsOpen;
-			}
-			set
-			{
-				if( _sceltaFotografoPopupIsOpen != value ) {
-					_sceltaFotografoPopupIsOpen = value;
-					OnPropertyChanged( "sceltaFotografoPopupIsOpen" );
-				}
-			}
 		}
 
 		#endregion Proprieta
@@ -535,6 +521,8 @@ namespace Digiphoto.Lumen.UI {
 			string nomeFile = AiutanteFoto.idrataImmagineDaStampare( singolaFotoTarget );
 
 			PanAndZoomViewModel panZommViewModel = new PanAndZoomViewModel(nomeFile);
+			// TODO anti-pattern : aprire finestre nel WiewModel.
+			//		usare openPopupDialogRequest come già fatto per associazione faccia fotografo
 			PanAndZoomWindow w = new Digiphoto.Lumen.UI.PanAndZoom.PanAndZoomWindow();
 			w.DataContext = panZommViewModel;
 			w.ShowDialog();
@@ -626,10 +614,13 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		void sceltaFotografoPopup() {
-			sceltaFotografoPopupIsOpen = true;
+		
+		private void openAssociaFacciaFotografoPopup() {
+
+			// Se ho qualche ascoltatore, lo invoco
+			SelezioneFotografoPopupRequestEventArgs args = new SelezioneFotografoPopupRequestEventArgs( getListaFotoTarget().Single() );
+			openPopupDialogRequest?.Invoke( this, args );
 		}
-	
 
 		#endregion Metodi
 
@@ -822,22 +813,31 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		private RelayCommand _sceltaFotografoPopupCommand;
-		public ICommand sceltaFotografoPopupCommand
+		private RelayCommand _openAssociaFacciaFotografoPopupCommand;
+		public ICommand openAssociaFacciaFotografoPopupCommand
 		{
 			get
 			{
-				if( _sceltaFotografoPopupCommand == null ) {
-					_sceltaFotografoPopupCommand = new RelayCommand( param => sceltaFotografoPopup(),
-					                                                 p => isAlmenoUnElementoSelezionato,
-																	 false );
+				if( _openAssociaFacciaFotografoPopupCommand == null ) {
+					_openAssociaFacciaFotografoPopupCommand = new RelayCommand( param => openAssociaFacciaFotografoPopup(), param => true, false );
 				}
-				return _sceltaFotografoPopupCommand;
+				return _openAssociaFacciaFotografoPopupCommand;
 			}
 		}
 
+		private RelayCommand _associareFacciaFotografoCommand;
+		public ICommand associareFacciaFotografoCommand
+		{
+			get
+			{
+				if( _associareFacciaFotografoCommand == null ) {
+					_associareFacciaFotografoCommand = new RelayCommand( param => associareFacciaFotografo(), param => true, false );
+				}
+				return _associareFacciaFotografoCommand;
+			}
+		}
 
-		#endregion
+		#endregion Comandi
 
 		#region MemBus
 
@@ -884,33 +884,6 @@ namespace Digiphoto.Lumen.UI {
 
 		// ------------------
 
-		private bool _associaFacciaFotografoPopupIsOpen;
-		public bool associaFacciaFotografoPopupIsOpen
-		{
-			get { return _associaFacciaFotografoPopupIsOpen; }
-			set
-			{
-				_associaFacciaFotografoPopupIsOpen = value;
-				OnPropertyChanged( "associaFacciaFotografoPopupIsOpen" );
-			}
-		}
-
-		private RelayCommand _openAssociaFacciaFotografoPopupCommand;
-		public ICommand openAssociaFacciaFotografoPopupCommand
-		{
-			get
-			{
-				if( _openAssociaFacciaFotografoPopupCommand == null ) {
-					_openAssociaFacciaFotografoPopupCommand = new RelayCommand( param => openAssociaFacciaFotografoPopup(), param => true, false );
-				}
-				return _openAssociaFacciaFotografoPopupCommand;
-			}
-		}
-
-
-		private void openAssociaFacciaFotografoPopup() {
-			associaFacciaFotografoPopupIsOpen = true;
-		}
 
 		void associareFacciaFotografo() {
 
@@ -927,26 +900,14 @@ namespace Digiphoto.Lumen.UI {
 
 			AiutanteFoto.setImmagineFotografo( fotografia, fotografo );
 
+			string msg = string.Format( "Impostata immagine per faccia fotografo {0}\nCon la foto numero {1}", fotografo.cognomeNome, fotografia.numero );
+			_giornale.Info( msg );
+
 			// Spengo la selezione per la prossima volta
 			selettoreFotografoViewModelFaccia.fotografiCW.deselezionaTutto();
 
-			string msg = string.Format( "OK : impostata immagine per il fotografo {0}\nCon la foto numero {1}", fotografo.cognomeNome, fotografia.numero );
 			dialogProvider.ShowMessage( msg, "Operazione riuscita" );
 		}
-
-
-		private RelayCommand _associareFacciaFotografoCommand;
-		public ICommand associareFacciaFotografoCommand
-		{
-			get
-			{
-				if( _associareFacciaFotografoCommand == null ) {
-					_associareFacciaFotografoCommand = new RelayCommand( param => associareFacciaFotografo(), param => true, false );
-				}
-				return _associareFacciaFotografoCommand;
-			}
-		}
-		
 
 	}
 }

@@ -1,0 +1,26 @@
+﻿<Window x:Class="Digiphoto.Lumen.UI.SelettoreFotografoPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
+        mc:Ignorable="d" Background="Black" BorderThickness="2" BorderBrush="DarkRed"
+        Title="Associa faccia al fotografo" WindowStartupLocation="CenterOwner" Height="500" Width="350">
+
+	<Window.Resources>
+		<ResourceDictionary Source="SelettoreFotografoPopupResources.xaml" />
+	</Window.Resources>
+
+	<DockPanel LastChildFill="True">
+
+		<StackPanel DockPanel.Dock="Bottom"  Orientation="Horizontal" HorizontalAlignment="Center" Margin="2 10">
+			<Button Name="cancelButton"  Content="Cancel" Margin="10 0 20 0" IsCancel="True" Style="{StaticResource buttonBaseStyle}" Width="80" />
+			<Image Name="immagine" Source="{Binding Path=immagine,Converter={StaticResource imageSourceConverter}}" Style="{StaticResource immagineStyle}" />
+			<Button Name="okButton" Content="OK" Margin="20 0 10 0 "  Click="okButton_Click" IsCancel="True" Style="{StaticResource buttonBaseStyle}" Width="80"/>
+		</StackPanel>
+
+		<lum:SelettoreFotografo x:Name="selettoreFotografoFaccia" possoCreare="False" selezioneMultipla="False"
+		                        Margin="3" DataContext="{Binding selettoreFotografoViewModelFaccia}" />
+
+	</DockPanel>
+</Window>
