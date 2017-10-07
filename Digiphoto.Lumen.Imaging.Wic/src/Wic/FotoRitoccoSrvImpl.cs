@@ -438,6 +438,17 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 		
 		}
 
+		public void salvaOrdinamentoMaschere( FiltroMask filtro, List<string> nuovaLista ) {
+
+			string dirMaschere = getCartellaMaschera( filtro );
+			if( !Directory.Exists( dirMaschere ) )
+				return;
+
+			string nomeFileOrdinamento = Path.Combine( dirMaschere, "ordinamento.txt" );
+
+			File.WriteAllLines( nomeFileOrdinamento, nuovaLista );
+		}
+
 		/// <summary>
 		/// Ricavo la lista di tutte le maschere (senza idratare le immagini, solo i nomi)
 		/// </summary>
@@ -483,7 +494,23 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 				}
 			}
 
-			return maschere;
+			// Prima di ritornare la lisa, controllo se nella cartella è presente un file di testo
+			// con eventuale ordinamento
+			string nomeFileOrdinamento = Path.Combine( dirMaschere, "ordinamento.txt" );
+			List<Model.Maschera> listaOrdinata;
+			if( File.Exists( nomeFileOrdinamento ) ) {
+
+				List<string> mioOrdinam = new List<string>( File.ReadAllLines( nomeFileOrdinamento ) );
+				listaOrdinata = maschere.OrderBy( d => mioOrdinam.IndexOf( d.nomeFile ) < 0 ? 9999 : mioOrdinam.IndexOf( d.nomeFile ) ).ToList();
+
+			} else {
+
+				// Ordino per nome
+				listaOrdinata = maschere.OrderBy( d => d.nomeFile ).ToList();
+
+			}
+
+			return listaOrdinata;
 		}
 
 #if false

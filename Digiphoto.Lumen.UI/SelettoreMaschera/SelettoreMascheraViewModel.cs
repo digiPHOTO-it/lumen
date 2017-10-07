@@ -52,6 +52,9 @@ namespace Digiphoto.Lumen.UI.SelettoreMaschera {
 		/// </summary>
 		void loadMaschereDaDisco( FiltroMask tipoMask ) {
 
+			// Mi salvo la modalità di filtro
+			this.tipoMask = tipoMask;
+
 			if( tipoMask == FiltroMask.MskSingole ) {
 				if( maschereSingole == null )
 					maschereSingole = caricaMaschere( tipoMask );
@@ -151,6 +154,51 @@ namespace Digiphoto.Lumen.UI.SelettoreMaschera {
 			throw new NotImplementedException();
 		}
 
+		void spostareOrdinamento( string suGiu ) {
+
+			string nomeFile = mascheraSelezionata.nomeFile;
+			int newIndex = 0;
+			int oldIndex = -1;
+			List<String> nuovaLista = null;
+
+			if( tipoMask == FiltroMask.MskSingole ) {
+
+				oldIndex = maschereSingole.IndexOf( mascheraSelezionata );
+				int delta = (suGiu == "SU") ? -1 : (suGiu == "GIU" ? +1 : 0);
+				newIndex = oldIndex + delta;
+				maschereSingole.Move( oldIndex, newIndex );
+				nuovaLista = maschereSingole.Select( m => m.nomeFile ).ToList();
+
+			} else {
+
+				oldIndex = maschereMultiple.IndexOf( mascheraSelezionata );
+				int delta = (suGiu == "SU") ? -1 : (suGiu == "GIU" ? +1 : 0);
+				newIndex = oldIndex + delta;
+				maschereMultiple.Move( oldIndex, newIndex );
+				nuovaLista = maschereMultiple.Select( m => m.nomeFile ).ToList();
+			}
+
+			fotoRitoccoSrv.salvaOrdinamentoMaschere( tipoMask, nuovaLista );
+
+		}
+
+		bool possoSpostareOrdinamento( string suGiu ) {
+
+			if( mascheraSelezionata == null )
+				return false;
+
+			if( suGiu == "SU" ) {
+				if( maschereCW.IndexOf( mascheraSelezionata ) <= 0 )
+					return false;
+			}
+			if( suGiu == "GIU" ) {
+				if( maschereCW.IndexOf( mascheraSelezionata ) >= maschereCW.Count-1 )
+					return false;
+			}
+
+			return true;
+		}
+
 		#endregion Metodi
 
 
@@ -239,40 +287,51 @@ namespace Digiphoto.Lumen.UI.SelettoreMaschera {
 			}
 		}
 
-		#endregion Proprietà
+	#endregion Proprietà
 
 
 		#region Comandi
 
-		private RelayCommand _caricareMaschereCommand;
-		public ICommand caricareMaschereCommand {
-			get {
-				if( _caricareMaschereCommand == null ) {
-					_caricareMaschereCommand = new RelayCommand( param => caricareMaschere( (string)param ),
-																 param => possoCaricareMaschere( (string)param ) );
+			private RelayCommand _caricareMaschereCommand;
+			public ICommand caricareMaschereCommand {
+				get {
+					if( _caricareMaschereCommand == null ) {
+						_caricareMaschereCommand = new RelayCommand( param => caricareMaschere( (string)param ),
+																	 param => possoCaricareMaschere( (string)param ) );
+					}
+					return _caricareMaschereCommand;
 				}
-				return _caricareMaschereCommand;
 			}
-		}
 
-		private RelayCommand _sfogliarePerFileCommand;
-		public ICommand sfogliarePerFileCommand
-		{
-			get
-			{
-				if( _sfogliarePerFileCommand == null ) {
-					_sfogliarePerFileCommand = new RelayCommand( p => sfogliarePerFile(),
-																		p => possoSfogliarePerFile );
+			private RelayCommand _sfogliarePerFileCommand;
+			public ICommand sfogliarePerFileCommand {
+				get {
+					if( _sfogliarePerFileCommand == null ) {
+						_sfogliarePerFileCommand = new RelayCommand( p => sfogliarePerFile(),
+																			p => possoSfogliarePerFile );
+					}
+					return _sfogliarePerFileCommand;
 				}
-				return _sfogliarePerFileCommand;
 			}
-		}
+
+			private RelayCommand _spostareOrdinamentoCommand;
+			public ICommand spostareOrdinamentoCommand {
+				get {
+					if( _spostareOrdinamentoCommand == null ) {
+						_spostareOrdinamentoCommand = new RelayCommand( p => spostareOrdinamento( (string)p ), 
+																		p => possoSpostareOrdinamento( (string)p ) );
+					}
+					return _spostareOrdinamentoCommand;
+				}
+			}
+
+		public FiltroMask tipoMask { get; private set; }
 
 		#endregion Comandi
 
 
 		#region Eventi
-		
+
 		public event SelezioneCambiataEventHandler selezioneCambiata;
 
 
@@ -285,7 +344,7 @@ namespace Digiphoto.Lumen.UI.SelettoreMaschera {
 				selezioneCambiata( this, EventArgs.Empty );
 		}
 
-		#endregion Eventi
+#endregion Eventi
 
 	}
 }

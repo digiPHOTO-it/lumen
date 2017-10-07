@@ -297,16 +297,13 @@
 				<!-- Maschere -->
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
 					<RowDefinition Height="*" />
 				</Grid.RowDefinitions>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition />
 				</Grid.ColumnDefinitions>
 
-				<Button Grid.Row="0" Grid.Column="0" Content="Carica da disco ..." ToolTip="Carica maschera da un'altra cartella" Command="{Binding commandSfogliarePerFileCornice}" Margin="2"  Style="{StaticResource buttonBaseStyle}" />
-
-				<Grid Grid.Row="1" Grid.Column="0" Margin="2"  Visibility="{Binding ElementName=tabItemComposizione,Path=IsSelected,Converter={StaticResource booleanToVisibilityConverter}}">
+				<Grid Grid.Row="0" Grid.Column="0" Margin="2"  Visibility="{Binding ElementName=tabItemComposizione,Path=IsSelected,Converter={StaticResource booleanToVisibilityConverter}}">
 					<Grid.RowDefinitions>
 						<RowDefinition/>
 					</Grid.RowDefinitions>
@@ -328,7 +325,7 @@
 				-->
 				<Label Name="componenteInutileDiAppoggio"  IsEnabled="{Binding Path=possoScegliereMaschera}" />
 				<lumSM:SelettoreMaschera x:Name="selettoreMaschera" 
-										 Grid.Row="2" Grid.Column="0"
+										 Grid.Row="1" Grid.Column="0"
 										 IsEnabled="{Binding ElementName=componenteInutileDiAppoggio, Path=IsEnabled}"  />
 			</Grid>
 		</Border>

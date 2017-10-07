@@ -70,7 +70,8 @@ namespace Digiphoto.Lumen.Servizi.Ritoccare {
 		/// Se le miniature non esistono, allora le creo.
 		/// </summary>
 		List<Model.Maschera> caricaListaMaschere( FiltroMask filtro );
-		
+		void salvaOrdinamentoMaschere( FiltroMask filtro, List<string> nuovaLista );
+
 
 		void clonaFotografie(Fotografia[] fotografie);
 

@@ -15,8 +15,23 @@
 	</UserControl.Resources>
 
 	<Grid>
+		<!-- Maschere -->
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition />
+		</Grid.ColumnDefinitions>
 
-		<ListBox x:Name="maschereListBox" 
+
+		<StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" >
+			<Button Content="Sposta SU ⇧" Command="{Binding spostareOrdinamentoCommand}" CommandParameter="SU"  Margin="1 1 4 1" Style="{StaticResource buttonBaseStyle}" ToolTip="Modifica l'ordinamento della maschera selezionata in SU" MinWidth="70" />
+			<Button Content="⇩ Sposta GIU" Command="{Binding spostareOrdinamentoCommand}" CommandParameter="GIU" Margin="4 1 1 1" Style="{StaticResource buttonBaseStyle}" ToolTip="Modifica l'ordinamento della maschera selezionata in GIU" MinWidth="70" />
+		</StackPanel>
+
+
+		<ListBox x:Name="maschereListBox" Grid.Row="1" Grid.Column="0"
 		         IsSynchronizedWithCurrentItem="False"
 		         SelectedItem="{Binding mascheraSelezionata,Mode=TwoWay}"
 		         Style="{StaticResource maschereListBoxStyle}"
