@@ -1637,6 +1637,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					nomeMaschera = Path.Combine( subFolder, maschera.nomeFile );
 				}
 
+				// Gestisco eventuale forzatura di formato sulla maschera.
+				if( modalitaEdit == ModalitaEdit.GestioneMaschere ) {
+					if( !String.IsNullOrWhiteSpace( forzauraRatioMaschera ) ) {
+						nomeMaschera = gestisciCacheMascheraForzata( nomeMaschera, forzauraRatioMaschera );
+					}
+				}
+
 			} else if( p is BitmapImage ) {
 				bi = (BitmapImage)p;
 				nomeFile = Path.GetFileName( bi.UriSource.LocalPath );
