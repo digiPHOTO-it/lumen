@@ -58,12 +58,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				fotografieDaModificareCW = new ListCollectionView( fotografieDaModificare );
 				fotografieDaModificareCW.Filter += fdmViewFilter;
 
-				// Carico le maschere e mi setto in modalità fotoritocco
-				this.modalitaEdit = ModalitaEdit.FotoRitocco;
+				// Componente per selezionare le maschere
 				selettoreMascheraViewModel = new Digiphoto.Lumen.UI.SelettoreMaschera.SelettoreMascheraViewModel();
-				selettoreMascheraViewModel.filtro = FiltroMask.MskSingole;
 				selettoreMascheraViewModel.selezioneCambiata += selettoreMascheraViewModel_selezioneCambiata;
 
+				// Carico le maschere e mi setto in modalità fotoritocco
+				cambiareModalitaEdit( "R" );
 
 				cfg = Configurazione.UserConfigLumen;
 

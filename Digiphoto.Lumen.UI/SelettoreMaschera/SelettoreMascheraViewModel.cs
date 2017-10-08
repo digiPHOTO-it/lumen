@@ -32,11 +32,14 @@ namespace Digiphoto.Lumen.UI.SelettoreMaschera {
 		/// <param name="verso"></param>
 		public void caricareMaschere( string verso ) {
 
+
 			if( verso == "S" ) {
-				loadMaschereDaDisco( FiltroMask.MskSingole );
+				filtro = FiltroMask.MskSingole;
+				loadMaschereDaDisco();
 				maschereCW = new ListCollectionView( maschereSingole );
 			} else if( verso == "M" ) {
-				loadMaschereDaDisco( FiltroMask.MskMultiple );
+				filtro = FiltroMask.MskMultiple;
+				loadMaschereDaDisco();
 				maschereCW = new ListCollectionView( maschereMultiple );
 			} else {
 				maschereCW = null;
@@ -50,21 +53,19 @@ namespace Digiphoto.Lumen.UI.SelettoreMaschera {
 		/// <summary>
 		/// Carico la collezione con le maschere
 		/// </summary>
-		void loadMaschereDaDisco( FiltroMask tipoMask ) {
+		void loadMaschereDaDisco() {
 
-			// Mi salvo la modalità di filtro
-			this.tipoMask = tipoMask;
-
-			if( tipoMask == FiltroMask.MskSingole ) {
+			// Gestisco una specie di cache
+			if( filtro == FiltroMask.MskSingole ) {
 				if( maschereSingole == null )
-					maschereSingole = caricaMaschere( tipoMask );
+					maschereSingole = caricaMaschere();
 			} else {
 				if( maschereMultiple == null )
-					maschereMultiple = caricaMaschere( tipoMask );
+					maschereMultiple = caricaMaschere();
 			}
 		}
 
-		private ObservableCollection<Maschera> caricaMaschere( FiltroMask filtro ) {
+		private ObservableCollection<Maschera> caricaMaschere() {
 
 			List<Maschera> maschere = fotoRitoccoSrv.caricaListaMaschere( filtro );
 			if( maschere != null ) {
@@ -161,7 +162,7 @@ namespace Digiphoto.Lumen.UI.SelettoreMaschera {
 			int oldIndex = -1;
 			List<String> nuovaLista = null;
 
-			if( tipoMask == FiltroMask.MskSingole ) {
+			if( filtro == FiltroMask.MskSingole ) {
 
 				oldIndex = maschereSingole.IndexOf( mascheraSelezionata );
 				int delta = (suGiu == "SU") ? -1 : (suGiu == "GIU" ? +1 : 0);
@@ -178,7 +179,7 @@ namespace Digiphoto.Lumen.UI.SelettoreMaschera {
 				nuovaLista = maschereMultiple.Select( m => m.nomeFile ).ToList();
 			}
 
-			fotoRitoccoSrv.salvaOrdinamentoMaschere( tipoMask, nuovaLista );
+			fotoRitoccoSrv.salvaOrdinamentoMaschere( filtro, nuovaLista );
 
 		}
 
@@ -236,7 +237,7 @@ namespace Digiphoto.Lumen.UI.SelettoreMaschera {
 			get {
 				return _filtro;
 			}
-			set {
+			private set {
 				if( _filtro != value ) {
 					_filtro = value;
 					OnPropertyChanged( "filtro" );
@@ -324,8 +325,6 @@ namespace Digiphoto.Lumen.UI.SelettoreMaschera {
 					return _spostareOrdinamentoCommand;
 				}
 			}
-
-		public FiltroMask tipoMask { get; private set; }
 
 		#endregion Comandi
 
