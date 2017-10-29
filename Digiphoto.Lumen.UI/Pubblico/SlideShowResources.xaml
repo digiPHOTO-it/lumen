@@ -42,7 +42,7 @@
 					   Margin="0,2,2,0"
 					   FontSize="{Binding Converter={StaticResource percentualeConverter}, FallbackValue=14, ElementName=gridUnaFotoShow,Path=ActualHeight,ConverterParameter=8}"
 					   Foreground="Black"
-					   Background="Orange" />
+					   Background="White" />
 
                 <!-- Se richiesto, aggiungo un watermark anche allo slideshow -->
                 <Viewbox Visibility="{Binding Path=DataContext.possoApplicareWaterMark, Converter={StaticResource boolVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}">
