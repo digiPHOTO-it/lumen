@@ -75,17 +75,18 @@
         <ToolBarTray Name="toolBarTrayAzioniDx"  Orientation="Vertical" DockPanel.Dock="Right" Style="{StaticResource fgToolBarTrayStyle}">
 
             <ToolBar Band="1" BandIndex="1" Style="{StaticResource fgToolBarStyle}">
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                    <Button Command="{Binding commandSpostarePaginazione}" CommandParameter="-999"  IsEnabled="{Binding isAlmenoUnaFoto}" Margin="2">
+                        <Image Width="20" Source="/Digiphoto.Lumen.UI;component/Resources/PageFirst-20x20.png" />
+                    </Button>
+                    <Button Command="{Binding commandSpostarePaginazione}" CommandParameter="+999"  IsEnabled="{Binding isAlmenoUnaFoto}" Margin="2">
+                        <Image Width="20" Source="/Digiphoto.Lumen.UI;component/Resources/PageLast-20x20.png" />
+                    </Button>
+                </StackPanel>
+                <Separator />
                 <Button ToolTip="Page UP" Style="{StaticResource imageButtonToolBarStyle}" Command="{Binding commandSpostarePaginazione}" CommandParameter="-1" IsEnabled="{Binding isAlmenoUnaFoto}">
                     <Image Width="48" Source="/Digiphoto.Lumen.UI;component/Resources/PageUp-48x48.png" />
                 </Button>
-                <StackPanel Orientation="Horizontal">
-                    <Button Command="{Binding commandSpostarePaginazione}" CommandParameter="-999"  IsEnabled="{Binding isAlmenoUnaFoto}">
-                        <Image Width="20" Source="/Digiphoto.Lumen.UI;component/Resources/PageFirst-20x20.png" />
-                    </Button>
-                    <Button Command="{Binding commandSpostarePaginazione}" CommandParameter="+999"  IsEnabled="{Binding isAlmenoUnaFoto}">
-                        <Image Width="20" Source="/Digiphoto.Lumen.UI;component/Resources/PageLast-20x20.png" />
-                    </Button>
-				</StackPanel>
                 <Button ToolTip="Page DOWN" Style="{StaticResource imageButtonToolBarStyle}" Command="{Binding commandSpostarePaginazione}" CommandParameter="1" IsEnabled="{Binding isAlmenoUnaFoto}">
                     <Image Width="48" Source="/Digiphoto.Lumen.UI;component/Resources/PageDown-48x48.png" />
                 </Button>
