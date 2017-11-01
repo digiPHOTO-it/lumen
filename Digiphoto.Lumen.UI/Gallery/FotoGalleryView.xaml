@@ -306,7 +306,7 @@
 						         x:Name="textBoxNumFotogrammi"
 						         Margin="0,0,0,0"
 						         CharacterCasing="Upper" MinWidth="80" FontSize="11"
-						         ToolTip="Indicare i numeri separati da virgola , oppure range con il meno -" >
+						         ToolTip="Indicare i numeri separati da virgola , oppure range con il meno -&#x0a;Doppio click o F4 per aiuto" >
 							<TextBox.InputBindings>
 								<MouseBinding Gesture="LeftDoubleClick" Command="{Binding openCercaFotoPopupCommand}" />
 							</TextBox.InputBindings>
