@@ -18,6 +18,14 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 		/// <returns>Un numero intero positivo da 0 in poi indicante il numero di elementi selezionati dalla query</returns>
 		int conta( ParamCercaFoto param );
 
+		/// <summary>
+		/// Senza modificare i filtri di ricerca, vado a vedere in quale pagina si trova la foto indicata.
+		/// </summary>
+		/// <param name="totPagine"></param>
+		/// <param name="param"></param>
+		/// <returns></returns>
+		uint ricercaPaginaDelFotogramma( uint numFotogramma, uint paginaMin, uint paginaMax, ParamCercaFoto param );
+
 		ICollection<Carrello> cerca(ParamCercaCarrello param);
 
 		List<string> cercaNomi( ParamCercaFoto param );
