@@ -24,7 +24,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 		public string numeriFotogrammi { get; set; }
 		
 		// numero foto su cui posizionarsi.
-		public int primoPosizionaSulNumero { get; set; }
+		public uint numeroConIntorno { get; set; }
 
 		public DateTime? giornataIniz {	get; set; }
 		public DateTime? giornataFine { get; set; }

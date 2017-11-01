@@ -108,7 +108,7 @@ namespace Digiphoto.Lumen.UI.PanAndZoom {
 			// where you'd like to move the top left corner of the view to
 			double toX = physicalPoint.X - ScreenStartPoint.X + startOffset.X;
 			double toY = physicalPoint.Y - ScreenStartPoint.Y + startOffset.Y;
-			Console.WriteLine( "You're attempting to move to " + toX + "," + toY );
+			// Console.WriteLine( "You're attempting to move to " + toX + "," + toY );
 
 			double scaleValue = zoomTransform.ScaleX;
 			var content = (FrameworkElement)Content;
