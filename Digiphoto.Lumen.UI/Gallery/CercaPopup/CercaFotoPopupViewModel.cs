@@ -52,6 +52,22 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			}
 		}
 
+		private bool _possoRicercareLaPagina;
+		public bool possoRicercareLaPagina {
+			get {
+				return _possoRicercareLaPagina;
+			}
+
+			set {
+				if( _possoRicercareLaPagina != value ) {
+					_possoRicercareLaPagina = value;
+					OnPropertyChanged( "possoRicercareLaPagina" );
+				}
+			}
+		}
+
+		
+
 		public ModoRicercaPop _modoRicercaPop;
 		public ModoRicercaPop modoRicercaPop {
 

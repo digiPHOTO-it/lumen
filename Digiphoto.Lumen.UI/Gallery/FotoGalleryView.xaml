@@ -25,7 +25,8 @@
         <CommandBinding Command="{StaticResource uicmdDeselezionaTutteLeFoto}" Executed="deselezionareTutteLeFoto_Click" />
     </UserControl.CommandBindings>
     <UserControl.InputBindings>
-        <KeyBinding  Key="F8" Command="{StaticResource cmdGoToCurrentFotoSS}" />
+		<KeyBinding  Key="F4" Command="{Binding Path=openCercaFotoPopupCommand}" />
+		<KeyBinding  Key="F8" Command="{StaticResource cmdGoToCurrentFotoSS}" />
         <KeyBinding  Key="S" Modifiers="Control" Command="{StaticResource uicmdSelezionaTutteLeFoto}" />
         <KeyBinding  Key="Q" Modifiers="Control" Command="{StaticResource uicmdDeselezionaTutteLeFoto}" />
     </UserControl.InputBindings>

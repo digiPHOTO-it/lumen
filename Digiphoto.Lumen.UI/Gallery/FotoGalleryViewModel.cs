@@ -2522,10 +2522,18 @@ namespace Digiphoto.Lumen.UI.Gallery {
 		void openCercaFotoPopup() {
 
 			cercaFotoPopupViewModel = new CercaFotoPopupViewModel();
-			cercaFotoPopupViewModel.modoRicercaPop = ModoRicercaPop.PosizionaPaginaDaNumero;
 
-			// Se ho qualche ascoltatore, lo invoco
-			CercaFotoPopupRequestEventArgs args = new CercaFotoPopupRequestEventArgs();
+			// Se ho una ricerca attiva, allora permetto di ricercare per numero fotogramma.
+			if( totFotoRicerca > 0 ) { 
+				cercaFotoPopupViewModel.modoRicercaPop = ModoRicercaPop.PosizionaPaginaDaNumero;
+				cercaFotoPopupViewModel.possoRicercareLaPagina = true;
+			} else {
+				cercaFotoPopupViewModel.modoRicercaPop = ModoRicercaPop.RicercaNumeroConIntorno;
+				cercaFotoPopupViewModel.possoRicercareLaPagina = false;
+			}
+
+		// Se ho qualche ascoltatore, lo invoco
+		CercaFotoPopupRequestEventArgs args = new CercaFotoPopupRequestEventArgs();
 			RaisePopupDialogRequest( args );
 
 			if( cercaFotoPopupViewModel.confermata ) {

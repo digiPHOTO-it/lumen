@@ -9,4 +9,23 @@
 
 	<lumC:EnumBooleanConverter x:Key="enumBooleanConverter" />
 
+	<Style x:Key="modoRicRadioStyle" TargetType="RadioButton">
+		<Setter Property="FontSize" Value="20" />
+		<Setter Property="Height" Value="30" />
+		<Setter Property="BorderBrush" Value="AntiqueWhite" />
+		<Setter Property="BorderThickness" Value="2" />
+		<Setter Property="Foreground" Value="White" />
+	</Style>
+
+	<Style x:Key="modoRicButtonStyle" TargetType="Button" BasedOn="{StaticResource buttonBaseStyle}">
+		<Setter Property="Width" Value="120" />
+		<Setter Property="Height" Value="44" />
+	</Style>
+
+	<Style x:Key="numRicStyle" TargetType="TextBox">
+		<Setter Property="FontSize" Value="30" />
+		<Setter Property="Height" Value="36" />
+		<Setter Property="HorizontalContentAlignment" Value="Right" />
+	</Style>
+
 </ResourceDictionary>
