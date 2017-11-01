@@ -6,6 +6,10 @@ namespace Digiphoto.Lumen.UI.PanAndZoom {
 
 	public class PanAndZoomViewModel : ClosableWiewModel {
 
+		public PanAndZoomViewModel( ImageSource imageSource ) {
+			this.imageSource = imageSource;
+		}
+
 		public PanAndZoomViewModel( string nomeFileImmagine ) {
 			loadImage( nomeFileImmagine );
 		}
