@@ -18,7 +18,6 @@ namespace Digiphoto.Lumen.UI.Mvvm
 
 		protected static readonly ILog _giornale = LogManager.GetLogger( typeof( ViewModelBase ) );
 
-
 		public IDialogProvider dialogProvider {
 			get;
 			set;
@@ -197,5 +196,28 @@ namespace Digiphoto.Lumen.UI.Mvvm
 		}
 		#endregion
 
-    }
+		#region Popup
+
+		private EventHandler _openPopupDialogRequest;
+		public event EventHandler openPopupDialogRequest
+		{
+			add
+			{
+				_openPopupDialogRequest -= value;
+				_openPopupDialogRequest += value;
+			}
+
+			remove
+			{
+				_openPopupDialogRequest -= value;
+			}
+		}
+
+		protected virtual void RaisePopupDialogRequest( EventArgs eventArgs ) {
+			_openPopupDialogRequest?.Invoke( this, eventArgs );
+		}
+
+		#endregion Popup
+
+	}
 }

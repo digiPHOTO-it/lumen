@@ -183,8 +183,8 @@
                 <extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. righe Slide-Show" Value="{Binding numRigheSlideShow}" IsEnabled="{Binding possoControllareSlideShow}" />
                 <extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. colonne Slide-Show" Value="{Binding numColonneSlideShow}" IsEnabled="{Binding possoControllareSlideShow}" />
 
-
-            </ToolBar>
+				<TextBox Name="dacanc"  TextChanged="dacanc_TextChanged" />
+			</ToolBar>
 
 
             <ToolBar Band="2" BandIndex="1" Name="stampaProvini" IsEnabled="{Binding Path=stampantiAbbinate, Converter={StaticResource listVisibilityConverter}}" Style="{StaticResource fgToolBarStyle}">
@@ -301,11 +301,15 @@
 								 Text="{Binding paramCercaFoto.didascalia, Mode=TwoWay}" MinWidth="80" FontSize="11"/>
 
                         <Label Content="Numeri" FontSize="10" />
-                        <TextBox  Text="{Binding stringaNumeriFotogrammi}" 
-							  x:Name="textBoxNumFotogrammi"
-								  Margin="0,0,0,0"
-							  CharacterCasing="Upper" MinWidth="80" FontSize="11"
-							  ToolTip="Indicare i numeri separati da virgola , oppure range con il meno -" />
+						<TextBox Text="{Binding stringaNumeriFotogrammi}" 
+						         x:Name="textBoxNumFotogrammi"
+						         Margin="0,0,0,0"
+						         CharacterCasing="Upper" MinWidth="80" FontSize="11"
+						         ToolTip="Indicare i numeri separati da virgola , oppure range con il meno -" >
+							<TextBox.InputBindings>
+								<MouseBinding Gesture="LeftDoubleClick" Command="{Binding openCercaFotoPopupCommand}" />
+							</TextBox.InputBindings>
+						</TextBox>
                     </StackPanel>
                 </GroupBox>
 

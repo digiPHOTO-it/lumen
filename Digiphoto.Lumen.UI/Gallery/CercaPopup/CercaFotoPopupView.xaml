@@ -1,0 +1,28 @@
+﻿<Window x:Class="Digiphoto.Lumen.UI.Gallery.CercaFotoPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Digiphoto.Lumen.UI.Gallery"
+        mc:Ignorable="d"
+        Title="CercaFotoPopup" Height="300" Width="300" Name="CercaFotoPopupWindow" Loaded="CercaFotoPopupWindow_Loaded">
+
+	<Window.Resources>
+		<ResourceDictionary Source="CercaFotoPopupResources.xaml" />
+	</Window.Resources>
+
+	<Grid>
+
+		<StackPanel Orientation="Vertical">
+			<Label Content="Numero fotogramma" />
+			<TextBox Name="numFotoTextBox" PreviewTextInput="numFotoTextBox_PreviewTextInput" Text="{Binding numeroFotogramma, UpdateSourceTrigger=PropertyChanged}"  />
+			<RadioButton Content="Vai alla pagina"   GroupName="Gruppo5" IsChecked="{Binding modoRicercaPop, Converter={StaticResource enumBooleanConverter}, ConverterParameter={x:Static local:ModoRicercaPop.PosizionaPaginaDaNumero}}" />
+			<RadioButton Content="Cerca con intorno" GroupName="Gruppo5" IsChecked="{Binding modoRicercaPop, Converter={StaticResource enumBooleanConverter}, ConverterParameter={x:Static local:ModoRicercaPop.RicercaNumeroConIntorno}}" />
+			<Button Content="Annulla" IsCancel="True" />
+			<Button Content="OK" IsDefault="True" Name="confermareButton"  Command="{Binding confermareCommand}" Click="confermareButton_Click" />
+		</StackPanel>
+
+
+
+	</Grid>
+</Window>

@@ -29,6 +29,7 @@ using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
 using Digiphoto.Lumen.Core.Eventi;
 using Digiphoto.Lumen.UI.SelettoreAzioniRapide;
+using Digiphoto.Lumen.Core.Database;
 
 namespace Digiphoto.Lumen.UI.Gallery {
 
@@ -106,7 +107,6 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			selettoreMetadatiViewModel = new SelettoreMetadatiViewModel1( this );
 
 			selettoreAzioniAutomaticheViewModel = new SelettoreAzioniAutomaticheViewModel( this );
-
 
 			azzeraParamRicerca();       // Svuoto i parametri
 			azzeraFotoSelez();          // creo la collezione vuota delle foto selezionate
@@ -516,6 +516,10 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			private set;
 		}
 
+		public CercaFotoPopupViewModel cercaFotoPopupViewModel {
+			get;
+			private set;
+		}
 
 		public IList<StampanteAbbinata> stampantiAbbinate {
 			get;
@@ -1082,7 +1086,20 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			}
 		}
 
-		#endregion
+		private RelayCommand _openCercaFotoPopupCommand;
+		public ICommand openCercaFotoPopupCommand
+		{
+			get
+			{
+				if( _openCercaFotoPopupCommand == null ) {
+					_openCercaFotoPopupCommand = new RelayCommand( param => openCercaFotoPopup(), param => true );
+				}
+				return _openCercaFotoPopupCommand;
+			}
+		}
+
+
+		#endregion Comandi
 
 
 		#region Metodi
@@ -2502,6 +2519,37 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 		}
 
+		void openCercaFotoPopup() {
+
+			cercaFotoPopupViewModel = new CercaFotoPopupViewModel();
+			cercaFotoPopupViewModel.modoRicercaPop = ModoRicercaPop.PosizionaPaginaDaNumero;
+
+			// Se ho qualche ascoltatore, lo invoco
+			CercaFotoPopupRequestEventArgs args = new CercaFotoPopupRequestEventArgs();
+			RaisePopupDialogRequest( args );
+
+			if( cercaFotoPopupViewModel.confermata ) {
+
+				// Se confermata la popup, agisco
+				using( new UnitOfWorkScope() ) {
+
+					if( cercaFotoPopupViewModel.modoRicercaPop == ModoRicercaPop.PosizionaPaginaDaNumero ) {
+
+						// Spostamento sulla pagina in cui si trova il fotogramma scelto
+						if( spostarePaginazioneConNumFotoCommand.CanExecute( cercaFotoPopupViewModel.numeroFotogramma ) )
+							spostarePaginazioneConNumFotoCommand.Execute( cercaFotoPopupViewModel.numeroFotogramma );
+					}
+
+					if( cercaFotoPopupViewModel.modoRicercaPop == ModoRicercaPop.RicercaNumeroConIntorno ) {
+
+						// Nuova ricerca con intorno
+						paramCercaFoto = new ParamCercaFoto();
+						paramCercaFoto.numeriFotogrammi = String.Format( "*{0}*", cercaFotoPopupViewModel.numeroFotogramma );
+						eseguireRicerca( RicercaFlags.NuovaRicerca );
+					}
+				}
+			}
+		}
 
 		#endregion Metodi
 

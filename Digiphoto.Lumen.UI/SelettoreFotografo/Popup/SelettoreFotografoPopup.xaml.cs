@@ -20,10 +20,6 @@ namespace Digiphoto.Lumen.UI {
 
 		public SelettoreFotografoPopup() {
 			InitializeComponent();
-
-			// Mi creo e mi associo il datacontext per eventuali bindings
-//			this.DataContext = new SelettoreFotografoPopupViewModel();
-
 		}
 
 
