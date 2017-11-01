@@ -120,9 +120,9 @@ namespace Digiphoto.Lumen.Util {
 	 				creaRisultanteFoto( foto );
 			}
 
-			AiutanteFoto.idrataImmaginiFoto( foto, quale, true );
+			var nome = AiutanteFoto.idrataImmaginiFoto( foto, quale, true );
 
-			return PathUtil.nomeCompletoFile( foto, quale );
+			return nome;
 		}
 
 		/// <summary>

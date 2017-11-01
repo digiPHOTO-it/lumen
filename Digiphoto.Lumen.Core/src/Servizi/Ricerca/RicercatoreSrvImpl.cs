@@ -14,7 +14,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 	internal class RicercatoreSrvImpl : ServizioImpl, IRicercatoreSrv {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( RicercatoreSrvImpl ) );
-		private static string SEPAR = "\r\n";
+		internal static string SEPAR = "\r\n";
 
 		public RicercatoreSrvImpl() {
 		}
@@ -24,9 +24,10 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			// è stato chiesto un numero specifico di foto ma con intorno prima e dopo
 			int pagina = gestisciRicercaPuntualePerNumeroEdIntorno( param );
 			if( pagina > 0 )
+				// mi posiziono sulla pagina che contiene la foto desiderata
 				param.paginazione.skip = (pagina -1) * param.paginazione.take;
 			// in ogni caso devo pulire il numerino perché al prossmo giro diventa una ricerca paginata normale	
-			param.primoPosizionaSulNumero = 0;
+			param.numeroConIntorno = 0;
 
 
 			return cercaVeloceSQL( param );
@@ -105,8 +106,51 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			*/
 
 			#region Where
+		
+			string where = creaQuerySQLWhere( param, ref paramOut );
+			sql.Append( where );
 
-			sql.Append( "where 1=1" );
+			#endregion Where
+
+			// Nella query normale devo ordinare e paginare, mentre invece se sto solo facendo la conta dei record mi risparmio questa fatica cosi vado piu veloce
+			if( ! soloCount ) {
+
+				#region Order-By
+
+				string orderBy = creaQuerySQLOrderBy( param );
+				sql.Append( orderBy );
+
+				#endregion Order-By
+
+				#region Paginazione
+
+				// Paginazione
+				if( param.paginazione != null && param.paginazione.isEmpty == false ) {
+					sql.Append( " LIMIT " );
+					sql.Append( param.paginazione.skip );
+					sql.Append( " , " );
+					sql.Append( param.paginazione.take );
+					sql.Append( SEPAR );
+				}
+
+				#endregion Paginazione
+			}
+
+#if DEBUG
+			// Eventuale debug della query
+			if( _giornale.IsDebugEnabled ) {
+				_giornale.Debug( sql.ToString() );
+			}
+#endif
+
+			return sql.ToString();
+		}
+
+		internal static string creaQuerySQLWhere( ParamCercaFoto param, ref List<Object> paramOut ) {
+			
+			StringBuilder sql = new StringBuilder();
+
+			sql.Append( " where 1=1" );
 			sql.Append( SEPAR );
 
 			#region Where - Eventi
@@ -115,18 +159,18 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			if( param.eventi != null ) {
 				if( param.eventi.Length == 1 ) {
 					sql.Append( "AND f.evento_id = {" + paramOut.Count + "}" );
-                    paramOut.Add( (string) param.eventi.ElementAt( 0 ).id.ToString() );  // Forzatura: devo convertirlo in stringa
+					paramOut.Add( (string)param.eventi.ElementAt( 0 ).id.ToString() );  // Forzatura: devo convertirlo in stringa
 				} else {
 					sql.Append( "AND f.evento_id in ( " );
 					foreach( var p in param.eventi ) {
 						sql.Append( "{" + paramOut.Count + "}," );
-						paramOut.Add( (string) p.ToString() );	// Forzatura: devo convertirlo in stringa
+						paramOut.Add( (string)p.ToString() );   // Forzatura: devo convertirlo in stringa
 					}
 					sql.Replace( ',', ')', sql.Length - 1, 1 );  // Rimuovo l'ultima virgola di troppo e la sostituisco con la parentesi chiusa
 				}
 				sql.Append( SEPAR );
 			}
-			
+
 			#endregion Where - Eventi
 
 
@@ -178,7 +222,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 				sql.Append( "AND f.id in ( " );
 				foreach( var id in param.idsFotografie ) {
 					sql.Append( "{" + paramOut.Count + "}," );
-					paramOut.Add( (string) id.ToString() );
+					paramOut.Add( (string)id.ToString() );
 				}
 				sql.Replace( ',', ')', sql.Length - 1, 1 );  // Rimuovo l'ultima virgola di troppo e la sostituisco con la parentesi chiusa
 				sql.Append( SEPAR );
@@ -190,19 +234,19 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 			// --- numeri di fotogrammi
 			if( param.numeriFotogrammi != null ) {
-				int[] range = FotoRangeUtil.rangeToString( param.numeriFotogrammi );
+				int [] range = FotoRangeUtil.rangeToString( param.numeriFotogrammi );
 
 				// Testo se ho un range o una lista
 				if( param.numeriFotogrammi.Contains( '-' ) ) {
-					int estInf = range[0];
-					int estSup = range[1];
+					int estInf = range [0];
+					int estSup = range [1];
 
 					// ----- RANGE di fotogramma
 					sql.Append( "AND f.numero >= {" + paramOut.Count + "}" );
 					sql.Append( SEPAR );
 					paramOut.Add( estInf );
 
-					if( range[1] > 0 ) {
+					if( range [1] > 0 ) {
 						sql.Append( "AND f.numero <= {" + paramOut.Count + "}" );
 						paramOut.Add( estSup );
 						sql.Append( SEPAR );
@@ -285,53 +329,32 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 			// TODO ..... altri parametri mancanti
 
-
-			#endregion Where
-
-			// Nella query normale devo ordinare e paginare, mentre invece se sto solo facendo la conta dei record mi risparmio questa fatica cosi vado piu veloce
-			if( ! soloCount ) {
-
-				#region Order-By
-
-				// ----- Ordinamento
-				if( param.ordinamento != null ) {
-					sql.Append( "ORDER BY f.dataOraAcquisizione " );
-					if( param.ordinamento == Ordinamento.Desc )
-						sql.Append( " DESC " );
-					sql.Append( ", f.numero " );
-					if( param.ordinamento == Ordinamento.Desc )
-						sql.Append( " DESC " );
-					// forse non serve. provo a far risparmiare tempo
-					sql.Append( ", f.id " );
-					sql.Append( SEPAR );
-				}
-
-				#endregion Order-By
-
-				#region Paginazione
-
-				// Paginazione
-				if( param.paginazione != null && param.paginazione.isEmpty == false ) {
-					sql.Append( " LIMIT " );
-					sql.Append( param.paginazione.skip );
-					sql.Append( " , " );
-					sql.Append( param.paginazione.take );
-					sql.Append( SEPAR );
-				}
-
-				#endregion Paginazione
-			}
-
-#if DEBUG
-			// Eventuale debug della query
-			if( _giornale.IsDebugEnabled ) {
-				_giornale.Debug( sql.ToString() );
-			}
-#endif
+			sql.Append( " " );
 
 			return sql.ToString();
 		}
 
+		internal static string creaQuerySQLOrderBy( ParamCercaFoto param ) {
+
+			StringBuilder sql = new StringBuilder();
+
+			// ----- Ordinamento
+			if( param.ordinamento != null ) {
+				sql.Append( "ORDER BY f.dataOraAcquisizione " );
+				if( param.ordinamento == Ordinamento.Desc )
+					sql.Append( " DESC " );
+				sql.Append( ", f.numero " );
+				if( param.ordinamento == Ordinamento.Desc )
+					sql.Append( " DESC " );
+				// forse non serve. provo a far risparmiare tempo
+				sql.Append( ", f.id " );
+//				sql.Append( SEPAR );
+			}
+
+			sql.Append( " " );
+
+			return sql.ToString();
+		}
 
 
 		/// <summary>
@@ -374,7 +397,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 		int gestisciRicercaPuntualePerNumeroEdIntorno( ParamCercaFoto param ) {
 
-			if( param.primoPosizionaSulNumero <= 0 )
+			if( param.numeroConIntorno <= 0 )
 				return -1;
 
 			var v = param.numeriFotogrammi.Split( '-' );
@@ -386,7 +409,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			// ---
 
 			List<object> sqlParam = new List<object>();
-			sqlParam.Add( param.primoPosizionaSulNumero );
+			sqlParam.Add( param.numeroConIntorno );
 
 			string sql = "Select count(*) from fotografie f where f.numero = {0}";
 
@@ -394,12 +417,12 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 			var quanti = (long) query.Single();
 
-			// Se non esiste la foto che sto cercando, allora esco
+			// Se non esiste la foto che sto cercando, allora esco subito, cosi non perdo tempo nella ricerca dicotomica a vuoto
 			if( quanti == 0 )
 				return -1;
 
 
-
+			// Ora so che la foto c'è.
 			// Ora devo scoprire a quale pagina si trova la foto interessata. Probabilmente è nel mezzo
 			// parto dal mezzo con una ricerca dicotomica
 
@@ -413,21 +436,21 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 			int totale = (int)query.Single();
 
-			int totPagine = (totale / param.paginazione.take) ;
+			ushort totPagine = (ushort) ( (totale / param.paginazione.take) );
 			if( (totale % param.paginazione.take) != 0 )
 				++totPagine;
 
-
-			var pag = ricercaPaginaDicotomica( 1, totPagine, sqlParam, param );
+			uint numeroDaric = param.numeroConIntorno;
+			var pag = ricercaPaginaDicotomicaIntorno( 1, totPagine, sqlParam, param );
 
 			return pag;
 		}
 
-		private int ricercaPaginaDicotomica( int limiteInf, int limiteSup, List<object> sqlParam, ParamCercaFoto param ) {
+		private ushort ricercaPaginaDicotomicaIntorno( ushort limiteInf, ushort limiteSup, List<object> sqlParam, ParamCercaFoto param ) {
 
 			StringBuilder sql = new StringBuilder();
 
-			int middlePage = (limiteInf + limiteSup) / 2;
+			ushort middlePage = (ushort) ((limiteInf + limiteSup) / 2);
 
 			if( middlePage < limiteInf || limiteSup < 0 )
 				throw new InvalidOperationException( "impossibile" );
@@ -442,23 +465,15 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			sql.Append( SEPAR );
 			sql.Append( "\twhere 1=1" );
 			sql.Append( SEPAR );
-			sql.Append( "\t\tand f.numero between {0} and {1}" );
+			if( sqlParam.Count > 0 )
+				sql.Append( "\t\tand f.numero between {0} and {1}" );
 			sql.Append( SEPAR );
 
-			if( param.ordinamento != null ) {
-				sql.Append( "\tORDER BY f.dataOraAcquisizione " );
-				if( param.ordinamento == Ordinamento.Desc )
-					sql.Append( " DESC " );
-				sql.Append( ", f.numero " );
-				if( param.ordinamento == Ordinamento.Desc )
-					sql.Append( " DESC " );
-				// forse non serve. provo a far risparmiare tempo
-				sql.Append( ", f.id " );
-				sql.Append( SEPAR );
-			}
+			string orderBy = creaQuerySQLOrderBy( param );
+			sql.Append( orderBy );
 
 			sql.Append( "\tLIMIT " );
-			var skip = param.paginazione.take * (middlePage - 1);
+			int skip = param.paginazione.take * (middlePage - 1);
 			sql.Append( Convert.ToString( skip ) );
 			sql.Append( " , " );
 			sql.Append( param.paginazione.take );
@@ -469,44 +484,31 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			AppoNumNum appo = query.ToList()[0];
 
 			//  Vediamo se nella pagina attuale ho trovato il numero di foto che sto cercando
-			if( appo.minimo <= param.primoPosizionaSulNumero && appo.massimo >= param.primoPosizionaSulNumero )
+			if( appo.minimo <= param.numeroConIntorno && appo.massimo >= param.numeroConIntorno )
 				// Trovato
 				return middlePage;
 			else {
 				
-				if( appo.massimo < param.primoPosizionaSulNumero ) {
+				if( appo.massimo < param.numeroConIntorno ) {
 					// salgo
-					limiteInf = middlePage + 1;
+					limiteInf = (ushort) (middlePage + 1);
 				} else {
 					// Scendo
-					limiteSup = middlePage - 1;
+					limiteSup = (ushort) (middlePage - 1);
 				}
 
-				return ricercaPaginaDicotomica( limiteInf, limiteSup, sqlParam, param );
+				return ricercaPaginaDicotomicaIntorno( limiteInf, limiteSup, sqlParam, param );
 			}
-
 		}
 
+		public uint ricercaPaginaDelFotogramma( uint numFotogrammaDaric, uint paginaMin, uint paginaMax, ParamCercaFoto param ) {
 
-		private List<Fotografia> cercaLentoEF__DACANC( ParamCercaFoto param ) {
-			
-			_giornale.Debug( "Parametri di ricerca:\n" + param );
+			RicercatorePaginaDicotomicoPosiz ricer = new RicercatorePaginaDicotomicoPosiz( param );
 
-			IQueryable<Fotografia> query = creaQueryEntita( param );
+			ricer.paginaMin = paginaMin;
+			ricer.paginaMax = paginaMax;
 
-			// Eventuale paginazione dei risultati
-			if( param.paginazione != null )
-				query = query.Skip( param.paginazione.skip ).Take( param.paginazione.take );
-
-#if DEBUG
-			// Eventuale debug della query
-			if( _giornale.IsDebugEnabled ) {
-				_giornale.Debug( query.ToString() );
-			}
-#endif
-
-			_giornale.Debug( "Eseguita query di ricerca foto. Idrato lista risultati" );
-			return query.ToList();
+			return ricer.cercaPagina( numFotogrammaDaric );
 		}
 
 		public ICollection<Carrello> cerca(ParamCercaCarrello param)
@@ -774,5 +776,12 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 			return quanti;
 		}
+
+
+
+	
 	}
+
+
+
 }

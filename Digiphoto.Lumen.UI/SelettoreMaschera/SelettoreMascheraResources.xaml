@@ -38,12 +38,13 @@
 	<DataTemplate x:Key="itemTemplateThumbMaschera">
 
 		<Image Height="70"  Width="70" Name="thumbMaschera" Source="{Binding Path=imgProvino,Converter={StaticResource imageSourceConverter}}" >
+<!--
 			<i:Interaction.Triggers>
 				<i:EventTrigger EventName="MouseUp">
 					<i:InvokeCommandAction Command="{Binding Path=DataContext.attivareMascheraCommand,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"/>
 				</i:EventTrigger>
 			</i:Interaction.Triggers>
-<!--
+
             <Image.ToolTip>
                 <Label Content="{Binding Path=nomeFile}" Foreground="Black" />
             </Image.ToolTip>

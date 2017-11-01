@@ -20,6 +20,9 @@ using Digiphoto.Lumen.Servizi.Io;
 using Digiphoto.Lumen.Core.Collections;
 using Digiphoto.Lumen.UI.Dialogs;
 using Digiphoto.Lumen.UI.Mvvm.MultiSelect;
+using Digiphoto.Lumen.Imaging;
+using Digiphoto.Lumen.Imaging.Wic;
+using System.Windows.Media;
 
 namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 
@@ -518,9 +521,19 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 
 		private void viewFotoFullScreen()
 		{
-			string nomeFile = AiutanteFoto.idrataImmagineDaStampare( singolaFotoTarget );
+			// Qui devo capire quale foto verrà idratata
+			IdrataTarget quale = AiutanteFoto.qualeImmagineDaStampare( singolaFotoTarget );
 
-			PanAndZoomViewModel panZommViewModel = new PanAndZoomViewModel(nomeFile);
+			// Qui idrato
+			AiutanteFoto.idrataImmagineDaStampare( singolaFotoTarget );
+
+			// Qui ricavo la foto
+			IImmagine img = AiutanteFoto.getImmagineFoto( singolaFotoTarget, quale );
+			var imageSource = ((ImmagineWic)img).bitmapSource as ImageSource;
+
+			// Qui passo la foto al viewmodel che la deve visualizzare
+			PanAndZoomViewModel panZommViewModel = new PanAndZoomViewModel( imageSource );
+
 			// TODO anti-pattern : aprire finestre nel WiewModel.
 			//		usare openPopupDialogRequest come già fatto per associazione faccia fotografo
 			PanAndZoomWindow w = new Digiphoto.Lumen.UI.PanAndZoom.PanAndZoomWindow();

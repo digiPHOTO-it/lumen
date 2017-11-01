@@ -707,6 +707,22 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			}
 		}
 
+		/// <summary>
+		/// Se ho dei risultati caricati e quindi ho anche dei parametri di ricerca,
+		/// calcolo il numero totale delle pagine di paginazione
+		/// </summary>
+		public uint totPagineRicerca {
+			get {
+				if( totFotoRicerca > 0 && paramCercaFoto != null && paramCercaFoto.paginazione != null && paramCercaFoto.paginazione.take > 0 ) {
+					uint tot = (uint)(totFotoRicerca / paramCercaFoto.paginazione.take);
+					if( totFotoRicerca % paramCercaFoto.paginazione.take != 0 )
+						++tot;
+					return tot;
+				} else
+					return 0;
+			}
+		}
+
 		private float _ratioAreaStampabile = 0f;
 		public float ratioAreaStampabile {
 			get {
@@ -1024,6 +1040,19 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			}
 		}
 
+		private RelayCommand _spostarePaginazioneConNumFotoCommand;
+		public ICommand spostarePaginazioneConNumFotoCommand
+		{
+			get
+			{
+				if( _spostarePaginazioneConNumFotoCommand == null ) {
+					_spostarePaginazioneConNumFotoCommand = new RelayCommand( numFoto => spostarePaginazioneConNumFoto( Convert.ToUInt32( numFoto ) ),
+					                                                          numFoto => possoSpostarePaginazioneConNumFoto( Convert.ToUInt32( numFoto ) ),
+																			  false );
+				}
+				return _spostarePaginazioneConNumFotoCommand;
+			}
+		}
 
 		private RelayCommand _commandVedereAncoraInfoImg;
 		public ICommand commandVedereAncoraInfoImg {
@@ -1852,8 +1881,17 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			completaParametriRicercaWithOrder( false );
 		}
 
-
+		/// <summary>
+		/// Ricerca con intorno. Esempio:    *nf*amp$
+		/// nf = il numero del fotogramma
+		/// amp = ampiezza dell'intorno
+		/// </summary>
 		private static readonly Regex regexNumIntorno1 = new Regex( @"^\*([0-9]+)\*([0-9]+)$" );
+		/// <summary>
+		/// Ricerca con intorno. Esempio  *nf*
+		/// nf = numero fotogramma.
+		/// (l'ampiezza viene presa per default)
+		/// </summary>
 		private static readonly Regex regexNumIntorno2 = new Regex( @"^\*([0-9]+)\*$" );
 
 		/// <summary>
@@ -1864,6 +1902,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 			paramCercaFoto.idratareImmagini = false;
 
+			// Ordinamento
 			if( usaOrdinamentoAsc ) {
 				if( Configurazione.UserConfigLumen.invertiRicerca )
 					paramCercaFoto.ordinamento = Ordinamento.Asc;
@@ -1897,32 +1936,32 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			paramCercaFoto.paginazione.skip += offsetProssimoSkip;
 			offsetProssimoSkip = 0;
 
-
+			// Intorno.
 			// Questa espressione :     *120*  significa che devo cercare la foto 120 con anche delle foto prima e dopo
 			if( paramCercaFoto.numeriFotogrammi != null ) {
 
-				int numPosiz = 0;
-				int intorno = 0;
+				uint numPosiz = 0;
+				uint intorno = 0;
 
-				// Vediamo se l'utente mi ha inserito si il numero che la finestra
+				// Vediamo se l'utente mi ha inserito sia il numero che la finestra
 				Match m1 = regexNumIntorno1.Match( paramCercaFoto.numeriFotogrammi );
 				if( m1.Success ) {
-					numPosiz = int.Parse( m1.Groups[1].Value );
-					intorno = int.Parse( m1.Groups[2].Value );
+					numPosiz = UInt32.Parse( m1.Groups[1].Value );
+					intorno = UInt32.Parse( m1.Groups[2].Value );
 				} else { 
 					Match m2 = regexNumIntorno2.Match( paramCercaFoto.numeriFotogrammi );
 					if( m2.Success ) {
-						numPosiz = int.Parse( m2.Groups[1].Value );
+						numPosiz = UInt32.Parse( m2.Groups[1].Value );
 						intorno = 100;
 					}
 				}
 
 				if( numPosiz > 0 ) {
-					int dalNum = Math.Max( numPosiz - intorno, 1 );
-					int alNum = numPosiz + intorno;
+					uint dalNum = (uint) Math.Max( numPosiz - intorno, 1 );
+					uint alNum = numPosiz + intorno;
 
 					paramCercaFoto.numeriFotogrammi = dalNum + "-" + alNum;
-					paramCercaFoto.primoPosizionaSulNumero = numPosiz;
+					paramCercaFoto.numeroConIntorno = numPosiz;
 				}
 
 			}
@@ -2128,13 +2167,104 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			if( posso && delta < 0 ) {
 
 				// Voglio spostarmi indietro. Controllo di avere sufficienti pagine precedenti.
-//				if( delta == -999 )  // Torno alla prima pagina
-					posso = paramCercaFoto.paginazione.skip > 0;
-//				else
-//					posso = paramCercaFoto.paginazione.skip >= ( delta * paginazioneRisultatiGallery) > 0;
+				//				if( delta == -999 )  // Torno alla prima pagina
+				posso = paramCercaFoto.paginazione.skip > 0;
+				//				else
+				//					posso = paramCercaFoto.paginazione.skip >= ( delta * paginazioneRisultatiGallery) > 0;
 			}
 
 			return posso;
+		}
+
+		/// <summary>
+		/// Questa funzionalità prevede di mantenere gli attuali filtri di ricerca, ma occorre cercare 
+		/// in quale pagina si trova il fotogramma desiderato.
+		/// Quindi non va effettuata una nuova ricerca, ma occorre mantenere tutto (anche le foto selezionate devono rimanere)
+		/// </summary>
+		/// <param name="numFotogrammaDaric"></param>
+		void spostarePaginazioneConNumFoto( uint numFotogrammaDaric ) {
+
+			IRicercatoreSrv ricercaSrv = LumenApplication.Instance.getServizioAvviato<IRicercatoreSrv>();
+			
+			int numeroSx = fotografieCW.SourceCollection.OfType<Fotografia>().First().numero;
+			int numeroDx = fotografieCW.SourceCollection.OfType<Fotografia>().Last().numero;
+
+			uint min = (ushort) Math.Min( numeroSx, numeroDx );
+			uint max = (ushort) Math.Max( numeroSx, numeroDx );
+
+			// Ricavo il numero di pagina su cui sono posionato adesso, ricavandolo dai parametri di ricerca
+			uint paginaAttuale = (uint) ((paramCercaFoto.paginazione.skip / paramCercaFoto.paginazione.take) + 1);
+			uint pagineTotali = totPagineRicerca;
+
+			uint paginaMin = 0;
+			uint paginaMax = 0;
+
+			if( paramCercaFoto.ordinamento == Ordinamento.Asc ) {
+				if( numFotogrammaDaric < min ) {
+					// Sinistra
+					paginaMax = (ushort) (paginaAttuale - 1);
+					paginaMin = 1;
+				}
+				if( numFotogrammaDaric > max ) {
+					// Destra
+					paginaMin = (ushort)(paginaAttuale + 1);
+					paginaMax = pagineTotali;
+				}
+			}
+
+			if( paramCercaFoto.ordinamento == Ordinamento.Desc ) {
+				if( numFotogrammaDaric < min ) {
+					// Destra
+					paginaMin = (ushort)(paginaAttuale + 1);
+					paginaMax = pagineTotali;
+				}
+				if( numFotogrammaDaric > max ) {
+					// Sinistra
+					paginaMax = (ushort)(paginaAttuale - 1);
+					paginaMin = 1;
+				}
+			}
+	
+			var pagina = ricercaSrv.ricercaPaginaDelFotogramma( numFotogrammaDaric, paginaMin, paginaMax, paramCercaFoto );
+
+			if( pagina > 0 ) {
+				// Ho trovato la pagina. eseguo lo spostamento
+				this.paramCercaFoto.paginazione.skip = (int) ((pagina - 1) * this.paramCercaFoto.paginazione.take);
+				eseguireRicerca( RicercaFlags.Niente );
+			}
+
+			System.Console.WriteLine( "nuova pagina = " + pagina );
+		}
+
+	
+
+		bool possoSpostarePaginazioneConNumFoto( uint numFotogramma ) {
+
+
+
+
+			// Se non ho risultati attuali, esco
+			if( !isAlmenoUnaFoto )
+				return false;
+
+			// Se non ho la possibilità di andare ne avanti ne indietro, significa che non ho altre pagine oltre questa.
+			if( !possoSpostarePaginazione( -1 ) && !possoSpostarePaginazione( +1 ) )
+				return false;
+
+			// Ora devo fare dei ragionamenti più sofisiticati sul numero di fotogramma
+			int numeroSx = fotografieCW.SourceCollection.OfType<Fotografia>().First().numero;
+			int numeroDx = fotografieCW.SourceCollection.OfType<Fotografia>().Last().numero;
+
+			int min = Math.Min( numeroSx, numeroDx );
+			int max = Math.Max( numeroSx, numeroDx );
+
+			// Controllo che il numero del fotogramma sia al di fuori della pagina attuale
+			if( numFotogramma >= min && numFotogramma <= max )
+				return false;
+
+
+			// Passati tutti i controlli, significa che posso provare a spostarmi
+			return true;
 		}
 
 		public short numRighe {
