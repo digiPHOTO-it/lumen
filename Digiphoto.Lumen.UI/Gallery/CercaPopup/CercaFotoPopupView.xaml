@@ -4,8 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Digiphoto.Lumen.UI.Gallery"
-        mc:Ignorable="d"
-        Title="CercaFotoPopup" Height="300" Width="300" Name="CercaFotoPopupWindow" Loaded="CercaFotoPopupWindow_Loaded">
+        mc:Ignorable="d" 
+		WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+		Background="#081d56" 
+        Title="Ricerca per N° fotogramma" Height="300" Width="300" Name="CercaFotoPopupWindow" Loaded="CercaFotoPopupWindow_Loaded">
 
 	<Window.Resources>
 		<ResourceDictionary Source="CercaFotoPopupResources.xaml" />
@@ -13,14 +15,16 @@
 
 	<Grid>
 
-		<StackPanel Orientation="Vertical">
-			<Label Content="Numero fotogramma" />
-			<TextBox Name="numFotoTextBox" PreviewTextInput="numFotoTextBox_PreviewTextInput" Text="{Binding numeroFotogramma, UpdateSourceTrigger=PropertyChanged}"  />
-			<RadioButton Content="Vai alla pagina"   GroupName="Gruppo5" IsChecked="{Binding modoRicercaPop, Converter={StaticResource enumBooleanConverter}, ConverterParameter={x:Static local:ModoRicercaPop.PosizionaPaginaDaNumero}}" />
-			<RadioButton Content="Cerca con intorno" GroupName="Gruppo5" IsChecked="{Binding modoRicercaPop, Converter={StaticResource enumBooleanConverter}, ConverterParameter={x:Static local:ModoRicercaPop.RicercaNumeroConIntorno}}" />
-			<Button Content="Annulla" IsCancel="True" />
-			<Button Content="OK" IsDefault="True" Name="confermareButton"  Command="{Binding confermareCommand}" Click="confermareButton_Click" />
-		</StackPanel>
+
+		<Label Content="N° fotogramma" FontSize="16" Margin="10,27,152,0" Height="50" VerticalAlignment="Top" />
+		<TextBox Name="numFotoTextBox" PreviewTextInput="numFotoTextBox_PreviewTextInput" Text="{Binding numeroFotogramma, UpdateSourceTrigger=PropertyChanged}" Margin="162,27,30,192" Style="{StaticResource numRicStyle}" Height="Auto"  />
+		<RadioButton Content="Vai alla pagina"   GroupName="Gruppo5" 
+		             IsEnabled="{Binding possoRicercareLaPagina}"
+		             IsChecked="{Binding modoRicercaPop, Converter={StaticResource enumBooleanConverter}, ConverterParameter={x:Static local:ModoRicercaPop.PosizionaPaginaDaNumero}}" 
+					 Margin="50,95,30,0" Style="{StaticResource modoRicRadioStyle}" VerticalAlignment="Top" />
+		<RadioButton Content="Cerca con intorno" GroupName="Gruppo5" IsChecked="{Binding modoRicercaPop, Converter={StaticResource enumBooleanConverter}, ConverterParameter={x:Static local:ModoRicercaPop.RicercaNumeroConIntorno}}" Margin="50,130,30,0" Style="{StaticResource modoRicRadioStyle}" VerticalAlignment="Top" />
+		<Button Content="Annulla" IsCancel="True" Margin="10,195,162,30" Style="{StaticResource modoRicButtonStyle}" />
+		<Button Content="OK" IsDefault="True" Name="confermareButton"  Style="{StaticResource modoRicButtonStyle}" Command="{Binding confermareCommand}" Click="confermareButton_Click" Margin="162,195,10,30" />
 
 
 

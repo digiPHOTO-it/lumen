@@ -70,6 +70,9 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 				CercaFotoPopup win = new CercaFotoPopup();
 
+				// Imposto la finestra contenitore per poter centrare
+				win.Owner = this.parentWindow;
+
 				// Questo è il viewmodel della finestra di popup				
 				win.DataContext = fotoGalleryViewModel.cercaFotoPopupViewModel;
 
