@@ -58,14 +58,39 @@ namespace Digiphoto.Lumen.UI.Gallery {
  
 			galleryUIRispetto = new GalleryUIRispetto( LsImageGallery, this );
 
+			// Ascolto gli eventi di richiesta apertura popup da parte del viewmodel
+			fotoGalleryViewModel.openPopupDialogRequest += viewModel_openPopupDialogRequest;
+		}
+
+		private void viewModel_openPopupDialogRequest( object sender, EventArgs e ) {
+
+			if( e is CercaFotoPopupRequestEventArgs ) {
+
+				CercaFotoPopupRequestEventArgs popEventArgs = (CercaFotoPopupRequestEventArgs)e;
+
+				CercaFotoPopup win = new CercaFotoPopup();
+
+				// Questo è il viewmodel della finestra di popup				
+				win.DataContext = fotoGalleryViewModel.cercaFotoPopupViewModel;
+
+				var esito = win.ShowDialog();
+
+				if( esito == true ) {
+					// TODO
+				}
+
+				Console.WriteLine( esito );
+
+				win.Close();
+			}
 		}
 
 
 
 
 
-#region Proprietà
-		
+		#region Proprietà
+
 		private FotoGalleryViewModel fotoGalleryViewModel {
 			get {
 				return (FotoGalleryViewModel)base.viewModelBase;
@@ -383,6 +408,17 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 			galleryUIRispetto.ascolta( checkBoxAreaRispetto.IsChecked == true );
 
+		}
+
+		private void dacanc_TextChanged( object sender, TextChangedEventArgs e ) {
+
+			int numFotogramma;
+
+			if( Int32.TryParse( dacanc.Text, out numFotogramma ) )
+				if( numFotogramma > 1000 )
+					if( fotoGalleryViewModel.spostarePaginazioneConNumFotoCommand.CanExecute( numFotogramma ) )
+						fotoGalleryViewModel.spostarePaginazioneConNumFotoCommand.Execute( numFotogramma );
+					
 		}
 	}
 }

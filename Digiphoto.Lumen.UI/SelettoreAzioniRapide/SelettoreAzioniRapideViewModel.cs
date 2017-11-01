@@ -39,9 +39,6 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 
 		public event Digiphoto.Lumen.UI.FotoRitocco.FotoRitoccoViewModel.EditorModeChangedEventHandler editorModeChangedEvent;
 
-		public event EventHandler openPopupDialogRequest;
-
-
 		public ISelettore<Fotografia> fotografieSelector;
 		
 		public SelettoreFotografoViewModel selettoreFotografoViewModelFaccia {
@@ -632,7 +629,7 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 
 			// Se ho qualche ascoltatore, lo invoco
 			SelezioneFotografoPopupRequestEventArgs args = new SelezioneFotografoPopupRequestEventArgs( getListaFotoTarget().Single() );
-			openPopupDialogRequest?.Invoke( this, args );
+			RaisePopupDialogRequest( args );
 		}
 
 		#endregion Metodi
