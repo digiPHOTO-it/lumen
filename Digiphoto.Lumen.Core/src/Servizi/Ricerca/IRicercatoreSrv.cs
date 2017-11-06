@@ -24,7 +24,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 		/// <param name="totPagine"></param>
 		/// <param name="param"></param>
 		/// <returns></returns>
-		uint ricercaPaginaDelFotogramma( uint numFotogramma, uint paginaMin, uint paginaMax, ParamCercaFoto param );
+		int ricercaPaginaDelFotogramma( int numFotogramma, int paginaMin, int paginaMax, ParamCercaFoto param );
 
 		ICollection<Carrello> cerca(ParamCercaCarrello param);
 

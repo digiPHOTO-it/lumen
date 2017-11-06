@@ -18,14 +18,14 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 		private string orderBy { get; set; }
 
-		private uint numFotogrammaDaric { get; set; }
+		private int numFotogrammaDaric { get; set; }
 
-		public uint paginaAttuale { get; private set; }
+		public int paginaAttuale { get; private set; }
 
-		public uint paginaMin { get; set; }
-		public uint paginaMax { get; set; }
+		public int paginaMin { get; set; }
+		public int paginaMax { get; set; }
 
-		private ushort ampiezzaPagina { get; set; }
+		private int ampiezzaPagina { get; set; }
 
 		private List<Object> sqlParam;
 
@@ -42,12 +42,12 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 			// Per default, imposto il limite ad un valore impossibile. Non posso effettuare una ricerca in questo modo
 			paginaMin = 1;
-			paginaMax = uint.MaxValue;
+			paginaMax = int.MaxValue;
 
-			ampiezzaPagina = (ushort) paramCercaFoto.paginazione.take;
+			ampiezzaPagina = paramCercaFoto.paginazione.take;
 		}
 
-		public uint cercaPagina( uint numFotogrammaDaric ) {
+		public int cercaPagina( int numFotogrammaDaric ) {
 
 			this.numFotogrammaDaric = numFotogrammaDaric;
 
@@ -84,11 +84,11 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 		/// <param name="numDaRic"></param>
 		/// <returns>il numero della pagina in cui ho trovato il fotogramma richiesto</returns>
 
-		private uint cercaPaginaRicorsivo( uint limiteInf, uint limiteSup ) {
+		private int cercaPaginaRicorsivo( int limiteInf, int limiteSup ) {
 
 			StringBuilder sql = new StringBuilder();
 
-			uint middlePage = (uint)((limiteInf + limiteSup) / 2);
+			int middlePage = (limiteInf + limiteSup) / 2;
 
 			// Se sono fuori dai range ammissibili, significa che il numero di foto da ricecare non è stato trovato
 			if( middlePage < limiteInf || limiteSup < 0 )
@@ -114,7 +114,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			// .. clausola order-by
 			innerSql.Append( orderBy );
 
-			uint skip = ampiezzaPagina * (middlePage - 1);
+			int skip = ampiezzaPagina * (middlePage - 1);
 			innerSql.AppendFormat( " LIMIT {0} , {1} ", skip, ampiezzaPagina );
 			innerSql.Append( RicercatoreSrvImpl.SEPAR );
 
