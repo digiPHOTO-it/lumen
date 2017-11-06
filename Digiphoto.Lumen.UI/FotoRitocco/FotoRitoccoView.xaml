@@ -206,8 +206,9 @@
 
 					</StackPanel>
 				</TabItem>
-				<TabItem Header="Testo">
-					<StackPanel Name="panelTestoRitocco" Style="{StaticResource panelTestoStyle}">
+				<TabItem Header="Testo" >
+
+					<StackPanel Name="panelScritta" Style="{StaticResource panelScrittaStyle}" >
 
 						<Button Content="Crea Scritta" ToolTip="Aggiungere una scritta alla immagine" Command="{Binding aggiungereScrittaCommand}" CommandParameter="+" Margin="2,4,2,0" />
 
@@ -226,7 +227,7 @@
 								</Grid.RowDefinitions>
 
 								<Label Content="Size" Grid.Column="0" Grid.Row="0" />
-								<extToolkit:IntegerUpDown Grid.Column="1" Grid.Row="0"
+								<extToolkit:IntegerUpDown Grid.Column="1" Grid.Row="0" IsEnabled="False"
 								                          ToolTip="Font Size" Value="{Binding Path=scritta.fontSize,Mode=TwoWay}" />
 
 								<Label Content="Color" Grid.Column="2" Grid.Row="0" />
@@ -265,8 +266,10 @@
 						</GroupBox>
 
 						<TextBox AcceptsReturn="True" Text="{Binding Path=scritta.testo,Mode=TwoWay}" MinHeight="70" MinWidth="140" Name="textBoxScritta" 
-						         IsEnabled="{Binding scritta, Converter={StaticResource boolIsNullConverter}, ConverterParameter=Not}" HorizontalAlignment="Left"  />
-						
+						         IsEnabled="{Binding scritta, Converter={StaticResource boolIsNullConverter}, ConverterParameter=Not}" HorizontalAlignment="Left" Margin="0,2" Width="188"  />
+						<!-- Questo button non serve a niente, serve solo per far perdere il fuoco alla TextBox precedente. Perdendo il fuoco si aggiorna la scritta -->
+						<Button MaxWidth="80" Content="Test" IsEnabled="{Binding scritta, Converter={StaticResource boolIsNullConverter}, ConverterParameter=Not}" />
+
 					</StackPanel>
 				</TabItem>
 			</TabControl>

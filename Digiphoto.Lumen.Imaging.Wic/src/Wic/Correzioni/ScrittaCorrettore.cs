@@ -162,12 +162,12 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 
 			scritta.testo = Configurazione.infoFissa.descrizPuntoVendita != null ? Configurazione.infoFissa.descrizPuntoVendita : "Testo di esempio";
 
-			scritta.fontSize = 60;
-			scritta.fillColor = "#0000FF";  // blue
+			scritta.fontSize = 300;
+			scritta.fillColor = "#FFFFFF";  // White
 			scritta.fontFamily = "Verdana";
 
-			scritta.strokeThickness = 1;
-			scritta.strokeColor = "#FF0000"; // red 
+			scritta.strokeThickness = 3;
+			scritta.strokeColor = "#000000"; // Black 
 			
 			return scritta;
 		}

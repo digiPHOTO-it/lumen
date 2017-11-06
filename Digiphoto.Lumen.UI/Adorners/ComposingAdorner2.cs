@@ -295,8 +295,6 @@ namespace Digiphoto.Lumen.UI.Adorners {
 			return finalSize;
 		}
 
-
-
 		protected override int VisualChildrenCount {
 			get {
 				return visualChildren.Count;
@@ -307,10 +305,7 @@ namespace Digiphoto.Lumen.UI.Adorners {
 			return visualChildren [index];
 		}
 
-
-
 		private void scaleHandle_DragStarted( object sender, DragStartedEventArgs e ) {
-
 			azioneScaleInizio();																																																																	
 		}
 
@@ -318,8 +313,6 @@ namespace Digiphoto.Lumen.UI.Adorners {
 			scaleTfx.CenterX = center.X;
 			scaleTfx.CenterY = center.Y;
 			posizInizioMove = Mouse.GetPosition( this );
-
-//			rotellaStavoRuotando = false;
 		}
 
 		void scaleHandle_DragDelta( object sender, DragDeltaEventArgs e ) {
@@ -329,11 +322,21 @@ namespace Digiphoto.Lumen.UI.Adorners {
 			// faccio cosi che ogni pixel equivale ad un 1 percento.
 			var verticalChange = (posizInizioMove.Y - pos.Y);
 
-			var perc = verticalChange/ 100;
-			
-			this.scaleFactor += perc;
+			// Variazioni più grandi di 2 pixel causano dei salti incontrollati. Limito tutto a 2 pixel
+			if( verticalChange > 2 )
+				verticalChange = 2;
+			if( verticalChange < -2 )
+				verticalChange = -2;
 
-			posizInizioMove = pos;
+			if( verticalChange != 0 ) {
+
+				var perc = verticalChange / 100;
+				if( scaleFactor + perc > 0 ) {
+					// Evito di scendere in negativo
+					this.scaleFactor += perc;
+					posizInizioMove = pos;
+				}
+			}
 		}
 
 		void scaleHandle_DragCompleted( object sender, DragCompletedEventArgs e ) {

@@ -187,10 +187,9 @@
 	</Style>
 
 
-	<Style x:Key="panelTestoStyle" TargetType="Panel" BasedOn="{StaticResource panelLeveRitoccoStyle}">
-		<!--
-		<Setter Property="Width" Value="190" />
--->
+	<Style x:Key="panelScrittaStyle" TargetType="Panel" BasedOn="{StaticResource panelLeveRitoccoStyle}">
+		<Setter Property="VerticalAlignment" Value="Top" />
+		<Setter Property="Height" Value="400" />
 	</Style>
 
 	<Style x:Key="gridOneShotRitoccoStyle" TargetType="UniformGrid" BasedOn="{StaticResource {x:Type Panel}}">
