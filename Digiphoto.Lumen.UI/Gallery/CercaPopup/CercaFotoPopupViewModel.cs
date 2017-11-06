@@ -38,8 +38,8 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 		#region Proprietà
 		
-		private uint _numeroFotogramma;
-		public uint numeroFotogramma {
+		private int _numeroFotogramma;
+		public int numeroFotogramma {
 			get {
 				return _numeroFotogramma;
 			}

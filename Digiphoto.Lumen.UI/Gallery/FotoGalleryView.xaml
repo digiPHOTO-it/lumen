@@ -13,7 +13,7 @@
 			 xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
 
              mc:Ignorable="d" 
-             x:Name="this"
+             x:Name="fotoGallery"
              d:DesignHeight="700" d:DesignWidth="1300" FontStretch="Condensed">
 
 
@@ -73,7 +73,7 @@
 
         </Expander>
 
-        <ToolBarTray Name="toolBarTrayAzioniDx"  Orientation="Vertical" DockPanel.Dock="Right" Style="{StaticResource fgToolBarTrayStyle}">
+		<ToolBarTray Name="toolBarTrayAzioniDx"  Orientation="Vertical" DockPanel.Dock="Right" Style="{StaticResource fgToolBarTrayStyle}">
 
             <ToolBar Band="1" BandIndex="1" Style="{StaticResource fgToolBarStyle}">
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
@@ -184,7 +184,6 @@
                 <extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. righe Slide-Show" Value="{Binding numRigheSlideShow}" IsEnabled="{Binding possoControllareSlideShow}" />
                 <extToolkit:IntegerUpDown Minimum="1" Maximum="10" ToolTip="Num. colonne Slide-Show" Value="{Binding numColonneSlideShow}" IsEnabled="{Binding possoControllareSlideShow}" />
 
-				<TextBox Name="dacanc"  TextChanged="dacanc_TextChanged" />
 			</ToolBar>
 
 
@@ -244,8 +243,33 @@
 
         </ToolBarTray>
 
+		<!-- Slider verticale per spostamento paginazione gallery (con popup con numero di fotogramma) -->
+		<Slider DockPanel.Dock="Right" Orientation="Vertical"
+				Minimum="{Binding minPagineRicerca,Mode=OneWay}"
+				Maximum="{Binding totPagineRicerca,Mode=OneWay}"
+				Value="{Binding paginaAttualeRicerca,Mode=OneWay}"
+		        Name="slider"
+				TickPlacement="Both" TickFrequency="3"
+		        Thumb.DragStarted="slider_DragStarted"
+				Thumb.DragDelta="slider_DragDelta" 
+		        Thumb.DragCompleted="slider_DragCompleted" 
+				IsSnapToTickEnabled="True" 
+				IsEnabled="{Binding isAlmenoUnaFoto}"
+				Style="{StaticResource sliderStyle}" 
+		/>
 
-        <Expander Header="Filtri per ricercare le foto nell'archivio" DockPanel.Dock="Bottom" IsExpanded="True" ExpandDirection="Up" Name="expanderFiltriRicerca" >
+		<Popup Name="sliderTooltipPopup" Style="{StaticResource sliderTooltipPopupStyle}"
+		       PlacementTarget="{Binding ElementName=fotoGallery}" Placement="Center" 
+			   IsOpen="False" StaysOpen="True">
+			<Grid>
+				<Label Content="Posizionamento sul N° fotogramma" />
+				<Border>
+					<TextBlock Name="sliderTooltipTextBlock" Text="12345" />
+				</Border>
+			</Grid>
+		</Popup>
+
+		<Expander Header="Filtri per ricercare le foto nell'archivio" DockPanel.Dock="Bottom" IsExpanded="True" ExpandDirection="Up" Name="expanderFiltriRicerca" >
 
             <StackPanel Orientation="Horizontal" MaxHeight="120">
 
@@ -325,9 +349,6 @@
             </StackPanel>
 
         </Expander>
-
-
-
 
 		<!-- Questa è la lista delle immagini -->
 		<Grid x:Name="gridImges">

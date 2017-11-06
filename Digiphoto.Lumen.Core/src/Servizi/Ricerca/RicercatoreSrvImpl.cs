@@ -440,7 +440,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			if( (totale % param.paginazione.take) != 0 )
 				++totPagine;
 
-			uint numeroDaric = param.numeroConIntorno;
+			int numeroDaric = param.numeroConIntorno;
 			var pag = ricercaPaginaDicotomicaIntorno( 1, totPagine, sqlParam, param );
 
 			return pag;
@@ -501,7 +501,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			}
 		}
 
-		public uint ricercaPaginaDelFotogramma( uint numFotogrammaDaric, uint paginaMin, uint paginaMax, ParamCercaFoto param ) {
+		public int ricercaPaginaDelFotogramma( int numFotogrammaDaric, int paginaMin, int paginaMax, ParamCercaFoto param ) {
 
 			RicercatorePaginaDicotomicoPosiz ricer = new RicercatorePaginaDicotomicoPosiz( param );
 

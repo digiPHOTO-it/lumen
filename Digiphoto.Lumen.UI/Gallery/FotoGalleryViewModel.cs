@@ -264,7 +264,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 		/// </summary>
         public int paginazioneRisultatiGallery {
 			get {
-				return numRighePag * numColonnePag;
+				return (numRighePag * numColonnePag);
 			}
 		}
 
@@ -707,25 +707,45 @@ namespace Digiphoto.Lumen.UI.Gallery {
 					OnPropertyChanged( "totFotoRicerca" );
 					OnPropertyChanged( "countElementiTotali" );
 					OnPropertyChanged( "percentualePosizRicerca" );
-                }
+				}
 			}
 		}
 
 		/// <summary>
+		/// Se ho dei risultati torno 1. Se non ho risultati torno 0
+		/// </summary>
+		public int minPagineRicerca {
+			get {
+				return totFotoRicerca > 0 ? 1 : 0;
+			}
+		}
+		
+		/// <summary>
 		/// Se ho dei risultati caricati e quindi ho anche dei parametri di ricerca,
 		/// calcolo il numero totale delle pagine di paginazione
 		/// </summary>
-		public uint totPagineRicerca {
+		public int totPagineRicerca {
 			get {
-				if( totFotoRicerca > 0 && paramCercaFoto != null && paramCercaFoto.paginazione != null && paramCercaFoto.paginazione.take > 0 ) {
-					uint tot = (uint)(totFotoRicerca / paramCercaFoto.paginazione.take);
-					if( totFotoRicerca % paramCercaFoto.paginazione.take != 0 )
+				if( totFotoRicerca > 0 ) {
+					int tot = (totFotoRicerca / paginazioneRisultatiGallery);
+					if( totFotoRicerca % paginazioneRisultatiGallery != 0 )
 						++tot;
 					return tot;
 				} else
 					return 0;
 			}
 		}
+
+		public int paginaAttualeRicerca {
+			get {
+				if( totFotoRicerca > 0 && paramCercaFoto != null ) { 
+					int tot = (paramCercaFoto.paginazione.skip / paginazioneRisultatiGallery) + 1;
+					return tot;
+				} else
+					return 0;
+			}
+		}
+
 
 		private float _ratioAreaStampabile = 0f;
 		public float ratioAreaStampabile {
@@ -1050,8 +1070,8 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			get
 			{
 				if( _spostarePaginazioneConNumFotoCommand == null ) {
-					_spostarePaginazioneConNumFotoCommand = new RelayCommand( numFoto => spostarePaginazioneConNumFoto( Convert.ToUInt32( numFoto ) ),
-					                                                          numFoto => possoSpostarePaginazioneConNumFoto( Convert.ToUInt32( numFoto ) ),
+					_spostarePaginazioneConNumFotoCommand = new RelayCommand( numFoto => spostarePaginazioneConNumFoto( Convert.ToInt32( numFoto ) ),
+					                                                          numFoto => possoSpostarePaginazioneConNumFoto( Convert.ToInt32( numFoto ) ),
 																			  false );
 				}
 				return _spostarePaginazioneConNumFotoCommand;
@@ -1159,6 +1179,10 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			numColonnePag = Configurazione.UserConfigLumen.prefGalleryViste[idx].numColonne;
 			int newTot = numRighePag * numColonnePag;
 
+			// Se non è cambiato nulla, esco subito
+			if( saveRig == numRighePag && saveCol == numColonnePag )
+				return;
+
 
 			bool cambioInHQ = false;
 			if( stelline == 1 ) {
@@ -1191,6 +1215,11 @@ namespace Digiphoto.Lumen.UI.Gallery {
 				// Rieseguo la ricerca qui nel viewmodel
 				// 			RicercaFlags flags = RicercaFlags.NuovaRicerca | RicercaFlags.MantenereSelezionate | RicercaFlags.MantenereListaIds;
 				eseguireRicerca( RicercaFlags.Niente );
+			} else {
+
+				OnPropertyChanged( "minPagineRicerca" );
+				OnPropertyChanged( "totPagineRicerca" );
+				OnPropertyChanged( "paginaAttualeRicerca" );
 			}
 
 		}
@@ -1678,6 +1707,12 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			OnPropertyChanged( "fotoAttualeRicerca" );
 			OnPropertyChanged( "percentualePosizRicerca" );
 
+			// Paginazione
+			OnPropertyChanged( "minPagineRicerca" );
+			OnPropertyChanged( "totPagineRicerca" );
+			OnPropertyChanged( "paginaAttualeRicerca" );
+			// Paginazione
+
 			raisePropertyChangeSelezionate();
 
 			// Ora ci penso io ad idratare le immagini, perchè devo fare questa operazione nello stesso thread della UI
@@ -1957,25 +1992,25 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			// Questa espressione :     *120*  significa che devo cercare la foto 120 con anche delle foto prima e dopo
 			if( paramCercaFoto.numeriFotogrammi != null ) {
 
-				uint numPosiz = 0;
-				uint intorno = 0;
+				int numPosiz = 0;
+				int intorno = 0;
 
 				// Vediamo se l'utente mi ha inserito sia il numero che la finestra
 				Match m1 = regexNumIntorno1.Match( paramCercaFoto.numeriFotogrammi );
 				if( m1.Success ) {
-					numPosiz = UInt32.Parse( m1.Groups[1].Value );
-					intorno = UInt32.Parse( m1.Groups[2].Value );
+					numPosiz = int.Parse( m1.Groups[1].Value );
+					intorno = int.Parse( m1.Groups[2].Value );
 				} else { 
 					Match m2 = regexNumIntorno2.Match( paramCercaFoto.numeriFotogrammi );
 					if( m2.Success ) {
-						numPosiz = UInt32.Parse( m2.Groups[1].Value );
+						numPosiz = int.Parse( m2.Groups[1].Value );
 						intorno = 100;
 					}
 				}
 
 				if( numPosiz > 0 ) {
-					uint dalNum = (uint) Math.Max( numPosiz - intorno, 1 );
-					uint alNum = numPosiz + intorno;
+					int dalNum = Math.Max( numPosiz - intorno, 1 );
+					int alNum = numPosiz + intorno;
 
 					paramCercaFoto.numeriFotogrammi = dalNum + "-" + alNum;
 					paramCercaFoto.numeroConIntorno = numPosiz;
@@ -2099,6 +2134,8 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			OnPropertyChanged( "isPomeriggioChecked" );
 			OnPropertyChanged( "isSeraChecked" );
 
+
+
 			// Spengo tutte le eventuali selezioni
 			selettoreEventoViewModel.deselezionareTutto();
 			selettoreFotografoViewModel.deselezionareTutto();
@@ -2148,7 +2185,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			else if( deltaPag == 999 ) {
 				paramCercaFoto.paginazione.skip = totFotoRicerca - paginazioneRisultatiGallery;
             } else
-				paramCercaFoto.paginazione.skip += (deltaPag * paginazioneRisultatiGallery);
+				paramCercaFoto.paginazione.skip += ( deltaPag * paginazioneRisultatiGallery);
 			
 			// Non posso scendere sotto il minimo
 			if( paramCercaFoto.paginazione.skip < 0 )
@@ -2166,6 +2203,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			eseguireRicerca( RicercaFlags.Niente );
 
 			OnPropertyChanged( "percentualePosizRicerca" );
+			OnPropertyChanged( "paginaAttualeRicerca" );
 		}
 
 		bool possoSpostarePaginazione( short delta ) {
@@ -2199,32 +2237,32 @@ namespace Digiphoto.Lumen.UI.Gallery {
 		/// Quindi non va effettuata una nuova ricerca, ma occorre mantenere tutto (anche le foto selezionate devono rimanere)
 		/// </summary>
 		/// <param name="numFotogrammaDaric"></param>
-		void spostarePaginazioneConNumFoto( uint numFotogrammaDaric ) {
+		void spostarePaginazioneConNumFoto( int numFotogrammaDaric ) {
 
 			IRicercatoreSrv ricercaSrv = LumenApplication.Instance.getServizioAvviato<IRicercatoreSrv>();
 			
 			int numeroSx = fotografieCW.SourceCollection.OfType<Fotografia>().First().numero;
 			int numeroDx = fotografieCW.SourceCollection.OfType<Fotografia>().Last().numero;
 
-			uint min = (ushort) Math.Min( numeroSx, numeroDx );
-			uint max = (ushort) Math.Max( numeroSx, numeroDx );
+			int min = Math.Min( numeroSx, numeroDx );
+			int max = Math.Max( numeroSx, numeroDx );
 
 			// Ricavo il numero di pagina su cui sono posionato adesso, ricavandolo dai parametri di ricerca
-			uint paginaAttuale = (uint) ((paramCercaFoto.paginazione.skip / paramCercaFoto.paginazione.take) + 1);
-			uint pagineTotali = totPagineRicerca;
+			int paginaAttuale = ((paramCercaFoto.paginazione.skip / paramCercaFoto.paginazione.take) + 1);
+			int pagineTotali = totPagineRicerca;
 
-			uint paginaMin = 0;
-			uint paginaMax = 0;
+			int paginaMin = 0;
+			int paginaMax = 0;
 
 			if( paramCercaFoto.ordinamento == Ordinamento.Asc ) {
 				if( numFotogrammaDaric < min ) {
 					// Sinistra
-					paginaMax = (ushort) (paginaAttuale - 1);
+					paginaMax = (paginaAttuale - 1);
 					paginaMin = 1;
 				}
 				if( numFotogrammaDaric > max ) {
 					// Destra
-					paginaMin = (ushort)(paginaAttuale + 1);
+					paginaMin = (paginaAttuale + 1);
 					paginaMax = pagineTotali;
 				}
 			}
@@ -2232,12 +2270,12 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			if( paramCercaFoto.ordinamento == Ordinamento.Desc ) {
 				if( numFotogrammaDaric < min ) {
 					// Destra
-					paginaMin = (ushort)(paginaAttuale + 1);
+					paginaMin = (paginaAttuale + 1);
 					paginaMax = pagineTotali;
 				}
 				if( numFotogrammaDaric > max ) {
 					// Sinistra
-					paginaMax = (ushort)(paginaAttuale - 1);
+					paginaMax = (paginaAttuale - 1);
 					paginaMin = 1;
 				}
 			}
@@ -2255,7 +2293,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 	
 
-		bool possoSpostarePaginazioneConNumFoto( uint numFotogramma ) {
+		bool possoSpostarePaginazioneConNumFoto( int numFotogramma ) {
 
 
 
@@ -2557,6 +2595,42 @@ namespace Digiphoto.Lumen.UI.Gallery {
 					}
 				}
 			}
+		}
+
+		/// <summary>
+		/// Mantenendo i parametri di ricerca attuali,
+		/// dato un numero di pagina in input, ritorno il numero del primo fotogramma di quella pagina.
+		/// </summary>
+		/// <param name="numPagina">int 0 se non ho trovato niente, altrimenti il numero del fotogramma</param>
+		/// <returns></returns>
+		public int getPrimoFotogrammaPagina( int numPagina ) {
+
+			// Clono i parametri per non sporcare quelli attuali
+			ParamCercaFoto newParam = paramCercaFoto.deepCopy();
+			newParam.paginazione.skip = (numPagina - 1) * paginazioneRisultatiGallery;
+			newParam.paginazione.take = 1;
+			newParam.idratareImmagini = false;
+
+			// Eseguo la ricerca nel database
+			IRicercatoreSrv ricercaSrv = LumenApplication.Instance.getServizioAvviato<IRicercatoreSrv>();
+			var fotografie = ricercaSrv.cerca( newParam );
+
+			int numFotogramma = 0;
+			if( fotografie != null && fotografie.Count > 0 ) {
+				numFotogramma = fotografie.First().numero;
+			}
+
+			return numFotogramma;
+		}
+
+		UnitOfWorkScope _unitOfWorkSlider = null;
+
+		public void startUnitOkWork() {
+			_unitOfWorkSlider = new UnitOfWorkScope();
+		}
+		public void stopUnitOkWork() {
+			_unitOfWorkSlider.Dispose();
+			_unitOfWorkSlider = null;
 		}
 
 		#endregion Metodi

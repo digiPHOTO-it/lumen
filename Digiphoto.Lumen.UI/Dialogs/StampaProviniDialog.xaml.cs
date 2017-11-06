@@ -170,8 +170,8 @@ namespace Digiphoto.Lumen.UI.Dialogs
 		private void RapidoButton_Click(object sender, RoutedEventArgs e) {
 			String tag = (String) (e.Source as Button).Tag;
 			var vetRC = tag.Split('x');
-			model.paramStampaProvini.numeroRighe = int.Parse(vetRC[0]);
-			model.paramStampaProvini.numeroColonne = int.Parse(vetRC[1]);
+			model.paramStampaProvini.numeroRighe = short.Parse(vetRC[0]);
+			model.paramStampaProvini.numeroColonne = short.Parse(vetRC[1]);
 		}
 	}
 }

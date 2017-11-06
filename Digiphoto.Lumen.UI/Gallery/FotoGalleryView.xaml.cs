@@ -11,6 +11,8 @@ using Digiphoto.Lumen.UI.Util;
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.UI.Pubblico;
 using Digiphoto.Lumen.UI.Gallery;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 
 namespace Digiphoto.Lumen.UI.Gallery {
 
@@ -55,7 +57,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			selettoreMetadati.DataContext = fotoGalleryViewModel.selettoreMetadatiViewModel;
 
 			selettoreAzioniAutomatiche.DataContext = fotoGalleryViewModel.selettoreAzioniAutomaticheViewModel;
- 
+
 			galleryUIRispetto = new GalleryUIRispetto( LsImageGallery, this );
 
 			// Ascolto gli eventi di richiesta apertura popup da parte del viewmodel
@@ -94,12 +96,14 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 		#region Proprietà
 
-		private FotoGalleryViewModel fotoGalleryViewModel {
-			get {
+		private FotoGalleryViewModel fotoGalleryViewModel
+		{
+			get
+			{
 				return (FotoGalleryViewModel)base.viewModelBase;
 			}
 		}
-#endregion
+		#endregion
 
 		private void oggiButton_Click( object sender, RoutedEventArgs e ) {
 			datePickerRicercaIniz.SelectedDate = fotoGalleryViewModel.oggi;
@@ -128,8 +132,8 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 				// A seconda di come si esegue la selezione, il range può essere ascendente o discendente.
 				// A me serve sempre prima la più piccola poi la più grande
-				DateTime aa = (DateTime)giorni[0];
-				DateTime bb = (DateTime)giorni[giorni.Count - 1];
+				DateTime aa = (DateTime)giorni [0];
+				DateTime bb = (DateTime)giorni [giorni.Count - 1];
 
 				// Metto sempre per prima la data più piccola
 				fotoGalleryViewModel.paramCercaFoto.giornataIniz = minDate( aa, bb );
@@ -206,7 +210,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			var lbi = getSelectedItemOnLeftClick( e );
 			return lbi == null ? null : (Fotografia)lbi.Content;
 		}
-	
+
 		/// <summary>
 		/// L'evento click avviene su tutta la ListBox (comprese aree vuote e anche scrollbar)
 		/// Invece voglio isolare soltanto i click sulle immagini delle foto.
@@ -222,7 +226,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			ListBoxItem clickedListBoxItem = null;
 			if( element != null )
 				clickedListBoxItem = GetVisualParent<ListBoxItem>( element );
-			
+
 			return clickedListBoxItem;
 		}
 
@@ -413,15 +417,116 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 		}
 
-		private void dacanc_TextChanged( object sender, TextChangedEventArgs e ) {
+		#region Gestione Slider Spostamento
 
-			int numFotogramma;
+		private bool _azioneManuale = false;
+		private bool _dragIniziato = false;
+		private double _posizInizialeY = 0;
+		// Questo binding mi serve per disabilitare il binding
+		private Binding pauseBinding = new Binding( "FooInutile" ) {
+			Mode = BindingMode.OneTime
+		};
 
-			if( Int32.TryParse( dacanc.Text, out numFotogramma ) )
-				if( numFotogramma > 1000 )
-					if( fotoGalleryViewModel.spostarePaginazioneConNumFotoCommand.CanExecute( numFotogramma ) )
-						fotoGalleryViewModel.spostarePaginazioneConNumFotoCommand.Execute( numFotogramma );
-					
+		private BindingExpression _saveSliderValueBinding;
+
+		/// <summary>
+		/// Mentre eseguo il drag della maniglietta dello slider, devo disabilitare il binding perché agisco sullo stesso
+		/// controllo in cui ho il "Value" bindato in Get. (readonly)
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void slider_DragStarted( object sender, DragStartedEventArgs e ) {
+
+			_dragIniziato = true;
+
+			fotoGalleryViewModel.startUnitOkWork();
+
+			inizioSpostamentoSlider();
+		}
+
+		private void inizioSpostamentoSlider() {
+
+			// Se già iniziato, non faccio niente
+			if( _azioneManuale == true )
+				return;
+
+			_azioneManuale = true;
+
+			// Mi salvo il binding e poi lo imposto su di uno che non fa niente. In pratica lo metto in pausa
+			_saveSliderValueBinding = slider.GetBindingExpression( Slider.ValueProperty );
+			slider.SetBinding( Slider.ValueProperty, pauseBinding );
+			slider.Minimum = fotoGalleryViewModel.minPagineRicerca;
+			slider.Maximum = fotoGalleryViewModel.totPagineRicerca;
+			slider.Value = fotoGalleryViewModel.paginaAttualeRicerca;
+
+			// Apro la tooltip
+			sliderTooltipPopup.IsOpen = true;
+		}
+
+		void fineSpostamentoSlider() {
+
+			if( _azioneManuale == false )
+				return;
+
+			_azioneManuale = false;
+			sliderTooltipPopup.IsOpen = false;
+
+			int paginaDesiderata = (int)slider.Value;
+			int deltaPagine = (int)(paginaDesiderata - fotoGalleryViewModel.paginaAttualeRicerca);
+
+			fotoGalleryViewModel.commandSpostarePaginazione.Execute( deltaPagine );
+
+			// Rimetto a posto il binding che avevo messo in pausa
+			BindingOperations.SetBinding( slider, Slider.ValueProperty, _saveSliderValueBinding.ParentBinding );
+		}
+
+		private void slider_DragCompleted( object sender, DragCompletedEventArgs e ) {
+			
+			_dragIniziato = false;
+
+			fineSpostamentoSlider();
+
+			fotoGalleryViewModel.stopUnitOkWork();
+		}
+
+		#endregion Gestione Slider Spostamento
+
+		private void slider_ValueChanged( object sender, RoutedPropertyChangedEventArgs<double> e ) {
+
+			fineSpostamentoSlider();
+
+			if( _azioneManuale ) {
+
+				if( _dragIniziato == true ) {
+					// Ancora non devo fare nulla perché sto facendo il drag. 
+					// L'azione la farò al termine del drag
+				} else {
+					// Se arrivo qui significa che ho cliccato sullo slider (non sulla maniglia)
+					// Questo ha provocato lo spostamento secco del valore 
+					// fineSpostamentoSlider();
+				}
+
+			} else {
+
+				// Il valore dello slider è stato modificato dal binding e non da una mossa dell'utente sul componente.
+				// Quindi non devo fare niente
+			}
+		}
+
+		private void slider_PreviewMouseDown( object sender, MouseButtonEventArgs e ) {
+			inizioSpostamentoSlider();
+		}
+
+		private void slider_PreviewMouseUp( object sender, MouseButtonEventArgs e ) {
+			fineSpostamentoSlider();
+		}
+
+		private void slider_DragDelta( object sender, DragDeltaEventArgs e ) {
+
+			int numPagina = Convert.ToInt32( ((Slider)sender).Value );
+			int numeroFotogramma = fotoGalleryViewModel.getPrimoFotogrammaPagina( numPagina );
+			
+			sliderTooltipTextBlock.Text = numeroFotogramma.ToString();
 		}
 	}
 }
