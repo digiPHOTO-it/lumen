@@ -14,6 +14,7 @@ using System.Windows;
 using Digiphoto.Lumen.Servizi.Ritoccare;
 using Digiphoto.Lumen.Servizi;
 using log4net;
+using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
 
 namespace Digiphoto.Lumen.UI.Pubblico {
 
@@ -24,7 +25,7 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 	};
 
 
-	public class SlideShowViewModel : ClosableWiewModel, IContenitoreGriglia, IObserver<FotoModificateMsg>
+	public class SlideShowViewModel : ClosableWiewModel, IContenitoreGriglia, IObserver<FotoModificateMsg>, IObserver<FotoEliminateMsg>
 	{
 
 		private DispatcherTimer _orologio;
@@ -360,6 +361,9 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			IObservable<FotoModificateMsg> observableFM = LumenApplication.Instance.bus.Observe<FotoModificateMsg>();
 			observableFM.Subscribe( this );
 
+			IObservable<FotoEliminateMsg> observableFotoEliminate = LumenApplication.Instance.bus.Observe<FotoEliminateMsg>();
+			observableFotoEliminate.Subscribe( this );
+
 			raiseCambioStatoProperties();
 		}
 
@@ -479,9 +483,6 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		#endregion
 
 
-
-	
-
 		private void orologio_Tick (object sender, EventArgs e) {
 			
 
@@ -567,6 +568,20 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			}
 		}
 
+		public void OnNext( FotoEliminateMsg msg ) {
+
+			if( slideShow == null )
+				return;
+
+			foreach( Fotografia fotoEliminata in msg.listaFotoEliminate ) {
+				// Elimino dalla collezione delle foto quelle che non ci sono più
+				int pos = slideShow.slides.IndexOf( fotoEliminata );
+				if( pos > 0 ) {
+					AiutanteFoto.disposeImmagini( slideShow.slides [pos], IdrataTarget.Tutte );
+					slideShow.slides.Remove( fotoEliminata );
+				}
+			}
+		}
 		#endregion Messaggi Eventi
 	}
 }
