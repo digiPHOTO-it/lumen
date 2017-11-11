@@ -57,7 +57,8 @@ namespace Digiphoto.Lumen.Servizi.BarCode
 			{
 				try
 				{
-					scansionatore.CancelAsync();
+					if( scansionatore != null )
+						scansionatore.CancelAsync();
 				}
 				catch (Exception ee)
 				{

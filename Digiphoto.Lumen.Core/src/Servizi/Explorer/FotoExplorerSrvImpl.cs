@@ -135,8 +135,9 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			}
 
 			try {
-				foreach( Fotografia foto in this.fotografie ) {
-					AiutanteFoto.disposeImmagini( foto );
+				if( this.fotografie != null )
+					foreach( Fotografia foto in this.fotografie ) {
+						AiutanteFoto.disposeImmagini( foto );
 				}
 			} finally {
 			}
