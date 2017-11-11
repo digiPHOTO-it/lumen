@@ -39,6 +39,7 @@ Name: "italian"; MessagesFile: "compiler:Languages\Italian.isl"
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "DisableAuoRun"; Description: "Disabilitare Auto-Run sui drive rimovibili"; 
 
 [Files]
 ; --- Model ---
@@ -98,3 +99,5 @@ Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: 
 [Run]
 Filename: "{app}\{#MyConfExeName}"; Description: "lancia il gestore della configurazione"; Flags: nowait postinstall skipifsilent runascurrentuser
 
+[Registry]
+Root: HKCU; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\policies\Explorer"; ValueName: NoDriveTypeAutorun; ValueType: dword; ValueData: 255; Flags: uninsdeletekey; Tasks: DisableAuoRun;
