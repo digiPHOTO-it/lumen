@@ -22,12 +22,12 @@ namespace Digiphoto.Lumen.UI.Util
 				{
 					if (value.Contains('-'))
 					{
-						IEnumerable<int> v = ((string)value).Split('-').Select(nn => (int)CompNumFoto.getLongValue(nn));
+						IEnumerable<int> v = ((string)value).Split('-').Select(nn => CompNumFoto.getIntValue(nn) );
 						return v.ToArray<int>();
 					}
 					else
 					{
-						IEnumerable<int> v = ((string)value).Split(',').Select(nn => (int)CompNumFoto.getLongValue(nn));
+						IEnumerable<int> v = ((string)value).Split(',').Select(nn => CompNumFoto.getIntValue(nn) );
 						return v.ToArray<int>();
 					}
 				}

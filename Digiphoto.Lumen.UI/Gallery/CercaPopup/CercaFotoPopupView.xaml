@@ -16,8 +16,8 @@
 	<Grid>
 
 
-		<Label Content="N° fotogramma" FontSize="16" Margin="10,27,152,0" Height="50" VerticalAlignment="Top" />
-		<TextBox Name="numFotoTextBox" PreviewTextInput="numFotoTextBox_PreviewTextInput" Text="{Binding numeroFotogramma, UpdateSourceTrigger=PropertyChanged}" Margin="162,27,30,192" Style="{StaticResource numRicStyle}" Height="Auto"  />
+		<Label Content="N° foto" FontSize="16" Margin="10,27,0,0" HorizontalAlignment="Left" Width="62" Height="33" VerticalAlignment="Top" />
+		<TextBox Name="numFotoTextBox" PreviewTextInput="numFotoTextBox_PreviewTextInput" Text="{Binding numeroFotogramma, UpdateSourceTrigger=PropertyChanged}" Margin="85,19,20,200" Style="{StaticResource numRicStyle}" Height="Auto" MaxLength="10"  />
 		<RadioButton Content="Vai alla pagina"   GroupName="Gruppo5" 
 		             IsEnabled="{Binding possoRicercareLaPagina}"
 		             IsChecked="{Binding modoRicercaPop, Converter={StaticResource enumBooleanConverter}, ConverterParameter={x:Static local:ModoRicercaPop.PosizionaPaginaDaNumero}}" 

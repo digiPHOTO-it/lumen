@@ -35,5 +35,17 @@ namespace Digiphoto.Lumen.Model.Util
 			}
 			return result;
 		}
+
+		public static int getIntValue( string input ) {
+			var reversed = input.ToLower().Reverse();
+			int result = 0;
+			int pos = 0;
+			foreach( char c in reversed ) {
+				result += CharList.IndexOf( c ) * (int)Math.Pow( CharList.Length, pos );
+				pos++;
+			}
+			return result;
+		}
+
 	}
 }

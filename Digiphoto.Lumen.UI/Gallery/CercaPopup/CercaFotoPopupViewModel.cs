@@ -91,7 +91,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 		public bool possoConfermare { 
 			get {
-				return numeroFotogramma > 0;
+				return numeroFotogramma > 0 && numeroFotogramma < Int32.MaxValue;
 			}
 		}
 

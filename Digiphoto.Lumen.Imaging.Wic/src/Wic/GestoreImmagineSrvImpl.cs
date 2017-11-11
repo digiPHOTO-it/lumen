@@ -53,7 +53,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			if( File.Exists( nomeFile ) )
 				return new ImmagineWic( nomeFile );
 			else
-				throw new LumenException( "Nome file insesistente: " + nomeFile + ". Impossibile caricare immagine" );
+				throw new IOException( "Nome file insesistente: " + nomeFile + ". Impossibile caricare immagine" );
 		}
 
 		public IImmagine creaProvino( IImmagine immagineGrande, long sizeLatoMax ) {
