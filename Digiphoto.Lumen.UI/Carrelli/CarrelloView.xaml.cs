@@ -1,27 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Digiphoto.Lumen.UI.Mvvm;
 using System.Collections;
 using Digiphoto.Lumen.Model;
-using Digiphoto.Lumen.UI.Util;
+using Digiphoto.Lumen.UI.Carrelli.Masterizzare;
+using Digiphoto.Lumen.UI.Mvvm.Event;
 
-namespace Digiphoto.Lumen.UI
-{
-    /// <summary>
-    /// Interaction logic for Carrello.xaml
-    /// </summary>
-    public partial class CarrelloView : UserControlBase
+namespace Digiphoto.Lumen.UI.Carrelli {
+	/// <summary>
+	/// Interaction logic for Carrello.xaml
+	/// </summary>
+	public partial class CarrelloView : UserControlBase
     {
         public CarrelloView() 
         {
@@ -40,6 +31,8 @@ namespace Digiphoto.Lumen.UI
 			// Mi posiziono per default sulla data di oggi.
 			carrelloViewModel.paramCercaCarrello.giornataIniz = carrelloViewModel.oggi;
 			carrelloViewModel.paramCercaCarrello.giornataFine = carrelloViewModel.oggi;
+
+			carrelloViewModel.openPopupDialogRequest += viewModel_openPopupDialogRequest;
 		}
 
 		private CarrelloViewModel carrelloViewModel
@@ -207,6 +200,32 @@ namespace Digiphoto.Lumen.UI
 		}
 
 		#endregion Sposta Copia Righe Drag and Drop
+
+		private void viewModel_openPopupDialogRequest( object sender, EventArgs e ) {
+
+			OpenPopupRequestEventArgs eaPop = (OpenPopupRequestEventArgs)e;
+
+			if( eaPop.requestName == "ScegliMasterizzaTargetPopup" ) {
+
+				ScegliMasterizzaTarget win = new ScegliMasterizzaTarget();
+
+				// Imposto la finestra contenitore per poter centrare
+				win.Owner = this.parentWindow;
+
+				// Questo è il viewmodel della finestra di popup				
+				win.DataContext = eaPop.viewModel;
+
+				var esito = win.ShowDialog();
+
+				if( esito == true ) {
+					// TODO
+				}
+
+				Console.WriteLine( esito );
+
+				win.Close();
+			}
+		}
 
 	}
 }

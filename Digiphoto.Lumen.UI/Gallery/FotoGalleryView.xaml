@@ -353,7 +353,7 @@
 		<!-- Questa è la lista delle immagini -->
 		<Grid x:Name="gridImges">
 
-			<lumS:SelettoreAzioniRapide Visibility="Hidden" DataContext="{Binding Path=selettoreAzioniRapideViewModel}"/>
+			<lumS:SelettoreAzioneRapida Visibility="Hidden" DataContext="{Binding Path=selettoreAzioniRapideViewModel}"/>
 
 			<ListBox x:Name="LsImageGallery"   Margin="0,0,0,0"
 					 ScrollViewer.VerticalScrollBarVisibility="Disabled" 

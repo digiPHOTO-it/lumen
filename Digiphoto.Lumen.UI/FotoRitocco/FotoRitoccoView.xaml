@@ -334,7 +334,7 @@
 		</Border>
 
 
-		<lumS:SelettoreAzioniRapide Visibility="Collapsed" DataContext="{Binding Path=selettoreAzioniRapideViewModel}" />
+		<lumS:SelettoreAzioneRapida Visibility="Collapsed" DataContext="{Binding Path=selettoreAzioniRapideViewModel}" />
 
 		<!-- Pannello con la lista foto in attesa di modifica e pulsanti per paginazione risultati -->
 		<DockPanel DockPanel.Dock="Right" LastChildFill="True">
