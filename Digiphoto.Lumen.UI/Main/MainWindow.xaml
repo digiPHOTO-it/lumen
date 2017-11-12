@@ -9,6 +9,7 @@
 		xmlns:lumE="clr-namespace:Digiphoto.Lumen.UI.EliminaVecchiRullini"
 		xmlns:lumCF="clr-namespace:Digiphoto.Lumen.UI.ComNumFoto"
 		xmlns:lumGS="clr-namespace:Digiphoto.Lumen.UI.Pubblico"
+		xmlns:lumCA="clr-namespace:Digiphoto.Lumen.UI.Carrelli"
 		xmlns:lumBS="clr-namespace:Digiphoto.Lumen.UI.BarcodeScanner"
         Title="Lumen" WindowStyle="None" WindowState="Maximized"
 		ContentRendered="mainWindow_ContentRendered"
@@ -134,7 +135,7 @@
 			<TabItem.Header>
 				<TextBlock Text="Carrello" ToolTip="Vendi stampe e CD" />
 			</TabItem.Header>
-			<lum:CarrelloView x:Name="carrelloView" />
+			<lumCA:CarrelloView x:Name="carrelloView" />
         </TabItem>
 
 		<TabItem Name="tabItemPreferenze">

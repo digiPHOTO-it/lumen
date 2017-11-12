@@ -1,27 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Digiphoto.Lumen.UI.Mvvm;
-using System.Collections;
 
 namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 
 	/// <summary>
 	/// Interaction logic for AzioniRapideView.xaml
 	/// </summary>
-	public partial class SelettoreAzioniRapide : UserControlBase
+	public partial class SelettoreAzioneRapida : UserControlBase
 	{
-		public SelettoreAzioniRapide()
+		public SelettoreAzioneRapida()
 		{
 			InitializeComponent();
 
@@ -33,8 +21,8 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 			associaDialogProvider();
 
 			// Devo anche gestire la popup per associare la faccia del fotografo
-			if( this.DataContext is SelettoreAzioniRapideViewModel )
-				viewModel.openPopupDialogRequest += viewModel_openPopupDialogRequest;
+			if( this.DataContext is SelettoreAzioneRapidaViewModel )
+				viewModel.openPopupDialogRequest += this.viewModel_openPopupDialogRequest;
 		}
 
 		private void viewModel_openPopupDialogRequest( object sender, EventArgs e ) {
@@ -42,7 +30,6 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 			if( e is SelezioneFotografoPopupRequestEventArgs ) {
 
 				SelezioneFotografoPopupRequestEventArgs popEventArgs = (SelezioneFotografoPopupRequestEventArgs)e;
-
 				
 				SelettoreFotografoPopup win = new SelettoreFotografoPopup();
 				viewModel.selettoreFotografoViewModelFaccia.deselezionareTutto();
@@ -67,9 +54,9 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 
 		}
 
-		SelettoreAzioniRapideViewModel viewModel {
+		SelettoreAzioneRapidaViewModel viewModel {
 			get {
-				return (SelettoreAzioniRapideViewModel) this.DataContext;
+				return (SelettoreAzioneRapidaViewModel) this.DataContext;
 			}
 		}
 

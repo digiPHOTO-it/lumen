@@ -8,11 +8,11 @@ using System.Windows.Media.Imaging;
 
 namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 
-	public partial class SelettoreAzioniRapideResources {
+	public partial class SelettoreAzioneRapidaResources {
 
-		protected static readonly ILog _giornale = LogManager.GetLogger( typeof( SelettoreAzioniRapideResources ) );
+		protected static readonly ILog _giornale = LogManager.GetLogger( typeof( SelettoreAzioneRapidaResources ) );
 		
-		private SelettoreAzioniRapideViewModel azioniRapideViewModel {
+		private SelettoreAzioneRapidaViewModel azioniRapideViewModel {
 			get;
 			set;
 		}
@@ -22,7 +22,7 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 
 			// Questa operazione non dovrebbe servire
 			ContextMenu menu = (ContextMenu)sender;
-			azioniRapideViewModel = (SelettoreAzioniRapideViewModel)menu.DataContext;
+			azioniRapideViewModel = (SelettoreAzioneRapidaViewModel)menu.DataContext;
 			if( azioniRapideViewModel == null ) {
 
 				_giornale.Warn( "DataContext nullo" );
@@ -46,7 +46,7 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 
 			MenuItem menuItemStampePiene = (MenuItem) sender;
 			MenuItem menuItemSingolaFoto = (MenuItem) menuItemStampePiene.Parent;
-			SelettoreAzioniRapideViewModel vm = (SelettoreAzioniRapideViewModel)menuItemStampePiene.DataContext;
+			SelettoreAzioneRapidaViewModel vm = (SelettoreAzioneRapidaViewModel)menuItemStampePiene.DataContext;
 			
 			if( vm == null ) {
 				// Questa cosa non ha senso, perché il VM dovrebbe essere sempre valorizzato
@@ -98,7 +98,7 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 		private void onSubmenuOpened( object sender, RoutedEventArgs e ) {
 
 			MenuItem curr = (MenuItem)sender;
-			SelettoreAzioniRapideViewModel vm = (SelettoreAzioniRapideViewModel)curr.DataContext;
+			SelettoreAzioneRapidaViewModel vm = (SelettoreAzioneRapidaViewModel)curr.DataContext;
 			if( vm != null )
 				vm.setTarget( (string)curr.Tag );
 			else {

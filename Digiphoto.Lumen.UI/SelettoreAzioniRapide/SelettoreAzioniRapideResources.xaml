@@ -3,8 +3,7 @@
                     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
 					xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI"
                     xmlns:lumCC="clr-namespace:Digiphoto.Lumen.UI.Converters"
-					
-					x:Class="Digiphoto.Lumen.UI.SelettoreAzioniRapide.SelettoreAzioniRapideResources">
+					x:Class="Digiphoto.Lumen.UI.SelettoreAzioniRapide.SelettoreAzioneRapidaResources">
 
 
     <lumCC:ListAzioniRapideVisibilityConverter x:Key="listAzioniRapideVisibilityConverter" />

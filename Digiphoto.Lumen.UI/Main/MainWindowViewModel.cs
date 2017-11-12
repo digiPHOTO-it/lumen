@@ -28,6 +28,7 @@ using Digiphoto.Lumen.UI.Preferenze;
 using static System.Environment;
 using Digiphoto.Lumen.Core.Servizi.Utilita;
 using Digiphoto.Lumen.UI.Gallery;
+using Digiphoto.Lumen.UI.Carrelli;
 
 namespace Digiphoto.Lumen.UI {
 
