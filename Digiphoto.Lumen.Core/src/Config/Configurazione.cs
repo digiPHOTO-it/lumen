@@ -203,7 +203,7 @@ namespace Digiphoto.Lumen.Config  {
 
 			userConfig.estensioniGrafiche = ".jpg;.jpeg;.png;.tif;.tiff";
 			userConfig.editorImmagini = "MSPAINT.EXE";
-			userConfig.masterizzaDirettamente = false;
+			userConfig.masterizzaTarget = MasterizzaTarget.DriveRimovibili;
 			userConfig.millisIntervalloSlideShow = 2500;
 			userConfig.oraCambioGiornata = "05:00";
 

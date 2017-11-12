@@ -5,14 +5,10 @@ using System.Text;
 using Digiphoto.Lumen.Servizi;
 using System.Collections;
 using Digiphoto.Lumen.Model;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.Servizi.Masterizzare {
 
-	public enum TipoDestinazione {
-		NULLA,
-		MASTERIZZATORE,
-		CARTELLA
-	}
 
 	/**
 	 * Questo servizio implementa una coda di attesa di foto che devono essere copiate.
@@ -26,7 +22,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare {
 		 * Se il tipo è MASTERIZZATORE allora la destinazione indica il 
 		 * masterizzatore da usare (potrebbero essercene più di uno).
 		 */
-		void impostaDestinazione( TipoDestinazione tipoDestinazione, String destinazione );
+		void impostaDestinazione( MasterizzaTarget tipoDestinazione, String destinazione );
 		
 		void addFotografia( Fotografia foto );
 

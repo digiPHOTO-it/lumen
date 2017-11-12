@@ -27,6 +27,19 @@ namespace Digiphoto.Lumen.Config
 		StampaDiretta = 1
 	}
 
+	public enum MasterizzaTarget : short {
+		[Description( "Non gestita masterizzazione" )]
+		Nulla = 0,
+		[Description( "Solo drive rimovibili" )]
+		DriveRimovibili = 1,
+		[Description( "Solo sul masterizzatore" )]
+		Masterizzatore = 2,
+		[Description( "Solo su specifica cartella" )]
+		Cartella = 3,
+		[Description( "Ovunque" )]
+		Ovunque = 4
+	}
+
 	public enum MotoreDatabase : short {
 		SqlServerCE = 0,
 		SqLite = 1,
@@ -172,11 +185,11 @@ namespace Digiphoto.Lumen.Config
 			set;
 		}
 
-		public bool masterizzaDirettamente {
+		public MasterizzaTarget masterizzaTarget {
 			get;
 			set;
 		}
-
+		
 		public string defaultMasterizzatore {
 			get;
 			set;

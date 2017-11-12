@@ -8,6 +8,7 @@
         xmlns:extToolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters;assembly=Digiphoto.Lumen.UI"
         xmlns:lumL="clr-namespace:Digiphoto.Lumen.GestoreConfigurazione.UI.Licenze"
+		xmlns:lumCcfg="clr-namespace:Digiphoto.Lumen.Config;assembly=Digiphoto.Lumen.Core"
         FocusManager.FocusedElement="{Binding ElementName=PasswordBox}"
         Title="Lumen Gestore Configurazione"  WindowState="Maximized" WindowStartupLocation="CenterScreen" Icon="/Digiphoto.Lumen.GestoreConfigurazione.UI;component/Images/Configuration-48x48.ico">
 
@@ -172,11 +173,21 @@
 
 					<Expander Header="Masterizzare" Style="{StaticResource expanderStyleDispari}">
 						<Grid>
-							<RadioButton  Content="Direttamente con" Height="23" HorizontalAlignment="Left" Margin="12,15,0,0" x:Name="masterizzaDirettoRadioButton" VerticalAlignment="Top" Width="116" IsChecked="{Binding cfg.masterizzaDirettamente}"/>
-							<RadioButton  Content="usa cartella" Height="23" HorizontalAlignment="Left" Margin="12,50,0,0" x:Name="masterizzaCartellaRadioButton" VerticalAlignment="Top" Width="115" IsChecked="{Binding notMasterizzaDirettamente}"/>
-							<ComboBox Height="23" HorizontalAlignment="Left" Margin="145,15,0,0" VerticalAlignment="Top" Width="248" 
+							<RadioButton Content="Solo sul masterizzatore" Height="23" HorizontalAlignment="Left" Margin="12,15,0,0" x:Name="masterizzaDirettoRadioButton" VerticalAlignment="Top" Width="160" 
+							             IsChecked="{Binding Path=cfg.masterizzaTarget, Converter={StaticResource enumBooleanConverter}, ConverterParameter={x:Static lumCcfg:MasterizzaTarget.Masterizzatore}}" />
+							<RadioButton Content="Solo nella cartella" Height="23" HorizontalAlignment="Left" Margin="12,45,0,0" x:Name="masterizzaCartellaRadioButton" VerticalAlignment="Top" Width="160"
+							             IsChecked="{Binding Path=cfg.masterizzaTarget, Converter={StaticResource enumBooleanConverter}, ConverterParameter={x:Static lumCcfg:MasterizzaTarget.Cartella}}" />
+							<RadioButton Content="Qualsiasi drive rimovibile" Height="23" HorizontalAlignment="Left" Margin="12,75,0,0" x:Name="masterizzaRimovibileButton" VerticalAlignment="Top" Width="160" 
+							             IsChecked="{Binding Path=cfg.masterizzaTarget, Converter={StaticResource enumBooleanConverter}, ConverterParameter={x:Static lumCcfg:MasterizzaTarget.DriveRimovibili}}" />
+							<RadioButton Content="Ovunque" Height="23" HorizontalAlignment="Left" Margin="12,105,0,0" x:Name="masterizzaOvunqueButton" VerticalAlignment="Top" Width="160" 
+							             IsChecked="{Binding Path=cfg.masterizzaTarget, Converter={StaticResource enumBooleanConverter}, ConverterParameter={x:Static lumCcfg:MasterizzaTarget.Ovunque}}" />
+							<RadioButton Content="Mai" ToolTip="Masterizzatore non gestito" Height="23" HorizontalAlignment="Left" Margin="12,135,0,0" x:Name="masterizzaMaiButton" VerticalAlignment="Top" Width="160" 
+							             IsChecked="{Binding Path=cfg.masterizzaTarget, Converter={StaticResource enumBooleanConverter}, ConverterParameter={x:Static lumCcfg:MasterizzaTarget.Nulla}}" />
+
+
+							<ComboBox Height="23" HorizontalAlignment="Left" Margin="194,15,0,0" VerticalAlignment="Top" Width="248" 
                                         IsEnabled="{Binding IsChecked, ElementName=masterizzaDirettoRadioButton}" ItemsSource="{Binding listaMasterizzatori}"  SelectedItem="{Binding cfg.defaultMasterizzatore}" />
-							<TextBox Height="23" Margin="145,47,46,0" x:Name="cartellaMasterizzaTextBox" VerticalAlignment="Top"
+							<TextBox Height="23" Margin="194,47,46,0" x:Name="cartellaMasterizzaTextBox" VerticalAlignment="Top"
                                         IsEnabled="{Binding IsChecked, ElementName=masterizzaCartellaRadioButton}" Text="{Binding cfg.defaultChiavetta}"  />
 							<Button Content="..." Height="23" Margin="0,47,18,0" VerticalAlignment="Top" Command="{Binding scegliereCartellaCommand}" CommandParameter="burn" HorizontalAlignment="Right" Width="22" />
 

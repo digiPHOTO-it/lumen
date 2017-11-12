@@ -123,7 +123,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 					_impl.aggiungereStampe( fotos, p );
 
 					_impl.aggiungereMasterizzate( fotos );
-					_impl.setDatiDischetto( TipoDestinazione.CARTELLA, Path.GetTempPath(), 7m );
+					_impl.setDatiDischetto( MasterizzaTarget.Cartella, Path.GetTempPath(), 7m );
 
 					Assert.IsFalse( _impl.carrello.venduto );
 

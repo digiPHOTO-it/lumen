@@ -127,16 +127,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
-	
-		public bool notMasterizzaDirettamente {
-			get {
-				return ! cfg.masterizzaDirettamente;
-			}
-			set {
-				cfg.masterizzaDirettamente = !(value);
-			}
-		}
-
 		public MotoreDatabase? motorePrecedente {
 			get;
 			set;

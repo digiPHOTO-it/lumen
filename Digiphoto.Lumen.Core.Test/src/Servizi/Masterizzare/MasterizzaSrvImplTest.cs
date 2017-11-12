@@ -8,6 +8,7 @@ using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Servizi.Masterizzare;
 using System.Threading;
 using Digiphoto.Lumen.Servizi.Masterizzare.MyBurner;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.Core.Test.Servizi.Masterizzare {
 
@@ -39,7 +40,7 @@ namespace Digiphoto.Lumen.Core.Test.Servizi.Masterizzare {
                     _impl.addFotografia(fot);
                 }
             }
-            _impl.impostaDestinazione(TipoDestinazione.MASTERIZZATORE, @"E:\");
+            _impl.impostaDestinazione( MasterizzaTarget.Masterizzatore, @"E:\");
 			BurnerSrvImpl burnerSrvImpl = new BurnerSrvImpl();
 			if (burnerSrvImpl.testMedia())
 			{
@@ -64,7 +65,7 @@ namespace Digiphoto.Lumen.Core.Test.Servizi.Masterizzare {
                 }
             }
             string strPathDesktop = Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
-            _impl.impostaDestinazione(TipoDestinazione.CARTELLA, strPathDesktop + @"\Chiavetta");
+            _impl.impostaDestinazione(MasterizzaTarget.Cartella, strPathDesktop + @"\Chiavetta");
 			BurnerSrvImpl burnerSrvImpl = new BurnerSrvImpl();
 			if (burnerSrvImpl.testMedia())
 			{
