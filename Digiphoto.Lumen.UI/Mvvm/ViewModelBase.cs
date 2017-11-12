@@ -6,6 +6,7 @@ using System.Windows;
 using Digiphoto.Lumen.Eventi;
 using log4net;
 using Digiphoto.Lumen.Applicazione;
+using Digiphoto.Lumen.UI.Mvvm.Event;
 
 namespace Digiphoto.Lumen.UI.Mvvm
 {
@@ -213,7 +214,7 @@ namespace Digiphoto.Lumen.UI.Mvvm
 			}
 		}
 
-		protected virtual void RaisePopupDialogRequest( EventArgs eventArgs ) {
+		protected virtual void RaisePopupDialogRequest( OpenPopupRequestEventArgs eventArgs ) {
 			_openPopupDialogRequest?.Invoke( this, eventArgs );
 		}
 
