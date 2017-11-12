@@ -5,6 +5,7 @@
 
 	<lumC:BoolInverterConverter x:Key="boolInverterConverter" />
 	<lumC:BoolVisibilityConverter x:Key="boolVisibilityConverter" />
+	<lumC:EnumBooleanConverter x:Key="enumBooleanConverter" />
 
 	<Style TargetType="{x:Type Expander}"  x:Key="expanderStyle" >
 		<Setter Property="BorderBrush" Value="Green" />
