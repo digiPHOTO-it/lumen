@@ -1188,14 +1188,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// </summary>
 		public void removeDatiDischetto() {
 			this.eliminareRigheCarrello( RigaCarrello.TIPORIGA_MASTERIZZATA );
-			setDatiDischetto( TipoDestinazione.NULLA, null, null );
+			setDatiDischetto( MasterizzaTarget.Nulla, null, null );
 		}
 
-		public void setDatiDischetto( TipoDestinazione tipoDest, string nomeCartella ) {
+		public void setDatiDischetto( MasterizzaTarget tipoDest, string nomeCartella ) {
 			masterizzaSrv.impostaDestinazione( tipoDest, nomeCartella );
 		}
 
-		public void setDatiDischetto( TipoDestinazione tipoDest, string nomeCartella, decimal? prezzoDischetto ) {
+		public void setDatiDischetto( MasterizzaTarget tipoDest, string nomeCartella, decimal? prezzoDischetto ) {
 
 			setDatiDischetto( tipoDest, nomeCartella );
 

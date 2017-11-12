@@ -18,7 +18,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
     {
         private static readonly ILog _giornale = LogManager.GetLogger(typeof(MasterizzaSrvImpl));
 
-        private TipoDestinazione _tipoDestinazione;
+        private MasterizzaTarget _tipoDestinazione;
 
         private IList<Fotografia> _fotografie;
 
@@ -84,19 +84,19 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
         /// </summary>
         /// <param name="tipoDestinazione"></param>
         /// <param name="destinazione"></param>
-        public void impostaDestinazione(TipoDestinazione tipoDestinazione, String destinazione)
+        public void impostaDestinazione( MasterizzaTarget tipoDestinazione, String destinazione)
         {
             this._tipoDestinazione = tipoDestinazione;
             switch (_tipoDestinazione)
             {
-                case TipoDestinazione.CARTELLA:
+                case MasterizzaTarget.Cartella:
                     this._destinazione = destinazione;
                     if (!Directory.Exists(_destinazione))
                     {
                         Directory.CreateDirectory(_destinazione);
                     }
                     break;
-                case TipoDestinazione.MASTERIZZATORE:
+                case MasterizzaTarget.Masterizzatore:
                     this._driverLetter = destinazione;
                     break;
             }
@@ -114,13 +114,13 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 			senderTag = idCarrello;
 
             switch(_tipoDestinazione){
-                case TipoDestinazione.CARTELLA :
+                case MasterizzaTarget.Cartella :
                     // Scarico in un thread separato per non bloccare l'applicazione
                     seNonPossoCopiareSpaccati();
                     _threadCopiaSuChiavetta = new Thread(copiaCartellaDestinazioneAsincrono);
                     _threadCopiaSuChiavetta.Start();
                     break;
-                case TipoDestinazione.MASTERIZZATORE :
+                case MasterizzaTarget.Masterizzatore :
                     _burner = new BurnerSrvImpl();
                     _burner.InviaStatoMasterizzazione += new BurnerSrvImpl.StatoMasterizzazioneEventHandler(inviaMessaggioStatoMasterizzazione);
                     _burner.start();

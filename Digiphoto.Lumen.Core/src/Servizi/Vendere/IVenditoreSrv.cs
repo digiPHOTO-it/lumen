@@ -28,8 +28,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		void aggiungereStampe( Fotografia fotografia, ParamStampa param );
 
 		void removeDatiDischetto();
-		void setDatiDischetto( TipoDestinazione tipoDest, String nomeCartella );
-		void setDatiDischetto( TipoDestinazione tipoDest, String nomeCartella, decimal? prezzoDischetto );
+		void setDatiDischetto( MasterizzaTarget masterizzaTarget, String nomeCartella );
+		void setDatiDischetto( MasterizzaTarget masterizzaTarget, String nomeCartella, decimal? prezzoDischetto );
 
 		/// <summary>
 		///  Aggiungere foto da vendere come cd da masterizzare
