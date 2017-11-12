@@ -101,7 +101,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			selettoreEventoMetadato = new SelettoreEventoViewModel();
 			selettoreFotografoViewModel = new SelettoreFotografoViewModel();
 
-			selettoreAzioniRapideViewModel = new SelettoreAzioniRapideViewModel( this );
+			selettoreAzioniRapideViewModel = new SelettoreAzioneRapidaViewModel( this );
 			selettoreAzioniRapideViewModel.gestitaSelezioneMultipla = true;
 
 			selettoreMetadatiViewModel = new SelettoreMetadatiViewModel1( this );
@@ -131,7 +131,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			}
 
 			// Imposto per default la visualizzazione a 2 stelline
-			cambiarePaginazione( 2 );
+			cambiarePaginazione( (short)2 );
 
 		}
 
@@ -668,7 +668,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 		}
 
 
-		public SelettoreAzioniRapideViewModel selettoreAzioniRapideViewModel
+		public SelettoreAzioneRapidaViewModel selettoreAzioniRapideViewModel
 		{
 			get;
 			private set;
@@ -860,8 +860,8 @@ namespace Digiphoto.Lumen.UI.Gallery {
 		public ICommand cambiarePaginazioneCommand {
 			get {
 				if( _cambiarePaginazioneCommand == null ) {
-					_cambiarePaginazioneCommand = new RelayCommand( stelline => cambiarePaginazione( Convert.ToInt16( stelline ) ),
-																    stelline => true,
+					_cambiarePaginazioneCommand = new RelayCommand( param => cambiarePaginazione( param ),
+																    param => true,
 																	false );
 				}
 				return _cambiarePaginazioneCommand;
@@ -1166,7 +1166,33 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			this.stampantiAbbinate = StampantiAbbinateUtil.deserializza( ss );
 		}
 
-		private void cambiarePaginazione( short stelline ) {
+		/// <summary>
+		/// eseguo il cambio di paginazione. 
+		/// </summary>
+		/// <param name="param">Può essere :
+		///          * short se chiamato internamente
+		///          * string se usato tramite binding
+		///          * Fotografia se mi devo posizionare in HQ su quella
+		/// </param>
+
+		private void cambiarePaginazione( object param ) {
+
+			short stelline = -1;
+			Fotografia primaFotoSelezionata = null;
+
+			if( param is short || param is int ) {
+				stelline = (short)param;
+			} else if( param is string ) {
+				stelline = Convert.ToInt16( (string)param );
+			}
+
+			if( stelline == 1 )
+				primaFotoSelezionata = fotografieCW == null ? null : fotografieCW.SelectedItems.FirstOrDefault();
+
+			if( stelline < 0 && param is Fotografia ) {
+				stelline = 1;
+				primaFotoSelezionata = (Fotografia)param;
+			}
 
 			// Mi salvo le righe per capire se sto passando da una risoluziona bassa (tante foto) ad una risoluziona alta (una foto)	
 			var saveRig = numRighePag;
@@ -1190,11 +1216,9 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 					cambioInHQ = true;
 
-					// Mi salvo la prima foto selezionata della pagina (se esiste)
-					Fotografia primaFotoSelez = fotografieCW == null ? null : fotografieCW.SelectedItems.FirstOrDefault();
 
-					if( primaFotoSelez != null ) {
-						int index = fotografieCW.IndexOf( primaFotoSelez );
+					if( primaFotoSelezionata != null ) {
+						int index = fotografieCW.IndexOf( primaFotoSelezionata );
 						if( Configurazione.UserConfigLumen.invertiRicerca )
 							offsetProssimoSkip = index;
 						else {
@@ -1266,7 +1290,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 			// Controllo se ho un solo risultato, allora mi posiziono con una sola stellina (alta risoluzione)
 			if( idsFotografieSelez.Count == 1 ) {
-				cambiarePaginazione( 1 );
+				cambiarePaginazione( (short)1 );
 			}
 
 		}
@@ -2570,8 +2594,8 @@ namespace Digiphoto.Lumen.UI.Gallery {
 				cercaFotoPopupViewModel.possoRicercareLaPagina = false;
 			}
 
-		// Se ho qualche ascoltatore, lo invoco
-		CercaFotoPopupRequestEventArgs args = new CercaFotoPopupRequestEventArgs();
+			// Se ho qualche ascoltatore, lo invoco
+			CercaFotoPopupRequestEventArgs args = new CercaFotoPopupRequestEventArgs();
 			RaisePopupDialogRequest( args );
 
 			if( cercaFotoPopupViewModel.confermata ) {

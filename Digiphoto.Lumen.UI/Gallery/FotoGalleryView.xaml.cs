@@ -149,12 +149,19 @@ namespace Digiphoto.Lumen.UI.Gallery {
 		}
 
 		/// <summary>
-		/// Tramite il doppio click sulla foto, mando direttamente in modifica quella immagine.
+		/// Originariamente, tramite il doppio click sulla foto, mandavo direttamente in modifica quella immagine.
+		/// Ora invece mi posiziono la paginazione ad 1 HQ su quella foto
 		/// </summary>
 		private void listBoxItemImageGallery_MouseDoubleClick( object sender, RoutedEventArgs e ) {
 
-			ListBoxItem lbItem = (ListBoxItem)sender;
-			fotoGalleryViewModel.mandareInModificaImmediata( lbItem.Content as Fotografia );
+			ListBoxItem lbItem = (ListBoxItem)sender; 
+			var fotoCliccata = lbItem.Content as Fotografia;
+
+			if( fotoGalleryViewModel.isAltaQualita )
+				fotoGalleryViewModel.mandareInModificaImmediata( lbItem.Content as Fotografia );
+			else
+				fotoGalleryViewModel.cambiarePaginazioneCommand.Execute( fotoCliccata );
+
 		}
 
 		/// <summary>
