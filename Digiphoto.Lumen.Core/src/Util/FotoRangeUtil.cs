@@ -48,7 +48,7 @@ namespace Digiphoto.Lumen.UI.Util
 			{
 				throw new ArgumentOutOfRangeException( "Intervallo numerico non valido", ee );
 			}
-			return range.ToArray<int>();
+
 		}
 	}
 }
