@@ -33,7 +33,7 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 	}
 
 
-	public class SelettoreAzioniRapideViewModel : ViewModelBase, IObserver<GestoreCarrelloMsg> {
+	public class SelettoreAzioneRapidaViewModel : ViewModelBase, IObserver<GestoreCarrelloMsg> {
 
 		private Boolean operazioniCarrelloBloccanti = false;
 
@@ -47,7 +47,7 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 		}
 
 
-		public SelettoreAzioniRapideViewModel( ISelettore<Fotografia> fotografieSelector ) {
+		public SelettoreAzioneRapidaViewModel( ISelettore<Fotografia> fotografieSelector ) {
 			this.fotografieSelector = fotografieSelector;
 			IObservable<GestoreCarrelloMsg> observableCarrello = LumenApplication.Instance.bus.Observe<GestoreCarrelloMsg>();
 			observableCarrello.Subscribe( this );
