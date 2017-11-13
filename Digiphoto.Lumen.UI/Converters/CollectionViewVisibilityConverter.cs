@@ -12,23 +12,26 @@ namespace Digiphoto.Lumen.UI.Converters {
 	public class CollectionViewVisibilityConverter : IValueConverter
 	{
 		public object Convert( object value, Type targetType, object parameter, CultureInfo culture ) {
-			if (value == null)
-			{
-				return Visibility.Collapsed;
+
+			Visibility ret = Visibility.Hidden;
+
+			if( value is ICollectionView ) {
+				if( (value as ICollectionView).IsEmpty ) {
+					ret = Visibility.Hidden;
+				} else {
+					ret = Visibility.Visible;
+				}
 			}
 
-			else if (value is ICollectionView)
-			{
-				if ((value as ICollectionView).IsEmpty)
-				{
-					return Visibility.Collapsed;
-				}
+			// Se richiesto dal parametro, inverto il risultato
+			if( "Not".Equals( parameter ) ) {
+				if( ret == Visibility.Hidden )
+					ret = Visibility.Visible;
 				else
-				{
-					return Visibility.Visible;
-				}
+					ret = Visibility.Hidden;
 			}
-			return Visibility.Collapsed;
+
+			return ret;
 		}
 
 		public object ConvertBack( object value, Type targetType, object parameter,	CultureInfo culture ) {

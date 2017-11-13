@@ -81,8 +81,6 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 				// Creo il modello anche dei componenti di cui mi servo.
 				incassiFotografiViewModel = new IncassiFotografiViewModel( "Dettaglio incassi/fotografo per il carrello" );
 
-				scegliMasterizzaTargetViewModel = new ScegliMasterizzaTargetViewModel();
-
 				copiaFotoRigaRadio = true;
 				spostaFotoRigaSingolaRadio = true;
 			}
@@ -142,12 +140,6 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 			get;
 			private set;
 		}
-
-		public ScegliMasterizzaTargetViewModel scegliMasterizzaTargetViewModel {
-			get;
-			private set;
-		}
-
 
 		/// <summary>
 		/// E' il carrello su cui sto aggiungendo le foto
@@ -839,14 +831,32 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 			// Se non ho nessuna foto da masterizzare, esco subito.
 			if( sommatoriaFotoDaMasterizzare > 0 ) {
 
-				// Apro la popup con un evento
-				var ea = new OpenPopupRequestEventArgs {
-					requestName = "ScegliMasterizzaTargetPopup",
-					viewModel = scegliMasterizzaTargetViewModel
-				};
-				RaisePopupDialogRequest( ea );
+				// Creo il ViewModel per la popup
+				using( ScegliMasterizzaTargetViewModel scegliMasterizzaTargetViewModel = new ScegliMasterizzaTargetViewModel() ) {
 
+					// Apro la popup lanciando un evento
+					var ea = new OpenPopupRequestEventArgs {
+						requestName = "ScegliMasterizzaTargetPopup",
+						viewModel = scegliMasterizzaTargetViewModel
+					};
 
+					RaisePopupDialogRequest( ea );
+
+					if( ea.mioDialogResult == true ) {
+
+						// Ricavo la cartella ed eventualmente il tipo di drive
+						string folder = scegliMasterizzaTargetViewModel.cartella;
+						DriveType driveType = scegliMasterizzaTargetViewModel.getDriveType( folder );
+
+						if( driveType == DriveType.CDRom )
+							ret = masterizzaSulMasterizzatore( folder );
+						else
+							ret = masterizzaSuCartella( folder );
+
+					}
+				}
+
+/*
 				switch( Configurazione.UserConfigLumen.masterizzaTarget ) {
 
 					case MasterizzaTarget.Masterizzatore:
@@ -857,17 +867,21 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 						ret = masterizzaSuCartella();
 						break;
 				}
-
-				scegliMasterizzaTargetViewModel = null;
+*/
+				
 			}
 
 			return ret;
 		}
 
 		private bool masterizzaSulMasterizzatore() {
+			return masterizzaSulMasterizzatore( Configurazione.UserConfigLumen.defaultMasterizzatore );
+        }
+
+		private bool masterizzaSulMasterizzatore( string nomeCartella ) {
 
 			bool procediPure = true;
-			venditoreSrv.setDatiDischetto( MasterizzaTarget.Masterizzatore, Configurazione.UserConfigLumen.defaultMasterizzatore );
+			venditoreSrv.setDatiDischetto( MasterizzaTarget.Masterizzatore, nomeCartella );
 
 			dialogProvider.ShowConfirmation( "Voi continuare la masterizzazione sul CD/DVD ?",
 				"Richiesta conferma",
@@ -891,19 +905,21 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 		}
 
 		private bool masterizzaSuCartella() {
+			return masterizzaSuCartella( Configurazione.UserConfigLumen.defaultChiavetta );
+		}
 
-			string chiavettaPath = Configurazione.UserConfigLumen.defaultChiavetta;
+		private bool masterizzaSuCartella( string nomeCartella ) {
 
 			// cartella
-			if( !testCartellaMasterizza( chiavettaPath ) ) {
-				chiavettaPath = scegliCartellaDoveMasterizzare();
-				if( chiavettaPath == null ) {
+			if( !testCartellaMasterizza( nomeCartella ) ) {
+				nomeCartella = scegliCartellaDoveMasterizzare();
+				if( nomeCartella == null ) {
 					return false;
 				}
 			}
 
-			_giornale.Debug( "Masterizzo i files su : " + chiavettaPath );
-			venditoreSrv.setDatiDischetto( MasterizzaTarget.Cartella, chiavettaPath );
+			_giornale.Debug( "Masterizzo i files su : " + nomeCartella );
+			venditoreSrv.setDatiDischetto( MasterizzaTarget.Cartella, nomeCartella );
 
 			return true;
 		}
@@ -1740,6 +1756,23 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 		private Digiphoto.Lumen.Servizi.Masterizzare.Fase faseOld = Digiphoto.Lumen.Servizi.Masterizzare.Fase.Attesa;
 		public void OnNext(MasterizzaMsg msg)
 		{
+			if( msg.fase == Servizi.Masterizzare.Fase.CopiaCompletata ) {
+			
+				if( msg.esito == Eventi.Esito.Ok ) {
+
+					// Apro la cartella di destinazione cosi verifico le foto
+					if( Directory.Exists( msg.cartella ) ) {
+						System.Diagnostics.Process.Start( new System.Diagnostics.ProcessStartInfo() {
+							FileName = msg.cartella,
+							UseShellExecute = true,
+							Verb = "open"
+						} );
+					}
+
+				}
+			}
+
+/*
 			System.Diagnostics.Trace.WriteLine("");
 			System.Diagnostics.Trace.WriteLine("[TotFotoNonAggiunte]: " + msg.totFotoNonAggiunte);
 			System.Diagnostics.Trace.WriteLine("[TotFotoAggiunte]: " + msg.totFotoAggiunte);
@@ -1748,7 +1781,7 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 			System.Diagnostics.Trace.WriteLine("[Fase]: " + msg.fase);
 			System.Diagnostics.Trace.WriteLine("[Result]: " + msg.result);
 			System.Diagnostics.Trace.WriteLine("[Progress]: " + msg.progress);
-			 
+*/			 
 
 			StatoMasterizzazione = msg.fase;
 			if (faseOld != StatoMasterizzazione)

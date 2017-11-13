@@ -111,26 +111,13 @@ namespace Digiphoto.Lumen.Servizi.VolumeCambiato {
 			volumeCambiatoMsg.timeStamp = new DateTime( (long)timeCreated );
 
 			volumeCambiatoMsg.nomeVolume = driveName;
+
 			// 2=montato ; 3=smontato
 			volumeCambiatoMsg.montato = (eventType == 2);
 
 			volumeCambiatoMsg.descrizione = (volumeCambiatoMsg.montato) ? "Attivato" : "Smontato";
 			volumeCambiatoMsg.descrizione += " il volume " + driveName;
 
-/*
-			_giornale.Debug( e.NewEvent.GetText( TextFormat.Mof ) );
-			_giornale.Debug( "\tType = " + mo.GetType().ToString() );
-			_giornale.Debug( "\t" + e.ToString() );
-			_giornale.Debug( "\t" + e.NewEvent.ToString() );
-
-			PropertyDataCollection.PropertyDataEnumerator enu = mo.Properties.GetEnumerator();
-			if( _giornale.IsDebugEnabled ) {
-				while( enu.MoveNext() ) {
-					PropertyData pd = enu.Current;
-					_giornale.Debug( "Nome=" + pd.Name + "  Valore=" + pd.Value );
-				}
-			}
-*/
 
 			// Memorizzo l'ultimo drive
 			ultimoDriveMontato = volumeCambiatoMsg.montato ? driveName : null;

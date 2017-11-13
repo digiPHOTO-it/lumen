@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="Digiphoto.Lumen.UI.SelettoreDischi.SelettoreDisco"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Digiphoto.Lumen.UI.SelettoreDischi"
+             mc:Ignorable="d" Style="{DynamicResource selettoreDiscoUserControlStyle}"
+             d:DesignHeight="300" d:DesignWidth="300">
+
+	<!-- includo il dizionario puntuale e quello globale -->
+	<UserControl.Resources>
+		<ResourceDictionary Source="SelettoreDiscoResources.xaml" />
+	</UserControl.Resources>
+
+	<DockPanel LastChildFill="True">
+
+		<TextBlock Padding="3" DockPanel.Dock="Bottom" Foreground="White" FontSize="14" TextWrapping="Wrap" TextAlignment="Center">
+			E' possibile inserire un disco rimovibile in questo momento
+			ed attendere che venga riconosciuto dal sistema operativo.
+		</TextBlock>
+
+		<Grid>
+		<ListView x:Name="dischiListBox" 
+		         Visibility="{Binding dischiCW,Converter={StaticResource collectionViewVisibilityConverter}}"
+		         IsSynchronizedWithCurrentItem="False"
+		         SelectedItem="{Binding discoSelezionato,Mode=TwoWay}"
+				 ItemsSource="{Binding Path=dischiCW}"
+				 Style="{StaticResource dischiListBoxStyle}"
+				 ItemTemplate="{DynamicResource dischiItemTemplate}" >
+
+			<ListView.ItemContainerStyle>
+				<Style TargetType="ListViewItem">
+					<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+				</Style>
+			</ListView.ItemContainerStyle>
+		</ListView>
+
+		<TextBlock TextWrapping="Wrap"  Text="Nessun disco rimovibile rilevato" Foreground="Orange" TextAlignment="Center"
+		           Visibility="{Binding dischiCW,Converter={StaticResource collectionViewVisibilityConverter},ConverterParameter=Not}"
+				   VerticalAlignment="Center" HorizontalAlignment="Center"  FontSize="32" 
+		/>
+
+		</Grid>
+	</DockPanel>
+</UserControl>
