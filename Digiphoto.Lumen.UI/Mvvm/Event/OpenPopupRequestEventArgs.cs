@@ -11,6 +11,8 @@ namespace Digiphoto.Lumen.UI.Mvvm.Event
 	/// </summary>
 	public class OpenPopupRequestEventArgs : RoutedEventArgs
 	{
+		public Nullable<bool> mioDialogResult { get; set; }
+
 		public object param;
 
 		public string requestName { get; set; }

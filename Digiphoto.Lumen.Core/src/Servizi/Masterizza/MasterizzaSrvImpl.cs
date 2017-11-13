@@ -184,7 +184,9 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 				inizioCopiaMsg.fase = Fase.InizioCopia;
                 inizioCopiaMsg.progress = 0;
                 inizioCopiaMsg.result = "Inizio Copia Su Chiavetta";
-                pubblicaMessaggio(inizioCopiaMsg);
+				inizioCopiaMsg.cartella = _destinazione;
+
+				pubblicaMessaggio(inizioCopiaMsg);
 
                 totFotoCopiate = 0;
                 totFotoNonCopiate = 0;
@@ -209,6 +211,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 							statoCopiaMsg.totFotoNonAggiunte = totFotoNonCopiate;
 							statoCopiaMsg.progress = ((totFotoCopiate + totFotoNonCopiate) * 100) / _fotografie.Count;
 							statoCopiaMsg.result = "Il File " + fot.nomeFile + " è statoScarica copiato sulla chiavetta con successo";
+							statoCopiaMsg.cartella = _destinazione;
 							pubblicaMessaggio( statoCopiaMsg );
 							//System.Diagnostics.Trace.WriteLine("Il File " + fot.nomeFile + " è statoScarica copiato sulla chiavetta con successo");
 						}
@@ -237,6 +240,7 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 				copiaCompletataMsg.progress = 100;
                 copiaCompletataMsg.totFotoNonAggiunte = totFotoNonCopiate;
                 copiaCompletataMsg.totFotoAggiunte = totFotoCopiate;
+				copiaCompletataMsg.cartella = _destinazione;
 				this.isCompletato = true;
                 pubblicaMessaggio(copiaCompletataMsg);
                 //System.Diagnostics.Trace.WriteLine("FINE");

@@ -222,16 +222,21 @@
       <DependentUpon>BarcodeScanner.xaml</DependentUpon>
     </Compile>
     <Compile Include="BarcodeScanner\BarcodeScannerViewModel.cs" />
-    <Compile Include="Carrello\CarrelloView.xaml.cs">
+    <Compile Include="Carrelli\CarrelloView.xaml.cs">
       <DependentUpon>CarrelloView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Carrello\CarrelloViewModel.cs" />
+    <Compile Include="Carrelli\CarrelloViewModel.cs" />
+    <Compile Include="Carrelli\Masterizzare\ScegliMasterizzaTargetViewModel.cs" />
+    <Compile Include="Carrelli\Masterizzare\ScegliMasterizzaTargetWiew.xaml.cs">
+      <DependentUpon>ScegliMasterizzaTargetWiew.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ComNumFoto\CompNumFotoView.xaml.cs">
       <DependentUpon>CompNumFotoView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\BoolInverterConverter.cs" />
     <Compile Include="Converters\BooleanToSelectionModeConverter.cs" />
     <Compile Include="Converters\ColorHexConverter.cs" />
+    <Compile Include="Converters\DriveInfoConverter.cs" />
     <Compile Include="Converters\FiltroSelezConverter.cs" />
     <Compile Include="Converters\StatoMasterizzazioneVisibilityConverter.cs" />
     <Compile Include="Converters\CollectionViewVisibilityConverter.cs" />
@@ -323,6 +328,7 @@
     </Compile>
     <Compile Include="IncassiFotografi\IncassiFotografiViewModel.cs" />
     <Compile Include="Main\CambioPaginaMsg.cs" />
+    <Compile Include="Mvvm\Event\OpenPopupRequestEventArgs.cs" />
     <Compile Include="Mvvm\Event\SelectionFailedEventArgs.cs" />
     <Compile Include="Mvvm\Event\SelectionFailedEventHandler.cs" />
     <Compile Include="Mvvm\ITrayIconProvider.cs" />
@@ -330,6 +336,7 @@
     <Compile Include="Mvvm\MultiSelect\IMultiSelectCollectionView.cs" />
     <Compile Include="Mvvm\MultiSelect\MultiSelect.cs" />
     <Compile Include="Mvvm\MultiSelect\MultiSelectCollectionView.cs" />
+    <Compile Include="Mvvm\WindowBase.cs" />
     <Compile Include="Mvvm\UserControlBase.cs" />
     <Compile Include="PanAndZoom\PanAndZoom.cs" />
     <Compile Include="PanAndZoom\PanAndZoomViewModel.cs" />
@@ -363,12 +370,16 @@
       <DependentUpon>SelettoreAzioniAutomaticheView.xaml</DependentUpon>
     </Compile>
     <Compile Include="SelettoreAzioniAutomatiche\SelettoreAzioniAutomaticheViewModel.cs" />
-    <Compile Include="SelettoreAzioniRapide\SelettoreAzioniRapideResources.cs" />
-    <Compile Include="SelettoreAzioniRapide\SelettoreAzioniRapideView.xaml.cs">
-      <DependentUpon>SelettoreAzioniRapideView.xaml</DependentUpon>
+    <Compile Include="SelettoreAzioniRapide\SelettoreAzioneRapidaResources.cs" />
+    <Compile Include="SelettoreAzioniRapide\SelettoreAzioneRapidaView.xaml.cs">
+      <DependentUpon>SelettoreAzioneRapidaView.xaml</DependentUpon>
     </Compile>
     <Compile Include="SelettoreAzioniRapide\SelettoreAzioniRapideViewModel.cs" />
     <Compile Include="SelettoreAzioniRapide\SelezioneFotografoPopupRequestEventArgs.cs" />
+    <Compile Include="SelettoreDischi\SelettoreDisco.xaml.cs">
+      <DependentUpon>SelettoreDisco.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SelettoreDischi\SelettoreDiscoViewModel.cs" />
     <Compile Include="SelettoreFotografo\Popup\SelettoreFotografoPopupViewModel.cs" />
     <Compile Include="SelettoreFotografo\Popup\SelettoreFotografoPopup.xaml.cs">
       <DependentUpon>SelettoreFotografoPopup.xaml</DependentUpon>
@@ -402,6 +413,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="BarcodeScanner\BarcodeScannerResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Carrelli\Masterizzare\ScegliMasterizzaTargetResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Carrelli\Masterizzare\ScegliMasterizzaTargetWiew.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -558,12 +577,12 @@
     <Compile Include="src\ScreenCapture\Win32Api\User32.cs" />
     <Compile Include="src\ScreenCapture\Win32Api\Win32Point.cs" />
     <Compile Include="src\ScreenCapture\Win32Api\Win32Rect.cs" />
-    <Page Include="Carrello\CarrelloView.xaml">
+    <Page Include="Carrelli\CarrelloView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Carrello\CarrelloResources.xaml">
+    <Page Include="Carrelli\CarrelloResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -603,9 +622,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SelettoreAzioniRapide\SelettoreAzioniRapideView.xaml">
+    <Page Include="SelettoreAzioniRapide\SelettoreAzioneRapidaView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SelettoreDischi\SelettoreDisco.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SelettoreDischi\SelettoreDiscoResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="SelettoreFormatoCartaAbbinato\SelettoreFormatoCartaAbbinatoView.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -922,6 +949,10 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\DriveType_Removable-64x64.png" />
+    <Resource Include="Resources\DriveType_CDRom-64x64.png" />
+    <Resource Include="Resources\DriveType_CDRom-32x32.png" />
+    <Resource Include="Resources\DriveType_Removable-32x32.png" />
     <Resource Include="Resources\ritratto-16x16.png" />
     <Resource Include="Resources\riempimenti\rocks.jpg" />
     <Resource Include="Resources\AzioniSelezionate-16x16.png" />

@@ -27,5 +27,6 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
         public int totFotoNonAggiunte { get; set; }
         public string result { get; set; }
         public int progress { get; set; }
-    }
+		public string cartella { get; set; }
+	}
 }

@@ -217,11 +217,7 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 
 				var esito = win.ShowDialog();
 
-				if( esito == true ) {
-					// TODO
-				}
-
-				Console.WriteLine( esito );
+				eaPop.mioDialogResult = esito;
 
 				win.Close();
 			}
