@@ -951,8 +951,6 @@
   <ItemGroup>
     <Resource Include="Resources\DriveType_Removable-64x64.png" />
     <Resource Include="Resources\DriveType_CDRom-64x64.png" />
-    <Resource Include="Resources\DriveType_CDRom-32x32.png" />
-    <Resource Include="Resources\DriveType_Removable-32x32.png" />
     <Resource Include="Resources\ritratto-16x16.png" />
     <Resource Include="Resources\riempimenti\rocks.jpg" />
     <Resource Include="Resources\AzioniSelezionate-16x16.png" />
