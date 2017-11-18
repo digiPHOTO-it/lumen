@@ -62,8 +62,10 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 					correttore = new ZoomCorrettore();
 				else if( tipo == typeof( Trasla ) )
 					correttore = new TraslaCorrettore();
-				else if( tipo == typeof( Maschera ) )
-					correttore = new MascheraCorrettore();
+				else if( tipo == typeof( Mascheratura ) )
+					correttore = new MascheraturaCorrettore();
+				else if( tipo == typeof( MascheraturaOrientabile ) )
+					correttore = new MascheraturaCorrettore();
 				else if( tipo == typeof( Logo ) )
 					correttore = new LogoCorrettore();
 				else if( tipo == typeof( AreaRispetto ) )

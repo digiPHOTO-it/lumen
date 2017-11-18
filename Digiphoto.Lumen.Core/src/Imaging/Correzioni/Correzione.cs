@@ -30,7 +30,8 @@ namespace Digiphoto.Lumen.Imaging.Correzioni {
 	[XmlInclude(typeof(Gimp))]
 	[XmlInclude(typeof(Zoom))]
 	[XmlInclude(typeof(Trasla))]
-	[XmlInclude(typeof(Maschera))]
+	[XmlInclude(typeof(Mascheratura))]
+	[XmlInclude( typeof( MascheraturaOrientabile ) )]
 	[XmlInclude( typeof( Logo ) )]
 	[XmlInclude( typeof( Scritta ) )]
 	public abstract class Correzione {

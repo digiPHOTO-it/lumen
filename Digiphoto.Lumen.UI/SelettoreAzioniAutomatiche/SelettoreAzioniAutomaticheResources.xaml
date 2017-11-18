@@ -12,18 +12,32 @@
     <DataTemplate x:Key="azioniAutomaticheListBoxTemplate">
         <Border BorderBrush="Red" >
             <StackPanel Orientation="Horizontal">
-                <Image 
-                    Name="icon"
-                    Source="{Binding correzioniXml, Converter={StaticResource correzioniXmlImageSourceConverter}}"
-                    Height="50"
-                    Width="50"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    Canvas.Left="0"
-                 />
+
+				<Grid 	VerticalAlignment="Center"
+						HorizontalAlignment="Center"
+						Canvas.Left="0" >
+
+					<Image 
+						Name="icon"
+						Source="{Binding correzioniXml, Converter={StaticResource correzioniXmlImageSourceConverter},ConverterParameter=MASCHERA}"
+						Height="50" Width="50" Panel.ZIndex="10" />
+
+					<Image Width="16" Panel.ZIndex="20"
+					       Source="{Binding correzioniXml, Converter={StaticResource correzioniXmlImageSourceConverter},ConverterParameter=ICONACOMPOSIZIONE}" />
+				</Grid>
+                
                 <Label Content="{Binding nome}" Margin="10,10,0,0" />
             </StackPanel>
         </Border>
     </DataTemplate>
+
+	<Style x:Key="azioniAutomaticheListBox" TargetType="ListBox" BasedOn="{StaticResource baseListBoxStyle}">
+		<Style.Triggers>
+			<DataTrigger Binding="{Binding modalitaAssociazione}" Value="True">
+				<Setter Property="BorderBrush" Value="Purple" />
+				<Setter Property="Background" Value="LightGreen" />
+			</DataTrigger>
+		</Style.Triggers>
+	</Style>
 
 </ResourceDictionary>

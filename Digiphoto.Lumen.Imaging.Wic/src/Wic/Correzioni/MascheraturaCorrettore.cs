@@ -6,7 +6,7 @@ using Digiphoto.Lumen.Imaging.Correzioni;
 
 namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 	
-	public class MascheraCorrettore : Correttore {
+	public class MascheraturaCorrettore : Correttore {
 
 		public override IImmagine applica( IImmagine immagineSorgente, Correzione correzione ) {
 			throw new NotImplementedException();

@@ -220,7 +220,7 @@
 	</Style>
 
 	
-	<Style TargetType="{x:Type ListBox}">
+	<Style x:Key="baseListBoxStyle" TargetType="{x:Type ListBox}">
 		<Setter Property="Background" Value="Gray" />
 		<Setter Property="Foreground" Value="WhiteSmoke" />
 	</Style>
