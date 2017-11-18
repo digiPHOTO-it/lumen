@@ -1263,7 +1263,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				string nomeFile = Path.GetFileName( bmpMascheraAttiva.UriSource.LocalPath );
 
 				// Uso la maschera nella sua dimensione naturale
-				Imaging.Correzioni.Maschera maschera = new Imaging.Correzioni.Maschera {
+				Imaging.Correzioni.Mascheratura maschera = new Imaging.Correzioni.Mascheratura {
 					nome = nomeFile,
 					width = bmpMascheraAttiva.PixelWidth,
 					height = bmpMascheraAttiva.PixelHeight
@@ -1615,8 +1615,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			BitmapImage bi = null;
 
 
-			if( p is Digiphoto.Lumen.Imaging.Correzioni.Maschera ) {
-				Digiphoto.Lumen.Imaging.Correzioni.Maschera mascheratura = (Digiphoto.Lumen.Imaging.Correzioni.Maschera)p;
+			if( p is Digiphoto.Lumen.Imaging.Correzioni.Mascheratura ) {
+				Digiphoto.Lumen.Imaging.Correzioni.Mascheratura mascheratura = (Digiphoto.Lumen.Imaging.Correzioni.Mascheratura)p;
 				if( mascheratura == null ) {
 					bmpMascheraAttiva = null;
 				} else {
@@ -1857,7 +1857,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 					// La maschera e il logo devo gestirli in modo separato.
 					foreach( Correzione c in correzioni ) {
 
-						if( c is Imaging.Correzioni.Maschera ) {
+						if( c is Imaging.Correzioni.Mascheratura ) {
 							maschera = c;
 							attivareMaschera( maschera );   // Questa chiamata già ridimensiona il contenitore giallo.
 						}
@@ -2175,7 +2175,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				string nomeFile = Path.GetFileName( bmpMascheraAttiva.UriSource.LocalPath );
 
 				// Uso la maschera nella sua dimensione naturale
-				Imaging.Correzioni.Maschera maschera = new Imaging.Correzioni.Maschera {
+				Imaging.Correzioni.Mascheratura maschera = new Imaging.Correzioni.Mascheratura {
 					nome = nomeFile,
 					width = bmpMascheraAttiva.PixelWidth,
 					height = bmpMascheraAttiva.PixelHeight

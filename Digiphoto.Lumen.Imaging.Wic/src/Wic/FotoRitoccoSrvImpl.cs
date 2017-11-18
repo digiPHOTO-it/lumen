@@ -675,7 +675,8 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			// ma devo gestire nell'insieme in modo efficiente.
 			// In questo caso devo cambiare strategia.
 			bool complicato = false;
-			if( correzioni.SingleOrDefault( c => c is Imaging.Correzioni.Maschera ) != null ||
+			if( correzioni.SingleOrDefault( c => c is Imaging.Correzioni.Mascheratura ) != null ||
+			    correzioni.SingleOrDefault( c => c is Imaging.Correzioni.MascheraturaOrientabile ) != null ||
 				correzioni.SingleOrDefault( c => c is Ruota && ((Ruota)c).isAngoloRetto == false ) != null ||
 				correzioni.SingleOrDefault( c => c is Trasla ) != null ||
 				correzioni.SingleOrDefault( c => c is Zoom ) != null )
@@ -718,12 +719,27 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 			// ::: Per prima cosa calcolo la dimensione che deve avere l'immagine di uscita (il canvas)
 			//     Verifico quindi se c'è una maschera. In tal caso comanda lei
-			Imaging.Correzioni.Maschera maschera = (Imaging.Correzioni.Maschera)correzioni.FirstOrDefault( c => c is Imaging.Correzioni.Maschera );
-			if( maschera != null ) {
+			Imaging.Correzioni.Mascheratura mascheratura = (Imaging.Correzioni.Mascheratura)correzioni.FirstOrDefault( c => c is Imaging.Correzioni.Mascheratura );
 
+			// La mascheratura potrebbe essere anche indicata come orientabile
+			if( mascheratura == null ) {
+				Imaging.Correzioni.MascheraturaOrientabile mascheraturaOrientabile = (Imaging.Correzioni.MascheraturaOrientabile)correzioni.FirstOrDefault( c => c is Imaging.Correzioni.MascheraturaOrientabile );
+				if( mascheraturaOrientabile != null ) {
+					// Ora estraggo la mascheratura giusta per questa foto
+					if( immaginePartenza.orientamento == Orientamento.Verticale )
+						mascheratura = mascheraturaOrientabile.mascheraturaV;
+					if( immaginePartenza.orientamento == Orientamento.Orizzontale )
+						mascheratura = mascheraturaOrientabile.mascheraturaH;
+				}
+			}
 
+			//
+			// Ora che ho scoperto se esiste una mascheratura, la applico
+			//
 
-				ImmagineWic immagineMaschera = new ImmagineWic( Path.Combine( getCartellaMaschera(FiltroMask.MskSingole), maschera.nome ) );
+			if( mascheratura != null ) {
+
+				ImmagineWic immagineMaschera = new ImmagineWic( Path.Combine( getCartellaMaschera(FiltroMask.MskSingole), mascheratura.nome ) );
 				bmpMaschera = immagineMaschera.bitmapSource;
 				// Carico la maschera per avere le dimensioni reali definitive
 				if( qualeTarget == IdrataTarget.Provino ) {

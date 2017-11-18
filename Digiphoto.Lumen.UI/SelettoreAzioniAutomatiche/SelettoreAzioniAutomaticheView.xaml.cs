@@ -33,6 +33,24 @@ namespace Digiphoto.Lumen.UI
 
 		private void SelettoreAzioniAutomatiche_DataContextChanged( object sender, DependencyPropertyChangedEventArgs e ) {
 			associaDialogProvider();
+
+			viewModel.PropertyChanged += ViewModel_PropertyChanged;
 		}
+
+		private void ViewModel_PropertyChanged( object sender, System.ComponentModel.PropertyChangedEventArgs e ) {
+			if( e.PropertyName == "modalitaAssociazione" ) {
+				if( viewModel.modalitaAssociazione == true )
+					this.Cursor = Cursors.Pen;
+				else
+					this.Cursor = Cursors.Arrow;
+			}
+		}
+
+		SelettoreAzioniAutomaticheViewModel viewModel {
+			get {
+				return (SelettoreAzioniAutomaticheViewModel)this.DataContext;
+			}
+		}
+
 	}
 }

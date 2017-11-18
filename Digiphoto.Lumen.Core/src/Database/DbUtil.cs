@@ -89,13 +89,17 @@ namespace Digiphoto.Lumen.Core.Database {
 
 					conn.Open();
 
+
 					string sql = "select versioneDbCompatibile from InfosFisse";
 					using( DbCommand comm = conn.CreateCommand() ) {
 						comm.CommandText = sql;
 						using( DbDataReader rdr = comm.ExecuteReader() ) {
 							while( rdr.Read() ) {
 
-								string versioneAttuale = rdr.GetString( 0 );
+								// Prima di testare la versione, eseguo upgrade
+								string versioneAttuale = eventualiUpgradeBaseDati( conn, rdr.GetString( 0 ) );
+
+
 								_giornale.Info( "Controllo versione DB: Attuale=" + versioneAttuale + " ; Richiesta=" + VERSIONE_DB_COMPATIBILE );
 								decimal dVerAttuale = decimal.Parse( versioneAttuale, CultureInfo.InvariantCulture );
 								decimal dVerRichiesta = decimal.Parse( VERSIONE_DB_COMPATIBILE, CultureInfo.InvariantCulture );
@@ -216,5 +220,29 @@ namespace Digiphoto.Lumen.Core.Database {
 			return dbContext.Fotografi.SingleOrDefault<Fotografo>( ff => ff.id == idFotografo );
 		}
 
+		private string eventualiUpgradeBaseDati( DbConnection conn, string versioneAttuale ) {
+
+			if( versioneAttuale == "2.1" ) {
+
+				// Rinomino la correzione "Maschera" in "Mascheratura"
+				string sql = @"update AzioniAutomatiche
+				              set correzioniXml = replace( correzioniXml, 'type=""Maschera""', 'type=""Mascheratura""' )";
+
+				var cmd = conn.CreateCommand();
+				cmd.CommandText = sql;
+				cmd.CommandType = CommandType.Text;
+				int conta = cmd.ExecuteNonQuery();
+				
+				string sql2 = @"update InfosFisse set versioneDbCompatibile = '" + DbUtil.VERSIONE_DB_COMPATIBILE + "'";
+				cmd.CommandText = sql2;
+				var conta2 = cmd.ExecuteNonQuery();
+
+				_giornale.Debug( "Aggiornati " + conta + " record. Aggiornamento db " + DbUtil.VERSIONE_DB_COMPATIBILE );
+				versioneAttuale = DbUtil.VERSIONE_DB_COMPATIBILE;
+			}
+
+			return versioneAttuale;
+		}
+		
 	}
 }

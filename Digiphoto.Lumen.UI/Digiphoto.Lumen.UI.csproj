@@ -949,6 +949,7 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Composizione-16x16.png" />
     <Resource Include="Resources\DriveType_Removable-64x64.png" />
     <Resource Include="Resources\DriveType_CDRom-64x64.png" />
     <Resource Include="Resources\ritratto-16x16.png" />

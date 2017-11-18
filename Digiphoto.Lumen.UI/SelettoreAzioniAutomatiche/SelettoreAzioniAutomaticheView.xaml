@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
              xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
-             mc:Ignorable="d"
+             mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="250">
 
     <UserControl.Resources>
@@ -25,16 +25,22 @@
         <ListBox Name="azioniAutomaticheListBox"
 				 ItemsSource="{Binding azioniAutomatiche}"
 				 ItemTemplate="{StaticResource azioniAutomaticheListBoxTemplate}"
-				 SelectedItem="{Binding Path=azioneAutomaticaSelezionata}"
+				 SelectedItem="{Binding Path=azioneAutomaticaSelezionata,Mode=TwoWay}"
 				 ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Auto"
 				 Grid.Row="0" Grid.Column="0" 
 				 ItemContainerStyle="{StaticResource ResourceKey=listBoxItemEvidenziatoStyle}"
+				 Style="{StaticResource azioniAutomaticheListBox}"
 				 >
 
 			<ListBox.ContextMenu>
 				<ContextMenu>
 					<MenuItem Header="Rinomina" Command="{Binding rinominaCommand}" />
 					<MenuItem Header="Elimina" Command="{Binding eliminaCommand}" />
+					<Separator />
+					<MenuItem Header="Associa mascheratura orientabile" Command="{Binding abilitareModoAssociaCommand}" 
+					          ToolTip="Si possono associare le mascherature orizzontali/verticali in una unica azione" />
+					<MenuItem Header="Disassocia mascheratura orientabile" Command="{Binding disassociareMascheraturaCommand}" 
+					          ToolTip="Si possono associare le mascherature orizzontali/verticali in una unica azione" />
 				</ContextMenu>
 			</ListBox.ContextMenu>
 		</ListBox>
@@ -51,7 +57,20 @@
 			<Button Name="refreshButton" Command="{Binding Path=rileggereAzioniAutomaticheCommand}"  CommandParameter="True" ToolTip="Rileggi elenco delle Azioni Automatiche" Grid.Row="0" Grid.Column="0" >
 				<Image Source="/Digiphoto.Lumen.UI;component/Resources/refresh-16x16.png"  />
 			</Button>
-			<Button Name="eseguiAzioneButton" Content="Esegui Azione" Command="{Binding Path=eseguiAzioniAutomaticheCommand}"  CommandParameter="True" Margin="5,0,5,0" MinWidth="140" Grid.Row="0" Grid.Column="1" />
+
+			<!-- i seguenti bottoni, si alternano a video quindi sono nella stessa posizione -->
+			<Button Name="eseguiAzioneButton" Content="Esegui Azione" Style="{StaticResource buttonBaseStyle}"
+			        Command="{Binding Path=eseguireAzioneAutomaticaCommand}"  CommandParameter="True" 
+					Margin="5,0,5,0" MinWidth="140" Grid.Row="0" Grid.Column="1" 
+			         />
+			<!-- Visibility="{Binding Path=modalitaAssociazione,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=not}" -->
+			<Button Name="rinunciareAssociazione" Content="Annulla" Style="{StaticResource buttonBaseStyle}"
+			        Command="{Binding Path=rinunciareAssociazioneCommand}"  CommandParameter="True" 
+					Margin="5,0,5,0" MinWidth="140" Grid.Row="0" Grid.Column="1" 
+					Visibility="{Binding Path=modalitaAssociazione,Converter={StaticResource booleanToVisibilityConverter}}"
+			/>
+			<!--  -->
+					
 		</Grid>
 
 	</Grid>
