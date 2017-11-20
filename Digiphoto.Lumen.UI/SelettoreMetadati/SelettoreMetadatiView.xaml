@@ -45,6 +45,7 @@
                     <CheckBox x:Name="checkBoxFasidelGiorno" Content="Fasi del Giorno" IsChecked="{Binding Path=metadati.usoFaseDelGiorno, Mode=TwoWay}" Margin="2" Unchecked="checkBoxFasidelGiorno_Unchecked" />
                 </GroupBox.Header>
                 <ListBox x:Name="fasiDelGiorno" 
+				         Style="{StaticResource baseListBoxStyle}"
 						 ItemsSource="{Binding fasiDelGiorno}"
                          SelectedItem="{Binding Path=metadati.faseDelGiorno, Mode=TwoWay}" 
 						 IsEnabled="{Binding ElementName=checkBoxFasidelGiorno, Path=IsChecked}" 

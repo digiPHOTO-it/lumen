@@ -10,7 +10,7 @@
 	<lumC:ImageSourceConverter x:Key="imageSourceConverter" />
     <lumC:PercentualeConverter x:Key="percentualeConverter" />
 	<lumC:EnabledValidationMultiConverter x:Key="enabledValidationMultiConverter" />
-	<BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
+	<lumC:BoolVisibilityConverter x:Key="booleanToVisibilityConverter"/>
 	<lumC:BoolInverterConverter x:Key="boolInverterConverter" />
     <lumC:RectangleSizeConverter x:Key="rectangleSizeConverter" />
     <lumC:BoolIsNullConverter x:Key="boolIsNullConverter" />
@@ -217,6 +217,23 @@
 
 	<Style TargetType="Panel">
 		<Setter Property="Background" Value="Orchid" />
+	</Style>
+
+
+	<Style x:Key="contenitoreStyle" TargetType="Control">
+		<Setter Property="Foreground" Value="White" />
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush EndPoint="0,1">
+
+					<GradientStop Color="#021128" Offset="1.0" />
+
+					<GradientStop Color="#3f4754" Offset="0.2" />
+
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+
 	</Style>
 
 	

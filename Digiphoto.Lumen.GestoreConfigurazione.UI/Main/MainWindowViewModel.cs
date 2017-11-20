@@ -392,8 +392,8 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 					msg.Append( "\nFotografi mancanti = " + rebuilderSrv.contaFotografiMancanti );
 				if( rebuilderSrv.contaFotoMancanti > 0 )
 					msg.Append( "\nFotografie mancanti = " + rebuilderSrv.contaFotoMancanti );
-				if( rebuilderSrv.contaFotografieSenzaImmagini > 0 )
-					msg.Append( "\nFoto senza immagini = " + rebuilderSrv.contaFotografieSenzaImmagini );
+				if( rebuilderSrv.contaJpegMancanti > 0 )
+					msg.Append( "\nFoto senza immagini = " + rebuilderSrv.contaJpegMancanti );
 				msg.Append( "\n" );
 				msg.Append( "\nAvviando la ricostruzione verranno rigenerati" );
 				msg.Append( "\ni dati mancanti." );

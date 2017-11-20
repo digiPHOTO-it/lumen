@@ -29,6 +29,7 @@
                          DisplayMemberPath="descrizione" 
                          SelectedItem="{Binding eventoSelezionato}"
 						 ItemContainerStyle="{StaticResource ResourceKey=listBoxItemEvidenziatoStyle}"
+						 Style="{StaticResource baseListBoxStyle}"
                          />
         </ScrollViewer>
 

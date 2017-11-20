@@ -37,7 +37,7 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 
 		protected Window parentWindow {
 			get {
-				return this.parentWindow;
+				return this.Owner;
 			}
 		}
 

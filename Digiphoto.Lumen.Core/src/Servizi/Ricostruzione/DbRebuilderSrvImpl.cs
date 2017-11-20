@@ -22,11 +22,16 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 		}
 
 		private bool analisiEffettuata = false;
+		public void analizzare()
+		{
+			this.analizzare( null );
+		}
 
-
-		public void analizzare() {
+		public void analizzare( ParamRebuild paramRebuild ) { 
 
 			_giornale.Info( "Inizio analisi per rebuild del database" );
+
+			this.paramRebuild = paramRebuild;
 
 			inizializzazioni();
 
@@ -41,31 +46,61 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 		/// </summary>
 		public void analizzare1() {
 
+			_giornale.Debug( "Inizio analisi1 parto dal FS cerco nel DB. Param = " + paramRebuild );
+			contaFotoElaborate = 0;
+
 			DirectoryInfo dirInfoRoot = new DirectoryInfo( Configurazione.UserConfigLumen.cartellaFoto );
 			string cosa = "*" + Configurazione.suffissoCartellaGiorni;
 			foreach( DirectoryInfo dig in dirInfoRoot.EnumerateDirectories( cosa ) ) {
 				
 				diGiornataCorr = dig;
+
+				// Controllo il parametro del giorno
+				if( paramRebuild != null ) {
+					DateTime giornoInEsame = (DateTime)PathUtil.giornoFromPath2( dig.Name );
+					if( giornoInEsame != paramRebuild.giorno ) {
+						_giornale.Debug( "Salto controllo cartella " + dig + " perché fuori filtro" );
+						continue;
+					}
+				}
+
 				_giornale.Debug( "Considero cartella per giornata " + diGiornataCorr );
 
 				cosa = "*" + Configurazione.suffissoCartellaFoto;
 				foreach( DirectoryInfo dif in dig.EnumerateDirectories( cosa ) ) {
 				
 					diFotografoCorr = dif;
-					_giornale.Debug( "Considero cartella per fotografo " + diFotografoCorr );
+
+					// Controllo il parametro del fotografo che è facoltativo
+					if( paramRebuild != null && paramRebuild.fotografo != null ) {
+						string fotografoIdInEsame = PathUtil.fotografoIDFromPath( dif.Name );
+						if( fotografoIdInEsame != paramRebuild.fotografo.id ) {
+							_giornale.Debug( "Salto controllo cartella " + dif + " perché fuori filtro" );
+							continue;
+						}
+					}
+
+					_giornale.Debug( "Esamino cartella: " + dig + " " + dif );
 
 					controllaFotografoMancante();
 
+					
 					foreach( FileInfo fileInfo in dif.EnumerateFiles() ) {
 
 						if( estensioniAmmesse.Contains( fileInfo.Extension.ToLower() ) ) {
 
 							// Ok trovata una foto. La tratto.
+							++contaFotoElaborate;
 							controllaFotoMancante( fileInfo );
 						}
 					}
 				}
 			}
+
+			if( fiFotosMancanti.Count == 0 )
+				_giornale.Info( "Analisi1 completata. Tutto ok" );
+			else
+				_giornale.Warn( "Analisi1 completata ci sono " + fiFotosMancanti.Count + " JPG senza record" );
 		}
 
 		private void controllaFotoMancante( FileInfo fInfoFoto ) {
@@ -75,6 +110,7 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 
 			if( ! UnitOfWorkScope.currentDbContext.Fotografie.Any( f => f.nomeFile == nomeRel ) ) {
 				fiFotosMancanti.Add( fInfoFoto );
+				_giornale.Debug( "Attenzione! Foto mancante nel database : " + nomeRel );
 			}
 		}
 
@@ -90,7 +126,10 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 			if( UnitOfWorkScope.currentDbContext.Fotografi.SingleOrDefault( f => f.id == idFotografo ) != null )
 				return;
 
-			idsFotografiMancanti.Add( idFotografo );
+			if( !idsFotografiMancanti.Contains( idFotografo ) ) {
+				idsFotografiMancanti.Add( idFotografo );
+				_giornale.Warn( "Fotografo mancante nel db: " + idFotografo );
+			}
 		}
 
 		private void creaFotografoMancante( string id ) {
@@ -108,12 +147,26 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 		/// Parto dal db e confronto con il filesystem
 		/// </summary>
 		void analizzare2() {
-					
-			foreach( Fotografia foto in UnitOfWorkScope.currentDbContext.Fotografie ) {
+
+			_giornale.Debug( "Inizio analisi2 parto dal DB e cerco nel FS. Param = " + paramRebuild );
+
+			contaJpegElaborati = 0;
+
+			var q = UnitOfWorkScope.currentDbContext.Fotografie.AsQueryable();
+			if( paramRebuild != null )
+				q = q.Where( f => f.giornata == paramRebuild.giorno );
+
+
+			foreach( Fotografia foto in q ) {
+				++contaJpegElaborati;
 				if( ! File.Exists( PathUtil.nomeCompletoOrig( foto ) ) )
 					fotografieSenzaImmagini.Add( foto );
 			}
 
+			if( fotografieSenzaImmagini.Count == 0 )
+				_giornale.Info( "Analisi2 completata. Tutto ok" );
+			else
+				_giornale.Warn( "Analisi2 completata. Ci sono " + fotografieSenzaImmagini.Count + " record senza JPG" );
 		}
 
 		private void inizializzazioni() {
@@ -167,16 +220,25 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 			set;
 		}
 
-		public int contaFotografieSenzaImmagini {
+		public int contaJpegMancanti {
 			get {
 				return fotografieSenzaImmagini.Count;
 			}
+		}
+		public int contaJpegElaborati {
+			get;
+			private set;
 		}
 
 		public int contaFotoMancanti {
 			get {
 				return fiFotosMancanti.Count;
 			}
+		}
+
+		public int contaFotoElaborate {
+			get;
+			private set;
 		}
 
 		public int contaFotoAggiunte {
@@ -196,7 +258,7 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 
 		public bool necessarioRicostruire {
 			get {
-				return contaFotoMancanti > 0 || contaFotografiMancanti > 0 || contaFotografieSenzaImmagini > 0;
+				return contaFotoMancanti > 0 || contaFotografiMancanti > 0 || contaJpegMancanti > 0;
 			}
 		}
 
@@ -205,6 +267,8 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 				return idsFotografiMancanti.Count;
 			}
 		}
+
+		public ParamRebuild paramRebuild { get; private set; }
 
 		public void ricostruire() {
 
@@ -236,7 +300,7 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 
 			// Piccolo controllo di paranoia
 			if( quanti != fotografieSenzaImmagini.Count ) {
-				_giornale.Warn( "Dovevo cancellare " + contaFotografieSenzaImmagini + " fotografie ma in test mi dice: " + quanti );
+				_giornale.Warn( "Dovevo cancellare " + contaJpegMancanti + " fotografie ma in test mi dice: " + quanti );
 			}
 
 		}

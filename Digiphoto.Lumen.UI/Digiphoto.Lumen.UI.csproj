@@ -328,6 +328,10 @@
     </Compile>
     <Compile Include="IncassiFotografi\IncassiFotografiViewModel.cs" />
     <Compile Include="Main\CambioPaginaMsg.cs" />
+    <Compile Include="Main\DbRebuilder\DbRebuilderViewModel.cs" />
+    <Compile Include="Main\DbRebuilder\DbRebuilderWiew.xaml.cs">
+      <DependentUpon>DbRebuilderWiew.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Mvvm\Event\OpenPopupRequestEventArgs.cs" />
     <Compile Include="Mvvm\Event\SelectionFailedEventArgs.cs" />
     <Compile Include="Mvvm\Event\SelectionFailedEventHandler.cs" />
@@ -509,6 +513,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="IncassiFotografi\IncassiFotografiView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\DbRebuilder\DbRebuilderResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\DbRebuilder\DbRebuilderWiew.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -17,9 +17,9 @@
         >
 
 	<Window.Resources>
-        <ResourceDictionary Source="MainWindowResources.xaml" />
+		<ResourceDictionary Source="MainWindowResources.xaml" />
 	</Window.Resources>
-	
+
 	<DockPanel LastChildFill="True" >
 
 		<StatusBar Name="statusBarMain" DockPanel.Dock="Bottom" ItemsPanel="{DynamicResource itemsPanelTemplateStatusBarMain}">
@@ -27,14 +27,14 @@
 			<!-- Informazioni Utente -->
 			<StatusBarItem Grid.Column="0">
 				<StackPanel Orientation="Horizontal">
-                    <Button Content="R" Command="{Binding eseguireRefreshCommand}" ToolTip="Refresh immagini" />
-                    <Image Source="{Binding Path=ultimaInformazioneUtente.esito,Converter={StaticResource imageSourceConverter}}" Height="16" Width="16" ToolTip="{Binding Path=ultimaInformazioneUtente.esito}"/>
+					<Button Content="R" Command="{Binding eseguireRefreshCommand}" ToolTip="Refresh immagini" />
+					<Image Source="{Binding Path=ultimaInformazioneUtente.esito,Converter={StaticResource imageSourceConverter}}" Height="16" Width="16" ToolTip="{Binding Path=ultimaInformazioneUtente.esito}"/>
 					<ComboBox IsReadOnly="True" ItemsSource="{Binding informazioniUtente,Mode=OneWay}" DisplayMemberPath="testo" SelectedValue="{Binding Path=ultimaInformazioneUtente,Mode=OneWay}" Name="comboBoxHistoryInfo" ToolTip="History messaggi" Style="{StaticResource styleComboBoxHistoryInfo}" />
 				</StackPanel>
 			</StatusBarItem>
 
 			<!-- Carrello -->
-            <StatusBarItem Grid.Column="1" ToolTip="Stato carrello">
+			<StatusBarItem Grid.Column="1" ToolTip="Stato carrello">
 				<TextBlock MinWidth="60" >
 					<TextBlock.Text>
 						<MultiBinding StringFormat="Foto: {0} Pagare: {1}">
@@ -49,59 +49,59 @@
 			<StatusBarItem Grid.Column="2" ToolTip="Progresso Masterizzatore">
 				<StackPanel Orientation="Horizontal">
 					<Image Source="{Binding Path=carrelloViewModel.StatusStatoMasterizzazioneImage}" Width="16" Height="16" ToolTip="Stato della Masterizzazione" />
-                    <ProgressBar Name="progressBarMasterizzazione" IsIndeterminate="True" Background="White" Foreground="Blue" Width="40" Visibility="{Binding Path=carrelloViewModel.StatoMasterizzazione, Converter={StaticResource statoMasterizzazioneVisibilityConverter}}"/>
+					<ProgressBar Name="progressBarMasterizzazione" IsIndeterminate="True" Background="White" Foreground="Blue" Width="40" Visibility="{Binding Path=carrelloViewModel.StatoMasterizzazione, Converter={StaticResource statoMasterizzazioneVisibilityConverter}}"/>
 				</StackPanel>
 			</StatusBarItem>
 
 			<!-- Info Gallery -->
 			<StatusBarItem Grid.Column="3">
 
-                <StackPanel Orientation="Horizontal">
+				<StackPanel Orientation="Horizontal">
 
-                    <TextBlock ToolTip="Gallery selezione" FontFamily="Courier New" FontSize="12" Background="Pink" MinWidth="50">
+					<TextBlock ToolTip="Gallery selezione" FontFamily="Courier New" FontSize="12" Background="Pink" MinWidth="50">
 						<TextBlock.Text>
-                            <MultiBinding StringFormat="Selez: {0,3}/{1,4}">
-                                <Binding Path="fotoGalleryViewModel.countElementiSelezionati" />
-                                <Binding Path="fotoGalleryViewModel.countElementiTotali" />
+							<MultiBinding StringFormat="Selez: {0,3}/{1,4}">
+								<Binding Path="fotoGalleryViewModel.countElementiSelezionati" />
+								<Binding Path="fotoGalleryViewModel.countElementiTotali" />
 							</MultiBinding>
 						</TextBlock.Text>
 					</TextBlock>
 
 					<!-- posizione attuale gallery -->
-                    <Grid Margin="4 0 0 0">
+					<Grid Margin="4 0 0 0">
 						<ProgressBar Value="{Binding Path=fotoGalleryViewModel.percentualePosizRicerca,Mode=OneWay}" Name="progressBarPaginazioneGallery" Style="{StaticResource progressBarPaginazioneGalleryStyle}" />
-                        <TextBlock Text="{Binding ElementName=progressBarPaginazioneGallery, Path=Value, StringFormat={}{0:0}%}" 
+						<TextBlock Text="{Binding ElementName=progressBarPaginazioneGallery, Path=Value, StringFormat={}{0:0}%}" 
 								   HorizontalAlignment="Center" VerticalAlignment="Center"  />
-                    </Grid>
-					
+					</Grid>
+
 					<!-- Stato dello slide-show -->
-                    <Image Source="{Binding Path=statusSlideShowImage}" Width="16" Height="16" 
+					<Image Source="{Binding Path=statusSlideShowImage}" Width="16" Height="16" 
                            ToolTip="Cliccare per vedere stato slide show oppure premi F8" Margin="4,0,0,0">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="MouseLeftButtonUp">
-                                <i:InvokeCommandAction Command="{Binding commandRivelareNumFotoSlideShow}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </Image>
+						<i:Interaction.Triggers>
+							<i:EventTrigger EventName="MouseLeftButtonUp">
+								<i:InvokeCommandAction Command="{Binding commandRivelareNumFotoSlideShow}"/>
+							</i:EventTrigger>
+						</i:Interaction.Triggers>
+					</Image>
 
 				</StackPanel>
 			</StatusBarItem>
 
-            <!-- Scaricamento e Provinatura -->
+			<!-- Scaricamento e Provinatura -->
 			<StatusBarItem Grid.Column="4" Visibility="{Binding Path=numFotoFaseVisibility,Converter={StaticResource booleanToVisibilityConverter}}"  >
-                <StackPanel Orientation="Horizontal" >
-                    <ProgressBar Name="progressBar" IsIndeterminate="True" Background="White" Foreground="Blue" Width="40" Height="16"/>
-                    <TextBlock ToolTip="Stato scaricamento" Text="{Binding numFotoFase}" MaxWidth="200" />
+				<StackPanel Orientation="Horizontal" >
+					<ProgressBar Name="progressBar" IsIndeterminate="True" Background="White" Foreground="Blue" Width="40" Height="16"/>
+					<TextBlock ToolTip="Stato scaricamento" Text="{Binding numFotoFase}" MaxWidth="200" />
 
-		            <!-- Eject Usb -->
-                    <ComboBox Width="80" ItemsSource="{Binding dischiRimovibili,Mode=OneWay}" Name="comboBoxDischiRemovibili" SelectedItem="{Binding ejectUsbItem,Mode=TwoWay}" ToolTip="Dischi Removibili" />
-                    <Button Name="creareNuovoButton" Command="{Binding Path=ejectUsbCommand}" ToolTip="Eject Usb" Margin="5,0,0,0">
-                        <Image Source="/Digiphoto.Lumen.UI;component/Resources/usbPendrive-16x16.png" Width="16" Height="16" />
-                    </Button>
-                </StackPanel>
-            </StatusBarItem>
+					<!-- Eject Usb -->
+					<ComboBox Width="80" ItemsSource="{Binding dischiRimovibili,Mode=OneWay}" Name="comboBoxDischiRemovibili" SelectedItem="{Binding ejectUsbItem,Mode=TwoWay}" ToolTip="Dischi Removibili" />
+					<Button Name="creareNuovoButton" Command="{Binding Path=ejectUsbCommand}" ToolTip="Eject Usb" Margin="5,0,0,0">
+						<Image Source="/Digiphoto.Lumen.UI;component/Resources/usbPendrive-16x16.png" Width="16" Height="16" />
+					</Button>
+				</StackPanel>
+			</StatusBarItem>
 
-        </StatusBar>
+		</StatusBar>
 
 		<TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Top" Name="tabControlProspettive" SelectedIndex="1" 
 					Style="{DynamicResource tabControlProspettiveStyle}"
@@ -112,63 +112,63 @@
 					<TextBlock Text="Scarica" ToolTip="Scarica foto da memory-card o da altra cartella" />
 				</TabItem.Header>
 
-            <!-- UserControl per scaricare le foto -->
-            <lum:ScaricatoreFoto />
-        </TabItem>
+				<!-- UserControl per scaricare le foto -->
+				<lum:ScaricatoreFoto />
+			</TabItem>
 
 
 			<TabItem Name="tabItemGallery">
 				<TabItem.Header>
 					<TextBlock Text="Gallery" ToolTip="Esplora archivio foto" />
 				</TabItem.Header>
-            <lumG:FotoGallery x:Name="fotoGallery" />
-        </TabItem>
+				<lumG:FotoGallery x:Name="fotoGallery" />
+			</TabItem>
 
-		<TabItem Name="tabItemAggiusta">
-			<TabItem.Header>
-				<TextBlock Text="Correggi" ToolTip="Ritocca, correggi e incornicia" />
-			</TabItem.Header>
-			<lumFR:FotoRitocco x:Name="fotoRitoccoUserControl" Focusable="True" />
-		</TabItem>
+			<TabItem Name="tabItemAggiusta">
+				<TabItem.Header>
+					<TextBlock Text="Correggi" ToolTip="Ritocca, correggi e incornicia" />
+				</TabItem.Header>
+				<lumFR:FotoRitocco x:Name="fotoRitoccoUserControl" Focusable="True" />
+			</TabItem>
 
-		<TabItem Name="tabItemCarrello">
-			<TabItem.Header>
-				<TextBlock Text="Carrello" ToolTip="Vendi stampe e CD" />
-			</TabItem.Header>
-			<lumCA:CarrelloView x:Name="carrelloView" />
-        </TabItem>
+			<TabItem Name="tabItemCarrello">
+				<TabItem.Header>
+					<TextBlock Text="Carrello" ToolTip="Vendi stampe e CD" />
+				</TabItem.Header>
+				<lumCA:CarrelloView x:Name="carrelloView" />
+			</TabItem>
 
-		<TabItem Name="tabItemPreferenze">
-			<TabItem.Header>
-				<TextBlock Text="Preferenze" ToolTip="Impostazioni operative" />
-			</TabItem.Header> 
-			<TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Left" Name="tabConfigPagine"
+			<TabItem Name="tabItemPreferenze">
+				<TabItem.Header>
+					<TextBlock Text="Preferenze" ToolTip="Impostazioni operative" />
+				</TabItem.Header>
+				<TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Left" Name="tabConfigPagine"
 						Style="{DynamicResource tabControlProspettiveStyle}"
 						ItemContainerStyle="{StaticResource tabItemProspettiveStyle}">
 
-                    <TabItem Header="Schermo" ToolTip="Configurazione del monitor&#x0a;e dello Slide Show">
+					<TabItem Header="Schermo" ToolTip="Configurazione del monitor&#x0a;e dello Slide Show">
 
-                        <lumGS:GestSlideShowView/>
-                        
-                    </TabItem>
+						<lumGS:GestSlideShowView/>
 
-                    <TabItem Header="Preferenze" ToolTip="Preferenze utente">
+					</TabItem>
 
-                        <Button Content="Preferenze Utente" Width="140" Height="40" Command="{Binding modificarePreferenzeCommand}" />
+					<TabItem Header="Preferenze" ToolTip="Preferenze utente">
 
-                    </TabItem>
+						<Button Content="Preferenze Utente" Width="140" Height="40" Command="{Binding modificarePreferenzeCommand}" />
+
+					</TabItem>
 
 
 
-			</TabControl>
-        </TabItem>
+				</TabControl>
+			</TabItem>
 
-		<TabItem Name="tabItemTabelle">
-			<TabItem.Header>
-				<TextBlock Text="Tabelle" ToolTip="Archivi della base dati" />
-			</TabItem.Header>
+			<TabItem Name="tabItemTabelle">
+				<TabItem.Header>
+					<TextBlock Text="Tabelle" ToolTip="Archivi della base dati" />
+				</TabItem.Header>
 
-			<Grid>
+				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="*" />
 						<RowDefinition Height="*" />
@@ -183,16 +183,16 @@
 						<ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
 					<Button Grid.Row="1" Grid.Column="1" Content="Fotografo" Height="50" Width="150" Command="{Binding commandDataEntry}" CommandParameter="Fotografo" />
-                    <Button Grid.Row="2" Grid.Column="1" Content="Evento" Height="50" Width="150" Command="{Binding commandDataEntry}" CommandParameter="Evento" />
-                    <Button Grid.Row="3" Grid.Column="1" Content="Chiusura cassa giorno" Height="50" Width="150" Command="{Binding commandDataEntry}" CommandParameter="Giornata" />
-			</Grid>
-		</TabItem>
+					<Button Grid.Row="2" Grid.Column="1" Content="Evento" Height="50" Width="150" Command="{Binding commandDataEntry}" CommandParameter="Evento" />
+					<Button Grid.Row="3" Grid.Column="1" Content="Chiusura cassa giorno" Height="50" Width="150" Command="{Binding commandDataEntry}" CommandParameter="Giornata" />
+				</Grid>
+			</TabItem>
 
-		<TabItem Name="tabItemUtilita">
-			<TabItem.Header>
-				<TextBlock Text="Utilità" ToolTip="Report e funzionalità varie" />
-			</TabItem.Header>
-			
+			<TabItem Name="tabItemUtilita">
+				<TabItem.Header>
+					<TextBlock Text="Utilità" ToolTip="Report e funzionalità varie" />
+				</TabItem.Header>
+
 				<TabControl MinHeight="480" MinWidth="640" TabStripPlacement="Left" Name="tabUtilityPagine" 
 						Style="{DynamicResource tabControlProspettiveStyle}"
 						ItemContainerStyle="{StaticResource tabItemProspettiveStyle}">
@@ -201,7 +201,7 @@
 						<TabItem.Header>
 							<TextBlock Text="Coda di stampe" />
 						</TabItem.Header>
-						
+
 						<lum:SelettoreStampanteInstallata DataContext="{Binding Path=DataContextStampantiInstallate}" 
 														  Width="600" Height="300" 
 														  aprireCoda="True" />
@@ -231,23 +231,24 @@
 						<TabItem.Header>
 							<TextBlock Text="Report" FontSize="14" />
 						</TabItem.Header>
-							<StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-								<Button Content="Report Vendite" Name="buttonReport" Command="{Binding reportVenditeCommand}" Style="{StaticResource reportButtonStyle}" />
-								<Button Content="Report Consumo Carta" Name="buttonConsumoCarta" Command="{Binding reportConsumoCartaCommand}" Style="{StaticResource reportButtonStyle}" />
-								<Button Content="Report Provvigioni" Command="{Binding reportProvvigioniCommand}" Style="{StaticResource reportButtonStyle}" />
-							</StackPanel>
-					</TabItem>	
-				
-					<TabItem ToolTip="Consultazione giornale e messaggi applicativi">
+						<StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+							<Button Content="Report Vendite" Name="buttonReport" Command="{Binding reportVenditeCommand}" Style="{StaticResource reportButtonStyle}" />
+							<Button Content="Report Consumo Carta" Name="buttonConsumoCarta" Command="{Binding reportConsumoCartaCommand}" Style="{StaticResource reportButtonStyle}" />
+							<Button Content="Report Provvigioni" Command="{Binding reportProvvigioniCommand}" Style="{StaticResource reportButtonStyle}" />
+						</StackPanel>
+					</TabItem>
+
+					<TabItem ToolTip="Utilità di sistema">
 						<TabItem.Header>
-							<TextBlock Text="Log" FontSize="14" />
+							<TextBlock Text="Utilità di sistema" FontSize="14" />
 						</TabItem.Header>
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-							<Button Content="Visualizza Log" Height="50" Command="{Binding visualizzareLogCommand}" Width="150" Margin="0,0,0,10"/>
-							<Button Content="Spedisci Log" Height="50" Command="{Binding spedireLogCommand}" Width="150" Margin="0,10,0,0"/>
-                        </StackPanel>
-                    </TabItem>	
-				
+						<StackPanel Orientation="Vertical" VerticalAlignment="Center">
+							<Button Content="Visualizza Log" Command="{Binding visualizzareLogCommand}"   Style="{StaticResource pulsanteMenuUtilitaStyle}" />
+							<Button Content="Spedisci Log" Command="{Binding spedireLogCommand}"  Style="{StaticResource pulsanteMenuUtilitaStyle}" />
+							<Button Content="Ricostruzione database" Command="{Binding aprirePopupRicostruzioneDbCommand}"  Style="{StaticResource pulsanteMenuUtilitaStyle}" />
+						</StackPanel>
+					</TabItem>
+
 					<TabItem ToolTip="Informazioni sul programma">
 						<TabItem.Header>
 							<TextBlock Text="About" FontSize="14"/>
@@ -264,11 +265,11 @@
 							<Button Content="Spegnimento" Height="50" Command="{Binding uscireCommand}" CommandParameter="SHUTDOWN" Width="150" ToolTip="Spegnimento del sistema" Margin="20,0,0,0"/>
 						</StackPanel>
 					</TabItem>
-				
-				</TabControl>
-        </TabItem>
 
-    </TabControl>
+				</TabControl>
+			</TabItem>
+
+		</TabControl>
 
 	</DockPanel>
 </Window>

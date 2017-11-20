@@ -21,7 +21,7 @@
 	<lumC:SumConverter x:Key="sumConverter" />
 
 	<!-- Stile della listbox che itera le RigheCarrello -->
-    <Style x:Key="ListCarrelloStyle" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}" >
+    <Style x:Key="ListCarrelloStyle" TargetType="ListBox" BasedOn="{StaticResource baseListBoxStyle}" >
         <Setter Property="IsSynchronizedWithCurrentItem" Value="True" />
         <Setter Property="ItemContainerStyle" Value="{DynamicResource ImageCarrelloImageContainerStyle}" />
 		<Setter Property="Margin" Value="2,0,10,0" />

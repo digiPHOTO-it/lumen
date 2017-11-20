@@ -33,6 +33,7 @@
                          ItemsSource="{Binding Path=fotografiCW}" 
 						 DisplayMemberPath="cognomeNome" 
 						 SelectionChanged="fotografiListBox_SelectionChanged"
+						 Style="{StaticResource baseListBoxStyle}"
 						 ItemContainerStyle="{StaticResource ResourceKey=listBoxItemEvidenziatoStyle}" />
 			</ScrollViewer>
 		</GroupBox>
