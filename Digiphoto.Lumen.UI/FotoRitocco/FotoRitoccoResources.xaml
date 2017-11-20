@@ -18,7 +18,7 @@
 	<lumC:ColorHexConverter			x:Key="colorHexConverter" />
 
 	<!-- Stile della listbox che itera le immagini -->
-    <Style x:Key="listBoxImmaginiDaModificareStyle" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
+	<Style x:Key="listBoxImmaginiDaModificareStyle" TargetType="ListBox" BasedOn="{StaticResource baseListBoxStyle}">
 <!--
         <Setter Property="IsSynchronizedWithCurrentItem" Value="True" />
 

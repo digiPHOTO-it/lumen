@@ -23,6 +23,7 @@ using Digiphoto.Lumen.Licensing;
 using Digiphoto.Lumen.Servizi.Io;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Servizi.BarCode;
+using Digiphoto.Lumen.Servizi.Ricostruzione;
 
 namespace Digiphoto.Lumen.Applicazione {
 
@@ -239,6 +240,9 @@ namespace Digiphoto.Lumen.Applicazione {
 			IBarCodeSrv bcs = getServizioAvviato<IBarCodeSrv>();
 			if( bcs != null )
 				bcs.stop();
+			IDbRebuilderSrv dbr = getServizioAvviato<IDbRebuilderSrv>();
+			if( dbr != null )
+				dbr.stop();
 
 		}
 

@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Windows;
 using Digiphoto.Lumen.Core.Database;
-using Digiphoto.Lumen.Config;
-using System.Configuration;
 using Digiphoto.Lumen.UI.Main;
 using Digiphoto.Lumen.Applicazione;
-using Digiphoto.Lumen.UI.Reports;
 using Digiphoto.Lumen.UI.Mvvm;
 using Digiphoto.Lumen.UI.TrayIcon;
 using Digiphoto.Lumen.UI.About;
 using System.Windows.Input;
 using Digiphoto.Lumen.Eventi;
-using System.Windows.Controls;
+using Digiphoto.Lumen.UI.Mvvm.Event;
 
 namespace Digiphoto.Lumen.UI {
 	/// <summary>
@@ -34,6 +31,7 @@ namespace Digiphoto.Lumen.UI {
 				carrelloView.DataContext = _mainWindowViewModel.carrelloViewModel;
 				fotoGallery.DataContext = _mainWindowViewModel.fotoGalleryViewModel;
 
+				_mainWindowViewModel.openPopupDialogRequest += _mainWindowViewModel_openPopupDialogRequest;
 			}
 
 
@@ -54,6 +52,32 @@ namespace Digiphoto.Lumen.UI {
 			// Mi sottoscrivo per ascoltare i messaggi di richiesta di cambio pagina.
 			IObservable<CambioPaginaMsg> observable = LumenApplication.Instance.bus.Observe<CambioPaginaMsg>();
 			observable.Subscribe( this );
+		}
+
+		private void _mainWindowViewModel_openPopupDialogRequest( object sender, EventArgs e ) {
+
+			if( e is OpenPopupRequestEventArgs ) {
+
+				OpenPopupRequestEventArgs popEventArgs = (OpenPopupRequestEventArgs)e;
+				if( popEventArgs.requestName == "RicostruzioneDbPopup" ) {
+
+					DbRebuilderWiew win = new DbRebuilderWiew();
+
+					// Imposto la finestra contenitore per poter centrare
+					win.Owner = this;
+
+					// Questo è il viewmodel della finestra di popup				
+					win.DataContext = popEventArgs.viewModel;
+
+					var esito = win.ShowDialog();
+
+					if( esito == true ) {
+						// TODO
+					}
+
+					win.Close();
+				}
+			}
 		}
 
 		public void OnCompleted() {

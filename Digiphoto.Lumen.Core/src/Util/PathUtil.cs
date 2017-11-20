@@ -177,6 +177,14 @@ namespace Digiphoto.Lumen.Util {
             return fotografoID;
         }
 
+		public static DateTime? giornoFromPath2( string path ) {
+			string strGiorno = giornoFromPath( path );
+			Nullable<DateTime> giorno = null;
+			if( strGiorno != null )
+				giorno = Convert.ToDateTime( strGiorno );
+			return giorno;
+		}
+
         public static string giornoFromPath(String path)
         {
             String giorno = null;

@@ -29,6 +29,8 @@ using static System.Environment;
 using Digiphoto.Lumen.Core.Servizi.Utilita;
 using Digiphoto.Lumen.UI.Gallery;
 using Digiphoto.Lumen.UI.Carrelli;
+using Digiphoto.Lumen.UI.Mvvm.Event;
+using Digiphoto.Lumen.UI.Main;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -193,6 +195,12 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		public bool possoAprirePopupRicostruzioneDb {
+			get {
+				return true;
+			}
+		}
+
 		#endregion Prorietà
 
 		#region Comandi
@@ -316,6 +324,18 @@ namespace Digiphoto.Lumen.UI {
 					_modificarePreferenzeCommand = new RelayCommand( nn => modificarePreferenze(), nn => true, false );
 				}
 				return _modificarePreferenzeCommand;
+			}
+		}
+
+		private RelayCommand _aprirePopupRicostruzioneDbCommand;
+		public ICommand aprirePopupRicostruzioneDbCommand {
+			get {
+				if( _aprirePopupRicostruzioneDbCommand == null ) {
+					_aprirePopupRicostruzioneDbCommand = new RelayCommand( param => this.aprirePopupRicostruzioneDb(),
+					                                                       param => possoAprirePopupRicostruzioneDb,
+					                                                       false );
+				}
+				return _aprirePopupRicostruzioneDbCommand;
 			}
 		}
 
@@ -622,6 +642,25 @@ namespace Digiphoto.Lumen.UI {
 			PreferenzeWindow window = new PreferenzeWindow();
 			window.DataContext = new PreferenzeViewModel();
 			window.ShowDialog();
+		}
+
+		/// <summary>
+		/// Apro la finestra di popup per la ricostruzione del database
+		/// </summary>
+		void aprirePopupRicostruzioneDb() {
+
+			using( DbRebuilderViewModel dbRebuilderViewModel = new DbRebuilderViewModel() ) {
+
+				var oprea = new OpenPopupRequestEventArgs {
+					requestName = "RicostruzioneDbPopup",
+					viewModel = dbRebuilderViewModel
+				};
+
+				RaisePopupDialogRequest( oprea );
+
+				if( oprea.mioDialogResult == true ) {
+				}
+			}
 		}
 
 		#endregion Metodi

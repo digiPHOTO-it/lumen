@@ -19,6 +19,7 @@
 			<ScrollViewer VerticalScrollBarVisibility="Auto" >
 				<ListBox Grid.IsSharedSizeScope="True"
 						 SelectionMode="Multiple"
+						 Style="{StaticResource baseListBoxStyle}"
 						 lumMS:MultiSelect.IsEnabled="True" IsSynchronizedWithCurrentItem="True"
 						 ItemsSource="{Binding Path=scarichiCardsCW}" 
 						 ItemContainerStyle="{StaticResource ResourceKey=listBoxItemEvidenziatoStyle}"

@@ -1,0 +1,103 @@
+﻿<lumM:WindowBase x:Class="Digiphoto.Lumen.UI.Main.DbRebuilderWiew"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"     
+		xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
+        xmlns:local="clr-namespace:Digiphoto.Lumen.UI.Main"
+        mc:Ignorable="d" Style="{DynamicResource contenitoreStyle}"
+        Title="Ricostruzione database" Height="400" Width="619" WindowStartupLocation="CenterOwner">
+
+	<Window.Resources>
+		<ResourceDictionary Source="DbRebuilderResources.xaml" />
+	</Window.Resources>
+
+	<DockPanel>
+
+		<Grid DockPanel.Dock="Left" Width="300">
+			<TextBlock TextWrapping="Wrap" FontSize="12" Margin="8,10,8,0" Text="Verifica la corrispondenza delle foto presenti nel database e quelle presenti sul FileSystem" Height="39" VerticalAlignment="Top" Grid.ColumnSpan="2" />
+			<Label Content="Giorno" Margin="10,66,0,0" HorizontalAlignment="Left" Width="65"  VerticalAlignment="Top" Height="26"/>
+			<DatePicker Margin="86,66,0,0" Height="24" VerticalAlignment="Top" HorizontalAlignment="Left" Width="198" SelectedDate="{Binding Path=paramRebuild.giorno,Mode=TwoWay}"  />
+
+			<lum:SelettoreFotografo possoCreare="False"
+									Margin="20,92,16,65"
+									selezioneMultipla="False"
+									DataContext="{Binding Path=selettoreFotografoViewModel}"  />
+
+			<Button Content="Iniziare l'Analisi" Margin="20,0,20,10" Style="{StaticResource buttonBaseStyle}" Command="{Binding iniziareAnalisiCommand}" Height="34" VerticalAlignment="Bottom" />
+
+		</Grid>
+
+		<Grid DockPanel.Dock="Right" 
+		      Visibility="{Binding analisiCompletata, Converter={StaticResource booleanToVisibilityConverter} }">
+
+			<Label Content="Esito del controllo" Margin="20,10,20,0" Height="26" VerticalAlignment="Top" HorizontalContentAlignment="Center" />
+
+
+			<Grid Margin="20,41,20,0" Height="90" VerticalAlignment="Top">
+				<Grid.Resources >
+					<Style TargetType="Border" >
+						<Setter Property="Padding" Value="2,2,2,0" />
+					</Style>
+				</Grid.Resources>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition />
+					<RowDefinition />
+					<RowDefinition />
+				</Grid.RowDefinitions>
+
+				<!-- -->
+				<Label Grid.Row="0" Grid.Column="0" Content="Fotografi mancanti nel db" />
+				<Border Grid.Row="0" Grid.Column="1">
+					<Label Content="{Binding totFotografiMancanti,Mode=OneWay}" 
+					       Style="{StaticResource labelNumStyle}" />
+				</Border>
+				<!-- -->
+				<Label Grid.Row="1" Grid.Column="0" Content="Jpg mancanti su disco" />
+				<Border Grid.Row="1" Grid.Column="1" >
+					<Label Content="{Binding totJpegMancanti,Mode=OneWay}" 
+					       Style="{StaticResource labelNumStyle}" />
+				</Border>
+				<Border Grid.Row="1" Grid.Column="2">
+					<Label Content="{Binding totJpegElaborati, Mode=OneWay}" 
+					       Style="{StaticResource labelNumStyle}" />
+				</Border> 
+
+				<!-- -->
+				<Label Grid.Row="2" Grid.Column="0" Content="Fotografie mancanti nel db" />
+				<Border Grid.Row="2" Grid.Column="1">
+					<Label Content="{Binding totFotoMancanti,Mode=OneWay}" 
+					       Style="{StaticResource labelNumStyle}" />
+				</Border>
+				<Border Grid.Row="2" Grid.Column="2">
+					<Label Content="{Binding totFotoElaborate, Mode=OneWay}" 
+				           Style="{StaticResource labelNumStyle}" />
+				</Border>
+
+
+			</Grid>
+
+
+
+			
+			<TextBlock TextWrapping="Wrap" Background="DarkRed" Padding="3" Margin="20,144,20,0" VerticalAlignment="Top" 
+			           Text="L'analisi effettuata, ha riscontrato alcuni problemi di congruenza tra la base dati ed il FileSystem. Si consiglia di effettuare un backup dei dati e di proseguire con la ricostruzione." 
+			           Visibility="{Binding isNecessarioRicostruire,  Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter} }" 
+					   />
+			<TextBlock TextWrapping="Wrap" Background="DarkGreen" Margin="20,235,20,0"  VerticalAlignment="Top"
+			           Text="L'analisi effettuata non ha riscontrato problemi. La ricostruzione non è necessaria." Padding="3"
+			           Visibility="{Binding isNecessarioRicostruire, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}, ConverterParameter=not}"  />
+
+			<Button Content="Avvio Ricostruzione" Margin="20,0,20,10" Style="{StaticResource buttonBaseStyle}"  Height="34" VerticalAlignment="Bottom" Command="{Binding ricostruireDatabaseCommand}" />
+			
+		</Grid>
+
+	</DockPanel>
+
+</lumM:WindowBase>

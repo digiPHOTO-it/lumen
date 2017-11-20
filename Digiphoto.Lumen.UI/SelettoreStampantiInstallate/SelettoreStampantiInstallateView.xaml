@@ -29,6 +29,7 @@
                      ItemTemplate="{StaticResource stampantiInstallateListBoxTemplate}"
                      SelectedItem="{Binding Path=stampanteSelezionata}"
                      Grid.Row="0" Grid.Column="0"
+					 Style="{StaticResource baseListBoxStyle}"
                      ScrollViewer.CanContentScroll="True"
                      ScrollViewer.VerticalScrollBarVisibility="Auto"
                      ScrollViewer.HorizontalScrollBarVisibility="Auto"	>
