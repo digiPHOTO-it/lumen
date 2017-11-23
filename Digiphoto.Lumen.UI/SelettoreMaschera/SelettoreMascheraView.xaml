@@ -26,8 +26,8 @@
 
 
 		<StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" >
-			<Button Content="Sposta SU ⇧" Command="{Binding spostareOrdinamentoCommand}" CommandParameter="SU"  Margin="1 1 4 1" Style="{StaticResource buttonBaseStyle}" ToolTip="Modifica l'ordinamento della maschera selezionata in SU" MinWidth="70" />
-			<Button Content="⇩ Sposta GIU" Command="{Binding spostareOrdinamentoCommand}" CommandParameter="GIU" Margin="4 1 1 1" Style="{StaticResource buttonBaseStyle}" ToolTip="Modifica l'ordinamento della maschera selezionata in GIU" MinWidth="70" />
+			<Button Content="SU ⇧" Command="{Binding spostareOrdinamentoCommand}" CommandParameter="SU"  Margin="1 1 4 1" Style="{StaticResource buttonBaseStyle}" ToolTip="Modifica l'ordinamento della maschera selezionata in SU" MinWidth="70" />
+			<Button Content="⇩ GIU" Command="{Binding spostareOrdinamentoCommand}" CommandParameter="GIU" Margin="4 1 1 1" Style="{StaticResource buttonBaseStyle}" ToolTip="Modifica l'ordinamento della maschera selezionata in GIU" MinWidth="70" />
 		</StackPanel>
 
 
@@ -37,7 +37,13 @@
 		         Style="{StaticResource maschereListBoxStyle}"
 				 ItemsSource="{Binding Path=maschereCW}"
 				 ItemsPanel="{DynamicResource itemsPanelTemplateMaschere}"
-				 ItemTemplate="{DynamicResource itemTemplateThumbMaschera}" />
+				 ItemTemplate="{DynamicResource itemTemplateThumbMaschera}" >
+			<ListBox.ItemContainerStyle>
+				<Style TargetType="{x:Type ListBoxItem}">
+					<EventSetter Event="PreviewMouseLeftButtonDown" Handler="maschereListBox_MouseLeftButtonDown" />
+				</Style>
+			</ListBox.ItemContainerStyle>
+		</ListBox>
 	</Grid>
 
 </lumM:UserControlBase>

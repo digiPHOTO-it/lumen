@@ -30,5 +30,18 @@ namespace Digiphoto.Lumen.UI.SelettoreMaschera {
 			InitializeComponent();
 		}
 
+		SelettoreMascheraViewModel viewModel { 
+			get {
+				return (SelettoreMascheraViewModel)this.DataContext;
+			}
+		}
+
+		private void maschereListBox_MouseLeftButtonDown( object sender, RoutedEventArgs e ) {
+			
+			ListBoxItem lbi = ((ListBoxItem)sender);
+			Maschera maschera = (Maschera)lbi.Content;
+
+			viewModel.raiseMascheraClickedEvent( maschera );
+		}
 	}
 }
