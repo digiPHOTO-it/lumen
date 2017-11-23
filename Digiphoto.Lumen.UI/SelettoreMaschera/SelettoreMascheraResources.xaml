@@ -13,7 +13,7 @@
 
 
 	<!-- Quando le maschere sono disabilitate, rendo tutto il pannello girigietto -->
-	<Style x:Key="maschereListBoxStyle" TargetType="ListBox">
+	<Style x:Key="maschereListBoxStyle" TargetType="ListBox" BasedOn="{StaticResource baseListBoxStyle}">
 		<Setter Property="Background"  Value="#1d1d26" />
 		<Style.Triggers>
 			<Trigger Property="IsEnabled" Value="False">
@@ -26,11 +26,15 @@
 
 			<!--
 			<UniformGrid  Columns="3" Height="Auto" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+
+			Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}"
 	-->
-		<WrapPanel Height="Auto" Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}"
+		<WrapPanel Height="Auto" 
+		Width="180"
 			       ScrollViewer.CanContentScroll="True" 
-				   ScrollViewer.VerticalScrollBarVisibility="Visible" 
-				   ScrollViewer.HorizontalScrollBarVisibility="Hidden" />
+				   ScrollViewer.VerticalScrollBarVisibility="Auto" 
+				   ScrollViewer.HorizontalScrollBarVisibility="Hidden" 
+				   />
 
 	</ItemsPanelTemplate>
 

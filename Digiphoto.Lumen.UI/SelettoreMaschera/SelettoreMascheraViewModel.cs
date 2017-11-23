@@ -32,7 +32,6 @@ namespace Digiphoto.Lumen.UI.SelettoreMaschera {
 		/// <param name="verso"></param>
 		public void caricareMaschere( string verso ) {
 
-
 			if( verso == "S" ) {
 				filtro = FiltroMask.MskSingole;
 				loadMaschereDaDisco();
@@ -332,7 +331,7 @@ namespace Digiphoto.Lumen.UI.SelettoreMaschera {
 		#region Eventi
 
 		public event SelezioneCambiataEventHandler selezioneCambiata;
-
+		public event EventHandler mascheraClicked;
 
 		/// <summary>
 		///   Avviso eventuali ascoltatori esterni
@@ -342,6 +341,11 @@ namespace Digiphoto.Lumen.UI.SelettoreMaschera {
 			if( selezioneCambiata != null )
 				selezioneCambiata( this, EventArgs.Empty );
 		}
+
+		public void raiseMascheraClickedEvent( Maschera maschera ) {
+			mascheraClicked?.Invoke( maschera, EventArgs.Empty );
+		}
+
 
 #endregion Eventi
 
