@@ -60,7 +60,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 				// Componente per selezionare le maschere
 				selettoreMascheraViewModel = new Digiphoto.Lumen.UI.SelettoreMaschera.SelettoreMascheraViewModel();
-				selettoreMascheraViewModel.selezioneCambiata += selettoreMascheraViewModel_selezioneCambiata;
+				selettoreMascheraViewModel.mascheraClicked += selettoreMascheraViewModel_mascheraClicked;
 
 				// Carico le maschere e mi setto in modalità fotoritocco
 				cambiareModalitaEdit( "R" );
@@ -79,12 +79,11 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		}
 
-		private void selettoreMascheraViewModel_selezioneCambiata( object sender, EventArgs e ) {
+		private void selettoreMascheraViewModel_mascheraClicked( object sender, EventArgs e ) {
 
 			if( possoScegliereMaschera ) {
 
-				var msk = selettoreMascheraViewModel.mascheraSelezionata;
-
+				Maschera msk = (Maschera)sender;
 				attivareMascheraCommand.Execute( msk );
 
 			} else {

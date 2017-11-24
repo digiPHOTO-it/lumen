@@ -2647,14 +2647,21 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			return numFotogramma;
 		}
 
+
+		/// <summary>
+		/// Quando muovo lo slider ho bisogno di eseguire delle query sul db
+		/// e quindi mi serve una UnitOfWork tutta mia.
+		/// </summary>
 		UnitOfWorkScope _unitOfWorkSlider = null;
 
 		public void startUnitOkWork() {
 			_unitOfWorkSlider = new UnitOfWorkScope();
 		}
 		public void stopUnitOkWork() {
-			_unitOfWorkSlider.Dispose();
-			_unitOfWorkSlider = null;
+			if( _unitOfWorkSlider != null ) {
+				_unitOfWorkSlider.Dispose();
+				_unitOfWorkSlider = null;
+			}
 		}
 
 		#endregion Metodi
