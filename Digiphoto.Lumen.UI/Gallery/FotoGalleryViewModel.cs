@@ -55,6 +55,10 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			MantenereListaIds       = 8			// non viene azzerata la lista degli ids (quando proviene dal carrello)
 		}
 
+		/// <summary>
+		/// Numero di foto prima e dopo quando viene richiesta la ricerca con intorno
+		/// </summary>
+		private readonly int QUANTE_FOTO_INTORNO = 300;
 
 
 		#region Campi
@@ -1106,15 +1110,16 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			}
 		}
 
-		private RelayCommand _openCercaFotoPopupCommand;
-		public ICommand openCercaFotoPopupCommand
+		private RelayCommand _aprireCercaFotoPopupCommand;
+		public ICommand aprireCercaFotoPopupCommand
 		{
 			get
 			{
-				if( _openCercaFotoPopupCommand == null ) {
-					_openCercaFotoPopupCommand = new RelayCommand( param => openCercaFotoPopup(), param => true );
+				if( _aprireCercaFotoPopupCommand == null ) {
+					_aprireCercaFotoPopupCommand = new RelayCommand( param => aprireCercaFotoPopup( (ModoRicercaPop)param ), 
+					                                                 param => possoAprireCercaFotoPopup( (ModoRicercaPop)param ) );
 				}
-				return _openCercaFotoPopupCommand;
+				return _aprireCercaFotoPopupCommand;
 			}
 		}
 
@@ -2028,7 +2033,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 					Match m2 = regexNumIntorno2.Match( paramCercaFoto.numeriFotogrammi );
 					if( m2.Success ) {
 						numPosiz = int.Parse( m2.Groups[1].Value );
-						intorno = 100;
+						intorno = QUANTE_FOTO_INTORNO;
 					}
 				}
 
@@ -2581,18 +2586,32 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 		}
 
-		void openCercaFotoPopup() {
+		private bool possoAprireCercaFotoPopup( ModoRicercaPop modoRicercaPop ) {
+
+			// Lo spostamento di pagina sui risultanti correnti, è abilitato solo se ho delle foto nella gallery.
+			if( modoRicercaPop == ModoRicercaPop.PosizionaPaginaDaNumero && totFotoRicerca <= 0 )
+				return false;
+
+
+			return true;
+		}
+
+		void aprireCercaFotoPopup( ModoRicercaPop modoRicercaPop ) {
 
 			cercaFotoPopupViewModel = new CercaFotoPopupViewModel();
 
+			cercaFotoPopupViewModel.modoRicercaPop = modoRicercaPop;
+
+			// Non dovrebbe mai accadere, ma se mi arrivasse questa condizione non è usabile. La correggo
 			// Se ho una ricerca attiva, allora permetto di ricercare per numero fotogramma.
-			if( totFotoRicerca > 0 ) { 
+			if( modoRicercaPop == ModoRicercaPop.PosizionaPaginaDaNumero && totFotoRicerca <= 0 ) {
+				// Ricerca impossibile. la correggo
+				_giornale.Warn( "Ricerca impossibile. La correggo" );
 				cercaFotoPopupViewModel.modoRicercaPop = ModoRicercaPop.PosizionaPaginaDaNumero;
-				cercaFotoPopupViewModel.possoRicercareLaPagina = true;
-			} else {
-				cercaFotoPopupViewModel.modoRicercaPop = ModoRicercaPop.RicercaNumeroConIntorno;
-				cercaFotoPopupViewModel.possoRicercareLaPagina = false;
 			}
+
+			// Lo spostamento su pagine viene attivato solo se ho almeno due pagine di risultati
+			cercaFotoPopupViewModel.possoRicercareLaPagina = (totPagineRicerca > 1);
 
 			// Se ho qualche ascoltatore, lo invoco
 			CercaFotoPopupRequestEventArgs args = new CercaFotoPopupRequestEventArgs();
@@ -2603,18 +2622,39 @@ namespace Digiphoto.Lumen.UI.Gallery {
 				// Se confermata la popup, agisco
 				using( new UnitOfWorkScope() ) {
 
+					int numeroFotogramma = cercaFotoPopupViewModel.numeroFotogramma;
+
 					if( cercaFotoPopupViewModel.modoRicercaPop == ModoRicercaPop.PosizionaPaginaDaNumero ) {
 
 						// Spostamento sulla pagina in cui si trova il fotogramma scelto
-						if( spostarePaginazioneConNumFotoCommand.CanExecute( cercaFotoPopupViewModel.numeroFotogramma ) )
-							spostarePaginazioneConNumFotoCommand.Execute( cercaFotoPopupViewModel.numeroFotogramma );
+						if( spostarePaginazioneConNumFotoCommand.CanExecute( numeroFotogramma ) )
+							spostarePaginazioneConNumFotoCommand.Execute( numeroFotogramma );
 					}
 
-					if( cercaFotoPopupViewModel.modoRicercaPop == ModoRicercaPop.RicercaNumeroConIntorno ) {
+					bool ricercareNumPerIntorno = (cercaFotoPopupViewModel.modoRicercaPop == ModoRicercaPop.RicercaNumeroConIntorno);
+
+					if( cercaFotoPopupViewModel.modoRicercaPop == ModoRicercaPop.RicercaDidascaliaConIntorno ) {
+						// Cerco la prima foto con quella diascalia
+						paramCercaFoto = new ParamCercaFoto();
+						paramCercaFoto.didascalia = cercaFotoPopupViewModel.numeroFotogramma.ToString();
+
+						fotoExplorerSrv.cercaFoto( paramCercaFoto );
+
+						if( fotoExplorerSrv.fotografie.Count > 0 ) {
+							// ora posso cascare nel caso della ricerca per numero, già implementata sotto.
+							numeroFotogramma = fotoExplorerSrv.fotografie [0].numero;
+							ricercareNumPerIntorno = true;
+						} else {
+							System.Media.SystemSounds.Beep.Play();
+						}
+					}
+
+
+					if( ricercareNumPerIntorno ) {
 
 						// Nuova ricerca con intorno
 						paramCercaFoto = new ParamCercaFoto();
-						paramCercaFoto.numeriFotogrammi = String.Format( "*{0}*", cercaFotoPopupViewModel.numeroFotogramma );
+						paramCercaFoto.numeriFotogrammi = String.Format( "*{0}*", numeroFotogramma );
 						eseguireRicerca( RicercaFlags.NuovaRicerca );
 					}
 				}
