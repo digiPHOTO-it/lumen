@@ -393,8 +393,6 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			return lista;
 		}
 
-		private static readonly Regex regexNumIntorno = new Regex( @"\*([0-9]+)\*" );
-
 		int gestisciRicercaPuntualePerNumeroEdIntorno( ParamCercaFoto param ) {
 
 			if( param.numeroConIntorno <= 0 )

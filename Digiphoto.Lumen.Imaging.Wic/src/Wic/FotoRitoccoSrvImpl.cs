@@ -1113,24 +1113,33 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			// per ora scelgo la strada di tenere un minimo per rinfrescale le foto
 			// Cmq non è un buon compromesso.
 
-			int perc;
+			short percentuale;
+			short percentualePrec = -1;
 			int conta = 0;
 			int tot = fotografie.Count();
 
 
 			foreach( Fotografia foto in fotografie ) {
 
-				perc = (100 * (++conta)) / tot ;
+				percentuale = (short) ((100 * (++conta)) / tot );
 
 				// Eseguo il lavoro nel ReportProgess perché questo metodo viene eseguito nel thread della UI
-				worker.ReportProgress( perc, foto );
+				// Devo eseguirlo nel thread della UI perché altrimenti mi blocca tutto e il prg. diventa tutto bianco
+				worker.ReportProgress( percentuale, foto );
 
-				// Vediamo quanto tempo è passato. Faccio degli sleep proporzionali
-				if( (perc % 10) == 0 ) {
-					Thread.Sleep( 200 );
+				// Faccio degli sleep per fare respirare l'applicazione
+				if( tot > 10 && percentuale != percentualePrec ) {
+					// Per 3 volte faccio dei respiri lunghi (per dare il tempo alla UI di aggiornarsi)
+					if( percentuale == 25 || percentuale == 50 || percentuale == 75 ) {
+						Thread.Sleep( 2500 );
+					} else
+					// Le altre volta un respiro corto
+					if( (percentuale % 10) == 0 ) {
+						Thread.Sleep( 200 );
+					}
 				}
-				
 
+				percentualePrec = percentuale;
 			}
 		}
 
