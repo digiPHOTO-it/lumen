@@ -15,6 +15,7 @@
 		<Setter Property="BorderBrush" Value="AntiqueWhite" />
 		<Setter Property="BorderThickness" Value="2" />
 		<Setter Property="Foreground" Value="White" />
+		<Setter Property="VerticalAlignment" Value="Top" />
 	</Style>
 
 	<Style x:Key="modoRicButtonStyle" TargetType="Button" BasedOn="{StaticResource buttonBaseStyle}">

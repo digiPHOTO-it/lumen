@@ -9,7 +9,8 @@
              xmlns:extToolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"
              xmlns:lumD="clr-namespace:Digiphoto.Lumen.UI.Diapo"   
-			 xmlns:lumS="clr-namespace:Digiphoto.Lumen.UI.SelettoreAzioniRapide"      
+			 xmlns:lumS="clr-namespace:Digiphoto.Lumen.UI.SelettoreAzioniRapide"     
+			 xmlns:local="clr-namespace:Digiphoto.Lumen.UI.Gallery" 
 			 xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
 
              mc:Ignorable="d" 
@@ -25,7 +26,9 @@
         <CommandBinding Command="{StaticResource uicmdDeselezionaTutteLeFoto}" Executed="deselezionareTutteLeFoto_Click" />
     </UserControl.CommandBindings>
     <UserControl.InputBindings>
-		<KeyBinding  Key="F4" Command="{Binding Path=openCercaFotoPopupCommand}" />
+		<KeyBinding  Key="F4" Command="{Binding Path=aprireCercaFotoPopupCommand}" CommandParameter="{x:Static local:ModoRicercaPop.PosizionaPaginaDaNumero}" />
+		<KeyBinding  Key="F5" Command="{Binding Path=aprireCercaFotoPopupCommand}" CommandParameter="{x:Static local:ModoRicercaPop.RicercaNumeroConIntorno}" />
+		<KeyBinding  Key="F6" Command="{Binding Path=aprireCercaFotoPopupCommand}" CommandParameter="{x:Static local:ModoRicercaPop.RicercaDidascaliaConIntorno}" />
 		<KeyBinding  Key="F8" Command="{StaticResource cmdGoToCurrentFotoSS}" />
         <KeyBinding  Key="S" Modifiers="Control" Command="{StaticResource uicmdSelezionaTutteLeFoto}" />
         <KeyBinding  Key="Q" Modifiers="Control" Command="{StaticResource uicmdDeselezionaTutteLeFoto}" />
@@ -269,9 +272,9 @@
 			</Grid>
 		</Popup>
 
-		<Expander Header="Filtri per ricercare le foto nell'archivio" DockPanel.Dock="Bottom" IsExpanded="True" ExpandDirection="Up" Name="expanderFiltriRicerca" >
+		<Expander Header="Filtri per ricercare le foto nell'archivio" DockPanel.Dock="Bottom" IsExpanded="True" ExpandDirection="Up" Name="expanderFiltriRicerca" Style="{StaticResource contenitoreStyle}">
 
-            <StackPanel Orientation="Horizontal" MaxHeight="120">
+            <StackPanel Orientation="Horizontal" MaxHeight="120" >
 
                 <StackPanel Orientation="Vertical" Margin="1,0,1,0"  >
 
@@ -321,18 +324,23 @@
                 <GroupBox Header="Metadati" Margin="3,0,3,0"  >
                     <StackPanel Orientation="Vertical" >
                         <Label Content="Didascalia" FontSize="10" />
-                        <TextBox x:Name="didascaliaTextBox" CharacterCasing="Upper" 
-								 Margin="0,0,0,0" ToolTip="Valori speciali: &lt;ISNULL&gt; oppure &lt;ISNOTNULL&gt;"
-								 Text="{Binding paramCercaFoto.didascalia, Mode=TwoWay}" MinWidth="80" FontSize="11"/>
+						<TextBox x:Name="didascaliaTextBox" CharacterCasing="Upper" 
+								 Margin="0,0,0,0"
+								 Text="{Binding paramCercaFoto.didascalia, Mode=TwoWay}" MinWidth="80" FontSize="11"
+								 ToolTip="Indicare la didascalia, oppure il codice a barre&#x0a;Valori speciali: &lt;ISNULL&gt; oppure &lt;ISNOTNULL&gt;&#x0a;Doppio click o F6 per ricerca avanzata" >
+							<TextBox.InputBindings>
+								<MouseBinding Gesture="LeftDoubleClick" Command="{Binding aprireCercaFotoPopupCommand}" CommandParameter="{x:Static local:ModoRicercaPop.RicercaDidascaliaConIntorno}" />
+							</TextBox.InputBindings>
+						</TextBox>
 
-                        <Label Content="Numeri" FontSize="10" />
+						<Label Content="Numeri" FontSize="10" />
 						<TextBox Text="{Binding stringaNumeriFotogrammi}" 
 						         x:Name="textBoxNumFotogrammi"
 						         Margin="0,0,0,0"
 						         CharacterCasing="Upper" MinWidth="80" FontSize="11"
-						         ToolTip="Indicare i numeri separati da virgola , oppure range con il meno -&#x0a;Doppio click o F4 per aiuto" >
+						         ToolTip="Indicare i numeri separati da virgola , oppure range con il meno -&#x0a;Doppio click o F4 o F5 per ricerca avanzata" >
 							<TextBox.InputBindings>
-								<MouseBinding Gesture="LeftDoubleClick" Command="{Binding openCercaFotoPopupCommand}" />
+								<MouseBinding Gesture="LeftDoubleClick" Command="{Binding aprireCercaFotoPopupCommand}" CommandParameter="{x:Static local:ModoRicercaPop.RicercaNumeroConIntorno}" />
 							</TextBox.InputBindings>
 						</TextBox>
                     </StackPanel>

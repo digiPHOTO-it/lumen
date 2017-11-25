@@ -19,7 +19,12 @@ namespace Digiphoto.Lumen.UI.Gallery {
 		/// Vengono svuotati i filtri di ricerca, e viene effettuata una ricerca con il numero del 
 		/// fotogramma indicato con intorno altre foto prima e dopo
 		/// </summary>
-		RicercaNumeroConIntorno
+		RicercaNumeroConIntorno,
+
+		/// <summary>
+		/// Esattamente come con il numero, ma prima si cerca la prima didascalia
+		/// </summary>
+		RicercaDidascaliaConIntorno
 	}
 
 	public class CercaFotoPopupViewModel : ViewModelBase {
