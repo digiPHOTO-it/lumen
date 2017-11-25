@@ -187,8 +187,16 @@ namespace Digiphoto.Lumen.UI
 		{
 			if (azioneAutomaticaSelezionata != null)
 			{
+				const int troppe = 150;
 				const int max = 3;
 				bool conferma = false;
+
+
+				// Verifica se troppe. Oltre questo tot, si pianta il pc
+				if( fotografieSelector.countElementiSelezionati > troppe ) {
+					dialogProvider.ShowError( "Le foto selezionate sono troppe\nRidurre al massimo a " + troppe + " foto", "Impossibile proseguire", null );
+					return;
+				}
 
 				if( fotografieSelector.countElementiSelezionati <= max )
 					conferma = true;

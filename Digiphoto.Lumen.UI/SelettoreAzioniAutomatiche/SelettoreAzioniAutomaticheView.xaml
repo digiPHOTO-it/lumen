@@ -45,9 +45,10 @@
 			</ListBox.ContextMenu>
 		</ListBox>
 
-		<Grid Grid.Row="1" Grid.Column="0" Height="28">
+		<Grid Grid.Row="1" Grid.Column="0" Height="50">
 			<Grid.RowDefinitions>
 				<RowDefinition />
+				<RowDefinition Height="14" />
 			</Grid.RowDefinitions>		
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto" />
@@ -70,9 +71,9 @@
 					Visibility="{Binding Path=modalitaAssociazione,Converter={StaticResource booleanToVisibilityConverter}}"
 			/>
 			<!--  -->
-					
-		</Grid>
 
+		</Grid>
+							
 	</Grid>
 
 </lumM:UserControlBase>
