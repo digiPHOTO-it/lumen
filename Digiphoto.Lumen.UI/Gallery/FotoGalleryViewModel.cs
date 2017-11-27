@@ -2592,7 +2592,6 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			if( modoRicercaPop == ModoRicercaPop.PosizionaPaginaDaNumero && totFotoRicerca <= 0 )
 				return false;
 
-
 			return true;
 		}
 
@@ -2631,29 +2630,29 @@ namespace Digiphoto.Lumen.UI.Gallery {
 							spostarePaginazioneConNumFotoCommand.Execute( numeroFotogramma );
 					}
 
-					bool ricercareNumPerIntorno = (cercaFotoPopupViewModel.modoRicercaPop == ModoRicercaPop.RicercaNumeroConIntorno);
+					bool ricercareNumConIntorno = (cercaFotoPopupViewModel.modoRicercaPop == ModoRicercaPop.RicercaNumeroConIntorno);
 
 					if( cercaFotoPopupViewModel.modoRicercaPop == ModoRicercaPop.RicercaDidascaliaConIntorno ) {
 						// Cerco la prima foto con quella diascalia
-						paramCercaFoto = new ParamCercaFoto();
+						azzeraParamRicerca();
 						paramCercaFoto.didascalia = cercaFotoPopupViewModel.numeroFotogramma.ToString();
 
 						fotoExplorerSrv.cercaFoto( paramCercaFoto );
 
 						if( fotoExplorerSrv.fotografie.Count > 0 ) {
 							// ora posso cascare nel caso della ricerca per numero, già implementata sotto.
-							numeroFotogramma = fotoExplorerSrv.fotografie [0].numero;
-							ricercareNumPerIntorno = true;
+							numeroFotogramma = fotoExplorerSrv.fotografie[0].numero;
+							ricercareNumConIntorno = true;
 						} else {
 							System.Media.SystemSounds.Beep.Play();
 						}
 					}
 
 
-					if( ricercareNumPerIntorno ) {
+					if( ricercareNumConIntorno ) {
 
 						// Nuova ricerca con intorno
-						paramCercaFoto = new ParamCercaFoto();
+						azzeraParamRicerca();
 						paramCercaFoto.numeriFotogrammi = String.Format( "*{0}*", numeroFotogramma );
 						eseguireRicerca( RicercaFlags.NuovaRicerca );
 					}
