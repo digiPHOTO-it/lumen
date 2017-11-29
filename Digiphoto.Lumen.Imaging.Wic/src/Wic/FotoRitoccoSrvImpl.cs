@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Digiphoto.Lumen.Servizi;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Imaging.Correzioni;
 using Digiphoto.Lumen.Util;
-using Digiphoto.Lumen.Imaging;
-using System.Data.Objects;
-using System.Data;
 using Digiphoto.Lumen.Servizi.Scaricatore;
 using Digiphoto.Lumen.Config;
 using System.Threading;
@@ -18,13 +14,11 @@ using System.IO;
 using log4net;
 using Digiphoto.Lumen.Servizi.Ritoccare.Clona;
 using Digiphoto.Lumen.Database;
-using System.Collections;
 using Digiphoto.Lumen.Servizi.Ritoccare;
 using System.Windows.Media.Imaging;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows;
-using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.Windows.Media.Effects;
 using System.Windows.Media.Effects;
 using Digiphoto.Lumen.Servizi.Io;
@@ -331,26 +325,6 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			return ffout[0];
 		}
 
-/*
-		public void acquisisciImmagineIncorniciataWithArtista( string nomeFileImg ) {
-
-			// Per fare entrare la nuova foto, uso lo stesso servizio che uso normalmente per scaricare le memory-card
-			using( IScaricatoreFotoSrv srv = LumenApplication.Instance.creaServizio<IScaricatoreFotoSrv>() ) {
-
-				srv.start();
-
-				ParamScarica param = new ParamScarica();
-				param.nomeFileSingolo = nomeFileImg;
-				param.flashCardConfig = new Config.FlashCardConfig {
-					idFotografo = Configurazione.ID_FOTOGRAFO_ARTISTA
-				};
-
-				srv.scarica( param );
-
-				// Non devo attendere il completamento, perché quando scarico la singola foto, tutto avviene nello stesso thread
-			}
-		}
-*/	
 		public void clonaImmagineIncorniciata(Fotografia fotoOrig, string nomeFileImg)
 		{
 			FileInfo fileInfoSrc = new FileInfo( fotoOrig.nomeFile );
