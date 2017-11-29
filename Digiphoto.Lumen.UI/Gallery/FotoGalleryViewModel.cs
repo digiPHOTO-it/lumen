@@ -2635,7 +2635,10 @@ namespace Digiphoto.Lumen.UI.Gallery {
 					if( cercaFotoPopupViewModel.modoRicercaPop == ModoRicercaPop.RicercaDidascaliaConIntorno ) {
 						// Cerco la prima foto con quella diascalia
 						azzeraParamRicerca();
-						paramCercaFoto.didascalia = cercaFotoPopupViewModel.numeroFotogramma.ToString();
+
+
+						// Il barcode è un ean8 quindi formatto il numero da 8 con zeri davanti
+						paramCercaFoto.didascalia = String.Format( "{0:00000000}", cercaFotoPopupViewModel.numeroFotogramma );
 
 						fotoExplorerSrv.cercaFoto( paramCercaFoto );
 
@@ -2655,6 +2658,9 @@ namespace Digiphoto.Lumen.UI.Gallery {
 						azzeraParamRicerca();
 						paramCercaFoto.numeriFotogrammi = String.Format( "*{0}*", numeroFotogramma );
 						eseguireRicerca( RicercaFlags.NuovaRicerca );
+
+//						OnPropertyChanged( "paramCercaFoto" );
+						OnPropertyChanged( "stringaNumeriFotogrammi" );
 					}
 				}
 			}
