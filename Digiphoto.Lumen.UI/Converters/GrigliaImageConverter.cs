@@ -4,6 +4,7 @@ using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.UI.Gallery;
 using Digiphoto.Lumen.UI.Pubblico;
 using Digiphoto.Lumen.Util;
+using log4net;
 using System;
 using System.Globalization;
 using System.Windows.Data;
@@ -19,6 +20,7 @@ namespace Digiphoto.Lumen.UI.Converters {
 	/// 
 	public class GrigliaImageConverter : IMultiValueConverter {
 
+		private static readonly ILog _giornale = LogManager.GetLogger( typeof( GrigliaImageConverter ) );
 
 		public static bool richiedeAltaQualita( short numRighe, short numColonne ) {
 			return FotoGalleryViewModel.vediAltaQualita( numRighe, numColonne );
@@ -65,8 +67,9 @@ namespace Digiphoto.Lumen.UI.Converters {
 				if( immagine != null )
 					imageSource = ((ImmagineWic)immagine).bitmapSource as ImageSource;
 
-			} catch( Exception ) {
-				// Alcune immagini possono essere rovinate o mancanti. Devo proseguire
+			} catch( Exception ee ) {
+				_giornale.Error( "estrazione immagine fallita", ee );
+				// Alcune immagini possono essere rovinate o mancanti. Devo proseguire.
 				imageSource = null;
 			}
 
