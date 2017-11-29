@@ -334,7 +334,7 @@
 						</TextBox>
 
 						<Label Content="Numeri" FontSize="10" />
-						<TextBox Text="{Binding stringaNumeriFotogrammi}" 
+						<TextBox Text="{Binding stringaNumeriFotogrammi,Mode=TwoWay}" 
 						         x:Name="textBoxNumFotogrammi"
 						         Margin="0,0,0,0"
 						         CharacterCasing="Upper" MinWidth="80" FontSize="11"
