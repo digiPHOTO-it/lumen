@@ -204,7 +204,6 @@ namespace Digiphoto.Lumen.Config  {
 			userConfig.estensioniGrafiche = ".jpg;.jpeg;.png;.tif;.tiff";
 			userConfig.editorImmagini = "MSPAINT.EXE";
 			userConfig.masterizzaTarget = MasterizzaTarget.DriveRimovibili;
-			userConfig.millisIntervalloSlideShow = 2500;
 			userConfig.oraCambioGiornata = "05:00";
 
 			userConfig.numRigheProvini = 6;
@@ -260,8 +259,8 @@ namespace Digiphoto.Lumen.Config  {
 			// Setto i default
 			lastUsedConfig.slideShowNumRighe = 1;
 			lastUsedConfig.slideShowNumColonne = 2;
+			lastUsedConfig.millisIntervalloSlideShow = 2500;
             lastUsedConfig.collassaFiltriInRicercaGallery = true;
-
 
 			return lastUsedConfig;
 		}

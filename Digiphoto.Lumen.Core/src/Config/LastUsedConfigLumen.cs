@@ -27,6 +27,11 @@ namespace Digiphoto.Lumen.Config
 			set;
 		}
 
+		public short millisIntervalloSlideShow {
+			get;
+			set;
+		}
+
 		public bool collassaFiltriInRicercaGallery {
 			get;
 			set;

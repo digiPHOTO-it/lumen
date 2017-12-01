@@ -319,11 +319,6 @@ namespace Digiphoto.Lumen.Config
 			}
 		}
 
-		public int millisIntervalloSlideShow {
-			get;
-			set;
-		}
-
 		public string oraCambioGiornata {
 			get;
 			set;

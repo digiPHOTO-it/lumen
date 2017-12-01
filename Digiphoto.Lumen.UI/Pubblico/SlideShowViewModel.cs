@@ -351,8 +351,12 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 		}
 
 		private void creaShow() {
-			
-			slideShow.millisecondiIntervallo = Configurazione.UserConfigLumen.millisIntervalloSlideShow;
+
+
+			if( Configurazione.LastUsedConfigLumen.millisIntervalloSlideShow <= 0 )
+				slideShow.millisecondiIntervallo = 2500;
+			else
+				slideShow.millisecondiIntervallo = Configurazione.LastUsedConfigLumen.millisIntervalloSlideShow;
 
 			// Avvio il timer che serve a far girare le foto
 			creaNuovoTimer();
