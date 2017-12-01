@@ -12,6 +12,11 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 
 		public GestSlideShowViewModel() {
 			caricaSchermi();
+
+			if( Configurazione.LastUsedConfigLumen.millisIntervalloSlideShow <= 0 )
+				millisIntervalloSlideShow = 2500;
+			else
+				millisIntervalloSlideShow = Configurazione.LastUsedConfigLumen.millisIntervalloSlideShow;
 		}
 
 
@@ -114,6 +119,22 @@ namespace Digiphoto.Lumen.UI.Pubblico {
             }
 		}
 
+		private short _millisIntervalloSlideShow;
+		public short millisIntervalloSlideShow { 
+			get {
+				return _millisIntervalloSlideShow;
+			}
+			set {
+				if( _millisIntervalloSlideShow != value ) {
+					_millisIntervalloSlideShow = value;
+					OnPropertyChanged( "millisIntervalloSlideShow" );
+
+					// Salvo il cambiamento dei millis
+					aggiornaConfigurazione();
+
+				}
+			}
+		}
 
 		#endregion Proprieta
 
@@ -201,10 +222,18 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			gestoreFinestrePubbliche.posizionaFinestraSlideShow();
         }
 
+		void aggiornaConfigurazione() {
+			if( millisIntervalloSlideShow != Configurazione.LastUsedConfigLumen.millisIntervalloSlideShow ) {
+				Configurazione.LastUsedConfigLumen.millisIntervalloSlideShow = millisIntervalloSlideShow;
+				LastUsedConfigSerializer.serializeToFile( Configurazione.LastUsedConfigLumen );
+			}
+
+		}
+
 		#endregion Metodi
 
 		#region Comandi
-		
+
 		private RelayCommand _aprireSlideShowCommand;
 		public ICommand aprireSlideShowCommand {
 			get {

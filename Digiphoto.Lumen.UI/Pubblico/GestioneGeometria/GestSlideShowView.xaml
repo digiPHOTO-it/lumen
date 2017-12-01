@@ -5,7 +5,7 @@
 					  xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 					  xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
 					  xmlns:lum="clr-namespace:Digiphoto.Lumen.UI.Pubblico"
-					  mc:Ignorable="d" 
+					  mc:Ignorable="d" Style="{DynamicResource contenitoreStyle}"
 					  d:DesignHeight="500" d:DesignWidth="900">
 
 	<lumM:UserControlBase.DataContext>
@@ -24,27 +24,35 @@
 
         <GroupBox Header="Finestra Slide Show" DockPanel.Dock="Top" Margin="0,20,0,0">
 
-            <StackPanel Orientation="Horizontal">
+			<Grid>
+				<StackPanel Orientation="Horizontal">
 
-                <Label Content="Sul monitor n°" FontSize="16" />
-                <TextBox Width="30" Height="26" Text="{Binding Path=deviceEnum,Mode=OneWay}" IsReadOnly="True" />
+					<Label Content="Sul monitor n°" FontSize="16" />
+					<TextBox Width="30" Height="26" Text="{Binding Path=deviceEnum,Mode=OneWay}" IsReadOnly="True" />
 
-                <CheckBox IsEnabled="False" Content="Schermo Intero" IsChecked="{Binding Path=fullScreen,Mode=OneWay}" Margin="30,0,0,0"  VerticalAlignment="Center" FontSize="18" />
+					<CheckBox IsEnabled="False" Content="Schermo Intero" IsChecked="{Binding Path=fullScreen,Mode=OneWay}" Margin="30,0,0,0"  VerticalAlignment="Center" FontSize="18" />
 
 
-                <Button Content="Apri" Command="{Binding aprireSlideShowCommand}" />
-                <Button Content="Chiudi" Command="{Binding chiudereSlideShowCommand}" />
+					<Button Content="Apri" Command="{Binding aprireSlideShowCommand}" />
+					<Button Content="Chiudi" Command="{Binding chiudereSlideShowCommand}" />
 
-<!--
-                <Button Content="Ripristina" Command="{Binding ripristinaCommand}" Style="{StaticResource finestraPubblicaButtonStyle}" ToolTip="Carica la ultima posizione salvata" />
--->
-                <Button Content="Massimizza sul&#10;monitor secondario" Command="{Binding massimizzareSulMonitor2Command}" ToolTip="Posiziona la finestra dello Slide Show&#10;sul monitor secondario&#10;in modalità tutto schermo" IsEnabled="{Binding isPossibileMassimizzareSulMonitor2,Converter={StaticResource booleanToVisibilityConverter}}" />
+					<!--
+					<Button Content="Ripristina" Command="{Binding ripristinaCommand}" Style="{StaticResource finestraPubblicaButtonStyle}" ToolTip="Carica la ultima posizione salvata" />
+					-->
+					<Button Content="Massimizza sul&#10;monitor secondario" Command="{Binding massimizzareSulMonitor2Command}" ToolTip="Posiziona la finestra dello Slide Show&#10;sul monitor secondario&#10;in modalità tutto schermo" IsEnabled="{Binding isPossibileMassimizzareSulMonitor2,Converter={StaticResource booleanToVisibilityConverter}}" />
 
-                <Button Content="Reset" Command="{Binding resetCommand}" ToolTip="Resetta posizione sul monitor principale" />
+					<Button Content="Reset" Command="{Binding resetCommand}" ToolTip="Resetta posizione sul monitor principale" />
 
-                <Button Content="Salva" Command="{Binding salvarePosizioneSlideShowCommand}" />
+					<Button Content="Salva" Command="{Binding salvarePosizioneSlideShowCommand}" />
 
-            </StackPanel>
+				</StackPanel>
+
+				<Label Content="Millis intervallo SlideShow" Margin="117,140,574,34" Width="197" ToolTip="Esempio: 1 secondo e mezzo = 1500 millis"/>
+				<TextBox  Text="{Binding millisIntervalloSlideShow,Mode=TwoWay,UpdateSourceTrigger=LostFocus}" ToolTip="esempio 1500 = 1 secondo e mezzo" Margin="368,143,444,34" HorizontalContentAlignment="Right" Height="26" Width="76" />
+
+			</Grid>
+
+
         </GroupBox>
         <GroupBox Header="Finestra Pubblico" DockPanel.Dock="Top" Margin="0,20,0,0">
 
@@ -62,6 +70,6 @@
         </GroupBox>
 
 
-    </DockPanel>
+	</DockPanel>
 	
 </lumM:UserControlBase>
