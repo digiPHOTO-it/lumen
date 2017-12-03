@@ -6,6 +6,12 @@ using Digiphoto.Lumen.Model;
 
 namespace Digiphoto.Lumen.Servizi.Stampare {
 
+	// Non modificare i valori della enumeration, perché corrispondono ai metodi del ManagementObject (wmi)
+	public enum PrnAzione {
+		Pause,
+		Resume
+	};
+
 
 	/**
 	 * Lo spool di stampa è quello che presiede tutte le stampe.
@@ -37,5 +43,17 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 		float ratioAreaStampabile {
 			get;
 		}
+
+
+		/// <summary>
+		/// Mette in pausa tutte stampanti di sistema (solo quelle gestite da Lumen)
+		/// </summary>
+		void pauseTutteLeStampanti();
+
+		/// <summary>
+		/// Riavvia tutte le stampanti di sistema (solo quelle gestite da Lumen)
+		/// </summary>
+		void resumeTutteLeStampanti();
+
 	}
 }

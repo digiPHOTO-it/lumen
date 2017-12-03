@@ -213,6 +213,12 @@
 
                 <ToggleButton IsChecked="{Binding Path=modoVendita,Mode=TwoWay,Converter={StaticResource modoVenditaBoolConverter}}" Style="{StaticResource statusModoVenditaSwitchImage}" />
 
+				<ToggleButton Content="Run" ToolTip="Controllo lo stato delle stampanti"
+				              Command="{Binding pauseRunStampantiCommand,Mode=OneWay}" 
+							  CommandParameter="{Binding IsChecked,RelativeSource={RelativeSource Self}}"
+							  Style="{StaticResource printersStatusToggleButtonStyle}"
+							  />
+
             </ToolBar>
 
 

@@ -65,7 +65,7 @@
       ** Quindi creo un pulsante che ha una didascalia sotto.
     -->
     <DataTemplate x:Key="pulsanteDiStampaTemplate">
-        <Button ToolTip="{Binding}" 
+		<Button ToolTip="{Binding}" 
                 Command="{Binding Path=DataContext.stampareCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
                 CommandParameter="{Binding}"
 				Style="{StaticResource imageButtonToolBarStyle}"
@@ -334,6 +334,35 @@
 		<Setter Property="ToolTip" Value="Visualizza solo le foto selezionate&#10;oppure tutte le foto" />
 	</Style>
 
+	<!-- Pulsante di avvio/pausa di tutte le stampanti -->
+	<Style x:Key="printersStatusToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource mioToggleButtonStyle}">
+
+		<Setter Property="FontSize" Value="10" />
+		<Setter Property="Width" Value="38" />
+
+		<Style.Triggers>
+			<Trigger Property="IsChecked" Value="True">
+				<Setter Property="ContentTemplate" >
+					<Setter.Value>
+						<DataTemplate>
+							<Label Content="Pause" Margin="0" Padding="0" ToolTip="Tutte le stampanti sono in pausa" />
+						</DataTemplate>
+					</Setter.Value>
+				</Setter>
+			</Trigger>
+
+			<!--
+			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Self},Path=IsPressed}" Value="True">
+				<Setter Property="BorderBrush" Value="Red" />
+				<Setter Property="BorderThickness" Value="1" />
+				<Setter Property="Background" Value="Yellow" />
+				<Setter Property="Content" Value="Paused" />
+			</DataTrigger>
+-->
+		</Style.Triggers>
+	</Style>
+
+
 	<!-- lo slider per spostare la paginazione -->
 	<Style x:Key="sliderStyle" TargetType="{x:Type Slider}">
 
@@ -367,6 +396,7 @@
 		
 	</Style>
 
+	<!-- finestrella di popup per visualizzare numero corrente durante lo slider -->
 	<Style x:Key="sliderTooltipPopupStyle" TargetType="Popup">
 
 		
@@ -421,53 +451,6 @@
 		</Style.Resources>
 	</Style>
 
-
-<!--
-	<Style x:Key="sliderStyle1" TargetType="{x:Type Slider}">
-		<Setter Property="Height" Value="32" />
-		
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type Slider}">
-					<Border>
-						<Grid ShowGridLines="True">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}"/>
-								<RowDefinition Height="Auto"/>
-							</Grid.RowDefinitions>
-							<Border x:Name="TrackBackground" Height="34" Background="Chocolate" Grid.Row="1"/>
-
-							<Track x:Name="PART_Track" Grid.Row="1">
-								<Track.Thumb>
-									<Thumb x:Name="Thumb" Style="{DynamicResource ThumbStyle1}"/>
-								</Track.Thumb>
-							</Track>
-						</Grid>
-					</Border>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</Style>
-
-	<Style x:Key="ThumbStyle1" TargetType="{x:Type Thumb}">
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type Thumb}">
-					<Canvas>
-						<Ellipse  Fill="Blue" Height="70" Width="74" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-						<Image Margin="4,12,0,0" Source="/Digiphoto.Lumen.UI;component/Resources/gallery-double-arrow-left-16x16.png" Width="16" />
-						<Image Margin="21,0,0,0" Source="/Digiphoto.Lumen.UI;component/Resources/gallery-slider-move-32x32.png" Width="32" />
-						<Image Margin="53,12,0,0" Source="/Digiphoto.Lumen.UI;component/Resources/gallery-double-arrow-right-16x16.png" Width="16" />
-					</Canvas>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</Style>
--->
 
 	<RoutedUICommand x:Key="cmdTakeSnapshotPubblico1" />
 	<RoutedUICommand x:Key="cmdCloseSnapshotPubblico" />
