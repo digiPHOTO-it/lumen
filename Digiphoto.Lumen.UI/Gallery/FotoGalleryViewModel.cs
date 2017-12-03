@@ -1123,6 +1123,17 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			}
 		}
 
+		private RelayCommand _pauseRunStampantiCommand;
+		public ICommand pauseRunStampantiCommand {
+			get {
+				if( _pauseRunStampantiCommand == null ) {
+					_pauseRunStampantiCommand = new RelayCommand( pause => pauseRunStampanti( (bool) pause ),
+																  pause => true );
+				}
+				return _pauseRunStampantiCommand;
+			}
+		}
+
 
 		#endregion Comandi
 
@@ -2707,6 +2718,15 @@ namespace Digiphoto.Lumen.UI.Gallery {
 				_unitOfWorkSlider.Dispose();
 				_unitOfWorkSlider = null;
 			}
+		}
+
+		void pauseRunStampanti( bool pause ) {
+
+			ISpoolStampeSrv srv = LumenApplication.Instance.getServizioAvviato<ISpoolStampeSrv>();
+			if( pause )
+				srv.pauseTutteLeStampanti();
+			else
+				srv.resumeTutteLeStampanti();
 		}
 
 		#endregion Metodi

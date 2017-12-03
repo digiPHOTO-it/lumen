@@ -11,6 +11,9 @@ using log4net;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Threading;
 using Digiphoto.Lumen.Config;
+using System.Text.RegularExpressions;
+using System.Printing;
+using System.Management;
 
 namespace Digiphoto.Lumen.Servizi.Stampare {
 
@@ -152,6 +155,88 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 				c.Clear();
 		}
 
+		// private void azioneSuTutteLeStampanti__NON_VA( PrnAzione azione ) {
+
+		private void azioneSuTutteLeStampanti( PrnAzione azione ) {
+
+			foreach( var stampanteAbbinata in stampantiAbbinate ) {
+
+				var prn = stampanteAbbinata.StampanteInstallata.NomeStampante;
+
+				try {
+					azioneSuSingolaStampante( azione, prn );
+					_giornale.Info( "Azione: " + azione + " su stampante " + prn + " riuscita" );
+				} catch( Exception ee ) {
+					_giornale.Error( "Azione " + azione + " su stampante " + prn + " non riuscita", ee );
+				}
+			}
+		}
+
+		/// <summary>
+		/// Eseguo una azione su di una stampante (server di stampa). 
+		/// Devo usare i ManagementObject perché le classi apposite non vanno.
+		/// </summary>
+		/// <param name="azione"></param>
+		/// <param name="printerName"></param>
+		public void azioneSuSingolaStampante( PrnAzione azione, string printerName ) {
+
+			string query = string.Format( "SELECT * from Win32_Printer WHERE Name LIKE '%{0}'", printerName );
+			
+			ManagementObjectSearcher searcher = new ManagementObjectSearcher( query );
+			ManagementObjectCollection coll = searcher.Get();
+
+			foreach( ManagementObject printer in coll ) { 
+				printer.InvokeMethod( azione.ToString(), null ); 
+			}
+		}
+
+
+		/// <summary>
+		/// Questa implementazione che è quella più intelligente, non mi funziona.
+		/// Mi solleva una eccezione che dice che non sono autorizzato, non ho i permessi ????
+		/// Nonostante io richieda i permessi di amministrare il server di stampa
+		/// </summary>
+		/// <param name="azione"></param>
+		private void azioneSuSingolaStampante__NON__VA__access_denied( PrnAzione azione, String nomeStampante ) { 
+
+			var match = Regex.Match( nomeStampante, @"(?<machine>\\\\.*?)\\(?<queue>.*)" );
+			PrintServer printServer = null;
+			if( match.Success ) {
+				// Come print-server uso il server di rete
+				printServer = new PrintServer( match.Groups ["machine"].Value, PrintSystemDesiredAccess.AdministrateServer );
+			} else {
+				// Come print-server uso me stesso
+				printServer = new PrintServer( PrintSystemDesiredAccess.AdministrateServer );
+			}
+
+			using( printServer ) {
+
+				PrintQueue printQueue = null;
+				if( match.Success ) {
+					printQueue = printServer.GetPrintQueue( match.Groups ["queue"].Value );
+				} else {
+					printQueue = printServer.GetPrintQueue( nomeStampante );
+				}
+
+				// Ricavo la coda di stampa (cioè la stampante) e le sue capacità.
+				using( printQueue ) {
+
+					if( azione == PrnAzione.Pause )
+						printQueue.Pause();
+
+					if( azione == PrnAzione.Resume )
+						printQueue.Resume();
+				}
+			}
+		}
+
+		public void pauseTutteLeStampanti() {
+			azioneSuTutteLeStampanti( PrnAzione.Pause );
+		}
+
+		public void resumeTutteLeStampanti() {
+			azioneSuTutteLeStampanti( PrnAzione.Resume );
+		}
 
 		private StampantiAbbinateCollection _stampantiAbbinate;
 		public StampantiAbbinateCollection stampantiAbbinate {
@@ -177,5 +262,9 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			}
 
 		}
+
+	
+
+
 	}
 }
