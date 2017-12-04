@@ -11,6 +11,8 @@ using Digiphoto.Lumen.Util;
 using System.Transactions;
 using Digiphoto.Lumen.Servizi.Scaricatore;
 using Digiphoto.Lumen.Applicazione;
+using Digiphoto.Lumen.Servizi.Io;
+using Digiphoto.Lumen.Imaging;
 
 namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 
@@ -109,8 +111,21 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 			string nomeRel = PathUtil.nomeRelativoFoto( fInfoFoto );
 
 			if( ! UnitOfWorkScope.currentDbContext.Fotografie.Any( f => f.nomeFile == nomeRel ) ) {
-				fiFotosMancanti.Add( fInfoFoto );
-				_giornale.Debug( "Attenzione! Foto mancante nel database : " + nomeRel );
+
+				// La foto c'è su disco ma non nel db. Potrebbe anche essere una foto corrotta e non leggibile.
+				try {
+
+					// provo ad aprire la foto
+					IImmagine img = gestoreImmagineSrv.load( fInfoFoto.FullName );
+					img.Dispose();
+
+					fiFotosMancanti.Add( fInfoFoto );
+					_giornale.Warn( "Attenzione! Foto mancante nel database : " + nomeRel );
+
+				} catch( Exception ) {
+					_giornale.Warn( "Foto mancante nel database : " + nomeRel + " ma non recuperabile" );
+				}
+
 			}
 		}
 
@@ -351,7 +366,11 @@ namespace Digiphoto.Lumen.Servizi.Ricostruzione {
 				_giornale.Debug( "success = " + success );
 		}
 
-
+		private IGestoreImmagineSrv gestoreImmagineSrv {
+			get {
+				return LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
+			}
+		}
 
 
 	}

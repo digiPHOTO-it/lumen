@@ -160,13 +160,17 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			statoScarica = StatoScarica.Provinatura;
 			elab.elabora( esitoScarico.tempo );
 
-			_giornale.Debug( "Elaborazione terminata. Inserite " + elab.conta + " foto nel database" );
+			_giornale.Debug( "Elaborazione terminata. Inserite " + elab.contaAggiunteDb + " foto nel database" );
 
 			statoScarica = StatoScarica.Idle;
 
 			// Rendo pubblico l'esito dell'elaborazione così che si può aggiornare la libreria.
+			scaricoFotoMsg.esitoScarico.totFotoProvinate = elab.contaAggiunteDb;
+			if( scaricoFotoMsg.esitoScarico.totFotoProvinate != scaricoFotoMsg.esitoScarico.totFotoScaricate )
+				scaricoFotoMsg.esitoScarico.riscontratiErrori = true;
+
 			scaricoFotoMsg.fase = FaseScaricoFoto.FineLavora;
-			scaricoFotoMsg.descrizione = "Provinatura foto terminata. Inserite " + elab.conta + " foto nel database";
+			scaricoFotoMsg.descrizione = "Provinatura foto terminata. Inserite " + elab.contaAggiunteDb + " foto nel database";
 			scaricoFotoMsg.showInStatusBar = true;
 			pubblicaMessaggio( scaricoFotoMsg );
 
@@ -176,10 +180,12 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			// Faccio un controllo: Se le foto scaricate non coincidono con quelle elaborate (ovvero scritte nel db e provinate)
 			// Allora c'è stato un problema. Devo avvisare l'utente di ricostruire il database
-			if( esitoScarico.totFotoCopiateOk != elab.conta ) {
+			bool problemiInVista = (esitoScarico.riscontratiErrori || esitoScarico.totFotoCopiateOk != elab.contaAggiunteDb);
+
+			if( problemiInVista ) {
 
 				// TODO stampare nel log tutto l'oggetto EsitoScarico
-				_giornale.Warn( String.Format( "Riscontrata incongruenza database. copiate={0} elab={1}", esitoScarico.totFotoCopiateOk, elab.conta ) );
+				_giornale.Warn( String.Format( "Riscontrata incongruenza database. copiate={0} elab={1}", esitoScarico.totFotoCopiateOk, elab.contaAggiunteDb ) );
 
 				RilevataInconsistenzaDatabaseMsg inconsistenzaMsg = new RilevataInconsistenzaDatabaseMsg( this );
 				inconsistenzaMsg.descrizione = "Inconsistenza database. Lanciare ricostruzione!";
