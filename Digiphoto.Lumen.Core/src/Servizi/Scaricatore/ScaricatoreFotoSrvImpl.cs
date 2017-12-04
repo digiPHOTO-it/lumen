@@ -11,8 +11,10 @@ using System.Threading;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Model;
-using  System.Data.Entity.Core.Objects;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
+using Digiphoto.Lumen.Core.Eventi;
+using Digiphoto.Lumen.Applicazione;
 
 namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
@@ -170,6 +172,21 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			// Chiudo il worker che ha finito il suo lavoro
 			// _copiaImmaginiWorker.Stop();
+
+
+			// Faccio un controllo: Se le foto scaricate non coincidono con quelle elaborate (ovvero scritte nel db e provinate)
+			// Allora c'è stato un problema. Devo avvisare l'utente di ricostruire il database
+			if( esitoScarico.totFotoCopiateOk != elab.conta ) {
+
+				// TODO stampare nel log tutto l'oggetto EsitoScarico
+				_giornale.Warn( String.Format( "Riscontrata incongruenza database. copiate={0} elab={1}", esitoScarico.totFotoCopiateOk, elab.conta ) );
+
+				RilevataInconsistenzaDatabaseMsg inconsistenzaMsg = new RilevataInconsistenzaDatabaseMsg( this );
+				inconsistenzaMsg.descrizione = "Inconsistenza database. Lanciare ricostruzione!";
+				inconsistenzaMsg.showInStatusBar = true;
+				inconsistenzaMsg.giornataDaVerificare = LumenApplication.Instance.stato.giornataLavorativa;
+				pubblicaMessaggio( inconsistenzaMsg );
+			}
 
 		}
 

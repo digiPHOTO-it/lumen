@@ -759,6 +759,32 @@ namespace Digiphoto.Lumen.UI {
 				}
 			}
 
+			if( msg is RilevataInconsistenzaDatabaseMsg ) {
+				bool ricostruire = false;
+				bool possoAdesso = aprirePopupRicostruzioneDbCommand.CanExecute( null );
+				string titolo = "Rilevata inconsistenza database";
+				string testo = "ATTENZIONE\nE' stata riscontrata una differenza\ntra le foto scaricate e quelle elaborate.\nE' necessario lanciare la ricostruzione database!";
+
+				App.Current.Dispatcher.BeginInvoke( new Action( () => {
+
+					if( possoAdesso ) {
+						testo += "\nVuoi eseguirlo adesso ?";
+						
+						dialogProvider.ShowConfirmation( testo, titolo, ( sino ) => {
+							ricostruire = sino;
+						} );
+
+						if( ricostruire ) {
+							aprirePopupRicostruzioneDbCommand.Execute( null );
+						}
+					} else {
+						dialogProvider.ShowMessage( testo, titolo );
+					}
+
+				} ) );
+
+			}
+
 		}
 #endregion Eventi
 
