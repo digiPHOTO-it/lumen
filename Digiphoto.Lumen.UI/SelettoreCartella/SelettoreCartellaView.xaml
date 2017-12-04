@@ -37,8 +37,8 @@
                      MouseDoubleClick="dischiRimovibiliListBox_MouseDoubleClick" />
         </GroupBox>
 
-        <Button Name="browseForFolderButton" Content="Scegli altra cartella" 
-                Command="{Binding scegliereCartellaCommand}"
+        <Button Name="browseForFolderButton" Content="Scegli altra cartella" Height="26"
+                Command="{Binding scegliereCartellaCommand}" Style="{StaticResource buttonBaseStyle}"
         />
 <!--        Click="browseForFolderButton_Click" -->
 
