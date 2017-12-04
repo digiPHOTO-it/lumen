@@ -174,6 +174,7 @@
     <Compile Include="src\Config\LastUsedConfigLumen.cs" />
     <Compile Include="src\Config\GeometriaFinestra.cs" />
     <Compile Include="src\Eventi\RefreshMsg.cs" />
+    <Compile Include="src\Eventi\RilevataInconsistenzaDatabaseMsg.cs" />
     <Compile Include="src\Imaging\CalcolatoreAreeRispetto.cs" />
     <Compile Include="src\Imaging\Correzioni\AreaRispetto.cs" />
     <Compile Include="src\Imaging\Correzioni\MascheraturaOrientabile.cs" />

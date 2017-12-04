@@ -45,8 +45,14 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			this._paramScarica = paramScarica;
 		}
 
-        public int numeroFotoAcquisite(){
-            return _listaFiles.Count;
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+        public int numeroFotoAcquisite {
+			get {
+				return _listaFiles.Count;
+			}
         }
 
 
@@ -154,7 +160,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			_giornale.Debug( "Inizio incrementaTotaleFotoScaricate()" );
 			ScaricoCard scaricoCard = new ScaricoCard();
 			scaricoCard.id = Guid.NewGuid();
-			scaricoCard.totFoto = (short)numeroFotoAcquisite();
+			scaricoCard.totFoto = (short)numeroFotoAcquisite;
 
 			scaricoCard.fotografo = this._fotografo;
 			scaricoCard.tempo = tempoScarico;  // Deve essere uguale al tempo indicato sulla fotografia	
