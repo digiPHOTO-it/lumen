@@ -21,7 +21,7 @@
 		
 		<TextBox  AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True" Margin="100,85,100,0" Text="{Binding testoEsplicativo,Mode=OneTime}" VerticalAlignment="Top" />
 
-		<Button Content="Inizia ricerca foto vecchie" Height="28" Margin="185,215,0,0" Name="button2" VerticalAlignment="Top" Command="{Binding cleanCommand}" HorizontalAlignment="Left" Width="200"/>
+		<Button Content="Inizia ricerca foto vecchie" Height="28" Margin="185,215,0,0" Name="button2" VerticalAlignment="Top" Command="{Binding cleanCommand}" HorizontalAlignment="Left" Width="200" Style="{StaticResource buttonBaseStyle}" />
 
 	</Grid>
 </lumM:UserControlBase>

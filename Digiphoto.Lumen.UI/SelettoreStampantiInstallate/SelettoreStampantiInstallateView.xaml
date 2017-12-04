@@ -41,14 +41,21 @@
 					<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="LightGreen" Opacity="0.7" />
 				</ListBox.Resources>
 
+				<ListBox.ItemContainerStyle>
+					<Style TargetType="{x:Type ListBoxItem}">
+						<EventSetter Event="MouseDoubleClick" Handler="stampantiInstallateListBox_MouseDoubleClick" />
+					</Style>
+				</ListBox.ItemContainerStyle>
+
 			</ListBox>
 
-			<StackPanel Orientation="Horizontal"  Grid.Row="1" Grid.Column="0">
+			<StackPanel Orientation="Horizontal"  Grid.Row="1" Grid.Column="0" Height="25">
 
-				<Button Name="refreshButton" Content="Rileggi" Command="{Binding Path=rileggereStampantiInstallateCommand}" />
+				<Button Name="refreshButton" Content="Rileggi" Command="{Binding Path=rileggereStampantiInstallateCommand}" Style="{StaticResource buttonBaseStyle}" />
 
 				<Button Content="Visualizza coda di stampe" ToolTip="Apre coda di stampa"
 						Width="auto" 
+						Style="{StaticResource buttonBaseStyle}" Margin="10 0 0 0" 
 						Visibility="{Binding Path=aprireCoda, Converter={StaticResource boolVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
 						Command="{Binding Path=aprireCodaCommand}"  />
 

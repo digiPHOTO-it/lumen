@@ -35,5 +35,19 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
-    }
+		private void stampantiInstallateListBox_MouseDoubleClick( object sender, RoutedEventArgs e ) {
+
+			ListBoxItem lbItem = (ListBoxItem)sender;
+			var stampanteInstallata = lbItem.Content; // as StampanteInstallata;
+
+			viewModel.aprireCodaCommand.Execute( null );
+
+		}
+
+		private SelettoreStampantiInstallateViewModel viewModel {
+			get {
+				return (SelettoreStampantiInstallateViewModel)DataContext;
+			}
+		}
+	}
 }

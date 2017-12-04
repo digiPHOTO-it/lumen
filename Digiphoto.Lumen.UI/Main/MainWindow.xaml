@@ -253,7 +253,7 @@
 						<TabItem.Header>
 							<TextBlock Text="About" FontSize="14"/>
 						</TabItem.Header>
-						<Button Content="About" Height="50" Width="150" Click="Button_Click" />
+						<Button Content="About" Height="50" Width="150" Click="Button_Click" Style="{StaticResource buttonBaseStyle}" />
 					</TabItem>
 
 					<TabItem ToolTip="Termina la sessione di lavoro con lumen" Height="Auto" Margin="0,40,0,-40">
@@ -261,8 +261,8 @@
 							<TextBlock Text="Fine lavoro" FontSize="16" />
 						</TabItem.Header>
 						<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-							<Button Content="Uscita" Height="50" Command="{Binding uscireCommand}" Width="150" ToolTip="Uscita dal programma"/>
-							<Button Content="Spegnimento" Height="50" Command="{Binding uscireCommand}" CommandParameter="SHUTDOWN" Width="150" ToolTip="Spegnimento del sistema" Margin="20,0,0,0"/>
+							<Button Content="Uscita" Height="50" Command="{Binding uscireCommand}" Width="150" ToolTip="Uscita dal programma" Style="{StaticResource buttonBaseStyle}" />
+							<Button Content="Spegnimento" Height="50" Command="{Binding uscireCommand}" CommandParameter="SHUTDOWN" Width="150" ToolTip="Spegnimento del sistema" Margin="20,0,0,0" Style="{StaticResource buttonBaseStyle}" />
 						</StackPanel>
 					</TabItem>
 
