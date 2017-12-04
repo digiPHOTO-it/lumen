@@ -392,7 +392,7 @@ namespace Digiphoto.Lumen.UI {
 				else if (msgScaricoFotoMsg.fase == FaseScaricoFoto.FineLavora)
 				{
 					StringBuilder msgProvinatura = new StringBuilder();
-					msgProvinatura.AppendFormat("Scaricate {0}\nProvinate {0}", msgScaricoFotoMsg.esitoScarico.totFotoCopiateOk, msgScaricoFotoMsg.esitoScarico.totFotoProvinate );
+					msgProvinatura.AppendFormat("Scaricate {0}\nProvinate {1}", msgScaricoFotoMsg.esitoScarico.totFotoCopiateOk, msgScaricoFotoMsg.esitoScarico.totFotoProvinate );
 					
 					trayIconProvider.showInfo("Esito acquisizione",msgProvinatura.ToString(),5000);
 				}

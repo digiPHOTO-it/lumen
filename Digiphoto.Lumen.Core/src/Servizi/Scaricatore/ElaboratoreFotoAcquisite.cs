@@ -34,7 +34,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		private Fotografo _fotografo;
 		private Evento _evento;
 
-		public int conta {
+		public int contaAggiunteDb {
 			get;
 			private set;
 		}
@@ -78,7 +78,8 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			_giornale.Debug( "Sto per lavorare le " + _listaFiles.Count + " foto appena acquisite di " + _fotografo.id );
 
 			int ultimoNumFoto = NumeratoreFotogrammi.incrementaNumeratoreFoto( _listaFiles.Count );
-			int conta = 0;
+
+			contaAggiunteDb = 0;
 
 			ScaricoFotoMsg scaricoFotoMsg = new ScaricoFotoMsg(this, "Notifica progresso");
 			scaricoFotoMsg.fase = FaseScaricoFoto.Provinatura;
@@ -99,8 +100,10 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 				using( TransactionScope transaction = new TransactionScope() ) {
 
 					try {
+						int proxNum = 1 + contaAggiunteDb + ultimoNumFoto;
 
-						Fotografia foto = aggiungiFoto( fileInfo, ++conta + ultimoNumFoto, tempoScarico );
+						Fotografia foto = aggiungiFoto( fileInfo, proxNum, tempoScarico );
+
 
 						_giornale.Debug( "Inizio Provinatura immagine " + fileInfo.FullName );
 						AiutanteFoto.creaProvinoFoto( fileInfo.FullName, foto );
@@ -109,6 +112,11 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 						// Mark the transaction as complete.
 						transaction.Complete();
 
+
+						// Incremento qui il contatore perché in caso di eccezione, voglio che non si incrementi
+						++contaAggiunteDb;
+
+						
 						// Libero la memoria occupata dalle immagini, altrimenti esplode.
 						AiutanteFoto.disposeImmagini( foto, IdrataTarget.Tutte );
 
@@ -126,8 +134,8 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 						}
 						_giornale.Debug( "ok nuova foto provinata e inserita nel db: " + foto );
 
-						if( conta % 20 == 0 ) {
-							scaricoFotoMsg.esitoScarico.totFotoProvinateProg = conta;
+						if( contaAggiunteDb % 20 == 0 ) {
+							scaricoFotoMsg.esitoScarico.totFotoProvinateProg = contaAggiunteDb;
 							LumenApplication.Instance.bus.Publish( scaricoFotoMsg );
 						}
 
@@ -142,14 +150,14 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 				barCodeSrv.scan( fotoDaEsaminare );
 			}
 
-			if (conta != 0)
+			if (contaAggiunteDb != 0)
 			{
-				scaricoFotoMsg.esitoScarico.totFotoProvinateProg = conta;
-				scaricoFotoMsg.esitoScarico.totFotoProvinate = conta;
+				scaricoFotoMsg.esitoScarico.totFotoProvinateProg = contaAggiunteDb;
+				scaricoFotoMsg.esitoScarico.totFotoProvinate = contaAggiunteDb;
 				LumenApplication.Instance.bus.Publish(scaricoFotoMsg);
 			}
 
-			_giornale.Info( "Terminato di lavorare " + _listaFiles.Count + " foto appena acqusite" );
+			_giornale.Info( "Terminato di lavorare " + _listaFiles.Count + " foto appena acquisite" );
 
 			incrementaTotaleFotoScaricate( tempoScarico );
 		}
@@ -180,7 +188,7 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		 */
 		private Fotografia aggiungiFoto( FileInfo fileInfo, int numFotogramma, DateTime tempoScarico ) {
 
-			_giornale.Debug( "Inizio aggiungiFoto()" );
+			_giornale.Debug( "Sto per aggiungere la foto " + fileInfo + " al database" );
 
 			// Ad ogni foto persisto.
 			// Se per esempio ho 500 foto da salvare, non posso permettermi che se una salta, perdo anche le altre 499 !
@@ -188,31 +196,29 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			LumenEntities objContext = UnitOfWorkScope.currentDbContext;
 
-				foto = new Fotografia();
-				foto.id = Guid.NewGuid();
-				foto.dataOraAcquisizione = tempoScarico;
-				foto.fotografo = _fotografo;
-				foto.evento = _evento;
-				foto.didascalia = _paramScarica.flashCardConfig.didascalia;
-				foto.numero = numFotogramma;
-				foto.faseDelGiorno = (short?) _paramScarica.faseDelGiorno;
-				foto.giornata = LumenApplication.Instance.stato.giornataLavorativa;
+			foto = new Fotografia();
+			foto.id = Guid.NewGuid();
+			foto.dataOraAcquisizione = tempoScarico;
+			foto.fotografo = _fotografo;
+			foto.evento = _evento;
+			foto.didascalia = _paramScarica.flashCardConfig.didascalia;
+			foto.numero = numFotogramma;
+			foto.faseDelGiorno = (short?) _paramScarica.faseDelGiorno;
+			foto.giornata = LumenApplication.Instance.stato.giornataLavorativa;
 
-				// il nome del file, lo memorizzo solamente relativo
-				// scarto la parte iniziale di tutto il path togliendo il nome della cartella di base delle foto.
-				// Questo perché le stesse foto le devono vedere altri computer della rete che
-				// vedono il percorso condiviso in maniera differente.
-				foto.nomeFile = PathUtil.nomeRelativoFoto( fileInfo );
+			// il nome del file, lo memorizzo solamente relativo
+			// scarto la parte iniziale di tutto il path togliendo il nome della cartella di base delle foto.
+			// Questo perché le stesse foto le devono vedere altri computer della rete che
+			// vedono il percorso condiviso in maniera differente.
+			foto.nomeFile = PathUtil.nomeRelativoFoto( fileInfo );
 
-				caricaMetadatiImmagine( fileInfo.FullName, foto );
+			caricaMetadatiImmagine( fileInfo.FullName, foto );
 
-				objContext.Fotografie.Add( foto );
+			objContext.Fotografie.Add( foto );
 					
-				objContext.SaveChanges();
-
-				++conta;
+			objContext.SaveChanges();
 					
-				_giornale.Debug( "Inserita nuova foto: " + foto.ToString() + " ora sono " + conta );
+			_giornale.Debug( "Inserita nuova foto: " + foto.ToString() + " ora sono " + contaAggiunteDb );
 
 			return foto;
 		}
