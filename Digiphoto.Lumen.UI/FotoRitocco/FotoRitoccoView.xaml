@@ -18,11 +18,6 @@
              d:DesignHeight="800" d:DesignWidth="900" 
              Focusable="True" PreviewKeyDown="onFotoRitoccoUserControl_KeyDown" >
 
-	<!-- Istanzio il controllore -->
-	<lumM:UserControlBase.DataContext>
-		<lumFR:FotoRitoccoViewModel />
-	</lumM:UserControlBase.DataContext>
-
 	<UserControl.Resources>
 		<ResourceDictionary Source="FotoRitoccoResources.xaml" />
 	</UserControl.Resources>
@@ -36,11 +31,6 @@
 		<KeyBinding  Key="F3" Command="{StaticResource cmdCloseSnapshotPubblico}" />
 	</UserControl.InputBindings>
 
-	<i:Interaction.Triggers>
-		<i:EventTrigger EventName="GotFocus">
-			<i:InvokeCommandAction Command="{Binding commandGotFocus}"/>
-		</i:EventTrigger>
-	</i:Interaction.Triggers>
 
 
 	<DockPanel LastChildFill="True" >

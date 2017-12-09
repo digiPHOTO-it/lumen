@@ -31,6 +31,7 @@ using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Servizi.EntityRepository;
 using Digiphoto.Lumen.Core.Collections;
 using Digiphoto.Lumen.UI.SelettoreAzioniRapide;
+using Digiphoto.Lumen.Core.Eventi;
 
 namespace Digiphoto.Lumen.UI.FotoRitocco {
 
@@ -46,7 +47,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			if( IsInDesignMode ) {
 				// caricare qualche foto a casaccio
 			} else {
-
+				
 				// Mi sottoscrivo per ascoltare i messaggi di richiesta di modifica delle foto.
 				IObservable<Messaggio> observable = LumenApplication.Instance.bus.Observe<Messaggio>();
 				observable.Subscribe( this );
@@ -1407,6 +1408,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// </summary>
 		public void forzaRefreshStato() {
 
+			// Eventualmente re-idrato i provini 
+			reidrataProvini();
+
 			OnPropertyChanged( "possoTornareOriginale" );
 			OnPropertyChanged( "possoApplicareCorrezione" );
 			OnPropertyChanged( "possoApplicareCorrezioni" );
@@ -2142,6 +2146,10 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		}
 
 		void gotFocus() {
+			reidrataProvini();
+		}
+
+		void reidrataProvini() {
 			// Eventualmente idrato nuovamente i provini che potrebbero essere stati disidratati
 			if( fotografieDaModificare != null )
 				foreach( Fotografia foto in fotografieDaModificare )
@@ -2309,6 +2317,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			if( msg is FotoEliminateMsg )
 				gestisciFotoEliminate( msg as FotoEliminateMsg );
 
+			if( msg is RefreshMsg )
+				forzaRefreshStato();
 		}
 
 		// Sono state eliminate delle foto. Se per caso le avevo in modifica, le devo togliere

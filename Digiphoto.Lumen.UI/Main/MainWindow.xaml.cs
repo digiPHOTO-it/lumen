@@ -30,6 +30,7 @@ namespace Digiphoto.Lumen.UI {
 
 				carrelloView.DataContext = _mainWindowViewModel.carrelloViewModel;
 				fotoGallery.DataContext = _mainWindowViewModel.fotoGalleryViewModel;
+				fotoRitoccoUserControl.DataContext = _mainWindowViewModel.fotoRitoccoViewModel;
 
 				_mainWindowViewModel.openPopupDialogRequest += _mainWindowViewModel_openPopupDialogRequest;
 			}
