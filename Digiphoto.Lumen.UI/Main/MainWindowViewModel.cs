@@ -31,6 +31,7 @@ using Digiphoto.Lumen.UI.Gallery;
 using Digiphoto.Lumen.UI.Carrelli;
 using Digiphoto.Lumen.UI.Mvvm.Event;
 using Digiphoto.Lumen.UI.Main;
+using Digiphoto.Lumen.UI.FotoRitocco;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -45,9 +46,11 @@ namespace Digiphoto.Lumen.UI {
 
 			carrelloViewModel = new CarrelloViewModel();
 			fotoGalleryViewModel = new FotoGalleryViewModel();
+			fotoRitoccoViewModel = new FotoRitoccoViewModel();
 
 			selettoreStampantiInstallateViewModel = new SelettoreStampantiInstallateViewModel();
 			DataContextStampantiInstallate = selettoreStampantiInstallateViewModel;
+
 
 			// Ascolto i messaggi
 			IObservable<Messaggio> observable = LumenApplication.Instance.bus.Observe<Messaggio>();
@@ -97,6 +100,11 @@ namespace Digiphoto.Lumen.UI {
 			private set {
 				_fotoGalleryViewModel = value;
 			}
+		}
+
+		public FotoRitoccoViewModel fotoRitoccoViewModel {
+			get; 
+			private set;
 		}
 
 		private SelettoreStampantiInstallateViewModel selettoreStampantiInstallateViewModel = null;

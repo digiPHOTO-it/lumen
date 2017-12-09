@@ -45,36 +45,39 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		protected static readonly ILog _giornale = LogManager.GetLogger( typeof( ViewModelBase ) );
 
-		FotoRitoccoViewModel _viewModel;
+		private FotoRitoccoViewModel viewModel {
+			get {
+				return (FotoRitoccoViewModel) this.DataContext;
+			}
+		}
 
 		public FotoRitocco() {
 			
 			InitializeComponent();
 
-			_viewModel = (FotoRitoccoViewModel) this.DataContext;
-
-			selettoreMaschera.DataContext = _viewModel.selettoreMascheraViewModel;
-
-			_viewModel.editorModeChangedEvent += cambiareModoEditor;
-
-			_viewModel.PropertyChanged += _viewModel_PropertyChanged;
-
-			// Questo bottone è solo UI. Lo gestisco io da qui, senza viewmodel
-			toggleButtonReticolo.DataContext = this;
-			
+			this.DataContextChanged += fotoRitocco_DataContextChanged;
 
 			// Mi sottoscrivo per ascoltare i messaggi di fotoritocco per ribindare i controlli.
 			IObservable<RitoccoPuntualeMsg> observable = LumenApplication.Instance.bus.Observe<RitoccoPuntualeMsg>();
 			observable.Subscribe( this );
 
-//			_viewModel.PropertyChanged += propertyCambiata;
+			// Questo bottone è solo UI. Lo gestisco io da qui, senza viewmodel
+			toggleButtonReticolo.DataContext = this;
+		}
 
-//			this.KeyDown += new KeyEventHandler( onFotoRitoccoUserControl_KeyDown );			
+		private void fotoRitocco_DataContextChanged( object sender, DependencyPropertyChangedEventArgs e ) {
+
+			selettoreMaschera.DataContext = viewModel.selettoreMascheraViewModel;
+
+			viewModel.editorModeChangedEvent += cambiareModoEditor;
+
+			viewModel.PropertyChanged += _viewModel_PropertyChanged;
+
+			//			this.KeyDown += new KeyEventHandler( onFotoRitoccoUserControl_KeyDown );			
 
 			// Fino a che non renderizzo i controlli per davvero, non so quanto sia l'area di fotoritocco. Per ora quindi mi setto un valore verosimile e funzionante.
-			_viewModel.frpContenitoreMaxW = 500;
-			_viewModel.frpContenitoreMaxH = 500;
-
+			viewModel.frpContenitoreMaxW = 500;
+			viewModel.frpContenitoreMaxH = 500;
 		}
 
 		void _viewModel_PropertyChanged( object sender, PropertyChangedEventArgs e ) {
@@ -98,7 +101,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				// Se la nuova fotografia ha la ratio diversa da quella prima...
 				eliminaReticoloPerpendicolare();
 
-				if( _viewModel.fotografiaInModifica == null ) {
+				if( viewModel.fotografiaInModifica == null ) {
 					azzeraGestioneRitocco();
 				}
 			}
@@ -114,56 +117,56 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		private void sliderLuminosita_ValueChanged( object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e ) {
 
-			if( _viewModel != null ) {
-				if( _viewModel.forseCambioEffettoCorrente( typeof( LuminositaContrastoEffect ) ) )
+			if( viewModel != null ) {
+				if( viewModel.forseCambioEffettoCorrente( typeof( LuminositaContrastoEffect ) ) )
 					bindaSliderLuminositaContrasto();
-				_viewModel.forseInizioModifiche();
+				viewModel.forseInizioModifiche();
 			}
 		}
 
 		private void sliderContrasto_ValueChanged( object sender, RoutedPropertyChangedEventArgs<double> e ) {
 
-			if( _viewModel != null ) {
-				if( _viewModel.forseCambioEffettoCorrente( typeof( LuminositaContrastoEffect ) ) )
+			if( viewModel != null ) {
+				if( viewModel.forseCambioEffettoCorrente( typeof( LuminositaContrastoEffect ) ) )
 					bindaSliderLuminositaContrasto();
-				_viewModel.forseInizioModifiche();
+				viewModel.forseInizioModifiche();
 			}
 		}
 
 
 		private void sliderRuota_ValueChanged( object sender, RoutedPropertyChangedEventArgs<double> e ) {
 
-			if( _viewModel != null ) {
-				if( _viewModel.forseCambioTrasformazioneCorrente( FotoRitoccoViewModel.TFXPOS_ROTATE ) )
+			if( viewModel != null ) {
+				if( viewModel.forseCambioTrasformazioneCorrente( FotoRitoccoViewModel.TFXPOS_ROTATE ) )
 					bindaSliderRuota();
-				_viewModel.forseInizioModifiche();
+				viewModel.forseInizioModifiche();
 			}
 		}
 
 
 		private void sliderDominanti_ValueChanged( object sender, RoutedPropertyChangedEventArgs<double> e ) {
 
-			if( _viewModel != null ) {
-				if( _viewModel.forseCambioEffettoCorrente( typeof( DominantiEffect ) ) )
+			if( viewModel != null ) {
+				if( viewModel.forseCambioEffettoCorrente( typeof( DominantiEffect ) ) )
 					bindaSlidersDominanti();
-				_viewModel.forseInizioModifiche();
+				viewModel.forseInizioModifiche();
 			}
 		}
 
 		private void sliderZoom_ValueChanged( object sender, RoutedPropertyChangedEventArgs<double> e ) {
 
-			if( _viewModel != null ) {
-				if( _viewModel.forseCambioTrasformazioneCorrente( FotoRitoccoViewModel.TFXPOS_ZOOM ) )
+			if( viewModel != null ) {
+				if( viewModel.forseCambioTrasformazioneCorrente( FotoRitoccoViewModel.TFXPOS_ZOOM ) )
 					bindaSliderZoom();
-				_viewModel.forseInizioModifiche();
+				viewModel.forseInizioModifiche();
 			}
 		}
 
 		private void sliderTrasla_ValueChanged( object sender, RoutedPropertyChangedEventArgs<double> e ) {
-			if( _viewModel != null ) {
-				if( _viewModel.forseCambioTrasformazioneCorrente( FotoRitoccoViewModel.TFXPOS_TRANSLATE ) )
+			if( viewModel != null ) {
+				if( viewModel.forseCambioTrasformazioneCorrente( FotoRitoccoViewModel.TFXPOS_TRANSLATE ) )
 					bindaSliderTrasla();
-				_viewModel.forseInizioModifiche();
+				viewModel.forseInizioModifiche();
 			}
 		}
 
@@ -178,25 +181,25 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// <param name="qualeRGB">Una stringa contenente : "R", "G", "B" </param>
 		private void bindaSlidersDominanti( bool mantieniValori ) {
 
-			if( mantieniValori && _viewModel.dominantiEffect == null ) {
+			if( mantieniValori && viewModel.dominantiEffect == null ) {
 				sliderDominanteRed.Value = 0;
 				sliderDominanteGreen.Value = 0;
 				sliderDominanteBlue.Value = 0;
 				return;
 			}
 
-			double salvaValoreR = _viewModel.dominantiEffect.Red;
-			double salvaValoreG = _viewModel.dominantiEffect.Green;
-			double salvaValoreB = _viewModel.dominantiEffect.Blue;
+			double salvaValoreR = viewModel.dominantiEffect.Red;
+			double salvaValoreG = viewModel.dominantiEffect.Green;
+			double salvaValoreB = viewModel.dominantiEffect.Blue;
 
 			bindaSliderDominanteRGB( sliderDominanteRed,   DominantiEffect.RedProperty );
 			bindaSliderDominanteRGB( sliderDominanteGreen, DominantiEffect.GreenProperty );
 			bindaSliderDominanteRGB( sliderDominanteBlue,  DominantiEffect.BlueProperty );
 
 			if( mantieniValori ) {
-				_viewModel.dominantiEffect.Red = salvaValoreR;
-				_viewModel.dominantiEffect.Green = salvaValoreG;
-				_viewModel.dominantiEffect.Blue = salvaValoreB;
+				viewModel.dominantiEffect.Red = salvaValoreR;
+				viewModel.dominantiEffect.Green = salvaValoreG;
+				viewModel.dominantiEffect.Blue = salvaValoreB;
 			}
 		}
 
@@ -205,7 +208,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			binding.Source = sliderSorgente;
 			binding.Mode = BindingMode.TwoWay;  // Mi serve bidirezionale perché posso resettare tutto dal ViewModel
 			binding.Path = new PropertyPath( Slider.ValueProperty );
-			BindingOperations.SetBinding( _viewModel.dominantiEffect, prop, binding );
+			BindingOperations.SetBinding( viewModel.dominantiEffect, prop, binding );
 		}
 
 		private void bindaSliderRuota() {
@@ -214,21 +217,21 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		
 		private void bindaSliderRuota( bool mantieniValore ) {
 
-			if( FotoRitoccoViewModel.isTrasformazioneNulla( _viewModel.trasformazioneRotate ) ) {
+			if( FotoRitoccoViewModel.isTrasformazioneNulla( viewModel.trasformazioneRotate ) ) {
 				sliderRuota.Value = 0;  // per sicurezza riporto lo slider nella sua posizione neutra
 				return;
 			}
 
-			double salvaValore = ((RotateTransform)_viewModel.trasformazioneRotate).Angle;
+			double salvaValore = ((RotateTransform)viewModel.trasformazioneRotate).Angle;
 
 			Binding binding = new Binding();
 			binding.Source = sliderRuota;
 			binding.Mode = BindingMode.TwoWay;  // Mi serve bidirezionale perché posso resettare tutto dal ViewModel
 			binding.Path = new PropertyPath( Slider.ValueProperty );
-			BindingOperations.SetBinding( _viewModel.trasformazioneRotate, RotateTransform.AngleProperty, binding );
+			BindingOperations.SetBinding( viewModel.trasformazioneRotate, RotateTransform.AngleProperty, binding );
 
 			if( mantieniValore ) {
-				((RotateTransform)_viewModel.trasformazioneRotate).Angle = salvaValore;
+				((RotateTransform)viewModel.trasformazioneRotate).Angle = salvaValore;
 			}
 		}
 
@@ -238,24 +241,24 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		private void bindaSliderZoom( bool mantieniValore ) {
 
-			if( FotoRitoccoViewModel.isTrasformazioneNulla( _viewModel.trasformazioneZoom ) ) {
+			if( FotoRitoccoViewModel.isTrasformazioneNulla( viewModel.trasformazioneZoom ) ) {
 				sliderZoom.Value = 1;
 				return;
 			}
 
-			double scaleX = ((ScaleTransform)_viewModel.trasformazioneZoom).ScaleX;
-			double scaleY = ((ScaleTransform)_viewModel.trasformazioneZoom).ScaleY;
+			double scaleX = ((ScaleTransform)viewModel.trasformazioneZoom).ScaleX;
+			double scaleY = ((ScaleTransform)viewModel.trasformazioneZoom).ScaleY;
 
 			Binding binding = new Binding();
 			binding.Source = sliderZoom;
 			binding.Mode = BindingMode.TwoWay;  // Mi serve bidirezionale perché posso resettare tutto dal ViewModel
 			binding.Path = new PropertyPath( Slider.ValueProperty );
-			BindingOperations.SetBinding( _viewModel.trasformazioneZoom, ScaleTransform.ScaleXProperty, binding );
-			BindingOperations.SetBinding( _viewModel.trasformazioneZoom, ScaleTransform.ScaleYProperty, binding );
+			BindingOperations.SetBinding( viewModel.trasformazioneZoom, ScaleTransform.ScaleXProperty, binding );
+			BindingOperations.SetBinding( viewModel.trasformazioneZoom, ScaleTransform.ScaleYProperty, binding );
 
 			if( mantieniValore ) {
-				((ScaleTransform)_viewModel.trasformazioneZoom).ScaleX = scaleX;
-				((ScaleTransform)_viewModel.trasformazioneZoom).ScaleY = scaleY;
+				((ScaleTransform)viewModel.trasformazioneZoom).ScaleX = scaleX;
+				((ScaleTransform)viewModel.trasformazioneZoom).ScaleY = scaleY;
 			}
 		}
 
@@ -265,32 +268,32 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		private void bindaSliderTrasla( bool mantieniValore ) {
 		
-			if( FotoRitoccoViewModel.isTrasformazioneNulla( _viewModel.trasformazioneTranslate ) ) {
+			if( FotoRitoccoViewModel.isTrasformazioneNulla( viewModel.trasformazioneTranslate ) ) {
 				sliderTraslaX.Value = 0;
 				sliderTraslaY.Value = 0;
 				return;
 			}
 
-			double salvaX = ((TranslateTransform)_viewModel.trasformazioneTranslate).X;
-			double salvaY = ((TranslateTransform)_viewModel.trasformazioneTranslate).Y;
+			double salvaX = ((TranslateTransform)viewModel.trasformazioneTranslate).X;
+			double salvaY = ((TranslateTransform)viewModel.trasformazioneTranslate).Y;
 
 			Binding bindingSx = new Binding();
 			bindingSx.Source = sliderTraslaX;
 			bindingSx.Mode = BindingMode.TwoWay;  // Mi serve bidirezionale perché posso resettare tutto dal ViewModel
 			bindingSx.Path = new PropertyPath( Slider.ValueProperty );
-			BindingOperations.SetBinding( _viewModel.trasformazioneTranslate, TranslateTransform.XProperty, bindingSx );
+			BindingOperations.SetBinding( viewModel.trasformazioneTranslate, TranslateTransform.XProperty, bindingSx );
 
 			Binding bindingSy = new Binding();
 			bindingSy.Source = sliderTraslaY;
 			bindingSy.Mode = BindingMode.TwoWay;  // Mi serve bidirezionale perché posso resettare tutto dal ViewModel
 			bindingSy.Path = new PropertyPath( Slider.ValueProperty );
-			BindingOperations.SetBinding( _viewModel.trasformazioneTranslate, TranslateTransform.YProperty, bindingSy );
+			BindingOperations.SetBinding( viewModel.trasformazioneTranslate, TranslateTransform.YProperty, bindingSy );
 
 			// Setto anche le dimensioni di riferimento dell'area di modifica. Mi serviranno per riproporzionare sui provini o sulle risultanti
 
 			if( mantieniValore ) {
-				((TranslateTransform)_viewModel.trasformazioneTranslate).X = salvaX;
-				((TranslateTransform)_viewModel.trasformazioneTranslate).Y = salvaY;
+				((TranslateTransform)viewModel.trasformazioneTranslate).X = salvaX;
+				((TranslateTransform)viewModel.trasformazioneTranslate).Y = salvaY;
 			}
 		}
 
@@ -311,21 +314,21 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// </summary>
 		private void bindaSliderContrasto( bool mantieniValore ) {
 
-			if( mantieniValore && _viewModel.luminositaContrastoEffect == null ) {
+			if( mantieniValore && viewModel.luminositaContrastoEffect == null ) {
 				sliderContrasto.Value = 1;
 				return;
 			}
 
-			double salvaValore = _viewModel.luminositaContrastoEffect.Contrast;
+			double salvaValore = viewModel.luminositaContrastoEffect.Contrast;
 
 			Binding contrBinding = new Binding();
 			contrBinding.Source = sliderContrasto;
 			contrBinding.Mode = BindingMode.TwoWay;  // Mi serve bidirezionale perché posso resettare tutto dal ViewModel
 			contrBinding.Path = new PropertyPath( Slider.ValueProperty );
-			BindingOperations.SetBinding( _viewModel.luminositaContrastoEffect, LuminositaContrastoEffect.ContrastProperty, contrBinding );
+			BindingOperations.SetBinding( viewModel.luminositaContrastoEffect, LuminositaContrastoEffect.ContrastProperty, contrBinding );
 
 			if( mantieniValore )
-				_viewModel.luminositaContrastoEffect.Contrast = salvaValore;
+				viewModel.luminositaContrastoEffect.Contrast = salvaValore;
 		}
 
 		private void bindaSliderLuminosita() {
@@ -337,21 +340,21 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// </summary>
 		private void bindaSliderLuminosita( bool mantieniValore ) {
 
-			if( _viewModel.luminositaContrastoEffect == null ) {
+			if( viewModel.luminositaContrastoEffect == null ) {
 				sliderLuminosita.Value = 0;
 				return;
 			}
 
-			double salvaValore = _viewModel.luminositaContrastoEffect.Brightness;
+			double salvaValore = viewModel.luminositaContrastoEffect.Brightness;
 
 			Binding lumBinding = new Binding();
 			lumBinding.Mode = BindingMode.TwoWay; // .TwoWay;  // Mi serve bidirezionale perché posso resettare tutto dal ViewModel
 			lumBinding.Source = sliderLuminosita;
 			lumBinding.Path = new PropertyPath( Slider.ValueProperty );
-			BindingOperations.SetBinding( _viewModel.luminositaContrastoEffect, LuminositaContrastoEffect.BrightnessProperty, lumBinding );
+			BindingOperations.SetBinding( viewModel.luminositaContrastoEffect, LuminositaContrastoEffect.BrightnessProperty, lumBinding );
 
 			if( mantieniValore )
-				_viewModel.luminositaContrastoEffect.Brightness = salvaValore;
+				viewModel.luminositaContrastoEffect.Brightness = salvaValore;
 		}
 
 		#endregion Aggancio Controlli Bindings
@@ -792,7 +795,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			RenderTargetBitmap bitmapIncorniciata = componiBitmapDaMaschera( canvasDefinitivo );
 
-			_viewModel.salvareImmagineIncorniciata(firstFotoInCanvas ,bitmapIncorniciata );
+			viewModel.salvareImmagineIncorniciata(firstFotoInCanvas ,bitmapIncorniciata );
 
 			azzeraGestioneMaschere();
 		}
@@ -877,7 +880,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 					if( oo != null ) {
 						Fotografia daTogliere = oo as Fotografia;
-						_viewModel.rifiutareCorrezioni( daTogliere, true );
+						viewModel.rifiutareCorrezioni( daTogliere, true );
 					}
 				}
 
@@ -894,7 +897,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		private void listBoxImmaginiDaModificare_PreviewMouseRightButtonDown( object sender, MouseButtonEventArgs e ) {
 		
 			// Se ci sono modifiche in corso, non permetto di modificare la selezione
-			if( _viewModel.modificheInCorso || _viewModel.modalitaEdit ==  ModalitaEdit.GestioneMaschere ) {
+			if( viewModel.modificheInCorso || viewModel.modalitaEdit ==  ModalitaEdit.GestioneMaschere ) {
 				e.Handled = false;
 				return;
 			}
@@ -902,7 +905,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			ListBoxItem listBoxItem = SelectItemOnRightClick( e );
 			if( listBoxItem != null ) {
 
-				_viewModel.setModalitaSingolaFoto( (Fotografia)listBoxItem.Content );
+				viewModel.setModalitaSingolaFoto( (Fotografia)listBoxItem.Content );
 
                 // Questo mi evita di selezionare la foto quando clicco con il destro.
                 // e.Handled = true;
@@ -945,7 +948,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			StringBuilder msg = new StringBuilder();
 			msg.AppendFormat("Non puoi selezionare più di {0} foto", e.maxNumSelected);
 
-			_viewModel.trayIconProvider.showInfo("AVVISO", msg.ToString(), 1500);
+			viewModel.trayIconProvider.showInfo("AVVISO", msg.ToString(), 1500);
 		}
 
 		/// <summary>
@@ -1081,9 +1084,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				gridRitocco.Children.Remove( prec );
 
 
-			if( _viewModel.logo == null )
+			if( viewModel.logo == null )
 				return;
-			String nomeFileLogo = PathUtil.nomeCompletoLogo( _viewModel.logo );
+			String nomeFileLogo = PathUtil.nomeCompletoLogo( viewModel.logo );
 			if( File.Exists( nomeFileLogo ) == false ) {
 				ShowError( nomeFileLogo, "Logo inesistente", null );
 				return;
@@ -1130,7 +1133,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 
 		private void Adorner_CambiatoQualcosa( object sender, EventArgs e ) {
-			_viewModel.forseInizioModifiche();
+			viewModel.forseInizioModifiche();
 		}
 
 		void scrittaToUI() {
@@ -1161,7 +1164,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 			
 			// Se la scritta è nulla, ho già spento tutto ed esco.
-			if( _viewModel.scritta == null )
+			if( viewModel.scritta == null )
 				return;
 
 				
@@ -1179,28 +1182,28 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		/// </summary>
 		void uiToScritta() {
 
-			if( _viewModel == null || _viewModel.scritta == null )
+			if( viewModel == null || viewModel.scritta == null )
 				return;
 
 
 			var qq = textPathScritta.PointToScreen( new Point( textPathScritta.ActualWidth, textPathScritta.ActualHeight ) ) - textPathScritta.PointToScreen( new Point( 0, 0 ) );
-			_viewModel.scritta.width = Convert.ToInt32( qq.X );
-			_viewModel.scritta.height = Convert.ToInt32( qq.Y );
+			viewModel.scritta.width = Convert.ToInt32( qq.X );
+			viewModel.scritta.height = Convert.ToInt32( qq.Y );
 
 			Vector offset = VisualTreeHelper.GetOffset( viewBoxScritta );
 
 			GeneralTransform generalTransform1 = viewBoxScritta.TransformToAncestor( gridRitocco );
 			Point currentPoint1 = generalTransform1.Transform( new Point( 0, 0 ) );
 #if true
-			_viewModel.scritta.rifContenitoreW = Convert.ToInt32( imageRitoccata.ActualWidth );
-			_viewModel.scritta.rifContenitoreH = Convert.ToInt32( imageRitoccata.ActualHeight );
+			viewModel.scritta.rifContenitoreW = Convert.ToInt32( imageRitoccata.ActualWidth );
+			viewModel.scritta.rifContenitoreH = Convert.ToInt32( imageRitoccata.ActualHeight );
 
 
 			GeneralTransform generalTransform2 = viewBoxScritta.TransformToVisual( imageRitoccata );
 			Point currentPoint2 = generalTransform2.Transform( new Point( 0, 0 ) );
 
-			_viewModel.scritta.left = Convert.ToInt32( currentPoint2.X );
-			_viewModel.scritta.top = Convert.ToInt32( currentPoint2.Y );
+			viewModel.scritta.left = Convert.ToInt32( currentPoint2.X );
+			viewModel.scritta.top = Convert.ToInt32( currentPoint2.Y );
 #else
 			_viewModel.scritta.rifContenitoreW = borderImage1.ActualWidth;
 			_viewModel.scritta.rifContenitoreH = borderImage1.ActualHeight;
@@ -1238,8 +1241,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 						// memorizzo la traslazione (spostamento)
 						trasla = new Trasla();
-						trasla.rifW = _viewModel.scritta.rifContenitoreW;
-						trasla.rifH = _viewModel.scritta.rifContenitoreH;
+						trasla.rifW = viewModel.scritta.rifContenitoreW;
+						trasla.rifH = viewModel.scritta.rifContenitoreH;
 
 						TranslateTransform tra = (TranslateTransform)tr;
 						trasla.offsetX = tra.X;
@@ -1255,9 +1258,9 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				}
 
 				// scarico
-				_viewModel.scritta.traslazione = (trasla == null || trasla.isInutile) ? null : trasla ;
-				_viewModel.scritta.rotazione = (ruota == null || ruota.isInutile) ? null : ruota;
-				_viewModel.scritta.zoom = (zoom == null || zoom.isInutile) ? null : zoom;
+				viewModel.scritta.traslazione = (trasla == null || trasla.isInutile) ? null : trasla ;
+				viewModel.scritta.rotazione = (ruota == null || ruota.isInutile) ? null : ruota;
+				viewModel.scritta.zoom = (zoom == null || zoom.isInutile) ? null : zoom;
 			} 
 
 		}
@@ -1286,24 +1289,24 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			// ---
 			// ---
 
-			if( _viewModel.scritta != null ) {
+			if( viewModel.scritta != null ) {
 
 				// Applico eventuali valori di trasformazione precedenti
 
-				if( _viewModel.scritta.rotazione != null && _viewModel.scritta.rotazione.isInutile == false ) {
-					adorner.impostaRotazioneDefault( _viewModel.scritta.rotazione.gradi );
+				if( viewModel.scritta.rotazione != null && viewModel.scritta.rotazione.isInutile == false ) {
+					adorner.impostaRotazioneDefault( viewModel.scritta.rotazione.gradi );
 				}
 
-				if( _viewModel.scritta.traslazione != null && _viewModel.scritta.traslazione.isInutile == false ) {
+				if( viewModel.scritta.traslazione != null && viewModel.scritta.traslazione.isInutile == false ) {
 
-					var x = _viewModel.scritta.traslazione.offsetX * imageRitoccata.ActualWidth / _viewModel.scritta.traslazione.rifW;
-					var y = _viewModel.scritta.traslazione.offsetY * imageRitoccata.ActualHeight / _viewModel.scritta.traslazione.rifH;
+					var x = viewModel.scritta.traslazione.offsetX * imageRitoccata.ActualWidth / viewModel.scritta.traslazione.rifW;
+					var y = viewModel.scritta.traslazione.offsetY * imageRitoccata.ActualHeight / viewModel.scritta.traslazione.rifH;
 
 					adorner.impostaTraslazioneDefault( x, y );
 				}
 
-				if( _viewModel.scritta.zoom != null && _viewModel.scritta.zoom.isInutile == false ) {
-					adorner.impostaZoomDefault( _viewModel.scritta.zoom.fattore );
+				if( viewModel.scritta.zoom != null && viewModel.scritta.zoom.isInutile == false ) {
+					adorner.impostaZoomDefault( viewModel.scritta.zoom.fattore );
 				}
 			}
 		}
@@ -1331,13 +1334,13 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			Thickness margin = new Thickness();
 
-			if( LogoCorrettore.isLogoPosizionatoManualmente( _viewModel.logo ) ) {
+			if( LogoCorrettore.isLogoPosizionatoManualmente( viewModel.logo ) ) {
 				// TODO
 			} else {
 
 				Point relativeLocation = borderCornice.TranslatePoint( new Point( 0, 0 ), gridRitocco );
 
-				Rect r = LogoCorrettore.calcolaCoordinateLogoAutomatiche( (int)borderCornice.ActualWidth, (int)borderCornice.ActualHeight, wl, hl, _viewModel.logo );
+				Rect r = LogoCorrettore.calcolaCoordinateLogoAutomatiche( (int)borderCornice.ActualWidth, (int)borderCornice.ActualHeight, wl, hl, viewModel.logo );
 
 				imageLogino.Width = r.Width;
 				imageLogino.Height = r.Height;
@@ -1354,7 +1357,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		private void imageRitoccata_MouseWheel( object sender, MouseWheelEventArgs e ) {
 
-			bool saveModificheInCorso = _viewModel.modificheInCorso;
+			bool saveModificheInCorso = viewModel.modificheInCorso;
 
 			if( Keyboard.IsKeyDown( Key.LeftCtrl ) ) {
 				// Rotazione
@@ -1382,7 +1385,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			// delle views, non provocano l'aggiornamento dello stato dei Command.CanExecute
 			// In pratica non si accende il pulsante "Applica" come succede invece se muovo fisicamente gli 
 			// sliders. Devo far rivalutare i CanExecute dei comandi.
-			if( _viewModel.modificheInCorso != saveModificheInCorso )
+			if( viewModel.modificheInCorso != saveModificheInCorso )
 				CommandManager.InvalidateRequerySuggested();
 		}
 
@@ -1400,7 +1403,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			double offsetX = 0;
 			double offsetY = 0;
 			// paranoia: dovrebbe sempre esistere. Però...
-			TranslateTransform tt = (TranslateTransform) _viewModel.trasformazioneTranslate;
+			TranslateTransform tt = (TranslateTransform) viewModel.trasformazioneTranslate;
 			if( tt != null ) {
 				offsetX = tt.X;
 				offsetY = tt.Y;
@@ -1461,20 +1464,20 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 				if( ((FrameworkElement)e.OriginalSource).Name == "textBoxScritta" )
 					return;
 
-				if( _viewModel.modalitaEdit == ModalitaEdit.GestioneMaschere && _viewModel.possoSalvareMaschera ) {
+				if( viewModel.modalitaEdit == ModalitaEdit.GestioneMaschere && viewModel.possoSalvareMaschera ) {
 					salvareMascheraButton_Click( null, null );
 				}
 
-				if( _viewModel.modalitaEdit == ModalitaEdit.FotoRitocco ) {
-					if( _viewModel.applicareCorrezioniCommand.CanExecute( null ) )
-						_viewModel.applicareCorrezioniCommand.Execute( null );
-					_viewModel.selezionaProssimaFoto();
+				if( viewModel.modalitaEdit == ModalitaEdit.FotoRitocco ) {
+					if( viewModel.applicareCorrezioniCommand.CanExecute( null ) )
+						viewModel.applicareCorrezioniCommand.Execute( null );
+					viewModel.selezionaProssimaFoto();
 				}
 			}
 
 			// Spostamento della immaginetta con le freccette durante la composizione maschere.
 			if( e.Key == Key.Down || e.Key == Key.Up || e.Key == Key.Left || e.Key == Key.Right ) {
-				if( _viewModel.modalitaEdit == ModalitaEdit.GestioneMaschere && fotinaSelezionata != null ) {
+				if( viewModel.modalitaEdit == ModalitaEdit.GestioneMaschere && fotinaSelezionata != null ) {
 					// Sposto la fotina selezionata
 					ComposingAdorner ado = (ComposingAdorner)AdornerLayer.GetAdornerLayer( fotinaSelezionata ).GetAdorners( fotinaSelezionata ).ElementAt(0);
 					double deltaX = 0;
@@ -1495,8 +1498,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			// Rifiutare le correzioni transienti con il tasto ESCAPE
 			if( e.Key == Key.Escape ) {
-				if( _viewModel.modalitaEdit == ModalitaEdit.FotoRitocco && _viewModel.rifiutareCorrezioniCommand.CanExecute( null ) ) {
-					_viewModel.rifiutareCorrezioniCommand.Execute( null );
+				if( viewModel.modalitaEdit == ModalitaEdit.FotoRitocco && viewModel.rifiutareCorrezioniCommand.CanExecute( null ) ) {
+					viewModel.rifiutareCorrezioniCommand.Execute( null );
 				}
 			}
 
@@ -1505,8 +1508,8 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 		private void gridRitocco_SizeChanged(object sender, SizeChangedEventArgs e) {	
 
-			_viewModel.frpContenitoreMaxW = gridRitocco.ActualWidth;
-			_viewModel.frpContenitoreMaxH = gridRitocco.ActualHeight;
+			viewModel.frpContenitoreMaxW = gridRitocco.ActualWidth;
+			viewModel.frpContenitoreMaxH = gridRitocco.ActualHeight;
 
 		}
 
@@ -1514,7 +1517,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		void dimensionaBordiPerAreaDiRispetto() {
 
 			// Se non è indicato il rapporto non faccio nulla
-			if( !_viewModel.esisteRatioAreaRispetto )
+			if( !viewModel.esisteRatioAreaRispetto )
 				return;
 
 			try {
@@ -1676,7 +1679,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 		private void listBoxImmaginiDaModificare_ContextMenuOpening( object sender, ContextMenuEventArgs e ) {
 
 			// Se sto modificando, non permetto il tasto destro
-			if( _viewModel.modificheInCorso || _viewModel.modalitaEdit == ModalitaEdit.GestioneMaschere )
+			if( viewModel.modificheInCorso || viewModel.modalitaEdit == ModalitaEdit.GestioneMaschere )
 				e.Handled = true;
 		}
 

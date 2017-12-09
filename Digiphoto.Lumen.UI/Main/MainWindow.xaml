@@ -126,7 +126,13 @@
 
 			<TabItem Name="tabItemAggiusta">
 				<TabItem.Header>
-					<TextBlock Text="Correggi" ToolTip="Ritocca, correggi e incornicia" />
+					<TextBlock Text="Correggi" ToolTip="Ritocca, correggi e incornicia" >
+						<i:Interaction.Triggers>
+							<i:EventTrigger EventName="MouseLeftButtonDown">
+								<i:InvokeCommandAction Command="{Binding Path=fotoRitoccoViewModel.commandGotFocus}"/>
+							</i:EventTrigger>
+						</i:Interaction.Triggers>
+					</TextBlock>
 				</TabItem.Header>
 				<lumFR:FotoRitocco x:Name="fotoRitoccoUserControl" Focusable="True" />
 			</TabItem>
