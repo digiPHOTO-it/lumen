@@ -49,7 +49,10 @@
 			<StatusBarItem Grid.Column="2" ToolTip="Progresso Masterizzatore">
 				<StackPanel Orientation="Horizontal">
 					<Image Source="{Binding Path=carrelloViewModel.StatusStatoMasterizzazioneImage}" Width="16" Height="16" ToolTip="Stato della Masterizzazione" />
-					<ProgressBar Name="progressBarMasterizzazione" IsIndeterminate="True" Background="White" Foreground="Blue" Width="40" Visibility="{Binding Path=carrelloViewModel.StatoMasterizzazione, Converter={StaticResource statoMasterizzazioneVisibilityConverter}}"/>
+					<!--
+					ProgressBar Name="progressBarMasterizzazione" IsIndeterminate="True" Background="White" Foreground="Blue" Width="40" 
+					            Visibility="{Binding Path=carrelloViewModel.StatoMasterizzazione, Converter={StaticResource statoMasterizzazioneVisibilityConverter}}"
+					-->
 				</StackPanel>
 			</StatusBarItem>
 
@@ -90,7 +93,7 @@
 			<!-- Scaricamento e Provinatura -->
 			<StatusBarItem Grid.Column="4" Visibility="{Binding Path=numFotoFaseVisibility,Converter={StaticResource booleanToVisibilityConverter}}"  >
 				<StackPanel Orientation="Horizontal" >
-					<ProgressBar Name="progressBar" IsIndeterminate="True" Background="White" Foreground="Blue" Width="40" Height="16"/>
+
 					<TextBlock ToolTip="Stato scaricamento" Text="{Binding numFotoFase}" MaxWidth="200" />
 
 					<!-- Eject Usb -->
