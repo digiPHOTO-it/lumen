@@ -141,11 +141,13 @@ namespace Digiphoto.Lumen.UI.Pubblico {
 			if( e.PropertyName == "vorreiVisualizzareAreaDiRispettoHQ" )
 				cambiaAreaStampabile = true;
 
-			if( fotoGalleryViewModel.isAltaQualita ) {
-				// Significa che mi sono spostato alla foto successiva in HQ
-				if( e.PropertyName == "fotografieCW" ||
-					e.PropertyName == "numRighe" || e.PropertyName == "numColonne" ||
-					e.PropertyName == "numRighePag" || e.PropertyName == "numColonnePag" )
+			
+			// Significa che mi sono spostato alla foto successiva in HQ
+			if( e.PropertyName == "fotografieCW" ||
+				e.PropertyName == "numRighe" || e.PropertyName == "numColonne" ||
+				e.PropertyName == "numRighePag" || e.PropertyName == "numColonnePag" )
+			{
+				if (fotoGalleryViewModel.isAltaQualita)
 					cambiaAreaStampabile = true;
 			}
 
