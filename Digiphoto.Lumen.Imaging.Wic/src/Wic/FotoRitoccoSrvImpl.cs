@@ -357,7 +357,7 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 
 					fotoMsk.didascalia = fotoOrig.didascalia;
 					fotoMsk.numero = fotoOrig.numero;
-					fotoMsk.correzioniXml = fotoOrig.correzioniXml;
+					// Le correzioni non devo duplicarle perché non sono tipiche della composizione finale, ma della foto originale.
 
 					fotoMsk.faseDelGiorno = fotoOrig.faseDelGiorno;
 					fotoMsk.giornata = fotoOrig.giornata;
