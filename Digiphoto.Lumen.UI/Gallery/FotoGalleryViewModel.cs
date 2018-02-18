@@ -2467,6 +2467,16 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			// OnPropertyChanged( "fotografieCW" );
 		}
 
+
+		Action _reidrataProviniAction;
+		Action reidrataProviniAction {
+			get {
+				if( _reidrataProviniAction == null )
+					_reidrataProviniAction = new Action( forseReidrataProvini );
+				return _reidrataProviniAction;
+			}
+		}
+
 		private void forseReidrataProvini() {
 
 			foreach( Fotografia f in fotoExplorerSrv.fotografie ) {
@@ -2476,7 +2486,9 @@ namespace Digiphoto.Lumen.UI.Gallery {
 					} catch( Exception ) {
 					}
 			}
+
 		}
+
 
 		public IEnumerator<Fotografia> getEnumeratorElementiSelezionati() {
 			return getElementiSelezionati().GetEnumerator();
@@ -2650,8 +2662,9 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 						// Il barcode è un ean8 quindi formatto il numero da 8 con zeri davanti
 						paramCercaFoto.didascalia = String.Format( "{0:00000000}", cercaFotoPopupViewModel.numeroFotogramma );
+                        paramCercaFoto.idratareImmagini = false;
 
-						fotoExplorerSrv.cercaFoto( paramCercaFoto );
+                        fotoExplorerSrv.cercaFoto( paramCercaFoto );
 
 						if( fotoExplorerSrv.fotografie.Count > 0 ) {
 							// ora posso cascare nel caso della ricerca per numero, già implementata sotto.
@@ -2746,7 +2759,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 		
 		public void OnNext( RefreshMsg msg ) {
 
-			forseReidrataProvini();
+			Application.Current.Dispatcher.BeginInvoke( reidrataProviniAction );
 
 			OnPropertyChanged( "isPossibileModificareCarrello" );
 		}
@@ -2896,7 +2909,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			if( value.fase == GestoreCarrelloMsg.Fase.CreatoNuovoCarrello ||
 				value.fase == GestoreCarrelloMsg.Fase.LoadCarrelloSalvato ) {
 
-				forseReidrataProvini();
+				Application.Current.Dispatcher.BeginInvoke( reidrataProviniAction );
 
 				OnPropertyChanged( "modoVendita" );
 				OnPropertyChanged( "isPossibileModificareCarrello" );
