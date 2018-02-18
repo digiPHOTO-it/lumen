@@ -846,6 +846,12 @@ namespace Digiphoto.Lumen.Imaging.Wic {
 			immagineMod = new ImmagineWic( rtb );
 
 
+			// Come penultima cosa, mi rimane da gestire le Scritte (in realtà una sola)
+			foreach( var scritta in correzioni.OfType<Scritta>() ) {
+				Correttore correttore = gestoreImmaginiSrv.getCorrettore( scritta );
+				immagineMod = correttore.applica( immagineMod, scritta );
+			}
+
 			// Per ultima cosa, mi rimane fuori un evenuale logo ...
 			Logo correzioneLogo = (Logo) correzioni.FirstOrDefault( c => c is Logo );
 			if( correzioneLogo != null ) {
