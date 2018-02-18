@@ -1604,6 +1604,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 			fotografiaInModifica = null;
 			bmpMascheraAttiva = null;
+			scritta = null;
 		}
 
 
