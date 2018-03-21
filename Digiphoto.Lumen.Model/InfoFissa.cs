@@ -19,7 +19,7 @@ namespace Digiphoto.Lumen.Model
         public InfoFissa()
         {
             this.id = "K";
-            this.versioneDbCompatibile = "2.1.1";
+            this.versioneDbCompatibile = "2.1"; // Occhio deve essere un numero valido da parsare.
             this.modoNumerazFoto = "X";
         }
     

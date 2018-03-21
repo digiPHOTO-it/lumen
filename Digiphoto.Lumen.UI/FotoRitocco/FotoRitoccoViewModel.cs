@@ -1866,6 +1866,16 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 							attivareMaschera( maschera );   // Questa chiamata già ridimensiona il contenitore giallo.
 						}
 
+						if( c is Imaging.Correzioni.MascheraturaOrientabile ) {
+							var mo = c as MascheraturaOrientabile;
+							if( fotografiaInModifica.imgOrig.orientamento == Orientamento.Verticale )
+								maschera = mo.mascheraturaV;
+							if( fotografiaInModifica.imgOrig.orientamento == Orientamento.Orizzontale )
+								maschera = mo.mascheraturaH;
+							attivareMaschera( maschera );   // Questa chiamata già ridimensiona il contenitore giallo.
+						}
+
+
 						if( c is Logo ) {
 							logo = (Logo)c;  // Per ora ne gestisco solo uno.
 						}
