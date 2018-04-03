@@ -35,7 +35,7 @@
 								   Style="{StaticResource selettoreCartellaStyle}" />
 
             <lum:SelettoreFotografo x:Name="selettoreFotografo1" DataContext="{Binding selettoreFotografoViewModel}"
-									Grid.Row="0" Grid.Column="1"
+									Grid.Row="0" Grid.Column="1" selezioneMultipla="False"
 									Style="{StaticResource selettoreFotografoStyle}"
                                     possoCreare="True" />
 
@@ -55,6 +55,7 @@
 
 				<GroupBox Header="Fasi del giorno" Grid.Row="0" Grid.Column="0" VerticalAlignment="Top" >
 					<ListBox Name="fasiGiornoListBox" Style="{StaticResource fasiGiornoListBoxStyle}"
+							  
 							 ItemsSource="{Binding fasiDelGiorno}" 
 							 SelectedItem="{Binding faseDelGiorno}"  />
 				</GroupBox>
