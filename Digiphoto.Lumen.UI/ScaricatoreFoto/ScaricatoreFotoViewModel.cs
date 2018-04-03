@@ -321,8 +321,22 @@ namespace Digiphoto.Lumen.UI {
 				// Se invece rileggo dal db, avrò l'effetto che il SelectedItem della ListBox non si aggiorna.
 
 				// Fotografo
-				if( param.flashCardConfig.idFotografo != null )
-					selettoreFotografoViewModel .fotografoSelezionato = selettoreFotografoViewModel.fotografi.Where( fo => fo.id == param.flashCardConfig.idFotografo ).SingleOrDefault();
+				if( param.flashCardConfig.idFotografo != null ) {
+					// Il fotografo sulla flashcard potrebbe non esistere
+					Fotografo prec = selettoreFotografoViewModel.fotografi.Where( fo => fo.id == param.flashCardConfig.idFotografo ).SingleOrDefault();
+					if( prec != null ) {
+
+						/*
+						 * purtroppo non funziona.
+						 * Siccome la view non subisce il viewmodel, la ListBox non si posiziona
+						 * correttamente (non è sincronizzata con l'elemento corrente)
+						 * 
+						selettoreFotografoViewModel.fotografoSelezionato = prec;
+						*/
+					}
+
+				}
+					
 
 				// Evento
 				if( param.flashCardConfig.idEvento != Guid.Empty )

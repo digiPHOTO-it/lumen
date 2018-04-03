@@ -83,6 +83,10 @@ namespace Digiphoto.Lumen.UI {
 
 				foreach( var obj in e.AddedItems )
 					cw.seleziona( (Fotografo)obj );
+
+				if( cw.SelectedItems.Count > 1 )
+					if( System.Diagnostics.Debugger.IsAttached )
+						System.Diagnostics.Debugger.Break();
 			}
 		}
 

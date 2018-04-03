@@ -85,15 +85,37 @@ namespace Digiphoto.Lumen.UI {
 			get {
 				if( fotografiCW == null || fotografiCW.SelectedItems.Count == 0 )
 					return null;
-				if( fotografiCW.SelectedItems.Count > 1 )
-					throw new InvalidOperationException( "Usare la selezione singola, oppure usare fotografiSelezionati" );
 
-				return fotografiCW.SelectedItems[0];
+				// Se ho solo un elemento, ritorno quello
+				if( fotografiCW.SelectedItems.Count == 1 )
+					return fotografiCW.SelectedItems[0];
+
+				// Se ne ho piu di uno, può essere che ci siano dei NULL nella collezione
+				if( fotografiCW.SelectedItems.Count > 1 ) {
+
+					Fotografo selezionato = null;
+					foreach( var f in fotografiCW.SelectedItems )
+						if( f != null )
+							if( selezionato == null )
+								selezionato = f;
+							else
+								throw new InvalidOperationException( "Usare la selezione singola, oppure usare fotografiSelezionati" );
+					return selezionato;
+				}
+
+				return null;  // qui non dovrebbe mai arrivare
 			}
 
 			set {
-				fotografiCW.seleziona( value );
+				if( value != null )
+				{
+					fotografiCW.seleziona( value );
+				}
 			}
+		}
+
+		public void forzaRefresh() {
+			fotografiCW.Refresh();
 		}
 
 		public IEntityRepositorySrv<Fotografo> fotografiReporitorySrv {

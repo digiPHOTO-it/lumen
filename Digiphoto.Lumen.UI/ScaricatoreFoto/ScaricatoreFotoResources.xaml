@@ -24,6 +24,7 @@
 		<Setter Property="FontSize" Value="18" />
 		<Setter Property="Background" Value="Gray"  />
 		<Setter Property="Foreground" Value="WhiteSmoke" />
+		<Setter Property="ItemContainerStyle" Value="{StaticResource listBoxItemEvidenziatoStyle}" />
 	</Style>
 
 	<Style x:Key="selettoreCartellaStyle" TargetType="{x:Type lum:SelettoreCartella}" >
