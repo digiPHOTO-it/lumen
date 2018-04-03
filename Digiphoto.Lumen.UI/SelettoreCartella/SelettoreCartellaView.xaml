@@ -33,6 +33,7 @@
                      ItemsSource="{Binding dischiRimovibili}" 
                      ItemTemplate="{StaticResource dischiRimovibiliTemplate}" 
                      MinHeight="20"  Style="{StaticResource baseListBoxStyle}"
+					 ItemContainerStyle="{StaticResource ResourceKey=listBoxItemEvidenziatoStyle}"
                      SelectionChanged="dischiRimovibiliListBox_SelectionChanged" 
                      MouseDoubleClick="dischiRimovibiliListBox_MouseDoubleClick" />
         </GroupBox>

@@ -144,7 +144,8 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			battezzaFlashCard( _paramScarica );
 
 			// Se il drive che ho appena scaricato è rimovibile, allora lo smonto
-			smontaSeRimovibile();
+			// Richiesta di Ciccio del 29-03-2018 non smontiamo piu la card
+			// smontaSeRimovibile();
 
 
 

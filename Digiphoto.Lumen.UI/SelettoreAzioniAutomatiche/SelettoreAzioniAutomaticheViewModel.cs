@@ -70,7 +70,8 @@ namespace Digiphoto.Lumen.UI
 					OnPropertyChanged("azioneAutomaticaSelezionata");
 
 					// Quando cambia la selezione, potrei eseguire l'associazione (se ci sono i presupposti)
-					forseAssociareMaschere(); 
+					if( value != null )
+						forseAssociareMaschere(); 
 				}
 			}
 		}
