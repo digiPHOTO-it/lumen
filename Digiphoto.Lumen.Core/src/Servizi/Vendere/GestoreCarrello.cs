@@ -521,7 +521,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
         public static bool isStessaFotoInCarrello(Carrello carrello, RigaCarrello rigaNew, string discriminator)
         {
-			bool esisteGia = carrello.righeCarrello.Any( r =>  rigaNew.discriminator == r.discriminator && rigaNew.fotografia.Equals( r.fotografia )  );
+			bool esisteGia = carrello.righeCarrello.Any( r =>  r.discriminator == discriminator && rigaNew.fotografia.Equals( r.fotografia )  );
 
             return esisteGia;
         }
