@@ -11,7 +11,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "digiPHOTO.it" )]
 [assembly: AssemblyProduct( "Lumen" )]
-[assembly: AssemblyCopyright( "Copyright © digiPHOTO.it 2014-2017" )]
+[assembly: AssemblyCopyright( "Copyright © digiPHOTO.it 2014-2018" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
@@ -32,7 +32,7 @@ using System.Resources;
 //
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion( "2.1.0.604" )]
+[assembly: AssemblyVersion( "2.1.0.0" )]
 
 
 [assembly: NeutralResourcesLanguageAttribute( "it" )]
