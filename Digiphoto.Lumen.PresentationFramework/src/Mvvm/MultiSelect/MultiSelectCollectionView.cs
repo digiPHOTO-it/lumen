@@ -7,7 +7,6 @@ using System.Windows.Data;
 using System;
 using System.Windows;
 using Digiphoto.Lumen.UI.Mvvm.Event;
-using Digiphoto.Lumen.Model;
 
 namespace Digiphoto.Lumen.UI.Mvvm.MultiSelect {
 
