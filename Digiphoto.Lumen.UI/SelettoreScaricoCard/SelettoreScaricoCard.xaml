@@ -5,7 +5,7 @@
 					  xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 					  xmlns:lum="clr-namespace:Digiphoto.Lumen.UI"
 					  xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
-					  xmlns:lumMS="clr-namespace:Digiphoto.Lumen.UI.Mvvm.MultiSelect"
+					  xmlns:lumMS="clr-namespace:Digiphoto.Lumen.UI.Mvvm.MultiSelect;assembly=Digiphoto.Lumen.PresentationFramework"
 					  x:Name="selettoreScaricoCard"
 					  mc:Ignorable="d" 
 					  d:DesignHeight="200" d:DesignWidth="200">

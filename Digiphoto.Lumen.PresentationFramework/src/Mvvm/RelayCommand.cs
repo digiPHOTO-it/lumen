@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Windows.Input;
 using System.Diagnostics;
-using Digiphoto.Lumen.Model;
-using Digiphoto.Lumen.Core.Database;
 using log4net;
+using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Util;
 
 namespace Digiphoto.Lumen.UI.Mvvm {
