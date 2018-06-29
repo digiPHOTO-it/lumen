@@ -8,11 +8,8 @@ using Digiphoto.Lumen.UI.Mvvm;
 using Digiphoto.Lumen.Util;
 using log4net;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -251,6 +248,10 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			}
 		}
 
+		private void scegliereCartella() {
+			// TODO
+		}
+
 		public void OnError( Exception error ) {
 		}
 
@@ -290,6 +291,16 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 				}
 				return _caricareItemsCommand;
+			}
+		}
+
+		private RelayCommand _scegliereCartellaCommand;
+		public ICommand scegliereCartellaCommand {
+			get {
+				if( _scegliereCartellaCommand == null ) {
+					_scegliereCartellaCommand = new RelayCommand( quale => scegliereCartella() );
+				}
+				return _scegliereCartellaCommand;
 			}
 		}
 
