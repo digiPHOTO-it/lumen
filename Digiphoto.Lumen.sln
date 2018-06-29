@@ -49,7 +49,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.Presentatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.UI.Test", "Digiphotot.Lumen.UI.test\Digiphoto.Lumen.UI.Test.csproj", "{6BE93BCE-B38D-4C9B-9A1E-1DCA366E8FDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.OnRideUI", "Digiphoto.Lumen.OnRideUI\Digiphoto.Lumen.OnRideUI.csproj", "{33052124-6A75-4E2B-A67F-66A2F0A8CE06}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.OnRide.UI", "Digiphoto.Lumen.OnRide.UI\Digiphoto.Lumen.OnRide.UI.csproj", "{A8B5723A-A594-4648-B906-4D2EE2F5F196}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,10 +101,10 @@ Global
 		{6BE93BCE-B38D-4C9B-9A1E-1DCA366E8FDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BE93BCE-B38D-4C9B-9A1E-1DCA366E8FDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6BE93BCE-B38D-4C9B-9A1E-1DCA366E8FDE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{33052124-6A75-4E2B-A67F-66A2F0A8CE06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{33052124-6A75-4E2B-A67F-66A2F0A8CE06}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{33052124-6A75-4E2B-A67F-66A2F0A8CE06}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{33052124-6A75-4E2B-A67F-66A2F0A8CE06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8B5723A-A594-4648-B906-4D2EE2F5F196}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8B5723A-A594-4648-B906-4D2EE2F5F196}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8B5723A-A594-4648-B906-4D2EE2F5F196}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8B5723A-A594-4648-B906-4D2EE2F5F196}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

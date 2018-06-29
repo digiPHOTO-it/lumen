@@ -1,0 +1,101 @@
+﻿<Window x:Class="Digiphoto.Lumen.OnRide.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525" WindowState="Maximized" >
+
+	<Window.Resources>
+		<ResourceDictionary Source="MainWindowResources.xaml" />
+	</Window.Resources>
+	
+	<DockPanel LastChildFill="True">
+
+		<Expander DockPanel.Dock="Top">
+			<Grid Height="44">
+				<Label Content="Cartella input foto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="19,0,0,17"  />
+				<TextBox Text="{Binding Path=cartellaOnRide,Mode=TwoWay}" VerticalAlignment="Top" HorizontalAlignment="Left" Width="325" Margin="130,5,0,0" />
+
+			</Grid>
+		</Expander>
+
+		<ToolBar DockPanel.Dock="Top">
+			<Button  Content="Acquisire" Command="{Binding acquisireFotoCommand}" />
+			<Separator />
+			<Button  Content="Refresh" Command="{Binding caricareItemsCommand}" />
+		</ToolBar>
+
+		<StatusBar DockPanel.Dock="Bottom">
+			<Label Content="{Binding Path=ciao}" />
+		</StatusBar>
+		
+		<Expander DockPanel.Dock="Left" Header="Preferenze" Background="Red">
+			<DockPanel>
+				<CheckBox Content="Solo senza barcode" />
+			</DockPanel>
+		</Expander>
+
+		
+		<Grid DockPanel.Dock="Left">
+			
+			<ListView x:Name="listBoxOnride"
+					  SelectionMode="Single" IsSynchronizedWithCurrentItem="True"
+					  ItemsSource="{Binding Path=fotoItemsCW}">
+				
+				<ListView.View>
+					<GridView>
+						<GridView.ColumnHeaderContainerStyle>
+							<Style TargetType="{x:Type GridViewColumnHeader}">
+								<Setter Property="Visibility" Value="Visible" />
+							</Style>
+						</GridView.ColumnHeaderContainerStyle>
+						<GridViewColumn Header="Foto">
+							<GridViewColumn.CellTemplate>
+								<DataTemplate>
+									<Image Height="50" Width="50">
+										<Image.Source>
+											<BitmapImage UriSource="{Binding Path=fileInfo.FullName}" DecodePixelWidth="50" CacheOption="OnLoad" />
+										</Image.Source>
+									</Image>
+								</DataTemplate>
+							</GridViewColumn.CellTemplate>
+						</GridViewColumn>
+
+						<GridViewColumn Header="Taggare">
+							<GridViewColumn.CellTemplate>
+								<DataTemplate>
+									<CheckBox IsChecked="{Binding Path=daTaggare}"  />
+								</DataTemplate>
+							</GridViewColumn.CellTemplate>
+						</GridViewColumn>
+
+						<GridViewColumn Header="Tag">
+							<GridViewColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding Path=tag}" Width="300" FontSize="34" Height="50" IsEnabled="{Binding Path=daTaggare, UpdateSourceTrigger=PropertyChanged}" CharacterCasing="Upper" />
+								</DataTemplate>
+							</GridViewColumn.CellTemplate>
+						</GridViewColumn>
+
+						<GridViewColumn Header="Eliminare">
+							<GridViewColumn.CellTemplate>
+								<DataTemplate>
+									<CheckBox IsChecked="{Binding Path=daEliminare}" />
+								</DataTemplate>
+							</GridViewColumn.CellTemplate>
+						</GridViewColumn>
+						
+					</GridView>
+				</ListView.View>
+			</ListView>
+
+		</Grid>
+
+		
+		<Grid>
+			<Image Source="{Binding ElementName=listBoxOnride, Path=SelectedItem.fileInfo.FullName, Converter={StaticResource uriToCachedImageConverter} }" />
+		</Grid>
+		
+	</DockPanel>
+</Window>
