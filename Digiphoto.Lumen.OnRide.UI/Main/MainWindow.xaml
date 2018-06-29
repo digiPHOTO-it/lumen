@@ -15,8 +15,8 @@
 		<Expander DockPanel.Dock="Top">
 			<Grid Height="44">
 				<Label Content="Cartella input foto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="19,0,0,17"  />
-				<TextBox Text="{Binding Path=cartellaOnRide,Mode=TwoWay}" VerticalAlignment="Top" HorizontalAlignment="Left" Width="325" Margin="130,5,0,0" />
-
+				<TextBox Text="{Binding Path=cartellaOnRide,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" HorizontalAlignment="Left" Width="325" Margin="130,5,0,0" />
+				<Button Visibility="Hidden"  Command="{Binding scegliereCartellaCommand}" CommandParameter="foto" Content="..." Height="Auto" Margin="0,4,10,0" ToolTip="Sfoglia cartelle" VerticalAlignment="Top" HorizontalAlignment="Right" Width="22" />
 			</Grid>
 		</Expander>
 
@@ -29,13 +29,6 @@
 		<StatusBar DockPanel.Dock="Bottom">
 			<Label Content="{Binding Path=ciao}" />
 		</StatusBar>
-		
-		<Expander DockPanel.Dock="Left" Header="Preferenze" Background="Red">
-			<DockPanel>
-				<CheckBox Content="Solo senza barcode" />
-			</DockPanel>
-		</Expander>
-
 		
 		<Grid DockPanel.Dock="Left">
 			
