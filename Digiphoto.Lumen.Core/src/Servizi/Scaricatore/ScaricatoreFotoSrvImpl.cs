@@ -151,8 +151,14 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			// Rendo pubblico l'esito dello scarico in modo che la UI possa notificare l'utente di togliere 
 			// la flash card.
+			/*
+			 * per l'onride mi serve che lanci il msg anche su un solo file
+			 * però mi pare che nessuno utilizzi il modo singolo. quindi lo pubblico sempre
+			 * 
 			if( _paramScarica.nomeFileSingolo == null && _paramScarica.cartellaSorgente != null )
+			*/
 				pubblicaMessaggio( scaricoFotoMsg );
+			
 			_giornale.Debug( "Scaricate " + esitoScarico.totFotoCopiateOk + " foto. Si può togliere la card" );
 
 			// -- inizio elaborazione 
@@ -221,15 +227,18 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 			if( !(_paramScarica.nomeFileSingolo == null ^ _paramScarica.cartellaSorgente == null) )
 				throw new ArgumentException( "specificare la cartella da scaricare, oppure il nome del file singolo da scaricare. Uno, l'altro ma non tutti e due" );
 
-			if( _paramScarica.cartellaSorgente != null && Directory.Exists( _paramScarica.cartellaSorgente ) == false )
-				throw new FileNotFoundException( "cartella da scaricare inesistente:\n" + _paramScarica.cartellaSorgente );
+			if( _paramScarica.cartellaSorgente != null ) {
+
+				if( Directory.Exists( _paramScarica.cartellaSorgente ) == false )
+					throw new FileNotFoundException( "cartella da scaricare inesistente:\n" + _paramScarica.cartellaSorgente );
+
+				// Se devo spostare le foto, allora testo che la cartella sia scrivibile
+				if( _paramScarica.eliminaFilesSorgenti && !PathUtil.isCartellaScrivibile( _paramScarica.cartellaSorgente ) )
+					throw new InvalidOperationException( "La cartella indicata non è scrivibile. Impossibile spostare i files" );
+			}
 
 			if( _paramScarica.nomeFileSingolo != null && File.Exists( _paramScarica.nomeFileSingolo ) == false )
 				throw new FileNotFoundException( "file da scaricare inesistente:\n" + _paramScarica.nomeFileSingolo );
-
-			// Se devo spostare le foto, allora testo che la cartella sia scrivibile
-			if( _paramScarica.eliminaFilesSorgenti && !PathUtil.isCartellaScrivibile( _paramScarica.cartellaSorgente ) )
-				throw new InvalidOperationException( "La cartella indicata non è scrivibile. Impossibile spostare i files" );
 
 			if( _paramScarica.flashCardConfig.idFotografo == null )
 				throw new ArgumentException( "fotografo non indicato" );

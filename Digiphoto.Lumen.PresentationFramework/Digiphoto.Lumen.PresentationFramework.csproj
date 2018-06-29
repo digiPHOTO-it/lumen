@@ -47,6 +47,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\Converters\UriToCachedImageConverter.cs" />
     <Compile Include="src\Mvvm\ClosableWiewModel.cs" />
     <Compile Include="src\Mvvm\Event\SelectionFailedEventArgs.cs" />
     <Compile Include="src\Mvvm\Event\SelectionFailedEventHandler.cs" />

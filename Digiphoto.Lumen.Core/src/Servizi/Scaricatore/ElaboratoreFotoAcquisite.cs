@@ -105,10 +105,6 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 						Fotografia foto = aggiungiFoto( fileInfo, proxNum, tempoScarico );
 
 
-						_giornale.Debug( "Inizio Provinatura immagine " + fileInfo.FullName );
-						AiutanteFoto.creaProvinoFoto( fileInfo.FullName, foto );
-						_giornale.Debug( "Fine Provinatura immagine " );
-
 						// Mark the transaction as complete.
 						transaction.Complete();
 
@@ -117,6 +113,10 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 						++contaAggiunteDb;
 
 						
+						_giornale.Debug( "Inizio Provinatura immagine " + fileInfo.FullName );
+						AiutanteFoto.creaProvinoFoto( fileInfo.FullName, foto );
+						_giornale.Debug( "Fine Provinatura immagine " );
+
 						// Libero la memoria occupata dalle immagini, altrimenti esplode.
 						AiutanteFoto.disposeImmagini( foto, IdrataTarget.Tutte );
 
