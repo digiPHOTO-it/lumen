@@ -118,6 +118,19 @@ namespace Digiphoto.Lumen.Config
 			}
 		}
 
+		private string _cartellaOnRide;
+		public string cartellaOnRide {
+			get {
+				return _cartellaOnRide;
+			}
+			set {
+				if( _cartellaOnRide != value ) {
+					_cartellaOnRide = value;
+					OnPropertyChanged( "cartellaOnRide" );
+				}
+			}
+		}
+
 		public string stampantiAbbinate {
 			get;
 			set;

@@ -64,6 +64,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\PresentationFramework\Popup\IModalDialogPopup.cs" />
     <Compile Include="src\PresentationFramework\TextPath.cs" />
+    <Compile Include="src\Util\AiutanteUI.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Themes\CoreStyles.Generic.xaml">

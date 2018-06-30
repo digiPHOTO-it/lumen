@@ -1,7 +1,9 @@
 ﻿using Digiphoto.Lumen.OnRide.UI.Model;
 using Digiphoto.Lumen.UI.Mvvm;
+using Digiphoto.Lumen.UI.Util;
 using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Digiphoto.Lumen.OnRide.UI {
@@ -102,5 +104,31 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 		#endregion IDIalogProvider
 
+		private void TagTextBox_GotFocus( object sender, RoutedEventArgs e ) {
+			
+			// Quando clicco nella textbox, non si aggiorna la foto (perché l'evento viene consumato)
+			// devo selezionare la riga io a mano
+
+			ListViewItem lvi = AiutanteUI.GetAncestorByType( e.OriginalSource as DependencyObject, typeof( ListViewItem ) ) as ListViewItem;
+
+			if( lvi != null ) {
+
+				bool front = true;
+
+				if( front ) {
+
+					// provoco lo spostamento sulla ListView del frontend
+					var idx = onrideListView.ItemContainerGenerator.IndexFromContainer( lvi );
+					onrideListView.SelectedIndex = idx;
+					lvi.IsSelected = true;
+				} else {
+					// cosi funziona ma agisto sul viemwodel
+					FotoItem item = (FotoItem)lvi.Content;
+					viewModel.fotoItemsCW.MoveCurrentTo( item );
+				}
+
+			}
+
+		}
 	}
 }
