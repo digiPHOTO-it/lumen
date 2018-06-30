@@ -4,5 +4,10 @@
 
 
 	<pf:UriToCachedImageConverter x:Key="uriToCachedImageConverter" />
+
+	<Style x:Key="pulsanteStyle" TargetType="ButtonBase">
+
+		<Setter Property="BorderBrush" Value="LightGray" />
+	</Style>
 	
 </ResourceDictionary>
