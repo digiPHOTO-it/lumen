@@ -3,6 +3,7 @@ using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.OnRide.UI.Model;
+using Digiphoto.Lumen.OnRideUI;
 using Digiphoto.Lumen.Servizi.Scaricatore;
 using Digiphoto.Lumen.UI.Mvvm;
 using Digiphoto.Lumen.Util;
@@ -10,6 +11,8 @@ using log4net;
 using System;
 using System.IO;
 using System.Linq;
+using System.Security.Permissions;
+using System.Threading;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -17,33 +20,27 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 	public class MainWindowViewModel : ViewModelBase, IObserver<ScaricoFotoMsg> {
 
+
 		protected new static readonly ILog _giornale = LogManager.GetLogger( typeof( MainWindowViewModel ) );
 
 		public MainWindowViewModel() {
 
-			// TODO parametrizzare
-			this.cartellaOnRide = @"D:\OnRideIn";
+			Init();
+		}
+		
 
-			using( new UnitOfWorkScope() ) {
+		#region Proprietà
 
-				// Carico il fotografo dal db (in questo caso non è umano, ma di tipo automatico)
-				fotografoOnRide = UnitOfWorkScope.currentDbContext.Fotografi.FirstOrDefault( f => f.umano == false && f.attivo == true );
-				if( fotografoOnRide == null )
-					throw new LumenException( "Nessun fotografo per OnRide" );
+		public bool isRunning {
+			get {
+				return fileSystemWatcher != null ? fileSystemWatcher.EnableRaisingEvents : false;
 			}
-
-			init();
 		}
 
-		private void init() {
-
-			// Ascolto messaggio
-			IObservable<ScaricoFotoMsg> observable = LumenApplication.Instance.bus.Observe<ScaricoFotoMsg>();
-			observable.Subscribe( this );
-
-			caricareItems();
+		private FileSystemWatcher fileSystemWatcher {
+			get;
+			set;
 		}
-
 
 		public Fotografo fotografoOnRide {
 			get;
@@ -72,8 +69,68 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			set;
 		}
 
+		bool possoAcquisireFoto {
+			get {
+				return fotoItemsCW.Count > 0;
+			}
+		}
 
-		private void caricareItems() {
+		#endregion Proprietà
+
+		#region Metodi
+
+		private void Init() {
+
+			// TODO leggere dalla configurazione
+			this.cartellaOnRide = @"D:\OnRideIn";
+
+
+			using( new UnitOfWorkScope() ) {
+
+				// Carico il fotografo dal db (in questo caso non è umano, ma di tipo automatico)
+				fotografoOnRide = UnitOfWorkScope.currentDbContext.Fotografi.FirstOrDefault( f => f.umano == false && f.attivo == true );
+				if( fotografoOnRide == null ) {
+					var msg = "Nessun fotografo attivo per modalità OnRide";
+					_giornale.Error( msg );
+					throw new LumenException( msg );
+				}
+			}
+
+			// Ascolto messaggio
+			IObservable<ScaricoFotoMsg> observable = LumenApplication.Instance.bus.Observe<ScaricoFotoMsg>();
+			observable.Subscribe( this );
+
+			CaricareItems();
+
+			CreaFileSystemWatcher();
+
+			// inizio ad ascoltare file in arrivo
+			cambiareStatoCommand.Execute( "start" );
+		}
+
+		/// <summary>
+		/// Creo un ascoltatore che mi notifica quando viene creato un file in una determinata cartella.
+		/// </summary>
+		[PermissionSet( SecurityAction.Demand, Name = "FullTrust" )]
+		void CreaFileSystemWatcher() {
+
+			if( fileSystemWatcher != null ) {
+				fileSystemWatcher.Dispose();
+				fileSystemWatcher = null;
+			}
+
+			fileSystemWatcher = new FileSystemWatcher( cartellaOnRide );
+			fileSystemWatcher.Filter = ""; // Ascolto tutti i tipi di file perché non posso specificare più di una estensione. Li filtro io dopo
+			fileSystemWatcher.Created += new FileSystemEventHandler( OnNuovaFotoArrivata );
+
+			_giornale.Info( "Inizio monitoraggio cartella : " + cartellaOnRide );
+		}
+
+
+		/// <summary>
+		/// Ricarico la lista degli items da disco, analizzando tutti i file contenuti nella cartella
+		/// </summary>
+		private void CaricareItems() {
 
 			fotoItems = new ObservableCollectionEx<FotoItem>();
 
@@ -86,9 +143,7 @@ namespace Digiphoto.Lumen.OnRide.UI {
 					foreach( FileInfo fileInfo in dirInfo.GetFiles( "*" + estensione ) ) {
 
 						// Istanzio elemento della lista
-						FotoItem fotoItem = new FotoItem();
-						fotoItem.fileInfo = fileInfo;
-						fotoItem.daTaggare = true;
+						FotoItem fotoItem = new FotoItem( fileInfo );
 
 						// carico eventuale testo già associato
 						if( File.Exists( fotoItem.nomeFileTag ) ) {
@@ -99,7 +154,9 @@ namespace Digiphoto.Lumen.OnRide.UI {
 					}
 				}
 
-				fotoItemsCW = new ListCollectionView( fotoItems );
+				// Ora che ho riempito la collezione, creo la sua VIEW
+				// fotoItemsCW = new ListCollectionView( fotoItems );
+				fotoItemsCW = (ListCollectionView)CollectionViewSource.GetDefaultView( fotoItems );
 				OnPropertyChanged( "fotoItemsCW" );
 
 			} catch( Exception ee ) {
@@ -109,7 +166,31 @@ namespace Digiphoto.Lumen.OnRide.UI {
 		}
 
 
-		void acquisireTutteLeFoto() {
+		void AcquisireTutteLeFoto() {
+
+			// --- Prima chiedo conferma sulle eliminazioni
+
+			int quanteDaEliminare = fotoItems.Count( f => f.daEliminare );
+			int quanteSenzaTag = fotoItems.Count( f => f.daTaggare == false );
+
+			string msgConferma = "Sei sicuro di volere\r\n";
+			if( quanteDaEliminare > 0 )
+				msgConferma += "distruggere " + quanteDaEliminare + " foto\r\n";
+			if( quanteSenzaTag > 0 )
+				msgConferma += "acquisire " + quanteSenzaTag + " foto senza il tag\r\n";
+			msgConferma += "?";
+
+			bool procediPure = true;
+			if( quanteDaEliminare > 0 || quanteSenzaTag > 0 )
+				dialogProvider.ShowConfirmation( msgConferma, "Attenzione",
+					  ( confermato ) => {
+						  procediPure = confermato;
+					  } );
+
+			if( !procediPure )
+				return;
+
+			// ---
 
 			bool ricomincia;
 
@@ -121,7 +202,7 @@ namespace Digiphoto.Lumen.OnRide.UI {
 					FotoItem fotoItem = fotoItems[ii];
 					// Se richiesta la cancellazione da disco, la elimino 
 					if( fotoItem.daEliminare ) {
-						if( eliminareFoto( fotoItem ) ) {
+						if( EliminareFoto( fotoItem ) ) {
 							ricomincia = true;
 							break;
 						}
@@ -138,7 +219,7 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 		}
 
-		private bool eliminareFoto( FotoItem fotoItem ) {
+		private bool EliminareFoto( FotoItem fotoItem ) {
 
 			bool eliminata = false;
 
@@ -204,6 +285,17 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 		}
 
+		void cambiareStato( string nuovo ) {
+
+			if( nuovo == "stop" )
+				fileSystemWatcher.EnableRaisingEvents = false;
+			if( nuovo == "start" )
+				fileSystemWatcher.EnableRaisingEvents = true;
+			OnPropertyChanged( "isRunning" );
+		}
+
+		#endregion Metodi
+
 		#region Messaggi
 
 		public void OnNext( ScaricoFotoMsg msgScaricoFotoMsg ) {
@@ -258,13 +350,64 @@ namespace Digiphoto.Lumen.OnRide.UI {
 		public void OnCompleted() {
 		}
 
-		#endregion Messaggi
+		private void OnNuovaFotoArrivata( object sender, FileSystemEventArgs e ) {
+			// Controllo se il file ha una estensione tra quelle supportate
 
-		bool possoAcquisireFoto {
-				get {
-					return fotoItemsCW.Count > 0;
+			string[] estensioniAmmesse = Configurazione.UserConfigLumen.estensioniGrafiche.Split( ';' );
+
+			FileInfo finfo = new FileInfo( e.FullPath );
+			if( !estensioniAmmesse.Contains( finfo.Extension.ToLower() ) )
+				return;
+
+
+			// Se non attendo un briciolo, il file è sempre loccato perché deve essere ancora copiato
+			// Thread.Sleep( 100 );
+
+			const int maxAttesa	= 10000;	// Massimo numero di secondi che sono disposto ad attendere. Poi lo dichiaro non usabile.
+			const int singolaPausa = 1000;	// Ampiezza della singola pausa (sleep)
+			int aspetta = 0;
+
+			do {
+				bool isLocked = FileUtil.IsFileLocked( finfo );
+				if( isLocked ) {
+					aspetta += singolaPausa;
+					Thread.Sleep( singolaPausa );
+				} else
+					aspetta = maxAttesa*2;		// ok file buono e arrivato: provoco l'uscita dal loop
+
+			} while( aspetta < maxAttesa );
+
+
+			// Se il file è ancora loccato, non posso aggiungerlo, devo ignorarlo. Occorrerà un refresh
+			bool possoAggiungere = true;
+
+			if( aspetta != (maxAttesa * 2) ) {
+				possoAggiungere = false;        // il file è ancora loccato
+				_giornale.Warn( "File ancora loccato: " + finfo.Name + ". Impossibile aggiungerlo alla lista" );
 			}
+
+			if( possoAggiungere ) {
+				// Ok è arrivata una immagine per davvero. Creo un item da accodare
+				finfo.Refresh();
+				if( finfo.Length <= 50 ) {
+					possoAggiungere = false;        // Dimensione del file non corretta
+					_giornale.Warn( "File con dimensione errata: " + finfo.Name + ". Impossibile aggiungerlo alla lista" );
+				}
+			}
+
+			if( possoAggiungere ) {
+			
+				try {
+					FotoItem fotoItem = new FotoItem( finfo );
+					fotoItems.Add( fotoItem );
+				} catch( Exception ee ) {
+					_giornale.Error( "Aggingo foto alla lista", ee );
+				}
+			}
+
 		}
+
+		#endregion Messaggi
 
 		#region Comandi
 
@@ -273,7 +416,7 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			get {
 				if( _acquisireFotoCommand == null ) {
 
-					_acquisireFotoCommand = new RelayCommand( param => acquisireTutteLeFoto(),
+					_acquisireFotoCommand = new RelayCommand( param => AcquisireTutteLeFoto(),
 					                                          param => possoAcquisireFoto );
 
 				}
@@ -286,7 +429,7 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			get {
 				if( _caricareItemsCommand == null ) {
 
-					_caricareItemsCommand = new RelayCommand( param => caricareItems(),
+					_caricareItemsCommand = new RelayCommand( param => CaricareItems(),
 															  param => true );
 
 				}
@@ -303,6 +446,17 @@ namespace Digiphoto.Lumen.OnRide.UI {
 				return _scegliereCartellaCommand;
 			}
 		}
+
+		private RelayCommand _cambiareStatoCommand;
+		public ICommand cambiareStatoCommand {
+			get {
+				if( _cambiareStatoCommand == null ) {
+					_cambiareStatoCommand = new RelayCommand( stato => cambiareStato( (string)stato ) );
+				}
+				return _cambiareStatoCommand;
+			}
+		}
+
 
 		#endregion Comandi
 	}

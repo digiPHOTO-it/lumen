@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525" WindowState="Maximized" >
 
@@ -21,9 +22,21 @@
 		</Expander>
 
 		<ToolBar DockPanel.Dock="Top">
-			<Button  Content="Acquisire" Command="{Binding acquisireFotoCommand}" />
-			<Separator />
-			<Button  Content="Refresh" Command="{Binding caricareItemsCommand}" />
+			<Button  Content="Esegui !" Command="{Binding acquisireFotoCommand}" Style="{StaticResource pulsanteStyle}" ToolTip="Applica le modifiche impostate" />
+			<Separator Margin="6 0 6 0"/>
+			<Button  Content="Refresh" Command="{Binding caricareItemsCommand}" Style="{StaticResource pulsanteStyle}" ToolTip="Aggiorna la lista delle foto a video"/>
+			<Separator Margin="6 0 6 0"/>
+			<ToggleButton IsChecked="{Binding Path=isRunning, Mode=OneWay}" 
+						  Content="Start/Stop" Style="{StaticResource pulsanteStyle}" ToolTip="Avvia o Arresta il monitoriaggio della cartella" >
+				<i:Interaction.Triggers>
+					<i:EventTrigger EventName="Checked">
+						<i:InvokeCommandAction Command="{Binding Path=cambiareStatoCommand}" CommandParameter="start"/>
+					</i:EventTrigger>
+					<i:EventTrigger EventName="Unchecked">
+						<i:InvokeCommandAction Command="{Binding Path=cambiareStatoCommand}" CommandParameter="stop"/>
+					</i:EventTrigger>
+				</i:Interaction.Triggers>
+			</ToggleButton>
 		</ToolBar>
 
 		<StatusBar DockPanel.Dock="Bottom">
@@ -55,10 +68,23 @@
 							</GridViewColumn.CellTemplate>
 						</GridViewColumn>
 
-						<GridViewColumn Header="Taggare">
-							<GridViewColumn.CellTemplate>
+
+						<GridViewColumn Width="70">
+							<GridViewColumn.Header>
+								<StackPanel Orientation="Horizontal">
+									<CheckBox Name="boxHeaderTaggare" Click="boxHeaderTaggare_Click" />
+									<TextBlock Text="Taggare" ToolTip="Se da taggare, inserire il tag" />
+								</StackPanel>
+							</GridViewColumn.Header>
+
+
+								<GridViewColumn.CellTemplate>
 								<DataTemplate>
-									<CheckBox IsChecked="{Binding Path=daTaggare}"  />
+									<CheckBox IsChecked="{Binding Path=daTaggare}"  >
+										<CheckBox.LayoutTransform>
+											<ScaleTransform ScaleX="2" ScaleY="2" />
+										</CheckBox.LayoutTransform>
+									</CheckBox>
 								</DataTemplate>
 							</GridViewColumn.CellTemplate>
 						</GridViewColumn>
@@ -71,10 +97,21 @@
 							</GridViewColumn.CellTemplate>
 						</GridViewColumn>
 
-						<GridViewColumn Header="Eliminare">
+						<GridViewColumn Width="70">
+							<GridViewColumn.Header>
+								<StackPanel Orientation="Horizontal">
+									<CheckBox Name="boxHeaderEliminare" Click="boxHeaderEliminare_Click" />
+									<TextBlock Text="Eliminare" ToolTip="Le foto contrassegnate saranno distrutte per sempre" />
+								</StackPanel>
+							</GridViewColumn.Header>
+							
 							<GridViewColumn.CellTemplate>
 								<DataTemplate>
-									<CheckBox IsChecked="{Binding Path=daEliminare}" />
+									<CheckBox IsChecked="{Binding Path=daEliminare}" >
+										<CheckBox.LayoutTransform>
+											<ScaleTransform ScaleX="2" ScaleY="2" />
+										</CheckBox.LayoutTransform>
+									</CheckBox>
 								</DataTemplate>
 							</GridViewColumn.CellTemplate>
 						</GridViewColumn>
