@@ -5,50 +5,54 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525" WindowState="Maximized" >
+        Title="OnRide manager" Height="350" Width="525" WindowState="Maximized" >
 
 	<Window.Resources>
 		<ResourceDictionary Source="MainWindowResources.xaml" />
 	</Window.Resources>
-	
+
 	<DockPanel LastChildFill="True">
 
-		<Expander DockPanel.Dock="Top">
-			<Grid Height="44">
-				<Label Content="Cartella input foto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="19,0,0,17"  />
-				<TextBox Text="{Binding Path=cartellaOnRide,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" HorizontalAlignment="Left" Width="325" Margin="130,5,0,0" />
+		<Expander DockPanel.Dock="Top" Header="preferenze">
+			<Grid Height="80">
+				<Label Content="Cartella input foto" VerticalAlignment="Top" Margin="12,4,0,0" HorizontalAlignment="Left" Width="118"  />
+				<TextBox FontSize="20" Text="{Binding Path=cartellaOnRide,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Margin="143,5,46,0" Height="25" />
 				<Button Visibility="Hidden"  Command="{Binding scegliereCartellaCommand}" CommandParameter="foto" Content="..." Height="Auto" Margin="0,4,10,0" ToolTip="Sfoglia cartelle" VerticalAlignment="Top" HorizontalAlignment="Right" Width="22" />
+
+				<Label Content="Stato monitoraggio" HorizontalAlignment="Left" Margin="12,39,0,0" Height="26" VerticalAlignment="Top" Width="118"  />
+				<ToggleButton IsChecked="{Binding Path=isRunning, Mode=OneWay}" 
+						  Content="Start/Stop" Style="{StaticResource pulsanteStyle}" ToolTip="Avvia o Arresta il monitoriaggio della cartella" Margin="143,44,0,0" Height="21" VerticalAlignment="Top" HorizontalAlignment="Left" Width="61" >
+					<i:Interaction.Triggers>
+						<i:EventTrigger EventName="Checked">
+							<i:InvokeCommandAction Command="{Binding Path=cambiareStatoCommand}" CommandParameter="start"/>
+						</i:EventTrigger>
+						<i:EventTrigger EventName="Unchecked">
+							<i:InvokeCommandAction Command="{Binding Path=cambiareStatoCommand}" CommandParameter="stop"/>
+						</i:EventTrigger>
+					</i:Interaction.Triggers>
+				</ToggleButton>
+
 			</Grid>
 		</Expander>
 
 		<ToolBar DockPanel.Dock="Top">
-			<Button  Content="Esegui !" Command="{Binding acquisireFotoCommand}" Style="{StaticResource pulsanteStyle}" ToolTip="Applica le modifiche impostate" />
+			<Button  Height="36" Padding="4 0 4 0" Content="Esegui !" Command="{Binding acquisireFotoCommand}" Style="{StaticResource pulsanteStyle}" ToolTip="Applica le modifiche impostate" />
 			<Separator Margin="6 0 6 0"/>
 			<Button  Content="Refresh" Command="{Binding caricareItemsCommand}" Style="{StaticResource pulsanteStyle}" ToolTip="Aggiorna la lista delle foto a video"/>
 			<Separator Margin="6 0 6 0"/>
-			<ToggleButton IsChecked="{Binding Path=isRunning, Mode=OneWay}" 
-						  Content="Start/Stop" Style="{StaticResource pulsanteStyle}" ToolTip="Avvia o Arresta il monitoriaggio della cartella" >
-				<i:Interaction.Triggers>
-					<i:EventTrigger EventName="Checked">
-						<i:InvokeCommandAction Command="{Binding Path=cambiareStatoCommand}" CommandParameter="start"/>
-					</i:EventTrigger>
-					<i:EventTrigger EventName="Unchecked">
-						<i:InvokeCommandAction Command="{Binding Path=cambiareStatoCommand}" CommandParameter="stop"/>
-					</i:EventTrigger>
-				</i:Interaction.Triggers>
-			</ToggleButton>
+
 		</ToolBar>
 
 		<StatusBar DockPanel.Dock="Bottom">
 			<Label Content="{Binding Path=ciao}" />
 		</StatusBar>
-		
+
 		<Grid DockPanel.Dock="Left">
-			
-			<ListView x:Name="listBoxOnride"
+
+			<ListView x:Name="onrideListView"
 					  SelectionMode="Single" IsSynchronizedWithCurrentItem="True"
 					  ItemsSource="{Binding Path=fotoItemsCW}">
-				
+
 				<ListView.View>
 					<GridView>
 						<GridView.ColumnHeaderContainerStyle>
@@ -78,7 +82,7 @@
 							</GridViewColumn.Header>
 
 
-								<GridViewColumn.CellTemplate>
+							<GridViewColumn.CellTemplate>
 								<DataTemplate>
 									<CheckBox IsChecked="{Binding Path=daTaggare}"  >
 										<CheckBox.LayoutTransform>
@@ -92,7 +96,10 @@
 						<GridViewColumn Header="Tag">
 							<GridViewColumn.CellTemplate>
 								<DataTemplate>
-									<TextBox Text="{Binding Path=tag}" Width="300" FontSize="34" Height="50" IsEnabled="{Binding Path=daTaggare, UpdateSourceTrigger=PropertyChanged}" CharacterCasing="Upper" />
+									<TextBox Text="{Binding Path=tag}" Width="200" FontSize="34" Height="50" 
+											 IsEnabled="{Binding Path=daTaggare, UpdateSourceTrigger=PropertyChanged}" 
+											 CharacterCasing="Upper" GotFocus="TagTextBox_GotFocus"
+											 />
 								</DataTemplate>
 							</GridViewColumn.CellTemplate>
 						</GridViewColumn>
@@ -104,7 +111,7 @@
 									<TextBlock Text="Eliminare" ToolTip="Le foto contrassegnate saranno distrutte per sempre" />
 								</StackPanel>
 							</GridViewColumn.Header>
-							
+
 							<GridViewColumn.CellTemplate>
 								<DataTemplate>
 									<CheckBox IsChecked="{Binding Path=daEliminare}" >
@@ -115,17 +122,17 @@
 								</DataTemplate>
 							</GridViewColumn.CellTemplate>
 						</GridViewColumn>
-						
+
 					</GridView>
 				</ListView.View>
 			</ListView>
 
 		</Grid>
 
-		
+
 		<Grid>
-			<Image Source="{Binding ElementName=listBoxOnride, Path=SelectedItem.fileInfo.FullName, Converter={StaticResource uriToCachedImageConverter} }" />
+			<Image Source="{Binding ElementName=onrideListView, Path=SelectedItem.fileInfo.FullName, Converter={StaticResource uriToCachedImageConverter} }" />
 		</Grid>
-		
+
 	</DockPanel>
 </Window>

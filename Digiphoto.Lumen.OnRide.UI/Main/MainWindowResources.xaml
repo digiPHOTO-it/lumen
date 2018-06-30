@@ -9,5 +9,14 @@
 
 		<Setter Property="BorderBrush" Value="LightGray" />
 	</Style>
+
+	<!-- NON VA
+	<Style TargetType="{x:Type  DataGridRow}">
+		<Style.Resources>
+			<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="OrangeRed"/>
+			<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="OrangeRed"/>
+		</Style.Resources>
+	</Style>
+	-->
 	
 </ResourceDictionary>

@@ -38,8 +38,9 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 		PuntoVendita = 2,
 		CartaEStampanti = 3,
 		PreferenzeUtente = 4,
-		Riservato = 5,
-		Licenza = 6
+		OnRide = 5,
+		Riservato = 6,
+		Licenza = 7
 	}
 
 	public class MainWindowViewModel : ClosableWiewModel, IObserver<Messaggio>
@@ -268,6 +269,12 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 		public bool isPassoPreferenzeUtente {
 			get {
 				return passo == PassoWiz.PreferenzeUtente;
+			}
+		}
+
+		public bool isPassoOnRide {
+			get {
+				return passo == PassoWiz.OnRide;
 			}
 		}
 
@@ -1001,6 +1008,8 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 					cfg.cartellaPubblicita = appo;
 				else if( quale.Equals( "loghi", StringComparison.CurrentCultureIgnoreCase ) )
 					cfg.cartellaLoghi = appo;
+				else if( quale.Equals( "onride", StringComparison.CurrentCultureIgnoreCase ) )
+					cfg.cartellaOnRide = appo;
 				else
 					throw new ArgumentException( "quale cartella : non riconosciuto" );
 			}

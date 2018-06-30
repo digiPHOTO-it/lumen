@@ -85,6 +85,18 @@ namespace Digiphoto.Lumen.UI.Util {
 			return null;
 		}
 
+		public static DependencyObject GetAncestorByType( DependencyObject element, Type type ) {
+
+			if( element == null )
+				return null;
+
+			if( element.GetType() == type )
+				return element;
+
+			return GetAncestorByType( VisualTreeHelper.GetParent( element ), type );
+
+		}
+
 		public static string scegliFileImmagineDialog( string cartellaIniziale ) {
 
 			string filter = "PNG Files (*.png)|*.png|JPEG Files (*.jpeg)|*.jpeg|JPG Files (*.jpg)|*.jpg|GIF Files (*.gif)|*.gif";

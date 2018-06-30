@@ -82,8 +82,12 @@ namespace Digiphoto.Lumen.OnRide.UI {
 		private void Init() {
 
 			// TODO leggere dalla configurazione
-			this.cartellaOnRide = @"D:\OnRideIn";
-
+			this.cartellaOnRide = Configurazione.UserConfigLumen.cartellaOnRide;
+			if( ! Directory.Exists( cartellaOnRide ) ) {
+				var msg = "Cartella per modalità OnRide non valida: " + cartellaOnRide;
+				_giornale.Error( msg );
+				throw new LumenException( msg );
+			}
 
 			using( new UnitOfWorkScope() ) {
 
