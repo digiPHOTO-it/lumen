@@ -2,13 +2,18 @@
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Model;
+using Digiphoto.Lumen.OnRide.UI.Config;
 using Digiphoto.Lumen.OnRide.UI.Model;
 using Digiphoto.Lumen.OnRideUI;
+using Digiphoto.Lumen.Servizi.Io;
+using Digiphoto.Lumen.Servizi.Ritoccare;
 using Digiphoto.Lumen.Servizi.Scaricatore;
+using Digiphoto.Lumen.UI;
 using Digiphoto.Lumen.UI.Mvvm;
 using Digiphoto.Lumen.Util;
 using log4net;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Permissions;
@@ -18,7 +23,7 @@ using System.Windows.Input;
 
 namespace Digiphoto.Lumen.OnRide.UI {
 
-	public class MainWindowViewModel : ViewModelBase, IObserver<ScaricoFotoMsg> {
+	public class MainWindowViewModel : ClosableWiewModel, IObserver<ScaricoFotoMsg> {
 
 
 		protected new static readonly ILog _giornale = LogManager.GetLogger( typeof( MainWindowViewModel ) );
@@ -27,9 +32,52 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 			Init();
 		}
-		
+
 
 		#region Proprietà
+
+		private Maschera _maschera;
+		public Maschera maschera {
+			get {
+				return _maschera;
+			}
+			private set {
+
+				if( value != _maschera ) {
+					_maschera = value;
+					OnPropertyChanged( "maschera" );
+					OnPropertyChanged( "nomeCompletoMaschera" );
+					OnPropertyChanged( "bytesProvinoMaschera" );
+				}
+			}
+		}
+
+		private bool _isMascheraAttiva;
+		public bool isMascheraAttiva {
+			get {
+				return _isMascheraAttiva;
+			}
+			set {
+
+				if( value != _isMascheraAttiva ) {
+					_isMascheraAttiva = value;
+					OnPropertyChanged( "isMascheraAttiva" );
+				}
+			}
+		}
+
+		public string nomeCompletoMaschera {
+			get {
+				return maschera == null ? null : Path.Combine( PathUtil.getCartellaMaschera( FiltroMask.MskSingole ), maschera.nomeFile );
+			}
+		}
+
+		public byte[] bytesProvinoMaschera {
+
+			get {
+				return maschera == null ? null : maschera.imgProvino.getBytes();
+			}
+		}
 
 		public bool isRunning {
 			get {
@@ -63,6 +111,18 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			}
 		}
 
+		public IFotoRitoccoSrv fotoRitoccoSrv {
+			get {
+				return LumenApplication.Instance.getServizioAvviato<IFotoRitoccoSrv>();
+			}
+		}
+
+		public IGestoreImmagineSrv gestoreImmagineSrv {
+			get {
+				return LumenApplication.Instance.getServizioAvviato<IGestoreImmagineSrv>();
+			}
+		}
+
 		private ObservableCollectionEx<FotoItem> fotoItems {
 
 			get;
@@ -81,13 +141,29 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 		private void Init() {
 
-			// TODO leggere dalla configurazione
 			this.cartellaOnRide = Configurazione.UserConfigLumen.cartellaOnRide;
 			if( ! Directory.Exists( cartellaOnRide ) ) {
 				var msg = "Cartella per modalità OnRide non valida: " + cartellaOnRide;
 				_giornale.Error( msg );
 				throw new LumenException( msg );
 			}
+
+
+			// Devo caricare le preferenze
+			string nomeFileMsk = null;
+			try {
+				UserConfigOnRide userConfigOnRide = Config.UserConfigSerializer.deserialize();
+				if( userConfigOnRide != null ) {
+					this.isMascheraAttiva = userConfigOnRide.isMascheraAttiva;
+					nomeFileMsk = userConfigOnRide.nomeMaschera;
+					_giornale.Info( "Caricate preferenze utente" );
+				}
+				
+			} catch( Exception ee ) {
+				_giornale.Error( "Caricamento preferenze utente", ee );
+			}
+
+
 
 			using( new UnitOfWorkScope() ) {
 
@@ -105,6 +181,8 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			observable.Subscribe( this );
 
 			CaricareItems();
+
+			CaricareMaschera( nomeFileMsk );
 
 			CreaFileSystemWatcher();
 
@@ -128,6 +206,30 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			fileSystemWatcher.Created += new FileSystemEventHandler( OnNuovaFotoArrivata );
 
 			_giornale.Info( "Inizio monitoraggio cartella : " + cartellaOnRide );
+		}
+
+
+		public void CaricareMaschera( string nomeFileMsk ) {
+
+			List<Maschera> maschere = fotoRitoccoSrv.caricaListaMaschere( FiltroMask.MskSingole );
+			Maschera mskTemp = maschere.SingleOrDefault( m => m.nomeFile == nomeFileMsk );
+
+			if( mskTemp != null ) {
+			
+				try {
+					// idrato sia l'immaginetta del provino che quella grande, perché mi servono le dimensioni.
+					gestoreImmagineSrv.idrataMaschera( mskTemp, true );
+
+					// ok la maschera esiste ed è idratata. La assegno
+					this.maschera = mskTemp;
+
+					isMascheraAttiva = (this.maschera != null);
+
+				} catch( Exception ee ) {
+					_giornale.Warn( "Maschera " + nomeFileMsk + "  non caricata", ee );
+				}
+			}
+
 		}
 
 
@@ -267,6 +369,10 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 			paramScarica.eliminaFilesSorgenti = true;
 
+			// Eventuale maschera automatica
+			if( isMascheraAttiva )
+				paramScarica.mascheraAuto = maschera;
+
 
 			// Fase del giorno
 			FaseDelGiorno faseDelGiorno;
@@ -300,7 +406,7 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 		#endregion Metodi
 
-		#region Messaggi
+		#region Eventi
 
 		public void OnNext( ScaricoFotoMsg msgScaricoFotoMsg ) {
 
@@ -408,7 +514,24 @@ namespace Digiphoto.Lumen.OnRide.UI {
 					_giornale.Error( "Aggingo foto alla lista", ee );
 				}
 			}
+		}
 
+		protected override void OnRequestClose() {
+
+			// Faccio la dispose di tutti i viewmodel che ho istanziato io.
+
+			// Devo salvare le preferenze
+			try {
+				UserConfigOnRide pref = new UserConfigOnRide();
+				pref.isMascheraAttiva = this.isMascheraAttiva;
+				pref.nomeMaschera = maschera == null ? null : maschera.nomeFile;
+				Config.UserConfigSerializer.serializeToFile( pref );
+			} catch( Exception ee ) {
+				_giornale.Error( "Salvataggio preferenze", ee );
+			}
+
+
+			base.OnRequestClose();
 		}
 
 		#endregion Messaggi
