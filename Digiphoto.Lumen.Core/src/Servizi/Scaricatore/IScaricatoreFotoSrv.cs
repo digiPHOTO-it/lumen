@@ -29,6 +29,11 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		public FaseDelGiorno? faseDelGiorno  { get; set; }
 		public bool ricercaBarCode { get; set; }
 
+		/// <summary>
+		///		Eventuale maschera da applicare durante lo scarico. Serve per OnRide
+		/// </summary>
+		public Maschera mascheraAuto { get; set; }
+
 		public override string ToString() {
 			
 			StringBuilder sb = new StringBuilder( "Cartella = " ).Append( cartellaSorgente );

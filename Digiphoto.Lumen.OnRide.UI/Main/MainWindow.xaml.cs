@@ -1,7 +1,9 @@
 ﻿using Digiphoto.Lumen.OnRide.UI.Model;
 using Digiphoto.Lumen.UI.Mvvm;
 using Digiphoto.Lumen.UI.Util;
+using Digiphoto.Lumen.Util;
 using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -127,6 +129,27 @@ namespace Digiphoto.Lumen.OnRide.UI {
 					viewModel.fotoItemsCW.MoveCurrentTo( item );
 				}
 
+			}
+
+		}
+
+		private void cambiareMascheraButton_Click( object sender, RoutedEventArgs e ) {
+
+			// Create OpenFileDialog
+			Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+
+			// Set filter for file extension and default file extension
+			dlg.DefaultExt = ".png";
+			dlg.Filter = "Portable Network Graphics (.png)|*.png";
+			dlg.InitialDirectory = PathUtil.getCartellaMaschera( Lumen.Model.FiltroMask.MskSingole );
+
+			// Display OpenFileDialog by calling ShowDialog method
+			Nullable<bool> result = dlg.ShowDialog();
+
+			// Get the selected file name and display in a TextBox
+			if( result == true ) {
+				FileInfo fi = new FileInfo( dlg.FileName );
+				viewModel.CaricareMaschera( fi.Name );		// solo nome, senza path
 			}
 
 		}

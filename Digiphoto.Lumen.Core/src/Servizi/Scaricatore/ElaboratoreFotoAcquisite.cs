@@ -103,7 +103,20 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 						int proxNum = 1 + contaAggiunteDb + ultimoNumFoto;
 
 						Fotografia foto = aggiungiFoto( fileInfo, proxNum, tempoScarico );
+						
+						//
+						// --- eventuale maschera automatica
+						if( _paramScarica.mascheraAuto  != null ) {
 
+							// Uso la maschera nella sua dimensione naturale
+							Imaging.Correzioni.Mascheratura mascheraratura = new Imaging.Correzioni.Mascheratura {
+								nome = _paramScarica.mascheraAuto.nomeFile,
+								width = _paramScarica.mascheraAuto.imgOriginale.ww,
+								height = _paramScarica.mascheraAuto.imgOriginale.hh
+							};
+
+							fotoRitoccoSrv.addCorrezione( foto, mascheraratura, false );
+						}
 
 						// Mark the transaction as complete.
 						transaction.Complete();

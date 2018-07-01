@@ -8,11 +8,11 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle( "Digiphoto.Lumen.OnRideUI" )]
-[assembly: AssemblyDescription( "" )]
+[assembly: AssemblyDescription( "Componenti comuni UI wpf mvvm" )]
 [assembly: AssemblyConfiguration( "" )]
-[assembly: AssemblyCompany( "" )]
+[assembly: AssemblyCompany( "digiPHOTO.it" )]
 [assembly: AssemblyProduct( "Digiphoto.Lumen.OnRideUI" )]
-[assembly: AssemblyCopyright( "Copyright ©  2018" )]
+[assembly: AssemblyCopyright( "Copyright © digiPHOTO 2014-2018" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
@@ -52,4 +52,4 @@ using System.Windows;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion( "1.0.0.0" )]
-[assembly: AssemblyFileVersion( "1.0.0.0" )]
+[assembly: AssemblyFileVersion( "2.2.0.*" )]
