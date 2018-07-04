@@ -28,8 +28,10 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.Converters
 
             if (value.GetType() == typeof(FotografiaDto))
             {
+				/*
                 SelfServiceClient ssClient = new SelfServiceClient();
                 ssClient.Open();
+				*/
 
                 FotografiaDto fotografia = (FotografiaDto)value;
 
