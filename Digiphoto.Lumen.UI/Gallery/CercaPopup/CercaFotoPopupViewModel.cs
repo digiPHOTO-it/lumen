@@ -27,6 +27,12 @@ namespace Digiphoto.Lumen.UI.Gallery {
 		RicercaDidascaliaConIntorno
 	}
 
+	public enum FiltroDidascalia {
+
+			SoloPiene,
+			SoloVuote
+	}
+
 	public class CercaFotoPopupViewModel : ViewModelBase {
 
 		#region Costruttori
@@ -90,6 +96,11 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 		public bool confermata { get; set; }
 
+		public Nullable<FiltroDidascalia> filtroDidascalia {
+			set;
+			get;
+		}
+
 		#endregion Proprietà
 
 		#region Metodi
@@ -103,7 +114,11 @@ namespace Digiphoto.Lumen.UI.Gallery {
 		void confermare() {
 			confermata = true;
 		}
-		
+
+		void setFiltroDidascalia( string quale ) {
+			this.filtroDidascalia = (FiltroDidascalia) Enum.Parse( typeof( FiltroDidascalia ), quale );
+		}
+
 		#endregion Metodi
 
 		#region Comandi
@@ -120,6 +135,20 @@ namespace Digiphoto.Lumen.UI.Gallery {
 				return _confermareCommand;
 			}
 		}
+
+		private RelayCommand _setFiltroDidascaliaCommand;
+		public ICommand setFiltroDidascaliaCommand {
+			get {
+				if( _setFiltroDidascaliaCommand == null ) {
+					_setFiltroDidascaliaCommand = new RelayCommand( quale => setFiltroDidascalia( (string)quale ),
+					                                                quale => true );
+				}
+				return _setFiltroDidascaliaCommand;
+			}
+		}
+
+
+		
 
 		#endregion Comandi
 

@@ -333,7 +333,7 @@
 						<TextBox x:Name="didascaliaTextBox" CharacterCasing="Upper" 
 								 Margin="0,0,0,0"
 								 Text="{Binding paramCercaFoto.didascalia, Mode=TwoWay}" MinWidth="80" FontSize="11"
-								 ToolTip="Indicare la didascalia, oppure il codice a barre&#x0a;Valori speciali: &lt;ISNULL&gt; oppure &lt;ISNOTNULL&gt;&#x0a;Doppio click o F6 per ricerca avanzata" >
+								 ToolTip="Indicare la didascalia, oppure il codice a barre&#x0a;Valori speciali: (VUOTA) oppure (PIENA)&#x0a;Doppio click o F6 per ricerca avanzata" >
 							<TextBox.InputBindings>
 								<MouseBinding Gesture="LeftDoubleClick" Command="{Binding aprireCercaFotoPopupCommand}" CommandParameter="{x:Static local:ModoRicercaPop.RicercaDidascaliaConIntorno}" />
 							</TextBox.InputBindings>
