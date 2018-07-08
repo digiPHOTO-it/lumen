@@ -289,10 +289,10 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			// ----- Didascalia (le didascalie le memorizziamo solo in maiuscolo)
 			if( !String.IsNullOrWhiteSpace( param.didascalia ) && param.didascalia != "%" ) {
 
-				if( "<IsNull>".Equals( param.didascalia, StringComparison.CurrentCultureIgnoreCase ) ) {
+				if( "(VUOTA)".Equals( param.didascalia, StringComparison.CurrentCultureIgnoreCase ) ) {
 					// Caso particolare : voglio solo i nulli.
 					sql.Append( "AND f.didascalia is null " );
-				} else if( "<IsNotNull>".Equals( param.didascalia, StringComparison.CurrentCultureIgnoreCase ) ) {
+				} else if( "(PIENA)".Equals( param.didascalia, StringComparison.CurrentCultureIgnoreCase ) ) {
 					// Caso particolare : voglio solo i NON nulli.
 					sql.Append( "AND f.didascalia is not null " );
 				} else {
@@ -338,18 +338,25 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 			StringBuilder sql = new StringBuilder();
 
+
+			// Query normale
+
 			// ----- Ordinamento
 			if( param.ordinamento != null ) {
-				sql.Append( "ORDER BY f.dataOraAcquisizione " );
-				if( param.ordinamento == Ordinamento.Desc )
-					sql.Append( " DESC " );
-				sql.Append( ", f.numero " );
-				if( param.ordinamento == Ordinamento.Desc )
-					sql.Append( " DESC " );
+				sql.Append( "ORDER BY " );
+
+				sql.Append( "f.numero " );
+				sql.Append( param.ordinamento );
+				sql.Append( ", " );
+
+				sql.Append( "f.dataOraAcquisizione " );
+				sql.Append( param.ordinamento );
+
 				// forse non serve. provo a far risparmiare tempo
 				sql.Append( ", f.id " );
-//				sql.Append( SEPAR );
 			}
+
+
 
 			sql.Append( " " );
 

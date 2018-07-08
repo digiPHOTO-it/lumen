@@ -2662,9 +2662,9 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 						// Il barcode è un ean8 quindi formatto il numero da 8 con zeri davanti
 						paramCercaFoto.didascalia = String.Format( "{0:00000000}", cercaFotoPopupViewModel.numeroFotogramma );
-                        paramCercaFoto.idratareImmagini = false;
+						paramCercaFoto.idratareImmagini = false;
 
-                        fotoExplorerSrv.cercaFoto( paramCercaFoto );
+						fotoExplorerSrv.cercaFoto( paramCercaFoto );
 
 						if( fotoExplorerSrv.fotografie.Count > 0 ) {
 							// ora posso cascare nel caso della ricerca per numero, già implementata sotto.
@@ -2683,9 +2683,18 @@ namespace Digiphoto.Lumen.UI.Gallery {
 						paramCercaFoto.numeriFotogrammi = String.Format( "*{0}*", numeroFotogramma );
 						eseguireRicerca( RicercaFlags.NuovaRicerca );
 
-//						OnPropertyChanged( "paramCercaFoto" );
+						//						OnPropertyChanged( "paramCercaFoto" );
 						OnPropertyChanged( "stringaNumeriFotogrammi" );
 					}
+				}
+			} else {
+
+				if( cercaFotoPopupViewModel.filtroDidascalia != null ) {
+					if( cercaFotoPopupViewModel.filtroDidascalia == FiltroDidascalia.SoloPiene )
+						paramCercaFoto.didascalia = "(PIENA)";
+					if( cercaFotoPopupViewModel.filtroDidascalia == FiltroDidascalia.SoloVuote )
+						paramCercaFoto.didascalia = "(VUOTA)";
+					OnPropertyChanged( "paramCercaFoto" );
 				}
 			}
 		}
