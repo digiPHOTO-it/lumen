@@ -345,11 +345,12 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			if( param.ordinamento != null ) {
 				sql.Append( "ORDER BY " );
 
-				sql.Append( "f.numero " );
+				sql.Append( "f.dataOraAcquisizione " );
 				sql.Append( param.ordinamento );
+
 				sql.Append( ", " );
 
-				sql.Append( "f.dataOraAcquisizione " );
+				sql.Append( "f.numero " );
 				sql.Append( param.ordinamento );
 
 				// forse non serve. provo a far risparmiare tempo
@@ -415,8 +416,9 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 			List<object> sqlParam = new List<object>();
 			sqlParam.Add( param.numeroConIntorno );
+			sqlParam.Add( param.giornataIniz ); // la fine è sempre uguale all'inizio. ne basta uno solo di parametro.
 
-			string sql = "Select count(*) from fotografie f where f.numero = {0}";
+			string sql = "Select count(*) from fotografie f where f.numero = {0} and giornata = {1}";
 
 			var query = objectContext.Database.SqlQuery<int>( sql, sqlParam.ToArray() );
 
@@ -431,11 +433,12 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			// Ora devo scoprire a quale pagina si trova la foto interessata. Probabilmente è nel mezzo
 			// parto dal mezzo con una ricerca dicotomica
 
-			sql = "Select count(*) from fotografie f where f.numero between {0} and {1}";
+			sql = "Select count(*) from fotografie f where f.numero between {0} and {1} and giornata = {2}";
 
 			sqlParam = new List<object>();
 			sqlParam.Add( dalNum.ToString() );
 			sqlParam.Add( alNum.ToString() );
+			sqlParam.Add( param.giornataIniz );
 
 			query = objectContext.Database.SqlQuery<int>( sql, sqlParam.ToArray() );
 
@@ -472,6 +475,8 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			sql.Append( SEPAR );
 			if( sqlParam.Count > 0 )
 				sql.Append( "\t\tand f.numero between {0} and {1}" );
+			sql.Append( SEPAR );
+			sql.Append( "\t\tand f.giornata = {2}" );
 			sql.Append( SEPAR );
 
 			string orderBy = creaQuerySQLOrderBy( param );

@@ -2645,6 +2645,8 @@ namespace Digiphoto.Lumen.UI.Gallery {
 				using( new UnitOfWorkScope() ) {
 
 					int numeroFotogramma = cercaFotoPopupViewModel.numeroFotogramma;
+					Nullable<DateTime> giornata = null;
+					
 
 					if( cercaFotoPopupViewModel.modoRicercaPop == ModoRicercaPop.PosizionaPaginaDaNumero ) {
 
@@ -2656,19 +2658,23 @@ namespace Digiphoto.Lumen.UI.Gallery {
 					bool ricercareNumConIntorno = (cercaFotoPopupViewModel.modoRicercaPop == ModoRicercaPop.RicercaNumeroConIntorno);
 
 					if( cercaFotoPopupViewModel.modoRicercaPop == ModoRicercaPop.RicercaDidascaliaConIntorno ) {
-						// Cerco la prima foto con quella diascalia
-						azzeraParamRicerca();
 
+						// Cerco la prima foto con quella diascalia per scoprire la giornata
+						azzeraParamRicerca();
 
 						// Il barcode è un ean8 quindi formatto il numero da 8 con zeri davanti
 						paramCercaFoto.didascalia = String.Format( "{0:00000000}", cercaFotoPopupViewModel.numeroFotogramma );
 						paramCercaFoto.idratareImmagini = false;
+						paramCercaFoto.paginazione.take = 1;
+						paramCercaFoto.ordinamento = Ordinamento.Desc; // voglio per prima la foto più recente.
 
 						fotoExplorerSrv.cercaFoto( paramCercaFoto );
 
 						if( fotoExplorerSrv.fotografie.Count > 0 ) {
 							// ora posso cascare nel caso della ricerca per numero, già implementata sotto.
 							numeroFotogramma = fotoExplorerSrv.fotografie[0].numero;
+							// memorizzo la giornata perché la ricerca dicotomica andrà solo per quel giorno.
+							giornata = fotoExplorerSrv.fotografie[0].giornata;
 							ricercareNumConIntorno = true;
 						} else {
 							System.Media.SystemSounds.Beep.Play();
@@ -2678,9 +2684,31 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 					if( ricercareNumConIntorno ) {
 
-						// Nuova ricerca con intorno
+						// Cerco la prima foto con quella diascalia per scoprire la giornata
+	
+
+						if( giornata == null ) {
+
+							// Cerco la foto con il numero perché devo ricavare la giornata
+							azzeraParamRicerca();
+							paramCercaFoto.numeriFotogrammi = numeroFotogramma.ToString();
+							paramCercaFoto.idratareImmagini = false;
+							paramCercaFoto.paginazione.take = 1;
+							paramCercaFoto.ordinamento = Ordinamento.Desc; // voglio per prima la foto più recente.
+
+							fotoExplorerSrv.cercaFoto( paramCercaFoto );
+
+							if( fotoExplorerSrv.fotografie.Count > 0 ) {
+								// memorizzo la giornata perché la ricerca dicotomica andrà solo per quel giorno.
+								giornata = fotoExplorerSrv.fotografie[0].giornata;
+							} else
+								throw new LumenException( "ricerca numerica fallita. errore interno" );
+						}
+
 						azzeraParamRicerca();
 						paramCercaFoto.numeriFotogrammi = String.Format( "*{0}*", numeroFotogramma );
+						paramCercaFoto.giornataIniz = giornata;
+						paramCercaFoto.giornataFine = giornata;
 						eseguireRicerca( RicercaFlags.NuovaRicerca );
 
 						//						OnPropertyChanged( "paramCercaFoto" );
