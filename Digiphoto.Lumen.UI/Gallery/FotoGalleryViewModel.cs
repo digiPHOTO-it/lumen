@@ -2711,7 +2711,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 						paramCercaFoto.giornataFine = giornata;
 						eseguireRicerca( RicercaFlags.NuovaRicerca );
 
-						//						OnPropertyChanged( "paramCercaFoto" );
+						OnPropertyChanged( "paramCercaFoto" );
 						OnPropertyChanged( "stringaNumeriFotogrammi" );
 					}
 				}
