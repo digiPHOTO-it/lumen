@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName       "Lumen"
-#define MyAppVersion    "2.2-20180715_1"
+#define MyAppVersion    "2.2-20180715_2"
 #define MyAppPublisher  "digiPHOTO.it"
 #define MyAppURL        "http://www.digiphoto.it/Lumen"
 #define MyAppExeName    "Digiphoto.Lumen.UI.exe"
@@ -33,6 +33,7 @@ OutputDir=C:\rilasci\Lumen
 OutputBaseFilename=setup-{#MyAppName}-{#MyAppVersion}
 Compression=lzma
 SolidCompression=yes
+UsePreviousAppDir=no
 
 
 [Languages]
