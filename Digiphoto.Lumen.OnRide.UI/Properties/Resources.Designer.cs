@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Digiphoto.Lumen.OnRideUI.Properties {
+namespace Digiphoto.Lumen.OnRide.UI.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Digiphoto.Lumen.OnRideUI.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Digiphoto.Lumen.OnRideUI.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Digiphoto.Lumen.OnRide.UI.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

@@ -771,9 +771,7 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 				return;
 
 
-
-			_giornale.Debug( "Sono pronto per vendere il carrello. Tot a pagare = " + venditoreSrv.carrello.totaleAPagare );
-
+			_giornale.Debug( "Sono pronto per vendere il carrello" );
 
 
 			string msgErrore = venditoreSrv.vendereCarrello();
@@ -818,7 +816,7 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 					LumenApplication.Instance.bus.Publish( msg );
 				}
 			} else {
-				_giornale.Warn( "carrello non è stato salvato correttamente: " + msgErrore );
+				_giornale.Error( "carrello non è stato salvato correttamente: " + msgErrore );
 				dialogProvider.ShowError( "Attenzione: Il carrello non è stato salvato correttamente\r\n" + msgErrore, "ERRORE", null );
 			}
 

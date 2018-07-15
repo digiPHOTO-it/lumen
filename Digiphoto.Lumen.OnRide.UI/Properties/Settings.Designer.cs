@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Digiphoto.Lumen.OnRideUI.Properties {
+namespace Digiphoto.Lumen.OnRide.UI.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
