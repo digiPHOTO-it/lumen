@@ -8,7 +8,7 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle( "Digiphoto.Lumen.OnRideUI" )]
-[assembly: AssemblyDescription( "Componenti comuni UI wpf mvvm" )]
+[assembly: AssemblyDescription( "UI per operatore OnRide associazione codici a barre" )]
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "digiPHOTO.it" )]
 [assembly: AssemblyProduct( "Digiphoto.Lumen.OnRideUI" )]
