@@ -20,6 +20,9 @@ namespace Digiphoto.Lumen.SelfService {
 		[OperationContract]
 		List<CarrelloDto> getListaCarrelli();
 
+		[OperationContract]
+		CarrelloDto getCarrello( Guid carrelloId );
+
 		/// <summary>
 		/// Ricava la lista delle foto contenute nel carrello indicato nel parametro
 		/// </summary>

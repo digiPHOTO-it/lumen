@@ -36,7 +36,7 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 
 
 		public CarrelloViewModel() {
-			paramCercaCarrello = new ParamCercaCarrello();
+			paramCercaCarrello = new ParamCercaCarrello( true );
 
 			if( IsInDesignMode ) {
 			} else {
@@ -1243,7 +1243,7 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 
 
 		private void azzeraParamRicerca() {
-			paramCercaCarrello = new ParamCercaCarrello();
+			paramCercaCarrello = new ParamCercaCarrello( true );
 			IsVendutoChecked = false;
 		}
 

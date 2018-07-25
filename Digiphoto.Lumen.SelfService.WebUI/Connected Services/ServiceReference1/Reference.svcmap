@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="0a845156-50e9-4bc3-a95d-40be1e10149c" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="net.tcp://localhost:8523/Digiphoto.Lumen.SelfService/SelfService/mex" Protocol="mex" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="3b6635da-1855-48c6-9dec-4dafd3f63514" SourceId="1" SourceUrl="net.tcp://localhost:8523/Digiphoto.Lumen.SelfService/SelfService/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="3eabb1dd-dec3-4ba7-bf76-941fb6e57823" SourceId="1" SourceUrl="net.tcp://localhost:8523/Digiphoto.Lumen.SelfService/SelfService/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="1fe8e6f7-1e61-4882-b9f8-182ba49b780a" SourceId="1" SourceUrl="net.tcp://localhost:8523/Digiphoto.Lumen.SelfService/SelfService/mex" />
+    <MetadataFile FileName="Digiphoto.Lumen.SelfService.Carrelli.xsd" MetadataType="Schema" ID="176494b2-fa96-4444-91ea-c142f851a289" SourceId="1" SourceUrl="net.tcp://localhost:8523/Digiphoto.Lumen.SelfService/SelfService/mex" />
+    <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="29c89b8a-4e14-4943-bfac-91b7734d2647" SourceId="1" SourceUrl="net.tcp://localhost:8523/Digiphoto.Lumen.SelfService/SelfService/mex" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>
