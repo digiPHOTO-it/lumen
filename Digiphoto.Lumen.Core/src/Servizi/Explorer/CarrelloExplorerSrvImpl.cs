@@ -28,8 +28,7 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			private set;
 		}
 
-		public void setCarrelloCorrente( Guid id ) {
-
+		public void setCarrelloCorrente( Guid id ) {			
 			carrelloCorrente = carrelli.Single( c => c.id == id );
 		}
 
@@ -47,9 +46,13 @@ namespace Digiphoto.Lumen.Servizi.Explorer {
 			// Per prima cosa azzero il carrello corrente
 			this.carrelli = null;
 
+			_giornale.Debug( "ricerco il carrello: " + param );
+
 			using( IRicercatoreSrv ricercaSrv = LumenApplication.Instance.creaServizio<IRicercatoreSrv>() ) {
 				ricercaSrv.start();
 				carrelli = ricercaSrv.cerca( param );
+
+				_giornale.Debug( "trovati: " + (carrelli == null ? -1 : carrelli.Count) );
 			}
 		}
 

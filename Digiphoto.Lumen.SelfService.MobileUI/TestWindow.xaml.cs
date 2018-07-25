@@ -38,7 +38,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
 		private void Window_Loaded( object sender, RoutedEventArgs e ) {
 
 			// Mi connetto con il servizio SelfService.
-			ssClient = new SelfServiceClient( "myHttpEndPoint" );
+			ssClient = new SelfServiceClient( "myNetTcpEndPoint" );
             ssClient.Open();
 
 		}

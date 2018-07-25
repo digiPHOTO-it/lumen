@@ -1,0 +1,58 @@
+﻿
+@model Digiphoto.Lumen.SelfService.WebUI.Models.Paniere
+
+@{
+	Layout = null;
+
+	int totRighe = Model.listaFotografieDto.Length;
+	int conta = 0;
+
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<title>Carrello Details</title>
+</head>
+<body>
+	<div>
+		<p>Dettaglio carrello</p>
+		<dl class="dl-horizontal">
+			<dt>
+				ID: @Html.DisplayFor( model => model.carrelloDto.id )
+			</dt>
+			<dt>
+				Titolo: @Html.DisplayFor( model => model.carrelloDto.titolo )
+			</dt>
+			<dt>
+				Total righe: @totRighe
+			</dt>
+		</dl>
+	</div>
+
+	<div>
+		<table>
+			<tbody>
+
+				@foreach( var item in Model.listaFotografieDto ) {
+				<tr>
+					<td>
+						@(conta = conta + 1) 
+						)
+					</td>
+					<td>
+						@Html.DisplayFor( qq => item.id )
+					</td>
+					<td>
+						@Html.ActionLink( "Scarica foto", "GetImage", "Home", new { fotografiaId = item.id }, null )
+					</td>
+				</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+
+</body>
+</html>

@@ -724,6 +724,11 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 										 orderby ff.tempo descending
 										 select ff;
 
+
+			// ----- ID : ricerca puntuale per ID
+			if( param.carrelloId != Guid.Empty )
+				query = query.Where( cc => cc.id == param.carrelloId );
+
 			//Filtro solo i carrelli che non sono stati venduti
 			if (param.isVenduto != null)
 			{
@@ -767,6 +772,8 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			// ----- Giornata Fine
 			if (param.giornataFine != null)
 				query = query.Where(ff => ff.giornata <= param.giornataFine);
+
+
 
 			return query;
 		}

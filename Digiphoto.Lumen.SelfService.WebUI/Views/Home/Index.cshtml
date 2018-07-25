@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+	<h1>SelfService Lumen</h1>
+	<img src="@Url.Action( "GetLogo" )" width="200" />
+	<p class="lead">
+		Funzioni a disposizione del cliente finale.
+	</p>
+</div>
+
+<div class="row">
+	<div class="col-md-4">
+		<h2>Download file</h2>
+		<p>
+			Acquista le foto nel punto vendita, e scarica direttamente i file sul tuo dispositio mobile.
+		</p>
+		<p>
+			Inserisci il codice del carrello e quindi clicca il pulsante "Download". Verrà scaricato un pacchetto ZIP conenente
+			le tue foto.
+		</p>
+
+		@using( Html.BeginForm( "Details", "Carrello" ) ) {
+			@Html.TextBox( "id", "369845ba-995a-4dc9-a19d-eb4c77eddc24" )
+			<button type="submit">getCarrello</button>
+		}
+
+
+		<p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+	</div>
+    <div class="col-md-4">
+        <h2>Servi fotografici</h2>
+        <p></p>
+        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Web Hosting</h2>
+        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
+        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+    </div>
+</div>

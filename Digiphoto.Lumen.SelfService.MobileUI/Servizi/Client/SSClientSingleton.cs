@@ -206,7 +206,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.Servizi
 			{
 				connectionRestart();
                 if (isConnectionOK){
-					return ssClient.getListaFotografie(id);
+					result = ssClient.getListaFotografie(id);
 				}
 			}
 			return result;

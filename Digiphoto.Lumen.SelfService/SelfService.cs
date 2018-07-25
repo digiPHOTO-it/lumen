@@ -13,10 +13,17 @@ using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Config;
 using System.Collections.Specialized;
 using Digiphoto.Lumen.Servizi.Io;
+using log4net;
+using System.ServiceModel;
+using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace Digiphoto.Lumen.SelfService {
 
 	public class SelfService : ISelfService {
+
+
+		private static readonly ILog _giornale = LogManager.GetLogger( typeof( SelfService ) );
 
 		public SelfService() {
 
@@ -31,6 +38,34 @@ namespace Digiphoto.Lumen.SelfService {
 
 		}
 
+		public CarrelloDto getCarrello( Guid carrelloId ) {
+
+			CarrelloDto dto = null;
+
+			using( new UnitOfWorkScope() ) {
+
+				// Ricavo il servizio per estrarre i carrelli
+				ICarrelloExplorerSrv srv = LumenApplication.Instance.getServizioAvviato<ICarrelloExplorerSrv>();
+
+				ParamCercaCarrello param = new ParamCercaCarrello {
+					soloSelfService = true,
+					carrelloId = carrelloId
+				};
+
+				srv.cercaCarrelli( param );
+
+				// Creo la lista contenente gli oggetti di trasporto leggeri che ho ricavato dal servizio core.
+
+				if( srv.carrelli != null && srv.carrelli.Count == 1 ) {
+					var carrello = srv.carrelli.ElementAt( 0 );
+					dto = new CarrelloDto();
+					dto.id = carrello.id;
+					dto.titolo = carrello.intestazione;
+				}
+			}
+
+			return dto;
+		}
 
 		public List<CarrelloDto> getListaCarrelli() {
 
@@ -69,27 +104,53 @@ namespace Digiphoto.Lumen.SelfService {
 
 		public List<FotografiaDto> getListaFotografie( Guid carrelloId ) {
 
-			List<FotografiaDto> listaFotografie = new List<FotografiaDto>();
+			_giornale.Debug( "inizio metodo getListaFotografie( " + carrelloId  + " )" );
+
+			List <FotografiaDto> listaFotografie = new List<FotografiaDto>();
 
 			using( new UnitOfWorkScope() ) {
 
+				_giornale.Debug( "apertura unit-ok-work ok" );
+
 				// ricavo il servizio dei carrelli e imposto quello corrente
 				ICarrelloExplorerSrv srv = LumenApplication.Instance.getServizioAvviato<ICarrelloExplorerSrv>();
-				srv.setCarrelloCorrente( carrelloId );
+				_giornale.Debug( "ottenuto servizio ICarrelloExplorerSrv" );
 
-				foreach( RigaCarrello riga in srv.carrelloCorrente.righeCarrello ) {
+				try {
 
-					if( riga.fotografia_id != null ) {
+					// Se non ho il carrello nella cache, provo a caricarlo per ID (soltanto lui)
+					if( srv.carrelli == null || srv.carrelli.Any( c => c.id == carrelloId ) == false )
+						srv.cercaCarrelli( new ParamCercaCarrello { carrelloId = carrelloId, soloSelfService = true } );
 
-						FotografiaDto dto = new FotografiaDto();
-						dto.id = riga.fotografia.id;
-						dto.etichetta = riga.fotografia.etichetta;
-						dto.miPiace = riga.fotografia.miPiace; // TODO aggiungere nuovo flag su Fotografia
+					// Se ancora non l'ho trovato significa che non c'è oppure non è destinato al self service.
+					if( srv.carrelli == null || srv.carrelli.Any( c => c.id == carrelloId ) == false )
+						return listaFotografie;
 
-						listaFotografie.Add( dto );
+					srv.setCarrelloCorrente( carrelloId );
+
+					_giornale.Debug( "settatto carrello corrente: " + carrelloId + " tot. righe = " +  srv.carrelloCorrente.righeCarrello.Count );
+					if( srv.carrelloCorrente != null ) {
+					
+						foreach( RigaCarrello riga in srv.carrelloCorrente.righeCarrello ) {
+
+							if( riga.fotografia_id != null ) {
+
+								FotografiaDto dto = new FotografiaDto();
+								dto.id = riga.fotografia.id;
+								dto.etichetta = riga.fotografia.etichetta;
+								dto.miPiace = riga.fotografia.miPiace; // TODO aggiungere nuovo flag su Fotografia
+
+								listaFotografie.Add( dto );
+							}
+						}
 					}
+				} catch( Exception ee ) {
+					_giornale.Error( ee );
+					throw ee;
 				}
 			}
+
+			_giornale.Debug( "ritorno lista di " + listaFotografie .Count + " + righe" );
 
 			return listaFotografie;
 		}
@@ -249,5 +310,7 @@ namespace Digiphoto.Lumen.SelfService {
 
 			return settings;
 		}
+			
+
 	}
 }

@@ -27,15 +27,21 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 		public DateTime? giornataIniz {	get; set; }
 		public DateTime? giornataFine { get; set; }
+		public Guid carrelloId { get; set; }
+	
+	public bool idratareImmagini { get; set; }
 
-		public bool idratareImmagini { get; set; }
+		public ParamCercaCarrello() : this( false ) {
+		}
 
-		public ParamCercaCarrello() {
-
-			// Istanzio la lista vuota che mi è più comoda
-			fasiDelGiorno = new List<FaseDelGiorno>();
-			idratareImmagini = true;
-			isVenduto = false;
+		public ParamCercaCarrello( bool applicaDefault ) {
+			if( applicaDefault ) {
+				// Istanzio la lista vuota che mi è più comoda
+				fasiDelGiorno = new List<FaseDelGiorno>();
+				idratareImmagini = true;
+				isVenduto = false;
+			}
+			carrelloId = Guid.Empty;  // ricerca puntuale
 		}
 
 		public ParamCercaCarrello ShallowCopy()
