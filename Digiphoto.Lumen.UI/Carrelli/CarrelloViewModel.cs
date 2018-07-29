@@ -410,9 +410,34 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 			}
 		}
 
+		public bool possovisualizzareQRcodeSelfService {
+			get {
+				return carrelloCorrente != null && carrelloCorrente.venduto == true && carrelloCorrente.visibileSelfService == true;
+			}
+		}
+
 		#endregion
 
 		#region Controlli
+
+		public bool possoSalvareCarrello {
+			get {
+
+				if( IsInDesignMode )
+					return true;
+				bool posso = true;
+
+				// Verifico che i dati minimi siano stati indicati
+				if( posso && RiCaFotoStampateCv.IsEmpty && venditoreSrv.sommatoriaFotoDaMasterizzare <= 0 )
+					posso = false;
+
+				// Ce un errore nella masterizzazione 
+				if( posso && IsErroriMasterizzazione )
+					posso = false;
+
+				return posso;
+			}
+		}
 
 		public bool abilitaOperazioniCarrello {
 			get {
@@ -585,7 +610,7 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 				bool posso = true;
 			
 				if( ! IsInDesignMode )
-					posso = (possoEditareCarrello && carrelloCorrente.righeCarrello.Any( r => r.isTipoStampa && r.fotografia.miPiace != true ));
+					posso = (possoEditareCarrello && carrelloCorrente.righeCarrello.Any( r => r.isTipoStampa && r.fotografia != null && r.fotografia.miPiace != true ));
 
 				return posso;
 			}
@@ -982,7 +1007,7 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 			venditoreSrv.ricalcolaTotaleCarrello();
 		}
 
-		private void salvaCarrello() {
+		private void salvareCarrello() {
 			//Verifico se ho un prezzo totaleAPagare(Forfettario) uguale a ZERO in caso notifico l'operatore che sta per regalare il carrello
 			if( verificaChiediConfermaSalvataggioTotaleAPagareZero() == false )
 				return;
@@ -1169,18 +1194,19 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 			Carrello c = carrelloCorrente;
 			//				OrmUtil.forseAttacca<Carrello>( "Carrelli", ref c );
 
-			foreach( RigaCarrello ric in carrelloCorrente.righeCarrello ) {
-				if( 1 == 1 ) {
-					if( (worker.CancellationPending == true) ) {
-						e.Cancel = true;
-						break;
-					} else {
-						Fotografia foto = ric.fotografia;
-						if( foto != null )
-							AiutanteFoto.idrataImmaginiFoto( foto, IdrataTarget.Provino );
+			if( carrelloCorrente != null )
+				foreach( RigaCarrello ric in carrelloCorrente.righeCarrello ) {
+					if( 1 == 1 ) {
+						if( (worker.CancellationPending == true) ) {
+							e.Cancel = true;
+							break;
+						} else {
+							Fotografia foto = ric.fotografia;
+							if( foto != null )
+								AiutanteFoto.idrataImmaginiFoto( foto, IdrataTarget.Provino );
+						}
 					}
 				}
-			}
 			//			}
 
 			// TODO
@@ -1489,6 +1515,20 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 			LumenApplication.Instance.bus.Publish( cambioPaginaMsg );
 		}
 
+		void visualizzareQRcodeSelfService() {
+
+			// Apro la popup lanciando un evento
+			var ea = new OpenPopupRequestEventArgs {
+				requestName = "QRcodeSelfServicePopup"
+			};
+
+			RaisePopupDialogRequest( ea );
+
+			if( ea.mioDialogResult == true ) {
+			}
+
+		}
+
 		#endregion Metodi
 
 		#region Comandi
@@ -1541,8 +1581,8 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 				if (_salvaCarrelloCommand == null)
 				{
 					// Non salvo alla fine perchè già salvo all'interno del metodo
-					_salvaCarrelloCommand = new RelayCommand( param => salvaCarrello(), 
-					                                          param => abilitaOperazioniCarrello, 
+					_salvaCarrelloCommand = new RelayCommand( param => salvareCarrello(), 
+					                                          param => possoSalvareCarrello, 
 															  false);
 				}
 				return _salvaCarrelloCommand;
@@ -1735,6 +1775,18 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 				return _caricareInGalleryCommand;
 			}
 		}
+
+		private RelayCommand _visualizzareQRcodeSelfServiceCommand;
+		public ICommand visualizzareQRcodeSelfServiceCommand {
+			get {
+				if( _visualizzareQRcodeSelfServiceCommand == null ) {
+					_visualizzareQRcodeSelfServiceCommand = new RelayCommand( param => visualizzareQRcodeSelfService(), p => possovisualizzareQRcodeSelfService, false );
+				}
+				return _visualizzareQRcodeSelfServiceCommand;
+			}
+		}
+
+		
 
 		#endregion Comandi
 

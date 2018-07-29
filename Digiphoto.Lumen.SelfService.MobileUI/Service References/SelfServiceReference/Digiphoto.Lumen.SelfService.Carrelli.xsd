@@ -10,6 +10,7 @@
   <xs:complexType name="CarrelloDto">
     <xs:sequence>
       <xs:element minOccurs="0" name="id" type="ser:guid" />
+      <xs:element minOccurs="0" name="isVenduto" type="xs:boolean" />
       <xs:element minOccurs="0" name="titolo" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>

@@ -24,6 +24,12 @@
   <wsdl:message name="ISelfService_getListaCarrelli_OutputMessage">
     <wsdl:part name="parameters" element="tns:getListaCarrelliResponse" />
   </wsdl:message>
+  <wsdl:message name="ISelfService_getCarrello_InputMessage">
+    <wsdl:part name="parameters" element="tns:getCarrello" />
+  </wsdl:message>
+  <wsdl:message name="ISelfService_getCarrello_OutputMessage">
+    <wsdl:part name="parameters" element="tns:getCarrelloResponse" />
+  </wsdl:message>
   <wsdl:message name="ISelfService_getListaFotografie_InputMessage">
     <wsdl:part name="parameters" element="tns:getListaFotografie" />
   </wsdl:message>
@@ -77,6 +83,10 @@
       <wsdl:input wsaw:Action="http://tempuri.org/ISelfService/getListaCarrelli" message="tns:ISelfService_getListaCarrelli_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ISelfService/getListaCarrelliResponse" message="tns:ISelfService_getListaCarrelli_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="getCarrello">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISelfService/getCarrello" message="tns:ISelfService_getCarrello_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISelfService/getCarrelloResponse" message="tns:ISelfService_getCarrello_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="getListaFotografie">
       <wsdl:input wsaw:Action="http://tempuri.org/ISelfService/getListaFotografie" message="tns:ISelfService_getListaFotografie_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ISelfService/getListaFotografieResponse" message="tns:ISelfService_getListaFotografie_OutputMessage" />
@@ -116,6 +126,15 @@
     <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
     <wsdl:operation name="getListaCarrelli">
       <soap12:operation soapAction="http://tempuri.org/ISelfService/getListaCarrelli" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getCarrello">
+      <soap12:operation soapAction="http://tempuri.org/ISelfService/getCarrello" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -198,9 +217,9 @@
   </wsdl:binding>
   <wsdl:service name="SelfService">
     <wsdl:port name="myNetTcpEndPoint" binding="tns:myNetTcpEndPoint">
-      <soap12:address location="net.tcp://localhost:8523/Digiphoto.Lumen.SelfService/SelfService" />
+      <soap12:address location="net.tcp://localhost:8523/Digiphoto.Lumen.SelfService/SelfService/" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://localhost:8523/Digiphoto.Lumen.SelfService/SelfService</wsa10:Address>
+        <wsa10:Address>net.tcp://localhost:8523/Digiphoto.Lumen.SelfService/SelfService/</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
           <Dns>localhost</Dns>
         </Identity>

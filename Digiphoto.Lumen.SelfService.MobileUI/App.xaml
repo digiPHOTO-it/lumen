@@ -2,10 +2,10 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Digiphoto.Lumen.SelfService.MobileUI"
-			 StartupUri="TestWindow.xaml"
+			 StartupUri="Main\SelfMainWindow.xaml"
 			 >
              <!--
-             StartupUri="Main\SelfMainWindow.xaml"
+				 StartupUri="TestWindow.xaml"
 			 -->
 
     <Application.Resources>

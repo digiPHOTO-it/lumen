@@ -15,24 +15,38 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="getListaFotografie">
+  <xs:element name="getCarrello">
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="carrelloId" type="q2:guid" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="getCarrelloResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Digiphoto.Lumen.SelfService.Carrelli" minOccurs="0" name="getCarrelloResult" nillable="true" type="q3:CarrelloDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getListaFotografie">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="carrelloId" type="q4:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="getListaFotografieResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Digiphoto.Lumen.SelfService.Carrelli" minOccurs="0" name="getListaFotografieResult" nillable="true" type="q3:ArrayOfFotografiaDto" />
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/Digiphoto.Lumen.SelfService.Carrelli" minOccurs="0" name="getListaFotografieResult" nillable="true" type="q5:ArrayOfFotografiaDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="getImage">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="fotografiaId" type="q4:guid" />
+        <xs:element xmlns:q6="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="fotografiaId" type="q6:guid" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -46,7 +60,7 @@
   <xs:element name="getImageProvino">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q5="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="fotografiaId" type="q5:guid" />
+        <xs:element xmlns:q7="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="fotografiaId" type="q7:guid" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -72,7 +86,7 @@
   <xs:element name="setMiPiace">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q6="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="fotografiaId" type="q6:guid" />
+        <xs:element xmlns:q8="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="fotografiaId" type="q8:guid" />
         <xs:element minOccurs="0" name="miPiace" type="xs:boolean" />
       </xs:sequence>
     </xs:complexType>
@@ -90,7 +104,7 @@
   <xs:element name="getListaFotografiResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/Digiphoto.Lumen.SelfService.Carrelli" minOccurs="0" name="getListaFotografiResult" nillable="true" type="q7:ArrayOfFotografoDto" />
+        <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/Digiphoto.Lumen.SelfService.Carrelli" minOccurs="0" name="getListaFotografiResult" nillable="true" type="q9:ArrayOfFotografoDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -106,7 +120,7 @@
   <xs:element name="getListaFotografieDelFotografoResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/Digiphoto.Lumen.SelfService.Carrelli" minOccurs="0" name="getListaFotografieDelFotografoResult" nillable="true" type="q8:ArrayOfFotografiaDto" />
+        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/Digiphoto.Lumen.SelfService.Carrelli" minOccurs="0" name="getListaFotografieDelFotografoResult" nillable="true" type="q10:ArrayOfFotografiaDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -118,7 +132,7 @@
   <xs:element name="getSettingsResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q9="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="getSettingsResult" nillable="true" type="q9:ArrayOfKeyValueOfstringstring" />
+        <xs:element xmlns:q11="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="getSettingsResult" nillable="true" type="q11:ArrayOfKeyValueOfstringstring" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

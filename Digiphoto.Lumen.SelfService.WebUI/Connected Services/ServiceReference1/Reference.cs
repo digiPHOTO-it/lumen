@@ -26,6 +26,9 @@ namespace Digiphoto.Lumen.SelfService.WebUI.ServiceReference1 {
         private System.Guid idField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool isVendutoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string titoloField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
@@ -47,6 +50,19 @@ namespace Digiphoto.Lumen.SelfService.WebUI.ServiceReference1 {
                 if ((this.idField.Equals(value) != true)) {
                     this.idField = value;
                     this.RaisePropertyChanged("id");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool isVenduto {
+            get {
+                return this.isVendutoField;
+            }
+            set {
+                if ((this.isVendutoField.Equals(value) != true)) {
+                    this.isVendutoField = value;
+                    this.RaisePropertyChanged("isVenduto");
                 }
             }
         }

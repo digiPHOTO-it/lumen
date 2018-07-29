@@ -6,7 +6,6 @@
 
 	int totRighe = Model.listaFotografieDto.Length;
 	int conta = 0;
-
 }
 
 <!DOCTYPE html>
@@ -37,21 +36,29 @@
 			<tbody>
 
 				@foreach( var item in Model.listaFotografieDto ) {
-				<tr>
-					<td>
-						@(conta = conta + 1) 
-						)
-					</td>
-					<td>
-						@Html.DisplayFor( qq => item.id )
-					</td>
-					<td>
-						@Html.ActionLink( "Scarica foto", "GetImage", "Home", new { fotografiaId = item.id }, null )
-					</td>
-				</tr>
+					<tr>
+						<td>
+							@(conta = conta + 1)
+							)
+						</td>
+						<td>
+							@Html.DisplayFor( qq => item.id )
+						</td>
+						<td>
+							@Html.ActionLink( "Scarica foto", "GetImage", "Carrello", new { fotografiaId = item.id }, null )
+						</td>
+					</tr>
 				}
 			</tbody>
 		</table>
+	</div>
+
+	<div>
+		@Html.ActionLink( "Scarica ZIP", "ScaricareZip", "Carrello", new { id = Model.carrelloDto.id }, null )
+	</div>
+
+	<div>
+		@Html.ActionLink( "Back to Index", "Index", "Home" )
 	</div>
 
 </body>
