@@ -2,14 +2,16 @@
 using Digiphoto.Lumen.SelfService.WebUI.ServiceReference1;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Digiphoto.Lumen.SelfService.WebUI.Controllers
 {
     public class CarrelloController : Controller
     {
+		#region Proprietà
 
 		private SelfServiceClient _selfServiceClient;
 		public SelfServiceClient selfServiceClient {
@@ -23,104 +25,98 @@ namespace Digiphoto.Lumen.SelfService.WebUI.Controllers
 			}
 		}
 
+		#endregion Proprietà
 
 
-		// GET: Carrello
-		public ActionResult Index()
-        {
-            return View();
-        }
+		/// <summary>
+		/// Scarico tutte le foto con uno zip.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		/// 
+		// GET: Carrello/ScaricareZip/5
+		[HttpGet]
+		public ActionResult ScaricareZip( Guid id ) {
 
-		public ActionResult DownloadFoto( Guid id ) {
+			Paniere paniere = (Paniere) Session["paniere"];
 
-			// selfServiceClient.downloadZipLongOperation( id, null );
+			if( paniere.carrelloDto.id != id )
+				throw new InvalidOperationException( "sessione non valida" );
 
-			return View();
+			List<FileInfo> filesDaZippare = new List<FileInfo>();
+
+			foreach( FotografiaDto f in paniere.listaFotografieDto ) {
+
+				byte [] bytes = selfServiceClient.getImage( f.id );
+
+				String fullName = Path.Combine( System.IO.Path.GetTempPath(), f.id + ".jpeg" );
+
+				if( ! filesDaZippare.Any( i => i.FullName == fullName ) ) {
+					System.IO.File.WriteAllBytes( fullName, bytes );
+					filesDaZippare.Add( new FileInfo( fullName ) );
+				}
+			}
+
+			if( filesDaZippare.Count == 0 ) {
+				return View( "Error", "Non trovata nessuna immagine da zippare" );
+			}
+
+			// Creo lo zip
+			String zipName = Path.Combine( Path.GetTempPath(), id + ".zip" );
+			if( System.IO.File.Exists( zipName ) )
+				System.IO.File.Delete( zipName );
+			using( ZipArchive zip = ZipFile.Open( zipName, ZipArchiveMode.Create ) ) {
+				foreach( FileInfo finfo in filesDaZippare )
+					zip.CreateEntryFromFile( finfo.FullName, finfo.Name );
+			}
+
+			FileContentResult result = new FileContentResult( System.IO.File.ReadAllBytes( zipName ), "application/zip" );
+			result.FileDownloadName = id + ".zip";
+			return result;
 		}
+
 
 		// GET: Carrello/Details/5
 		public ActionResult Details( Guid id )
         {
-			Paniere paniere = new Paniere();
+			CarrelloDto dto = selfServiceClient.getCarrello( id );
 
-// 			paniere.carrelloDto = selfServiceClient.getCarrello( id );
-			
-			paniere.listaFotografieDto = selfServiceClient.getListaFotografie( id );
+			if( dto == null || dto.isVenduto == false ) {
+				string msg = "Carrello non trovato, oppure NON ancora venduto, oppure non visibile per il SelfService. ID = " + id;
+				return View( "Error", model:msg );   // questa sintassi serve a risolvere un problema: esiste un overload con 2 stringhe: https://stackoverflow.com/questions/18273416/the-view-or-its-master-was-not-found-or-no-view-engine-supports-the-searched-loc#31245642
+			}
 
+			FotografiaDto [] lista = selfServiceClient.getListaFotografie( id );
 
-			int contaRighe = paniere.listaFotografieDto.Length;
-			paniere.fileinfoFoto = new System.IO.FileInfo[contaRighe];
-
+			// creo il modello per visualizzare la view
+			var paniere = new Paniere {
+				carrelloDto = dto,
+				listaFotografieDto = lista,
+				fileinfoFoto = new System.IO.FileInfo[lista.Length]
+			};
 				
 			Session["paniere"] = paniere;
 
 			return View( "Details", paniere );
         }
 
-        // GET: Carrello/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
+		[HttpGet]
+		public ActionResult GetImage( Guid fotografiaId ) {
 
-        // POST: Carrello/Create
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
+			using( SelfServiceClient selfServiceClient = new SelfServiceClient() ) {
 
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
+				selfServiceClient.Open();
 
-        // GET: Carrello/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
+				byte[] imageFoto = selfServiceClient.getImage( fotografiaId );
 
-        // POST: Carrello/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
+				selfServiceClient.Close();
 
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
+				FileContentResult result = new FileContentResult( imageFoto, "image/jpg" );
+				result.FileDownloadName = "mia-foto.jpg";
+				return result;
 
-        // GET: Carrello/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Carrello/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-    }
+				// return File( imageFoto, "image/png", "foto.jpg" );
+			}
+		}
+	}
 }

@@ -126,9 +126,9 @@
                 <Label Content="VENDUTO" VerticalContentAlignment="Center"  HorizontalContentAlignment="Center" FontSize="20" Background="Crimson" Height="50" Margin="2,0,0,0"
 					   Visibility="{Binding Path=carrelloCorrente.venduto, Converter={StaticResource boolVisibilityConverter}}" 
 					   />
+				<Button Content="QRcode Self" ToolTip="Visualizza QRcode per scaricare da SelfService" Name="aprireQRcodePopup" Command="{Binding visualizzareQRcodeSelfServiceCommand}" />
 
-
-            </StackPanel>
+			</StackPanel>
 
         </StackPanel>
 

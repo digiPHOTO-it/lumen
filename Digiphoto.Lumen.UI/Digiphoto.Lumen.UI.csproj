@@ -144,6 +144,9 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Gma.QrCodeNet.Encoding, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\QrCode.Net.0.4.0.0\lib\net45\Gma.QrCodeNet.Encoding.dll</HintPath>
+    </Reference>
     <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.5\lib\net451\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
       <Private>True</Private>
@@ -228,6 +231,9 @@
     <Compile Include="Carrelli\Masterizzare\ScegliMasterizzaTargetViewModel.cs" />
     <Compile Include="Carrelli\Masterizzare\ScegliMasterizzaTargetWiew.xaml.cs">
       <DependentUpon>ScegliMasterizzaTargetWiew.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Carrelli\SelfService\QRcodeSelfService.xaml.cs">
+      <DependentUpon>QRcodeSelfService.xaml</DependentUpon>
     </Compile>
     <Compile Include="ComNumFoto\CompNumFotoView.xaml.cs">
       <DependentUpon>CompNumFotoView.xaml</DependentUpon>
@@ -415,6 +421,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Carrelli\Masterizzare\ScegliMasterizzaTargetWiew.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Carrelli\SelfService\QRcodeSelfService.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

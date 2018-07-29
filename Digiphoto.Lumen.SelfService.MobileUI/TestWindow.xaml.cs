@@ -126,5 +126,12 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
 			MessageBox.Show( "Impostazione eseguita" );
 		}
 
+		private void buttonGetCarrello_Click( object sender, RoutedEventArgs e ) {
+			var carrelloDto = ssClient.getCarrello( new Guid( textCarrelloId.Text ) );
+			listaCarrelli.Clear();
+			if( carrelloDto != null )
+				listaCarrelli.Add( carrelloDto );
+			MessageBox.Show( "Recuperato " + listaCarrelli.Count + " carrello." );
+		}
 	}
 }

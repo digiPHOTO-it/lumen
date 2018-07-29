@@ -41,24 +41,7 @@ namespace Digiphoto.Lumen.SelfService.WebUI.Controllers {
 				return null;
 		}
 
-		[HttpGet]
-		public ActionResult GetImage( Guid fotografiaId ) {
 
-			using( SelfServiceClient selfServiceClient = new SelfServiceClient() ) {
-
-				selfServiceClient.Open();
-
-				byte [] imageFoto = selfServiceClient.getImage( fotografiaId );
-
-				selfServiceClient.Close();
-
-				FileContentResult result = new FileContentResult( imageFoto, "image/jpg" );
-				result.FileDownloadName = "mia-foto.jpg";
-				return result;
-
-				// return File( imageFoto, "image/png", "foto.jpg" );
-			}
-		}
 
 		public ActionResult Index() {
 

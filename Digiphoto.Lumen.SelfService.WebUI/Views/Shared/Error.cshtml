@@ -1,13 +1,23 @@
-﻿<!DOCTYPE html>
+﻿@model System.String
+
+@{
+	Layout = null;
+}
+
+<!DOCTYPE html>
+
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Error</title>
+	<meta name="viewport" content="width=device-width" />
+	<title>SelfService Error</title>
 </head>
 <body>
-    <hgroup>
-        <h1>Error.</h1>
-        <h2>An error occurred while processing your request.</h2>
-    </hgroup>
+	<div>
+		<h1>Errore</h1>
+		<p>Si è verificato un errore nella tua richiesta !</p>
+		<p>@Html.DisplayFor( Model => Model )</p>
+
+		@Html.ActionLink( "Back to Index", "Index", "Home" )
+	</div>
 </body>
 </html>

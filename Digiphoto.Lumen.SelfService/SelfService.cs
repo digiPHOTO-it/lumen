@@ -61,6 +61,7 @@ namespace Digiphoto.Lumen.SelfService {
 					dto = new CarrelloDto();
 					dto.id = carrello.id;
 					dto.titolo = carrello.intestazione;
+					dto.isVenduto = carrello.venduto;
 				}
 			}
 
@@ -93,6 +94,7 @@ namespace Digiphoto.Lumen.SelfService {
 					CarrelloDto dto = new CarrelloDto();
 					dto.id = carrello.id;
 					dto.titolo = carrello.intestazione;
+					dto.isVenduto = carrello.venduto;
 					listaCarrelli.Add( dto );
 				}
 			}
