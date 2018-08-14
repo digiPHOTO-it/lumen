@@ -170,6 +170,11 @@
 
 							<ToggleButton Content="B/N"   Command="{Binding grayScaleCommand}" IsChecked="{Binding Path=isGrayscaleChecked,Mode=OneWay}"    Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" ToolTip="Bianco/Nero" Margin="0,0,1,0" />
 							<ToggleButton Content="Sepia" Command="{Binding sepiaCommand}"     IsChecked="{Binding Path=isSepiaChecked,Mode=OneWay}"        Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" ToolTip="Effetto invecchiato" Margin="0,0,1,0" />
+							<ToggleButton Command="{Binding oldMovieCommand}"     IsChecked="{Binding Path=isOldMovieChecked,Mode=OneWay}"        Style="{StaticResource mioToggleButtonStyle}" CommandParameter="{Binding Path=IsChecked,RelativeSource={RelativeSource Self}}" ToolTip="Vecchio film" Margin="0,0,1,0" >
+								<ToggleButton.Content>
+									<TextBlock FontSize="9" Text="Old&#x0a;Movie" />
+								</ToggleButton.Content>
+							</ToggleButton>
 							<Button Content="Logo" ToolTip="Attiva disattiva sposta logo" Command="{Binding aggiungereLogoCommand}" Margin="0,0,1,0" />
 							<!--            
 					<Button Name="buttonModificaConPrgEsterno" Content="Gimp" ToolTip="Modifica le foto con un programma esterno" Command="{Binding modificareConEditorEsternoCommand}"  />

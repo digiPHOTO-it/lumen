@@ -459,6 +459,12 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		public bool isOldMovieChecked {
+			get {
+				return (effetti != null && effetti.Exists( e => e is OldMovieEffect ));
+			}
+		}
+		
 		public bool isFlipChecked {
 			get {
 				return (trasformazioni != null && trasformazioni.Children.Count > TFXPOS_FLIP && trasformazioni.Children[TFXPOS_FLIP] is ScaleTransform);
@@ -849,6 +855,17 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			}
 		}
 
+		private RelayCommand _oldMovieCommand;
+		public ICommand oldMovieCommand {
+			get {
+				if( _oldMovieCommand == null ) {
+					_oldMovieCommand = new RelayCommand( param => this.oldMovie( (bool)param ),
+													     param => this.possoApplicareCorrezione );
+				}
+				return _oldMovieCommand;
+			}
+		}
+
 		private RelayCommand _flipCommand;
 		public ICommand flipCommand {
 			get {
@@ -1144,6 +1161,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			if( addRemove ) {
 				sepia( false );  // Eventualmente prima spengo la sepia se esiste
+				oldMovie( false );
 				forseCambioEffettoCorrente( typeof( GrayscaleEffect ) );
 			} else
 				removeEffetto( typeof( GrayscaleEffect ) );
@@ -1165,10 +1183,25 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 			rifiutareCorrezioni();
 		}
 
+		private void oldMovie( bool addRemove ) {
+
+			if( addRemove ) {
+				sepia( false );
+				grayScale( false );
+				forseCambioEffettoCorrente( typeof( OldMovieEffect ) );
+			} else
+				removeEffetto( typeof( OldMovieEffect ) );
+
+			forseInizioModifiche();
+
+			OnPropertyChanged( "isOldMovieChecked" );
+		}
+
 		private void sepia( bool addRemove ) {
 
 			if( addRemove ) {
 				grayScale( false );
+				oldMovie( false );
 				forseCambioEffettoCorrente( typeof( SepiaEffect ) );
 			} else
 				removeEffetto( typeof( SepiaEffect ) );
@@ -1421,6 +1454,7 @@ namespace Digiphoto.Lumen.UI.FotoRitocco {
 
 			OnPropertyChanged( "isGrayscaleChecked" );
 			OnPropertyChanged( "isSepiaChecked" );
+			OnPropertyChanged( "isOldMovieChecked" );
 			OnPropertyChanged( "isRotatePiu90Checked" );
 			OnPropertyChanged( "isRotateMeno90Checked" );
 			OnPropertyChanged( "isFlipChecked" );
