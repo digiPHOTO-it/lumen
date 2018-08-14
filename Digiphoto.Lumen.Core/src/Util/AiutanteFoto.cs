@@ -205,8 +205,16 @@ namespace Digiphoto.Lumen.Util {
 
 			// carico eventuali correzioni
 			CorrezioniList correzioni = null;
-			if( foto.correzioniXml != null )
-				correzioni = SerializzaUtil.stringToObject<CorrezioniList>( foto.correzioniXml );
+			if( foto.correzioniXml != null ) {
+
+				try {
+					correzioni = SerializzaUtil.stringToObject<CorrezioniList>( foto.correzioniXml );
+				} catch( Exception ee ) {
+					// Se ci fossero inciampi con le correzioni, preferisco perderle che far saltare tutto.
+					// Non dovrebbe mai capitare.
+					_giornale.Error( "Deserializza correzioni foto = " + foto.id, ee );
+				}
+			}
 
 			// Se devo crere il provino ma la foto contiene la correzione di Zoom, 
 			// devo passare dalla foto grande, altrimenti perde di qualità
