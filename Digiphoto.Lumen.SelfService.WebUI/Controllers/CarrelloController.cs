@@ -66,9 +66,14 @@ namespace Digiphoto.Lumen.SelfService.WebUI.Controllers
 			if( System.IO.File.Exists( zipName ) )
 				System.IO.File.Delete( zipName );
 			using( ZipArchive zip = ZipFile.Open( zipName, ZipArchiveMode.Create ) ) {
-				foreach( FileInfo finfo in filesDaZippare )
+				foreach( FileInfo finfo in filesDaZippare ) {
 					zip.CreateEntryFromFile( finfo.FullName, finfo.Name );
+					finfo.Delete();
+				}
 			}
+
+
+
 
 			FileContentResult result = new FileContentResult( System.IO.File.ReadAllBytes( zipName ), "application/zip" );
 			result.FileDownloadName = id + ".zip";

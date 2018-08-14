@@ -116,7 +116,6 @@
     <Compile Include="src\Servizi\Vendere\VenditoreSrvImplTest.cs" />
     <Compile Include="src\Util\CompNumFotoTest.cs" />
     <Compile Include="src\Util\Costanti.cs" />
-    <Compile Include="src\Util\Crc32.cs" />
     <Compile Include="src\Util\QueriesVarieTest.cs" />
     <Compile Include="src\Util\SerializzaUtilTest.cs" />
     <Compile Include="src\Util\Utilita.cs" />

@@ -178,6 +178,7 @@
     <Compile Include="src\Imaging\Correzioni\AreaRispetto.cs" />
     <Compile Include="src\Imaging\Correzioni\MascheraturaOrientabile.cs" />
     <Compile Include="src\Imaging\Correzioni\Scritta.cs" />
+    <Compile Include="src\Imaging\Correzioni\OldMovie.cs" />
     <Compile Include="src\Licensing\LicenseNotFoundException.cs" />
     <Compile Include="src\Applicazione\StartupUtil.cs" />
     <Compile Include="src\Applicazione\Stato.cs" />
@@ -353,6 +354,7 @@
     <Compile Include="src\Threading\WorkerThreadBase.cs" />
     <Compile Include="src\Util\AiutanteFoto.cs" />
     <Compile Include="src\Licensing\LicenseUtil.cs" />
+    <Compile Include="src\Util\Crc32.cs" />
     <Compile Include="src\Util\ExtensionMethods.cs" />
     <Compile Include="src\Util\FileUtil.cs" />
     <Compile Include="src\Util\CoreUtil.cs" />
