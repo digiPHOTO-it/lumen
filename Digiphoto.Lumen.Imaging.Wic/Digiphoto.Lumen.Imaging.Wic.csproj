@@ -136,6 +136,7 @@
     <Compile Include="src\Wic\Correzioni\LogoCorrettore.cs" />
     <Compile Include="src\Wic\Correzioni\MascheraturaCorrettore.cs" />
     <Compile Include="src\Wic\Correzioni\ScrittaCorrettore.cs" />
+    <Compile Include="src\Wic\Correzioni\OldMovieCorrettore.cs" />
     <Compile Include="src\Wic\FotoRitoccoSrvImpl.cs" />
     <Compile Include="src\Wic\Correzioni\GimpCorrettore.cs" />
     <Compile Include="src\Wic\Correzioni\LuminositaContrastoCorrettore.cs" />
@@ -157,10 +158,10 @@
     <Compile Include="src\Windows\Media\Effects\EffectsUtil.cs" />
     <Compile Include="src\Windows\Media\Effects\Grayscale\GrayscaleEffect.cs" />
     <Compile Include="src\Windows\Media\Effects\LuminositaContrasto\LuminositaContrastoEffect.cs" />
+    <Compile Include="src\Windows\Media\Effects\OldMovie\OldMovieEffect.cs" />
     <Compile Include="src\Windows\Media\Effects\Sepia\SepiaEffect.cs" />
     <Compile Include="src\Windows\Media\Effects\ShaderEffectBase.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Digiphoto.Lumen.Core\Digiphoto.Lumen.Core.csproj">
       <Project>{34477397-B3B8-4DD1-8418-D7E9EED4D006}</Project>
@@ -185,11 +186,15 @@
     <Resource Include="src\Windows\Media\Effects\Grayscale\GrayscaleEffect.ps" />
     <None Include="src\Windows\Media\Effects\LuminositaContrasto\LuminositaContrastoEffect.fx" />
     <Resource Include="src\Windows\Media\Effects\LuminositaContrasto\LuminositaContrastoEffect.ps" />
+    <Resource Include="src\Windows\Media\Effects\OldMovie\OldMovieEffect.ps" />
     <None Include="src\Windows\Media\Effects\Sepia\SepiaEffect.fx" />
     <Resource Include="src\Windows\Media\Effects\Sepia\SepiaEffect.ps" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Windows\Media\Effects\Dominanti\DominantiEffect.fx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\Windows\Media\Effects\OldMovie\OldMovieEffect.fx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

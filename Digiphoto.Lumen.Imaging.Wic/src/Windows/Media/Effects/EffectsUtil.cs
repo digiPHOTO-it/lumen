@@ -110,6 +110,8 @@ namespace Digiphoto.Lumen.Windows.Media.Effects {
 				tipoCorrezione = TipoCorrezione.Luce;
 			else if( oo is SepiaEffect )
 				tipoCorrezione = TipoCorrezione.Sepia;
+			else if( oo is OldMovieEffect )
+				tipoCorrezione = TipoCorrezione.OldMovie;
 			else
 				throw new NotSupportedException( "Effetto non riconosciuto: " + oo );
 

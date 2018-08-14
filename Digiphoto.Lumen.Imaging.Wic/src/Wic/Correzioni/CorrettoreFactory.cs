@@ -46,6 +46,8 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 					correttore = new ResizeCorrettore();
 				else if( tipo == typeof( Sepia ) )
 					correttore = new SepiaCorrettore();
+				else if( tipo == typeof( OldMovie ) )
+					correttore = new OldMovieCorrettore();
 				else if( tipo == typeof( Ruota ) )
 					correttore = new RuotaCorrettore();
 				else if( tipo == typeof( Specchio ) )
@@ -98,6 +100,9 @@ namespace Digiphoto.Lumen.Imaging.Wic.Correzioni {
 					break;
 				case TipoCorrezione.Sepia:
 					tipo = typeof(Sepia);
+					break;
+				case TipoCorrezione.OldMovie:
+					tipo = typeof( OldMovie );
 					break;
 				case TipoCorrezione.Ruota:
 					tipo = typeof(Ruota);

@@ -17,12 +17,14 @@ namespace Digiphoto.Lumen.Imaging.Correzioni {
 		Specchio = 7,
 		Zoom = 8,
 		Ridimensiona = 9,
-		Trasla = 10
+		Trasla = 10,
+		OldMovie = 11
 	};
 
 	[XmlInclude(typeof(Ruota))]
 	[XmlInclude(typeof(BiancoNero))]
 	[XmlInclude(typeof(Sepia))]
+	[XmlInclude( typeof( OldMovie ) )]
 	[XmlInclude(typeof(Specchio ) )]
 	[XmlInclude(typeof(Luce))]
 	[XmlInclude(typeof(Crop))]
