@@ -23,8 +23,8 @@ namespace Digiphoto.Lumen.Servizi.Reports {
 		public Decimal totIncassoDichiarato {get; set;}
 
 		// Chiusura di cassa (queste uno potrebbe dimenticarsi di farle)
-		public Decimal ccTotIncassoPrevisto {get; set;}
-		public Decimal ccTotIncassoDichiarato {get; set;}
+		public Nullable<Decimal> ccTotIncassoPrevisto {get; set;}
+		public Nullable<Decimal> ccTotIncassoDichiarato {get; set;}
 
 		public IList<ReportVenditeDettaglio> dettaglioFormatiCarta;
 	}

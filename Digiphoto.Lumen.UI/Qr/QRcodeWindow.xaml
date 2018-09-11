@@ -1,14 +1,13 @@
-﻿<Window x:Class="Digiphoto.Lumen.UI.Carrelli.SelfService.QRcodeSelfService"
+﻿<Window x:Class="Digiphoto.Lumen.UI.Qr.QRcodeWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		SizeToContent="WidthAndHeight" 
-		AllowsTransparency="False"  OpacityMask="Red"
+		AllowsTransparency="False"
         mc:Ignorable="d"
 		WindowStartupLocation="CenterOwner"
-        Title="QRcodeSelfService" Height="600" Width="600">
-    <Grid Width="500" Height="500">
+        Title="QR code window" Height="500" Width="500">
+    <Grid>
 		<Image Name="imgQRcode" />
 	</Grid>
 </Window>

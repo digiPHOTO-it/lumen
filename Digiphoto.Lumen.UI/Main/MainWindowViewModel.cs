@@ -32,6 +32,8 @@ using Digiphoto.Lumen.UI.Carrelli;
 using Digiphoto.Lumen.UI.Mvvm.Event;
 using Digiphoto.Lumen.UI.Main;
 using Digiphoto.Lumen.UI.FotoRitocco;
+using Digiphoto.Lumen.Model.Dto;
+using Digiphoto.Lumen.Core.Util;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -347,6 +349,18 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private RelayCommand _aprirePopupQrCodeInvioCassaCommand;
+		public ICommand aprirePopupQrCodeInvioCassaCommand {
+			get {
+				if( _aprirePopupQrCodeInvioCassaCommand == null ) {
+					_aprirePopupQrCodeInvioCassaCommand = new RelayCommand( param => this.aprirePopupQrCodeInvioCassa(),
+																		    param => true,
+																		    false );
+				}
+				return _aprirePopupQrCodeInvioCassaCommand;
+			}
+		}
+		
 		#endregion Comandi
 
 		#region Metodi
@@ -669,6 +683,88 @@ namespace Digiphoto.Lumen.UI {
 				if( oprea.mioDialogResult == true ) {
 				}
 			}
+		}
+
+		/// <summary>
+		/// Nel qrcode ci infilo dentro i dati di una settimana
+		/// </summary>
+		private const short GIORNI_INDIETRO_CHIUSURE = 6;
+
+		/// <summary>
+		/// Ricavo i dati dell'ultima settimana
+		/// </summary>
+		/// <returns></returns>
+		private ChiusureCassaDto riempireDtoChiusure() {
+
+			ParamRangeGiorni paramRangeGiorni = new ParamRangeGiorni {
+				dataIniz = DateTime.Today.AddDays( -1 * GIORNI_INDIETRO_CHIUSURE ),
+				dataFine = DateTime.Today
+			};
+
+			Servizi.Vendere.IVenditoreSrv srv = LumenApplication.Instance.getServizioAvviato<Servizi.Vendere.IVenditoreSrv>();
+
+			List<RigaReportVendite> righe = srv.creaReportVendite( paramRangeGiorni );
+			if( righe == null || righe.Count < 1 )
+				return null;
+
+
+			ChiusureCassaDto chiusure = new ChiusureCassaDto();
+			chiusure.pdv = Configurazione.infoFissa.idPuntoVendita;
+
+			foreach( var riga in righe ) {
+
+				// Se non c'è la chiusura di cassa, non la invio nemmeno.
+				if( riga.ccTotIncassoDichiarato != null ) {
+				
+					ChiusuraCassaGiornoDto chiusura = new ChiusuraCassaGiornoDto();
+
+					chiusura.giornata = riga.giornata;
+					chiusura.ccIncassoDichiarato = (decimal)riga.ccTotIncassoDichiarato;
+					chiusura.ccIncassoPrevisto = (decimal)riga.ccTotIncassoPrevisto;
+					chiusura.totFotoScattate = riga.totFotoScattate;
+					chiusura.totFotoStampate = riga.totFotoStampate;
+					chiusura.totFotoMasterizzate = riga.totFotoMasterizzate;
+				
+					chiusure.listaChiusureGiorni.Add( chiusura );
+				}
+			}
+
+			return chiusure;
+		}
+
+		void aprirePopupQrCodeInvioCassa() {
+
+			var chiusure = riempireDtoChiusure();
+
+			if( chiusure == null ) {
+				dialogProvider.ShowMessage( "Nessun dato estratto negli ultimi " + GIORNI_INDIETRO_CHIUSURE + " giorni", "Nessun dato" );
+				return;
+			}
+
+
+			string messaggio = chiusure.serializeToPiccolaString();
+
+			// Aggiungo un crc di sicurezza
+			Crc16 chk = new Crc16();
+			ushort crc16 = chk.ComputeChecksum( Encoding.ASCII.GetBytes( messaggio ) );
+
+			// aggiungo un prefisso che è un comando per telegram che vado ad implementare
+			string qrCode = "/cc " + messaggio + "!" + crc16.ToString( "X4" );
+
+			string nomeFileTemp = Path.Combine( Path.GetTempPath(), "qrcode-cassa.ser.txt" );
+			File.WriteAllBytes( nomeFileTemp, Encoding.ASCII.GetBytes( qrCode ) );
+
+			// Apro la popup lanciando un evento
+			var ea = new OpenPopupRequestEventArgs {
+				requestName = "QRcodeChiusureCassaPopup",
+				param = qrCode
+			};
+
+			RaisePopupDialogRequest( ea );
+
+			if( ea.mioDialogResult == true ) {
+			}
+
 		}
 
 		#endregion Metodi

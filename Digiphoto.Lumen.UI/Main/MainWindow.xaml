@@ -191,9 +191,38 @@
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
-					<Button Grid.Row="1" Grid.Column="1" Content="Fotografo" Height="50" Width="150" Command="{Binding commandDataEntry}" CommandParameter="Fotografo" />
-					<Button Grid.Row="2" Grid.Column="1" Content="Evento" Height="50" Width="150" Command="{Binding commandDataEntry}" CommandParameter="Evento" />
-					<Button Grid.Row="3" Grid.Column="1" Content="Chiusura cassa giorno" Height="50" Width="150" Command="{Binding commandDataEntry}" CommandParameter="Giornata" />
+					<Button Grid.Row="1" Grid.Column="1" Style="{StaticResource buttonBaseStyle}" Height="60" Width="180" Command="{Binding commandDataEntry}" CommandParameter="Fotografo" >
+						<Button.Content>
+							<StackPanel Orientation="Horizontal">
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/Fotografo-48x48.png" Width="48"/>
+								<Label Content="Fotografo" Foreground="Black" VerticalContentAlignment="Center" Margin="10,0,0,0" />
+							</StackPanel>
+						</Button.Content>						
+					</Button>
+					<Button Grid.Row="2" Grid.Column="1" Style="{StaticResource buttonBaseStyle}" Height="60" Width="180" Command="{Binding commandDataEntry}" CommandParameter="Evento" >
+						<Button.Content>
+							<StackPanel Orientation="Horizontal">
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/Evento-48x48.png" Width="48"/>
+								<Label Content="Evento" Foreground="Black" VerticalContentAlignment="Center" Margin="10,0,0,0" />
+							</StackPanel>
+						</Button.Content>
+					</Button>
+					<Button Grid.Row="3" Grid.Column="1" Style="{StaticResource buttonBaseStyle}" Height="60" Width="180" Command="{Binding commandDataEntry}" CommandParameter="Giornata" >
+						<Button.Content>
+							<StackPanel Orientation="Horizontal">
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/Cassa-48x48.png" Width="48"/>
+								<Label Content="Chiusura cassa&#x0a;giorno" Foreground="Black" VerticalContentAlignment="Center" Margin="10,0,0,0" />
+							</StackPanel>
+						</Button.Content>
+					</Button>
+					<Button Grid.Row="3" Grid.Column="2" Style="{StaticResource buttonBaseStyle}"  Height="60" Width="180" Command="{Binding aprirePopupQrCodeInvioCassaCommand}" >
+						<Button.Content>
+							<StackPanel Orientation="Horizontal">
+								<Image Source="/Digiphoto.Lumen.UI;component/Resources/QRcode-48x48.png" Width="48" />
+								<Label Content="Invia dati&#x0a;cassa 7 giorni" Foreground="Black" VerticalContentAlignment="Center" Margin="10,0,0,0" />
+							</StackPanel>
+						</Button.Content>
+					</Button>
 				</Grid>
 			</TabItem>
 

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
 using System.Windows.Threading;
 
 namespace Digiphoto.Lumen.Util {
-	
+
 	public class CoreUtil {
 
 		// Questa formula magica, l'ho trovata qui: 
@@ -34,5 +29,6 @@ namespace Digiphoto.Lumen.Util {
 			loDataTable.Rows.Add( 0 );
 			return (double)(loDataTable.Rows[0]["Eval"]);
 		}
+
 	}
 }

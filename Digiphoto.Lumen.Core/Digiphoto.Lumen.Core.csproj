@@ -354,12 +354,15 @@
     <Compile Include="src\Threading\WorkerThreadBase.cs" />
     <Compile Include="src\Util\AiutanteFoto.cs" />
     <Compile Include="src\Licensing\LicenseUtil.cs" />
+    <Compile Include="src\Util\Crc16.cs" />
+    <Compile Include="src\Util\Crc16Ccitt.cs" />
     <Compile Include="src\Util\Crc32.cs" />
     <Compile Include="src\Util\ExtensionMethods.cs" />
     <Compile Include="src\Util\FileUtil.cs" />
     <Compile Include="src\Util\CoreUtil.cs" />
     <Compile Include="src\Util\FormuleMagiche.cs" />
     <Compile Include="src\Util\LumenException.cs" />
+    <Compile Include="src\Util\NetworkUtil.cs" />
     <Compile Include="src\Util\UsbEjectWithExe.cs" />
     <Compile Include="src\Util\ErroriUtil.cs" />
     <Compile Include="src\Util\FotoRangeUtil.cs" />

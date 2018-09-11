@@ -6,7 +6,7 @@
         xmlns:lumDE="clr-namespace:Digiphoto.Lumen.UI.DataEntry"
         xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters"        
 		xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        Title="Chiusura di Cassa" Height="561" Width="561"
+        Title="Chiusura di Cassa" Height="561" Width="700"
         Background="Black">
 
     <Window.Resources>
@@ -27,7 +27,9 @@
                     <CollectionViewSource x:Key="giornataSource" />
                 </ResourceDictionary>
                 <ResourceDictionary Source="/Resources/GlobalResourceDictionary.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/DataEntry/ToolsBarResources.xaml" />
+
+			</ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -46,7 +48,20 @@
                     </MultiBinding>
                 </lumDE:ToolsBar.possoSalvare>
             </lumDE:ToolsBar>
-        </ToolBar>
+<!--
+			<ToolBar>
+				<Button Grid.Row="3" Grid.Column="2" Style="{StaticResource buttonStatoDEStyle}" Command="{Binding aprirePopupQrCodeInvioCassaCommand}" >
+					<Button.Content>
+						<StackPanel Orientation="Horizontal">
+							<Image Source="/Digiphoto.Lumen.UI;component/Resources/QRcode-48x48.png" Width="48"/>
+							<Label Content="Invia dati&#x0a;cassa" Foreground="Black" VerticalContentAlignment="Center" Margin="10,0,0,0" />
+						</StackPanel>
+					</Button.Content>
+				</Button>
+			</ToolBar>
+-->			
+			
+		</ToolBar>
 
         <!-- Questo è il last child che prende tutto lo spazio centrale -->
         <Grid>
