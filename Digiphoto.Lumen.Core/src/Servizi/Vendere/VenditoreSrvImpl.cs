@@ -310,7 +310,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			
 			if (_masterizzaSrvImpl != null)
 			{
-				_masterizzaSrvImpl.Dispose();
+				if( _masterizzaSrvImpl.possoChiudere() ) {
+					_masterizzaSrvImpl.Dispose();
+				}
 				_masterizzaSrvImpl = null;
 			}
 		}

@@ -192,6 +192,8 @@
       <DependentUpon>LumenModel.tt</DependentUpon>
     </Compile>
     <Compile Include="src\Digiphoto\Lumen\Model\Carrello.cs" />
+    <Compile Include="src\Digiphoto\Lumen\Model\Dto\ChiusuraCassaGiornoDto.cs" />
+    <Compile Include="src\Digiphoto\Lumen\Model\Dto\ChiusureCassaDto.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\FaseDelGiornoUtil.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\FormatoCarta.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\Fotografo.cs" />

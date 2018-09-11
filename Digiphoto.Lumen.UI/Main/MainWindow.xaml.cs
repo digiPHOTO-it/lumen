@@ -9,6 +9,7 @@ using Digiphoto.Lumen.UI.About;
 using System.Windows.Input;
 using Digiphoto.Lumen.Eventi;
 using Digiphoto.Lumen.UI.Mvvm.Event;
+using Digiphoto.Lumen.UI.Qr;
 
 namespace Digiphoto.Lumen.UI {
 	/// <summary>
@@ -75,6 +76,23 @@ namespace Digiphoto.Lumen.UI {
 					if( esito == true ) {
 						// TODO
 					}
+
+					win.Close();
+				}
+
+
+
+				if( popEventArgs.requestName == "QRcodeChiusureCassaPopup" ) {
+
+					QRcodeWindow win = new QRcodeWindow();
+
+					// Imposto la finestra contenitore per poter centrare
+					win.Owner = this;
+
+					// Questo è il QR code
+					win.DataContext = popEventArgs.param;
+
+					var esito = win.ShowDialog();
 
 					win.Close();
 				}

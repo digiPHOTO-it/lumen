@@ -144,9 +144,6 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Gma.QrCodeNet.Encoding, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\QrCode.Net.0.4.0.0\lib\net45\Gma.QrCodeNet.Encoding.dll</HintPath>
-    </Reference>
     <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.5\lib\net451\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
       <Private>True</Private>
@@ -208,6 +205,12 @@
       <HintPath>..\packages\Extended.Wpf.Toolkit.2.5\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="zxing, Version=0.16.4.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZXing.Net.0.16.4\lib\net45\zxing.dll</HintPath>
+    </Reference>
+    <Reference Include="zxing.presentation, Version=0.16.4.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZXing.Net.0.16.4\lib\net45\zxing.presentation.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -232,8 +235,8 @@
     <Compile Include="Carrelli\Masterizzare\ScegliMasterizzaTargetWiew.xaml.cs">
       <DependentUpon>ScegliMasterizzaTargetWiew.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Carrelli\SelfService\QRcodeSelfService.xaml.cs">
-      <DependentUpon>QRcodeSelfService.xaml</DependentUpon>
+    <Compile Include="Qr\QRcodeWindow.xaml.cs">
+      <DependentUpon>QRcodeWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ComNumFoto\CompNumFotoView.xaml.cs">
       <DependentUpon>CompNumFotoView.xaml</DependentUpon>
@@ -424,7 +427,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Carrelli\SelfService\QRcodeSelfService.xaml">
+    <Page Include="Qr\QRcodeWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -954,6 +957,9 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Evento-48x48.png" />
+    <Resource Include="Resources\Fotografo-48x48.png" />
+    <Resource Include="Resources\QRcode-48x48.png" />
     <Resource Include="Resources\Composizione-16x16.png" />
     <Resource Include="Resources\DriveType_Removable-64x64.png" />
     <Resource Include="Resources\DriveType_CDRom-64x64.png" />
@@ -1052,6 +1058,7 @@
     <None Include="Resources\Lumen-64x64.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Carrelli\SelfService\" />
     <Folder Include="Mvvm\Event\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

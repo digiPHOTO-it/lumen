@@ -41,8 +41,10 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 
 		public override bool possoChiudere()
 		{
-			return !(backgroundWorkerCopia != null && backgroundWorkerCopia.WorkerSupportsCancellation == true) &&
+			bool posso =
+				!(backgroundWorkerCopia != null && backgroundWorkerCopia.WorkerSupportsCancellation == true) &&
 				!(_threadCopiaSuChiavetta != null && _threadCopiaSuChiavetta.IsAlive);
+			return posso;
 		}
 
 		public bool notificareProgressione {
