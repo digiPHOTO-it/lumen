@@ -116,6 +116,12 @@
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="MySql.Data, Version=6.9.12.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.12\lib\net45\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data.Entity.EF6, Version=6.9.12.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.Entity.6.9.12\lib\net45\MySql.Data.Entity.EF6.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -140,58 +146,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AzioneAuto.cs">
-      <DependentUpon>LumenModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Carrello.cs">
-      <DependentUpon>LumenModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ConsumoCartaGiornaliero.cs">
-      <DependentUpon>LumenModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Evento.cs">
-      <DependentUpon>LumenModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="FormatoCarta.cs">
-      <DependentUpon>LumenModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Fotografia.cs">
-      <DependentUpon>LumenModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Fotografo.cs">
-      <DependentUpon>LumenModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Giornata.cs">
-      <DependentUpon>LumenModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IncassoFotografo.cs">
-      <DependentUpon>LumenModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="InfoFissa.cs">
-      <DependentUpon>LumenModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="LumenModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>LumenModel.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="LumenModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>LumenModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="LumenModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>LumenModel.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="RigaCarrello.cs">
-      <DependentUpon>LumenModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ScaricoCard.cs">
-      <DependentUpon>LumenModel.tt</DependentUpon>
-    </Compile>
+    <Compile Include="src\Digiphoto\Lumen\Model\AzioneAuto.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\Carrello.cs" />
+    <Compile Include="src\Digiphoto\Lumen\Model\ConsumoCartaGiornaliero.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\Dto\ChiusuraCassaGiornoDto.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\Dto\ChiusureCassaDto.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\FaseDelGiornoUtil.cs" />
@@ -201,6 +158,10 @@
     <Compile Include="src\Digiphoto\Lumen\Imaging\IImmagine.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\Evento.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\Fotografia.cs" />
+    <Compile Include="src\Digiphoto\Lumen\Model\Giornata.cs" />
+    <Compile Include="src\Digiphoto\Lumen\Model\IncassoFotografo.cs" />
+    <Compile Include="src\Digiphoto\Lumen\Model\InfoFissa.cs" />
+    <Compile Include="src\Digiphoto\Lumen\Model\LumenEntities.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\Maschera.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\RigaCarrello.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\ScaricoCard.cs" />
@@ -208,17 +169,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ddl\ddl-create-sqLite.sql" />
-    <Content Include="LumenModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>LumenModel.edmx</DependentUpon>
-      <LastGenOutput>LumenModel.Context.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="LumenModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>LumenModel.edmx</DependentUpon>
-      <LastGenOutput>LumenModel.cs</LastGenOutput>
-    </Content>
     <None Include="App.config" />
     <Content Include="dbVuoto.sqlite">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -226,13 +176,6 @@
     <None Include="ddl\creadbsqlite.bat" />
     <None Include="ddl\SSDLToSQLite3.tt">
       <LastGenOutput>SSDLToSQLite3.sql</LastGenOutput>
-    </None>
-    <EntityDeploy Include="LumenModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>LumenModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <None Include="LumenModel.edmx.diagram">
-      <DependentUpon>LumenModel.edmx</DependentUpon>
     </None>
     <None Include="packages.config" />
   </ItemGroup>

@@ -1,35 +1,39 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Digiphoto.Lumen.Model {
 
-	[MetadataType( typeof( ScaricoCard ) )]
-	[Serializable]
-	[Table( "ScarichiCards" )]
-	public partial class ScaricoCard : INotifyPropertyChanged {
+	[Table( "ConsumiCartaGiornalieri" )]	
+	public partial class ConsumoCartaGiornaliero : INotifyPropertyChanged {
 
-		#region Attributi
+		#region Attribute
 
 		[Key]
 		public System.Guid id { get; set; }
 
-		public System.DateTime tempo { get; set; }
-
-		public short totFoto { get; set; }
-
+		[Required]
 		public System.DateTime giornata { get; set; }
 
-		[ForeignKey("fotografo")]
-		public string fotografo_id { get; set; }
+		[Required]
+		public System.DateTime tempo { get; set; }
 
-		public virtual Fotografo fotografo { get; set; }
+		public short totFogli { get; set; }
 
-		#endregion Attributi
+		public short diCuiProvini { get; set; }
+
+		public short diCuiFoto { get; set; }
+
+		[ForeignKey( "formatoCarta" )]
+		public System.Guid formatoCarta_id { get; set; }
+
+		public virtual FormatoCarta formatoCarta { get; set; }
+
+		#endregion Attribute
 
 		#region INotifyPropertyChanged
-
 		[field: NonSerialized]
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -41,7 +45,6 @@ namespace Digiphoto.Lumen.Model {
 			if( PropertyChanged != null )
 				PropertyChanged( this, e );
 		}
-
 		#endregion INotifyPropertyChanged	
 	}
 }

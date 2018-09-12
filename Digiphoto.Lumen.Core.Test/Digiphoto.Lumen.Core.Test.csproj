@@ -45,9 +45,8 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="MemBus, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MemBus.3.2.0\lib\net46\MemBus.dll</HintPath>
@@ -65,6 +64,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Printing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="WindowsBase" />
@@ -85,6 +85,11 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resource2.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource2.resx</DependentUpon>
+    </Compile>
     <Compile Include="src\Collections\RingBufferTests.cs" />
     <Compile Include="src\Core\AvvioFermaTest.cs" />
     <Compile Include="src\DatiDiEsempio\DataGenTest.cs" />
@@ -135,7 +140,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -169,8 +176,14 @@
     <Content Include="images\Img10.JPG">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\Image01.jpg" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Resource2.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource2.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
@@ -192,13 +205,18 @@
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(SolutionDir)packages\System.Data.SQLite.Core.1.0.99.0\lib\net46\System.Data.SQLite.dll"  "$(TargetDir)" /y
+    <PostBuildEvent>xcopy "$(SolutionDir)packages\System.Data.SQLite.Core.1.0.99.0\lib\net46\System.Data.SQLite.dll"  "$(TargetDir)" /d
 
-copy "$(SolutionDir)packages\System.Data.SQLite.Core.1.0.99.0\build\net46\x64\SQLite.Interop.dll"  "$(TargetDir)" /y
+xcopy "$(SolutionDir)packages\System.Data.SQLite.Core.1.0.99.0\build\net46\x64\SQLite.Interop.dll"  "$(TargetDir)" /d
 
-copy "$(SolutionDir)packages\System.Data.SQLite.Linq.1.0.99.0\lib\net46\System.Data.SQLite.Linq.dll"  "$(TargetDir)" /y
+xcopy "$(SolutionDir)packages\System.Data.SQLite.Linq.1.0.99.0\lib\net46\System.Data.SQLite.Linq.dll"  "$(TargetDir)" /d
 
-copy "$(SolutionDir)packages\System.Data.SQLite.EF6.1.0.99.0\lib\net46\System.Data.SQLite.EF6.dll"  "$(TargetDir)" /y</PostBuildEvent>
+xcopy "$(SolutionDir)packages\System.Data.SQLite.EF6.1.0.99.0\lib\net46\System.Data.SQLite.EF6.dll"  "$(TargetDir)" /d
+
+rem -- MsSql
+xcopy "$(SolutionDir)packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll"  "$(TargetDir)"  /d
+xcopy "$(SolutionDir)packages\MySql.Data.Entity.6.9.9\lib\net45\MySql.Data.Entity.EF6.dll"  "$(TargetDir)" /d
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -780,8 +780,12 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 		public int conta( ParamCercaFoto param ) {
 
+			// Clono i parametri per evitare alcuni rallentamenti che nella count non hanno senso
+			ParamCercaFoto param2 = param.deepCopy<ParamCercaFoto>();
+			param2.ordinamento = null;
+
 			List<object> sqlParam = null;
-			String sql = creaQuerySQL( param, true, ref sqlParam );
+			String sql = creaQuerySQL( param2, true, ref sqlParam );
 
 			var query = objectContext.Database.SqlQuery<int>( sql, sqlParam.ToArray() );
 

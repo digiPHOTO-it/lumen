@@ -5,26 +5,25 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Digiphoto.Lumen.Model {
 
-	[MetadataType( typeof( ScaricoCard ) )]
-	[Serializable]
-	[Table( "ScarichiCards" )]
-	public partial class ScaricoCard : INotifyPropertyChanged {
+	[Table( "AzioniAutomatiche" )]
+	public partial class AzioneAuto : INotifyPropertyChanged {
+
+		public AzioneAuto() {
+			this.attivo = true;
+		}
 
 		#region Attributi
 
 		[Key]
 		public System.Guid id { get; set; }
 
-		public System.DateTime tempo { get; set; }
+		[Required]
+		public string nome { get; set; }
 
-		public short totFoto { get; set; }
+		[Required]
+		public string correzioniXml { get; set; }
 
-		public System.DateTime giornata { get; set; }
-
-		[ForeignKey("fotografo")]
-		public string fotografo_id { get; set; }
-
-		public virtual Fotografo fotografo { get; set; }
+		public bool attivo { get; set; }
 
 		#endregion Attributi
 
@@ -41,7 +40,7 @@ namespace Digiphoto.Lumen.Model {
 			if( PropertyChanged != null )
 				PropertyChanged( this, e );
 		}
-
+		
 		#endregion INotifyPropertyChanged	
 	}
 }
