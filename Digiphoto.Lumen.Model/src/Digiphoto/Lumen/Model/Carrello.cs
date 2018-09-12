@@ -1,11 +1,78 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Digiphoto.Lumen.Model {
 
-	public partial class Carrello {
+	[Table("Carrelli")]
+	public partial class Carrello : INotifyPropertyChanged {
+
+		public Carrello() {
+			this.venduto = false;
+			this.visibileSelfService = true;
+			this.incassiFotografi = new HashSet<IncassoFotografo>();
+			this.righeCarrello = new HashSet<RigaCarrello>();
+		}
+
+		#region Attributi
+
+		[Key]
+		public System.Guid id { get; set; }
+
+		[Required]
+		public System.DateTime giornata { get; set; }
+
+		[Required]
+		public System.DateTime tempo { get; set; }
+
+		private Nullable<decimal> _totaleAPagare;
+		public Nullable<decimal> totaleAPagare {
+			get {
+				return _totaleAPagare;
+			}
+			set {
+				if( _totaleAPagare != value ) {
+					_totaleAPagare = value;
+					OnPropertyChanged( "totaleAPagare" );
+				}
+			}
+		}
+
+		public string intestazione { get; set; }
+
+		public bool venduto { get; set; }
+
+		public string note { get; set; }
+
+		public short totMasterizzate { get; set; }
+
+		public bool visibileSelfService { get; set; }
+
+		private Nullable<decimal> _prezzoDischetto;
+		public Nullable<decimal> prezzoDischetto {
+			get {
+				return _prezzoDischetto;
+			}
+			set {
+				if( _prezzoDischetto != value ) {
+					_prezzoDischetto = value;
+					OnPropertyChanged( "prezzoDischetto" );
+				}
+			}
+		}
+
+		public virtual ICollection<IncassoFotografo> incassiFotografi { get; set; }
+
+		public virtual ICollection<RigaCarrello> righeCarrello { get; set; }
+
+
+		#endregion Attributi
+
+
+		#region Uguaglianza
 
 		public override bool Equals( object altro ) {
 			bool uguali = false;
@@ -22,5 +89,23 @@ namespace Digiphoto.Lumen.Model {
 			return hash;
 		}
 
-    }
+		#endregion Uguaglianza
+
+		
+		#region INotifyPropertyChanged
+		
+		[field: NonSerialized]
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		protected void OnPropertyChanged( string propertyName ) {
+			OnPropertyChanged( new PropertyChangedEventArgs( propertyName ) );
+		}
+
+		protected virtual void OnPropertyChanged( PropertyChangedEventArgs e ) {
+			if( PropertyChanged != null )
+				PropertyChanged( this, e );
+		}
+		
+		#endregion INotifyPropertyChanged	
+	}
 }

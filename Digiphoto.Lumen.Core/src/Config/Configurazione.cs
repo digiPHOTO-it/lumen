@@ -113,7 +113,7 @@ namespace Digiphoto.Lumen.Config  {
 		private void verificheConfruenza() {
 			String motivoErrore = getMotivoErrore();
 			if( motivoErrore != null ) {
-				_giornale.Warn( motivoErrore );
+				_giornale.Error( motivoErrore );
 				throw new ConfigurazioneNonValidaException( "Mancano dati fondamentali per l'avvio del programma:\n" + motivoErrore );
 			}
 		}
