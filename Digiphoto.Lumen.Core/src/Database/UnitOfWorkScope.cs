@@ -85,8 +85,7 @@ namespace Digiphoto.Lumen.Core.Database {
 		public UnitOfWorkScope( bool saveAllChangesAtEndOfScope, string connectionString ) {
 
 			if( _currentScope != null && !_currentScope._isDisposed )
-				throw new InvalidOperationException( "ObjectContextScope instances " +
-																"cannot be nested." );
+				throw new InvalidOperationException( "ObjectContextScope instances cannot be nested." );
 
 			_giornale.Debug( "+Apro Unit-Of-Work" );													
 																

@@ -49,7 +49,11 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI {
 			_mainWindowViewModel.trayIconProvider = this;
 
 			licenseEditor1.DataContext = _mainWindowViewModel.licenseEditorViewModel;
+
+			
 		}
+
+	
 
 		/// <summary>
 		/// Visualizza un messaggio
@@ -124,26 +128,34 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI {
 
 		private void comboBoxMotoreDatabase_SelectionChanged( object sender, SelectionChangedEventArgs e ) {
 
-			if( e.RemovedItems.Count == 0 )
-				return;
+			abilitaGiustaTabMotore();
+	
+		}
 
-			if( !((ComboBox)sender).IsEnabled )
-				return;
+		void abilitaGiustaTabMotore() {
 
-			string dbPrec = e.RemovedItems [0].ToString();
-			string dbCorr = e.AddedItems [0].ToString();
+			// carico immagine del logo
+			string nomeLogo = null;
 
-			if( MessageBox.Show( "Sei sicuro di voler cambiare il motore del database\nda" + dbPrec + " a " + dbCorr + " ??\nATTENTO che perdi tutti i dati !\nConfermi ? ", "ATTENZIONE: cambio database", MessageBoxButton.YesNo, MessageBoxImage.Warning ) == MessageBoxResult.Yes ) {
-
-			} else {
 				
-				ComboBox cb = (ComboBox)sender;
-				e.Handled = true;
-				cb.IsEnabled = false;
-				cb.SelectedItem = e.RemovedItems[0];
-				cb.IsEnabled = true;
-				e.Handled = true;
+			if( _mainWindowViewModel.cfg.motoreDatabase == Config.MotoreDatabase.SqLite ) {
+				sqliteTab.IsEnabled = sqliteTab.IsSelected = true;
+				mysqlTab.IsEnabled = false;
+				sqliteTab.Focus();
+				nomeLogo = "SQLite-Logo.png";
 			}
+
+			if( _mainWindowViewModel.cfg.motoreDatabase == Config.MotoreDatabase.MySQL ) {
+				mysqlTab.IsEnabled = mysqlTab.IsSelected = true;
+				sqliteTab.IsEnabled = false;
+				mysqlTab.Focus();
+				nomeLogo = "MySQL-Logo.png";
+			}
+
+			Uri uriLogo = new Uri( "/Resources/" + nomeLogo, UriKind.Relative );
+
+			logoMotoreDbImage.Source = new BitmapImage( uriLogo );
+
 		}
 
 		private void about_Click(object sender, RoutedEventArgs e)
@@ -168,6 +180,10 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI {
 						this.Cursor = Cursors.Arrow;  // normale
 				}
 			}
+		}
+
+		private void Window_ContentRendered( object sender, EventArgs e ) {
+			abilitaGiustaTabMotore();
 		}
 	}
 }

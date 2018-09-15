@@ -84,12 +84,12 @@ namespace Digiphoto.Lumen.UI {
 
 			} catch( Exception ee ) {
 						
-					_giornale.Error( "Impossibile avviare applicazione", ee );
+				_giornale.Error( "Impossibile avviare applicazione", ee );
 
-					// Metto due message box perché la prima non si ferma !
-					MessageBox.Show( ee.Message, "ATTENZIONE" );
-					MessageBox.Show( "Impossibile avviare l'applicazione " + Configurazione.applicationName + " !\nErrore bloccante!\nVedere il log", "ERRORE non previsto", MessageBoxButton.OK, MessageBoxImage.Error );
-					Environment.Exit( 9 );
+				// Metto due message box perché la prima non si ferma !
+				MessageBox.Show( ee.Message, "ATTENZIONE" );
+				MessageBox.Show( "Impossibile avviare l'applicazione " + Configurazione.applicationName + " !\nErrore bloccante!\nVedere il log", "ERRORE non previsto", MessageBoxButton.OK, MessageBoxImage.Error );
+				Environment.Exit( 9 );
 			}
 
 			#if (! DEBUG)

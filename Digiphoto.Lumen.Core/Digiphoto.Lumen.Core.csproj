@@ -172,6 +172,10 @@
     <Compile Include="src\Config\LastUsedConfigSerializer.cs" />
     <Compile Include="src\Config\LastUsedConfigLumen.cs" />
     <Compile Include="src\Config\GeometriaFinestra.cs" />
+    <Compile Include="src\Database\IDatabaseAdapter.cs" />
+    <Compile Include="src\Database\MySqlDatabaseAdapter.cs" />
+    <Compile Include="src\Database\AbstractDatabaseAdapter.cs" />
+    <Compile Include="src\Database\SqLiteDatabaseAdapter.cs" />
     <Compile Include="src\Eventi\RefreshMsg.cs" />
     <Compile Include="src\Eventi\RilevataInconsistenzaDatabaseMsg.cs" />
     <Compile Include="src\Imaging\CalcolatoreAreeRispetto.cs" />

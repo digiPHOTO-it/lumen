@@ -40,10 +40,10 @@ namespace Digiphoto.Lumen.Config
 		Ovunque = 4
 	}
 
+
 	public enum MotoreDatabase : short {
-		SqlServerCE = 0,
 		SqLite = 1,
-		SqlServer = 2
+		MySQL = 2
 	}
 
 
@@ -155,6 +155,19 @@ namespace Digiphoto.Lumen.Config
 		public string dbNomeDbVuoto {
 			get;
 			set;
+		}
+
+		private string _dbNomeServer;
+		public string dbNomeServer {
+			get {
+				return _dbNomeServer;
+			}
+			set {
+				if( _dbNomeServer != value ) {
+					_dbNomeServer = value;
+					OnPropertyChanged( "dbNomeServer" );
+				}
+			}
 		}
 
 		private string _dbNomeDbPieno;

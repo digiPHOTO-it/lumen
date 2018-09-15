@@ -10,7 +10,7 @@
         xmlns:lumL="clr-namespace:Digiphoto.Lumen.GestoreConfigurazione.UI.Licenze"
 		xmlns:lumCcfg="clr-namespace:Digiphoto.Lumen.Config;assembly=Digiphoto.Lumen.Core"
         FocusManager.FocusedElement="{Binding ElementName=PasswordBox}"
-        Title="Lumen Gestore Configurazione"  WindowState="Maximized" WindowStartupLocation="CenterScreen" Icon="/Digiphoto.Lumen.GestoreConfigurazione.UI;component/Images/Configuration-48x48.ico">
+        Title="Lumen Gestore Configurazione"  WindowState="Maximized" WindowStartupLocation="CenterScreen" Icon="/Digiphoto.Lumen.GestoreConfigurazione.UI;component/Images/Configuration-48x48.ico" ContentRendered="Window_ContentRendered">
 
 	<Window.Resources>
 		<ResourceDictionary Source="MainWindowResources.xaml" />
@@ -41,15 +41,14 @@
 
 				<Grid IsEnabled="{Binding Path=loginEffettuato}">
 
-					<Label Content="Database Connection String" Height="28" HorizontalAlignment="Left" Margin="11,61,0,0" Name="label4" VerticalAlignment="Top"  />
-					<TextBox Height="65" TextWrapping="Wrap" Margin="14,95,35,0"  VerticalAlignment="Top" IsEnabled="False" Width="723" Text="{Binding Path=ConnectionString,Mode=OneWay}" />
+					<Label Content="Connection String&#xD;&#xA;" Height="28" HorizontalAlignment="Left" Margin="11,61,0,0" Name="label4" VerticalAlignment="Top" Width="126"  />
+					<TextBox FontSize="12" Height="24" TextWrapping="Wrap" Margin="142,61,258,0"  VerticalAlignment="Top" IsEnabled="False" Text="{Binding Path=ConnectionString,Mode=OneWay}" />
 
-					<ComboBox Height="23" HorizontalAlignment="Left" Margin="183,19,0,0" 
-                                  Name="comboBoxMotoreDatabase" VerticalAlignment="Top" Width="206" 
-                                  IsEnabled="False"
+					<ComboBox Height="23" HorizontalAlignment="Left" Margin="142,19,0,0" 
+                                  Name="comboBoxMotoreDatabase" VerticalAlignment="Top" Width="200" 
                                   ItemsSource="{Binding motoriDatabasesValues}"
                                   SelectedValue="{Binding Path=cfg.motoreDatabase,Mode=TwoWay}" 
-                                  SelectionChanged="comboBoxMotoreDatabase_SelectionChanged" IsReadOnly="True">
+                                  SelectionChanged="comboBoxMotoreDatabase_SelectionChanged" >
 						<i:Interaction.Triggers>
 							<i:EventTrigger EventName="SelectionChanged">
 								<i:InvokeCommandAction Command="{Binding cambiareMotoreDataBaseCommand}"/>
@@ -57,15 +56,60 @@
 						</i:Interaction.Triggers>
 					</ComboBox>
 
-					<Label Content="Motore di database" Height="28" HorizontalAlignment="Left" Margin="11,19,0,0" Name="label10" VerticalAlignment="Top" Width="152"  />
 
-					<Label Content="DataDirectory" Height="27" HorizontalAlignment="Left" Margin="11,211,0,0" Name="label13" VerticalAlignment="Top" Width="102" />
-					<TextBox Height="23" Margin="127,211,165,0" Name="textBoxDataSource" VerticalAlignment="Top" Text="{Binding Path=cfg.cartellaDatabase}" IsEnabled="{Binding Path=possoCambiareCartellaDb}" TabIndex="3" />
-					<Button Content="..." Height="23" Margin="0,210,138,0" VerticalAlignment="Top" Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="db" IsEnabled="{Binding Path=possoCambiareCartellaDb}" HorizontalAlignment="Right" Width="22" />
-					<Button Content="Prova la connessione" Height="25" HorizontalAlignment="Left" Margin="127,274,0,0"  VerticalAlignment="Top" Width="152" Command="{Binding Path=testConnectionCommand}" ToolTip="Prova la connessione al database" />
-					<Button Content="Crea nuovo Database" Height="25" HorizontalAlignment="Left" Margin="297,274,0,0"  VerticalAlignment="Top" Width="157" Command="{Binding Path=CreateDataBaseCommand}"/>
-					<Label Content="Nome Database" Height="28" HorizontalAlignment="Left" Margin="11,178,0,0" Name="label11" VerticalAlignment="Top" Width="102" />
-					<TextBox IsEnabled="False" Height="23" Margin="127,178,442,0"  VerticalAlignment="Top" Text="{Binding Path=cfg.dbNomeDbPieno}" />
+					<!-- immagine con il logo del motore scelto che si accende o spegne a seconda del successo della connessione -->
+					<Border Style="{StaticResource borderImgLogoMotoreStyle}"
+							BorderThickness="1" BorderBrush="LightGray"
+							Margin="0,16,17,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="180" Height="85" >
+						<Image Stretch="Uniform" Name="logoMotoreDbImage" 
+							   Style="{StaticResource imgLogoMotoreSyle}" />
+					</Border>
+					
+					<Label Content="Motore di database" Height="28" HorizontalAlignment="Left" Margin="11,19,0,0" Name="label10" VerticalAlignment="Top" Width="126"  />
+
+
+					<TabControl Background="LightCyan" Margin="20,107,20,81">
+						<TabItem Header="SQLite" Name="sqliteTab">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="7*"/>
+									<ColumnDefinition Width="170*"/>
+								</Grid.ColumnDefinitions>
+								<TextBlock TextWrapping="Wrap" Padding="20" Margin="0,0,0,126" Grid.ColumnSpan="2">
+									Questo motore di database è indicato per utilizzo mono-utente,
+									in una postazione di lavoro con computer singolo o in una mini rete.
+									Non necessita di un server dedicato.
+								</TextBlock>
+
+
+								<Label Content="Cartella database&#xD;&#xA;(DataDirectory)" Height="41" HorizontalAlignment="Left" Margin="36,146,0,0" Name="label13" VerticalAlignment="Top" Width="102" Grid.Column="1" />
+								<TextBox Height="23" Margin="160,147,100,0" Name="textBoxDataSource" VerticalAlignment="Top" Text="{Binding Path=cfg.cartellaDatabase}" IsEnabled="{Binding Path=possoCambiareCartellaDb}" TabIndex="3" ToolTip="Nome della cartella che continene il database.&#10;Può essere una cartella di rete." Grid.Column="1" />
+
+								<Label Content="Nome database" Height="28" HorizontalAlignment="Left" x:Name="label11" VerticalAlignment="Top" Width="102" Margin="36,88,0,0" Grid.Column="1" RenderTransformOrigin="0.696,0.393" />
+								<TextBox IsEnabled="False" Height="23"  VerticalAlignment="Top" Text="{Binding cfg.dbNomeDbPieno}" Margin="160,93,0,0" HorizontalAlignment="Left" Width="200" Grid.Column="1" />
+
+								<Button Content="..." Height="23" Margin="0,147,56,0" VerticalAlignment="Top" Command="{Binding Path=scegliereCartellaCommand}" CommandParameter="db" IsEnabled="{Binding Path=possoCambiareCartellaDb}" HorizontalAlignment="Right" Width="22" Grid.Column="1" />
+
+							</Grid>
+						</TabItem>
+
+						<TabItem Header="MySQL" Name="mysqlTab">
+							<Grid>
+								<TextBlock TextWrapping="Wrap" Padding="20" Margin="0,0,0,126">
+									Questo motore di database è indicato per utilizzo multi utente,
+									in una postazione di lavoro con divresi computer in rete.
+									Occorre un server dedicato.
+								</TextBlock>
+								<Label Content="Nome del server mysql&#xD;&#xA;(ServerName)" Width="145" HorizontalAlignment="Left" Margin="115,101,0,0" Height="41" VerticalAlignment="Top" />
+								<TextBox Margin="284,101,115,0" Height="31" VerticalAlignment="Top" Text="{Binding Path=cfg.dbNomeServer}" />
+
+							</Grid>
+						</TabItem>
+
+					</TabControl>
+
+					<Button Content="Prova la connessione" Margin="0,0,149,29" Command="{Binding Path=testConnectionCommand}" ToolTip="Prova la connessione al database" Height="25" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="154" />
+					<Button Content="Crea nuovo Database" HorizontalAlignment="Left" Margin="157,0,0,29" Width="157" Command="{Binding Path=CreateDataBaseCommand}" ToolTip="Crea un nuovo database vuoto" Height="25" VerticalAlignment="Bottom" />
 
 				</Grid>
 			</TabItem>
@@ -299,7 +343,7 @@
 				</StackPanel>
 
 			</TabItem>
-			
+
 			<TabItem Header="5) OnRide" IsSelected="{Binding Path=isPassoOnRide,Mode=OneWay}" IsEnabled="{Binding Path=isPassoOnRide,Mode=OneWay}">
 
 				<Grid>
@@ -307,12 +351,12 @@
 					<Label Content="Cartella OnRide" Height="25" HorizontalAlignment="Left" Margin="13,12,0,0" x:Name="label22" VerticalAlignment="Top" Width="121" />
 					<TextBox Height="23" Margin="151,12,55,0" Text="{Binding cfg.cartellaOnRide}" VerticalAlignment="Top" />
 					<Button  Command="{Binding scegliereCartellaCommand}" CommandParameter="onride" Content="..." Height="Auto" Margin="0,11,16,0" ToolTip="Sfoglia cartelle" VerticalAlignment="Top" HorizontalAlignment="Right" Width="22" />
-					
+
 				</Grid>
 
 
 			</TabItem>
-			
+
 			<TabItem Header="6) Riservato" IsSelected="{Binding Path=isPassoRiservato,Mode=OneWay}" IsEnabled="{Binding Path=isPassoRiservato,Mode=OneWay}">
 
 				<Grid>
