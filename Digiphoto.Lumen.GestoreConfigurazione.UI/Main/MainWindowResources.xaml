@@ -18,5 +18,26 @@
 		<Setter Property="Background" Value="Lavender" />
 	</Style>
 
+	<Style x:Key="imgLogoMotoreSyle" TargetType="{x:Type Image}"  >
+		<Style.Triggers>
+			<DataTrigger Binding="{Binding isConnessioneStabilita}" Value="False">
+				<Setter Property="Opacity" Value="0.2"/>
+				<Setter Property="IsEnabled" Value="False" />
+			</DataTrigger>
+		</Style.Triggers>
+	</Style>
 
+	<Style x:Key="borderImgLogoMotoreStyle" TargetType="{x:Type Border}">
+		<Style.Triggers>
+			<DataTrigger Binding="{Binding isConnessioneStabilita}" Value="False">
+				<Setter Property="BorderThickness" Value="2"/>
+				<Setter Property="BorderBrush" Value="Red" />
+			</DataTrigger>
+			<DataTrigger Binding="{Binding isConnessioneStabilita}" Value="True">
+				<Setter Property="BorderThickness" Value="2"/>
+				<Setter Property="BorderBrush" Value="Green" />
+			</DataTrigger>
+		</Style.Triggers>
+	</Style>
+	
 </ResourceDictionary>

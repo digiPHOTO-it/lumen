@@ -66,6 +66,8 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			// Ascolto i messaggi
 			IObservable<Messaggio> observable = LumenApplication.Instance.bus.Observe<Messaggio>();
 			observable.Subscribe(this);
+
+			canCreateDatabase = false;
         }
 
 		public LicenseEditorViewModel licenseEditorViewModel {
@@ -198,7 +200,10 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 		// TODO rivedere. non so se serve piu
         private void salvaConfigDB()
         {
-			AppDomain.CurrentDomain.SetData( "DataDirectory", cfg.cartellaDatabase );
+
+			int TODO = 5;
+			// TODO forse non serve più ???????
+			// AppDomain.CurrentDomain.SetData( "DataDirectory", cfg.cartellaDatabase );
 		}
 
         private void caricaListaMasterizzatori()
@@ -296,30 +301,69 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
+		private bool _isConnessioneStabilita;
+		public bool isConnessioneStabilita {
+			get {
+				return _isConnessioneStabilita;
+			}
+			private set {
+				if( _isConnessioneStabilita != value ) {
+					_isConnessioneStabilita = value;
+					OnPropertyChanged( "isConnessioneStabilita" );
+					OnPropertyChanged( "possoStepAvanti" );
+				}
+			}
+		}
+
+
 		public bool possoStepAvanti {
 			get {
 				return loginEffettuato
-					&& passo < PassoWiz.Licenza
-					&& File.Exists( Path.Combine( cfg.cartellaDatabase, cfg.dbNomeDbPieno ) );
+					&& (
+						(passo > PassoWiz.MotoreDb && passo < PassoWiz.Licenza) ||
+						(passo == PassoWiz.MotoreDb && isConnessioneStabilita == true ) 
+					   );
 			}
 		}
+
+		/// <summary>
+		/// Provo a connettermi al database.
+		/// </summary>
+		/// <returns>true se ci riesco</returns>
+		private bool testConnessioneDatabase() {
+			var dbUtil = new DbUtil( cfg );
+			string msgErr;
+			isConnessioneStabilita = dbUtil.verificaSeDatabaseUtilizzabile( out msgErr );
+
+			return isConnessioneStabilita;
+		}
+
 
 		void apriTutto() {
 
 			dialogProvider.attenderePrego = true;
 
+			// Il motore del database potrebbe essere cambiato
+			Configurazione.UserConfigLumen.motoreDatabase = cfg.motoreDatabase;
+
 			// La cartella potrebbe essere cambiata
 			Configurazione.UserConfigLumen.cartellaDatabase = cfg.cartellaDatabase;
 
+			// Il nome del db server potrebbe essere cambiato
+			Configurazione.UserConfigLumen.dbNomeServer = cfg.dbNomeServer;
+
+			string cs = null; // uso il nome della connessione di default che è: "name=LumenEntities"
+
 			// Se è la prima volta, avvio tutto
 			if( !LumenApplication.Instance.avviata ) {
-				LumenApplication.Instance.avvia( true, qualeConnectionString, false );
+				LumenApplication.Instance.avvia( true, cs, false );
 			}
 
 			// Se è la prima volta, avvio tutto
-			impostaConnectionStringFittizzia();
+			
+
 			if( this.unitOfWorkScope == null )
-				this.unitOfWorkScope = new UnitOfWorkScope( false, qualeConnectionString );
+				this.unitOfWorkScope = new UnitOfWorkScope( false, cs );
 
 			// carico un pò di dati dal database se per caso esiste già.
 			loadDataContextFromDb();
@@ -533,14 +577,18 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 		private string qualeConnectionString {
 			get {
-				if( cfg.motoreDatabase == MotoreDatabase.SqLite )
-					return "LumenEntities-sqLite";
-				else if( cfg.motoreDatabase == MotoreDatabase.SqlServerCE )
-					return "LumenEntities-sqlCE";
+
+				return "LumenEntities-" + cfg.motoreDatabase.ToString();
+/*
+				if( cfg.motoreDatabase == MotoreDatabase.SQLite )
+					
+				else if( cfg.motoreDatabase == MotoreDatabase.MySQL )
+					return "LumenEntities-";
 				else if( cfg.motoreDatabase == MotoreDatabase.SqlServer )
 					return "LumenEntities-sqlServer";
 				else
 					return null;
+*/
 			}
 		}
 
@@ -548,7 +596,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 		{
 			get
 			{
-				return cfg.motoreDatabase == MotoreDatabase.SqLite || cfg.motoreDatabase == MotoreDatabase.SqlServerCE;
+				return cfg.motoreDatabase == MotoreDatabase.SqLite;
 			}
 		}
 
@@ -620,18 +668,27 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			set;
 		}
 
+		private bool _canCreateDatabase;
 		public bool canCreateDatabase {
 			get {
-				// Per poter creare il database, non deve esistere
-				DbUtil dbUtil = new DbUtil( cfg );
-				return ! dbUtil.isDatabasEsistente;
+				return _canCreateDatabase;
+			}
+			set {
+				if( _canCreateDatabase != value ) {
+					_canCreateDatabase = value;
+					OnPropertyChanged( "canCreateDatabase" );
+				}
 			}
 		}
 
+
 		public bool canTestConnection {
 			get {
+				/*
 				DbUtil dbUtil = new DbUtil( cfg );
-				return dbUtil.isDatabasEsistente;				
+				return dbUtil.possoCreareNuovoDatabase;				
+				*/
+				return true;
 			}
 		}
 
@@ -887,22 +944,36 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			if( passo != PassoWiz.MotoreDb )
 				return true;
 
+			bool prosegui = true;
+
+#if false
 			if( motorePrecedente == cfg.motoreDatabase )
 				return true;
-
-			bool prosegui = false;
-
-			dialogProvider.ShowConfirmation( "La modifica del motore del database viene eseguita adesso. Confermi?", "Cambio motore database",
+			
+			dialogProvider.ShowConfirmation( "La modifica del motore del database viene eseguita adesso.\nConfermi?", "Cambio motore database",
 				( sino ) => {
 					prosegui = sino;
 				} );
+#endif
 
 			if( prosegui ) {
 
+				
+
 				try {
-					eseguiCambioMotore();
+
+					// Sistemo i file di configurazione
+
+					eseguiCambioMotore( "Digiphoto.Lumen.GestoreConfigurazione.UI.exe" );
+
+					eseguiCambioMotore( "Digiphoto.Lumen.UI.exe" );
+
+					eseguiCambioMotore( "Digiphoto.Lumen.SelfService.HostConsole.exe" );
+					
 					prosegui = true;
+
 				} catch( Exception ee ) {
+					prosegui = false;
 					dialogProvider.ShowError( "Impossibile modificare il motore del database.\n" + ee.Message, "ERRORE", null );
 				}
 			}
@@ -910,59 +981,17 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			return prosegui;
 		}
 
-		/// <summary>
-		/// In base al motore di database selezionato in questo momento, mi creo una 
-		/// connection string di nome "LumenEntities" in memoria, senza salvarla su disco nel .config
-		/// </summary>
-		void impostaConnectionStringFittizzia() {
-
-			_giornale.Debug( "qq-1" );
-			ConnectionStringSettings giusta = ConfigurationManager.ConnectionStrings[qualeConnectionString];
-			_giornale.Debug( "qq-2   : giusta=" + giusta );
-			int quanti = ConfigurationManager.ConnectionStrings.Count;
-			_giornale.Debug( "qq-3   : quanti=" + quanti );
-
-			Configuration config = ConfigurationManager.OpenExeConfiguration( ConfigurationUserLevel.None );
-			_giornale.Debug( "qq-4   :  config=" + config );
-
-			// Mi creo in memoria una connection string anche per me ma senza salvarla
-			var test = config.ConnectionStrings.ConnectionStrings["LumenEntities"];
-			if( test == null ) {
-				test = new ConnectionStringSettings( "LumenEntities", giusta.ConnectionString );
-				config.ConnectionStrings.ConnectionStrings.Add( test );
-			} else {
-				test.ConnectionString = giusta.ConnectionString;
-			}
-			_giornale.Debug( "qq-5  :  test=" + test );
-
-			try {
-
-				config.Save( ConfigurationSaveMode.Modified );
-
-				_giornale.Debug( "qq-6   :   salvataggio ok" );
-
-				int quanti2 = ConfigurationManager.ConnectionStrings.Count;
-				ConfigurationManager.RefreshSection( "connectionStrings" );
-				int quanti3 = ConfigurationManager.ConnectionStrings.Count;
-				_giornale.Debug( "qq-7" );
-			} catch( Exception ee ) {
-				_giornale.Warn( "Impossibile salvare .config", ee );
-			}
-
-			_giornale.Debug( "Imposto questa connection string: " + test.ConnectionString );
-		}
-
-		private void eseguiCambioMotore() {
-
-			const string nomeExe = "Digiphoto.Lumen.UI.exe";
-
-			impostaConnectionStringFittizzia();
-			ConnectionStringSettings csGiusta = ConfigurationManager.ConnectionStrings [qualeConnectionString];
 
 
+
+		private void eseguiCambioMotore( string nomeExe ) {
+
+			// Ricavo il nome completo dell'eseguibile (compreso il percorso)
 			FileInfo [] filesInfo = null;
 
-#if (DEBUG)
+			var dbUtil = new DbUtil( cfg );
+
+#if(DEBUG)
 			// Probabilmente sono in debug.
 			DirectoryInfo dInfo = new DirectoryInfo( Directory.GetCurrentDirectory() );
 			DirectoryInfo padre = dInfo.Parent.Parent.Parent;   // Mi trovo nella cartella:  lumen\Digiphoto.Lumen.GestoreConfigurazione.UI\bin\Debug e devo risalire nella cartella dove c'è la solution. Salgo di 3.
@@ -976,16 +1005,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 			if( filesInfo != null ) {
 				foreach( FileInfo fileInfo in filesInfo ) {
-
-					// Get the application configuration file.
-					Configuration config = ConfigurationManager.OpenExeConfiguration( fileInfo.FullName );
-					if( !config.HasFile )
-						continue;
-					// Get the connection strings section.
-					ConnectionStringsSection csSection = config.ConnectionStrings;
-
-					csSection.ConnectionStrings ["LumenEntities"].ConnectionString = csGiusta.ConnectionString;
-					config.Save();
+					dbUtil.impostaConnectionStringFittizzia( fileInfo.FullName );
 				}
 			}
 
@@ -1021,12 +1041,15 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
             salvaConfigDB();
 
-			impostaConnectionStringFittizzia();
-
 			DbUtil dbUtil = new DbUtil( cfg );
 
+			// il test della connessione è diverso dal verificare se il db è utilizzabile. Sono due cose diverse
+			isConnessioneStabilita = dbUtil.testConessione();
+
 			string msgErrore;
-            if (dbUtil.verificaSeDatabaseUtilizzabile( out msgErrore ))
+			bool isUsabile = dbUtil.verificaSeDatabaseUtilizzabile( out msgErrore );
+			
+            if( isUsabile )
             {
 				dialogProvider.ShowMessage( "OK\nConnessione al database riuscita", "Test Connection" );
 				_giornale.Info( "Connessione al db riuscita. Tutto ok" );
@@ -1035,10 +1058,14 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             {
 				dialogProvider.ShowError( msgErrore, "Connessione fallita", null );
             }
-        }
+
+			// Devo aggiornare anche l'altro 
+			canCreateDatabase = dbUtil.possoCreareNuovoDatabase;
+			
+		}
 
 
-        private void selezionaDataSource()
+		private void selezionaDataSource()
         {
 
             // Configure open file dialog box
@@ -1047,13 +1074,10 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             //dlg.DefaultExt = ".config"; // Default file extension
             switch (cfg.motoreDatabase)
             {
-                case MotoreDatabase.SqlServerCE:
-                    dlg.Filter = "Config File (.sdf)|*.sdf"; // Filter files by extension
-                    break;
                 case MotoreDatabase.SqLite:
                     dlg.Filter = "Config File (.sqlite)|*.sqlite"; // Filter files by extension
                     break;
-                case MotoreDatabase.SqlServer:
+                case MotoreDatabase.MySQL:
 					dialogProvider.ShowMessage( "Il Data Sorce prevede un Server", "Avviso" );
                     break;
             }
@@ -1073,23 +1097,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 		}
 
 		private void cambiareMotoreDatabase() {
-
-			switch ( cfg.motoreDatabase )
-            {
-				case MotoreDatabase.SqlServerCE:
-					cfg.dbNomeDbVuoto = "dbVuoto.sdf";
-					cfg.dbNomeDbPieno = "database.sdf";
-                    break;
-                case MotoreDatabase.SqLite:
-					cfg.dbNomeDbVuoto = "dbVuoto.sqlite";
-					cfg.dbNomeDbPieno = "database.sqlite";
-                    break;
-                case MotoreDatabase.SqlServer:
-					cfg.dbNomeDbVuoto = null;
-					cfg.dbNomeDbPieno = null;
-					dialogProvider.ShowMessage( "Il Data Sorce prevede un Server", "Avviso" );
-                    break;
-            }
 
 			OnPropertyChanged( "possoCambiareCartellaDb" );
 			OnPropertyChanged( "ConnectionString" );
@@ -1260,23 +1267,20 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
         private void createDataBase()
         {
+			salvaConfigDB();
 
 			DbUtil qdbUtil = new DbUtil( cfg );
 
-            salvaConfigDB();
-            // Se non esiste la cartella per il database, allora la creo.
-			qdbUtil.creaCartellaPerDb();
+			// Se non esiste la cartella per il database, allora la creo.
+			qdbUtil.creareNuovoDatabase();
 
-            // Controllo il database. Se non esiste nessuna impostazione diversa, lo creo.
-			qdbUtil.copiaDbVuotoSuDbDiLavoro();
-
-			dialogProvider.ShowMessage( "DataBase creato con successo\n" + qdbUtil.nomeFileDbPieno, "Avviso" );
+			dialogProvider.ShowMessage( "DataBase creato con successo", "Avviso" );
         }
 
         private void login()
         {
 			bool indovinata = false;
-#if (DEBUG)
+#if(DEBUG)
 			indovinata = true;
 #else
             String administratorPasswordMd5 = Md5.MD5GenerateHash(LoginPassword.ToString());
@@ -1355,10 +1359,10 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
-        #endregion
+#endregion
 
 
-		#region Eventi
+#region Eventi
 		public void OnCompleted()
 		{
 			// throw new NotImplementedException();
@@ -1374,6 +1378,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			if(msg.showInStatusBar)
 				dialogProvider.ShowError(msg.descrizione, "Configurazione", null);
 		}
-		#endregion Eventi
+#endregion Eventi
 	}
 }

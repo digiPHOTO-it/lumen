@@ -36,7 +36,6 @@ namespace Digiphoto.Lumen.Config  {
 		}
 
 
-		DbUtil _dbUtil;
 
 		public static string cartellaBaseFoto {
 			get {
@@ -72,13 +71,14 @@ namespace Digiphoto.Lumen.Config  {
 			if( autoSistemazione == false && UserConfigLumen == null )
 				throw new ConfigurazioneMancanteException( "Configurazione utente non trovata" );
 
-			_dbUtil = new DbUtil();
-
 			caricaMappaNomiServizi();
 
 			_autoSistemazione = autoSistemazione;
 
-			sostituisciSegnapostoDataDirectoryPerConnectionString();
+
+			// sostituisci Segnaposto DataDirectory Per Connection String
+			AppDomain.CurrentDomain.SetData( "DataDirectory", UserConfigLumen.cartellaDatabase );
+
 
 			if( autoSistemazione ) {
 				autoSistemaPerPartenzaDiDefault();
@@ -91,6 +91,7 @@ namespace Digiphoto.Lumen.Config  {
 
 			//Valorizzo la compressione del numero della foto
 			Fotografia.compNumFoto = UserConfigLumen.compNumFoto;
+
 		}
 
 
@@ -122,20 +123,7 @@ namespace Digiphoto.Lumen.Config  {
 			get { return _nomiServizi; }
 		}
 
-		/**
-		 * Per non camblare il nome della cartella nella ConnectionString,
-		 * devo usare un segnaposto che ora vado a sostituire
-		 */
-		private static void sostituisciSegnapostoDataDirectoryPerConnectionString() {
 
-			// Ora che ho deciso dove sta il database, sostituisco la cartella nella stringa di connessione.
-			sostituisciSegnapostoDataDirectoryPerConnectionString( UserConfigLumen.cartellaDatabase );
-		}
-
-		private static void sostituisciSegnapostoDataDirectoryPerConnectionString( string cartella ) {
-			AppDomain.CurrentDomain.SetData( "DataDirectory", cartella );
-		}
-		
 		private void autoSistemaPerPartenzaDiDefault() {
 
 			_giornale.Debug( "La configurazione attuale non è sufficiente. Devo sistemarla con valori di default" );
@@ -156,13 +144,9 @@ namespace Digiphoto.Lumen.Config  {
 			}
 
 			// ---
-
-			// Se non esiste la cartella per il database, allora la creo.
-			_dbUtil.creaCartellaPerDb();
-
-			// Controllo il database. Se non esiste nessuna impostazione diversa, lo creo.
-			if( ! _dbUtil.isDatabasEsistente )
-				_dbUtil.copiaDbVuotoSuDbDiLavoro();
+			DbUtil _dbUtil = new DbUtil();
+			if( _dbUtil.possoCreareNuovoDatabase )
+				_dbUtil.creareNuovoDatabase();
 
 
 			// ----
@@ -188,6 +172,8 @@ namespace Digiphoto.Lumen.Config  {
 			userConfig.motoreDatabase = MotoreDatabase.SqLite;
 			userConfig.dbNomeDbVuoto = "dbvuoto.sqlite";
 			userConfig.dbNomeDbPieno = "database.sqlite";
+			// Questo è per MySql
+			userConfig.dbNomeServer = "localhost";					// TODO sostituire con LUMEN
 
 			userConfig.cartellaDatabase = decidiCartellaDatabase();
 			userConfig.autoZoomNoBordiBianchi = true;
@@ -296,11 +282,14 @@ namespace Digiphoto.Lumen.Config  {
 		 */
 		public String getMotivoErrore() {
 
+#if false
+			TODO rivedere questo controllo
+
 			// Controllo che esista il database vuoto. Mi serve in caso di copia iniziale
 			if( !System.IO.File.Exists( _dbUtil.nomeFileDbVuoto ) ) {
 				return "il Database template\n" + UserConfigLumen.dbNomeDbVuoto + "\nnon usabile. Probabile installazione rovinata";
 			}
-
+#endif
 			return getMotivoErrore( UserConfigLumen );
 		}
 
@@ -435,9 +424,12 @@ namespace Digiphoto.Lumen.Config  {
 
 			// Controllo che esista e che sia valido anche il database vero di lavoro
 			string msgErrore;
+#if false
 			if( ! mioDbUtil.verificaSeDatabaseUtilizzabile( out msgErrore ) )
 				return "Database di lavoro\n" + mioDbUtil.nomeFileDbPieno + "\n" + msgErrore;
-
+#else
+			msgErrore = null;
+#endif
 			// Controllo che la cartella contenente le foto esista e sia scrivibile
 			if( !Directory.Exists( userConfig.cartellaFoto ) ) {
 				return( "Cartella foto inesistente: " + userConfig.cartellaFoto );
