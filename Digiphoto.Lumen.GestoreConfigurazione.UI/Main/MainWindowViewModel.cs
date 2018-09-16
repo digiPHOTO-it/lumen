@@ -70,6 +70,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			canCreateDatabase = false;
         }
 
+
 		public LicenseEditorViewModel licenseEditorViewModel {
 			get;
 			private set;
@@ -180,7 +181,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			UserConfigSerializer.serializeToFile( cfg );
 			_giornale.Info( "Salvata la configurazione utente su file xml" );
 
-            salvaConfigDB();
         }
 
 		private void saveLastUsedConfig()
@@ -195,15 +195,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 		void saveRegistry() {
 			_giornale.Debug( "Salvo nel registry: cod licenza = " + licenseEditorViewModel.codiceLicenza );
 			LicenseUtil.writeCurrentLicenseKey( licenseEditorViewModel.codiceLicenza );
-		}
-
-		// TODO rivedere. non so se serve piu
-        private void salvaConfigDB()
-        {
-
-			int TODO = 5;
-			// TODO forse non serve più ???????
-			// AppDomain.CurrentDomain.SetData( "DataDirectory", cfg.cartellaDatabase );
 		}
 
         private void caricaListaMasterizzatori()
@@ -330,10 +321,11 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 		/// Provo a connettermi al database.
 		/// </summary>
 		/// <returns>true se ci riesco</returns>
-		private bool testConnessioneDatabase() {
+		private bool testareConessioneDatabase() {
+
 			var dbUtil = new DbUtil( cfg );
 			string msgErr;
-			isConnessioneStabilita = dbUtil.verificaSeDatabaseUtilizzabile( out msgErr );
+			isConnessioneStabilita = dbUtil.testConessione();
 
 			return isConnessioneStabilita;
 		}
@@ -673,7 +665,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			get {
 				return _canCreateDatabase;
 			}
-			set {
+			private set {
 				if( _canCreateDatabase != value ) {
 					_canCreateDatabase = value;
 					OnPropertyChanged( "canCreateDatabase" );
@@ -682,7 +674,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 		}
 
 
-		public bool canTestConnection {
+		public bool possoVerificareSeDatabaseProntoAllUso {
 			get {
 				/*
 				DbUtil dbUtil = new DbUtil( cfg );
@@ -729,11 +721,11 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 		public bool possoRicostruireDb {
 			get {
-				return canTestConnection;
+				return possoVerificareSeDatabaseProntoAllUso;
 			}
 		}
 
-        #endregion
+        #endregion Proprietà
 
         #region Comandi
 
@@ -848,16 +840,13 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             }
         }
 
-        private RelayCommand _testConnectionCommand;
-        public ICommand testConnectionCommand
-        {
-            get
-            {
-                if (_testConnectionCommand == null)
-                {
-                    _testConnectionCommand = new RelayCommand(param => this.testConnection(), p => canTestConnection );
+        private RelayCommand _verificareSeDatabaseProntoAllUsoCommand;
+        public ICommand verificareSeDatabaseProntoAllUsoCommand {
+            get {
+                if( _verificareSeDatabaseProntoAllUsoCommand == null ) {
+                    _verificareSeDatabaseProntoAllUsoCommand = new RelayCommand( param => this.verificareSeDatabaseProntoAllUso(), p => possoVerificareSeDatabaseProntoAllUso );
                 }
-                return _testConnectionCommand;
+                return _verificareSeDatabaseProntoAllUsoCommand;
             }
         }
 
@@ -913,9 +902,9 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
-        #endregion
+        #endregion Comandi
 
-        #region esecuzioneComandi
+		#region esecuzioneComandi
 
         private void stepIndietro()
         {
@@ -957,8 +946,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 #endif
 
 			if( prosegui ) {
-
-				
 
 				try {
 
@@ -1005,7 +992,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 			if( filesInfo != null ) {
 				foreach( FileInfo fileInfo in filesInfo ) {
-					dbUtil.impostaConnectionStringFittizzia( fileInfo.FullName );
+					dbUtil.impostaConnectionStringGiusta( fileInfo.FullName );
 				}
 			}
 
@@ -1035,11 +1022,14 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
         }
 
-        private void testConnection()
+		/// <summary>
+		/// Testo se il database esiste già e se è utilizzabile
+		/// (Quindi deve esistere il db, deve esistere lo schema, ci devono essere le informazioni fisse)
+		/// </summary>
+        private void verificareSeDatabaseProntoAllUso()
         {
 			_giornale.Debug( "Devo provare a connettermi al db" );
 
-            salvaConfigDB();
 
 			DbUtil dbUtil = new DbUtil( cfg );
 
@@ -1051,12 +1041,12 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			
             if( isUsabile )
             {
-				dialogProvider.ShowMessage( "OK\nConnessione al database riuscita", "Test Connection" );
+				dialogProvider.ShowMessage( "OK\nConnessione al database riuscita\nSi può procedere con la configurazione", "Test Connection" );
 				_giornale.Info( "Connessione al db riuscita. Tutto ok" );
             }
             else
             {
-				dialogProvider.ShowError( msgErrore, "Connessione fallita", null );
+				dialogProvider.ShowError( "Connessione al database fallita.\nVerificare che il database sia attivo\noppure crearne uno nuovo.\nImpossibile procedere con la configurazione.\n\n\nErrore:\n" + msgErrore, "Connessione non riuscita", null );
             }
 
 			// Devo aggiornare anche l'altro 
@@ -1267,7 +1257,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
         private void createDataBase()
         {
-			salvaConfigDB();
 
 			DbUtil qdbUtil = new DbUtil( cfg );
 
@@ -1359,10 +1348,10 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
-#endregion
+		#endregion esecuzioneComandi
 
+		#region Eventi
 
-#region Eventi
 		public void OnCompleted()
 		{
 			// throw new NotImplementedException();

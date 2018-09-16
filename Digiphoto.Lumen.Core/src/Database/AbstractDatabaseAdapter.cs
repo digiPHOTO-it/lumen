@@ -45,45 +45,11 @@ namespace Digiphoto.Lumen.Core.Database {
 		/// che sarà quella che verrà utilizzata da entity framework per lavorare per davvero.
 		/// Questi adapter, invece usano delle connection-string template
 		/// </summary>
-		protected abstract string sostutireSegnapostoConnectionString( string cs );
+		protected abstract string sostutireSegnapostoConnectionString( string cs, bool definitiva = false );
 
-		
-
-
-		protected void creaConnectionStringGiusta() {
-
-			string qualeConnectionString = "LumenEntities-" + cfg.motoreDatabase;
-			ConnectionStringSettings giusta = ConfigurationManager.ConnectionStrings[qualeConnectionString];
-
-			int quanti = ConfigurationManager.ConnectionStrings.Count;
-
-			// Qui apro la configurazione dell'eseguibile che mi sta invocando
-			Configuration config = ConfigurationManager.OpenExeConfiguration( ConfigurationUserLevel.None );
-
-			string nuovaCS = sostutireSegnapostoConnectionString( giusta.ConnectionString );
-
-			// Mi creo connection string
-			var test = config.ConnectionStrings.ConnectionStrings["LumenEntities"];
-			if( test == null ) {
-				test = new ConnectionStringSettings( "LumenEntities", nuovaCS );
-				config.ConnectionStrings.ConnectionStrings.Add( test );
-			} else {
-				config.ConnectionStrings.ConnectionStrings.Remove( test );
-				test.ConnectionString = nuovaCS;
-				config.ConnectionStrings.ConnectionStrings.Add( test );
-			}
-
-
-			config.Save( ConfigurationSaveMode.Modified );
-
-
-			// int quanti2 = ConfigurationManager.ConnectionStrings.Count;
-			ConfigurationManager.RefreshSection( "connectionStrings" );
-			// int quanti3 = ConfigurationManager.ConnectionStrings.Count;
-			
-			_giornale.Debug( "Imposto questa connection string: " + test.ConnectionString );
+		protected abstract string schemaName {
+			get;
 		}
-
 
 		public UserConfigLumen cfg {
 			get;
@@ -136,15 +102,14 @@ namespace Digiphoto.Lumen.Core.Database {
 
 				using( DbConnection conn = createConnection() )  {
 
-
-					// var sssss = AppDomain.CurrentDomain.GetData( "ServerName" );
-
-					// conn.ConnectionString = "LumenEntities";
-
 					conn.Open();
 
+					// Compongo il nome della tabella eventualmente con il prefisso dello schema
+					string sql = "select versioneDbCompatibile from ";
+					if( schemaName != null )
+						sql += schemaName + ".";
+					sql += "InfosFisse";
 
-					string sql = "select versioneDbCompatibile from InfosFisse";
 					using( DbCommand comm = conn.CreateCommand() ) {
 						comm.CommandText = sql;
 						using( DbDataReader rdr = comm.ExecuteReader() ) {
@@ -165,7 +130,8 @@ namespace Digiphoto.Lumen.Core.Database {
 								} else
 									usabile = true;
 							} else {
-								msgErrore = "Mancano informazioni fisse. Lanciare il Configuratore";
+								// Mancano informazioni fisse. Verranno create quando parte entity framework
+								usabile = true;
 							}
 						}
 					}
@@ -173,7 +139,7 @@ namespace Digiphoto.Lumen.Core.Database {
 					_giornale.Info( "OK il database risulta utilizzabile" );
 				}
 			} catch( Exception ee ) {
-				_giornale.Error( "verifica se db utilizzabile fallita", ee );
+				_giornale.Info( "verifica se db utilizzabile fallita", ee );
 				msgErrore = ee.Message;
 			}
 
@@ -184,9 +150,33 @@ namespace Digiphoto.Lumen.Core.Database {
 			return VERSIONE_DB_COMPATIBILE;
 		}
 
+#if false
+		public void creareInfoFisse() {
+
+			string sql = @"insert into "  InfosFisse 
+				            (id, versioneDbCompatibile, pixelProvino)
+				            values
+				            ('K', " + VERSIONE_DB_COMPATIBILE + ", 400";
+
+			using( DbConnection conn = createConnection() ) {
+
+				conn.Open();
+
+				var command = conn.CreateCommand();
+				command.CommandText = sql;
+				command.CommandType = CommandType.Text;
+				int quante = command.ExecuteNonQuery();
+					
+				conn.Close();
+
+				_giornale.Info( "create informazioni fisse di default" );
+			}
+		}
+#endif
+
 		public abstract void creareNuovoDatabase();
 
-		public bool testConnessione() {
+		public bool verificareConnessione() {
 
 			bool tuttoBene = false;
 
@@ -212,18 +202,16 @@ namespace Digiphoto.Lumen.Core.Database {
 		}
 
 
-		public void impostaConnectionStringFittizzia( string nomeExe ) {
+		public void impostaConnectionStringGiusta( string nomeExe ) {
 
 			string key = "LumenEntities-" + this.cfg.motoreDatabase;
 			ConnectionStringSettings giusta = ConfigurationManager.ConnectionStrings[key];
-
 
 			Configuration config = ConfigurationManager.OpenExeConfiguration( nomeExe );
 			if( !config.HasFile ) {
 				_giornale.Debug( "Non trovato .config dell'exe: " + nomeExe );
 				return;
 			}
-
 
 			// Creo o aggiorno la connessione con il nome corretto
 			var test = config.ConnectionStrings.ConnectionStrings["LumenEntities"];
@@ -233,7 +221,7 @@ namespace Digiphoto.Lumen.Core.Database {
 				test = new ConnectionStringSettings( "LumenEntities", giusta.ConnectionString );
 				config.ConnectionStrings.ConnectionStrings.Add( test );
 			} else {
-				test.ConnectionString = sostutireSegnapostoConnectionString( giusta.ConnectionString );
+				test.ConnectionString = sostutireSegnapostoConnectionString( giusta.ConnectionString, true );
 			}
 
 			test.ProviderName = provider;

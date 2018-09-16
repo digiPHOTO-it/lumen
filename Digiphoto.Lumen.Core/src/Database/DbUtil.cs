@@ -57,12 +57,12 @@ namespace Digiphoto.Lumen.Core.Database {
 		/// </summary>
 		/// <returns></returns>
 		public bool testConessione() {
-			return _databaseAdapter.testConnessione();
+			return _databaseAdapter.verificareConnessione();
 		}
 
 
-		public void impostaConnectionStringFittizzia( string nomeExe ) {
-			_databaseAdapter.impostaConnectionStringFittizzia( nomeExe );
+		public void impostaConnectionStringGiusta( string nomeExe ) {
+			_databaseAdapter.impostaConnectionStringGiusta( nomeExe );
 		}
 
 		public String providerConnectionString {
