@@ -23,13 +23,21 @@
 		/// Eseguo una connessione di test al database;
 		/// </summary>
 		/// <returns>true se riesco a connettermi</returns>
-		bool testConnessione();
+		bool verificareConnessione();
 
 		/// <summary>
 		/// Se possibile crea il db vuoto in condizioni di partenza.
 		/// Se il db esiste già oppure non può essere creato, allora solleva eccezione.
 		/// </summary>
 		void creareNuovoDatabase();
+
+#if false
+		/// <summary>
+		/// Valirizzo le informazioni fisse di default. Mi servono anche per validare la connessione
+		/// dopo aver creato il db
+		/// </summary>
+		void creareInfoFisse();
+#endif
 
 		//		void eventualiUpgradeBaseDati( string versioneAttuale );
 
@@ -39,7 +47,7 @@
 		/// e la salvo con il nome "LumenEntities" risolvendo eventuali segnaposto per parametri.
 		/// </summary>
 		/// <param name="nomeExe"></param>
-		void impostaConnectionStringFittizzia( string nomeExe );
+		void impostaConnectionStringGiusta( string nomeExe );
 	}
 
 }

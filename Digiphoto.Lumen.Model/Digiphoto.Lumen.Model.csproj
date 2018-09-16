@@ -168,6 +168,7 @@
     <Compile Include="src\Digiphoto\Lumen\Util\CompNumFoto.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ddl\ddl-create-mysql.sql" />
     <Content Include="ddl\ddl-create-sqLite.sql" />
     <None Include="App.config" />
     <Content Include="dbVuoto.sqlite">

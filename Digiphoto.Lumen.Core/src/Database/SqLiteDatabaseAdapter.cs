@@ -16,7 +16,9 @@ namespace Digiphoto.Lumen.Core.Database {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( SqLiteDatabaseAdapter ) );
 
-		
+		private const string SCHEMA_NAME = null;
+		private const string PROVIDER = "System.Data.SQLite";
+
 		private string nomeFileDbVuoto;
 		private string nomeFileDbPieno;
 		private string cartellaDatabase;
@@ -42,31 +44,30 @@ namespace Digiphoto.Lumen.Core.Database {
 
 		}
 
-		protected override DbConnection createConnection() {
-			
-			// Sostituisco il segnaposto
-			AppDomain.CurrentDomain.SetData( "DataDirectory", cfg.cartellaDatabase );
+		#region Proprietà
 
-			return base.createConnection();
+		private string nomeCompleto {
+			get {
+				return Path.Combine( cfg.cartellaDatabase, cfg.dbNomeDbPieno );
+			}
 		}
 
 		public override string provider {
 			get {
-				return "System.Data.SQLite";
+				return PROVIDER;
 			}
 		}
 
+		protected override string schemaName {
+			get {
+				return SCHEMA_NAME;
+			}
+		}
 
-		/// <summary>
-		/// Usando una connection string "template", creo la connection string vera ovvero quella che
-		/// si chiama "LumenEntities" che è quella che utilizzerà EntityFramework
-		/// </summary>
-		protected override string sostutireSegnapostoConnectionString( string cs ) {
-
-			// Sostituisco il segnaposto nella connection string
-			// AppDomain.CurrentDomain.SetData( "DataDirectory", cartellaDatabase );
-
-			return cs.Replace( "|DataDirectory|", cartellaDatabase );
+		private bool isDatabasEsistente {
+			get {
+				return System.IO.File.Exists( nomeFileDbPieno );
+			}
 		}
 
 		/// <summary>
@@ -79,7 +80,34 @@ namespace Digiphoto.Lumen.Core.Database {
 			}
 		}
 
+		#endregion Proprietà
 
+		#region Metodi
+
+		protected override DbConnection createConnection() {
+
+			FileInfo fi = new FileInfo( nomeCompleto );
+			if( fi.Exists == false || fi.Length == 0 )
+				throw new LumenException( "Il database non esiste. Occorre crearlo" );
+
+
+			// Sostituisco il segnaposto
+			AppDomain.CurrentDomain.SetData( "DataDirectory", cfg.cartellaDatabase );
+
+			return base.createConnection();
+		}
+
+		/// <summary>
+		/// Usando una connection string "template", creo la connection string vera ovvero quella che
+		/// si chiama "LumenEntities" che è quella che utilizzerà EntityFramework
+		/// </summary>
+		protected override string sostutireSegnapostoConnectionString( string cs, bool definitiva ) {
+
+			// Sostituisco il segnaposto nella connection string
+			// AppDomain.CurrentDomain.SetData( "DataDirectory", cartellaDatabase );
+
+			return cs.Replace( "|DataDirectory|", cartellaDatabase );
+		}
 
 		protected override string eventualiUpgradeBaseDati( DbConnection conn, string versioneAttuale ) {
 
@@ -108,7 +136,6 @@ namespace Digiphoto.Lumen.Core.Database {
 			return versioneAttuale;
 		}
 
-		
 		public override void creareNuovoDatabase() {
 
 			// Se non esiste la cartella per il database, allora la creo.
@@ -118,13 +145,6 @@ namespace Digiphoto.Lumen.Core.Database {
 			copiaDbVuotoSuDbDiLavoro();
 		}
 
-		private bool isDatabasEsistente {
-			get {
-				return System.IO.File.Exists( nomeFileDbPieno );
-			}
-		}
-
-		
 		/** Controllo se non esiste la cartella dove risiederà il database, allora la creo */
 		private void creaCartellaPerDb() {
 			// Controllo se esiste la cartella di base dei dati dell'applicazione
@@ -156,6 +176,8 @@ namespace Digiphoto.Lumen.Core.Database {
 			}
 
 		}
+
+		#endregion Metodi
 
 	}
 }
