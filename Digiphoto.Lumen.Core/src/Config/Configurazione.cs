@@ -143,11 +143,12 @@ namespace Digiphoto.Lumen.Config  {
 				// Sistemare eventuali parametri nuovi di release future..
 			}
 
-			// ---
+			/*
+			 * Il database deve essere a posto in fase di configurazione. Qui è troppo tardi (almeno per mysql)
 			DbUtil _dbUtil = new DbUtil();
 			if( _dbUtil.possoCreareNuovoDatabase )
 				_dbUtil.creareNuovoDatabase();
-
+			*/
 
 			// ----
 			// Se non esiste la cartella dove mettere i rullini, allora la creo

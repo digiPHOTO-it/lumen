@@ -194,7 +194,7 @@ namespace Digiphoto.Lumen.Core.Database {
 
 			} catch( Exception ee ) {
 				// Non segnalo errore, perché questo metodo è solo di test
-				_giornale.Debug( "connessione al db fallita", ee );
+				 _giornale.Debug( "connessione al db fallita", ee );
 				tuttoBene = false;
 			}
 

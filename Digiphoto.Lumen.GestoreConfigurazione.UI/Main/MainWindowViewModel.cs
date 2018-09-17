@@ -1264,9 +1264,11 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			qdbUtil.creareNuovoDatabase();
 
 			dialogProvider.ShowMessage( "DataBase creato con successo", "Avviso" );
-        }
 
-        private void login()
+			isConnessioneStabilita = qdbUtil.testConessione();
+		}
+
+		private void login()
         {
 			bool indovinata = false;
 #if(DEBUG)

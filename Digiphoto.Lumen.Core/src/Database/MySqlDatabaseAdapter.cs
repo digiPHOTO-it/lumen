@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.Common;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -53,24 +54,42 @@ namespace Digiphoto.Lumen.Core.Database {
 
 		#region Metodi
 
+
+
 		/// <summary>
 		/// Ricavo lo script DDL che è presente in un altro assembly della solution,
 		/// e lo eseguo sulla connessione mysql attiva.
 		/// </summary>
 		public override void creareNuovoDatabase() {
 
-			string res = "Digiphoto.Lumen.Model.ddl.ddl-create-mysql.sql";
+			// ---
+			_giornale.Debug( "Inizio creazione schema databse MySql tramite DDL" );
+			eseguiDDL( "Digiphoto.Lumen.Model.ddl.ddl-create-mysql.sql" );
+			_giornale.Info( "Fine creazione schema databse MySql tramite DDL" );
+
+			// ---
+			_giornale.Debug( "Inizio creazione schema databse MySql tramite DDL" );
+			eseguiDDL( "Digiphoto.Lumen.Model.ddl.ddl-create-mysql-user.sql" );
+			_giornale.Info( "Fine creazione utente tramite DDL" );
+
+		}
+
+		/// <summary>
+		/// i DDL li ho messi nel progetto : Model
+		/// </summary>
+		/// <param name="nomeRisorsa"></param>
+		private void eseguiDDL( string nomeRisorsa ) {
 
 			var aa = typeof( Digiphoto.Lumen.Model.LumenEntities ).Assembly;
 
 			string fileContents = null;
-			using( var stream = aa.GetManifestResourceStream( res ) ) {
+			using( var stream = aa.GetManifestResourceStream( nomeRisorsa ) ) {
 				TextReader tr = new StreamReader( stream );
 				fileContents = tr.ReadToEnd();
 			}
 
 			if( fileContents == null )
-				throw new ConfigurazioneNonValidaException( "DDL non trovato: " + res );
+				throw new ConfigurazioneNonValidaException( "DDL non trovato: " + nomeRisorsa );
 
 
 
@@ -85,13 +104,13 @@ namespace Digiphoto.Lumen.Core.Database {
 
 				conn.Open();
 
-				_giornale.Info( "Inizio creazione schema databse MySql tramite DDL" );
+				
 
 				Regex regRem = new Regex( @"^--\s.*\n", RegexOptions.Multiline );
 
 				// Separo i singoli comandi
 				char[] sep = { ';', '\n' };
-				string[] comandi = Regex.Split( fileContents, ";\n" );
+				string[] comandi = Regex.Split( fileContents, ";\r\n" );
 				int conta = 0;
 
 				for( int ii = 0; ii < comandi.Length; ii++ ) {
@@ -113,7 +132,7 @@ namespace Digiphoto.Lumen.Core.Database {
 
 				}
 
-				_giornale.Info( "Fine creazione schema databse MySql tramite DDL" );
+
 				conn.Close();
 			}
 		}
@@ -160,14 +179,10 @@ namespace Digiphoto.Lumen.Core.Database {
 
 		protected override string sostutireSegnapostoConnectionString( string connectionString, bool definitiva ) {
 
-			var cs = connectionString.Replace( "|ServerName|", this.cfg.dbNomeServer );
+			var cs = connectionString.Replace( "|ServerName|", cfg.dbNomeServer );
 
 			if( definitiva ) {
-				if( ! cs.Contains( "database=" ) ) {
-					if( !cs.EndsWith( ";" ) )
-						cs += ";";
-					cs += "database=" + schemaName + ";";
-				}
+				cs = String.Format( "server={0};port=3306;database={1};uid=fotografo;pwd=fotografo", cfg.dbNomeServer, schemaName );
 			}
 
 			return cs;
