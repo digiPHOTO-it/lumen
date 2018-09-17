@@ -1788,7 +1788,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			
 			if (!paramCercaFoto.isEmpty())
 				return procediPure;
-
+#if false
 			procediPure = false;
 			StringBuilder msg = new StringBuilder("Attenzione: stai eseguendo una ricerca senza parametri.\nConfermi?");
 			dialogProvider.ShowConfirmation(msg.ToString(), "Richiesta conferma",
@@ -1796,7 +1796,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 				{
 					procediPure = confermato;
 				});
-
+#endif
 			return procediPure;
 		}
 
@@ -2779,10 +2779,10 @@ namespace Digiphoto.Lumen.UI.Gallery {
 				srv.resumeTutteLeStampanti();
 		}
 
-		#endregion Metodi
+#endregion Metodi
 
 
-		#region MemBus
+#region MemBus
 
 		public void OnCompleted()
 		{
@@ -2981,7 +2981,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			}
 		}
 
-		#endregion MemBus
+#endregion MemBus
 
 
 

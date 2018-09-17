@@ -146,6 +146,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ddl\Class1.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\AzioneAuto.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\Carrello.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\ConsumoCartaGiornaliero.cs" />
@@ -169,6 +170,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ddl\ddl-create-mysql.sql" />
+    <EmbeddedResource Include="ddl\ddl-create-mysql-user.sql" />
     <Content Include="ddl\ddl-create-sqLite.sql" />
     <None Include="App.config" />
     <Content Include="dbVuoto.sqlite">

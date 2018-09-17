@@ -66,7 +66,8 @@ namespace Digiphoto.Lumen.Core.Database {
 
 		private bool isDatabasEsistente {
 			get {
-				return System.IO.File.Exists( nomeFileDbPieno );
+				FileInfo fi = new FileInfo( nomeFileDbPieno );
+				return fi.Exists && fi.Length > 0;
 			}
 		}
 
@@ -161,13 +162,15 @@ namespace Digiphoto.Lumen.Core.Database {
 		 */
 		private void copiaDbVuotoSuDbDiLavoro() {
 
-			if( !File.Exists( nomeFileDbPieno ) ) {
-				_giornale.Info( @"Il database di lavoro\r\n" + nomeFileDbPieno + "\r\nnon usabile. Lo creo partendo dal template vuoto" );
+			FileInfo fi = new FileInfo( nomeFileDbPieno );
 
-				File.Copy( nomeFileDbVuoto, nomeFileDbPieno );
+			if( ! fi.Exists || fi.Length == 0 ) {
+				_giornale.Info( @"Il database di lavoro\r\n" + nomeFileDbPieno + "\r\nnon esiste. Lo creo partendo dal template vuoto" );
 
-				_giornale.Debug( "ok copia vuoto -> pieno riuscita" );
+				bool overwrite = (fi.Exists && fi.Length == 0);
+				File.Copy( nomeFileDbVuoto, nomeFileDbPieno, overwrite );
 
+				_giornale.Debug( "copia db vuoto -> pieno riuscita" );
 
 				PathUtil.AddFileSecurity( nomeFileDbPieno, FileSystemRights.WriteData | FileSystemRights.WriteData, AccessControlType.Allow );
 
