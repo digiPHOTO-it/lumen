@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName       "Lumen"
-#define MyAppVersion    "2.2-20180715_2"
+#define MyAppVersion    "3.0-20180919"
 #define MyAppPublisher  "digiPHOTO.it"
 #define MyAppURL        "http://www.digiphoto.it/Lumen"
 #define MyAppExeName    "Digiphoto.Lumen.UI.exe"
@@ -87,11 +87,15 @@ Source: "..\Digiphoto.Lumen.OnRide.UI\{#dirPlat}\Digiphoto.Lumen.OnRide.UI.exe.c
 
 
 ; --- Driver sql ---
+; SqLite
 Source: "..\packages\System.Data.SQLite.Core.1.0.99.0\build\net46\x86\SQLite.Interop.dll"; DestDir: "{app}"; Check: "not IsWin64"; Flags: ignoreversion
 Source: "..\packages\System.Data.SQLite.Core.1.0.99.0\build\net46\x64\SQLite.Interop.dll"; DestDir: "{app}"; Check: "IsWin64"; Flags: ignoreversion
 Source: "..\packages\System.Data.SQLite.Core.1.0.99.0\lib\net46\System.Data.SQLite.dll"; DestDir: "{app}";  Flags: ignoreversion
 Source: "..\packages\System.Data.SQLite.EF6.1.0.99.0\lib\net46\System.Data.SQLite.EF6.dll"; DestDir: "{app}";  Flags: ignoreversion
 Source: "..\packages\System.Data.SQLite.Linq.1.0.99.0\lib\net46\System.Data.SQLite.Linq.dll"; DestDir: "{app}";  Flags: ignoreversion
+; MySql
+Source: "..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll"; DestDir: "{app}";  Flags: ignoreversion
+Source: "..\packages\MySql.Data.Entity.6.9.9\lib\net45\MySql.Data.Entity.EF6.dll"; DestDir: "{app}";  Flags: ignoreversion
 
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
