@@ -603,9 +603,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					}
 				}
 
-				if( r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA ) {
-					carrello.totMasterizzate += r.quantita;
-				}
 			}
 
 			if( ancheProvvigioni ) {
@@ -700,13 +697,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			if( carrello != null )
 				throw new InvalidOperationException( "Esiste già un carrello caricato" );
 
-			
 			using( new UnitOfWorkScope( true ) ) {
 
 				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 
 				var query = from c in dbContext.Carrelli.Include( "righeCarrello" )
-							where c.righeCarrello.Any( r => r.id == idRigaCarrello )
+							where c.righeCarrello.Any( q => q.id == idRigaCarrello )
 							select c;
 
 				carrello = query.SingleOrDefault();
@@ -717,36 +713,39 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				// Carattere speciale che non c'è sulla tastiera per evitare cancellazioni fraudolente
 				char marca = '\u0251';
 
+				RigaCarrello r = carrello.righeCarrello.SingleOrDefault( rr => rr.id == idRigaCarrello );
+
 				// Devo individuare qual'è la riga da modificare
-				foreach( RigaCarrello r in carrello.righeCarrello ) {
-					if( r.id == idRigaCarrello ) {
+				if( r.id != null ) {
 
-						short qtaPrec = r.quantita;
-						decimal totRigaPrec = r.prezzoNettoTotale;
+					short qtaPrec = r.quantita;
+					decimal totRigaPrec = r.prezzoNettoTotale;
 
-						r.quantita = 0;
+					// azzero il valore della riga
+					r.quantita = 0;
+					r.prezzoNettoTotale = 0;
 
-						if( r.isTipoStampa ) {
-							r.descrizione = marca + "Storno " + r.totFogliStampati + " fogli";
-							r.totFogliStampati = 0;
-                            Fotografia f = r.fotografia;
-                            int contaStampa = (int)f.contaStampata + (int)r.quantita;
-                            f.contaStampata = (short)(contaStampa > 0 ? contaStampa : 0);
+					// decremento il totale a pagare del carrello (evito per qualsiasi ragione di scendere negativo)
+					carrello.totaleAPagare -= totRigaPrec;
+					if( carrello.totaleAPagare < 0 )
+						carrello.totaleAPagare = 0;
 
-                            ObjectContext objContext = ((IObjectContextAdapter)mioDbContext).ObjectContext;
-                            objContext.ObjectStateManager.ChangeObjectState(f, EntityState.Modified);
-                        }
 
-						if( r.isTipoMasterizzata ) {
-							r.descrizione = marca + "Storno foto masterizzate";
-							r.quantita = 0;
-						}
-
-						completaAttributiMancanti( false );
-						break;
+					if( r.isTipoStampa ) {
+						r.descrizione = marca + " Storno " + r.totFogliStampati + " fogli";
+						r.totFogliStampati = 0;
+                        Fotografia f = r.fotografia;
+						f.contaStampata = (short) Math.Max( 0, f.contaStampata - qtaPrec );
 					}
-				}
 
+					if( r.isTipoMasterizzata ) {
+						r.descrizione = marca + "Storno foto masterizzate";
+						r.quantita = 0;
+					}
+
+					completaAttributiMancanti( false );
+				}
+				
 				dbContext.SaveChanges();
 			}
 		}
