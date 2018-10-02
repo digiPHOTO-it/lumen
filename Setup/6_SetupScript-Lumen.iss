@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName       "Lumen"
-#define MyAppVersion    "3.0-20180919"
+#define MyAppVersion    "3.0-20180920_1"
 #define MyAppPublisher  "digiPHOTO.it"
 #define MyAppURL        "http://www.digiphoto.it/Lumen"
 #define MyAppExeName    "Digiphoto.Lumen.UI.exe"
@@ -84,6 +84,10 @@ Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\Images\Lumen-selfservice-lo
 ; --- OnRide
 Source: "..\Digiphoto.Lumen.OnRide.UI\{#dirPlat}\Digiphoto.Lumen.OnRide.UI.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.OnRide.UI\{#dirPlat}\Digiphoto.Lumen.OnRide.UI.exe.config"; DestDir: "{app}"; Flags: ignoreversion
+; --- altro varie
+Source: "..\Digiphoto.Lumen.UI\{#dirPlat}\zxing.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.UI\{#dirPlat}\zxing.presentation.dll"; DestDir: "{app}"; Flags: ignoreversion
+
 
 
 ; --- Driver sql ---
