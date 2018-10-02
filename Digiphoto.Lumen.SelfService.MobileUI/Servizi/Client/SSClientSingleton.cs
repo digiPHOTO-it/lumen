@@ -175,6 +175,21 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.Servizi
 			return result;
 		}
 
+		internal CarrelloDto[] getListaCarrelli() {
+			CarrelloDto[] result = new CarrelloDto[0];
+			Open();
+			try {
+				result = ssClient.getListaCarrelli();
+			} catch( Exception ) {
+				connectionRestart();
+				if( isConnectionOK ) {
+					return ssClient.getListaCarrelli();
+				}
+			}
+			return result;
+		}
+
+
 		internal byte[] getImageProvino(Guid fotografiaId)
 		{
 			byte[] result = new byte[0];

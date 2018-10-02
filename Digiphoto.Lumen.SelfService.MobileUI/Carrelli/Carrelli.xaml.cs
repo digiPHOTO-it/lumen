@@ -52,7 +52,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
             listaCarrelli = new ObservableCollection<CarrelloDto>();
 
-            var lista = ssClient.getListaCarrelli();
+			var lista = SSClientSingleton.Instance.getListaCarrelli();
             Console.WriteLine("Lista Carrelli " + lista.Count());
             listaCarrelli.Clear();
             foreach (var carrelloDto in lista)
