@@ -29,11 +29,12 @@ namespace Digiphoto.Lumen.UI.SelettoreDischi {
 
 		public SelettoreDiscoViewModel( string defaultMasterizzatore ) : this() {
 
-			for( int ii = 0; ii < dischi.Count; ii++ ) {
-				if( dischi[ii].Name.StartsWith( defaultMasterizzatore ) ) {
-					discoSelezionato = dischi [ii];
+			if( defaultMasterizzatore != null )  // potrebbe non essere stato configurato.x
+				for( int ii = 0; ii < dischi.Count; ii++ ) {
+					if( dischi[ii].Name.StartsWith( defaultMasterizzatore ) ) {
+						discoSelezionato = dischi [ii];
+					}
 				}
-			}
 
 		}
 
