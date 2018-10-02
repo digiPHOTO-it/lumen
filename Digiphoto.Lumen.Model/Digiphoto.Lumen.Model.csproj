@@ -146,7 +146,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ddl\Class1.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\AzioneAuto.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\Carrello.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\ConsumoCartaGiornaliero.cs" />
