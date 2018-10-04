@@ -121,7 +121,8 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                     seNonPossoCopiareSpaccati();
                     _threadCopiaSuChiavetta = new Thread(copiaCartellaDestinazioneAsincrono);
                     _threadCopiaSuChiavetta.Start();
-                    break;
+
+					break;
                 case MasterizzaTarget.Masterizzatore :
                     _burner = new BurnerSrvImpl();
                     _burner.InviaStatoMasterizzazione += new BurnerSrvImpl.StatoMasterizzazioneEventHandler(inviaMessaggioStatoMasterizzazione);
@@ -250,7 +251,9 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 				copiaCompletataMsg.cartella = _destinazione;
 				this.isCompletato = true;
                 pubblicaMessaggio(copiaCompletataMsg);
-            } 
+            }
+
+			_giornale.Debug( "fine del thread copia su chiavetta."  );
         }
 
         #region CopiaSuChiavetta;
@@ -281,6 +284,11 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
                     string nomeFileDest = "";
                     try
                     {
+
+						if( backgroundWorkerCopia.CancellationPending ) {
+							_giornale.Warn( "cancellazione richiesta durante copia file su chiavetta. Come mai ? Indagare" );
+						}
+						
                         nomeFileDest = Path.Combine(_destinazione, Path.GetFileName(fot.nomeFile));
                         String nomeFileSorgente = PathUtil.nomeCompletoVendita(fot);
                         File.Copy(@nomeFileSorgente, nomeFileDest, false);
@@ -440,30 +448,25 @@ namespace Digiphoto.Lumen.Servizi.Masterizzare
 		
 		protected override void Dispose( bool disposing )
         {
-
-            System.Diagnostics.Trace.WriteLine("DISPOSE");
-            try
-            {
-                // Se il tread di copia è ancora vivo, lo uccido
-                if (_threadCopiaSuChiavetta != null)
-                {
-                    System.Diagnostics.Trace.WriteLine("VIVO");
-                    if (_threadCopiaSuChiavetta.IsAlive)
-                        _threadCopiaSuChiavetta.Abort();
-                    else
-                        _threadCopiaSuChiavetta.Join();
-                }
-            }
-            finally
-            {
+			_giornale.Debug( "eseguo Dispose" );
+			try {
+				// Se il tread di copia è ancora vivo, lo uccido
+				if( _threadCopiaSuChiavetta != null ) {
+					System.Diagnostics.Trace.WriteLine( "VIVO" );
+					if( _threadCopiaSuChiavetta.IsAlive )
+						_threadCopiaSuChiavetta.Abort();
+					else
+						_threadCopiaSuChiavetta.Join();
+				}
+			} finally {
 				isCompletato = true;
 
-                if (_burner != null)
-                {
-                    _burner.Dispose();
-                }
-                base.Dispose( disposing );
-            }
+				if( _burner != null ) {
+					_burner.Dispose();
+				}
+				base.Dispose( disposing );
+			}
+
         }
 
 
