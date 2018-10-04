@@ -16,8 +16,8 @@ namespace Digiphoto.Lumen.Servizi {
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof(ServizioImpl) );
 		
-		private bool _disposed;
-		private bool _disposing;
+		protected bool _disposed;
+		protected bool _disposing;
 
 		public ServizioImpl() {
 		}

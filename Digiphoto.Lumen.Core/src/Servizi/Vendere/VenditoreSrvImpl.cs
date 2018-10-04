@@ -161,6 +161,26 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		protected override void Dispose( bool disposing ) {
 
 			gestoreCarrello.Dispose(); // Importante: mi serve per rilasciare il DbContext (che altrimenti rimane aperto e tiene sotto scacco le entità)
+			
+			chiudiTuttiIServiziSospesi();
+		}
+
+		void chiudiTuttiIServiziSospesi() {
+
+			lock( thisLock ) {
+				do {
+					if( listaServiziDaChiudere.Count > 0 ) {
+						int idx = listaServiziDaChiudere.Count - 1;
+						IServizio srvDaChiudere = listaServiziDaChiudere[idx];
+						listaServiziDaChiudere.RemoveAt( idx );
+						try {
+							srvDaChiudere.Dispose();
+						} catch( Exception ee ) {
+							_giornale.Warn( "errore in chiusura servizio: " + srvDaChiudere, ee );
+						}
+					}
+				} while( listaServiziDaChiudere.Count > 0 );
+			}
 		}
 
 		public override void start() {
@@ -290,6 +310,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 		public void creareNuovoCarrello() {
+
+			chiudiTuttiIServiziSospesi();
 
 			if( gestoreCarrello != null ) {
 				ascoltatorePropertyChangedElimina();
@@ -658,20 +680,18 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
+		List<IServizio> listaServiziDaChiudere = new List<IServizio>();
+
 		private void gestioneEsitoMasterizzazione( MasterizzaMsg masterizzaMsg ) {
 
-			if( masterizzaMsg.fase != Fase.CopiaCompletata )
-				return;
+			// ho finito ma non posso chiudere ancora il servizio perché deve finire di fare il suo iter di chiusura.
+			// lo chiuderò prossimamente.
+			if( masterizzaMsg.fase == Fase.CopiaCompletata || masterizzaMsg.fase == Fase.ErroreMedia || masterizzaMsg.fase == Fase.ErroreSpazioDisco ) {
 
-			if( masterizzaMsg.esito == Esito.Ok )
-				return;
-
-			// TODO gestire lo storno
-			// Vado a correggere questa riga
-			//using( GestoreCarrello altroGestoreCarrello = new GestoreCarrello() ) {
-			//    altroGestoreCarrello.stornoMasterizzate( (Guid)masterizzaMsg.senderTag, (short)masterizzaMsg.totFotoAggiunte, (short)masterizzaMsg.totFotoNonAggiunte );
-			//}
-
+				lock( thisLock ) {
+					listaServiziDaChiudere.Add( (IMasterizzaSrv)masterizzaMsg.sender );
+				}
+			}
 		}
 
 		/**
