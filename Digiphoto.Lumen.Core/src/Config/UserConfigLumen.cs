@@ -313,7 +313,6 @@ namespace Digiphoto.Lumen.Config
 			}
 		}
 
-
 		/// <summary>
 		/// La percentuale di copertura della foto originale da parte del logo.
 		/// </summary>

@@ -27,6 +27,7 @@ using Digiphoto.Lumen.Core.Eventi;
 using Digiphoto.Lumen.Servizi.EliminaFotoVecchie;
 using Digiphoto.Lumen.UI.Carrelli.Masterizzare;
 using Digiphoto.Lumen.UI.Mvvm.Event;
+using Digiphoto.Lumen.Core.Database;
 
 namespace Digiphoto.Lumen.UI.Carrelli {
 
@@ -825,7 +826,11 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 												"\nTotale: " + venditoreSrv.carrello.totaleAPagare +
 												"\nN° Fotografie: " + totoleFotoStampate +
 												"\nN° Foto Masterizzate: " + totaleFotoMasterizzate +
-												"\nN° ErroriUtil: " + totoleErrori;
+												"\nN° Errori: " + totoleErrori;
+
+					if( venditoreSrv.carrello.idCortoSelfService != null ) {
+						msg += "\n\nCod. Self-Service : " + venditoreSrv.carrello.idCortoSelfService;
+					}
 
 					dialogProvider.ShowMessage( msg, "Avviso" );
 
@@ -1517,9 +1522,14 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 
 		void visualizzareQRcodeSelfService() {
 
+			string prefix = UnitOfWorkScope.currentDbContext.InfosFisse.First().urlPrefixSelfServiceWeb;
+			
+			string url = prefix + "/Carrello/Details/" + carrelloCorrente.id;
+
 			// Apro la popup lanciando un evento
 			var ea = new OpenPopupRequestEventArgs {
-				requestName = "QRcodeSelfServicePopup"
+				requestName = "QRcodeSelfServicePopup",
+				param = url
 			};
 
 			RaisePopupDialogRequest( ea );

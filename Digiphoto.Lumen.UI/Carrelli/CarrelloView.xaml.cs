@@ -7,7 +7,8 @@ using System.Collections;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.UI.Carrelli.Masterizzare;
 using Digiphoto.Lumen.UI.Mvvm.Event;
-
+using Digiphoto.Lumen.UI.Qr;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.UI.Carrelli {
 	/// <summary>
@@ -206,15 +207,15 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 
 			OpenPopupRequestEventArgs eaPop = (OpenPopupRequestEventArgs)e;
 
-#if false
 			if( eaPop.requestName == "QRcodeSelfServicePopup" ) {
 
-				QRcodeSelfService win = new QRcodeSelfService();
+				QRcodeWindow win = new QRcodeWindow();
 
 				// Imposto la finestra contenitore per poter centrare
 				win.Owner = this.parentWindow;
+				win.Title = "Indirizzo web self-service";
 
-				win.DataContext = carrelloViewModel.carrelloCorrente.id;
+				win.DataContext = eaPop.param;
 
 				var esito = win.ShowDialog();
 
@@ -222,7 +223,6 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 
 				win.Close();
 			}
-#endif
 
 			if( eaPop.requestName == "ScegliMasterizzaTargetPopup" ) {
 

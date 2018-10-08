@@ -28,8 +28,9 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 		public DateTime? giornataIniz {	get; set; }
 		public DateTime? giornataFine { get; set; }
 		public Guid carrelloId { get; set; }
-	
-	public bool idratareImmagini { get; set; }
+		public string carrelloIdCorto  { get; set; }
+
+		public bool idratareImmagini { get; set; }
 
 		public ParamCercaCarrello() : this( false ) {
 		}

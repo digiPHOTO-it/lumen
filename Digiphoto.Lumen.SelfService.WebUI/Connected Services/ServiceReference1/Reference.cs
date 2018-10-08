@@ -260,6 +260,12 @@ namespace Digiphoto.Lumen.SelfService.WebUI.ServiceReference1 {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISelfService/getCarrello", ReplyAction="http://tempuri.org/ISelfService/getCarrelloResponse")]
         System.Threading.Tasks.Task<Digiphoto.Lumen.SelfService.WebUI.ServiceReference1.CarrelloDto> getCarrelloAsync(System.Guid carrelloId);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISelfService/getCarrello2", ReplyAction="http://tempuri.org/ISelfService/getCarrello2Response")]
+        Digiphoto.Lumen.SelfService.WebUI.ServiceReference1.CarrelloDto getCarrello2(string carrelloIdCorto);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISelfService/getCarrello2", ReplyAction="http://tempuri.org/ISelfService/getCarrello2Response")]
+        System.Threading.Tasks.Task<Digiphoto.Lumen.SelfService.WebUI.ServiceReference1.CarrelloDto> getCarrello2Async(string carrelloIdCorto);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISelfService/getListaFotografie", ReplyAction="http://tempuri.org/ISelfService/getListaFotografieResponse")]
         Digiphoto.Lumen.SelfService.WebUI.ServiceReference1.FotografiaDto[] getListaFotografie(System.Guid carrelloId);
         
@@ -350,6 +356,14 @@ namespace Digiphoto.Lumen.SelfService.WebUI.ServiceReference1 {
         
         public System.Threading.Tasks.Task<Digiphoto.Lumen.SelfService.WebUI.ServiceReference1.CarrelloDto> getCarrelloAsync(System.Guid carrelloId) {
             return base.Channel.getCarrelloAsync(carrelloId);
+        }
+        
+        public Digiphoto.Lumen.SelfService.WebUI.ServiceReference1.CarrelloDto getCarrello2(string carrelloIdCorto) {
+            return base.Channel.getCarrello2(carrelloIdCorto);
+        }
+        
+        public System.Threading.Tasks.Task<Digiphoto.Lumen.SelfService.WebUI.ServiceReference1.CarrelloDto> getCarrello2Async(string carrelloIdCorto) {
+            return base.Channel.getCarrello2Async(carrelloIdCorto);
         }
         
         public Digiphoto.Lumen.SelfService.WebUI.ServiceReference1.FotografiaDto[] getListaFotografie(System.Guid carrelloId) {

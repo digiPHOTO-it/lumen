@@ -51,6 +51,13 @@ namespace Digiphoto.Lumen.Model {
 
 		public bool visibileSelfService { get; set; }
 
+		/// <summary>
+		/// Codice corto di soli quattro caratteri da usare per identificare il carrello nel self-service web
+		/// </summary>
+		public string idCortoSelfService {
+			get; set;
+		}
+
 		private Nullable<decimal> _prezzoDischetto;
 		public Nullable<decimal> prezzoDischetto {
 			get {

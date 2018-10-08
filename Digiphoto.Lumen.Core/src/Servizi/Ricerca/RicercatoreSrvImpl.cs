@@ -729,8 +729,11 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			if( param.carrelloId != Guid.Empty )
 				query = query.Where( cc => cc.id == param.carrelloId );
 
+			if( param.carrelloIdCorto != null )
+				query = query.Where( cc => cc.idCortoSelfService == param.carrelloIdCorto );
+
 			//Filtro solo i carrelli che non sono stati venduti
-			if (param.isVenduto != null)
+			if( param.isVenduto != null)
 			{
 				if(param.isVenduto==false){
 					query = query.Where(ff => ff.venduto != true);

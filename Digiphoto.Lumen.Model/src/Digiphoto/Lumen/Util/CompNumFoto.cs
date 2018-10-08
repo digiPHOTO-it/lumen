@@ -7,7 +7,7 @@ namespace Digiphoto.Lumen.Model.Util
 {
 	public class CompNumFoto
 	{
-		private const string CharList = "0123456789abcdefghijklmnpqrstuvwxyz";
+		private const string CharList = "0123456789ABCDEFGHIJKLMNPQRSTUVWXYZ";
 
 		public static String getStringValue(long input)
 		{
@@ -47,5 +47,18 @@ namespace Digiphoto.Lumen.Model.Util
 			return result;
 		}
 
+		public static string getRandomString( int len ) {
+
+			StringBuilder buf = new StringBuilder();
+			Random rnd = new Random();
+			int pos;
+			do {
+				pos = rnd.Next( 0, CharList.Length-1 );
+				buf.Append( CharList[pos] );
+			} while( buf.Length < len );
+
+			return buf.ToString();
+		}
+			 
 	}
 }

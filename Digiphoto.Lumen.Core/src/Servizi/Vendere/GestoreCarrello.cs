@@ -17,6 +17,7 @@ using System.IO;
 using System.Data.Entity.Validation;
 using System.Data.Entity;
 using Digiphoto.Lumen.Servizi.Stampare;
+using Digiphoto.Lumen.Model.Util;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 
@@ -32,7 +33,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		#region Costruttore
 
 #if DEBUG
-	public
+		public
 #else
 	protected internal 
 #endif
@@ -80,9 +81,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
-		public bool isCarrelloModificato { 
-			get; 
-			private set; 
+		public bool isCarrelloModificato {
+			get;
+			private set;
 		}
 
 		public bool isCarrelloTransient {
@@ -99,14 +100,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public bool isPossibileModificareCarrello {
 			get {
-				return ! carrello.venduto;
+				return !carrello.venduto;
 			}
 		}
 
-		public bool isCarrelloVuoto
-		{
-			get
-			{
+		public bool isCarrelloVuoto {
+			get {
 				return carrello.righeCarrello.Count == 0;
 			}
 		}
@@ -118,9 +117,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// </summary>
 		public short? scontoApplicato {
 			get {
-				if (carrello.totaleAPagare == 0 || 
+				if( carrello.totaleAPagare == 0 ||
 					prezzoNettoTotale == 0 ||
-					carrello.totaleAPagare == null)
+					carrello.totaleAPagare == null )
 					return null;
 
 				decimal x = (100 * (decimal)carrello.totaleAPagare) / prezzoNettoTotale;
@@ -158,13 +157,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
-		public string spazioFotoDaMasterizzate
-		{
-			get
-			{
+		public string spazioFotoDaMasterizzate {
+			get {
 				long totalLength = 0;
-				foreach (RigaCarrello riga in carrello.righeCarrello.Where(r => r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA))
-                {
+				foreach( RigaCarrello riga in carrello.righeCarrello.Where( r => r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA ) ) {
 					if( riga.fotografia != null ) {
 						String filePath = (Configurazione.cartellaRepositoryFoto + Path.DirectorySeparatorChar + riga.fotografia.nomeFile);
 						totalLength += new FileInfo( filePath ).Length;
@@ -173,7 +169,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 				//long size = totalLength / 1024;
 
-				return Format.ByteSize(totalLength);
+				return Format.ByteSize( totalLength );
 
 				//return string.Format( "{0} MB", size / 1024 );
 
@@ -218,7 +214,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		#region Metodi
 		private void creaMioDbContext() {
-			
+
 			// Rilascio eventuale context precedente
 			if( mioDbContext != null ) {
 				mioDbContext.Dispose();
@@ -246,8 +242,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// Carico da disco un carrello esistente
 		/// </summary>
 		/// <param name="idCarrello"></param>
-		public void caricaCarrello( Guid idCarrello )
-		{
+		public void caricaCarrello( Guid idCarrello ) {
 			creaMioDbContext();
 
 			this.carrello = mioDbContext.Carrelli
@@ -255,7 +250,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				.Include( c2 => c2.incassiFotografi )
 				.Where( r => r.id == idCarrello )
 				.Single();
-			
+
 			foreach( IncassoFotografo ff in carrello.incassiFotografi ) {
 				mioObjContext.LoadProperty( ff, c => c.fotografo );
 				mioObjContext.Detach( ff.fotografo );
@@ -350,10 +345,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 
 			isCarrelloModificato = true;
-		} 
+		}
 
 		public void aggiungiRiga( RigaCarrello riga ) {
-			
+
 			if( riga.fotografia == null )
 				throw new ArgumentNullException( "nella RigaCarrello è obbligatoria la Fotografia" );
 			if( riga.fotografo == null )
@@ -363,7 +358,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					throw new ArgumentNullException( "nella RigaCarrello da stampare è obbligatorio il FormatoCarta" );
 
 
-			if (!isStessaFotoInCarrello(_carrello, riga)) {
+			if( !isStessaFotoInCarrello( _carrello, riga ) ) {
 
 				// Rileggo le associazioni in questo modo gli oggetti vengono riattaccati al context corrente.
 				riga.fotografia = mioDbContext.Fotografie.Single( r => r.id == riga.fotografia.id );
@@ -376,21 +371,21 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				// Se non ci credi leggi qui:
 				// http://jamesheppinstall.wordpress.com/2013/06/08/managing-parent-and-child-collection-relationships-in-entity-framework-what-is-an-identifying-relationship-anyway/
 				riga.carrello = this.carrello;
-//				riga.carrello_id = this.carrello.id;
+				//				riga.carrello_id = this.carrello.id;
 				// Però se faccio cosi, non mi funziona piu l'aggiunta di righe ad un carrello esistente !!
 
 				carrello.righeCarrello.Add( riga );
 
 				isCarrelloModificato = true;
 
-            } else {
+			} else {
 				throw new LumenException( "La fotografia è già stata caricata nel carrello\r\nModificare la quantità\r\nRiga non aggiunta" );
-			}	
+			}
 		}
 
 		internal void elimina( Carrello carrelloDacanc ) {
 
-			if( ! carrelloDacanc.Equals( this.carrello ) ) {
+			if( !carrelloDacanc.Equals( this.carrello ) ) {
 				OrmUtil.forseAttacca<Carrello>( ref carrelloDacanc, mioDbContext );
 			}
 
@@ -433,14 +428,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			completaAttributiMancanti( true );
 
-			if( ! isPossibileSalvare )
+			if( !isPossibileSalvare )
 				throw new InvalidOperationException( "Impossibile salvare carrello : " + msgValidaCarrello() );
 
 			// Sistemo tutti gli attributi di chiave transienti
 			if( carrello.id == Guid.Empty )
 				carrello.id = Guid.NewGuid();
 
-			foreach(RigaCarrello rigaCarrello in carrello.righeCarrello){
+			foreach( RigaCarrello rigaCarrello in carrello.righeCarrello ) {
 
 				if( rigaCarrello.id == Guid.Empty )
 					rigaCarrello.id = Guid.NewGuid();
@@ -448,7 +443,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				if( rigaCarrello.carrello_id == Guid.Empty )
 					rigaCarrello.carrello_id = carrello.id;           
 				*/
-            }
+			}
 
 			foreach( IncassoFotografo incassoFotografo in carrello.incassiFotografi ) {
 				if( incassoFotografo.id == Guid.Empty )
@@ -459,13 +454,13 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				*/
 			}
 
-            // Se il carrello è nuovo, lo aggiungo al set.
-            if (isStatoModifica == false)
-                mioDbContext.Carrelli.Add(carrello);
+			// Se il carrello è nuovo, lo aggiungo al set.
+			if( isStatoModifica == false )
+				mioDbContext.Carrelli.Add( carrello );
 
 			// Ora sistemo il totale a pagare. Lo valorizzo soltanto se è vuoto. 
 			// Se l'utente ha valorizzato a mano il totale a pagare, lo lascio invariato.
-			if( carrello.totaleAPagare == null)
+			if( carrello.totaleAPagare == null )
 				//Prima non avevo la gestione dei valori nulli.
 				//carrello.totaleAPagare <= 0 )
 				carrello.totaleAPagare = prezzoNettoTotale;
@@ -514,22 +509,20 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// <summary>
 		/// Mi dice se la stessa foto è già nel carrello con lo stesso discriminator
 		/// </summary>
-		private static bool isStessaFotoInCarrello( Carrello carrello, RigaCarrello riga )
-		{
-			return isStessaFotoInCarrello(carrello, riga, riga.discriminator);
+		private static bool isStessaFotoInCarrello( Carrello carrello, RigaCarrello riga ) {
+			return isStessaFotoInCarrello( carrello, riga, riga.discriminator );
 		}
 
-        public static bool isStessaFotoInCarrello(Carrello carrello, RigaCarrello rigaNew, string discriminator)
-        {
-			bool esisteGia = carrello.righeCarrello.Any( r =>  r.discriminator == discriminator && rigaNew.fotografia.Equals( r.fotografia )  );
+		public static bool isStessaFotoInCarrello( Carrello carrello, RigaCarrello rigaNew, string discriminator ) {
+			bool esisteGia = carrello.righeCarrello.Any( r => r.discriminator == discriminator && rigaNew.fotografia.Equals( r.fotografia ) );
 
-            return esisteGia;
-        }
+			return esisteGia;
+		}
 
-        /// <summary>
-        /// Questo metodo pubblico per poter ricalcolare il totale durante la gestione del carrello.
-        /// </summary>
-        public void ricalcolaDocumento() {
+		/// <summary>
+		/// Questo metodo pubblico per poter ricalcolare il totale durante la gestione del carrello.
+		/// </summary>
+		public void ricalcolaDocumento() {
 			completaAttributiMancanti( false );
 		}
 		public void ricalcolaDocumento( bool ancheProvvigioni ) {
@@ -634,6 +627,30 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					}
 				}
 			}
+
+			// Se gestisco il self-service, e se il carrello è venduto, attribuisco l'ID corto per il web
+			if( carrello.venduto && carrello.visibileSelfService )
+				if( carrello.idCortoSelfService == null )
+					carrello.idCortoSelfService = generaUnIdCorto();
+		}
+
+		private string generaUnIdCorto() {
+
+			string idCorto = null;
+			bool esiste;
+			int tentativi = 0;
+			do {
+
+				idCorto = CompNumFoto.getRandomString( 4 );
+
+				// Verifico se esiste già
+				esiste = UnitOfWorkScope.currentDbContext.Carrelli.Any( c => c.idCortoSelfService == idCorto );
+				++tentativi;
+
+			} while( esiste );
+
+			_giornale.Debug( String.Format( "Generato idCorto carrello {0} in {1} tentativi", idCorto, tentativi ) );
+			return idCorto;
 		}
 
 		/** 

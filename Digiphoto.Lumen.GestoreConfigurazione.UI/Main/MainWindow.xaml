@@ -64,7 +64,7 @@
 						<Image Stretch="Uniform" Name="logoMotoreDbImage" 
 							   Style="{StaticResource imgLogoMotoreSyle}" />
 					</Border>
-					
+
 					<Label Content="Motore di database" Height="28" HorizontalAlignment="Left" Margin="11,19,0,0" Name="label10" VerticalAlignment="Top" Width="126"  />
 
 
@@ -125,8 +125,8 @@
 					<TextBlock Height="71" Margin="0,6,6,0" Text="ATTENZIONE  queste preferenze sono univoche per tutto il Punto Vendita e quindi per tutti i computer collegati alla rete" VerticalAlignment="Top" TextWrapping="Wrap" Width="189" HorizontalAlignment="Right" />
 					<Label Content="N° giorni elimina foto" HorizontalAlignment="Left" Margin="30,199,0,0" VerticalAlignment="Top" Width="155" />
 					<TextBox Height="23" HorizontalAlignment="Left" Margin="217,202,0,0" MaxLength="3" Text="{Binding Path=infoFissa.numGiorniEliminaFoto}" ToolTip="N.giorni dopo cui cancellare le foto vecchie" VerticalAlignment="Top" Width="66" />
-					<Label Content="Quando azzerare il numeratore fotogrammi" Height="28" HorizontalAlignment="Left" Margin="30,258,0,0" Name="label7" VerticalAlignment="Top" Width="253" />
-					<ComboBox Height="23" HorizontalAlignment="Left" Margin="289,258,0,0" VerticalAlignment="Top" Width="120"
+					<Label Content="Quando azzerare il numeratore fotogrammi" Height="28" HorizontalAlignment="Left" Margin="319,199,0,0" Name="label7" VerticalAlignment="Top" Width="253" />
+					<ComboBox Height="23" HorizontalAlignment="Left" Margin="603,202,0,0" VerticalAlignment="Top" Width="120"
                               ItemsSource="{Binding modiAzzeramentoNumeroFoto}"
                               SelectedValuePath="Key" DisplayMemberPath="Value"
                               ToolTip="Scegliere con quale frequenza viene azzerato il numeratore dei fotogrammi scaricati"
@@ -135,6 +135,9 @@
 
 					<Label Content="Modalità di vendita" HorizontalAlignment="Left" Margin="30,132,0,0" Name="label9" VerticalAlignment="Top" Width="113" />
 					<ComboBox Name="comboBoxModalitaVendita"  HorizontalAlignment="Left" Margin="217,132,0,0" VerticalAlignment="Top" Width="148" ItemsSource="{Binding modoVenditaValues}" SelectedValue="{Binding Path=cfg.modoVendita}" />
+
+					<Label Content="Url web server SS" Height="27" HorizontalAlignment="Left" Margin="30,244,0,0" VerticalAlignment="Top" Width="155" />
+					<TextBox Height="27" Margin="217,244,182,0" Text="{Binding infoFissa.urlPrefixSelfServiceWeb}" VerticalAlignment="Top" ToolTip="Prefisso url web server per Self Service" />
 
 				</Grid>
 			</TabItem>
@@ -239,17 +242,20 @@
 					</Expander>
 					<Expander Header="Self-Service"  Style="{StaticResource expanderStylePari}">
 						<Grid>
-							<Label Content="Modalità ricerca foto" Margin="19,0,602,41" Height="27" />
-							<ComboBox SelectedValuePath="Content" SelectedValue="{Binding Path=cfg.modoRicercaSS}" Margin="193,0,0,42" HorizontalAlignment="Left" Width="103">
+							<Label Content="Modalità ricerca foto" Margin="19,8,602,62" Height="27" />
+							<ComboBox SelectedValuePath="Content" SelectedValue="{Binding Path=cfg.modoRicercaSS}" Margin="193,0,0,62" HorizontalAlignment="Left" Width="103">
 								<ComboBox.Items>
 									<ComboBoxItem Content="carrelli" />
 									<ComboBoxItem Content="fotografi" />
 								</ComboBox.Items>
 							</ComboBox>
 
-							<Label Content="Logo self-service" Height="27" HorizontalAlignment="Left" Margin="19,37,0,0" VerticalAlignment="Top" Width="131" />
-							<TextBox Height="27" Margin="193,37,55,0" Text="{Binding cfg.logoNomeFileSelfService}" VerticalAlignment="Top" ToolTip="Questo logo viene visualizzato sul tablet" />
+							<Label Content="Logo self-service" Height="27" HorizontalAlignment="Left" Margin="19,40,0,0" VerticalAlignment="Top" Width="131" />
+							<TextBox Height="27" Margin="193,40,55,0" Text="{Binding cfg.logoNomeFileSelfService}" VerticalAlignment="Top" ToolTip="Questo logo viene visualizzato sul tablet" />
 							<Button Command="{Binding scegliereFileCommand}" CommandParameter="logoSS" Content="..." Margin="0,39,15,0" ToolTip="Nome file del logo per il self-service SENZA percorso" VerticalAlignment="Top" Width="22" HorizontalAlignment="Right" />
+
+
+
 						</Grid>
 					</Expander>
 

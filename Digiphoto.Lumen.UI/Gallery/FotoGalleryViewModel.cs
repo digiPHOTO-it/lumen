@@ -1568,7 +1568,14 @@ namespace Digiphoto.Lumen.UI.Gallery {
 						venditoreStampaDiretta.creareNuovoCarrello();
 						venditoreStampaDiretta.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_RAPIDA;
 						venditoreStampaDiretta.aggiungereStampe(listaSelez, creaParamStampaFoto(stampanteAbbinata));
+
+						// La vendita con stampa diretta, non la gestisco con il self service
+						venditoreStampaDiretta.carrello.visibileSelfService = false;
+
 						string msgErrore = venditoreStampaDiretta.vendereCarrello();
+
+
+
 						bool esitoOk = (msgErrore == null);
                         if( esitoOk )
 						{
