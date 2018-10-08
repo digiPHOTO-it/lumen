@@ -81,17 +81,26 @@ namespace Digiphoto.Lumen.SelfService.WebUI.Controllers
 		}
 
 
+
+
 		// GET: Carrello/Details/5
-		public ActionResult Details( Guid id )
+		public ActionResult Details( String id )
         {
-			CarrelloDto dto = selfServiceClient.getCarrello( id );
+			CarrelloDto dto = null;
+			Guid guid;
+			bool isGuid = Guid.TryParse( id, out guid );
+
+			if( isGuid )
+				dto = selfServiceClient.getCarrello( guid );
+			else
+				dto = selfServiceClient.getCarrello2( id.ToUpper() );
 
 			if( dto == null || dto.isVenduto == false ) {
 				string msg = "Carrello non trovato, oppure NON ancora venduto, oppure non visibile per il SelfService. ID = " + id;
 				return View( "Error", model:msg );   // questa sintassi serve a risolvere un problema: esiste un overload con 2 stringhe: https://stackoverflow.com/questions/18273416/the-view-or-its-master-was-not-found-or-no-view-engine-supports-the-searched-loc#31245642
 			}
 
-			FotografiaDto [] lista = selfServiceClient.getListaFotografie( id );
+			FotografiaDto [] lista = selfServiceClient.getListaFotografie( dto.id );
 
 			// creo il modello per visualizzare la view
 			var paniere = new Paniere {

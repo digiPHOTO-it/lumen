@@ -54,6 +54,7 @@ namespace Digiphoto.Lumen.Applicazione {
 				infoFissa = new InfoFissa();
 				infoFissa.id = "K";
 				infoFissa.pixelProvino = 400;
+				infoFissa.urlPrefixSelfServiceWeb = "http://lumen:8080";
 				objContext.InfosFisse.Add( infoFissa );
 				objContext.SaveChanges();
 			}

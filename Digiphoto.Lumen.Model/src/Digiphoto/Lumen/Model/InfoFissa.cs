@@ -32,6 +32,8 @@ namespace Digiphoto.Lumen.Model {
 		public short numGiorniEliminaFoto { get; set; }
 		public string varie { get; set; }
 
+		public string urlPrefixSelfServiceWeb { get; set; }
+
 		#region INotifyPropertyChanged
 		[field: NonSerialized]
 		public event PropertyChangedEventHandler PropertyChanged;

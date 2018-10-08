@@ -108,6 +108,17 @@
 
             </GroupBox>
 
+			<GroupBox Header="Self-Service" Style="{StaticResource gruppoTotaleTipoStyle}">
+				<StackPanel Orientation="Vertical">
+					<CheckBox IsChecked="{Binding Path=carrelloCorrente.visibileSelfService,Mode=TwoWay}" Content="Visibile SS" ToolTip="Carrello visibile sui tablet/web per il self-service" />
+					<StackPanel Orientation="Horizontal">
+						<Label Content="Cod" />
+						<TextBox Margin="0" IsReadOnly="True" Text="{Binding Path=carrelloCorrente.idCortoSelfService}" Width="50" MaxLength="4" />
+					</StackPanel>
+					<Button Content="QRcode SS" ToolTip="Visualizza QRcode per scaricare da SelfService" Name="aprireQRcodePopup" Command="{Binding visualizzareQRcodeSelfServiceCommand}"  />
+				</StackPanel>
+			</GroupBox>
+			
             <StackPanel Margin="4">
 
                 <Popup IsOpen="{Binding IsChecked, ElementName=buttonVediProvvigioni}" x:Name="Popup" StaysOpen="False" >
@@ -121,12 +132,10 @@
 							  IsHitTestVisible="{Binding IsOpen, Converter={StaticResource boolInverterConverter}, ElementName=Popup, Mode=OneWay}" 
 							  />
 
-                <CheckBox IsChecked="{Binding Path=carrelloCorrente.visibileSelfService,Mode=TwoWay}" Content="Self Service" ToolTip="Carrello visibile sui tablet per il self-service" />
 
                 <Label Content="VENDUTO" VerticalContentAlignment="Center"  HorizontalContentAlignment="Center" FontSize="20" Background="Crimson" Height="50" Margin="2,0,0,0"
 					   Visibility="{Binding Path=carrelloCorrente.venduto, Converter={StaticResource boolVisibilityConverter}}" 
 					   />
-				<Button Content="QRcode Self" ToolTip="Visualizza QRcode per scaricare da SelfService" Name="aprireQRcodePopup" Command="{Binding visualizzareQRcodeSelfServiceCommand}" />
 
 			</StackPanel>
 
@@ -209,6 +218,7 @@
                         </DataGridTextColumn>
                         <DataGridTextColumn Header="Note" Binding="{Binding note}" IsReadOnly="True" />
                         <DataGridCheckBoxColumn Header="Self Service" Binding="{Binding visibileSelfService}" IsReadOnly="True" />
+						<DataGridTextColumn Header="cod. SS" Binding="{Binding idCortoSelfService}" IsReadOnly="True" />
                     </DataGrid.Columns>
                 </DataGrid>
 

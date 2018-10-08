@@ -38,6 +38,33 @@ namespace Digiphoto.Lumen.SelfService {
 
 		}
 
+		public CarrelloDto getCarrello2( String idCorto ) {
+
+			CarrelloDto dto = null;
+
+			using( new UnitOfWorkScope() ) {
+
+				// Ricavo il servizio per estrarre i carrelli
+				ICarrelloExplorerSrv srv = LumenApplication.Instance.getServizioAvviato<ICarrelloExplorerSrv>();
+
+				ParamCercaCarrello param = new ParamCercaCarrello {
+					soloSelfService = true,
+					carrelloIdCorto = idCorto
+				};
+
+				srv.cercaCarrelli( param );
+
+				// Creo la lista contenente gli oggetti di trasporto leggeri che ho ricavato dal servizio core.
+				if( srv.carrelli != null && srv.carrelli.Count == 1 ) {
+					var carrello = srv.carrelli.ElementAt( 0 );
+					dto = SelfService.idrataDaCarrello( carrello );
+				}
+			}
+
+			return dto;
+		}
+
+
 		public CarrelloDto getCarrello( Guid carrelloId ) {
 
 			CarrelloDto dto = null;
@@ -55,16 +82,20 @@ namespace Digiphoto.Lumen.SelfService {
 				srv.cercaCarrelli( param );
 
 				// Creo la lista contenente gli oggetti di trasporto leggeri che ho ricavato dal servizio core.
-
 				if( srv.carrelli != null && srv.carrelli.Count == 1 ) {
 					var carrello = srv.carrelli.ElementAt( 0 );
-					dto = new CarrelloDto();
-					dto.id = carrello.id;
-					dto.titolo = carrello.intestazione;
-					dto.isVenduto = carrello.venduto;
+					dto = SelfService.idrataDaCarrello( carrello );
 				}
 			}
 
+			return dto;
+		}
+
+		private static CarrelloDto idrataDaCarrello( Carrello carrello ) {
+			var dto = new CarrelloDto();
+			dto.id = carrello.id;
+			dto.titolo = carrello.intestazione;
+			dto.isVenduto = carrello.venduto;
 			return dto;
 		}
 

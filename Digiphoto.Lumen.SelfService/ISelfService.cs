@@ -24,6 +24,15 @@ namespace Digiphoto.Lumen.SelfService {
 		CarrelloDto getCarrello( Guid carrelloId );
 
 		/// <summary>
+		/// Questo metodo serve per reperire un carrello tramite un id corto, in 
+		/// modo che un essere umano possa digitarlo
+		/// </summary>
+		/// <param name="carrelloIdCorto"></param>
+		/// <returns></returns>
+		[OperationContract]
+		CarrelloDto getCarrello2( String carrelloIdCorto );
+
+		/// <summary>
 		/// Ricava la lista delle foto contenute nel carrello indicato nel parametro
 		/// </summary>
 		/// <param name="carrelloId"></param>
