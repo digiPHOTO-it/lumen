@@ -13,16 +13,16 @@
 	</div>
 	<div class="col-md-9">
 		
-		<p><img src="~/images/Italy_Flag_32x32.png" />
+		<p style="font-size: large;"><img src="~/images/Italy_Flag_32x32.png" />
 			Acquista le foto nel nostro punto vendita, e scarica direttamente i file sul tuo dispositio mobile.
 			<br />
-			Inserisci qui il codice di acquisto che ti viene consegnato alla cassa.
+			Inserisci qui il <strong>codice di acquisto</strong> che ti viene consegnato alla cassa.
 		</p>
-		<p style="margin-top: 20px;">
+		<p style="font-size: large; margin-top: 20px;">
 			<img src=" ~/images/England_Flag_32x32.png" />
 			Buy your photos in our store and download the images directly to your mobile device.
 			<br />
-			Enter here the purchase code provided to you at the cash desk.
+			Enter here the <strong>purchase code</strong> provided to you at the cash desk.
 		</p>
 
 		<div style="margin-top: 20px;">
@@ -31,7 +31,7 @@
 					@class = "input-lg",
 					data_rule_required = "true"
 				} );
-				<input type="image" value="" src="/images/search_48x48.png" style='vertical-align: bottom; margin-left: 8px;' onclick="this.form.submit();" />
+				<input name="btn-cerca" id="btn-cerca" type="image" src="/images/search_48x48.png" onclick="this.form.submit();" title="Search" />
 			}
 		</div>
 

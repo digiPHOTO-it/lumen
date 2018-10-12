@@ -1,7 +1,7 @@
 ﻿@model System.String
 
 @{
-	Layout = null;
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <!DOCTYPE html>
@@ -13,11 +13,21 @@
 </head>
 <body>
 	<div>
-		<h1>Errore</h1>
-		<p>Si è verificato un errore nella tua richiesta !</p>
-		<p>@Html.DisplayFor( Model => Model )</p>
+		<div class="alert alert-warning" role="alert">
+			<h1>Error</h1>
+			<p>There is an error in your request ! Verify parameters</p>
+			<p>@Html.DisplayFor( Model => Model )</p>
+		</div>
 
-		@Html.ActionLink( "Back to Index", "Index", "Home" )
+		<div class="container text-center" id="riga-pulsantoni">
+			<figure class="bottoncione">
+				<a href='@Url.Action("Index", "Home" )'>
+					<img src='@Url.Content("~/images/home.svg")' />
+				</a>
+				<figcaption>Back to home</figcaption>
+			</figure>
+		</div>
+
 	</div>
 </body>
 </html>

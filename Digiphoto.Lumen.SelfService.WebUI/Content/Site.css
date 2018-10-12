@@ -26,3 +26,28 @@ textarea {
 .input-lg {
 	font-size: 32px;
 }
+
+input#btn-cerca {
+	vertical-align: bottom; 
+	margin-left: 8px;
+}
+
+a.lnk-dwnl-zip {
+	background: url(../Images/zip_file_download.svg) no-repeat center ; 
+	 display: block;
+     min-width: 128px;
+     min-height: 128px;
+     text-indent: -99999px; /* hides the link text */
+}
+
+div#riga-pulsantoni {
+}
+
+div#riga-pulsantoni figure.bottoncione {
+	border: 1px solid lightgrey;
+}
+
+div#riga-pulsantoni figure.bottoncione img {
+	max-width: 128px;
+	max-height: 128px;
+}
