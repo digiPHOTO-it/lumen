@@ -150,30 +150,6 @@ namespace Digiphoto.Lumen.Core.Database {
 			return VERSIONE_DB_COMPATIBILE;
 		}
 
-#if false
-		public void creareInfoFisse() {
-
-			string sql = @"insert into "  InfosFisse 
-				            (id, versioneDbCompatibile, pixelProvino)
-				            values
-				            ('K', " + VERSIONE_DB_COMPATIBILE + ", 400";
-
-			using( DbConnection conn = createConnection() ) {
-
-				conn.Open();
-
-				var command = conn.CreateCommand();
-				command.CommandText = sql;
-				command.CommandType = CommandType.Text;
-				int quante = command.ExecuteNonQuery();
-					
-				conn.Close();
-
-				_giornale.Info( "create informazioni fisse di default" );
-			}
-		}
-#endif
-
 		public abstract void creareNuovoDatabase();
 
 		public bool verificareConnessione() {
