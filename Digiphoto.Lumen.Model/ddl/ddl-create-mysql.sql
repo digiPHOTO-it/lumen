@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS `lumen`.`InfosFisse` (
   `descrizPuntoVendita` VARCHAR(50) NULL,
   `numGiorniEliminaFoto` SMALLINT(5) NOT NULL DEFAULT 0,
   `varie` VARCHAR(200) NULL,
+  `urlPrefixSelfServiceWeb` varchar(40) NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
