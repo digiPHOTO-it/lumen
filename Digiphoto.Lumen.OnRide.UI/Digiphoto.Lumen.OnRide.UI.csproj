@@ -177,12 +177,17 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(SolutionDir)packages\System.Data.SQLite.Core.1.0.99.0\lib\net46\System.Data.SQLite.dll"  "$(TargetDir)" /y
+    <PostBuildEvent>xcopy "$(SolutionDir)packages\System.Data.SQLite.Core.1.0.99.0\lib\net46\System.Data.SQLite.dll"  "$(TargetDir)" /d
 
-copy "$(SolutionDir)packages\System.Data.SQLite.Core.1.0.99.0\build\net46\x64\SQLite.Interop.dll"  "$(TargetDir)" /y
+xcopy "$(SolutionDir)packages\System.Data.SQLite.Core.1.0.99.0\build\net46\x64\SQLite.Interop.dll"  "$(TargetDir)" /d
 
-copy "$(SolutionDir)packages\System.Data.SQLite.Linq.1.0.99.0\lib\net46\System.Data.SQLite.Linq.dll"  "$(TargetDir)" /y
+xcopy "$(SolutionDir)packages\System.Data.SQLite.Linq.1.0.99.0\lib\net46\System.Data.SQLite.Linq.dll"  "$(TargetDir)" /d
 
-copy "$(SolutionDir)packages\System.Data.SQLite.EF6.1.0.99.0\lib\net46\System.Data.SQLite.EF6.dll"  "$(TargetDir)" /y</PostBuildEvent>
+xcopy "$(SolutionDir)packages\System.Data.SQLite.EF6.1.0.99.0\lib\net46\System.Data.SQLite.EF6.dll"  "$(TargetDir)" /d
+
+rem -- MsSql
+xcopy "$(SolutionDir)packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll"  "$(TargetDir)"  /d
+xcopy "$(SolutionDir)packages\MySql.Data.Entity.6.9.9\lib\net45\MySql.Data.Entity.EF6.dll"  "$(TargetDir)" /d
+</PostBuildEvent>
   </PropertyGroup>
 </Project>

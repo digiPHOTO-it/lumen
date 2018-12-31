@@ -212,7 +212,13 @@ namespace Digiphoto.Lumen.SelfService {
 		}
 
 		public byte[] getImageProvino( Guid fotografiaId ) {
-			return getImage( fotografiaId, IdrataTarget.Provino );
+
+			try {
+				return getImage( fotografiaId, IdrataTarget.Provino );
+			} catch( Exception ee ) {
+				return null;
+			}
+
 		}
 
 		private byte[] getImage( Guid fotografiaId, IdrataTarget quale ) {

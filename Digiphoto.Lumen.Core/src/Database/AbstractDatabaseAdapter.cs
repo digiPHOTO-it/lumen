@@ -87,7 +87,7 @@ namespace Digiphoto.Lumen.Core.Database {
 
 			// var quale = "LumenEntities-" + cfg.motoreDatabase;
 			// var cs = ConfigurationManager.ConnectionStrings[quale];
-			_giornale.Debug( "connessione al db creata. Ora apro la apro con questa connection string: " + conn.ConnectionString );
+			_giornale.Debug( "connessione al db creata. Ora la apro con questa connection string: " + conn.ConnectionString );
 
 
 			return conn;
