@@ -180,7 +180,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.Servizi
 			Open();
 			try {
 				result = ssClient.getListaCarrelli();
-			} catch( Exception ) {
+			} catch( Exception ee ) {
 				connectionRestart();
 				if( isConnectionOK ) {
 					return ssClient.getListaCarrelli();

@@ -925,6 +925,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			// Dalla pagina 1 sto andando sulla 2
 			if( passo == PassoWiz.PuntoVendita )
 				apriTutto();
+
         }
 
 

@@ -98,7 +98,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.Servizi
                 if (!System.IO.File.Exists(_path))
                 {
                     bytes = SSClientSingleton.Instance.getImageProvino(fotografiaId);
-                    scriviFile = true;
+                    scriviFile = (bytes != null);
                 }
             }
             else if (quale == "Logo")
