@@ -136,5 +136,14 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 			return isEmpty;
 		}
 
+		/// <summary>
+		/// true = filtro solo le foto vendute
+		/// false = filtro solo le foto NON vendute
+		/// null = non filtro niente del genere
+		/// </summary>
+		public Nullable<bool> soloVendute {
+			get;
+			set;
+		}
 	}
 }

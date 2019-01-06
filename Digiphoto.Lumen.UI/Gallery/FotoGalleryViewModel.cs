@@ -579,6 +579,37 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 		#endregion fasi del giorno
 
+		#region Solo vendute
+		public bool isSoloVenduteChecked {
+			get {
+				return (paramCercaFoto.soloVendute != null && paramCercaFoto.soloVendute == true);
+			}
+			set {
+				if( value == true )
+					paramCercaFoto.soloVendute = true;
+				else
+					paramCercaFoto.soloVendute = null;
+				OnPropertyChanged( "isSoloVenduteChecked" );
+				OnPropertyChanged( "isSoloInvenduteChecked" );
+			}
+		}
+
+		public bool isSoloInvenduteChecked {
+			get {
+				return (paramCercaFoto.soloVendute != null && paramCercaFoto.soloVendute == false);
+			}
+			set {
+				if( value == true )
+					paramCercaFoto.soloVendute = false;
+				else
+					paramCercaFoto.soloVendute = null;
+				OnPropertyChanged( "isSoloVenduteChecked" );
+				OnPropertyChanged( "isSoloInvenduteChecked" );
+			}
+		}
+
+		#endregion Solo vendute
+
 		public bool possoSelezionareTutto {
 			get {
 				return fotografieCW != null && fotografieCW.Count > 0;   // Se ho almeno una foto
@@ -2181,7 +2212,8 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			OnPropertyChanged( "isPomeriggioChecked" );
 			OnPropertyChanged( "isSeraChecked" );
 
-
+			OnPropertyChanged( "isSoloVenduteChecked" );
+			OnPropertyChanged( "isSoloInvenduteChecked" );
 
 			// Spengo tutte le eventuali selezioni
 			selettoreEventoViewModel.deselezionareTutto();
