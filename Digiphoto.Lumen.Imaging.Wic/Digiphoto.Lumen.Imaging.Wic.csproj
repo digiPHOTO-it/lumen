@@ -148,6 +148,8 @@
     <Compile Include="src\Wic\Correzioni\ZoomCorrettore.cs" />
     <Compile Include="src\Wic\GestoreImmagineSrvImpl.cs" />
     <Compile Include="src\Wic\ImmagineWic.cs" />
+    <Compile Include="src\Wic\Stampe\EsecutoreStampaTessera.cs" />
+    <Compile Include="src\Windows\Documents\TesseraDocPaginator.cs" />
     <Compile Include="src\Windows\Documents\ProviniDocPaginator.cs" />
     <Compile Include="src\Wic\Stampe\EsecutoreStampaProvini.cs" />
     <Compile Include="src\Wic\Stampe\EsecutoreStampaWic.cs" />

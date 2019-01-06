@@ -29,8 +29,18 @@
             </MenuItem.Icon>
         </MenuItem>
     </DataTemplate>
-    
-    <ContextMenu x:Key="azioniRapideMenu" 
+
+	<DataTemplate x:Key="stampaFotoTesseraMenu">
+		<MenuItem x:Name="azioniRapideMenu" Header="{Binding}"
+					Command="{Binding Path=DataContext.stampaFotoTesseraCommand, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}" 
+					CommandParameter="{Binding}">
+			<MenuItem.Icon>
+				<Image Source="/Digiphoto.Lumen.UI;component/Resources/clear-filter-32x32.png" />
+			</MenuItem.Icon>
+		</MenuItem>
+	</DataTemplate>
+
+	<ContextMenu x:Key="azioniRapideMenu" 
                  x:Shared="true" 
                  DataContextChanged="azioniRapideMenu_DataContextChanged"
                  DataContext="{Binding Path=selettoreAzioniRapideViewModel}" >
@@ -76,7 +86,13 @@
                               DataContext="{Binding}">
                     </MenuItem>
 
-                    <MenuItem Header="Aggiungi al Carrello"
+					<MenuItem Header="Stampa foto tessera"
+                              ItemsSource="{Binding Path=stampantiAbbinate}"
+                              ItemTemplate="{StaticResource stampaFotoTesseraMenu}"
+                              DataContext="{Binding}">
+					</MenuItem>
+
+					<MenuItem Header="Aggiungi al Carrello"
                               DataContext="{Binding}"
                               ItemsSource="{Binding Path=stampantiAbbinate}" >
                         <MenuItem.ItemContainerStyle>

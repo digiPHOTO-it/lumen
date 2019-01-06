@@ -1,27 +1,11 @@
 ﻿using log4net;
-using Digiphoto.Lumen.Imaging;
 using Digiphoto.Lumen.Servizi.Stampare;
 using System;
-using System.Diagnostics;
-using System.Threading;
-using System.Windows.Documents;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows;
 using System.Printing;
-using System.Windows.Markup;
 using System.Text;
-using Digiphoto.Lumen.Model;
-using System.IO;
 using Digiphoto.Lumen.Config;
-using System.Windows.Shapes;
-using System.Runtime.InteropServices;
-using System.Windows.Data;
-using System.Collections.Generic;
-using System.Collections;
-using Digiphoto.Lumen.Util;
-using System.Globalization;
 using Digiphoto.Lumen.Imaging.Wic.Documents;
 using System.Text.RegularExpressions;
 
@@ -29,7 +13,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 
 	public class EsecutoreStampaProvini : IEsecutoreStampa {
 
-		private static readonly ILog _giornale = LogManager.GetLogger( typeof( EsecutoreStampaWic ) );
+		private static readonly ILog _giornale = LogManager.GetLogger( typeof( EsecutoreStampaProvini ) );
 
 		private EsitoStampa _esito;
 

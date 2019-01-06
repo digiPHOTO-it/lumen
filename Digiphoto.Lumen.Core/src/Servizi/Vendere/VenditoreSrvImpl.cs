@@ -21,6 +21,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( VenditoreSrvImpl ) );
 
 		public static readonly String INTESTAZIONE_STAMPA_RAPIDA = "Stampa Diretta o Rapida";
+		public static readonly String INTESTAZIONE_STAMPA_FOTOTESSERA = "Stampa foto tessera";
 
 		#region Proprietà
 
@@ -274,16 +275,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			Exception laPrimaEccezione = null;
 
-			if (param is ParamStampaFoto)
-			{
-				foreach (Fotografia foto in fotografie)
-				{
+			if( param is ParamStampaFoto || param is ParamStampaTessera ) {
+				foreach( Fotografia foto in fotografie ) {
 					try {
 
 						// Non so perchè me devo fare la versione forzata perchè se no non mi idrata i provini del carrello. 
 						// Nel caso in cui ricarico una foto che è già stata stampata precedentemente. 
-						AiutanteFoto.idrataImmaginiFoto( foto , IdrataTarget.Provino, true);
-						gestoreCarrello.aggiungiRiga(creaRiCaFotoStampata(foto, param as ParamStampaFoto));
+						AiutanteFoto.idrataImmaginiFoto( foto, IdrataTarget.Provino, true );
+						gestoreCarrello.aggiungiRiga( creaRiCaFotoStampata( foto, param as ParamStampaFoto ) );
 
 					} catch( Exception ee ) {
 						_giornale.Error( "Aggingi stampe al carrello", ee );
@@ -294,16 +293,23 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				}
 				// Notifico al carrello l'evento
 				ricalcolaTotaleCarrello();
-			}
-			else if(param is ParamStampaProvini)
-			{
+			} else if( param is ParamStampaProvini ) {
+
 				ParamStampaProvini paramStampaProvini = param as ParamStampaProvini;
 
 				// Stampigli
 				paramStampaProvini.stampigli = configurazione.stampigli;
-				spoolStampeSrv.accodaStampaProvini(fotografie.ToList<Fotografia>(), paramStampaProvini);
-			}
+				spoolStampeSrv.accodaStampaProvini( fotografie.ToList<Fotografia>(), paramStampaProvini );
 
+			} 
+/*			
+			else if( param is ParamStampaTessera ) {
+
+				ParamStampaTessera paramStampaFotoTessera = param as ParamStampaTessera;
+
+				spoolStampeSrv.accodaFotoTessera( fotografie.ToList<Fotografia>(), paramStampaFotoTessera );
+			}
+*/
 
 			if( laPrimaEccezione != null )
 				throw laPrimaEccezione;
@@ -547,11 +553,15 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 					++conta;
 
-
 					// Creo nuovamente i parametri di stampa perché potrebbero essere cambiati nell GUI
 					ParamStampaFoto paramStampaFoto = creaParamStampaFoto( riga );
-					spoolStampeSrv.accodaStampaFoto( riga.fotografia, paramStampaFoto );
 
+					// Se è un carrello di tipo foto tessera, creo i parametri 
+					if( carrello.intestazione == VenditoreSrvImpl.INTESTAZIONE_STAMPA_FOTOTESSERA ) {
+						spoolStampeSrv.accodaFotoTessera( riga.fotografia, (ParamStampaTessera)paramStampaFoto );
+					} else {
+						spoolStampeSrv.accodaStampaFoto( riga.fotografia, paramStampaFoto );
+					}
 				}
 			}
 		}
@@ -603,7 +613,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 		private ParamStampaFoto creaParamStampaFoto( RigaCarrello riCaFotoStampata ) {
-			ParamStampaFoto param = new ParamStampaFoto();
+
+			ParamStampaFoto param;
+			if( riCaFotoStampata.carrello.intestazione == VenditoreSrvImpl.INTESTAZIONE_STAMPA_FOTOTESSERA )
+				param = new ParamStampaTessera();
+			else
+				param = new ParamStampaFoto();
 			param.autoRuota = true;
 			param.autoZoomNoBordiBianchi = ! (bool) riCaFotoStampata.bordiBianchi;
 			param.formatoCarta = riCaFotoStampata.formatoCarta;
