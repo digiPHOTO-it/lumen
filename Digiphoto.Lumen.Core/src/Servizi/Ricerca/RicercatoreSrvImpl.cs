@@ -1,5 +1,4 @@
-﻿using Digiphoto.Lumen.Core.Database;
-using Digiphoto.Lumen.Model;
+﻿using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.UI.Util;
 using Digiphoto.Lumen.Util;
 using log4net;
@@ -7,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Digiphoto.Lumen.Servizi.Ricerca {
 
@@ -325,7 +323,17 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 
 			#endregion Date
 
-			// TODO
+			#region vendute/non vendute
+			if( param.soloVendute != null && param.soloVendute == true ) {
+				sql.Append( "AND (f.contaStampata > 0 or f.contaMasterizzata > 0)" );
+				sql.Append( SEPAR );
+			}
+			if( param.soloVendute != null && param.soloVendute == false ) {
+				sql.Append( "AND (f.contaStampata = 0 and f.contaMasterizzata = 0)" );
+				sql.Append( SEPAR );
+			}
+			#endregion vendute/non vendute
+
 
 			// TODO ..... altri parametri mancanti
 

@@ -356,10 +356,17 @@
 				                          Margin="3,0,0,0" FontSize="14"
 				                          DataContext="{Binding selettoreScaricoCardViewModel}" />
 				<StackPanel Orientation="Vertical">
+					
 					<CheckBox Name="checkBoxCollassaFiltri" Content="Collassa filtri in ricerca" IsChecked="True" ToolTip="Quando viene esegita la ricerca, viene nascosto atomaticamente il pannello dei filtri" />
 					<CheckBox Name="checkBoxAreaRispetto" Content="Area di stampa" IsChecked="{Binding Path=vorreiVisualizzareAreaDiRispettoHQ}" ToolTip="Visualizza area di stampa nelle immagini ad alta qualità" Click="checkBoxAreaRispetto_Click" />
+					
+					<GroupBox Header="Solo foto vendute">
+						<StackPanel Orientation="Vertical">
+							<CheckBox Content="Solo vendute SI" IsChecked="{Binding isSoloVenduteChecked, Mode=TwoWay}" ToolTip="Filtra solo le foto vendute" />
+							<CheckBox Content="Solo vendute NO" IsChecked="{Binding isSoloInvenduteChecked, Mode=TwoWay}" ToolTip="Filtra solo le foto invendute" />
+						</StackPanel>
+					</GroupBox>
 				</StackPanel>
-
             </StackPanel>
 
         </Expander>
