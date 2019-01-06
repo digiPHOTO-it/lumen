@@ -19,9 +19,11 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 	public interface ISpoolStampeSrv : IServizio {
 
 		/** Aggiunge la stampa alla coda */
-		void accodaStampaFoto(Fotografia foto, ParamStampaFoto param);
+		void accodaStampaFoto( Fotografia foto, ParamStampaFoto param );
 
 		void accodaStampaProvini( IList<Fotografia> foto, ParamStampaProvini param );
+
+		void accodaFotoTessera( Fotografia foto, ParamStampaTessera param );
 
 		/** 
 		 * Elimina tutte le stempe da tutte le code.

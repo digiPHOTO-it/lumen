@@ -97,6 +97,9 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 				//Rinstanzio il stampatore che potrebbe essere di un tipo differente dal mio
 				LavoroDiStampaProvini lsp = (LavoroDiStampaProvini)lavoroDiStampa;
 				param = lsp.param;
+			} else if( lavoroDiStampa is LavoroDiStampaTessera ) {
+				LavoroDiStampaTessera lavoroDiStampaTessera = lavoroDiStampa as LavoroDiStampaTessera;
+				param = lavoroDiStampaTessera.param;
 			}
 
 			// Se sono cambiati i parametri istanzio nuovamente lo stampatore.

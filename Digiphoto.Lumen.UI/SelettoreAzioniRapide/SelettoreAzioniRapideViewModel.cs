@@ -40,7 +40,7 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 		public event Digiphoto.Lumen.UI.FotoRitocco.FotoRitoccoViewModel.EditorModeChangedEventHandler editorModeChangedEvent;
 
 		public ISelettore<Fotografia> fotografieSelector;
-		
+
 		public SelettoreFotografoViewModel selettoreFotografoViewModelFaccia {
 			get;
 			private set;
@@ -95,7 +95,7 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 		public bool gestitaSelezioneMultipla {
 			get; set;
 		}
-		
+
 		private bool _visualizzaEliminaFoto = true;
 		public bool visualizzaEliminaFoto {
 			get {
@@ -186,7 +186,7 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 
 				bool posso = true;
 
-				if( posso && ! isAlmenoUnElementoSelezionato )
+				if( posso && !isAlmenoUnElementoSelezionato )
 					posso = false;
 
 				// Verifico che non abbia fatto nel carrello operazioni di 
@@ -200,7 +200,7 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 
 		public bool possoApplicareCorrezione {
 			get {
-				
+
 				if( targetMode == TargetMode.Singola && singolaFotoTarget != null )
 					return true;
 
@@ -209,7 +209,7 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 
 				if( targetMode == TargetMode.Tutte && countTotali > 0 )
 					return true;
-				
+
 				return false;
 			}
 		}
@@ -277,48 +277,42 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 		/// Nel parametro mi arriva l'oggetto StampanteAbbinata che mi da tutte le indicazioni
 		/// per la stampa: il formato carta e la stampante
 		/// </summary>
-		private void stampare( StampanteAbbinata stampanteAbbinata )
-		{
-			
+		private void stampare( StampanteAbbinata stampanteAbbinata ) {
+
 			// Se ho selezionato più di una foto, e lavoro in stampa diretta, allora chiedo conferma
 			bool procediPure = true;
-			
-			if (countSelezionate >= 1 && Configurazione.UserConfigLumen.modoVendita == ModoVendita.StampaDiretta)
-			{
+
+			if( countSelezionate >= 1 && Configurazione.UserConfigLumen.modoVendita == ModoVendita.StampaDiretta ) {
 				procediPure = chiedereConfermaPerProseguire( "Confermi la stampa di " + countSelezionate + " foto ?" );
 			}
 
-			if (procediPure)
-			{
-				if (Configurazione.UserConfigLumen.modoVendita == ModoVendita.StampaDiretta)
-				{
-					using (IVenditoreSrv venditoreStampaDiretta = LumenApplication.Instance.creaServizio<IVenditoreSrv>())
-					{
+			if( procediPure ) {
+				if( Configurazione.UserConfigLumen.modoVendita == ModoVendita.StampaDiretta ) {
+					using( IVenditoreSrv venditoreStampaDiretta = LumenApplication.Instance.creaServizio<IVenditoreSrv>() ) {
 						venditoreStampaDiretta.creareNuovoCarrello();
 						venditoreStampaDiretta.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_RAPIDA;
-						venditoreStampaDiretta.aggiungereStampe( getListaFotoTarget(), creaParamStampaFoto(stampanteAbbinata));
+						venditoreStampaDiretta.aggiungereStampe( getListaFotoTarget(), creaParamStampaFoto( stampanteAbbinata ) );
 						string msgErrore = venditoreStampaDiretta.vendereCarrello();
 						bool esitoOk = (msgErrore == null);
-						if( esitoOk )
-						{
-							dialogProvider.ShowMessage("Carrello venduto Correttamente", "Avviso");
-						}
-						else
-						{
-							dialogProvider.ShowError("Errore inserimento carrello nella cassa", "Errore", null);
+						if( esitoOk ) {
+							dialogProvider.ShowMessage( "Carrello venduto Correttamente", "Avviso" );
+						} else {
+							dialogProvider.ShowError( "Errore inserimento carrello nella cassa", "Errore", null );
 						}
 					}
-				}
-				else
-				{
-					venditoreSrv.aggiungereStampe( getListaFotoTarget(), creaParamStampaFoto(stampanteAbbinata));
+				} else {
+					venditoreSrv.aggiungereStampe( getListaFotoTarget(), creaParamStampaFoto( stampanteAbbinata ) );
 				}
 
 				deselezionaFoto();
 			}
 		}
 
-		private void stampaRapida( StampanteAbbinata stampanteAbbinata, bool autoZoomNoBordiBianchi )
+		private void stampaRapida( StampanteAbbinata stampanteAbbinata, bool autoZoomNoBordiBianchi ) {
+			stampaRapida( stampanteAbbinata, autoZoomNoBordiBianchi, VenditoreSrvImpl.INTESTAZIONE_STAMPA_RAPIDA );
+		}
+
+		private void stampaRapida( StampanteAbbinata stampanteAbbinata, bool autoZoomNoBordiBianchi, String intestazione )
 		{
 
 			// Un parametro della configurazione mi dice il totale foto oltre il quale chiedere conferma
@@ -337,7 +331,7 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 			{
 
 				venditoreSpampaRapida.creareNuovoCarrello();
-				venditoreSpampaRapida.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_RAPIDA;
+				venditoreSpampaRapida.carrello.intestazione = intestazione;
 				var listaFoto = getListaFotoTarget();
 				var param = creaParamStampaFoto( stampanteAbbinata, autoZoomNoBordiBianchi );
 
@@ -354,6 +348,38 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 				else
 				{
 					dialogProvider.ShowError("Stampa diretta non riuscita.", "Errore", null);
+				}
+			}
+		}
+
+		void stampaFotoTessera( StampanteAbbinata stampanteAbbinata ) {
+
+			// Le foto-tessera le stampo una alla volta. Non è molto probabile la stampa multipla
+			if( targetMode != TargetMode.Singola )
+				return;
+
+			using( IVenditoreSrv venditoreFtessera = LumenApplication.Instance.creaServizio<IVenditoreSrv>() ) {
+
+				venditoreFtessera.creareNuovoCarrello();
+				venditoreFtessera.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_FOTOTESSERA;
+				var listaFoto = getListaFotoTarget();
+				
+				var param = new ParamStampaTessera {
+					nomeStampante = stampanteAbbinata.StampanteInstallata.NomeStampante,
+					formatoCarta = stampanteAbbinata.FormatoCarta,
+					numCopie = 1
+				};
+
+				venditoreFtessera.aggiungereStampe( listaFoto, param );
+
+				string msgErrore = venditoreFtessera.vendereCarrello();
+				bool esitoOk = (msgErrore == null);
+				if( esitoOk ) {
+					// Spengo le foto che ormai sono andate
+					deselezionaFoto();
+
+				} else {
+					dialogProvider.ShowError( "Stampa foto tessera non riuscita.", "Errore", null );
 				}
 			}
 		}
@@ -697,6 +723,18 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 			}
 		}
 
+		private RelayCommand _stampaFotoTesseraCommand;
+		public ICommand stampaFotoTesseraCommand {
+			get {
+				if( _stampaFotoTesseraCommand == null ) {
+					_stampaFotoTesseraCommand = new RelayCommand( param => stampaFotoTessera( (StampanteAbbinata)param ),
+															      param => this.possoStampare,
+															      false,
+															      param => deselezionaFoto() );
+				}
+				return _stampaFotoTesseraCommand;
+			}
+		}
 
 		private RelayCommand _caricareSlideShowCommand;
 		public ICommand caricareSlideShowCommand

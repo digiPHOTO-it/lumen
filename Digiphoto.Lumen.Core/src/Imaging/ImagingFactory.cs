@@ -41,14 +41,15 @@ namespace Digiphoto.Lumen.Imaging {
 
 		public IEsecutoreStampa creaStampatore( ParamStampa param, string nomeStampante ) {
 			object ooo = null;
-			if (param is ParamStampaFoto)
-			{
+
+			if( param is ParamStampaTessera ) {
+				ooo = Activator.CreateInstance( "Digiphoto.Lumen.Imaging.Wic", "Digiphoto.Lumen.Imaging.Wic.Stampe.EsecutoreStampaTessera" ).Unwrap();
+			} else if (param is ParamStampaFoto) {
 				ooo = Activator.CreateInstance("Digiphoto.Lumen.Imaging.Wic", "Digiphoto.Lumen.Imaging.Wic.Stampe.EsecutoreStampaWic").Unwrap();
 			}
-			else if(param is ParamStampaProvini)
-			{
+			else if(param is ParamStampaProvini) {
 				ooo = Activator.CreateInstance("Digiphoto.Lumen.Imaging.Wic", "Digiphoto.Lumen.Imaging.Wic.Stampe.EsecutoreStampaProvini").Unwrap();
-			}
+			} 
 			// TODO sostituire con un setting
 			return (IEsecutoreStampa)ooo;
 		}

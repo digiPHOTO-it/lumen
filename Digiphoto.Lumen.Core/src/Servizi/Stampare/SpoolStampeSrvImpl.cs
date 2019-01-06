@@ -97,6 +97,15 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 
 		}
 
+		public void accodaFotoTessera( Fotografia foto, ParamStampaTessera param ) {
+
+			CodaDiStampe codaDiStampe = ricavaCodaDiStampa( param );
+
+			// Creo un nuovo lavoro di stampa e lo aggiungo alla coda.
+			LavoroDiStampaTessera lavoro = new LavoroDiStampaTessera( foto, param );
+			codaDiStampe.EnqueueItem( lavoro );
+		}
+
 		private string ricavaStampante( FormatoCarta formatoCarta ) {
 
 			_giornale.Warn( "Come mai non è definita la stampante? Va beh, la determino io" );
