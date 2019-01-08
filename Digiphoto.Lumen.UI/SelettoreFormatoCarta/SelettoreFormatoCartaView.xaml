@@ -62,7 +62,7 @@
 					<xctk:DecimalUpDown Value="{Binding Path=nuovoFormatoCarta.prezzo, UpdateSourceTrigger=PropertyChanged}"
 										Style="{StaticResource newPrezzoFormatoCartaUpDnStyle}" 
 										MinWidth="90" Minimum="0" AllowTextInput="True"
-										Increment="0.5" Height="26" />
+										Increment="1" Height="26" />
 
 					<Button Name="creareNuovoButton" Content="Crea" Command="{Binding Path=creareNuovoCommand}" Width="100" Height="26" />
 				</DockPanel>
