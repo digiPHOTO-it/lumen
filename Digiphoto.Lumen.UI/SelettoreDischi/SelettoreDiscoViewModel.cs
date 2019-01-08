@@ -153,7 +153,7 @@ namespace Digiphoto.Lumen.UI.SelettoreDischi {
 		#region Comandi
 
 		private RelayCommand _caricareDischiRimovibiliCommand;
-		private string defaultMasterizzatore;
+		
 
 		public ICommand caricareDischiRimovibiliCommand
 		{

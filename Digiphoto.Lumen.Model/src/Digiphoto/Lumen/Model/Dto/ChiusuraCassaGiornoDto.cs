@@ -37,12 +37,10 @@ namespace Digiphoto.Lumen.Model.Dto {
 			ret.Append( ggPassati.ToString( "X" ) );
 			ret.Append( SEP_FIELD );
 
-			if( this.ccIncassoDichiarato != null )
-				ret.Append( ((short)this.ccIncassoDichiarato).ToString( "X" ) );
+			ret.Append( ((short)this.ccIncassoDichiarato).ToString( "X" ) );
 			ret.Append( SEP_FIELD );
 
-			if( this.ccIncassoPrevisto != null )
-				ret.Append( ((short)this.ccIncassoPrevisto).ToString( "X" ) );
+			ret.Append( ((short)this.ccIncassoPrevisto).ToString( "X" ) );
 			ret.Append( SEP_FIELD );
 
 			ret.Append( this.totFotoScattate.ToString( "X" ) );
