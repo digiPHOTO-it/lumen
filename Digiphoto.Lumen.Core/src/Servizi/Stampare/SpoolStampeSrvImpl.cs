@@ -120,7 +120,7 @@ namespace Digiphoto.Lumen.Servizi.Stampare {
 			return nomeStampante;
 		}
 
-		private CodaDiStampe ricavaCodaDiStampa( ParamStampa param) {
+		private CodaDiStampe ricavaCodaDiStampa( ParamStampa param ) {
 
 			string nomeStampante = param.nomeStampante;
 

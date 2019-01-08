@@ -13,6 +13,7 @@ using Digiphoto.Lumen.Database;
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Servizi.Reports;
 using System.ComponentModel;
+using System.Data.Entity.Validation;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 
@@ -674,7 +675,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public override void OnNext( Messaggio messaggio ) {
 
-			base.OnNext( messaggio );
+			const string LO_ZA_VEST = "!giaVisto*";
+
+			// Non so assolutamente per quale motivo, ma i messaggi mi arrivano doppi, tripli e persino cinque o sei volte duplicati
+			// Non c'è motivo perché in debug ho verificato che ne viene lanciato solo 1 di messaggio, ma qui ne arrivano anche 5.
+			// Probabilmente c'è una questione multi-thread ?
+			// cerco di parare il colpo.
+			if( LO_ZA_VEST.Equals( messaggio.senderTag ) )
+				return;
 
 			lock( thisLock ) {
 
@@ -682,10 +690,23 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 				try {
 
-					if( messaggio is StampatoMsg )
+					if( messaggio is StampatoMsg ) {
 						gestioneEsitoStampa( ((StampatoMsg)messaggio).lavoroDiStampa );
-					else if( messaggio is MasterizzaMsg )
-						gestioneEsitoMasterizzazione( (MasterizzaMsg)messaggio );
+						messaggio.senderTag = LO_ZA_VEST;
+					} else if( messaggio is MasterizzaMsg ) {
+						if( gestioneEsitoMasterizzazione( (MasterizzaMsg)messaggio ) )
+							messaggio.senderTag = LO_ZA_VEST;
+					}
+				} catch( DbEntityValidationException e ) {
+
+					foreach( var eve in e.EntityValidationErrors ) {
+						_giornale.Error( String.Format( "Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+							eve.Entry.Entity.GetType().Name, eve.Entry.State ) );
+						foreach( var ve in eve.ValidationErrors ) {
+							_giornale.Error( String.Format( "- Property: \"{0}\", Error: \"{1}\"",
+								ve.PropertyName, ve.ErrorMessage ) );
+						}
+					}
 
 				} catch( Exception ee ) {
 					_giornale.Error( "gestione messaggio " + messaggio, ee );
@@ -697,16 +718,37 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		List<IServizio> listaServiziDaChiudere = new List<IServizio>();
 
-		private void gestioneEsitoMasterizzazione( MasterizzaMsg masterizzaMsg ) {
+		private bool gestioneEsitoMasterizzazione( MasterizzaMsg masterizzaMsg ) {
 
-			// ho finito ma non posso chiudere ancora il servizio perché deve finire di fare il suo iter di chiusura.
-			// lo chiuderò prossimamente.
+			bool esito = false;
+
 			if( masterizzaMsg.fase == Fase.CopiaCompletata || masterizzaMsg.fase == Fase.ErroreMedia || masterizzaMsg.fase == Fase.ErroreSpazioDisco ) {
 
 				lock( thisLock ) {
+
 					listaServiziDaChiudere.Add( (IMasterizzaSrv)masterizzaMsg.sender );
+
+					if( masterizzaMsg.esito == Esito.Ok && masterizzaMsg.fase == Fase.CopiaCompletata ) {
+
+						using( new UnitOfWorkScope() ) {
+
+							LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
+
+							foreach( Fotografia _fo5 in ((IMasterizzaSrv)masterizzaMsg.sender).fotografie ) {
+								var fo5 = dbContext.Fotografie.Include( "fotografo" ).Single( f => f.id == _fo5.id );
+								fo5.contaMasterizzata += 1;
+							}
+
+							int quante = dbContext.SaveChanges();
+							_giornale.Debug( "Aggiornate " + quante + " foto incremento qta masterizzate" );
+							esito = true;
+						}
+					}
+
 				}
 			}
+
+			return esito;
 		}
 
 		/**
@@ -717,45 +759,20 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			LavoroDiStampaFoto lavoroDiStampaFoto = null;
 			LavoroDiStampaProvini lavoroDiStampaProvini = null;
 
-			
-			if (lavoroDiStampa is LavoroDiStampaFoto)
-			{
+			if( lavoroDiStampa is LavoroDiStampaFoto ) {
 
 				lavoroDiStampaFoto = lavoroDiStampa as LavoroDiStampaFoto;
 
-#if FALSE
-				bool provaRisparmio = false;
-				if (provaRisparmio && lavoroDiStampaFoto.fotografia != null)
-				{
-					// Ora che so che è andata bene la stampa, devo incrementare il numero di volte che è stata stampata
-					
-					try {
-						// Rilascio un pò di memoria
-						AiutanteFoto.disposeImmagini( lavoroDiStampaFoto.fotografia, IdrataTarget.Originale );
-						AiutanteFoto.disposeImmagini( lavoroDiStampaFoto.fotografia, IdrataTarget.Risultante );
+			} else if( lavoroDiStampa is LavoroDiStampaProvini ) {
 
-					} catch( Exception ee ) {
-						_giornale.Error( "Impossibile rilasciare immagini dopo stampa", ee );
-	
-						// Devo andare avanti lo stesso perché devo notificare tutti
-					}
-				}
-#endif
-			} else if (lavoroDiStampa is LavoroDiStampaProvini)
-			{
 				lavoroDiStampaProvini = lavoroDiStampa as LavoroDiStampaProvini;
-				foreach(Fotografia foto in lavoroDiStampaProvini.fotografie){
-					if (false && foto != null)
-					{
-						try
-						{
+				foreach( Fotografia foto in lavoroDiStampaProvini.fotografie ) {
+					if (false && foto != null) {
+						try {
 							AiutanteFoto.disposeImmagini( foto, IdrataTarget.Originale );
 							AiutanteFoto.disposeImmagini( foto, IdrataTarget.Risultante );
-						}
-						catch (Exception ee)
-						{
+						} catch (Exception ee) {
 							_giornale.Error("Impossibile rilasciare immagini dopo stampa", ee);
-
 							// Devo andare avanti lo stesso perché devo notificare tutti
 						}
 					}
@@ -763,22 +780,28 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 
 			// Se la stampa è stata completata correttamente, aggiorno alcuni dati di consumo
-			if( lavoroDiStampa.esitostampa == EsitoStampa.Ok ) {
+			if( lavoroDiStampa.esitostampa == EsitoStampa.Ok && lavoroDiStampa.stato == LavoroDiStampa.Stato.Completato ) {
 
 				if( lavoroDiStampaFoto != null ) {
 
-					Fotografia foto = lavoroDiStampaFoto.fotografia;
+					if( ! UnitOfWorkScope.hasCurrent ) {
 
-					// Devo aggiornare la fotografia sul db.
+						using( new UnitOfWorkScope() ) {
+							LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
+							Fotografia foto1 = dbContext.Fotografie.Include( "fotografo" ).Single( f => f.id == lavoroDiStampaFoto.fotografia.id );
+							string utile = foto1.fotografo.cognomeNome; // tocco l'associazione con il fotografo che sembra avere dei problemi
+							foto1.contaStampata += lavoroDiStampaFoto.param.numCopie;
+							dbContext.SaveChanges();
+						}
 
-					using( new UnitOfWorkScope() ) {
-
+					} else {
+						_giornale.Warn( "Strano sia qui c'è già una UoW aperta" );
 						LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
-						Fotografia foto1 = dbContext.Fotografie.Single( f => f.id == lavoroDiStampaFoto.fotografia.id );
+						Fotografia foto1 = dbContext.Fotografie.Include( "fotografo" ).Single( f => f.id == lavoroDiStampaFoto.fotografia.id );
+						string utile = foto1.fotografo.cognomeNome; // tocco l'associazione con il fotografo che sembra avere dei problemi
 						foto1.contaStampata += lavoroDiStampaFoto.param.numCopie;
 						dbContext.SaveChanges();
-                    }
-
+					}
 				}
 
 				if( lavoroDiStampaProvini != null ) {
