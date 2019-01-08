@@ -735,7 +735,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 							LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 
 							foreach( Fotografia _fo5 in ((IMasterizzaSrv)masterizzaMsg.sender).fotografie ) {
-								var fo5 = dbContext.Fotografie.Include( "fotografo" ).Single( f => f.id == _fo5.id );
+								var fo5 = dbContext.Fotografie.Single( f => f.id == _fo5.id );
 								fo5.contaMasterizzata += 1;
 							}
 
@@ -784,20 +784,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 				if( lavoroDiStampaFoto != null ) {
 
-					if( ! UnitOfWorkScope.hasCurrent ) {
-
-						using( new UnitOfWorkScope() ) {
-							LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
-							Fotografia foto1 = dbContext.Fotografie.Include( "fotografo" ).Single( f => f.id == lavoroDiStampaFoto.fotografia.id );
-							string utile = foto1.fotografo.cognomeNome; // tocco l'associazione con il fotografo che sembra avere dei problemi
-							foto1.contaStampata += lavoroDiStampaFoto.param.numCopie;
-							dbContext.SaveChanges();
-						}
-
-					} else {
-						_giornale.Warn( "Strano sia qui c'è già una UoW aperta" );
+					using( new UnitOfWorkScope() ) {
 						LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
-						Fotografia foto1 = dbContext.Fotografie.Include( "fotografo" ).Single( f => f.id == lavoroDiStampaFoto.fotografia.id );
+						Fotografia foto1 = dbContext.Fotografie.Single( f => f.id == lavoroDiStampaFoto.fotografia.id );
 						string utile = foto1.fotografo.cognomeNome; // tocco l'associazione con il fotografo che sembra avere dei problemi
 						foto1.contaStampata += lavoroDiStampaFoto.param.numCopie;
 						dbContext.SaveChanges();
