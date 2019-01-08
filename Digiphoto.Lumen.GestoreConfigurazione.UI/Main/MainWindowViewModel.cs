@@ -324,7 +324,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 		private bool testareConessioneDatabase() {
 
 			var dbUtil = new DbUtil( cfg );
-			string msgErr;
 			isConnessioneStabilita = dbUtil.testConessione();
 
 			return isConnessioneStabilita;

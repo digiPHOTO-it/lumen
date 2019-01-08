@@ -215,7 +215,7 @@ namespace Digiphoto.Lumen.SelfService {
 
 			try {
 				return getImage( fotografiaId, IdrataTarget.Provino );
-			} catch( Exception ee ) {
+			} catch( Exception ) {
 				return null;
 			}
 

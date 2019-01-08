@@ -23,7 +23,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
         public static bool _slideShowRun = false;
 
-        private SelfServiceClient ssClient;
+        
 
         public ObservableCollection<CarrelloDto> listaCarrelli
         {

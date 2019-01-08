@@ -423,14 +423,6 @@ namespace Digiphoto.Lumen.Config  {
 
 			DbUtil mioDbUtil = new DbUtil( userConfig );
 
-			// Controllo che esista e che sia valido anche il database vero di lavoro
-			string msgErrore;
-#if false
-			if( ! mioDbUtil.verificaSeDatabaseUtilizzabile( out msgErrore ) )
-				return "Database di lavoro\n" + mioDbUtil.nomeFileDbPieno + "\n" + msgErrore;
-#else
-			msgErrore = null;
-#endif
 			// Controllo che la cartella contenente le foto esista e sia scrivibile
 			if( !Directory.Exists( userConfig.cartellaFoto ) ) {
 				return( "Cartella foto inesistente: " + userConfig.cartellaFoto );

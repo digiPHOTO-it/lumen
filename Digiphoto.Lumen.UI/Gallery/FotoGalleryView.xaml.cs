@@ -428,7 +428,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 		private bool _azioneManuale = false;
 		private bool _dragIniziato = false;
-		private double _posizInizialeY = 0;
+
 		// Questo binding mi serve per disabilitare il binding
 		private Binding pauseBinding = new Binding( "FooInutile" ) {
 			Mode = BindingMode.OneTime
