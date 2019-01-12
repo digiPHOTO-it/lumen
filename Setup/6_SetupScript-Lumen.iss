@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName       "Lumen"
-#define MyAppVersion    "3.0-alpha3-20181116-003"
+#define MyAppVersion    "3.0-alpha4"
 #define MyAppPublisher  "digiPHOTO.it"
 #define MyAppURL        "http://www.digiphoto.it/Lumen"
 #define MyAppExeName    "Digiphoto.Lumen.UI.exe"
@@ -42,6 +42,9 @@ Name: "italian"; MessagesFile: "compiler:Languages\Italian.isl"
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 Name: "DisableAuoRun"; Description: "Disabilitare Auto-Run sui drive rimovibili"; 
+
+[Dirs]
+Name: {commonappdata}\{#MyAppPublisher}\{#MyAppName}
 
 [Files]
 ; --- Model ---
@@ -87,7 +90,6 @@ Source: "..\Digiphoto.Lumen.OnRide.UI\{#dirPlat}\Digiphoto.Lumen.OnRide.UI.exe.c
 ; --- altro varie
 Source: "..\Digiphoto.Lumen.UI\{#dirPlat}\zxing.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.UI\{#dirPlat}\zxing.presentation.dll"; DestDir: "{app}"; Flags: ignoreversion
-
 
 
 ; --- Driver sql ---
