@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Digiphoto.Lumen.Config;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Windows;
 using System.Windows.Data;
 using System.Xml;
@@ -87,23 +89,23 @@ namespace Digiphoto.Lumen.UI.About
 		/// <summary>
 		/// Gets the application's version information to show.
 		/// </summary>
-		public string Version
-		{
-			get
-			{
-				string result = string.Empty;
+		public string Version {
+			get {
+				StringBuilder result = new StringBuilder();
 				// first, try to get the version string from the assembly.
 				Version version = Assembly.GetExecutingAssembly().GetName().Version;
-				if (version != null)
-				{
-					result = version.ToString();
-				}
-				else
-				{
+				if( version != null ) {
+					result.Append( version.ToString() );
+				} else {
 					// if that fails, try to get the version from a resource in the Application.
-					result = GetLogicalResourceString(xPathVersion);
+					result.Append( GetLogicalResourceString( xPathVersion ) );
 				}
-				return result;
+
+				result.Append( " (" );
+				result.Append( Configurazione.releaseNickname );
+				result.Append( ")" );
+
+				return result.ToString();
 			}
 		}
 

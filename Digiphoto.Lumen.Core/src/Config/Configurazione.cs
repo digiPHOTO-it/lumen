@@ -26,6 +26,7 @@ namespace Digiphoto.Lumen.Config  {
 		public static readonly string pathBaseRegLumen = "Software\\" + Configurazione.companyName + "\\" + Configurazione.applicationName;
 		public static readonly string nomeLogoDefault = "digiPHOTO-logo.png";
 		public static readonly string nomeLogoSSDefault = "Lumen-selfservice-logo.png";
+		public static readonly string releaseNickname = "Giotto";
 
 		public static String configPath
 		{

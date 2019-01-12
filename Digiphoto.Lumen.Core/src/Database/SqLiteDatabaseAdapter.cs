@@ -139,8 +139,9 @@ namespace Digiphoto.Lumen.Core.Database {
 
 		public override void creareNuovoDatabase() {
 
+			// No! la cartella deve esistere.
 			// Se non esiste la cartella per il database, allora la creo.
-			creaCartellaPerDb();
+			// creaCartellaPerDb();
 
 			// Copio il database template su quello di destinazione vero.
 			copiaDbVuotoSuDbDiLavoro();

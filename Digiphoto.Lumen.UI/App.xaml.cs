@@ -34,8 +34,8 @@ namespace Digiphoto.Lumen.UI {
 			// Faccio partire il log
 			log4net.Config.XmlConfigurator.Configure();
 
-			// loggo la versione dell'assebly (la release del software)
-			_giornale.Info( "Avvio " + Assembly.GetExecutingAssembly().FullName );
+			// loggo la versione dell'assembly (la release del software)
+			_giornale.Info( "Avvio " + Assembly.GetExecutingAssembly().FullName + " (" + Configurazione.releaseNickname + ")" );
 				
 			// Senza di questa istruzione, gli StringFormat usati nei binding, usano sempre la cultura americana.
 			FrameworkElement.LanguageProperty.OverrideMetadata( typeof( FrameworkElement ), new FrameworkPropertyMetadata( XmlLanguage.GetLanguage( CultureInfo.CurrentCulture.IetfLanguageTag ) ) );
