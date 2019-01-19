@@ -66,10 +66,10 @@
                         <Style TargetType="{x:Type Image}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=didascalia, Converter={StaticResource boolIsNullConverter}, Mode=OneWay}" Value="True" >
-                                    <Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/info-16x16.png"/>
+                                    <Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/info_b-16x16.png"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=didascalia, Converter={StaticResource boolIsNullConverter}, Mode=OneWay}" Value="False" >
-                                    <Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/info-16x16_v.png"/>
+                                    <Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/info_m-16x16.png"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -91,7 +91,7 @@
 					</Image.ToolTip>
 				</Image>
 
-				<!-- Icona per evidenziare che l'immagine è già stata stampata -->
+				<!-- Icona per evidenziare che l'immagine è già stata venduta -->
 				<Image 	Width="16"
 					HorizontalAlignment="Right"
 					VerticalAlignment="Bottom"
@@ -100,8 +100,9 @@
 					<Image.ToolTip>
 						<TextBlock >
 							<TextBlock.Text>
-								<MultiBinding StringFormat="Stampate {0} copie">
+								<MultiBinding StringFormat="Stampata {0} ; Masterizzata {1}">
 									<Binding Path="contaStampata" />
+									<Binding Path="contaMasterizzata" />
 								</MultiBinding>
 							</TextBlock.Text>
 						</TextBlock>
@@ -109,9 +110,9 @@
 
 					<Image.Style>
 						<Style TargetType="{x:Type Image}">
-							<Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/foto-gia-stampata-16x16.png" />
+							<Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/foto-gia-venduta-16x16.png" />
 							<Style.Triggers>
-								<DataTrigger Binding="{Binding Path=contaStampata}" Value="0" >
+								<DataTrigger Binding="{Binding Path=contaVenduta}" Value="0" >
 									<Setter Property="Visibility" Value="Hidden" />
 								</DataTrigger>
 							</Style.Triggers>

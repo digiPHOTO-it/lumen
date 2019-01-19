@@ -61,11 +61,34 @@ namespace Digiphoto.Lumen.Model {
 				if( value != _contaStampata ) {
 					_contaStampata = value;
 					OnPropertyChanged( "contaStampata" );
+					OnPropertyChanged( "contaVenduta" );
 				}
 			}
 		}
 
-		public short contaMasterizzata { get; set; }
+		private short _contaMasterizzata;
+		public short contaMasterizzata {
+			get {
+				return _contaMasterizzata;
+			}
+			set {
+				if( value != _contaMasterizzata ) {
+					_contaMasterizzata = value;
+					OnPropertyChanged( "contaMasterizzata" );
+					OnPropertyChanged( "contaVenduta" );
+				}
+			}
+		}
+
+		/// <summary>
+		/// quante volte è stata venduta in totale (stampata + masterizzata)
+		/// </summary>
+		[NotMapped]
+		public short contaVenduta {
+			get {
+				return (short)(contaStampata + contaMasterizzata);
+			}
+		}
 
 		[ForeignKey( "evento" )]
 		public Nullable<System.Guid> evento_id { get; set; }
