@@ -906,7 +906,7 @@
     <Resource Include="Resources\Provini-48x48.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\info-16x16.png" />
+    <Resource Include="Resources\info_b-16x16.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\usbPendrive.png" />
@@ -955,6 +955,16 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\foto-non-mi-piace-32x32.png" />
+    <Resource Include="Resources\foto-mi-piace-32x32.png" />
+    <Resource Include="Resources\foto-gia-venduta-16x16.png" />
+    <Resource Include="Resources\foto-gia-venduta-32x32.png" />
+    <Resource Include="Resources\info_m-16x16.png" />
+    <Resource Include="Resources\info_m-32x32.png" />
+    <Resource Include="Resources\info_v-32x32.png" />
+    <Resource Include="Resources\info_b-32x32.png" />
+    <Resource Include="Resources\info-32x32.png" />
+    <Resource Include="Resources\info-64x64.png" />
     <Resource Include="Resources\Evento-48x48.png" />
     <Resource Include="Resources\Fotografo-48x48.png" />
     <Resource Include="Resources\QRcode-48x48.png" />
@@ -996,7 +1006,7 @@
     <Resource Include="Resources\clone-32x32.png" />
     <Resource Include="Resources\clear-filter-32x32.png" />
     <Resource Include="Resources\panorama-16x16.png" />
-    <Resource Include="Resources\info-16x16_v.png" />
+    <Resource Include="Resources\info_v-16x16.png" />
     <Resource Include="Resources\gallery-view-selez-deselez.png" />
     <Resource Include="Resources\gallery-view-minus.png" />
     <Resource Include="Resources\gallery-view-1.png" />

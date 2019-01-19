@@ -38,7 +38,10 @@
 				</Image>
 
 				<!-- Pallino "I" con le informazioni -->
-				<Image 	Width="16" Panel.ZIndex="50"
+				<Image 	Panel.ZIndex="50"
+						MinWidth="16" MaxWidth="64" Width="{Binding Converter={StaticResource percentualeConverter},ElementName=fotoGrid,Path=ActualWidth,ConverterParameter=8}"
+						MinHeight="16" MaxHeight="64" Height="{Binding Converter={StaticResource percentualeConverter},ElementName=fotoGrid,Path=ActualHeight,ConverterParameter=8}"
+						Stretch="Uniform"
 				        HorizontalAlignment="Left"
 						VerticalAlignment="Bottom"
 						Margin="4,0,0,4">
@@ -47,10 +50,10 @@
                         <Style TargetType="{x:Type Image}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=didascalia, Converter={StaticResource boolIsNullConverter}, Mode=OneWay}" Value="True" >
-                                    <Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/info-16x16.png"/>
+                                    <Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/info_b-32x32.png"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=didascalia, Converter={StaticResource boolIsNullConverter}, Mode=OneWay}" Value="False" >
-                                    <Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/info-16x16_v.png"/>
+									<Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/info_m-32x32.png"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -80,12 +83,19 @@
                     </Image.ToolTip>
                 </Image>
 
-                <!-- Icona Mi Piace / Non mi piace -->
-				<Image 	Width="16" Panel.ZIndex="50"
-					HorizontalAlignment="Right"
-					VerticalAlignment="Bottom"
-					Margin="0,0,24,4"
-				>
+				<!-- pannello con le icone in basso a destra -->
+				<StackPanel Orientation="Horizontal" Panel.ZIndex="50"
+							HorizontalAlignment="Right"
+							VerticalAlignment="Bottom" 
+							Margin="0,0,0,4">
+					
+					<!-- Icona Mi Piace / Non mi piace -->
+					<Image 
+						MinWidth="16" MaxWidth="64" Width="{Binding Converter={StaticResource percentualeConverter},ElementName=fotoGrid,Path=ActualWidth,ConverterParameter=8}"
+						MinHeight="16" MaxHeight="64" Height="{Binding Converter={StaticResource percentualeConverter},ElementName=fotoGrid,Path=ActualHeight,ConverterParameter=8}"
+						Stretch="Uniform" 
+						Margin="0,0,3,0"
+						>
                     <Image.ToolTip >
                         <TextBlock >
                             <TextBlock.Text>
@@ -100,45 +110,47 @@
                         <Style TargetType="{x:Type Image}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=miPiace, Mode=OneWay}" Value="True" >
-                                    <Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/foto-mi-piace-16x16.png" />
+                                    <Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/foto-mi-piace-32x32.png" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=miPiace, Mode=OneWay}" Value="False" >
-                                    <Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/foto-non-mi-piace-16x16.png" />
+                                    <Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/foto-non-mi-piace-32x32.png" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Image.Style>
                 </Image>
 
-                <!-- Icona per evidenziare che l'immagine è già stata stampata -->
-				<Image 	Width="16" Panel.ZIndex="50"
-					HorizontalAlignment="Right"
-					VerticalAlignment="Bottom"
-					Margin="0,0,4,4"
-				>
-                    <Image.ToolTip>
-                        <TextBlock >
-                            <TextBlock.Text>
-                                <MultiBinding StringFormat="Stampate {0} copie">
-                                    <Binding Path="contaStampata" />
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                    </Image.ToolTip>
+					<!-- Icona per evidenziare che l'immagine è già stata venduta -->
+					<Image Margin="0,0,3,0"
+						   MinWidth="16" MaxWidth="64" Width="{Binding Converter={StaticResource percentualeConverter},ElementName=fotoGrid,Path=ActualWidth,ConverterParameter=8}"
+						   MinHeight="16" MaxHeight="64" Height="{Binding Converter={StaticResource percentualeConverter},ElementName=fotoGrid,Path=ActualHeight,ConverterParameter=8}"
+						   Stretch="Uniform" >
 					
-                    <Image.Style>
-                        <Style TargetType="{x:Type Image}">
-						<Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/foto-gia-stampata-16x16.png" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=contaStampata, Mode=OneWay}" Value="0" >
-                                    <Setter Property="Visibility" Value="Hidden" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Image.Style>
-                </Image>
-			
-                <!-- IL font con cui stampo il numero, ha grandezza proporzionale al canvas . Per ora uso 8% della grandezza del contenitore della foto -->
+						<Image.ToolTip>
+							<TextBlock >
+								<TextBlock.Text>
+									<MultiBinding StringFormat="Stampata {0} ; Masterizzata {1}">
+										<Binding Path="contaStampata" />
+										<Binding Path="contaMasterizzata" />
+									</MultiBinding>
+								</TextBlock.Text>
+							</TextBlock>
+						</Image.ToolTip>
+					
+						<Image.Style>
+							<Style TargetType="{x:Type Image}">
+							<Setter Property="Source" Value="/Digiphoto.Lumen.UI;component/Resources/foto-gia-venduta-32x32.png" />
+								<Style.Triggers>
+									<DataTrigger Binding="{Binding Path=contaVenduta, Mode=OneWay}" Value="0" >
+										<Setter Property="Visibility" Value="Hidden" />
+									</DataTrigger>
+								</Style.Triggers>
+							</Style>
+						</Image.Style>
+					</Image>
+				</StackPanel>
+
+				<!-- IL font con cui stampo il numero, ha grandezza proporzionale al canvas . Per ora uso 8% della grandezza del contenitore della foto -->
 				<Label x:Name="NumFoto"  Panel.ZIndex="50"
                        Content="{Binding Path=etichetta}"    
 					   VerticalAlignment="Top" HorizontalAlignment="Right"
