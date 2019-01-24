@@ -406,6 +406,7 @@
   <ItemGroup>
     <Folder Include="src\Comandi\" />
     <Folder Include="src\Core\" />
+    <Folder Include="src\Promozioni\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Digiphoto.Lumen.Model\Digiphoto.Lumen.Model.csproj">

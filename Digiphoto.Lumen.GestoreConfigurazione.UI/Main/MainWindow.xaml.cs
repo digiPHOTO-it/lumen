@@ -185,5 +185,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI {
 		private void Window_ContentRendered( object sender, EventArgs e ) {
 			abilitaGiustaTabMotore();
 		}
+
 	}
 }

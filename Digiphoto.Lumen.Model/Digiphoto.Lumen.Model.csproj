@@ -161,6 +161,9 @@
     <Compile Include="src\Digiphoto\Lumen\Model\InfoFissa.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\LumenEntities.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\Maschera.cs" />
+    <Compile Include="src\Digiphoto\Lumen\Model\PromoPrendiNPaghiM.cs" />
+    <Compile Include="src\Digiphoto\Lumen\Model\PromoStessaFotoSuFile.cs" />
+    <Compile Include="src\Digiphoto\Lumen\Model\Promozione.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\RigaCarrello.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\ScaricoCard.cs" />
     <Compile Include="src\Digiphoto\Lumen\Util\CompNumFoto.cs" />
