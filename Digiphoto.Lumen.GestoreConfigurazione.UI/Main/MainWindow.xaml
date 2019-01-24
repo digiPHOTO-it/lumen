@@ -9,6 +9,7 @@
         xmlns:lumC="clr-namespace:Digiphoto.Lumen.UI.Converters;assembly=Digiphoto.Lumen.UI"
         xmlns:lumL="clr-namespace:Digiphoto.Lumen.GestoreConfigurazione.UI.Licenze"
 		xmlns:lumCcfg="clr-namespace:Digiphoto.Lumen.Config;assembly=Digiphoto.Lumen.Core"
+		xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         FocusManager.FocusedElement="{Binding ElementName=PasswordBox}"
         Title="Lumen Gestore Configurazione"  WindowState="Maximized" WindowStartupLocation="CenterScreen" Icon="/Digiphoto.Lumen.GestoreConfigurazione.UI;component/Images/Configuration-48x48.ico" ContentRendered="Window_ContentRendered">
 
@@ -116,28 +117,74 @@
 
 			<TabItem Header="2) Punto Vendita" IsSelected="{Binding Path=isPassoPuntoVendita,Mode=OneWay}" IsEnabled="{Binding Path=isPassoPuntoVendita}">
 				<Grid>
-					<Label Content="Codice PdV" Height="26" HorizontalAlignment="Left" Margin="30,65,0,0" VerticalAlignment="Top" Width="155" />
-					<TextBox Height="23" Margin="217,67,0,0" VerticalAlignment="Top" Text="{Binding Path=infoFissa.idPuntoVendita}" HorizontalAlignment="Left" Width="91" MaxLength="5" CharacterCasing="Upper" />
-					<Label Content="Descrizione" Height="26" Margin="30,95,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="155" />
-					<TextBox Height="23" Margin="217,97,137,0" VerticalAlignment="Top" Text="{Binding Path=infoFissa.descrizPuntoVendita}" />
-					<Label Content="Pixel lato provino" Height="28" Margin="30,168,0,0" Name="label6" VerticalAlignment="Top" Width="155" HorizontalAlignment="Left" />
-					<TextBox Height="23" HorizontalAlignment="Left" Margin="217,168,0,0"  VerticalAlignment="Top" Width="66" Text="{Binding Path=infoFissa.pixelProvino,Mode=TwoWay}" />
-					<TextBlock Height="71" Margin="0,6,6,0" Text="ATTENZIONE  queste preferenze sono univoche per tutto il Punto Vendita e quindi per tutti i computer collegati alla rete" VerticalAlignment="Top" TextWrapping="Wrap" Width="189" HorizontalAlignment="Right" />
-					<Label Content="N° giorni elimina foto" HorizontalAlignment="Left" Margin="30,199,0,0" VerticalAlignment="Top" Width="155" />
-					<TextBox Height="23" HorizontalAlignment="Left" Margin="217,202,0,0" MaxLength="3" Text="{Binding Path=infoFissa.numGiorniEliminaFoto}" ToolTip="N.giorni dopo cui cancellare le foto vecchie" VerticalAlignment="Top" Width="66" />
-					<Label Content="Quando azzerare il numeratore fotogrammi" Height="28" HorizontalAlignment="Left" Margin="319,199,0,0" Name="label7" VerticalAlignment="Top" Width="253" />
-					<ComboBox Height="23" HorizontalAlignment="Left" Margin="603,202,0,0" VerticalAlignment="Top" Width="120"
+					<Label Content="Codice PdV" Height="26" HorizontalAlignment="Left" Margin="25,9,0,0" VerticalAlignment="Top" Width="127" />
+					<TextBox Height="23" Margin="174,12,0,0" VerticalAlignment="Top" Text="{Binding Path=infoFissa.idPuntoVendita}" HorizontalAlignment="Left" Width="91" MaxLength="5" CharacterCasing="Upper" />
+					<Label Content="Descrizione" Height="26" Margin="25,39,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="127" />
+					<TextBox Height="23" Margin="174,41,248,0" VerticalAlignment="Top" Text="{Binding Path=infoFissa.descrizPuntoVendita}" />
+					<Label Content="Pixel lato provino" Height="28" Margin="25,112,0,0" Name="label6" VerticalAlignment="Top" Width="127" HorizontalAlignment="Left" />
+					<TextBox Height="23" HorizontalAlignment="Left" Margin="174,112,0,0"  VerticalAlignment="Top" Width="66" Text="{Binding Path=infoFissa.pixelProvino,Mode=TwoWay}" />
+					<TextBlock Height="71" Margin="0,6,6,0" Text="ATTENZIONE  queste preferenze sono univoche per tutto il Punto Vendita e quindi per tutti i computer collegati alla rete" VerticalAlignment="Top" TextWrapping="Wrap" Width="189" HorizontalAlignment="Right" Padding="4" >
+						<TextBlock.Background>
+							<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+								<GradientStop Color="#FF6EEE04" Offset="0"/>
+								<GradientStop Color="#FF5FA228" Offset="1"/>
+							</LinearGradientBrush>
+						</TextBlock.Background>
+					</TextBlock>
+					<Label Content="N° giorni elimina foto" HorizontalAlignment="Left" Margin="25,143,0,0" VerticalAlignment="Top" Width="127" />
+					<TextBox Height="23" HorizontalAlignment="Left" Margin="174,146,0,0" MaxLength="3" Text="{Binding Path=infoFissa.numGiorniEliminaFoto}" ToolTip="N.giorni dopo cui cancellare le foto vecchie" VerticalAlignment="Top" Width="66" />
+					<Label Content="Quando azzerare il numeratore fotogrammi" Height="28" HorizontalAlignment="Left" Margin="310,141,0,0" Name="label7" VerticalAlignment="Top" Width="244" />
+					<ComboBox Height="23" HorizontalAlignment="Left" Margin="559,143,0,0" VerticalAlignment="Top" Width="120"
                               ItemsSource="{Binding modiAzzeramentoNumeroFoto}"
                               SelectedValuePath="Key" DisplayMemberPath="Value"
                               ToolTip="Scegliere con quale frequenza viene azzerato il numeratore dei fotogrammi scaricati"
                               SelectedValue="{Binding Path=infoFissa.modoNumerazFoto}" >
 					</ComboBox>
 
-					<Label Content="Modalità di vendita" HorizontalAlignment="Left" Margin="30,132,0,0" Name="label9" VerticalAlignment="Top" Width="113" />
-					<ComboBox Name="comboBoxModalitaVendita"  HorizontalAlignment="Left" Margin="217,132,0,0" VerticalAlignment="Top" Width="148" ItemsSource="{Binding modoVenditaValues}" SelectedValue="{Binding Path=cfg.modoVendita}" />
+					<Label Content="Modalità di vendita" HorizontalAlignment="Left" Margin="25,76,0,0" Name="label9" VerticalAlignment="Top" Width="127" />
+					<ComboBox Name="comboBoxModalitaVendita"  HorizontalAlignment="Left" Margin="174,76,0,0" VerticalAlignment="Top" Width="148" ItemsSource="{Binding modoVenditaValues}" SelectedValue="{Binding Path=cfg.modoVendita}" />
 
-					<Label Content="Url web server SS" Height="27" HorizontalAlignment="Left" Margin="30,244,0,0" VerticalAlignment="Top" Width="155" />
-					<TextBox Height="27" Margin="217,244,182,0" Text="{Binding infoFissa.urlPrefixSelfServiceWeb}" VerticalAlignment="Top" ToolTip="Prefisso url web server per Self Service" />
+					<Label Content="Url web server SS" Height="27" HorizontalAlignment="Left" Margin="25,174,0,0" VerticalAlignment="Top" Width="127" />
+					<TextBox Height="27" Margin="174,176,225,0" Text="{Binding infoFissa.urlPrefixSelfServiceWeb}" VerticalAlignment="Top" ToolTip="Prefisso url web server per Self Service" />
+
+					<GroupBox Header="Promozioni" Margin="31,220,0,0" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" Width="387" Height="148" VerticalAlignment="Top">
+
+						<Grid>
+
+							<CheckBox Content="1) Prendi anche file con il prezzo di favore:" 
+									  HorizontalAlignment="Left" Margin="28,20,0,0" VerticalAlignment="Top" Width="248" 
+									  IsChecked="{Binding Path=promoStessaFotoSuFile.attiva}"
+									  ToolTip="Per ogni stampa acquistata si può avere&#x0a;lo stesso file al prezzo di favore indicato" />
+
+							<xctk:DecimalUpDown Value="{Binding Path=promoStessaFotoSuFile.prezzoFile, UpdateSourceTrigger=PropertyChanged}"
+												Minimum="0"  AllowTextInput="True"
+												Increment="1" Height="26" Width="60" 
+												Margin="290,15,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+
+
+							<Separator Margin="62,46,0,0" HorizontalAlignment="Left" Width="288" Height="19" VerticalAlignment="Top" />
+
+							
+							<CheckBox Content="2) Compri &lt;N&gt; prodotti e ne paghi &lt;M&gt;" 
+									  HorizontalAlignment="Left" Margin="28,67,0,0" VerticalAlignment="Top" 
+									  IsChecked="{Binding Path=promoPrendiNPaghiM.attiva}"
+									  ToolTip="Esempio: compri 3 paghi 2" />
+
+							<xctk:IntegerUpDown Value="{Binding Path=promoPrendiNPaghiM.qtaDaPrendere, UpdateSourceTrigger=PropertyChanged}"
+											Minimum="0"  AllowTextInput="True"
+											Increment="1" Width="60" Height="26"
+											Margin="64,88,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+
+							<Label Content="X" Margin="160,88,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+
+							<xctk:IntegerUpDown Value="{Binding Path=promoPrendiNPaghiM.qtaDaPagare, UpdateSourceTrigger=PropertyChanged}"
+											Minimum="0"  AllowTextInput="True"
+											Increment="1" Width="60" Height="26" 
+											Margin="206,88,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+							
+						</Grid>
+
+					</GroupBox>
 
 				</Grid>
 			</TabItem>
@@ -385,6 +432,7 @@
 			<TabItem Header="7) Licenza" IsSelected="{Binding Path=isPassoLicenza,Mode=OneWay}" IsEnabled="{Binding Path=isPassoLicenza}">
 				<lumL:LicenseEditor x:Name="licenseEditor1" />
 			</TabItem>
+
 
 		</TabControl>
 

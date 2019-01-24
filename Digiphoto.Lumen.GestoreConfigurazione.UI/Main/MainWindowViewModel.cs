@@ -409,6 +409,8 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 			// -- carico anche le informazioni fisse che possono essere modificate
 			infoFissa = infoFisseRepository.getById( "K" );
+
+			caricaEventualiPromozioni();
         }
 
 		private void ricostruireDb() {
@@ -1135,12 +1137,15 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
         private void applica()
         {
-
 			creaEventualiCartelleMancanti();
 
 			copiaLogoDiDefault();
 
 			string errore = Configurazione.getMotivoErrore( cfg );
+			if( errore == null ) {
+				errore = getMotivoErrore();
+			}
+
 			int qquanti = ConfigurationManager.ConnectionStrings.Count;
 
 			if( errore != null ) {
@@ -1369,6 +1374,66 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			if(msg.showInStatusBar)
 				dialogProvider.ShowError(msg.descrizione, "Configurazione", null);
 		}
-#endregion Eventi
+		#endregion Eventi
+
+		#region Promozioni
+
+		public const int PROMO_GESTITE = 2;
+
+		public Promozione[] promozioni;
+
+		void caricaEventualiPromozioni() {
+
+			promozioni = new Promozione[PROMO_GESTITE];
+
+			promozioni[0] = UnitOfWorkScope.currentDbContext.Promozioni.FirstOrDefault<Promozione>( p => p.id == 1 );
+			if( promozioni[0] == null ) {
+				promozioni[0] = new PromoStessaFotoSuFile {
+					id = 1,
+					attivaSuStampe = true,
+					descrizione = "Compra anche il file"
+				};
+				UnitOfWorkScope.currentDbContext.Promozioni.Add( promozioni[0] );
+			}
+			OnPropertyChanged( "promoStessaFotoSuFile" );
+
+			promozioni[1] = UnitOfWorkScope.currentDbContext.Promozioni.FirstOrDefault<Promozione>( p => p.id == 2 );
+			if( promozioni[1] == null ) {
+				promozioni[1] = new PromoPrendiNPaghiM {
+					id = 2,
+					attivaSuFile = true,
+					attivaSuStampe = true,
+					descrizione = "Prendi N paghi M"
+				};
+				UnitOfWorkScope.currentDbContext.Promozioni.Add( promozioni[1] );
+			}
+			OnPropertyChanged( "promoPrendiNPaghiM" );
+		}
+
+		public PromoStessaFotoSuFile promoStessaFotoSuFile {
+			get {
+				return promozioni == null ? null : (PromoStessaFotoSuFile) promozioni[0];
+			}
+		}
+
+		public PromoPrendiNPaghiM promoPrendiNPaghiM {
+			get {
+				return promozioni == null ? null : (PromoPrendiNPaghiM)promozioni[1];
+			}
+		}
+
+		#endregion Promozioni
+
+		private string getMotivoErrore() {
+
+			for( int ii = 0; ii < PROMO_GESTITE; ii++ ) {
+				var errori = promozioni[ii].Validate( null );
+				if( errori.Count() > 0 ) {
+					return errori.ElementAt( 0 ).ErrorMessage;
+				}
+			}
+			
+			return null;
+		}
 	}
 }

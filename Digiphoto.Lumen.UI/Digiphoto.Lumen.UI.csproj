@@ -963,8 +963,6 @@
     <Resource Include="Resources\info_m-32x32.png" />
     <Resource Include="Resources\info_v-32x32.png" />
     <Resource Include="Resources\info_b-32x32.png" />
-    <Resource Include="Resources\info-32x32.png" />
-    <Resource Include="Resources\info-64x64.png" />
     <Resource Include="Resources\Evento-48x48.png" />
     <Resource Include="Resources\Fotografo-48x48.png" />
     <Resource Include="Resources\QRcode-48x48.png" />

@@ -22,10 +22,11 @@ namespace Digiphoto.Lumen.Model {
 		}
 
 		protected override void OnModelCreating( DbModelBuilder modelBuilder ) {
-			
-			// TODO MYSQL attenzione manca tutta la mappatura, ma per andare avanti lo tolgo
-			// throw new UnintentionalCodeFirstException();
+
+			modelBuilder.Entity<PromoStessaFotoSuFile>();
+
 		}
+	
 
 		public virtual DbSet<AzioneAuto> AzioniAutomatiche { get; set; }
 		public virtual DbSet<Carrello> Carrelli { get; set; }
@@ -39,5 +40,7 @@ namespace Digiphoto.Lumen.Model {
 		public virtual DbSet<InfoFissa> InfosFisse { get; set; }
 		public virtual DbSet<RigaCarrello> RigheCarrelli { get; set; }
 		public virtual DbSet<ScaricoCard> ScarichiCards { get; set; }
+		public virtual DbSet<Promozione> Promozioni { get; set; }
+
 	}
 }
