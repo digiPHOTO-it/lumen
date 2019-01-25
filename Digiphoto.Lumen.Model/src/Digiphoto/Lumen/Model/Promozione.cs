@@ -15,6 +15,7 @@ namespace Digiphoto.Lumen.Model {
 		#region Attributi
 
 		[Key]
+		[DatabaseGenerated( DatabaseGeneratedOption.None )]
 		public short id {
 			get; set;
 		}
