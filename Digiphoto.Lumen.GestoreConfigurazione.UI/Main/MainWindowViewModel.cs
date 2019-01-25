@@ -1154,6 +1154,10 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 				try {
 
+// Serve per visualizzare il log sql di entity framework
+// UnitOfWorkScope.currentDbContext.Database.Log = s => System.Diagnostics.Debug.WriteLine( s );
+
+					// Qui in realtà salvo tutto il database
 					int quanti = saveInfoFisse();
 					
 					saveUserConfig();
@@ -1426,6 +1430,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 		private string getMotivoErrore() {
 
+			// Valido le singole promozioni
 			for( int ii = 0; ii < PROMO_GESTITE; ii++ ) {
 				var errori = promozioni[ii].Validate( null );
 				if( errori.Count() > 0 ) {
