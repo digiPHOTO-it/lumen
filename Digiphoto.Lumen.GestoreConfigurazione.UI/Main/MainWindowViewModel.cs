@@ -131,6 +131,19 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
+		private ProdottoFile _prodottoFile;
+		public ProdottoFile prodottoFile {
+			get {
+				return _prodottoFile;
+			}
+			set {
+				if( _prodottoFile != value ) {
+					_prodottoFile = value;
+					OnPropertyChanged( "prodottoFile" );
+				}
+			}
+		}
+
 		public MotoreDatabase? motorePrecedente {
 			get;
 			set;
@@ -409,6 +422,18 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 			// -- carico anche le informazioni fisse che possono essere modificate
 			infoFissa = infoFisseRepository.getById( "K" );
+
+			// -- Creo una entità per il prezzo del file masterizzato
+			prodottoFile = UnitOfWorkScope.currentDbContext.ProdottiFile.FirstOrDefault();
+			if( prodottoFile == null ) {
+				prodottoFile = new ProdottoFile {
+					id = Guid.NewGuid(),
+					descrizione = "File digitale",
+					attivo = true,
+					prezzo = 5
+				};
+				UnitOfWorkScope.currentDbContext.ProdottiFile.Add( prodottoFile );
+			}
 
 			caricaEventualiPromozioni();
         }

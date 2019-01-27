@@ -14,6 +14,7 @@ using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Servizi.Reports;
 using System.ComponentModel;
 using System.Data.Entity.Validation;
+using Digiphoto.Lumen.Core.Servizi.Vendere;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 
@@ -147,8 +148,21 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		#endregion
 
 		#region Fields
+
 		private Object thisLock = new Object();
+
 		private StampantiAbbinateCollection _stampantiAbbinate;
+
+		private Promozione[] _promozioniAttive;
+
+		/// <summary>
+		/// Mappa con associazione tipo di promozione e il suo calcolatore.
+		/// </summary>
+		private static Dictionary<Type, ICalcolatorePromozione> _promoCalcFactoryMap = new Dictionary<Type, ICalcolatorePromozione> {
+			{ typeof( PromoPrendiNPaghiM ), new  CalcolatorePromoPrendiNPaghiM() },
+			{ typeof( PromoStessaFotoSuFile ), new  CalcolatorePromoStessaFotoSuFile() }
+		};
+
 		#endregion Fields
 
 
@@ -157,6 +171,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			// istanzio il gestore del carrello e creo subito un carrello nuovo per iniziare a lavorare subito.
 			gestoreCarrello = new GestoreCarrello();
 
+			
 			contaMessaggiInCoda = 0;
 		}
 
@@ -188,6 +203,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		public override void start() {
 
 			base.start();
+
+			// carico le promo attive
+			_promozioniAttive = UnitOfWorkScope.currentDbContext.Promozioni.Where( p => p.attiva ).OrderBy( p => p.priorita ).ToArray();
 
 			creareNuovoCarrello();
 
@@ -363,6 +381,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			try {
 
+				CalcolaPromozioni();
+
 				// Poi salvo il carrello
 				gestoreCarrello.salvare( vendere );
 
@@ -392,7 +412,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 		public void clonareCarrello() {
-			gestoreCarrello.clonareCarrello();
+			gestoreCarrello.CreaNuovoCarrelloPerClonazione();
 		}
 
 
@@ -1280,5 +1300,26 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				return this.carrello.righeCarrello.Where( rr1 => rr1 != null && rr1.fotografia != null ).Select( rr2 => rr2.fotografia.id );
 
 		}
+
+		#region Promozioni
+
+		public void CalcolaPromozioni() {
+
+			// Qui vorrei clonare il carrello originale sorgente perché non lo voglio toccare.
+			Carrello chart = this.carrello;
+			ContestoDiVendita contestoDiVendita = new ContestoDiVendita();
+
+			Carrello clone = gestoreCarrello.ClonaCarrello();
+
+			foreach( Promozione promo in _promozioniAttive ) {
+
+				ICalcolatorePromozione qq = _promoCalcFactoryMap[promo.GetType()];
+
+				clone = qq.Applica( clone, promo, contestoDiVendita );
+			}
+
+		}
+		
+		#endregion Promozioni
 	}
 }

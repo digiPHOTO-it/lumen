@@ -18,6 +18,7 @@ using System.Data.Entity.Validation;
 using System.Data.Entity;
 using Digiphoto.Lumen.Servizi.Stampare;
 using Digiphoto.Lumen.Model.Util;
+using Digiphoto.Lumen.Core.Servizi.Vendere;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 
@@ -363,6 +364,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				// Rileggo le associazioni in questo modo gli oggetti vengono riattaccati al context corrente.
 				riga.fotografia = mioDbContext.Fotografie.Single( r => r.id == riga.fotografia.id );
 				riga.fotografo = mioDbContext.Fotografi.Single( f => f.id == riga.fotografo.id );
+
 				if( riga.formatoCarta != null )
 					riga.formatoCarta = mioDbContext.FormatiCarta.Single( c => c.id == riga.formatoCarta.id );
 
@@ -523,9 +525,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// Questo metodo pubblico per poter ricalcolare il totale durante la gestione del carrello.
 		/// </summary>
 		public void ricalcolaDocumento() {
+
 			completaAttributiMancanti( false );
+
 		}
 		public void ricalcolaDocumento( bool ancheProvvigioni ) {
+
 			completaAttributiMancanti( ancheProvvigioni );
 		}
 
@@ -849,25 +854,22 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 		// TODO forse sarebbe più consono chiamare il clona su tutti i componenti ?? (carrello, righe, provvigioni)
-		public void clonareCarrello() {
+		public Carrello ClonaCarrello() {
 
-			if( possoClonareCarrello == false )
-				throw new InvalidOperationException("nessun carrello caricato");
+			Carrello clonato = new Carrello();
+			clonato.giornata = DateTime.Today;
+			clonato.tempo = DateTime.Now;
+			clonato.intestazione = carrello.intestazione;
+			clonato.note = carrello.note;
+			clonato.prezzoDischetto = carrello.prezzoDischetto;
+			clonato.totaleAPagare = carrello.totaleAPagare;
+			clonato.totMasterizzate = carrello.totMasterizzate;
+			clonato.visibileSelfService = carrello.visibileSelfService;
 
-			Carrello c = new Carrello();
-			c.giornata = DateTime.Today;
-			c.tempo = DateTime.Now;
-			c.intestazione = carrello.intestazione;
-			c.note = carrello.note;
-			c.prezzoDischetto = carrello.prezzoDischetto;
-			c.totaleAPagare = carrello.totaleAPagare;
-			c.totMasterizzate = carrello.totMasterizzate;
-			c.visibileSelfService = carrello.visibileSelfService;
-
-			c.righeCarrello = new List<RigaCarrello>();
+			clonato.righeCarrello = new List<RigaCarrello>();
 			foreach( RigaCarrello r in carrello.righeCarrello ) {
 				RigaCarrello r2 = new RigaCarrello();
-				r2.carrello = c;
+				r2.carrello = clonato;
 				r2.bordiBianchi = r.bordiBianchi;
 				r2.descrizione = r.descrizione;
 				r2.discriminator = r.discriminator;
@@ -879,11 +881,21 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				r2.prezzoNettoTotale = r.prezzoNettoTotale;
 				r2.quantita = r.quantita;
 				r2.sconto = r.sconto;
-				c.righeCarrello.Add( r2 );
+				clonato.righeCarrello.Add( r2 );
 			}
-			
-			mioObjContext.Detach(carrello);
-			carrello = c;
+
+			return clonato;
+		}
+
+		public void CreaNuovoCarrelloPerClonazione() {
+
+			if( possoClonareCarrello == false )
+				throw new InvalidOperationException( "nessun carrello caricato" );
+
+			Carrello clonato = ClonaCarrello();
+
+			mioObjContext.Detach( carrello );
+			carrello = clonato;
 
 			isStatoModifica = false;
 			isCarrelloModificato = true;
@@ -942,5 +954,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					size < 0 ? "-" : null, normSize, sizeSuffixes[iUnit] );
 			}
 		}
+
 	}
 }

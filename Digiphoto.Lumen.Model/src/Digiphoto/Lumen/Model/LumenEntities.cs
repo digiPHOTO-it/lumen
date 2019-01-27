@@ -23,8 +23,11 @@ namespace Digiphoto.Lumen.Model {
 
 		protected override void OnModelCreating( DbModelBuilder modelBuilder ) {
 
+			// Entità derivate
 			modelBuilder.Entity<PromoStessaFotoSuFile>();
-
+			modelBuilder.Entity<PromoPrendiNPaghiM>();
+			modelBuilder.Entity<ProdottoFile>();
+			modelBuilder.Entity<FormatoCarta>();
 		}
 	
 
@@ -32,7 +35,7 @@ namespace Digiphoto.Lumen.Model {
 		public virtual DbSet<Carrello> Carrelli { get; set; }
 		public virtual DbSet<ConsumoCartaGiornaliero> ConsumiCartaGiornalieri { get; set; }
 		public virtual DbSet<Evento> Eventi { get; set; }
-		public virtual DbSet<FormatoCarta> FormatiCarta { get; set; }
+
 		public virtual DbSet<Fotografo> Fotografi { get; set; }
 		public virtual DbSet<Fotografia> Fotografie { get; set; }
 		public virtual DbSet<Giornata> Giornate { get; set; }
@@ -41,6 +44,10 @@ namespace Digiphoto.Lumen.Model {
 		public virtual DbSet<RigaCarrello> RigheCarrelli { get; set; }
 		public virtual DbSet<ScaricoCard> ScarichiCards { get; set; }
 		public virtual DbSet<Promozione> Promozioni { get; set; }
+
+		public virtual DbSet<FormatoCarta> FormatiCarta { get; set; }
+		public virtual DbSet<ProdottoFile> ProdottiFile { get; set; }
+		public virtual DbSet<Prodotto> Prodotti { get; set; }
 
 	}
 }

@@ -22,14 +22,20 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 		}
 
 		public virtual void addNew( TEntity entita ) {
-			ObjectSet<TEntity> objectSet = UnitOfWorkScope.currentObjectContext.CreateObjectSet<TEntity>();
-			objectSet.AddObject( entita );
+
+			UnitOfWorkScope.currentDbContext.Set<TEntity>().Add( entita );
+
+			// ObjectSet<TEntity> objectSet = UnitOfWorkScope.currentObjectContext.CreateObjectSet<TEntity>();
+			// objectSet.AddObject( entita );
 			_giornale.Info( "Creata nuova entità " + entita.GetType() + " " + entita.ToString() );
 		}
 
 		public virtual IEnumerable<TEntity> getAll() {
-			ObjectSet<TEntity> objectSet = UnitOfWorkScope.currentObjectContext.CreateObjectSet<TEntity>();
-			return objectSet.AsEnumerable();
+
+			return UnitOfWorkScope.currentDbContext.Set<TEntity>().AsEnumerable();
+			
+			// ObjectSet<TEntity> objectSet = UnitOfWorkScope.currentObjectContext.CreateObjectSet<TEntity>();
+			// return objectSet.AsEnumerable();
 		}
 
 		public virtual TEntity getById( object id ) {
@@ -38,14 +44,18 @@ namespace Digiphoto.Lumen.Servizi.EntityRepository {
 
 		public virtual IQueryable<TEntity> Query() {
 
-			ObjectSet<TEntity> objectSet = UnitOfWorkScope.currentObjectContext.CreateObjectSet<TEntity>();
-			return objectSet.AsQueryable();
+			return UnitOfWorkScope.currentDbContext.Set<TEntity>().AsQueryable();
+
+			// ObjectSet<TEntity> objectSet = UnitOfWorkScope.currentObjectContext.CreateObjectSet<TEntity>();
+			// return objectSet.AsQueryable();
 		}
 
 		public virtual IQueryable<TEntity> Query( System.Linq.Expressions.Expression<Func<TEntity, bool>> filter ) {
 
-			ObjectSet<TEntity> objectSet = UnitOfWorkScope.currentObjectContext.CreateObjectSet<TEntity>();
-			return objectSet.AsQueryable().Where( filter );
+			return UnitOfWorkScope.currentDbContext.Set<TEntity>().AsQueryable().Where( filter );
+			
+			// ObjectSet<TEntity> objectSet = UnitOfWorkScope.currentObjectContext.CreateObjectSet<TEntity>();
+			// return objectSet.AsQueryable().Where( filter );
 		}
 
 

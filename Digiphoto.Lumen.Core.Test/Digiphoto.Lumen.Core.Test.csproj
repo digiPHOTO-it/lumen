@@ -95,7 +95,7 @@
     <Compile Include="src\Imaging\CorrezioniTest.cs" />
     <Compile Include="src\Imaging\ProiettoreAreaTest.cs" />
     <Compile Include="src\Licenza\LicenzaTest.cs" />
-    <Compile Include="src\Model\PromoPolimorfTest.cs" />
+    <Compile Include="src\Model\PolimorfismoTest.cs" />
     <Compile Include="src\Model\CarrelloTest.cs" />
     <Compile Include="src\Model\crudTest.cs" />
     <Compile Include="src\Mvvm\ObservableCollectionExTest.cs" />
