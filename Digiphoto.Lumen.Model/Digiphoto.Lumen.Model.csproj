@@ -150,6 +150,7 @@
     <Compile Include="src\Digiphoto\Lumen\Model\Dto\ChiusuraCassaGiornoDto.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\Dto\ChiusureCassaDto.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\FaseDelGiornoUtil.cs" />
+    <Compile Include="src\Digiphoto\Lumen\Model\ProdottoFile.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\FormatoCarta.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\Fotografo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -161,6 +162,7 @@
     <Compile Include="src\Digiphoto\Lumen\Model\InfoFissa.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\LumenEntities.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\Maschera.cs" />
+    <Compile Include="src\Digiphoto\Lumen\Model\Prodotto.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\PromoPrendiNPaghiM.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\PromoStessaFotoSuFile.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\Promozione.cs" />
