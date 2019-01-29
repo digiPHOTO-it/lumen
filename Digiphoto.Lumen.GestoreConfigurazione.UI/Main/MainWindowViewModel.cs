@@ -1462,6 +1462,9 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 					return errori.ElementAt( 0 ).ErrorMessage;
 				}
 			}
+
+			if( prodottoFile.prezzo <= 0 )
+				return "Prezzo del file digitale non valido";
 			
 			return null;
 		}

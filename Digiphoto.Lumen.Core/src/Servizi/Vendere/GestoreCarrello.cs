@@ -143,6 +143,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
+		public decimal sommatoraPrezziFotoDaMasterizzare {
+			get {
+				return carrello.righeCarrello.Where( r => r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA ).Sum( rfs => rfs.prezzoNettoTotale );
+			}
+		}
+
 		/// <summary>
 		/// Mi dice quante foto da stampare ci sono nel carrello 
 		/// </summary>
@@ -184,7 +190,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		public Decimal prezzoNettoTotale {
 
 			get {
-				return carrello.righeCarrello.Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA ).Sum( r => r.prezzoNettoTotale ) + (carrello.prezzoDischetto != null ? (decimal)carrello.prezzoDischetto : (decimal)0);
+				return carrello.righeCarrello.Sum( r => r.prezzoNettoTotale );
 			}
 		}
 
@@ -562,12 +568,18 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 
 			carrello.totMasterizzate = 0;
+			carrello.prezzoDischetto = 0;
 
 			// :: loop su tutte le righe
 			foreach( RigaCarrello r in carrello.righeCarrello ) {
 
 				// ricalcolo il valore della riga
 				r.prezzoNettoTotale = calcValoreRiga( r );
+
+				// Calcolo il totale del prezzo del dischetto, che prima veniva inserito manualmente
+				if( r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA )
+					carrello.prezzoDischetto += r.prezzoNettoTotale;
+
 
 				// Se ho venduto il carrello, valorizzo i fogli stampati con la quantità
 				if( carrello.venduto ) {
@@ -590,13 +602,15 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 						carrello.incassiFotografi.Add( inca );
 					}
 
+					// Incasso totale
+					inca.incasso += r.prezzoNettoTotale;
 
+					// Incasso diviso per prodotto
 					if( r.discriminator == RigaCarrello.TIPORIGA_STAMPA ) {
-						inca.incasso += r.prezzoNettoTotale;
 						inca.incassoStampe += r.prezzoNettoTotale;
 						inca.contaStampe += r.quantita;
 					} else if( r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA ) {
-						// Il prezzo di queste righe è zero. Calcolo tutto alla fine sul totale
+						inca.incassoMasterizzate += r.prezzoNettoTotale;
 						inca.contaMasterizzate += r.quantita;  // fisso = 1
 					}
 				}
@@ -663,15 +677,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		 */
 		public static decimal calcValoreRiga( RigaCarrello riga ) {
 
-			decimal valore = 0;
+			decimal _localSconto = riga.sconto != null ? (decimal)riga.sconto : 0;
 
-			// Le righe masterizzate non le conteggio. Sono a valore 0
-			if( riga.isTipoStampa ) {
-
-				decimal _localSconto = riga.sconto != null ? (decimal)riga.sconto : 0;
-
-				valore = riga.quantita * (riga.prezzoLordoUnitario - _localSconto);
-			}
+			decimal valore = riga.quantita * (riga.prezzoLordoUnitario - _localSconto);
 
 			return valore;
 		}

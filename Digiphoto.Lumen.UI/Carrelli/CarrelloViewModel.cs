@@ -392,6 +392,11 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 				return venditoreSrv.sommatoriaFotoDaMasterizzare;
 			}
 		}
+		public decimal sommatoriaPrezziFotoDaMasterizzare {
+			get {
+				return venditoreSrv.sommatoriaPrezziFotoDaMasterizzare;
+			}
+		}
 
 		public int sommatoriaQtaFotoDaStampare {
 			get {
@@ -745,6 +750,7 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 			OnPropertyChanged( "sommatoriaFotoDaMasterizzare" );
 			OnPropertyChanged( "sommatoriaQtaFotoDaStampare" );
 			OnPropertyChanged( "sommatoriaPrezziFotoDaStampare" );
+			OnPropertyChanged( "sommatoriaPrezziFotoDaMasterizzare" );
 			OnPropertyChanged( "possoVisualizzareIncassiFotografi" );
 			OnPropertyChanged( "spazioFotoDaMasterizzate" );
 			OnPropertyChanged( "operazioniCd" );

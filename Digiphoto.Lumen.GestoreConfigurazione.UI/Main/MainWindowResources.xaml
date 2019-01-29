@@ -39,5 +39,18 @@
 			</DataTrigger>
 		</Style.Triggers>
 	</Style>
+
+	<Style x:Key="grpBoxCfg" TargetType="GroupBox">
+		<Setter Property="BorderBrush" Value="Blue" />
+		<Setter Property="HeaderTemplate">
+			<Setter.Value>
+				<DataTemplate>
+					<Border Background="Red">
+						<Label Content="Hello"></Label>
+					</Border>
+				</DataTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
 	
 </ResourceDictionary>
