@@ -138,6 +138,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			get;
 		}
 
+		Decimal sommatoriaPrezziFotoDaMasterizzare {
+			get;
+		}
+
 		Decimal prezzoNettoTotale {
 			get;
 		}

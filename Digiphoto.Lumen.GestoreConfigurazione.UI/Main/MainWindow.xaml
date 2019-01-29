@@ -145,43 +145,50 @@
 					<ComboBox Name="comboBoxModalitaVendita"  HorizontalAlignment="Left" Margin="174,76,0,0" VerticalAlignment="Top" Width="148" ItemsSource="{Binding modoVenditaValues}" SelectedValue="{Binding Path=cfg.modoVendita}" />
 
 					<Label Content="Url web server SS" Height="27" HorizontalAlignment="Left" Margin="25,174,0,0" VerticalAlignment="Top" Width="127" />
-					<TextBox Height="27" Margin="174,176,225,0" Text="{Binding infoFissa.urlPrefixSelfServiceWeb}" VerticalAlignment="Top" ToolTip="Prefisso url web server per Self Service" />
+					<TextBox Height="27" Margin="174,176,248,0" Text="{Binding infoFissa.urlPrefixSelfServiceWeb}" VerticalAlignment="Top" ToolTip="Prefisso url web server per Self Service" />
 
-					<GroupBox Header="Promozioni" Margin="31,220,0,0" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" Width="387" Height="148" VerticalAlignment="Top">
+					<GroupBox Header="Promozioni" 
+							  Margin="31,220,0,0"  HorizontalAlignment="Left" Width="387" Height="148" VerticalAlignment="Top"
+							  >
 
 						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="27*"/>
+								<ColumnDefinition Width="31*"/>
+								<ColumnDefinition Width="317*"/>
+							</Grid.ColumnDefinitions>
 
 							<CheckBox Content="1) Prendi anche file con il prezzo di favore:" 
-									  HorizontalAlignment="Left" Margin="28,20,0,0" VerticalAlignment="Top" Width="248" 
+									  HorizontalAlignment="Left" Margin="1,20,0,0" VerticalAlignment="Top" Width="248" 
 									  IsChecked="{Binding Path=promoStessaFotoSuFile.attiva}"
-									  ToolTip="Per ogni stampa acquistata si può avere&#x0a;lo stesso file al prezzo di favore indicato" />
+									  ToolTip="Per ogni stampa acquistata si può avere&#x0a;lo stesso file al prezzo di favore indicato" Grid.Column="1" Grid.ColumnSpan="2" />
 
 							<xctk:DecimalUpDown Value="{Binding Path=promoStessaFotoSuFile.prezzoFile, UpdateSourceTrigger=PropertyChanged}"
 												Minimum="0"  AllowTextInput="True"
 												Increment="1" Height="26" Width="60" 
-												Margin="290,15,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+												Margin="232,15,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="2" />
 
 
-							<Separator Margin="62,46,0,0" HorizontalAlignment="Left" Width="288" Height="19" VerticalAlignment="Top" />
+							<Separator Margin="4,46,0,0" HorizontalAlignment="Left" Width="288" Height="19" VerticalAlignment="Top" Grid.Column="2" />
 
-							
+
 							<CheckBox Content="2) Compri &lt;N&gt; prodotti e ne paghi &lt;M&gt;" 
-									  HorizontalAlignment="Left" Margin="28,67,0,0" VerticalAlignment="Top" 
+									  HorizontalAlignment="Left" Margin="1,67,0,0" VerticalAlignment="Top" 
 									  IsChecked="{Binding Path=promoPrendiNPaghiM.attiva}"
-									  ToolTip="Esempio: compri 3 paghi 2" />
+									  ToolTip="Esempio: compri 3 paghi 2" Grid.Column="1" Grid.ColumnSpan="2" />
 
 							<xctk:IntegerUpDown Value="{Binding Path=promoPrendiNPaghiM.qtaDaPrendere, UpdateSourceTrigger=PropertyChanged}"
 											Minimum="0"  AllowTextInput="True"
 											Increment="1" Width="60" Height="26"
-											Margin="64,88,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+											Margin="6,88,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" Grid.Column="2" />
 
-							<Label Content="X" Margin="160,88,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+							<Label Content="X" Margin="102,88,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="2" />
 
 							<xctk:IntegerUpDown Value="{Binding Path=promoPrendiNPaghiM.qtaDaPagare, UpdateSourceTrigger=PropertyChanged}"
 											Minimum="0"  AllowTextInput="True"
 											Increment="1" Width="60" Height="26" 
-											Margin="206,88,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
-							
+											Margin="148,88,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="2" />
+
 						</Grid>
 
 					</GroupBox>
@@ -220,36 +227,37 @@
 
 					<StackPanel VerticalAlignment="Center" Grid.Row="0" Grid.Column="1">
 						<Button Content="Abbina ---&gt;" Name="abbinaButton" Margin="5,5,5,5" Command="{Binding Path=abbinaCommand}" />
-						<Button Content="&lt;--- Rimuovi abbinamento" Name="rimuoviAbbinamentoButton" Margin="5,5,5,5" Command="{Binding Path=rimuoviAbbinamentoCommand}"/>
+						<Button Content="&lt;--- Rimuovi&#x0a;abbinamento" Name="rimuoviAbbinamentoButton" Margin="5,5,5,5" Command="{Binding Path=rimuoviAbbinamentoCommand}" />
 					</StackPanel>
 
-					<HeaderedContentControl Header="Prodotti vendibili" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Padding="0,0,0,20" >
-						
-						<StackPanel Orientation="Vertical" Height="360">
+					<HeaderedContentControl Header="Prodotti vendibili" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" >
 
-							<GroupBox>
+						<StackPanel Orientation="Vertical" Height="360" >
+
+							<GroupBox BorderBrush="Blue">
 								<GroupBox.Header>
-									<Label Background="Yellow">Stampe cartacee</Label>
+									<Label Background="#6f9de8">Stampe cartacee</Label>
 								</GroupBox.Header>
-							<vc:SelettoreFormatoCartaAbbinatoView DataContext="{Binding Path=DataContextAbbinamenti}" Height="200" />
+								<vc:SelettoreFormatoCartaAbbinatoView DataContext="{Binding Path=DataContextAbbinamenti}" Height="200" />
 							</GroupBox>
-							
+
 							<Separator Margin="0,20,0,20" />
 
-							<GroupBox>
+							<GroupBox BorderBrush="Blue">
 								<GroupBox.Header>
-									<Label Background="Yellow">File digitale</Label>
+									<Label Background="#6f9de8">File digitale</Label>
 								</GroupBox.Header>
-								
+
 								<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 									<Label Content="Prezzo file:" Height="26" />
 									<xctk:DecimalUpDown Value="{Binding Path=prodottoFile.prezzo, UpdateSourceTrigger=PropertyChanged}"
-												Minimum="0"  AllowTextInput="True"
-												Increment="1" Height="26" Width="60" />
+														Minimum="0"  AllowTextInput="True"
+														ToolTip="Prezzo della singola foto venduta come file digitale&#x0a;(masterizzata su cd o chiavetta)"
+														Increment="1" Height="26" Width="60" />
 
 								</StackPanel>
 							</GroupBox>
-							
+
 
 						</StackPanel>
 					</HeaderedContentControl>

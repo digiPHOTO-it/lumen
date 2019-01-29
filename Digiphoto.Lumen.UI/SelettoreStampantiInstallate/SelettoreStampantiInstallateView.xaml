@@ -11,7 +11,7 @@
         <ResourceDictionary Source="SelettoreStampantiInstallateResources.xaml" />
     </UserControl.Resources>
 
-    <GroupBox Header="Selezionare una Stampante">
+    <GroupBox Header="Selezionare una Stampante" BorderBrush="Blue" Foreground="Black">
 
         <Grid>
 

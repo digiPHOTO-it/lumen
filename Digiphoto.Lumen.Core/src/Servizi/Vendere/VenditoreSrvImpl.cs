@@ -99,6 +99,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
+		public decimal sommatoriaPrezziFotoDaMasterizzare {
+			get {
+				return gestoreCarrello.sommatoraPrezziFotoDaMasterizzare;
+			}
+		}
+
 		public string spazioFotoDaMasterizzate
 		{
 			get
@@ -154,6 +160,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		private StampantiAbbinateCollection _stampantiAbbinate;
 
 		private Promozione[] _promozioniAttive;
+		private decimal _prezzoFile;
 
 		/// <summary>
 		/// Mappa con associazione tipo di promozione e il suo calcolatore.
@@ -206,6 +213,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			// carico le promo attive
 			_promozioniAttive = UnitOfWorkScope.currentDbContext.Promozioni.Where( p => p.attiva ).OrderBy( p => p.priorita ).ToArray();
+
+			_prezzoFile = UnitOfWorkScope.currentDbContext.ProdottiFile.Single( w => w.attivo == true ).prezzo;
 
 			creareNuovoCarrello();
 
@@ -939,6 +948,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			r.id = Guid.Empty;  // Lascio intenzionalmente vuoto. Lo valorizzo alla fine prima di salvare
 			r.quantita = 1;
+			r.prezzoLordoUnitario = r.prezzoNettoTotale = _prezzoFile;
 			r.descrizione = "Foto masterizzata";
 
 			// Riattacco un pò di roba altrimenti si incacchia

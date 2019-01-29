@@ -306,6 +306,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" 
@@ -366,9 +367,12 @@
 				<Label Content="Oper" Grid.Row="0" Grid.Column="2" Style="{StaticResource styleLabelRigaCarrello}" />
 				<Label Content="{Binding Path=fotografo.iniziali}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{StaticResource styleLabelRigaCarrello}" ToolTip="{Binding Path=fotografo.cognomeNome}" />
 
-                <!-- Icona Mi Piace / Non mi piace -->
-                <Label Content="Like" Grid.Row="0" Grid.Column="3" Style="{StaticResource styleLabelRigaCarrello}" ToolTip="Like" />
-                <Image Grid.Row="1" Grid.Column="3" Width="16">
+				<Label Content="Prz Tot" Grid.Row="0" Grid.Column="3" Style="{StaticResource styleLabelRigaCarrello}" />
+				<Label Content="{Binding Path=prezzoNettoTotale}" Grid.Row="1" Grid.Column="3" Style="{StaticResource styleLabelRigaCarrello}" />
+
+				<!-- Icona Mi Piace / Non mi piace -->
+                <Label Content="Like" Grid.Row="0" Grid.Column="4" Style="{StaticResource styleLabelRigaCarrello}" ToolTip="Like" />
+                <Image Grid.Row="1" Grid.Column="4" Width="16">
                     <Image.ToolTip >
                         <TextBlock >
                             <TextBlock.Text>
