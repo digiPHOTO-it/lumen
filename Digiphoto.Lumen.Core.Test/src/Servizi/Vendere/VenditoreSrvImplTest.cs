@@ -392,56 +392,5 @@ namespace Digiphoto.Lumen.Core.VsTest {
 			}
 		}
 
-
-		[TestMethod]
-		public void PromozioniAncheFileTest() {
-
-
-			using( new UnitOfWorkScope( false ) ) {
-
-				_impl.creareNuovoCarrello();
-
-				ParamStampaFoto p = ricavaParamStampa();
-
-				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
-				List<Fotografia> fotos = (from f in dbContext.Fotografie.Include( "fotografo" )
-										  select f).Take( QUANTE ).ToList();
-
-				if( fotos.Count == QUANTE ) {
-
-					contaStampate = 0;
-
-					_impl.aggiungereStampe( fotos, p );
-					_impl.aggiungereMasterizzate( fotos );
-					_impl.carrello.prezzoDischetto = 123;
-
-					Assert.IsFalse( _impl.carrello.venduto );
-
-					Assert.IsTrue( _impl.isPossibileSalvareCarrello );
-					Assert.IsTrue( _impl.isPossibileVendereCarrello );
-					Assert.IsTrue( _impl.isPossibileModificareCarrello );
-
-					_impl.vendereCarrello();
-
-					Assert.IsTrue( _impl.carrello.venduto );
-					Assert.IsTrue( _impl.carrello.totaleAPagare == 6 + 1 );
-				}
-			}
-
-
-
-			// TODO Qui non funziona e non capisco perché.
-			// Mi va in fail durante la sleep
-			//while( !venditaCompletata ) {
-			//    System.Threading.Thread.Sleep( 6000 );
-			//}
-
-			//			_impl.stop();
-
-
-			Console.WriteLine( "FINITO" );
-		}
-
-
 	}
 }

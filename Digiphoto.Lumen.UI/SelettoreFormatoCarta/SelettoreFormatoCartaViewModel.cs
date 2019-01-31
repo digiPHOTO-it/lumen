@@ -148,8 +148,8 @@ namespace Digiphoto.Lumen.UI
 			// Questo è d'appoggio per la creazione nomeCartellaRecente un nuovo formatoCartaSelezionato al volo
 			nuovoFormatoCarta = new FormatoCarta();
 			nuovoFormatoCarta.id = Guid.NewGuid();
+			nuovoFormatoCarta.attivo = true;
 
-            //OnPropertyChanged("descrizioneFormatoNew");
             OnPropertyChanged("nuovoFormatoCarta");
 		}
 

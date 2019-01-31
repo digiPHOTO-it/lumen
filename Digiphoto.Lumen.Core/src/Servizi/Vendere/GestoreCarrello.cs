@@ -43,6 +43,13 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			creaMioDbContext();
 		}
 
+		public GestoreCarrello clone() {
+			GestoreCarrello clone = new GestoreCarrello();
+			clone.carrello = ClonaCarrello();
+			return clone;
+		}
+
+
 		~GestoreCarrello() {
 			if( mioDbContext != null ) {
 				// Qui non dovrebbe mai capitare.
@@ -447,19 +454,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 				if( rigaCarrello.id == Guid.Empty )
 					rigaCarrello.id = Guid.NewGuid();
-				/* ERRATO !!!!
-				if( rigaCarrello.carrello_id == Guid.Empty )
-					rigaCarrello.carrello_id = carrello.id;           
-				*/
 			}
 
 			foreach( IncassoFotografo incassoFotografo in carrello.incassiFotografi ) {
 				if( incassoFotografo.id == Guid.Empty )
 					incassoFotografo.id = Guid.NewGuid();
-				/* ERRATO
-				if( incassoFotografo.carrello_id == Guid.Empty )
-					incassoFotografo.carrello_id = carrello.id;
-				*/
 			}
 
 			// Se il carrello è nuovo, lo aggiungo al set.
@@ -651,6 +650,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			if( carrello.venduto && carrello.visibileSelfService )
 				if( carrello.idCortoSelfService == null )
 					carrello.idCortoSelfService = generaUnIdCorto();
+
+			carrello.totaleAPagare = prezzoNettoTotale;
 		}
 
 		private string generaUnIdCorto() {

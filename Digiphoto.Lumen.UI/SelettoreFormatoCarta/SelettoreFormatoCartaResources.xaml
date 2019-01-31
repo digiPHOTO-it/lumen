@@ -8,6 +8,7 @@
             <StackPanel Orientation="Horizontal">
                 <Label Content="{Binding descrizione}" />
                 <Label Content="{Binding prezzo}" />
+				<Label Content="{Binding grandezza}" />
             </StackPanel>
         </Border>
 
