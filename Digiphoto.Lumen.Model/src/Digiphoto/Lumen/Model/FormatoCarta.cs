@@ -15,9 +15,12 @@ namespace Digiphoto.Lumen.Model {
 		/// P = piccolo
 		/// M = medio
 		/// G = grande
+		/// 
+		/// serve per il calcolo delle promozioni
 		/// </summary>
 		[Column("st_grandezza")]
-		public char grandezza {
+		[Required]
+		public string grandezza {
 			get; set;
 		}
 	}

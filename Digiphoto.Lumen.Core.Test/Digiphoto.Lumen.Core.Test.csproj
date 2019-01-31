@@ -118,6 +118,7 @@
     <Compile Include="src\Servizi\Utilita\UtilitaSrvImplTests.cs" />
     <Compile Include="src\Servizi\Vendere\GestoreCarrelloTest.cs" />
     <Compile Include="src\Servizi\Vendere\VenditoreSrvImplTest.cs" />
+    <Compile Include="src\Servizi\Vendere\VenditorePromoTest.cs" />
     <Compile Include="src\Util\CompNumFotoTest.cs" />
     <Compile Include="src\Util\Costanti.cs" />
     <Compile Include="src\Util\QueriesVarieTest.cs" />

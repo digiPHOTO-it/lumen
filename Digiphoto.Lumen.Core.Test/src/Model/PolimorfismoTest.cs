@@ -107,6 +107,9 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 					Console.WriteLine( "Prodotto: " + prod.descrizione );
 				}
 
+// abilito debug di ef6
+// dbContext.Database.Log = s => System.Diagnostics.Debug.WriteLine( s );
+
 				int qStampe = dbContext.FormatiCarta.Count();
 				Console.WriteLine( "tot stampe : " + qStampe );
 				foreach( Prodotto prod in dbContext.FormatiCarta ) {

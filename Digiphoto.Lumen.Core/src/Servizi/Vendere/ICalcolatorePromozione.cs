@@ -9,7 +9,7 @@ namespace Digiphoto.Lumen.Core.Servizi.Vendere {
 
 	interface ICalcolatorePromozione {
 
-		Carrello Applica( Carrello cin, Promozione promo, ContestoDiVendita contestoDiVendita );
+		Carrello Applica( Carrello cin, Promozione promo, PromoContext contestoDiVendita );
 
 	}
 }

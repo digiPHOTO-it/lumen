@@ -6,8 +6,7 @@ namespace Digiphoto.Lumen.Core.Servizi.Vendere {
 
 	public class CalcolatorePromoStessaFotoSuFile : ICalcolatorePromozione {
 
-		public Carrello Applica( Carrello cin, Promozione _promo, ContestoDiVendita contestoDiVendita ) {
-
+		public Carrello Applica( Carrello cin, Promozione _promo, PromoContext promoContext ) {
 
 			PromoStessaFotoSuFile promo = (PromoStessaFotoSuFile) _promo;
 
@@ -20,11 +19,15 @@ namespace Digiphoto.Lumen.Core.Servizi.Vendere {
 					if( rigaFile != null ) {
 						// trovato il file che corrisponde a questa foto.
 						rigaFile.prezzoLordoUnitario = promo.prezzoFile;
+
+						// Aggiungo la promo alla lista di quelle applicate
+						if( !promoContext.promoApplicate.Contains( promo ) )
+							promoContext.promoApplicate.Add( promo );
 					}
 				}
 			}
 			
-			return null;
+			return cin;
 		}
 
 	}

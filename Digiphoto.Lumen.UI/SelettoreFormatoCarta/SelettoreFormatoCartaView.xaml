@@ -49,22 +49,36 @@
                           Grid.Row="2" Grid.Column="0">
             
 
-				<DockPanel Margin="20,14,0,14">
+				<DockPanel Margin="20,4,0,14">
 
-					<Label Content="Descrizione" Height="26"/>
-					<TextBox x:Name="newDescrizioneTxt" MinWidth="120" Height="26"
-							 Text="{Binding  Path=nuovoFormatoCarta.descrizione, UpdateSourceTrigger=PropertyChanged}"
-							 VerticalContentAlignment="Center"
-							 Style="{StaticResource newDescrizioneFormatoCartaTxtStyle}" />
+					<StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+						<Label Content="Descrizione" Height="26"/>
+						<TextBox x:Name="newDescrizioneTxt" MinWidth="100" Height="26"
+								 Text="{Binding  Path=nuovoFormatoCarta.descrizione, UpdateSourceTrigger=PropertyChanged}"
+								 VerticalContentAlignment="Center"
+								 Style="{StaticResource newDescrizioneFormatoCartaTxtStyle}" />
 
-					<Label Content="Prezzo" Height="26" />
+						<Label Content="Prezzo" Height="26" />
           
-					<xctk:DecimalUpDown Value="{Binding Path=nuovoFormatoCarta.prezzo, UpdateSourceTrigger=PropertyChanged}"
-										Style="{StaticResource newPrezzoFormatoCartaUpDnStyle}" 
-										MinWidth="90" Minimum="0" AllowTextInput="True"
-										Increment="1" Height="26" />
+						<xctk:DecimalUpDown Value="{Binding Path=nuovoFormatoCarta.prezzo, UpdateSourceTrigger=PropertyChanged}"
+											Style="{StaticResource newPrezzoFormatoCartaUpDnStyle}" 
+											MinWidth="70" Minimum="0" AllowTextInput="True"
+											Increment="1" Height="26" />
 
-					<Button Name="creareNuovoButton" Content="Crea" Command="{Binding Path=creareNuovoCommand}" Width="100" Height="26" />
+						<Label Height="26" Content="Grandezza" />
+						<ComboBox SelectedValue="{Binding Path=nuovoFormatoCarta.grandezza}" SelectedValuePath="Tag"
+								  IsEditable="False" MinWidth="60" Height="26" >
+							<ComboBox.Items>
+								<ComboBoxItem Tag="P">Piccolo</ComboBoxItem>
+								<ComboBoxItem Tag="M">Medio</ComboBoxItem>
+								<ComboBoxItem Tag="G">Grande</ComboBoxItem>
+							</ComboBox.Items>
+						</ComboBox>
+					</StackPanel>
+					
+					<Button DockPanel.Dock="Bottom" Name="creareNuovoButton" Content="Crea" 
+							Command="{Binding Path=creareNuovoCommand}" 
+							Width="100" Height="26" />
 				</DockPanel>
 			</Expander>
 

@@ -1313,23 +1313,39 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		#region Promozioni
 
-		public void CalcolaPromozioni() {
+		public Carrello CalcolaPromozioni( bool ancheDiscrezione = false ) {
+
+			Carrello chart;
 
 			// Qui vorrei clonare il carrello originale sorgente perché non lo voglio toccare.
-			Carrello chart = this.carrello;
-			ContestoDiVendita contestoDiVendita = new ContestoDiVendita();
+			using( var gesclone = gestoreCarrello.clone() ) {
 
-			Carrello clone = gestoreCarrello.ClonaCarrello();
+				chart = gesclone.carrello;
+			
+				PromoContext contestoDiVendita = new PromoContext();
 
-			foreach( Promozione promo in _promozioniAttive ) {
+				foreach( Promozione promo in _promozioniAttive ) {
 
-				ICalcolatorePromozione qq = _promoCalcFactoryMap[promo.GetType()];
+					// Controllo se applicare o meno le promo a discrezione utente
+					if( promo.discrezionale && contestoDiVendita.applicarePromoADiscrezione == false ) {
+						_giornale.Debug( "Non calcolco la promo " + promo.GetType() + " perché discrezionale" );
+						continue;
+					}
 
-				clone = qq.Applica( clone, promo, contestoDiVendita );
+					ICalcolatorePromozione qq = _promoCalcFactoryMap[promo.GetType()];
+
+					chart = qq.Applica( chart, promo, contestoDiVendita );
+				}
+
+				gesclone.ricalcolaDocumento();
+
+				var newtot = chart.totaleAPagare;
+				_giornale.Debug( "nuovo totale dopo le promozioni = " + newtot );
 			}
 
+			return chart;
 		}
-		
+
 		#endregion Promozioni
 	}
 }
