@@ -11,6 +11,10 @@ namespace Digiphoto.Lumen.Model {
 	[MetadataType( typeof( FormatoCarta ) )]
 	public class FormatoCarta : Prodotto {
 
+		public FormatoCarta() {
+			tipologia = RigaCarrello.TIPORIGA_STAMPA;
+		}
+
 		/// <summary>
 		/// P = piccolo
 		/// M = medio

@@ -7,6 +7,10 @@ namespace Digiphoto.Lumen.Model {
 
 	[MetadataType( typeof( ProdottoFile ) )]
 	public class ProdottoFile : Prodotto {
+
+		public ProdottoFile() {
+			this.tipologia = RigaCarrello.TIPORIGA_MASTERIZZATA;
+		}
 	}
 
 }

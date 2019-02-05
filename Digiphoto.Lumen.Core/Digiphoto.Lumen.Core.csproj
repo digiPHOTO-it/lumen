@@ -286,6 +286,7 @@
     <Compile Include="src\Servizi\Reports\RigaReportProvvigioni.cs" />
     <Compile Include="src\Servizi\Utilita\IUtilitaSrv.cs" />
     <Compile Include="src\Servizi\Utilita\UtilitaSrvImpl.cs" />
+    <Compile Include="src\Servizi\Vendere\CalcolatorePromoProdXProd.cs" />
     <Compile Include="src\Servizi\Vendere\CalcolatorePromoStessaFotoSuFile.cs" />
     <Compile Include="src\Servizi\Vendere\CalcolatorePromoPrendiNPaghiM.cs" />
     <Compile Include="src\Servizi\Vendere\PromoContext.cs" />

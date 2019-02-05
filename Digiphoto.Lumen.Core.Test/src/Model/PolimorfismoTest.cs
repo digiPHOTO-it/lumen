@@ -29,12 +29,8 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 	[TestClass]
 	public class PromoPolimorfTest {
 
-		int _contaStampate = 0;
-		int _contaMasterizzate = 0;
-		Carrello _carrelloInserito = null;
 
-
-		//Use ClassInitialize to run code before running the first test in the class
+		// Use ClassInitialize to run code before running the first test in the class
 		[ClassInitialize()]
 		public static void PromoPolimorfTestInitialize( TestContext testContext ) {
 			LumenApplication.Instance.avvia();
@@ -53,7 +49,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 		/// <summary>
 		/// Carico i carrelli con anche le righe
 		/// </summary>
-		[TestMethod]
+		[TestMethod, TestCategory( "Promozioni" )]
 		public void DoPromoPolimorfTest() {
 
 			using( LumenEntities dbContext = new LumenEntities() ) {

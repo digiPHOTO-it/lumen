@@ -271,7 +271,7 @@ namespace Digiphoto.Lumen.Core.Test.Core {
 				rc.carrello = cc;
 				rc.descrizione = "Test-" + r.Next( 1000, 9999 );
 				rc.discriminator = "S";
-				rc.formatoCarta = context.FormatiCarta.First();
+				rc.prodotto = context.FormatiCarta.First();
 				rc.fotografo = context.Fotografi.First();
 				rc.prezzoLordoUnitario = r.Next( 1, 12 );
 				rc.quantita = (short)r.Next( 1, 12 );

@@ -281,9 +281,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 				}
 
-				if( rr.formatoCarta != null ) {
-					mioObjContext.LoadProperty( rr, r => r.formatoCarta );
-					mioObjContext.Detach( rr.formatoCarta );
+				if( rr.prodotto != null ) {
+					mioObjContext.LoadProperty( rr, r => r.prodotto );
+					mioObjContext.Detach( rr.prodotto );
 				}
 			}
 
@@ -367,10 +367,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				throw new ArgumentNullException( "nella RigaCarrello è obbligatoria la Fotografia" );
 			if( riga.fotografo == null )
 				throw new ArgumentNullException( "nella RigaCarrello è obbligatorio il Fotografo" );
-			if( riga.discriminator == RigaCarrello.TIPORIGA_STAMPA )
-				if( riga.formatoCarta == null )
-					throw new ArgumentNullException( "nella RigaCarrello da stampare è obbligatorio il FormatoCarta" );
-
+			if( riga.prodotto == null )
+				throw new ArgumentNullException( "nella RigaCarrello è obbligatorio il Prodotto" );
 
 			if( !isStessaFotoInCarrello( _carrello, riga ) ) {
 
@@ -378,8 +376,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				riga.fotografia = mioDbContext.Fotografie.Single( r => r.id == riga.fotografia.id );
 				riga.fotografo = mioDbContext.Fotografi.Single( f => f.id == riga.fotografo.id );
 
-				if( riga.formatoCarta != null )
-					riga.formatoCarta = mioDbContext.FormatiCarta.Single( c => c.id == riga.formatoCarta.id );
+				riga.prodotto = mioDbContext.Prodotti.Single( c => c.id == riga.prodotto.id );
 
 				// Non so perché ma per gestire le associazioni identificanti, (e quindi il cascade dal master al child) occorre sfruttare un attributo con l'ID del padre.
 				// In pratica la FK del figlio deve essere parte della PK (del figlio) quindi una chiave composta (che brutto).
@@ -882,7 +879,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				r2.bordiBianchi = r.bordiBianchi;
 				r2.descrizione = r.descrizione;
 				r2.discriminator = r.discriminator;
-				r2.formatoCarta = r.formatoCarta;
+				r2.prodotto = r.prodotto;
 				r2.fotografia = r.fotografia;
 				r2.fotografo = r.fotografo;
 				r2.nomeStampante = r.nomeStampante;
@@ -918,7 +915,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			if( rigaCarrello.isTipoStampa ) {
 				rigaCarrello.discriminator = RigaCarrello.TIPORIGA_MASTERIZZATA;
 				rigaCarrello.quantita = 1;
-				rigaCarrello.formatoCarta = null;
+				rigaCarrello.prodotto = mioDbContext.ProdottiFile.Single();
 				rigaCarrello.totFogliStampati = 0;
 				rigaCarrello.bordiBianchi = null;
 				rigaCarrello.prezzoLordoUnitario = 0;
@@ -929,6 +926,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				//Quando sposto la riga setto di default i bordi bianchi a false
 				rigaCarrello.bordiBianchi = false;
 				rigaCarrello.discriminator = RigaCarrello.TIPORIGA_STAMPA;
+
+// TODO !!!!
+rigaCarrello.prodotto = mioDbContext.FormatiCarta.First( f => f.attivo ); // non lo so ancora TODO da sistemare
+
+
 			} else {
 				_giornale.Warn( "Errore è stata spostata una riga senza dicriminator" );
 			}
