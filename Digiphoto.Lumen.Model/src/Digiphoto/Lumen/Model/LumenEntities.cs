@@ -25,7 +25,8 @@ namespace Digiphoto.Lumen.Model {
 
 			// Entità derivate
 			modelBuilder.Entity<PromoStessaFotoSuFile>();
-			modelBuilder.Entity<PromoPrendiNPaghiM>();
+			modelBuilder.Entity<PromoProdXProd>();
+			modelBuilder.Entity<PromoProdXProd>();
 			modelBuilder.Entity<ProdottoFile>();
 			modelBuilder.Entity<FormatoCarta>();
 		}

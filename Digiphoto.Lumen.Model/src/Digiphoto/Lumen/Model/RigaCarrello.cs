@@ -15,6 +15,19 @@ namespace Digiphoto.Lumen.Model {
 		public const string TIPORIGA_STAMPA = "S";
 		public const string TIPORIGA_MASTERIZZATA = "M";
 
+		public RigaCarrello() {
+		}
+
+		public RigaCarrello( Prodotto prodotto, short quantita ) {
+			this.id = Guid.Empty;
+			this.prodotto = prodotto;
+			this.quantita = quantita;
+			this.prezzoLordoUnitario = prodotto.prezzo;
+			this.prezzoNettoTotale = (this.quantita * this.prezzoLordoUnitario);
+			this.discriminator = prodotto.tipologia;
+			this.descrizione = prodotto.descrizione;
+		}
+
 		#region Attributi
 
 		[Key]
@@ -77,9 +90,10 @@ namespace Digiphoto.Lumen.Model {
 		public Nullable<System.Guid> fotografia_id { get; set; }
 		public virtual Fotografia fotografia { get; set; }
 
-		[ForeignKey( "formatoCarta" )]
-		public Nullable<System.Guid> formatoCarta_id { get; set; }
-		public virtual FormatoCarta formatoCarta { get; set; }
+		[Required]
+		[ForeignKey( "prodotto" )]
+		public Guid prodotto_id { get; set; }
+		public virtual Prodotto prodotto { get; set; }
 
 		#endregion Attributi
 

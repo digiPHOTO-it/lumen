@@ -108,8 +108,8 @@ namespace Digiphoto.Lumen.Core.VsTest {
 			return p;
 		}
 
-		[TestMethod]
-		public void PromozioniAncheFileTest() {
+		[TestMethod, TestCategory( "Promozioni" )]
+		public void PromoAncheFileTest() {
 
 			using( new UnitOfWorkScope( false ) ) {
 
@@ -119,58 +119,54 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 				List<Fotografia> fotos = (from f in dbContext.Fotografie.Include( "fotografo" )
-										  select f).Take( QUANTE ).ToList();
+										  select f).Take( 4 ).ToList();
 
-				if( fotos.Count == QUANTE ) {
+				Assert.IsTrue( fotos.Count == 4);
 
-					contaStampate = 0;
+				contaStampate = 0;
 
-					_impl.aggiungereStampe( fotos, p );
-					_impl.aggiungereMasterizzate( fotos );
-					_impl.carrello.prezzoDischetto = 123;
+				// Prendo solo i primi 3 elementi
+				_impl.aggiungereStampe( fotos.Take( 3 ), p );
+				_impl.aggiungereMasterizzate( new [] { fotos[0], fotos[3] } );	// Solo una foto in promo
+				_impl.carrello.prezzoDischetto = 123;
 
-					Assert.IsFalse( _impl.carrello.venduto );
+				Assert.IsFalse( _impl.carrello.venduto );
 
-					Assert.IsTrue( _impl.isPossibileSalvareCarrello );
-					Assert.IsTrue( _impl.isPossibileVendereCarrello );
-					Assert.IsTrue( _impl.isPossibileModificareCarrello );
+				Assert.IsTrue( _impl.isPossibileSalvareCarrello );
+				Assert.IsTrue( _impl.isPossibileVendereCarrello );
+				Assert.IsTrue( _impl.isPossibileModificareCarrello );
 
-					_impl.vendereCarrello();
+				var newCart = _impl.CalcolaPromozioni();
 
-					Assert.IsTrue( _impl.carrello.venduto );
-					Assert.IsTrue( _impl.carrello.totaleAPagare == 6 + 1 );
-				}
+				Assert.IsTrue( newCart.totaleAPagare == (decimal)( (3*4.5) + (1*1) + (1*3.5) ) );
 			}
-
-
-
-			// TODO Qui non funziona e non capisco perché.
-			// Mi va in fail durante la sleep
-			//while( !venditaCompletata ) {
-			//    System.Threading.Thread.Sleep( 6000 );
-			//}
-
-			//			_impl.stop();
-
-
+			
 			Console.WriteLine( "FINITO" );
 		}
 
-		[TestMethod]
-		public void PromoCal1() {
+		[TestMethod, TestCategory( "Promozioni" )]
+		public void PromoCalTest1() {
 			PromoCalcGenerico( 5, 5, 5, (decimal)83.5 );
 		}
-		[TestMethod]
-		public void PromoCal2() {
+		[TestMethod, TestCategory( "Promozioni" )]
+		public void PromoCalTest2() {
 			PromoCalcGenerico( 0, 1, 0, (decimal)5 );
 		}
-		[TestMethod]
-		public void PromoCal3() {
+		[TestMethod, TestCategory( "Promozioni" )]
+		public void PromoCalTest3() {
 			PromoCalcGenerico( 0, 4, 12, (decimal)110 );
 		}
-		[TestMethod]
-		public void PromoCal4() {
+		[TestMethod, TestCategory( "Promozioni" )]
+		public void PromoCalTest4() {
 			PromoCalcGenerico( 0, 4, 11, (decimal)105 );
+		}
+		[TestMethod, TestCategory( "Promozioni" )]
+		public void PromoCalTest5() {
+			PromoCalcGenerico( 2, 2, 2, (decimal)32.5 );
+		}
+		[TestMethod, TestCategory( "Promozioni" )]
+		public void PromoCalTest6() {
+			PromoCalcGenerico( 1, 6, 0, (decimal)29.5 );
 		}
 
 		private void PromoCalcGenerico( int qtaP, int qtaM, int qtaG, decimal prezzoPromoDesiderato ) {

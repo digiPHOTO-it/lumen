@@ -27,6 +27,8 @@ using Digiphoto.Lumen.Eventi;
 using System.Windows.Resources;
 using System.Windows;
 using Digiphoto.Lumen.UI.Util;
+using System.Data.Entity;
+using System.Windows.Data;
 
 namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 {
@@ -436,7 +438,16 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 
 			caricaEventualiPromozioni();
-        }
+
+#if SONO_INDECISO
+			// carico lista dei prodotti per caricare le combo
+			var lista = UnitOfWorkScope.currentDbContext.Prodotti.OrderBy( p => p.ordinamento ).ToList();
+			listaProdotti = new CollectionView( lista );
+#else
+			listaProdotti = UnitOfWorkScope.currentDbContext.Prodotti.OrderBy( p => p.ordinamento ).ToList();
+#endif
+			OnPropertyChanged( "listaProdotti" );
+		}
 
 		private void ricostruireDb() {
 
@@ -518,7 +529,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 		bool possoLogin {
 			get {
 				 bool posso = loginEffettuato == false;
-#if (! DEBUG)
+#if(!DEBUG)
 				if( posso ) 
 					posso = LoginPassword != null;
 #endif
@@ -526,7 +537,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
-        #region Proprietà
+#region Proprietà
 
 		private bool _loginEffettuato;
 		public bool loginEffettuato
@@ -751,9 +762,9 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
-        #endregion Proprietà
+#endregion Proprietà
 
-        #region Comandi
+#region Comandi
 
         private RelayCommand _commandStepIndietro;
         public ICommand commandStepIndietro
@@ -928,9 +939,9 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
-        #endregion Comandi
+#endregion Comandi
 
-		#region esecuzioneComandi
+#region esecuzioneComandi
 
         private void stepIndietro()
         {
@@ -1384,9 +1395,9 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
-		#endregion esecuzioneComandi
+#endregion esecuzioneComandi
 
-		#region Eventi
+#region Eventi
 
 		public void OnCompleted()
 		{
@@ -1403,11 +1414,11 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			if(msg.showInStatusBar)
 				dialogProvider.ShowError(msg.descrizione, "Configurazione", null);
 		}
-		#endregion Eventi
+#endregion Eventi
 
-		#region Promozioni
+#region Promozioni
 
-		public const int PROMO_GESTITE = 2;
+		public const int PROMO_GESTITE = 3;
 
 		public Promozione[] promozioni;
 
@@ -1415,6 +1426,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 			promozioni = new Promozione[PROMO_GESTITE];
 
+			// --
 			promozioni[0] = UnitOfWorkScope.currentDbContext.Promozioni.FirstOrDefault<Promozione>( p => p.id == 1 );
 			if( promozioni[0] == null ) {
 				promozioni[0] = new PromoStessaFotoSuFile {
@@ -1426,9 +1438,10 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 			OnPropertyChanged( "promoStessaFotoSuFile" );
 
+			// --
 			promozioni[1] = UnitOfWorkScope.currentDbContext.Promozioni.FirstOrDefault<Promozione>( p => p.id == 2 );
 			if( promozioni[1] == null ) {
-				promozioni[1] = new PromoPrendiNPaghiM {
+				promozioni[1] = new PromoProdXProd {
 					id = 2,
 					attivaSuFile = true,
 					attivaSuStampe = true,
@@ -1437,6 +1450,20 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 				UnitOfWorkScope.currentDbContext.Promozioni.Add( promozioni[1] );
 			}
 			OnPropertyChanged( "promoPrendiNPaghiM" );
+
+			// --
+			promozioni[2] = UnitOfWorkScope.currentDbContext.Promozioni.FirstOrDefault<Promozione>( p => p.id == 3 );
+			if( promozioni[2] == null ) {
+				promozioni[2] = new PromoProdXProd {
+					id = 3,
+					attivaSuFile = false,
+					attivaSuStampe = true,
+					descrizione = "Compri X del protto A e ti regalo Y del prodotto B"
+				};
+				UnitOfWorkScope.currentDbContext.Promozioni.Add( promozioni[2] );
+			}
+			OnPropertyChanged( "promoProdXProd" );
+
 		}
 
 		public PromoStessaFotoSuFile promoStessaFotoSuFile {
@@ -1445,11 +1472,29 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
-		public PromoPrendiNPaghiM promoPrendiNPaghiM {
+		public PromoProdXProd promoPrendiNPaghiM {
 			get {
-				return promozioni == null ? null : (PromoPrendiNPaghiM)promozioni[1];
+				return promozioni == null ? null : (PromoProdXProd)promozioni[1];
 			}
 		}
+
+		public PromoProdXProd promoProdXProd {
+			get {
+				return promozioni == null ? null : (PromoProdXProd)promozioni[2];
+			}
+		}
+
+#if SONO_INDECISO
+		public CollectionView listaProdotti {
+			get;
+			private set;
+		}
+#else
+		public List<Prodotto> listaProdotti {
+			get;
+			private set;
+		}
+#endif
 
 		#endregion Promozioni
 

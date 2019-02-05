@@ -163,6 +163,7 @@
     <Compile Include="src\Digiphoto\Lumen\Model\LumenEntities.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\Maschera.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\Prodotto.cs" />
+    <Compile Include="src\Digiphoto\Lumen\Model\PromoProdXProd.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\PromoPrendiNPaghiM.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\PromoStessaFotoSuFile.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\Promozione.cs" />

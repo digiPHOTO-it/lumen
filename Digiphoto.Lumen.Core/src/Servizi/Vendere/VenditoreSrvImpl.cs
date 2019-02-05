@@ -119,6 +119,18 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
+		private Decimal _prezzoPromozione;
+		public Decimal prezzoPromozione {
+			get {
+				return _prezzoPromozione;
+			}
+			private set {
+				if( _prezzoPromozione != value ) {
+					_prezzoPromozione = value;
+				}
+			}
+		}
+
 		public string msgValidaCarrello {
 			get {
 				return gestoreCarrello.msgValidaCarrello();
@@ -160,14 +172,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		private StampantiAbbinateCollection _stampantiAbbinate;
 
 		private Promozione[] _promozioniAttive;
-		private decimal _prezzoFile;
 
 		/// <summary>
 		/// Mappa con associazione tipo di promozione e il suo calcolatore.
 		/// </summary>
 		private static Dictionary<Type, ICalcolatorePromozione> _promoCalcFactoryMap = new Dictionary<Type, ICalcolatorePromozione> {
 			{ typeof( PromoPrendiNPaghiM ), new  CalcolatorePromoPrendiNPaghiM() },
-			{ typeof( PromoStessaFotoSuFile ), new  CalcolatorePromoStessaFotoSuFile() }
+			{ typeof( PromoStessaFotoSuFile ), new  CalcolatorePromoStessaFotoSuFile() },
+			{ typeof( PromoProdXProd ), new  CalcolatorePromoProdXProd() }
 		};
 
 		#endregion Fields
@@ -213,8 +225,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			// carico le promo attive
 			_promozioniAttive = UnitOfWorkScope.currentDbContext.Promozioni.Where( p => p.attiva ).OrderBy( p => p.priorita ).ToArray();
-
-			_prezzoFile = UnitOfWorkScope.currentDbContext.ProdottiFile.Single( w => w.attivo == true ).prezzo;
 
 			creareNuovoCarrello();
 
@@ -390,7 +400,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			try {
 
-				CalcolaPromozioni();
+				if( vendere ) {
+					Carrello cartPromo = CalcolaPromozioni();
+					this.prezzoPromozione = (decimal)cartPromo.totaleAPagare;
+				}
 
 				// Poi salvo il carrello
 				gestoreCarrello.salvare( vendere );
@@ -494,7 +507,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
                 {
                     if (RigaCarrello.TIPORIGA_STAMPA.Equals(d))
                     {
-                        rigaDaSpostare.formatoCarta = parametriDiStampa.FormatoCarta;
+                        rigaDaSpostare.prodotto = parametriDiStampa.FormatoCarta;
                         rigaDaSpostare.nomeStampante = parametriDiStampa.NomeStampante;
                         rigaDaSpostare.quantita = parametriDiStampa.Quantita;
                         rigaDaSpostare.prezzoLordoUnitario = parametriDiStampa.PrezzoLordoUnitario;
@@ -531,7 +544,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			//associo il nuovo formato carta alla riga
 			if( parametriDiStampa != null ) {
 				cloneRiga.bordiBianchi = parametriDiStampa.BordiBianchi;
-				cloneRiga.formatoCarta = parametriDiStampa.FormatoCarta;
+				cloneRiga.prodotto = parametriDiStampa.FormatoCarta;
 				cloneRiga.nomeStampante = parametriDiStampa.NomeStampante;
 				cloneRiga.quantita = parametriDiStampa.Quantita;
 				cloneRiga.prezzoLordoUnitario = parametriDiStampa.PrezzoLordoUnitario;
@@ -574,11 +587,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 					// Siccome il nome della stampante è un attributo transiente,
 					// eventualmente lo assegno. Potrebbe essere null, quando carico un carrello dal db.
 					if( riga.nomeStampante == null ) {
-						StampanteAbbinata sa = _stampantiAbbinate.FirstOrDefault<StampanteAbbinata>( s => s.FormatoCarta.Equals( riga.formatoCarta ) );
+						StampanteAbbinata sa = _stampantiAbbinate.FirstOrDefault<StampanteAbbinata>( s => s.FormatoCarta.Equals( riga.prodotto ) );
 						if( sa != null )
 							riga.nomeStampante = sa.StampanteInstallata.NomeStampante;
 						else
-							_giornale.Warn( "Non riesco a stabilire la stampante di questa carta: " + riga.formatoCarta.descrizione + "(id=" + riga.formatoCarta.id + ")" );
+							_giornale.Warn( "Non riesco a stabilire la stampante di questa carta: " + riga.prodotto.descrizione + "(id=" + riga.prodotto.id + ")" );
 					}
 
 					++conta;
@@ -601,11 +614,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		 */
 		private RigaCarrello creaRiCaFotoStampata( Fotografia fotografia, ParamStampaFoto param ) {
 
-			RigaCarrello r = new RigaCarrello() {
-				discriminator = RigaCarrello.TIPORIGA_STAMPA
-			};
-
-			r.id = Guid.Empty;  // Lascio intenzionalmente vuoto. Lo valorizzo alla fine prima di salvare
+			RigaCarrello r = new RigaCarrello( param.formatoCarta, param.numCopie );
 
 			// Riattacco un pò di roba altrimenti si incacchia
 			// A volte possono esserci degli errori durante il riattacco. Cerco di evitarli
@@ -629,14 +638,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			r.fotografia = fotografia;
 			r.fotografo = fotografia.fotografo;
-			r.formatoCarta = param.formatoCarta;
 			r.nomeStampante = param.nomeStampante;   // Questo è un attributo transiente mi serve solo a runtime.
 
 			r.descrizione = "Stampe formato " + param.formatoCarta.descrizione;
 
-			r.prezzoLordoUnitario = param.formatoCarta.prezzo;
-			r.quantita = param.numCopie;
-			r.prezzoNettoTotale = r.prezzoLordoUnitario * r.quantita;
 			r.bordiBianchi = ! param.autoZoomNoBordiBianchi;
 
 			return r;
@@ -651,7 +656,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				param = new ParamStampaFoto();
 			param.autoRuota = true;
 			param.autoZoomNoBordiBianchi = ! (bool) riCaFotoStampata.bordiBianchi;
-			param.formatoCarta = riCaFotoStampata.formatoCarta;
+			param.formatoCarta = (FormatoCarta)riCaFotoStampata.prodotto;
 			param.numCopie = riCaFotoStampata.quantita;
 			param.nomeStampante = riCaFotoStampata.nomeStampante;  // Attributo transiente.
 
@@ -942,15 +947,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		// creo anche una riga nel carrello (UNA SOLA)
 		private RigaCarrello creaRigaFotoMasterizzata( Fotografia fotografia ) {
 
-			RigaCarrello r = new RigaCarrello {
-				discriminator = RigaCarrello.TIPORIGA_MASTERIZZATA
-			};
+			ProdottoFile prodottoFile = UnitOfWorkScope.currentDbContext.ProdottiFile.Single( p => p.attivo == true );
 
-			r.id = Guid.Empty;  // Lascio intenzionalmente vuoto. Lo valorizzo alla fine prima di salvare
-			r.quantita = 1;
-			r.prezzoLordoUnitario = r.prezzoNettoTotale = _prezzoFile;
-			r.descrizione = "Foto masterizzata";
-
+			RigaCarrello r = new RigaCarrello( prodottoFile, 1 );
+			
 			// Riattacco un pò di roba altrimenti si incacchia
 			try {
 				OrmUtil.forseAttacca<Fotografia>( ref fotografia );
@@ -1077,7 +1077,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			var queryb = from dd in querya
 						 group dd by new {
 							 dd.cc.giornata,
-							 dd.rr.formatoCarta.descrizione
+							 dd.rr.prodotto.descrizione
 						 } into grp
 						 select new {
 							 gg = grp.Key.giornata,
@@ -1332,7 +1332,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 						continue;
 					}
 
-					ICalcolatorePromozione qq = _promoCalcFactoryMap[promo.GetType()];
+					ICalcolatorePromozione qq = _promoCalcFactoryMap[promo.GetType().BaseType];
 
 					chart = qq.Applica( chart, promo, contestoDiVendita );
 				}

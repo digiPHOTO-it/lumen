@@ -231,7 +231,7 @@
 				</Border>
 
                 <Label Content="Carta" Grid.Row="0" Grid.Column="1" Style="{StaticResource styleLabelRigaCarrello}" />
-                <Label Content="{Binding Path=formatoCarta.descrizione}" Grid.Row="1" Grid.Column="1" Style="{StaticResource styleLabelRigaCarrello}" />
+                <Label Content="{Binding Path=prodotto.descrizione}" Grid.Row="1" Grid.Column="1" Style="{StaticResource styleLabelRigaCarrello}" />
                 <!-- -->
                 <Label Content="N° Foto" Grid.Row="0" Grid.Column="2" Style="{StaticResource styleLabelRigaCarrello}" />
                 <Label Content="{Binding Path=fotografia.numero}" Grid.Row="1" Grid.Column="2" Style="{StaticResource styleLabelRigaCarrello}" />
@@ -364,11 +364,11 @@
 				<Label Content="N° Foto" Grid.Row="0" Grid.Column="1" Style="{StaticResource styleLabelRigaCarrello}" />
 				<Label Content="{Binding Path=fotografia.numero}" Grid.Row="1" Grid.Column="1" Style="{StaticResource styleLabelRigaCarrello}" />
 				<!-- -->
-				<Label Content="Oper" Grid.Row="0" Grid.Column="2" Style="{StaticResource styleLabelRigaCarrello}" />
-				<Label Content="{Binding Path=fotografo.iniziali}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{StaticResource styleLabelRigaCarrello}" ToolTip="{Binding Path=fotografo.cognomeNome}" />
-
-				<Label Content="Prz Tot" Grid.Row="0" Grid.Column="3" Style="{StaticResource styleLabelRigaCarrello}" />
-				<Label Content="{Binding Path=prezzoNettoTotale}" Grid.Row="1" Grid.Column="3" Style="{StaticResource styleLabelRigaCarrello}" />
+				<Label Content="Prz Tot" Grid.Row="0" Grid.Column="2" Style="{StaticResource styleLabelRigaCarrello}" />
+				<Label Content="{Binding Path=prezzoNettoTotale}" Grid.Row="1" Grid.Column="2" Style="{StaticResource styleLabelRigaCarrello}" />
+				<!-- -->
+				<Label Content="Oper" Grid.Row="0" Grid.Column="3" Style="{StaticResource styleLabelRigaCarrello}" />
+				<Label Content="{Binding Path=fotografo.iniziali}" Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{StaticResource styleLabelRigaCarrello}" ToolTip="{Binding Path=fotografo.cognomeNome}" />
 
 				<!-- Icona Mi Piace / Non mi piace -->
                 <Label Content="Like" Grid.Row="0" Grid.Column="4" Style="{StaticResource styleLabelRigaCarrello}" ToolTip="Like" />

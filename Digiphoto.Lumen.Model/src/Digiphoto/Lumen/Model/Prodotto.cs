@@ -34,6 +34,10 @@ namespace Digiphoto.Lumen.Model {
 			get; set;
 		}
 
+		public string tipologia {
+			get; set;
+		}
+
 		#endregion Attributi
 
 

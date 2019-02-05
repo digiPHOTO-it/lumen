@@ -146,6 +146,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			get;
 		}
 
+		Decimal prezzoPromozione {
+			get;
+		}
+
 		string msgValidaCarrello {
 			get;
 		}

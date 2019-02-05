@@ -245,6 +245,8 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 
 		}
 
+
+
 		#region Ricerca
 
 		private string _intestazioneSearch;
@@ -375,6 +377,13 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 		public decimal prezzoNettoTotale {
 			get {
 				return venditoreSrv.prezzoNettoTotale;
+			}
+		}
+
+		private decimal _prezzoPromozione;
+		public decimal prezzoPromozione {
+			get {
+				return venditoreSrv.prezzoPromozione;
 			}
 		}
 
@@ -1401,7 +1410,7 @@ namespace Digiphoto.Lumen.UI.Carrelli {
                     if ( rigaCarrello != null)
                     {
                         //associo il nuovo formato carta alla riga ed anche la stampante
-                        rigaCarrello.formatoCarta = parametriDiStampa.FormatoCarta;
+                        rigaCarrello.prodotto = parametriDiStampa.FormatoCarta;
                         rigaCarrello.nomeStampante = parametriDiStampa.NomeStampante;
                         rigaCarrello.quantita = parametriDiStampa.Quantita;
                         rigaCarrello.prezzoLordoUnitario = parametriDiStampa.PrezzoLordoUnitario;

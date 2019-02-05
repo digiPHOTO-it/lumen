@@ -554,13 +554,7 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 					if( r.fotografia != null )
 						System.Diagnostics.Trace.WriteLine( "\t\tDataOra = " + r.fotografia.dataOraAcquisizione );
 
-					if (r.discriminator == RigaCarrello.TIPORIGA_STAMPA )
-					{
-						System.Diagnostics.Trace.WriteLine("\t\tFormato Carta = " + r.formatoCarta);
-					}
-					if( r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA )
-					{
-					}
+						System.Diagnostics.Trace.WriteLine("\t\tProdotto = " + r.prodotto.descrizione );
 				}
 			}
 
