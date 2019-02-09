@@ -35,6 +35,13 @@ namespace Digiphoto.Lumen.Model {
 
 		public decimal prezzoLordoUnitario { get; set; }
 
+		[NotMapped]
+		public decimal prezzoNettoUnitario {
+			get {
+				return (sconto == null) ? prezzoLordoUnitario : (prezzoLordoUnitario - (decimal)sconto);
+			}
+		}
+
 		private short _quantita;
 		public short quantita {
 			get {

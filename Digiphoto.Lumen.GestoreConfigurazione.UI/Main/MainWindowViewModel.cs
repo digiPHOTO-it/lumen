@@ -1432,6 +1432,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 				promozioni[0] = new PromoStessaFotoSuFile {
 					id = 1,
 					attivaSuStampe = true,
+					priorita = 1,
 					descrizione = "Compra anche il file"
 				};
 				UnitOfWorkScope.currentDbContext.Promozioni.Add( promozioni[0] );
@@ -1445,6 +1446,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 					id = 2,
 					attivaSuFile = true,
 					attivaSuStampe = true,
+					priorita = 7,
 					descrizione = "Prendi N paghi M"
 				};
 				UnitOfWorkScope.currentDbContext.Promozioni.Add( promozioni[1] );
@@ -1458,6 +1460,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 					id = 3,
 					attivaSuFile = false,
 					attivaSuStampe = true,
+					priorita = 4,
 					descrizione = "Compri X del protto A e ti regalo Y del prodotto B"
 				};
 				UnitOfWorkScope.currentDbContext.Promozioni.Add( promozioni[2] );
@@ -1472,9 +1475,9 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
-		public PromoProdXProd promoPrendiNPaghiM {
+		public PromoPrendiNPaghiM promoPrendiNPaghiM {
 			get {
-				return promozioni == null ? null : (PromoProdXProd)promozioni[1];
+				return promozioni == null ? null : (PromoPrendiNPaghiM)promozioni[1];
 			}
 		}
 

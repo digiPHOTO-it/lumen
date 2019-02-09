@@ -259,5 +259,10 @@ namespace Digiphoto.Lumen.Database {
 			if( dbContext.Entry( entita ).State == EntityState.Added )
 				dbContext.Set( entita.GetType() ).Remove( entita );
 		}
+
+		public static Type GetObjectType( Type t ) {
+			return ObjectContext.GetObjectType( t );
+		}
+
 	}
 }

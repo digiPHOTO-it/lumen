@@ -169,6 +169,35 @@ namespace Digiphoto.Lumen.Core.VsTest {
 			PromoCalcGenerico( 1, 6, 0, (decimal)29.5 );
 		}
 
+		[TestMethod, TestCategory( "Promozioni" )]
+		public void PromoFile6x5Test() {
+
+			using( new UnitOfWorkScope( false ) ) {
+
+				decimal prezzoPromoDesiderato = (decimal)(3.5 * 5);
+				_impl.creareNuovoCarrello();
+
+				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
+				List<Fotografia> fotos = (from f in dbContext.Fotografie.Include( "fotografo" )
+										  select f).Take( 6 ).ToList();
+
+				// Controllo che ci siano abbastanza foto nel database
+				Assert.IsTrue( fotos.Count == 6 );
+
+				_impl.aggiungereMasterizzate( fotos );
+
+				_impl.ricalcolaTotaleCarrello();
+				var totPagarePrima = _impl.carrello.totaleAPagare;
+
+				Carrello cart = _impl.CalcolaPromozioni( true );
+
+				var totPagareDopo = cart.totaleAPagare;
+
+				Assert.AreEqual( totPagareDopo, prezzoPromoDesiderato );
+			}
+
+		}
+
 		private void PromoCalcGenerico( int qtaP, int qtaM, int qtaG, decimal prezzoPromoDesiderato ) {
 		
 			using( new UnitOfWorkScope( false ) ) {

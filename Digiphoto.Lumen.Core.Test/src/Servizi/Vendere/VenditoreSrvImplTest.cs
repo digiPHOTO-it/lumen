@@ -258,7 +258,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				var porc2 = from d in porc
 							group d by new {
 								d.c.giornata,
-								d.r.formatoCarta.descrizione
+								d.r.prodotto.descrizione
 							} into grp
 							select new {
 								gg = grp.Key.giornata,
@@ -302,7 +302,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 					}
 
 					var qq = carrello.righeCarrello.Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA )
-							 .GroupBy( t => t.formatoCarta.descrizione )
+							 .GroupBy( t => t.prodotto.descrizione )
 							 .Select( r => new {
 								 ff = r.Key,
 								 tot = r.Sum( t => t.quantita )

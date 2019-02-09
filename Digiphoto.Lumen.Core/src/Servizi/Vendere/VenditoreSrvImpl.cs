@@ -105,10 +105,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
-		public string spazioFotoDaMasterizzate
-		{
-			get
-			{
+		public string spazioFotoDaMasterizzate {
+			get {
 				return gestoreCarrello.spazioFotoDaMasterizzate;
 			}
 		}
@@ -119,8 +117,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
-		private Decimal _prezzoPromozione;
-		public Decimal prezzoPromozione {
+		private Nullable<decimal> _prezzoPromozione;
+		public Nullable<decimal> prezzoPromozione {
 			get {
 				return _prezzoPromozione;
 			}
@@ -152,8 +150,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
-		public override bool possoChiudere()
-		{
+		public override bool possoChiudere() {
 			return gestoreCarrello.isCarrelloVuoto || gestoreCarrello.isCarrelloModificato == false;
 		}
 
@@ -190,14 +187,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			// istanzio il gestore del carrello e creo subito un carrello nuovo per iniziare a lavorare subito.
 			gestoreCarrello = new GestoreCarrello();
 
-			
+
 			contaMessaggiInCoda = 0;
 		}
 
 		protected override void Dispose( bool disposing ) {
 
 			gestoreCarrello.Dispose(); // Importante: mi serve per rilasciare il DbContext (che altrimenti rimane aperto e tiene sotto scacco le entità)
-			
+
 			chiudiTuttiIServiziSospesi();
 		}
 
@@ -242,12 +239,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			// Sistemo i prezzi e i totali documento
 			gestoreCarrello.ricalcolaDocumento( false );
 
+			CalcolaPromozioni(); // TODO gestire discrezionalità
+
 			inviaMessaggioValoreCarrelloCambiato();
 		}
 
 		private void inviaMessaggioValoreCarrelloCambiato() {
 			inviaMessaggioValoreCarrelloCambiato( false );
-        }
+		}
 
 		/// <summary>
 		/// Invio un messaggio sul bus che il prezzo del carrello è cambiato
@@ -268,6 +267,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			ascoltatorePropertyChangedCrea();
 
+			// Se il carrello è ancora da vendere, ricalcolo eventuali promozioni da mostrare
+			if( carrello.venduto == false )
+				CalcolaPromozioni();
 
 			GestoreCarrelloMsg msg = new GestoreCarrelloMsg( this );
 			msg.descrizione = "Caricato carrello dal database: " + c.intestazione;
@@ -295,11 +297,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			if( e.PropertyName == "prezzoDischetto" || e.PropertyName == "totaleAPagare" ) {
 				inviaMessaggioValoreCarrelloCambiato();
-            }
+			}
 		}
 
 		public void aggiungereStampe( Fotografia fotografia, Stampare.ParamStampa param ) {
-			Fotografia [] fotos = { fotografia };
+			Fotografia[] fotos = { fotografia };
 			aggiungereStampe( fotos, param );
 		}
 
@@ -308,7 +310,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		 */
 		public void aggiungereStampe( IEnumerable<Fotografia> fotografie, Stampare.ParamStampa param ) {
 
-			if( ! possoAggiungereStampe )
+			if( !possoAggiungereStampe )
 				throw new InvalidOperationException( "Impossibile aggiungere stampe a questo carrello" );
 
 			Exception laPrimaEccezione = null;
@@ -331,6 +333,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				}
 				// Notifico al carrello l'evento
 				ricalcolaTotaleCarrello();
+
 			} else if( param is ParamStampaProvini ) {
 
 				ParamStampaProvini paramStampaProvini = param as ParamStampaProvini;
@@ -339,18 +342,19 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				paramStampaProvini.stampigli = configurazione.stampigli;
 				spoolStampeSrv.accodaStampaProvini( fotografie.ToList<Fotografia>(), paramStampaProvini );
 
-			} 
-/*			
-			else if( param is ParamStampaTessera ) {
-
-				ParamStampaTessera paramStampaFotoTessera = param as ParamStampaTessera;
-
-				spoolStampeSrv.accodaFotoTessera( fotografie.ToList<Fotografia>(), paramStampaFotoTessera );
 			}
-*/
+			/*			
+						else if( param is ParamStampaTessera ) {
+
+							ParamStampaTessera paramStampaFotoTessera = param as ParamStampaTessera;
+
+							spoolStampeSrv.accodaFotoTessera( fotografie.ToList<Fotografia>(), paramStampaFotoTessera );
+						}
+			*/
 
 			if( laPrimaEccezione != null )
 				throw laPrimaEccezione;
+
 		}
 
 		public void creareNuovoCarrello() {
@@ -364,18 +368,18 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 
 			modoVendita = Configurazione.UserConfigLumen.modoVendita;
+			prezzoPromozione = null;
 
 			gestoreCarrello = new GestoreCarrello();
 			gestoreCarrello.creaNuovo();
-			
+
 			ascoltatorePropertyChangedCrea();
 
 			GestoreCarrelloMsg msg = new GestoreCarrelloMsg( this );
 			msg.fase = Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.CreatoNuovoCarrello;
 			LumenApplication.Instance.bus.Publish( msg );
-			
-			if (_masterizzaSrvImpl != null)
-			{
+
+			if( _masterizzaSrvImpl != null ) {
 				if( _masterizzaSrvImpl.possoChiudere() ) {
 					_masterizzaSrvImpl.Dispose();
 				}
@@ -384,10 +388,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 		public string salvareCarrello() {
-			return salvareCarrello( false  );
+			return salvareCarrello( false );
 		}
 
-        private string salvareCarrello( bool vendere ) {
+		private string salvareCarrello( bool vendere ) {
 
 			string msgErrore = null;
 
@@ -400,9 +404,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			try {
 
-				if( vendere ) {
-					Carrello cartPromo = CalcolaPromozioni();
-					this.prezzoPromozione = (decimal)cartPromo.totaleAPagare;
+				if( vendere && _promozioniAttive.Length > 0 ) {
+					// Applico sul carrello vero solo se sto vendendo per davvero. se salvo e basta, allora non applico le offerte
+					bool flgDiscrez = this.applicarePromoDiscrez;
+					flgDiscrez = true;	// Ripensamento: le promo vengono sempre calcolate tutte obbligatoriamente.
+					ApplicaPromozioni( gestoreCarrello.carrello, flgDiscrez );
 				}
 
 				// Poi salvo il carrello
@@ -419,7 +425,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			} catch( Exception eee ) {
 
-				msgErrore = ErroriUtil.estraiMessage(eee);
+				msgErrore = ErroriUtil.estraiMessage( eee );
 				_giornale.Error( msgErrore, eee );
 
 				pubblicaMessaggio( new Messaggio( this ) {
@@ -438,7 +444,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 
-        public string vendereCarrello() {
+		public string vendereCarrello() {
 
 			_giornale.Debug( "carrello valido. Inizio operazioni di produzione" );
 
@@ -451,10 +457,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			} finally {
 				// Vado avanti ugualmente
 				// Prima lancio le stampe
-				eventualeStampa(carrello);
+				eventualeStampa( carrello );
 
 				// Poi lancio la masterizzazione
-				eventualeMasterizzazione(carrello);
+				eventualeMasterizzazione( carrello );
 			}
 
 
@@ -470,16 +476,15 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			gestoreCarrello.removeRiga( rigaCarrello );
 
-			if (masterizzaSrv != null && masterizzaSrv.fotografie!=null && masterizzaSrv.fotografie.Contains(rigaCarrello.fotografia))
-				masterizzaSrv.fotografie.Remove(rigaCarrello.fotografia);
+			if( masterizzaSrv != null && masterizzaSrv.fotografie != null && masterizzaSrv.fotografie.Contains( rigaCarrello.fotografia ) )
+				masterizzaSrv.fotografie.Remove( rigaCarrello.fotografia );
 
 			ricalcolaTotaleCarrello();
 		}
 
 		public void eliminareRigheCarrello( string discriminator ) {
 			IEnumerable<RigaCarrello> listaDacanc = carrello.righeCarrello.Where( r => r.discriminator == discriminator );
-			foreach (RigaCarrello dacanc in listaDacanc.ToArray())
-			{
+			foreach( RigaCarrello dacanc in listaDacanc.ToArray() ) {
 				gestoreCarrello.removeRiga( dacanc );
 			}
 			ricalcolaTotaleCarrello();
@@ -490,48 +495,54 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			gestoreCarrello.elimina( carrello );
 		}
 
-		public void spostareRigaCarrello(RigaCarrello rigaCarrello)
-		{
-			spostaRigaCarrello(rigaCarrello, true);
+		public void spostareRigaCarrello( RigaCarrello rigaCarrello ) {
+			spostaRigaCarrello( rigaCarrello, true );
 		}
 
-        public void spostareTutteRigheCarrello(string discriminator, ParametriDiStampa parametriDiStampa)
-        {
-            IEnumerable<RigaCarrello> listaDaSpostare = carrello.righeCarrello.Where(r => r.discriminator == discriminator);
-			
-            string d = RigaCarrello.getDiscriminatorOpposto(discriminator);
+		public void spostareTutteRigheCarrello( string discriminator, ParametriDiStampa parametriDiStampa ) {
+			IEnumerable<RigaCarrello> listaDaSpostare = carrello.righeCarrello.Where( r => r.discriminator == discriminator );
 
-            foreach (RigaCarrello rigaDaSpostare in listaDaSpostare.ToArray())
-            {
-                if(!GestoreCarrello.isStessaFotoInCarrello(carrello, rigaDaSpostare, d))
-                {
-                    if (RigaCarrello.TIPORIGA_STAMPA.Equals(d))
-                    {
-                        rigaDaSpostare.prodotto = parametriDiStampa.FormatoCarta;
-                        rigaDaSpostare.nomeStampante = parametriDiStampa.NomeStampante;
-                        rigaDaSpostare.quantita = parametriDiStampa.Quantita;
-                        rigaDaSpostare.prezzoLordoUnitario = parametriDiStampa.PrezzoLordoUnitario;
-                        rigaDaSpostare.prezzoNettoTotale = parametriDiStampa.PrezzoNettoTotale;
-                    }
-                    gestoreCarrello.spostaRigaCarrello(rigaDaSpostare, true);
-                }
-            }
-            
-            inviaMessaggioValoreCarrelloCambiato(true);
-        }
+			string d = RigaCarrello.getDiscriminatorOpposto( discriminator );
 
-        private void spostaRigaCarrello(RigaCarrello rigaCarrello, bool remove)
-        {
-            gestoreCarrello.spostaRigaCarrello(rigaCarrello, remove);
-            inviaMessaggioValoreCarrelloCambiato(true);
-        }
+			foreach( RigaCarrello rigaDaSpostare in listaDaSpostare.ToArray() ) {
 
-        public void copiaSpostaRigaCarrello( RigaCarrello rigaSorgente, ParametriDiStampa parametriDiStampa )
-		{
+				// Creo una riga finta di test per vedere se posso aggiungerla nel carrello, oppure se esiste già
+				RigaCarrello newRigaTest = new RigaCarrello();
+				newRigaTest.discriminator = d;
+				newRigaTest.fotografia = rigaDaSpostare.fotografia;
+				if( RigaCarrello.TIPORIGA_STAMPA.Equals( d ) )
+					newRigaTest.prodotto = parametriDiStampa.FormatoCarta;
+				if( RigaCarrello.TIPORIGA_STAMPA.Equals( d ) )
+					newRigaTest.prodotto = UnitOfWorkScope.currentDbContext.ProdottiFile.Single();
+
+				if( !GestoreCarrello.isStessaFotoInCarrello( carrello, newRigaTest ) ) {
+					if( RigaCarrello.TIPORIGA_STAMPA.Equals( d ) ) {
+						rigaDaSpostare.prodotto = parametriDiStampa.FormatoCarta;
+						rigaDaSpostare.nomeStampante = parametriDiStampa.NomeStampante;
+						rigaDaSpostare.quantita = parametriDiStampa.Quantita;
+						rigaDaSpostare.prezzoLordoUnitario = parametriDiStampa.PrezzoLordoUnitario;
+						rigaDaSpostare.sconto = null;
+						rigaDaSpostare.prezzoNettoTotale = parametriDiStampa.PrezzoNettoTotale;
+					}
+					gestoreCarrello.spostaRigaCarrello( rigaDaSpostare, true );
+				}
+			}
+
+			ricalcolaTotaleCarrello();
+			inviaMessaggioValoreCarrelloCambiato( true );
+		}
+
+		private void spostaRigaCarrello( RigaCarrello rigaCarrello, bool remove ) {
+			gestoreCarrello.spostaRigaCarrello( rigaCarrello, remove );
+			ricalcolaTotaleCarrello();
+			inviaMessaggioValoreCarrelloCambiato( true );
+		}
+
+		public void copiaSpostaRigaCarrello( RigaCarrello rigaSorgente, ParametriDiStampa parametriDiStampa ) {
 			RigaCarrello cloneRiga = new RigaCarrello();
 
 			cloneRiga.id = Guid.Empty;
-			
+
 			cloneRiga.carrello = rigaSorgente.carrello;
 			cloneRiga.descrizione = rigaSorgente.descrizione;
 			cloneRiga.discriminator = rigaSorgente.discriminator;
@@ -554,22 +565,28 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			spostaRigaCarrello( cloneRiga, false );
 		}
 
-        public void copiaSpostaTutteRigheCarrello(string discriminaSorg, ParametriDiStampa parametriDiStampa)
-        {
-            IEnumerable<RigaCarrello> listaDaCopiareSpostare = carrello.righeCarrello.Where(r => r.discriminator == discriminaSorg);
+		public void copiaSpostaTutteRigheCarrello( string discriminaSorg, ParametriDiStampa parametriDiStampa ) {
+			IEnumerable<RigaCarrello> listaDaCopiareSpostare = carrello.righeCarrello.Where( r => r.discriminator == discriminaSorg );
 
-            string discriminaDest = RigaCarrello.getDiscriminatorOpposto(discriminaSorg);
+			string discriminaDest = RigaCarrello.getDiscriminatorOpposto( discriminaSorg );
 
-            foreach ( RigaCarrello rigaDaCopiareSpostare in listaDaCopiareSpostare.ToArray() )
-            {
-                if (!GestoreCarrello.isStessaFotoInCarrello(carrello, rigaDaCopiareSpostare, discriminaDest))
-                {
-                    copiaSpostaRigaCarrello( rigaDaCopiareSpostare, parametriDiStampa );
-                }
-            }
-        }
+			foreach( RigaCarrello rigaDaCopiareSpostare in listaDaCopiareSpostare.ToArray() ) {
 
-		private void eventualeStampa(Carrello carrello) {
+				RigaCarrello newRigaTest = new RigaCarrello();
+				newRigaTest.discriminator = discriminaDest;
+				newRigaTest.fotografia = rigaDaCopiareSpostare.fotografia;
+				if( RigaCarrello.TIPORIGA_STAMPA.Equals( discriminaDest ) )
+					newRigaTest.prodotto = parametriDiStampa.FormatoCarta;
+				if( RigaCarrello.TIPORIGA_STAMPA.Equals( discriminaDest ) )
+					newRigaTest.prodotto = UnitOfWorkScope.currentDbContext.ProdottiFile.Single();
+
+				if( !GestoreCarrello.isStessaFotoInCarrello( carrello, newRigaTest ) ) {
+					copiaSpostaRigaCarrello( rigaDaCopiareSpostare, parametriDiStampa );
+				}
+			}
+		}
+
+		private void eventualeStampa( Carrello carrello ) {
 
 			// Se non ho righe nel carrello da stampare, allora esco.
 			if( carrello == null || carrello.righeCarrello.Count == 0 )
@@ -577,7 +594,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 
-			
+
 
 			int conta = 0;
 			foreach( RigaCarrello riga in carrello.righeCarrello ) {
@@ -642,7 +659,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			r.descrizione = "Stampe formato " + param.formatoCarta.descrizione;
 
-			r.bordiBianchi = ! param.autoZoomNoBordiBianchi;
+			r.bordiBianchi = !param.autoZoomNoBordiBianchi;
 
 			return r;
 		}
@@ -655,7 +672,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			else
 				param = new ParamStampaFoto();
 			param.autoRuota = true;
-			param.autoZoomNoBordiBianchi = ! (bool) riCaFotoStampata.bordiBianchi;
+			param.autoZoomNoBordiBianchi = !(bool)riCaFotoStampata.bordiBianchi;
 			param.formatoCarta = (FormatoCarta)riCaFotoStampata.prodotto;
 			param.numCopie = riCaFotoStampata.quantita;
 			param.nomeStampante = riCaFotoStampata.nomeStampante;  // Attributo transiente.
@@ -673,24 +690,23 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		 * Siccome il carrello in questione viene chiuso prima che termini la masterizzazione,
 		 * tramite il suo id, è possibile andare a sistemare eventuali problemi.
 		 */
-		private void eventualeMasterizzazione(Carrello carrello)
-		{
+		private void eventualeMasterizzazione( Carrello carrello ) {
 			// Se non ho righe nel carrello da stampare, allora esco.
-			if (carrello == null || carrello.righeCarrello.Count == 0)
+			if( carrello == null || carrello.righeCarrello.Count == 0 )
 				return;
 
-			IEnumerable<RigaCarrello> listaDaMast = carrello.righeCarrello.Where(r => r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA);
+			IEnumerable<RigaCarrello> listaDaMast = carrello.righeCarrello.Where( r => r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA );
 			IList<Fotografia> fotoDaMast = new List<Fotografia>();
-			foreach(RigaCarrello riga in listaDaMast){
+			foreach( RigaCarrello riga in listaDaMast ) {
 				//Aggiungo l'idratazione della foto per avere la risulatante anche per le masterizzate
-				AiutanteFoto.idrataImmagineDaStampare(riga.fotografia);
-				fotoDaMast.Add(riga.fotografia);
+				AiutanteFoto.idrataImmagineDaStampare( riga.fotografia );
+				fotoDaMast.Add( riga.fotografia );
 			}
 
 			if( fotoDaMast.Count <= 0 )
 				return;
 
-			masterizzaSrv.addFotografie(fotoDaMast);
+			masterizzaSrv.addFotografie( fotoDaMast );
 
 			_masterizzaSrvImpl.start();
 			_masterizzaSrvImpl.masterizza( carrello.id );
@@ -801,12 +817,12 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 				lavoroDiStampaProvini = lavoroDiStampa as LavoroDiStampaProvini;
 				foreach( Fotografia foto in lavoroDiStampaProvini.fotografie ) {
-					if (false && foto != null) {
+					if( false && foto != null ) {
 						try {
 							AiutanteFoto.disposeImmagini( foto, IdrataTarget.Originale );
 							AiutanteFoto.disposeImmagini( foto, IdrataTarget.Risultante );
-						} catch (Exception ee) {
-							_giornale.Error("Impossibile rilasciare immagini dopo stampa", ee);
+						} catch( Exception ee ) {
+							_giornale.Error( "Impossibile rilasciare immagini dopo stampa", ee );
 							// Devo andare avanti lo stesso perché devo notificare tutti
 						}
 					}
@@ -856,14 +872,13 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				_giornale.Error( "il lavoro di stampa non è andato a buon fine: " + lavoroDiStampa.ToString() );
 
 				// Vado a correggere questa riga
-				if(lavoroDiStampaFoto != null){
+				if( lavoroDiStampaFoto != null ) {
 					using( GestoreCarrello altroGestoreCarrello = new GestoreCarrello() ) {
 						ParamStampaFoto psf = lavoroDiStampa.param as ParamStampaFoto;
 						altroGestoreCarrello.stornoRiga( psf.idRigaCarrello );
 					}
 				}
-				if (lavoroDiStampaProvini != null)
-				{
+				if( lavoroDiStampaProvini != null ) {
 					// TODO Fare storno errore provini
 				}
 			}
@@ -899,8 +914,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		private MasterizzaSrvImpl _masterizzaSrvImpl;
 		private IMasterizzaSrv masterizzaSrv {
 			get {
-				if (_masterizzaSrvImpl == null)
-				{
+				if( _masterizzaSrvImpl == null ) {
 					// Siccome non voglio che si chiami il metodo masterizza da fuori, faccio una forzatura.
 					// Uso io direttamente la impl internamente.
 					_masterizzaSrvImpl = (MasterizzaSrvImpl)LumenApplication.Instance.creaServizio<IMasterizzaSrv>();
@@ -912,7 +926,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		public void aggiungereMasterizzate( IEnumerable<Fotografia> fotografie ) {
 
-			if( ! possoAggiungereMasterizzate )
+			if( !possoAggiungereMasterizzate )
 				throw new InvalidOperationException( "Impossibile aggiungere foto da masterizzare a questo carrello" );
 
 			Exception laPrimaEccezione = null;
@@ -935,7 +949,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 
 			// Aggiungo le foto alla lista
-// TODO da fare alla fine			_masterizzaSrvImpl.addFotografie( fotografie );
+			// TODO da fare alla fine			_masterizzaSrvImpl.addFotografie( fotografie );
 			// Notifico al carrello l'evento
 			ricalcolaTotaleCarrello();
 
@@ -950,7 +964,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			ProdottoFile prodottoFile = UnitOfWorkScope.currentDbContext.ProdottiFile.Single( p => p.attivo == true );
 
 			RigaCarrello r = new RigaCarrello( prodottoFile, 1 );
-			
+
 			// Riattacco un pò di roba altrimenti si incacchia
 			try {
 				OrmUtil.forseAttacca<Fotografia>( ref fotografia );
@@ -986,8 +1000,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			return p;
 		}
 
-		public ParamStampaProvini creaParamStampaProvini()
-		{
+		public ParamStampaProvini creaParamStampaProvini() {
 
 			ParamStampaProvini p = new ParamStampaProvini();
 			p.autoRuota = true;    // non ha senso stampare una foto orizzontale nella carta verticale
@@ -1002,19 +1015,19 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			_giornale.Debug( "Devo preparare il report provvigioni da " + p.dataIniz + " a " + p.dataFine );
 
 			var queryh = from inf in this.objectContext.IncassiFotografi
-						 where 1==1
+						 where 1 == 1
 						   && inf.carrello.venduto == true
-			                           && inf.carrello.giornata >= p.dataIniz && inf.carrello.giornata <= p.dataFine
-			                         orderby inf.fotografo.cognomeNome
-			                         group inf by inf.fotografo.cognomeNome into grp
-			                         select new RigaReportProvvigioni {
-			                                nomeFotografo = grp.Key,
-			                                incasso = grp.Sum( q2 => q2.incasso ),
-			                                incassoStampe = grp.Sum( q3 => q3.incassoStampe ),
-			                                incassoMasterizzate = grp.Sum( q4 => q4.incassoMasterizzate ),
-			                                contaStampe = grp.Sum( q5 => q5.contaStampe ),
-			                                contaMasterizzate = grp.Sum( q6 => q6.contaMasterizzate )
-			                         };
+									   && inf.carrello.giornata >= p.dataIniz && inf.carrello.giornata <= p.dataFine
+						 orderby inf.fotografo.cognomeNome
+						 group inf by inf.fotografo.cognomeNome into grp
+						 select new RigaReportProvvigioni {
+							 nomeFotografo = grp.Key,
+							 incasso = grp.Sum( q2 => q2.incasso ),
+							 incassoStampe = grp.Sum( q3 => q3.incassoStampe ),
+							 incassoMasterizzate = grp.Sum( q4 => q4.incassoMasterizzate ),
+							 contaStampe = grp.Sum( q5 => q5.contaStampe ),
+							 contaMasterizzate = grp.Sum( q6 => q6.contaMasterizzate )
+						 };
 
 			return queryh.ToList();
 		}
@@ -1067,7 +1080,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			var querya = from cc in UnitOfWorkScope.currentDbContext.Carrelli.Include( "righeCarrello" )
 						 from rr in cc.righeCarrello.Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA )
 						 where cc.giornata >= p.dataIniz && cc.giornata <= p.dataFine
-						       && cc.venduto == true
+							   && cc.venduto == true
 						 select new {
 							 cc,
 							 rr
@@ -1089,7 +1102,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			foreach( var ris in queryb ) {
 				RigaReportVendite riga;
 				if( reportVendite.ContainsKey( ris.gg ) )
-					riga = reportVendite [ris.gg];
+					riga = reportVendite[ris.gg];
 				else {
 					riga = new RigaReportVendite {
 						giornata = ris.gg
@@ -1114,7 +1127,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			var queryc = from cc in UnitOfWorkScope.currentDbContext.Carrelli.Include( "righeCarrello" )
 						 from rr in cc.righeCarrello.Where( r => r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA )
 						 where cc.giornata >= p.dataIniz && cc.giornata <= p.dataFine
-						       && cc.venduto == true
+							   && cc.venduto == true
 						 select new {
 							 cc,
 							 rr
@@ -1135,7 +1148,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			foreach( var ris in queryd ) {
 				RigaReportVendite riga;
 				if( reportVendite.ContainsKey( ris.gg ) )
-					riga = reportVendite [ris.gg];
+					riga = reportVendite[ris.gg];
 				else {
 					riga = new RigaReportVendite {
 						giornata = ris.gg
@@ -1160,7 +1173,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			//
 			var querye = from cc in dbContext.Carrelli
 						 where cc.giornata >= p.dataIniz && cc.giornata <= p.dataFine
-						       && cc.venduto == true
+							   && cc.venduto == true
 						 group cc by cc.giornata into grp
 						 select new {
 							 gg = grp.Key,
@@ -1172,7 +1185,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			foreach( var ris in querye ) {
 				RigaReportVendite riga;
 				if( reportVendite.ContainsKey( ris.gg ) )
-					riga = reportVendite [ris.gg];
+					riga = reportVendite[ris.gg];
 				else {
 					riga = new RigaReportVendite {
 						giornata = ris.gg
@@ -1220,13 +1233,30 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
+		public bool esistonoPromoADiscrezione {
+			get {
+				return _promozioniAttive.Any( pa => pa.discrezionale );
+			}
+		}
+
+		public bool esistonoPromoAttive {
+			get {
+				return _promozioniAttive.Any( pa => pa.attiva );
+			}
+		}
+
+		public bool applicarePromoDiscrez {
+			get;
+			set;
+		}
+
 		public decimal calcolaIncassoPrevisto( DateTime giornata ) {
 
 			LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 
 			// Questa sintassi strana nella Sum, serve per gestire un caso rompiscatole. Se il set è vuoto, la somma torna null.
 			// vedere qui: http://adventuresinsoftware.com/blog/?p=478
-			decimal incasso = dbContext.Carrelli.Where( c => c.giornata == giornata && c.venduto == true ).Sum( p => (decimal ?)p.totaleAPagare) ?? 0;
+			decimal incasso = dbContext.Carrelli.Where( c => c.giornata == giornata && c.venduto == true ).Sum( p => (decimal?)p.totaleAPagare ) ?? 0;
 
 			_giornale.Debug( "Calcolato incasso previsto giornata= " + giornata + " incasso=" + incasso );
 
@@ -1313,39 +1343,60 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		#region Promozioni
 
-		public Carrello CalcolaPromozioni( bool ancheDiscrezione = false ) {
+		/// <summary>
+		/// Applico le promozioni sul carrello passato nei parametri.
+		/// </summary>
+		public void ApplicaPromozioni( Carrello cart, bool ancheDiscrezionali ) {
 
-			Carrello chart;
+			PromoContext contestoDiVendita = new PromoContext();
+			contestoDiVendita.applicarePromoADiscrezione = ancheDiscrezionali;
+
+			foreach( Promozione promo in _promozioniAttive ) {
+
+				// Controllo se applicare o meno le promo a discrezione utente
+				if( promo.discrezionale && contestoDiVendita.applicarePromoADiscrezione == false ) {
+					_giornale.Debug( "Non calcolco la promo " + promo.GetType() + " perché discrezionale e non richiesta" );
+					continue;
+				}
+
+				Type clazz = OrmUtil.GetObjectType( promo.GetType() );
+				ICalcolatorePromozione qq = _promoCalcFactoryMap[clazz];
+				
+				cart = qq.Applica( cart, promo, contestoDiVendita );
+			}
+
+			_giornale.Debug( "nuovo totale dopo le promozioni = " + cart.totaleAPagare );
+		}
+
+		/// <summary>
+		/// Calcolo le promozioni su di un carrello clonato, in modo
+		/// da non rovinare il carrello corrente vero, e per far vedere la differenza
+		/// di prezzo.
+		/// </summary>
+		/// <returns></returns>
+		public Carrello CalcolaPromozioni() {
+
+			bool flgDiscrez = this.applicarePromoDiscrez;
+			flgDiscrez = true;  // Ripensamento: le promo vengono sempre calcolate tutte obbligatoriamente.
+			return CalcolaPromozioni( flgDiscrez );
+		}
+
+		public Carrello CalcolaPromozioni( bool ancheDiscrezionali ) {
+
+			Carrello cart;
 
 			// Qui vorrei clonare il carrello originale sorgente perché non lo voglio toccare.
 			using( var gesclone = gestoreCarrello.clone() ) {
-
-				chart = gesclone.carrello;
-			
-				PromoContext contestoDiVendita = new PromoContext();
-
-				foreach( Promozione promo in _promozioniAttive ) {
-
-					// Controllo se applicare o meno le promo a discrezione utente
-					if( promo.discrezionale && contestoDiVendita.applicarePromoADiscrezione == false ) {
-						_giornale.Debug( "Non calcolco la promo " + promo.GetType() + " perché discrezionale" );
-						continue;
-					}
-
-					ICalcolatorePromozione qq = _promoCalcFactoryMap[promo.GetType().BaseType];
-
-					chart = qq.Applica( chart, promo, contestoDiVendita );
-				}
-
+				cart = gesclone.carrello;
+				ApplicaPromozioni( cart, ancheDiscrezionali );
 				gesclone.ricalcolaDocumento();
-
-				var newtot = chart.totaleAPagare;
-				_giornale.Debug( "nuovo totale dopo le promozioni = " + newtot );
+				this.prezzoPromozione = cart.totaleAPagare;
 			}
 
-			return chart;
+			return cart;
 		}
-
-		#endregion Promozioni
 	}
+
+	#endregion Promozioni
+
 }

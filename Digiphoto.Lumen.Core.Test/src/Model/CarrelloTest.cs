@@ -73,7 +73,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 							Debug.WriteLine( "\t\tDataOra = " + r.fotografia.dataOraAcquisizione );
 
 						if( r.isTipoStampa ) {
-							Debug.WriteLine( "\t\tFormato Carta = " + r.formatoCarta );
+							Debug.WriteLine( "\t\tFormato Carta = " + r.prodotto );
 						}
 						if( r.isTipoMasterizzata ) {
 							Debug.WriteLine( "\t\tTot. foto masterizzate = " + c.totMasterizzate );
@@ -123,7 +123,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 				r2.prezzoNettoTotale = Decimal.Multiply( r2.prezzoLordoUnitario, r2.quantita );
 				r2.descrizione = "RicaFotoStampata1";
 				r2.totFogliStampati = 3;
-				r2.formatoCarta = Utilita.ottieniFormatoCarta( dbContext, "A4" );
+				r2.prodotto = Utilita.ottieniFormatoCarta( dbContext, "A4" );
 				r2.fotografo = Utilita.ottieniFotografoMario( dbContext );
 				c1.righeCarrello.Add( r2 );
 				_contaStampate++;
@@ -140,7 +140,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 				r3.prezzoNettoTotale = Decimal.Multiply( r3.prezzoLordoUnitario, r3.quantita );
 				r3.descrizione = "RicaFotoStampata1";
 				r3.totFogliStampati = 3;
-				r3.formatoCarta = Utilita.ottieniFormatoCarta( dbContext, "A4" );
+				r3.prodotto = Utilita.ottieniFormatoCarta( dbContext, "A4" );
 				r3.fotografo = Utilita.ottieniFotografoMario( dbContext );
 				c1.righeCarrello.Add( r3 );
 				_contaStampate++;
@@ -199,7 +199,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 
 				RigaCarrello rr = new RigaCarrello();
 				rr.discriminator = RigaCarrello.TIPORIGA_STAMPA;
-				rr.formatoCarta =  formato;
+				rr.prodotto =  formato;
 				rr.fotografo = fotografo;
 				rr.fotografia = fotografia;
 			}
@@ -319,7 +319,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 				r1.descrizione = "RicaFotoStampata1";
 				r1.totFogliStampati = 11;
 
-				r1.formatoCarta = formato;
+				r1.prodotto = formato;
 				r1.fotografo = fotografo;
 				r1.fotografia = fotografia;
 				
@@ -334,7 +334,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 				RigaCarrello r1 = c3.righeCarrello.ElementAt( 0 );
 
 				// Riattacco le associazioni altrimeti si spacca (sembra)
-				dbContext.FormatiCarta.Attach( r1.formatoCarta );
+				dbContext.FormatiCarta.Attach( r1.prodotto as FormatoCarta );
 				dbContext.Fotografi.Attach( r1.fotografo );
 				dbContext.Fotografie.Attach( r1.fotografia );
 
@@ -395,7 +395,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 				};
 
 				// Aggiungo le associazioni
-				r1.formatoCarta = formato;
+				r1.prodotto = formato;
 				r1.fotografo = fotografo;
 				r1.fotografia = fotografia;
 
@@ -411,7 +411,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 				RigaCarrello r1 = c3.righeCarrello.ElementAt( 0 );
 
 				dbContext.Fotografie.Attach( r1.fotografia );
-				dbContext.FormatiCarta.Attach( r1.formatoCarta );
+				dbContext.FormatiCarta.Attach( r1.prodotto as FormatoCarta );
 				dbContext.Fotografi.Attach( r1.fotografo );
 
 				// The EntityKey property can only be set when the current value of the property is null
@@ -479,7 +479,7 @@ namespace Digiphoto.Lumen.Core.Test.Model {
 				riga.prezzoNettoTotale = Decimal.Multiply( riga.prezzoLordoUnitario, riga.quantita );
 				riga.descrizione = "SaveCarrelloLodingTest";
 				riga.totFogliStampati = 3;
-				riga.formatoCarta = formato;
+				riga.prodotto = formato;
 				riga.fotografo = fotografo;
 				riga.fotografia = fotografia;
 

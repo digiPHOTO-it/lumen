@@ -50,45 +50,48 @@
 		<!-- Fascia alta del carrello con dati di testata e riassunto stampe/CD -->
 		<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" >
 
-			<GroupBox Header="Testata carrello" IsEnabled="{Binding Path=carrelloCorrente.venduto,Converter={StaticResource boolInverterConverter}}">
-				<Grid Style="{StaticResource styleGridTestata}">
-					<Label Content="Prezzo Intero" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="515,7,0,0" Width="103" FontSize="15" />
-					<Label Content="Intestazione"  VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,38,0,0" Width="85" />
-					<TextBox Text="{Binding Path=carrelloCorrente.intestazione, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="92,40,0,0" Width="249" />
-					<Label Content="{Binding Path=prezzoNettoTotale,Mode=OneWay,StringFormat=C}" Margin="515,42,0,11" 
-						   HorizontalContentAlignment="Right" Width="103" Style="{StaticResource labelRiepilogoStyle}" />
+			<GroupBox Header="Testata carrello" IsEnabled="{Binding Path=carrelloCorrente.venduto,Converter={StaticResource boolInverterConverter}}"  Style="{StaticResource gruppoTotaleTipoStyle}">
+				<Grid Style="{StaticResource styleGridTestata}" Width="514">
+					<Label Content="Intero" HorizontalContentAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="353,9,0,0" FontSize="15" Height="28" Width="74" />
+					<Label Content="Intestazione"  VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,32,0,0" Width="85" Height="24" FontSize="14" Padding="1" />
+					<TextBox Text="{Binding Path=carrelloCorrente.intestazione, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="92,35,0,0" Width="250" />
+					<Label Content="{Binding Path=prezzoNettoTotale,Mode=OneWay,StringFormat=C}" Margin="438,10,0,72" Width="66" Height="28" FontSize="15"
+						   HorizontalContentAlignment="Right" Style="{StaticResource labelRiepilogoStyle}" HorizontalAlignment="Left" />
+
 					<!--					
                     <Label Content="Forfettario" Margin="507,64,0,0" Width="85" FontSize="12" />
-				
                     <TextBox Text="{Binding Path=carrelloCorrente.totaleAPagare,StringFormat=C,TargetNullValue='', UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" TextAlignment="Right" Margin="596,65,0,0" FontSize="14" ToolTip="Prezzo effettivamente pagato"  Background="Yellow" Width="70" />
 					
                     <Label Content="Sconto" Margin="507,36,0,0"  VerticalAlignment="Top" HorizontalAlignment="Left" Width="85" FontSize="12"/>
                     <TextBox Text="{Binding Path=ScontoApplicato,Mode=OneWay}" Margin="596,38,0,0" IsReadOnly="True" HorizontalContentAlignment="Right" Width="70" />
--->
+					-->
 
-					<Label Content="Giornata" Margin="0,7,0,0" Width="85" />
+					<Label Content="Giornata" Margin="0,4,0,0" Width="85" Height="24" FontSize="14" Padding="1" />
 					<TextBox Text="{Binding Path=carrelloCorrente.giornata,StringFormat=D,Mode=OneWay}" IsReadOnly="true"  Margin="92,9,0,0" Width="192" />
-					<Label Content="id" Margin="0,67,0,0" Width="85" />
-					<TextBox Text="{Binding Path=carrelloCorrente.id,Mode=OneWay}" Margin="92,69,0,0" Width="249" FontSize="11" IsReadOnly="True"/>
-					<TextBox ToolTip="Note carrello"  Height="81" HorizontalAlignment="Left" Margin="350,9,0,0" Text="{Binding Path=carrelloCorrente.note}" VerticalAlignment="Top" Width="160" AcceptsReturn="True" />
-					<Label Content="Note" Height="28" HorizontalAlignment="Left" Margin="290,7,0,0" Name="label1" VerticalAlignment="Top" Width="51" />
+
+					<TextBox ToolTip="Note carrello"  Height="44" HorizontalAlignment="Left" Margin="92,61,0,0" Text="{Binding Path=carrelloCorrente.note}" VerticalAlignment="Top" Width="250" AcceptsReturn="True" />
+					<Label Content="Note" Height="28" HorizontalAlignment="Left" Margin="0,65,0,0" VerticalAlignment="Top" Width="85" Padding="1" />
+					<Label Content="{Binding prezzoPromozione, Mode=OneWay, StringFormat=C}" 
+								   HorizontalContentAlignment="Right" Style="{StaticResource labelRiepilogoStyle}" 
+								   FontSize="20" Height="36" Width="66" Margin="438,46,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+					<Label Content="Scontato" FontSize="15" HorizontalContentAlignment="Right" ToolTip="Prezzo da pagare per il carrello&#xA;con applicate le promozioni" Margin="353,46,0,0" Width="74" Height="28" />
 				</Grid>
 			</GroupBox>
 
-			<GroupBox Header="Stampe riepilogo"  Style="{StaticResource gruppoTotaleTipoStyle}">
+			<GroupBox Header="Stampe riepilogo"  Style="{StaticResource gruppoTotaleTipoStyle}" Width="143">
 
 				<Grid>
 					<Image Source="/Digiphoto.Lumen.UI;component/Resources/foto-stampate-32x32.png" 
-							Height="32" Width="32" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="6,10,0,0" />
+							Height="32" Width="32" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,0,0,0" />
 
 					<Label Content="Σ Qta"  
-						   Margin="45,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="12"/>
+						   Margin="10,44,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="12"/>
 					<Label Content="{Binding Path=sommatoriaQtaFotoDaStampare,Mode=OneWay}" Style="{StaticResource labelRiepilogoStyle}"
-						   Width="56" Height="40" Margin="75,2,2,0" HorizontalAlignment="Right" VerticalAlignment="Top"  VerticalContentAlignment="Bottom" HorizontalContentAlignment="Right" />
+						   Width="56" Height="26" Margin="73,41,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"  VerticalContentAlignment="Bottom" HorizontalContentAlignment="Right" />
 					<Label Content="Σ Prezzi"  
-						   Margin="10,56,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="12" />
+						   Margin="10,75,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="12" />
 					<Label Content="{Binding Path=sommatoriaPrezziFotoDaStampare,Mode=OneWay}" Style="{StaticResource labelRiepilogoStyle}"
-						   Width="74" Height="40" Margin="75,46,2,0" HorizontalAlignment="Right" VerticalAlignment="Top" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Right" />
+						   Width="56" Height="26" Margin="73,75,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Right" />
 				</Grid>
 			</GroupBox>
 
@@ -96,24 +99,22 @@
 
 				<Grid>
 					<Image Source="/Digiphoto.Lumen.UI;component/Resources/dvd-32x32.png" 
-							Height="32" Width="32" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="6,10,0,0" />
+							Height="32" Width="32" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8,0,0,0" />
 
-					<Label Content="Σ Prezzi CD" Margin="10,61,0,10" HorizontalAlignment="Left" FontSize="12" />
-					<Label Content="N°Foto" 
-						   Margin="45,2,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="9" Height="21"/>
+					<Label Content="Σ Qta"  
+						   Margin="10,44,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="12"/>
 					<Label Content="{Binding Path=sommatoriaFotoDaMasterizzare,Mode=OneWay}" Style="{StaticResource labelRiepilogoStyle}"
-						   Width="56" Height="21" Margin="0,2,52,0" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="24" VerticalContentAlignment="Top" HorizontalContentAlignment="Right" />
-					<Label Content="{Binding Path=sommatoriaPrezziFotoDaMasterizzare, Mode=OneWay}" 
-						   Style="{StaticResource labelRiepilogoStyle}"
-						   Height="40" Margin="79,50,52,0" 
-						   VerticalAlignment="Top" BorderThickness="1" BorderBrush="Gray" FontSize="24" 
-						   VerticalContentAlignment="Bottom" HorizontalContentAlignment="Right" />
+						   Width="56" Height="26" Margin="73,41,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"  VerticalContentAlignment="Bottom" HorizontalContentAlignment="Right" />
 
-					<Button  Command="{Binding eliminaDischettoCommand}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="167,3,2,0" Style="{StaticResource styleCartEliminaCd}" ToolTip="Rimuove tutte le foto da masterizzate dal carrello" />
-					<Button  Command="{Binding eliminaRigaCommand}" CommandParameter="M" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,2,8" Style="{StaticResource styleCartDelRigaMasterizzate}" ToolTip="Rimuove la riga selezionata da masterizzate dal carrello" />
+					<Label Content="Σ Prezzi"  
+						   Margin="10,75,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="12" />
+					<Label Content="{Binding Path=sommatoriaPrezziFotoDaMasterizzare,Mode=OneWay}" Style="{StaticResource labelRiepilogoStyle}"
+						   Width="56" Height="26" Margin="73,75,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Right" />
 
-					<Label Content="Spazio" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontSize="9" Margin="45,23,0,0" HorizontalAlignment="Left" Width="38" Height="21" VerticalAlignment="Top" />
-					<Label Content="{Binding Path=spazioFotoDaMasterizzate, Mode=OneWay}" Style="{StaticResource labelRiepilogoStyle}" Margin="97,24,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="56" Height="19" VerticalAlignment="Top" />
+
+					<Button  Command="{Binding eliminaDischettoCommand}" VerticalAlignment="Top" Margin="141,3,6,0" Style="{StaticResource styleCartEliminaCd}" ToolTip="Rimuove tutte le foto da masterizzate dal carrello" RenderTransformOrigin="0.111,0.954" />
+					<Button  Command="{Binding eliminaRigaCommand}" CommandParameter="M" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,6,10" Style="{StaticResource styleCartDelRigaMasterizzate}" ToolTip="Rimuove la riga selezionata da masterizzate dal carrello" />
+					<Label Content="{Binding Path=spazioFotoDaMasterizzate, Mode=OneWay}" Style="{StaticResource labelRiepilogoStyle}" Margin="58,3,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="70" Height="26" VerticalAlignment="Top" FontSize="11" ToolTip="Spazio occupato dalle foto da masterizzare" />
 
 				</Grid>
 
