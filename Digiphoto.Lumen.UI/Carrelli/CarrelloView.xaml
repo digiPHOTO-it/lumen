@@ -51,11 +51,23 @@
 		<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" >
 
 			<GroupBox Header="Testata carrello" IsEnabled="{Binding Path=carrelloCorrente.venduto,Converter={StaticResource boolInverterConverter}}"  Style="{StaticResource gruppoTotaleTipoStyle}">
+
 				<Grid Style="{StaticResource styleGridTestata}" Width="514">
-					<Label Content="Intero" HorizontalContentAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="353,9,0,0" FontSize="15" Height="28" Width="74" />
+
+					<Label Content="Giornata" Margin="0,4,0,0" Width="85" Height="24" FontSize="14" Padding="1" />
+					<TextBox Text="{Binding Path=carrelloCorrente.giornata,StringFormat=D,Mode=OneWay}" IsReadOnly="true"  Margin="92,9,0,0" Width="192" />
+
 					<Label Content="Intestazione"  VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,32,0,0" Width="85" Height="24" FontSize="14" Padding="1" />
 					<TextBox Text="{Binding Path=carrelloCorrente.intestazione, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="92,35,0,0" Width="250" />
-					<Label Content="{Binding Path=prezzoNettoTotale,Mode=OneWay,StringFormat=C}" Margin="438,10,0,72" Width="66" Height="28" FontSize="15"
+
+					<Label Content="Note" Height="28" HorizontalAlignment="Left" Margin="0,65,0,0" VerticalAlignment="Top" Width="85" Padding="1" />
+					<TextBox ToolTip="Note carrello"  Height="44" HorizontalAlignment="Left" Margin="92,61,0,0" Text="{Binding Path=carrelloCorrente.note}" VerticalAlignment="Top" Width="250" AcceptsReturn="True" />
+
+					<Label Content="Intero" HorizontalContentAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="363,9,0,0" 
+						   ToolTip="Prezzo intero del carrello senza le promozioni applicate"
+						   FontSize="15" Height="22" Width="64" Padding="1" />
+					<Label Content="{Binding Path=prezzoNettoTotale,Mode=OneWay,StringFormat=C}" Margin="438,6,0,72"  
+						   FontSize="22" Width="66" Height="30"
 						   HorizontalContentAlignment="Right" Style="{StaticResource labelRiepilogoStyle}" HorizontalAlignment="Left" />
 
 					<!--					
@@ -66,15 +78,19 @@
                     <TextBox Text="{Binding Path=ScontoApplicato,Mode=OneWay}" Margin="596,38,0,0" IsReadOnly="True" HorizontalContentAlignment="Right" Width="70" />
 					-->
 
-					<Label Content="Giornata" Margin="0,4,0,0" Width="85" Height="24" FontSize="14" Padding="1" />
-					<TextBox Text="{Binding Path=carrelloCorrente.giornata,StringFormat=D,Mode=OneWay}" IsReadOnly="true"  Margin="92,9,0,0" Width="192" />
-
-					<TextBox ToolTip="Note carrello"  Height="44" HorizontalAlignment="Left" Margin="92,61,0,0" Text="{Binding Path=carrelloCorrente.note}" VerticalAlignment="Top" Width="250" AcceptsReturn="True" />
-					<Label Content="Note" Height="28" HorizontalAlignment="Left" Margin="0,65,0,0" VerticalAlignment="Top" Width="85" Padding="1" />
+					<Label Content="Scontato" FontSize="15" HorizontalContentAlignment="Right" 
+						   ToolTip="Prezzo da pagare per il carrello&#xA;con applicate le promozioni" 
+						   Margin="363,48,0,0" Width="64" Height="22"
+						   Padding="1"
+						   Visibility="{Binding Path=isCarrelloScontato,Converter={StaticResource boolVisibilityConverter}}" />
 					<Label Content="{Binding prezzoPromozione, Mode=OneWay, StringFormat=C}" 
-								   HorizontalContentAlignment="Right" Style="{StaticResource labelRiepilogoStyle}" 
-								   FontSize="20" Height="36" Width="66" Margin="438,46,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
-					<Label Content="Scontato" FontSize="15" HorizontalContentAlignment="Right" ToolTip="Prezzo da pagare per il carrello&#xA;con applicate le promozioni" Margin="353,46,0,0" Width="74" Height="28" />
+						   HorizontalContentAlignment="Right" Style="{StaticResource labelRiepilogoStyle}" 
+						   FontSize="22" Height="30" Width="66" Margin="438,46,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" 
+						   Visibility="{Binding Path=isCarrelloScontato,Converter={StaticResource boolVisibilityConverter}}" />
+					<Image HorizontalAlignment="Left" Height="24" Margin="426,38,0,0" VerticalAlignment="Top"
+						   Source="/Digiphoto.Lumen.UI;component/Resources/sconto-24x24.png"
+						   Visibility="{Binding isCarrelloScontato, Converter={StaticResource boolVisibilityConverter}}" />
+
 				</Grid>
 			</GroupBox>
 
@@ -82,7 +98,7 @@
 
 				<Grid>
 					<Image Source="/Digiphoto.Lumen.UI;component/Resources/foto-stampate-32x32.png" 
-							Height="32" Width="32" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,0,0,0" />
+						   Height="32" Width="32" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,0,0,0" />
 
 					<Label Content="Σ Qta"  
 						   Margin="10,44,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="12"/>

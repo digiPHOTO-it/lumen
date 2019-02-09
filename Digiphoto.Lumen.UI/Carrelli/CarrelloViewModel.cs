@@ -461,6 +461,12 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 			}
 		}
 
+		public bool isCarrelloScontato {
+			get {
+				return prezzoPromozione != null && prezzoNettoTotale != prezzoPromozione;
+			}
+		}
+
 		#endregion
 
 		#region Controlli
@@ -786,6 +792,7 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 			OnPropertyChanged( "carrelloCorrente" );
 			OnPropertyChanged( "prezzoNettoTotale" );
 			OnPropertyChanged( "prezzoPromozione" );
+			OnPropertyChanged( "isCarrelloScontato" );
 			OnPropertyChanged( "ScontoApplicato" );
 			OnPropertyChanged( "sommatoriaFotoDaMasterizzare" );
 			OnPropertyChanged( "sommatoriaQtaFotoDaStampare" );
