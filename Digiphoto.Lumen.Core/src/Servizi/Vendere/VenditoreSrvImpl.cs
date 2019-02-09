@@ -512,7 +512,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				newRigaTest.fotografia = rigaDaSpostare.fotografia;
 				if( RigaCarrello.TIPORIGA_STAMPA.Equals( d ) )
 					newRigaTest.prodotto = parametriDiStampa.FormatoCarta;
-				if( RigaCarrello.TIPORIGA_STAMPA.Equals( d ) )
+				if( RigaCarrello.TIPORIGA_MASTERIZZATA.Equals( d ) )
 					newRigaTest.prodotto = UnitOfWorkScope.currentDbContext.ProdottiFile.Single();
 
 				if( !GestoreCarrello.isStessaFotoInCarrello( carrello, newRigaTest ) ) {
