@@ -71,7 +71,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Vendere {
 				riga3.fotografia = UnitOfWorkScope.currentDbContext.Fotografie.AsEnumerable().Except( fotos ).First();
 				riga3.quantita = 1;
 				riga3.fotografo = riga3.fotografia.fotografo;
-				riga3.formatoCarta = UnitOfWorkScope.currentDbContext.FormatiCarta.First();
+				riga3.prodotto = UnitOfWorkScope.currentDbContext.FormatiCarta.First();
 				riga3.discriminator = RigaCarrello.TIPORIGA_STAMPA;
 				riga3.descrizione = "DACANC";
 				riga3.nomeStampante = Costanti.NomeStampantePdf;
@@ -139,7 +139,7 @@ namespace Digiphoto.Lumen.Core.VsTest.src.Servizi.Vendere {
 			riga1.fotografia = fotografie[i];
 			riga1.quantita = 2;
 			riga1.fotografo = fotografie[i].fotografo;
-			riga1.formatoCarta = formatoCarta;
+			riga1.prodotto = formatoCarta;
 			riga1.discriminator = RigaCarrello.TIPORIGA_STAMPA;
 			riga1.descrizione = "da stampare";
 			riga1.nomeStampante = Costanti.NomeStampantePdf;

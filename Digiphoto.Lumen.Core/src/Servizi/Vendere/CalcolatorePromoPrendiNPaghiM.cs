@@ -1,50 +1,109 @@
 ﻿using Digiphoto.Lumen.Model;
 using System.Linq;
 using System.Collections.Generic;
+using log4net;
 
 namespace Digiphoto.Lumen.Core.Servizi.Vendere {
 
 	public class CalcolatorePromoPrendiNPaghiM : ICalcolatorePromozione {
 
-		private Dictionary<string, int> _mappaDaElargireStampe = new Dictionary<string, int>();
+		private Dictionary<string, int> _mappaDaElargireStampe;
 		private Dictionary<string, int> _mappaTotStampe;
 		private int _daElargireFile;
 		private PromoPrendiNPaghiM _promoPrendiNPaghiM;
 
+		protected static readonly ILog _giornale = LogManager.GetLogger( typeof( CalcolatorePromoPrendiNPaghiM ) );
+
 		public Carrello Applica( Carrello cin, Promozione promo, PromoContext contestoDiVendita ) {
 
+			// Se ho già applicato la promo 3 (ingrandimento) allora questa non deve funzionare
+			if( contestoDiVendita.promoApplicate.Any( p => p.id == 3 ) ) {
+				_giornale.Debug( "Non applico la " + promo.GetType().Name + " perché è già stata applicata la promo 3" );
+				return cin;
+			}
+
 			this._promoPrendiNPaghiM = (PromoPrendiNPaghiM)promo;
+			bool elargito = false;
 
-			#region carico totali x grandezza
+			#region Elaboro Stampe
 
-			// per prima cosa, carico la mappa con i totali delle stampe raggruppate per grandezza p,m,g
+			if( promo.attivaSuStampe ) {
 
-			var qq = cin.righeCarrello
-				.Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA )
-				.GroupBy( r => ((FormatoCarta)r.prodotto).grandezza )
-				.Select( ff => new { grandez = ff.Key, conta = ff.Sum( r => r.quantita ) } );
+				_mappaDaElargireStampe = new Dictionary<string, int>();
 
-			_mappaTotStampe = qq.ToDictionary( t => t.grandez, t => t.conta );
+				#region carico totali x grandezza
 
-			#endregion carico totali x grandezza
+				// per prima cosa, carico la mappa con i totali delle stampe 
+				// raggruppate per grandezza p,m,g
+				// e che siano a prezzo pieno (cioè che non abbiano già uno sconto)
 
+				var qq = cin.righeCarrello
+					.Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA &&
+							r.sconto == null )
+					.GroupBy( r => ((FormatoCarta)r.prodotto).grandezza )
+					.Select( ff => new { grandez = ff.Key, conta = ff.Sum( r => r.quantita ) } );
 
-			valorizzaMappeWork();
+				_mappaTotStampe = qq.ToDictionary( t => t.grandez, t => t.conta );
 
-			// Ora agisco sul carrello
+				#endregion carico totali x grandezza
 
-			foreach( var key in _mappaDaElargireStampe.Keys ) {
+				valorizzaMappeWork();
 
-				int quante = _mappaDaElargireStampe[key];
+				foreach( var key in _mappaDaElargireStampe.Keys ) {
 
-				// Ora itero le righe del carrellocon quel tipo
-				var righe = cin.righeCarrello
-					.Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA && ((FormatoCarta)r.prodotto).grandezza == key )
-					.Take( quante );
-				foreach( RigaCarrello riga in righe )
-					riga.sconto = riga.prezzoLordoUnitario;
+					int quante = _mappaDaElargireStampe[key];
+
+					// Ora itero le righe del carrellocon quel tipo
+					var righe = cin.righeCarrello
+						.Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA && ((FormatoCarta)r.prodotto).grandezza == key )
+						.Take( quante );
+
+					foreach( RigaCarrello riga in righe ) {
+						riga.sconto = riga.prezzoLordoUnitario;
+						elargito = true;
+					}
+				}
 
 			}
+
+			#endregion Elaboro Stampe
+
+
+			#region Elaboro Masterizzate
+
+			if( promo.attivaSuFile ) {
+
+				// Conto quante masterizzate sono a prezzo pieno
+				var qta = cin.righeCarrello
+					.Where( r => r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA &&
+							r.sconto == null )
+					.Sum( r => r.quantita );
+
+				var multiploRegali = ((int)(qta / _promoPrendiNPaghiM.qtaDaPrendere));
+				var qtaElarg = multiploRegali * (_promoPrendiNPaghiM.qtaDaPrendere - _promoPrendiNPaghiM.qtaDaPagare);
+
+				_giornale.Debug( "devo elargire " + qtaElarg + " file digitali" );
+
+				// Ora itero le righe del carrello con quel tipo
+				var righeOma = cin.righeCarrello
+					.Where( r => r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA &&
+							r.sconto == null );
+
+				foreach( RigaCarrello riga in righeOma ) {
+
+					if( qtaElarg >= riga.quantita ) {
+						riga.sconto = riga.prezzoLordoUnitario;
+						qtaElarg -= riga.quantita;
+						elargito = true;
+					}
+				}
+			}
+
+			#endregion Elaboro Masterizzate
+
+			// Aggiungo la promo alla lista di quelle elargite
+			if( elargito && contestoDiVendita.promoApplicate.Contains( promo ) == false )
+				contestoDiVendita.promoApplicate.Add( promo );
 
 			return cin;
 		}

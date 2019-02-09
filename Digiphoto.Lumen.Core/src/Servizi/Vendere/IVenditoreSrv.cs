@@ -13,7 +13,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 	 */
 	public interface IVenditoreSrv : IServizio {
 
-		ModoVendita modoVendita { get; set; }
+		ModoVendita modoVendita {
+			get; set;
+		}
 
 
 		/** In base alla configurazione e ad altre variabili di lavoro, creo i parametri di stampa di default */
@@ -41,7 +43,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// Il carrello corrente viene "abbandonato" senza nessun salvataggio.
 		/// </summary>
 		void creareNuovoCarrello();
-		
+
 
 		/// <summary>
 		/// Il carrello corrente viene venduto. Diventa definitivo
@@ -54,7 +56,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		/// <summary>
 		/// Consente il Salvattaggio del Carrello senza effettuare ne la stampa ne la Masterizzazione
-        /// </summary>
+		/// </summary>
 		string salvareCarrello();
 
 		void abbandonareCarrello();
@@ -72,7 +74,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// rimuove anche dal db (senza commit).
 		/// </summary>
 		/// <param name="rigaCarrello"></param>
-		void eliminareRigaCarrello(RigaCarrello rigaCarrello);
+		void eliminareRigaCarrello( RigaCarrello rigaCarrello );
 
 		/// <summary>
 		/// Elimina dal carrello tutte le righe di un certo tipo
@@ -80,18 +82,20 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// <param name="discriminator">S=Stampe ; M=Masterizzate</param>
 		void eliminareRigheCarrello( string discriminator );
 
-		void eliminareCarrello(Carrello carrello);
+		void eliminareCarrello( Carrello carrello );
 
-		void spostareRigaCarrello(RigaCarrello rigaCarrello);
+		void spostareRigaCarrello( RigaCarrello rigaCarrello );
 
-        void spostareTutteRigheCarrello(String discriminator, ParametriDiStampa parametriDiStampa);
+		void spostareTutteRigheCarrello( String discriminator, ParametriDiStampa parametriDiStampa );
 
-        void copiaSpostaRigaCarrello(RigaCarrello rigaCarrello, ParametriDiStampa parametriDiStampa );
+		void copiaSpostaRigaCarrello( RigaCarrello rigaCarrello, ParametriDiStampa parametriDiStampa );
 
-        void copiaSpostaTutteRigheCarrello(String discriminator, ParametriDiStampa parametriDiStampa);
+		void copiaSpostaTutteRigheCarrello( String discriminator, ParametriDiStampa parametriDiStampa );
 
 		/** Lavoro con un carrello alla volta. Esiste un solo carrello "corrente". */
-		Carrello carrello { get; }
+		Carrello carrello {
+			get;
+		}
 
 		void caricareCarrello( Carrello c );
 
@@ -146,7 +150,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			get;
 		}
 
-		Decimal prezzoPromozione {
+		Nullable<decimal> prezzoPromozione {
 			get;
 		}
 
@@ -175,7 +179,20 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		void rimpiazzaFotoInRiga( RigaCarrello riga, Fotografia fMod );
 
-		string spazioFotoDaMasterizzate{
+		string spazioFotoDaMasterizzate {
+			get;
+		}
+
+		bool applicarePromoDiscrez {
+			get;
+			set;
+		}
+
+		bool esistonoPromoADiscrezione {
+			get;
+		}
+
+		bool esistonoPromoAttive {
 			get;
 		}
 	}

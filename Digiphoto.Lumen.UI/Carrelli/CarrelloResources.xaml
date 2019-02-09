@@ -240,7 +240,7 @@
                 <Label Content="{Binding Path=quantita}" Grid.Row="1" Grid.Column="3" Style="{StaticResource styleLabelRigaCarrello}" />
                 <!-- -->
                 <Label Content="Prz Uni" Grid.Row="0" Grid.Column="4" Style="{StaticResource styleLabelRigaCarrello}" />
-                <Label Content="{Binding Path=prezzoLordoUnitario}" Grid.Row="1" Grid.Column="4" Style="{StaticResource styleLabelRigaCarrello}" />
+				<Label Content="{Binding Path=prezzoNettoUnitario}" Grid.Row="1" Grid.Column="4" Style="{StaticResource styleLabelRigaCarrello}" />
                 <!-- -->
                 <Label Content="Prz Tot" Grid.Row="0" Grid.Column="5" Style="{StaticResource styleLabelRigaCarrello}" />
                 <Label Content="{Binding Path=prezzoNettoTotale}" Grid.Row="1" Grid.Column="5" Style="{StaticResource styleLabelRigaCarrello}" ToolTip="E' il prezzo Foto moltiplicato per la quantita"/>
@@ -287,7 +287,7 @@
 			<GroupBox.Header>
 				<TextBlock>
 					<TextBlock.Text>
-						<MultiBinding StringFormat="Riga {0} Carrello masterizzata">
+						<MultiBinding StringFormat="Riga {0} File digitale">
 							<Binding Path="."
                                      RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}"
                                      Converter="{StaticResource listItemIndexConverter}" />
@@ -498,7 +498,7 @@
 				<Setter Property="HorizontalContentAlignment" Value="Right" />
 				<Setter Property="HorizontalAlignment" Value="Left" />
 				<Setter Property="VerticalAlignment" Value="Top" />
-				<Setter Property="Foreground" Value="AntiqueWhite" />
+				<Setter Property="Foreground" Value="White" />
 			</Style>
 			<Style TargetType="TextBox">
 				<Setter Property="MinWidth" Value="70" />
@@ -717,7 +717,8 @@
 	<Style x:Key="labelRiepilogoStyle" TargetType="Label">
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="BorderBrush" Value="Gray" />
-		<Setter Property="FontSize" Value="24" />
+		<Setter Property="FontSize" Value="18" />
+		<Setter Property="Padding" Value="1" />
 		<Setter Property="Foreground" Value="AntiqueWhite" />
 	</Style>
 	

@@ -511,15 +511,15 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 		/// <summary>
-		/// Mi dice se la stessa foto è già nel carrello con lo stesso discriminator
+		/// Sto per aggiungere una riga nuova al carrello.
+		/// Controllo che non esista già una riga con lo stesso "prodotto" e con la stessa "foto"
+		/// La stessa foto stampata, però può esistere in due formati diversi (prodotti)
 		/// </summary>
-		private static bool isStessaFotoInCarrello( Carrello carrello, RigaCarrello riga ) {
-			return isStessaFotoInCarrello( carrello, riga, riga.discriminator );
-		}
+		public static bool isStessaFotoInCarrello( Carrello carrello, RigaCarrello rigaNew ) {
 
-		public static bool isStessaFotoInCarrello( Carrello carrello, RigaCarrello rigaNew, string discriminator ) {
-			bool esisteGia = carrello.righeCarrello.Any( r => r.discriminator == discriminator && rigaNew.fotografia.Equals( r.fotografia ) );
-
+			bool esisteGia = carrello.righeCarrello
+				.Any( r => r.prodotto.Equals( rigaNew.prodotto ) &&
+					  r.fotografia.Equals( rigaNew.fotografia ) );
 			return esisteGia;
 		}
 
@@ -913,24 +913,20 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				carrello.righeCarrello.Remove( rigaCarrello );
 
 			if( rigaCarrello.isTipoStampa ) {
+				ProdottoFile prodottoFile = mioDbContext.ProdottiFile.Single();
 				rigaCarrello.discriminator = RigaCarrello.TIPORIGA_MASTERIZZATA;
 				rigaCarrello.quantita = 1;
 				rigaCarrello.prodotto = mioDbContext.ProdottiFile.Single();
 				rigaCarrello.totFogliStampati = 0;
 				rigaCarrello.bordiBianchi = null;
-				rigaCarrello.prezzoLordoUnitario = 0;
-				rigaCarrello.prezzoNettoTotale = 0;
+				rigaCarrello.prezzoLordoUnitario = prodottoFile.prezzo;
+				rigaCarrello.prezzoNettoTotale = rigaCarrello.prezzoLordoUnitario;
 				rigaCarrello.nomeStampante = null;
 				rigaCarrello.sconto = null;
 			} else if( rigaCarrello.isTipoMasterizzata ) {
 				//Quando sposto la riga setto di default i bordi bianchi a false
 				rigaCarrello.bordiBianchi = false;
 				rigaCarrello.discriminator = RigaCarrello.TIPORIGA_STAMPA;
-
-// TODO !!!!
-rigaCarrello.prodotto = mioDbContext.FormatiCarta.First( f => f.attivo ); // non lo so ancora TODO da sistemare
-
-
 			} else {
 				_giornale.Warn( "Errore è stata spostata una riga senza dicriminator" );
 			}

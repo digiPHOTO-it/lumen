@@ -380,8 +380,32 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 			}
 		}
 
-		private decimal _prezzoPromozione;
-		public decimal prezzoPromozione {
+		
+		public bool applicarePromoDiscrez {
+			get {
+				return venditoreSrv.applicarePromoDiscrez;
+			}
+			set {
+				if( venditoreSrv.applicarePromoDiscrez != value ) {
+					venditoreSrv.applicarePromoDiscrez = value;
+					calcolaTotali();
+				}
+			}
+		}
+
+		public bool esistonoPromoADiscrezione {
+			get {
+				return venditoreSrv.esistonoPromoADiscrezione;
+			}
+		}
+
+		public bool esistonoPromoAttive {
+			get {
+				return venditoreSrv.esistonoPromoAttive;
+			}
+		}
+
+		public Nullable<decimal> prezzoPromozione {
 			get {
 				return venditoreSrv.prezzoPromozione;
 			}
@@ -428,6 +452,12 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 		public bool possovisualizzareQRcodeSelfService {
 			get {
 				return carrelloCorrente != null && carrelloCorrente.venduto == true && carrelloCorrente.visibileSelfService == true;
+			}
+		}
+
+		public bool possoCambiareDiscrezionalitaPromo {
+			get {
+				return true;
 			}
 		}
 
@@ -755,6 +785,7 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 
 			OnPropertyChanged( "carrelloCorrente" );
 			OnPropertyChanged( "prezzoNettoTotale" );
+			OnPropertyChanged( "prezzoPromozione" );
 			OnPropertyChanged( "ScontoApplicato" );
 			OnPropertyChanged( "sommatoriaFotoDaMasterizzare" );
 			OnPropertyChanged( "sommatoriaQtaFotoDaStampare" );
@@ -1554,6 +1585,11 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 
 		}
 
+		void cambiareDiscrezionalitaPromo( bool newval ) {
+			// applicarePromoDiscrez = newval;
+			// calcolaTotali();
+		}
+
 		#endregion Metodi
 
 		#region Comandi
@@ -1811,11 +1847,21 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 			}
 		}
 
-		
+#if DACANC
+		private RelayCommand _cambiareDiscrezionalitaPromoCommand;
+		public ICommand cambiareDiscrezionalitaPromoCommand {
+			get {
+				if( _cambiareDiscrezionalitaPromoCommand == null ) {
+					_cambiareDiscrezionalitaPromoCommand = new RelayCommand( param => cambiareDiscrezionalitaPromo( Boolean.Parse( (string)param  ) ), p => possoCambiareDiscrezionalitaPromo, false );
+				}
+				return _cambiareDiscrezionalitaPromoCommand;
+			}
+		}
+#endif       
 
-		#endregion Comandi
+#endregion Comandi
 
-		#region MemBus
+#region MemBus
 
 		public void OnCompleted()
 		{
@@ -1983,7 +2029,7 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 			base.OnDispose();
 		}
 
-		#endregion
+#endregion
 
 	}
 }

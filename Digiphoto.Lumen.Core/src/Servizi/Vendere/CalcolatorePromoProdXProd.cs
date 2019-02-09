@@ -1,6 +1,7 @@
 ﻿using Digiphoto.Lumen.Model;
 using System.Linq;
 using System.Collections.Generic;
+using log4net;
 
 namespace Digiphoto.Lumen.Core.Servizi.Vendere {
 
@@ -11,121 +12,57 @@ namespace Digiphoto.Lumen.Core.Servizi.Vendere {
 		private int _daElargireFile;
 		private PromoProdXProd _promoProdXProd;
 
+		protected static readonly ILog _giornale = LogManager.GetLogger( typeof( CalcolatorePromoProdXProd ) );
+
 		public Carrello Applica( Carrello cin, Promozione promo, PromoContext contestoDiVendita ) {
 
 			this._promoProdXProd = (PromoProdXProd)promo;
+	
+			// Non entro in promozione: esco subito
+			if( !promo.attivaSuStampe )
+				return cin;
+			
+			var qta = cin.righeCarrello
+				.Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA &&
+						r.prodotto.Equals( _promoProdXProd.prodottoInnesco ) )
+				.Sum( r2 => r2.quantita );
 
-			#region carico totali x prodotto
-
-			// per prima cosa, carico la mappa con i totali delle stampe raggruppate per grandezza p,m,g
-
-			var qq = cin.righeCarrello
-				.Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA )
-				.GroupBy( r => ((FormatoCarta)r.prodotto).grandezza )
-				.Select( ff => new { grandez = ff.Key, conta = ff.Sum( r => r.quantita ) } );
-
-			_mappaTotStampe = qq.ToDictionary( t => t.grandez, t => t.conta );
-
-			#endregion carico totali x grandezza
+			// Non entro in promozione: esco subito
+			if( qta < _promoProdXProd.qtaInnesco )
+				return cin;
 
 
-			valorizzaMappeWork();
-
+			// Ok la quantità è sufficiente per cascare nella promo.
 			// Ora agisco sul carrello
 
-			foreach( var key in _mappaDaElargireStampe.Keys ) {
+			// Ora determino quante foto di quella misura posso elargire.
+			var multiploRegali = ((int)(qta / _promoProdXProd.qtaInnesco));
+			var qtaElarg = multiploRegali * (_promoProdXProd.qtaElargito);
+			_giornale.Debug( "devo elargire " + qtaElarg + " omaggio" );
 
-				int quante = _mappaDaElargireStampe[key];
+			// Ora itero le righe del carrello con quel tipo
+			var righeOma = cin.righeCarrello
+				.Where( r => r.prodotto.Equals( _promoProdXProd.prodottoElargito ) );
 
-				// Ora itero le righe del carrellocon quel tipo
-				var righe = cin.righeCarrello
-					.Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA && ((FormatoCarta)r.prodotto).grandezza == key )
-					.Take( quante );
-				foreach( RigaCarrello riga in righe )
+			bool elargito = false;
+			foreach( RigaCarrello riga in righeOma ) {
+
+				if( qtaElarg >= riga.quantita ) {
 					riga.sconto = riga.prezzoLordoUnitario;
+					qtaElarg -= riga.quantita;
 
+					elargito = true;
+				}
 			}
+
+			// Aggiungo la promo alla lista di quelle elargite
+			if( elargito && contestoDiVendita.promoApplicate.Contains( promo ) == false )
+				contestoDiVendita.promoApplicate.Add( promo );
 
 			return cin;
 		}
 
-		/// <summary>
-		/// distribuisco le quantità delle elargizioni
-		/// </summary>
-		private void valorizzaMappeWork() {
-#if TODO
-			// ---
 
-#region calc elargizioni omogenee
-
-			// Ora determino per ogni grandezza se casca in promozione e quante ne posso elargire
-			List<string> keys = new List<string>( _mappaTotStampe.Keys );
-			foreach( var kk in keys ) {
-				var qta = _mappaTotStampe[kk];
-
-				if( qta >= _promoProdXProd.qtaDaPrendere ) {
-
-					// Ok la quantità è sufficiente per cascare nella promo.
-
-					// Ora determino quante foto di quella misura posso elargire.
-					var multiploRegali = ((int)(qta / _promoProdXProd.qtaDaPrendere));
-					var qtaElarg = multiploRegali * (_promoProdXProd.qtaDaPrendere - _promoProdXProd.qtaDaPagare);
-					_mappaDaElargireStampe.Add( kk, qtaElarg );
-
-					// Decurto la quantità elargita dal totale delle foto di quella grandezza,
-					// perché con il rimanente posso anche determinare una offerta mista.
-					int newQta = _mappaTotStampe[kk] - (multiploRegali * _promoProdXProd.qtaDaPrendere);
-					_mappaTotStampe[kk] = newQta;
-				}
-			}
-
-#endregion calc elargizioni omogenee
-
-			// ---
-
-#region calc elargizioni miste
-
-			// adesso sommo i rimasugli
-			int qtaRimas = _mappaTotStampe.Values.Sum();
-			if( qtaRimas >= _promoProdXProd.qtaDaPrendere ) {
-				// Ok posso ancora regalare qualcosa . 
-				var multiploRegali = ((int)(qtaRimas / _promoProdXProd.qtaDaPrendere));
-				var qtaElarg = multiploRegali * (_promoProdXProd.qtaDaPrendere - _promoProdXProd.qtaDaPagare);
-
-				bool continua = true;
-				string key = "P";
-				do {
-					if( qtaElarg > 0 ) {
-
-						if( _mappaTotStampe.ContainsKey( key ) && _mappaTotStampe[key] > 0 ) {
-							--_mappaTotStampe[key];
-							if( _mappaDaElargireStampe.ContainsKey( key ) )
-								++_mappaDaElargireStampe[key];
-							else
-								_mappaDaElargireStampe.Add( key, 1 );
-
-							--qtaElarg;
-						} else {
-
-							if( key == "P" )
-								key = "M";
-							else if( key == "M" )
-								key = "G";
-							else
-								key = null;
-						}
-					}
-
-					continua = (qtaElarg > 0 && key != null);
-
-				} while( continua );
-
-			}
-
-#endregion calc elargizioni miste
-
-#endif
-		}
 
 	}
 }
