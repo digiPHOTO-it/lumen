@@ -162,7 +162,7 @@ namespace Digiphoto.Lumen.Core.Database {
 
 					conn.Open();
 					string appo = conn.ServerVersion;
-					_giornale.Debug( "db server version = " + appo );
+					_giornale.Info( "db server version = " + appo );
 					conn.Close();
 
 					tuttoBene = (appo != null);

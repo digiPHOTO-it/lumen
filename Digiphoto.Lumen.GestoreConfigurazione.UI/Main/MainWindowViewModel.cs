@@ -1442,7 +1442,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			// --
 			promozioni[1] = UnitOfWorkScope.currentDbContext.Promozioni.FirstOrDefault<Promozione>( p => p.id == 2 );
 			if( promozioni[1] == null ) {
-				promozioni[1] = new PromoProdXProd {
+				promozioni[1] = new PromoPrendiNPaghiM {
 					id = 2,
 					attivaSuFile = true,
 					attivaSuStampe = true,
