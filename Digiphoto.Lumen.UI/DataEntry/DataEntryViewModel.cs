@@ -12,6 +12,7 @@ using System.Runtime.CompilerServices;
 using Digiphoto.Lumen.Database;
 using Digiphoto.Lumen.Util;
 using Digiphoto.Lumen.Eventi;
+using System.ComponentModel;
 
 namespace Digiphoto.Lumen.UI.DataEntry {
 
@@ -39,7 +40,12 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 
 			entitySource = new CollectionViewSource();
 
-			entitySource.Source = passoCaricaDati();
+			IEnumerable<TEntity> dati = passoCaricaDati();
+
+			var bindingList = new BindingList<TEntity>( dati.ToList() );
+
+			entitySource.Source = bindingList;
+
 
 			collectionView = (BindingListCollectionView)entitySource.View;
 
@@ -343,7 +349,7 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 			// A disposizione per override
 		}
 
-		protected virtual object passoCaricaDati() {
+		protected virtual IEnumerable<TEntity> passoCaricaDati() {
 			return entityRepositorySrv.getAll();
 		}
 

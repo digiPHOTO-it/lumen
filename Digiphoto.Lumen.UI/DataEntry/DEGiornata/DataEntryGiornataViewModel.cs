@@ -77,12 +77,7 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 			collectionView.Refresh();
 		}
 
-		protected override object passoCaricaDati() {
-			/*
-			Expression<Func<Giornata, Boolean>> filtro = gg => (gg.incassoDichiarato > 100);
-			return entityRepositorySrv.Query( filtro );
-			*/
-			// TODO si potrebbe fermare ad una settimana prima ?
+		protected override IEnumerable<Giornata> passoCaricaDati() {
 
 			IQueryable<Giornata> q = entityRepositorySrv.Query();
 			return q.OrderByDescending( gg => gg.id );

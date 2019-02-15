@@ -21,9 +21,10 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEEvento {
 			collectionView.Refresh();
 		}
 
-		protected override object passoCaricaDati() {
+		protected override IEnumerable<Evento> passoCaricaDati() {
 			IQueryable<Evento> q = entityRepositorySrv.Query();
-			return q.OrderByDescending( gg => gg.id );
+			IOrderedQueryable<Evento> rr = q.OrderByDescending( gg => gg.id );
+			return rr;
 		}
 
 		protected override void passoPreparaEdit( Evento evento ) {
