@@ -64,7 +64,7 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEFotografo {
 			collectionView.Refresh();
 		}
 
-		protected override object passoCaricaDati() {
+		protected override IEnumerable<Fotografo> passoCaricaDati() {
 			IQueryable<Fotografo> q = entityRepositorySrv.Query();
 			return q.OrderByDescending( gg => gg.id );
 		}
