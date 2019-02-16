@@ -506,14 +506,25 @@ namespace Digiphoto.Lumen.Servizi.Ricerca {
 				// Trovato
 				return middlePage;
 			else {
-				
-				if( appo.massimo < param.numeroConIntorno ) {
-					// salgo
-					limiteInf = (ushort) (middlePage + 1);
-				} else {
-					// Scendo
-					limiteSup = (ushort) (middlePage - 1);
+
+				if( param.ordinamento == Ordinamento.Asc ) {
+					if( appo.massimo < param.numeroConIntorno ) {
+						// salgo
+						limiteInf = (ushort)(middlePage + 1);
+					} else {
+						// Scendo
+						limiteSup = (ushort)(middlePage - 1);
+					}
+				} else if( param.ordinamento == Ordinamento.Desc ) {
+					if( appo.minimo > param.numeroConIntorno ) {
+						// salgo
+						limiteInf = (ushort)(middlePage + 1);
+					} else {
+						// Scendo
+						limiteSup = (ushort)(middlePage - 1);
+					}
 				}
+
 
 				return ricercaPaginaDicotomicaIntorno( limiteInf, limiteSup, sqlParam, param );
 			}
