@@ -329,7 +329,7 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 
 			using (IVenditoreSrv venditoreSpampaRapida = LumenApplication.Instance.creaServizio<IVenditoreSrv>())
 			{
-
+				venditoreSpampaRapida.start();
 				venditoreSpampaRapida.creareNuovoCarrello();
 				venditoreSpampaRapida.carrello.intestazione = intestazione;
 				var listaFoto = getListaFotoTarget();
@@ -349,6 +349,7 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 				{
 					dialogProvider.ShowError("Stampa diretta non riuscita.", "Errore", null);
 				}
+				venditoreSpampaRapida.stop();
 			}
 		}
 
