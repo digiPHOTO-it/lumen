@@ -12,6 +12,7 @@ using Digiphoto.Lumen.Imaging.Correzioni;
 using Digiphoto.Lumen.Util;
 using System.IO;
 using Digiphoto.Lumen.Model;
+using log4net;
 
 namespace Digiphoto.Lumen.UI.Converters {
 
@@ -20,6 +21,8 @@ namespace Digiphoto.Lumen.UI.Converters {
 	/// in un componente renderizzabile in un controllo Image.
 	/// </summary>
 	public class CorrezioniXmlImageSourceConverter : IValueConverter  {
+
+		private static readonly ILog _giornale = LogManager.GetLogger( typeof( CorrezioniXmlImageSourceConverter ) );
 
 		// Una icona che è sempre la stessa
 		static ImageSource iconaOverlayComposizione = null;
@@ -43,8 +46,26 @@ namespace Digiphoto.Lumen.UI.Converters {
 
 			} else if( "MASCHERA".Equals( parameter ) ) {
 
-				// carico proprio la maschera
-				imageSource = caricaMascheraDaCorrezioneXml( (String)value );
+				try {
+					// carico proprio la maschera
+					imageSource = caricaMascheraDaCorrezioneXml( (String)value );
+
+				} catch( Exception ee ) {
+
+
+					BitmapImage image = new BitmapImage();
+
+					try {
+						image.BeginInit();
+						image.UriSource = new Uri( @"pack://application:,,,/Digiphoto.Lumen.UI;component/Resources/image-not-found-48x48.png" );
+						image.EndInit();
+						image.Freeze();
+					} catch {
+						// Qui si potrebbe emettere una warning
+					}
+
+					imageSource = image;
+				}
 			}
 			
 			return imageSource;
