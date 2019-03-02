@@ -1595,6 +1595,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 				if( stampaDiretta ){
 					using( IVenditoreSrv venditoreStampaDiretta = LumenApplication.Instance.creaServizio<IVenditoreSrv>() ) 
 					{
+						venditoreStampaDiretta.start();
 						venditoreSrv.modoVendita = ModoVendita.StampaDiretta;
 						venditoreStampaDiretta.creareNuovoCarrello();
 						venditoreStampaDiretta.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_RAPIDA;
@@ -1616,6 +1617,8 @@ namespace Digiphoto.Lumen.UI.Gallery {
 						{
 							dialogProvider.ShowError("Errore inserimento carrello nella cassa","Errore", null);
 						}
+
+						venditoreStampaDiretta.stop();
 					}
 				}else{
 					venditoreSrv.aggiungereStampe( listaSelez, creaParamStampaFoto( stampanteAbbinata ) );
