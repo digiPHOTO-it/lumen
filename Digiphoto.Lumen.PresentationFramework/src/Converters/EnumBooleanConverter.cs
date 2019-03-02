@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Digiphoto.Lumen.UI.Converters {
+namespace Digiphoto.Lumen.PresentationFramework.Converters {
 
 	public class EnumBooleanConverter : IValueConverter {
 
