@@ -317,7 +317,6 @@
       <DependentUpon>CercaFotoPopupView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Gallery\CercaPopup\CercaFotoPopupViewModel.cs" />
-    <Compile Include="Converters\EnumBooleanConverter.cs" />
     <Compile Include="Gallery\FotoGalleryView.xaml.cs">
       <DependentUpon>FotoGalleryView.xaml</DependentUpon>
     </Compile>
@@ -955,6 +954,7 @@
     <Resource Include="Resources\warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\image-not-found-48x48.png" />
     <Resource Include="Resources\sconto-24x24.png" />
     <Resource Include="Resources\foto-non-mi-piace-32x32.png" />
     <Resource Include="Resources\foto-mi-piace-32x32.png" />
