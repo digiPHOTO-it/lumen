@@ -14,6 +14,7 @@ using Digiphoto.Lumen.Util;
 using log4net;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Permissions;
@@ -135,6 +136,11 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			}
 		}
 
+		public UserConfigOnRide userConfigOnRide {
+			get;
+			private set;
+		}
+
 		#endregion Proprietà
 
 		#region Metodi
@@ -142,7 +148,7 @@ namespace Digiphoto.Lumen.OnRide.UI {
 		private void Init() {
 
 			this.cartellaOnRide = Configurazione.UserConfigLumen.cartellaOnRide;
-			if( ! Directory.Exists( cartellaOnRide ) ) {
+			if( !Directory.Exists( cartellaOnRide ) ) {
 				var msg = "Cartella per modalità OnRide non valida: " + cartellaOnRide;
 				_giornale.Error( msg );
 				throw new LumenException( msg );
@@ -152,13 +158,14 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			// Devo caricare le preferenze
 			string nomeFileMsk = null;
 			try {
-				UserConfigOnRide userConfigOnRide = Config.UserConfigSerializer.deserialize();
+				userConfigOnRide = Config.UserConfigSerializer.deserialize();
 				if( userConfigOnRide != null ) {
 					this.isMascheraAttiva = userConfigOnRide.isMascheraAttiva;
 					nomeFileMsk = userConfigOnRide.nomeMaschera;
 					_giornale.Info( "Caricate preferenze utente" );
-				}
-				
+				} else
+					userConfigOnRide = new UserConfigOnRide();
+
 			} catch( Exception ee ) {
 				_giornale.Error( "Caricamento preferenze utente", ee );
 			}
@@ -215,7 +222,7 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			Maschera mskTemp = maschere.SingleOrDefault( m => m.nomeFile == nomeFileMsk );
 
 			if( mskTemp != null ) {
-			
+
 				try {
 					// idrato sia l'immaginetta del provino che quella grande, perché mi servono le dimensioni.
 					gestoreImmagineSrv.idrataMaschera( mskTemp, true );
@@ -244,7 +251,7 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 				// Prendo le estensioni ammesse dalla configurazione
 				string[] estensioni = Configurazione.UserConfigLumen.estensioniGrafiche.Split( ';' );
-				foreach( string estensione in estensioni )	{
+				foreach( string estensione in estensioni ) {
 					DirectoryInfo dirInfo = new DirectoryInfo( cartellaOnRide );
 					foreach( FileInfo fileInfo in dirInfo.GetFiles( "*" + estensione ) ) {
 
@@ -317,10 +324,10 @@ namespace Digiphoto.Lumen.OnRide.UI {
 							acquisireUnaFoto( fotoItem );
 							ricomincia = true;
 							break;
-						}	
+						}
 					}
 				}
-			
+
 			} while( ricomincia );
 
 		}
@@ -370,21 +377,25 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			paramScarica.eliminaFilesSorgenti = true;
 
 			// Eventuale maschera automatica
-			if( isMascheraAttiva )
+			if(isMascheraAttiva )
 				paramScarica.mascheraAuto = maschera;
 
-
 			// Fase del giorno
-			FaseDelGiorno faseDelGiorno;
-			DateTime creation = File.GetCreationTime( fotoItem.fileInfo.FullName );
-			if( creation.Hour > 16 )
-				faseDelGiorno = FaseDelGiorno.Sera;
-			else if( creation.Hour > 13 )
-				faseDelGiorno = FaseDelGiorno.Pomeriggio;
-			else
-				faseDelGiorno = FaseDelGiorno.Mattino;
-			paramScarica.faseDelGiorno = faseDelGiorno;
-			
+			if( String.IsNullOrWhiteSpace(userConfigOnRide.orarioSeparaMatPom ) == false ) {
+				
+				FaseDelGiorno? faseDelGiorno = null;
+				DateTime creation = File.GetCreationTime( fotoItem.fileInfo.FullName );
+					
+				string strCreation = creation.ToString( "HH:mm" );
+				
+				if( strCreation.CompareTo( userConfigOnRide.orarioSeparaMatPom ) < 0 )
+					faseDelGiorno = FaseDelGiorno.Mattino;
+				if( strCreation.CompareTo( userConfigOnRide.orarioSeparaMatPom ) >= 0 )
+					faseDelGiorno = FaseDelGiorno.Pomeriggio;
+
+				paramScarica.faseDelGiorno = faseDelGiorno;
+			}
+
 			try {
 
 				scaricatoreFotoSrv.scarica( paramScarica );
@@ -522,10 +533,10 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 			// Devo salvare le preferenze
 			try {
-				UserConfigOnRide pref = new UserConfigOnRide();
-				pref.isMascheraAttiva = this.isMascheraAttiva;
-				pref.nomeMaschera = maschera == null ? null : maschera.nomeFile;
-				Config.UserConfigSerializer.serializeToFile( pref );
+				// UserConfigOnRide pref = new UserConfigOnRide();
+				userConfigOnRide.isMascheraAttiva = this.isMascheraAttiva;
+				userConfigOnRide.nomeMaschera = maschera == null ? null : maschera.nomeFile;
+				Config.UserConfigSerializer.serializeToFile( userConfigOnRide );
 			} catch( Exception ee ) {
 				_giornale.Error( "Salvataggio preferenze", ee );
 			}

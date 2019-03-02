@@ -22,8 +22,9 @@ namespace Digiphoto.Lumen.SelfService.HostConsole {
 			Console.Out.WriteLine( "Step=1 : Avvio HOST self service. Machine Name = [" + System.Environment.MachineName + "]" );
 
 			// Se il nome è diverso da LUMEN, segnalo un avviso
-			if( System.Environment.MachineName.ToUpper() != "LUMEN" )
-				Console.Out.WriteLine( "Attenzione: per default questo servizio deve girare su di un server di nome: LUMEN" );
+			string testsrv = "SERVER-LUMEN";
+			if( System.Environment.MachineName.ToUpper() != testsrv )
+				Console.Out.WriteLine( "Attenzione: per default questo servizio deve girare su di un server di nome: " + testsrv );
 
 
 			// Per prima cosa, evito esecuzioni doppie
