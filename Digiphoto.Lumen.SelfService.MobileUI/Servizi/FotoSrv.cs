@@ -62,6 +62,11 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.Servizi
             }
         }
 
+		public string faseDelGiorno {
+			get;
+			set;
+		}
+		
 		public void setFotografo(String id)
         {
             if (!idFotografo.Equals(id))

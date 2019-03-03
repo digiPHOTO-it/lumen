@@ -244,6 +244,107 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference {
         }
     }
     
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="PaginazParam", Namespace="http://schemas.datacontract.org/2004/07/Digiphoto.Lumen.SelfService")]
+    [System.SerializableAttribute()]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference.RicercaFotoParam))]
+    public partial class PaginazParam : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int skipField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int takeField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int skip {
+            get {
+                return this.skipField;
+            }
+            set {
+                if ((this.skipField.Equals(value) != true)) {
+                    this.skipField = value;
+                    this.RaisePropertyChanged("skip");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int take {
+            get {
+                return this.takeField;
+            }
+            set {
+                if ((this.takeField.Equals(value) != true)) {
+                    this.takeField = value;
+                    this.RaisePropertyChanged("take");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="RicercaFotoParam", Namespace="http://schemas.datacontract.org/2004/07/Digiphoto.Lumen.SelfService")]
+    [System.SerializableAttribute()]
+    public partial class RicercaFotoParam : Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference.PaginazParam {
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string faseDelGiornoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string fotografoIdField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string faseDelGiorno {
+            get {
+                return this.faseDelGiornoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.faseDelGiornoField, value) != true)) {
+                    this.faseDelGiornoField = value;
+                    this.RaisePropertyChanged("faseDelGiorno");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string fotografoId {
+            get {
+                return this.fotografoIdField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.fotografoIdField, value) != true)) {
+                    this.fotografoIdField = value;
+                    this.RaisePropertyChanged("fotografoId");
+                }
+            }
+        }
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="SelfServiceReference.ISelfService")]
     public interface ISelfService {
@@ -303,10 +404,10 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference {
         System.Threading.Tasks.Task<Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference.FotografoDto[]> getListaFotografiAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISelfService/getListaFotografieDelFotografo", ReplyAction="http://tempuri.org/ISelfService/getListaFotografieDelFotografoResponse")]
-        Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference.FotografiaDto[] getListaFotografieDelFotografo(string fotografoId, int skip, int take);
+        Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference.FotografiaDto[] getListaFotografieDelFotografo(Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference.RicercaFotoParam ricercaFotoParam);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISelfService/getListaFotografieDelFotografo", ReplyAction="http://tempuri.org/ISelfService/getListaFotografieDelFotografoResponse")]
-        System.Threading.Tasks.Task<Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference.FotografiaDto[]> getListaFotografieDelFotografoAsync(string fotografoId, int skip, int take);
+        System.Threading.Tasks.Task<Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference.FotografiaDto[]> getListaFotografieDelFotografoAsync(Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference.RicercaFotoParam ricercaFotoParam);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISelfService/getSettings", ReplyAction="http://tempuri.org/ISelfService/getSettingsResponse")]
         System.Collections.Generic.Dictionary<string, string> getSettings();
@@ -414,12 +515,12 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference {
             return base.Channel.getListaFotografiAsync();
         }
         
-        public Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference.FotografiaDto[] getListaFotografieDelFotografo(string fotografoId, int skip, int take) {
-            return base.Channel.getListaFotografieDelFotografo(fotografoId, skip, take);
+        public Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference.FotografiaDto[] getListaFotografieDelFotografo(Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference.RicercaFotoParam ricercaFotoParam) {
+            return base.Channel.getListaFotografieDelFotografo(ricercaFotoParam);
         }
         
-        public System.Threading.Tasks.Task<Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference.FotografiaDto[]> getListaFotografieDelFotografoAsync(string fotografoId, int skip, int take) {
-            return base.Channel.getListaFotografieDelFotografoAsync(fotografoId, skip, take);
+        public System.Threading.Tasks.Task<Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference.FotografiaDto[]> getListaFotografieDelFotografoAsync(Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference.RicercaFotoParam ricercaFotoParam) {
+            return base.Channel.getListaFotografieDelFotografoAsync(ricercaFotoParam);
         }
         
         public System.Collections.Generic.Dictionary<string, string> getSettings() {

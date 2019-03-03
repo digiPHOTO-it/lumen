@@ -2,6 +2,7 @@
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import namespace="http://schemas.datacontract.org/2004/07/Digiphoto.Lumen.SelfService.Carrelli" />
   <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/Digiphoto.Lumen.SelfService" />
   <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
   <xs:element name="getListaCarrelli">
     <xs:complexType>
@@ -125,16 +126,14 @@
   <xs:element name="getListaFotografieDelFotografo">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="fotografoId" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="skip" type="xs:int" />
-        <xs:element minOccurs="0" name="take" type="xs:int" />
+        <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/Digiphoto.Lumen.SelfService" minOccurs="0" name="ricercaFotoParam" nillable="true" type="q11:RicercaFotoParam" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="getListaFotografieDelFotografoResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/Digiphoto.Lumen.SelfService.Carrelli" minOccurs="0" name="getListaFotografieDelFotografoResult" nillable="true" type="q11:ArrayOfFotografiaDto" />
+        <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/Digiphoto.Lumen.SelfService.Carrelli" minOccurs="0" name="getListaFotografieDelFotografoResult" nillable="true" type="q12:ArrayOfFotografiaDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -146,7 +145,7 @@
   <xs:element name="getSettingsResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q12="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="getSettingsResult" nillable="true" type="q12:ArrayOfKeyValueOfstringstring" />
+        <xs:element xmlns:q13="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="getSettingsResult" nillable="true" type="q13:ArrayOfKeyValueOfstringstring" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

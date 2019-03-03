@@ -7,13 +7,59 @@
              d:DesignHeight="900" d:DesignWidth="1800"
              Background="WhiteSmoke"
              IsManipulationEnabled="True">
-    
-    <Grid Background="Aqua">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
 
-        <Grid Name="PlaybackPanel">
+	<UserControl.Resources>
+		<ResourceDictionary Source="FotografiResources.xaml" />
+	</UserControl.Resources>
+
+
+	<DockPanel Background="Aqua" LastChildFill="True">
+
+		<Border DockPanel.Dock="Top" Name="BorderHome" Background="#55FFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center">
+			<Button Name="HomeButton" TouchDown="Home_Click" Click="Home_Click" ToolTip="Home" VerticalAlignment="Center" Style="{StaticResource styleHome}" IsTabStop="False"/>
+		</Border>
+
+		
+		
+		<Grid DockPanel.Dock="Bottom" Margin="60,0,60,80" >
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="48"/>
+				<ColumnDefinition />
+				<ColumnDefinition />
+				<ColumnDefinition />
+				<ColumnDefinition />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition />
+				<RowDefinition />
+				<RowDefinition />
+			</Grid.RowDefinitions>
+
+			<!-- italiano -->
+			<Image Grid.Row="0" Grid.Column="0" Source="{StaticResource italyFlag}" />
+			<Label Grid.Row="0" Grid.Column="1" Style="{StaticResource ResourceKey=fasegiornoLabelStyle}" Content="Fase del giorno" />
+			<Label Grid.Row="0" Grid.Column="2" Style="{StaticResource ResourceKey=fasegiornoLabelStyle}" Content="Tutto il gioro" />
+			<Label Grid.Row="0" Grid.Column="3" Style="{StaticResource ResourceKey=fasegiornoLabelStyle}" Content="Mattino" />
+			<Label Grid.Row="0" Grid.Column="4" Style="{StaticResource ResourceKey=fasegiornoLabelStyle}" Content="Pomeriggio" />
+			<Label Grid.Row="0" Grid.Column="5" Style="{StaticResource ResourceKey=fasegiornoLabelStyle}" Content="Sera" />
+
+			<!-- inglese -->
+			<Image Grid.Row="1" Grid.Column="0" Source="{StaticResource englandFlag}"  />
+			<Label Grid.Row="1" Grid.Column="1" Style="{StaticResource ResourceKey=fasegiornoLabelStyle}" Content="Time of the day" />
+			<Label Grid.Row="1" Grid.Column="2" Style="{StaticResource ResourceKey=fasegiornoLabelStyle}" Content="All day" />
+			<Label Grid.Row="1" Grid.Column="3" Style="{StaticResource ResourceKey=fasegiornoLabelStyle}" Content="Morning" />
+			<Label Grid.Row="1" Grid.Column="4" Style="{StaticResource ResourceKey=fasegiornoLabelStyle}" Content="Afternoon" />
+			<Label Grid.Row="1" Grid.Column="5" Style="{StaticResource ResourceKey=fasegiornoLabelStyle}" Content="Evening" />
+
+			<RadioButton Grid.Row="2" Grid.Column="2" Style="{StaticResource ResourceKey=radioStyle}" IsChecked="{Binding strFaseDelGiorno, Converter={StaticResource compareConverter}, ConverterParameter=TuttoIlGiorno}" />
+			<RadioButton Grid.Row="2" Grid.Column="3" Style="{StaticResource ResourceKey=radioStyle}" IsChecked="{Binding strFaseDelGiorno, Converter={StaticResource compareConverter}, ConverterParameter=Mattino}" />
+			<RadioButton Grid.Row="2" Grid.Column="4" Style="{StaticResource ResourceKey=radioStyle}" IsChecked="{Binding strFaseDelGiorno, Converter={StaticResource compareConverter}, ConverterParameter=Pomeriggio}" />
+			<RadioButton Grid.Row="2" Grid.Column="5" Style="{StaticResource ResourceKey=radioStyle}" IsChecked="{Binding strFaseDelGiorno, Converter={StaticResource compareConverter}, ConverterParameter=Sera}" />
+
+		</Grid>
+
+		<Grid Name="PlaybackPanel" Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="60" />
                 <ColumnDefinition Width="*" />
@@ -51,24 +97,9 @@
                     <Button Name="ButtonNext" TouchDown="ScrollDown" Click="ScrollDown" VerticalAlignment="Center" Style="{StaticResource styleRigth}" IsTabStop="False" />
                 </StackPanel>
             </Border>
-            <!--RepeatButton Click="ScrollDown" Grid.Column="2">Scroll Down</RepeatButton-->
-        </Grid>
-
-        <Grid Name="Panel">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="65" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="65" />
-            </Grid.RowDefinitions>
-
-            <Border Name="BorderHome" Grid.Row="0" Background="#55FFFFFF" >
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Button Name="HomeButton" TouchDown="Home_Click" Click="Home_Click" ToolTip="Home" VerticalAlignment="Center" Style="{StaticResource styleHome}" IsTabStop="False"/>
-                </StackPanel>
-            </Border>
-
            
-            
         </Grid>
-    </Grid>
+
+
+    </DockPanel>
 </UserControl>

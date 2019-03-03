@@ -84,7 +84,7 @@ namespace Digiphoto.Lumen.SelfService {
 		/// <param name="carrelloId"></param>
 		/// <returns>Una lista di oggetti di trasporto leggeri, con solo i dati necessari</returns>
 		[OperationContract]
-		List<FotografiaDto> getListaFotografieDelFotografo( string fotografoId, int skip, int take );
+		List<FotografiaDto> getListaFotografieDelFotografo( RicercaFotoParam ricercaFotoParam );
 
 		[OperationContract]
 		Dictionary<string, string> getSettings();
