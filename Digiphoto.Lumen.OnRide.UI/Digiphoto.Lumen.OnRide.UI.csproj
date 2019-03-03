@@ -98,6 +98,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Converters\RunningModeConverter.cs" />
     <Compile Include="Main\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -174,6 +175,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="onride.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\RunningMode_Automatico-32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\RunningMode_Presidiato-32x32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
