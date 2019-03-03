@@ -72,6 +72,8 @@
     <Compile Include="Carrelli\FotografoDto.cs" />
     <Compile Include="Carrelli\FotografiaDto.cs" />
     <Compile Include="ISelfService.cs" />
+    <Compile Include="Param\PaginazParam.cs" />
+    <Compile Include="Param\RicercaFotoParam.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SelfService.cs" />
   </ItemGroup>

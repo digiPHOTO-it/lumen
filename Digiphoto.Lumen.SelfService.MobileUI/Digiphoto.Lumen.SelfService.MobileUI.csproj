@@ -64,6 +64,7 @@
       <DependentUpon>Carrelli.xaml</DependentUpon>
     </Compile>
     <Compile Include="Control\UserControlBase.cs" />
+    <Compile Include="Converters\CompareConverter.cs" />
     <Compile Include="Converters\ImageSourceConverter.cs" />
     <Compile Include="Converters\MiPiaceBollConverter.cs" />
     <Compile Include="Converters\PercentualeConverter.cs" />
@@ -99,6 +100,10 @@
     <Page Include="Fotografi\Fotografi.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Fotografi\FotografiResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Logo\Logo.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -171,6 +176,9 @@
     <None Include="Service References\SelfServiceReference\Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference.FotografoDto.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\SelfServiceReference\Digiphoto.Lumen.SelfService.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\SelfServiceReference\service.wsdl" />
     <None Include="Service References\SelfServiceReference\service.xsd">
       <SubType>Designer</SubType>
@@ -227,7 +235,10 @@
   <ItemGroup>
     <Resource Include="Resources\Empty.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\England_Flag_32x32.png" />
+    <Resource Include="Resources\Italy_Flag_32x32.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

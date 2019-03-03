@@ -297,7 +297,7 @@ namespace Digiphoto.Lumen.SelfService {
 		}
 	
 
-		public List<FotografiaDto> getListaFotografieDelFotografo( string fotografoId, int skip, int take ) {
+		public List<FotografiaDto> getListaFotografieDelFotografo( RicercaFotoParam ricercaFotoParam ) {
 
 			List<FotografiaDto> listaDto = new List<FotografiaDto>();
 
@@ -309,15 +309,22 @@ namespace Digiphoto.Lumen.SelfService {
 				// preparo parametri
 				ParamCercaFoto param = new ParamCercaFoto();
 				
-				var fotografo = UnitOfWorkScope.currentDbContext.Fotografi.Single( f => f.id == fotografoId );
+				var fotografo = UnitOfWorkScope.currentDbContext.Fotografi.Single( f => f.id == ricercaFotoParam.fotografoId );
 				param.fotografi = new Fotografo [] { fotografo };
 				param.evitareJoinEvento = true;
-				param.paginazione = new Paginazione { skip = skip, take = take };
+				param.paginazione = new Paginazione { skip = ricercaFotoParam.skip, take = ricercaFotoParam.take };
 				param.idratareImmagini = false;
 				DateTime giornata = StartupUtil.calcolaGiornataLavorativa();
 				param.ordinamento = Ordinamento.Asc;
 				param.giornataIniz = giornata;
 				param.giornataFine = giornata;
+
+				// La fase del giorno è un parametro opzionale
+				if( ricercaFotoParam.faseDelGiorno != null ) {
+					FaseDelGiorno faseDelGiorno;
+					if( Enum.TryParse<FaseDelGiorno>( ricercaFotoParam.faseDelGiorno, out faseDelGiorno ) )
+						param.setFaseGiorno( faseDelGiorno, true );
+				}
 
 				var fotografie = ricercaSrv.cerca( param );
 				foreach( var foto in fotografie ) {

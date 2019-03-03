@@ -34,6 +34,20 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             get;
             private set;
         }
+		
+		/// <summary>
+		/// Mantengo solo una stringa 
+		/// Mattino
+		/// Pomeriggio
+		/// Sera
+		/// null = nessun filtro (quindi è tutto il giorno)
+		/// </summary>
+
+		public string strFaseDelGiorno {
+			get;
+			set;
+		}
+
 
         public Fotografi(SelfMainWindow main)
         {
@@ -92,7 +106,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
                 if (item != null)
                 {
                     FotografoDto c = (FotografoDto)item;
-                    main.ContentArea.Content = new SlideShowNxM(main, c);
+                    main.ContentArea.Content = new SlideShowNxM( main, c, strFaseDelGiorno );
                     MoveTimeCounter.Instance.updateLastTime();
                 }
             }

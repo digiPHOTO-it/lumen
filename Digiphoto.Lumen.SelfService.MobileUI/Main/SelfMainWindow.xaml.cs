@@ -132,5 +132,9 @@ namespace Digiphoto.Lumen.SelfService.MobileUI {
         public void Previous()
         {
         }
-    }
+
+		private void Window_MouseDoubleClick( object sender, MouseButtonEventArgs e ) {
+
+		}
+	}
 }

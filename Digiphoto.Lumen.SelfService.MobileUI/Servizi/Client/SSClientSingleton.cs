@@ -240,20 +240,28 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.Servizi
             }
 		}
 
-		internal IList getListaFotografieDelFotografo(string id, int v, int _PAGE_SIZE)
+		internal IList getListaFotografieDelFotografo(string id, string strFaseDelGiorno, int skip, int _PAGE_SIZE)
 		{
 			IList result = new ArrayList();
 			Open();
+
+			RicercaFotoParam param = new RicercaFotoParam {
+				fotografoId = id,
+				faseDelGiorno = strFaseDelGiorno,
+				skip = skip,
+				take = _PAGE_SIZE
+			};
+
 			try
 			{
-				result = ssClient.getListaFotografieDelFotografo(id, v, _PAGE_SIZE);
+				result = ssClient.getListaFotografieDelFotografo( param );
 			}
 			catch (Exception)
 			{
 				connectionRestart();
 				if (isConnectionOK)
 				{
-					return ssClient.getListaFotografieDelFotografo(id, v, _PAGE_SIZE);
+					return ssClient.getListaFotografieDelFotografo( param );
 				}  
 			}
 			return result;
