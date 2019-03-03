@@ -3,6 +3,7 @@ using Digiphoto.Lumen.UI.Mvvm;
 using Digiphoto.Lumen.UI.Util;
 using Digiphoto.Lumen.Util;
 using System;
+using System.Collections.Specialized;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,6 +22,21 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			this.DataContext = new MainWindowViewModel();
 
 			viewModel.dialogProvider = this;
+
+			if( viewModel.userConfigOnRide.runningMode == Config.RunningMode.Automatico )
+				((INotifyCollectionChanged)onrideListView.Items).CollectionChanged += ListView_CollectionChanged;
+		}
+
+		private void ListView_CollectionChanged( object sender, NotifyCollectionChangedEventArgs e ) {
+
+			if( viewModel.userConfigOnRide.runningMode == Config.RunningMode.Automatico ) {
+
+				foreach( FotoItem fotoItem in viewModel.fotoItemsCW )
+					fotoItem.daTaggare = false;
+
+				viewModel.acquisireFotoCommand.Execute( null );
+			}
+
 		}
 
 		MainWindowViewModel viewModel {

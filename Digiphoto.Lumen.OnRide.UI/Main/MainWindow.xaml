@@ -79,11 +79,15 @@
 
 		</Expander>
 
-		<ToolBar DockPanel.Dock="Top">
+		<ToolBar DockPanel.Dock="Top"
+				 IsEnabled="{Binding Path=userConfigOnRide.runningMode, Converter={StaticResource enumBooleanConverter}, ConverterParameter={x:Static oc:RunningMode.Presidiato}}" >
+			
 			<Button  Height="36" Padding="4 0 4 0" Content="Esegui !" Command="{Binding acquisireFotoCommand}" Style="{StaticResource pulsanteStyle}" ToolTip="Applica le modifiche impostate" />
 			<Separator Margin="6 0 6 0"/>
 			<Button  Content="Refresh" Command="{Binding caricareItemsCommand}" Style="{StaticResource pulsanteStyle}" ToolTip="Aggiorna la lista delle foto a video"/>
 			<Separator Margin="6 0 6 0"/>
+
+			
 
 		</ToolBar>
 
@@ -91,7 +95,8 @@
 			<Label Content="{Binding Path=ciao}" />
 		</StatusBar>
 
-		<Grid DockPanel.Dock="Left">
+		<Grid DockPanel.Dock="Left" 
+			  IsEnabled="{Binding Path=userConfigOnRide.runningMode, Converter={StaticResource enumBooleanConverter}, ConverterParameter={x:Static oc:RunningMode.Presidiato}}" >
 
 			<ListView x:Name="onrideListView"
 					  SelectionMode="Single" IsSynchronizedWithCurrentItem="True"
@@ -173,9 +178,18 @@
 
 		</Grid>
 
+		<Grid DockPanel.Dock="Top">
+			<StackPanel Orientation="Horizontal">
+				<Image Source="{Binding Path=userConfigOnRide.runningMode, ConverterParameter=icon, Converter={StaticResource runningModeConverter}}" Width="32" Height="32" />
+				<Label Content="Conta foto processate: " FontSize="18" />
+				<Label Content="{Binding Path=totFotoAcquisite}" MinWidth="50" FontSize="18" Background="LightGreen" HorizontalContentAlignment="Center" />
+			</StackPanel>
+		</Grid>
 
-		<Grid>
-			<Image Source="{Binding ElementName=onrideListView, Path=SelectedItem.fileInfo.FullName, Converter={StaticResource uriToCachedImageConverter} }" />
+		<Grid >
+			<Image Source="{Binding ElementName=onrideListView, Path=SelectedItem.fileInfo.FullName, Converter={StaticResource uriToCachedImageConverter} }" 
+				   IsEnabled="{Binding Path=userConfigOnRide.runningMode, Converter={StaticResource enumBooleanConverter}, ConverterParameter={x:Static oc:RunningMode.Presidiato}}" 
+				   />
 		</Grid>
 
 	</DockPanel>

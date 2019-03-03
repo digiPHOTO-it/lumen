@@ -14,6 +14,7 @@ using Digiphoto.Lumen.Util;
 using log4net;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -63,6 +64,19 @@ namespace Digiphoto.Lumen.OnRide.UI {
 				if( value != _isMascheraAttiva ) {
 					_isMascheraAttiva = value;
 					OnPropertyChanged( "isMascheraAttiva" );
+				}
+			}
+		}
+
+		private int _totFotoAcquisite;
+		public int totFotoAcquisite {
+			get {
+				return _totFotoAcquisite;
+			}
+			private set {
+				if( _totFotoAcquisite != value ) {
+					_totFotoAcquisite = value;
+					OnPropertyChanged( "totFotoAcquisite" );
 				}
 			}
 		}
@@ -244,8 +258,14 @@ namespace Digiphoto.Lumen.OnRide.UI {
 		/// Ricarico la lista degli items da disco, analizzando tutti i file contenuti nella cartella
 		/// </summary>
 		private void CaricareItems() {
-
+/*
+			if( fotoItems != null )
+				fotoItems.CollectionChanged -= this.collezioneCambiata;
+*/
 			fotoItems = new ObservableCollectionEx<FotoItem>();
+
+//			fotoItems.CollectionChanged += this.collezioneCambiata;
+
 
 			try {
 
@@ -265,10 +285,12 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 						if( userConfigOnRide.runningMode == RunningMode.Presidiato ) {
 							fotoItems.Add( fotoItem );
+
 						} else if( userConfigOnRide.runningMode == RunningMode.Automatico ) {
 							fotoItem.daTaggare = false;
 							acquisireUnaFoto( fotoItem );
 						}
+
 					}
 				}
 
@@ -291,19 +313,23 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			int quanteDaEliminare = fotoItems.Count( f => f.daEliminare );
 			int quanteSenzaTag = fotoItems.Count( f => f.daTaggare == false );
 
-			string msgConferma = "Sei sicuro di volere\r\n";
-			if( quanteDaEliminare > 0 )
-				msgConferma += "distruggere " + quanteDaEliminare + " foto\r\n";
-			if( quanteSenzaTag > 0 )
-				msgConferma += "acquisire " + quanteSenzaTag + " foto senza il tag\r\n";
-			msgConferma += "?";
-
 			bool procediPure = true;
-			if( quanteDaEliminare > 0 || quanteSenzaTag > 0 )
-				dialogProvider.ShowConfirmation( msgConferma, "Attenzione",
-					  ( confermato ) => {
-						  procediPure = confermato;
-					  } );
+
+			if( userConfigOnRide.runningMode == RunningMode.Presidiato ) {
+
+				string msgConferma = "Sei sicuro di volere\r\n";
+				if( quanteDaEliminare > 0 )
+					msgConferma += "distruggere " + quanteDaEliminare + " foto\r\n";
+				if( quanteSenzaTag > 0 )
+					msgConferma += "acquisire " + quanteSenzaTag + " foto senza il tag\r\n";
+				msgConferma += "?";
+
+				if( quanteDaEliminare > 0 || quanteSenzaTag > 0 )
+					dialogProvider.ShowConfirmation( msgConferma, "Attenzione",
+						  ( confermato ) => {
+							  procediPure = confermato;
+						  } );
+			}
 
 			if( !procediPure )
 				return;
@@ -389,6 +415,7 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			if( String.IsNullOrWhiteSpace(userConfigOnRide.orarioSeparaMatPom ) == false ) {
 				
 				FaseDelGiorno? faseDelGiorno = null;
+
 				DateTime creation = File.GetCreationTime( fotoItem.fileInfo.FullName );
 					
 				string strCreation = creation.ToString( "HH:mm" );
@@ -404,6 +431,8 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			try {
 
 				scaricatoreFotoSrv.scarica( paramScarica );
+
+				++totFotoAcquisite;
 
 			} catch( Exception ee ) {
 				_giornale.Error( "scarica foto", ee );
@@ -541,6 +570,7 @@ namespace Digiphoto.Lumen.OnRide.UI {
 					fotoItem.daTaggare = false;
 					acquisireUnaFoto( fotoItem );
 				}
+
 			}
 		}
 
@@ -562,9 +592,9 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			base.OnRequestClose();
 		}
 
-		#endregion Messaggi
+#endregion Messaggi
 
-		#region Comandi
+#region Comandi
 
 		private RelayCommand _acquisireFotoCommand;
 		public ICommand acquisireFotoCommand {
@@ -613,6 +643,6 @@ namespace Digiphoto.Lumen.OnRide.UI {
 		}
 
 
-		#endregion Comandi
+#endregion Comandi
 	}
 }
