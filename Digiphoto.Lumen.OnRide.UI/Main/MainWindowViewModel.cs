@@ -263,7 +263,12 @@ namespace Digiphoto.Lumen.OnRide.UI {
 							fotoItem.tag = File.ReadAllText( fotoItem.nomeFileTag );
 						}
 
-						fotoItems.Add( fotoItem );
+						if( userConfigOnRide.runningMode == RunningMode.Presidiato ) {
+							fotoItems.Add( fotoItem );
+						} else if( userConfigOnRide.runningMode == RunningMode.Automatico ) {
+							fotoItem.daTaggare = false;
+							acquisireUnaFoto( fotoItem );
+						}
 					}
 				}
 
@@ -504,25 +509,37 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 			if( aspetta != (maxAttesa * 2) ) {
 				possoAggiungere = false;        // il file è ancora loccato
-				_giornale.Warn( "File ancora loccato: " + finfo.Name + ". Impossibile aggiungerlo alla lista" );
+				_giornale.Warn( "File ancora loccato: " + finfo.Name + ". Impossibile processarlo adesso" );
 			}
 
+			// controllo se il file è troppo piccolo, (esempio zero) non è buono.
 			if( possoAggiungere ) {
 				// Ok è arrivata una immagine per davvero. Creo un item da accodare
 				finfo.Refresh();
 				if( finfo.Length <= 50 ) {
 					possoAggiungere = false;        // Dimensione del file non corretta
-					_giornale.Warn( "File con dimensione errata: " + finfo.Name + ". Impossibile aggiungerlo alla lista" );
+					_giornale.Warn( "File con dimensione errata: " + finfo.Name + ". Non lo considero" );
 				}
 			}
 
+			// --
 			if( possoAggiungere ) {
-			
-				try {
-					FotoItem fotoItem = new FotoItem( finfo );
-					fotoItems.Add( fotoItem );
-				} catch( Exception ee ) {
-					_giornale.Error( "Aggingo foto alla lista", ee );
+
+				FotoItem fotoItem = new FotoItem( finfo );
+
+				if( userConfigOnRide.runningMode == RunningMode.Presidiato ) {
+
+					try {
+						fotoItems.Add( fotoItem );
+					} catch( Exception ee ) {
+						_giornale.Error( "Aggingo foto alla lista", ee );
+					}
+
+				} else if( userConfigOnRide.runningMode == RunningMode.Automatico ) {
+
+					// La processo senza il tag
+					fotoItem.daTaggare = false;
+					acquisireUnaFoto( fotoItem );
 				}
 			}
 		}
