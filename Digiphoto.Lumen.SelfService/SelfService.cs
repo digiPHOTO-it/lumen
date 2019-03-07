@@ -269,7 +269,13 @@ namespace Digiphoto.Lumen.SelfService {
 
 			using( new UnitOfWorkScope() ) {
 
-				var fotografi = UnitOfWorkScope.currentDbContext.Fotografi.Where( f => f.attivo == true ).OrderBy( f => f.cognomeNome );
+				var linq = UnitOfWorkScope.currentDbContext.Fotografi.Where( f => f.attivo == true );
+				if( Configurazione.UserConfigLumen.filtroFotografiSS == FiltroFotografi.Umani )
+					linq = linq.Where( f => f.umano == true );
+				else if( Configurazione.UserConfigLumen.filtroFotografiSS == FiltroFotografi.Automatici )
+					linq = linq.Where( f => f.umano == false );
+
+				var fotografi = linq.OrderBy( f => f.cognomeNome );
 
 		
 				// Creo la lista contenente gli oggetti di trasporto leggeri che ho ricavato dal servizio core.
