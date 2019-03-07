@@ -27,6 +27,12 @@ namespace Digiphoto.Lumen.Config
 		StampaDiretta = 1
 	}
 
+	public enum FiltroFotografi {
+		Tutti,
+		Umani,
+		Automatici
+	}
+
 	public enum MasterizzaTarget : short {
 		[Description( "Non gestita masterizzazione" )]
 		Nulla = 0,
@@ -281,7 +287,7 @@ namespace Digiphoto.Lumen.Config
 		/// <summary>
 		/// Il nome del file di default per i loghi.
 		/// </summary>
-		string _logoNomeFileSelfService;
+		private string _logoNomeFileSelfService;
 		public string logoNomeFileSelfService {
 			get {
 				return _logoNomeFileSelfService;
@@ -290,6 +296,19 @@ namespace Digiphoto.Lumen.Config
 				if( _logoNomeFileSelfService != value ) {
 					_logoNomeFileSelfService = value;
 					OnPropertyChanged( "logoNomeFileSelfService" );
+				}
+			}
+		}
+
+		private FiltroFotografi _filtroFotografiSS;
+		public FiltroFotografi filtroFotografiSS {
+			get {
+				return _filtroFotografiSS;
+			}
+			set {
+				if( _filtroFotografiSS != value ) {
+					_filtroFotografiSS = value;
+					OnPropertyChanged( "filtroFotografiSS" );
 				}
 			}
 		}

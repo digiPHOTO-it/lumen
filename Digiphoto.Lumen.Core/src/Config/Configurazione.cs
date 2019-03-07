@@ -209,6 +209,7 @@ namespace Digiphoto.Lumen.Config  {
 
 			userConfig.logoNomeFileSelfService = nomeLogoSSDefault;
 			userConfig.modoRicercaSS = "fotografi";
+			userConfig.filtroFotografiSS = FiltroFotografi.Tutti;
 
 			#endregion Settagggi per Self-Service
 

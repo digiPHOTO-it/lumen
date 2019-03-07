@@ -115,6 +115,12 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
+		public IEnumerable<FiltroFotografi> filtroFotografiValues {
+			get {
+				return Enum.GetValues( typeof( FiltroFotografi ) ).Cast<FiltroFotografi>();
+			}
+		}
+
 		private UnitOfWorkScope unitOfWorkScope {
 			get;
 			set;
