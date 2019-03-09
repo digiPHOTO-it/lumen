@@ -49,7 +49,7 @@ namespace Digiphoto.Lumen.SelfService.WebUI.Controllers
 
 				byte [] bytes = selfServiceClient.getImage( f.id );
 
-				String fullName = Path.Combine( System.IO.Path.GetTempPath(), f.id + ".jpeg" );
+				String fullName = Path.Combine( System.IO.Path.GetTempPath(), "foto-" + f.id + ".jpg" );
 
 				if( ! filesDaZippare.Any( i => i.FullName == fullName ) ) {
 					System.IO.File.WriteAllBytes( fullName, bytes );
@@ -62,7 +62,7 @@ namespace Digiphoto.Lumen.SelfService.WebUI.Controllers
 			}
 
 			// Creo lo zip
-			String zipName = Path.Combine( Path.GetTempPath(), id + ".zip" );
+			String zipName = Path.Combine( Path.GetTempPath(), "carrello-" + id + ".zip" );
 			if( System.IO.File.Exists( zipName ) )
 				System.IO.File.Delete( zipName );
 			using( ZipArchive zip = ZipFile.Open( zipName, ZipArchiveMode.Create ) ) {
@@ -76,7 +76,7 @@ namespace Digiphoto.Lumen.SelfService.WebUI.Controllers
 
 
 			FileContentResult result = new FileContentResult( System.IO.File.ReadAllBytes( zipName ), "application/zip" );
-			result.FileDownloadName = id + ".zip";
+			result.FileDownloadName = "carrello-" + id + ".zip";
 			return result;
 		}
 
@@ -126,10 +126,8 @@ namespace Digiphoto.Lumen.SelfService.WebUI.Controllers
 				selfServiceClient.Close();
 
 				FileContentResult result = new FileContentResult( imageFoto, "image/jpg" );
-				result.FileDownloadName = "mia-foto.jpg";
+				result.FileDownloadName = "foto-" + fotografiaId + ".jpg";
 				return result;
-
-				// return File( imageFoto, "image/png", "foto.jpg" );
 			}
 		}
 	}
