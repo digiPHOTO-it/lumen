@@ -361,6 +361,7 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 
 			using( IVenditoreSrv venditoreFtessera = LumenApplication.Instance.creaServizio<IVenditoreSrv>() ) {
 
+				venditoreFtessera.start();
 				venditoreFtessera.creareNuovoCarrello();
 				venditoreFtessera.carrello.intestazione = VenditoreSrvImpl.INTESTAZIONE_STAMPA_FOTOTESSERA;
 				var listaFoto = getListaFotoTarget();
@@ -382,6 +383,7 @@ namespace Digiphoto.Lumen.UI.SelettoreAzioniRapide {
 				} else {
 					dialogProvider.ShowError( "Stampa foto tessera non riuscita.", "Errore", null );
 				}
+				venditoreFtessera.stop();
 			}
 		}
 
