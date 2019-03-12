@@ -9,7 +9,12 @@ namespace Digiphoto.Lumen.UI {
 
 		public SelettoreScaricoCard() {
 			InitializeComponent();
+
+			this.DataContextChanged += SelettoreScaricoCard_DataContextChanged;
 		}
 
+		private void SelettoreScaricoCard_DataContextChanged( object sender, System.Windows.DependencyPropertyChangedEventArgs e ) {
+			((SelettoreScaricoCardViewModel)this.DataContext).dialogProvider = this;
+		}
 	}
 }

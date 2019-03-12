@@ -24,6 +24,11 @@
 						 ItemsSource="{Binding Path=scarichiCardsCW}" 
 						 ItemContainerStyle="{StaticResource ResourceKey=listBoxItemEvidenziatoStyle}"
 						 >
+				<ListBox.ContextMenu>
+					<ContextMenu>
+						<MenuItem Header="Aggiorna" ToolTip="Rinfresca la lista degli scarichi card" Command="{Binding refreshScarichiCardsCommand}" CommandParameter="true" />
+					</ContextMenu>
+				</ListBox.ContextMenu>
 					<ListBox.ItemTemplate>
 						<DataTemplate>
 							<Grid ShowGridLines="True">
