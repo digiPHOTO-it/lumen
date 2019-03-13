@@ -61,11 +61,11 @@
 					</Grid>
 				</GroupBox>
 
-				<GroupBox Margin="505,49,0,0" HorizontalAlignment="Left" Width="142" Height="116" VerticalAlignment="Top" Header="Running Mode" >
+				<GroupBox Margin="505,49,0,0" HorizontalAlignment="Left" Width="152" Height="116" VerticalAlignment="Top" Header="Running Mode" >
 					<StackPanel Orientation="Vertical" Margin="0,10,0,0" >
-						<RadioButton Content="Presidiato" Height="30" FontSize="20" 
+						<RadioButton Content="Presidiato" Height="30" FontSize="20" ToolTip="E' presente un operatore che abbina i barcode"
 									 IsChecked="{Binding Path=userConfigOnRide.runningMode, Converter={StaticResource enumBooleanConverter}, ConverterParameter={x:Static oc:RunningMode.Presidiato}}" />
-						<RadioButton Content="Automatico" Height="30" FontSize="20"
+						<RadioButton Content="Abbandonato" Height="30" FontSize="20" ToolTip="Non vengono abbinati i barcode"
 									 IsChecked="{Binding Path=userConfigOnRide.runningMode, Converter={StaticResource enumBooleanConverter}, ConverterParameter={x:Static oc:RunningMode.Automatico}}" />
 					</StackPanel>
 				</GroupBox>
