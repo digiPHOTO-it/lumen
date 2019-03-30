@@ -1269,7 +1269,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			List<IncassoFotografo> incassiFotografiDelGiorno = new List<IncassoFotografo>();
 
-			var incassi = dbContext.IncassiFotografi.Where( i => i.carrello.giornata == giornata && i.carrello.venduto == true );
+			var incassi = dbContext.IncassiFotografi.Where( i => i.carrello.giornata == giornata && i.carrello.venduto == true ).ToList();
 
 			foreach( IncassoFotografo incaLoop in incassi ) {
 
@@ -1341,7 +1341,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		}
 
-		#region Promozioni
+#region Promozioni
 
 		/// <summary>
 		/// Applico le promozioni sul carrello passato nei parametri.
@@ -1397,6 +1397,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 	}
 
-	#endregion Promozioni
+#endregion Promozioni
 
 }
