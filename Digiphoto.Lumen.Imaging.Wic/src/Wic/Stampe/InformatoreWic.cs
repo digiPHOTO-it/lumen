@@ -33,7 +33,11 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
                 _printQueue = _printServer.GetPrintQueue( nomeStampante );
             }
 
-            _printCapabilities = _printQueue.GetPrintCapabilities();
+			try {
+				_printCapabilities = _printQueue.GetPrintCapabilities();
+			} catch( Exception ) {
+				// Le stampanti shinko in rete non supportano questa operazione
+			}
 
 			_printDialog = new PrintDialog();
 			_printDialog.PrintQueue = _printQueue;

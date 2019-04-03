@@ -62,7 +62,12 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
                     // Ricavo la coda di stampa (cioè la stampante) e le sue capacità.
                     using (coda ) {
 
-						PrintCapabilities capabilities = coda.GetPrintCapabilities();
+						PrintCapabilities capabilities = null;
+						try {
+							capabilities = coda.GetPrintCapabilities();
+						} catch( Exception ) {
+							// Le stampanti shinko non supportano queste capabilities
+						}
 
 						// Imposto la stampante (così che mi carica le impostazioni)
 						PrintDialog dialog = new PrintDialog();
@@ -96,7 +101,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 
 						if( _ruotareStampante ) {
 
-							if( capabilities.PageOrientationCapability.Contains( PageOrientation.Landscape ) && capabilities.PageOrientationCapability.Contains( PageOrientation.Portrait ) ) {
+							if( capabilities != null && capabilities.PageOrientationCapability.Contains( PageOrientation.Landscape ) && capabilities.PageOrientationCapability.Contains( PageOrientation.Portrait ) ) {
 								// tutto ok
 								dialog.PrintTicket.PageOrientation = (dialog.PrintTicket.PageOrientation == PageOrientation.Landscape ? PageOrientation.Portrait : PageOrientation.Landscape);
 							} else
@@ -112,7 +117,7 @@ namespace Digiphoto.Lumen.Imaging.Wic.Stampe {
 						int cicliStampa = 1;
 						if( lavoroDiStampa.param.numCopie > 1 ) {
 							// Se la stampante gestisce le copie multiple, faccio un invio solo.
-							if( capabilities.MaxCopyCount >= lavoroDiStampa.param.numCopie )
+							if( capabilities != null && capabilities.MaxCopyCount >= lavoroDiStampa.param.numCopie )
 								dialog.PrintTicket.CopyCount = lavoroDiStampa.param.numCopie;
 							else
 								cicliStampa = lavoroDiStampa.param.numCopie;
