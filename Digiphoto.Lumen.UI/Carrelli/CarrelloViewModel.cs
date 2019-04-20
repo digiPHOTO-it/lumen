@@ -925,14 +925,24 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 
 					if( ea.mioDialogResult == true ) {
 
-						// Ricavo la cartella ed eventualmente il tipo di drive
-						string folder = scegliMasterizzaTargetViewModel.cartella;
-						DriveType driveType = scegliMasterizzaTargetViewModel.getDriveType( folder );
+						MasterizzaTarget target = scegliMasterizzaTargetViewModel.masterizzaTarget;
 
-						if( driveType == DriveType.CDRom )
-							ret = masterizzaSulMasterizzatore( folder );
-						else
-							ret = masterizzaSuCartella( folder );
+						if( target == MasterizzaTarget.SelfServiceWeb ) {
+							// In questo caso non devo fare niente.
+							// Il cliente si scarica le foto da solo
+							venditoreSrv.setDatiDischetto( target, null );
+							ret = true;
+						} else {
+
+							// Ricavo la cartella ed eventualmente il tipo di drive
+							string folder = scegliMasterizzaTargetViewModel.cartella;
+							DriveType driveType = scegliMasterizzaTargetViewModel.getDriveType( folder );
+
+							if( driveType == DriveType.CDRom )
+								ret = masterizzaSulMasterizzatore( folder );
+							else
+								ret = masterizzaSuCartella( folder );
+						}
 
 					}
 				}

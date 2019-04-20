@@ -38,7 +38,11 @@ namespace Digiphoto.Lumen.UI.Carrelli.Masterizzare {
 			}
 		}
 
-		
+		public MasterizzaTarget masterizzaTarget {
+			get;
+			private set;
+		}
+
 		void confermare( MasterizzaTarget target ) {
 
 			// il risultato lo metto sempre in "cartella"
@@ -46,6 +50,7 @@ namespace Digiphoto.Lumen.UI.Carrelli.Masterizzare {
 				this.cartella = selettoreDiscoViewModel.discoSelezionato.Name;	
 			}
 
+			this.masterizzaTarget = target;
 			this.CloseCommand.Execute( null );
 		}
 
@@ -65,6 +70,10 @@ namespace Digiphoto.Lumen.UI.Carrelli.Masterizzare {
 			if( target == MasterizzaTarget.Cartella ) {
 				if( cartella != null && Directory.Exists( cartella ) )
 					posso = true;
+			}
+
+			if( target == MasterizzaTarget.SelfServiceWeb ) {
+				posso = true;
 			}
 
 			return posso;

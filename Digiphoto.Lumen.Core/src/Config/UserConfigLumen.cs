@@ -43,7 +43,9 @@ namespace Digiphoto.Lumen.Config
 		[Description( "Solo su specifica cartella" )]
 		Cartella = 3,
 		[Description( "Ovunque" )]
-		Ovunque = 4
+		Ovunque = 4,
+		[Description( "SelfService via web" )]
+		SelfServiceWeb = 5
 	}
 
 

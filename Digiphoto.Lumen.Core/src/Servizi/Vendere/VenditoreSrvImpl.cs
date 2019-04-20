@@ -691,8 +691,13 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		 * tramite il suo id, è possibile andare a sistemare eventuali problemi.
 		 */
 		private void eventualeMasterizzazione( Carrello carrello ) {
+
 			// Se non ho righe nel carrello da stampare, allora esco.
 			if( carrello == null || carrello.righeCarrello.Count == 0 )
+				return;
+
+			// Se non ho il servizio non vado oltre.
+			if( _masterizzaSrvImpl == null )
 				return;
 
 			IEnumerable<RigaCarrello> listaDaMast = carrello.righeCarrello.Where( r => r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA );
@@ -1301,7 +1306,13 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 		public void setDatiDischetto( MasterizzaTarget tipoDest, string nomeCartella ) {
-			masterizzaSrv.impostaDestinazione( tipoDest, nomeCartella );
+
+			if( tipoDest == MasterizzaTarget.SelfServiceWeb ) {
+				masterizzaSrv.stop();
+				masterizzaSrv.Dispose();
+				_masterizzaSrvImpl = null;
+			} else
+				masterizzaSrv.impostaDestinazione( tipoDest, nomeCartella );
 		}
 
 		public void setDatiDischetto( MasterizzaTarget tipoDest, string nomeCartella, decimal? prezzoDischetto ) {
