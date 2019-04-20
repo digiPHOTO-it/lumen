@@ -2,8 +2,22 @@
     ViewBag.Title = "digiPHOTO - Self Service";
 }
 
-<div class="jumbotron">
-	<h2>digiPHOTO - Self Service</h2>
+<div>
+
+	@using( Html.BeginForm( "Details", "Carrello" ) ) {
+		<label>Code:</label>
+		@Html.TextBox( "id", null, new {
+	   @class = "input-lg",
+	   data_rule_required = "true",
+	   @autofocus = "autofocus"
+   } );
+		<input name="btn-cerca" id="btn-cerca" type="image" src="/images/search_48x48.png" 
+			   onclick="this.form.submit();" title="Search" />
+	}
+</div>
+
+<div>
+	<h4 style="text-align:center">Photo Self Service</h4>
 </div>
 
 <div class="row">
@@ -25,15 +39,7 @@
 			Enter here the <strong>purchase code</strong> provided to you at the cash desk.
 		</p>
 
-		<div style="margin-top: 20px;">
-			@using( Html.BeginForm( "Details", "Carrello" ) ) {
-				@Html.TextBox( "id", null, new {
-					@class = "input-lg",
-					data_rule_required = "true"
-				} );
-				<input name="btn-cerca" id="btn-cerca" type="image" src="/images/search_48x48.png" onclick="this.form.submit();" title="Search" />
-			}
-		</div>
+
 
 	</div>
 </div>
