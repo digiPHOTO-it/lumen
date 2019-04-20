@@ -166,7 +166,7 @@ namespace Digiphoto.Lumen.SelfService {
 					
 						foreach( RigaCarrello riga in srv.carrelloCorrente.righeCarrello ) {
 
-							if( riga.fotografia_id != null ) {
+							if( riga.fotografia_id != null && riga.isTipoMasterizzata ) {
 
 								FotografiaDto dto = new FotografiaDto();
 								dto.id = riga.fotografia.id;
