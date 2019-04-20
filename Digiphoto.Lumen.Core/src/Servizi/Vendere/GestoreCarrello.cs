@@ -643,6 +643,10 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				}
 			}
 
+			// Se ho soltanto stampe nel carrello, questo non può essere visibile sul SelfService
+			if( carrello.venduto && !carrello.righeCarrello.Any( r => r.isTipoMasterizzata ) )
+				carrello.visibileSelfService = false;
+			
 			// Se gestisco il self-service, e se il carrello è venduto, attribuisco l'ID corto per il web
 			if( carrello.venduto && carrello.visibileSelfService )
 				if( carrello.idCortoSelfService == null )
