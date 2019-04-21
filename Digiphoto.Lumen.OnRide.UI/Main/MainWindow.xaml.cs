@@ -19,9 +19,9 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 			InitializeComponent();
 
-			this.DataContext = new MainWindowViewModel();
+			this.DataContext = new MainWindowViewModel( this );
 
-			viewModel.dialogProvider = this;
+
 
 			if( viewModel.userConfigOnRide.runningMode == Config.RunningMode.Automatico )
 				((INotifyCollectionChanged)onrideListView.Items).CollectionChanged += ListView_CollectionChanged;

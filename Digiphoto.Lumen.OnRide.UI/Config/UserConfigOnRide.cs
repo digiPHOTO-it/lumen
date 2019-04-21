@@ -23,6 +23,19 @@ namespace Digiphoto.Lumen.OnRide.UI.Config {
 
 	public class UserConfigOnRide : INotifyPropertyChanged {
 
+		private string _idFotografo;
+		public string idFotografo {
+			get {
+				return _idFotografo;
+			}
+			set {
+				if( _idFotografo != value ) {
+					_idFotografo = value;
+					OnPropertyChanged( "idFotografo" );
+				}
+			}
+		}
+
 		private string _nomeMaschera;
 		public string nomeMaschera {
 			get {

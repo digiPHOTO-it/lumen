@@ -6,7 +6,7 @@
 		xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
 		xmlns:oc="clr-namespace:Digiphoto.Lumen.OnRide.UI.Config"
         mc:Ignorable="d"
-        Title="OnRide manager" Height="600" Width="800" WindowState="Maximized" >
+        Title="OnRide manager" Height="825" Width="1100" WindowState="Maximized" >
 
 	<i:Interaction.Triggers>
 		<i:EventTrigger EventName="Closing">
@@ -22,15 +22,21 @@
 
 		<Expander DockPanel.Dock="Top" Header="preferenze">
 			<Grid Height="180">
-				<Label Content="Cartella input foto" VerticalAlignment="Top" Margin="10,8,0,0" HorizontalAlignment="Left" Width="120"  />
+				<Label Content="Cartella input foto"  Margin="10,8,0,0" 
+					   VerticalAlignment="Top" HorizontalAlignment="Left"   />
 				<TextBox FontSize="18" Text="{Binding Path=cartellaOnRide,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
 						 ToolTip="Cartella dove arrivano le foto della fotocamera"
-						 VerticalAlignment="Top" Margin="143,10,290,0" />
-				<Button Visibility="Hidden"  Command="{Binding scegliereCartellaCommand}" CommandParameter="foto" Content="..." Height="Auto" Margin="0,4,10,0" ToolTip="Sfoglia cartelle" VerticalAlignment="Top" HorizontalAlignment="Right" Width="22" />
+						 VerticalAlignment="Top" Margin="143,10,0,0" HorizontalAlignment="Left" Width="225" />
+				<Button Visibility="Hidden"  Command="{Binding scegliereCartellaCommand}" CommandParameter="foto" Content="..." Height="Auto" Margin="0,11,449,0" ToolTip="Sfoglia cartelle" VerticalAlignment="Top" HorizontalAlignment="Right" Width="22" />
+				<Label Content="Fotografo"  Margin="505,10,0,0" 
+					   VerticalAlignment="Top" HorizontalAlignment="Left"   />
+				<TextBox FontSize="18" Text="{Binding Path=userConfigOnRide.idFotografo,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+						 ToolTip="Indicare l'IDentificativo del Fotografo virtuale a cui attribuire le foto" Margin="580,10,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="200" />
 
 				<Label Content="Stato monitoraggio" Margin="0,18,91,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Right" Width="120"  />
+
 				<ToggleButton IsChecked="{Binding Path=isRunning, Mode=OneWay}" 
-						  Content="Start/Stop" Style="{StaticResource pulsanteStyle}" ToolTip="Avvia o Arresta il monitoriaggio della cartella" Margin="0,0,19,126" Height="45" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="72" >
+						  Content="Start/Stop"  ToolTip="Avvia o Arresta il monitoriaggio della cartella" Margin="0,0,19,126" Height="45" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="72" >
 					<i:Interaction.Triggers>
 						<i:EventTrigger EventName="Checked">
 							<i:InvokeCommandAction Command="{Binding Path=cambiareStatoCommand}" CommandParameter="start"/>
@@ -39,6 +45,18 @@
 							<i:InvokeCommandAction Command="{Binding Path=cambiareStatoCommand}" CommandParameter="stop"/>
 						</i:EventTrigger>
 					</i:Interaction.Triggers>
+					<ToggleButton.Style>
+						<Style TargetType="ToggleButton">
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding Path=isRunning, Mode=OneWay}" Value="True" >
+									<Setter Property="Background" Value="Green" />
+								</DataTrigger>
+								<DataTrigger Binding="{Binding Path=isRunning, Mode=OneWay}" Value="False" >
+									<Setter Property="Background" Value="Red" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</ToggleButton.Style>
 				</ToggleButton>
 
 
@@ -81,13 +99,13 @@
 
 		<ToolBar DockPanel.Dock="Top"
 				 IsEnabled="{Binding Path=userConfigOnRide.runningMode, Converter={StaticResource enumBooleanConverter}, ConverterParameter={x:Static oc:RunningMode.Presidiato}}" >
-			
+
 			<Button  Height="36" Padding="4 0 4 0" Content="Esegui !" Command="{Binding acquisireFotoCommand}" Style="{StaticResource pulsanteStyle}" ToolTip="Applica le modifiche impostate" />
 			<Separator Margin="6 0 6 0"/>
 			<Button  Content="Refresh" Command="{Binding caricareItemsCommand}" Style="{StaticResource pulsanteStyle}" ToolTip="Aggiorna la lista delle foto a video"/>
 			<Separator Margin="6 0 6 0"/>
 
-			
+
 
 		</ToolBar>
 
