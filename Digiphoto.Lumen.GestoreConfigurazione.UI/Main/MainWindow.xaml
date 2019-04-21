@@ -148,80 +148,121 @@
 					<TextBox Height="27" Margin="174,176,248,0" Text="{Binding infoFissa.urlPrefixSelfServiceWeb}" VerticalAlignment="Top" ToolTip="Prefisso url web server per Self Service" />
 
 					<GroupBox Header="Promozioni" 
-							  Margin="31,214,0,0"  HorizontalAlignment="Left" Width="439" Height="177" VerticalAlignment="Top"
+							  Margin="31,214,0,0"  HorizontalAlignment="Left" Width="591" Height="180" VerticalAlignment="Top"
 							  >
 
 						<Grid>
 
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="180" />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition />
+								<RowDefinition />
+								<RowDefinition Height="60"/>
+							</Grid.RowDefinitions>
+
+
+
+							<Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" BorderBrush="Gray" BorderThickness="0 0 0 1" />
 
 							<CheckBox Content="1) Prendi anche file con il prezzo di favore:" 
-									  HorizontalAlignment="Left" Margin="1,14,0,0" VerticalAlignment="Top" Width="248" 
+									  Grid.Column="0" Grid.Row="0" 
 									  IsChecked="{Binding Path=promoStessaFotoSuFile.attiva}"
-									  ToolTip="Per ogni stampa acquistata si può avere&#x0a;lo stesso file al prezzo di favore indicato" />
+									  ToolTip="Per ogni stampa acquistata si può avere&#x0a;lo stesso file al prezzo di favore indicato"  />
 
 							<xtk:DecimalUpDown Value="{Binding Path=promoStessaFotoSuFile.prezzoFile, UpdateSourceTrigger=PropertyChanged}"
 											   Minimum="0"  AllowTextInput="True"
-											   Increment="1"  Width="60" 
+											   Grid.Column="1" Grid.Row="0"
+											   Increment="1" Height="26" Width="100" 
 											   IsEnabled="{Binding Path=promoStessaFotoSuFile.attiva}"
-											   Margin="259,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+											   />
 
+							<CheckBox Content="Discrezionale" ToolTip="L'operatore può decidere di applicarla"
+									  IsChecked="{Binding Path=promoStessaFotoSuFile.discrezionale}"
+									  IsEnabled="{Binding Path=promoStessaFotoSuFile.attiva}"
+									  Height="26"
+									  Grid.Column="2" Grid.Row="0"  />
 
-							<Separator Margin="0,36,0,0" Height="14" VerticalAlignment="Top" HorizontalAlignment="Left" Width="415" />
-
+							<!-- -->
+							<Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" BorderBrush="Gray" BorderThickness="0 0 0 1" />
 
 							<CheckBox Content="2) Compri &lt;N&gt; prodotti e ne paghi &lt;M&gt;" 
-									  HorizontalAlignment="Left" Margin="1,55,0,0" VerticalAlignment="Top" 
+									  Grid.Column="0" Grid.Row="1" 
 									  IsChecked="{Binding Path=promoPrendiNPaghiM.attiva}"
-									  ToolTip="Solo per prodotti omogenei. Su tutti i prodotti.&#x0a;Esempio: compri 3 paghi 2" />
+									  ToolTip="Solo per prodotti omogenei. Su tutti i prodotti.&#x0a;Esempio: compri 3 paghi 2" 
+									  />
 
 							<xtk:IntegerUpDown Value="{Binding Path=promoPrendiNPaghiM.qtaDaPrendere, UpdateSourceTrigger=PropertyChanged}"
 											   Minimum="0"  AllowTextInput="True"
-											   Increment="1" Width="60"
+											   Increment="1"
 											   IsEnabled="{Binding Path=promoPrendiNPaghiM.attiva}"
-											   Margin="259,50,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+											   Grid.Column="1" Grid.Row="1" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Width="64" Margin="10,10,0,0" />
 
-							<Label Content="X" Margin="330,47,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"  />
+							<Label Content="X" Margin="84,13,0,0" Height="26"
+								   HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Grid.Column="1"  />
 
 							<xtk:IntegerUpDown Value="{Binding Path=promoPrendiNPaghiM.qtaDaPagare, UpdateSourceTrigger=PropertyChanged}"
 											   Minimum="0"  AllowTextInput="True"
 											   Increment="1" 
 											   IsEnabled="{Binding Path=promoPrendiNPaghiM.attiva}"
-											   Margin="355,49,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="60" />
+											   Grid.Column="1" Grid.Row="1" Width="64" 
+											   Margin="110,10,0,0" HorizontalAlignment="Left" Height="30" VerticalAlignment="Top"/>
 
+							<CheckBox Content="Discrezionale" ToolTip="L'operatore può decidere di applicarla"
+									  IsChecked="{Binding Path=promoPrendiNPaghiM.discrezionale}"
+									  IsEnabled="{Binding Path=promoPrendiNPaghiM.attiva}"
+									  Height="26"
+									  Grid.Column="2" Grid.Row="1"  />
 
-							<Separator Margin="1,78,0,0" HorizontalAlignment="Left" Width="414" Height="14" VerticalAlignment="Top" />
+							<!-- -->
+							<Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" BorderBrush="Gray" BorderThickness="0 0 0 1" />
 
-							<CheckBox Content="3) Innesco: qta e Prodotto&#x0a;&#x0a;   Elargizione: qta e Prodotto" 
-									  HorizontalAlignment="Left" Margin="0,97,0,0" VerticalAlignment="Top" 
+							<CheckBox Content="3) Innesco: qta e Prodotto&#x0a;&#x0a;    Elargizione: qta e Prodotto" 
 									  IsChecked="{Binding Path=promoProdXProd.attiva}"
 									  Name="chkPromoProdXprod"
+									  Grid.Column="0" Grid.Row="2"
 									  ToolTip="Esempio: compri 3 foto piccole, regalo 1 foto grande" />
 
 							<xtk:IntegerUpDown Value="{Binding Path=promoProdXProd.qtaInnesco, UpdateSourceTrigger=PropertyChanged}"
 											   Minimum="0"  AllowTextInput="True"
 											   ToolTip="Qta di innesco.&#x0a;Occorre acquistare almeno questa quanttità di prodotto"
-											   Increment="1" Width="60" 
+											   Increment="1" Width="60" Height="25"
+											   Grid.Column="0" Grid.Row="2"
 											   IsEnabled="{Binding Path=promoProdXProd.attiva}"
-											   Margin="178,92,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+											   Margin="239,5,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" />
 
 							<xtk:IntegerUpDown Value="{Binding Path=promoProdXProd.qtaElargito, UpdateSourceTrigger=PropertyChanged}"
 											   Minimum="0"  AllowTextInput="True"
 											   ToolTip="Qta elargita di prodotto.&#x0a;Vale anche per multipli"
-											   Increment="1" Width="60" 
+											   Increment="1" Width="60" Height="25"
+											   Grid.Column="0" Grid.Row="2"
 											   IsEnabled="{Binding Path=promoProdXProd.attiva}"
-											   Margin="178,125,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+											   Margin="239,32,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" />
 
-							<ComboBox Margin="259,125,0,0"  MinWidth="120"
-									  ToolTip="Prodotto elargito&#x0a;Verrà regalato questo prodotto"
-									  ItemsSource="{Binding Path=listaProdotti}" DisplayMemberPath="descrizione" 
-									  IsEnabled="{Binding Path=promoProdXProd.attiva}"
-									  SelectedValue="{Binding Path=promoProdXProd.prodottoElargito}" HorizontalAlignment="Left" Width="160" VerticalAlignment="Top" />
-							<ComboBox Margin="259,92,0,0"  
+							<ComboBox Margin="10,5,0,0"  
 									  ToolTip="Prodotto di innesco.&#xA;Occorre acquistare questo prodotto."
 									  ItemsSource="{Binding listaProdotti}" DisplayMemberPath="descrizione" 
 									  IsEnabled="{Binding Path=promoProdXProd.attiva}"
 									  SelectedValue="{Binding Path=promoProdXProd.prodottoInnesco}" HorizontalAlignment="Left" Width="160" 
+									  Grid.Column="1" Grid.Row="2"
 									  VerticalAlignment="Top" />
+							
+							<ComboBox Margin="10,32,0,0"  MinWidth="120"
+									  Grid.Column="1" Grid.Row="2"
+									  ToolTip="Prodotto elargito&#x0a;Verrà regalato questo prodotto"
+									  ItemsSource="{Binding Path=listaProdotti}" DisplayMemberPath="descrizione" 
+									  IsEnabled="{Binding Path=promoProdXProd.attiva}"
+									  SelectedValue="{Binding Path=promoProdXProd.prodottoElargito}" 
+									  HorizontalAlignment="Left" Width="160" VerticalAlignment="Top" />
+
+							<CheckBox Content="Discrezionale" ToolTip="L'operatore può decidere di applicarla"
+									  IsChecked="{Binding Path=promoProdXProd.discrezionale}"
+									  IsEnabled="{Binding Path=promoProdXProd.attiva}"
+									  Height="26"
+									  Grid.Column="2" Grid.Row="2"  />
 
 						</Grid>
 
