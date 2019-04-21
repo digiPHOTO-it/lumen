@@ -4,7 +4,7 @@ using Digiphoto.Lumen.Core.Database;
 using Digiphoto.Lumen.Model;
 using Digiphoto.Lumen.OnRide.UI.Config;
 using Digiphoto.Lumen.OnRide.UI.Model;
-using Digiphoto.Lumen.OnRideUI;
+using Digiphoto.Lumen.Servizi.EntityRepository;
 using Digiphoto.Lumen.Servizi.Io;
 using Digiphoto.Lumen.Servizi.Ritoccare;
 using Digiphoto.Lumen.Servizi.Scaricatore;
@@ -14,8 +14,6 @@ using Digiphoto.Lumen.Util;
 using log4net;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Permissions;
@@ -27,14 +25,14 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 	public class MainWindowViewModel : ClosableWiewModel, IObserver<ScaricoFotoMsg> {
 
-
 		protected new static readonly ILog _giornale = LogManager.GetLogger( typeof( MainWindowViewModel ) );
 
-		public MainWindowViewModel() {
+		public MainWindowViewModel( IDialogProvider dialogProvider ) {
+
+			this.dialogProvider = dialogProvider;
 
 			Init();
 		}
-
 
 		#region Proprietà
 
@@ -115,6 +113,12 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			set;
 		}
 
+/*
+		public string idFotografoOnRide {
+			get;
+			set;
+		}
+*/
 		public ListCollectionView fotoItemsCW {
 			get;
 			private set;
@@ -138,12 +142,18 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			}
 		}
 
+		public IEntityRepositorySrv<Fotografo> fotografiReporitorySrv {
+			get {
+				return LumenApplication.Instance.getServizioAvviato<IEntityRepositorySrv<Fotografo>>();
+			}
+		}
+
 		private ObservableCollectionEx<FotoItem> fotoItems {
 
 			get;
 			set;
 		}
-
+		
 		bool possoAcquisireFoto {
 			get {
 				return fotoItemsCW.Count > 0;
@@ -188,12 +198,27 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 			using( new UnitOfWorkScope() ) {
 
-				// Carico il fotografo dal db (in questo caso non è umano, ma di tipo automatico)
-				fotografoOnRide = UnitOfWorkScope.currentDbContext.Fotografi.FirstOrDefault( f => f.umano == false && f.attivo == true );
+				if( userConfigOnRide.idFotografo != null ) {
+					// Lo carico
+					fotografoOnRide = UnitOfWorkScope.currentDbContext.Fotografi.SingleOrDefault( f => f.id == userConfigOnRide.idFotografo && f.umano == false && f.attivo == true );
+				}
+
 				if( fotografoOnRide == null ) {
-					var msg = "Nessun fotografo attivo per modalità OnRide";
-					_giornale.Error( msg );
-					throw new LumenException( msg );
+					// Carico il fotografo dal db (in questo caso non è umano, ma di tipo automatico)
+					int conta = UnitOfWorkScope.currentDbContext.Fotografi.Count( f => f.umano == false && f.attivo == true );
+					if( conta == 1 ) {
+						fotografoOnRide = UnitOfWorkScope.currentDbContext.Fotografi.Single( f => f.umano == false && f.attivo == true );
+						userConfigOnRide.idFotografo = fotografoOnRide.id;
+					} else if( conta == 0 ) {
+						var msg = "Nessun fotografo attivo per modalità OnRide";
+						_giornale.Error( msg );
+						throw new LumenException( msg );
+					} 
+
+				}
+
+				if( fotografoOnRide == null ) {
+					// se la configurazione è vuota, allora devo permettere all'utente di inserirla.	
 				}
 			}
 
@@ -208,7 +233,10 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			CreaFileSystemWatcher();
 
 			// inizio ad ascoltare file in arrivo
-			cambiareStatoCommand.Execute( "start" );
+			if( cambiareStatoCommand.CanExecute( "start" ) )
+				cambiareStatoCommand.Execute( "start" );
+			else
+				dialogProvider.ShowError( "Completare la configurazione\r\nquindi premere il pulsante RUN\r\n" + validaConfigurazione(), "Configurazione non valida", null );
 		}
 
 		/// <summary>
@@ -444,10 +472,52 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 			if( nuovo == "stop" )
 				fileSystemWatcher.EnableRaisingEvents = false;
-			if( nuovo == "start" )
+			if( nuovo == "start" ) {
 				fileSystemWatcher.EnableRaisingEvents = true;
+			}
 			OnPropertyChanged( "isRunning" );
 		}
+
+		/// <summary>
+		/// Se non ci sono errori ritorno null
+		/// Altrimenti ritorno stringa con errore.
+		/// </summary>
+		/// <param name="avvisa"></param>
+		/// <returns></returns>
+		private bool possoCambiareStato( string newStato, bool avvisa = false ) {
+
+			if( newStato != "start" )
+				return true;
+
+			string msgError = null;
+			using( new UnitOfWorkScope() ) {
+				msgError = validaConfigurazione();
+			}
+
+			if( avvisa && msgError != null )
+				dialogProvider.ShowError( cartellaOnRide, msgError, null );
+
+			return (msgError == null);
+		}
+
+		private string validaConfigurazione() {
+
+			String msgError = null;
+
+			if( Directory.Exists( cartellaOnRide ) == false )
+				msgError = "Cartella Onrdide inesistente";
+
+			if( String.IsNullOrWhiteSpace( userConfigOnRide.idFotografo ) )
+				msgError = "Fotografo OnRide non impostato";
+			else {
+				Fotografo f = fotografiReporitorySrv.getById( userConfigOnRide.idFotografo );
+				if( f == null )
+					msgError = "Fotografo OnRide non valido";
+			}
+
+			return msgError;
+		}
+
 
 		#endregion Metodi
 
@@ -636,7 +706,9 @@ namespace Digiphoto.Lumen.OnRide.UI {
 		public ICommand cambiareStatoCommand {
 			get {
 				if( _cambiareStatoCommand == null ) {
-					_cambiareStatoCommand = new RelayCommand( stato => cambiareStato( (string)stato ) );
+					_cambiareStatoCommand = new RelayCommand( 
+						newStato => cambiareStato( (string)newStato ),
+						newStato => possoCambiareStato( (string)newStato ) );
 				}
 				return _cambiareStatoCommand;
 			}
