@@ -91,6 +91,11 @@
 						   Source="/Digiphoto.Lumen.UI;component/Resources/sconto-24x24.png"
 						   Visibility="{Binding isCarrelloScontato, Converter={StaticResource boolVisibilityConverter}}" />
 
+					<CheckBox Content="Promo" ToolTip="Consenti di applicare le promozioni discrezionali" 
+							  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="372,84,0,0"
+							  FontSize="16" IsChecked="{Binding applicarePromoDiscrez,Mode=TwoWay}"
+							  />
+
 				</Grid>
 			</GroupBox>
 

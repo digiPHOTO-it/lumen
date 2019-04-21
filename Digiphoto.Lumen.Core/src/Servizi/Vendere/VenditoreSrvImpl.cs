@@ -407,7 +407,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				if( vendere && _promozioniAttive.Length > 0 ) {
 					// Applico sul carrello vero solo se sto vendendo per davvero. se salvo e basta, allora non applico le offerte
 					bool flgDiscrez = this.applicarePromoDiscrez;
-					flgDiscrez = true;	// Ripensamento: le promo vengono sempre calcolate tutte obbligatoriamente.
 					ApplicaPromozioni( gestoreCarrello.carrello, flgDiscrez );
 				}
 
@@ -1388,7 +1387,6 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		public Carrello CalcolaPromozioni() {
 
 			bool flgDiscrez = this.applicarePromoDiscrez;
-			flgDiscrez = true;  // Ripensamento: le promo vengono sempre calcolate tutte obbligatoriamente.
 			return CalcolaPromozioni( flgDiscrez );
 		}
 
