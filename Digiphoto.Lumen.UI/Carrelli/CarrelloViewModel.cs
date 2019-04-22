@@ -388,6 +388,7 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 			set {
 				if( venditoreSrv.applicarePromoDiscrez != value ) {
 					venditoreSrv.applicarePromoDiscrez = value;
+					OnPropertyChanged( "applicarePromoDiscrez" );
 					calcolaTotali();
 				}
 			}
@@ -1317,6 +1318,7 @@ namespace Digiphoto.Lumen.UI.Carrelli {
 
 			copiaFotoRigaRadio = true;
 			spostaFotoRigaSingolaRadio = true;
+			applicarePromoDiscrez = false;
 		}
 
 		private void svuotaCarrello() {
