@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Digiphoto.Lumen.SelfService.Mobile.UI.Converters {
+namespace Digiphoto.Lumen.SelfService.MobileUI.Converters {
 
 	public class CompareConverter : IValueConverter {
 

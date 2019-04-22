@@ -240,7 +240,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.Servizi
             }
 		}
 
-		internal IList getListaFotografieDelFotografo(string id, string strFaseDelGiorno, int skip, int _PAGE_SIZE)
+		internal IList getListaFotografieDelFotografo(string id, DateTime giornataFiltro, string strFaseDelGiorno, int skip, int _PAGE_SIZE)
 		{
 			IList result = new ArrayList();
 			Open();
@@ -248,6 +248,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.Servizi
 			RicercaFotoParam param = new RicercaFotoParam {
 				fotografoId = id,
 				faseDelGiorno = strFaseDelGiorno,
+				giorno = giornataFiltro,
 				skip = skip,
 				take = _PAGE_SIZE
 			};

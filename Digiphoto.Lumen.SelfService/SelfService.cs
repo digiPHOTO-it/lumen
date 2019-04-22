@@ -320,8 +320,10 @@ namespace Digiphoto.Lumen.SelfService {
 				param.evitareJoinEvento = true;
 				param.paginazione = new Paginazione { skip = ricercaFotoParam.skip, take = ricercaFotoParam.take };
 				param.idratareImmagini = false;
-				DateTime giornata = StartupUtil.calcolaGiornataLavorativa();
-				param.ordinamento = Ordinamento.Asc;
+
+				// Se viene indicata una giornata nei parametri, prendo quella.
+				// Altrimenti imposto fisso la giornata corrente
+				DateTime giornata = ricercaFotoParam.giorno > DateTime.MinValue ? ricercaFotoParam.giorno : StartupUtil.calcolaGiornataLavorativa();
 				param.giornataIniz = giornata;
 				param.giornataFine = giornata;
 
@@ -331,6 +333,8 @@ namespace Digiphoto.Lumen.SelfService {
 					if( Enum.TryParse<FaseDelGiorno>( ricercaFotoParam.faseDelGiorno, out faseDelGiorno ) )
 						param.setFaseGiorno( faseDelGiorno, true );
 				}
+
+				param.ordinamento = Ordinamento.Asc;
 
 				var fotografie = ricercaSrv.cerca( param );
 				foreach( var foto in fotografie ) {

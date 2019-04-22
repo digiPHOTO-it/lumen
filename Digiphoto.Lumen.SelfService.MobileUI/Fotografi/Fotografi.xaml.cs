@@ -48,8 +48,19 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 			set;
 		}
 
+		public DateTime[] giornate {
+			get;
+			set;
+		}
 
-        public Fotografi(SelfMainWindow main)
+		public DateTime giornataFiltro {
+
+			get;
+			set;
+		}
+
+
+		public Fotografi(SelfMainWindow main)
         {
             InitializeComponent();
 
@@ -73,6 +84,12 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             }
 
             FotografiSalvatiCv = CollectionViewSource.GetDefaultView(listaFotografi);
+
+
+			// carico la lista delle date
+			giornate = new DateTime[7];
+			for( int gg = 0; gg < 7; gg++ )
+				giornate[gg] = DateTime.Today.AddDays( -1 * gg );
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -106,7 +123,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
                 if (item != null)
                 {
                     FotografoDto c = (FotografoDto)item;
-                    main.ContentArea.Content = new SlideShowNxM( main, c, strFaseDelGiorno );
+                    main.ContentArea.Content = new SlideShowNxM( main, c, giornataFiltro, strFaseDelGiorno );
                     MoveTimeCounter.Instance.updateLastTime();
                 }
             }

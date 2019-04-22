@@ -318,6 +318,9 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference {
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string fotografoIdField;
         
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.DateTime giornoField;
+        
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string faseDelGiorno {
             get {
@@ -340,6 +343,19 @@ namespace Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference {
                 if ((object.ReferenceEquals(this.fotografoIdField, value) != true)) {
                     this.fotografoIdField = value;
                     this.RaisePropertyChanged("fotografoId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.DateTime giorno {
+            get {
+                return this.giornoField;
+            }
+            set {
+                if ((this.giornoField.Equals(value) != true)) {
+                    this.giornoField = value;
+                    this.RaisePropertyChanged("giorno");
                 }
             }
         }

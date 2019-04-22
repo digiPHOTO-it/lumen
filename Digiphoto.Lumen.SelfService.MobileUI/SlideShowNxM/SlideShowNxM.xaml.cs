@@ -27,7 +27,9 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
         private FotografoDto fotografo;
 		private string strFaseDelGiorno;
 
-        private bool isControlliUtenteAttivi = false;
+		private DateTime giornataFiltro;
+
+		private bool isControlliUtenteAttivi = false;
 
         private bool isLoadingRisultante = false;
 
@@ -67,7 +69,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             }
         }
 
-        public SlideShowNxM(SelfMainWindow main, FotografoDto fotografo, String faseDelGiorno )
+        public SlideShowNxM(SelfMainWindow main, FotografoDto fotografo, DateTime giornataFiltro, String faseDelGiorno )
         {
             InitializeComponent();
 
@@ -75,6 +77,7 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
             this.main = main;
             this.fotografo = fotografo;
 			this.strFaseDelGiorno = faseDelGiorno;
+			this.giornataFiltro = giornataFiltro;
 
             SelfMainWindow.isShowLogo = false;
             SelfMainWindow.isShowSlideShow = true;
@@ -168,11 +171,11 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
         private void ShowCurrentPageIndex()
         {
 
-			IList fotografie = SSClientSingleton.Instance.getListaFotografieDelFotografo(fotografo.id, strFaseDelGiorno, currentPageIndex * _PAGE_SIZE, _PAGE_SIZE);
+			IList fotografie = SSClientSingleton.Instance.getListaFotografieDelFotografo(fotografo.id, giornataFiltro, strFaseDelGiorno, currentPageIndex * _PAGE_SIZE, _PAGE_SIZE);
             if (fotografie.Count==0)
             {
                 currentPageIndex = 0;
-                fotografie = SSClientSingleton.Instance.getListaFotografieDelFotografo(fotografo.id, strFaseDelGiorno, currentPageIndex * _PAGE_SIZE, _PAGE_SIZE);
+                fotografie = SSClientSingleton.Instance.getListaFotografieDelFotografo(fotografo.id, giornataFiltro, strFaseDelGiorno, currentPageIndex * _PAGE_SIZE, _PAGE_SIZE);
 			}
             fotografieCW = CollectionViewSource.GetDefaultView(fotografie);
 		}

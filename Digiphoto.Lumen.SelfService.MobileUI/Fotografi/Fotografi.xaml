@@ -19,9 +19,59 @@
 			<Button Name="HomeButton" TouchDown="Home_Click" Click="Home_Click" ToolTip="Home" VerticalAlignment="Center" Style="{StaticResource styleHome}" IsTabStop="False"/>
 		</Border>
 
-		
-		
-		<Grid DockPanel.Dock="Bottom" Margin="60,0,60,80" >
+		<Grid DockPanel.Dock="Top" Margin="60,0,60,80">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="48"/>
+				<ColumnDefinition />
+				<ColumnDefinition />
+				<ColumnDefinition />
+				<ColumnDefinition />
+				<ColumnDefinition />
+				<ColumnDefinition />
+				<ColumnDefinition />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition />
+				<RowDefinition />
+				<RowDefinition />
+			</Grid.RowDefinitions>
+
+			<!-- italiano -->
+			<Image Grid.Row="0" Grid.Column="0" Source="{StaticResource italyFlag}" />
+			<Label Grid.Row="0" Grid.Column="1" Style="{StaticResource ResourceKey=fasegiornoLabelStyle}" Content="Giorno" />
+			<TextBlock Grid.Row="0" Grid.Column="2" Style="{StaticResource ResourceKey=giornoTextBlockStyle}" Text="{Binding giornate[0], StringFormat='{}{0:d MMM ddd}', ConverterCulture=it-IT}" />
+			<TextBlock Grid.Row="0" Grid.Column="3" Style="{StaticResource ResourceKey=giornoTextBlockStyle}" Text="{Binding giornate[1], StringFormat='{}{0:d MMM ddd}', ConverterCulture=it-IT}" />
+			<TextBlock Grid.Row="0" Grid.Column="4" Style="{StaticResource ResourceKey=giornoTextBlockStyle}" Text="{Binding giornate[2], StringFormat='{}{0:d MMM ddd}', ConverterCulture=it-IT}" />
+			<TextBlock Grid.Row="0" Grid.Column="5" Style="{StaticResource ResourceKey=giornoTextBlockStyle}" Text="{Binding giornate[3], StringFormat='{}{0:d MMM ddd}', ConverterCulture=it-IT}" />
+			<TextBlock Grid.Row="0" Grid.Column="6" Style="{StaticResource ResourceKey=giornoTextBlockStyle}" Text="{Binding giornate[4], StringFormat='{}{0:d MMM ddd}', ConverterCulture=it-IT}" />
+			<TextBlock Grid.Row="0" Grid.Column="7" Style="{StaticResource ResourceKey=giornoTextBlockStyle}" Text="{Binding giornate[5], StringFormat='{}{0:d MMM ddd}', ConverterCulture=it-IT}" />
+			<TextBlock Grid.Row="0" Grid.Column="8" Style="{StaticResource ResourceKey=giornoTextBlockStyle}" Text="{Binding giornate[6], StringFormat='{}{0:d MMM ddd}', ConverterCulture=it-IT}" />
+
+
+			<!-- inglese -->
+			<Image Grid.Row="1" Grid.Column="0" Source="{StaticResource englandFlag}"  />
+			<Label Grid.Row="1" Grid.Column="1" Style="{StaticResource ResourceKey=fasegiornoLabelStyle}" Content="Day" />
+			<TextBlock Grid.Row="1" Grid.Column="2" Style="{StaticResource ResourceKey=giornoTextBlockStyle}" Text="{Binding giornate[0], StringFormat='{}{0:d MMM ddd}', ConverterCulture=en-GB}" />
+			<TextBlock Grid.Row="1" Grid.Column="3" Style="{StaticResource ResourceKey=giornoTextBlockStyle}" Text="{Binding giornate[1], StringFormat='{}{0:d MMM ddd}', ConverterCulture=en-GB}" />
+			<TextBlock Grid.Row="1" Grid.Column="4" Style="{StaticResource ResourceKey=giornoTextBlockStyle}" Text="{Binding giornate[2], StringFormat='{}{0:d MMM ddd}', ConverterCulture=en-GB}" />
+			<TextBlock Grid.Row="1" Grid.Column="5" Style="{StaticResource ResourceKey=giornoTextBlockStyle}" Text="{Binding giornate[3], StringFormat='{}{0:d MMM ddd}', ConverterCulture=en-GB}" />
+			<TextBlock Grid.Row="1" Grid.Column="6" Style="{StaticResource ResourceKey=giornoTextBlockStyle}" Text="{Binding giornate[4], StringFormat='{}{0:d MMM ddd}', ConverterCulture=en-GB}" />
+			<TextBlock Grid.Row="1" Grid.Column="7" Style="{StaticResource ResourceKey=giornoTextBlockStyle}" Text="{Binding giornate[5], StringFormat='{}{0:d MMM ddd}', ConverterCulture=en-GB}" />
+			<TextBlock Grid.Row="1" Grid.Column="8" Style="{StaticResource ResourceKey=giornoTextBlockStyle}" Text="{Binding giornate[6], StringFormat='{}{0:d MMM ddd}', ConverterCulture=en-GB}" />
+
+			<RadioButton Grid.Row="2" Grid.Column="2" GroupName="Giornata" Style="{StaticResource ResourceKey=radioStyle}" IsChecked="{Binding giornataFiltro, Converter={StaticResource giornataFiltroConverter}, ConverterParameter=0}" />
+			<RadioButton Grid.Row="2" Grid.Column="3" GroupName="Giornata" Style="{StaticResource ResourceKey=radioStyle}" IsChecked="{Binding giornataFiltro, Converter={StaticResource giornataFiltroConverter}, ConverterParameter=1}" />
+			<RadioButton Grid.Row="2" Grid.Column="4" GroupName="Giornata" Style="{StaticResource ResourceKey=radioStyle}" IsChecked="{Binding giornataFiltro, Converter={StaticResource giornataFiltroConverter}, ConverterParameter=2}" />
+			<RadioButton Grid.Row="2" Grid.Column="5" GroupName="Giornata" Style="{StaticResource ResourceKey=radioStyle}" IsChecked="{Binding giornataFiltro, Converter={StaticResource giornataFiltroConverter}, ConverterParameter=3}" />
+			<RadioButton Grid.Row="2" Grid.Column="6" GroupName="Giornata" Style="{StaticResource ResourceKey=radioStyle}" IsChecked="{Binding giornataFiltro, Converter={StaticResource giornataFiltroConverter}, ConverterParameter=4}" />
+			<RadioButton Grid.Row="2" Grid.Column="7" GroupName="Giornata" Style="{StaticResource ResourceKey=radioStyle}" IsChecked="{Binding giornataFiltro, Converter={StaticResource giornataFiltroConverter}, ConverterParameter=5}" />
+			<RadioButton Grid.Row="2" Grid.Column="8" GroupName="Giornata" Style="{StaticResource ResourceKey=radioStyle}" IsChecked="{Binding giornataFiltro, Converter={StaticResource giornataFiltroConverter}, ConverterParameter=6}" />
+
+		</Grid>
+
+
+		<Grid DockPanel.Dock="Top" Margin="60,0,60,80">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="48"/>
 				<ColumnDefinition />
@@ -39,7 +89,7 @@
 			<!-- italiano -->
 			<Image Grid.Row="0" Grid.Column="0" Source="{StaticResource italyFlag}" />
 			<Label Grid.Row="0" Grid.Column="1" Style="{StaticResource ResourceKey=fasegiornoLabelStyle}" Content="Fase del giorno" />
-			<Label Grid.Row="0" Grid.Column="2" Style="{StaticResource ResourceKey=fasegiornoLabelStyle}" Content="Tutto il gioro" />
+			<Label Grid.Row="0" Grid.Column="2" Style="{StaticResource ResourceKey=fasegiornoLabelStyle}" Content="Tutto il giorno" />
 			<Label Grid.Row="0" Grid.Column="3" Style="{StaticResource ResourceKey=fasegiornoLabelStyle}" Content="Mattino" />
 			<Label Grid.Row="0" Grid.Column="4" Style="{StaticResource ResourceKey=fasegiornoLabelStyle}" Content="Pomeriggio" />
 			<Label Grid.Row="0" Grid.Column="5" Style="{StaticResource ResourceKey=fasegiornoLabelStyle}" Content="Sera" />
@@ -52,12 +102,13 @@
 			<Label Grid.Row="1" Grid.Column="4" Style="{StaticResource ResourceKey=fasegiornoLabelStyle}" Content="Afternoon" />
 			<Label Grid.Row="1" Grid.Column="5" Style="{StaticResource ResourceKey=fasegiornoLabelStyle}" Content="Evening" />
 
-			<RadioButton Grid.Row="2" Grid.Column="2" Style="{StaticResource ResourceKey=radioStyle}" IsChecked="{Binding strFaseDelGiorno, Converter={StaticResource compareConverter}, ConverterParameter=TuttoIlGiorno}" />
-			<RadioButton Grid.Row="2" Grid.Column="3" Style="{StaticResource ResourceKey=radioStyle}" IsChecked="{Binding strFaseDelGiorno, Converter={StaticResource compareConverter}, ConverterParameter=Mattino}" />
-			<RadioButton Grid.Row="2" Grid.Column="4" Style="{StaticResource ResourceKey=radioStyle}" IsChecked="{Binding strFaseDelGiorno, Converter={StaticResource compareConverter}, ConverterParameter=Pomeriggio}" />
-			<RadioButton Grid.Row="2" Grid.Column="5" Style="{StaticResource ResourceKey=radioStyle}" IsChecked="{Binding strFaseDelGiorno, Converter={StaticResource compareConverter}, ConverterParameter=Sera}" />
+			<RadioButton Grid.Row="2" Grid.Column="2" GroupName="FaseGiorno" Style="{StaticResource ResourceKey=radioStyle}" IsChecked="{Binding strFaseDelGiorno, Converter={StaticResource compareConverter}, ConverterParameter=TuttoIlGiorno}" />
+			<RadioButton Grid.Row="2" Grid.Column="3" GroupName="FaseGiorno" Style="{StaticResource ResourceKey=radioStyle}" IsChecked="{Binding strFaseDelGiorno, Converter={StaticResource compareConverter}, ConverterParameter=Mattino}" />
+			<RadioButton Grid.Row="2" Grid.Column="4" GroupName="FaseGiorno" Style="{StaticResource ResourceKey=radioStyle}" IsChecked="{Binding strFaseDelGiorno, Converter={StaticResource compareConverter}, ConverterParameter=Pomeriggio}" />
+			<RadioButton Grid.Row="2" Grid.Column="5" GroupName="FaseGiorno" Style="{StaticResource ResourceKey=radioStyle}" IsChecked="{Binding strFaseDelGiorno, Converter={StaticResource compareConverter}, ConverterParameter=Sera}" />
 
 		</Grid>
+
 
 		<Grid Name="PlaybackPanel" Grid.Row="0">
             <Grid.ColumnDefinitions>
