@@ -15,6 +15,7 @@
       <xsd:import namespace="http://tempuri.org/" />
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/Digiphoto.Lumen.SelfService.Carrelli" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/Digiphoto.Lumen.SelfService" />
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
     </xsd:schema>
   </wsdl:types>
@@ -236,9 +237,9 @@
   </wsdl:binding>
   <wsdl:service name="SelfService">
     <wsdl:port name="myNetTcpEndPoint" binding="tns:myNetTcpEndPoint">
-      <soap12:address location="net.tcp://localhost:8523/Digiphoto.Lumen.SelfService/SelfService/" />
+      <soap12:address location="net.tcp://localhost:8523/Digiphoto.Lumen.SelfService/SelfService" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://localhost:8523/Digiphoto.Lumen.SelfService/SelfService/</wsa10:Address>
+        <wsa10:Address>net.tcp://localhost:8523/Digiphoto.Lumen.SelfService/SelfService</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
           <Dns>localhost</Dns>
         </Identity>

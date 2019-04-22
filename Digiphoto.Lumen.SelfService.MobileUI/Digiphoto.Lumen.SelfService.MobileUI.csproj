@@ -65,6 +65,7 @@
     </Compile>
     <Compile Include="Control\UserControlBase.cs" />
     <Compile Include="Converters\CompareConverter.cs" />
+    <Compile Include="Converters\GiornataFiltroConverter.cs" />
     <Compile Include="Converters\ImageSourceConverter.cs" />
     <Compile Include="Converters\MiPiaceBollConverter.cs" />
     <Compile Include="Converters\PercentualeConverter.cs" />

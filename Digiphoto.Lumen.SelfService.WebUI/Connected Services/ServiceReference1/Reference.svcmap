@@ -26,6 +26,7 @@
     <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="3eabb1dd-dec3-4ba7-bf76-941fb6e57823" SourceId="1" SourceUrl="net.tcp://localhost:8523/Digiphoto.Lumen.SelfService/SelfService/mex" />
     <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="1fe8e6f7-1e61-4882-b9f8-182ba49b780a" SourceId="1" SourceUrl="net.tcp://localhost:8523/Digiphoto.Lumen.SelfService/SelfService/mex" />
     <MetadataFile FileName="Digiphoto.Lumen.SelfService.Carrelli.xsd" MetadataType="Schema" ID="176494b2-fa96-4444-91ea-c142f851a289" SourceId="1" SourceUrl="net.tcp://localhost:8523/Digiphoto.Lumen.SelfService/SelfService/mex" />
+    <MetadataFile FileName="Digiphoto.Lumen.SelfService.xsd" MetadataType="Schema" ID="fe9a05cb-d94b-4632-a5fc-e8504b6f55b6" SourceId="1" SourceUrl="net.tcp://localhost:8523/Digiphoto.Lumen.SelfService/SelfService/mex" />
     <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="29c89b8a-4e14-4943-bfac-91b7734d2647" SourceId="1" SourceUrl="net.tcp://localhost:8523/Digiphoto.Lumen.SelfService/SelfService/mex" />
   </Metadata>
   <Extensions>

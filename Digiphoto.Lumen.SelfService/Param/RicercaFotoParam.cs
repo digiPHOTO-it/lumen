@@ -11,6 +11,11 @@ namespace Digiphoto.Lumen.SelfService {
 		public string fotografoId {
 			get; set;
 		}
+
+		public DateTime giorno {
+			get;
+			set;
+		}
 			
 		public string faseDelGiorno {
 			get; set;
