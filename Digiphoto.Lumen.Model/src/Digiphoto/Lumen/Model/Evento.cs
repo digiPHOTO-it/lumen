@@ -19,6 +19,7 @@ namespace Digiphoto.Lumen.Model {
 
 		#region Attributi
 
+		[Key]
 		public System.Guid id { get; set; }
 
 		[Required]

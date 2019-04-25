@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS `lumen`.`Ospiti` (
+  `id` INT(11) NOT NULL,
+  `nome` VARCHAR(50) NULL DEFAULT NULL,
+  `impronta` BLOB NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+;

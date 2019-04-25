@@ -149,6 +149,7 @@
     <Compile Include="src\Digiphoto\Lumen\Model\ConsumoCartaGiornaliero.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\Dto\ChiusuraCassaGiornoDto.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\Dto\ChiusureCassaDto.cs" />
+    <Compile Include="src\Digiphoto\Lumen\Model\Ospite.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\FaseDelGiornoUtil.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\ProdottoFile.cs" />
     <Compile Include="src\Digiphoto\Lumen\Model\FormatoCarta.cs" />

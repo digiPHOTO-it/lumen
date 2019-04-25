@@ -49,6 +49,7 @@ namespace Digiphoto.Lumen.Model {
 		public virtual DbSet<FormatoCarta> FormatiCarta { get; set; }
 		public virtual DbSet<ProdottoFile> ProdottiFile { get; set; }
 		public virtual DbSet<Prodotto> Prodotti { get; set; }
+		public virtual DbSet<Ospite> Ospiti { get; set;	}
 
 	}
 }
