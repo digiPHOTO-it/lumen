@@ -5,9 +5,6 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{32CE8606-F9DB-44D9-85C0-DD3BD21DBB9D}"
 	ProjectSection(SolutionItems) = preProject
-		Attivita_da_mettere_a_lavori.txt = Attivita_da_mettere_a_lavori.txt
-		doc\CHANGES.txt = doc\CHANGES.txt
-		Dubbi-da-analizzare.txt = Dubbi-da-analizzare.txt
 		Local.testsettings = Local.testsettings
 		Lumen.vsmdi = Lumen.vsmdi
 		doc\Lumen_analisi_funzionale.odt = doc\Lumen_analisi_funzionale.odt
@@ -57,6 +54,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.SelfService
 	ProjectSection(ProjectDependencies) = postProject
 		{041DB5F1-C9BB-4152-BD4F-6FC23BFB4B38} = {041DB5F1-C9BB-4152-BD4F-6FC23BFB4B38}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.FingerprintService", "Digiphoto.Lumen.FingerprintService\Digiphoto.Lumen.FingerprintService.csproj", "{5C3C41DF-E705-47F5-8BDE-D9ABDA8A7AFF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScannerTest", "ScannerTest\ScannerTest.csproj", "{8E79992D-61E0-4FF8-B09C-C30DC44D6825}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -120,6 +121,14 @@ Global
 		{F0D4D9E2-70AD-4E86-AEDD-E6D1810BB479}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0D4D9E2-70AD-4E86-AEDD-E6D1810BB479}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0D4D9E2-70AD-4E86-AEDD-E6D1810BB479}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C3C41DF-E705-47F5-8BDE-D9ABDA8A7AFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C3C41DF-E705-47F5-8BDE-D9ABDA8A7AFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C3C41DF-E705-47F5-8BDE-D9ABDA8A7AFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C3C41DF-E705-47F5-8BDE-D9ABDA8A7AFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E79992D-61E0-4FF8-B09C-C30DC44D6825}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E79992D-61E0-4FF8-B09C-C30DC44D6825}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E79992D-61E0-4FF8-B09C-C30DC44D6825}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E79992D-61E0-4FF8-B09C-C30DC44D6825}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
