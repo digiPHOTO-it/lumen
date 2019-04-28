@@ -272,10 +272,12 @@ namespace Digiphoto.Lumen.Applicazione {
 		{
 			_giornale.Info( "L'applicazione sta per essere fermata. Ora spengo tutto." );
 
-			foreach( string chiave in _serviziAvviati.Keys )
-				_serviziAvviati [chiave].Dispose();
+			if( _serviziAvviati != null ) {
+				foreach( string chiave in _serviziAvviati.Keys )
+					_serviziAvviati [chiave].Dispose();
 
-			_serviziAvviati.Clear();
+				_serviziAvviati.Clear();
+			}
 
 			if( registryLicense != null )
 				registryLicense.Dispose();

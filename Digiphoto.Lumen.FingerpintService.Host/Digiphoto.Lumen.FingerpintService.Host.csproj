@@ -1,18 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2C41FA59-6C97-48A2-A5EF-BBE711B92456}</ProjectGuid>
+    <ProjectGuid>{BEF9FBF4-9244-4CAC-8F9D-D9F374944334}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Digiphoto.Lumen.SelfService.HostConsole</RootNamespace>
-    <AssemblyName>Digiphoto.Lumen.SelfService.HostConsole</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <RootNamespace>Digiphoto.Lumen.FingerpintService.Host</RootNamespace>
+    <AssemblyName>Digiphoto.Lumen.FingerpintService.Host</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,14 +31,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup />
-  <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>Resources\SelfService-HostConsole.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -59,6 +49,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -67,10 +58,13 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="libzkfpcsharp, Version=1.0.0.1, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Digiphoto.Lumen.FingerprintService\libs\x86\libzkfpcsharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -82,71 +76,24 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service References\SelfServiceReference\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="app.manifest">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="Properties\DataSources\Digiphoto.Lumen.SelfService.Carrelli.CarrelloDto.datasource" />
-    <None Include="Properties\DataSources\Digiphoto.Lumen.SelfService.Carrelli.FotografiaDto.datasource" />
-    <None Include="Service References\SelfServiceReference\Digiphoto.Lumen.SelfService.Carrelli1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\SelfServiceReference\service1.wsdl" />
-    <None Include="Service References\SelfServiceReference\service2.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\SelfServiceReference\service21.xsd">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadataStorage Include="Service References\SelfServiceReference\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\SelfServiceReference\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\SelfServiceReference\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\SelfServiceReference\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Digiphoto.Lumen.Core\Digiphoto.Lumen.Core.csproj">
       <Project>{34477397-b3b8-4dd1-8418-d7e9eed4d006}</Project>
       <Name>Digiphoto.Lumen.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Digiphoto.Lumen.Imaging.Wic\Digiphoto.Lumen.Imaging.Wic.csproj">
-      <Project>{3ec29a25-fd9d-4593-ba20-60a9f7917e50}</Project>
-      <Name>Digiphoto.Lumen.Imaging.Wic</Name>
+    <ProjectReference Include="..\Digiphoto.Lumen.FingerprintService\Digiphoto.Lumen.FingerprintService.csproj">
+      <Project>{5c3c41df-e705-47f5-8bde-d9abda8a7aff}</Project>
+      <Name>Digiphoto.Lumen.FingerprintService</Name>
     </ProjectReference>
     <ProjectReference Include="..\Digiphoto.Lumen.Model\Digiphoto.Lumen.Model.csproj">
       <Project>{83d8301e-7999-4179-962c-1bfa507f5396}</Project>
       <Name>Digiphoto.Lumen.Model</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Digiphoto.Lumen.SelfService\Digiphoto.Lumen.SelfService.csproj">
-      <Project>{041db5f1-c9bb-4152-bd4f-6fc23bfb4b38}</Project>
-      <Name>Digiphoto.Lumen.SelfService</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\SelfService-HostConsole.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -163,11 +110,4 @@ xcopy "$(SolutionDir)packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll"  "$(Tar
 xcopy "$(SolutionDir)packages\MySql.Data.Entity.6.9.9\lib\net45\MySql.Data.Entity.EF6.dll"  "$(TargetDir)" /d
 </PostBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
