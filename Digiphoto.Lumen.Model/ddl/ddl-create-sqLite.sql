@@ -242,6 +242,13 @@ CREATE TABLE [AzioniAutomatiche] (
 	PRIMARY KEY ([id])	
 );
 
+CREATE TABLE [Ospiti] (
+  `id` integer NOT NULL,
+  `nome` VARCHAR(50) NULL,
+  `impronta` BLOB NOT NULL,
+  PRIMARY KEY (`id`))
+;
+
 -- --------------------------------------------------
 -- Script has ended
 -- --------------------------------------------------

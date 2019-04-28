@@ -57,7 +57,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.SelfService
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.FingerprintService", "Digiphoto.Lumen.FingerprintService\Digiphoto.Lumen.FingerprintService.csproj", "{5C3C41DF-E705-47F5-8BDE-D9ABDA8A7AFF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScannerTest", "ScannerTest\ScannerTest.csproj", "{8E79992D-61E0-4FF8-B09C-C30DC44D6825}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.FingerpintService.Host", "Digiphoto.Lumen.FingerpintService.Host\Digiphoto.Lumen.FingerpintService.Host.csproj", "{BEF9FBF4-9244-4CAC-8F9D-D9F374944334}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -125,10 +125,10 @@ Global
 		{5C3C41DF-E705-47F5-8BDE-D9ABDA8A7AFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C3C41DF-E705-47F5-8BDE-D9ABDA8A7AFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C3C41DF-E705-47F5-8BDE-D9ABDA8A7AFF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8E79992D-61E0-4FF8-B09C-C30DC44D6825}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8E79992D-61E0-4FF8-B09C-C30DC44D6825}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8E79992D-61E0-4FF8-B09C-C30DC44D6825}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8E79992D-61E0-4FF8-B09C-C30DC44D6825}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEF9FBF4-9244-4CAC-8F9D-D9F374944334}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEF9FBF4-9244-4CAC-8F9D-D9F374944334}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEF9FBF4-9244-4CAC-8F9D-D9F374944334}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEF9FBF4-9244-4CAC-8F9D-D9F374944334}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
