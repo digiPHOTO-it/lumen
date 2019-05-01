@@ -6,3 +6,7 @@ CREATE TABLE IF NOT EXISTS `lumen`.`Ospiti` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 ;
+
+alter table InfosFisse 
+add scannerImpronte varchar(20) null
+;

@@ -128,6 +128,9 @@
       <HintPath>..\packages\ExifLib.1.7.0.0\lib\net45\ExifLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="libzkfpcsharp">
+      <HintPath>lib\x64\libzkfpcsharp.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
@@ -244,6 +247,11 @@
     <Compile Include="src\Servizi\EntityRepository\AzioniAutoRepositorySrvImpl.cs" />
     <Compile Include="src\Servizi\EntityRepository\FotografieRepositorySrvImpl.cs" />
     <Compile Include="src\Servizi\EntityRepository\ScarichiCardsRepositorySrvImpl.cs" />
+    <Compile Include="src\Servizi\Impronte\IImpronteSrv.cs" />
+    <Compile Include="src\Servizi\Impronte\ZK\BitmapFormat.cs" />
+    <Compile Include="src\Servizi\Impronte\ZK\ImpronteZKTecoSrvImpl.cs" />
+    <Compile Include="src\Servizi\Impronte\ScansioneEvent.cs" />
+    <Compile Include="src\Servizi\Impronte\ZK\ZKErrors.cs" />
     <Compile Include="src\Servizi\Io\IGestoreImmagineSrv.cs">
       <SubType>Code</SubType>
     </Compile>

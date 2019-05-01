@@ -103,6 +103,7 @@
     <Compile Include="src\Servizi\EliminaFotoVecchie\EliminaFotoVecchieSrvImplTest.cs" />
     <Compile Include="src\Servizi\Explorer\FotoExplorerSrvImplTest.cs" />
     <Compile Include="src\Servizi\GestoreImmagine\GestoreImmagineSrvImplTest.cs" />
+    <Compile Include="src\Servizi\Impronte\ImpronteSrvImplTest.cs" />
     <Compile Include="src\Servizi\Masterizzare\BurnerSrvImplTest.cs" />
     <Compile Include="src\Servizi\Masterizzare\MasterizzaSrvImplTest.cs" />
     <Compile Include="src\Servizi\Numeratore\NumeratoreFotogrammiTest.cs" />
