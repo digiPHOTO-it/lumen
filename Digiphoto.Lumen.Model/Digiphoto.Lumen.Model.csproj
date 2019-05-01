@@ -194,7 +194,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="ddl\ddl-indici-sqLite.sql" />
-    <Content Include="ddl\ddl-upgrade-mysql-001.sql" />
+    <Content Include="ddl\ddl-upgrade-mysql-004.sql" />
     <Content Include="ddl\ddl-upgrade-sqLite-002.sql" />
     <Content Include="IstruzioniCreazioneDatabaseDaModello.txt" />
   </ItemGroup>

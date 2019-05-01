@@ -32,6 +32,21 @@ namespace Digiphoto.Lumen.Model {
 		public short numGiorniEliminaFoto { get; set; }
 		public string varie { get; set; }
 
+
+		private string _scannerImpronte;
+		public string scannerImpronte {
+			get {
+				return _scannerImpronte;
+			}
+			set {
+				if( _scannerImpronte != value ) {
+					_scannerImpronte = value;
+					OnPropertyChanged( "scannerImpronte" );
+				}
+			}
+		}
+
+
 		public string urlPrefixSelfServiceWeb { get; set; }
 
 		#region INotifyPropertyChanged

@@ -8,6 +8,7 @@
 	<pf:UriToCachedImageConverter x:Key="uriToCachedImageConverter" />
 	<lumP:EnumBooleanConverter x:Key="enumBooleanConverter" />
 	<orc:RunningModeConverter x:Key="runningModeConverter"/>
+	<lumP:PathToImageConverter x:Key="pathToIMageConverter"/>
 
 	<Style x:Key="pulsanteStyle" TargetType="ButtonBase">
 

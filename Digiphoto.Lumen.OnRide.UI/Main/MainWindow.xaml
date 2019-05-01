@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+		xmlns:extToolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
 		xmlns:oc="clr-namespace:Digiphoto.Lumen.OnRide.UI.Config"
         mc:Ignorable="d"
         Title="OnRide manager" Height="825" Width="1100" WindowState="Maximized" >
@@ -85,11 +86,81 @@
 									 IsChecked="{Binding Path=userConfigOnRide.runningMode, Converter={StaticResource enumBooleanConverter}, ConverterParameter={x:Static oc:RunningMode.Presidiato}}" />
 						<RadioButton Content="Abbandonato" Height="30" FontSize="20" ToolTip="Non vengono abbinati i barcode"
 									 IsChecked="{Binding Path=userConfigOnRide.runningMode, Converter={StaticResource enumBooleanConverter}, ConverterParameter={x:Static oc:RunningMode.Automatico}}" />
+
+
+
 					</StackPanel>
 				</GroupBox>
 
 				<Label Content="Orario cambio&#x0a;mattino/pomeriggio" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="661,88,0,0" Height="46" Width="119" ToolTip="formato HH:MM&#x0a;Prima è mattino&#x0a;Dopo è pomeriggio" />
 				<TextBox Text="{Binding Path=userConfigOnRide.orarioSeparaMatPom}" Height="26" VerticalAlignment="Top" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Width="110" Margin="661,139,0,0" FontSize="18" />
+
+				<GroupBox BorderBrush="Blue" Margin="805,59,0,0" HorizontalAlignment="Left" Width="174" >
+					<GroupBox.Header >
+						<CheckBox Content="Usa scanner impronte" Name="chkScannerAbilitato"
+								  IsChecked="{Binding Path=userConfigOnRide.scannerImpronteGestito}"  >
+							<i:Interaction.Triggers>
+								<i:EventTrigger EventName="Checked">
+									<i:InvokeCommandAction Command="{Binding Path=refreshScannerCommand}" CommandParameter="start"/>
+								</i:EventTrigger>
+								<i:EventTrigger EventName="Unchecked">
+									<i:InvokeCommandAction Command="{Binding Path=refreshScannerCommand}" CommandParameter="stop"/>
+								</i:EventTrigger>
+							</i:Interaction.Triggers>
+						</CheckBox>
+					</GroupBox.Header>
+					<Grid IsEnabled="{Binding Path=userConfigOnRide.scannerImpronteGestito}">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition />
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition />
+							<RowDefinition />
+							<RowDefinition />
+							<RowDefinition />
+						</Grid.RowDefinitions>
+						<Label Grid.Row="0" Grid.Column="0" Content="Modello" />
+						<Label Grid.Row="0" Grid.Column="1" Content="{Binding scannerImpronteNome, Mode=OneTime}" />
+						<StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0">
+							<Label  Content="Presente" />
+							<Button ToolTip="Scanner refresh" Command="{Binding Path=refreshScannerCommand}" >
+								<Image Source="/Digiphoto.Lumen.OnRide.UI;component/Resources/refresh-16x16.png" Width="16" Height="16" />
+							</Button>
+						</StackPanel>
+						<Label Grid.Row="1" Grid.Column="1" Content="{Binding scannerImprontePresente}" >
+							<Label.Style>
+								<Style TargetType="Label">
+									<Style.Triggers>
+										<DataTrigger Binding="{Binding Path=scannerImprontePresente, Mode=OneWay}" Value="True" >
+											<Setter Property="Background" Value="LightGreen" />
+										</DataTrigger>
+										<DataTrigger Binding="{Binding Path=scannerImprontePresente, Mode=OneWay}" Value="False" >
+											<Setter Property="Background" Value="Red" />
+										</DataTrigger>
+									</Style.Triggers>
+								</Style>
+							</Label.Style>
+
+						</Label>
+						
+						<Label Grid.Row="2" Grid.Column="0" Content="Min sec." ToolTip="Minimo N° secondi discesa" />
+						<extToolkit:IntegerUpDown Grid.Row="2" Grid.Column="1" 
+												  ToolTip="N° minimo di secondi impiegati per la discesa" 
+												  Value="{Binding Path=userConfigOnRide.secDiscesaMin,Mode=TwoWay}" />
+
+						<Label Grid.Row="3" Grid.Column="0" Content="Max sec." ToolTip="Massimo N° secondi discesa" />
+						<extToolkit:IntegerUpDown Grid.Row="3" Grid.Column="1" 
+												  ToolTip="N° massimo di secondi impiegati per la discesa" 
+												  Value="{Binding Path=userConfigOnRide.secDiscesaMax,Mode=TwoWay}" />
+						
+					</Grid>
+					
+					<!-- IsEnabled="{Binding scannerImprontePresente}" -->
+				</GroupBox>
+
+
+
 			</Grid>
 
 
@@ -104,8 +175,6 @@
 			<Separator Margin="6 0 6 0"/>
 			<Button  Content="Refresh" Command="{Binding caricareItemsCommand}" Style="{StaticResource pulsanteStyle}" ToolTip="Aggiorna la lista delle foto a video"/>
 			<Separator Margin="6 0 6 0"/>
-
-
 
 		</ToolBar>
 
@@ -201,6 +270,10 @@
 				<Image Source="{Binding Path=userConfigOnRide.runningMode, ConverterParameter=icon, Converter={StaticResource runningModeConverter}}" Width="32" Height="32" />
 				<Label Content="Conta foto processate: " FontSize="18" />
 				<Label Content="{Binding Path=totFotoAcquisite}" MinWidth="50" FontSize="18" Background="LightGreen" HorizontalContentAlignment="Center" />
+				<Label Content="Conta impronte acquisite: " FontSize="18" />
+				<Label Content="{Binding Path=totImpronteAcquisite}" MinWidth="50" FontSize="18" Background="LightGreen" HorizontalContentAlignment="Center" />
+				<Image Height="36" Width="36" Source="{Binding fileNameBmpImpronta, Converter={StaticResource pathToIMageConverter}}" />
+
 			</StackPanel>
 		</Grid>
 

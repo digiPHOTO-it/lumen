@@ -141,6 +141,14 @@
                               SelectedValue="{Binding Path=infoFissa.modoNumerazFoto}" >
 					</ComboBox>
 
+					<ComboBox HorizontalAlignment="Left" VerticalAlignment="Top" Margin="559,98,0,0" Width="130"
+						  SelectedValuePath="Tag" SelectedValue="{Binding Path=infoFissa.scannerImpronte}" >
+						<ComboBoxItem Content="- nessuno scanner -" Tag="null" />
+						<ComboBoxItem Content="ZKTeco - ZK4500" Tag="ZK4500" />
+					</ComboBox>
+					<Label Content="Scanner impronte digitali" HorizontalAlignment="Left" Margin="404,98,0,0" VerticalAlignment="Top" Width="150"/>
+
+
 					<Label Content="Modalità di vendita" HorizontalAlignment="Left" Margin="25,76,0,0" Name="label9" VerticalAlignment="Top" Width="127" />
 					<ComboBox Name="comboBoxModalitaVendita"  HorizontalAlignment="Left" Margin="174,76,0,0" VerticalAlignment="Top" Width="148" ItemsSource="{Binding modoVenditaValues}" SelectedValue="{Binding Path=cfg.modoVendita}" />
 
@@ -249,7 +257,7 @@
 									  SelectedValue="{Binding Path=promoProdXProd.prodottoInnesco}" HorizontalAlignment="Left" Width="160" 
 									  Grid.Column="1" Grid.Row="2"
 									  VerticalAlignment="Top" />
-							
+
 							<ComboBox Margin="10,32,0,0"  MinWidth="120"
 									  Grid.Column="1" Grid.Row="2"
 									  ToolTip="Prodotto elargito&#x0a;Verrà regalato questo prodotto"
@@ -520,11 +528,13 @@
 
 				<Grid>
 
-					<Label Content="Cartella OnRide" Height="25" HorizontalAlignment="Left" Margin="13,12,0,0" x:Name="label22" VerticalAlignment="Top" Width="121" />
-					<TextBox Height="23" Margin="151,12,55,0" Text="{Binding cfg.cartellaOnRide}" VerticalAlignment="Top" />
+					<Label Content="Cartella OnRide" Height="25" HorizontalAlignment="Left" Margin="13,12,0,0" x:Name="label22" VerticalAlignment="Top" Width="150" />
+					<TextBox Height="23" Margin="184,12,55,0" Text="{Binding cfg.cartellaOnRide}" VerticalAlignment="Top" />
 					<Button  Command="{Binding scegliereCartellaCommand}" CommandParameter="onride" Content="..." Height="Auto" Margin="0,11,16,0" ToolTip="Sfoglia cartelle" VerticalAlignment="Top" HorizontalAlignment="Right" Width="22" />
 
+
 				</Grid>
+
 
 
 			</TabItem>

@@ -6,6 +6,7 @@ using Digiphoto.Lumen.OnRide.UI.Config;
 using Digiphoto.Lumen.OnRide.UI.Model;
 using Digiphoto.Lumen.Servizi.EntityRepository;
 using Digiphoto.Lumen.Servizi.Io;
+using Digiphoto.Lumen.Core.Servizi.Impronte;
 using Digiphoto.Lumen.Servizi.Ritoccare;
 using Digiphoto.Lumen.Servizi.Scaricatore;
 using Digiphoto.Lumen.UI;
@@ -79,6 +80,20 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			}
 		}
 
+		private int _totImpronteAcquisite;
+		public int totImpronteAcquisite {
+			get {
+				return _totImpronteAcquisite;
+			}
+			private set {
+				if( _totImpronteAcquisite != value ) {
+					_totImpronteAcquisite = value;
+					OnPropertyChanged( "totImpronteAcquisite" );
+				}
+			}
+		}
+		
+
 		public string nomeCompletoMaschera {
 			get {
 				return maschera == null ? null : Path.Combine( PathUtil.getCartellaMaschera( FiltroMask.MskSingole ), maschera.nomeFile );
@@ -113,12 +128,6 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			set;
 		}
 
-/*
-		public string idFotografoOnRide {
-			get;
-			set;
-		}
-*/
 		public ListCollectionView fotoItemsCW {
 			get;
 			private set;
@@ -153,7 +162,7 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			get;
 			set;
 		}
-		
+
 		bool possoAcquisireFoto {
 			get {
 				return fotoItemsCW.Count > 0;
@@ -163,6 +172,36 @@ namespace Digiphoto.Lumen.OnRide.UI {
 		public UserConfigOnRide userConfigOnRide {
 			get;
 			private set;
+		}
+
+		public string scannerImpronteNome {
+			set; get;
+		}
+
+		private bool _scannerImprontePresente;
+		public bool scannerImprontePresente {
+			get {
+				return _scannerImprontePresente;
+			}
+			set {
+				if( _scannerImprontePresente != value ) {
+					_scannerImprontePresente = value;
+					OnPropertyChanged( "scannerImprontePresente" );
+				}
+			}
+		}
+
+		private string _fileNameBmpImpronta;
+		public string fileNameBmpImpronta {
+			get {
+				return _fileNameBmpImpronta;
+			}
+			set {
+				if( _fileNameBmpImpronta != value ) {
+					_fileNameBmpImpronta = value;
+					OnPropertyChanged( "fileNameBmpImpronta" );
+				}
+			}
 		}
 
 		#endregion Proprietà
@@ -177,7 +216,6 @@ namespace Digiphoto.Lumen.OnRide.UI {
 				_giornale.Error( msg );
 				throw new LumenException( msg );
 			}
-
 
 			// Devo caricare le preferenze
 			string nomeFileMsk = null;
@@ -194,8 +232,6 @@ namespace Digiphoto.Lumen.OnRide.UI {
 				_giornale.Error( "Caricamento preferenze utente", ee );
 			}
 
-
-
 			using( new UnitOfWorkScope() ) {
 
 				if( userConfigOnRide.idFotografo != null ) {
@@ -210,7 +246,7 @@ namespace Digiphoto.Lumen.OnRide.UI {
 						fotografoOnRide = UnitOfWorkScope.currentDbContext.Fotografi.Single( f => f.umano == false && f.attivo == true );
 						userConfigOnRide.idFotografo = fotografoOnRide.id;
 					} else if( conta == 0 ) {
-						var msg = "Nessun fotografo attivo per modalità OnRide";
+						var msg = "Nessun fotografo attivo per modalità OnRide (automatico)";
 						_giornale.Error( msg );
 						throw new LumenException( msg );
 					} 
@@ -220,6 +256,12 @@ namespace Digiphoto.Lumen.OnRide.UI {
 				if( fotografoOnRide == null ) {
 					// se la configurazione è vuota, allora devo permettere all'utente di inserirla.	
 				}
+
+				// Se ho deciso di usare lo scanner, lo inizializzo
+				if( userConfigOnRide.scannerImpronteGestito ) {
+					refreshStatoScanner();
+				}
+
 			}
 
 			// Ascolto messaggio
@@ -239,6 +281,7 @@ namespace Digiphoto.Lumen.OnRide.UI {
 				dialogProvider.ShowError( "Completare la configurazione\r\nquindi premere il pulsante RUN\r\n" + validaConfigurazione(), "Configurazione non valida", null );
 		}
 
+
 		/// <summary>
 		/// Creo un ascoltatore che mi notifica quando viene creato un file in una determinata cartella.
 		/// </summary>
@@ -256,7 +299,6 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 			_giornale.Info( "Inizio monitoraggio cartella : " + cartellaOnRide );
 		}
-
 
 		public void CaricareMaschera( string nomeFileMsk ) {
 
@@ -280,7 +322,6 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			}
 
 		}
-
 
 		/// <summary>
 		/// Ricarico la lista degli items da disco, analizzando tutti i file contenuti nella cartella
@@ -332,7 +373,6 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			}
 
 		}
-
 
 		void AcquisireTutteLeFoto() {
 
@@ -470,11 +510,27 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 		void cambiareStato( string nuovo ) {
 
-			if( nuovo == "stop" )
+			IImpronteSrv impronteSrv = LumenApplication.Instance.getServizioAvviato<IImpronteSrv>();
+
+			if( nuovo == "stop" ) {
+
 				fileSystemWatcher.EnableRaisingEvents = false;
-			if( nuovo == "start" ) {
-				fileSystemWatcher.EnableRaisingEvents = true;
+
+				if( userConfigOnRide.scannerImpronteGestito && scannerImprontePresente )
+					impronteSrv.stop();
 			}
+
+			if( nuovo == "start" ) {
+
+				fileSystemWatcher.EnableRaisingEvents = true;
+
+				if( userConfigOnRide.scannerImpronteGestito && scannerImprontePresente ) {
+					if( impronteSrv.statoRun == Servizi.StatoRun.Stopped )
+						impronteSrv.start();
+					impronteSrv.Listen( OnImprontaAcquisita );
+				}
+			}
+
 			OnPropertyChanged( "isRunning" );
 		}
 
@@ -518,10 +574,61 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			return msgError;
 		}
 
+		void OnImprontaAcquisita( object sender, ScansioneEvent eventArgs ) {
+
+			++totImpronteAcquisite;
+			fileNameBmpImpronta = eventArgs.bmpFileName;
+			_giornale.Info( "Impronta acquisita. Valida =  " + eventArgs.isValid + eventArgs.bmpFileName );
+
+		}
+
+		void refreshStatoScanner() {
+
+			scannerImpronteNome = null;
+			scannerImprontePresente = false;
+//			scannerImpronteAbilitato = false;
+
+			String nomeScanner = UnitOfWorkScope.currentDbContext.InfosFisse.Single().scannerImpronte;
+
+			string[] modelliScannerGestiti = { "ZK4500" };
+
+			if( modelliScannerGestiti.Contains( nomeScanner ) ) {
+				scannerImpronteNome = nomeScanner;
+//				scannerImpronteAbilitato = true;
+			}
+
+			// Ora provo a dialogare con lo scanner
+			IImpronteSrv impronteSrv = LumenApplication.Instance.getServizioAvviato<IImpronteSrv>();
+
+			if( ! userConfigOnRide.scannerImpronteGestito ) {
+
+				impronteSrv.stop();
+				scannerImprontePresente = false;
+
+			} else {
+
+				try {
+
+					if( impronteSrv.statoRun == Servizi.StatoRun.Stopped )
+						impronteSrv.start();
+
+					bool connesso = impronteSrv.testScannerConnected();
+					if( connesso ) {
+						scannerImprontePresente = true;
+						_giornale.Info( "Scanner presente : " + impronteSrv.infoScanner );
+					} else
+						_giornale.Warn( "scanner impronte non presente" );
+					
+				} catch( Exception ee ) {
+					_giornale.Error( "lettura da scanner", ee );
+					scannerImprontePresente = false;
+				}
+			}
+		}
 
 		#endregion Metodi
 
-		#region Eventi
+		#region Messaggi
 
 		public void OnNext( ScaricoFotoMsg msgScaricoFotoMsg ) {
 
@@ -662,10 +769,12 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			base.OnRequestClose();
 		}
 
-#endregion Messaggi
+		#endregion Messaggi
 
-#region Comandi
 
+		#region Comandi
+
+		
 		private RelayCommand _acquisireFotoCommand;
 		public ICommand acquisireFotoCommand {
 			get {
@@ -714,7 +823,20 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			}
 		}
 
+		private RelayCommand _refreshScannerCommand;
+		public ICommand refreshScannerCommand {
+			get {
+				if( _refreshScannerCommand == null ) {
+					_refreshScannerCommand = new RelayCommand(
+						newStato => refreshStatoScanner(),
+						newStato => true,
+						false );
+				}
+				return _refreshScannerCommand;
+			}
+		}
 
-#endregion Comandi
+		
+		#endregion Comandi
 	}
 }

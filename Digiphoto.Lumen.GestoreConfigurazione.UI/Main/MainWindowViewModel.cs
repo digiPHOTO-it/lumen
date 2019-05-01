@@ -1000,7 +1000,9 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 					eseguiCambioMotore( "Digiphoto.Lumen.UI.exe" );
 
 					eseguiCambioMotore( "Digiphoto.Lumen.SelfService.HostConsole.exe" );
-					
+
+					eseguiCambioMotore( "Digiphoto.Lumen.FingerpintService.Host.exe" );
+
 					prosegui = true;
 
 				} catch( Exception ee ) {

@@ -55,9 +55,22 @@ namespace Digiphoto.Lumen.OnRide.UI.Config {
 				return _isMascheraAttiva;
 			}
 			set {
-				if( _isMascheraAttiva ) {
+				if( _isMascheraAttiva != value ) {
 					_isMascheraAttiva = value;
 					OnPropertyChanged( "isMascheraAttiva" );
+				}
+			}
+		}
+
+		private bool _scannerImpronteGestito;
+		public bool scannerImpronteGestito {
+			get {
+				return _scannerImpronteGestito;
+			}
+			set {
+				if( _scannerImpronteGestito != value ) {
+					_scannerImpronteGestito = value;
+					OnPropertyChanged( "scannerImpronteGestito" );
 				}
 			}
 		}
@@ -92,6 +105,31 @@ namespace Digiphoto.Lumen.OnRide.UI.Config {
 			}
 		}
 
+		private int _secDiscesaMin;
+		public int secDiscesaMin {
+			get {
+				return _secDiscesaMin;
+			}
+			set {
+				if( _secDiscesaMin != value ) {
+					_secDiscesaMin = value;
+					OnPropertyChanged( "secDiscesaMin" );
+				}
+			}
+		}
+
+		private int _secDiscesaMax;
+		public int secDiscesaMax {
+			get {
+				return _secDiscesaMax;
+			}
+			set {
+				if( _secDiscesaMax != value ) {
+					_secDiscesaMax = value;
+					OnPropertyChanged( "secDiscesaMax" );
+				}
+			}
+		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
 

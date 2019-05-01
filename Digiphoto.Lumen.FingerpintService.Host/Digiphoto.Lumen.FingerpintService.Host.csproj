@@ -60,7 +60,7 @@
     </Reference>
     <Reference Include="libzkfpcsharp, Version=1.0.0.1, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Digiphoto.Lumen.FingerprintService\libs\x86\libzkfpcsharp.dll</HintPath>
+      <HintPath>..\Digiphoto.Lumen.Core\lib\x64\libzkfpcsharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />

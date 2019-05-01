@@ -178,6 +178,10 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 		/** Quando ho finito di scaricar le foto, aggiorno il totale in apposita tabella */
 		private void incrementaTotaleFotoScaricate( DateTime tempoScarico ) {
 
+			// Per gli onride, non sto a memorizzare gli scarichi (sarebbero migliaia di record da una singola unità
+			if( _fotografo.umano == false )
+				return;
+
 			_giornale.Debug( "Inizio incrementaTotaleFotoScaricate()" );
 			ScaricoCard scaricoCard = new ScaricoCard();
 			scaricoCard.id = Guid.NewGuid();

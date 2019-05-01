@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\Converters\EnumBooleanConverter.cs" />
+    <Compile Include="src\Converters\PathToImageConverter.cs" />
     <Compile Include="src\Converters\UriToCachedImageConverter.cs" />
     <Compile Include="src\Mvvm\ClosableWiewModel.cs" />
     <Compile Include="src\Mvvm\Event\SelectionFailedEventArgs.cs" />
