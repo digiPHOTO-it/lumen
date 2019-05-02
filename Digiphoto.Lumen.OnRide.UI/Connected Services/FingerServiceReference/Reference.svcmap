@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="17886c53-a8ff-4be9-966c-94a6708dd323" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="net.tcp://server-lumen:8524/Digiphoto.Lumen.Servizi/FingerprintService/mex" Protocol="mex" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="776fb614-92fb-43ce-88eb-7aaa210f41e9" SourceId="1" SourceUrl="net.tcp://server-lumen:8524/Digiphoto.Lumen.Servizi/FingerprintService/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="e5000b1b-20f9-4de8-9389-ed7d72c2fa97" SourceId="1" SourceUrl="net.tcp://server-lumen:8524/Digiphoto.Lumen.Servizi/FingerprintService/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="aef5192d-e78d-4e08-a1ae-2928e0247657" SourceId="1" SourceUrl="net.tcp://server-lumen:8524/Digiphoto.Lumen.Servizi/FingerprintService/mex" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

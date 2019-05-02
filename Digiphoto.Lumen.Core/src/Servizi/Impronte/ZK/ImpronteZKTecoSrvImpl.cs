@@ -168,13 +168,15 @@ namespace Digiphoto.Lumen.Core.Servizi.Impronte {
 					String strTemplate = zkfp2.BlobToBase64( captureTemplate, templateSize );
 
 					// Preparo la callback ed eseguo
-					ScansioneEvent sevent = new ScansioneEvent();
-					sevent.isValid = true;
-					sevent.bmpFileName = Path.ChangeExtension( Path.GetTempFileName(), ".bmp" );
-					sevent.strBase64Template = strTemplate;
+					ScansioneEvent sevent = new ScansioneEvent {
+						tempo = DateTime.Now,
+						isValid = true,
+						bmpFileName = Path.ChangeExtension( Path.GetTempFileName(), ".bmp" ),
+						strBase64Template = strTemplate
+					};
 
 					// TODO questo salvataggio potrebbe anche non servire (per risparmiare tempo)
-					bmp.Save( sevent.bmpFileName );
+					// bmp.Save( sevent.bmpFileName );
 
 					EmissioneFeedback( true );
 

@@ -17,9 +17,17 @@ namespace Digiphoto.Lumen.Core.Servizi.Impronte {
 			get;
 			set;
 		}
+
 		public string bmpFileName {
 			get;
 			internal set;
+		}
+
+		/// <summary>
+		/// Timestamp del momemto della scansione.
+		/// </summary>
+		public DateTime tempo {
+			get; set;
 		}
 	}
 }

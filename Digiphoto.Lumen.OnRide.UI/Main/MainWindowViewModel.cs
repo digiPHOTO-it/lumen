@@ -21,6 +21,11 @@ using System.Security.Permissions;
 using System.Threading;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows;
+using Digiphoto.Lumen.OnRide.UI.FingerServiceReference;
+using Digiphoto.Lumen.Servizi;
+using Digiphoto.Lumen.OnRide.UI.Servizi;
+using System.Collections.Specialized;
 
 namespace Digiphoto.Lumen.OnRide.UI {
 
@@ -92,7 +97,7 @@ namespace Digiphoto.Lumen.OnRide.UI {
 				}
 			}
 		}
-		
+
 
 		public string nomeCompletoMaschera {
 			get {
@@ -191,6 +196,7 @@ namespace Digiphoto.Lumen.OnRide.UI {
 			}
 		}
 
+/*
 		private string _fileNameBmpImpronta;
 		public string fileNameBmpImpronta {
 			get {
@@ -202,6 +208,15 @@ namespace Digiphoto.Lumen.OnRide.UI {
 					OnPropertyChanged( "fileNameBmpImpronta" );
 				}
 			}
+		}
+*/
+
+		/// <summary>
+		/// Liste delle persone sconosciute ancora da identificare
+		/// </summary>
+		public ObservableCollectionEx<Sconosciuto> personeSconosciute {
+			get;
+			private set;
 		}
 
 		#endregion Proprietà
@@ -259,6 +274,12 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 				// Se ho deciso di usare lo scanner, lo inizializzo
 				if( userConfigOnRide.scannerImpronteGestito ) {
+
+					FPSClientSingleton.Instance.Open();
+
+					personeSconosciute = new ObservableCollectionEx<Sconosciuto>();
+					personeSconosciute.CollectionChanged += PersoneSconosciute_CollectionChanged;
+					
 					refreshStatoScanner();
 				}
 
@@ -279,6 +300,20 @@ namespace Digiphoto.Lumen.OnRide.UI {
 				cambiareStatoCommand.Execute( "start" );
 			else
 				dialogProvider.ShowError( "Completare la configurazione\r\nquindi premere il pulsante RUN\r\n" + validaConfigurazione(), "Configurazione non valida", null );
+		}
+
+		private void PersoneSconosciute_CollectionChanged( object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e ) {
+
+			if( e.Action == NotifyCollectionChangedAction.Add ) {
+
+				foreach( Sconosciuto sconosciuto in e.NewItems ) {
+
+					string nome = FPSClientSingleton.Instance.GetNome( sconosciuto.base64Template );
+					sconosciuto.nome = nome;
+				}
+
+			}
+
 		}
 
 
@@ -525,7 +560,7 @@ namespace Digiphoto.Lumen.OnRide.UI {
 				fileSystemWatcher.EnableRaisingEvents = true;
 
 				if( userConfigOnRide.scannerImpronteGestito && scannerImprontePresente ) {
-					if( impronteSrv.statoRun == Servizi.StatoRun.Stopped )
+					if( impronteSrv.statoRun == StatoRun.Stopped )
 						impronteSrv.start();
 					impronteSrv.Listen( OnImprontaAcquisita );
 				}
@@ -576,9 +611,27 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 		void OnImprontaAcquisita( object sender, ScansioneEvent eventArgs ) {
 
-			++totImpronteAcquisite;
-			fileNameBmpImpronta = eventArgs.bmpFileName;
-			_giornale.Info( "Impronta acquisita. Valida =  " + eventArgs.isValid + eventArgs.bmpFileName );
+			if( eventArgs.isValid ) {
+
+				++totImpronteAcquisite;
+				_giornale.Info( "Impronta acquisita. Valida =  " + eventArgs.isValid + eventArgs.bmpFileName );
+
+				// Per svincolare il thread chiamante, mi creo una lista mia di sconosciuti da identificare.
+				// Lo faccio perché ora devo chiamare un altro servizio in rete che potrebbe perdere tempo,
+				// e quindi voglio ridare il controllo subito per evitare piantamenti
+				Sconosciuto sconosciuto = new Sconosciuto {
+					tempo = eventArgs.tempo,
+					base64Template = eventArgs.strBase64Template,
+					nome = null
+				};
+
+				Application.Current.Dispatcher.BeginInvoke(
+					new Action( () => {
+						personeSconosciute.Add( sconosciuto );
+					} ) );				
+
+				// fileNameBmpImpronta = eventArgs.bmpFileName;
+			}
 
 		}
 
@@ -609,7 +662,7 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 				try {
 
-					if( impronteSrv.statoRun == Servizi.StatoRun.Stopped )
+					if( impronteSrv.statoRun == StatoRun.Stopped )
 						impronteSrv.start();
 
 					bool connesso = impronteSrv.testScannerConnected();
@@ -738,17 +791,53 @@ namespace Digiphoto.Lumen.OnRide.UI {
 					try {
 						fotoItems.Add( fotoItem );
 					} catch( Exception ee ) {
-						_giornale.Error( "Aggingo foto alla lista", ee );
+						_giornale.Error( "Aggiungo foto alla lista", ee );
 					}
 
 				} else if( userConfigOnRide.runningMode == RunningMode.Automatico ) {
 
-					// La processo senza il tag
-					fotoItem.daTaggare = false;
+					if( userConfigOnRide.scannerImpronteGestito )
+						fotoItem.tag = EventualeTagDaImpronta( finfo );
+
+					// Posso processare anche senza il tag
+					fotoItem.daTaggare = !String.IsNullOrWhiteSpace( fotoItem.tag );
+
+
 					acquisireUnaFoto( fotoItem );
 				}
 
 			}
+		}
+
+		private string EventualeTagDaImpronta( FileInfo finfo ) {
+
+			string tag = null;
+
+			// Devo cercare se nella lista delle persone sconosciute esiste un record
+			// dello stesso range temporale della foto (compreso dei secondi di scarto configurati)
+			for( int ii = 0; ii < personeSconosciute.Count; ii++ ) {
+
+				Sconosciuto sconosciuto = personeSconosciute[ii];
+
+				// Timestamp di quando è stata scansionata l'impronta
+				DateTime tempoImpronta = sconosciuto.tempo;
+				// Timestamp di quando è stata scattata la foto (e trasferita sul pc)
+				DateTime tempoFoto = finfo.CreationTime;
+
+				if( tempoFoto >= tempoImpronta.AddSeconds( userConfigOnRide.secDiscesaMin )
+					&&
+					tempoFoto <= tempoImpronta.AddSeconds( userConfigOnRide.secDiscesaMax )
+					) {
+					// Ok associo 
+					tag = sconosciuto.nome;
+					personeSconosciute.RemoveAt( ii );
+					break;
+				}
+
+			}
+
+
+			return tag;
 		}
 
 		protected override void OnRequestClose() {
@@ -765,6 +854,9 @@ namespace Digiphoto.Lumen.OnRide.UI {
 				_giornale.Error( "Salvataggio preferenze", ee );
 			}
 
+			// Chiudo la comunicazione con il server delle impronte
+			if( userConfigOnRide.scannerImpronteGestito )
+				FPSClientSingleton.Instance.Close();
 
 			base.OnRequestClose();
 		}
