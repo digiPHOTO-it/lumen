@@ -34,6 +34,7 @@ using Digiphoto.Lumen.UI.Main;
 using Digiphoto.Lumen.UI.FotoRitocco;
 using Digiphoto.Lumen.Model.Dto;
 using Digiphoto.Lumen.Core.Util;
+using Digiphoto.Lumen.Core.Database;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -358,6 +359,19 @@ namespace Digiphoto.Lumen.UI {
 																		    false );
 				}
 				return _aprirePopupQrCodeInvioCassaCommand;
+			}
+		}
+
+		
+		private RelayCommand _eliminareImpronteOspitiCommand;
+		public ICommand eliminareImpronteOspitiCommand {
+			get {
+				if( _eliminareImpronteOspitiCommand == null ) {
+					_eliminareImpronteOspitiCommand = new RelayCommand( param => this.eliminareImpronteOspiti(),
+																			param => true,
+																			false );
+				}
+				return _eliminareImpronteOspitiCommand;
 			}
 		}
 		
@@ -766,6 +780,29 @@ namespace Digiphoto.Lumen.UI {
 			}
 
 		}
+
+		void eliminareImpronteOspiti() {
+
+			bool procediPure = false;
+			string msg = "La cancellazione dei dati biometrici, consente di alleggerire\n"
+				+ "e di velocizzare l'applicazione per il giorno successivo.\n"
+				+ "Ricordarsi di chiudere il servizio Fingerprint-service prima di\n"
+				+ "procedere\n." +
+				"\nSi desidra procedere ora ?";
+
+			dialogProvider.ShowConfirmation( msg, "Attenzione", ( sino ) => {
+				procediPure = sino;
+			} );
+
+			if( !procediPure )
+				return;
+
+			int tot = UnitOfWorkScope.currentObjectContext.ExecuteStoreCommand( "DELETE FROM OSPITI" );
+
+			dialogProvider.ShowMessage( "Sono stati cancellati " + tot + " record", "Cancellazione effettuata" );
+
+		}
+
 
 		#endregion Metodi
 

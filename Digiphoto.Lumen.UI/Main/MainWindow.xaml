@@ -197,7 +197,7 @@
 								<Image Source="/Digiphoto.Lumen.UI;component/Resources/Fotografo-48x48.png" Width="48"/>
 								<Label Content="Fotografo" Foreground="Black" VerticalContentAlignment="Center" Margin="10,0,0,0" />
 							</StackPanel>
-						</Button.Content>						
+						</Button.Content>
 					</Button>
 					<Button Grid.Row="2" Grid.Column="1" Style="{StaticResource buttonBaseStyle}" Height="60" Width="180" Command="{Binding commandDataEntry}" CommandParameter="Evento" >
 						<Button.Content>
@@ -251,10 +251,18 @@
 
 					<TabItem ToolTip="Cancella foto vecchie">
 						<TabItem.Header>
-							<TextBlock Text="Elimina foto vecchie" FontSize="14" />
+							<TextBlock Text="Pulizia archivi" FontSize="14" ToolTip="Compressione del database" />
 						</TabItem.Header>
 						<Grid>
-							<lumE:EliminaVecchiRulliniView />
+							<lumE:EliminaVecchiRulliniView Height="234" Margin="92,30,106,0" VerticalAlignment="Top"/>
+
+							<GroupBox Header="aaaaa">
+								<Button Style="{StaticResource buttonBaseStyle}" Content="Pulizia impronte digitali"  
+										ToolTip="Svuota la tabella con i dati biometrici"
+										VerticalAlignment="Top" Margin="190,300,190,0" Height="38" MaxWidth="300"
+										Command="{Binding eliminareImpronteOspitiCommand}" />
+
+							</GroupBox>
 						</Grid>
 					</TabItem>
 
