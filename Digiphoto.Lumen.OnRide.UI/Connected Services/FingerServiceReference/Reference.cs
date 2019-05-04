@@ -21,11 +21,17 @@ namespace Digiphoto.Lumen.OnRide.UI.FingerServiceReference {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFingerprintService/About", ReplyAction="http://tempuri.org/IFingerprintService/AboutResponse")]
         System.Threading.Tasks.Task<string> AboutAsync();
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFingerprintService/GetNome", ReplyAction="http://tempuri.org/IFingerprintService/GetNomeResponse")]
-        string GetNome(string template);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFingerprintService/IdentificaOrAggiungi", ReplyAction="http://tempuri.org/IFingerprintService/IdentificaOrAggiungiResponse")]
+        string IdentificaOrAggiungi(string template);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFingerprintService/GetNome", ReplyAction="http://tempuri.org/IFingerprintService/GetNomeResponse")]
-        System.Threading.Tasks.Task<string> GetNomeAsync(string template);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFingerprintService/IdentificaOrAggiungi", ReplyAction="http://tempuri.org/IFingerprintService/IdentificaOrAggiungiResponse")]
+        System.Threading.Tasks.Task<string> IdentificaOrAggiungiAsync(string template);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFingerprintService/Identifica", ReplyAction="http://tempuri.org/IFingerprintService/IdentificaResponse")]
+        string Identifica(string template);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFingerprintService/Identifica", ReplyAction="http://tempuri.org/IFingerprintService/IdentificaResponse")]
+        System.Threading.Tasks.Task<string> IdentificaAsync(string template);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -63,12 +69,20 @@ namespace Digiphoto.Lumen.OnRide.UI.FingerServiceReference {
             return base.Channel.AboutAsync();
         }
         
-        public string GetNome(string template) {
-            return base.Channel.GetNome(template);
+        public string IdentificaOrAggiungi(string template) {
+            return base.Channel.IdentificaOrAggiungi(template);
         }
         
-        public System.Threading.Tasks.Task<string> GetNomeAsync(string template) {
-            return base.Channel.GetNomeAsync(template);
+        public System.Threading.Tasks.Task<string> IdentificaOrAggiungiAsync(string template) {
+            return base.Channel.IdentificaOrAggiungiAsync(template);
+        }
+        
+        public string Identifica(string template) {
+            return base.Channel.Identifica(template);
+        }
+        
+        public System.Threading.Tasks.Task<string> IdentificaAsync(string template) {
+            return base.Channel.IdentificaAsync(template);
         }
     }
 }

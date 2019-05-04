@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,11 +36,54 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			// Do il focus al campo con il numero del fotogramma
 			numFotoTextBox.Focus();
 			numFotoTextBox.SelectAll();
+
+			// When the ViewModel asks to be closed, 
+			// close the window.
+			EventHandler closingHandle = null;
+			closingHandle = delegate {
+				viewModel.RequestClose -= closingHandle;
+				viewModel.identificatoreImprontaViewModel.PropertyChanged -= IdentificatoreImprontaViewModel_PropertyChanged;
+				viewModel.Dispose();
+				this.DataContext = null;
+				if( ! _stoChiudendo )
+					this.Close();
+			};
+			viewModel.RequestClose += closingHandle;
+
+			identificatoreImpronta.DataContext = viewModel.identificatoreImprontaViewModel;
+
+			viewModel.identificatoreImprontaViewModel.PropertyChanged += IdentificatoreImprontaViewModel_PropertyChanged;
+		}
+
+		private void IdentificatoreImprontaViewModel_PropertyChanged( object sender, PropertyChangedEventArgs e ) {
+			if( e.PropertyName == "nomeIdentificato" ) {
+				if( viewModel.identificatoreImprontaViewModel.nomeIdentificato != null )
+					confermareButton_Click( this, null );
+			}
+		}
+
+		private bool _stoChiudendo = false;
+		protected override void OnClosing( CancelEventArgs e ) {
+			_stoChiudendo = true;
+			base.OnClosing( e );
 		}
 
 		private void confermareButton_Click( object sender, RoutedEventArgs e ) {
 			this.DialogResult = true;
 			this.Hide();
+		}
+
+		public CercaFotoPopupViewModel viewModel {
+			get {
+				return (CercaFotoPopupViewModel)this.DataContext;
+			}
+		}
+
+		private void CercaFotoPopupWindow_Closing( object sender, System.ComponentModel.CancelEventArgs e ) {
+
+			if( viewModel != null )
+				if( viewModel.CloseCommand.CanExecute( null ) )
+					viewModel.CloseCommand.Execute( null );
 		}
 	}
 }

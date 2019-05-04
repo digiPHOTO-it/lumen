@@ -139,6 +139,19 @@ namespace Digiphoto.Lumen.Config
 			}
 		}
 
+		private bool _scannerImpronteGestito;
+		public bool scannerImpronteGestito {
+			get {
+				return _scannerImpronteGestito;
+			}
+			set {
+				if( _scannerImpronteGestito != value ) {
+					_scannerImpronteGestito = value;
+					OnPropertyChanged( "scannerImpronteGestito" );
+				}
+			}
+		}
+
 		public string stampantiAbbinate {
 			get;
 			set;

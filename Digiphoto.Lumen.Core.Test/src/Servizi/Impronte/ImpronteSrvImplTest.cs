@@ -46,7 +46,7 @@ namespace Digiphoto.Lumen.Core.Test.Servizi.Impronte {
 		[TestMethod]
 		public void acquisireTest() {
 
-			_impl.Listen( OnImmagineAcquisita );
+			_impl.Listen( OnImmagineAcquisita, false );
 
 			contaAcquisite = 0;
 

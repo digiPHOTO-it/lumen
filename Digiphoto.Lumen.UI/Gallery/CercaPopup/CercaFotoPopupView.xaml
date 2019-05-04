@@ -4,10 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Digiphoto.Lumen.UI.Gallery"
+		xmlns:lumI="clr-namespace:Digiphoto.Lumen.UI.Identifica"
+		xmlns:cfg="clr-namespace:Digiphoto.Lumen.Config;assembly=Digiphoto.Lumen.Core"
         mc:Ignorable="d" 
 		WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
-		Background="#081d56" 
-        Title="Ricerca foto avanzata" Height="300" Width="501" Name="CercaFotoPopupWindow" Loaded="CercaFotoPopupWindow_Loaded">
+		Background="#081d56" Closing="CercaFotoPopupWindow_Closing"
+        Title="Ricerca foto avanzata" Height="300" Width="620" Name="CercaFotoPopupWindow" Loaded="CercaFotoPopupWindow_Loaded">
 
 	<Window.Resources>
 		<ResourceDictionary Source="CercaFotoPopupResources.xaml" />
@@ -40,7 +42,7 @@
 
 		</Grid>
 
-		<Border DockPanel.Dock="Right" BorderBrush="DarkCyan" BorderThickness="1 1 1 1" Margin="10" Padding="3" HorizontalAlignment="Center">
+		<Border DockPanel.Dock="Right" BorderBrush="DarkCyan" BorderThickness="1 1 1 1" Margin="0 1 1 4" Padding="3 0 0 0" HorizontalAlignment="Center">
 			<Grid Margin="4 0 4 0">
 				<StackPanel Orientation="Vertical" >
 					<StackPanel.Resources>
@@ -67,6 +69,15 @@
 							</TextBlock>
 						</Button.ToolTip>
 					</Button>
+
+					<!-- {Binding Source={x:Static cfg:Configurazione.}} -->
+					<GroupBox Height="154" Margin="0 10 0 0" Header="Biometria - Impronta digitale">
+
+						<lumI:IdentificatoreImpronta x:Name="identificatoreImpronta" 
+													 MinWidth="200"
+													 IsEnabled="{Binding Path=userConfig.scannerImpronteGestito}"  />
+					</GroupBox>
+					
 				</StackPanel>
 			</Grid>
 		</Border>

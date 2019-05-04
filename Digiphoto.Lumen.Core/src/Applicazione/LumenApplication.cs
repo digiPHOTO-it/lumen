@@ -24,6 +24,7 @@ using Digiphoto.Lumen.Servizi.Io;
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.Servizi.BarCode;
 using Digiphoto.Lumen.Servizi.Ricostruzione;
+using Digiphoto.Lumen.Core.Servizi.Impronte;
 
 namespace Digiphoto.Lumen.Applicazione {
 
@@ -244,6 +245,12 @@ namespace Digiphoto.Lumen.Applicazione {
 			if( dbr != null )
 				dbr.stop();
 
+			// Anche il servizio di lettura scanner impronte digitali lo tengo spento. lo accendo solo alla necessità
+			IImpronteSrv imp = getServizioAvviato<IImpronteSrv>();
+			if( imp != null && imp.statoRun == StatoRun.Running ) {
+				if( Configurazione.UserConfigLumen.scannerImpronteGestito == false )
+					imp.stop();
+			}
 		}
 
 		public T creaServizio<T>() where T : IServizio {

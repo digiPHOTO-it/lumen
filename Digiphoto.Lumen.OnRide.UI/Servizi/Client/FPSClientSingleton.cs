@@ -106,7 +106,7 @@ namespace Digiphoto.Lumen.OnRide.UI.Servizi {
 		}
 
 		public string GetNome( string base64Template ) {
-			return fpClient.GetNome( base64Template );
+			return fpClient.IdentificaOrAggiungi( base64Template );
 		}
 		
 		

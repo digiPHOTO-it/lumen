@@ -162,6 +162,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity">
@@ -233,6 +235,15 @@
     <Compile Include="Carrelli\Masterizzare\ScegliMasterizzaTargetWiew.xaml.cs">
       <DependentUpon>ScegliMasterizzaTargetWiew.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Connected Services\FingerprintServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Identifica\IdentificatoreImpronta.xaml.cs">
+      <DependentUpon>IdentificatoreImpronta.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Identifica\IdentificatoreImprontaViewModel.cs" />
     <Compile Include="Qr\QRcodeWindow.xaml.cs">
       <DependentUpon>QRcodeWindow.xaml</DependentUpon>
     </Compile>
@@ -421,6 +432,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Carrelli\Masterizzare\ScegliMasterizzaTargetWiew.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Identifica\IdentificatoreImpronta.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Identifica\IdentificatoreImprontaResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -820,6 +839,13 @@
     <None Include="app.manifest">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Connected Services\FingerprintServiceReference\service.wsdl" />
+    <None Include="Connected Services\FingerprintServiceReference\service.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\FingerprintServiceReference\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\DataSources\Digiphoto.Lumen.Servizi.Reports.ConsumoCarta.RigaReportConsumoCarta.datasource" />
     <None Include="Properties\DataSources\Digiphoto.Lumen.Servizi.Reports.RigaReportProvvigioni.datasource" />
@@ -1059,6 +1085,12 @@
     <Resource Include="About\AboutLogo.png">
       <SubType>Image</SubType>
     </Resource>
+    <None Include="Connected Services\FingerprintServiceReference\configuration91.svcinfo" />
+    <None Include="Connected Services\FingerprintServiceReference\configuration.svcinfo" />
+    <None Include="Connected Services\FingerprintServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
     <Content Include="License_it.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1067,6 +1099,12 @@
   <ItemGroup>
     <Folder Include="Carrelli\SelfService\" />
     <Folder Include="Mvvm\Event\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Connected Services\FingerprintServiceReference\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
