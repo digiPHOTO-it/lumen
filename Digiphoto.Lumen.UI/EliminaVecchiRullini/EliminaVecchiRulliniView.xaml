@@ -7,21 +7,21 @@
 			 xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
 			 xmlns:lumE="clr-namespace:Digiphoto.Lumen.UI.EliminaVecchiRullini"
              mc:Ignorable="d" 
-             d:DesignHeight="311" d:DesignWidth="552">
+             d:DesignHeight="242" d:DesignWidth="393">
 
-	<UserControl.Resources>
-		<ResourceDictionary Source="EliminaRulliniVecchiResources.xaml" />
-	</UserControl.Resources>
+    <UserControl.Resources>
+        <ResourceDictionary Source="EliminaRulliniVecchiResources.xaml" />
+    </UserControl.Resources>
 
-	<lumM:UserControlBase.DataContext>
-		<lumE:EliminaVecchiRulliniViewModel />
-	</lumM:UserControlBase.DataContext>
+    <lumM:UserControlBase.DataContext>
+        <lumE:EliminaVecchiRulliniViewModel />
+    </lumM:UserControlBase.DataContext>
 
-	<Grid>
-		
-		<TextBox  AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True" Margin="100,85,100,0" Text="{Binding testoEsplicativo,Mode=OneTime}" VerticalAlignment="Top" />
+    <Grid>
 
-		<Button Content="Inizia ricerca foto vecchie" Height="28" Margin="185,215,0,0" Name="button2" VerticalAlignment="Top" Command="{Binding cleanCommand}" HorizontalAlignment="Left" Width="200" Style="{StaticResource buttonBaseStyle}" />
+        <TextBox  AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True" Margin="25,30,25,124" Text="{Binding testoEsplicativo,Mode=OneTime}" VerticalAlignment="Stretch" />
 
-	</Grid>
+        <Button Content="Inizia ricerca foto vecchie" MaxWidth="300" Margin="100,150,100,50" Name="button2" Command="{Binding cleanCommand}" Style="{StaticResource buttonBaseStyle}" />
+
+    </Grid>
 </lumM:UserControlBase>
