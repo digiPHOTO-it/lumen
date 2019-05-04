@@ -28,6 +28,8 @@ namespace Digiphoto.Lumen.Core.Servizi.Impronte {
 		private int imgDpi = 0;
 		private byte[] imgBuffer;
 
+		private bool generateBmp = false;
+
 		#endregion
 
 
@@ -140,9 +142,10 @@ namespace Digiphoto.Lumen.Core.Servizi.Impronte {
 
 		Thread captureThread = null;
 		OnImmagineAcquisita callback;
-		public void Listen( OnImmagineAcquisita callback ) {
+		public void Listen( OnImmagineAcquisita callback, bool generateBmp ) {
 
 			this.callback = callback;
+			this.generateBmp = generateBmp;
 			captureThread = new Thread( new ThreadStart( DoCapture ) );
 			captureThread.IsBackground = true;
 			captureThread.Start();
@@ -176,7 +179,8 @@ namespace Digiphoto.Lumen.Core.Servizi.Impronte {
 					};
 
 					// TODO questo salvataggio potrebbe anche non servire (per risparmiare tempo)
-					// bmp.Save( sevent.bmpFileName );
+					if( generateBmp )
+						bmp.Save( sevent.bmpFileName );
 
 					EmissioneFeedback( true );
 

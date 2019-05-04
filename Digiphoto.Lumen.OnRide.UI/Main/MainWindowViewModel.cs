@@ -562,7 +562,7 @@ namespace Digiphoto.Lumen.OnRide.UI {
 				if( userConfigOnRide.scannerImpronteGestito && scannerImprontePresente ) {
 					if( impronteSrv.statoRun == StatoRun.Stopped )
 						impronteSrv.start();
-					impronteSrv.Listen( OnImprontaAcquisita );
+					impronteSrv.Listen( OnImprontaAcquisita, false );
 				}
 			}
 

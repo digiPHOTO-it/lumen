@@ -532,6 +532,10 @@
 					<TextBox Height="23" Margin="184,12,55,0" Text="{Binding cfg.cartellaOnRide}" VerticalAlignment="Top" />
 					<Button  Command="{Binding scegliereCartellaCommand}" CommandParameter="onride" Content="..." Height="Auto" Margin="0,11,16,0" ToolTip="Sfoglia cartelle" VerticalAlignment="Top" HorizontalAlignment="Right" Width="22" />
 
+					<CheckBox Content="Scanner impronte digitali" IsChecked="{Binding Path=cfg.scannerImpronteGestito}" 
+							  VerticalAlignment="Top" HorizontalAlignment="Left" Margin="13,52,0,0"
+							  ToolTip="Indicare se su questo PC è collegato lo scanner usb &#x0a;Il modello di scanner è indicato nella tab n.2 'Punto Vendita'"
+							  />
 
 				</Grid>
 

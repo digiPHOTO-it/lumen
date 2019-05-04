@@ -2681,7 +2681,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			CercaFotoPopupRequestEventArgs args = new CercaFotoPopupRequestEventArgs();
 			RaisePopupDialogRequest( args );
 
-			if( cercaFotoPopupViewModel.confermata ) {
+				if( cercaFotoPopupViewModel.confermata ) {
 
 				// Se confermata la popup, agisco
 				using( new UnitOfWorkScope() ) {
@@ -2706,6 +2706,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 						// Il barcode è un ean8 quindi formatto il numero da 8 con zeri davanti
 						paramCercaFoto.didascalia = String.Format( "{0:00000000}", cercaFotoPopupViewModel.numeroFotogramma );
+
 						paramCercaFoto.idratareImmagini = false;
 						paramCercaFoto.paginazione.take = 1;
 						paramCercaFoto.ordinamento = Ordinamento.Desc; // voglio per prima la foto più recente.
@@ -2756,17 +2757,32 @@ namespace Digiphoto.Lumen.UI.Gallery {
 						OnPropertyChanged( "paramCercaFoto" );
 						OnPropertyChanged( "stringaNumeriFotogrammi" );
 					}
-				}
-			} else {
 
+					// Per ultimo controllo se ho una impronta digitale
+					if( cercaFotoPopupViewModel.identificatoreImprontaViewModel != null &&
+						cercaFotoPopupViewModel.identificatoreImprontaViewModel.nomeIdentificato != null ) {
+						paramCercaFoto.didascalia = cercaFotoPopupViewModel.identificatoreImprontaViewModel.nomeIdentificato;
+					}
+
+				}
+
+
+			} else {
+				// non confermata
 				if( cercaFotoPopupViewModel.filtroDidascalia != null ) {
 					if( cercaFotoPopupViewModel.filtroDidascalia == FiltroDidascalia.SoloPiene )
 						paramCercaFoto.didascalia = "(PIENA)";
 					if( cercaFotoPopupViewModel.filtroDidascalia == FiltroDidascalia.SoloVuote )
 						paramCercaFoto.didascalia = "(VUOTA)";
+					if( cercaFotoPopupViewModel.filtroDidascalia == FiltroDidascalia.Impronta )
+						paramCercaFoto.didascalia = cercaFotoPopupViewModel.identificatoreImprontaViewModel.nomeIdentificato;
 					OnPropertyChanged( "paramCercaFoto" );
 				}
 			}
+
+
+			// Chiudo la popup
+			cercaFotoPopupViewModel.CloseCommand.Execute( null );
 		}
 
 		/// <summary>

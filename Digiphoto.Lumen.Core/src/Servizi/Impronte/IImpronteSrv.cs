@@ -59,7 +59,12 @@ namespace Digiphoto.Lumen.Core.Servizi.Impronte {
 		}
 #endif
 
-		void Listen( OnImmagineAcquisita callback );
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="callback"></param>
+		/// <param name="generateBmp">Genera il file BMP conetenente l'immagine</param>
+		void Listen( OnImmagineAcquisita callback, bool generateBmp );
 
 	}
 }

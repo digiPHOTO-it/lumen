@@ -1,10 +1,12 @@
-﻿using Digiphoto.Lumen.UI.Mvvm;
+﻿using Digiphoto.Lumen.Config;
+using Digiphoto.Lumen.UI.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Digiphoto.Lumen.UI.Identifica;
 
 namespace Digiphoto.Lumen.UI.Gallery {
 	
@@ -30,10 +32,11 @@ namespace Digiphoto.Lumen.UI.Gallery {
 	public enum FiltroDidascalia {
 
 			SoloPiene,
-			SoloVuote
+			SoloVuote,
+			Impronta
 	}
 
-	public class CercaFotoPopupViewModel : ViewModelBase {
+	public class CercaFotoPopupViewModel : ClosableWiewModel {
 
 		#region Costruttori
 
@@ -44,11 +47,26 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			// Imposto la modalità di ricerca di default, oppure quella indicata dall'utente.
 			this.modoRicercaPop = modoDefault;
 			this.confermata = false;
+
+
+			identificatoreImprontaViewModel = new IdentificatoreImprontaViewModel();
+			identificatoreImprontaViewModel.PropertyChanged += IdentificatoreImprontaViewModel_PropertyChanged;
 		}
+
+		private void IdentificatoreImprontaViewModel_PropertyChanged( object sender, System.ComponentModel.PropertyChangedEventArgs e ) {
+			// sento quando cambia il nome corrispondente alla impronta.
+			// Quando assume un valore valido, chiudo la ricerca.
+			if( e.PropertyName == "nomeIdentificato" ) {
+				if( identificatoreImprontaViewModel.nomeIdentificato != null )
+					this.filtroDidascalia = FiltroDidascalia.Impronta;
+			}
+		}
+
 		#endregion Costruttori
 
 		#region Proprietà
-		
+
+
 		private int _numeroFotogramma;
 		public int numeroFotogramma {
 			get {
@@ -96,9 +114,20 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 		public bool confermata { get; set; }
 
+		public IdentificatoreImprontaViewModel identificatoreImprontaViewModel {
+			get;
+			private set;
+		}
+
 		public Nullable<FiltroDidascalia> filtroDidascalia {
 			set;
 			get;
+		}
+
+		public UserConfigLumen userConfig {
+			get {
+				return Configurazione.UserConfigLumen;
+			}
 		}
 
 		#endregion Proprietà
@@ -113,6 +142,7 @@ namespace Digiphoto.Lumen.UI.Gallery {
 
 		void confermare() {
 			confermata = true;
+			CloseCommand.Execute( null );
 		}
 
 		void setFiltroDidascalia( string quale ) {
@@ -147,8 +177,18 @@ namespace Digiphoto.Lumen.UI.Gallery {
 			}
 		}
 
+		protected override void OnRequestClose() {
+			base.OnRequestClose();
+		}
 
-		
+		protected override void OnDispose() {
+
+			if( this.identificatoreImprontaViewModel != null ) {
+				identificatoreImprontaViewModel.PropertyChanged -= IdentificatoreImprontaViewModel_PropertyChanged;
+				this.identificatoreImprontaViewModel.Dispose();
+			}
+				
+		}
 
 		#endregion Comandi
 
