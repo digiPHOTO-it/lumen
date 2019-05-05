@@ -231,6 +231,9 @@ namespace Digiphoto.Lumen.Servizi.Scaricatore {
 
 			caricaMetadatiImmagine( fileInfo.FullName, foto );
 
+			if( foto.dataOraScatto == null || foto.dataOraScatto == DateTime.MinValue )
+				foto.dataOraScatto = fileInfo.CreationTime;
+
 			objContext.Fotografie.Add( foto );
 					
 			objContext.SaveChanges();

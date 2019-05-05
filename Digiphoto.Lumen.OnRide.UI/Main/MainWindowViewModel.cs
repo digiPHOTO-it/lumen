@@ -26,6 +26,7 @@ using Digiphoto.Lumen.OnRide.UI.FingerServiceReference;
 using Digiphoto.Lumen.Servizi;
 using Digiphoto.Lumen.OnRide.UI.Servizi;
 using System.Collections.Specialized;
+using Digiphoto.Lumen.Servizi.Ricerca;
 
 namespace Digiphoto.Lumen.OnRide.UI {
 
@@ -804,6 +805,11 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 
 					acquisireUnaFoto( fotoItem );
+
+
+					// TODO questa operazione andrebbe fatta non qui, ma in un thread che agisce solo 
+					// quando il programma è idle (ovvero non sta facendo niente)
+					FreeMemSconosciutiVecchi();
 				}
 
 			}
@@ -838,6 +844,71 @@ namespace Digiphoto.Lumen.OnRide.UI {
 
 
 			return tag;
+		}
+
+		private enum StrategiaPuliziaImpronte {
+			Cancella,
+			Casaccio
+		};
+
+		/// <summary>
+		/// La collezione con le impronte degli sconosciuti, potrebbe 
+		/// crescere a dismisura, nel caso in cui falliscano gli abbinamenti con le fotografie per diverso tempo.
+		/// Per evitare di accumulare oggetti inutili, svecchio la collezione
+		/// </summary>
+		void FreeMemSconosciutiVecchi() {
+
+			bool restaQui;
+
+			StrategiaPuliziaImpronte strategia = StrategiaPuliziaImpronte.Casaccio;
+
+			
+			// Scelgo un tempo abbastanza ampio per dichiarare come "vecchia" una impronta.
+			// Prendo 20 volte il tempo massimo impostato per la discesa.
+			int tempoMax = userConfigOnRide.secDiscesaMax * 10;
+
+			do {
+				restaQui = false;
+
+				for( int ii = 0; ii < personeSconosciute.Count; ii++ ) {
+					Sconosciuto sconosciuto = personeSconosciute[ii];
+					DateTime adesso = DateTime.Now;
+					if( sconosciuto.tempo.AddSeconds( tempoMax ) < adesso ) {
+
+						if( strategia == StrategiaPuliziaImpronte.Cancella ) {
+							personeSconosciute.RemoveAt( ii );
+							restaQui = true;
+							break;
+						}
+
+						if( strategia == StrategiaPuliziaImpronte.Casaccio ) {
+							// Cerco la prima foto acquisita su questo scivolo dopo la data indicata e non ancora taggata
+
+							using( new UnitOfWorkScope() ) {
+								DateTime oraProvaMin = sconosciuto.tempo.AddSeconds( userConfigOnRide.secDiscesaMin );
+								DateTime oraProvaMax = sconosciuto.tempo.AddSeconds( userConfigOnRide.secDiscesaMax * 4 );
+								var foto = UnitOfWorkScope.currentDbContext.Fotografie
+									.Where( f => f.fotografo_id == fotografoOnRide.id
+										 && f.didascalia == null
+										 && f.dataOraAcquisizione > oraProvaMin
+										 && f.dataOraAcquisizione < oraProvaMax
+										 && f.giornata == sconosciuto.tempo.Date )
+									.OrderByDescending( f => f.dataOraAcquisizione )
+									.FirstOrDefault();
+
+								if( foto != null ) {
+									foto.didascalia = sconosciuto.nome;
+									UnitOfWorkScope.currentDbContext.SaveChanges();
+									personeSconosciute.RemoveAt( ii );
+									restaQui = true;
+									break;  // esco dal ciclo for
+								}
+							}
+						}
+					}
+				}
+
+			} while( restaQui );
 		}
 
 		protected override void OnRequestClose() {
