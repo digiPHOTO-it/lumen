@@ -270,13 +270,13 @@
 				<Image Source="{Binding Path=userConfigOnRide.runningMode, ConverterParameter=icon, Converter={StaticResource runningModeConverter}}" Width="32" Height="32" />
 				<Label Content="Conta foto processate: " FontSize="18" />
 				<Label Content="{Binding Path=totFotoAcquisite}" MinWidth="50" FontSize="18" Background="LightGreen" HorizontalContentAlignment="Center" />
-				<Label Content="Conta impronte acquisite: " FontSize="18" />
+				<Label Content="Conta impronte processate: " FontSize="18" />
 				<Label Content="{Binding Path=totImpronteAcquisite}" MinWidth="50" FontSize="18" Background="LightGreen" HorizontalContentAlignment="Center" />
 				<!--
 				  ** Il vedere l'immagine dell'impronta digitale non è molto utile.
 				<Image Height="36" Width="36" Source="{Binding fileNameBmpImpronta, Converter={StaticResource pathToIMageConverter}}" />
 				-->
-				<Label Content="{Binding Path=personeSconosciute.Count}" ContentStringFormat="Members: {0}" Background="Orange" MinWidth="50" FontSize="18" HorizontalContentAlignment="Center" />
+				<Label Content="{Binding Path=personeSconosciute.Count}" ContentStringFormat="Impronte da associare: {0}" Background="Cyan" MinWidth="50" FontSize="18" HorizontalContentAlignment="Center" />
 			</StackPanel>
 		</Grid>
 
