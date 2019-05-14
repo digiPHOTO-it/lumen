@@ -49,12 +49,54 @@ namespace Digiphoto.Lumen.Core.Database {
 			}
 		}
 
+		public override bool possoDistruggereDatabase {
+			get {
+					return verificareConnessione() == true && testareSchemaEsistente() == true;
+			}
+		}
+
 
 		#endregion Proprietà
 
 		#region Metodi
 
 
+		public override void distruggereDatabase() {
+
+			using( DbConnection conn = createConnection() ) {
+
+				conn.Open();
+
+				// Elimino il database
+				{
+				DbCommand cmd1 = conn.CreateCommand();
+				cmd1.CommandType = CommandType.Text;
+				cmd1.CommandText = "DROP DATABASE IF EXISTS LUMEN";
+
+				int nRowsAff = cmd1.ExecuteNonQuery();
+				_giornale.Info( "drop database lumen. Eliminato tutto. affected = " + nRowsAff );
+				}
+
+				// Elimino l'utente specifico
+				{
+				DbCommand cmd2 = conn.CreateCommand();
+				cmd2.CommandType = CommandType.Text;
+				cmd2.CommandText = "DROP USER IF EXISTS fotografo";
+				int nRowsAff = cmd2.ExecuteNonQuery();
+				_giornale.Info( "drop user fototgrafo. Eliminato tutto. affected = " + nRowsAff );
+				}
+
+			}
+		}
+
+		protected override string eventualeCorrezioneConnectionString( string connectionString ) {
+
+			if( !connectionString.EndsWith( ";" ) )
+				connectionString += ";";
+			connectionString += "Allow User Variables=True;";
+
+			return connectionString;
+		}
 
 		/// <summary>
 		/// Ricavo lo script DDL che è presente in un altro assembly della solution,
@@ -74,68 +116,7 @@ namespace Digiphoto.Lumen.Core.Database {
 
 		}
 
-		/// <summary>
-		/// i DDL li ho messi nel progetto : Model
-		/// </summary>
-		/// <param name="nomeRisorsa"></param>
-		private void eseguiDDL( string nomeRisorsa ) {
 
-			var aa = typeof( Digiphoto.Lumen.Model.LumenEntities ).Assembly;
-
-			string fileContents = null;
-			using( var stream = aa.GetManifestResourceStream( nomeRisorsa ) ) {
-				TextReader tr = new StreamReader( stream );
-				fileContents = tr.ReadToEnd();
-			}
-
-			if( fileContents == null )
-				throw new ConfigurazioneNonValidaException( "DDL non trovato: " + nomeRisorsa );
-
-
-
-			using( DbConnection conn = createConnection() ) {
-
-				// Questo parametro serve a consentire i parametri iniziali dello script (quelli con la chiocciola)
-				var ncs = conn.ConnectionString;
-				if( ! ncs.EndsWith( ";" ) )
-					ncs += ";";
-				ncs += "Allow User Variables=True;";
-				conn.ConnectionString = ncs;
-
-				conn.Open();
-
-				
-
-				Regex regRem = new Regex( @"^--\s.*\n", RegexOptions.Multiline );
-
-				// Separo i singoli comandi
-				char[] sep = { ';', '\n' };
-				string[] comandi = Regex.Split( fileContents, ";\r\n" );
-				int conta = 0;
-
-				for( int ii = 0; ii < comandi.Length; ii++ ) {
-
-					// Estraggo il comando, eliminando le righe di commento. Funzionerebbe ugualmente, ma cosi è più bello il log
-					var comando = regRem.Replace( comandi[ii], "" );
-
-					if( string.IsNullOrWhiteSpace( comando ) )
-						continue;
-
-					DbCommand cmd = conn.CreateCommand();
-					cmd.CommandType = CommandType.Text;
-					cmd.CommandText = comando;
-
-					int nRowsAff = cmd.ExecuteNonQuery();
-
-					var s = string.Format( "cmd=%02d esito=%d : %s", ++conta, nRowsAff, comando.Substring( 0, Math.Min( comando.Length, 40 ) ) );
-					_giornale.Debug( s );
-
-				}
-
-
-				conn.Close();
-			}
-		}
 
 		/// <summary>
 		/// Mi connetto ad database senza uno schema, e leggo le viste di sistema per 
@@ -187,6 +168,20 @@ namespace Digiphoto.Lumen.Core.Database {
 
 			return cs;
 		}
+
+		protected override string eventualiUpgradeBaseDati( DbConnection conn, string versioneAttuale ) {
+
+			if( versioneAttuale == "4" ) {
+				_giornale.Info( "upgrade base dati da versione " + versioneAttuale + " a " + VERSIONE_DB_COMPATIBILE );
+				eseguiDDL( "Digiphoto.Lumen.Model.ddl.ddl-upgrade-mysql-005.sql" );
+				_giornale.Info( "Fine upgrade database MySql tramite DDL" );
+
+				versioneAttuale = "5";
+			}
+
+			return versioneAttuale;
+		}
+
 
 		#endregion Metodi
 	}

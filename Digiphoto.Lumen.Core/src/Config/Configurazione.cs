@@ -175,7 +175,7 @@ namespace Digiphoto.Lumen.Config  {
 			userConfig.dbNomeDbVuoto = "dbvuoto.sqlite";
 			userConfig.dbNomeDbPieno = "database.sqlite";
 			// Questo è per MySql
-			userConfig.dbNomeServer = "localhost";					// TODO sostituire con LUMEN
+			userConfig.dbNomeServer = "server-lumen";					// TODO sostituire con LUMEN
 
 			userConfig.cartellaDatabase = decidiCartellaDatabase();
 			userConfig.autoZoomNoBordiBianchi = true;

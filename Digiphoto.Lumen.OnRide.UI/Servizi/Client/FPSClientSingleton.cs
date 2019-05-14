@@ -4,13 +4,17 @@ using System.Collections;
 using System.ServiceModel;
 using System.Windows;
 using Digiphoto.Lumen.OnRide.UI.FingerServiceReference;
+using Digiphoto.Lumen.Core.Util;
+using log4net;
 
 namespace Digiphoto.Lumen.OnRide.UI.Servizi {
 
 	public class FPSClientSingleton
     {
-       
-        private static FPSClientSingleton instance;
+		protected new static readonly ILog _giornale = LogManager.GetLogger( typeof( FPSClientSingleton ) );
+
+
+		private static FPSClientSingleton instance;
 
 		private FingerprintServiceClient fpClient;
 
@@ -49,7 +53,7 @@ namespace Digiphoto.Lumen.OnRide.UI.Servizi {
 					{
 						autoCloseNotification = true;
 						fpClient.Abort();
-
+						System.Threading.Thread.Sleep( 2000 );
 						fpClient = new FingerprintServiceClient();
                     }
 				}
@@ -102,16 +106,30 @@ namespace Digiphoto.Lumen.OnRide.UI.Servizi {
 		private void connectionRestart()
 		{
 			fpClient.Abort();
+			System.Threading.Thread.Sleep( 2000 );
 			Open();
 		}
 
 		public string GetNome( string base64Template ) {
 			return fpClient.IdentificaOrAggiungi( base64Template );
 		}
-		
-		
 
-	
+		internal void SyncroOrarioColServer() {
+
+			DateTime orarioMio = DateTime.Now;
+			DateTime orarioDelServer = fpClient.GetOrario();
+
+			if( Math.Abs( (orarioDelServer - orarioMio).TotalSeconds ) > 5 ) {
+				try {
+					Orologio.Set( orarioDelServer );
+					_giornale.Info( String.Format( "Orologio del mio sistema = {0} ; Orologio del server {1}. Effettuata sincronizzazione", orarioMio, orarioDelServer ) );
+				} catch( Exception ee ) {
+					_giornale.Error( "Syncro orologio server", ee );
+				}
+			} else {
+				_giornale.Info( "Orologio di sistema già sincronizzato con quello del sever. Non faccio nulla" );
+			}
+		}
 	}
 
 }

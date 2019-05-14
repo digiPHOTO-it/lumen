@@ -109,8 +109,9 @@
 
 					</TabControl>
 
-					<Button Content="Prova la connessione" Margin="0,0,149,29" Command="{Binding Path=verificareSeDatabaseProntoAllUsoCommand}" ToolTip="Verifica se il database è pronto all'uso" Height="25" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="154" />
-					<Button Content="Crea nuovo Database" HorizontalAlignment="Left" Margin="157,0,0,29" Width="157" Command="{Binding Path=CreateDataBaseCommand}" ToolTip="Crea un nuovo database vuoto" Height="25" VerticalAlignment="Bottom" />
+					<Button Content="Prova la connessione" Margin="0,0,43,29" Command="{Binding Path=verificareSeDatabaseProntoAllUsoCommand}" ToolTip="Verifica se il database è pronto all'uso" Height="25" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="154" />
+					<Button Content="Crea nuovo Database" HorizontalAlignment="Left" Margin="78,0,0,29" Width="157" Command="{Binding Path=CreateDataBaseCommand}" ToolTip="Crea un nuovo database vuoto" Height="25" VerticalAlignment="Bottom" />
+					<Button Content="Distruggi Database" HorizontalAlignment="Left" Margin="296,0,0,29" Width="157" Command="{Binding Path=destroyDatabaseCommand}" ToolTip="Elimina tutta la base dati. ATTENZIONE !!!" Height="25" VerticalAlignment="Bottom" />
 
 				</Grid>
 			</TabItem>

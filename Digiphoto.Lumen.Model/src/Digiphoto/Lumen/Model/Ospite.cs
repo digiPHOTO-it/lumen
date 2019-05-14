@@ -24,6 +24,9 @@ namespace Digiphoto.Lumen.Model {
 
 		public string nome { get; set; }
 
+		[Required]
+		public DateTime ora { get; set; }
+
 		#endregion Attributi
 
 		#region Uguaglianza

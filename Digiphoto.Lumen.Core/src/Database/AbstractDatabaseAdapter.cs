@@ -9,12 +9,13 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Security.AccessControl;
+using System.Text.RegularExpressions;
 
 namespace Digiphoto.Lumen.Core.Database {
 
 	public abstract class AbstractDatabaseAdapter : IDatabaseAdapter {
 
-		protected const string VERSIONE_DB_COMPATIBILE = "1.3";
+		protected const string VERSIONE_DB_COMPATIBILE = "5";
 
 		private static readonly ILog _giornale = LogManager.GetLogger( typeof( AbstractDatabaseAdapter ) );
 
@@ -76,6 +77,10 @@ namespace Digiphoto.Lumen.Core.Database {
 			get;
 		}
 
+		public abstract bool possoDistruggereDatabase {
+			get;
+		}
+
 		protected virtual DbConnection createConnection() {
 
 			if( !_inizializzato )
@@ -118,11 +123,11 @@ namespace Digiphoto.Lumen.Core.Database {
 								string dbVersion = rdr.GetString( 0 );
 								rdr.Close();
 
+								_giornale.Info( "Controllo versione DB: Attuale=" + dbVersion + " ; Richiesta=" + VERSIONE_DB_COMPATIBILE );
+
 								// Prima di testare la versione, eseguo upgrade
 								string versioneAttuale = eventualiUpgradeBaseDati( conn, dbVersion );
 
-
-								_giornale.Info( "Controllo versione DB: Attuale=" + versioneAttuale + " ; Richiesta=" + VERSIONE_DB_COMPATIBILE );
 								decimal dVerAttuale = decimal.Parse( versioneAttuale, CultureInfo.InvariantCulture );
 								decimal dVerRichiesta = decimal.Parse( VERSIONE_DB_COMPATIBILE, CultureInfo.InvariantCulture );
 								if( dVerAttuale < dVerRichiesta ) {
@@ -146,11 +151,11 @@ namespace Digiphoto.Lumen.Core.Database {
 			return usabile;
 		}
 
-		protected virtual string eventualiUpgradeBaseDati( DbConnection conn, string dbVersion ) {
-			return VERSIONE_DB_COMPATIBILE;
-		}
-
+		protected abstract string eventualiUpgradeBaseDati( DbConnection conn, string dbVersion );
+			
 		public abstract void creareNuovoDatabase();
+
+		public abstract void distruggereDatabase();
 
 		public bool verificareConnessione() {
 
@@ -209,6 +214,68 @@ namespace Digiphoto.Lumen.Core.Database {
 
 			_giornale.Debug( "Imposto questa connection string: " + test.ConnectionString + " per exe: " + nomeExe );
 
+		}
+
+		// La classe reale, potrebbe correggermi la connection string per eventuali particolarità
+		protected abstract string eventualeCorrezioneConnectionString( String connectionString );
+
+
+		/// <summary>
+		/// i DDL li ho messi nel progetto : Model
+		/// </summary>
+		/// <param name="nomeRisorsa"></param>
+		protected void eseguiDDL( string nomeRisorsa ) {
+
+			var aa = typeof( Digiphoto.Lumen.Model.LumenEntities ).Assembly;
+
+			string fileContents = null;
+			using( var stream = aa.GetManifestResourceStream( nomeRisorsa ) ) {
+				TextReader tr = new StreamReader( stream );
+				fileContents = tr.ReadToEnd();
+			}
+
+			if( fileContents == null )
+				throw new ConfigurazioneNonValidaException( "DDL non trovato: " + nomeRisorsa );
+
+
+
+			using( DbConnection conn = createConnection() ) {
+
+				// Questo parametro serve a consentire i parametri iniziali dello script (quelli con la chiocciola)
+				var ncs = conn.ConnectionString;
+				conn.ConnectionString = eventualeCorrezioneConnectionString( ncs );
+
+				conn.Open();
+
+
+				Regex regRem = new Regex( @"^--\s.*\n", RegexOptions.Multiline );
+
+				// Separo i singoli comandi
+				char[] sep = { ';', '\n' };
+				string[] comandi = Regex.Split( fileContents, ";\r\n" );
+				int conta = 0;
+
+				for( int ii = 0; ii < comandi.Length; ii++ ) {
+
+					// Estraggo il comando, eliminando le righe di commento. Funzionerebbe ugualmente, ma cosi è più bello il log
+					var comando = regRem.Replace( comandi[ii], "" );
+
+					if( string.IsNullOrWhiteSpace( comando ) )
+						continue;
+
+					DbCommand cmd = conn.CreateCommand();
+					cmd.CommandType = CommandType.Text;
+					cmd.CommandText = comando;
+
+					int nRowsAff = cmd.ExecuteNonQuery();
+
+					var s = string.Format( "cmd={0:00} affect={1} : {2}", ++conta, nRowsAff, comando.Substring( 0, Math.Min( comando.Length, 40 ) ) );
+					_giornale.Debug( s );
+
+				}
+
+				conn.Close();
+			}
 		}
 
 	}

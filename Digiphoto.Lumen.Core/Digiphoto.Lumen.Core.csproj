@@ -380,6 +380,7 @@
     <Compile Include="src\Util\FormuleMagiche.cs" />
     <Compile Include="src\Util\LumenException.cs" />
     <Compile Include="src\Util\NetworkUtil.cs" />
+    <Compile Include="src\Util\Orologio.cs" />
     <Compile Include="src\Util\UsbEjectWithExe.cs" />
     <Compile Include="src\Util\ErroriUtil.cs" />
     <Compile Include="src\Util\FotoRangeUtil.cs" />

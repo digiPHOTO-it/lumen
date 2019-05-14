@@ -70,6 +70,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			observable.Subscribe(this);
 
 			canCreateDatabase = false;
+			canDestroyDatabase = false;
         }
 
 
@@ -716,6 +717,18 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 			}
 		}
 
+		private bool _canDestroyDatabase;
+		public bool canDestroyDatabase {
+			get {
+				return _canDestroyDatabase;
+			}
+			private set {
+				if( _canDestroyDatabase != value ) {
+					_canDestroyDatabase = value;
+					OnPropertyChanged( "canDestroyDatabase" );
+				}
+			}
+		}
 
 		public bool possoVerificareSeDatabaseProntoAllUso {
 			get {
@@ -920,7 +933,18 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
             }
         }
 
-        private RelayCommand _cambiaPasswordCommand;
+		private RelayCommand _destroyDatabaseCommand;
+		public ICommand destroyDatabaseCommand {
+			get {
+				if( _destroyDatabaseCommand == null ) {
+					_destroyDatabaseCommand = new RelayCommand( p => destroyDatabase(), 
+						                                        p => canDestroyDatabase );
+				}
+				return _destroyDatabaseCommand;
+			}
+		}
+
+		private RelayCommand _cambiaPasswordCommand;
         public ICommand cambiaPasswordCommand
         {
             get
@@ -1076,7 +1100,6 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
         {
 			_giornale.Debug( "Devo provare a connettermi al db" );
 
-
 			DbUtil dbUtil = new DbUtil( cfg );
 
 			// il test della connessione è diverso dal verificare se il db è utilizzabile. Sono due cose diverse
@@ -1097,7 +1120,7 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
 			// Devo aggiornare anche l'altro 
 			canCreateDatabase = dbUtil.possoCreareNuovoDatabase;
-			
+			canDestroyDatabase = dbUtil.possoDistruggereDatabase;
 		}
 
 
@@ -1310,16 +1333,52 @@ namespace Digiphoto.Lumen.GestoreConfigurazione.UI
 
         private void createDataBase()
         {
-
 			DbUtil qdbUtil = new DbUtil( cfg );
 
 			// Se non esiste la cartella per il database, allora la creo.
 			qdbUtil.creareNuovoDatabase();
 
-			dialogProvider.ShowMessage( "DataBase creato con successo", "Avviso" );
+			dialogProvider.ShowMessage( "Database creato con successo", "Avviso" );
 
 			isConnessioneStabilita = qdbUtil.testConessione();
+			canCreateDatabase = qdbUtil.possoCreareNuovoDatabase;
+			canDestroyDatabase = qdbUtil.possoDistruggereDatabase;
 		}
+
+		private void destroyDatabase() {
+
+			bool procediPure = true;
+
+			dialogProvider.ShowConfirmation( "Questa operazione distruggerà tutta la base dati\nin modo irreversibile.\nSei sicuro di voler procedere ?", "ATTENZIONE: Distruzione dati",
+				( sino ) => {
+					procediPure = sino;
+				} );
+			if( !procediPure )
+				return;
+			dialogProvider.ShowConfirmation( "Ultimo avviso.\nEliminare tutti i dati in modo definitivo ?", "ULTIMO AVVERTIMENTO !!",
+				( sino ) => {
+					procediPure = sino;
+				} );
+			if( !procediPure )
+				return;
+
+
+			DbUtil qdbUtil = new DbUtil( cfg );
+
+			// Se non esiste la cartella per il database, allora la creo.
+			qdbUtil.distruggereDatabase();
+
+			dialogProvider.ShowMessage( "Database distrutto", "Avviso" );
+
+			isConnessioneStabilita = qdbUtil.testConessione();
+
+			// Devo aggiornare anche l'altro 
+			canCreateDatabase = qdbUtil.possoCreareNuovoDatabase;
+			canDestroyDatabase = qdbUtil.possoDistruggereDatabase;
+		}
+
+		
+
 
 		private void login()
         {

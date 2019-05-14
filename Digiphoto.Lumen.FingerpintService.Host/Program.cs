@@ -1,11 +1,15 @@
 using Digiphoto.Lumen.Applicazione;
 using Digiphoto.Lumen.FingerprintService.ZK;
+using log4net;
 using System;
 using System.ServiceModel;
 using System.Threading;
 
 namespace Digiphoto.Lumen.FingerprintService.Host {
+
 	class Program {
+
+		protected new static readonly ILog _giornale = LogManager.GetLogger( typeof( Program ) );
 
 		private static Mutex mutex = null;
 		private static ServiceHost myServiceHost = null;
@@ -40,6 +44,8 @@ namespace Digiphoto.Lumen.FingerprintService.Host {
 				Console.Out.WriteLine( "Step=3 : Avvio servizio Fingerprint-Service" );
 				myServiceHost.Open();
 
+				_giornale.Info( "Fingerprint Service avviato" );
+
 				//
 				string line;
 				do {
@@ -52,6 +58,7 @@ namespace Digiphoto.Lumen.FingerprintService.Host {
 			} catch( Exception ee ) {
 
 				Console.Error.Write( ee.StackTrace );
+				_giornale.Error( "Avvio", ee );
 
 			} finally {
 

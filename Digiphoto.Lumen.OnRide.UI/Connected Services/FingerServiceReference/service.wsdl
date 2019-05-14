@@ -22,6 +22,12 @@
   <wsdl:message name="IFingerprintService_About_OutputMessage">
     <wsdl:part name="parameters" element="tns:AboutResponse" />
   </wsdl:message>
+  <wsdl:message name="IFingerprintService_GetOrario_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetOrario" />
+  </wsdl:message>
+  <wsdl:message name="IFingerprintService_GetOrario_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetOrarioResponse" />
+  </wsdl:message>
   <wsdl:message name="IFingerprintService_IdentificaOrAggiungi_InputMessage">
     <wsdl:part name="parameters" element="tns:IdentificaOrAggiungi" />
   </wsdl:message>
@@ -39,6 +45,10 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IFingerprintService/About" message="tns:IFingerprintService_About_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IFingerprintService/AboutResponse" message="tns:IFingerprintService_About_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="GetOrario">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFingerprintService/GetOrario" message="tns:IFingerprintService_GetOrario_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFingerprintService/GetOrarioResponse" message="tns:IFingerprintService_GetOrario_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="IdentificaOrAggiungi">
       <wsdl:input wsaw:Action="http://tempuri.org/IFingerprintService/IdentificaOrAggiungi" message="tns:IFingerprintService_IdentificaOrAggiungi_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IFingerprintService/IdentificaOrAggiungiResponse" message="tns:IFingerprintService_IdentificaOrAggiungi_OutputMessage" />
@@ -54,6 +64,15 @@
     <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
     <wsdl:operation name="About">
       <soap12:operation soapAction="http://tempuri.org/IFingerprintService/About" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetOrario">
+      <soap12:operation soapAction="http://tempuri.org/IFingerprintService/GetOrario" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

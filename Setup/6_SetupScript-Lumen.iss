@@ -2,12 +2,13 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName       "Lumen"
-#define MyAppVersion    "3.1.0"
+#define MyAppVersion    "3.2.beta1"
 #define MyAppPublisher  "digiPHOTO.it"
 #define MyAppURL        "http://www.digiphoto.it/Lumen"
 #define MyAppExeName    "Digiphoto.Lumen.UI.exe"
 #define MyConfExeName   "Digiphoto.Lumen.GestoreConfigurazione.UI.exe"
 #define SSHostExeName   "Digiphoto.Lumen.SelfService.HostConsole.exe" 
+#define FPHostExeName   "Digiphoto.Lumen.FingerpintService.Host.exe" 
 #define OnRideUIExeName "Digiphoto.Lumen.OnRide.UI.exe" 
 #define dirPLat         "bin\Release"
 
@@ -60,6 +61,8 @@ Source: "..\Digiphoto.Lumen.Core\{#dirPlat}\log4net.dll"; DestDir: "{app}"; Flag
 Source: "..\Digiphoto.Lumen.Core\{#dirPlat}\MemBus.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.Core\{#dirPlat}\ExifLib.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.Core\{#dirPlat}\skgl.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.Core\lib\x64\libzkfpcsharp.dll"; DestDir: "{app}"; Check: "IsWin64"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.Core\lib\x86\libzkfpcsharp.dll"; DestDir: "{app}"; Check: "not IsWin64"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.Core\{#dirPlat}\Resources\*"; DestDir: "{app}\Resources"; Flags: recursesubdirs
 ; --- Imaging ---                                                            
 Source: "..\Digiphoto.Lumen.Imaging.Wic\{#dirPlat}\Digiphoto.Lumen.Imaging.Wic.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -84,6 +87,11 @@ Source: "..\Digiphoto.Lumen.SelfService.HostConsole\{#dirPlat}\Digiphoto.Lumen.S
 Source: "..\Digiphoto.Lumen.SelfService\{#dirPlat}\Digiphoto.Lumen.SelfService.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\Images\Operator1.jpg"; DestDir: "{%PUBLIC|C:\Users\Public}\Pictures\Lumen\Fotografi"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\Images\Lumen-selfservice-logo.png"; DestDir: "{%PUBLIC|C:\Users\Public}\Pictures\Lumen\Loghi"; Flags: ignoreversion
+; --- Fingerprint Service
+Source: "..\Digiphoto.Lumen.FingerpintService.Host\{#dirPlat}\Digiphoto.Lumen.FingerpintService.Host.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.FingerpintService.Host\{#dirPlat}\Digiphoto.Lumen.FingerpintService.Host.exe.config"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.FingerprintService\{#dirPlat}\Digiphoto.Lumen.FingerprintService.dll"; DestDir: "{app}"; Flags: ignoreversion
+
 ; --- OnRide
 Source: "..\Digiphoto.Lumen.OnRide.UI\{#dirPlat}\Digiphoto.Lumen.OnRide.UI.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.OnRide.UI\{#dirPlat}\Digiphoto.Lumen.OnRide.UI.exe.config"; DestDir: "{app}"; Flags: ignoreversion
@@ -109,6 +117,7 @@ Source: "..\packages\MySql.Data.Entity.6.9.9\lib\net45\MySql.Data.Entity.EF6.dll
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{group}\{#MyAppName} Configurazione"; Filename: "{app}\{#MyConfExeName}"
 Name: "{group}\{#MyAppName} Self Service Host"; Filename: "{app}\{#SSHostExeName}"
+Name: "{group}\{#MyAppName} Fingerprint Service Host"; Filename: "{app}\{#FPHostExeName}"
 Name: "{group}\{#MyAppName} OnRide manager"; Filename: "{app}\{#OnRideUIExeName}"
 ;
 Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"

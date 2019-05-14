@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `lumen`.`InfosFisse` (
   `id` CHAR(1) NOT NULL,
   `ultimoNumFotogramma` INT(11) NOT NULL,
   `dataUltimoScarico` DATE NULL,
-  `versioneDbCompatibile` VARCHAR(10) NOT NULL DEFAULT '2.1',
+  `versioneDbCompatibile` VARCHAR(10) NOT NULL DEFAULT '4',
   `modoNumerazFoto` CHAR(1) NOT NULL DEFAULT 'M',
   `pixelProvino` SMALLINT(5) NOT NULL,
   `idPuntoVendita` VARCHAR(5) NULL,
@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS `lumen`.`InfosFisse` (
   `numGiorniEliminaFoto` SMALLINT(5) NOT NULL DEFAULT 0,
   `varie` VARCHAR(200) NULL,
   `urlPrefixSelfServiceWeb` VARCHAR(45) NULL,
+  `scannerImpronte` varchar(20) null,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
@@ -321,6 +322,7 @@ CREATE TABLE IF NOT EXISTS `lumen`.`Ospiti` (
   `id` INT(11) NOT NULL,
   `nome` VARCHAR(50) NULL DEFAULT NULL,
   `impronta` BLOB NOT NULL,
+  ora DATETIME not null default CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 ;

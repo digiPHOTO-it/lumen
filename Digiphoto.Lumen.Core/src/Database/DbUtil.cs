@@ -77,6 +77,16 @@ namespace Digiphoto.Lumen.Core.Database {
 			}
 		}
 
+		public void distruggereDatabase() {
+			_databaseAdapter.distruggereDatabase();
+		}
+
+		public bool possoDistruggereDatabase {
+			get {
+				return _databaseAdapter.possoDistruggereDatabase;
+			}
+		}
+
 		public void creareNuovoDatabase() {
 			_databaseAdapter.creareNuovoDatabase();
 		}
@@ -86,7 +96,6 @@ namespace Digiphoto.Lumen.Core.Database {
 				return _databaseAdapter.possoCreareNuovoDatabase;
 			}
 		}
-
-
+		
 	}
 }
