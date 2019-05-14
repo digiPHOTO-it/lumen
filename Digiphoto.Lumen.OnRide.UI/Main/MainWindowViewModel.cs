@@ -284,6 +284,8 @@ namespace Digiphoto.Lumen.OnRide.UI {
 					refreshStatoScanner();
 				}
 
+				FPSClientSingleton.Instance.SyncroOrarioColServer();
+
 			}
 
 			// Ascolto messaggio

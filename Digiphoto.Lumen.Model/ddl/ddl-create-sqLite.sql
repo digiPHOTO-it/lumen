@@ -47,7 +47,9 @@ CREATE TABLE [InfosFisse] (
     [idPuntoVendita] nvarchar(5)   NULL ,
     [descrizPuntoVendita] nvarchar(50)   NULL ,
     [numGiorniEliminaFoto] smallint   NOT NULL ,
-    [varie] nvarchar(200)   NULL 
+    [varie] nvarchar(200)   NULL,
+	[urlPrefixSelfServiceWeb] VARCHAR(45) NULL,
+	[scannerImpronte] varchar(20) null
  , PRIMARY KEY ([id])	
 		);
 
@@ -246,8 +248,10 @@ CREATE TABLE [Ospiti] (
   `id` integer NOT NULL,
   `nome` VARCHAR(50) NULL,
   `impronta` BLOB NOT NULL,
+  `ora` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`))
 ;
+
 
 -- --------------------------------------------------
 -- Script has ended

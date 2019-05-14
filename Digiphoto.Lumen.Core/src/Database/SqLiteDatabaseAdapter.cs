@@ -81,6 +81,12 @@ namespace Digiphoto.Lumen.Core.Database {
 			}
 		}
 
+		public override bool possoDistruggereDatabase {
+			get {
+				return File.Exists( nomeFileDbPieno );
+			}
+		}
+
 		#endregion Proprietà
 
 		#region Metodi
@@ -112,24 +118,10 @@ namespace Digiphoto.Lumen.Core.Database {
 
 		protected override string eventualiUpgradeBaseDati( DbConnection conn, string versioneAttuale ) {
 
-			base.eventualiUpgradeBaseDati( conn, versioneAttuale );
-
-			if( versioneAttuale == "2.1" ) {
-
-				// Rinomino la correzione "Maschera" in "Mascheratura"
-				string sql = @"update AzioniAutomatiche
-								set correzioniXml = replace( correzioniXml, 'type=""Maschera""', 'type=""Mascheratura""' )";
-
-				var cmd = conn.CreateCommand();
-				cmd.CommandText = sql;
-				cmd.CommandType = CommandType.Text;
-				int conta = cmd.ExecuteNonQuery();
-
-				string sql2 = @"update InfosFisse set versioneDbCompatibile = '" + VERSIONE_DB_COMPATIBILE + "'";
-				cmd.CommandText = sql2;
-				var conta2 = cmd.ExecuteNonQuery();
-
-				_giornale.Debug( "Aggiornati " + conta + " record. Aggiornamento db " + VERSIONE_DB_COMPATIBILE );
+			if( versioneAttuale == "4" ) {
+				_giornale.Info( "upgrade base dati da versione " + versioneAttuale + " a " + VERSIONE_DB_COMPATIBILE );
+				eseguiDDL( "Digiphoto.Lumen.Model.ddl.ddl-upgrade-sqlite-005.sql" );
+				_giornale.Info( "Fine upgrade database MySql tramite DDL" );
 
 				versioneAttuale = VERSIONE_DB_COMPATIBILE;
 			}
@@ -179,6 +171,14 @@ namespace Digiphoto.Lumen.Core.Database {
 				throw new InvalidOperationException( "Il database " + nomeFileDbPieno + " esiste già. Copia fallita" );
 			}
 
+		}
+
+		public override void distruggereDatabase() {
+			File.Delete( nomeFileDbPieno );
+		}
+
+		protected override string eventualeCorrezioneConnectionString( string connectionString ) {
+			return connectionString;
 		}
 
 		#endregion Metodi

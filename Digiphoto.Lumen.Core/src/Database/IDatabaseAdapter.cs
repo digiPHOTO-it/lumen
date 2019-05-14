@@ -16,6 +16,10 @@
 			get;
 		}
 
+		bool possoDistruggereDatabase {
+			get;
+		}
+
 		bool verificaSeDatabaseUtilizzabile( out string msgErrore );
 
 
@@ -30,6 +34,8 @@
 		/// Se il db esiste già oppure non può essere creato, allora solleva eccezione.
 		/// </summary>
 		void creareNuovoDatabase();
+
+		void distruggereDatabase();
 
 #if false
 		/// <summary>
