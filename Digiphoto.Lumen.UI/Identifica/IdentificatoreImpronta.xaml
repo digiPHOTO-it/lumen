@@ -14,7 +14,7 @@
 	<DockPanel LastChildFill="True">
 	
 		<StackPanel Orientation="Vertical" DockPanel.Dock="Left">
-			<Button Content="Identifica" Style="{StaticResource butScannerStyle}" Margin="0 6 0 6" Command="{Binding identificareCommand}" />
+			<Button Content="Identifica" Style="{StaticResource butScannerStyle}" Margin="1 2 1 2" MinHeight="30" Command="{Binding identificareCommand}" />
 			<Label Content="stato scanner" Style="{StaticResource statusLabelStyle}" />
 			<Label Content="{Binding statoScanner}" Style="{StaticResource statusLabelStyle}" />
 			<Label Content="{Binding esitoIdentificazione}" Style="{StaticResource statusLabelStyleEsito}" />

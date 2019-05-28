@@ -167,10 +167,16 @@ namespace Digiphoto.Lumen.UI.Identifica {
 				nomeFileBmpImpronta = null;
 				strBase64Template = null;
 			}
-			OnPropertyChanged( "possoIdentificare" );
-			OnPropertyChanged( "nomeFileBmpImpronta" );
-			// Non so come fare a rinfrescare il pulsante "Identifica" che normalmente è spento. La property: "possoIdentificare" non è sufficiente.
-			CommandManager.InvalidateRequerySuggested();
+
+			// Forzo il refersh del pulsante ma nella UI perché qui sono in un thread di callback e non avrebbe effetto
+			App.Current.Dispatcher.BeginInvoke( new Action( () => {
+				OnPropertyChanged( "possoIdentificare" );
+				OnPropertyChanged( "nomeFileBmpImpronta" );
+
+				_identificareCommand.RaiseCanExecuteChanged();
+			} ) );
+
+
 		}
 
 		protected override void OnDispose() {
