@@ -70,6 +70,11 @@ namespace Digiphoto.Lumen.UI.Mvvm {
 			}
 		}
 
+
+		public void RaiseCanExecuteChanged() {
+			CommandManager.InvalidateRequerySuggested();
+		}
+
 		public void Execute( object parameter ) {
 
 			try {
