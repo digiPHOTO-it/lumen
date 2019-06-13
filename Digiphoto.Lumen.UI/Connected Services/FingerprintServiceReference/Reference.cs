@@ -21,6 +21,12 @@ namespace Digiphoto.Lumen.UI.FingerprintServiceReference {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFingerprintService/About", ReplyAction="http://tempuri.org/IFingerprintService/AboutResponse")]
         System.Threading.Tasks.Task<string> AboutAsync();
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFingerprintService/GetOrario", ReplyAction="http://tempuri.org/IFingerprintService/GetOrarioResponse")]
+        System.DateTime GetOrario();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFingerprintService/GetOrario", ReplyAction="http://tempuri.org/IFingerprintService/GetOrarioResponse")]
+        System.Threading.Tasks.Task<System.DateTime> GetOrarioAsync();
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFingerprintService/IdentificaOrAggiungi", ReplyAction="http://tempuri.org/IFingerprintService/IdentificaOrAggiungiResponse")]
         string IdentificaOrAggiungi(string template);
         
@@ -67,6 +73,14 @@ namespace Digiphoto.Lumen.UI.FingerprintServiceReference {
         
         public System.Threading.Tasks.Task<string> AboutAsync() {
             return base.Channel.AboutAsync();
+        }
+        
+        public System.DateTime GetOrario() {
+            return base.Channel.GetOrario();
+        }
+        
+        public System.Threading.Tasks.Task<System.DateTime> GetOrarioAsync() {
+            return base.Channel.GetOrarioAsync();
         }
         
         public string IdentificaOrAggiungi(string template) {

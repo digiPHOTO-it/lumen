@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="rU8CoeXTqtM2HVHsmmx4qSGu7Hg=">
+<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="hO0qi/Y2kmqEkKCr2stdzEIIP8w=">
   <bindingConfigurations>
     <bindingConfiguration bindingType="netTcpBinding" name="myNetTcpEndPoint">
       <properties>
@@ -121,10 +121,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="myNetTcpEndPoint" contract="FingerprintServiceReference.IFingerprintService" bindingType="netTcpBinding" address="net.tcp://server-lumen:8524/Digiphoto.Lumen.Servizi/FingerprintService/" bindingConfiguration="myNetTcpEndPoint">
+    <endpoint name="myNetTcpEndPoint" contract="FingerprintServiceReference.IFingerprintService" bindingType="netTcpBinding" address="net.tcp://server-lumen:8702/Digiphoto.Lumen.Services.Fingerprint/FingerprintService/" bindingConfiguration="myNetTcpEndPoint">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>net.tcp://server-lumen:8524/Digiphoto.Lumen.Servizi/FingerprintService/</serializedValue>
+          <serializedValue>net.tcp://server-lumen:8702/Digiphoto.Lumen.Services.Fingerprint/FingerprintService/</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
