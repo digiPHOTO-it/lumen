@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="26d121f6-f579-450f-8f9f-02d93205ed17" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="net.tcp://server-lumen:8701/Digiphoto.Lumen.Services/SpoolerService/mex" Protocol="mex" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="a596c37e-cc11-4dee-af23-96233957a582" SourceId="1" SourceUrl="net.tcp://server-lumen:8701/Digiphoto.Lumen.Services/SpoolerService/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="42309f09-36d1-4823-b966-02ef09f5f7bc" SourceId="1" SourceUrl="net.tcp://server-lumen:8701/Digiphoto.Lumen.Services/SpoolerService/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="a60312bd-cc4d-4666-8a67-8fc64151445d" SourceId="1" SourceUrl="net.tcp://server-lumen:8701/Digiphoto.Lumen.Services/SpoolerService/mex" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>
