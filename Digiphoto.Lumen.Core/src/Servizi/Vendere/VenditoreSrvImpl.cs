@@ -15,6 +15,7 @@ using Digiphoto.Lumen.Servizi.Reports;
 using System.ComponentModel;
 using System.Data.Entity.Validation;
 using Digiphoto.Lumen.Core.Servizi.Vendere;
+using Digiphoto.Lumen.Core.SpoolerServiceReference;
 
 namespace Digiphoto.Lumen.Servizi.Vendere {
 
@@ -179,6 +180,11 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			{ typeof( PromoProdXProd ), new  CalcolatorePromoProdXProd() }
 		};
 
+		// Eventuale client del servizio di stampa centralizzato
+		SpoolerServiceClient spoolerServiceClient = null;
+
+		StampantiAbbinateCollection stampantiAbbinate;
+
 		#endregion Fields
 
 
@@ -187,6 +193,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			// istanzio il gestore del carrello e creo subito un carrello nuovo per iniziare a lavorare subito.
 			gestoreCarrello = new GestoreCarrello();
 
+			stampantiAbbinate = StampantiAbbinateUtil.deserializza( Configurazione.UserConfigLumen.stampantiAbbinate );
 
 			contaMessaggiInCoda = 0;
 		}
@@ -194,6 +201,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		protected override void Dispose( bool disposing ) {
 
 			gestoreCarrello.Dispose(); // Importante: mi serve per rilasciare il DbContext (che altrimenti rimane aperto e tiene sotto scacco le entità)
+
 
 			chiudiTuttiIServiziSospesi();
 		}
@@ -213,6 +221,15 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 						}
 					}
 				} while( listaServiziDaChiudere.Count > 0 );
+
+
+
+				// Eventualmente chiudo il client del servizio di stampa
+				if( spoolerServiceClient != null ) {
+					spoolerServiceClient.Close();
+					spoolerServiceClient = null;
+				}
+
 			}
 		}
 
@@ -260,10 +277,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 		public void caricareCarrello( Carrello c ) {
+			caricareCarrello( c.id );
+		}
+
+		public void caricareCarrello( Guid guid ) {
 
 			ascoltatorePropertyChangedElimina();
 
-			gestoreCarrello.caricaCarrello( c.id );
+			gestoreCarrello.caricaCarrello( guid );
 
 			ascoltatorePropertyChangedCrea();
 
@@ -272,7 +293,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 				CalcolaPromozioni();
 
 			GestoreCarrelloMsg msg = new GestoreCarrelloMsg( this );
-			msg.descrizione = "Caricato carrello dal database: " + c.intestazione;
+			msg.descrizione = "Caricato carrello dal database: " + carrello.intestazione;
 			msg.showInStatusBar = true;
 			msg.fase = Digiphoto.Lumen.Servizi.Vendere.GestoreCarrelloMsg.Fase.LoadCarrelloSalvato;
 			LumenApplication.Instance.bus.Publish( msg );
@@ -456,7 +477,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			} finally {
 				// Vado avanti ugualmente
 				// Prima lancio le stampe
-				eventualeStampa( carrello );
+				EventualiStampeCarrello( carrello );
 
 				// Poi lancio la masterizzazione
 				eventualeMasterizzazione( carrello );
@@ -585,44 +606,156 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			}
 		}
 
-		private void eventualeStampa( Carrello carrello ) {
+		/// <summary>
+		/// Il carrello è stato venduto dal client, ma deve eseguire le stampe il server.
+		/// </summary>
+		/// <param name="carrelloId"></param>
+		public void RistampareCarrello( Guid carrelloId ) {
 
-			// Se non ho righe nel carrello da stampare, allora esco.
-			if( carrello == null || carrello.righeCarrello.Count == 0 )
+			caricareCarrello( carrelloId );
+
+			if( ! carrello.venduto )
+				throw new InvalidOperationException( "Il carrello non è stato venduto. Impossibile stampare" );
+
+			RiassegnaStampantiRighe( true );
+
+			EventualiStampeCarrello( carrello );
+		}
+
+		/// <summary>
+		/// Il carrello è stato venduto dal client, ma deve eseguire le stampe il server.
+		/// </summary>
+		/// <param name="carrelloId"></param>
+		public void RistampareRigaCarrello( Guid rigaCarrelloId  ) {
+
+			RigaCarrello riga = UnitOfWorkScope.currentDbContext.RigheCarrelli.Include( "carrello" ).Single( r => r.id == rigaCarrelloId );
+			RiassegnaStampanteRiga( riga, true );
+
+			EventualeStampaRiga( riga );
+		}
+
+		private void RiassegnaStampantiRighe( bool azzeraSeFake ) {
+
+			// Sistemo le stampanti perché sui client potrebbero chiamarsi in modo diverso.
+			foreach( RigaCarrello riga in carrello.righeCarrello )
+				RiassegnaStampanteRiga( riga, azzeraSeFake );
+		}
+
+
+		/// <summary>
+		/// Quando stampo il carrello sul server, le stampanti potrebbero chiamarsi in modo diverso
+		/// cerco di sistemare i nomi. Se non riesco, le ricalcolo in base al formato carta richiesto
+		/// </summary>
+		private void RiassegnaStampanteRiga( RigaCarrello riga, bool azzeraSeFake ) {
+
+			if( !riga.isTipoStampa )
 				return;
 
-			LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
+			IStampantiInstallateSrv stampantiInstallateSrv = LumenApplication.Instance.getServizioAvviato<IStampantiInstallateSrv>();
 
+			// Mi serve per forzare il caricamento della associazione. non togliere
+			var d1 = riga.fotografia.fotografo.cognomeNome;
 
+			// Siccome il nome della stampante è un attributo transiente,
+			// eventualmente lo assegno. Potrebbe essere null, quando carico un carrello dal db.
+
+			String tenta = riga.nomeStampante;
+			if( azzeraSeFake && StampanteInstallata.NOME_FAKE_PRINTSERVER.Equals( tenta ) )
+				tenta = "!#^ç";
+			StampanteInstallata stp = null;
+
+			stp = stampantiInstallateSrv.getStampanteInstallataByString( tenta );
+			if( stp == null ) {
+				int pos = tenta.LastIndexOf( "\\" );
+				if( pos < 0 )
+					pos = tenta.LastIndexOf( "/" );
+				if( pos > 0 )
+					tenta = tenta.Substring( pos + 1 );
+				stp = stampantiInstallateSrv.getStampanteInstallataByString( tenta );
+				if( stp == null ) {
+					// Cerco con il formato indicato
+					var sab = stampantiAbbinate.FirstOrDefault( sa => sa.FormatoCarta.descrizione == riga.prodotto.descrizione && sa.StampanteInstallata.isFake == false );
+					if( sab != null )
+						stp = sab.StampanteInstallata;
+				}
+
+			}
+
+			if( stp == null ) {
+				_giornale.Error( "Impossibile assegnare stampante di riga. non so dove stampare" );
+			} else {
+				if( riga.nomeStampante != stp.NomeStampante ) {
+					riga.nomeStampante = stp.NomeStampante;
+					_giornale.Debug( "Riassegno nome stampante: " + stp.NomeStampante );
+				}
+			}
+
+		}
+
+		private void EventualiStampeCarrello( Carrello carrello ) {
+
+			// Se non ho righe nel carrello da stampare, allora esco.
+			if( carrello == null )
+				return;
 
 			int conta = 0;
 			foreach( RigaCarrello riga in carrello.righeCarrello ) {
 
 				if( riga.isTipoStampa ) {
-
-					// Siccome il nome della stampante è un attributo transiente,
-					// eventualmente lo assegno. Potrebbe essere null, quando carico un carrello dal db.
-					if( riga.nomeStampante == null ) {
-						StampanteAbbinata sa = _stampantiAbbinate.FirstOrDefault<StampanteAbbinata>( s => s.FormatoCarta.Equals( riga.prodotto ) );
-						if( sa != null )
-							riga.nomeStampante = sa.StampanteInstallata.NomeStampante;
-						else
-							_giornale.Warn( "Non riesco a stabilire la stampante di questa carta: " + riga.prodotto.descrizione + "(id=" + riga.prodotto.id + ")" );
-					}
-
 					++conta;
-
-					// Creo nuovamente i parametri di stampa perché potrebbero essere cambiati nell GUI
-					ParamStampaFoto paramStampaFoto = creaParamStampaFoto( riga );
-
-					// Se è un carrello di tipo foto tessera, creo i parametri 
-					if( carrello.intestazione == VenditoreSrvImpl.INTESTAZIONE_STAMPA_FOTOTESSERA ) {
-						spoolStampeSrv.accodaFotoTessera( riga.fotografia, (ParamStampaTessera)paramStampaFoto );
-					} else {
-						spoolStampeSrv.accodaStampaFoto( riga.fotografia, paramStampaFoto );
-					}
+					EventualeStampaRiga( riga );
 				}
 			}
+			
+		}
+
+		private void EventualeStampaRiga( RigaCarrello riga ) {
+
+			riga.nomeStampante = forseRiassegnaNomeStampante( riga );
+
+			// Creo nuovamente i parametri di stampa perché potrebbero essere cambiati nell GUI
+			ParamStampaFoto paramStampaFoto = creaParamStampaFoto( riga );
+
+			// Se è un carrello di tipo foto tessera, creo i parametri 
+			if( riga.carrello.intestazione == VenditoreSrvImpl.INTESTAZIONE_STAMPA_FOTOTESSERA ) {
+				spoolStampeSrv.accodaFotoTessera( riga.fotografia, (ParamStampaTessera)paramStampaFoto );
+			} else {
+
+				// Eseguo la stampa sul server
+				if( riga.nomeStampante == StampanteInstallata.NOME_FAKE_PRINTSERVER ) {
+
+					if( spoolerServiceClient == null ) {
+						spoolerServiceClient = new SpoolerServiceClient();
+						var ss = spoolerServiceClient.About();
+						_giornale.Info( "connessione al servizio: " + ss );
+					}
+					spoolerServiceClient.EseguireStampe( 'R', riga.id );
+				} else
+					spoolStampeSrv.accodaStampaFoto( riga.fotografia, paramStampaFoto );
+			}
+		}
+
+		private string forseRiassegnaNomeStampante( RigaCarrello riga ) {
+
+			bool riassegna = false;
+			string newNomeStampante = riga.nomeStampante;
+
+
+			if( riga.nomeStampante == null )
+				riassegna = true;
+
+			// Siccome il nome della stampante è un attributo transiente,
+			// eventualmente lo assegno. Potrebbe essere null, quando carico un carrello dal db.
+			if( riassegna ) {
+				StampanteAbbinata sa = _stampantiAbbinate.FirstOrDefault<StampanteAbbinata>( s => s.FormatoCarta.Equals( riga.prodotto ) );
+				if( sa != null )
+					newNomeStampante = sa.StampanteInstallata.NomeStampante;
+				else
+					_giornale.Warn( "Non riesco a stabilire la stampante di questa carta: " + riga.prodotto.descrizione + "(id=" + riga.prodotto.id + ")" );
+			}
+
+			
+			return newNomeStampante;
 		}
 
 		/**

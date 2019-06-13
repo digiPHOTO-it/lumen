@@ -7,7 +7,10 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 {
     public class StampanteInstallata
     {
-        public StampanteInstallata()
+		public const string NOME_FAKE_PRINTSERVER = "LumenSpoolerService";
+
+
+		public StampanteInstallata()
         {
         }
 
@@ -38,6 +41,12 @@ namespace Digiphoto.Lumen.Servizi.Stampare
 		public float rapporto {
 			get;
 			internal set;
+		}
+
+		public bool isFake {
+			get {
+				return this.NomeStampante == StampanteInstallata.NOME_FAKE_PRINTSERVER;
+			}
 		}
 
 		public override string ToString() {

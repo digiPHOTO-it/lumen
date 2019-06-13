@@ -1,5 +1,5 @@
 using Digiphoto.Lumen.Applicazione;
-using Digiphoto.Lumen.FingerprintService.ZK;
+using Digiphoto.Lumen.Services.Fingerprint;
 using log4net;
 using System;
 using System.ServiceModel;

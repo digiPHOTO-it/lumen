@@ -97,6 +97,14 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			get;
 		}
 
+
+		/// <summary>
+		/// Riesegue di nuovo le stampe del carrello (che magari si erano inceppate)
+		/// </summary>
+		/// <param name="carrelloId"></param>
+		void RistampareCarrello( Guid carrelloId );
+		void RistampareRigaCarrello( Guid rigaCarrelloId );
+
 		void caricareCarrello( Carrello c );
 
 		List<RigaReportVendite> creaReportVendite( ParamRangeGiorni param );
