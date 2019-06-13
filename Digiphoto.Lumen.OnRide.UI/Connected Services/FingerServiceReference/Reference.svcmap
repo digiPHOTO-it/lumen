@@ -19,12 +19,12 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="net.tcp://server-lumen:8524/Digiphoto.Lumen.Servizi/FingerprintService/mex" Protocol="mex" SourceId="1" />
+    <MetadataSource Address="net.tcp://server-lumen:8702/Digiphoto.Lumen.Services.Fingerprint/FingerprintService/mex" Protocol="mex" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="776fb614-92fb-43ce-88eb-7aaa210f41e9" SourceId="1" SourceUrl="net.tcp://server-lumen:8524/Digiphoto.Lumen.Servizi/FingerprintService/mex" />
-    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="e5000b1b-20f9-4de8-9389-ed7d72c2fa97" SourceId="1" SourceUrl="net.tcp://server-lumen:8524/Digiphoto.Lumen.Servizi/FingerprintService/mex" />
-    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="aef5192d-e78d-4e08-a1ae-2928e0247657" SourceId="1" SourceUrl="net.tcp://server-lumen:8524/Digiphoto.Lumen.Servizi/FingerprintService/mex" />
+    <MetadataFile FileName="service1.wsdl" MetadataType="Wsdl" ID="89ef4992-42ba-4da7-9149-52144750d784" SourceId="1" SourceUrl="net.tcp://server-lumen:8702/Digiphoto.Lumen.Services.Fingerprint/FingerprintService/mex" />
+    <MetadataFile FileName="service2.xsd" MetadataType="Schema" ID="869c1079-4d74-47fa-b906-d8c04dc066d5" SourceId="1" SourceUrl="net.tcp://server-lumen:8702/Digiphoto.Lumen.Services.Fingerprint/FingerprintService/mex" />
+    <MetadataFile FileName="service21.xsd" MetadataType="Schema" ID="eed6f145-b17c-486d-9132-107ce0d0d87a" SourceId="1" SourceUrl="net.tcp://server-lumen:8702/Digiphoto.Lumen.Services.Fingerprint/FingerprintService/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

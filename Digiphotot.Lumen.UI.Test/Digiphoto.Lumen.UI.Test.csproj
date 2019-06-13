@@ -38,6 +38,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -62,6 +64,9 @@
     <Compile Include="src\Adorner\AdornerProva2.xaml.cs">
       <DependentUpon>AdornerProva2.xaml</DependentUpon>
     </Compile>
+    <Compile Include="src\PrintServerTest\PrintServiceClientWindow.xaml.cs">
+      <DependentUpon>PrintServiceClientWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="src\Adorner\AdornerProva2.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -78,6 +83,10 @@
       <DependentUpon>AdornerProva1.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="src\PrintServerTest\PrintServiceClientWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -107,11 +116,23 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Digiphoto.Lumen.Core\Digiphoto.Lumen.Core.csproj">
+      <Project>{34477397-B3B8-4DD1-8418-D7E9EED4D006}</Project>
+      <Name>Digiphoto.Lumen.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Digiphoto.Lumen.Model\Digiphoto.Lumen.Model.csproj">
+      <Project>{83D8301E-7999-4179-962C-1BFA507F5396}</Project>
+      <Name>Digiphoto.Lumen.Model</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Digiphoto.Lumen.PresentationFramework\Digiphoto.Lumen.PresentationFramework.csproj">
       <Project>{8803e78f-a9ad-479c-9316-463e7218334d}</Project>
       <Name>Digiphoto.Lumen.PresentationFramework</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

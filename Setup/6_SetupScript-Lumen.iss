@@ -2,13 +2,14 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName       "Lumen"
-#define MyAppVersion    "3.2.beta2"
+#define MyAppVersion    "3.2.rc1"
 #define MyAppPublisher  "digiPHOTO.it"
 #define MyAppURL        "http://www.digiphoto.it/Lumen"
 #define MyAppExeName    "Digiphoto.Lumen.UI.exe"
 #define MyConfExeName   "Digiphoto.Lumen.GestoreConfigurazione.UI.exe"
 #define SSHostExeName   "Digiphoto.Lumen.SelfService.HostConsole.exe" 
-#define FPHostExeName   "Digiphoto.Lumen.FingerpintService.Host.exe" 
+#define FPHostExeName   "Digiphoto.Lumen.FingerpintService.Host.exe"
+#define SPHostExeName   "Digiphoto.Lumen.SpoolerService.Host.exe" 
 #define OnRideUIExeName "Digiphoto.Lumen.OnRide.UI.exe" 
 #define dirPLat         "bin\Release"
 
@@ -91,6 +92,10 @@ Source: "..\Digiphoto.Lumen.GestoreConfigurazione.UI\Images\Lumen-selfservice-lo
 Source: "..\Digiphoto.Lumen.FingerpintService.Host\{#dirPlat}\Digiphoto.Lumen.FingerpintService.Host.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.FingerpintService.Host\{#dirPlat}\Digiphoto.Lumen.FingerpintService.Host.exe.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.FingerprintService\{#dirPlat}\Digiphoto.Lumen.FingerprintService.dll"; DestDir: "{app}"; Flags: ignoreversion
+; --- Spooler Service
+Source: "..\Digiphoto.Lumen.SpoolerService.Host\{#dirPlat}\Digiphoto.Lumen.SpoolerService.Host.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.SpoolerService.Host\{#dirPlat}\Digiphoto.Lumen.SpoolerService.Host.exe.config"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.SpoolerService\{#dirPlat}\Digiphoto.Lumen.SpoolerService.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 ; --- OnRide
 Source: "..\Digiphoto.Lumen.OnRide.UI\{#dirPlat}\Digiphoto.Lumen.OnRide.UI.exe"; DestDir: "{app}"; Flags: ignoreversion
@@ -118,6 +123,7 @@ Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{group}\{#MyAppName} Configurazione"; Filename: "{app}\{#MyConfExeName}"
 Name: "{group}\{#MyAppName} Self Service Host"; Filename: "{app}\{#SSHostExeName}"
 Name: "{group}\{#MyAppName} Fingerprint Service Host"; Filename: "{app}\{#FPHostExeName}"
+Name: "{group}\{#MyAppName} Spooler Service Host"; Filename: "{app}\{#SPHostExeName}"
 Name: "{group}\{#MyAppName} OnRide manager"; Filename: "{app}\{#OnRideUIExeName}"
 ;
 Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"

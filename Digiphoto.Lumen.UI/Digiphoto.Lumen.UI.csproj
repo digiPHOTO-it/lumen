@@ -240,6 +240,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Connected Services\SpoolerServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Identifica\IdentificatoreImpronta.xaml.cs">
       <DependentUpon>IdentificatoreImpronta.xaml</DependentUpon>
     </Compile>
@@ -839,11 +844,18 @@
     <None Include="app.manifest">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\FingerprintServiceReference\service.wsdl" />
-    <None Include="Connected Services\FingerprintServiceReference\service.xsd">
+    <None Include="Connected Services\FingerprintServiceReference\service1.wsdl" />
+    <None Include="Connected Services\FingerprintServiceReference\service2.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\FingerprintServiceReference\service1.xsd">
+    <None Include="Connected Services\FingerprintServiceReference\service21.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\SpoolerServiceReference\service.wsdl" />
+    <None Include="Connected Services\SpoolerServiceReference\service.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\SpoolerServiceReference\service1.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
@@ -1091,6 +1103,12 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+    <None Include="Connected Services\SpoolerServiceReference\configuration91.svcinfo" />
+    <None Include="Connected Services\SpoolerServiceReference\configuration.svcinfo" />
+    <None Include="Connected Services\SpoolerServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
     <Content Include="License_it.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1105,6 +1123,7 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Connected Services\FingerprintServiceReference\" />
+    <WCFMetadataStorage Include="Connected Services\SpoolerServiceReference\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
