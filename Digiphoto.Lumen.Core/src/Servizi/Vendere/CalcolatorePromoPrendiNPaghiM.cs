@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using log4net;
+using Digiphoto.Lumen.Core.Database;
 
 namespace Digiphoto.Lumen.Core.Servizi.Vendere {
 
@@ -51,16 +52,30 @@ namespace Digiphoto.Lumen.Core.Servizi.Vendere {
 
 				foreach( var key in _mappaDaElargireStampe.Keys ) {
 
+					// Questo è il numero di copie che devo scontare
 					int quante = _mappaDaElargireStampe[key];
+					var prezzoUnitario = cin.righeCarrello.FirstOrDefault( r => r.isTipoStampa && ((FormatoCarta)r.prodotto).grandezza == key ).prezzoLordoUnitario;
+//						UnitOfWorkScope.currentDbContext.FormatiCarta.FirstOrDefault( fc => fc.grandezza == key && fc.attivo == true ).prezzo;
+					decimal totDaScontare = quante * prezzoUnitario;
 
-					// Ora itero le righe del carrellocon quel tipo
+					// Ora itero le righe del carrellocon quel tipo su cui devo spalmare lo sconto
 					var righe = cin.righeCarrello
-						.Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA && ((FormatoCarta)r.prodotto).grandezza == key )
-						.Take( quante );
+						.Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA && ((FormatoCarta)r.prodotto).grandezza == key );
 
 					foreach( RigaCarrello riga in righe ) {
-						riga.sconto = riga.prezzoLordoUnitario;
+
+						var impRig = riga.quantita * riga.prezzoLordoUnitario;
+						if( totDaScontare <= impRig ) {
+							riga.sconto = totDaScontare;
+							totDaScontare = 0;
+						} else {
+							riga.sconto = impRig;
+							totDaScontare -= impRig;
+						}
+
 						elargito = true;
+						if( totDaScontare <= 0 )
+							break;
 					}
 				}
 
