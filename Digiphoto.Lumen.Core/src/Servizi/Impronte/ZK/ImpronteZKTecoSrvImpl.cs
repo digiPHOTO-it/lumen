@@ -55,13 +55,25 @@ namespace Digiphoto.Lumen.Core.Servizi.Impronte {
 			statoRun = StatoRun.Stopped;
 			infoScanner = null;
 
-			int ret = zkfp2.Init();
+			try {
 
-			if( ret == zkfperrdef.ZKFP_ERR_OK )
-				_giornale.Info( "Inizializzato scanner ok" );
-			else {
+				int ret = zkfp2.Init();
+
+				if( ret == zkfperrdef.ZKFP_ERR_OK )
+					_giornale.Info( "Inizializzato scanner ok" );
+				else {
+					tuttoBene = false;
+					_giornale.Error( "err=" + ret + " : " + ZKErrors.getDescrizione( ret ) );
+				}
+
+			} catch( Exception ) {
 				tuttoBene = false;
-				_giornale.Error( "err=" + ret + " : " + ZKErrors.getDescrizione( ret ) );
+				String msg = "I driver dello scanner di imporonte digitali ZK Teco 4500 non sono installati.";
+				if( Lumen.Config.Configurazione.UserConfigLumen.scannerImpronteGestito )
+					_giornale.Error( msg + "  Impossibile avviare il servizio" );
+				else
+					_giornale.Debug( msg + " Poco male tanto non lo uso" );
+				return;
 			}
 
 			// Apro il device
