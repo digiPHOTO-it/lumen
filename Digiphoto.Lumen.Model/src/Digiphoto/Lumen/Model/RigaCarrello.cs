@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Digiphoto.Lumen.Model {
 
 	[Table( "RigheCarrelli" )]
-	public partial class RigaCarrello {
+	public partial class RigaCarrello : INotifyPropertyChanged {
 
 		public const string TIPORIGA_STAMPA = "S";
 		public const string TIPORIGA_MASTERIZZATA = "M";
