@@ -676,12 +676,13 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		/** 
 		 * Calcolo il valore della riga
+		 * Il valore dello sconto, non è unitario ma è totale
 		 */
 		public static decimal calcValoreRiga( RigaCarrello riga ) {
 
 			decimal _localSconto = riga.sconto != null ? (decimal)riga.sconto : 0;
 
-			decimal valore = riga.quantita * (riga.prezzoLordoUnitario - _localSconto);
+			decimal valore = (riga.quantita * riga.prezzoLordoUnitario) - _localSconto;
 
 			return valore;
 		}
