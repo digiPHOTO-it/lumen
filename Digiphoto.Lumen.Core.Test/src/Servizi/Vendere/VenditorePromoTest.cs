@@ -19,13 +19,22 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 
 	/// <summary>
-	///This is a test class for VenditoreSrvImplTest and is intended
-	///to contain all VenditoreSrvImplTest Unit Tests
+	/// Per poter svolgere correttamente i test, occorre dichiarare 3 formati carta
+	/// uno piccolo, uno medio, uno grande
+	/// del rispettivo prezzo di : 
+	/// 4,5 5, 9 euro.
+	/// altrimenti i calcoli non funzionano.
+	/// 
 	///</summary>
 	[TestClass()]
 	public class VenditorePromoTest : IObserver<Messaggio> {
 
 		const int QUANTE = 3;
+
+		const Decimal PRZ_FRM_PIC = (decimal)4.5;
+		const Decimal PRZ_FRM_MED = (decimal)5;
+		const Decimal PRZ_FRM_BIG = (decimal)9;
+		const Decimal PRZ_FRM_FILE = (decimal)3.5;
 
 		int contaStampate = 0;
 
@@ -34,7 +43,33 @@ namespace Digiphoto.Lumen.Core.VsTest {
 		//Use ClassInitialize to run code before running the first test in the class
 		[ClassInitialize()]
 		public static void classInitialize( TestContext testContext ) {
+
 			LumenApplication.Instance.avvia();
+
+			//
+			//
+
+			using( new UnitOfWorkScope( false ) ) {
+
+				// Controllo che le condizioni per il test siano verificate (formati carta e prezzi)
+				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
+
+				FormatoCarta frmPiccolo = dbContext.FormatiCarta.FirstOrDefault( fc => fc.grandezza == "P" && fc.prezzo == PRZ_FRM_PIC );
+				if( frmPiccolo == null )
+					throw new InvalidOperationException( "Manca il formato carta piccolo da " + PRZ_FRM_PIC + " euro" );
+
+				FormatoCarta frmMedio = dbContext.FormatiCarta.FirstOrDefault( fc => fc.grandezza == "M" && fc.prezzo == PRZ_FRM_MED );
+				if( frmMedio == null )
+					throw new InvalidOperationException( "Manca il formato carta medio da " + PRZ_FRM_MED + " euro" );
+
+				FormatoCarta frmGrande = dbContext.FormatiCarta.FirstOrDefault( fc => fc.grandezza == "G" && fc.prezzo == PRZ_FRM_BIG );
+				if( frmGrande == null )
+					throw new InvalidOperationException( "Manca il formato carta grande da " + PRZ_FRM_BIG + " euro" );
+
+				ProdottoFile prodFile = dbContext.ProdottiFile.FirstOrDefault( pf => pf.prezzo == PRZ_FRM_FILE );
+				if( prodFile == null )
+					throw new InvalidOperationException( "Manca il prodotto file da " + PRZ_FRM_FILE + " euro" );
+			}
 		}
 
 		[ClassCleanup()]
@@ -113,21 +148,26 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 			using( new UnitOfWorkScope( false ) ) {
 
+				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
+
+				var psfsf = dbContext.Promozioni.OfType<PromoStessaFotoSuFile>().SingleOrDefault( af => af.attiva == true );
+				if( psfsf == null )
+					throw new InvalidOperationException( "La PromoStessaFotoSuFile non è attiva. Impossibile testare" );
+
 				_impl.creareNuovoCarrello();
 
 				ParamStampaFoto p = ricavaParamStampa( "P" );
 
-				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 				List<Fotografia> fotos = (from f in dbContext.Fotografie.Include( "fotografo" )
 										  select f).Take( 4 ).ToList();
 
-				Assert.IsTrue( fotos.Count == 4);
+				Assert.IsTrue( fotos.Count == 4 );
 
 				contaStampate = 0;
 
 				// Prendo solo i primi 3 elementi
 				_impl.aggiungereStampe( fotos.Take( 3 ), p );
-				_impl.aggiungereMasterizzate( new [] { fotos[0], fotos[3] } );	// Solo una foto in promo
+				_impl.aggiungereMasterizzate( new[] { fotos[0], fotos[3] } );   // Solo una foto in promo
 				_impl.carrello.prezzoDischetto = 123;
 
 				Assert.IsFalse( _impl.carrello.venduto );
@@ -138,9 +178,9 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 				var newCart = _impl.CalcolaPromozioni();
 
-				Assert.IsTrue( newCart.totaleAPagare == (decimal)( (3*4.5) + (1*1) + (1*3.5) ) );
+				Assert.IsTrue( newCart.totaleAPagare == (decimal)((3 * 4.5) + (1 * 1) + (1 * 3.5)) );
 			}
-			
+
 			Console.WriteLine( "FINITO" );
 		}
 
@@ -199,7 +239,7 @@ namespace Digiphoto.Lumen.Core.VsTest {
 		}
 
 		private void PromoCalcGenerico( int qtaP, int qtaM, int qtaG, decimal prezzoPromoDesiderato ) {
-		
+
 			using( new UnitOfWorkScope( false ) ) {
 
 				_impl.creareNuovoCarrello();
@@ -241,10 +281,114 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				Assert.AreEqual( totPagareDopo, prezzoPromoDesiderato );
 
 			}
-			
+
 
 
 			Console.WriteLine( "FINITO" );
 		}
+
+		/// <summary>
+		/// Questo test era per risolvere un bug di quando metto a carrello
+		/// più copie della stessa foto. Sbagliava il prezzo finale.
+		/// </summary>
+		[TestMethod, TestCategory( "Promozioni" )]
+		public void PromoCalTest7() {
+
+			using( new UnitOfWorkScope() ) {
+
+				_impl.creareNuovoCarrello();
+
+				ParamStampaFoto paramM4 = ricavaParamStampa( "M" );
+				paramM4.numCopie = 4;
+				ParamStampaFoto paramM2 = ricavaParamStampa( "M" );
+				paramM2.numCopie = 2;
+
+				int totFoto = 2;
+
+				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
+				List<Fotografia> fotos = (from f in dbContext.Fotografie.Include( "fotografo" )
+										  select f).Take( totFoto ).ToList();
+
+				// Controllo che ci siano abbastanza foto nel database
+				Assert.IsTrue( fotos.Count == totFoto );
+
+				contaStampate = 0;
+
+				int qq = 0;
+				_impl.aggiungereStampe( fotos[0], paramM4 );
+
+				Assert.AreEqual( _impl.carrello.totaleAPagare, paramM4.numCopie * PRZ_FRM_MED );
+				Assert.AreEqual( _impl.carrello.righeCarrello.Count, 1 );
+
+				_impl.aggiungereStampe( fotos[1], paramM2 );
+
+				Assert.AreEqual( _impl.carrello.righeCarrello.Count, 2 );
+
+				_impl.ricalcolaTotaleCarrello();
+				var totPagarePrima = _impl.carrello.totaleAPagare;
+
+				Assert.AreEqual( totPagarePrima, PRZ_FRM_MED * 6 );
+
+				Carrello cart = _impl.CalcolaPromozioni( true );
+
+				var totPagareDopo = cart.totaleAPagare;
+
+				Assert.AreEqual( totPagareDopo, PRZ_FRM_MED * 5, "valore carrello errato" );
+
+			}
+			
+		}
+
+
+		/// <summary>
+		/// Questo test era per risolvere un bug di quando metto a carrello
+		/// più copie della stessa foto. Sbagliava il prezzo finale.
+		/// </summary>
+		[TestMethod, TestCategory( "Promozioni" )]
+		public void PromoCalTest8() {
+
+			using( new UnitOfWorkScope() ) {
+
+				_impl.creareNuovoCarrello();
+
+				ParamStampaFoto paramM2 = ricavaParamStampa( "M" );
+				paramM2.numCopie = 2;
+				ParamStampaFoto paramM16 = ricavaParamStampa( "M" );
+				paramM16.numCopie = 16;
+
+				int totFoto = 2;
+
+				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
+				List<Fotografia> fotos = (from f in dbContext.Fotografie.Include( "fotografo" )
+										  select f).Take( totFoto ).ToList();
+
+				// Controllo che ci siano abbastanza foto nel database
+				Assert.IsTrue( fotos.Count == totFoto );
+
+				contaStampate = 0;
+
+				int qq = 0;
+				_impl.aggiungereStampe( fotos[0], paramM2 );
+
+				Assert.AreEqual( _impl.carrello.totaleAPagare, paramM2.numCopie * PRZ_FRM_MED );
+				Assert.AreEqual( _impl.carrello.righeCarrello.Count, 1 );
+
+				_impl.aggiungereStampe( fotos[1], paramM16 );
+
+				Assert.AreEqual( _impl.carrello.righeCarrello.Count, 2 );
+
+				_impl.ricalcolaTotaleCarrello();
+				var totPagarePrima = _impl.carrello.totaleAPagare;
+
+				Assert.AreEqual( totPagarePrima, PRZ_FRM_MED * 18 );
+
+				Carrello cart = _impl.CalcolaPromozioni( true );
+
+				var totPagareDopo = cart.totaleAPagare;
+
+				Assert.AreEqual( totPagareDopo, PRZ_FRM_MED * 15, "valore carrello errato" );
+			}
+		}
+		
 	}
 }
