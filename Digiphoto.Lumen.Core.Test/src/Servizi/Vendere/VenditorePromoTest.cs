@@ -389,6 +389,99 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				Assert.AreEqual( totPagareDopo, PRZ_FRM_MED * 15, "valore carrello errato" );
 			}
 		}
-		
+
+
+
+		/// <summary>
+		/// Prendo 12 foto, ne metto 4 in stampa e 12 masterizzate 
+		/// (le 4 in stampa sono le stesse masterizzate)
+		/// </summary>
+		[TestMethod, TestCategory( "Promozioni" )]
+		public void PromoCalTest9() {
+
+			using( new UnitOfWorkScope() ) {
+
+				_impl.creareNuovoCarrello();
+
+				ParamStampaFoto paramM4 = ricavaParamStampa( "M" );
+
+				int totFoto = 12;
+
+				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
+				List<Fotografia> fotos = (from f in dbContext.Fotografie.Include( "fotografo" )
+										  select f).Take( totFoto ).ToList();
+
+				// Controllo che ci siano abbastanza foto nel database
+				Assert.IsTrue( fotos.Count == totFoto );
+
+				contaStampate = 0;
+
+				int qq = 0;
+				// Delle 12 foto, metto solo le prime 4 in stampa.
+				_impl.aggiungereStampe( fotos.Take( 4 ), paramM4 );
+
+				// Poi metto tutte e 12 da masterizzare
+				_impl.aggiungereMasterizzate( fotos );
+
+				Assert.AreEqual( _impl.carrello.righeCarrello.Count, 4+12 );
+
+				_impl.ricalcolaTotaleCarrello();
+
+				decimal totalePrePromo = (4 * PRZ_FRM_MED) + (totFoto * PRZ_FRM_FILE);
+				Assert.AreEqual( _impl.carrello.totaleAPagare, totalePrePromo );
+
+				Carrello cart = _impl.CalcolaPromozioni( true );
+
+				var totalePostPromo = (4 * PRZ_FRM_MED) + (2 * 0) + (6 * PRZ_FRM_FILE) + (4 * 1);
+
+				Assert.AreEqual( cart.totaleAPagare, totalePostPromo, "tot carrello errato x promozioni" );
+			}
+		}
+
+		/// <summary>
+		/// Questo test è il contrario del n.9 ovverto
+		/// sempre 12 foto, ma ne stampo 12 e ne masterizzo le prime 4
+		/// </summary>
+		[TestMethod, TestCategory( "Promozioni" )]
+		public void PromoCalTest10() {
+
+			using( new UnitOfWorkScope() ) {
+
+				_impl.creareNuovoCarrello();
+
+				ParamStampaFoto paramM = ricavaParamStampa( "M" );
+
+				int totFoto = 12;
+
+				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
+				List<Fotografia> fotos = (from f in dbContext.Fotografie.Include( "fotografo" )
+										  select f).Take( totFoto ).ToList();
+
+				// Controllo che ci siano abbastanza foto nel database
+				Assert.IsTrue( fotos.Count == totFoto );
+
+				contaStampate = 0;
+
+				int qq = 0;
+				// Delle 12 foto in stampa.
+				_impl.aggiungereStampe( fotos, paramM );
+
+				// Poi metto 4 da masterizzare
+				_impl.aggiungereMasterizzate( fotos.Take( 4 ) );
+
+				Assert.AreEqual( _impl.carrello.righeCarrello.Count, 4 + 12 );
+
+				_impl.ricalcolaTotaleCarrello();
+
+				decimal totalePrePromo = (totFoto * PRZ_FRM_MED) + (4 * PRZ_FRM_FILE);
+				Assert.AreEqual( _impl.carrello.totaleAPagare, totalePrePromo );
+
+				Carrello cart = _impl.CalcolaPromozioni( true );
+
+				var totalePostPromo = ((12-2) * PRZ_FRM_MED) + (4 * 1);
+
+				Assert.AreEqual( cart.totaleAPagare, totalePostPromo, "tot carrello errato x promozioni" );
+			}
+		}
 	}
 }
