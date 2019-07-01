@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using log4net;
 using Digiphoto.Lumen.Core.Database;
+using Digiphoto.Lumen.Servizi.Vendere;
 
 namespace Digiphoto.Lumen.Core.Servizi.Vendere {
 
@@ -39,8 +40,7 @@ namespace Digiphoto.Lumen.Core.Servizi.Vendere {
 				// e che siano a prezzo pieno (cioè che non abbiano già uno sconto)
 
 				var qq = cin.righeCarrello
-					.Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA &&
-							r.sconto == null )
+					.Where( r => r.isTipoStampa /* && r.sconto == null*/ )
 					.GroupBy( r => ((FormatoCarta)r.prodotto).grandezza )
 					.Select( ff => new { grandez = ff.Key, conta = ff.Sum( r => r.quantita ) } );
 
@@ -60,7 +60,7 @@ namespace Digiphoto.Lumen.Core.Servizi.Vendere {
 
 					// Ora itero le righe del carrellocon quel tipo su cui devo spalmare lo sconto
 					var righe = cin.righeCarrello
-						.Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA && ((FormatoCarta)r.prodotto).grandezza == key );
+						.Where( r => r.isTipoStampa && ((FormatoCarta)r.prodotto).grandezza == key );
 
 					foreach( RigaCarrello riga in righe ) {
 
@@ -73,6 +73,7 @@ namespace Digiphoto.Lumen.Core.Servizi.Vendere {
 							totDaScontare -= impRig;
 						}
 
+						riga.prezzoNettoTotale = GestoreCarrello.calcValoreRiga( riga );
 						elargito = true;
 						if( totDaScontare <= 0 )
 							break;
@@ -90,8 +91,7 @@ namespace Digiphoto.Lumen.Core.Servizi.Vendere {
 
 				// Conto quante masterizzate sono a prezzo pieno
 				var qta = cin.righeCarrello
-					.Where( r => r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA &&
-							r.sconto == null )
+					.Where( r => r.isTipoMasterizzata /* && r.sconto == null */ )
 					.Sum( r => r.quantita );
 
 				var multiploRegali = ((int)(qta / _promoPrendiNPaghiM.qtaDaPrendere));
@@ -99,17 +99,21 @@ namespace Digiphoto.Lumen.Core.Servizi.Vendere {
 
 				_giornale.Debug( "devo elargire " + qtaElarg + " file digitali" );
 
-				// Ora itero le righe del carrello con quel tipo
-				var righeOma = cin.righeCarrello
-					.Where( r => r.discriminator == RigaCarrello.TIPORIGA_MASTERIZZATA &&
-							r.sconto == null );
+				// Carico due liste: Prima quella dei file a prezzo pieno, poi quella dei file eventualmente già scontati
+				var righeOmaPP = cin.righeCarrello.Where( r => r.isTipoMasterizzata && r.sconto == null );
+				var righeOmaPS = cin.righeCarrello.Where( r => r.isTipoMasterizzata && r.sconto != null );
 
-				foreach( RigaCarrello riga in righeOma ) {
+				// Faccio due giri di elargizione
+				for( int ii = 1; ii <= 2; ii++ ) {
 
-					if( qtaElarg >= riga.quantita ) {
-						riga.sconto = riga.prezzoLordoUnitario;
-						qtaElarg -= riga.quantita;
-						elargito = true;
+					foreach( RigaCarrello riga in (ii == 1 ? righeOmaPP : righeOmaPS) ) {
+
+						if( qtaElarg >= riga.quantita ) {
+							riga.sconto = riga.prezzoLordoUnitario;
+							qtaElarg -= riga.quantita;
+							riga.prezzoNettoTotale = GestoreCarrello.calcValoreRiga( riga );
+							elargito = true;
+						}
 					}
 				}
 			}
