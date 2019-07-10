@@ -35,6 +35,7 @@ using Digiphoto.Lumen.UI.FotoRitocco;
 using Digiphoto.Lumen.Model.Dto;
 using Digiphoto.Lumen.Core.Util;
 using Digiphoto.Lumen.Core.Database;
+using System.Globalization;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -708,11 +709,11 @@ namespace Digiphoto.Lumen.UI {
 		/// Ricavo i dati dell'ultima settimana
 		/// </summary>
 		/// <returns></returns>
-		private ChiusureCassaDto riempireDtoChiusure() {
+		private ChiusureCassaDto riempireDtoChiusure( DateTime dataFinale ) {
 
 			ParamRangeGiorni paramRangeGiorni = new ParamRangeGiorni {
-				dataIniz = DateTime.Today.AddDays( -1 * GIORNI_INDIETRO_CHIUSURE ),
-				dataFine = DateTime.Today
+				dataIniz = dataFinale.AddDays( -1 * GIORNI_INDIETRO_CHIUSURE ),
+				dataFine = dataFinale
 			};
 
 			Servizi.Vendere.IVenditoreSrv srv = LumenApplication.Instance.getServizioAvviato<Servizi.Vendere.IVenditoreSrv>();
@@ -748,7 +749,19 @@ namespace Digiphoto.Lumen.UI {
 
 		void aprirePopupQrCodeInvioCassa() {
 
-			var chiusure = riempireDtoChiusure();
+
+			InputBoxDialog d = new InputBoxDialog();
+			d.inputValue.Text = DateTime.Today.ToString( "yyyy-MM-dd" );
+			d.Title = "Inserire data riferimento (AAAA-MM-GG)";
+			bool? esito = d.ShowDialog();
+
+			if( esito != true )
+				return;
+
+			DateTime dataFinale = DateTime.ParseExact( d.inputValue.Text, "yyyy-MM-dd", CultureInfo.InvariantCulture );
+
+
+		   var chiusure = riempireDtoChiusure( dataFinale );
 
 			if( chiusure == null ) {
 				dialogProvider.ShowMessage( "Nessun dato estratto negli ultimi " + GIORNI_INDIETRO_CHIUSURE + " giorni", "Nessun dato" );
