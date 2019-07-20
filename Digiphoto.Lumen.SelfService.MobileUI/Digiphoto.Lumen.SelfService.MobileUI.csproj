@@ -94,6 +94,7 @@
     <Compile Include="SlideShow\SlideShow.xaml.cs">
       <DependentUpon>SlideShow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Util\Clessidra.cs" />
     <Page Include="Carrelli\Carrelli.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
