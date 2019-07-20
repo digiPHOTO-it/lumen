@@ -1,7 +1,9 @@
 ﻿using Digiphoto.Lumen.SelfService.MobileUI.SelfServiceReference;
 using Digiphoto.Lumen.SelfService.MobileUI.Servizi;
 using Digiphoto.Lumen.SelfService.MobileUI.Servizi.Event;
+using Digiphoto.Lumen.SelfService.MobileUI.Util;
 using System;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -63,27 +65,35 @@ namespace Digiphoto.Lumen.SelfService.MobileUI
 
 		public void Go()
         {
-            if (!SelfMainWindow.isShowCarrelli)
-            {
-                String setting = SSClientSingleton.Instance.getSettings()["tipo-ricerca"];
-                switch (setting)
-                {
-                    case "carrelli":
-                        main.ContentArea.Content = new Carrelli(main);
-                        break;
-                    case "fotografi":
-                        main.ContentArea.Content = new Fotografi(main);
-                        break;
-                    default:
-                        main.ContentArea.Content = new Fotografi(main);
-                        break;
-                }
 
-                MoveTimeCounter.Instance.updateLastTime();
-            }
-        }
+			//
+			// Non so perché ma questa operazione dura 6 secondi inspiegabilmente
+			// sui server in cui c'è la doppia inirizzo di rete
+			//
+			//
+			using( new Clessidra() ) {
 
-        public void Next()
+				if( !SelfMainWindow.isShowCarrelli ) {
+					String setting = SSClientSingleton.Instance.getSettings()["tipo-ricerca"];
+					switch( setting ) {
+						case "carrelli":
+							main.ContentArea.Content = new Carrelli( main );
+							break;
+						case "fotografi":
+							main.ContentArea.Content = new Fotografi( main );
+							break;
+						default:
+							main.ContentArea.Content = new Fotografi( main );
+							break;
+					}
+
+					MoveTimeCounter.Instance.updateLastTime();
+				}
+			}
+
+		}
+
+		public void Next()
         {
         }
 
