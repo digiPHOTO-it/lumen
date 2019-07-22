@@ -10,10 +10,17 @@ using Digiphoto.Lumen.Servizi.Vendere;
 using Digiphoto.Lumen.UI.IncassiFotografi;
 using Digiphoto.Lumen.UI.Mvvm;
 using System.Windows.Input;
+using Digiphoto.Lumen.Core.Servizi.Contabilita;
 
 namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 
 	public class DataEntryGiornataViewModel : DataEntryViewModel<Giornata> {
+
+		public DataEntryGiornataViewModel() {
+
+			caricaChiusureMancanti();
+		}
+
 
 		#region Proprietà
 
@@ -28,22 +35,16 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 			}
 		}
 
+		public List<DateTime> listaGiornateNonChiuse {
+			get;
+			private set;
+		}
+
 		#endregion Proprietà
 
-		/*
-		public Nullable<Decimal> squadratura {
-			get {
 
-				Giornata g = this.collectionView.CurrentItem as Giornata;
-				if( g == null )
-					return null;
-				else {
-					return g.incassoPrevisto - g.incassoDichiarato;
-				}
+		#region Metodi
 
-			}
-		}
-*/
 		protected override void passoPreparaAddNew( Giornata giornata ) {
 			giornata.id = DateTime.Today;
 			giornata.orologio = DateTime.Now;
@@ -71,10 +72,22 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 				return venditoreSrv.calcolaIncassoPrevisto( giorno );
 		}
 
+		bool _stoPerInserire;
+
 		protected override void passoPrimaDiSalvare( Giornata giornata ) {
+
+			_stoPerInserire = (status == DataEntryStatus.New);
+
 			// Ribadisco per possibile cambio
 			giornata.incassoPrevisto = calcolaIncassoPrevisto( giornata.id );
 			collectionView.Refresh();
+		}
+
+		protected override void passoDopoSalvato( Giornata entita ) {
+			if( _stoPerInserire ) {
+				// Stavo inserendo un nuovo dato. Aggiorno la lista delle giornate mancanti
+				caricaChiusureMancanti();
+			}
 		}
 
 		protected override IEnumerable<Giornata> passoCaricaDati() {
@@ -87,7 +100,6 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 			ricalcolareGiornata( giornata );
 			collectionView.Refresh();
 		}
-
 
 		private void calcolaIncassiFotografiGiorno( DateTime giorno ) {
 
@@ -117,6 +129,17 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 				ricalcolareGiornata( entitaCorrente );
 		}
 
+		void caricaChiusureMancanti() {
+
+			IContabilitaSrv srv = LumenApplication.Instance.getServizioAvviato<IContabilitaSrv>();
+			listaGiornateNonChiuse = srv.getListaGiorniNonChiusi();
+			OnPropertyChanged( "listaGiornateNonChiuse" );
+		}
+
+		#endregion Metodi
+
+		#region Comandi
+
 		private RelayCommand _ricalcolareGiornoCommand;
 		public ICommand ricalcolareGiornoCommand {
 			get {
@@ -129,6 +152,6 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 			}
 		}
 
-
+		#endregion Comandi
 	}
 }
