@@ -60,9 +60,36 @@
 				</Button>
 			</ToolBar>
 -->			
-			
+					
 		</ToolBar>
 
+
+		<GroupBox Header="Giornate mancanti" Margin="4,50,4,50" Padding="4" DockPanel.Dock="Right" >
+
+			<Grid >
+
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+				
+				<TextBlock Grid.Row="0" Grid.Column="0" Foreground="White" HorizontalAlignment="Center">
+					<TextBlock.Text>
+						<MultiBinding StringFormat="Giorni: {0}">
+							<Binding Path="listaGiornateNonChiuse.Count" />
+						</MultiBinding>
+					</TextBlock.Text>
+				</TextBlock>
+				<ListBox ItemsSource="{Binding listaGiornateNonChiuse}" 
+							Background="LightYellow" ItemStringFormat="MMM dd ddd" 
+							Grid.Row="1" Grid.Column="0"/>
+				</Grid>
+				
+
+			</GroupBox>
+		
+		
+		
         <!-- Questo è il last child che prende tutto lo spazio centrale -->
         <Grid>
             <Grid.RowDefinitions>

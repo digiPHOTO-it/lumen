@@ -326,6 +326,8 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 				_giornale.Debug( "salvata entità: " + entita );
 				dialogProvider.ShowMessage( "Ok salvataggio riuscito\n" + entita, "Info" );
 
+				passoDopoSalvato( entita );
+
 				cambiareStatus( DataEntryStatus.View );
 
 			} catch( Exception eee ) {
@@ -346,6 +348,10 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 		}
 
 		protected virtual void passoPrimaDiSalvare( TEntity entita ) {
+			// A disposizione per override
+		}
+
+		protected virtual void passoDopoSalvato( TEntity entita ) {
 			// A disposizione per override
 		}
 

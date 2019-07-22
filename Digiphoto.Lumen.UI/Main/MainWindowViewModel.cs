@@ -36,6 +36,7 @@ using Digiphoto.Lumen.Model.Dto;
 using Digiphoto.Lumen.Core.Util;
 using Digiphoto.Lumen.Core.Database;
 using System.Globalization;
+using Digiphoto.Lumen.Core.Servizi.Contabilita;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -381,6 +382,7 @@ namespace Digiphoto.Lumen.UI {
 		#region Metodi
 
 		private void uscire( bool eseguiShutdown ) {
+
 			//Controllo se posso fermare l'applicazione
 			if( !LumenApplication.Instance.possoFermare ) {
 				bool procediPure = false;
@@ -396,6 +398,22 @@ namespace Digiphoto.Lumen.UI {
 				if( !procediPure )
 					return;
 			}
+
+
+			// Informo l'utente delle chiusure mancanti
+			var srv = LumenApplication.Instance.getServizioAvviato<IContabilitaSrv>();
+			var lista = srv.getListaGiorniNonChiusi();
+			if( lista.Count > 0 ) {
+				bool procediPure = false;
+				String msg = "Attenzione: mancano " + lista.Count + " chiusure di cassa" +
+					"\nVuoi uscire ugualmente ?";
+				dialogProvider.ShowConfirmation( msg, "Avviso", ( sino ) => {
+					procediPure = sino;
+				} );
+				if( !procediPure )
+					return;
+			}
+
 
 			if( eseguiShutdown )
 				this.shutdownConfermato = true;     // mi ha già detto che vuole spegnere
