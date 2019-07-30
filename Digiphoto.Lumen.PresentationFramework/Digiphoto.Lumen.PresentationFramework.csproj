@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="src\Converters\EnumBooleanConverter.cs" />
     <Compile Include="src\Converters\PathToImageConverter.cs" />
+    <Compile Include="src\Converters\PercentualeConverter.cs" />
     <Compile Include="src\Converters\UriToCachedImageConverter.cs" />
     <Compile Include="src\Mvvm\ClosableWiewModel.cs" />
     <Compile Include="src\Mvvm\Event\SelectionFailedEventArgs.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="src\Mvvm\OpenPopupRequestEventArgs.cs" />
     <Compile Include="src\Mvvm\RelayCommand.cs" />
     <Compile Include="src\Mvvm\ViewModelBase.cs" />
+    <Compile Include="src\PresentationFramework\IContenitoreGriglia.cs" />
     <Compile Include="src\PresentationFramework\Popup\ModalDialogPopup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\PresentationFramework\Popup\IModalDialogPopup.cs" />

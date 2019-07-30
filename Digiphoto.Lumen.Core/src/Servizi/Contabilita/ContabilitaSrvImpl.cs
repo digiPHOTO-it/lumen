@@ -19,7 +19,7 @@ namespace Digiphoto.Lumen.Core.Servizi.Contabilita {
 			DateTime inizio = DateTime.MinValue;
 
 			var lista  = UnitOfWorkScope.currentDbContext.Giornate
-				.Where( g => g.id.Year == DateTime.Today.Year && 1 == 1 )
+				.Where( g => g.id.Year == DateTime.Today.Year )
 				.Select( g => g.id );
 
 			if( lista.Any() ) {
