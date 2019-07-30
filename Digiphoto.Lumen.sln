@@ -65,6 +65,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.Services.Ho
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.SpoolerService.Host", "Digiphoto.Lumen.SpoolerService.Host\Digiphoto.Lumen.SpoolerService.Host.csproj", "{16C2EB92-43B3-44CB-A147-F1773AD0D0BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digiphoto.Lumen.SelfService.SlideShow", "Digiphoto.Lumen.SelfService.SlideShow\Digiphoto.Lumen.SelfService.SlideShow.csproj", "{5EA6E574-9D8A-4FA2-8D22-CB1FA1974084}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -147,6 +149,10 @@ Global
 		{16C2EB92-43B3-44CB-A147-F1773AD0D0BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16C2EB92-43B3-44CB-A147-F1773AD0D0BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16C2EB92-43B3-44CB-A147-F1773AD0D0BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EA6E574-9D8A-4FA2-8D22-CB1FA1974084}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EA6E574-9D8A-4FA2-8D22-CB1FA1974084}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EA6E574-9D8A-4FA2-8D22-CB1FA1974084}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EA6E574-9D8A-4FA2-8D22-CB1FA1974084}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
