@@ -1,0 +1,33 @@
+﻿<Window x:Class="Digiphoto.Lumen.SelfService.SlideShow.Preferenze.PreferenzeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Digiphoto.Lumen.SelfService.SlideShow.Preferenze"
+        mc:Ignorable="d"
+        Title="PreferenzeWindow" Height="330" Width="443">
+	<Grid>
+		<Label Content="Intervallo di tempo ms" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,25,0,0" Height="26" />
+		<TextBox Width="85" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="181,25,0,0" Height="26" Text="{Binding Path=userConfig.intervallo}" />
+
+		<Label Content="Num. righe" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,64,0,0" Height="26" Width="129" />
+		<TextBox Width="34" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="181,64,0,0" Height="26" Text="{Binding Path=userConfig.numRighe}" />
+		<Label Content="Num. colonne" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,95,0,0" Height="26" Width="129" />
+		<TextBox Width="34" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="181,95,0,0" Height="26" Text="{Binding Path=userConfig.numColonne}" />
+		<GroupBox Margin="288,12,10,10">
+			<GroupBox.Header>
+				<CheckBox Content="Fotografo" Name="optFotografoCheckBox" />
+			</GroupBox.Header>
+
+			<ListBox SelectionMode="Single"
+					 SelectedValue="{Binding Path=userConfig.idFotografo}"
+					 IsSynchronizedWithCurrentItem="True"
+					 ItemsSource="{Binding fotografiDto}"
+					 SelectedValuePath="id"
+					 DisplayMemberPath="nome" />
+		</GroupBox>
+		<Button Content="Applica" HorizontalAlignment="Left" Margin="168,180,0,0" VerticalAlignment="Top" Width="75" Name="salvareButton" Click="SalvareButton_Click" />
+		<Button Content="Annulla" HorizontalAlignment="Left" Margin="45,180,0,0" VerticalAlignment="Top" Width="75" Name="annullareButton" Click="AnnullareButton_Click" />
+
+	</Grid>
+</Window>

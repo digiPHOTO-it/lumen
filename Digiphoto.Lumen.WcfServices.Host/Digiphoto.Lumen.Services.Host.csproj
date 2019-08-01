@@ -127,7 +127,7 @@
       <Project>{83d8301e-7999-4179-962c-1bfa507f5396}</Project>
       <Name>Digiphoto.Lumen.Model</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Digiphoto.Lumen.WcfServices\Digiphoto.Lumen.SpoolerService.csproj">
+    <ProjectReference Include="..\Digiphoto.Lumen.SpoolerService\Digiphoto.Lumen.SpoolerService.csproj">
       <Project>{901377ee-96ca-4254-a15d-2bd3450aa9f2}</Project>
       <Name>Digiphoto.Lumen.SpoolerService</Name>
     </ProjectReference>

@@ -1,4 +1,5 @@
-﻿using Digiphoto.Lumen.SelfService.SlideShow.SelfServiceReference;
+﻿using Digiphoto.Lumen.SelfService.SlideShow.Config;
+using Digiphoto.Lumen.SelfService.SlideShow.SelfServiceReference;
 using Digiphoto.Lumen.SelfService.SlideShow.Servizi;
 using Digiphoto.Lumen.UI;
 using Digiphoto.Lumen.UI.Mvvm;
@@ -16,12 +17,18 @@ namespace Digiphoto.Lumen.SelfService.SlideShow.Main {
 
 		public SlideShowWindowViewModel() {
 
+			_giornale.Debug( "Avvio" );
+
 			puntatore = 999;
 			numColonne = 3;
 			numRighe = 2;
 
 			// Istanzio collezione vuota degli oggetti da visualizzare
 			this.fotografieDto = new ObservableCollectionEx<FotografiaDto>();
+
+			// carico configurazione
+			caricaConfigurazione();
+
 
 			timer = new DispatcherTimer();
 			timer.Interval = new TimeSpan( 0, 0, 2 );
@@ -31,6 +38,11 @@ namespace Digiphoto.Lumen.SelfService.SlideShow.Main {
 		#region Proprieta
 
 		private DispatcherTimer timer;
+
+		public UserConfig userConfig {
+			get;
+			private set;
+		}
 
 		public ObservableCollectionEx<FotografiaDto> fotografieDto {
 			get;
@@ -107,14 +119,21 @@ namespace Digiphoto.Lumen.SelfService.SlideShow.Main {
 
 			// Prendo un elemento in piu per capire se sono alla fine della lista.
 			RicercaFotoParam param = new RicercaFotoParam {
-				fotografoId = "ONRIDE1",
-				giorno = new DateTime( 2019, 07, 28 ),
+				fotografoId = userConfig.idFotografo,
+				giorno = DateTime.Today,
 				skip = ((pagina - 1) * totFrame),
-				take = totFrame
+				take = totFrame+1
 			};
 
-			listaAttesa = SSClientSingleton.Instance.getListaFotografieDelFotografo( param );
-			arrivatoInFondo = (listaAttesa.Length < totFrame);
+			
+			var listaAttesaTmp = SSClientSingleton.Instance.getListaFotografieDelFotografo( param );
+
+			int quanti = Math.Min( totFrame, listaAttesaTmp.Length );
+			listaAttesa = new FotografiaDto[quanti];
+
+			Array.Copy( listaAttesaTmp, listaAttesa, quanti );
+
+			arrivatoInFondo = (listaAttesaTmp.Length < totFrame);
 
 			puntatore = 0;
 		}
@@ -134,13 +153,42 @@ namespace Digiphoto.Lumen.SelfService.SlideShow.Main {
  			if( puntatore >= totFrame )
 				caricaProssimaPagina();
 
-			if( fotografieDto.Count > puntatore )
-				fotografieDto[puntatore] = listaAttesa[puntatore];
-			else
-				fotografieDto.Add( listaAttesa[puntatore] );
-			
+			// Vediamo se ho delle foto da mostrare
+			if( listaAttesa.Length > 0 ) {
 
-			++puntatore;
+				if( fotografieDto.Count > puntatore )
+					fotografieDto[puntatore] = listaAttesa[puntatore];
+				else
+					fotografieDto.Add( listaAttesa[puntatore] );
+			
+				++puntatore;
+			}
+
+		}
+
+		void caricaConfigurazione() {
+			userConfig = UserConfigSerializer.deserialize();
+			if( userConfig == null )
+				userConfig = new UserConfig {
+					intervallo = 2000,
+					numRighe = 2,
+					numColonne = 3
+				};
+		}
+
+		/// <summary>
+		/// Salvo la nuova configurazione e poi la ricarico
+		/// </summary>
+		/// <param name="newUserConfig"></param>
+		public void SalvaNuovaConfigurazione( UserConfig newUserConfig ) {
+
+			UserConfigSerializer.serializeToFile( newUserConfig );
+
+			caricaConfigurazione();
+
+			// Per sicurezza riparto da capo
+			pagina = 0;
+			puntatore = 999;
 		}
 
 		#endregion Metodi

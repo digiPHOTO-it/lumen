@@ -11,7 +11,7 @@
 	</Window.Resources>
 	
 	<Grid>
-		<Button Margin="0,0,0,0" Content="I" Height="16" Width="16" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+		<Button Margin="0,0,0,0" Content="P" FontSize="18" Height="26" Width="26" HorizontalAlignment="Left"  VerticalAlignment="Top" Name="preferenzeButton" Click="PreferenzeButton_Click" />
 
 		<ItemsControl x:Name="StreamsItemsControl" ItemsSource="{Binding Path=fotografieDto}">
 			<ItemsControl.ItemsPanel>

@@ -4,9 +4,14 @@ using System.Collections;
 using System.ServiceModel;
 using System.Windows;
 using Digiphoto.Lumen.SelfService.SlideShow.SelfServiceReference;
+using log4net;
 
 namespace Digiphoto.Lumen.SelfService.SlideShow.Servizi {
+
 	public class SSClientSingleton {
+
+		protected static readonly ILog _giornale = LogManager.GetLogger( typeof( SSClientSingleton ) );
+
 
 		private static SSClientSingleton instance;
 
@@ -33,8 +38,11 @@ namespace Digiphoto.Lumen.SelfService.SlideShow.Servizi {
 				if( !ssClient.State.Equals( CommunicationState.Opening ) ) {
 					try {
 						autoCloseNotification = false;
+						_giornale.Info( "Apro client wcf" );
 						ssClient.Open();
-					} catch( Exception ) {
+						_giornale.Info( "Ok aperto" );
+					} catch( Exception ee ) {
+						_giornale.Warn( ee );
 						autoCloseNotification = true;
 						ssClient.Abort();
 
@@ -124,7 +132,8 @@ namespace Digiphoto.Lumen.SelfService.SlideShow.Servizi {
 			Open();
 			try {
 				result = ssClient.getListaFotografi();
-			} catch( Exception ) {
+			} catch( Exception ee ) {
+				_giornale.Warn( ee );
 				connectionRestart();
 				if( isConnectionOK ) {
 					return ssClient.getListaFotografi();
