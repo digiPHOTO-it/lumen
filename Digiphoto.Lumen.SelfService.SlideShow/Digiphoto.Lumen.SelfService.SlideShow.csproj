@@ -60,6 +60,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Config\UserConfig.cs" />
+    <Compile Include="Config\UserConfigSerializer.cs" />
+    <Compile Include="Preferenze\PreferenzeWindow.xaml.cs">
+      <DependentUpon>PreferenzeWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Preferenze\PreferenzeWindowViewModel.cs" />
     <Compile Include="Servizi\AutoClosingMessageBox.cs" />
     <Compile Include="Servizi\SSClientSingleton.cs" />
     <Page Include="Main\SlideShowWindow.xaml">
@@ -80,6 +86,10 @@
       <DependentUpon>SlideShowWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Preferenze\PreferenzeWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main\SlideShowWindowViewModel.cs" />

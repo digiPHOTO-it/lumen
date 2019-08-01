@@ -319,6 +319,8 @@ namespace Digiphoto.Lumen.SelfService {
 
 			List<FotografiaDto> listaDto = new List<FotografiaDto>();
 
+			_giornale.Debug( "param = " + ricercaFotoParam.ToString() );
+
 			using( new UnitOfWorkScope() ) {
 				
 				// uso apposito servizio di ricerca foto
@@ -326,9 +328,12 @@ namespace Digiphoto.Lumen.SelfService {
 				
 				// preparo parametri
 				ParamCercaFoto param = new ParamCercaFoto();
-				
-				var fotografo = UnitOfWorkScope.currentDbContext.Fotografi.Single( f => f.id == ricercaFotoParam.fotografoId );
-				param.fotografi = new Fotografo [] { fotografo };
+
+				Fotografo fotografo = null;
+				if( ricercaFotoParam.fotografoId != null ) {
+					fotografo = UnitOfWorkScope.currentDbContext.Fotografi.Single( f => f.id == ricercaFotoParam.fotografoId );
+					param.fotografi = new Fotografo[] { fotografo };
+				}
 				param.evitareJoinEvento = true;
 				param.paginazione = new Paginazione { skip = ricercaFotoParam.skip, take = ricercaFotoParam.take };
 				param.idratareImmagini = false;
@@ -348,6 +353,7 @@ namespace Digiphoto.Lumen.SelfService {
 
 				param.ordinamento = Ordinamento.Asc;
 
+				_giornale.Debug( "ricerca con skip = " + ricercaFotoParam.skip );
 				var fotografie = ricercaSrv.cerca( param );
 				foreach( var foto in fotografie ) {
 					FotografiaDto dto = new FotografiaDto();
