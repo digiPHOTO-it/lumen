@@ -5,6 +5,7 @@ using System.ServiceModel;
 using System.Windows;
 using Digiphoto.Lumen.SelfService.SlideShow.SelfServiceReference;
 using log4net;
+using System.Threading;
 
 namespace Digiphoto.Lumen.SelfService.SlideShow.Servizi {
 
@@ -31,41 +32,41 @@ namespace Digiphoto.Lumen.SelfService.SlideShow.Servizi {
 		}
 
 		internal void Open() {
-			bool autoCloseNotification = false;
+
+			// Se sono già connesso, non faccio nulla.
+			if( isConnectionOK )
+				return;
+
+			_giornale.Debug( "Devo aprire connessione con il servizio wcf" );
+
 			bool shutdownApp = false;
 
 			while( !shutdownApp && !isConnectionOK ) {
+
 				if( !ssClient.State.Equals( CommunicationState.Opening ) ) {
+
 					try {
-						autoCloseNotification = false;
-						_giornale.Info( "Apro client wcf" );
+
 						ssClient.Open();
-						_giornale.Info( "Ok aperto" );
+						_giornale.Info( "Aperta connessione con il servizio wcf" );
+
 					} catch( Exception ee ) {
-						_giornale.Warn( ee );
-						autoCloseNotification = true;
+
+						_giornale.Error( "connessione fallita resto in attesa", ee );
+						Thread.Sleep( 5000 );
 						ssClient.Abort();
 
+						// istanzio un altro client
 						ssClient = new SelfServiceClient();
 					}
-				}
-
-				if( autoCloseNotification ) {
-					var dialogResult = AutoClosingMessageBox.Show( System.Windows.Application.Current, "Il server sembra non rispondere voi rimanere in attesa?", "Avviso", 10000, MessageBoxButton.YesNoCancel );
-					if( dialogResult == MessageBoxResult.No ) {
-						MessageBoxResult chiudiResult = MessageBox.Show( "Vuoi veramente uscire dall'applicazione?", "Avviso", MessageBoxButton.YesNo );
-						if( chiudiResult == MessageBoxResult.Yes ) {
-							shutdownApp = true;
-						}
-					}
-				}
-
+				} else
+					Thread.Sleep( 100 );
+				
 				if( shutdownApp ) {
 					ssClient.Abort();
 					//System.Windows.Application.Current.Shutdown();
 					Environment.Exit( 0 );
 				}
-
 			}
 		}
 
