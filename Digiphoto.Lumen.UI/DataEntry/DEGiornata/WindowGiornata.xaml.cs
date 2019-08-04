@@ -14,6 +14,7 @@ using Digiphoto.Lumen.UI.Mvvm;
 using Digiphoto.Lumen.Model;
 using System.Windows.Markup;
 using System.Globalization;
+using Digiphoto.Lumen.Config;
 
 namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 	/// <summary>
@@ -32,6 +33,8 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 			this.DataContext = _degViewModel;
 
 			_degViewModel.PropertyChanged += _degViewModel_PropertyChanged;
+
+			this.Title += " " + Configurazione.infoFissa.descrizPuntoVendita + " (" + Configurazione.infoFissa.idPuntoVendita + ")";
 
 //			this.incassiFotografiView.DataContext = _degViewModel.incassiFotografiViewModel;
 		}
