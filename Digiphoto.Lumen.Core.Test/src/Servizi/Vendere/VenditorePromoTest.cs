@@ -395,6 +395,9 @@ namespace Digiphoto.Lumen.Core.VsTest {
 		/// <summary>
 		/// Prendo 12 foto, ne metto 4 in stampa e 12 masterizzate 
 		/// (le 4 in stampa sono le stesse masterizzate)
+		/// Le 4 stampe sono a prezzo pieno-
+		/// 4 masterizzate ad un euro
+		/// 10 masterizzate 
 		/// </summary>
 		[TestMethod, TestCategory( "Promozioni" )]
 		public void PromoCalTest9() {
@@ -432,7 +435,12 @@ namespace Digiphoto.Lumen.Core.VsTest {
 
 				Carrello cart = _impl.CalcolaPromozioni( true );
 
-				var totalePostPromo = (4 * PRZ_FRM_MED) + (2 * 0) + (6 * PRZ_FRM_FILE) + (4 * 1);
+				var totalePostPromo = 0
+						+ (4 * PRZ_FRM_MED)				/* 4 stampe a prezzo pieno */
+						+ (3 * 0)						/* 3 file in omaggio per il 10+3 */
+						+ (5 * PRZ_FRM_FILE)			/* 6 file a prezzo pieno */
+						+ (4 * 1)						/* 4 file a prezzo scontato */
+				;
 
 				Assert.AreEqual( cart.totaleAPagare, totalePostPromo, "tot carrello errato x promozioni" );
 			}
@@ -483,5 +491,51 @@ namespace Digiphoto.Lumen.Core.VsTest {
 				Assert.AreEqual( cart.totaleAPagare, totalePostPromo, "tot carrello errato x promozioni" );
 			}
 		}
+
+		/// <summary>
+		/// Questo test prevede che sia attivata la promozione num. 3
+		/// con indicato  : se compri 10 file te ne regalo altri 3.
+		/// </summary>
+		[TestMethod, TestCategory( "Promozioni" )]
+		public void PromoPxPFileTest11() {
+
+			using( new UnitOfWorkScope() ) {
+
+				_impl.creareNuovoCarrello();
+
+				ParamStampaFoto paramM = ricavaParamStampa( "M" );
+
+				int totFoto = 13;
+
+				LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
+				List<Fotografia> fotos = (from f in dbContext.Fotografie.Include( "fotografo" )
+										  select f).Take( totFoto ).ToList();
+
+				// Controllo che ci siano abbastanza foto nel database
+				Assert.IsTrue( fotos.Count == totFoto );
+
+				contaStampate = 0;
+
+				int qq = 0;
+
+				// 13 file da masterizzare
+				_impl.aggiungereMasterizzate( fotos );
+
+				Assert.AreEqual( _impl.carrello.righeCarrello.Count, 13 );
+
+				_impl.ricalcolaTotaleCarrello();
+
+				decimal totalePrePromo = (13 * PRZ_FRM_FILE);
+				Assert.AreEqual( _impl.carrello.totaleAPagare, totalePrePromo );
+
+				Carrello cart = _impl.CalcolaPromozioni( true );
+
+				var totalePostPromo = (10 * PRZ_FRM_FILE);
+
+				Assert.AreEqual( cart.totaleAPagare, totalePostPromo, "tot carrello errato x promozioni" );
+			}
+		}
+
+
 	}
 }
