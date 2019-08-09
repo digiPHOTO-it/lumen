@@ -168,22 +168,6 @@
 										 IsReadOnly="{Binding Path=DataContext.canEditFields,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},Converter={StaticResource boolInverterConverter}}" />
                             </Grid>
                         </TabItem>
-                        <TabItem Header="Taglierine" HorizontalAlignment="Left" Name="tabItem1" VerticalAlignment="Top">
-                            <Grid>
-                                <Label Content="Progressivo taglierina 1" Height="28" HorizontalAlignment="Left" Margin="35,55,0,0" Name="label3" VerticalAlignment="Top" />
-                                <TextBox Height="23" HorizontalAlignment="Left" Margin="187,57,0,0" VerticalAlignment="Top" Width="162" Text="{Binding prgTaglierina1}" 
-										 IsReadOnly="{Binding Path=DataContext.canEditFields,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},Converter={StaticResource boolInverterConverter}}" />
-                                <Label Content="Progressivo taglierina 2" Height="28" HorizontalAlignment="Left" Margin="35,101,0,0" Name="label5" VerticalAlignment="Top" />
-                                <TextBox Height="23" HorizontalAlignment="Left" Margin="187,103,0,0" VerticalAlignment="Top" Width="162" Text="{Binding prgTaglierina2}" 
-										 IsReadOnly="{Binding Path=DataContext.canEditFields,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},Converter={StaticResource boolInverterConverter}}" />
-                                <Label Content="Progressivo taglierina 3" Height="28" HorizontalAlignment="Left" Margin="35,145,0,0" Name="label6" VerticalAlignment="Top" />
-                                <TextBox Height="23" HorizontalAlignment="Left" Margin="187,147,0,0" VerticalAlignment="Top" Width="162" Text="{Binding prgTaglierina3}" 
-										 IsReadOnly="{Binding Path=DataContext.canEditFields,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},Converter={StaticResource boolInverterConverter}}" />
-                            </Grid>
-                        </TabItem>
-                        <TabItem Header="Provvigioni" HorizontalAlignment="Left" Width="77">
-                            <lum:IncassiFotografiView x:Name="incassiFotografiView"  />
-                        </TabItem>
                     </TabControl>
                 </Grid>
             </ScrollViewer>

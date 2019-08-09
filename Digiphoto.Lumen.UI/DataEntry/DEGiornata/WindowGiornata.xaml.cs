@@ -48,7 +48,7 @@ namespace Digiphoto.Lumen.UI.DataEntry.DEGiornata {
 		private void _degViewModel_PropertyChanged( object sender, System.ComponentModel.PropertyChangedEventArgs e ) {
 			
 			if( e.PropertyName == "incassiFotografiViewModel" ) {
-				this.incassiFotografiView.DataContext = _degViewModel.incassiFotografiViewModel;
+//				this.incassiFotografiView.DataContext = _degViewModel.incassiFotografiViewModel;
 				valorizzaSquadratura();
 			}
 		}
