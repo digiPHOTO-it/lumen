@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using log4net;
 using Digiphoto.Lumen.Database;
+using System;
 
 namespace Digiphoto.Lumen.Core.Servizi.Vendere {
 
@@ -18,7 +19,10 @@ namespace Digiphoto.Lumen.Core.Servizi.Vendere {
 
 			PromoProdXProd _promoProdXProd = (PromoProdXProd)promo;
 
-			OrmUtil.forseAttacca<PromoProdXProd>( ref _promoProdXProd );
+			try {
+				OrmUtil.forseAttacca<PromoProdXProd>( ref _promoProdXProd );
+			} catch( Exception ) {
+			}
 
 			// NOTA: non controllo più il flag di applicazione stampe/file che c'è sul database.
 			//       tanto è il prodotto di innesco che mi guida.
