@@ -82,7 +82,7 @@
 
                     <DatePicker Height="25" HorizontalAlignment="Left" Margin="239,11,0,0"  VerticalAlignment="Top" Width="152"  FontSize="18"
 								SelectedDate="{Binding id,Mode=TwoWay}"  
-								IsEnabled="{Binding Path=isKeyEditabile,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" 
+								IsEnabled="{Binding Path=DataContext.isKeyEditabile,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" 
 								IsTodayHighlighted="False" Name="datePickerGiorno" >
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectedDateChanged">
