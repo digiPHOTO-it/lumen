@@ -23,6 +23,18 @@
             </lumDE:ToolsBar>
         </ToolBar>
 
+		<StatusBar DockPanel.Dock="Bottom">
+			<StackPanel Orientation="Horizontal">
+				<TextBlock>
+					<TextBlock.Text>
+						<MultiBinding StringFormat="Status: {0}">
+							<Binding Path="status" />
+						</MultiBinding>
+					</TextBlock.Text>
+				</TextBlock>
+			</StackPanel>
+		</StatusBar>
+
 		<!-- Questo è il last child che prende tutto lo spazio centrale -->
 		<Grid>
 			<Grid.RowDefinitions>
@@ -74,6 +86,8 @@
 			</DataGrid>
 
 		</Grid>
+
+
 	</DockPanel>
         
 </Window>

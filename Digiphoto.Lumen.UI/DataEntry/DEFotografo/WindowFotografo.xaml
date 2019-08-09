@@ -11,6 +11,7 @@
 	</Window.Resources>
 
 	<DockPanel LastChildFill="True">
+		
 		<ToolBar DockPanel.Dock="Top">
 			<lumDE:ToolsBar >
 				<lumDE:ToolsBar.possoSalvare>
@@ -24,6 +25,20 @@
 				</lumDE:ToolsBar.possoSalvare>
 			</lumDE:ToolsBar>
 		</ToolBar>
+
+		
+		<StatusBar DockPanel.Dock="Bottom">
+			<StackPanel Orientation="Horizontal">
+				<TextBlock>
+					<TextBlock.Text>
+						<MultiBinding StringFormat="Status: {0}">
+							<Binding Path="status" />
+						</MultiBinding>
+					</TextBlock.Text>
+				</TextBlock>
+			</StackPanel>
+		</StatusBar>
+		
 
 		<!-- Questo è il last child che prende tutto lo spazio centrale -->
 		<Grid>
@@ -86,6 +101,7 @@
 			</DataGrid>
 
 		</Grid>
+		
 	</DockPanel>
 
 
