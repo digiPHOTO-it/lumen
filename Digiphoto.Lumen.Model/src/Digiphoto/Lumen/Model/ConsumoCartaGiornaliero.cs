@@ -17,9 +17,6 @@ namespace Digiphoto.Lumen.Model {
 		[Required]
 		public System.DateTime giornata { get; set; }
 
-		[Required]
-		public System.DateTime tempo { get; set; }
-
 		public short totFogli { get; set; }
 
 		public short diCuiProvini { get; set; }
