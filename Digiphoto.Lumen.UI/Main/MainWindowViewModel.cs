@@ -8,7 +8,6 @@ using Digiphoto.Lumen.UI.Dialogs;
 using Digiphoto.Lumen.Servizi.Reports;
 using System.Collections.Generic;
 using Digiphoto.Lumen.UI.Reports;
-using Microsoft.Reporting.WinForms;
 using Digiphoto.Lumen.Config;
 using Digiphoto.Lumen.Servizi.Reports.ConsumoCarta;
 using Digiphoto.Lumen.Eventi;
@@ -37,6 +36,8 @@ using Digiphoto.Lumen.Core.Util;
 using Digiphoto.Lumen.Core.Database;
 using System.Globalization;
 using Digiphoto.Lumen.Core.Servizi.Contabilita;
+using Microsoft.Reporting.WinForms;
+using System.Linq;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -434,12 +435,13 @@ namespace Digiphoto.Lumen.UI {
 
 			Servizi.Vendere.IVenditoreSrv srv = LumenApplication.Instance.getServizioAvviato<Servizi.Vendere.IVenditoreSrv>();
 
-			List<RigaReportVendite> righe = srv.creaReportVendite( paramRangeGiorni );
+			ReportVendite reportVendite = srv.creaReportVendite( paramRangeGiorni );
 
 			string nomeRpt = ".\\Reports\\ReportVendite.rdlc";
 			_giornale.Debug( "devo caricare il report: " + nomeRpt );
 
 			ReportHostWindow rhw = new ReportHostWindow();
+			List<RigaReportVendite> righe = reportVendite.mappaRighe.Values.ToList();
 			rhw.impostaDataSource( righe );
 			rhw.reportPath = nomeRpt;
 
@@ -450,7 +452,14 @@ namespace Digiphoto.Lumen.UI {
 			string appo = String.IsNullOrEmpty( Configurazione.infoFissa.descrizPuntoVendita ) ? "pdv " + Configurazione.infoFissa.idPuntoVendita : Configurazione.infoFissa.descrizPuntoVendita;
 			ReportParameter p3 = new ReportParameter( "nomePdv", appo );
 
-			ReportParameter[] repoParam = { p1, p2, p3 };
+			// Questi parametri sono solo per stampare la intestazione delle colonne)
+			ReportParameter p4 = new ReportParameter( "formato1", reportVendite.formatiCartaVenduti.Count < 1 ? null : reportVendite.formatiCartaVenduti[0] );
+			ReportParameter p5 = new ReportParameter( "formato2", reportVendite.formatiCartaVenduti.Count < 2 ? null : reportVendite.formatiCartaVenduti[1] );
+			ReportParameter p6 = new ReportParameter( "formato3", reportVendite.formatiCartaVenduti.Count < 3 ? null : reportVendite.formatiCartaVenduti[2] );
+			ReportParameter p7 = new ReportParameter( "formato4", reportVendite.formatiCartaVenduti.Count < 4 ? null : reportVendite.formatiCartaVenduti[3] );
+
+
+			ReportParameter[] repoParam = { p1, p2, p3, p4, p5, p6, p7 };
 			rhw.viewerInstance.LocalReport.SetParameters( repoParam );
 
 			_giornale.Debug( "Impostati i parametri del report: " + paramRangeGiorni.dataIniz + " -> " + paramRangeGiorni.dataFine );
@@ -736,7 +745,8 @@ namespace Digiphoto.Lumen.UI {
 
 			Servizi.Vendere.IVenditoreSrv srv = LumenApplication.Instance.getServizioAvviato<Servizi.Vendere.IVenditoreSrv>();
 
-			List<RigaReportVendite> righe = srv.creaReportVendite( paramRangeGiorni );
+			ReportVendite reportVendite = srv.creaReportVendite( paramRangeGiorni );
+			List<RigaReportVendite> righe = reportVendite.mappaRighe.Values.ToList();
 			if( righe == null || righe.Count < 1 )
 				return null;
 

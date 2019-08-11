@@ -1049,6 +1049,8 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		 * Lasciare private la property.
 		 */
 		private MasterizzaSrvImpl _masterizzaSrvImpl;
+		
+
 		private IMasterizzaSrv masterizzaSrv {
 			get {
 				if( _masterizzaSrvImpl == null ) {
@@ -1170,9 +1172,9 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		}
 
 
-		public List<RigaReportVendite> creaReportVendite( ParamRangeGiorni p ) {
+		public ReportVendite creaReportVendite( ParamRangeGiorni p ) {
 
-			Dictionary<DateTime, RigaReportVendite> reportVendite = new Dictionary<DateTime, RigaReportVendite>();
+			ReportVendite reportVendite = new ReportVendite();
 
 			_giornale.Debug( "Devo preparare il report vendite da " + p.dataIniz + " a " + p.dataFine );
 
@@ -1182,13 +1184,13 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			creaReportVenditeStep3( ref reportVendite, p );   // Totale incasso dichiarato nei carrelli
 			creaReportVenditeStep4( ref reportVendite, p );   // Chiusura di cassa giorno
 
-			return reportVendite.Values.ToList();
+			return reportVendite;
 		}
 
 		/// <summary>
 		/// Calcolo le foto scattate (cioè quelle acquisite)
 		/// </summary>
-		void creaReportVenditeStep0( ref Dictionary<DateTime, RigaReportVendite> reportVendite, ParamRangeGiorni p ) {
+		void creaReportVenditeStep0( ref ReportVendite reportVendite, ParamRangeGiorni p ) {
 
 			// Siccome ho dei valori con il tempo, testo < del giorno dopo.
 			DateTime giornoDopo = p.dataFine.AddDays( 1 );
@@ -1203,7 +1205,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 			// Ora ciclo i risultati e li metto nella mappa
 			foreach( RigaReportVendite riga in queryh )
-				reportVendite.Add( riga.giornata, riga );
+				reportVendite.mappaRighe.Add( riga.giornata, riga );
 
 			_giornale.Debug( "report vendite: calcolate le foto scattate." );
 		}
@@ -1211,7 +1213,25 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// <summary>
 		/// Calcolo le foto stampate
 		/// </summary>
-		void creaReportVenditeStep1( ref Dictionary<DateTime, RigaReportVendite> reportVendite, ParamRangeGiorni p ) {
+		void creaReportVenditeStep1( ref ReportVendite reportVendite, ParamRangeGiorni p ) {
+
+			// Determino quanti formati carta diversi ho venduto in questo periodo.
+			// Siccome le voglio mettere in colonna, ne devo prevedere un masssimo
+			reportVendite.formatiCartaVenduti = UnitOfWorkScope.currentDbContext
+				.RigheCarrelli
+				.Include( "carrello" )
+				.Include( "prodotto" )
+				.Where( r => r.discriminator == RigaCarrello.TIPORIGA_STAMPA
+					&& r.carrello.venduto == true
+					&& r.carrello.giornata >= p.dataIniz && r.carrello.giornata <= p.dataFine )
+					.OrderBy( r => r.prodotto.ordinamento )
+					.OrderBy( r2 => r2.prodotto.descrizione )
+				.Select( r => r.prodotto.descrizione )
+				.Distinct()
+				.ToList()
+			;
+
+
 
 			// Qui ho necessità di fare una join tra il carrello e le righe di tipo FotoScattata
 			var querya = from cc in UnitOfWorkScope.currentDbContext.Carrelli.Include( "righeCarrello" )
@@ -1238,17 +1258,26 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			// Ora ciclo i risultati e creo l'apposita riga
 			foreach( var ris in queryb ) {
 				RigaReportVendite riga;
-				if( reportVendite.ContainsKey( ris.gg ) )
-					riga = reportVendite[ris.gg];
+				if( reportVendite.mappaRighe.ContainsKey( ris.gg ) )
+					riga = reportVendite.mappaRighe[ris.gg];
 				else {
 					riga = new RigaReportVendite {
 						giornata = ris.gg
 					};
-					reportVendite.Add( ris.gg, riga );
+					reportVendite.mappaRighe.Add( ris.gg, riga );
 				}
-				// Sommo i campi
+				
+				// Sommo il totale delle foto stampate (anche di formati diversi)
 				riga.totFotoStampate += (ris.fogli == null ? 0 : (int)ris.fogli);
-				// TODO sommare anche i diversi formati carta
+
+				// ora sistemo anche il totale 
+				ReportVenditeDettaglio det = new ReportVenditeDettaglio {
+					desFormatoCarta = ris.fc,
+					totFoto = (ris.fogli == null ? 0 : (int)ris.fogli)
+				};
+
+				int pos = reportVendite.formatiCartaVenduti.IndexOf( ris.fc );
+				riga.dettaglioFormatiCarta[pos] = det;
 			}
 
 			_giornale.Debug( "report vendite: calcolate le foto stampate." );
@@ -1258,7 +1287,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// <summary>
 		/// Calcolo i dischetti masterizzati
 		/// </summary>
-		void creaReportVenditeStep2( ref Dictionary<DateTime, RigaReportVendite> reportVendite, ParamRangeGiorni p ) {
+		void creaReportVenditeStep2( ref ReportVendite reportVendite, ParamRangeGiorni p ) {
 
 			// Estraggo le righe carrello di tipo disco masterizzato
 			var queryc = from cc in UnitOfWorkScope.currentDbContext.Carrelli.Include( "righeCarrello" )
@@ -1270,30 +1299,29 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 							 rr
 						 };
 
-			// Calcolo i cd masterizzati divisi per giornata e totalizzando per carrello (1 carrello = 1 cd)
+			// Sommo i file digitali venduti per ogni giornata
 			var queryd = from dd in queryc
 						 group dd by new {
-							 dd.cc.giornata,
-							 dd.cc.id
+							 dd.cc.giornata
 						 } into grp
 						 select new {
 							 gg = grp.Key.giornata,
-							 contaMaster = grp.Count()   // 1 riga = 1 foto masterizzata (tanto la qta è sempre uno)
+							 contaMaster = grp.Sum( a => a.rr.quantita )
 						 };
 
 			// Ora ciclo i risultati e creo l'apposita riga
 			foreach( var ris in queryd ) {
 				RigaReportVendite riga;
-				if( reportVendite.ContainsKey( ris.gg ) )
-					riga = reportVendite[ris.gg];
+				if( reportVendite.mappaRighe.ContainsKey( ris.gg ) )
+					riga = reportVendite.mappaRighe[ris.gg];
 				else {
 					riga = new RigaReportVendite {
 						giornata = ris.gg
 					};
-					reportVendite.Add( ris.gg, riga );
+					reportVendite.mappaRighe.Add( ris.gg, riga );
 				}
+
 				// Sommo i campi
-				riga.totDischettiMasterizzati += 1;
 				riga.totFotoMasterizzate += (int)ris.contaMaster;
 			}
 
@@ -1303,7 +1331,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// <summary>
 		/// Calcolo il totale incasso dichiarato nei carrelli
 		/// </summary>
-		void creaReportVenditeStep3( ref Dictionary<DateTime, RigaReportVendite> reportVendite, ParamRangeGiorni p ) {
+		void creaReportVenditeStep3( ref ReportVendite reportVendite, ParamRangeGiorni p ) {
 
 			LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 
@@ -1321,13 +1349,13 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 			// Ora ciclo i risultati e creo l'apposita riga
 			foreach( var ris in querye ) {
 				RigaReportVendite riga;
-				if( reportVendite.ContainsKey( ris.gg ) )
-					riga = reportVendite[ris.gg];
+				if( reportVendite.mappaRighe.ContainsKey( ris.gg ) )
+					riga = reportVendite.mappaRighe[ris.gg];
 				else {
 					riga = new RigaReportVendite {
 						giornata = ris.gg
 					};
-					reportVendite.Add( ris.gg, riga );
+					reportVendite.mappaRighe.Add( ris.gg, riga );
 				}
 				// setto il totale dell'incasso giornaliero
 				riga.totIncassoDichiarato = (decimal)ris.inca;
@@ -1340,19 +1368,19 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 		/// <summary>
 		/// Arricchisco con eventuale chiusura di cassa
 		/// </summary>
-		void creaReportVenditeStep4( ref Dictionary<DateTime, RigaReportVendite> reportVendite, ParamRangeGiorni p ) {
+		void creaReportVenditeStep4( ref ReportVendite reportVendite, ParamRangeGiorni p ) {
 
 			LumenEntities dbContext = UnitOfWorkScope.currentDbContext;
 
 			foreach( Giornata giornata in dbContext.Giornate.Where( gg => gg.id >= p.dataIniz && gg.id <= p.dataFine ) ) {
 				RigaReportVendite riga;
-				if( reportVendite.ContainsKey( giornata.id ) )
-					riga = reportVendite[giornata.id];
+				if( reportVendite.mappaRighe.ContainsKey( giornata.id ) )
+					riga = reportVendite.mappaRighe[giornata.id];
 				else {
 					riga = new RigaReportVendite {
 						giornata = giornata.id
 					};
-					reportVendite.Add( giornata.id, riga );
+					reportVendite.mappaRighe.Add( giornata.id, riga );
 				}
 				// setto i dati della chiusura
 				riga.ccTotIncassoPrevisto = giornata.incassoPrevisto;

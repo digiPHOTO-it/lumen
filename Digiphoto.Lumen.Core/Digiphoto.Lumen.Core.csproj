@@ -308,6 +308,7 @@
     <Compile Include="src\Servizi\Vendere\PromoContext.cs" />
     <Compile Include="src\Servizi\Vendere\ICalcolatorePromozione.cs" />
     <Compile Include="src\Servizi\Vendere\ParametriDiStampa.cs" />
+    <Compile Include="src\Servizi\Vendere\ReportVendite.cs" />
     <Compile Include="src\Servizi\Vendere\RigaReportVendite.cs" />
     <Compile Include="src\Servizi\Ricerca\ParamCercaCarrello.cs" />
     <Compile Include="src\Servizi\Ritoccare\FotoDaModificareMsg.cs" />

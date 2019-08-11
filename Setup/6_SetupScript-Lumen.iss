@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName       "Lumen"
-#define MyAppVersion    "3.2.rc3"
+#define MyAppVersion    "3.2.rc4"
 #define MyAppPublisher  "digiPHOTO.it"
 #define MyAppURL        "http://www.digiphoto.it/Lumen"
 #define MyAppExeName    "Digiphoto.Lumen.UI.exe"
@@ -103,7 +103,13 @@ Source: "..\Digiphoto.Lumen.OnRide.UI\{#dirPlat}\Digiphoto.Lumen.OnRide.UI.exe.c
 ; --- altro varie
 Source: "..\Digiphoto.Lumen.UI\{#dirPlat}\zxing.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Digiphoto.Lumen.UI\{#dirPlat}\zxing.presentation.dll"; DestDir: "{app}"; Flags: ignoreversion
-
+; --- report viewer
+Source: "..\Digiphoto.Lumen.UI\{#dirPlat}\Microsoft.ReportViewer.Common.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.UI\{#dirPlat}\Microsoft.ReportViewer.DataVisualization.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.UI\{#dirPlat}\Microsoft.ReportViewer.ProcessingObjectModel.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.UI\{#dirPlat}\Microsoft.ReportViewer.WinForms.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Digiphoto.Lumen.UI\{#dirPlat}\Microsoft.SqlServer.Types.dll"; DestDir: "{app}"; Flags: ignoreversion
+                                            
 
 ; --- Driver sql ---
 ; SqLite
