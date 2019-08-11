@@ -107,7 +107,7 @@ namespace Digiphoto.Lumen.Servizi.Vendere {
 
 		void caricareCarrello( Carrello c );
 
-		List<RigaReportVendite> creaReportVendite( ParamRangeGiorni param );
+		ReportVendite creaReportVendite( ParamRangeGiorni param );
 		List<RigaReportProvvigioni> creaReportProvvigioni( ParamRangeGiorni paramRangeGiorni );
 
 		/// <summary>
