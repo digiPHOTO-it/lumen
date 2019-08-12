@@ -30,5 +30,10 @@ namespace Digiphoto.Lumen.UI
 				return (SelettoreFormatoCartaViewModel)base.viewModelBase;
 			}
 		}
-    }
+
+		private void UserControlBase_DataContextChanged( object sender, DependencyPropertyChangedEventArgs e ) {
+			if( DataContext != null )
+				((SelettoreFormatoCartaViewModel)DataContext).dialogProvider = this;
+		}
+	}
 }

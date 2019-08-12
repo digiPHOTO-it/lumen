@@ -7,23 +7,23 @@
 					  xmlns:lumM="clr-namespace:Digiphoto.Lumen.UI.Mvvm"
 					  xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
 					  mc:Ignorable="d" 
-					  d:DesignHeight="381" d:DesignWidth="600">
+					  d:DesignHeight="381" d:DesignWidth="600" DataContextChanged="UserControlBase_DataContextChanged">
 
-    <UserControl.Resources>
-        <ResourceDictionary Source="SelettoreFormatoCartaResources.xaml" />
-    </UserControl.Resources>
-    
-    <GroupBox Header="Selezionare un formato carta">
+	<UserControl.Resources>
+		<ResourceDictionary Source="SelettoreFormatoCartaResources.xaml" />
+	</UserControl.Resources>
 
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
+	<GroupBox Header="Selezionare un formato carta">
+
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
 
 
 			<ListBox Name="formatiCartaListBox" 
@@ -32,7 +32,7 @@
                      SelectedItem="{Binding Path=formatoCartaSelezionato}"
                      ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"
                      Grid.Row="0" Grid.Column="0" >
-				
+
 				<ListBox.Resources>
 					<!--SelectedItem with focus -->
 					<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="LightGreen" />
@@ -42,12 +42,15 @@
 			</ListBox>
 
 			<Button Name="refreshButton" Content="Rileggi" Command="{Binding Path=rileggereFormatiCartaCommand}"  CommandParameter="True"
-                Grid.Row="1" Grid.Column="0" Width="100" Margin="0,4"/>
-
+					Grid.Row="1" Grid.Column="0" Width="100" Margin="87,4,401,4"/>
+			
+			<Button Content="Elimina" Command="{Binding Path=eliminareCommand}" 
+					Grid.Row="1" Grid.Column="0" Width="100" Margin="344,4,144,4" />
+			
 			<Expander IsExpanded="True" Header="Crea nuovo formato carta" Style="{StaticResource creaNuovoFormatoExpanderStyle}"
                           Visibility="{Binding possoCreare, ElementName=selFormatiCarta, Converter={StaticResource BooleanToVisibilityConverter}}"
                           Grid.Row="2" Grid.Column="0">
-            
+
 
 				<DockPanel Margin="20,4,0,14">
 
@@ -59,7 +62,7 @@
 								 Style="{StaticResource newDescrizioneFormatoCartaTxtStyle}" />
 
 						<Label Content="Prezzo" Height="26" />
-          
+
 						<xctk:DecimalUpDown Value="{Binding Path=nuovoFormatoCarta.prezzo, UpdateSourceTrigger=PropertyChanged}"
 											Style="{StaticResource newPrezzoFormatoCartaUpDnStyle}" 
 											MinWidth="70" Minimum="0" AllowTextInput="True"
@@ -75,14 +78,14 @@
 							</ComboBox.Items>
 						</ComboBox>
 					</StackPanel>
-					
+
 					<Button DockPanel.Dock="Bottom" Name="creareNuovoButton" Content="Crea" 
 							Command="{Binding Path=creareNuovoCommand}" 
 							Width="100" Height="26" />
 				</DockPanel>
 			</Expander>
 
-        </Grid>
-    </GroupBox>
+		</Grid>
+	</GroupBox>
 
 </lumM:UserControlBase>

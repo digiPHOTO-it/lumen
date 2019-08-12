@@ -64,9 +64,10 @@ CREATE TABLE IF NOT EXISTS `lumen`.`Prodotti` (
   `ordinamento` SMALLINT(5) NULL,
   `tipologia` CHAR(1) NOT NULL COMMENT '\'S=Stampa ; F=File\'',
   `st_grandezza` CHAR(1) NULL,
-  PRIMARY KEY (`id`))
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `Prodotti_UQ` (`descrizione` ASC))
 ENGINE = InnoDB
-COMMENT = '			';
+;
 
 
 -- -----------------------------------------------------

@@ -10,7 +10,7 @@ namespace Digiphoto.Lumen.Model {
 
 		public InfoFissa() {
 			this.id = "K";
-			this.versioneDbCompatibile = "5";
+			this.versioneDbCompatibile = "6";
 			this.modoNumerazFoto = "X";
 		}
 
