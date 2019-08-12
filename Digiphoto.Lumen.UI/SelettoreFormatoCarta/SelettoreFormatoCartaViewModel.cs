@@ -89,6 +89,32 @@ namespace Digiphoto.Lumen.UI
 			rileggereFormatiCarta( false );
 		}
 
+		private void eliminareFormatoCarta() {
+
+			FormatoCarta dacanc = formatoCartaSelezionato;
+
+			try {
+
+				try {
+					OrmUtil.forseAttacca( ref dacanc );
+				} catch( Exception ) {
+				}
+
+				var test = UnitOfWorkScope.currentDbContext.FormatiCarta.Remove( dacanc );
+
+				var test2 = UnitOfWorkScope.currentDbContext.SaveChanges();
+
+				// Se tutto è andato bene, allora rimuovo l'elemento dalla collezione visuale.
+				formatoCartaSelezionato = null;
+				formatiCarta.Remove( dacanc );
+
+			} catch( Exception ee ) {
+				UnitOfWorkScope.currentObjectContext.ObjectStateManager.ChangeObjectState( dacanc, System.Data.Entity.EntityState.Unchanged );
+				throw ee;
+			}
+
+		}
+
 		private void rileggereFormatiCarta( object param ) {
 
 			// Decido se devo dare un avviso all'utente
@@ -169,6 +195,17 @@ namespace Digiphoto.Lumen.UI
 			}
 		}
 
+		private RelayCommand _eliminareCommand;
+		public ICommand eliminareCommand {
+			get {
+				if( _eliminareCommand == null ) {
+					_eliminareCommand = new RelayCommand( param => this.eliminareFormatoCarta(),
+					                                      param => this.possoEliminareFormatoCarta,
+														  false );
+				}
+				return _eliminareCommand;
+			}
+		}
 
 		private RelayCommand _rileggereFormatiCartaCommand;
 		public ICommand rileggereFormatiCartaCommand {
@@ -183,6 +220,12 @@ namespace Digiphoto.Lumen.UI
 		private bool possoCreareNuovoFormatoCarta {
 			get {
 				return nuovoFormatoCarta != null && OrmUtil.isValido( nuovoFormatoCarta );
+			}
+		}
+
+		private bool possoEliminareFormatoCarta {
+			get {
+				return formatoCartaSelezionato != null;
 			}
 		}
 

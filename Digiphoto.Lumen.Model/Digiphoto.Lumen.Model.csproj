@@ -196,6 +196,8 @@
     <Content Include="ddl\ddl-indici-sqLite.sql" />
     <EmbeddedResource Include="ddl\ddl-upgrade-mysql-005.sql" />
     <EmbeddedResource Include="ddl\ddl-upgrade-sqlite-005.sql" />
+    <EmbeddedResource Include="ddl\ddl-upgrade-mysql-006.sql" />
+    <EmbeddedResource Include="ddl\ddl-upgrade-sqlite-006.sql" />
     <Content Include="IstruzioniCreazioneDatabaseDaModello.txt" />
   </ItemGroup>
   <ItemGroup>
