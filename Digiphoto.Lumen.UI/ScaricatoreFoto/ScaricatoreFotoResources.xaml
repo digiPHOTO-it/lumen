@@ -37,4 +37,29 @@
 		<Setter Property="Margin" Value="10,0,10,0" />
 	</Style>
 
+	<Style TargetType="{x:Type ProgressBar}" x:Key="spazioProgressStyle" >
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type ProgressBar}">
+					<Grid MinHeight="14" MinWidth="200">
+						<Rectangle Name="PART_Track" Stroke="#888888" StrokeThickness="1">
+							<Rectangle.Fill>
+								<LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+									<GradientStop Offset="0" Color="#FF00FF00"/>
+									<GradientStop Offset="0.75" Color="#FFFFFF00"/>
+									<GradientStop Offset="1" Color="#FFFF0000"/>
+								</LinearGradientBrush>
+							</Rectangle.Fill>
+						</Rectangle>
+						<DockPanel Margin="1">
+							<Rectangle Name="PART_Indicator">
+							</Rectangle>
+							<Rectangle Name="Mask" MinWidth="{TemplateBinding Width}" Fill="#C0C0C0"/>
+						</DockPanel>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
 </ResourceDictionary>

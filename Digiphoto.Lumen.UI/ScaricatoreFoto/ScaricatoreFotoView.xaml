@@ -9,9 +9,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="1200">
 
-    <UserControl.DataContext>
-        <lum:ScaricatoreFotoViewModel />
-    </UserControl.DataContext>
     
     <UserControl.Resources>
 		<ResourceDictionary Source="ScaricatoreFotoResources.xaml" />
@@ -21,7 +18,7 @@
 
 		<Grid>
 			<Grid.RowDefinitions>
-				<RowDefinition  />
+				<RowDefinition Height="*" />
 			</Grid.RowDefinitions>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition />
@@ -48,6 +45,7 @@
 					<RowDefinition Height="*" />
 					<RowDefinition />
 					<RowDefinition />
+					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition />
@@ -77,8 +75,27 @@
 
 				<Button Style="{StaticResource styleButtonScarica}" Content="go! SCARICA" Command="{Binding scaricareCommand}" Grid.Row="2" Grid.Column="0" />
 
+				<StackPanel Orientation="Vertical" Grid.Row="3" Grid.Column="0" >
+
+					<TextBlock TextAlignment="Center">
+						<TextBlock.Text>
+							<MultiBinding StringFormat="Spazio libero {0} / {1} GigaByte">
+								<Binding Path="spazio.liberoGB" />
+								<Binding Path="spazio.totaleGB" />
+							</MultiBinding>
+						</TextBlock.Text>
+					</TextBlock>
+
+
+					<ProgressBar Style="{StaticResource spazioProgressStyle}" 
+								 Value="{Binding Path=spazio.occupatoPerc, Mode=OneWay}" 
+								 Minimum="0" Maximum="100" />
+
+				</StackPanel>
 
 			</Grid>
+
+
 
 		</Grid>
 

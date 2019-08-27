@@ -112,11 +112,11 @@
 
 			<TabItem MinHeight="30" Name="tabItemScarica">
 				<TabItem.Header>
-					<TextBlock Text="Scarica" ToolTip="Scarica foto da memory-card o da altra cartella" />
+					<TextBlock Text="Scarica" ToolTip="Scarica foto da memory-card o da altra cartella" Name="TabItemScarica" MouseLeftButtonDown="TabItemScarica_MouseLeftButtonDown" />
 				</TabItem.Header>
 
 				<!-- UserControl per scaricare le foto -->
-				<lum:ScaricatoreFoto />
+				<lum:ScaricatoreFoto x:Name="scaricatoreFoto" />
 			</TabItem>
 
 

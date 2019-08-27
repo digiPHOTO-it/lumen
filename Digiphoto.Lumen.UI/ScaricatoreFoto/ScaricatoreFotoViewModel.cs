@@ -17,6 +17,7 @@ using Digiphoto.Lumen.Servizi.EntityRepository;
 using System.IO;
 using log4net;
 using System.Windows;
+using Digiphoto.Lumen.Core.Util;
 
 namespace Digiphoto.Lumen.UI {
 
@@ -39,6 +40,12 @@ namespace Digiphoto.Lumen.UI {
 			// Ascolto messaggio
 			IObservable<Messaggio> observable = LumenApplication.Instance.bus.Observe<Messaggio>();
 			observable.Subscribe( this );
+
+			aggiornareSpazioLiberoSuDisco();
+		}
+
+		private void aggiornareSpazioLiberoSuDisco() {
+			spazio = FileSystemUtil.FreeSpace( Configurazione.cartellaBaseFoto );
 		}
 
 		private void applicaConfigurazione() {
@@ -64,7 +71,7 @@ namespace Digiphoto.Lumen.UI {
 			private set;
 		}
 
-		public FaseDelGiorno [] fasiDelGiorno {
+		public FaseDelGiorno[] fasiDelGiorno {
 			get {
 				return FaseDelGiornoUtil.fasiDelGiorno;
 			}
@@ -72,16 +79,13 @@ namespace Digiphoto.Lumen.UI {
 
 		private FaseDelGiorno? _faseDelGiorno;
 		public FaseDelGiorno? faseDelGiorno {
-			get
-			{
+			get {
 				return _faseDelGiorno;
 			}
-			set
-			{
-				if (value != _faseDelGiorno)
-				{
+			set {
+				if( value != _faseDelGiorno ) {
 					_faseDelGiorno = value;
-					OnPropertyChanged("faseDelGiorno");
+					OnPropertyChanged( "faseDelGiorno" );
 				}
 			}
 		}
@@ -104,7 +108,7 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
-		
+
 		private bool _eraseFotoMemoryCard;
 		public bool eraseFotoMemoryCard {
 			get {
@@ -120,18 +124,14 @@ namespace Digiphoto.Lumen.UI {
 		}
 
 		private bool _ricercaBarCode;
-		public bool ricercaBarCode
-		{
-			get
-			{
+		public bool ricercaBarCode {
+			get {
 				return _ricercaBarCode;
 			}
-			set
-			{
-				if (value != _ricercaBarCode)
-				{
+			set {
+				if( value != _ricercaBarCode ) {
 					_ricercaBarCode = value;
-					OnPropertyChanged("ricercaBarCode");
+					OnPropertyChanged( "ricercaBarCode" );
 				}
 			}
 
@@ -157,7 +157,7 @@ namespace Digiphoto.Lumen.UI {
 			get {
 				return (scaricatoreFotoSrv != null && scaricatoreFotoSrv.statoScarica == StatoScarica.Scaricamento);
 			}
-		}				
+		}
 
 		public bool possoScaricare {
 			get {
@@ -165,7 +165,7 @@ namespace Digiphoto.Lumen.UI {
 					return true;
 
 				bool posso = true;
-				
+
 				if( posso && String.IsNullOrEmpty( cartellaSorgente ) )
 					posso = false;
 
@@ -175,10 +175,10 @@ namespace Digiphoto.Lumen.UI {
 				// Verifico che i dati minimi siano stati indicati
 				if( posso && selettoreFotografoViewModel.countElementiSelezionati < 1 )
 					posso = false;
-					
+
 				if( posso && isScaricatoreBusy )
 					posso = false;
-	
+
 				return posso;
 			}
 		}
@@ -188,7 +188,32 @@ namespace Digiphoto.Lumen.UI {
 		/// </summary>
 		public bool possoModificareSpostaCopia {
 			get {
-				return ! Configurazione.isFuoriStandardCiccio;
+				return !Configurazione.isFuoriStandardCiccio;
+			}
+		}
+
+		private Spazio _spazio;
+		public Spazio spazio {
+			get {
+				return _spazio;
+			}
+			private set {
+				_spazio = value;
+				OnPropertyChanged( "spazio" );
+				OnPropertyChanged( "diskSpaceProgressColor" );
+			}
+		}
+
+		public string diskSpaceProgressColor {
+			get {
+				decimal percentuale = (decimal)spazio.occupatoPerc / (decimal)100;
+
+				int R = Convert.ToInt32( Math.Floor( 255 - (255 - 50) * percentuale ) );
+				int G = Convert.ToInt32( Math.Floor( 205 * percentuale ) );
+				int B = Convert.ToInt32( Math.Floor( 50 * percentuale ) );
+
+				string ProgressColor = String.Format( "#{0:X2}{1:X2}{2:X2}", R, G, B );
+				return ProgressColor;
 			}
 		}
 
@@ -218,10 +243,28 @@ namespace Digiphoto.Lumen.UI {
 			}
 		}
 
+		private RelayCommand _aggiornareSpazioLiberoSuDiscoCommand;
+		public ICommand aggiornareSpazioLiberoSuDiscoCommand {
+			get {
+				if( _aggiornareSpazioLiberoSuDiscoCommand == null ) {
+					_aggiornareSpazioLiberoSuDiscoCommand = new RelayCommand( param => this.aggiornareSpazioLiberoSuDisco(),
+														param => true,
+														null );
+				}
+				return _aggiornareSpazioLiberoSuDiscoCommand;
+			}
+		}
+
 		#endregion
 
 		#region Metodi
 		private void scaricare() {
+
+			// Controllo spazio libero su disco
+			if( spazio.liberoPerc < 10 ) {
+				dialogProvider.ShowMessage( "Lo spazio libero su disco si sta esaurendo.\r\nLanciare utility di pulizia foto vecchie" , "Disco quasi pieno" );
+			}
+
 			// Verifico fase del giorno
 			if (controllaFaseDelGiorno() == false)
 				return;
@@ -405,6 +448,8 @@ namespace Digiphoto.Lumen.UI {
 				}
 				else if (msgScaricoFotoMsg.fase == FaseScaricoFoto.FineLavora)
 				{
+					aggiornareSpazioLiberoSuDisco();
+
 					StringBuilder msgProvinatura = new StringBuilder();
 					msgProvinatura.AppendFormat("Scaricate {0}\nProvinate {1}", msgScaricoFotoMsg.esitoScarico.totFotoCopiateOk, msgScaricoFotoMsg.esitoScarico.totFotoProvinate );
 					

@@ -221,8 +221,9 @@ namespace Digiphoto.Lumen.UI.DataEntry {
 				case DataEntryStatus.View:
 					if( collectionView.IsEditingItem && collectionView.CanCancelEdit )
 						collectionView.CancelEdit();
-					if( collectionView.IsAddingNew )
+					if( collectionView.IsAddingNew ) {
 						collectionView.CancelNew();
+					}
 					break;
 
 				case DataEntryStatus.Edit:
