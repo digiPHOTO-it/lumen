@@ -12,11 +12,20 @@ namespace Digiphoto.Lumen.UI {
 
 		public ScaricatoreFoto() {
 			InitializeComponent();
+
+			this.DataContextChanged += ScaricatoreFoto_DataContextChanged;
+		}
+
+		private void ScaricatoreFoto_DataContextChanged( object sender, System.Windows.DependencyPropertyChangedEventArgs e ) {
+
+			associaDialogProvider();
+
+			selettoreCartella1.DataContext = scaricatoreFotoViewModel.selettoreCartellaViewModel;
 		}
 
 		protected ScaricatoreFotoViewModel scaricatoreFotoViewModel {
 			get {
-				return (ScaricatoreFotoViewModel)base.viewModelBase;
+				return (ScaricatoreFotoViewModel)this.DataContext;
 			}
 		}
 

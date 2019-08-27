@@ -53,6 +53,7 @@ namespace Digiphoto.Lumen.UI {
 			carrelloViewModel = new CarrelloViewModel();
 			fotoGalleryViewModel = new FotoGalleryViewModel();
 			fotoRitoccoViewModel = new FotoRitoccoViewModel();
+			scaricatoreFotoViewModel = new ScaricatoreFotoViewModel();
 
 			selettoreStampantiInstallateViewModel = new SelettoreStampantiInstallateViewModel();
 			DataContextStampantiInstallate = selettoreStampantiInstallateViewModel;
@@ -110,6 +111,11 @@ namespace Digiphoto.Lumen.UI {
 
 		public FotoRitoccoViewModel fotoRitoccoViewModel {
 			get; 
+			private set;
+		}
+
+		public ScaricatoreFotoViewModel scaricatoreFotoViewModel {
+			get;
 			private set;
 		}
 

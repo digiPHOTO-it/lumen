@@ -20,7 +20,7 @@ namespace Digiphoto.Lumen.UI {
 
 		private SelettoreCartellaViewModel selettoreCartellaViewModel {
 			get {
-				return (SelettoreCartellaViewModel)base.viewModelBase;
+				return (SelettoreCartellaViewModel)this.DataContext;
 			}
 		}
 

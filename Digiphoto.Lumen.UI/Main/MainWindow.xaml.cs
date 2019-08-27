@@ -32,6 +32,7 @@ namespace Digiphoto.Lumen.UI {
 				carrelloView.DataContext = _mainWindowViewModel.carrelloViewModel;
 				fotoGallery.DataContext = _mainWindowViewModel.fotoGalleryViewModel;
 				fotoRitoccoUserControl.DataContext = _mainWindowViewModel.fotoRitoccoViewModel;
+				scaricatoreFoto.DataContext = _mainWindowViewModel.scaricatoreFotoViewModel;
 
 				_mainWindowViewModel.openPopupDialogRequest += _mainWindowViewModel_openPopupDialogRequest;
 			}
@@ -236,7 +237,11 @@ namespace Digiphoto.Lumen.UI {
 
 		}
 
+		private void TabItemScarica_MouseLeftButtonDown( object sender, MouseButtonEventArgs e ) {
+			
+			// ogni volta che clicco sulla pagina di scaricamento, chiamo l'aggiornamento dello spazio libero.
 
-
+			_mainWindowViewModel.scaricatoreFotoViewModel.aggiornareSpazioLiberoSuDiscoCommand.Execute( null );
+		}
 	}
 }
