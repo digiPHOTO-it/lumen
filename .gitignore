@@ -1,0 +1,13 @@
+bin
+obj
+*.user
+TestResults/**
+*.suo
+*.*~
+*.orig
+packages
+*.psess
+Digiphoto.Lumen.SelfService.WebUI\ssWebPackage
+Digiphoto.Lumen.SelfService.WebUI\ssWebPackage.zip
+.vs/
+*.bak
